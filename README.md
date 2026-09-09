@@ -227,7 +227,7 @@ No workflow engine, no repository index, no memory, no model routing, no subagen
 
 It now runs live: 89 real agent runs through the CLI, where the gate fires, refuses the stop, and the agent goes back and does more work. What that has not yet shown is whether the work comes out better. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen, so the run-to-run noise is larger than the effect, and answering the question properly needs about 252 agent runs per comparison against a task suite rebuilt so that most of it discriminates.
 
-One live result is consistent across both models tested: the gate stops nearly every first attempt to finish, and nearly always on work a plain agent had already got right. It buys evidence for correct-but-unproven work at about 2.5 times the tokens. Whether that trade is worth making is the open question, and it is now measurable rather than arguable.
+The gate used to stop nearly every first attempt to finish, and nearly always on work a plain agent had already got right. Measured across four live passes, that is now 12 percent of runs rather than 75, because when a project declares how its tests run the runtime runs them itself and computes the evidence instead of interrupting to demand it. Turns fell by a quarter and none of the tasks a plain agent reliably resolves regressed.
 
 ## Design notes
 

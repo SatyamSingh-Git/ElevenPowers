@@ -247,3 +247,35 @@ the thing most likely to make someone switch it off.
 **Cost of an answer:** about 252 agent runs per comparison, roughly $25 and
 several hours per arm, plus a rebuilt suite.
 
+## 2026-09-09, making the gate usable
+
+Four live passes over the same sixteen tasks and model, 64 runs, about $10. Two
+of the four tested ideas that were wrong.
+
+**Guidance did nothing.** Saying what would be needed, once, at the edit that
+opens the claim, moved blocking from 12 of 16 runs to 14. The transcripts
+confirm the text reached the agent, so the channel works and the theory was
+wrong.
+
+**The stability obligation was over-firing badly.** Any of a list of words
+appearing anywhere in the request demanded twenty clean repeat runs: "sometimes"
+in a deterministic bug report, "race" in a pasted job advert. On 566 real bug
+reports that was 26 percent of them; it is now 4.
+
+**The cause was structural.** Blocks now record which obligation was unmet, and
+in all fifteen blocked runs the agent had written a test and run it, and had not
+run the suite, which is a second invocation of the same tool.
+
+**The fix was to stop demanding and start computing.** When a project declares
+how its tests run, the runtime runs them at the stop. Blocking fell from 75
+percent of runs to 12, turns by a quarter, cost by 15 percent.
+
+**The held-out set caught the first version cheating.** Accepting "a test file
+was touched and the suite is green" also passes an agent that emptied a failing
+test. Miss rate went to 6 percent until the file was required to still declare a
+test.
+
+**Resolution:** 75 percent against a plain arm that scored 69 and 94 on two
+identical passes. None of the eleven tasks a plain agent always resolves
+regressed; all four failures were the tasks that fail anyway.
+

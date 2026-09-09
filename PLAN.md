@@ -56,9 +56,9 @@ The project's first goal, stated by the user before any code existed: **combine 
 |---|---|---|---|
 | 3 | Typed claims, risk-scaled evidence contracts, automatic capture | **built** | done |
 | 6 | Tooling for intermittent and concurrency bugs | **built** — runner and derived run counts; no instrumentation helpers, no hypothesis ledger | M4 completes |
-| 1 | Process-stage gates enforced by code | partial — Stop gate is code and ledger-driven; no stage rule such as "reproduce before edit" | M1 |
+| 1 | Process-stage gates enforced by code | partial — Stop gate is code and ledger-driven, and discharges what it can compute; no stage rule such as "reproduce before edit" | done for now |
 | 5 | Externalized task state surviving compaction and host switch | partial — the ledger survives compaction; host switch untested on one host | M5 |
-| 10 | Decision-level observability | partial — blocks, scope questions, claim openings recorded; not why | M1 |
+| 10 | Decision-level observability | partial — blocks now record which obligation was unmet, which is how M1 was solved; still no record of why a stage ran | done for now |
 | 2 | A calibrated task classifier | none | M4 |
 | 4 | Repository model with test edges and a blast-radius number | none | M3 |
 | 7 | Memory write gating that produces useful records | none | M6 |
@@ -83,13 +83,14 @@ Honest, reproducible, and unflattering in the places it should be.
 | Claim inference | 21 percent over-claim, 25 percent missed work over 3,557 real turns; 31/31 labelled | `python -m eval.claims_run` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
 | Live operation | the gate fires, refuses the stop, the agent does more work | `python -m eval.live` |
-| Tests | 291 | `python -m pytest tests -q` |
+| Live blocking | 12 percent of runs, down from 75, nothing stable regressed | `python -m eval.live --arm gate --model haiku` |
+| Tests | 339 | `python -m pytest tests -q` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
 
 **Not built**
 
-One host. No configuration of any kind. No override. No status command. No repository model. No composition. The gate is the only thing a user ever sees, and it appears only to say no.
+One host. No repository model. No composition. M1 added profiles, a project config, a status command and self-discharge, so the gate is no longer the only thing a user ever sees.
 
 **Against the field**, from the research cards: Superpowers is 195 files and 14 skills across 11+ hosts; ECC is 3,538 files, 286 skills, 68 agents, 94 commands, 16 install targets. We are roughly one to two percent of ECC by surface. We are the only one that computes completion. Both facts are true and the second does not excuse the first.
 
@@ -105,11 +106,14 @@ That is the design working as specified — "probably correct" is exactly what t
 
 | Channel | When | Cost | Status |
 |---|---|---|---|
-| **Guide** | after the first source edit: what would prove this work | tokens only, no interruption | to build, M1 |
+| **Guide** | after the first source edit: what would prove this work | tokens only, no interruption | built; measured, no effect on blocking |
+| **Compute** | at the end: run what the project declared and record the result | seconds, no tokens | built; this is what worked |
 | **Report** | at the end, always | a few lines | built |
 | **Gate** | at the end, when obligations are unmet | an interruption and a re-run | built |
 
-The hypothesis is that the gate fires so often because obligations are stated at prompt time and forgotten by the end. Guidance at the moment of work should convert most blocks into work the agent does unprompted. That is P14 and it is cheap to measure, because block rate is observed on every run rather than only on discordant pairs.
+That hypothesis was P14, and it was wrong: guidance moved blocking from 12 of 16 runs to 14, and the transcripts confirm the text reached the agent. What the decision records then showed is that in all fifteen blocked runs the agent had written a test and run it, and never run the whole suite, because that is a second invocation of the same tool.
+
+So the gate was solving it backwards. Blocking to make an agent run a command costs another turn at 2.5x the tokens; running the command costs seconds and none. The runtime now runs the commands a project declared and computes the missing evidence itself, which took blocking from 75 percent of runs to 12.
 
 **Profiles, taken from ECC.** `off` records only; `guide` never blocks; `strict` blocks as today. Which is default is decided by M1's measurement, not by taste. This is the method the project is supposed to use: our weakness class covered by another system's strength.
 
@@ -129,6 +133,13 @@ Each has an exit criterion that is a command and a number. **The plan is followe
 - Record *why* the gate blocked, not only that it did.
 
 **Exit:** on 24 live runs, blocks on already-correct work fall below 25 percent of runs, with resolution no worse than the same suite without guidance. `python -m eval.live --arm guide,strict`.
+
+**EXITED 2026-09-09**, after four passes of which two tested wrong ideas.
+Blocks on already-correct work fell from 69 percent to 12, turns by a quarter,
+cost by 15 percent, and none of the eleven tasks a plain agent always resolves
+regressed. Guidance did nothing; what worked was the runtime running the
+project's declared commands and computing the missing evidence rather than
+blocking to demand it. Full account in `journey/11-usable.md`.
 
 ### M2 — The composition baseline
 
@@ -199,7 +210,7 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | ID | Hypothesis | Needs | Status |
 |---|---|---|---|
 | P1 | Evidence gating halves the submit-resolve gap | ~252 paired runs | **unanswered**; noise floor exceeds the effect (M5) |
-| P2 | The gate does not block work that is already correct | live, ~24 runs | **failing**: 7/8 then 12/16 first stops blocked, nearly all already correct (M1) |
+| P2 | The gate does not block work that is already correct | live, ~24 runs | **holds**: 69 percent of runs to 12 percent, after M1 |
 | P3 | Claim inference engages when and only when there is work | replay | 21 percent over-claim, 25 percent missed, on 3,557 real turns |
 | P4 | Coarse invalidation is not too pessimistic to live with | dogfood | unmeasured (M3) |
 | P5 | Gating improves abstention accuracy | live | unmeasured |
@@ -212,7 +223,8 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | P11 | **Composition of best-of-breed pieces beats its best single part** | live | **not started (M2)** — the mission's own test |
 | P12 | Prediction calibration predicts the miss rate | replay | not started |
 | P13 | The runtime reads what the host actually sends | replay | **answered**: 174/174 and 5,916/5,916 |
-| P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | new (M1) |
+| P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | **rejected**: 12 of 16 blocked became 14; the text reached the agent |
+| P15 | The runtime computing the evidence beats blocking to demand it | live, ~24 runs | **holds**: blocking 75 to 12 percent of runs, nothing stable regressed |
 
 ---
 
@@ -229,8 +241,10 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | Repeat runner | 120 | built |
 | Report | 147 | built, end-of-turn only |
 | Host contract | 393 | built after three defects |
-| **Guidance channel** | — | **M1** |
-| **Config and profiles** | — | **M1** |
+| Guidance channel | 20 | built; no measurable effect on blocking |
+| Config and profiles | 82 | built |
+| Self-discharge | 71 | built; the fix that made the gate usable |
+| Status command | 66 | built |
 | **Repository model** | — | **M3** |
 | **Selection runtime** | — | **M4** |
 

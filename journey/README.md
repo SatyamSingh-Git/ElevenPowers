@@ -22,6 +22,7 @@ command in this repository and can be reproduced.
 | [08-wiring.md](08-wiring.md) | Three defects in the layer nobody had measured, found by reading 36,000 real commands |
 | [09-claims.md](09-claims.md) | What real prompts look like, and why the claim has to follow the work |
 | [10-live.md](10-live.md) | 89 real agent runs: the mechanism works, the measurement does not, and what an answer costs |
+| [11-usable.md](11-usable.md) | Two wrong fixes and a right one: the gate stops interrupting work that was already correct |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -104,6 +105,13 @@ and every arm comparison so far was reading noise. What survived is a friction
 result: the gate stops nearly every first attempt to finish, and nearly always on
 work that was already correct.
 
+**Then the plan was rewritten to obey its own research, and the first milestone
+under it worked.** v0.4 made the ten residual gaps the backlog and gave each
+milestone an exit criterion that is a command and a number. M1 took four live
+passes, two of which tested ideas that turned out to be wrong, and ended with the
+gate blocking 12 percent of runs instead of 75 by computing the evidence itself
+rather than demanding it.
+
 ## The two things worth taking away
 
 ### A measurement is only as good as the population it runs on
@@ -162,8 +170,9 @@ Every figure below comes from a command in this repository.
 | Claim inference, labelled | 31 of 31 | `python -m eval.claims_run --cases` |
 | Reading tool results, real commands | 174 of 174 failures, 5,916 of 5,916 successes over 36,034 commands | `python -m eval.replay --all` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
+| Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 291 | `python -m pytest tests -q` |
+| Tests | 339 | `python -m pytest tests -q` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
 
