@@ -18,6 +18,26 @@ from .evidence import IGNORED_DIRS
 
 TEST_NAME = re.compile(r"(^|/)(tests?|spec|__tests__)(/|$)|(^|/)(test_[^/]+|[^/]+_test|[^/]+\.test|[^/]+\.spec|[^/]+_spec)\.")
 
+# A test file that declares no test is not a test file any more. Emptying one is
+# how a suite goes green without the bug being fixed, so "a test file was
+# touched" is only evidence of a covering test when a test survives in it.
+TEST_DECLARATION = re.compile(
+    r"^\s*(?:async\s+)?def\s+test\w*"          # python
+    r"|^\s*(?:it|test|describe)\s*[.(]"        # jest, vitest, mocha, rspec
+    r"|^\s*func\s+Test\w+"                     # go
+    r"|#\[(?:test|tokio::test)\]"              # rust
+    r"|^\s*class\s+\w*Tests?\b"                # xunit, junit, phpunit
+    r"|^\s*@Test\b",
+    re.MULTILINE,
+)
+
+
+def declares_a_test(path) -> bool:
+    try:
+        return bool(TEST_DECLARATION.search(Path(path).read_text(encoding="utf-8", errors="ignore")))
+    except OSError:
+        return False
+
 
 @dataclass(frozen=True)
 class Surface:

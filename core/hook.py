@@ -23,6 +23,7 @@ from .obligations import risk_of
 from .parsers import parse, written_paths
 from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
+from .verify import discharge
 from .report import end_report, gate_message, guidance, start_banner
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 
@@ -205,6 +206,14 @@ def on_stop(payload: dict, root: Path) -> int:
 
     ledger.touched = sorted(set(ledger.touched) | set(_changed_paths(root)))
     status = ledger.settle(payload.get("last_assistant_message", ""))
+
+    if status is not Status.VERIFIED and ledger.config.speaks:
+        # Compute what is missing rather than demanding it. Blocking to make the
+        # agent run a command costs another turn; running it costs seconds.
+        found = discharge(ledger)
+        if found:
+            ledger.add(found)
+            status = ledger.status()
     ledger.save()
 
     if not ledger.config.speaks:

@@ -20,7 +20,7 @@ from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for, risk_of
 from .repeat import MIN_RUNS, runs_needed
 from .scope import is_manifest, is_prose, normalise
-from .surface import Surface, detect
+from .surface import TEST_NAME, Surface, declares_a_test, detect
 
 STATE_DIR = ".elevenpowers"
 
@@ -288,6 +288,12 @@ class Ledger:
             return Check(obligation=obligation, met=True, evidence=found,
                          freshness=found.freshness(self.root))
 
+        written = self._test_written_and_suite_green(obligation)
+        if written is not None:
+            return Check(obligation=obligation, met=True, evidence=written,
+                         freshness=written.freshness(self.root),
+                         caveat="a test was written and the suite that runs it passed")
+
         tolerated = self._no_new_failures(obligation)
         if tolerated is not None:
             return Check(obligation=obligation, met=True, evidence=tolerated,
@@ -333,6 +339,33 @@ class Ledger:
             caveat=(f"{best.runs} clean runs, {needed} needed" if short
                     else f"still failed {best.failed} of {best.runs}"),
         )
+
+    def _test_written_and_suite_green(self, obligation: Obligation) -> Evidence | None:
+        """This task wrote a test, and the suite that contains it passed.
+
+        A whole-suite run produces no per-test record, so an agent that writes a
+        covering test and then runs everything cannot discharge a scoped
+        obligation. That described three quarters of the runs the gate blocked
+        in live measurement, in every one of which a test file had been edited.
+
+        Watching the task write a test and the suite go green is the same proof
+        by a different route, which is the argument that already admits a
+        red-to-green transition. It is weaker than a named passing test, so it
+        is reported with the caveat rather than silently.
+        """
+        if not obligation.scoped or obligation.kind is not Kind.TEST:
+            return None
+        # The file must still declare a test. Emptying one is how a suite goes
+        # green without the bug being fixed, and the held-out scenarios caught
+        # exactly that the first time this rule was written without the check.
+        if not any(TEST_NAME.search(p) and declares_a_test(self.root / p)
+                   for p in set(self.touched) | set(self.seen)):
+            return None
+        green = [
+            e for e in self.evidence
+            if e.kind is Kind.SUITE and e.result is Result.PASS and not Obligation._is_scoped(e)
+        ]
+        return green[-1] if green else None
 
     def _no_new_failures(self, obligation: Obligation) -> Evidence | None:
         """A suite that was already red and is no redder than before.

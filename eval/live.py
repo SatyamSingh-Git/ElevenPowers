@@ -76,7 +76,12 @@ def build(task: Task, root: Path, arm: str) -> None:
         )
         # Both arms say what would prove the work; only one of them refuses to
         # stop without it. That is the comparison M1 exists to make.
-        save_config(root, Config(profile="guide" if arm == "guide" else "strict"))
+        # A real install declares how the project runs its tests; without that
+        # the runtime can only ask the agent to do it.
+        save_config(root, Config(
+            profile="guide" if arm == "guide" else "strict",
+            commands={"tests": "python -m pytest -q"},
+        ))
 
     for args in (["init", "-q"], ["add", "-A"],
                  ["-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "seed"]):
