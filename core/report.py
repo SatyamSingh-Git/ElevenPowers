@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from .evidence import Freshness
 from .ledger import Ledger, Status, Verdict
 
@@ -41,6 +43,38 @@ def start_banner(ledger: Ledger) -> str:
         f"risk:   {ledger.risk.value}{domains}\n"
         f"proof:  {obligations} obligation(s) to discharge"
     )
+
+
+def coverage_note(ledger: Ledger) -> str:
+    """Warn when the covering test looks unrelated to what changed.
+
+    Deliberately advisory. Deciding this properly needs a test-to-source map;
+    guessing from names would block correct work whenever a test is named
+    differently from the code it exercises, and a false block costs more than a
+    missed warning.
+    """
+    if not ledger.touched:
+        return ""
+    scoped = [
+        c.evidence for v in ledger.verdicts() for c in v.checks
+        if c.met and c.evidence and c.obligation.scoped
+    ]
+    if not scoped:
+        return ""
+    changed = {t for p in ledger.touched for t in _tokens(p)}
+    for record in scoped:
+        if changed & _tokens(record.identity):
+            return ""
+    names = ", ".join(sorted({r.identity for r in scoped}))
+    return f"note: {names} shares no name with the files you changed; confirm it covers them"
+
+
+def _tokens(path: str) -> set[str]:
+    stem = re.split(r"[/\]", path)[-1]
+    stem = re.sub(r"\.[A-Za-z0-9]+$", "", stem)
+    parts = re.split(r"[^A-Za-z0-9]+|(?<=[a-z])(?=[A-Z])", stem)
+    return {p.lower() for p in parts if len(p) > 2 and p.lower() not in
+            {"test", "tests", "spec", "specs"}}
 
 
 def end_report(ledger: Ledger) -> str:

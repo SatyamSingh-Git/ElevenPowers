@@ -81,7 +81,8 @@ def on_prompt(payload: dict, root: Path) -> int:
     ledger.task = ledger.task or f"t-{int(time.time())}"
     ledger.request = request
     ledger.claims = claims
-    ledger.risk, ledger.domains = risk_of(_changed_paths(root))
+    ledger.touched = _changed_paths(root)
+    ledger.risk, ledger.domains = risk_of(ledger.touched, request)
     ledger.blocks = 0
     ledger.save()
     _emit("UserPromptSubmit", additionalContext=start_banner(ledger))
@@ -151,7 +152,9 @@ def on_stop(payload: dict, root: Path) -> int:
     if not ledger.claims:
         return 0
 
-    status = ledger.status()
+    ledger.touched = sorted(set(ledger.touched) | set(_changed_paths(root)))
+    status = ledger.settle(payload.get("last_assistant_message", ""))
+    ledger.save()
     if status is Status.VERIFIED:
         _emit("Stop", additionalContext=end_report(ledger))
         return 0

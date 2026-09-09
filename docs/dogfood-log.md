@@ -37,3 +37,43 @@ everything was merely stale. Now it says to re-run the stale checks.
 Ledger for a full cycle: 3 evidence records, all fresh, about 4 KB on disk.
 Hook latency: under 200 ms per event on this repository, dominated by hashing
 the source set.
+
+## 2026-09-09, measuring the gate as a classifier (P2)
+
+Thirty labelled scenarios, then twelve more written afterwards to break it.
+
+**First honest number: 75 percent false blocks.** Fifteen of twenty completed
+tasks were blocked. The design was elegant and unusable. Causes, in order of how
+much each contributed:
+
+- Risk scored on filename substrings, so any file named `auth.py` demanded
+  reproduction and repeated-run stability.
+- Repeated-run stability demanded of every high-risk fix rather than of
+  nondeterministic bugs.
+- Ruby, Java, .NET, Elixir, PHP and every test wrapper (`npm test`, `make test`,
+  `tox`) produced no evidence at all, so obligations were undischargeable.
+- Projects with no test suite were asked for suite evidence.
+- Repositories already red on their main branch read as contradicted.
+- Stopping to ask the user a question was treated as a false completion claim.
+- A stated blocker had no way to be accepted.
+
+**The rule that fixed most of it.** An obligation must be dischargeable by an
+agent doing a good job. Obligations are now filtered by a scan of what the
+project can actually prove, corrected by evidence actually observed.
+
+**The overfitting lesson.** After the fixes the tuning set read zero. The
+held-out set read 43 percent. Two were real bugs (`pnpm --filter api test` not
+matching, and a project's own runner script classified as a program run rather
+than a test run, fixed by classifying on output shape instead of command name).
+
+**Scaling failure found by measurement.** Content-hashing the source tree cost
+about 6 seconds per evidence record on 8,000 files, paid on every test run.
+Timestamps cost 383 ms. The trade was that a formatter rewriting identical bytes
+read as stale. Resolved by asking git, which compares content and uses timestamps
+only as a cache: unchanged status means unchanged content. Cost 70 ms on the
+after-command hook; the before-edit hot path is unchanged at about 102 ms.
+
+Final: 0 percent false blocks and 0 percent misses across 42 scenarios, 50 unit
+tests green. What that does not prove is written down in
+`journey/05-measurement.md`, and the short version is that 42 constructed cases
+written by one person are not real agent behaviour.

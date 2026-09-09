@@ -1,0 +1,147 @@
+# Mistakes
+
+Kept in full, because the corrections are the most transferable part of the
+record. Each entry: what happened, what caused it, what it cost, what changed.
+
+## Planning
+
+### Writing a plan from memory
+
+A 522-line plan was produced without opening a single repository. Every claim
+about the fourteen systems came from recollection and was tagged as unverified.
+
+*Cause:* the brief asked for research and a plan, and the plan was easier.
+
+*Cost:* two full rewrites.
+
+*Changed:* when every load-bearing claim in a document carries a marker saying it
+has not been checked, that is not a caveat, it is the finding, and it should stop
+the work.
+
+### Designing what already existed
+
+The first architecture proposed an evidence ledger, task state surviving
+compaction, a repository model, and blind review ordering. Each already existed
+in some form in a system that had not been read.
+
+*Cost:* would have been weeks of reinvention.
+
+*Changed:* the research phase now produces a complementarity matrix mapping every
+strength to the weakness it covers, so building starts from what exists.
+
+### Writing decision rules the sample size could not support
+
+Confidence intervals excluding zero were specified for three tasks per category
+at three runs each. That design cannot produce those verdicts.
+
+*Cause:* rigorous-sounding language substituted for statistical thinking.
+
+*Changed:* measure the noise floor, publish the minimum detectable effect, then
+size the suite. Where an effect is too small to detect affordably, say so rather
+than writing a rule that pretends otherwise.
+
+### Unbounded novelty claims
+
+"The only system that will refuse to say done without evidence" and "no prior art
+at all" were written without the searches that would justify them.
+
+*Cost:* one claim was withdrawn entirely after finding a paper that already does
+runtime process enforcement over agent traces.
+
+*Changed:* a novelty claim now names the search that failed to find prior art.
+Bounding them made the remaining claims stronger, because the mechanism turned
+out to be proven industrial practice and only its application was new.
+
+### An architecture protected through a milestone that did not exist
+
+The plan promised a component would be protected "through M3" while defining only
+M0 to M2.
+
+*Cause:* editing a roadmap without re-reading what referenced it.
+
+*Changed:* three more inconsistencies were found in the same pass, including two
+competing verification philosophies in one document.
+
+## Implementation
+
+### Risk inherited from a parent repository
+
+`git status` walks up the directory tree, so a directory that was not itself a
+repository reported an unrelated parent's changes and scored the wrong risk tier.
+
+*Found by:* a test running in a temporary directory.
+
+*Would have shipped as:* mysterious over-strictness for anyone working in a
+monorepo subdirectory.
+
+*Changed:* confirm the repository toplevel matches the working root before
+trusting anything git says about it.
+
+### An obligation nothing could satisfy
+
+`test_added` demanded a per-test record, but the most common way to run tests
+prints no per-test lines.
+
+*Changed:* this generalised into the rule that fixed most of the false-block
+problem later. An obligation that no amount of good work can discharge is a
+design error, not a standard.
+
+### Reproduction read as contradiction
+
+The correct sequence for a high-risk bug fix produces a failing record then a
+passing one. The gate treated any fresh failure as contradiction, so doing
+exactly what was demanded produced a permanent block.
+
+*Found by:* running the whole cycle in order on a real repository. No unit test
+suggested it.
+
+*Changed:* only the latest record per identity counts. And dogfooding earned its
+place in one example.
+
+### Believing a tuned number
+
+After nine fixes the false-block rate reached zero, and for a few minutes that
+looked like success.
+
+*Cause:* the fixes had been tuned against the same thirty scenarios that produced
+the score.
+
+*Cost:* would have been shipping a tool that fails on nearly half of real cases.
+
+*Changed:* twelve scenarios written afterwards scored 43 percent on the same
+code. The held-out set is now the number that counts.
+
+### Not measuring scaling until late
+
+Content hashing every source file was fine on a small repository and took about 6
+seconds per evidence record on an 8,000 file one, paid on every test run.
+
+*Cause:* correctness was measured before cost.
+
+*Changed:* measure latency and scaling alongside accuracy. The fix was a 16x
+improvement and produced a better mechanism than the original.
+
+## Tooling
+
+### Silent failures from shell heredocs
+
+Several file edits were applied through Python scripts in shell heredocs. Escape
+sequences were mangled at least four times: a regex lost a word-boundary marker,
+a replacement silently matched nothing and reported success, and once a literal
+null byte was written into a source file, which produced a syntax error with no
+line number.
+
+*Cost:* perhaps forty minutes across the session, and one confusing debugging
+detour.
+
+*Changed:* use the editing tools for source changes. They fail loudly when the
+target does not match, which is the entire point.
+
+### Guessing before looking
+
+Twice, a failure was diagnosed by reasoning about what the code should do rather
+than by running it. Both times the reasoning was wrong and the cause was found in
+one command.
+
+*Changed:* run the smallest thing that shows the actual state before forming a
+theory.

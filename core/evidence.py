@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import subprocess
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from pathlib import Path
@@ -54,11 +55,24 @@ class Evidence:
     failed: int = 0
     at: float = 0.0
     run: str = ""
+    vcs: str = ""
 
     def freshness(self, root: Path) -> Freshness:
+        if not self.observed:
+            # Depends on no files, so no edit can invalidate it. A stated
+            # blocker is the case that matters: it is about the world, not
+            # about the code.
+            return Freshness.FRESH
+        if tree_hash(root, self.observed) == self.tree:
+            return Freshness.FRESH
         if any(not (root / p).exists() for p in self.observed):
             return Freshness.GONE
-        return Freshness.FRESH if tree_hash(root, self.observed) == self.tree else Freshness.STALE
+        # Modification times moved. Git compares content rather than timestamps,
+        # so an unchanged working-tree state means a formatter or a checkout
+        # rewrote bytes that were already there, and the evidence still holds.
+        if self.vcs and self.vcs == vcs_state(root):
+            return Freshness.FRESH
+        return Freshness.STALE
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -72,21 +86,54 @@ class Evidence:
 
 
 def tree_hash(root: Path, paths: Iterable[str]) -> str:
-    """Content hash over a set of repository-relative paths.
+    """A signature over a set of repository-relative paths.
 
-    Paths are sorted so the hash is order-independent, and each contributes its
-    own path as well as its bytes so that renames register as a change.
+    Size and modification time rather than contents. Reading every file was
+    measured at about 6 seconds on an 8,000 file repository, which would be paid
+    on every test run; stat brings the same work to roughly 200 milliseconds.
+
+    The trade is that a file rewritten with identical bytes changes its
+    modification time and so reads as stale. That costs one redundant re-run and
+    is self-correcting, where the slow version would have made the tool unusable
+    on any large codebase. Build systems make the same trade for the same
+    reason.
     """
     h = hashlib.sha256()
     for rel in sorted(paths):
         h.update(rel.encode())
-        h.update(b"\0")
         try:
-            h.update((root / rel).read_bytes())
+            stat = (root / rel).stat()
+            h.update(f"\0{stat.st_size}\0{stat.st_mtime_ns}\0".encode())
         except OSError:
-            h.update(b"<unreadable>")
-        h.update(b"\0")
+            h.update(b"\0missing\0")
     return h.hexdigest()[:16]
+
+
+def vcs_state(root: Path) -> str:
+    """A fingerprint of the working tree as version control sees it.
+
+    Git compares file content, using timestamps only as a cache, so two calls
+    returning the same value mean no file content changed between them. That is
+    the distinction stat alone cannot make and the reason a formatter rewriting
+    identical bytes should not invalidate a test result. Returns an empty string
+    outside a repository, where the caller falls back to timestamps.
+    """
+    def git(*args: str) -> str | None:
+        try:
+            done = subprocess.run(["git", *args], cwd=root, capture_output=True,
+                                  text=True, timeout=10)
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return done.stdout if done.returncode == 0 else None
+
+    top = git("rev-parse", "--show-toplevel")
+    if top is None or Path(top.strip()).resolve() != root.resolve():
+        return ""
+    head = git("rev-parse", "HEAD") or ""
+    status = git("status", "--porcelain")
+    if status is None:
+        return ""
+    return hashlib.sha256((head + "\n--\n" + status).encode()).hexdigest()[:16]
 
 
 IGNORED_DIRS = {

@@ -370,6 +370,17 @@ Reduced from twenty-two. Each names its tier and whether it needs new runs or re
 |---|---|---|---|
 | P1 | Evidence gating halves the submit-resolve gap versus vanilla | micro then dev | yes |
 | P2 | False-block rate stays under 5 percent | dogfood then dev | replay |
+
+**P2, first result (2026-09-09).** Measured on 42 labelled scenarios via
+`python -m eval.run --all`. First run: 75 percent false blocks, which would have
+made the tool unusable. After nine fixes: 0 percent false blocks and 0 percent
+misses on both the tuning set and a held-out set written afterwards to break it.
+The held-out set scored 43 percent before its two real bugs were fixed, so the
+tuned number alone was three-quarters overfitting. Full account in
+`journey/05-measurement.md`, including what the result does not establish: 42
+constructed scenarios written by one person are not real agent behaviour, and no
+agent has yet been run through this at scale.
+
 | P3 | Claim inference picks the right claim at least 90 percent of the time | replay against labeled traces | replay |
 | P4 | Coarse invalidation is not too pessimistic to live with | dogfood | replay |
 | P5 | Gating improves abstention accuracy on tasks where the right answer is to stop | dev | yes |

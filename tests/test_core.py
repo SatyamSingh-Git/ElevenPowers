@@ -115,15 +115,30 @@ def test_edit_after_green_makes_it_stale(repo):
 
 
 def test_fresh_failure_contradicts(repo):
+    """A suite that was green and is now red is our fault, so it contradicts."""
     files = source_files(repo)
     tree = tree_hash(repo, files)
     led = Ledger(root=repo, claims=[Claim.BUG_FIXED], risk=Risk.LOW)
     led.add([
-        Evidence(Kind.TEST, "t::a", Result.PASS, files, tree, at=time.time()),
-        Evidence(Kind.SUITE, "tests", Result.PASS, files, tree, at=time.time()),
-        Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=time.time()),
+        Evidence(Kind.TEST, "t::a", Result.PASS, files, tree, at=1.0),
+        Evidence(Kind.SUITE, "other", Result.PASS, files, tree, at=1.0),
+        Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=2.0),
     ])
     assert led.status() is Status.CONTRADICTED
+
+
+def test_pre_existing_failure_does_not_contradict(repo):
+    """A suite that was already red when the task began is not ours to answer for."""
+    files = source_files(repo)
+    tree = tree_hash(repo, files)
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], risk=Risk.LOW)
+    led.add([
+        Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=1.0),
+        Evidence(Kind.SUITE, "tests/test_auth.py", Result.PASS, files, tree, at=2.0),
+        Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=3.0),
+    ])
+    assert led.status() is not Status.CONTRADICTED
+    assert [e.identity for e in led.pre_existing()] == ["other"]
 
 
 def test_high_risk_demands_prior_failure(repo):
@@ -136,7 +151,21 @@ def test_high_risk_demands_prior_failure(repo):
         Evidence(Kind.SUITE, "tests", Result.PASS, files, tree, at=now),
     ])
     missing = {c.obligation.key for v in led.verdicts() for c in v.missing}
-    assert "reproduced" in missing and "stable" in missing
+    assert "reproduced" in missing
+
+
+def test_stability_demanded_only_for_intermittent_requests(repo):
+    """Repeated-run evidence is expensive; it needs a reason, not a risk tier."""
+    files = source_files(repo)
+    tree = tree_hash(repo, files)
+    plain = Ledger(root=repo, request="fix the login bug", claims=[Claim.BUG_FIXED], risk=Risk.HIGH)
+    flaky = Ledger(root=repo, request="fix the intermittent race in login",
+                   claims=[Claim.BUG_FIXED], risk=Risk.HIGH)
+    for led in (plain, flaky):
+        led.add([Evidence(Kind.SUITE, "tests", Result.PASS, files, tree, at=1.0)])
+    keys = lambda l: {c.obligation.key for v in l.verdicts() for c in v.checks}
+    assert "stable" not in keys(plain)
+    assert "stable" in keys(flaky)
 
 
 def test_reproduction_recognised_when_failure_precedes_pass(repo):
