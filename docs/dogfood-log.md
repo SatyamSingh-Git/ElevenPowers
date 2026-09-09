@@ -109,3 +109,39 @@ the first bare `--` by hand is the correct shape for this kind of tool.
 Verified end to end against real randomness: measured 3 failures in 30 runs, the
 gate computed 29 clean runs as the bar, refused completion, and passed only once
 that bar was met.
+
+
+## 2026-09-09, the scope guard was dead code
+
+`ledger.allow` was read in three places and written by nothing, so an agent
+asked to fix authentication could silently edit billing and the guard never
+fired. Same class of defect as the missing repeat runner: a core piece that
+looks built and does not function.
+
+**The design question was where scope comes from.** It cannot be declared up
+front, because nobody knows which files a change will touch before making it,
+and a guard built on a guessed list would spend its life questioning correct
+work. So it is derived from what the task established: files read, files edited,
+and areas the request named.
+
+**The adversarial cases were written before the implementation this time.** That
+was the lesson from the 75 percent measurement. Twelve of the fifteen were edits
+that look unrelated and are perfectly legitimate: creating a file, changing a
+manifest, editing the test for the code being changed, touching a sibling
+module.
+
+**All fifteen passed on the first run, which was the overfitting signal again.**
+Ten harder cases written afterwards found three real failures:
+
+- A monorepo's container directory counted as a shared name, so two files in
+  different packages looked related because both paths contained "packages".
+  Fixed by comparing filename tokens only, since directory structure is already
+  what the area comparison handles.
+- Generic filenames matched across modules: `src/auth/config.py` and
+  `src/billing/config.py` share a name that every module has.
+- A plural in the request missed its singular file, and the stemming fix
+  revealed a second bug where "dates" became "dat" because the "es" rule applied
+  everywhere instead of only after a sibilant.
+
+Final: 25 cases, 0 false asks, 0 misses. Verified end to end in a real session,
+silent on five legitimate edits and asking on the one drift.

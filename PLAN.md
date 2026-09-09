@@ -395,6 +395,14 @@ fault still present at rate p, n clean runs occur with probability (1-p)^n, so
 95 percent confidence needs n >= log(0.05)/log(1-p). Verified end to end against
 a real one-in-six failure. The hypothesis itself still needs agent runs.
 | P7 | Deterministic scope guards beat prompt instructions at reducing unrelated edits | dev, three arms | yes |
+
+**P7, mechanism built (2026-09-09).** The guard was previously inert: its allow
+list was read in three places and written by nothing. Scope is now derived
+rather than declared, from the files the task has read, the files it has edited,
+and the areas the request names, because nobody knows which files a change will
+touch before making it. It asks rather than denies. Measured on 25 labelled
+cases, weighted toward legitimate edits that look unrelated: 0 false questions,
+0 misses. The hypothesis itself still needs agent runs.
 | P8 | The layer adds under 10 percent tokens and under 5 seconds per task | micro | replay |
 | P9 | Obligation-directed work beats template-directed work on hard tasks | dev | yes, Phase 2 |
 | P10 | Static TIA invalidation measurably beats coarse invalidation | replay | replay |

@@ -18,6 +18,7 @@ command in this repository and can be reproduced.
 | [04-build.md](04-build.md) | Building the first working version, and the three defects that only appeared when it was used |
 | [05-measurement.md](05-measurement.md) | Measuring the gate as a classifier: 75 percent false blocks, every fix, and the honest limits of the result |
 | [06-intermittency.md](06-intermittency.md) | The flaky-bug gap: a false verification found by reasoning, and the arithmetic that decides how many clean runs are enough |
+| [07-scope.md](07-scope.md) | A guard that was dead code, and where a task's scope actually comes from |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -69,6 +70,12 @@ false verification on the exact task class the project claims as its
 differentiator. Building it raised a better question than the runner itself: how
 many clean runs are enough. That has an arithmetic answer, computed from the
 failure rate the agent measures while reproducing the bug.
+
+**Then a second piece turned out to be dead code.** The scope guard's allow list
+was read in three places and written by nothing, so it never fired. The
+interesting question was not how to enforce a scope but where one comes from,
+and the answer matched the rest of the project: derive it from what the task
+established rather than declaring it up front.
 
 ## The one thing worth taking away
 

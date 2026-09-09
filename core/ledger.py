@@ -17,6 +17,7 @@ from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for
 from .repeat import MIN_RUNS, runs_needed
+from .scope import normalise
 from .surface import Surface, detect
 
 STATE_DIR = ".elevenpowers"
@@ -64,6 +65,7 @@ class Ledger:
     domains: list[str] = field(default_factory=list)
     allow: list[str] = field(default_factory=list)
     touched: list[str] = field(default_factory=list)
+    seen: list[str] = field(default_factory=list)
     evidence: list[Evidence] = field(default_factory=list)
     decisions: list[dict] = field(default_factory=list)
     blocks: int = 0
@@ -109,6 +111,7 @@ class Ledger:
             domains=raw.get("domains", []),
             allow=raw.get("allow", []),
             touched=raw.get("touched", []),
+            seen=raw.get("seen", []),
             evidence=[Evidence.from_dict(e) for e in raw.get("evidence", [])],
             decisions=raw.get("decisions", []),
             blocks=raw.get("blocks", 0),
@@ -125,6 +128,7 @@ class Ledger:
             "domains": self.domains,
             "allow": self.allow,
             "touched": self.touched,
+            "seen": self.seen,
             "evidence": [e.to_dict() for e in self.evidence],
             "decisions": self.decisions,
             "blocks": self.blocks,
@@ -137,6 +141,12 @@ class Ledger:
     def add(self, records: list[Evidence]) -> None:
         self.evidence.extend(records)
         self._surface = None
+
+    def saw(self, path: str) -> None:
+        """Record that the task has looked at or changed a file."""
+        rel = normalise(path, self.root)
+        if rel and rel not in self.seen:
+            self.seen.append(rel)
 
     def note(self, what: str, why: str) -> None:
         self.decisions.append({"what": what, "why": why, "at": time.time()})

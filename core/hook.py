@@ -21,6 +21,7 @@ from .evidence import Kind, Result
 from .ledger import Ledger, Status
 from .obligations import risk_of
 from .parsers import parse
+from .scope import normalise, unrelated
 from .report import end_report, gate_message, start_banner
 
 MAX_BLOCKS = 2
@@ -105,22 +106,40 @@ def on_pre_tool(payload: dict, root: Path) -> int:
             )
         return 0
 
-    if tool in ("Edit", "Write", "NotebookEdit") and ledger.allow:
+    if tool in ("Edit", "Write", "NotebookEdit"):
         target = args.get("file_path", "")
-        if target and not _within(root, target, ledger.allow):
-            _emit(
-                "PreToolUse",
-                permissionDecision="ask",
-                permissionDecisionReason=(
-                    f"{target} is outside the declared scope for this task "
-                    f"({', '.join(ledger.allow)}). Widen the scope or explain why it belongs."
-                ),
-            )
+        if not target or not ledger.claims:
+            return 0
+        if ledger.allow and not _within(root, target, ledger.allow):
+            _emit("PreToolUse", permissionDecision="ask",
+                  permissionDecisionReason=(
+                      f"{target} is outside the declared scope for this task "
+                      f"({', '.join(ledger.allow)})."))
+            return 0
+        drift = unrelated(
+            normalise(target, root), ledger.seen, ledger.request,
+            exists=Path(target).exists(),
+        )
+        if drift:
+            ledger.note("scope question", drift)
+            ledger.save()
+            _emit("PreToolUse", permissionDecision="ask", permissionDecisionReason=drift)
     return 0
 
 
+FILE_TOOLS = {"Read", "Edit", "Write", "NotebookEdit", "NotebookRead"}
+
+
 def on_post_tool(payload: dict, root: Path) -> int:
-    if payload.get("tool_name") != "Bash":
+    tool = payload.get("tool_name", "")
+    if tool in FILE_TOOLS:
+        target = (payload.get("tool_input", {}) or {}).get("file_path", "")
+        if target:
+            ledger = Ledger.load(root)
+            ledger.saw(target)
+            ledger.save()
+        return 0
+    if tool != "Bash":
         return 0
     args = payload.get("tool_input", {}) or {}
     response = payload.get("tool_response", {}) or {}

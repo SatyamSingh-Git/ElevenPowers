@@ -101,6 +101,26 @@ ep-repeat 50 --jobs 8 -- pytest tests/test_login.py
 None of the fourteen systems surveyed ships a repeat runner or any other
 tooling for nondeterministic bugs.
 
+## Staying inside the task
+
+Agents wander. The guard asks when an edit lands somewhere the task has neither
+read nor been asked about:
+
+```
+src/billing/stripe.py is in billing, which this task has not read or edited,
+and the request does not mention it. Edit it anyway, or read it first.
+```
+
+It asks rather than denies, because the person is the judge. Scope is not
+declared up front, since nobody knows which files a change will touch before
+making it. It is derived from what the task established: files read, files
+edited, and the areas the request named.
+
+Silent for all the edits that look unrelated and are not: creating a file,
+changing a manifest or lockfile, editing the test for the code being changed,
+touching a sibling in the same module, or anything the request mentioned. On 25
+labelled cases the guard raises no question it should not.
+
 ## What it does not do yet
 
 No workflow engine, no repository index, no memory, no model routing, no subagents. Each is postponed with a written trigger in `docs/postponed.md`. Invalidation is currently coarse: any source edit stales everything. Narrowing it to the import closure of each test is the documented next step, and only once measurement shows the coarse version is too pessimistic to live with.

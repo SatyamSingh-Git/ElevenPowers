@@ -17,4 +17,4 @@ opinion.
 | Full 48-task harness | A decision needs a number the micro and smoke tiers cannot produce |
 | Browser evidence | A UI claim type is needed. gstack's Playwright daemon is MIT and liftable |
 
-Built since this file was written: the repeat runner, which was listed as core in the plan and turned out to be load-bearing. Its absence let a single lucky run satisfy the stability obligation, which was a false verification on the one task class this project claims as its differentiator.
+Built since this file was written: the scope guard, which was listed as core and turned out to be dead code (its allow list was read in three places and written by nothing, so it never fired); and the repeat runner, which was listed as core in the plan and turned out to be load-bearing. Its absence let a single lucky run satisfy the stability obligation, which was a false verification on the one task class this project claims as its differentiator.
