@@ -63,7 +63,7 @@ The project's first goal, stated by the user before any code existed: **combine 
 | 4 | Repository model with test edges and a blast-radius number | none | M3 |
 | 7 | Memory write gating that produces useful records | none | M6 |
 | 8 | Replay-gated learning | machinery exists (`eval/replay.py`), feature does not | M6 |
-| 9 | **Composition without dilution** | **none** | M2, M4 |
+| 9 | **Composition without dilution** | baseline built and censused; benefit untested for want of a discriminating suite | M2, M4 |
 
 Two of ten built. The single most novel gap is done; the one the project exists for has not been started.
 
@@ -151,6 +151,24 @@ Measure the conflicts the matrix predicts: three competing routers, two Stop hoo
 
 **Exit:** a measured comparison of the stack against vanilla, against its best single part, and against us, on the discriminating suite from M5. If the stack does not beat its parts, composition dilutes, and that finding is the argument for M4.
 
+**BUILT, NOT EXITED, 2026-09-09.** The baseline exists and rebuilds from one
+command, so the central claim is testable for the first time. The conflict
+census confirms the prediction and sharpens it: nine review mechanisms rather
+than three, nine state directories, ~1,038 always-on tokens. Assembling it also
+found a hazard the matrix does not mention: superpowers delivers its routing
+through a SessionStart injection, so taking its skills without its hooks buys
+their whole token cost and none of their behaviour.
+
+The comparison was run on the wrong suite and could not have worked. The plain
+arm failed exactly one of sixteen tasks, and it is the task nothing ever
+resolves, so no arm had headroom to improve on. Cost is a per-run measurement
+and is sound: composition costs 1.4x vanilla tokens and 1.5x wall clock, and the
+stack is indistinguishable from its best single part. Benefit is unmeasured.
+Full account in `journey/12-composition.md`.
+
+**Blocked on:** a task suite that discriminates, which is now blocking M2 and M5
+both, and is therefore the next thing built.
+
 ### M3 — The repository model
 
 *Gap 4, and the strength most worth taking from another system.*
@@ -175,7 +193,16 @@ Labels come from the evaluation harness, not from prose. The feature set starts 
 
 *The thesis, properly powered.*
 
-Requires first: a task suite where most tasks discriminate. Eleven of the current sixteen are resolved by a plain agent every time and carry no information.
+**Its prerequisite is now the critical path.** A task suite where most tasks
+discriminate blocks M2's exit as well as this one. Eleven of the current sixteen
+are resolved by a plain agent every time, one is resolved by nothing, and four
+are unstable, so a single pass offers at most one task of headroom.
+
+Target: most tasks resolved by a plain agent between 30 and 70 percent of the
+time, verified by repeated plain passes before any arm is compared against them.
+Difficulty has to come from locating the problem and from collateral damage
+rather than from edge cases, because two suites of trickier single-function bugs
+scored identically.
 
 **Exit:** ~252 paired runs per comparison, McNemar p reported with the ceiling stated up front. A result either way is a result; an underpowered one is not.
 
@@ -201,6 +228,8 @@ Ten phases produced four instances of the same failure. These rules exist so the
 
 **Silence must leave a trace.** Three components failed by doing nothing. Anything unreadable is appended to a blind-spot log, the hook subscription is generated from the constants the handlers use, and `ep-doctor` exercises the join rather than either half.
 
+**Know which kind of metric you have.** A per-run measurement such as block rate, cost or turns gives one observation per run, and sixteen runs can show a large effect. A per-discordant-pair measurement such as resolution only learns from tasks where two arms disagree, and disagreement is bounded by how often the baseline fails. M1 succeeded on the first kind and M2 was mismeasured on the second, one milestone apart.
+
 **Replay before spending.** 241 stored sessions and 36,034 commands cost nothing to grade. Live runs cost money and hours. Every hypothesis states which it needs.
 
 ---
@@ -220,7 +249,7 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | P8b | The work the gate induces is worth its cost | live | 2.5x tokens, 1.5-1.9x turns; worth is undecided (M1, M5) |
 | P9 | Obligation-directed work beats template-directed work | live | not started (M4) |
 | P10 | Static test-impact invalidation beats coarse | replay | not started (M3) |
-| P11 | **Composition of best-of-breed pieces beats its best single part** | live | **not started (M2)** — the mission's own test |
+| P11 | **Composition of best-of-breed pieces beats its best single part** | live | **half-answered**: costs 1.4x vanilla with no measurable benefit, but the test had no headroom |
 | P12 | Prediction calibration predicts the miss rate | replay | not started |
 | P13 | The runtime reads what the host actually sends | replay | **answered**: 174/174 and 5,916/5,916 |
 | P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | **rejected**: 12 of 16 blocked became 14; the text reached the agent |

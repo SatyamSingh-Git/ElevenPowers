@@ -23,6 +23,7 @@ command in this repository and can be reproduced.
 | [09-claims.md](09-claims.md) | What real prompts look like, and why the claim has to follow the work |
 | [10-live.md](10-live.md) | 89 real agent runs: the mechanism works, the measurement does not, and what an answer costs |
 | [11-usable.md](11-usable.md) | Two wrong fixes and a right one: the gate stops interrupting work that was already correct |
+| [12-composition.md](12-composition.md) | Assembling the composition baseline the mission is measured against, and mismeasuring with it |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 

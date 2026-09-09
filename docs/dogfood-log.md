@@ -279,3 +279,32 @@ test.
 identical passes. None of the eleven tasks a plain agent always resolves
 regressed; all four failures were the tasks that fail anyway.
 
+## 2026-09-09, the composition baseline
+
+The stack the research says this project must beat, assembled for the first time
+from local clones: superpowers, ECC's hard blocks, gstack's evidence scripts,
+Spec Kit lean, BMAD's review procedure. 74 files, MIT throughout, NOTICE
+recording every licence and exclusion.
+
+**The census is the durable result.** Nine review mechanisms would fire on one
+change where the matrix predicted three. Nine state directories appear in a
+repository that installed only the recommended pieces. About 1,038 tokens load
+every turn and 59,000 are available on demand.
+
+**Cherry-picking a plugin can silently disarm it.** The first build took
+superpowers' skills without its hooks. It loaded, its descriptions reached the
+system prompt, and the agent behaved exactly like vanilla: six turns, no skill
+invoked, and no bootstrap text in the transcript. Superpowers delivers its
+routing through a SessionStart injection. With the hook wired, eleven turns.
+
+**The comparison was run on the wrong suite.** The plain arm failed one of
+sixteen tasks and it is the one nothing ever resolves, so no arm had headroom.
+Cost is per-run and therefore sound: composition costs 1.4x vanilla tokens and
+1.5x wall clock, and the stack is indistinguishable from its best single part.
+Benefit is unmeasured.
+
+**The lesson had already been learned and was dropped one milestone later.**
+Block rate is observed on every run, which is why M1 could measure a fall from
+75 percent to 12 on sixteen runs. Resolution only learns from tasks where arms
+disagree. Knowing which kind of metric is in hand is now a rule in the plan.
+
