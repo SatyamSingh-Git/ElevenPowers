@@ -132,16 +132,6 @@ def test_edit_after_green_blocks_again_as_stale(repo):
     assert "stale" in result.stderr and "re-run" in result.stderr
 
 
-def test_scope_guard_asks_outside_allowed_paths(repo):
-    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], allow=["src/auth/**"])
-    led.save()
-    result = run_hook("PreToolUse", {
-        "cwd": str(repo), "tool_name": "Edit",
-        "tool_input": {"file_path": str(repo / "src" / "billing.py")},
-    }, repo)
-    assert json.loads(result.stdout)["hookSpecificOutput"]["permissionDecision"] == "ask"
-
-
 def test_destructive_command_asks(repo):
     result = run_hook("PreToolUse", {
         "cwd": str(repo), "tool_name": "Bash",

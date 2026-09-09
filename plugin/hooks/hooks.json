@@ -37,11 +37,23 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|Read|Edit|Write|NotebookEdit|NotebookRead",
         "hooks": [
           {
             "type": "command",
             "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" PostToolUse",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" PostToolUseFailure",
             "timeout": 20
           }
         ]

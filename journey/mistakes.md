@@ -121,6 +121,40 @@ seconds per evidence record on an 8,000 file one, paid on every test run.
 *Changed:* measure latency and scaling alongside accuracy. The fix was a 16x
 improvement and produced a better mechanism than the original.
 
+### Testing the halves and never the join
+
+Three defects lived in the layer between the runtime and its host, and 119
+passing tests never touched any of them. The subscription delivered `Bash` alone
+to `PostToolUse`, so the scope guard was inert one commit after it shipped;
+failing tool calls raise a different event nothing listened to; and the reader
+looked for an exit code the host does not send, scoring every failing command as
+a pass.
+
+*Cause:* the test payloads were written by the same person who wrote the code,
+from the same idea of what the host sends. Both halves shared the error, so they
+agreed perfectly. Each defect also fails by doing nothing, which looks exactly
+like having nothing to do.
+
+*Cost:* the product's central promise was unreachable in real use. A failing
+suite would have satisfied "the related test suite passes".
+
+*Changed:* fixtures are now captured from real session transcripts; the hook
+subscription is generated from the constants the handlers use, with a test
+asserting the file has not drifted; anything unreadable is appended to a
+blind-spot log; and `ep-doctor` checks the join rather than either half.
+
+### Believing a rate computed over an unbalanced corpus
+
+The first replay reported 79 percent agreement for the new reader and 96 percent
+for the old one, which read as a regression.
+
+*Cause:* the corpus is 97 percent successful commands, so a reader that says
+"passed" to everything scores well. The 4 percent gap was mostly stability
+records being graded against the wrong command.
+
+*Changed:* failing and succeeding commands are scored separately. The real
+comparison is 0 of 174 against 174 of 174.
+
 ## Tooling
 
 ### Silent failures from shell heredocs

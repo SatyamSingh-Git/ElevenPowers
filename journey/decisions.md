@@ -44,3 +44,14 @@ more useful record.
 | D24 | Write scenarios adversarially, expecting failures | Several were written specifically because the design looked weak against them | Stands. The first run was 75 percent and every fix came from a specific case |
 | D25 | Keep a held-out set written after tuning | The tuned score was zero; the held-out score was 43 percent | Stands. The single most valuable process decision |
 | D26 | Measure latency and scaling explicitly | A verification layer that adds seconds per command is unusable regardless of accuracy | Stands. Caught a 6-second-per-record scaling failure |
+
+## Host integration
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D27 | The hook subscription is generated from the constants the handlers branch on | Two pieces shipped inert because the subscription did not deliver their events. A test now asserts the checked-in file matches | Stands. The general fix for a class rather than three specific ones |
+| D28 | Accept every field name and shape a host has used for a tool result | The cost is a few lines; the cost of guessing wrong is total, silent inertness | Stands |
+| D29 | The event name is treated as evidence of failure | A failing tool call raises `PostToolUseFailure`. That survives the failure string changing shape again | Stands |
+| D30 | Anything unreadable is recorded rather than ignored | All three integration defects failed by doing nothing, and nothing is invisible | Stands |
+| D31 | Test fixtures are captured from real sessions, not written | Hand-written payloads encoded the same wrong assumption as the code | Stands. This is the decision that would have prevented all three |
+| D32 | Replay real transcripts instead of running new agents | The host records whether each command failed, so the ground truth needs no labels from the author, and 241 sessions cost nothing to grade | Stands. It cannot measure freshness, which is stated wherever its numbers appear |

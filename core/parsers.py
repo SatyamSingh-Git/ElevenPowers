@@ -25,6 +25,10 @@ PYTEST_TAIL = re.compile(
 )
 PYTEST_NODE = re.compile(r"^(?P<status>PASSED|FAILED|ERROR)\s+(?P<node>\S+::\S+)", re.MULTILINE)
 PYTEST_SHORT = re.compile(r"^(?P<node>\S+::\S+)\s+(?P<status>PASSED|FAILED|ERROR)", re.MULTILINE)
+# `pytest -q` ends with a bare summary and no rule of equals signs around it, so
+# the decorated pattern above recovers no counts from the quiet mode that most
+# agents actually use.
+PYTEST_QUIET = re.compile(r"^(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s", re.MULTILINE)
 
 JEST_TESTS = re.compile(r"^\s*Tests:\s+(?P<body>.+)$", re.MULTILINE)
 VITEST_TESTS = re.compile(r"^\s*Tests\s+(?P<body>.+?)$", re.MULTILINE)
@@ -72,6 +76,7 @@ WRAPPER = re.compile(
 # signal: `python run_tests.py` is a test run whatever it is called.
 LOOKS_LIKE_TESTS = re.compile(
     r"""(?: ^=+.*\b\d+\s+(?:passed|failed)\b.*=+$
+       | ^\d+\s+(?:passed|failed)(?:,\s*\d+\s+[a-z]+)*\s+in\s+[\d.]+s
        | ^\s*Tests:\s+\d
        | \b\d+\s+examples?,\s+\d+\s+failures?\b
        | \bTests\s+run:\s*\d+
@@ -96,6 +101,19 @@ RUN_PROGRAM = re.compile(
     )""",
     re.IGNORECASE | re.VERBOSE,
 )
+# Real commands rarely begin with the thing they run. Across 36,000 commands
+# replayed from real sessions, `cd <dir> && ...` and `export VAR=... && ...`
+# were the two commonest openings, and every anchored pattern here missed all of
+# them: `cd api && npm run build` was not a build, and its identity came out as
+# the directory rather than the command.
+PREFIX = re.compile(
+    r"""^\s*(?: cd\s+(?:"[^"]*"|'[^']*'|\S+)
+              | export\s+[A-Za-z_]\w*=(?:"[^"]*"|'[^']*'|\S*)
+              | set\s+-[a-z]+
+              | source\s+\S+
+        )\s*(?:&&|;)\s*""",
+    re.VERBOSE,
+)
 BUILD_WRAPPER = re.compile(
     r"""^\s*(?: (?:npm|pnpm|yarn|bun)\s+(?:run\s+)?build
       | make(?:\s+(?:all|build))?\s*$
@@ -107,9 +125,20 @@ BUILD_WRAPPER = re.compile(
 )
 
 
+def _bare(command: str) -> str:
+    """A command with its setup prefixes removed, so the runner is at the front."""
+    text = command.strip()
+    while True:
+        shorter = PREFIX.sub("", text, count=1)
+        if shorter == text:
+            return text
+        text = shorter
+
+
 def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
     """Evidence implied by one command and its output, or an empty list."""
     cmd = command.strip()
+    bare = _bare(cmd)
     low = cmd.lower()
 
     repeat = REPEAT.search(output)
@@ -138,17 +167,21 @@ def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidenc
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, PHPUNIT)]
     if re.search(r"\bdotnet test\b", low):
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, DOTNET)]
-    if WRAPPER.match(cmd):
+    if WRAPPER.match(bare):
         return [_wrapped(cmd, output, exit_code, root)]
-    if BUILD_WRAPPER.match(cmd):
+    if BUILD_WRAPPER.match(bare):
         return [_record(Kind.BUILD, _scope(cmd), exit_code, cmd, root, output)]
-    if re.search(r"\b(mypy|pyright)\b", low):
+    # `npm run typecheck` and `npx turbo typecheck` were among the commonest
+    # unrecognised commands in the replayed corpus. The script name is the same
+    # across ecosystems, and this is an obligation agents otherwise cannot
+    # discharge on a TypeScript project that does not call `tsc` directly.
+    if re.search(r"\b(mypy|pyright|typecheck|type-check)\b", low):
         return [_record(Kind.TYPECHECK, _scope(cmd), exit_code, cmd, root, output)]
     if re.search(r"\b(ruff|eslint|flake8|clippy)\b", low):
         return [_record(Kind.LINT, _scope(cmd), exit_code, cmd, root, output)]
     if LOOKS_LIKE_TESTS.search(output):
         return [_wrapped(cmd, output, exit_code, root)]
-    if RUN_PROGRAM.match(cmd):
+    if RUN_PROGRAM.match(bare):
         return [_record(Kind.RUNTIME, _scope(cmd), exit_code, cmd, root, output)]
     return []
 
@@ -165,7 +198,7 @@ def _counts(body: str) -> tuple[int, int]:
 
 def _scope(command: str) -> str:
     """A stable identity for a command-level record: the target it names."""
-    parts = [p for p in command.split() if not p.startswith("-")]
+    parts = [p for p in _bare(command).split() if not p.startswith("-")]
     tail = [p for p in parts[1:] if "/" in p or "." in p or "::" in p]
     return tail[-1] if tail else " ".join(parts[:2]) if parts else command
 
@@ -215,7 +248,7 @@ def _wrapped(command: str, output: str, exit_code: int, root: Path) -> Evidence:
     runner's summary through unchanged.
     """
     record = _record(Kind.SUITE, _scope(command), exit_code, command, root, output)
-    for pattern in (JEST_TESTS, PYTEST_TAIL, RSPEC, MIX):
+    for pattern in (JEST_TESTS, PYTEST_TAIL, PYTEST_QUIET, RSPEC, MIX):
         match = pattern.search(output)
         if not match:
             continue
@@ -257,6 +290,10 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
     if tail:
         passed = int(tail.group("passed") or 0)
         failed = int(tail.group("failed") or 0) + int(tail.group("errors") or 0)
+    else:
+        quiet = PYTEST_QUIET.search(output)
+        if quiet:
+            passed, failed = _counts(quiet.group("body"))
 
     records.append(
         Evidence(

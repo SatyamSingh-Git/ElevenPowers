@@ -63,7 +63,6 @@ class Ledger:
     claims: list[Claim] = field(default_factory=list)
     risk: Risk = Risk.LOW
     domains: list[str] = field(default_factory=list)
-    allow: list[str] = field(default_factory=list)
     touched: list[str] = field(default_factory=list)
     seen: list[str] = field(default_factory=list)
     evidence: list[Evidence] = field(default_factory=list)
@@ -109,7 +108,6 @@ class Ledger:
             claims=[Claim(c) for c in raw.get("claims", [])],
             risk=Risk(raw.get("risk", "low")),
             domains=raw.get("domains", []),
-            allow=raw.get("allow", []),
             touched=raw.get("touched", []),
             seen=raw.get("seen", []),
             evidence=[Evidence.from_dict(e) for e in raw.get("evidence", [])],
@@ -126,7 +124,6 @@ class Ledger:
             "claims": [c.value for c in self.claims],
             "risk": self.risk.value,
             "domains": self.domains,
-            "allow": self.allow,
             "touched": self.touched,
             "seen": self.seen,
             "evidence": [e.to_dict() for e in self.evidence],

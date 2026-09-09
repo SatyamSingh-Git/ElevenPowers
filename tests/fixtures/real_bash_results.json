@@ -1,0 +1,83 @@
+[
+ {
+  "command": "cat > \"E:/ElevenPowers/PLAN.md\" <<'PLAN_EOF_7f3a'\n# ElevenPowers: Master Plan\n\nVersion 0.1, written 2026-09-09.\nStatus: planning only. Nothing has been built. No third-party claim in this document has",
+  "result": "Error: ENAMETOOLONG: name too long, uv_spawn",
+  "shape": "str"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && cat >> tests/test_core.py <<'PYEOF'\n\n\ndef test_superseded_failure_is_reproduction_not_contradiction(repo):\n    \"\"\"A test that failed then passed is the reproduction, not a cont",
+  "result": "Error: Exit code 1\n..............................................                           [100%]\r\n46 passed in 2.86s\r\n\n=== dogfood: reproduce, fix, verify ===\n(exit 0)\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\n    import json;print(json.load(open('/tmp/ep_out.json'))['hookSpecificOutput']['additionalContext'])\r\n                                ~~~~^^^^^^^^^^^^^^^\n...[trimmed]...",
+  "shape": "str"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && python -c \"\nimport ast,sys\nsrc=open('core/evidence.py',encoding='utf-8').read()\ntry:\n    ast.parse(src)\n    print('parses fine')\nexcept SyntaxError as e:\n    print('line',e.lin",
+  "result": "Error: Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 5, in <module>\r\n    ast.parse(src)\r\n    ~~~~~~~~~^^^^^\r\n  File \"C:\\Python313\\Lib\\ast.py\", line 54, in parse\r\n    return compile(source, filename, mode, flags,\r\n                   _feature_version=feature_version, optimize=optimize)\r\nSyntaxError: source code string cannot contain null bytes\r\n\r\nDuring handling of the abov\n...[trimmed]...",
+  "shape": "str"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && python - <<'PY'\np=\"docs/research/hosts/claude-code.md\"\ns=open(p,encoding=\"utf-8\").read()\ns=s.replace(\"\"\"- `--max-turns` exists (CLI reference). Model pinned with `--model <id>`",
+  "result": {
+   "stdout": "ok",
+   "stderr": "",
+   "interrupted": false,
+   "isImage": false,
+   "noOutputExpected": false
+  },
+  "shape": "dict"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && python --version && python -c \"import pytest\" 2>&1 | head -2; ls",
+  "result": {
+   "stdout": "Python 3.13.2\r\nPLAN.md\ndocs\nprompt.md",
+   "stderr": "",
+   "interrupted": false,
+   "isImage": false,
+   "noOutputExpected": false
+  },
+  "shape": "dict"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && touch core/__init__.py && mkdir -p tests && cat > tests/test_core.py <<'PYEOF'\nimport time\nfrom pathlib import Path\n\nimport pytest\n\nfrom core.evidence import Evidence, Freshnes",
+  "result": {
+   "stdout": "...................                                                      [100%]\r\n19 passed in 0.24s",
+   "stderr": "",
+   "interrupted": false,
+   "isImage": false,
+   "noOutputExpected": false
+  },
+  "shape": "dict"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && cat > tests/test_hook.py <<'PYEOF'\nimport json\nimport subprocess\nimport sys\nfrom pathlib import Path\n\nimport pytest\n\nfrom core.claims import infer\nfrom core.ledger import Ledge",
+  "result": {
+   "stdout": "        run_hook(\"PostToolUse\", {\r\n            \"cwd\": str(repo), \"tool_name\": \"Bash\",\r\n            \"tool_input\": {\"command\": \"pytest tests/test_auth.py\"},\r\n            \"tool_response\": {\"stdout\": out, \"exit_code\": 0},\r\n        }, repo)\r\n>       assert run_hook(\"Stop\", {\"cwd\": str(repo)}, repo).returncode == 0\r\nE       AssertionError: assert 2 == 0\r\nE        +  where 2 = CompletedProcess(args=['C:\\\n...[trimmed]...",
+   "stderr": "",
+   "interrupted": false,
+   "isImage": false,
+   "noOutputExpected": false
+  },
+  "shape": "dict"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && python - <<'PY'\nimport tempfile, json\nfrom pathlib import Path\nfrom core.parsers import parse\nfrom core.ledger import Ledger\nfrom core.obligations import Claim, Risk\n\nroot = Pa",
+  "result": {
+   "stdout": "parsed: [('test', 'tests/test_auth.py::test_race', 'pass'), ('test_suite', 'tests/test_auth.py', 'pass')]\r\nstatus in-memory: VERIFIED\r\nkinds after round trip: [<Kind.TEST: 'test'>, <Kind.SUITE: 'test_suite'>]\r\nstatus after load: VERIFIED\r\n   test_added met= True fresh= Freshness.FRESH\r\n   suite_green met= True fresh= Freshness.FRESH",
+   "stderr": "",
+   "interrupted": false,
+   "isImage": false,
+   "noOutputExpected": false
+  },
+  "shape": "dict"
+ },
+ {
+  "command": "cd \"E:/ElevenPowers\" && python - <<'PY'\nimport json, subprocess, sys, tempfile\nfrom pathlib import Path\n\nroot = Path(tempfile.mkdtemp())\n(root/\"src\").mkdir()\n(root/\"src\"/\"auth.py\").write_text(\"x = 1\\n",
+  "result": {
+   "stdout": "prompt rc 0 {\"hookSpecificOutput\": {\"hookEventName\": \"UserPromptSubmit\", \"additionalContext\" \r\npost rc 0 stderr: \r\nclaims ['bug_fixed'] risk medium evidence 2\r\n    test tests/test_auth.py::test_race pass observed: 1\r\n    test_suite tests/test_auth.py pass observed: 1",
+   "stderr": "",
+   "interrupted": false,
+   "isImage": false,
+   "noOutputExpected": false
+  },
+  "shape": "dict"
+ }
+]

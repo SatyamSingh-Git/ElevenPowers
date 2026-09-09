@@ -145,3 +145,44 @@ Ten harder cases written afterwards found three real failures:
 
 Final: 25 cases, 0 false asks, 0 misses. Verified end to end in a real session,
 silent on five legitimate edits and asking on the one drift.
+
+## Auditing the wiring, 2026-09-09
+
+Two core pieces had already turned out to be dead, so the next session was spent
+asking what else was listed as working and was not. Everything found was in one
+place: the layer between the runtime and the host that feeds it, which no
+measurement had ever touched.
+
+**The scope guard was inert one commit after it shipped.** `hooks.json`
+subscribed `PostToolUse` to `Bash` only, so no file tool reached the handler
+that records what a task has read. Its 25 cases and 20 tests passed throughout,
+because they called the function directly.
+
+**Failing commands were invisible twice over.** A failing tool call raises
+`PostToolUseFailure`, which nothing was subscribed to. And the result reader
+looked for an exit code the host does not send, while treating the string form,
+which is exactly the failure case, as a success. Every command was recorded as
+passing, which makes `CONTRADICTED` unreachable and lets a red suite satisfy
+"the suite passes".
+
+**How it was found.** Not by reasoning. The documentation answered the event
+question; the shapes came from reading 6 MB of this project's own first session
+transcript, where 105 successful Bash results carried `{stdout, stderr,
+interrupted, ...}` with no exit code and 3 failures came back as
+`'Error: Exit code 1
+...'`.
+
+**What it cost to verify.** Nothing, which is the point. 241 stored sessions
+replayed offline: 36,034 commands, 958 of them failing per the host. The
+previous reader got 0 of 174 gradeable failures right; the current one gets all
+174, and all 5,916 successes.
+
+**What the corpus changed.** Real commands do not begin with the thing they run,
+so `cd api && npm run build` matched nothing and took its identity from the
+directory. `pytest -q` prints its totals bare, so the quiet mode nearly every
+agent uses recovered no counts. `npm run typecheck` was unrecognised. Evidence
+coverage went from 12 percent of real commands to 17.
+
+**Friction events:** none observed, because the layer still has not run live for
+a working day. That remains the honest gap.
+

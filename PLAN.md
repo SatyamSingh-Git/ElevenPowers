@@ -108,6 +108,7 @@ Estimated sizes are what the first working version should cost, not what it will
 | Repeat runner | Run a command N times, report failure rate and classify deterministic, flaky, clean | 100 |
 | Ledger and report | JSON file per task; the banner and end report | 200 |
 | Claude Code adapter | Hook wiring, one MCP tool for `record_evidence` and `declare_claim` | 200 |
+| Host contract | Reading real payload shapes, generated subscription, blind-spot log, `ep-doctor` | 400 |
 
 About 1,400 lines. If the first implementation is much larger than that, something has gone wrong.
 
@@ -319,6 +320,12 @@ Whether the gate would have blocked a run, whether claim inference picks the rig
 
 This means most iteration on the classifier, the obligation table, the parsers and the gate policy costs approximately nothing. Only changes that alter the agent's own behavior require new runs. v0.2 assumed every hypothesis needed a fresh sweep, which is what made its budget frightening. A trace corpus of a few hundred runs, collected once, supports dozens of offline experiments.
 
+**Built, 2026-09-09, and better than assumed.** The corpus did not need collecting: Claude Code already stores a transcript of every session, including each tool result exactly as the host produced it. `python -m eval.replay --all` reads them. The first run covered 241 sessions, 3,557 turns and 36,034 commands at no inference cost.
+
+The ground truth is the part that makes it worth more than expected. The host records whether each command failed, by returning a different shape, so the corpus grades the runtime without the author labelling anything. That removes the failure mode every earlier measurement in this project shared: scenarios written by the person whose code is being graded.
+
+What it cannot measure is freshness. The working tree at each moment is not recoverable from a transcript, so staleness results would be meaningless and are not reported.
+
 ---
 
 ## 10. Novelty claim audit
@@ -404,6 +411,30 @@ touch before making it. It asks rather than denies. Measured on 25 labelled
 cases, weighted toward legitimate edits that look unrelated: 0 false questions,
 0 misses. The hypothesis itself still needs agent runs.
 | P8 | The layer adds under 10 percent tokens and under 5 seconds per task | micro | replay |
+| P13 | The runtime reads what the host actually sends | replay | replay |
+
+**P13, first result (2026-09-09), and it failed.** The hypothesis was added
+after two core pieces turned out to be dead code, on the theory that a third
+might be. Three defects were found, all in the layer between the runtime and its
+host, none reachable by any test of the runtime alone.
+
+The subscription delivered `Bash` alone to `PostToolUse`, so the scope guard was
+inert one commit after it shipped. Failing tool calls raise `PostToolUseFailure`,
+which nothing listened to. And the result reader looked for an exit code the host
+does not send while treating the string form, which is exactly the failure case,
+as success. Every command was recorded as passing, which makes `CONTRADICTED`
+unreachable and lets a red suite discharge "the suite passes".
+
+Measured on 36,034 real commands: the previous reader agreed with the host on 0
+of 174 gradeable failures. The current one agrees on 174 of 174 and on 5,916 of
+5,916 successes. Reported as two rates because the corpus is 97 percent
+successes, where a reader that says "passed" to everything scores 97 percent.
+
+The general fixes matter more than the three specific ones: the subscription is
+generated from the constants the handlers branch on with a test asserting no
+drift, anything unreadable is appended to a blind-spot log, and `ep-doctor`
+exercises the join rather than either half. Full account in
+`journey/08-wiring.md`.
 | P9 | Obligation-directed work beats template-directed work on hard tasks | dev | yes, Phase 2 |
 | P10 | Static TIA invalidation measurably beats coarse invalidation | replay | replay |
 | P11 | Composition of best-of-breed pieces beats its best single part | dev | yes, Phase 2 |

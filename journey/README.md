@@ -19,6 +19,7 @@ command in this repository and can be reproduced.
 | [05-measurement.md](05-measurement.md) | Measuring the gate as a classifier: 75 percent false blocks, every fix, and the honest limits of the result |
 | [06-intermittency.md](06-intermittency.md) | The flaky-bug gap: a false verification found by reasoning, and the arithmetic that decides how many clean runs are enough |
 | [07-scope.md](07-scope.md) | A guard that was dead code, and where a task's scope actually comes from |
+| [08-wiring.md](08-wiring.md) | Three defects in the layer nobody had measured, found by reading 36,000 real commands |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -77,6 +78,13 @@ interesting question was not how to enforce a scope but where one comes from,
 and the answer matched the rest of the project: derive it from what the task
 established rather than declaring it up front.
 
+**Then the layer between the runtime and its host turned out to be wrong.**
+Auditing after two dead pieces found three more defects in one place, the worst
+of which recorded every failing command as passing, because the host sends no
+exit code and signals failure by returning a different shape. Replaying 241 real
+sessions showed the previous reader getting 0 of 174 failing commands right and
+the new one getting all of them.
+
 ## The one thing worth taking away
 
 Two measurements changed the design more than any amount of reasoning did.
@@ -90,3 +98,9 @@ The held-out set mattered just as much. After tuning, the score on the original
 scenarios was zero. On twelve fresh ones written to break it, the same code
 scored 43 percent. Without that second set the project would have believed a
 number that was three-quarters overfitting.
+
+A third measurement made the same point from the other side. Every number up to
+that point came from payloads written by the same person who wrote the code
+being tested, so both halves shared one wrong assumption and agreed perfectly.
+Real session transcripts settled it in a single pass, and they were sitting on
+the machine the whole time.

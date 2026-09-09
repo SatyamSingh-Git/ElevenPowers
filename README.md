@@ -56,6 +56,12 @@ claude --plugin-dir ElevenPowers/plugin
 
 Nothing to configure. Ask for a change as you normally would.
 
+To check that the runtime is seeing what the host sends:
+
+```bash
+python plugin/bin/ep_doctor.py
+```
+
 ## How it decides what to prove
 
 Claims are inferred from the request with pattern matching, no model call and no added latency. A question or a request to read code yields no claim at all, and the runtime stays out of the way entirely.
@@ -121,9 +127,52 @@ changing a manifest or lockfile, editing the test for the code being changed,
 touching a sibling in the same module, or anything the request mentioned. On 25
 labelled cases the guard raises no question it should not.
 
+## Checking that it is actually working
+
+A verification layer that silently stops working is worse than none, and the
+failure mode is real: three defects in the layer between this runtime and its
+host each failed by doing nothing, while every unit test passed. So the join is
+tested rather than assumed.
+
+`ep-doctor` feeds the runtime a tool result shaped the way the host shapes one
+and checks the answer comes back right:
+
+```
+ok    python 3.13.2
+ok    a failing command is recorded as failing
+ok    a passing command is recorded as passing
+ok    hooks.json subscribes to every event the runtime handles (6 tools recorded)
+ok    the ledger directory is writable
+ok    nothing unreadable has arrived from the host
+```
+
+Anything the runtime cannot read is appended to `.elevenpowers/blindspots.jsonl`
+and reported by that last check, so a host that changes a field becomes a
+diagnosable symptom rather than a tool that quietly went quiet.
+
+## Measured against real sessions
+
+Claude Code writes a transcript of every session, including each tool result
+exactly as the host produced it. Replaying those costs no inference and needs no
+hand labelling, because the host itself records whether each command failed:
+
+```bash
+python -m eval.replay --all
+```
+
+Across 241 real sessions and 36,034 commands, the runtime agrees with the host
+about whether a command failed on 174 of 174 failures and 5,916 of 5,916
+successes. The reader this replaced agreed on 0 of 174.
+
+Reported as two rates rather than one, because the corpus is 97 percent
+successes: a reader that answers "passed" to everything scores 97 percent
+accuracy while being wrong about the only thing the gate needs to know.
+
 ## What it does not do yet
 
 No workflow engine, no repository index, no memory, no model routing, no subagents. Each is postponed with a written trigger in `docs/postponed.md`. Invalidation is currently coarse: any source edit stales everything. Narrowing it to the import closure of each test is the documented next step, and only once measurement shows the coarse version is too pessimistic to live with.
+
+It has also not yet been watched running live for a working day. Replay shows the runtime reads correctly what the host wrote down; it does not show the host delivering those events to a running hook.
 
 ## Design notes
 

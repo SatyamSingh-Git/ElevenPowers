@@ -193,7 +193,7 @@ def test_no_claim_means_no_gate(repo):
 def test_ledger_round_trips(repo):
     files = source_files(repo)
     led = Ledger(root=repo, request="fix the race", claims=[Claim.BUG_FIXED], risk=Risk.HIGH,
-                 domains=["auth"], allow=["src/auth/**"])
+                 domains=["auth"])
     led.add([Evidence(Kind.SUITE, "tests", Result.PASS, files, tree_hash(repo, files), at=1.0)])
     led.note("gate blocked", "reproduction missing")
     led.save()
