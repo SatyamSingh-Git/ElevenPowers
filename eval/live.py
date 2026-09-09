@@ -22,6 +22,7 @@ Each run costs money and takes a minute or two. Start with one task.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -39,7 +40,14 @@ from .tasks import SUITES, Task, by_name
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HOOK = REPO_ROOT / "plugin" / "bin" / "ep_hook.py"
 TIMEOUT = 900
-ARMS = ("vanilla", "nudge", "guide", "gate")
+ARMS = ("vanilla", "nudge", "guide", "gate", "superpowers", "stack")
+
+# The composition baseline and its strongest single part, for M2. Both are
+# ordinary Claude Code plugins, so the host loads them the way a user would.
+PLUGINS = {
+    "superpowers": os.environ.get("EP_SUPERPOWERS_DIR", ""),
+    "stack": os.environ.get("EP_STACK_DIR", ""),
+}
 
 
 @dataclass
@@ -111,6 +119,9 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dic
     ]
     if arm == "nudge":
         command += ["--append-system-prompt", NUDGE]
+    plugin = PLUGINS.get(arm)
+    if plugin:
+        command += ["--plugin-dir", plugin]
     try:
         done = subprocess.run(command, cwd=root, capture_output=True, text=True,
                               timeout=TIMEOUT)
@@ -217,7 +228,7 @@ def main(argv: list[str]) -> int:
     suite = SUITES[option("--suite", "hard")]
     chosen = [by_name(only)] if only else suite[:limit or len(suite)]
     arms = ["vanilla", "gate"] if arm == "both" else (
-        list(ARMS) if arm == "all" else [arm])
+        list(ARMS) if arm == "all" else [a.strip() for a in arm.split(",") if a.strip()])
 
     results: list[Run] = []
     for task in chosen:
