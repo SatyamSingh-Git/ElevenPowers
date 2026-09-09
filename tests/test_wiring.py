@@ -46,6 +46,25 @@ def test_failing_commands_are_subscribed_separately():
     assert "Bash" in wiring.EVENTS["PostToolUseFailure"].split("|")
 
 
+def test_the_live_harness_installs_the_same_subscription(tmp_path):
+    """The gated arm of P1 must run the shipped wiring, not a copy of it."""
+    from eval.live import build
+    from eval.tasks import TASKS
+
+    build(TASKS[0], tmp_path, arm="gate")
+    installed = json.loads((tmp_path / ".claude" / "settings.json").read_text(encoding="utf-8"))
+    assert set(installed["hooks"]) == set(wiring.EVENTS)
+    assert "ep_hook.py" in installed["hooks"]["Stop"][0]["hooks"][0]["command"]
+
+
+def test_the_plain_arm_installs_nothing(tmp_path):
+    from eval.live import build
+    from eval.tasks import TASKS
+
+    build(TASKS[0], tmp_path, arm="vanilla")
+    assert not (tmp_path / ".claude").exists()
+
+
 def test_the_doctor_passes_on_a_healthy_checkout(tmp_path):
     failing = [c.name for c in checks(tmp_path) if not c.ok]
     assert not failing
