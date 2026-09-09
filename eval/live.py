@@ -30,6 +30,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
+from core.config import Config, save as save_config
 from core.intent import is_abstention
 from core.wiring import hooks_json
 
@@ -38,7 +39,7 @@ from .tasks import SUITES, Task, by_name
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HOOK = REPO_ROOT / "plugin" / "bin" / "ep_hook.py"
 TIMEOUT = 900
-ARMS = ("vanilla", "nudge", "gate")
+ARMS = ("vanilla", "nudge", "guide", "gate")
 
 
 @dataclass
@@ -64,7 +65,7 @@ def build(task: Task, root: Path, arm: str) -> None:
     # how `from src.paging import ...` resolves without an installed package.
     (root / "conftest.py").write_text("", encoding="utf-8")
 
-    if arm == "gate":
+    if arm in ("guide", "gate"):
         # The same subscription the plugin ships, with the launcher's real path
         # instead of the plugin-root placeholder.
         settings = root / ".claude" / "settings.json"
@@ -73,6 +74,9 @@ def build(task: Task, root: Path, arm: str) -> None:
             json.dumps(hooks_json(f'python "{HOOK.as_posix()}"'), indent=2),
             encoding="utf-8",
         )
+        # Both arms say what would prove the work; only one of them refuses to
+        # stop without it. That is the comparison M1 exists to make.
+        save_config(root, Config(profile="guide" if arm == "guide" else "strict"))
 
     for args in (["init", "-q"], ["add", "-A"],
                  ["-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "seed"]):

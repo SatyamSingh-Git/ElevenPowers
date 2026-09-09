@@ -47,10 +47,33 @@ def start_banner(ledger: Ledger) -> str:
     )
 
 
+def guidance(ledger: Ledger) -> str:
+    """What would prove this work, said while there is still time to do it.
+
+    The gate speaks at the end, by which point the obligations named in the
+    opening banner are far behind. Measured live, it stopped nearly every first
+    attempt to finish, and nearly always on work that was already correct: the
+    agent had done the job and simply not shown it. This is the same
+    information delivered at the moment it can still change what happens, which
+    is the difference between a reminder and an interruption.
+    """
+    missing = [c for v in ledger.verdicts() for c in v.missing]
+    if not missing:
+        return ""
+    lines = ["this task will need, before it can be called done:"]
+    for check in missing:
+        lines.append(f"  {check.obligation.description}")
+        lines.append(f"    {_hint(ledger, check)}")
+    return "\n".join(lines)
+
+
 def _hint(ledger: Ledger, check) -> str:
     """The hint, made specific where the runtime can compute the specifics."""
     if check.obligation.kind is not Kind.STABILITY:
-        return check.obligation.hint
+        # A command the project declared beats one this module guessed at, and
+        # guessing produced hints naming commands that did not exist.
+        declared = ledger.config.command_for(check.obligation.needs)
+        return f"run: {declared}" if declared else check.obligation.hint
     needed = ledger.required_runs()
 
     # Whatever was already measured for flakiness is by definition the command

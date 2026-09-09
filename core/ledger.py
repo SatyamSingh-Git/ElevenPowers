@@ -14,6 +14,7 @@ from enum import Enum
 from pathlib import Path
 
 from .claims import opens_new_task
+from .config import Config, load as load_config
 from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for, risk_of
@@ -69,8 +70,16 @@ class Ledger:
     evidence: list[Evidence] = field(default_factory=list)
     decisions: list[dict] = field(default_factory=list)
     blocks: int = 0
+    guided: bool = False
     created: float = field(default_factory=time.time)
     _surface: Surface | None = None
+    _config: Config | None = None
+
+    @property
+    def config(self) -> Config:
+        if self._config is None:
+            self._config = load_config(self.root)
+        return self._config
 
     @property
     def surface(self) -> Surface:
@@ -84,11 +93,12 @@ class Ledger:
         if self._surface is None:
             found = detect(self.root)
             kinds = {e.kind for e in self.evidence}
+            declared = self.config
             self._surface = Surface(
-                tests=found.tests or bool(kinds & {Kind.TEST, Kind.SUITE}),
-                typecheck=found.typecheck or Kind.TYPECHECK in kinds,
-                build=found.build or Kind.BUILD in kinds,
-                benchmark=found.benchmark or Kind.BENCHMARK in kinds,
+                tests=found.tests or bool(kinds & {Kind.TEST, Kind.SUITE}) or declared.declares("tests"),
+                typecheck=found.typecheck or Kind.TYPECHECK in kinds or declared.declares("typecheck"),
+                build=found.build or Kind.BUILD in kinds or declared.declares("build"),
+                benchmark=found.benchmark or Kind.BENCHMARK in kinds or declared.declares("benchmark"),
             )
         return self._surface
 
@@ -114,6 +124,7 @@ class Ledger:
             evidence=[Evidence.from_dict(e) for e in raw.get("evidence", [])],
             decisions=raw.get("decisions", []),
             blocks=raw.get("blocks", 0),
+            guided=raw.get("guided", False),
             created=raw.get("created", time.time()),
         )
 
@@ -130,6 +141,7 @@ class Ledger:
             "evidence": [e.to_dict() for e in self.evidence],
             "decisions": self.decisions,
             "blocks": self.blocks,
+            "guided": self.guided,
             "created": self.created,
         }
         tmp = self.path.with_suffix(".tmp")

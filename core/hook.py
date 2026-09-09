@@ -23,7 +23,7 @@ from .obligations import risk_of
 from .parsers import parse, written_paths
 from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
-from .report import end_report, gate_message, start_banner
+from .report import end_report, gate_message, guidance, start_banner
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 
 MAX_BLOCKS = 2
@@ -143,6 +143,7 @@ def on_post_tool(payload: dict, root: Path) -> int:
             ledger = Ledger.load(root)
             if tool in EDIT_TOOLS:
                 ledger.observe_edit(target)
+                _guide(ledger)
             else:
                 ledger.saw(target)
             ledger.save()
@@ -179,6 +180,24 @@ def on_post_tool(payload: dict, root: Path) -> int:
     return 0
 
 
+def _guide(ledger: Ledger) -> None:
+    """Say what would prove this work, once, at the edit that opens the claim.
+
+    Measured live, the gate stopped nearly every first attempt to finish, and
+    nearly always on work that was already correct: the agent had done the job
+    and simply not shown it. The obligations were stated in the opening banner
+    and were far behind by the end. This is the same information delivered
+    while it can still change what happens.
+    """
+    if ledger.guided or not ledger.claims or not ledger.config.speaks:
+        return
+    words = guidance(ledger)
+    if not words:
+        return
+    ledger.guided = True
+    _emit("PostToolUse", additionalContext=words)
+
+
 def on_stop(payload: dict, root: Path) -> int:
     ledger = Ledger.load(root)
     if not ledger.claims:
@@ -187,18 +206,33 @@ def on_stop(payload: dict, root: Path) -> int:
     ledger.touched = sorted(set(ledger.touched) | set(_changed_paths(root)))
     status = ledger.settle(payload.get("last_assistant_message", ""))
     ledger.save()
+
+    if not ledger.config.speaks:
+        return 0
     if status is Status.VERIFIED:
         _emit("Stop", additionalContext=end_report(ledger))
         return 0
 
+    # Which obligation was unmet, not merely that something was. Every block so
+    # far recorded only the status, so nothing could say whether the gate kept
+    # firing for the same reason.
+    unmet = ", ".join(sorted({c.obligation.key for v in ledger.verdicts() for c in v.missing}))
+    detail = f"{status.value}: {unmet or 'stale evidence'}"
+
+    if not ledger.config.blocks:
+        ledger.note("gate reported", detail)
+        ledger.save()
+        _emit("Stop", additionalContext=end_report(ledger))
+        return 0
+
     if ledger.blocks >= MAX_BLOCKS:
-        ledger.note("gate gave up", f"{status.value} after {ledger.blocks} blocks")
+        ledger.note("gate gave up", f"{detail} after {ledger.blocks} blocks")
         ledger.save()
         _emit("Stop", additionalContext=end_report(ledger) + "\n\nReported as UNVERIFIED to the user.")
         return 0
 
     ledger.blocks += 1
-    ledger.note("gate blocked", status.value)
+    ledger.note("gate blocked", detail)
     ledger.save()
     print(gate_message(ledger), file=sys.stderr)
     return 2
