@@ -18,7 +18,7 @@ command in this repository and can be reproduced.
 | [04-build.md](04-build.md) | Building the first working version, and the three defects that only appeared when it was used |
 | [05-measurement.md](05-measurement.md) | Measuring the gate as a classifier: 75 percent false blocks, every fix, and the honest limits of the result |
 | [06-intermittency.md](06-intermittency.md) | The flaky-bug gap: a false verification found by reasoning, and the arithmetic that decides how many clean runs are enough |
-| [07-scope.md](07-scope.md) | A guard that was dead code, and where a task's scope actually comes from |
+| [07-scope.md](07-scope.md) | A guard that was dead code, where a task's scope actually comes from, and how the replacement shipped inert too |
 | [08-wiring.md](08-wiring.md) | Three defects in the layer nobody had measured, found by reading 36,000 real commands |
 | [09-claims.md](09-claims.md) | What real prompts look like, and why the claim has to follow the work |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
@@ -61,10 +61,10 @@ ran in order.
 
 **Measuring it.** The gate is a classifier, so it was measured as one. The first
 honest measurement was a 75 percent false-block rate: the tool would have been
-uninstalled within an hour. Nine fixes later it is zero on 42 scenarios,
-including twelve written afterwards specifically to break it. That number is
-real but narrow, and [05-measurement.md](05-measurement.md) says exactly what it
-does not prove.
+uninstalled within an hour. Nine fixes later it is zero on 46 scenarios, twelve
+of which were written afterwards specifically to break it. That number is real
+but narrow, and [05-measurement.md](05-measurement.md) says exactly what it does
+not prove. Two later phases found out how narrow.
 
 **The flaky-bug gap.** A seventh core piece had been listed and never built, and
 its absence let one lucky run satisfy "repeated runs are stable", which is a
@@ -94,22 +94,71 @@ One real prompt in five is four words or fewer, which no classifier reading the
 prompt alone can handle. The claim now follows the work: the first source edit
 opens one when the prompt stated none.
 
-## The one thing worth taking away
+## The two things worth taking away
 
-Two measurements changed the design more than any amount of reasoning did.
+### A measurement is only as good as the population it runs on
 
-The 75 percent false-block rate turned an elegant idea into an obviously
-unusable one in a single command, and every fix that followed came from asking
-why a specific case failed rather than from thinking harder about the
-architecture.
+The same lesson arrived four times, each time from a wider population, and each
+time the previous number turned out to have been true and narrow rather than
+wrong.
 
-The held-out set mattered just as much. After tuning, the score on the original
-scenarios was zero. On twelve fresh ones written to break it, the same code
-scored 43 percent. Without that second set the project would have believed a
-number that was three-quarters overfitting.
+**Measuring at all.** The gate was elegant and, on its first honest measurement,
+blocked 75 percent of completed work. Every fix that followed came from asking
+why one specific case failed, not from thinking harder about the architecture.
 
-A third measurement made the same point from the other side. Every number up to
-that point came from payloads written by the same person who wrote the code
-being tested, so both halves shared one wrong assumption and agreed perfectly.
-Real session transcripts settled it in a single pass, and they were sitting on
-the machine the whole time.
+**Holding a set back.** After tuning, the score on the original scenarios was
+zero. On twelve fresh ones written afterwards to break it, the same code scored
+43 percent. Without that second set the project would have believed a number
+that was three-quarters overfitting.
+
+**Using payloads somebody else wrote.** Every number up to that point came from
+hook payloads written by the same person who wrote the code reading them, so
+both halves shared one wrong assumption and agreed perfectly. The host sends no
+exit code and signals failure by changing shape, so every failing command had
+been recorded as passing. Real session transcripts settled it in one pass, and
+they had been sitting on the machine the whole time.
+
+**Using prompts somebody else wrote.** The gate scored zero false blocks on 46
+scenarios while attaching obligations to 51 percent of real turns that changed
+nothing. Both numbers were correct. Every scenario in that suite was a piece of
+work, and real sessions are mostly conversation.
+
+The pattern is not that the earlier measurements were sloppy. It is that a suite
+you construct yourself inherits your blind spots exactly, and agrees with you
+about all of them.
+
+### Three pieces failed by doing nothing
+
+The repeat runner was never built. The scope guard's allow list was read in three
+places and written by nothing. The subscription that was meant to feed the guard
+delivered a single tool. In each case the code was correct, the tests passed, and
+the component was never reached.
+
+Nothing raises no exception, prints no warning, and looks exactly like a run
+where there was nothing to do. So the fixes are structural rather than careful:
+the hook subscription is generated from the constants the handlers branch on,
+anything unreadable is appended to a blind-spot log, and `ep-doctor` exercises
+the join between the runtime and its host rather than either half alone.
+
+## Where it stands
+
+Every figure below comes from a command in this repository.
+
+| | Result | Reproduce with |
+|---|---|---|
+| Gate, as a classifier | 0 percent false blocks, 0 percent misses on 46 scenarios | `python -m eval.run --all` |
+| Scope guard | 0 false questions, 0 misses on 25 cases | `python -m eval.scope_run` |
+| Claim inference, real turns | 21 percent over-claim, 25 percent missed work over 3,557 turns | `python -m eval.claims_run` |
+| Claim inference, labelled | 31 of 31 | `python -m eval.claims_run --cases` |
+| Reading tool results, real commands | 174 of 174 failures, 5,916 of 5,916 successes over 36,034 commands | `python -m eval.replay --all` |
+| Host integration | six checks | `python plugin/bin/ep_doctor.py` |
+| Tests | 225 | `python -m pytest tests -q` |
+
+About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
+
+**What none of it establishes.** No agent has run with this installed for a
+working day. Replay proves the runtime reads correctly what a host wrote down;
+it does not prove the host delivers those events to a running hook, and it
+cannot measure staleness at all, because the working tree at each moment is not
+recoverable from a transcript. That is the same closing sentence three phases
+running, and it is the next thing.

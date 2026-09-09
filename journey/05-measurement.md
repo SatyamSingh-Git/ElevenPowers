@@ -173,6 +173,23 @@ Stated plainly, because the number is easy to over-read.
   test is named differently from the code it exercises, so it is reported as an
   advisory note instead. A missed warning costs less than a false block.
 
-The honest summary: the gate now behaves sensibly on 42 constructed cases and no
+The honest summary: the gate now behaves sensibly on 46 constructed cases and no
 longer fails in the structural ways it did at the start. Whether it survives real
 use is the next measurement, not this one.
+
+## Postscript, written after phase 9
+
+The list of limits above missed the one that mattered most, and it is worth
+stating plainly rather than quietly correcting.
+
+Every scenario in this suite is a piece of work. Real sessions are mostly
+conversation: questions, pasted context, "continue", statements of fact. So a 0
+percent false-block rate here was compatible with attaching obligations to 51
+percent of real turns that changed nothing, which
+[09-claims.md](09-claims.md) measured on 3,557 turns from real sessions.
+
+Both numbers were correct. They describe different populations, and the one this
+file describes was constructed by the person whose code it grades. That is a
+sharper version of the held-out lesson: writing fresh cases guards against
+overfitting to the cases, and does nothing about overfitting to the *kind* of
+case you think to write.

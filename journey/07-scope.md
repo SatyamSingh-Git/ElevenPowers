@@ -104,3 +104,15 @@ judgement.
 About 120 lines of logic, 25 labelled cases, 20 tests. Nothing was added to the
 hot path: the check is string comparison against a list the ledger already
 keeps.
+
+## Postscript: it shipped inert anyway
+
+The verification above ran the hook directly. The plugin subscribed
+`PostToolUse` to `Bash` alone, so in an actual session no `Read` or `Edit` ever
+reached the handler that records what the task has looked at. `ledger.seen`
+stayed empty, and an empty seen list is the first early return in `unrelated()`:
+the guard answered "not drift" to everything.
+
+So this entry opens by describing a piece of dead code and closes by shipping
+another one, for a different reason, one commit later. That was found in the
+next phase and is the reason for the audit in [08-wiring.md](08-wiring.md).

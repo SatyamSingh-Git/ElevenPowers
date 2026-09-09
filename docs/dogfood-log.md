@@ -146,7 +146,7 @@ Ten harder cases written afterwards found three real failures:
 Final: 25 cases, 0 false asks, 0 misses. Verified end to end in a real session,
 silent on five legitimate edits and asking on the one drift.
 
-## Auditing the wiring, 2026-09-09
+## 2026-09-09, auditing the wiring
 
 Two core pieces had already turned out to be dead, so the next session was spent
 asking what else was listed as working and was not. Everything found was in one
@@ -186,7 +186,7 @@ coverage went from 12 percent of real commands to 17.
 **Friction events:** none observed, because the layer still has not run live for
 a working day. That remains the honest gap.
 
-## Claim inference on real prompts, 2026-09-09
+## 2026-09-09, claim inference on real prompts
 
 Having 3,557 real turns available made a second measurement cheap, and it was
 unflattering.
