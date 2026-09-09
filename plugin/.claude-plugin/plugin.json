@@ -1,0 +1,5 @@
+{
+  "name": "elevenpowers",
+  "description": "Computes whether work is actually done, and keeps that answer honest as the code changes.",
+  "version": "0.1.0"
+}

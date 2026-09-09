@@ -1,0 +1,62 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" SessionStart",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" UserPromptSubmit",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" PreToolUse",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" PostToolUse",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" Stop",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
