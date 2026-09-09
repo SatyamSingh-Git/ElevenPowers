@@ -150,9 +150,9 @@ RUNTIME_OK = Obligation(
     "run it and show the result",
 )
 STABLE = Obligation(
-    "stable", Kind.RUNTIME,
-    "repeated runs are stable",
-    "repeat the reproduction enough times to show the failure is gone",
+    "stable", Kind.STABILITY,
+    "repeated runs show the failure is gone",
+    "ep-repeat <n> -- <the command that reproduced it>",
 )
 BENCH = Obligation(
     "benchmark", Kind.BENCHMARK,

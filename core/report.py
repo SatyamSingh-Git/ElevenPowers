@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 
-from .evidence import Freshness
+from .evidence import Freshness, Kind, Result
 from .ledger import Ledger, Status, Verdict
 
 MARK = {True: "met     ", False: "missing "}
@@ -26,7 +26,9 @@ def gate_message(ledger: Ledger) -> str:
                 lines.append(f"  met      {check.obligation.description}")
             else:
                 lines.append(f"  missing  {check.obligation.description}")
-                lines.append(f"           {check.obligation.hint}")
+                lines.append(f"           {_hint(ledger, check)}")
+                if check.caveat:
+                    lines.append(f"           so far: {check.caveat}")
     if not lines:
         return ""
     lines.append("")
@@ -45,13 +47,34 @@ def start_banner(ledger: Ledger) -> str:
     )
 
 
-def coverage_note(ledger: Ledger) -> str:
-    """Warn when the covering test looks unrelated to what changed.
+def _hint(ledger: Ledger, check) -> str:
+    """The hint, made specific where the runtime can compute the specifics."""
+    if check.obligation.kind is not Kind.STABILITY:
+        return check.obligation.hint
+    needed = ledger.required_runs()
 
-    Deliberately advisory. Deciding this properly needs a test-to-source map;
-    guessing from names would block correct work whenever a test is named
-    differently from the code it exercises, and a false block costs more than a
-    missed warning.
+    # Whatever was already measured for flakiness is by definition the command
+    # that shows the bug, so repeat that one rather than guessing again.
+    measured = [e for e in ledger.evidence if e.kind is Kind.STABILITY and e.identity]
+    if measured:
+        return f"ep-repeat {needed} -- {measured[-1].identity}"
+
+    ran = [e for e in ledger.evidence
+           if e.kind in (Kind.TEST, Kind.SUITE, Kind.RUNTIME) and e.command]
+    failed_once = {e.identity for e in ran if e.result is not Result.PASS}
+    candidates = [e for e in ran if e.identity in failed_once] or ran
+    command = candidates[-1].command if candidates else "<the command that reproduced it>"
+    return f"ep-repeat {needed} -- {command}"
+
+
+def coverage_note(ledger: Ledger) -> str:
+    """Point at a test that looks more related than the one that was run.
+
+    Deliberately advisory, and deliberately quiet. Deciding coverage properly
+    needs a test-to-source map; naming alone would flag every project whose
+    tests are named differently from the code they exercise, which is most of
+    them. So this speaks only when a better-matching test file exists and was
+    not the one run, which is the case where the reader can act on it.
     """
     if not ledger.touched:
         return ""
@@ -61,16 +84,32 @@ def coverage_note(ledger: Ledger) -> str:
     ]
     if not scoped:
         return ""
+
     changed = {t for p in ledger.touched for t in _tokens(p)}
-    for record in scoped:
-        if changed & _tokens(record.identity):
-            return ""
-    names = ", ".join(sorted({r.identity for r in scoped}))
-    return f"note: {names} shares no name with the files you changed; confirm it covers them"
+    if not changed:
+        return ""
+    ran = {r.identity for r in scoped}
+    if any(changed & _tokens(name) for name in ran):
+        return ""
+
+    better = [
+        path for path in _test_files(ledger.root)
+        if changed & _tokens(path) and not any(path in name for name in ran)
+    ]
+    if not better:
+        return ""
+    return (f"note: {', '.join(sorted(better)[:3])} looks closer to what you changed "
+            f"than {', '.join(sorted(ran))}")
+
+
+def _test_files(root) -> list[str]:
+    from .surface import TEST_NAME, _walk
+
+    return [p for p in _walk(root) if TEST_NAME.search(p)]
 
 
 def _tokens(path: str) -> set[str]:
-    stem = re.split(r"[/\]", path)[-1]
+    stem = re.split(r"[/\\]", path)[-1]
     stem = re.sub(r"\.[A-Za-z0-9]+$", "", stem)
     parts = re.split(r"[^A-Za-z0-9]+|(?<=[a-z])(?=[A-Z])", stem)
     return {p.lower() for p in parts if len(p) > 2 and p.lower() not in
@@ -89,11 +128,20 @@ def end_report(ledger: Ledger) -> str:
             detail = ""
             if check.evidence:
                 counts = ""
-                if check.evidence.passed or check.evidence.failed:
+                if check.evidence.kind is Kind.STABILITY:
+                    counts = f" {check.evidence.runs} runs, {check.evidence.failed} failed"
+                elif check.evidence.passed or check.evidence.failed:
                     counts = f" {check.evidence.passed} passed, {check.evidence.failed} failed"
                 detail = f"  <- {check.evidence.identity}{counts}"
             lines.append(f"    {state:<8}{check.obligation.description}{detail}")
     captured = len(ledger.evidence)
     fresh = sum(1 for e in ledger.evidence if e.freshness(ledger.root) is Freshness.FRESH)
     lines.append(f"  evidence: {captured} record(s), {fresh} fresh")
+    pre = ledger.pre_existing()
+    if pre:
+        lines.append("  pre-existing failures, not attributed to this change: "
+                     + ", ".join(e.identity for e in pre))
+    note = coverage_note(ledger)
+    if note:
+        lines.append(f"  {note}")
     return "\n".join(lines)

@@ -75,6 +75,32 @@ Risk comes from the paths a task touches: anything under auth, payments, migrati
 
 `cannot_complete` is a real outcome. A system with no way to say "this should not be done as asked" reproduces the action bias that causes false completion in the first place.
 
+## Flaky and intermittent bugs
+
+The one case where a single green run proves nothing. Ask about something
+intermittent and the runtime requires repeated evidence, and computes how much
+is enough from the failure rate the agent actually measured:
+
+```
+missing  repeated runs show the failure is gone
+         ep-repeat 29 -- python -m pytest tests/test_worker.py -q
+         so far: still failed 3 of 30
+```
+
+Three failures in thirty runs is a ten percent rate, and ruling that out with 95
+percent confidence needs 29 clean runs, since 0.9 to the power 29 is under 0.05.
+The agent is told the number rather than left to pick one.
+
+The runner stands alone too:
+
+```bash
+ep-repeat 50 -- pytest tests/test_login.py     # is this flaky, and how flaky
+ep-repeat 50 --jobs 8 -- pytest tests/test_login.py
+```
+
+None of the fourteen systems surveyed ships a repeat runner or any other
+tooling for nondeterministic bugs.
+
 ## What it does not do yet
 
 No workflow engine, no repository index, no memory, no model routing, no subagents. Each is postponed with a written trigger in `docs/postponed.md`. Invalidation is currently coarse: any source edit stales everything. Narrowing it to the import closure of each test is the documented next step, and only once measurement shows the coarse version is too pessimistic to live with.

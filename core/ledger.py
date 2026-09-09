@@ -16,6 +16,7 @@ from pathlib import Path
 from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for
+from .repeat import MIN_RUNS, runs_needed
 from .surface import Surface, detect
 
 STATE_DIR = ".elevenpowers"
@@ -211,9 +212,15 @@ class Ledger:
         ]
 
     def pre_existing(self) -> list[Evidence]:
-        """Failures that were already there when the task started."""
+        """Failures that were already there when the task started.
+
+        Stability measurements are excluded: a repeat run that found the bug is
+        the reproduction the task exists to fix, not somebody else's breakage.
+        """
         first: dict[tuple, Evidence] = {}
         for e in self.evidence:
+            if e.kind is Kind.STABILITY:
+                continue
             key = (e.kind, e.identity)
             if key not in first or e.at < first[key].at:
                 first[key] = e
@@ -232,6 +239,9 @@ class Ledger:
             shown = _demonstrated_fix(self.evidence)
             return Check(obligation=obligation, met=shown is not None, evidence=shown)
 
+        if obligation.kind is Kind.STABILITY:
+            return self._check_stability(obligation)
+
         found = obligation.satisfied_by(self.evidence)
         if found is not None:
             return Check(obligation=obligation, met=True, evidence=found,
@@ -242,6 +252,46 @@ class Ledger:
             return Check(obligation=obligation, met=True, evidence=tolerated,
                          freshness=tolerated.freshness(self.root), caveat="no new failures")
         return Check(obligation=obligation, met=False)
+
+    def required_runs(self) -> int:
+        """How many clean runs would justify calling an intermittent bug fixed.
+
+        Derived from the worst failure rate this task actually observed, so the
+        answer is arithmetic rather than a guess. With nothing observed, fall
+        back to the floor and say so.
+        """
+        rates = [
+            e.failed / e.runs
+            for e in self.evidence
+            if e.kind is Kind.STABILITY and e.runs and e.failed
+        ]
+        return runs_needed(max(rates)) if rates else MIN_RUNS
+
+    def _check_stability(self, obligation: Obligation) -> Check:
+        """Stability needs enough clean repeats, not one lucky run.
+
+        A single successful execution is indistinguishable from a hundred of
+        them unless something counted, so this is the one obligation that
+        requires its own tool.
+        """
+        records = [e for e in self.evidence if e.kind is Kind.STABILITY]
+        if not records:
+            return Check(obligation=obligation, met=False)
+
+        needed = self.required_runs()
+        clean = [e for e in records if e.failed == 0 and e.runs >= needed]
+        if clean:
+            best = max(clean, key=lambda e: e.runs)
+            return Check(obligation=obligation, met=True, evidence=best,
+                         freshness=best.freshness(self.root))
+
+        best = max(records, key=lambda e: (e.failed == 0, e.runs))
+        short = best.failed == 0 and best.runs < needed
+        return Check(
+            obligation=obligation, met=False, evidence=best,
+            caveat=(f"{best.runs} clean runs, {needed} needed" if short
+                    else f"still failed {best.failed} of {best.runs}"),
+        )
 
     def _no_new_failures(self, obligation: Obligation) -> Evidence | None:
         """A suite that was already red and is no redder than before.

@@ -385,6 +385,15 @@ agent has yet been run through this at scale.
 | P4 | Coarse invalidation is not too pessimistic to live with | dogfood | replay |
 | P5 | Gating improves abstention accuracy on tasks where the right answer is to stop | dev | yes |
 | P6 | Stability obligations halve false "fixed" claims on flaky bugs | micro, flaky subset | yes |
+
+**P6, mechanism built (2026-09-09).** The `stable` obligation previously accepted
+any runtime record, so one execution of a reproduction script that happened not
+to fail satisfied it. That was a false verification on the differentiating task
+class. It now requires evidence from a repeat runner, and the required run count
+is computed from the failure rate the agent measured rather than chosen: with a
+fault still present at rate p, n clean runs occur with probability (1-p)^n, so
+95 percent confidence needs n >= log(0.05)/log(1-p). Verified end to end against
+a real one-in-six failure. The hypothesis itself still needs agent runs.
 | P7 | Deterministic scope guards beat prompt instructions at reducing unrelated edits | dev, three arms | yes |
 | P8 | The layer adds under 10 percent tokens and under 5 seconds per task | micro | replay |
 | P9 | Obligation-directed work beats template-directed work on hard tasks | dev | yes, Phase 2 |

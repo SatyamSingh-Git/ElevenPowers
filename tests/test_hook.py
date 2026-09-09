@@ -167,4 +167,6 @@ def test_race_request_demands_stability(repo):
         "tool_response": {"stdout": out, "exit_code": 0},
     }, repo)
     result = run_hook("Stop", {"cwd": str(repo)}, repo)
-    assert result.returncode == 2 and "repeated runs are stable" in result.stderr
+    assert result.returncode == 2
+    assert "repeated runs show the failure is gone" in result.stderr
+    assert "ep-repeat 20 -- pytest tests/test_auth.py" in result.stderr

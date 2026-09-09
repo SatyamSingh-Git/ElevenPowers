@@ -16,3 +16,5 @@ opinion.
 | Second host adapter | Someone asks, or Phase 1 numbers justify porting. Codex first: its hook engine is the closest match to Claude Code's |
 | Full 48-task harness | A decision needs a number the micro and smoke tiers cannot produce |
 | Browser evidence | A UI claim type is needed. gstack's Playwright daemon is MIT and liftable |
+
+Built since this file was written: the repeat runner, which was listed as core in the plan and turned out to be load-bearing. Its absence let a single lucky run satisfy the stability obligation, which was a false verification on the one task class this project claims as its differentiator.

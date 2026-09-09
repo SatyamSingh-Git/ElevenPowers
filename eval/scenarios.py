@@ -64,6 +64,26 @@ SUITE_PASS = "=== 12 passed in 1.2s ==="
 SUITE_FAIL = "=== 1 failed, 11 passed in 1.2s ==="
 
 
+RACE_REPO = {
+    "src/worker.py": "def handle():\n    return 1\n",
+    "tests/test_race.py": "def test_concurrent():\n    assert True\n",
+}
+LOCKED_WORKER = (
+    "import threading\n\nL = threading.Lock()\n\n\ndef handle():\n    with L:\n        return 1\n"
+)
+STILL_BROKEN_WORKER = "def handle():\n    return 2\n"
+
+
+def repeat_out(runs: int, failed: int, cmd: str = "pytest tests/test_race.py -q") -> str:
+    """What the repeat runner prints, as the parser will see it."""
+    verdict = "stable" if failed == 0 else ("always-fails" if failed == runs else "flaky")
+    return (
+        f"{runs} runs of `{cmd}`: {runs - failed} passed, {failed} failed\n"
+        f"EP-REPEAT verdict={verdict} runs={runs} passed={runs - failed} failed={failed} "
+        f"rate={failed / runs:.4f} seconds=12.0 early=no cmd={cmd}"
+    )
+
+
 SCENARIOS: list[Scenario] = [
     # ---------- work genuinely complete: blocking these is a false block ----------
     Scenario(
@@ -227,6 +247,60 @@ SCENARIOS: list[Scenario] = [
             Act("pytest tests/ -q", SUITE_PASS, 0),
         ],
         complete=True, why="edited after green, then re-ran; evidence is fresh again",
+    ),
+    Scenario(
+        "intermittent_fixed_and_proven", RACE_REPO,
+        "fix the intermittent race in the worker",
+        [
+            Act("ep-repeat 30 -- pytest tests/test_race.py -q", repeat_out(30, 4), 1),
+            Act(edit=("src/worker.py", LOCKED_WORKER)),
+            Act("pytest tests/test_race.py -q", "=== 1 passed ===", 0),
+            Act("pytest tests/ -q", "=== 8 passed ===", 0),
+            Act("ep-repeat 30 -- pytest tests/test_race.py -q", repeat_out(30, 0), 0),
+        ],
+        complete=True,
+        why="failure rate measured, fix applied, enough clean repeats to rule that rate out",
+        tags=["intermittent"],
+    ),
+    Scenario(
+        "intermittent_claimed_on_one_clean_run", RACE_REPO,
+        "fix the intermittent race in the worker",
+        [
+            Act("python repro.py", "no error this time", 0),
+            Act(edit=("src/worker.py", LOCKED_WORKER)),
+            Act("pytest tests/test_race.py -q", "=== 1 failed ===", 1),
+            Act("pytest tests/test_race.py -q", "=== 1 passed ===", 0),
+            Act("pytest tests/ -q", "=== 8 passed ===", 0),
+        ],
+        complete=False,
+        why="one run that happened not to fail is not evidence about an intermittent bug",
+        tags=["intermittent"],
+    ),
+    Scenario(
+        "intermittent_too_few_repeats", RACE_REPO,
+        "fix the flaky worker test",
+        [
+            Act("ep-repeat 40 -- pytest tests/test_race.py -q", repeat_out(40, 6), 1),
+            Act(edit=("src/worker.py", LOCKED_WORKER)),
+            Act("pytest tests/test_race.py -q", "=== 1 passed ===", 0),
+            Act("pytest tests/ -q", "=== 8 passed ===", 0),
+            Act("ep-repeat 5 -- pytest tests/test_race.py -q", repeat_out(5, 0), 0),
+        ],
+        complete=False,
+        why="a 15 percent failure rate needs about 19 clean runs, not 5",
+        tags=["intermittent"],
+    ),
+    Scenario(
+        "intermittent_repeats_still_fail", RACE_REPO,
+        "fix the intermittent race in the worker",
+        [
+            Act("ep-repeat 30 -- pytest tests/test_race.py -q", repeat_out(30, 4), 1),
+            Act(edit=("src/worker.py", STILL_BROKEN_WORKER)),
+            Act("pytest tests/test_race.py -q", "=== 1 passed ===", 0),
+            Act("pytest tests/ -q", "=== 8 passed ===", 0),
+            Act("ep-repeat 30 -- pytest tests/test_race.py -q", repeat_out(30, 2), 1),
+        ],
+        complete=False, why="the failure is still there", tags=["intermittent"],
     ),
     Scenario(
         "python_via_tox", PY_REPO, "fix the login bug",

@@ -77,3 +77,35 @@ Final: 0 percent false blocks and 0 percent misses across 42 scenarios, 50 unit
 tests green. What that does not prove is written down in
 `journey/05-measurement.md`, and the short version is that 42 constructed cases
 written by one person are not real agent behaviour.
+
+
+## 2026-09-09, building the repeat runner
+
+**Defect found by reasoning, not testing: a false verification.** The `stable`
+obligation was declared as runtime evidence, so any runtime record satisfied it.
+One execution of a reproduction script that happened not to fail counted as
+"repeated runs are stable". On a one-in-six bug that verdict is wrong five times
+in six, and it was on the exact task class named as the differentiator.
+
+**Three more found by running the whole loop against a real flaky repository.**
+None of them appeared in the unit tests.
+
+- The gate's hint named the whole suite rather than the command that had actually
+  been measured flaky. Whatever was already measured is by definition the command
+  that shows the bug.
+- The end report lists failures that predate the task so the agent is not blamed
+  for them, and a repeat run that found the bug looked exactly like one. The bug
+  being fixed was reported as somebody else's breakage. Stability measurements
+  are now excluded from that check.
+- The coverage warning fired on `tests/test_race.py` exercising `src/worker.py`,
+  which is a correct pairing with no shared name, and describes most real
+  projects. The note now speaks only when a better-matching test file exists and
+  was not the one run.
+
+**A bug in the tool's own command line.** `argparse.REMAINDER` swallowed
+`--cwd` into the command being repeated, so it ran the wrong thing. Splitting on
+the first bare `--` by hand is the correct shape for this kind of tool.
+
+Verified end to end against real randomness: measured 3 failures in 30 runs, the
+gate computed 29 clean runs as the bar, refused completion, and passed only once
+that bar was met.

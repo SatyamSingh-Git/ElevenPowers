@@ -42,6 +42,16 @@ MIX = re.compile(r"(?P<total>\d+) tests?, (?P<failed>\d+) failures?")
 PHPUNIT = re.compile(r"Tests: (?P<total>\d+), Assertions: \d+(?:, Failures: (?P<failed>\d+))?")
 DOTNET = re.compile(r"Failed:\s*(?P<failed>\d+),\s*Passed:\s*(?P<passed>\d+)", re.I)
 
+# The repeat runner's own machine-readable line. Stability is the one obligation
+# that cannot be inferred from an ordinary command, because a single clean run
+# of anything looks identical to a hundred of them.
+REPEAT = re.compile(
+    r"EP-REPEAT verdict=(?P<verdict>\S+) runs=(?P<runs>\d+) passed=(?P<passed>\d+) "
+    r"failed=(?P<failed>\d+) rate=(?P<rate>[\d.]+) seconds=(?P<seconds>[\d.]+) "
+    r"early=(?P<early>\S+) cmd=(?P<cmd>.+)$",
+    re.MULTILINE,
+)
+
 WRAPPER = re.compile(
     r"""^\s*(?:[A-Z_]+=\S+\s+)*
     (?: (?:npm|pnpm|yarn|bun)\s+(?:\S+\s+)*?(?:run\s+)?test
@@ -101,6 +111,10 @@ def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidenc
     """Evidence implied by one command and its output, or an empty list."""
     cmd = command.strip()
     low = cmd.lower()
+
+    repeat = REPEAT.search(output)
+    if repeat:
+        return [_stability(repeat, cmd, root)]
 
     if re.search(r"\b(hyperfine|criterion|benchmark|bench)\b", low) and "test" not in low:
         return [_record(Kind.BENCHMARK, _scope(cmd), exit_code, cmd, root, output)]
@@ -275,4 +289,18 @@ def _cargo(command: str, output: str, exit_code: int, root: Path) -> Evidence:
     for _, passed, failed in CARGO_RESULT.findall(output):
         record.passed += int(passed)
         record.failed += int(failed)
+    return record
+
+
+def _stability(match: re.Match, command: str, root: Path) -> Evidence:
+    runs = int(match.group("runs"))
+    failed = int(match.group("failed"))
+    record = _record(
+        Kind.STABILITY, match.group("cmd").strip(),
+        0 if failed == 0 else 1, command, root, "",
+    )
+    record.runs = runs
+    record.passed = int(match.group("passed"))
+    record.failed = failed
+    record.detail = f"{runs} runs, {failed} failed"
     return record

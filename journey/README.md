@@ -17,6 +17,7 @@ command in this repository and can be reproduced.
 | [03-architecture.md](03-architecture.md) | Two rewrites of the plan, the pivot from classifying tasks to deriving proof obligations, and what the thing actually is |
 | [04-build.md](04-build.md) | Building the first working version, and the three defects that only appeared when it was used |
 | [05-measurement.md](05-measurement.md) | Measuring the gate as a classifier: 75 percent false blocks, every fix, and the honest limits of the result |
+| [06-intermittency.md](06-intermittency.md) | The flaky-bug gap: a false verification found by reasoning, and the arithmetic that decides how many clean runs are enough |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -61,6 +62,13 @@ uninstalled within an hour. Nine fixes later it is zero on 42 scenarios,
 including twelve written afterwards specifically to break it. That number is
 real but narrow, and [05-measurement.md](05-measurement.md) says exactly what it
 does not prove.
+
+**The flaky-bug gap.** A seventh core piece had been listed and never built, and
+its absence let one lucky run satisfy "repeated runs are stable", which is a
+false verification on the exact task class the project claims as its
+differentiator. Building it raised a better question than the runner itself: how
+many clean runs are enough. That has an arithmetic answer, computed from the
+failure rate the agent measures while reproducing the bug.
 
 ## The one thing worth taking away
 

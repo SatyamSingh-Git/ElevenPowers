@@ -25,6 +25,7 @@ class Kind(str, Enum):
     LINT = "lint"
     RUNTIME = "runtime"
     BENCHMARK = "benchmark"
+    STABILITY = "stability"
     BROWSER = "browser"
     SCANNER = "scanner"
     DIFF = "diff"
@@ -55,6 +56,7 @@ class Evidence:
     failed: int = 0
     at: float = 0.0
     run: str = ""
+    runs: int = 0
     vcs: str = ""
 
     def freshness(self, root: Path) -> Freshness:
