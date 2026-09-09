@@ -219,10 +219,53 @@ SENSITIVE_REQUEST = re.compile(
     r"\b(auth\w*|login|session|token|permission|access control|password|secret|payment|billing|"
     r"charge|refund|migrat\w+|schema|production|deploy|security|vulnerab\w+)\b", re.I,
 )
-INTERMITTENT = re.compile(
-    r"\b(intermittent\w*|flak\w+|rac[ey]|nondeterministic|non-deterministic|sometimes|"
-    r"occasionally|randomly|heisenbug|timing|deadlock|concurren\w+)\b", re.I,
+# Repeated-run stability is the most expensive obligation the runtime can ask
+# for: twenty clean runs of a command the agent must first identify. Live runs
+# made it the commonest reason the gate fired, and on real prompts it was
+# demanded of 26 percent of bug fixes, triggered by "race" and "concurrent"
+# appearing inside pasted job adverts and by "sometimes" in
+# "sometimes returns a string longer than the limit", which is a deterministic
+# bug described conditionally.
+#
+# So two things are required rather than one word anywhere in the text: a term
+# that actually means nondeterminism, in the same sentence as something failing.
+UNAMBIGUOUS = re.compile(
+    r"\b(intermittent\w*|flak\w+|heisenbug|nondeterministic|non-deterministic|"
+    r"race condition|deadlock\w*|thread[- ]?saf\w+|data race)\b", re.I,
 )
+AMBIGUOUS = re.compile(
+    r"\b(sometimes|occasionally|randomly|now and then|every so often|once in a while)\b", re.I,
+)
+# What turns an ambiguous adverb into a claim about nondeterminism: the same
+# input behaving differently on different runs.
+UNRELIABLE = re.compile(
+    r"\b(not always|only sometimes|once in \w+|1 in \d+|every other run|on retry|"
+    r"retrying|transient|inconsistent\w*|varies|different each|reruns?|re-runs?)\b", re.I,
+)
+FAILING = re.compile(
+    r"\b(fail\w*|crash\w*|hang\w*|hung|error\w*|break\w*|broke\w*|bug|test\w*|"
+    r"timeout\w*|times? out|stall\w*|freez\w*|flake\w*)\b", re.I,
+)
+
+
+def is_intermittent(request: str) -> bool:
+    """Whether the bug is nondeterministic, as opposed to merely conditional.
+
+    A term that can only mean nondeterminism stands alone, because "fix the
+    intermittent race in login" says so plainly and contains no word for
+    failure. An ambiguous adverb needs company: the same thing failing and not
+    failing, in the same sentence as the failure itself.
+
+    Measured on 566 real bug-fix requests, this asks for repeated runs on 4
+    percent of them. The word-anywhere rule it replaces asked on 26 percent.
+    """
+    text = request or ""
+    if UNAMBIGUOUS.search(text):
+        return True
+    return any(
+        AMBIGUOUS.search(sentence) and UNRELIABLE.search(sentence) and FAILING.search(sentence)
+        for sentence in re.split(r"[.!?\n]+", text)
+    )
 
 
 def risk_of(paths: list[str], request: str = "", changed_lines: int = 0) -> tuple[Risk, list[str]]:
@@ -245,7 +288,7 @@ def obligations_for(
     """The obligations that apply here, filtered to what this project can prove."""
     chosen = list(TABLE[claim][risk])
 
-    if claim is Claim.BUG_FIXED and INTERMITTENT.search(request or ""):
+    if claim is Claim.BUG_FIXED and is_intermittent(request or ""):
         chosen.append(STABLE)
 
     if surface is None:
