@@ -131,6 +131,55 @@ changing a manifest or lockfile, editing the test for the code being changed,
 touching a sibling in the same module, or anything the request mentioned. On 25
 labelled cases the guard raises no question it should not.
 
+## Saying what it needs, before the end
+
+The gate speaks at the end. Measured live, that was too late: it stopped nearly
+every first attempt to finish, and nearly always on work that was already
+correct, because the agent had done the job and not shown it.
+
+So the obligations are also stated at the moment they can still change what
+happens, once, at the first edit that opens a claim:
+
+```
+this task will need, before it can be called done:
+  a test covering the change passes
+    run the test that exercises this change, by name or by file
+  the related test suite passes
+    run the suite covering the files you changed, not just the one test
+  repeated runs show the failure is gone
+    ep-repeat 20 -- <the command that reproduced it>
+```
+
+And you can ask at any point rather than waiting to be told:
+
+```bash
+python plugin/bin/ep_status.py
+```
+
+## Choosing how much it interrupts
+
+Optional, in `.elevenpowers/config.json`. A project with no config behaves
+exactly as it did before.
+
+```json
+{
+  "profile": "strict",
+  "commands": {"tests": "make test", "typecheck": "npm run typecheck"}
+}
+```
+
+| Profile | Behaviour |
+|---|---|
+| `off` | record evidence, say nothing, never block |
+| `guide` | say what would prove the work, report at the end, never block |
+| `strict` | the above, and refuse to stop while obligations are unmet |
+
+`EP_PROFILE` overrides the file for one session.
+
+Declaring commands does two things: it tells the runtime this project has a test
+suite even when the suite lives behind a Makefile and no scan would find it, and
+it replaces a guessed hint with the command you actually use.
+
 ## Checking that it is actually working
 
 A verification layer that silently stops working is worse than none, and the
