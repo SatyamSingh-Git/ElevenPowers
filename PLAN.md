@@ -376,6 +376,34 @@ Reduced from twenty-two. Each names its tier and whether it needs new runs or re
 | ID | Hypothesis | Tier | New runs? |
 |---|---|---|---|
 | P1 | Evidence gating halves the submit-resolve gap versus vanilla | micro then dev | yes |
+
+**P1, first attempt (2026-09-09): unanswered, and now for a stated reason.**
+Eighty-nine live agent runs through the real CLI, $13.33 of tokens, across three
+task suites and two models, via `python -m eval.live`.
+
+The mechanism works. The gate fires in a live session, refuses the stop, and the
+agent goes back and does more work. That closes three phases in which nothing
+had run outside replay.
+
+The measurement does not. Two identical plain passes over the same sixteen tasks
+resolved eleven and fifteen: a quarter of the suite answers differently run to
+run, which is larger than the effect being hunted. So all three arm comparisons
+were reading noise, including a first result that appeared to close the gap
+entirely and rested on one task changing hands. Eleven of the sixteen tasks are
+resolved by a plain agent every time and cannot show an improvement at all.
+
+An answer costs about 252 agent runs per comparison at 0.05 and 80 percent
+power, plus a task suite rebuilt so that most of it discriminates. That is now a
+number rather than an intention.
+
+One result did survive, consistent across both models: the gate stops nearly
+every first attempt to finish (7 of 8, then 12 of 16), and on nearly all of them
+a plain agent had already resolved the same task. It roughly doubles the turns
+and multiplies cost by 2.5 to buy evidence for work that was mostly already
+correct. Under this plan's own definition those are false blocks, and the 0
+percent measured on constructed scenarios did not survive contact with real
+agents, for the same reason as P3: the constructed suite did not contain the
+population that matters. Full account in `journey/10-live.md`.
 | P2 | False-block rate stays under 5 percent | dogfood then dev | replay |
 
 **P2, first result (2026-09-09).** Measured on 42 labelled scenarios via
@@ -431,6 +459,14 @@ touch before making it. It asks rather than denies. Measured on 25 labelled
 cases, weighted toward legitimate edits that look unrelated: 0 false questions,
 0 misses. The hypothesis itself still needs agent runs.
 | P8 | The layer adds under 10 percent tokens and under 5 seconds per task | micro | replay |
+
+**P8, first evidence (2026-09-09), and the target was written about the wrong
+quantity.** Measured live, the gated arm costs 2.5x the tokens and 1.5 to 1.9x
+the turns of a plain run. Almost none of that is the layer: its own hook latency
+is about 100 ms per call. It is the extra agent work that blocking induces,
+which is the mechanism rather than overhead. The hypothesis needs splitting into
+the layer's own cost, which is small and meets the target, and the cost of the
+work it causes, which is large and is the product doing its job.
 | P13 | The runtime reads what the host actually sends | replay | replay |
 
 **P13, first result (2026-09-09), and it failed.** The hypothesis was added

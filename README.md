@@ -176,7 +176,9 @@ accuracy while being wrong about the only thing the gate needs to know.
 
 No workflow engine, no repository index, no memory, no model routing, no subagents. Each is postponed with a written trigger in `docs/postponed.md`. Invalidation is currently coarse: any source edit stales everything. Narrowing it to the import closure of each test is the documented next step, and only once measurement shows the coarse version is too pessimistic to live with.
 
-It has also not yet been watched running live for a working day. Replay shows the runtime reads correctly what the host wrote down; it does not show the host delivering those events to a running hook.
+It now runs live: 89 real agent runs through the CLI, where the gate fires, refuses the stop, and the agent goes back and does more work. What that has not yet shown is whether the work comes out better. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen, so the run-to-run noise is larger than the effect, and answering the question properly needs about 252 agent runs per comparison against a task suite rebuilt so that most of it discriminates.
+
+One live result is consistent across both models tested: the gate stops nearly every first attempt to finish, and nearly always on work a plain agent had already got right. It buys evidence for correct-but-unproven work at about 2.5 times the tokens. Whether that trade is worth making is the open question, and it is now measurable rather than arguable.
 
 ## Design notes
 

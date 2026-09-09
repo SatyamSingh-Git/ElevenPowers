@@ -180,6 +180,35 @@ the task.
 *Changed:* a prompt that states no subject leaves an open claim alone. Only a
 question or an explicit request for something else clears it.
 
+### Comparing arms before measuring the noise floor
+
+Three live comparisons were run before checking whether the baseline reproduces
+itself. It does not: two identical plain passes over the same sixteen tasks
+resolved eleven and fifteen, with a quarter of the suite changing answer.
+
+*Cause:* the plan says the noise floor is measured first, "because without it
+every later number is unreadable". It was skipped because the first comparison
+produced a result that looked good.
+
+*Cost:* about $12 of agent runs and three comparisons that meant nothing,
+including one that appeared to close the submit-resolve gap entirely.
+
+*Changed:* `eval/noise.py` reports the flip rate and sorts tasks by whether they
+can discriminate at all; `eval/analyse.py` prints the strongest result a run
+could possibly produce before it prints any p-value.
+
+### Building harder tasks when the problem was the model
+
+The first suite was too easy, so a harder one was built with careful traps. It
+scored identically, because a single-function bug with a stated contract is
+inside a strong model's competence whatever the edge case is.
+
+*Cause:* treating difficulty as a property of the task rather than of the
+task-and-model pair.
+
+*Changed:* the operating point moved to a weaker model, where a 31 percent gap
+exists to study, and both suites are kept.
+
 ## Tooling
 
 ### Silent failures from shell heredocs

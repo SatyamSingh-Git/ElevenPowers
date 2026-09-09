@@ -67,3 +67,14 @@ more useful record.
 | D37 | Read write targets out of shell commands | 637 turns changed the repository without touching an edit tool. Narrow on purpose: a target needs a file extension | Stands |
 | D38 | Nothing from the session corpus is committed | It is one person's real work across thirty private projects. The labelled prompts are written to match observed shapes, not copied | Stands. The tools read from the machine they run on |
 
+## Live measurement
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D39 | Ground truth is a hidden test written after the agent finishes | The agent cannot optimise against what it never sees, and the visible suite is deliberately green both before and after the fix so a green run proves nothing | Stands |
+| D40 | Task properties are enforced by tests, not by convention | A task whose hidden test already passes measures nothing, and that failure is silent | Stands |
+| D41 | A third arm that asks for diligence in words | The gate buys extra turns by construction, so "you only gave it more compute" needs an answer in the design rather than in the discussion | Stands |
+| D42 | Measure the noise floor before believing any comparison | Two identical passes disagreed on a quarter of the suite, which is larger than the effect being hunted | Reinstated after being skipped. The plan had it right |
+| D43 | Report the strongest result a run could produce, before its p-values | An arm can only overturn tasks the baseline failed, so a pilot that cannot reach significance should say so up front | Stands |
+| D44 | Move the operating point rather than build harder tasks | Difficulty is a property of the task and model together; a weaker model gave a 31 percent gap where a stronger one gave 12 | Stands |
+

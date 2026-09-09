@@ -21,6 +21,7 @@ command in this repository and can be reproduced.
 | [07-scope.md](07-scope.md) | A guard that was dead code, where a task's scope actually comes from, and how the replacement shipped inert too |
 | [08-wiring.md](08-wiring.md) | Three defects in the layer nobody had measured, found by reading 36,000 real commands |
 | [09-claims.md](09-claims.md) | What real prompts look like, and why the claim has to follow the work |
+| [10-live.md](10-live.md) | 89 real agent runs: the mechanism works, the measurement does not, and what an answer costs |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -94,6 +95,15 @@ One real prompt in five is four words or fewer, which no classifier reading the
 prompt alone can handle. The claim now follows the work: the first source edit
 opens one when the prompt stated none.
 
+**Then it ran for real, and the floor turned out to be higher than the effect.**
+Eighty-nine live agent runs across three task suites and two models. The gate
+fires in a real session and refuses the stop, which closes three phases of "it
+has never run live". But two identical plain passes scored 69 and 94 percent on
+the same sixteen tasks, so a quarter of the suite answers differently run to run
+and every arm comparison so far was reading noise. What survived is a friction
+result: the gate stops nearly every first attempt to finish, and nearly always on
+work that was already correct.
+
 ## The two things worth taking away
 
 ### A measurement is only as good as the population it runs on
@@ -152,13 +162,15 @@ Every figure below comes from a command in this repository.
 | Claim inference, labelled | 31 of 31 | `python -m eval.claims_run --cases` |
 | Reading tool results, real commands | 174 of 174 failures, 5,916 of 5,916 successes over 36,034 commands | `python -m eval.replay --all` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
-| Tests | 225 | `python -m pytest tests -q` |
+| Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
+| Tests | 291 | `python -m pytest tests -q` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
 
-**What none of it establishes.** No agent has run with this installed for a
-working day. Replay proves the runtime reads correctly what a host wrote down;
-it does not prove the host delivers those events to a running hook, and it
+**What none of it establishes.** P1, the hypothesis the whole thesis rests on,
+is still unanswered, and now for a stated reason: the run-to-run noise floor is
+larger than the effect. Answering it needs about 252 agent runs per comparison
+and a task suite rebuilt so that most of it discriminates, since eleven of the
+current sixteen tasks are resolved by a plain agent every time. Replay still
 cannot measure staleness at all, because the working tree at each moment is not
-recoverable from a transcript. That is the same closing sentence three phases
-running, and it is the next thing.
+recoverable from a transcript.

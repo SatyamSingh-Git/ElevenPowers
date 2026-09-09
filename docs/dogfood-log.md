@@ -215,3 +215,35 @@ suites unchanged at zero.
 **Friction events:** still none observed, because the layer still has not run
 live for a working day.
 
+## 2026-09-09, the first live agent runs
+
+Eighty-nine runs through the real CLI, $13.33 of tokens, three task suites, two
+models.
+
+**The gate works in a live session.** It fires, refuses the stop, and the agent
+goes back and does more work. Three phases of "it has never run live" are over.
+
+**The measurement does not work yet.** Two identical plain passes over the same
+sixteen tasks resolved eleven and fifteen. A quarter of the suite answers
+differently run to run, which is bigger than the effect, so all three arm
+comparisons were noise, including a first one that appeared to close the gap
+completely and rested on a single task.
+
+**The suite mostly cannot discriminate.** Eleven of sixteen tasks are resolved by
+a plain agent every time, one is never resolved, and four are unstable. Only the
+unstable four carry information.
+
+**Difficulty is not a property of the task alone.** A second suite built with
+careful traps scored identically to the first on the stronger model. Moving to a
+weaker model produced a 31 percent gap immediately, and at a tenth of the cost
+per run.
+
+**Friction, measured live for the first time.** The gate blocked 7 of 8 runs on
+one model and 12 of 16 on the other, and on nearly all of them the plain agent
+had already resolved the task. It buys evidence for work that was mostly already
+correct, at 2.5x tokens. That is the design working as intended, and it is also
+the thing most likely to make someone switch it off.
+
+**Cost of an answer:** about 252 agent runs per comparison, roughly $25 and
+several hours per arm, plus a rebuilt suite.
+
