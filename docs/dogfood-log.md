@@ -186,3 +186,32 @@ coverage went from 12 percent of real commands to 17.
 **Friction events:** none observed, because the layer still has not run live for
 a working day. That remains the honest gap.
 
+## Claim inference on real prompts, 2026-09-09
+
+Having 3,557 real turns available made a second measurement cheap, and it was
+unflattering.
+
+**51 percent of turns that changed nothing had obligations attached.** Any
+sentence longer than two words claimed a feature. The 0 percent false-block rate
+on 46 scenarios stands, and measures a different population: every scenario in
+that suite is a piece of work, and real sessions are mostly conversation.
+
+**The gate switched itself off on "continue".** A prompt with no claim in it
+cleared the claims of work in progress. Sixty-four prompts in the corpus were
+bare continuations and 53 of them changed code.
+
+**One prompt in five is four words or fewer.** The intent for those lives in the
+conversation, not the message, so the claim now follows the work: the first
+source edit opens one when the prompt stated none, unless the prompt explicitly
+asked for something that is not a change.
+
+**Agents write files through the shell.** 637 turns changed the repository
+without touching an edit tool. Redirect targets are now read from the command.
+
+After: over-claiming 21 percent, missed work 25 percent and 11 percent on turns
+whose change is visible, 31 of 31 labelled prompts correct, gate and scope
+suites unchanged at zero.
+
+**Friction events:** still none observed, because the layer still has not run
+live for a working day.
+

@@ -66,6 +66,10 @@ python plugin/bin/ep_doctor.py
 
 Claims are inferred from the request with pattern matching, no model call and no added latency. A question or a request to read code yields no claim at all, and the runtime stays out of the way entirely.
 
+A request often states no claim, because one real prompt in five is four words or fewer and "continue" carries its subject in the conversation rather than in the message. So the claim follows the work: the first edit to a source file opens one, and a prompt with no subject of its own leaves an open claim alone rather than clearing it. A prompt that explicitly asked for something else, a question or a review, is never overridden by an edit.
+
+Measured on 3,557 turns from real sessions: obligations attach to 21 percent of turns that changed nothing, down from 51 percent when any sentence longer than two words claimed a feature.
+
 Risk comes from the paths a task touches: anything under auth, payments, migrations, infrastructure or secrets is high risk and carries more obligations. Everything else is scored by size.
 
 | Claim | Low risk | High risk adds |

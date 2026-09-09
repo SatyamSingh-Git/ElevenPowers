@@ -16,11 +16,11 @@ import time
 from pathlib import Path
 
 from . import blindspots
-from .claims import infer
+from .claims import infer, opens_new_task
 from .evidence import Result
 from .ledger import Ledger, Status
 from .obligations import risk_of
-from .parsers import parse
+from .parsers import parse, written_paths
 from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
 from .report import end_report, gate_message, start_banner
@@ -87,7 +87,10 @@ def on_prompt(payload: dict, root: Path) -> int:
     ledger = Ledger.load(root)
     claims = infer(request)
     if not claims:
+        if ledger.claims and not opens_new_task(request):
+            return 0        # a continuation keeps the obligations already open
         ledger.claims = []
+        ledger.request = request
         ledger.save()
         return 0
 
@@ -138,7 +141,10 @@ def on_post_tool(payload: dict, root: Path) -> int:
         target = target_file(payload)
         if target:
             ledger = Ledger.load(root)
-            ledger.saw(target)
+            if tool in EDIT_TOOLS:
+                ledger.observe_edit(target)
+            else:
+                ledger.saw(target)
             ledger.save()
         return 0
     if tool not in COMMAND_TOOLS:
@@ -154,10 +160,13 @@ def on_post_tool(payload: dict, root: Path) -> int:
         return 0
 
     records = parse(command, result.output, result.exit_code, root)
-    if not records:
+    written = written_paths(command) if result.ok else []
+    if not records and not written:
         return 0
 
     ledger = Ledger.load(root)
+    for path in written:
+        ledger.observe_edit(path)
     ledger.add(records)
     ledger.save()
 

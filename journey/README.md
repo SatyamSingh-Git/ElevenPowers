@@ -20,6 +20,7 @@ command in this repository and can be reproduced.
 | [06-intermittency.md](06-intermittency.md) | The flaky-bug gap: a false verification found by reasoning, and the arithmetic that decides how many clean runs are enough |
 | [07-scope.md](07-scope.md) | A guard that was dead code, and where a task's scope actually comes from |
 | [08-wiring.md](08-wiring.md) | Three defects in the layer nobody had measured, found by reading 36,000 real commands |
+| [09-claims.md](09-claims.md) | What real prompts look like, and why the claim has to follow the work |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -84,6 +85,14 @@ of which recorded every failing command as passing, because the host sends no
 exit code and signals failure by returning a different shape. Replaying 241 real
 sessions showed the previous reader getting 0 of 174 failing commands right and
 the new one getting all of them.
+
+**And the switch that turns the whole runtime on was miscalibrated.** The same
+corpus showed 51 percent of real turns getting obligations attached while
+changing nothing, and a no-claim prompt clearing the obligations of work already
+in progress, so the gate switched itself off whenever the user typed "continue".
+One real prompt in five is four words or fewer, which no classifier reading the
+prompt alone can handle. The claim now follows the work: the first source edit
+opens one when the prompt stated none.
 
 ## The one thing worth taking away
 

@@ -13,11 +13,12 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
+from .claims import opens_new_task
 from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
-from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for
+from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for, risk_of
 from .repeat import MIN_RUNS, runs_needed
-from .scope import normalise
+from .scope import is_manifest, is_prose, normalise
 from .surface import Surface, detect
 
 STATE_DIR = ".elevenpowers"
@@ -144,6 +145,27 @@ class Ledger:
         rel = normalise(path, self.root)
         if rel and rel not in self.seen:
             self.seen.append(rel)
+
+    def observe_edit(self, path: str) -> None:
+        """Record an edit, and open a claim if the task never stated one.
+
+        Deriving the claim from what a task does rather than only from what was
+        asked is the same move the scope guard makes, for the same reason: one
+        real prompt in five is four words or fewer, and the intent for those
+        lives in the conversation. A prompt that explicitly asked for something
+        other than a change is left alone, so answering a question does not
+        become a claim because a note was edited along the way.
+        """
+        rel = normalise(path, self.root)
+        self.saw(rel)
+        if self.claims or not self.request or opens_new_task(self.request):
+            return
+        if is_manifest(rel) or is_prose(rel):
+            return
+        self.claims = [Claim.FEATURE_ADDED]
+        self.touched = sorted(set(self.touched) | {rel})
+        self.risk, self.domains = risk_of(self.touched, self.request)
+        self.note("claim opened by an edit", f"{rel} changed with no claim stated")
 
     def note(self, what: str, why: str) -> None:
         self.decisions.append({"what": what, "why": why, "at": time.time()})

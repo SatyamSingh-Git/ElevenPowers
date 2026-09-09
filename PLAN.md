@@ -389,6 +389,26 @@ constructed scenarios written by one person are not real agent behaviour, and no
 agent has yet been run through this at scale.
 
 | P3 | Claim inference picks the right claim at least 90 percent of the time | replay against labeled traces | replay |
+
+**P3, first result (2026-09-09).** Measured on 3,557 turns from 241 real
+sessions via `python -m eval.claims_run`, with ground truth taken from what each
+turn actually did rather than from labels. First run: 51 percent of turns that
+changed nothing had obligations attached, because any sentence longer than two
+words claimed a feature. The 0 percent false-block rate on 46 scenarios was not
+wrong, it was measured on a population containing no conversations, and real
+sessions are mostly conversation.
+
+The same measurement found the gate switching itself off: a prompt with no claim
+in it cleared the claims of work already in progress, so typing "continue" ended
+the task's obligations. One real prompt in five is four words or fewer, so no
+classifier reading the prompt alone can do this job.
+
+The claim now follows the work. A prompt that states no subject leaves an open
+claim alone; the first source edit opens one when the prompt stated none; an
+explicit question or read request is never overridden by an edit. Over-claiming
+fell to 21 percent and missed work to 25 percent, 11 percent on turns whose
+change the runtime can see. Full account in `journey/09-claims.md`, including
+what the proxy cannot separate.
 | P4 | Coarse invalidation is not too pessimistic to live with | dogfood | replay |
 | P5 | Gating improves abstention accuracy on tasks where the right answer is to stop | dev | yes |
 | P6 | Stability obligations halve false "fixed" claims on flaky bugs | micro, flaky subset | yes |

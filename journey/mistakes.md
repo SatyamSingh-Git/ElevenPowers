@@ -155,6 +155,31 @@ records being graded against the wrong command.
 *Changed:* failing and succeeding commands are scored separately. The real
 comparison is 0 of 174 against 174 of 174.
 
+### A scenario suite made entirely of work
+
+The gate scored 0 percent false blocks on 46 scenarios while attaching
+obligations to 51 percent of real turns that changed nothing. Both numbers were
+correct; they measured different populations.
+
+*Cause:* every scenario in the suite was a piece of work. Real sessions are
+mostly conversation, and the suite contained none.
+
+*Changed:* claim inference is measured on 3,557 real turns against what each
+turn actually did, and the labelled set includes continuations, questions,
+pasted context and statements.
+
+### A component that switched itself off on "continue"
+
+Any prompt with no claim in it cleared the claims of work already in progress,
+so the gate stopped watching the moment the user typed the most common thing a
+person types mid-task.
+
+*Cause:* claims were treated as a property of the latest prompt rather than of
+the task.
+
+*Changed:* a prompt that states no subject leaves an open claim alone. Only a
+question or an explicit request for something else clears it.
+
 ## Tooling
 
 ### Silent failures from shell heredocs

@@ -125,6 +125,36 @@ BUILD_WRAPPER = re.compile(
 )
 
 
+# Agents write files through the shell as often as through an edit tool. In a
+# corpus of 36,000 real commands, `cat > file` alone appeared 1,431 times, and
+# 637 turns changed the repository without touching an edit tool at all. A
+# runtime watching only the edit tools is blind to all of them.
+WRITE_TARGET = re.compile(
+    r""" >>?\s*(?P<redirect>[\w./\\-]+)
+       | \btee\s+(?:-a\s+)?(?P<tee>[\w./\\-]+)
+       | \bsed\s+-i(?:\.\w+)?\s+(?:-e\s+)?(?:'[^']*'\s+|"[^"]*"\s+)?(?P<sed>[\w./\\-]+)
+    """,
+    re.VERBOSE,
+)
+
+
+def written_paths(command: str) -> list[str]:
+    """Files this command wrote to, as best as a shell line can be read.
+
+    Deliberately narrow: a target needs a file extension, which rules out `>&2`,
+    process substitution and most of the ways a redirect is not a file. The
+    consequence of a wrong guess here is a path added to the task's touched set,
+    so under-reading is much cheaper than over-reading.
+    """
+    out = []
+    for match in WRITE_TARGET.finditer(command):
+        target = next(g for g in match.groups() if g)
+        if target.startswith("/dev/") or "." not in Path(target).name:
+            continue
+        out.append(target)
+    return out
+
+
 def _bare(command: str) -> str:
     """A command with its setup prefixes removed, so the runner is at the front."""
     text = command.strip()

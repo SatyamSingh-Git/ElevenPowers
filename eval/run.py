@@ -70,6 +70,7 @@ def play(scenario: Scenario) -> Outcome:
                 target = root / act.edit[0]
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text(act.edit[1], encoding="utf-8")
+                ledger.observe_edit(act.edit[0])
                 continue
             records = parse(act.command, act.output, act.exit_code, root)
             for record in records:

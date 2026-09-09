@@ -55,3 +55,15 @@ more useful record.
 | D30 | Anything unreadable is recorded rather than ignored | All three integration defects failed by doing nothing, and nothing is invisible | Stands |
 | D31 | Test fixtures are captured from real sessions, not written | Hand-written payloads encoded the same wrong assumption as the code | Stands. This is the decision that would have prevented all three |
 | D32 | Replay real transcripts instead of running new agents | The host records whether each command failed, so the ground truth needs no labels from the author, and 241 sessions cost nothing to grade | Stands. It cannot measure freshness, which is stated wherever its numbers appear |
+
+## Claims
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D33 | No fallback claim from prompt length | Claiming a feature for any sentence over two words attached obligations to 51 percent of real turns that changed nothing | Reversal of the original rule. Found by measurement |
+| D34 | A prompt that states no subject does not clear an open claim | One real prompt in five is four words or fewer, and a gate that switches off when the user says "continue" is off for much of a session | Stands |
+| D35 | The first source edit opens a claim when the prompt stated none | The same move the scope guard makes: derive from what the task does rather than from what it said. This is what makes short prompts work | Stands |
+| D36 | An explicit non-work prompt is never overridden by an edit | Answering a question must not become a claim because a file was touched along the way | Stands |
+| D37 | Read write targets out of shell commands | 637 turns changed the repository without touching an edit tool. Narrow on purpose: a target needs a file extension | Stands |
+| D38 | Nothing from the session corpus is committed | It is one person's real work across thirty private projects. The labelled prompts are written to match observed shapes, not copied | Stands. The tools read from the machine they run on |
+
