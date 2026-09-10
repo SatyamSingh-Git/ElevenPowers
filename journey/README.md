@@ -24,6 +24,7 @@ command in this repository and can be reproduced.
 | [10-live.md](10-live.md) | 89 real agent runs: the mechanism works, the measurement does not, and what an answer costs |
 | [11-usable.md](11-usable.md) | Two wrong fixes and a right one: the gate stops interrupting work that was already correct |
 | [12-composition.md](12-composition.md) | Assembling the composition baseline the mission is measured against, and mismeasuring with it |
+| [13-instrument.md](13-instrument.md) | Four rounds of building a ruler, the rule that decides whether a task measures anything, and the prior art that was there all along |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -113,6 +114,16 @@ passes, two of which tested ideas that turned out to be wrong, and ended with th
 gate blocking 12 percent of runs instead of 75 by computing the evidence itself
 rather than demanding it.
 
+**Then four rounds of building a ruler, and a withdrawal.** A suite that can
+measure blocked two milestones, and every attempt to write one failed: tasks too
+easy, tasks that were single-function bugs in disguise, tasks so trapped that
+nothing could solve them. The rule that finally emerged is that a task measures
+verification only if running the existing suite would catch the fix an agent
+reaches for first. Looking up how the field does this found that rule already
+named — SWE-bench's FAIL_TO_PASS and PASS_TO_PASS — and, in the same search,
+published prior art on the thesis itself. The novelty claim was withdrawn and the
+instrument now mines real bug fixes out of somebody else's history.
+
 ## The two things worth taking away
 
 ### A measurement is only as good as the population it runs on
@@ -172,8 +183,9 @@ Every figure below comes from a command in this repository.
 | Reading tool results, real commands | 174 of 174 failures, 5,916 of 5,916 successes over 36,034 commands | `python -m eval.replay --all` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
+| Real mined instances | validated from upstream history, no Docker | `python -m eval.mine --repo DIR --out mined.json` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 339 | `python -m pytest tests -q` |
+| Tests | 343 | `python -m pytest tests -q` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
 

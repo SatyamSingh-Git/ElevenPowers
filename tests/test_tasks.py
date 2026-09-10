@@ -16,7 +16,10 @@ import pytest
 from eval.live import build, verify
 from eval.tasks import SUITES
 
-ALL = SUITES["every"]
+# Mined instances are somebody else's repository at a commit: they have no
+# `files` to write and no hidden body, and their equivalent checks were run by
+# eval/mine.py before they became tasks at all.
+ALL = [t for t in SUITES["every"] if not t.source]
 
 
 def run_pytest(target: Path, cwd: Path) -> int:
