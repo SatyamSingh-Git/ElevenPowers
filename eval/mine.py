@@ -41,7 +41,9 @@ from pathlib import Path
 
 NODE = re.compile(r"^(?P<node>\S+::\S+)\s+(?:FAILED|ERROR)|^(?:FAILED|ERROR)\s+(?P<alt>\S+::\S+)",
                   re.MULTILINE)
-TIMEOUT = 300
+# Generous for a suite that runs in seconds, short enough that one hanging
+# commit costs a couple of minutes rather than derailing the run.
+TIMEOUT = 120
 
 
 @dataclass
@@ -98,6 +100,19 @@ def failing_nodes(output: str) -> list[str]:
     return found
 
 
+# A revert's message is not a bug report: it says "this reverts commit <sha>"
+# and names something the agent cannot see. A re-land is the same change as the
+# commit it restores, and counting both would count one bug twice in a paired
+# comparison. Both are what SWE-bench's human validation pass exists to catch.
+REVERT = re.compile(r"^\s*revert\b", re.I)
+
+
+def usable_report(subject: str, seen: set[str]) -> bool:
+    if REVERT.match(subject):
+        return False
+    return subject.strip().lower() not in seen
+
+
 def candidates(repo: Path, limit: int, source_dir: str, test_dir: str) -> list[tuple[str, list[str]]]:
     """Commits that changed source and tests together, newest first.
 
@@ -105,12 +120,16 @@ def candidates(repo: Path, limit: int, source_dir: str, test_dir: str) -> list[t
     bug report. Merges are skipped because their diff is not one change.
     """
     log = git(repo, "log", "--no-merges", "--format=%H", f"-{limit}")
-    out = []
+    out, seen = [], set()
     for sha in log.split():
+        subject = git(repo, "log", "-1", "--format=%s", sha).strip()
+        if not usable_report(subject, seen):
+            continue
         files = git(repo, "show", "--name-only", "--format=", sha).split()
         touched_source = [f for f in files if f.startswith(source_dir)]
         touched_tests = [f for f in files if f.startswith(test_dir) and f.endswith(".py")]
         if touched_source and touched_tests:
+            seen.add(subject.lower())
             out.append((sha, touched_tests))
     return out
 
@@ -180,14 +199,16 @@ def mine(repo: Path, limit: int, want: int, env: dict[str, str],
     for sha, tests in pool:
         if len(found) >= want:
             break
-        with tempfile.TemporaryDirectory() as tmp:
+        # Windows holds file handles open a moment after pytest exits, so a
+        # strict cleanup takes the whole run down on somebody else's temp file.
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             try:
                 instance = validate(repo, sha, tests, env, Path(tmp))
             except (subprocess.SubprocessError, OSError, zipfile.BadZipFile) as exc:
-                print(f"  {sha[:8]}  skipped: {type(exc).__name__}")
+                print(f"  {sha[:8]}  skipped: {type(exc).__name__}", flush=True)
                 continue
         mark = f"kept, {len(instance.f2p)} failing test(s)" if instance else "no usable transition"
-        print(f"  {sha[:8]}  {mark}")
+        print(f"  {sha[:8]}  {mark}", flush=True)
         if instance:
             found.append(instance)
     return found
