@@ -17,6 +17,13 @@ class Task:
     files: dict[str, str]
     hidden: str
     why: str
+    source: dict | None = None
+    """A real repository at a commit, instead of `files` written from scratch.
+
+    Carries repo, base, env, hidden_files and f2p as eval/mine.py produced them.
+    When set, the task is somebody else's code, bug, tests and bug report, which
+    is the only way to escape grading your own assumptions.
+    """
     naive: tuple[str, str] | None = None
     """The fix an agent reaches for first, as (path, replacement body).
 

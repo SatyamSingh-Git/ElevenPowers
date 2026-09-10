@@ -63,7 +63,24 @@ class Run:
     note: str = ""
 
 
+def materialise(task: Task, root: Path) -> None:
+    """A real repository at its base commit, without its history."""
+    import zipfile
+
+    source = task.source
+    bundle = root.parent / f"{task.name}.zip"
+    subprocess.run(["git", "-C", source["repo"], "archive", "--format=zip",
+                    "-o", str(bundle), source["base"]], check=True, capture_output=True)
+    with zipfile.ZipFile(bundle) as archive:
+        archive.extractall(root)
+    bundle.unlink(missing_ok=True)
+
+
 def build(task: Task, root: Path, arm: str) -> None:
+    if task.source:
+        materialise(task, root)
+        _install(task, root, arm)
+        return
     for rel, body in task.files.items():
         path = root / rel
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -91,6 +108,31 @@ def build(task: Task, root: Path, arm: str) -> None:
             commands={"tests": "python -m pytest -q"},
         ))
 
+    _seed_git(root)
+
+
+def _install(task: Task, root: Path, arm: str) -> None:
+    if arm in ("guide", "gate"):
+        settings = root / ".claude" / "settings.json"
+        settings.parent.mkdir(parents=True, exist_ok=True)
+        settings.write_text(
+            json.dumps(hooks_json(f'python "{HOOK.as_posix()}"'), indent=2),
+            encoding="utf-8",
+        )
+        save_config(root, Config(
+            profile="guide" if arm == "guide" else "strict",
+            commands={"tests": _test_command(task)},
+        ))
+    _seed_git(root)
+
+
+def _test_command(task: Task) -> str:
+    env = (task.source or {}).get("env", {})
+    prefix = "".join(f"{k}={v} " for k, v in env.items())
+    return f"{prefix}python -m pytest tests -q" if env else "python -m pytest -q"
+
+
+def _seed_git(root: Path) -> None:
     for args in (["init", "-q"], ["add", "-A"],
                  ["-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "seed"]):
         subprocess.run(["git", *args], cwd=root, capture_output=True)
@@ -137,6 +179,8 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dic
 
 def verify(task: Task, root: Path) -> bool:
     """Run the test the agent never saw."""
+    if task.source:
+        return _verify_real(task, root)
     path = root / "tests" / "test_hidden.py"
     path.write_text(task.hidden, encoding="utf-8")
     try:
@@ -147,6 +191,34 @@ def verify(task: Task, root: Path) -> bool:
     finally:
         path.unlink(missing_ok=True)
     return done.returncode == 0
+
+
+def _verify_real(task: Task, root: Path) -> bool:
+    """Write in the fix commit's tests and run exactly the ones that must pass."""
+    import os
+
+    source = task.source
+    written = []
+    for rel, body in source["hidden_files"].items():
+        path = root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        written.append((path, path.read_text(encoding="utf-8") if path.exists() else None))
+        path.write_text(body, encoding="utf-8")
+    try:
+        done = subprocess.run(
+            [sys.executable, "-m", "pytest", *source["f2p"], "-q", "--no-header"],
+            cwd=root, capture_output=True, text=True, timeout=300,
+            env={**os.environ, **source.get("env", {})},
+        )
+        return done.returncode == 0
+    except subprocess.TimeoutExpired:
+        return False
+    finally:
+        for path, before in written:
+            if before is None:
+                path.unlink(missing_ok=True)
+            else:
+                path.write_text(before, encoding="utf-8")
 
 
 def blocks_recorded(root: Path) -> int:

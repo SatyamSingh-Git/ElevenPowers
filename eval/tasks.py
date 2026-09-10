@@ -849,14 +849,16 @@ def test_every_row_reads_back_unchanged():
     ),
 ]
 
+from .mined import load as _load_mined
 from .tasks_repo import EASY, REPO
 
 SUITES: dict[str, list[Task]] = {
+    "mined": _load_mined(),
     "simple": TASKS,
     "hard": HARD + EASY,
     "repo": REPO,
     "all": TASKS + HARD + EASY,
-    "every": TASKS + HARD + EASY + REPO,
+    "every": TASKS + HARD + EASY + REPO + _load_mined(),
 }
 
 

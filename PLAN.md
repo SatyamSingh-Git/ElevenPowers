@@ -220,13 +220,18 @@ headroom provided some arm can overturn it, and one run says whether it can.
 | | For | Cost |
 |---|---|---|
 | The hand-written suite | fast iteration, per-run metrics such as block rate and cost | ~$2 a pass |
-| **SWE-bench Verified mini**, 50 real instances | any milestone claim, and any comparison against published numbers | Docker, slower, one-time setup |
+| **Mined real bugs** (`eval/mine.py`) | any milestone claim | CPU time only; no Docker, no install |
 
 The second exists because the population problem has bitten this project three
 times: hook payloads, gate scenarios and claim prompts were each written by the
 person whose code they graded, and each agreed with it. Tasks written here have
-now failed the same way twice more. Real instances with F2P and P2P sets already
-attached remove the failure mode rather than guarding against it.
+now failed the same way twice more. Real commits carry their own F2P and P2P
+sets, so the failure mode is removed rather than guarded against.
+
+The SWE-bench harness needs Docker, which is not available here, but the harness
+is not the valuable part. The construction is, and it needs only a repository
+with history, a commit touching source and tests together, and a test runner.
+`click` supplies 3,362 commits, no dependencies, and 1,982 tests in 6.9 seconds.
 
 **Expect small effects.** The published comparator amplifies visible-pass into
 hidden-fail on 1.72 percent of cells for naive retry against 0.11 percent gated,
