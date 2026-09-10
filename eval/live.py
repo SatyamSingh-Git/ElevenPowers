@@ -75,6 +75,28 @@ def materialise(task: Task, root: Path) -> None:
         archive.extractall(root)
     bundle.unlink(missing_ok=True)
 
+    # SWE-bench installs the package into its container; a src-layout project
+    # needs the same thing here. A root conftest is the portable equivalent, and
+    # it matters because an env-var prefix in a command string is valid in a
+    # POSIX shell and a syntax error in cmd.exe, so the declared test command
+    # would have failed on every mined task without it.
+    where = (task.source.get("env") or {}).get("PYTHONPATH")
+    conftest = root / "conftest.py"
+    if where and not conftest.exists():
+        # Both, and for different consumers. sys.path serves this process;
+        # PYTHONPATH serves the subprocesses some tests spawn, which do not
+        # inherit a sys.path edit and fail confusingly when only that is done.
+        conftest.write_text(
+            "import os\n"
+            "import sys\n"
+            "from pathlib import Path\n\n"
+            f"_root = str(Path(__file__).parent / {where!r})\n"
+            "sys.path.insert(0, _root)\n"
+            "os.environ['PYTHONPATH'] = os.pathsep.join(\n"
+            "    p for p in (_root, os.environ.get('PYTHONPATH', '')) if p)\n",
+            encoding="utf-8",
+        )
+
 
 def build(task: Task, root: Path, arm: str) -> None:
     if task.source:
@@ -127,9 +149,12 @@ def _install(task: Task, root: Path, arm: str) -> None:
 
 
 def _test_command(task: Task) -> str:
-    env = (task.source or {}).get("env", {})
-    prefix = "".join(f"{k}={v} " for k, v in env.items())
-    return f"{prefix}python -m pytest tests -q" if env else "python -m pytest -q"
+    """What the project would tell the runtime its tests are.
+
+    Plain, because the path setup lives in the conftest written at materialise
+    time rather than in an env-var prefix that only a POSIX shell understands.
+    """
+    return "python -m pytest tests -q" if task.source else "python -m pytest -q"
 
 
 def _seed_git(root: Path) -> None:
