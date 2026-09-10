@@ -286,6 +286,7 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | P10 | Static test-impact invalidation beats coarse | replay | not started (M3) |
 | P11 | **Composition of best-of-breed pieces beats its best single part** | live | **half-answered**: costs 1.4x vanilla with no measurable benefit, but the test had no headroom |
 | P16 | The layer reduces visible-pass/hidden-fail amplification | live, powered | published comparator: 1.72 percent for naive retry, 0.11 percent gated, over 9,240 cells (arXiv 2607.14890) |
+| P17 | An obligation whose oracle is not the agent changes outcomes where agent-authored evidence does not | live, 12 mined bugs | new. Mutation score over the changed lines is the cheapest such oracle |
 | P12 | Prediction calibration predicts the miss rate | replay | not started |
 | P13 | The runtime reads what the host actually sends | replay | **answered**: 174/174 and 5,916/5,916 |
 | P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | **rejected**: 12 of 16 blocked became 14; the text reached the agent |
@@ -337,6 +338,39 @@ Standing rule unchanged: a novelty claim names the search that failed to find pr
 - **What survives, stated narrowly:** evidence captured by parsing tool output the agent already produced, requiring no cooperation from the agent and no process from the user; claims inferred from ordinary intent rather than declared; and invalidation at test-impact granularity rather than whole-tree, which is planned in M3 and therefore a claim about the future, not the present.
 - **Withdrawn:** runtime-enforced process stages (AgentLTL), typed claims as such (proof-carrying certificates for LLM pipelines), staleness invalidation as a mechanism (Test Impact Analysis is standard industrial practice).
 - **Untested:** that composition of these systems beats its best part. This is P11 and the project's own reason to exist. Claiming it before M2 would be the same error as every number that was true about an invented population.
+
+---
+
+## 11b. The oracle problem, and what it costs this design
+
+The first fair comparison returned a null: twelve mined bugs, identical outcomes
+in both arms, 1.4x the cost. The cause is not a tuning error.
+
+`test_added` accepts a passing test the agent wrote after deciding its fix was
+correct, so the test asserts whatever the fix does. `suite_green` is an
+independent oracle but does not cover the bug, which is why the bug existed. So
+every obligation the gate checks is either satisfied by what the agent does
+anyway, or blind to the thing that is wrong.
+
+The field has measured this. Agent-written test volume does not change outcomes
+(arXiv 2602.07900). LLM assertions encode actual rather than expected behaviour
+(arXiv 2606.18168, 86,156 test patches), with no semantic remedy proposed. And
+TDD inside the agent loop showed no discernible difference in outcome quality in
+Fowler's experiment, with the agent implementing ahead of its own test so that it
+never went red.
+
+**Reproduction-first was the obvious fix and it is not sufficient.** Verifying a
+red-to-green transition does catch implement-ahead, which instructing TDD does
+not. It leaves the oracle in the agent's hands: a reproduction test encoding a
+misunderstanding fails, then passes against a fix that implements the same
+misunderstanding.
+
+**The design consequence.** An obligation is only worth checking if its oracle is
+not the agent. Of the sources available to a runtime watching one agent, mutation
+score over the changed lines is the cheapest: mutate what changed, run the tests
+the agent wrote, and see whether they notice. A test that survives every mutant
+asserts nothing about the change. This is P17, and it is measurable on the same
+twelve bugs. Card: `docs/research/cards/agent-authored-oracles.md`.
 
 ---
 
