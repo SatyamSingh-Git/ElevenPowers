@@ -273,7 +273,7 @@ Ten phases produced four instances of the same failure. These rules exist so the
 
 | ID | Hypothesis | Needs | Status |
 |---|---|---|---|
-| P1 | Evidence gating halves the submit-resolve gap | ~252 paired runs | **unanswered**; noise floor exceeds the effect (M5) |
+| P1 | Evidence gating halves the submit-resolve gap | ~252 paired runs | **first fair answer: no effect.** 12 mined bugs, identical outcomes in both arms, 0 discordant pairs, 1.4x cost. The obligation set is inert because the agent already does what it asks |
 | P2 | The gate does not block work that is already correct | live, ~24 runs | **holds**: 69 percent of runs to 12 percent, after M1 |
 | P3 | Claim inference engages when and only when there is work | replay | 21 percent over-claim, 25 percent missed, on 3,557 real turns |
 | P4 | Coarse invalidation is not too pessimistic to live with | dogfood | unmeasured (M3) |

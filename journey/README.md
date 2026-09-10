@@ -25,6 +25,7 @@ command in this repository and can be reproduced.
 | [11-usable.md](11-usable.md) | Two wrong fixes and a right one: the gate stops interrupting work that was already correct |
 | [12-composition.md](12-composition.md) | Assembling the composition baseline the mission is measured against, and mismeasuring with it |
 | [13-instrument.md](13-instrument.md) | Four rounds of building a ruler, the rule that decides whether a task measures anything, and the prior art that was there all along |
+| [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, and a gate that changed nothing because the agent marks its own homework |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -123,6 +124,15 @@ reaches for first. Looking up how the field does this found that rule already
 named — SWE-bench's FAIL_TO_PASS and PASS_TO_PASS — and, in the same search,
 published prior art on the thesis itself. The novelty claim was withdrawn and the
 instrument now mines real bug fixes out of somebody else's history.
+
+**Then the first fair test, and the gate did nothing.** Twelve bugs mined from
+click's own history, validated the way SWE-bench validates, with nothing in them
+written by this project. Identical outcomes in both arms on all twelve, at 1.4
+times the cost. The reason is the useful part: the gate asks for a passing test
+and a green suite, the agent produces both unprompted, and it writes its test
+after deciding the fix is right, so the test agrees with whatever the fix does.
+Self-confirming review is weakness class L in this project's own research, and it
+had been built into the gate.
 
 ## The two things worth taking away
 
