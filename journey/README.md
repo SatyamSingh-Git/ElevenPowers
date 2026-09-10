@@ -25,7 +25,7 @@ command in this repository and can be reproduced.
 | [11-usable.md](11-usable.md) | Two wrong fixes and a right one: the gate stops interrupting work that was already correct |
 | [12-composition.md](12-composition.md) | Assembling the composition baseline the mission is measured against, and mismeasuring with it |
 | [13-instrument.md](13-instrument.md) | Four rounds of building a ruler, the rule that decides whether a task measures anything, and the prior art that was there all along |
-| [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, and a gate that changed nothing because the agent marks its own homework |
+| [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, a gate that changed nothing, and why the obvious fix is theatre |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -132,7 +132,11 @@ times the cost. The reason is the useful part: the gate asks for a passing test
 and a green suite, the agent produces both unprompted, and it writes its test
 after deciding the fix is right, so the test agrees with whatever the fix does.
 Self-confirming review is weakness class L in this project's own research, and it
-had been built into the gate.
+had been built into the gate. The obvious fix — demand a test that fails first —
+turns out to be published and measured: TDD inside the agent loop shows no
+discernible difference, because the agent implements ahead of its own test. The
+real conclusion is structural, and grading every obligation by whose word it
+takes shows the whole null at a glance.
 
 ## The two things worth taking away
 

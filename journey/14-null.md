@@ -74,9 +74,76 @@ ask, and a specific defect to fix rather than a number to feel good about. The
 null is only trustworthy because the bugs came from somebody else, which is the
 whole argument for the instrument.
 
+## The obvious fix, and why it is wrong
+
+Demand a test that fails first. An agent cannot satisfy that by writing something
+agreeable afterwards, because the evidence is a transition and the red half has
+to exist first. It seemed obvious enough to start implementing.
+
+Researching it first turned up three things.
+
+**The null is already published.** *Rethinking the Value of Agent-Generated
+Tests* (arXiv 2602.07900): "prompt-induced changes in the volume of agent-written
+tests do not significantly change final outcomes" and they "reshape process and
+cost more than final task outcomes". That is this result, at larger scale, by
+someone else.
+
+**The mechanism has a name and no cure.** *All Smoke, No Alarm* (arXiv
+2606.18168), over 86,156 test patches: LLM assertions "frequently encode actual
+program behavior rather than expected behavior, turning bugs into passing tests".
+Their remedy is syntactic, and they say what it cannot do: confirming an equality
+check exists is not confirming it checks the right property.
+
+**The obvious fix was run and it is theatre.** Fowler's team compared TDD inside
+the agent loop against no TDD: "there was no clearly discernable difference", and
+"more than once Opus ranked the non-TDD workflow solutions slightly higher". The
+agent "implements ahead of the test" so it "passed immediately" and never went
+red; tests "checked the implementation's output against itself"; an active bug
+was "enshrined by a test". Her conclusion: "I have stopped telling my coding
+agents to write tests first."
+
+One difference this project can claim: she tested *instructing* TDD, and this
+runtime would *verify* that a red-to-green transition actually happened. That
+catches implement-ahead instead of trusting it.
+
+It does not catch the failure that matters. A reproduction test encoding a
+misunderstanding fails against current code and passes against a fix that
+implements the same misunderstanding. Red to green, bug still there — which is
+the shape of all seven tasks that failed here.
+
+## The conclusion, which is structural
+
+**No obligation over agent-authored evidence escapes the oracle problem.** The
+agent is author and examiner. Reproduction improves the process evidence and
+leaves the oracle untouched.
+
+Grading the obligation table by whose word it takes should have been done before
+any of this was built:
+
+| Obligation | Oracle | Independent? |
+|---|---|---|
+| `suite_green` | the project's tests | yes, but blind to the bug by definition |
+| `build_ok`, `typecheck_ok` | the compiler | yes, and narrow |
+| `stable` | this runtime's repeat runner | yes, and only for nondeterminism |
+| `test_added` | a test the agent wrote after deciding it was done | **no** |
+| `reproduced` | a test the agent wrote, in verified order | **no** |
+| `runtime_ok` | the agent reading its own output | **no** |
+
+Two of the four in the default set are the agent's own word, and the two that are
+not are blind to the bug. **The whole null is visible in that table**, and the
+table could have been written in week one.
+
 ## What it does not say
 
-It does not say gating is useless. It says **this obligation set is inert on
-these bugs**, because everything it asks for is something the agent already does.
-Whether a reproduction-first obligation changes that is the next measurement, on
-the same twelve tasks, where a real effect can now show itself.
+It does not say gating is useless. It says this obligation set is inert on these
+bugs, for a reason that is now understood rather than guessed at.
+
+The next measurement is an oracle that is not the agent. Mutation score over the
+changed lines is the cheapest one a runtime watching a single agent can reach:
+mutate what changed, run the tests the agent wrote, and see whether they notice.
+It is also what Fowler recommends in place of agent-side TDD. That is P17, on the
+same twelve bugs, where an effect can now show itself.
+
+And if that fails too, the honest finding is that a layer watching one agent
+cannot verify that agent's work, and this becomes a reporting tool rather than a
+gate. The plan says so now, before the measurement.

@@ -1,4 +1,18 @@
-# Master Plan v0.4
+# Master Plan v0.5
+
+2026-09-10. Amends v0.4 after the first fair comparison returned a null and the
+literature explained why. The change is to the thesis itself, not to a policy.
+
+| What v0.4 assumed | What twelve real bugs showed | v0.5 |
+|---|---|---|
+| Computing completion from evidence is the hard part | The evidence can be written by the agent being judged, so computing over it changes nothing. Identical outcomes in both arms, 1.4x cost | The thesis gains a second clause: the oracle must not be the agent (§2) |
+| Obligations differ by what they require | They differ by **whose word they take**, which v0.4 never asked | Every obligation is graded by its oracle (§5b), and two of the four in the default set turn out to be the agent's own |
+| Reproduction-first is the fix for self-confirmation | Fowler measured no difference; the agent implements ahead so the test never goes red, and a reproduction encoding a misunderstanding still goes red to green | Kept as process evidence, demoted as a correctness claim (§11b) |
+| M3 repository model comes next | An inert gate does not benefit from finer invalidation | M2.5 independent oracles comes first (§6) |
+
+---
+
+## v0.4 preamble, retained
 
 2026-09-09. Supersedes v0.3, which superseded v0.2 (research-grounded but lab-shaped) and v0.1 (written from memory). The research in `docs/research/` is unchanged and still governs; v0.4 is the first plan that actually obeys it.
 
@@ -36,9 +50,11 @@ The closest analogue is `make`. `make` does not build software; it knows what de
 
 ## 2. The thesis
 
-> **Completion should be computed from dependency-tracked evidence, not asserted by the model.**
+> **Completion should be computed from dependency-tracked evidence, not asserted by the model — and the evidence is worth nothing unless its oracle is somebody other than the model.**
 
-Unchanged. Everything is machinery in service of it, and each piece must answer: if this vanished, would a developer notice their agent got worse?
+The second clause is new, and it was bought with a null result on twelve real bugs. v0.4's thesis is necessary and was not sufficient: a runtime can compute faultlessly over evidence the agent authored to agree with itself, and that is what this one did, twelve times out of twelve.
+
+Everything is machinery in service of it, and each piece must answer two questions now: if this vanished, would a developer notice their agent got worse — and whose word does it take?
 
 Ten phases add one corollary, learned the hard way:
 
@@ -119,6 +135,32 @@ So the gate was solving it backwards. Blocking to make an agent run a command co
 
 ---
 
+## 5b. Every obligation, graded by whose word it takes
+
+The axis v0.4 never asked about. An obligation is worth checking only if the
+thing that decides pass or fail is not the agent being judged.
+
+| Obligation | Oracle | Independent? | What it is actually worth |
+|---|---|---|---|
+| `suite_green` | the project's existing tests | **yes** | real, but blind to the new bug by definition: if the suite covered it, it would not be a bug |
+| `build_ok`, `typecheck_ok` | the compiler | **yes** | real, and narrow |
+| `stable` | this runtime's repeat runner | **yes** | real, and only applies to nondeterminism |
+| `test_added` | a test the agent wrote after deciding it was done | **no** | evidence that a test exists, nothing more |
+| `reproduced` | a test the agent wrote, in a verified red-to-green order | **no** | process evidence: it did verify something. Not a correctness oracle |
+| `runtime_ok` | the agent's reading of its own output | **no** | the weakest thing in the table |
+| **mutation score over changed lines** | the code itself | **yes** | proposed. A test that survives every mutant asserts nothing about the change |
+
+Two of the four obligations in the default `bug_fixed` set are the agent's own
+word, and the two that are not are blind to the bug. That is the whole
+explanation of the null, and it was visible in this table before the measurement,
+had the table existed.
+
+**Standing rule from here.** A new obligation must name its oracle. If the answer
+is "the agent", it may be recorded and reported, and it may not be the reason a
+task is called done.
+
+---
+
 ## 6. Milestones
 
 Each has an exit criterion that is a command and a number. **The plan is followed by taking the next unmet exit criterion.** No milestone starts before its predecessor exits, except where marked parallel.
@@ -168,6 +210,22 @@ Full account in `journey/12-composition.md`.
 
 **Blocked on:** a task suite that discriminates, which is now blocking M2 and M5
 both, and is therefore the next thing built.
+
+### M2.5 — An oracle that is not the agent
+
+*The null said the gate is inert because everything it checks is either the
+agent's own word or blind to the bug. Finer invalidation of worthless evidence is
+worth nothing, so this comes before M3.*
+
+Mutation score over the changed lines: mutate what the agent changed, run the
+tests it wrote, and see whether they notice. Cheap on a repository whose suite
+runs in seconds, computable without the agent's cooperation, and independent of
+its opinion. This is what Fowler recommends in place of agent-side TDD.
+
+**Exit:** P17 measured on the same twelve mined bugs. Either the obligation
+changes outcomes where agent-authored evidence did not, or the honest finding is
+that a runtime watching one agent cannot reach an oracle strong enough to matter,
+and the product's claim shrinks to what it can actually support.
 
 ### M3 — The repository model
 
@@ -377,7 +435,8 @@ twelve bugs. Card: `docs/research/cards/agent-authored-oracles.md`.
 ## 12. What would falsify the project
 
 - **P11 fails and M4 does not recover it.** If the stack does not beat its parts and selection does not beat the stack, composition was not the opportunity.
-- **P1 fails when properly powered.** The thesis is wrong and no amount of the rest saves it.
+- **P1 already failed once, on the obligation set of the day.** Twelve mined bugs, zero discordant pairs. That falsifies the v0.4 obligation set rather than the thesis, and the distinction is only honest if the replacement is measured on the same tasks rather than argued for.
+- **P17 fails as well.** If an independent oracle a runtime can actually reach does not change outcomes either, then a layer watching one agent cannot verify that agent's work, and the product is a reporting tool rather than a gate. That is a real possibility and the plan should say so before the measurement rather than after.
 - **P2 cannot be fixed.** If guidance does not cut blocking, the gate is a tax on correct work and belongs behind `strict` rather than on by default.
 
 If P1 holds and P2 is fixed, the product exists. If P1 holds and P2 does not, the idea is right and the policy is wrong, which is tuning. The order in §6 puts the cheap, falsifying measurements first for that reason.
