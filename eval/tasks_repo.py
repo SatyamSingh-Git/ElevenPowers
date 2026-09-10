@@ -10,8 +10,22 @@ lives in another, or the obvious fix repairs the reported case and breaks a
 second consumer the visible suite does not cover. Both are the ordinary shape of
 a bug in a real repository, and both are what verification is supposed to catch.
 
-The three rules from the simple suites still hold: reported by symptom, visible
-suite green before and after, hidden test decides.
+The rule that decides whether a task is worth anything, learned over four
+calibration rounds and then found to be the field's:
+
+    a task measures verification only if running the existing suite would catch
+    the fix an agent reaches for first.
+
+Where it would not, no amount of evidence-gathering helps and the task measures
+raw capability instead. Every task here whose naive fix left the visible suite
+green was failed identically by a weak and a strong model; every task whose
+naive fix turned it red was failed by the weak model and resolved by the strong
+one.
+
+This is SWE-bench's structure under other names: their FAIL_TO_PASS is the
+hidden test, their PASS_TO_PASS is the visible suite a naive fix must break.
+Each task therefore records the naive fix as data, so the property is a test
+rather than a good intention.
 """
 
 from __future__ import annotations
@@ -76,6 +90,7 @@ def test_many_rows_do_not_drift():
     ),
     Task(
         name="credit_sign",
+        naive=('src/money.py', '"""Formatting amounts for display."""\n\n\ndef format_money(cents):\n    """`cents` as a currency string."""\n    return f"${cents / 100:.2f}"\n'),
         prompt=(
             "Credit notes on an invoice are printed as though they were charges, so "
             "an invoice with a credit reads as costing more than it does. "
@@ -140,6 +155,7 @@ def test_charges_are_unchanged_on_both():
     ),
     Task(
         name="stale_admin",
+        naive=('src/store.py', '"""User lookups."""\n\n\ndef get_user(db, uid):\n    return db.fetch(uid)\n\n\ndef save_user(db, uid, record):\n    db.write(uid, record)\n\n\ndef reset():\n    pass\n'),
         prompt=(
             "Edits made in the admin page do not show up on the site until the "
             "process is restarted. Please fix it."
@@ -192,6 +208,14 @@ def test_writes_a_user():
     db = FakeDB()
     save_user(db, "u1", {"name": "grace"})
     assert db.rows["u1"]["name"] == "grace"
+
+
+def test_repeated_reads_hit_the_database_once():
+    reset()
+    db = FakeDB()
+    get_user(db, "u1")
+    get_user(db, "u1")
+    assert db.fetches == 1
 ''',
         },
         hidden='''from src.store import get_user, reset, save_user
@@ -218,6 +242,7 @@ def test_repeated_reads_still_avoid_the_database():
     ),
     Task(
         name="dropped_rows",
+        naive=('src/chunk.py', '"""Splitting a sequence into consecutive batches."""\n\n\ndef batches(items, size):\n    return [items[i:i + size] for i in range(0, len(items), size)]\n'),
         prompt=(
             "Every CSV export is missing its last few rows, unless the number of "
             "rows happens to divide evenly by the batch size. Please fix it."
@@ -229,6 +254,15 @@ def test_repeated_reads_still_avoid_the_database():
 def batches(items, size):
     """`items` in consecutive batches of at most `size`, covering all of them."""
     return [items[i:i + size] for i in range(0, len(items) - size + 1, size)]
+''',
+            "src/pager.py": '''"""Page counting for the results footer."""
+
+from src.chunk import batches
+
+
+def page_count(items, size):
+    """How many full pages of `size` items there are."""
+    return len(batches(items, size))
 ''',
             "src/export.py": '''"""Writing rows out in batches."""
 
@@ -244,6 +278,7 @@ def export(rows, size=5):
 ''',
             "tests/test_export.py": '''from src.chunk import batches
 from src.export import export
+from src.pager import page_count
 
 
 def test_exports_an_exact_multiple():
@@ -252,10 +287,19 @@ def test_exports_an_exact_multiple():
 
 def test_batches_an_exact_multiple():
     assert batches([1, 2, 3, 4, 5, 6], 3) == [[1, 2, 3], [4, 5, 6]]
+
+
+def test_page_count():
+    assert page_count(list(range(10)), 5) == 2
+
+
+def test_page_count_ignores_a_partial_page():
+    assert page_count(list(range(7)), 5) == 1
 ''',
         },
         hidden='''from src.chunk import batches
 from src.export import export
+from src.pager import page_count
 
 
 def test_every_row_is_exported():
@@ -268,78 +312,79 @@ def test_the_final_short_batch_is_kept():
 
 def test_fewer_items_than_one_batch():
     assert batches([1, 2], 5) == [[1, 2]]
+
+
+def test_the_footer_still_counts_only_full_pages():
+    assert page_count(list(range(7)), 5) == 1
+    assert page_count(list(range(10)), 5) == 2
 ''',
-        why="the symptom is in the export and the cause is the range bound in the batching helper",
+        why="fixing the shared helper makes the page counter, which wanted full pages only, start counting the short one",
     ),
     Task(
-        name="tax_mismatch",
+        name="percent_display",
+        naive=('src/percent.py', '"""Formatting a ratio for display."""\n\n\ndef format_ratio(ratio):\n    return f"{ratio * 100:.0f}%"\n'),
         prompt=(
-            "On orders with several lines, the total on the summary page and the "
-            "total on the invoice disagree by a penny or two. Please fix it."
+            "The dashboard is showing conversion rates as 0.12 instead of 12%. "
+            "Please fix it."
         ),
         files={
-            "src/tax.py": '''"""Value added tax.
+            "src/percent.py": '''"""Formatting a ratio for display.
 
-Tax is charged on the order total, not on each line separately.
-"""
-
-RATE = 0.2
+Returns the ratio itself, to two decimal places, as a string.
+\"\"\"
 
 
-def with_tax(pence):
-    """`pence` plus tax, to the nearest penny."""
-    return round(pence * (1 + RATE))
+def format_ratio(ratio):
+    """`ratio` as a string, to two decimal places."""
+    return f"{ratio:.2f}"
 ''',
-            "src/invoice.py": '''"""The invoice total."""
+            "src/dashboard.py": '''"""The dashboard shows rates as a percentage."""
 
-from src.tax import with_tax
+from src.percent import format_ratio
 
 
-def invoice_total(lines):
-    """The order total including tax, in pence."""
-    return with_tax(sum(lines))
+def conversion(rate):
+    return f"conversion {format_ratio(rate)}"
 ''',
-            "src/summary.py": '''"""The summary page total."""
+            "src/export.py": '''"""The CSV export carries the raw ratio, which downstream tools parse."""
 
-from src.tax import with_tax
+from src.percent import format_ratio
 
 
-def summary_total(lines):
-    """The order total including tax, in pence."""
-    return sum(with_tax(line) for line in lines)
+def row(name, rate):
+    return f"{name},{format_ratio(rate)}"
 ''',
-            "tests/test_totals.py": '''from src.invoice import invoice_total
-from src.summary import summary_total
-from src.tax import with_tax
+            "tests/test_display.py": '''from src.dashboard import conversion
+from src.export import row
 
 
-def test_the_two_totals_agree():
-    assert invoice_total([100, 200]) == summary_total([100, 200])
+def test_export_row():
+    assert row("signups", 0.12) == "signups,0.12"
 
 
-def test_tax_on_one_amount():
-    assert with_tax(100) == 120
+def test_dashboard_renders_something():
+    assert conversion(0.12).startswith("conversion ")
 ''',
         },
-        hidden='''from src.invoice import invoice_total
-from src.summary import summary_total
-from src.tax import with_tax
+        hidden='''from src.dashboard import conversion
+from src.export import row
+from src.percent import format_ratio
 
 
-def test_the_totals_agree_on_awkward_orders():
-    for lines in ([99, 99, 99], [33, 33, 33, 1], [7, 7, 7, 7, 7], [1] * 11):
-        assert summary_total(lines) == invoice_total(lines)
+def test_the_dashboard_shows_a_percentage():
+    assert conversion(0.12) == "conversion 12%"
+    assert conversion(0.5) == "conversion 50%"
 
 
-def test_tax_is_charged_on_the_order_total():
-    assert summary_total([99, 99, 99]) == with_tax(297)
+def test_the_export_still_carries_the_raw_ratio():
+    assert row("signups", 0.12) == "signups,0.12"
+    assert row("signups", 0.5) == "signups,0.50"
 
 
-def test_tax_on_a_single_amount_is_unchanged():
-    assert with_tax(100) == 120
-    assert with_tax(99) == 119
+def test_the_shared_helper_is_unchanged():
+    assert format_ratio(0.12) == "0.12"
 ''',
-        why="both pages call the same helper; the summary applies it per line when it belongs on the total",
+        why="the tempting fix is to make the shared formatter multiply by 100, which corrupts the export",
     ),
     Task(
         name="search_misses",
@@ -400,10 +445,14 @@ def test_still_case_insensitive():
     assert find(INDEX, "grace hopper") == "Grace Hopper"
 
 
+def test_a_query_without_the_space_still_finds_it():
+    assert find(INDEX, "adalovelace") == "Ada Lovelace"
+
+
 def test_the_index_form_is_unchanged():
     assert key("Ada Lovelace") == "adalovelace"
 ''',
-        why="the index normalises spacing and the search does not, so the two disagree",
+        why="the tempting fix is to stop ignoring spacing in the index, which breaks lookups that omit it",
     ),
 ]
 

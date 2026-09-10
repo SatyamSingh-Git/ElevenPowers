@@ -56,3 +56,23 @@ def test_every_task_reports_a_symptom_rather_than_a_fix(seeded):
     lowered = task.prompt.lower()
     assert not any(word in lowered for word in ("weekday", "sorted(", "//", "kwargs")), \
         f"{task.name} gives away the diagnosis"
+
+
+# --- the rule that decides whether a task can measure anything ---------------
+
+REPO_TASKS = [t for t in SUITES["repo"] if t.naive]
+
+
+@pytest.mark.parametrize("task", REPO_TASKS, ids=[t.name for t in REPO_TASKS])
+def test_the_naive_fix_turns_the_visible_suite_red(task, tmp_path):
+    """SWE-bench calls this PASS_TO_PASS: the tests a wrong fix must break.
+
+    A task whose naive fix leaves the suite green cannot measure verification,
+    because running the suite would not have helped. Both a weak and a strong
+    model failed every such task identically.
+    """
+    build(task, tmp_path, arm="vanilla")
+    assert run_pytest(tmp_path / "tests", tmp_path) == 0, "the suite starts green"
+    rel, body = task.naive
+    (tmp_path / rel).write_text(body, encoding="utf-8")
+    assert run_pytest(tmp_path / "tests", tmp_path) != 0, task.why

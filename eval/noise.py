@@ -86,11 +86,14 @@ def report(first: dict[str, bool], second: dict[str, bool], arm: str) -> None:
 def calibrate(path: Path, arm: str = "vanilla", low: float = 0.3, high: float = 0.7) -> None:
     """Per-task resolve rate over repeated plain passes, and what each is worth.
 
-    A task the baseline always resolves cannot show an improvement, and one it
-    never resolves can only be overturned by an arm that is genuinely better at
-    the underlying work. Neither is useless, but a suite made mostly of the first
-    kind cannot measure anything, which is what the first sixteen tasks turned
-    out to be.
+    Only one band is useless. A task the baseline always resolves cannot show an
+    improvement, ever. A task it never resolves is prime headroom: if an arm can
+    overturn it that is exactly the evidence being sought, and if no arm can, it
+    costs one run to find out.
+
+    Three passes cannot classify a task on their own. One of these moved from 67
+    percent to 0 between two calibrations of identical settings, so the rates
+    here are estimates and the band matters more than the number.
     """
     runs = json.loads(path.read_text(encoding="utf-8"))
     by_task: dict[str, list[bool]] = {}
@@ -100,24 +103,23 @@ def calibrate(path: Path, arm: str = "vanilla", low: float = 0.3, high: float = 
 
     rows = sorted(((t, sum(r) / len(r), len(r)) for t, r in by_task.items()),
                   key=lambda x: x[1])
-    useful = [t for t, rate, _ in rows if low <= rate <= high]
+    useful = [t for t, rate, _ in rows if rate <= high]
     ceiling = [t for t, rate, _ in rows if rate > high]
-    floor = [t for t, rate, _ in rows if rate < low]
 
     print(f"{'task':<18}{'resolved':>10}{'passes':>8}  verdict")
     for task, rate, n in rows:
-        verdict = ("discriminates" if low <= rate <= high else
-                   "no headroom" if rate > high else "rarely or never resolved")
+        verdict = ("no headroom, cannot show an improvement" if rate > high else
+                   "headroom: an arm has to overturn it" if rate < low else
+                   "discriminates")
         print(f"{task:<18}{rate:>9.0%}{n:>8}  {verdict}")
     print()
-    print(f"discriminating   {len(useful):>2} of {len(rows)}")
-    print(f"no headroom      {len(ceiling):>2}   {', '.join(ceiling) or '-'}")
-    print(f"rarely resolved  {len(floor):>2}   {', '.join(floor) or '-'}")
+    print(f"carries information  {len(useful):>2} of {len(rows)}")
+    print(f"no headroom          {len(ceiling):>2}   {', '.join(ceiling) or '-'}")
     if rows:
         share = len(useful) / len(rows)
         print()
-        print(f"{share:.0%} of this suite carries information."
-              f"  {'usable' if share >= 0.5 else 'not usable as a measuring instrument yet'}")
+        print(f"{share:.0%} of this suite can move."
+              f"  {'usable' if share >= 0.75 else 'not usable as a measuring instrument yet'}")
 
 
 def main(argv: list[str]) -> int:

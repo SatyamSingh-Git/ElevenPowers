@@ -193,16 +193,46 @@ Labels come from the evaluation harness, not from prose. The feature set starts 
 
 *The thesis, properly powered.*
 
-**Its prerequisite is now the critical path.** A task suite where most tasks
-discriminate blocks M2's exit as well as this one. Eleven of the current sixteen
-are resolved by a plain agent every time, one is resolved by nothing, and four
-are unstable, so a single pass offers at most one task of headroom.
+**Its prerequisite is the critical path.** A suite that can measure blocks M2's
+exit as well as this one, and four rounds of calibration produced a design rule
+that turns out to be the field's, arrived at the slow way.
 
-Target: most tasks resolved by a plain agent between 30 and 70 percent of the
-time, verified by repeated plain passes before any arm is compared against them.
-Difficulty has to come from locating the problem and from collateral damage
-rather than from edge cases, because two suites of trickier single-function bugs
-scored identically.
+**The rule.** A task measures verification only if **running the existing suite
+would catch the fix an agent reaches for first**. Where it would not, no amount
+of evidence-gathering helps and the task measures raw capability instead: every
+task whose naive fix left the visible suite green was failed identically by a
+weak and a strong model, and every task whose naive fix turned it red was failed
+by the weak model and resolved by the strong one.
+
+This is SWE-bench's structure under different names. Their FAIL_TO_PASS is the
+hidden test; their PASS_TO_PASS is the visible suite that must stay green, which
+is exactly what a naive fix has to break. Their validation repeats each instance
+to exclude flaky ones, which is the calibration built here. The vocabulary is
+adopted rather than reinvented from here on.
+
+**Chasing a 30 to 70 percent band was the wrong target.** These outcomes are not
+coin flips: for a given model a trap is either seen or it is not, consistently.
+Only the ceiling band is useless. A task the baseline never resolves is prime
+headroom provided some arm can overturn it, and one run says whether it can.
+
+**Two instruments, because one is not enough.**
+
+| | For | Cost |
+|---|---|---|
+| The hand-written suite | fast iteration, per-run metrics such as block rate and cost | ~$2 a pass |
+| **SWE-bench Verified mini**, 50 real instances | any milestone claim, and any comparison against published numbers | Docker, slower, one-time setup |
+
+The second exists because the population problem has bitten this project three
+times: hook payloads, gate scenarios and claim prompts were each written by the
+person whose code they graded, and each agreed with it. Tasks written here have
+now failed the same way twice more. Real instances with F2P and P2P sets already
+attached remove the failure mode rather than guarding against it.
+
+**Expect small effects.** The published comparator amplifies visible-pass into
+hidden-fail on 1.72 percent of cells for naive retry against 0.11 percent gated,
+and needed 9,240 cells for a confidence interval excluding zero. That
+corroborates the 252-runs-per-comparison estimate and argues for engineering the
+task suite to raise the base rate rather than hoping for a large effect.
 
 **Exit:** ~252 paired runs per comparison, McNemar p reported with the ceiling stated up front. A result either way is a result; an underpowered one is not.
 
@@ -250,6 +280,7 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | P9 | Obligation-directed work beats template-directed work | live | not started (M4) |
 | P10 | Static test-impact invalidation beats coarse | replay | not started (M3) |
 | P11 | **Composition of best-of-breed pieces beats its best single part** | live | **half-answered**: costs 1.4x vanilla with no measurable benefit, but the test had no headroom |
+| P16 | The layer reduces visible-pass/hidden-fail amplification | live, powered | published comparator: 1.72 percent for naive retry, 0.11 percent gated, over 9,240 cells (arXiv 2607.14890) |
 | P12 | Prediction calibration predicts the miss rate | replay | not started |
 | P13 | The runtime reads what the host actually sends | replay | **answered**: 174/174 and 5,916/5,916 |
 | P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | **rejected**: 12 of 16 blocked became 14; the text reached the agent |
@@ -297,7 +328,8 @@ Ten phases produced four instances of the same failure. These rules exist so the
 
 Standing rule unchanged: a novelty claim names the search that failed to find prior art.
 
-- **Bounded and standing:** obligations derived from inferred intent, discharged by automatically captured evidence, invalidated by repository change, gating completion of a general coding agent, was not found among the fourteen systems surveyed. Nearest instances are gstack's single-command working-tree fingerprint and Test Impact Analysis applied to test selection.
+- **Withdrawn, 2026-09-10.** "Obligations derived from inferred intent, discharged by evidence bound to repository state, invalidated by change, gating completion" is prior art. Proof-or-Stop (arXiv 2607.14890) publishes the same spine — claim, evidence, gate, transition — binds evidence to a `materialHash` over the tracked source tree, and rejects it "the instant the source tree changes". It also names the failure this project was built around, an unattended agent retrying until a visible check turns green. Found while researching how to build a task suite, which is how prior art is usually found. Card in `docs/research/cards/proof-or-stop.md`.
+- **What survives, stated narrowly:** evidence captured by parsing tool output the agent already produced, requiring no cooperation from the agent and no process from the user; claims inferred from ordinary intent rather than declared; and invalidation at test-impact granularity rather than whole-tree, which is planned in M3 and therefore a claim about the future, not the present.
 - **Withdrawn:** runtime-enforced process stages (AgentLTL), typed claims as such (proof-carrying certificates for LLM pipelines), staleness invalidation as a mechanism (Test Impact Analysis is standard industrial practice).
 - **Untested:** that composition of these systems beats its best part. This is P11 and the project's own reason to exist. Claiming it before M2 would be the same error as every number that was true about an invented population.
 
