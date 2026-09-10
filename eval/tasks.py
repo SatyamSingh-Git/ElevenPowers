@@ -19,16 +19,7 @@ between what a function does and what its happy-path test covers.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-
-
-@dataclass(frozen=True)
-class Task:
-    name: str
-    prompt: str
-    files: dict[str, str]
-    hidden: str
-    why: str
+from .task import Task
 
 
 TASKS: list[Task] = [
@@ -858,15 +849,19 @@ def test_every_row_reads_back_unchanged():
     ),
 ]
 
+from .tasks_repo import EASY, REPO
+
 SUITES: dict[str, list[Task]] = {
     "simple": TASKS,
-    "hard": HARD,
-    "all": TASKS + HARD,
+    "hard": HARD + EASY,
+    "repo": REPO,
+    "all": TASKS + HARD + EASY,
+    "every": TASKS + HARD + EASY + REPO,
 }
 
 
 def by_name(name: str) -> Task:
-    for task in SUITES["all"]:
+    for task in SUITES["every"]:
         if task.name == name:
             return task
     raise KeyError(name)

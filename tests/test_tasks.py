@@ -16,7 +16,7 @@ import pytest
 from eval.live import build, verify
 from eval.tasks import SUITES
 
-ALL = SUITES["all"]
+ALL = SUITES["every"]
 
 
 def run_pytest(target: Path, cwd: Path) -> int:

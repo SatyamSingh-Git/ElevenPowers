@@ -199,7 +199,7 @@ def report(runs: list[Run]) -> None:
     present = [a for a in ARMS if any(r.arm == a for r in runs)]
     print()
     print(f"{'task':<16}" + "".join(f"{a:<22}" for a in present))
-    for task in SUITES["all"]:
+    for task in SUITES["every"]:
         cells = []
         for arm in present:
             rows = [r for r in runs if r.task == task.name and r.arm == arm]
