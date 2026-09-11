@@ -157,13 +157,53 @@ Added by this audit:
 
 ## 7. Execution: five phases, three tracks
 
+**How this plan is followed.** Take the next unmet exit criterion. Within a
+phase, take the cheapest experiment that could falsify the thing being claimed.
+That rule is carried forward from v0.4, where it kept three failed attempts at
+M1 pointed at the same target instead of drifting to something more interesting
+after the first one did not work.
+
+**The smallest useful slice, always.** v0.3 replaced a three-week harness with a
+seven-day vertical slice and that was the correction that made the project real.
+v0.7 is a larger design than v0.2, which was rejected for being a laboratory, and
+the difference has to be enforced rather than asserted: **every phase ships
+something runnable before it ships something complete.** Phase A's first slice is
+the sixteen audit probes promoted from a script to `tests/test_audit_probes.py`,
+which takes an afternoon and makes every later repair verifiable.
+
+**The shipped tool keeps working meanwhile.** The plugin installs, captures
+evidence, discharges declared commands and reports. Phase A changes what its
+numbers are worth, not whether it runs. `README.md` says plainly that published
+figures are provisional until §4 is closed.
+
+**Compute envelopes, because this direction is not cheap.** Measured rates: a
+mined bug costs about $0.25 on the small model and roughly twice that on the
+larger one; a synthetic task about $0.06. No experiment starts without a stated
+envelope and a stop condition.
+
+| Phase | Envelope | Stop condition |
+|---|---|---|
+| A | under $5 — almost all repair, tests and fixtures | probes green, instrument validated |
+| B | $20–40 — a pinned baseline over several repositories | a reproducible score with an interval |
+| C | $40–80 — pools at N = 1, 4, 8 over the development corpus | coverage, selected success and regret reported |
+| D | $80+, decided by C's curve | a preregistered held-out comparison |
+| E | not budgeted until D returns something | — |
+
+If a phase exceeds its envelope without reaching its stop condition, that is a
+result about the design, not a reason to spend more.
+
 Tracks run in parallel where prerequisites allow: **evaluation infrastructure**, **candidate generation**, **candidate assessment**. Oracle diagnostics can proceed on frozen candidates while the harness is being made reproducible.
 
 ### Phase A — Make conclusions reconstructible *(blocking)*
 
 Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audit's probe. Add run bundles: task manifest, base identity, candidate diff and snapshot, host events, prompts and model configuration, trajectory, test node outcomes, limits, result. Grade in an evaluator-owned workspace from an exported patch. Keep raw host-event fixtures separate from transcript fixtures. Provision an isolated Linux worker.
 
-**Exit:** a run reconstructs from its bundle; a known regression fails grading; no replicate is lost; a candidate input change invalidates dependent evidence; supported host success, failure and stop paths observed end to end.
+**Exit, as commands:**
+
+- `python -m pytest tests/test_audit_probes.py -q` → 16 passed, one per reproduced defect
+- `python -m eval.validate` → gold patch resolves; a known regression fails; a wrong patch fails; a setup failure is reported as setup failure, not as an unresolved task
+- `python -m eval.live --runs 2 && python -m eval.analyse` → two rows retained per task and arm, not one
+- `python plugin/bin/ep_doctor.py --host` → success, failure and stop paths observed against a pinned host
 
 ### Phase B — Establish the strongest useful baseline
 
@@ -171,13 +211,13 @@ A current strong native host configuration against a minimal worker harness, pin
 
 Measure what actually reaches the model rather than what is installed.
 
-**Exit:** at least one reproducible baseline, a failure taxonomy backed by saved trajectories, and enough repeats to separate setup problems from coding failures.
+**Exit, as commands:** `python -m eval.baseline --pinned` reports a score with an interval that a rerun reproduces, and `python -m eval.failures` prints a taxonomy where every category cites saved trajectories. Enough repeats to separate setup problems from coding failures.
 
 ### Phase C — Separate generation from selection
 
 Candidate pools at several budgets, graded offline. Evaluate selectors without exposing hidden outcomes: patch text, structured summaries plus evidence, and the existing gate. Run the A/B/C oracle diagnostics — frozen issue-derived checks, differential comparison against the original program, interpretation probes — independently on frozen candidates.
 
-**Exit:** pool coverage, selected success, selection regret, false rejection, regression rate and total compute reported together on development and untouched tasks.
+**Exit, as a command:** `python -m eval.pool --n 1,4,8` reports pool coverage, selected success, selection regret, correct-candidate survival, regression rate and total compute together, on development and on untouched tasks.
 
 ### Phase D — Spend compute where it creates new solutions
 
