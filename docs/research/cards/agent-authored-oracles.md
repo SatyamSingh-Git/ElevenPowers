@@ -138,3 +138,55 @@ used to filter candidate patches, *"doubling the precision of SWE-Agent"*.
 It costs a model call and the independence is imperfect, since it shares the
 agent's priors. SWT-Bench got its result with the same models, so imperfect
 independence was enough there.
+
+
+## Correction, 2026-09-11: the diagnosis was wrong
+
+An external critique challenged the claim that `click-762c97ee` showed a
+misunderstood intent, and it was right. The claim was made from the agent's test
+without reading the answer key, which is the error this project keeps repeating.
+
+The hidden tests require optional **and variadic** `Choice` to render
+`[foo|bar|baz]`, and **`DateTime`** arguments to behave the same way. The agent's
+`[a|b|c]` for the optional case was correct. It failed because it fixed `Choice`
+and never generalised to `DateTime` or to `nargs=-1`.
+
+**That is incomplete generalisation, not unknowable intent**, and unlike intent it
+is recoverable from the repository: `DateTime` supplies its own brackets in the
+same way, and the code is right there.
+
+Auditing all seven failures the same way:
+
+| task | why it failed | reachable by a runtime? |
+|---|---|---|
+| `762c97ee` | fixed `Choice`, missed `DateTime` and variadic | yes, a generality probe |
+| `bc32a92c` | closed a borrowed stream, no flush on exception | yes, differential against the original program |
+| `047adef2` | shuffled order, dedupe, conflict cases | yes, edge probes |
+| `f316d5cb` | final position at 3, 7, 25, iterate and update | yes, edge probes |
+| `9f9b149e` | a new API the commit message names outright | yes, it is in the report |
+| `bec59289` | import name to distribution, ambiguity error | partly |
+| `fc518e41` | exit-code policy when an interrupt races a result | a genuine decision |
+
+**Six of seven are recoverable.** The conclusion that "a runtime watching one
+agent cannot reach an oracle strong enough" is withdrawn. What the twelve-bug
+experiment established is narrower and still true: *the current obligation set
+adds no resolution benefit on these tasks*. It never established that the
+failures require information the runtime cannot obtain.
+
+`bc32a92c` is the sharpest example of what was being missed. Its requirements are
+*preservation* properties — a borrowed stream must still not be closed, an
+exception must still flush. **The original program is the oracle for those**, and
+comparing behaviour before and after needs no intent at all.
+
+## Two citations corrected
+
+**SWT-Bench.** The precision improvement came with about 20 percent recall
+(§5.3). It demonstrates useful *filtering* of candidate patches, not a doubling
+of bugs resolved. Quoting "doubling the precision of SWE-Agent" without the
+recall was misleading in the direction that flattered the plan.
+
+**All Smoke, No Alarm.** Its 86,156-patch classification is largely syntactic,
+and the "assertions encode actual rather than expected behaviour" claim is cited
+from a separate controlled study (arXiv 2410.21136) rather than measured there.
+Neither establishes that every stronger verification architecture must fail, and
+this card previously implied they did.
