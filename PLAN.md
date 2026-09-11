@@ -58,7 +58,7 @@ Twelve real bugs said the gate changes nothing on its own. The most promising di
 
 ## 4. P0: the defects that make measurement untrustworthy
 
-All reproduced. None may be deferred, and no new performance claim is made until they are fixed and covered by regression tests.
+All reproduced by `docs/research/audit_2026_09_11/reproduce.py`. **P0 here means a prerequisite for trusting a research conclusion, not a production emergency**: the tool is usable, and its numbers are not yet evidence. None may be deferred, and no new performance claim is made until each is fixed and covered by a regression test derived from the probe that found it.
 
 ### Evaluator
 
@@ -90,7 +90,7 @@ All reproduced. None may be deferred, and no new performance claim is made until
 | | Defect | Consequence |
 |---|---|---|
 | H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity |
-| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision |
+| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path |
 | H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it |
 | H4 | Bash-only subscription | PowerShell commands are invisible |
 
@@ -121,15 +121,17 @@ A **missing-code search** after a candidate edit — sibling implementations of 
 
 **5.3 Context is a constructed working set.** The old plan excluded finding code because the field is crowded. That optimises novelty rather than task success, and the restriction is removed. Compact worker state carries contract, diagnosis, located symbols, observed failures, rejected approaches, active candidate, open questions and evidence references, with code and logs retrievable. Summaries must distinguish observation from hypothesis so a guess is not promoted during compaction. No giant always-loaded overview: the revised AGENTS.md study finds context files generally do not improve success while increasing cost.
 
-**5.4 Select on summaries, then inspect primary evidence.** Bounded candidate summaries with diagnosis, snapshot, changes, compatibility assumptions, checks actually run, and provenance of every expectation. Randomise presentation order and measure rejection of correct candidates, not judge agreement.
+**5.4 Select on summaries, then inspect primary evidence.** There is direct support for trying this: structured rollout summaries with tournament voting and parallel-distill-refine are reported to move SWE-Bench Verified from 70.9 to 77.6 percent and Terminal-Bench v2.0 from 46.9 to 59.1. That used substantial extra inference on specific older model and harness combinations, so it justifies the experiment and not an expected uplift. Bounded candidate summaries with diagnosis, snapshot, changes, compatibility assumptions, checks actually run, and provenance of every expectation. Randomise presentation order and measure rejection of correct candidates, not judge agreement.
 
 **5.5 Generated checks are uncertain until grounded.** Freezing a wrong assertion before seeing a patch does not make it right. Distinguish mandatory checks backed by authorised requirements from speculative ones. Adding checks raises the chance a correct candidate is falsely rejected, so measure **correct-candidate survival through each filter** and keep rejected candidates. A speculative disagreement should start an investigation or lower a score, not eliminate every candidate that disagrees.
 
+Build the **candidate-by-probe outcome matrix**: inputs down one axis, candidates across the other. Where plausible candidates disagree, retrieve the contract or nearby code that explains why. The matrix chooses the next investigation. Voting across candidates is not an authority on intended behaviour.
+
 **5.6 Keep an incumbent, allow nonmonotonic search.** A long attempt ends at its latest patch, not its best. Candidates are immutable; a failed repair must not destroy an earlier one. After integration, snapshot again and rerun checks: evidence from two passing branches does not transfer to their merge.
 
-**5.7 Route for complementary capability.** The question is not which model is cheaper but whether different configurations solve different tasks. Measure overlap between strong pinned configurations before assuming scaffolding helps.
+**5.7 Route for complementary capability.** The question is not which model is cheaper but whether different configurations solve different tasks. Measure overlap between strong pinned configurations before assuming scaffolding helps. Model-mixing experiments show complementary benefit in some combinations and none in others, and multi-agent benefit depends strongly on task structure, so a committee is not assumed to help every sequential task.
 
-**5.8 Learn from decisions, not from successful transcripts.** Per-task working memory and attempt histories first. Replay validates parsers and retrieval; it cannot establish the causal benefit of an action never executed.
+**5.8 Learn from decisions, not from successful transcripts.** Per-task working memory and attempt histories first. Replay validates parsers and retrieval; it cannot establish the causal benefit of an action never executed. Prompt and procedure optimisation from execution feedback is worth testing once that data exists, at Phase E, keeping training, development selection and final evaluation separate.
 
 ---
 
@@ -143,8 +145,13 @@ Added by this audit:
 - **Track correct-candidate survival through every filter.** A gate that raises precision by discarding correct work is not an improvement.
 - **Separate pilots from confirmatory comparisons.** Small mechanistic pilots discover whether an intervention does anything; a preregistered comparison supports a performance claim. Report effect sizes and intervals rather than applying a universal significance gate to every iteration.
 - **Do not rebuild the main test set until the preferred mechanism wins.** Keep a versioned portfolio: an external benchmark track, a frozen private development corpus, and a final holdout untouched by tuning. Publish task accounting and exclusion reasons for each.
+- **Version the external benchmark itself.** A July 2026 vendor audit reports substantial task and test defects in SWE-bench Pro public and withdraws an earlier recommendation, which contradicts this project's own reading list where that set was made the primary external source. Pin a release, inspect it, record why. A benchmark's defects are a reason to version it, not a licence to discard inconvenient results.
 - **Account for all compute**: inference, judge calls, external test time, infrastructure.
 - **Recompute the required n per comparison.** The 252-run figure alternated between agent runs and paired runs and is not a constant.
+- **Keep easy tasks in the held-out set.** They cannot show an improvement and they are the only way to catch a regression. The instinct to drop no-headroom tasks optimises for detecting gains and blinds the measurement to harm.
+- **One failure is not proof a task is impossible.** Nor are a few identical failures, which may share one cause.
+- **A false block must be graded at the block.** "The other arm solved this task" is a different statement. To measure a block on already-correct work, freeze the patch at the moment of the block and grade it independently; the P2 figure of 12 percent used the weaker proxy and is qualified accordingly.
+- **Measure effective loaded instructions, not installed components.** Counting skills or plugins describes an install; only what actually reaches the model describes a treatment.
 
 ---
 
@@ -161,6 +168,8 @@ Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audi
 ### Phase B — Establish the strongest useful baseline
 
 A current strong native host configuration against a minimal worker harness, pinned models and environments, several repositories and difficulty categories. Both a matched-compute comparison and a maximum-budget curve; cost is secondary here, so the curve is the product direction and the matched comparison explains where gains came from.
+
+Measure what actually reaches the model rather than what is installed.
 
 **Exit:** at least one reproducible baseline, a failure taxonomy backed by saved trajectories, and enough repeats to separate setup problems from coding failures.
 
@@ -253,4 +262,4 @@ The 1.4× gate result stands for its narrow configuration. It is not an argument
 
 ## Appendix: evidence trail
 
-`docs/research/` holds the source study of fourteen systems at recorded commits, the host cards, the complementarity matrix, the licence register, the reading list, the oracle-problem card, and `audit_2026_09_11/` with its reproduction script and evidence appendix. `journey/` holds fifteen phases of what was tried, what was wrong, and what the measurements said. Every number in this plan is reproducible from a command in this repository, and the ones that are not yet trustworthy are marked as such in §4 and §10.
+`docs/research/` holds the source study of fourteen systems at recorded commits, the host cards, the complementarity matrix, the licence register, the reading list (refreshed 2026-09-11 with eight sources from the audit, each carrying the limit on what may be inferred from it, and one explicit contradiction of an earlier entry), the oracle-problem card, and `audit_2026_09_11/` with its reproduction script and evidence appendix. `journey/` holds fifteen phases of what was tried, what was wrong, and what the measurements said. Every number in this plan is reproducible from a command in this repository, and the ones that are not yet trustworthy are marked as such in §4 and §10.

@@ -55,3 +55,67 @@ Started 2026-09-09. Each entry: what it claims, how strong the evidence is, what
 ## Still to read (from v0.1 list, unchanged priority)
 
 Agent architectures: SWE-agent, mini-SWE-agent, OpenHands and CodeAct, Agentless, AutoCodeRover, RepoGraph, CodePlan, Moatless, SWE-search, AlphaCodium, CodeT. Planning: ReAct, Tree of Thoughts, LATS, Reflexion, PlanSearch, hierarchical task networks. Memory: MemGPT and Letta, Generative Agents, A-MEM, Mem0, Zep and Graphiti, Agent Workflow Memory, Voyager. Context: Aider's map notes, LongLLMLingua. Routing: RouteLLM, FrugalGPT. Multi-agent failure analyses. Security: InjecAgent, AgentDojo, rules-file backdoor and MCP tool-poisoning disclosures. Optimization: DSPy, TextGrad, GEPA.
+
+---
+
+## Added 2026-09-11, from the external audit
+
+These eight are the audit's recommended additions. Each carries the limit on what
+may be inferred from it, which is the part this list has previously been worst at
+recording.
+
+**[mini-SWE-agent](https://mini-swe-agent.com/latest/).** A small, current,
+reproducible worker harness. *Take:* use it as a baseline in Phase B. *Limit:*
+its simplicity is a useful comparison, not proof that custom tooling never helps.
+
+**[SWE-agent: Agent-Computer Interfaces](https://arxiv.org/abs/2405.15793).**
+*Take:* the interface offered to a model is itself an experimental variable, so
+it belongs in the treatment description rather than the background. *Limit:* its
+historical scores are not today's ceiling.
+
+**[SWE-Search](https://arxiv.org/abs/2410.20285).** *Take:* search over
+alternative actions and trajectories is an established direction, which is
+evidence the v0.7 outer loop is not eccentric. *Limit:* do not build a full
+search tree before a candidate-pool baseline shows remaining headroom.
+
+**[Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).**
+*Take:* targeted retrieval, compact working state, recoverable references — the
+shape of §5.3. *Limit:* engineering guidance, not a measured intervention here.
+
+**[SWE-smith](https://arxiv.org/abs/2504.21798).** *Take:* large executable task
+and trajectory datasets are a route to training a specialised worker later.
+*Limit:* synthetic generation is not independent evaluation, and training is a
+Phase E investment.
+
+**[Proof-or-Stop](https://arxiv.org/html/2607.14890v1).** *Take:* the
+claim/evidence/gate precedent and its narrowly measured fault detection. *Limit:*
+its injected-fault, single-family design does not calibrate the natural failure
+rate or the power requirement of this project's experiment. Previously cited here
+as though it did.
+
+**[Separating signal from noise in coding evaluations](https://openai.com/index/separating-signal-from-noise-coding-evaluations/)
+(OpenAI, July 2026).** *Take:* substantial task and test defects reported in
+SWE-bench Pro public, with an earlier recommendation withdrawn. **This directly
+contradicts the entry above in this file**, which made SWE-bench Pro public the
+primary external source. *Limit:* a vendor audit is evidence to inspect and
+version, not licence to discard inconvenient benchmark outcomes.
+
+**[SWE-Bench Pro Verified](https://arxiv.org/html/2609.08149v1).** *Take:*
+proposed task refinements and protections against answer leakage, including
+channels beyond local git history. *Limit:* first posted 8 September 2026;
+validate the chosen release independently before adopting it.
+
+**Supporting the search direction, with their limits:**
+
+- [Scaling Test-Time Compute for Agentic Coding](https://arxiv.org/html/2604.16529v1) — structured rollout summaries, recursive tournament voting, parallel-distill-refine; reported 70.9 to 77.6 percent on SWE-Bench Verified and 46.9 to 59.1 on Terminal-Bench v2.0. *Limit:* substantial extra inference on specific older model and harness combinations. Supports running the experiment, not an expected uplift.
+- [Infrastructure noise](https://www.anthropic.com/engineering/infrastructure-noise) — material score changes with model and harness held fixed, around six percentage points across Terminal-Bench configurations. *Limit:* not an estimate for this project, but it makes environment control a competing investment rather than hygiene.
+- [Roulette-mode model mixing](https://www.swebench.com/post-250820-mini-roulette.html) — complementary benefits in some model combinations, none in another. *Limit:* an illustrative older experiment.
+- [Towards a Science of Scaling Agent Systems](https://arxiv.org/abs/2512.08296) — multi-agent benefit depends strongly on task structure and coordination. *Limit:* not a direct coding-benchmark effect estimate.
+- [GEPA](https://arxiv.org/abs/2507.19457) — prompt and procedure optimisation from execution feedback. *Limit:* does not show that optimising this controller improves repository-level patch selection. Phase E at the earliest.
+- [Evaluating AGENTS.md, v2](https://arxiv.org/html/2602.11988v2) — generated and developer-provided context files generally did not improve success while increasing cost. *Revises* the stronger developer-file benefit suggested by the older secondary summary previously recorded here.
+
+**The standing correction this section exists to make.** Several entries above
+were written from secondary summaries and stated more than their sources
+support. Every entry added from here carries its limit in the same breath as its
+claim, and an entry that contradicts an earlier one says so explicitly rather
+than being quietly appended.
