@@ -217,10 +217,25 @@ both, and is therefore the next thing built.
 agent's own word or blind to the bug. Finer invalidation of worthless evidence is
 worth nothing, so this comes before M3.*
 
-Mutation score over the changed lines: mutate what the agent changed, run the
-tests it wrote, and see whether they notice. Cheap on a repository whose suite
-runs in seconds, computable without the agent's cooperation, and independent of
-its opinion. This is what Fowler recommends in place of agent-side TDD.
+**Revised 2026-09-11, before building, on free evidence.** Two candidates were
+killed by reading the twelve transcripts rather than by spending on runs.
+
+*Mutation score is the wrong instrument.* Its premise was that failing agents
+write weak tests. They do not: the agent on `click-762c97ee` wrote a
+four-case parametrised test with real assertions, which would kill mutants
+easily. Mutation score measures test strength; this test is strong and
+confidently wrong. The obligation passes and the task still fails.
+
+*Tampering detection has no signal.* Treating `suite_green` as independent only
+when the agent leaves the project's tests alone: 2 of 5 resolved when it edited
+them, 3 of 7 when it did not. Kept as a reported caveat, not a gate.
+
+*What survives* is an independent derivation of expected behaviour from the issue
+text, made without sight of the patch, used to judge it. This is SWT-Bench's
+shape and the one published result that works: tests generated from the issue,
+filtering candidate patches, doubling the precision of SWE-Agent. It costs a
+model call and its independence is imperfect, since it shares the agent's priors,
+which was enough for SWT-Bench with the same models.
 
 **Exit:** P17 measured on the same twelve mined bugs. Either the obligation
 changes outcomes where agent-authored evidence did not, or the honest finding is

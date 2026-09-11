@@ -88,3 +88,53 @@ separation, and cannot manufacture it by reordering the agent's own steps.
 3. **Keep reproduction, but demote the claim made for it.** Verified red-to-green
    is real process evidence and catches implement-ahead. It is not a correctness
    oracle and should not be described as one.
+
+
+## Postscript, 2026-09-11: two candidate oracles killed by free evidence
+
+Before building mutation scoring, the transcripts of the twelve runs were read to
+check its premise.
+
+**Mutation scoring would not have caught this.** The premise was that the failing
+agents write weak tests. They do not. On `click-762c97ee` the agent wrote a
+parametrised test with four cases and real assertions:
+
+```python
+({}, "{a|b|c}"),
+({"required": True}, "{a|b|c}"),
+({"required": False}, "[a|b|c]"),
+({"default": "a"}, "[a|b|c]"),
+```
+
+That kills mutants easily. **Mutation score measures test strength, and this test
+is strong and confidently wrong**: it asserts the behaviour the agent decided on,
+which is not the behaviour click's maintainers implemented. The obligation would
+have passed and the task still fails.
+
+Mutation scoring answers "do the tests notice a change to the code". The observed
+failure is "the tests assert the wrong thing". Those are different questions, and
+only the second one matters here.
+
+**Tampering detection does not predict failure either.** The second candidate:
+treat `suite_green` as independent only if the agent left the project's own tests
+alone, on the theory that editing the marker's answer key is the sharpest form of
+marking your own homework. Measured across the twelve:
+
+```
+modified the project's tests : 2/5 resolved
+left them alone              : 3/7 resolved
+```
+
+40 percent against 43 percent. No signal. Worth keeping as a reported caveat,
+not as a gate.
+
+**What that leaves.** The failure is a confident, well-formed, wrong expectation.
+Catching it needs the right expectation from somewhere, and the only source a
+runtime can reach that the agent did not write is an **independent derivation
+from the issue text, made without sight of the patch**. That is SWT-Bench's
+shape, and the one published result that works: tests generated from the issue,
+used to filter candidate patches, *"doubling the precision of SWE-Agent"*.
+
+It costs a model call and the independence is imperfect, since it shares the
+agent's priors. SWT-Bench got its result with the same models, so imperfect
+independence was enough there.
