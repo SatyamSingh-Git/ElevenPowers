@@ -27,6 +27,7 @@ command in this repository and can be reproduced.
 | [13-instrument.md](13-instrument.md) | Four rounds of building a ruler, the rule that decides whether a task measures anything, and the prior art that was there all along |
 | [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, a gate that changed nothing, and why the obvious fix is theatre |
 | [15-correction.md](15-correction.md) | An external critique, an answer key that should have been read first, and six of seven failures turning out reachable |
+| [16-audit.md](16-audit.md) | Sixteen reproduced defects, a grader blind to regressions, and a change of objective |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -149,6 +150,15 @@ could help was withdrawn, two citations that had been trimmed the flattering way
 were corrected, and the plan gained the distinction it was missing: establish what
 the expected behaviour is before judging whether the patch implements it.
 
+**Then an audit reproduced sixteen defects and changed the objective.** The worst
+is that the grader never ran a preservation set: a patch breaking existing tests
+scored as resolved, so the measurement was blind to regressions, which is the
+gate's main mechanism. Beneath the defects a harder argument — better stopping
+cannot explore a diagnosis the worker never considered, and ranking work by gaps
+in other frameworks optimises novelty rather than performance. v0.7 gives the
+system an outer loop: generate candidates, select among them, decide what to try
+next, with verification as one component.
+
 ## The two things worth taking away
 
 ### A measurement is only as good as the population it runs on
@@ -210,7 +220,7 @@ Every figure below comes from a command in this repository.
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
 | Real mined instances | validated from upstream history, no Docker | `python -m eval.mine --repo DIR --out mined.json` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 343 | `python -m pytest tests -q` |
+| Tests | 379 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.

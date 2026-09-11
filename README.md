@@ -203,6 +203,16 @@ Anything the runtime cannot read is appended to `.elevenpowers/blindspots.jsonl`
 and reported by that last check, so a host that changes a field becomes a
 diagnosable symptom rather than a tool that quietly went quiet.
 
+## Known defects, 2026-09-11
+
+An external audit reproduced sixteen defects in the runtime and the evaluator;
+`docs/research/audit_2026_09_11/` holds the report and a script that reproduces
+them. Until they are fixed, treat every number below as provisional. The most
+consequential: the task grader runs only the fail-to-pass set, so a patch that
+breaks existing tests still scores as resolved; a deleted observed file still
+verifies; `echo pytest` counts as a passing suite; and reading an existing test
+counts as writing one.
+
 ## Measured against real sessions
 
 Claude Code writes a transcript of every session, including each tool result

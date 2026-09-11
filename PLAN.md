@@ -1,569 +1,256 @@
-# Master Plan v0.6
+# Master Plan v0.7
 
-2026-09-11. Amends v0.5 after an external critique corrected the diagnosis behind it.
+2026-09-11. Supersedes v0.6. Written after an external audit reproduced sixteen defects in the runtime and the evaluator, and argued that the project has been optimising the wrong objective. Both halves of that are accepted. Earlier plans are in git history; `docs/research/` and `journey/` are unchanged and still govern.
 
-v0.5 concluded from twelve real bugs that a runtime watching one agent cannot reach
-an oracle strong enough to matter. That conclusion rested on one task read wrongly:
-the agent was said to have misunderstood the issue, when in fact its answer for the
-reported case was right and it simply failed to generalise to `DateTime` and to the
-variadic path. The claim was made from the agent's own test without reading the
-answer key, which is the error this project keeps repeating.
-
-Auditing all seven failures, **six are recoverable from what a runtime can observe**.
-Only one needs a decision a person has to make.
-
-| What v0.5 said | Corrected |
-|---|---|
-| The failures require unknowable intent | Six of seven do not. They are incomplete generalisation, unprobed edge cases, and preservation properties |
-| The oracle must not be the agent | Still true, but the useful form is narrower: **a passing test must never promote an interpretation into a requirement** (§5b) |
-| Mutation score is the next oracle | Killed before building: the failing agents write strong tests. Replaced by three mechanisms measured separately (§6, M2.5) |
-| The gate refuses the stop | Conflates ending computation with certifying completion, and produced loops where the missing ingredient was information. Five distinct outcomes instead (§5c) |
-| SWT-Bench doubles precision | With about 20 percent recall. Filtering, not resolution |
+**This is a larger change than any previous revision.** v0.4 restored the mission, v0.5 and v0.6 adjusted the thesis. v0.7 changes what the system is for.
 
 ---
 
-## v0.5 preamble, retained
+## 0. Why v0.6 needed replacing
 
-2026-09-10. Amends v0.4 after the first fair comparison returned a null and the
-literature explained why. The change is to the thesis itself, not to a policy.
-
-| What v0.4 assumed | What twelve real bugs showed | v0.5 |
+| What v0.6 assumed | What the audit established | v0.7 |
 |---|---|---|
-| Computing completion from evidence is the hard part | The evidence can be written by the agent being judged, so computing over it changes nothing. Identical outcomes in both arms, 1.4x cost | The thesis gains a second clause: the oracle must not be the agent (§2) |
-| Obligations differ by what they require | They differ by **whose word they take**, which v0.4 never asked | Every obligation is graded by its oracle (§5b), and two of the four in the default set turn out to be the agent's own |
-| Reproduction-first is the fix for self-confirmation | Fowler measured no difference; the agent implements ahead so the test never goes red, and a reproduction encoding a misunderstanding still goes red to green | Kept as process evidence, demoted as a correctness claim (§11b) |
-| M3 repository model comes next | An inert gate does not benefit from finer invalidation | M2.5 independent oracles comes first (§6) |
+| The project is a verification layer that decides when work is done | Better stopping cannot explore a diagnosis the worker never considered. The brief was to make coding agents dramatically more capable | The system owns an **outer loop**: generate candidates, select among them, decide what to try next. Verification is one component (§1) |
+| Architecture is justified only by gaps in the fourteen surveyed systems | That is a novelty filter. A mature, widely implemented capability can be the largest missing contributor | Work is ranked by the failure it addresses, not by whether anyone else built it (§1.2) |
+| The twelve-bug null was a fair test of the gate | **The grader never ran a preservation set.** A patch that breaks existing tests scores as resolved. The gate's main mechanism is catching regressions, and the measurement was blind to them | Every reproduced defect is P0 and blocks new performance claims (§4) |
+| Milestones exit in order | M2 needed a suite assigned to M5; M2.5 sat behind an unresolved M2 | Three tracks with explicit prerequisites, not a chain (§7) |
+| Local absence of Docker bounds the work | An environment limitation was allowed to define the scientific scope | Provision an isolated Linux worker for external benchmarks (§7, Phase A) |
+
+Sixteen probes reproduce against the current implementation; `docs/research/audit_2026_09_11/reproduce.py` runs them. The one that matters most was independently re-confirmed on a real mined instance: maintainer's fix applied, an unrelated existing test broken, suite red, **grader still reports resolved**.
 
 ---
 
-## v0.4 preamble, retained
+## 1. What this is, restated
 
-2026-09-09. Supersedes v0.3, which superseded v0.2 (research-grounded but lab-shaped) and v0.1 (written from memory). The research in `docs/research/` is unchanged and still governs; v0.4 is the first plan that actually obeys it.
+Not a plugin that says no. **Given a task, permitted repository context and a compute envelope, produce the strongest patch the system can find, with the evidence for it.**
 
-What changes here is direction. v0.3 reduced the project to a single mechanism and postponed everything else, including the goal the project was started for. That was the right opening move and the wrong place to spend ten phases.
+The completion state is one output of that system rather than its organising purpose. Existing hosts keep the inner tool-use loop; this owns the decisions around it: restart an unproductive attempt, allocate another model, preserve alternative patches, choose a winner, continue from a better diagnosis.
+
+**1.1 What survives from the old framing.** Automatic collection from ordinary work, automatic execution of declared checks, evidence bound to state, explicit provenance, honest unresolved outcomes, and a recorded history of failed hypotheses. These are good foundations for a search system and were always the valuable part.
+
+**1.2 What stops governing investment.** The residual-gap census ranks by novelty. Work is now ranked by the failure it addresses: environment setup, localisation, requirement interpretation, implementation, cross-file integration, candidate selection, context loss. The matrix stays useful for choosing an implementation to borrow once a bottleneck is identified.
+
+**1.3 Composition is a hypothesis, not a purpose.** "The stack beats its best part" is worth measuring and is not a reason the product must exist. If a small controller around one strong worker wins, that is a success.
 
 ---
 
-## 0. Why v0.3 needed replacing
+## 2. The thesis, demoted and kept
 
-Each item below is a correction forced by a measurement, not a change of taste. The evidence is in `journey/` and reproducible from this repository.
+> Completion should be computed from dependency-tracked evidence, not asserted by the model — and no expectation may be treated as a requirement on the strength of the agent's own say-so.
 
-| What v0.3 said | What happened | v0.4 |
+Still true, and no longer the point of the project. The audit's formulation is better:
+
+> **The evidence layer can be valuable inside a stronger search-and-selection system without being an independent semantic oracle.**
+
+Twelve real bugs said the gate changes nothing on its own. The most promising distinctive investment is an evidence store that makes **alternative solutions comparable and failed attempts reusable**. Today the ledger explains why one attempt stopped. Making it support choosing what to try next is the larger opportunity, and it keeps the part of the original idea worth keeping.
+
+---
+
+## 3. Where we actually are
+
+**Working, and still useful.** Evidence capture from ordinary tool output; provenance and staleness; self-discharge of declared commands; profiles and config; `ep-status`; a scope guard; a repeat runner with derived run counts; a miner that builds real tasks from upstream history without Docker; a live harness driving the real CLI.
+
+**Not trustworthy until §4 is done.** Every number this project has published rests on an evaluator that does not check preservation, an analysis that discards replicates, and an evidence layer with nine reproduced soundness defects.
+
+**Never built.** Candidate pools, selection, diagnosis branching, localisation, run bundles, an isolated benchmark environment.
+
+---
+
+## 4. P0: the defects that make measurement untrustworthy
+
+All reproduced. None may be deferred, and no new performance claim is made until they are fixed and covered by regression tests.
+
+### Evaluator
+
+| | Defect | Consequence |
 |---|---|---|
-| Seven core pieces, everything else postponed | Ten phases inside the 90/10. Two of the ten residual gaps built, five untouched, including composition, which is the project's stated purpose | The ten residual gaps become the backlog (§3), with a milestone owning each |
-| "The system must beat the composition baseline" (research §6) | The baseline was never assembled, so the central claim is untestable | The baseline is M2, before any claim of superiority (§6) |
-| Noise floor measured in week one | Skipped. Three live comparisons run first; two identical passes then scored 69 and 94 percent | The noise floor is a gate, not an intention (§7) |
-| False-block rate under 5 percent | 0 percent on constructed scenarios; live, the gate blocked 7 of 8 then 12 of 16 first stops, nearly all on already-correct work | P2 is redefined against observed behaviour, and the gate gains a guidance channel (§5) |
-| P8: under 10 percent tokens, under 5 seconds | The layer costs ~100 ms per call. The work it induces costs 2.5x tokens. One target cannot cover both | P8 splits into layer cost and induced cost (§8) |
-| Micro tier: 10 tasks, 1 run, minutes | P1 needs ~252 agent runs per comparison to reach 0.05 at 80 percent power | Every hypothesis carries its power requirement (§7) |
-| Nine core pieces, all mechanism | No config, no override, no status command, one host. Installing it yields something that interrupts and is otherwise invisible | Product surface is a first-class milestone (§5) |
+| E1 | The grader runs only `f2p`; there is no preservation set | A patch that breaks existing tests scores as resolved. **The gate's main mechanism is regression-catching and the measurement could not see it** |
+| E2 | `eval/analyse.py` keeps one row per task and arm | `--runs N` is incompatible with the analysis. Replicates, uncertainty and cost vanish |
+| E3 | The workspace is deleted; `Run` holds no diff, log or trajectory | Freezing twelve candidate patches is impossible because they no longer exist |
+| E4 | Model alias, inherited environment, silent plugin omission, fixed arm order | An arm can be labelled present and be absent |
+| E5 | Grading happens inside the candidate's mutable workspace | Separation in time is not isolation of authority |
+| E6 | Task selection keyed to the gate's own detection mechanism; flip-rate bound is invalid | Selecting the benchmark around the intervention being tested. A baseline can fail deterministically while a treatment succeeds deterministically, giving zero baseline flips and complete between-arm disagreement |
 
----
+### Evidence layer
 
-## 1. What this is
-
-Unchanged and still correct.
-
-It is not a framework: it prescribes no process the user must learn. It is not an agent: it never acts. It is not a harness: it does not own the loop. It watches an agent work, decides what would constitute proof that the work is done, collects that proof from what the agent already runs, tracks which proof is still valid as the code changes, and computes a completion state the agent cannot assert.
-
-The closest analogue is `make`. `make` does not build software; it knows what depends on what, notices when something is stale, and refuses to call a target up to date when its inputs have changed. It converts "is this built?" from an opinion into a computation.
-
-**Working description: an incremental verification layer for coding agents, and a runtime that selects which verification is worth doing.** The second half is new in v0.4 and is where composition lives.
-
----
-
-## 2. The thesis
-
-> **Completion should be computed from dependency-tracked evidence, not asserted by the model — and no expectation may be treated as a requirement on the strength of the agent's own say-so.**
-
-The second clause was bought with a null result on twelve real bugs, and refined after that result was diagnosed wrongly. v0.4's thesis is necessary and was not sufficient: a runtime can compute faultlessly over evidence the agent authored to agree with itself, and that is what this one did, twelve times out of twelve.
-
-The refinement matters. "The oracle must not be the agent" reads as though agent-authored evidence is worthless, which is too strong and would forbid useful things. The operative rule is about **promotion**: an agent may propose an expectation, and its own passing test may not be what turns that proposal into the standard the work is judged against.
-
-Everything is machinery in service of it, and each piece must answer two questions now: if this vanished, would a developer notice their agent got worse — and whose word does it take?
-
-Ten phases add one corollary, learned the hard way:
-
-> **A verification layer that cannot verify itself is worthless.** Three of its components shipped doing nothing, and each was found by measurement rather than review.
-
----
-
-## 3. The mission, restored
-
-The project's first goal, stated by the user before any code existed: **combine the strengths of the studied systems so that each one's weakness is covered by another's strength, then add what none of them has.**
-
-`docs/research/complementarity-matrix.md` did that mapping across fourteen systems, sixteen weakness classes, and ten residual gaps. Those gaps are "the only places where new architecture is justified". They are the backlog. Nothing else is.
-
-| # | Residual gap | Status | Milestone |
-|---|---|---|---|
-| 3 | Typed claims, risk-scaled evidence contracts, automatic capture | **built** | done |
-| 6 | Tooling for intermittent and concurrency bugs | **built** — runner and derived run counts; no instrumentation helpers, no hypothesis ledger | M4 completes |
-| 1 | Process-stage gates enforced by code | partial — Stop gate is code and ledger-driven, and discharges what it can compute; no stage rule such as "reproduce before edit" | done for now |
-| 5 | Externalized task state surviving compaction and host switch | partial — the ledger survives compaction; host switch untested on one host | M5 |
-| 10 | Decision-level observability | partial — blocks now record which obligation was unmet, which is how M1 was solved; still no record of why a stage ran | done for now |
-| 2 | A calibrated task classifier | none | M4 |
-| 4 | Repository model with test edges and a blast-radius number | none | M3 |
-| 7 | Memory write gating that produces useful records | none | M6 |
-| 8 | Replay-gated learning | machinery exists (`eval/replay.py`), feature does not | M6 |
-| 9 | **Composition without dilution** | baseline built and censused; benefit untested for want of a discriminating suite | M2, M4 |
-
-Two of ten built. The single most novel gap is done; the one the project exists for has not been started.
-
----
-
-## 4. Where we actually are
-
-Honest, reproducible, and unflattering in the places it should be.
-
-**Built and measured**
-
-| Piece | Result | Command |
+| | Defect | Consequence |
 |---|---|---|
-| Evidence capture and provenance | 174/174 failing and 5,916/5,916 passing commands read correctly, over 36,034 real commands | `python -m eval.replay --all` |
-| Completion gate as a classifier | 0 percent false blocks, 0 percent misses on 46 scenarios | `python -m eval.run --all` |
-| Scope guard | 0 false questions, 0 misses on 25 cases | `python -m eval.scope_run` |
-| Claim inference | 21 percent over-claim, 25 percent missed work over 3,557 real turns; 31/31 labelled | `python -m eval.claims_run` |
-| Host integration | six checks | `python plugin/bin/ep_doctor.py` |
-| Live operation | the gate fires, refuses the stop, the agent does more work | `python -m eval.live` |
-| Live blocking | 12 percent of runs, down from 75, nothing stable regressed | `python -m eval.live --arm gate --model haiku` |
-| Tests | 339 | `python -m pytest tests -q` |
-
-About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
-
-**Not built**
-
-One host. No repository model. No composition. M1 added profiles, a project config, a status command and self-discharge, so the gate is no longer the only thing a user ever sees.
-
-**Against the field**, from the research cards: Superpowers is 195 files and 14 skills across 11+ hosts; ECC is 3,538 files, 286 skills, 68 agents, 94 commands, 16 install targets. We are roughly one to two percent of ECC by surface. We are the only one that computes completion. Both facts are true and the second does not excuse the first.
-
----
-
-## 5. What the live runs changed about the design
-
-The gate stopped 7 of 8 runs on one model and 12 of 16 on another, and on nearly all of them a plain agent had already resolved the same task. It roughly doubles turns and multiplies cost by 2.5 to buy evidence for work that was mostly already correct.
-
-That is the design working as specified — "probably correct" is exactly what the thesis refuses — and it is also the behaviour most likely to get the tool switched off. Both readings are right, which means the design is missing a channel rather than being wrong.
-
-**Three channels, not one.**
-
-| Channel | When | Cost | Status |
-|---|---|---|---|
-| **Guide** | after the first source edit: what would prove this work | tokens only, no interruption | built; measured, no effect on blocking |
-| **Compute** | at the end: run what the project declared and record the result | seconds, no tokens | built; this is what worked |
-| **Report** | at the end, always | a few lines | built |
-| **Gate** | at the end, when obligations are unmet | an interruption and a re-run | built |
-
-That hypothesis was P14, and it was wrong: guidance moved blocking from 12 of 16 runs to 14, and the transcripts confirm the text reached the agent. What the decision records then showed is that in all fifteen blocked runs the agent had written a test and run it, and never run the whole suite, because that is a second invocation of the same tool.
-
-So the gate was solving it backwards. Blocking to make an agent run a command costs another turn at 2.5x the tokens; running the command costs seconds and none. The runtime now runs the commands a project declared and computes the missing evidence itself, which took blocking from 75 percent of runs to 12.
-
-**Profiles, taken from ECC.** `off` records only; `guide` never blocks; `strict` blocks as today. Which is default is decided by M1's measurement, not by taste. This is the method the project is supposed to use: our weakness class covered by another system's strength.
-
----
-
-## 5b. Every obligation, graded by whose word it takes
-
-The axis v0.4 never asked about. An obligation is worth checking only if the
-thing that decides pass or fail is not the agent being judged.
-
-| Obligation | Oracle | Independent? | What it is actually worth |
-|---|---|---|---|
-| `suite_green` | the project's existing tests | **yes** | real, but blind to the new bug by definition: if the suite covered it, it would not be a bug |
-| `build_ok`, `typecheck_ok` | the compiler | **yes** | real, and narrow |
-| `stable` | this runtime's repeat runner | **yes** | real, and only applies to nondeterminism |
-| `test_added` | a test the agent wrote after deciding it was done | **no** | evidence that a test exists, nothing more |
-| `reproduced` | a test the agent wrote, in a verified red-to-green order | **no** | process evidence: it did verify something. Not a correctness oracle |
-| `runtime_ok` | the agent's reading of its own output | **no** | the weakest thing in the table |
-| **mutation score over changed lines** | the code itself | **yes** | proposed. A test that survives every mutant asserts nothing about the change |
-
-Two of the four obligations in the default `bug_fixed` set are the agent's own
-word, and the two that are not are blind to the bug. That is the whole
-explanation of the null, and it was visible in this table before the measurement,
-had the table existed.
-
-**Standing rule from here.** A new obligation must name its oracle, and every
-expectation must record where it came from:
-
-| Origin of an expectation | What it establishes |
-|---|---|
-| An explicit user example, or an approved acceptance criterion | a directly specified requirement |
-| An applicable existing contract: documentation, a type signature, an adjacent test | a requirement within that contract's scope |
-| The original program's behaviour | what previously happened, which grounds preservation |
-| The agent's interpretation | a hypothesis, which needs scrutiny |
-
-**A passing test must never promote an interpretation into a requirement.**
-Provenance is necessary and not sufficient, since an agent can cite documentation
-incorrectly; a direct example or a mechanically checkable contract deserves more
-weight than an inferred reading of prose.
-
-## 5c. Five outcomes, not two
-
-"Refuse the stop" conflates ending computation with certifying completion. When
-the missing ingredient is information rather than effort, refusing produces an
-expensive loop: measured live, blocking bought extra turns at 1.4 to 2.5 times
-the cost and changed no outcomes.
-
-| Situation | What the runtime does |
-|---|---|
-| Required evidence missing or stale | run the checks it can run itself |
-| A grounded expectation is violated | return the counterexample: input, expected, observed, and where the expectation came from |
-| A material expectation is ambiguous | ask one concrete question, not "verify more" |
-| Budget or environment prevents verification | stop, unresolved, and say so |
-| The acceptance protocol is satisfied | issue a certificate scoped to this contract, these checks, this tree |
-
-An agent may end its turn unresolved. It may not report an unresolved result as
-verified completion. The certificate means *this artifact satisfied this version
-of the contract under these checks in this environment*, which is something a
-runtime can actually compute, unlike unrestricted correctness.
-
----
-
----
-
-## 6. Milestones
-
-Each has an exit criterion that is a command and a number. **The plan is followed by taking the next unmet exit criterion.** No milestone starts before its predecessor exits, except where marked parallel.
-
-### M1 — Make it usable
-
-*Gap 1, 10. The tool currently interrupts most turns and is otherwise invisible.*
-
-- Guidance channel: after the first source edit, inject the obligations for the open claim.
-- Profiles `off` / `guide` / `strict`, and a project config naming the commands this repository uses for tests, build and typecheck.
-- `ep status`: what the runtime currently believes, on demand.
-- Record *why* the gate blocked, not only that it did.
-
-**Exit:** on 24 live runs, blocks on already-correct work fall below 25 percent of runs, with resolution no worse than the same suite without guidance. `python -m eval.live --arm guide,strict`.
-
-**EXITED 2026-09-09**, after four passes of which two tested wrong ideas.
-Blocks on already-correct work fell from 69 percent to 12, turns by a quarter,
-cost by 15 percent, and none of the eleven tasks a plain agent always resolves
-regressed. Guidance did nothing; what worked was the runtime running the
-project's declared commands and computing the missing evidence rather than
-blocking to demand it. Full account in `journey/11-usable.md`.
-
-### M2 — The composition baseline
-
-*Gap 9. The yardstick the mission demands, never built.*
-
-Assemble the Section 6 recipe from the complementarity matrix: Superpowers' procedures and handoff scripts, ECC's hard blocks and batched Stop check, gstack's evidence ledger and verify-gate, Aider's repo map, Spec Kit lean commands, BMAD's blind-then-claims review. All MIT or Apache-2.0; attribution in NOTICE.
-
-Measure the conflicts the matrix predicts: three competing routers, two Stop hooks, three reviewer mechanisms, four state directories, and the skill listing truncating under load.
-
-**Exit:** a measured comparison of the stack against vanilla, against its best single part, and against us, on the discriminating suite from M5. If the stack does not beat its parts, composition dilutes, and that finding is the argument for M4.
-
-**BUILT, NOT EXITED, 2026-09-09.** The baseline exists and rebuilds from one
-command, so the central claim is testable for the first time. The conflict
-census confirms the prediction and sharpens it: nine review mechanisms rather
-than three, nine state directories, ~1,038 always-on tokens. Assembling it also
-found a hazard the matrix does not mention: superpowers delivers its routing
-through a SessionStart injection, so taking its skills without its hooks buys
-their whole token cost and none of their behaviour.
-
-The comparison was run on the wrong suite and could not have worked. The plain
-arm failed exactly one of sixteen tasks, and it is the task nothing ever
-resolves, so no arm had headroom to improve on. Cost is a per-run measurement
-and is sound: composition costs 1.4x vanilla tokens and 1.5x wall clock, and the
-stack is indistinguishable from its best single part. Benefit is unmeasured.
-Full account in `journey/12-composition.md`.
-
-**Blocked on:** a task suite that discriminates, which is now blocking M2 and M5
-both, and is therefore the next thing built.
-
-### M2.5 — Establish the contract before judging the implementation
-
-*Twelve real bugs, no effect. Six of the seven failures were reachable, so the
-question is which mechanism reaches them, not whether anything can.*
-
-**Two questions, where v0.5 had one.**
-
-- *Contract validity:* what supports this expected behaviour?
-- *Implementation validity:* what supports the claim that this patch implements it?
-
-An agent-authored assertion can speak to the second only once the first has
-support from somewhere else. Today the runtime asks only the second, and accepts
-the agent's answer to the first by default.
-
-**Three mechanisms, measured separately, because they carry different
-information.**
-
-| | Mechanism | Costs | What the audit says it would reach |
-|---|---|---|---|
-| A | Independent checks derived from the issue, frozen before the patch is visible | a model call | the reported case, stated APIs |
-| B | **Differential behaviour against the original program** | no model call | preservation properties: `bc32a92c`'s borrowed stream and missing flush |
-| C | Probes that distinguish competing interpretations | a model call | generality and edge cases: `762c97ee`'s `DateTime`, `047adef2`'s dedupe, `f316d5cb`'s boundaries |
-
-B is the cheapest and needs no intent at all: a bug fix owes *change the defective
-behaviour* and *preserve the rest*, and the original program is the oracle for the
-second. The current gate checks only the first.
-
-C produces probes that are **questions with executable inputs**, not tests. Where
-the permitted context cannot settle a disagreement the runtime asks one concrete
-question — for this input the plausible outputs are A and B, which is intended —
-which is far cheaper for a maintainer than reviewing a patch. Two models agreeing
-is evidence about their agreement, not about intent; disagreement allocates
-attention rather than deciding anything.
-
-**The diagnostic comes before the verifier.** Freeze the twelve candidate patches.
-Generate checks from the original code and permitted context only, with the
-candidate, the maintainer's fix and the hidden tests withheld. Then run the frozen
-checks against all three:
-
-| Observation | Reading |
-|---|---|
-| rejects the candidate, accepts the maintainer's fix | useful discrimination |
-| rejects both | a wrong oracle, an unsupported requirement, or broken infrastructure |
-| accepts both | no discrimination between these two |
-| rejects a known-good candidate | a false rejection to investigate |
-
-Checks that turn out inconvenient after the gold result is known are **counted,
-not discarded**.
-
-**Measured, at minimum:** incorrect patches certified; correct patches rejected;
-tasks resolved; unresolved plus clarification burden; and cost per correctly
-resolved task. A repair experiment comes only after discrimination is shown, with
-a baseline spending the same budget on ordinary extra attempts — otherwise a gain
-cannot be told apart from more compute.
-
-**Exit:** each of A, B and C reported separately on the twelve, then the surviving
-design assessed on tasks that were never used to develop it. Also audited: for
-each failure, whether the hidden expectation was recoverable from the agent's
-permitted context at all, since missing information and unused information need
-different remedies.
-
-### M3 — The repository model
-
-*Gap 4, and the strength most worth taking from another system.*
-
-Lift Aider's `repomap.py` (Apache-2.0): tree-sitter tags, file graph, personalized PageRank, token-budgeted render. Add what it lacks and what this project needs: **test-to-source edges and a blast-radius number.**
-
-This is not for finding code, which is a crowded space. It is to compute what a change invalidates, turning `observed` from every source file into the import closure of each test. Coarse invalidation stales everything on one edit and has never been measured in daily use.
-
-**Exit:** P4 and P10 measured. Static invalidation stales measurably less than coarse on real edits, with no evidence wrongly kept fresh. Test-impact analysis' safety rule holds throughout: when the map is missing or stale, fall back to full.
-
-### M4 — Selective composition
-
-*Gap 2, 9, and the completion of 6.*
-
-If M2 shows that stacking dilutes — which the matrix predicts, with three routers all over-routing trivial work — then the thing worth building is a runtime that chooses which piece runs for this task. That is the calibrated classifier (gap 2) and the workflow compiler under its proper name.
-
-Labels come from the evaluation harness, not from prose. The feature set starts from ECC's size-to-ceremony table and BMAD's route-after-investigation rule, both already specified in the matrix.
-
-**Exit:** the selective runtime beats the M2 stack on the discriminating suite, at lower token cost than loading everything.
-
-### M5 — Answer P1
-
-*The thesis, properly powered.*
-
-**Its prerequisite is the critical path.** A suite that can measure blocks M2's
-exit as well as this one, and four rounds of calibration produced a design rule
-that turns out to be the field's, arrived at the slow way.
-
-**The rule.** A task measures verification only if **running the existing suite
-would catch the fix an agent reaches for first**. Where it would not, no amount
-of evidence-gathering helps and the task measures raw capability instead: every
-task whose naive fix left the visible suite green was failed identically by a
-weak and a strong model, and every task whose naive fix turned it red was failed
-by the weak model and resolved by the strong one.
-
-This is SWE-bench's structure under different names. Their FAIL_TO_PASS is the
-hidden test; their PASS_TO_PASS is the visible suite that must stay green, which
-is exactly what a naive fix has to break. Their validation repeats each instance
-to exclude flaky ones, which is the calibration built here. The vocabulary is
-adopted rather than reinvented from here on.
-
-**Chasing a 30 to 70 percent band was the wrong target.** These outcomes are not
-coin flips: for a given model a trap is either seen or it is not, consistently.
-Only the ceiling band is useless. A task the baseline never resolves is prime
-headroom provided some arm can overturn it, and one run says whether it can.
-
-**Two instruments, because one is not enough.**
-
-| | For | Cost |
+| R1 | Size and mtime, with `vcs_state` as tie-breaker | Two different contents of an already-modified file share a porcelain status; evidence survives a real change |
+| R2 | `observed` is a stored list; additions escape it | A new failing test file does not stale anything. Environment and dependency changes are not fingerprinted at all |
+| R3 | Only `STALE` is rejected | Deleting an observed file yields `GONE` and still verifies |
+| R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED |
+| R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests |
+| R6 | `_test_written_and_suite_green` searches `touched ∪ seen` | **Reading** an existing test counts as writing one. Added in M1 to cut false blocks, and cut them partly by being wrong |
+| R7 | `on_prompt` reuses the task id | A new request inherits the previous task's evidence, read set and `guided` flag; concurrent writers lose updates |
+| R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low |
+| R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence |
+
+### Host contract
+
+| | Defect | Consequence |
 |---|---|---|
-| The hand-written suite | fast iteration, per-run metrics such as block rate and cost | ~$2 a pass |
-| **Mined real bugs** (`eval/mine.py`) | any milestone claim | CPU time only; no Docker, no install |
-
-The second exists because the population problem has bitten this project three
-times: hook payloads, gate scenarios and claim prompts were each written by the
-person whose code they graded, and each agreed with it. Tasks written here have
-now failed the same way twice more. Real commits carry their own F2P and P2P
-sets, so the failure mode is removed rather than guarded against.
-
-The SWE-bench harness needs Docker, which is not available here, but the harness
-is not the valuable part. The construction is, and it needs only a repository
-with history, a commit touching source and tests together, and a test runner.
-`click` supplies 3,362 commits, no dependencies, and 1,982 tests in 6.9 seconds.
-
-**Expect small effects.** The published comparator amplifies visible-pass into
-hidden-fail on 1.72 percent of cells for naive retry against 0.11 percent gated,
-and needed 9,240 cells for a confidence interval excluding zero. That
-corroborates the 252-runs-per-comparison estimate and argues for engineering the
-task suite to raise the base rate rather than hoping for a large effect.
-
-**Exit:** ~252 paired runs per comparison, McNemar p reported with the ceiling stated up front. A result either way is a result; an underpowered one is not.
-
-### M6 — Memory and learning (parallel, low priority)
-
-*Gaps 7, 8.* Both real implementations in the field report automatic capture failing. Writes only as proposals from a retrospective, with evidence links, validated by replay before promotion. Not started until M1 to M4 exit.
+| H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity |
+| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision |
+| H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it |
+| H4 | Bash-only subscription | PowerShell commands are invisible |
 
 ---
 
-## 7. Measurement discipline
+## 5. The architecture to build toward
 
-Ten phases produced four instances of the same failure. These rules exist so there is not a fifth.
+```
+task + permitted context
+   → reproducible base environment
+   → localise code, enumerate plausible diagnoses
+   → isolated candidate attempts          ←────────────┐
+   → immutable candidate snapshots                     │
+   → visible checks + grounded behavioural probes      │
+   → candidate comparison and selection                │
+   → worth more work?  ──── new diagnosis or repair ───┘
+   → selected patch + evidence report
+   → independent held-out evaluator
+```
 
-**Every metric names its population.** Three separate measurements were true about a population invented by the person being graded and false about the real one: hook payloads written by hand agreed with the code because both shared one wrong assumption; the gate scored 0 percent false blocks on a suite containing no conversations; claim inference looked fine until it met 3,557 real prompts. A number without a stated population is not reportable.
+The held-out evaluator's answers are unavailable to the worker, the selector and the within-task repair policy.
 
-**Prefer ground truth the author did not write.** The host records whether a command failed. A hidden test decides resolution. A turn's own behaviour says whether work happened. Where such a signal exists, use it and say it is a proxy where it is one.
+**5.1 Measure the generation ceiling before building a better examiner.** For a frozen pool of N candidates: *pool coverage* is the fraction of tasks where at least one candidate is correct; *selected success* is the fraction where the chosen one is correct; the difference is **selection regret**. If every candidate is wrong, no reranking helps and the investment belongs in localisation, models or diagnosis diversity. Pilot at N = 1, 4, 8.
 
-**The noise floor is measured before any comparison.** Two identical passes disagreed on a quarter of the suite. Skipping this cost three comparisons and about $12. `python -m eval.noise` reports the flip rate and sorts tasks by whether they discriminate at all.
+**5.2 Branch at diagnosis, not only at patch generation.** Workers given the same interpretation reproduce the same mistake. Branch where the interpretation is chosen. Share verified repository facts; keep speculative diagnoses separate until comparison. Measure diversity by failure overlap and solutions found, not by role names.
 
-**State the ceiling before the p-value.** An arm can only overturn tasks the baseline failed. A run that cannot reach significance however well it goes is a pilot, and `eval/analyse.py` says so before it says anything else.
+A **missing-code search** after a candidate edit — sibling implementations of the changed interface, callers with other argument types, exception paths, resource-ownership transitions, parsers that must agree — targets exactly the failure that beat `click-762c97ee`, which fixed `Choice` and never generalised to `DateTime`.
 
-**Hold a set back, and expect it to hurt.** The tuned score was 0 percent; the held-out score was 43. Fresh cases guard against overfitting to the cases; they do nothing about overfitting to the *kind* of case you think to write, which is why the population rule comes first.
+**5.3 Context is a constructed working set.** The old plan excluded finding code because the field is crowded. That optimises novelty rather than task success, and the restriction is removed. Compact worker state carries contract, diagnosis, located symbols, observed failures, rejected approaches, active candidate, open questions and evidence references, with code and logs retrievable. Summaries must distinguish observation from hypothesis so a guess is not promoted during compaction. No giant always-loaded overview: the revised AGENTS.md study finds context files generally do not improve success while increasing cost.
 
-**Silence must leave a trace.** Three components failed by doing nothing. Anything unreadable is appended to a blind-spot log, the hook subscription is generated from the constants the handlers use, and `ep-doctor` exercises the join rather than either half.
+**5.4 Select on summaries, then inspect primary evidence.** Bounded candidate summaries with diagnosis, snapshot, changes, compatibility assumptions, checks actually run, and provenance of every expectation. Randomise presentation order and measure rejection of correct candidates, not judge agreement.
 
-**Know which kind of metric you have.** A per-run measurement such as block rate, cost or turns gives one observation per run, and sixteen runs can show a large effect. A per-discordant-pair measurement such as resolution only learns from tasks where two arms disagree, and disagreement is bounded by how often the baseline fails. M1 succeeded on the first kind and M2 was mismeasured on the second, one milestone apart.
+**5.5 Generated checks are uncertain until grounded.** Freezing a wrong assertion before seeing a patch does not make it right. Distinguish mandatory checks backed by authorised requirements from speculative ones. Adding checks raises the chance a correct candidate is falsely rejected, so measure **correct-candidate survival through each filter** and keep rejected candidates. A speculative disagreement should start an investigation or lower a score, not eliminate every candidate that disagrees.
 
-**Audit whether the answer was reachable.** For every failure, ask whether the
-hidden expectation could have been recovered from the context the agent was
-allowed. Missing information and unused information need different remedies, and
-conflating them produced a withdrawn conclusion: seven failures were called
-unknowable intent when six were incomplete generalisation, unprobed edges, or
-preservation properties sitting in the repository.
+**5.6 Keep an incumbent, allow nonmonotonic search.** A long attempt ends at its latest patch, not its best. Candidates are immutable; a failed repair must not destroy an earlier one. After integration, snapshot again and rerun checks: evidence from two passing branches does not transfer to their merge.
 
-**Quote a result with the number that qualifies it.** SWT-Bench's precision gain
-came with about 20 percent recall, and this plan quoted the first without the
-second. A citation trimmed in the direction that flatters the design is worse
-than no citation.
+**5.7 Route for complementary capability.** The question is not which model is cheaper but whether different configurations solve different tasks. Measure overlap between strong pinned configurations before assuming scaffolding helps.
 
-**Replay before spending.** 241 stored sessions and 36,034 commands cost nothing to grade. Live runs cost money and hours. Every hypothesis states which it needs.
-
----
-
-## 8. Hypotheses
-
-| ID | Hypothesis | Needs | Status |
-|---|---|---|---|
-| P1 | Evidence gating halves the submit-resolve gap | ~252 paired runs | **first fair answer: no effect.** 12 mined bugs, identical outcomes in both arms, 0 discordant pairs, 1.4x cost. The obligation set is inert because the agent already does what it asks |
-| P2 | The gate does not block work that is already correct | live, ~24 runs | **holds**: 69 percent of runs to 12 percent, after M1 |
-| P3 | Claim inference engages when and only when there is work | replay | 21 percent over-claim, 25 percent missed, on 3,557 real turns |
-| P4 | Coarse invalidation is not too pessimistic to live with | dogfood | unmeasured (M3) |
-| P5 | Gating improves abstention accuracy | live | unmeasured |
-| P6 | Stability obligations halve false "fixed" claims on flaky bugs | live, flaky subset | mechanism built, hypothesis unmeasured |
-| P7 | Deterministic scope guards beat prompt instructions | live, three arms | mechanism built, 0/0 on 25 cases, hypothesis unmeasured |
-| P8a | The layer's own cost is under 5 percent | replay | ~100 ms per call; holds |
-| P8b | The work the gate induces is worth its cost | live | 2.5x tokens, 1.5-1.9x turns; worth is undecided (M1, M5) |
-| P9 | Obligation-directed work beats template-directed work | live | not started (M4) |
-| P10 | Static test-impact invalidation beats coarse | replay | not started (M3) |
-| P11 | **Composition of best-of-breed pieces beats its best single part** | live | **half-answered**: costs 1.4x vanilla with no measurable benefit, but the test had no headroom |
-| P16 | The layer reduces visible-pass/hidden-fail amplification | live, powered | published comparator: 1.72 percent for naive retry, 0.11 percent gated, over 9,240 cells (arXiv 2607.14890) |
-| P17a | Frozen issue-derived checks discriminate the candidate from the maintainer's fix | diagnostic, 12 frozen patches | no runs needed beyond generation |
-| P17b | **Differential comparison against the original program** discriminates | diagnostic, no model call | the cheapest, and the audit says it reaches `bc32a92c` |
-| P17c | Interpretation probes discriminate | diagnostic, one model call | the audit says it reaches `762c97ee`, `047adef2`, `f316d5cb` |
-| P18 | Counterexample-driven repair beats spending the same budget on more attempts | live, after discrimination | the baseline that keeps a gain from being just more compute |
-| P12 | Prediction calibration predicts the miss rate | replay | not started |
-| P13 | The runtime reads what the host actually sends | replay | **answered**: 174/174 and 5,916/5,916 |
-| P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | **rejected**: 12 of 16 blocked became 14; the text reached the agent |
-| P15 | The runtime computing the evidence beats blocking to demand it | live, ~24 runs | **holds**: blocking 75 to 12 percent of runs, nothing stable regressed |
+**5.8 Learn from decisions, not from successful transcripts.** Per-task working memory and attempt histories first. Replay validates parsers and retrieval; it cannot establish the causal benefit of an action never executed.
 
 ---
 
-## 9. The core, and what it still lacks
+## 6. Measurement discipline
 
-| Piece | Lines | State |
+Retained from v0.4–v0.6: every metric names its population; prefer ground truth the author did not write; measure the noise floor before comparing; state the achievable ceiling before the p-value; hold a set back; silence must leave a trace; know whether a metric is per-run or per-discordant-pair; audit whether each failure was reachable from permitted context; quote a result with the number that qualifies it.
+
+Added by this audit:
+
+- **Report pool coverage, selected success and selection regret together.** A single resolved-rate hides whether the problem is generation or selection.
+- **Track correct-candidate survival through every filter.** A gate that raises precision by discarding correct work is not an improvement.
+- **Separate pilots from confirmatory comparisons.** Small mechanistic pilots discover whether an intervention does anything; a preregistered comparison supports a performance claim. Report effect sizes and intervals rather than applying a universal significance gate to every iteration.
+- **Do not rebuild the main test set until the preferred mechanism wins.** Keep a versioned portfolio: an external benchmark track, a frozen private development corpus, and a final holdout untouched by tuning. Publish task accounting and exclusion reasons for each.
+- **Account for all compute**: inference, judge calls, external test time, infrastructure.
+- **Recompute the required n per comparison.** The 252-run figure alternated between agent runs and paired runs and is not a constant.
+
+---
+
+## 7. Execution: five phases, three tracks
+
+Tracks run in parallel where prerequisites allow: **evaluation infrastructure**, **candidate generation**, **candidate assessment**. Oracle diagnostics can proceed on frozen candidates while the harness is being made reproducible.
+
+### Phase A — Make conclusions reconstructible *(blocking)*
+
+Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audit's probe. Add run bundles: task manifest, base identity, candidate diff and snapshot, host events, prompts and model configuration, trajectory, test node outcomes, limits, result. Grade in an evaluator-owned workspace from an exported patch. Keep raw host-event fixtures separate from transcript fixtures. Provision an isolated Linux worker.
+
+**Exit:** a run reconstructs from its bundle; a known regression fails grading; no replicate is lost; a candidate input change invalidates dependent evidence; supported host success, failure and stop paths observed end to end.
+
+### Phase B — Establish the strongest useful baseline
+
+A current strong native host configuration against a minimal worker harness, pinned models and environments, several repositories and difficulty categories. Both a matched-compute comparison and a maximum-budget curve; cost is secondary here, so the curve is the product direction and the matched comparison explains where gains came from.
+
+**Exit:** at least one reproducible baseline, a failure taxonomy backed by saved trajectories, and enough repeats to separate setup problems from coding failures.
+
+### Phase C — Separate generation from selection
+
+Candidate pools at several budgets, graded offline. Evaluate selectors without exposing hidden outcomes: patch text, structured summaries plus evidence, and the existing gate. Run the A/B/C oracle diagnostics — frozen issue-derived checks, differential comparison against the original program, interpretation probes — independently on frozen candidates.
+
+**Exit:** pool coverage, selected success, selection regret, false rejection, regression rate and total compute reported together on development and untouched tasks.
+
+### Phase D — Spend compute where it creates new solutions
+
+Diagnosis branching, missing-code search, complementary worker configurations, fresh-context repair from evidence-linked summaries. Each compared against ordinary extra independent attempts at matched budget.
+
+**Exit:** a selected-patch gain survives a preregistered held-out comparison and is not explained by scoring defects or excluded tasks.
+
+### Phase E — Learn the allocation policy
+
+Routing, prompts and reusable procedures on training and development tasks. Cross-project memory only if evidence-backed and separately evaluated.
+
+**Exit:** improvement transfers to unseen tasks or repositories. Replay-only improvements do not count.
+
+---
+
+## 8. The experiment queue
+
+| Experiment | Comparison | Decision it answers |
 |---|---|---|
-| Evidence parsers | 373 | built, 17 percent of real commands produce evidence |
-| Provenance and staleness | 171 | built, coarse only |
-| Claim inference | 90 | built, measured on real prompts |
-| Obligation table | 259 | built |
-| Gate | 343 | built, over-fires |
-| Scope guard | 153 | built |
-| Repeat runner | 120 | built |
-| Report | 147 | built, end-of-turn only |
-| Host contract | 393 | built after three defects |
-| Guidance channel | 20 | built; no measurable effect on blocking |
-| Config and profiles | 82 | built |
-| Self-discharge | 71 | built; the fix that made the gate usable |
-| Status command | 66 | built |
-| **Repository model** | — | **M3** |
-| **Selection runtime** | — | **M4** |
+| Instrument validation | gold patch, known regression, wrong patch, setup failure | can the evaluator tell these apart? |
+| Strong baseline | native host vs minimal harness, pinned | are we starting from a competitive worker? |
+| Candidate scaling | N = 1 / 4 / 8, selected vs pool coverage | is more generation buying alternatives? |
+| Selection ablation | patch text vs summaries plus evidence | does representation improve the choice? |
+| Diagnosis diversity | retries vs different grounded diagnoses | do workers escape shared mistakes? |
+| Localisation expansion | normal context vs targeted caller/sibling search | are failures caused by missing code? |
+| Repair vs restart | continue transcript vs fresh worker with prior facts | does reuse preserve learning without fixation? |
+| Check survival | required checks vs added generated checks | do new checks remove wrong candidates without removing right ones? |
+| Complementarity | repeated strongest worker vs heterogeneous pool | does configuration diversity add solutions? |
+| Gate contribution | same pipeline: capture-only, auto-check, blocking | what does blocking add once search exists? |
+
+The 1.4× gate result stands for its narrow configuration. It is not an argument against spending more compute through a mechanism that demonstrably creates or selects more correct patches.
 
 ---
 
-## 10. Postponed, with triggers
+## 9. Hypotheses
 
-| Postponed | Trigger |
-|---|---|
-| Context engine with budgets | Large-repository tasks fail on context, measured |
-| Model routing | Cost becomes a real complaint; hosts already route |
-| Critics and subagents | Regression rate on risky changes stays high with the gate on |
-| Second host adapter | M1 exits, or someone asks. Codex first: closest hook engine |
-| Browser evidence | A UI claim type is needed. gstack's Playwright daemon is MIT and liftable |
-| Reconstructing repository state from transcript file-history rows | Replay needs to measure freshness, which it currently cannot |
-| Subagent transcript replay | Subagent work is gated. 1,290 such transcripts already exist |
-
----
-
-## 11. Novelty claims
-
-Standing rule unchanged: a novelty claim names the search that failed to find prior art.
-
-- **Withdrawn, 2026-09-10.** "Obligations derived from inferred intent, discharged by evidence bound to repository state, invalidated by change, gating completion" is prior art. Proof-or-Stop (arXiv 2607.14890) publishes the same spine — claim, evidence, gate, transition — binds evidence to a `materialHash` over the tracked source tree, and rejects it "the instant the source tree changes". It also names the failure this project was built around, an unattended agent retrying until a visible check turns green. Found while researching how to build a task suite, which is how prior art is usually found. Card in `docs/research/cards/proof-or-stop.md`.
-- **What survives, stated narrowly:** evidence captured by parsing tool output the agent already produced, requiring no cooperation from the agent and no process from the user; claims inferred from ordinary intent rather than declared; and invalidation at test-impact granularity rather than whole-tree, which is planned in M3 and therefore a claim about the future, not the present.
-- **Withdrawn:** runtime-enforced process stages (AgentLTL), typed claims as such (proof-carrying certificates for LLM pipelines), staleness invalidation as a mechanism (Test Impact Analysis is standard industrial practice).
-- **Untested:** that composition of these systems beats its best part. This is P11 and the project's own reason to exist. Claiming it before M2 would be the same error as every number that was true about an invented population.
+| ID | Hypothesis | Status |
+|---|---|---|
+| P1 | Evidence gating halves the submit-resolve gap | **no effect measured** on twelve mined bugs, on a grader now known not to check preservation. Re-run after Phase A |
+| P2 | The gate does not block already-correct work | holds at 12 percent of runs, on the same qualified grader |
+| P3 | Claim inference engages when there is work | 21 percent over-claim, 25 percent missed, over 3,557 real turns |
+| P13 | The runtime reads what the host sends | **qualified by H1**: replay fidelity is not delivery fidelity |
+| P17a/b/c | Frozen issue-derived checks / differential comparison / interpretation probes discriminate | not started; Phase C |
+| P19 | Pool coverage exceeds selected success by a margin worth attacking | **new, and the most informative thing to measure first**; Phase C |
+| P20 | Diagnosis branching finds solutions repeated attempts do not | new; Phase D |
+| P21 | Localisation expansion resolves tasks that fail from missing code | new; Phase D |
+| P4–P12, P14–P16, P18 | carried forward unchanged | see v0.6 in git history |
 
 ---
 
-## 11b. The oracle problem, and what it costs this design
+## 10. Claims withdrawn or qualified
 
-The first fair comparison returned a null: twelve mined bugs, identical outcomes
-in both arms, 1.4x the cost. The cause is not a tuning error.
-
-`test_added` accepts a passing test the agent wrote after deciding its fix was
-correct, so the test asserts whatever the fix does. `suite_green` is an
-independent oracle but does not cover the bug, which is why the bug existed. So
-every obligation the gate checks is either satisfied by what the agent does
-anyway, or blind to the thing that is wrong.
-
-The field has measured this. Agent-written test volume does not change outcomes
-(arXiv 2602.07900). LLM assertions encode actual rather than expected behaviour
-(arXiv 2606.18168, 86,156 test patches), with no semantic remedy proposed. And
-TDD inside the agent loop showed no discernible difference in outcome quality in
-Fowler's experiment, with the agent implementing ahead of its own test so that it
-never went red.
-
-**Reproduction-first was the obvious fix and it is not sufficient.** Verifying a
-red-to-green transition does catch implement-ahead, which instructing TDD does
-not. It leaves the oracle in the agent's hands: a reproduction test encoding a
-misunderstanding fails, then passes against a fix that implements the same
-misunderstanding.
-
-**The design consequence.** An obligation is only worth checking if its oracle is
-not the agent. Of the sources available to a runtime watching one agent, mutation
-score over the changed lines is the cheapest: mutate what changed, run the tests
-the agent wrote, and see whether they notice. A test that survives every mutant
-asserts nothing about the change. This is P17, and it is measurable on the same
-twelve bugs. Card: `docs/research/cards/agent-authored-oracles.md`.
+- **"Evidence is bound to exact file contents."** False of the implementation: size and mtime with a `vcs_state` tie-breaker.
+- **"The instrument is honest."** Parser fidelity, host delivery, freshness, evaluator validity and statistical analysis are five separate things; none proves the others.
+- **"174 of 174 failures read correctly."** True of replay. H1 shows a documented live failure shape produces no evidence at all.
+- **"The first failing observation was pre-existing."** Not a baseline unless measured before the change.
+- **"No more failures means no new failures."** Failure identity and execution conditions matter; equal counts can hide different failures.
+- **"Real commits remove the population problem."** They improve authenticity. Sampling bias, underspecification and grader defects remain.
+- **"A useful task requires the naive fix to break the visible suite."** That defines a diagnostic subset for one mechanism, not coding correctness, and selecting the benchmark that way favours the intervention.
+- **"If the evidence layer cannot decide done, the project has failed."** Withdrawn. It can be valuable inside a search system without being a semantic oracle.
 
 ---
 
-## 12. What would falsify the project
+## 11. Retain, defer, stop
 
-- **P11 fails and M4 does not recover it.** If the stack does not beat its parts and selection does not beat the stack, composition was not the opportunity.
-- **P1 already failed once, on the obligation set of the day.** Twelve mined bugs, zero discordant pairs. That falsifies the v0.4 obligation set rather than the thesis, and the distinction is only honest if the replacement is measured on the same tasks rather than argued for.
-- **All three mechanisms fail to discriminate.** If frozen issue-derived checks, differential comparison against the original program, and interpretation probes all accept the candidate and the maintainer's fix equally, then a layer watching one agent cannot tell good work from bad, and the product is a reporting tool rather than a gate.
+**Retain:** automatic collection from ordinary work; automatic execution of declared checks; provenance of expectations; five honest outcomes rather than block-or-pass; independent oracle diagnostics; the recorded history of failed hypotheses.
 
-  v0.5 asserted that outcome from a single misread task. It is still possible and it is no longer the expectation: six of the seven failures were recoverable, which is an argument that the mechanisms have something to find. The honest version is that **the diagnostic decides this, not the prose**.
-- **P2 cannot be fixed.** If guidance does not cut blocking, the gate is a tax on correct work and belongs behind `strict` rather than on by default.
+**Defer:** a second host adapter, a large always-on framework stack, cross-project memory, a custom tree-search framework, elaborate risk routing, precise static test-impact optimisation. Correct invalidation is *not* deferred — it is P0.
 
-If P1 holds and P2 is fixed, the product exists. If P1 holds and P2 does not, the idea is right and the policy is wrong, which is tuning. The order in §6 puts the cheap, falsifying measurements first for that reason.
+**Stop:** ranking work by novelty; treating the stop gate as the organising purpose; publishing a number without the qualification that bounds it.
+
+---
+
+## 12. What would falsify this direction
+
+- **Pool coverage barely exceeds selected success.** Then selection is not the bottleneck and the search framing buys little.
+- **Candidate scaling flattens immediately.** More attempts produce the same wrong answer, and the investment belongs in generation quality or localisation.
+- **Every oracle diagnostic accepts candidate and maintainer fix equally.** Then the assessment track cannot discriminate, and the honest product is capture and reporting.
+- **The strong baseline is already at the ceiling of the chosen corpus.** Then the corpus is exhausted, not the idea, and the portfolio needs harder tracks.
 
 ---
 
 ## Appendix: evidence trail
 
-`docs/research/` holds the source study unchanged: fourteen source-read cards at recorded commits, three host cards, the competitor map, the complementarity matrix with its sixteen weakness classes and ten residual gaps, the licence register, and the annotated reading list. `journey/` holds ten phases of what was tried, what was wrong, and what the measurements said. Every number in this plan is reproducible from a command in this repository.
+`docs/research/` holds the source study of fourteen systems at recorded commits, the host cards, the complementarity matrix, the licence register, the reading list, the oracle-problem card, and `audit_2026_09_11/` with its reproduction script and evidence appendix. `journey/` holds fifteen phases of what was tried, what was wrong, and what the measurements said. Every number in this plan is reproducible from a command in this repository, and the ones that are not yet trustworthy are marked as such in §4 and §10.
