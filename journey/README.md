@@ -27,7 +27,7 @@ command in this repository and can be reproduced.
 | [13-instrument.md](13-instrument.md) | Four rounds of building a ruler, the rule that decides whether a task measures anything, and the prior art that was there all along |
 | [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, a gate that changed nothing, and why the obvious fix is theatre |
 | [15-correction.md](15-correction.md) | An external critique, an answer key that should have been read first, and six of seven failures turning out reachable |
-| [16-audit.md](16-audit.md) | Sixteen reproduced defects, a grader blind to regressions, and a change of objective |
+| [16-audit.md](16-audit.md) | Sixteen reproduced defects, a grader blind to regressions, a change of objective, and two bad attempts at responding to it |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 

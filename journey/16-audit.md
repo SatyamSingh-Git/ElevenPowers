@@ -110,6 +110,36 @@ one mechanism rather than coding correctness — **selecting the benchmark that 
 favours the intervention being measured**, which is the thing this project has
 been most careful about elsewhere.
 
+## Responding to it badly, twice
+
+The plan was rewritten as v0.7 and presented as incorporating the audit. It did
+not.
+
+**First check: fourteen of twenty-five recommendations covered.** Eleven missing,
+including the whole of section 6 — eight primary sources for the reading list,
+one of which contradicts an entry this project had written from a secondary
+summary and made its primary external benchmark. The plan had been written by
+reading the audit once and writing from memory of it, which is the same failure
+as the first plan in this project and as the null diagnosed from an unread answer
+key.
+
+**Second check: five pieces of earned discipline had been deleted.** Rewriting
+around the audit's structure removed the rule for what to work on next, the
+smallest-useful-slice discipline, any compute envelope, a statement of what
+happens to the shipped tool meanwhile, and exits expressed as commands rather
+than prose. As first written, v0.7 was a larger design than the v0.2 that was
+rejected for being a research laboratory, with none of the discipline that made
+v0.3 and v0.4 work.
+
+The cause is worth stating because it will recur. **An external critique is
+authoritative about what it examined and silent about everything else.** This one
+was right about the objective and had no reason to mention how the project had
+learned to keep itself honest. Adopting its shape wholesale treated that silence
+as permission.
+
+Both checks were scripts, not readings, and both were run only because someone
+asked whether the plan was actually finished.
+
 ## What it cost, and what it is worth
 
 Nothing except the reading. Sixteen defects, a withdrawn interpretation of the

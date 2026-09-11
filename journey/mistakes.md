@@ -230,6 +230,47 @@ quote a result with the number that qualifies it.
 
 ## Tooling
 
+### Declaring a plan complete without checking it against its source
+
+v0.7 was written from an audit and presented as incorporating it. Asked directly
+whether that was true, a mechanical check found **fourteen of twenty-five
+recommendations covered and eleven missing, including an entire section**. The
+reading-list updates — eight primary sources — had been skipped altogether.
+
+*Cause:* the plan was written by reading the audit once and writing from memory
+of it. The same shape as the first plan in this project, which was written from
+recollection of repositories nobody had opened, and as the null diagnosed from an
+answer key nobody had read.
+
+*Cost:* a plan presented as finished that was missing a third of its input,
+including a source that contradicts an earlier entry in this project's own
+reading list.
+
+*Changed:* the check is now a script rather than a reading. Any document claimed
+to incorporate a source is verified against that source item by item.
+
+### Adopting a good external framing and losing my own
+
+Rewriting the plan around the audit's structure silently deleted five things v0.4
+had earned: the rule for what to work on next, the smallest-useful-slice
+discipline, a compute envelope, a statement of what happens to the shipped tool
+meanwhile, and exit criteria stated as commands rather than prose. A second
+mechanical check found all five missing.
+
+*Cause:* the audit was right about the objective and had nothing to say about how
+this project had learned to keep itself honest. Adopting its shape wholesale
+replaced the whole document rather than the parts it addressed.
+
+*Cost:* v0.7 as first written was a larger design than the v0.2 that had been
+rejected for being a laboratory, with none of the discipline that made v0.3 and
+v0.4 work. It would have been unfollowable in exactly the way v0.2 was.
+
+*Changed:* both checks are recorded here, and the plan now states the rule it is
+followed by in its own execution section rather than assuming it.
+
+*The general lesson:* an external critique is authoritative about what it
+examined and silent about everything else. Silence is not permission to discard.
+
 ### Silent failures from shell heredocs
 
 Several file edits were applied through Python scripts in shell heredocs. Escape
