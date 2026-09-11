@@ -26,6 +26,7 @@ command in this repository and can be reproduced.
 | [12-composition.md](12-composition.md) | Assembling the composition baseline the mission is measured against, and mismeasuring with it |
 | [13-instrument.md](13-instrument.md) | Four rounds of building a ruler, the rule that decides whether a task measures anything, and the prior art that was there all along |
 | [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, a gate that changed nothing, and why the obvious fix is theatre |
+| [15-correction.md](15-correction.md) | An external critique, an answer key that should have been read first, and six of seven failures turning out reachable |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -138,6 +139,16 @@ discernible difference, because the agent implements ahead of its own test. The
 real conclusion is structural, and grading every obligation by whose word it
 takes shows the whole null at a glance.
 
+**Then the diagnosis of that null did not survive review.** The claim that the
+agent had misunderstood the issue was made from the agent's own test without
+reading the answer key. The hidden tests show its answer for the reported case was
+right; it failed by not generalising to a second type. Auditing all seven, six are
+recoverable from what a runtime can observe, and one of them wants only a
+comparison against the original program. The conclusion that no reachable oracle
+could help was withdrawn, two citations that had been trimmed the flattering way
+were corrected, and the plan gained the distinction it was missing: establish what
+the expected behaviour is before judging whether the patch implements it.
+
 ## The two things worth taking away
 
 ### A measurement is only as good as the population it runs on
@@ -200,6 +211,7 @@ Every figure below comes from a command in this repository.
 | Real mined instances | validated from upstream history, no Docker | `python -m eval.mine --repo DIR --out mined.json` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
 | Tests | 343 | `python -m pytest tests -q` |
+| P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
 

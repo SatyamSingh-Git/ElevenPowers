@@ -209,6 +209,25 @@ task-and-model pair.
 *Changed:* the operating point moved to a weaker model, where a 31 percent gap
 exists to study, and both suites are kept.
 
+### Diagnosing a null from the agent's own test, without reading the answer key
+
+The twelve-bug null was explained as the agent misunderstanding the issue, and
+from that came a conclusion that no reachable oracle could help. The hidden tests
+say otherwise: the agent's answer for the reported case was correct, and it failed
+by not generalising to a second type.
+
+*Cause:* the same one as five previous entries — a story built on a source that
+was never opened. Committed while writing about the importance of not doing it.
+
+*Cost:* a wrong conclusion in the plan, two citations quoted in the direction that
+flattered it, and very nearly a mutation-testing build aimed at a failure mode
+that was not occurring.
+
+*Changed:* an audit rule in the plan — for every failure, ask whether the hidden
+expectation was reachable from the agent's permitted context, because missing
+information and unused information need different remedies. And a citation rule:
+quote a result with the number that qualifies it.
+
 ## Tooling
 
 ### Silent failures from shell heredocs

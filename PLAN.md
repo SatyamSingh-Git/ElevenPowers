@@ -1,4 +1,28 @@
-# Master Plan v0.5
+# Master Plan v0.6
+
+2026-09-11. Amends v0.5 after an external critique corrected the diagnosis behind it.
+
+v0.5 concluded from twelve real bugs that a runtime watching one agent cannot reach
+an oracle strong enough to matter. That conclusion rested on one task read wrongly:
+the agent was said to have misunderstood the issue, when in fact its answer for the
+reported case was right and it simply failed to generalise to `DateTime` and to the
+variadic path. The claim was made from the agent's own test without reading the
+answer key, which is the error this project keeps repeating.
+
+Auditing all seven failures, **six are recoverable from what a runtime can observe**.
+Only one needs a decision a person has to make.
+
+| What v0.5 said | Corrected |
+|---|---|
+| The failures require unknowable intent | Six of seven do not. They are incomplete generalisation, unprobed edge cases, and preservation properties |
+| The oracle must not be the agent | Still true, but the useful form is narrower: **a passing test must never promote an interpretation into a requirement** (§5b) |
+| Mutation score is the next oracle | Killed before building: the failing agents write strong tests. Replaced by three mechanisms measured separately (§6, M2.5) |
+| The gate refuses the stop | Conflates ending computation with certifying completion, and produced loops where the missing ingredient was information. Five distinct outcomes instead (§5c) |
+| SWT-Bench doubles precision | With about 20 percent recall. Filtering, not resolution |
+
+---
+
+## v0.5 preamble, retained
 
 2026-09-10. Amends v0.4 after the first fair comparison returned a null and the
 literature explained why. The change is to the thesis itself, not to a policy.
@@ -50,9 +74,11 @@ The closest analogue is `make`. `make` does not build software; it knows what de
 
 ## 2. The thesis
 
-> **Completion should be computed from dependency-tracked evidence, not asserted by the model — and the evidence is worth nothing unless its oracle is somebody other than the model.**
+> **Completion should be computed from dependency-tracked evidence, not asserted by the model — and no expectation may be treated as a requirement on the strength of the agent's own say-so.**
 
-The second clause is new, and it was bought with a null result on twelve real bugs. v0.4's thesis is necessary and was not sufficient: a runtime can compute faultlessly over evidence the agent authored to agree with itself, and that is what this one did, twelve times out of twelve.
+The second clause was bought with a null result on twelve real bugs, and refined after that result was diagnosed wrongly. v0.4's thesis is necessary and was not sufficient: a runtime can compute faultlessly over evidence the agent authored to agree with itself, and that is what this one did, twelve times out of twelve.
+
+The refinement matters. "The oracle must not be the agent" reads as though agent-authored evidence is worthless, which is too strong and would forbid useful things. The operative rule is about **promotion**: an agent may propose an expectation, and its own passing test may not be what turns that proposal into the standard the work is judged against.
 
 Everything is machinery in service of it, and each piece must answer two questions now: if this vanished, would a developer notice their agent got worse — and whose word does it take?
 
@@ -155,9 +181,42 @@ word, and the two that are not are blind to the bug. That is the whole
 explanation of the null, and it was visible in this table before the measurement,
 had the table existed.
 
-**Standing rule from here.** A new obligation must name its oracle. If the answer
-is "the agent", it may be recorded and reported, and it may not be the reason a
-task is called done.
+**Standing rule from here.** A new obligation must name its oracle, and every
+expectation must record where it came from:
+
+| Origin of an expectation | What it establishes |
+|---|---|
+| An explicit user example, or an approved acceptance criterion | a directly specified requirement |
+| An applicable existing contract: documentation, a type signature, an adjacent test | a requirement within that contract's scope |
+| The original program's behaviour | what previously happened, which grounds preservation |
+| The agent's interpretation | a hypothesis, which needs scrutiny |
+
+**A passing test must never promote an interpretation into a requirement.**
+Provenance is necessary and not sufficient, since an agent can cite documentation
+incorrectly; a direct example or a mechanically checkable contract deserves more
+weight than an inferred reading of prose.
+
+## 5c. Five outcomes, not two
+
+"Refuse the stop" conflates ending computation with certifying completion. When
+the missing ingredient is information rather than effort, refusing produces an
+expensive loop: measured live, blocking bought extra turns at 1.4 to 2.5 times
+the cost and changed no outcomes.
+
+| Situation | What the runtime does |
+|---|---|
+| Required evidence missing or stale | run the checks it can run itself |
+| A grounded expectation is violated | return the counterexample: input, expected, observed, and where the expectation came from |
+| A material expectation is ambiguous | ask one concrete question, not "verify more" |
+| Budget or environment prevents verification | stop, unresolved, and say so |
+| The acceptance protocol is satisfied | issue a certificate scoped to this contract, these checks, this tree |
+
+An agent may end its turn unresolved. It may not report an unresolved result as
+verified completion. The certificate means *this artifact satisfied this version
+of the contract under these checks in this environment*, which is something a
+runtime can actually compute, unlike unrestricted correctness.
+
+---
 
 ---
 
@@ -211,36 +270,66 @@ Full account in `journey/12-composition.md`.
 **Blocked on:** a task suite that discriminates, which is now blocking M2 and M5
 both, and is therefore the next thing built.
 
-### M2.5 — An oracle that is not the agent
+### M2.5 — Establish the contract before judging the implementation
 
-*The null said the gate is inert because everything it checks is either the
-agent's own word or blind to the bug. Finer invalidation of worthless evidence is
-worth nothing, so this comes before M3.*
+*Twelve real bugs, no effect. Six of the seven failures were reachable, so the
+question is which mechanism reaches them, not whether anything can.*
 
-**Revised 2026-09-11, before building, on free evidence.** Two candidates were
-killed by reading the twelve transcripts rather than by spending on runs.
+**Two questions, where v0.5 had one.**
 
-*Mutation score is the wrong instrument.* Its premise was that failing agents
-write weak tests. They do not: the agent on `click-762c97ee` wrote a
-four-case parametrised test with real assertions, which would kill mutants
-easily. Mutation score measures test strength; this test is strong and
-confidently wrong. The obligation passes and the task still fails.
+- *Contract validity:* what supports this expected behaviour?
+- *Implementation validity:* what supports the claim that this patch implements it?
 
-*Tampering detection has no signal.* Treating `suite_green` as independent only
-when the agent leaves the project's tests alone: 2 of 5 resolved when it edited
-them, 3 of 7 when it did not. Kept as a reported caveat, not a gate.
+An agent-authored assertion can speak to the second only once the first has
+support from somewhere else. Today the runtime asks only the second, and accepts
+the agent's answer to the first by default.
 
-*What survives* is an independent derivation of expected behaviour from the issue
-text, made without sight of the patch, used to judge it. This is SWT-Bench's
-shape and the one published result that works: tests generated from the issue,
-filtering candidate patches, doubling the precision of SWE-Agent. It costs a
-model call and its independence is imperfect, since it shares the agent's priors,
-which was enough for SWT-Bench with the same models.
+**Three mechanisms, measured separately, because they carry different
+information.**
 
-**Exit:** P17 measured on the same twelve mined bugs. Either the obligation
-changes outcomes where agent-authored evidence did not, or the honest finding is
-that a runtime watching one agent cannot reach an oracle strong enough to matter,
-and the product's claim shrinks to what it can actually support.
+| | Mechanism | Costs | What the audit says it would reach |
+|---|---|---|---|
+| A | Independent checks derived from the issue, frozen before the patch is visible | a model call | the reported case, stated APIs |
+| B | **Differential behaviour against the original program** | no model call | preservation properties: `bc32a92c`'s borrowed stream and missing flush |
+| C | Probes that distinguish competing interpretations | a model call | generality and edge cases: `762c97ee`'s `DateTime`, `047adef2`'s dedupe, `f316d5cb`'s boundaries |
+
+B is the cheapest and needs no intent at all: a bug fix owes *change the defective
+behaviour* and *preserve the rest*, and the original program is the oracle for the
+second. The current gate checks only the first.
+
+C produces probes that are **questions with executable inputs**, not tests. Where
+the permitted context cannot settle a disagreement the runtime asks one concrete
+question — for this input the plausible outputs are A and B, which is intended —
+which is far cheaper for a maintainer than reviewing a patch. Two models agreeing
+is evidence about their agreement, not about intent; disagreement allocates
+attention rather than deciding anything.
+
+**The diagnostic comes before the verifier.** Freeze the twelve candidate patches.
+Generate checks from the original code and permitted context only, with the
+candidate, the maintainer's fix and the hidden tests withheld. Then run the frozen
+checks against all three:
+
+| Observation | Reading |
+|---|---|
+| rejects the candidate, accepts the maintainer's fix | useful discrimination |
+| rejects both | a wrong oracle, an unsupported requirement, or broken infrastructure |
+| accepts both | no discrimination between these two |
+| rejects a known-good candidate | a false rejection to investigate |
+
+Checks that turn out inconvenient after the gold result is known are **counted,
+not discarded**.
+
+**Measured, at minimum:** incorrect patches certified; correct patches rejected;
+tasks resolved; unresolved plus clarification burden; and cost per correctly
+resolved task. A repair experiment comes only after discrimination is shown, with
+a baseline spending the same budget on ordinary extra attempts — otherwise a gain
+cannot be told apart from more compute.
+
+**Exit:** each of A, B and C reported separately on the twelve, then the surviving
+design assessed on tasks that were never used to develop it. Also audited: for
+each failure, whether the hidden expectation was recoverable from the agent's
+permitted context at all, since missing information and unused information need
+different remedies.
 
 ### M3 — The repository model
 
@@ -338,6 +427,18 @@ Ten phases produced four instances of the same failure. These rules exist so the
 
 **Know which kind of metric you have.** A per-run measurement such as block rate, cost or turns gives one observation per run, and sixteen runs can show a large effect. A per-discordant-pair measurement such as resolution only learns from tasks where two arms disagree, and disagreement is bounded by how often the baseline fails. M1 succeeded on the first kind and M2 was mismeasured on the second, one milestone apart.
 
+**Audit whether the answer was reachable.** For every failure, ask whether the
+hidden expectation could have been recovered from the context the agent was
+allowed. Missing information and unused information need different remedies, and
+conflating them produced a withdrawn conclusion: seven failures were called
+unknowable intent when six were incomplete generalisation, unprobed edges, or
+preservation properties sitting in the repository.
+
+**Quote a result with the number that qualifies it.** SWT-Bench's precision gain
+came with about 20 percent recall, and this plan quoted the first without the
+second. A citation trimmed in the direction that flatters the design is worse
+than no citation.
+
 **Replay before spending.** 241 stored sessions and 36,034 commands cost nothing to grade. Live runs cost money and hours. Every hypothesis states which it needs.
 
 ---
@@ -359,7 +460,10 @@ Ten phases produced four instances of the same failure. These rules exist so the
 | P10 | Static test-impact invalidation beats coarse | replay | not started (M3) |
 | P11 | **Composition of best-of-breed pieces beats its best single part** | live | **half-answered**: costs 1.4x vanilla with no measurable benefit, but the test had no headroom |
 | P16 | The layer reduces visible-pass/hidden-fail amplification | live, powered | published comparator: 1.72 percent for naive retry, 0.11 percent gated, over 9,240 cells (arXiv 2607.14890) |
-| P17 | An obligation whose oracle is not the agent changes outcomes where agent-authored evidence does not | live, 12 mined bugs | new. Mutation score over the changed lines is the cheapest such oracle |
+| P17a | Frozen issue-derived checks discriminate the candidate from the maintainer's fix | diagnostic, 12 frozen patches | no runs needed beyond generation |
+| P17b | **Differential comparison against the original program** discriminates | diagnostic, no model call | the cheapest, and the audit says it reaches `bc32a92c` |
+| P17c | Interpretation probes discriminate | diagnostic, one model call | the audit says it reaches `762c97ee`, `047adef2`, `f316d5cb` |
+| P18 | Counterexample-driven repair beats spending the same budget on more attempts | live, after discrimination | the baseline that keeps a gain from being just more compute |
 | P12 | Prediction calibration predicts the miss rate | replay | not started |
 | P13 | The runtime reads what the host actually sends | replay | **answered**: 174/174 and 5,916/5,916 |
 | P14 | Guidance at the moment of work converts blocks into unprompted verification | live, ~24 runs | **rejected**: 12 of 16 blocked became 14; the text reached the agent |
@@ -451,7 +555,9 @@ twelve bugs. Card: `docs/research/cards/agent-authored-oracles.md`.
 
 - **P11 fails and M4 does not recover it.** If the stack does not beat its parts and selection does not beat the stack, composition was not the opportunity.
 - **P1 already failed once, on the obligation set of the day.** Twelve mined bugs, zero discordant pairs. That falsifies the v0.4 obligation set rather than the thesis, and the distinction is only honest if the replacement is measured on the same tasks rather than argued for.
-- **P17 fails as well.** If an independent oracle a runtime can actually reach does not change outcomes either, then a layer watching one agent cannot verify that agent's work, and the product is a reporting tool rather than a gate. That is a real possibility and the plan should say so before the measurement rather than after.
+- **All three mechanisms fail to discriminate.** If frozen issue-derived checks, differential comparison against the original program, and interpretation probes all accept the candidate and the maintainer's fix equally, then a layer watching one agent cannot tell good work from bad, and the product is a reporting tool rather than a gate.
+
+  v0.5 asserted that outcome from a single misread task. It is still possible and it is no longer the expectation: six of the seven failures were recoverable, which is an argument that the mechanisms have something to find. The honest version is that **the diagnostic decides this, not the prose**.
 - **P2 cannot be fixed.** If guidance does not cut blocking, the gate is a tax on correct work and belongs behind `strict` rather than on by default.
 
 If P1 holds and P2 is fixed, the product exists. If P1 holds and P2 does not, the idea is right and the policy is wrong, which is tuning. The order in §6 puts the cheap, falsifying measurements first for that reason.
