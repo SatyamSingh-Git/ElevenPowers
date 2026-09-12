@@ -22,6 +22,15 @@ import subprocess
 from pathlib import Path
 
 
+# Every git call in the evaluation pipeline runs with newline conversion off.
+# `git archive` honours `core.autocrlf`, so on a machine where it is on, a
+# repository carrying no `.gitattributes` is extracted with CRLF while one
+# declaring `eol=lf` is not. The patch then has to match whichever the tree
+# happened to get, and the grade becomes a function of the grader's git
+# configuration rather than of the base and the patch.
+GIT = ["git", "-c", "core.autocrlf=false", "-c", "core.eol=lf"]
+
+
 # Not part of anybody's answer: compiled bytecode, test-runner caches, the
 # host's own settings, and the runtime's ledger. Staged by `git add -A` in a
 # workspace with no ignore rules of its own, they made the exported candidate
@@ -50,7 +59,7 @@ def ignore_artefacts(root: Path) -> None:
 
 def seed_commit(root: Path) -> str:
     """The commit the workspace was built at, before the agent touched it."""
-    done = subprocess.run(["git", "-C", str(root), "rev-list", "--max-parents=0", "HEAD"],
+    done = subprocess.run([*GIT, "-C", str(root), "rev-list", "--max-parents=0", "HEAD"],
                           capture_output=True, text=True)
     return done.stdout.split()[0] if done.returncode == 0 and done.stdout.split() else ""
 
@@ -65,10 +74,14 @@ def export_patch(root: Path) -> str:
     base = seed_commit(root)
     if not base:
         return ""
-    subprocess.run(["git", "-C", str(root), "add", "-A"], capture_output=True)
-    done = subprocess.run(["git", "-C", str(root), "diff", "--binary", base],
-                          capture_output=True, text=True)
-    return done.stdout if done.returncode == 0 else ""
+    subprocess.run([*GIT, "-C", str(root), "add", "-A"], capture_output=True)
+    # Bytes, not text. Python translates newlines on a text pipe in both
+    # directions, so a patch read as text and written back as text is not the
+    # patch git produced -- and on Windows the round trip adds a carriage
+    # return to every line, including the ones inside a --binary block.
+    done = subprocess.run([*GIT, "-C", str(root), "diff", "--binary", base],
+                          capture_output=True)
+    return done.stdout.decode("utf-8", "replace") if done.returncode == 0 else ""
 
 
 def apply_patch(root: Path, patch: str) -> str:
@@ -87,13 +100,14 @@ def apply_patch(root: Path, patch: str) -> str:
     # with nothing anywhere reporting a problem. Giving the workspace its own
     # repository makes the working directory the top level.
     if not (root / ".git").exists():
-        subprocess.run(["git", "init", "-q"], cwd=root, capture_output=True)
-    done = subprocess.run(["git", "apply", "--verbose", "--whitespace=nowarn", "-"],
-                          cwd=root, input=patch, capture_output=True, text=True)
+        subprocess.run([*GIT, "init", "-q"], cwd=root, capture_output=True)
+    done = subprocess.run([*GIT, "apply", "--verbose", "--whitespace=nowarn", "-"],
+                          cwd=root, input=patch.encode("utf-8"), capture_output=True)
+    stderr = done.stderr.decode("utf-8", "replace")
     if done.returncode != 0:
-        return (done.stderr or "git apply failed").strip()
+        return (stderr or "git apply failed").strip()
     # Belt and braces against the same class: a zero exit is not the claim.
-    skipped = [ln for ln in done.stderr.splitlines() if "Skipped patch" in ln]
+    skipped = [ln for ln in stderr.splitlines() if "Skipped patch" in ln]
     return "; ".join(skipped)
 
 
@@ -125,7 +139,7 @@ def write(into: Path, *, task: str, arm: str, model: str, asked: str, patch: str
         "limits": limits,
         "environment": environment or {},
     }, indent=1), encoding="utf-8")
-    (into / "patch.diff").write_text(patch, encoding="utf-8")
+    (into / "patch.diff").write_bytes(patch.encode("utf-8"))
     (into / "answer.json").write_text(json.dumps(answer, indent=1), encoding="utf-8")
     if ledger and ledger.exists():
         (into / "ledger.json").write_text(ledger.read_text(encoding="utf-8"), encoding="utf-8")
@@ -157,5 +171,5 @@ def read(directory: Path) -> dict:
         if path.exists():
             out[name] = json.loads(path.read_text(encoding="utf-8"))
     patch = directory / "patch.diff"
-    out["patch"] = patch.read_text(encoding="utf-8") if patch.exists() else ""
+    out["patch"] = patch.read_bytes().decode("utf-8") if patch.exists() else ""
     return out

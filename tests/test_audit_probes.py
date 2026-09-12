@@ -788,3 +788,68 @@ def test_a_seeded_task_records_which_tests_were_seen_to_pass():
         graded = verify(task, root)
         assert not graded.resolved, "the seeded bug is still there"
         assert any(n.startswith("tests/") for n in graded.observed), graded.observed
+
+
+# --- the grader corrupted every patch it was handed, and got away with it ----
+
+def test_a_saved_patch_is_byte_identical_to_the_one_exported(upstream, tmp_path):
+    """`write_text` translates newlines, so every bundle held a CRLF patch.
+
+    The existing round-trip probe asserts `read(bundle)["patch"] == patch` and
+    passed throughout, because `read_text` translates the damage back out again.
+    A file written and read by the same library agrees with itself no matter
+    what it put on disk; only the bytes say what a bundle actually contains.
+    """
+    from eval.bundle import export_patch, write
+
+    task, root = upstream
+    (root / "src/app.py").write_bytes(FIXED.encode("utf-8"))
+    patch = export_patch(root)
+
+    kept = write(tmp_path / "b" / "run", task=task.name, arm="vanilla",
+                 model="claude-opus-5", asked="opus", patch=patch,
+                 answer={"num_turns": 3}, limits={}, ledger=None,
+                 source=task.source)
+
+    assert (kept / "patch.diff").read_bytes() == patch.encode("utf-8")
+
+
+def test_the_patch_reaching_git_is_the_patch_that_was_exported(upstream, tmp_path,
+                                                               monkeypatch):
+    """A text pipe translates on the way in as well as on the way out.
+
+    `git apply` tolerates a carriage return on every line for some hunks and
+    not others, so this bought two live runs on real repositories that passed
+    while a third could not apply its patch at all. Asserting that the patch
+    applies would have passed before the fix; the bytes are the claim.
+    """
+    import subprocess
+
+    from eval.bundle import export_patch
+    from eval.live import grade_patch
+
+    task, root = upstream
+    # Bytes, so the fixture does not put a carriage return in the file and
+    # then get blamed for one. `write_text` translates on Windows exactly
+    # as the code under test did, which would make this assertion a
+    # statement about pytest's tmp_path.
+    (root / "src/app.py").write_bytes(FIXED.encode("utf-8"))
+    patch = export_patch(root)
+    assert "\r" not in patch, "git did not put one there"
+
+    handed = []
+    unwatched = subprocess.run
+
+    def watch(command, **kw):
+        if "apply" in command:
+            handed.append(kw.get("input"))
+        return unwatched(command, **kw)
+
+    monkeypatch.setattr("eval.bundle.subprocess.run", watch)
+    graded = grade_patch(task, patch, tmp_path / "court")
+
+    assert handed and isinstance(handed[0], bytes), (
+        "a text pipe: Python translates every newline on the way into the child, "
+        "so git receives carriage returns this patch does not contain")
+    assert handed == [patch.encode("utf-8")]
+    assert graded.outcome == "resolved", "the byte check must not come at the cost of the grade"

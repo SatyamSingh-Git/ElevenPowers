@@ -42,7 +42,7 @@ from core.intent import is_abstention
 from core.wiring import hooks_json
 
 from . import bundle
-from .bundle import apply_patch, export_patch, ignore_artefacts
+from .bundle import GIT, apply_patch, export_patch, ignore_artefacts
 from .mine import failing_nodes, passing_nodes
 from .tasks import SUITES, Task, by_name
 
@@ -82,7 +82,7 @@ def materialise(task: Task, root: Path) -> None:
 
     source = task.source
     archive_path = root.parent / f"{task.name}.zip"
-    subprocess.run(["git", "-C", source["repo"], "archive", "--format=zip", "-o",
+    subprocess.run([*GIT, "-C", source["repo"], "archive", "--format=zip", "-o",
                     str(archive_path), source["base"]], check=True, capture_output=True)
     with zipfile.ZipFile(archive_path) as archive:
         archive.extractall(root)
@@ -185,13 +185,13 @@ def _test_command(task: Task) -> str:
 
 
 def _seed_git(root: Path) -> None:
-    subprocess.run(["git", "init", "-q"], cwd=root, capture_output=True)
+    subprocess.run([*GIT, "init", "-q"], cwd=root, capture_output=True)
     # Before the first `add`, so bytecode and runtime state never enter the
     # workspace's history and cannot reach the exported candidate.
     ignore_artefacts(root)
     for args in (["add", "-A"],
                  ["-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "seed"]):
-        subprocess.run(["git", *args], cwd=root, capture_output=True)
+        subprocess.run([*GIT, *args], cwd=root, capture_output=True)
 
 
 # The gate works by refusing to let the agent stop, so the gated arm gets more
@@ -378,7 +378,7 @@ def _restore_tests(task: Task, root: Path) -> bool:
     source = task.source
     archive_path = root.parent / f"{root.name}-tests.zip"
     done = subprocess.run(
-        ["git", "-C", source["repo"], "archive", "--format=zip", "-o", str(archive_path),
+        [*GIT, "-C", source["repo"], "archive", "--format=zip", "-o", str(archive_path),
          source["base"], "--", "tests"], capture_output=True)
     if done.returncode != 0:
         return False

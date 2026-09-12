@@ -21,6 +21,7 @@ from core.ledger import Ledger, Status
 from core.obligations import risk_of
 from core.parsers import parse
 
+from .bundle import GIT
 from .heldout import HELD_OUT
 from .scenarios import SCENARIOS, Act, Scenario
 
@@ -48,7 +49,7 @@ def build(repo: dict[str, str], root: Path) -> None:
         path.write_text(body, encoding="utf-8")
     for args in (["init", "-q"], ["add", "-A"],
                  ["-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "base"]):
-        subprocess.run(["git", *args], cwd=root, capture_output=True)
+        subprocess.run([*GIT, *args], cwd=root, capture_output=True)
 
 
 def play(scenario: Scenario) -> Outcome:

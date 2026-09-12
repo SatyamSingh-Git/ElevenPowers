@@ -39,6 +39,8 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+
+from .bundle import GIT
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -82,7 +84,7 @@ class Instance:
 
 
 def git(repo: Path, *args: str) -> str:
-    done = subprocess.run(["git", "-C", str(repo), *args], capture_output=True,
+    done = subprocess.run([*GIT, "-C", str(repo), *args], capture_output=True,
                           text=True, timeout=TIMEOUT)
     return done.stdout if done.returncode == 0 else ""
 
@@ -95,7 +97,7 @@ def materialise(repo: Path, sha: str, into: Path) -> None:
     """
     into.mkdir(parents=True, exist_ok=True)
     bundle = into.parent / f"{sha[:12]}.zip"
-    subprocess.run(["git", "-C", str(repo), "archive", "--format=zip", "-o",
+    subprocess.run([*GIT, "-C", str(repo), "archive", "--format=zip", "-o",
                     str(bundle), sha], check=True, capture_output=True, timeout=TIMEOUT)
     with zipfile.ZipFile(bundle) as archive:
         archive.extractall(into)

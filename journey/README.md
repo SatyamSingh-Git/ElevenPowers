@@ -227,11 +227,12 @@ Every figure below comes from a command in this repository.
 | Host integration | eleven checks, five of them driving the launcher as a process | `python plugin/bin/ep_doctor.py --host` |
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
 | The grader, graded | four patches with known answers, four correct | `python -m eval.validate` |
+| The corpus, graded | 15 of 15: the maintainer's fix resolves, the empty patch does not | `python -m eval.validate --corpus eval/corpus.lock` |
 | Corpus, pinned | 15 instances from 5 repositories, rebuilt identically from a 3.8KB lock | `python -m eval.corpus --rebuild eval/corpus.lock --repos DIR` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 480 | `python -m pytest tests -q` |
+| Tests | 482 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

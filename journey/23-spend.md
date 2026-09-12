@@ -84,6 +84,102 @@ tasks — 26 to 120 lines of gold patch — are unmeasured, and they are where b
 the time and the money concentrate. The per-run cap is the only thing standing
 between an unmeasured tail and an open-ended bill.
 
+## Run one said `setup`, and the dry runs had proved nothing
+
+The sweep launched. The first task, `attrs-f53fc544`, graded `setup` — the
+taxonomy's word for *the harness broke, this is not the agent's fault*. The
+second replicate did the same. It was stopped there, two runs and about ninety
+cents in.
+
+`git apply` had refused the patch, and its complaint printed a `?` at the end of
+every context line: a carriage return that was not in the file it was matching
+against. Three separate causes, stacked.
+
+**The machine's git config decided the base tree.** `core.autocrlf` is `true`
+here, and `git archive` honours it. markupsafe ships no `.gitattributes`, so it
+was extracted with CRLF line endings; attrs ships `* text=auto eol=lf`, so it
+was not. **The grade was a function of the grader's git configuration** — which
+is D55 not merely bent but inverted, in the one module written to enforce it.
+
+**Every saved patch was damaged on the way to disk.** `write_text` translates
+`
+` to the platform separator, so every `patch.diff` in every bundle held CRLF
+that git never emitted — including inside the `--binary` blocks.
+
+**Every patch was damaged again on the way into git.** `subprocess.run(...,
+input=patch, text=True)` translates in *that* direction too. A carriage return
+was added to every line of every patch the grader ever handed to `git apply`.
+
+### Why two green live runs were worth nothing
+
+`git apply` tolerates the extra carriage returns for some hunks and not others.
+markupsafe's tolerated them. click's tolerated them. attrs' did not.
+
+So the pre-flight — two real agent runs on two real repositories, both scoring
+correctly, plus a five-way adversarial matrix that gave five different answers —
+**passed while the grader was corrupting every patch it was handed.** That is
+the strongest evidence this project knows how to produce, and it was evidence of
+nothing, because both samples landed on the lucky side of a coin flip nobody
+knew was being tossed.
+
+The existing probe was no better. It asserts `read(bundle)["patch"] == patch`
+and passed throughout, because `read_text` translates the damage back out again.
+**A file written and read by the same library agrees with itself no matter what
+it put on disk.**
+
+### What the two runs actually said
+
+Re-graded after the fix, both attrs runs are `resolved`, on 1,405 observed
+nodes. The agent had solved the task twice. The grader threw both answers away
+and filed them under harness breakage — a category the report excludes from the
+agent's score, so the night would have ended with a clean number that silently
+omitted every task in every repository without a `.gitattributes`.
+
+### The fix, and the probe that would have caught it
+
+Every git call in the evaluation pipeline now pins `core.autocrlf=false` and
+`core.eol=lf`, so a base tree is the repository's own bytes on any machine. A
+patch moves as bytes from `git diff` to disk to `git apply`, never through a
+text pipe.
+
+The probe asserts **bytes**, not outcome, because an "it applied" test passed
+before the fix. Watched failing first, both of them.
+
+With that in place the five-way matrix was rerun against the *maintainer's own
+fix* rather than an agent's patch — an answer known before the grader is asked:
+
+| patch | grade | seen |
+|---|---|---|
+| the maintainer's fix | `resolved` | 36 of 36 |
+| nothing at all | `unfixed` | 35 |
+| the module broken outright | `unfixed` | 0, collection died |
+| `escape()` broken, which the ask uses | `unfixed` | 10 |
+| `soft_str()` broken, which it does not | **`regressed`** | names `test_soft_str[markupsafe._native]` |
+
+And on attrs, the repository that exposed all of this: the maintainer's fix
+`resolved` at 1,405 nodes, an empty patch `unfixed`, a broken module `unfixed`.
+
+### The check that was missing
+
+A sample of outcomes is not a test of a pipeline, so `eval.validate --corpus`
+asks every mined task two questions whose answers are known before it starts:
+the maintainer's own fix must come out `resolved`, and an empty patch must come
+out `unfixed`. A task failing the first is mined wrong or missing its
+environment; a task failing the second has a required test that already passes
+at the base commit and is measuring nothing at all. Neither is visible in a
+score, and neither was visible in a sample of two.
+
+All fifteen pass, across all five repositories, on observed node counts from 36
+to 1,876. It costs nothing but CPU and it was available during the entire six
+hours spent preparing to spend money.
+
+`python -m eval.validate` itself had to be fixed to survive this. Its fixture
+wrote files with `write_text` and then built patches from the same constants in
+LF, so with conversion pinned off the tree and the patch disagreed and three of
+its four cases came out `setup`. It had been passing only because the machine's
+`autocrlf` was quietly normalising both sides — which means the grader's own
+grader would have failed on any machine configured differently.
+
 ## What this step still cannot answer
 
 Every failure category remains unit-tested and unseen. The single real check

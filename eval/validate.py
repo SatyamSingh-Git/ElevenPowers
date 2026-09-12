@@ -12,6 +12,12 @@ answer was already known.
 So: four patches with four known answers, built from a real two-commit repository
 mined the way `eval.mine` mines one.
 
+`--corpus` asks the same question of every mined task, using the maintainer's own
+fix as the patch. It exists because a pre-flight that sampled two tasks out of
+fifteen passed while the grader was corrupting every patch it was handed: both
+samples happened to survive it, and outcome is exactly the observable luck can
+supply. Fifteen tasks, two questions each, and it costs nothing but CPU.
+
 | patch | must come out as |
 |---|---|
 | the maintainer's own fix | `resolved` |
@@ -32,6 +38,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+from .bundle import GIT
 from .live import grade_patch
 from .task import Task
 
@@ -42,7 +49,7 @@ NEW = "from src.app import double\n\n\ndef test_double():\n    assert double(2) 
 
 
 def _git(repo: Path, *args: str) -> str:
-    done = subprocess.run(["git", "-C", str(repo), *args], check=True,
+    done = subprocess.run([*GIT, "-C", str(repo), *args], check=True,
                           capture_output=True, text=True)
     return done.stdout.strip()
 
@@ -62,12 +69,14 @@ def fixture(into: Path) -> Task:
     for rel, body in ((".gitignore", "__pycache__/\n"), ("src/__init__.py", ""),
                       ("src/app.py", BUGGY), ("tests/__init__.py", ""),
                       ("tests/test_keep.py", KEEP)):
-        (repo / rel).write_text(body, encoding="utf-8")
-    subprocess.run(["git", "init", "-q"], cwd=repo, check=True, capture_output=True)
+        # Bytes: the patches below are built from these constants, so the file
+        # on disk has to be the constant and not the platform's idea of it.
+        (repo / rel).write_bytes(body.encode("utf-8"))
+    subprocess.run([*GIT, "init", "-q"], cwd=repo, check=True, capture_output=True)
     base = _commit(repo, "the code before the fix")
 
-    (repo / "src/app.py").write_text(FIXED, encoding="utf-8")
-    (repo / "tests/test_new.py").write_text(NEW, encoding="utf-8")
+    (repo / "src/app.py").write_bytes(FIXED.encode("utf-8"))
+    (repo / "tests/test_new.py").write_bytes(NEW.encode("utf-8"))
     _commit(repo, "double() returned its argument unchanged")
 
     return Task(
@@ -98,7 +107,64 @@ CASES = [
 ]
 
 
+def gold_patch(task: Task, fix: str) -> str:
+    """The maintainer's own change, minus the tests the grader restores itself."""
+    source = [p for p in task.source["changed"] if not p.startswith("tests/")]
+    done = subprocess.run([*GIT, "-C", task.source["repo"], "diff",
+                           task.source["base"], fix, "--", *source],
+                          capture_output=True)
+    return done.stdout.decode("utf-8")
+
+
+def over_corpus(lock: Path) -> int:
+    """Every mined task, asked whether it can tell a fix from no fix at all.
+
+    A task where the empty patch already resolves is not measuring anything: its
+    required test passes at the base commit. A task where the maintainer's own
+    fix does not resolve is mined wrong, or its environment is missing. Neither
+    can be seen from a score, and both are invisible in a sample of two.
+    """
+    import json
+
+    from .mined import load as load_mined
+
+    fixes = {r["name"]: r["fix"] for r in
+             json.loads(lock.read_text(encoding="utf-8"))}
+    tasks = load_mined()
+    if not tasks:
+        print("no mined tasks. Set EP_MINED to a corpus built by python -m eval.corpus")
+        return 1
+
+    print(f"{'task':<26}{'gold':<12}{'empty':<12}  nodes")
+    wrong = []
+    for task in tasks:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+            into = Path(tmp)
+            gold = grade_patch(task, gold_patch(task, fixes[task.name]), into / "gold")
+            empty = grade_patch(task, "", into / "empty")
+        bad = gold.outcome != "resolved" or empty.outcome != "unfixed"
+        wrong.append((task.name, gold, empty)) if bad else None
+        print(f"{task.name:<26}{gold.outcome:<12}{empty.outcome:<12}"
+              f"{len(gold.observed):>6}{'   <-- WRONG' if bad else ''}", flush=True)
+
+    print()
+    for name, gold, empty in wrong:
+        print(f"{name}: gold {gold.outcome} ({(gold.detail or '')[:80]}), "
+              f"empty {empty.outcome}")
+    if wrong:
+        print()
+        print(f"{len(wrong)} of {len(tasks)} tasks cannot tell a fix from no fix.")
+        return 1
+    print(f"all {len(tasks)} tasks: the maintainer's fix resolves and the empty "
+          "patch does not.")
+    return 0
+
+
 def main(argv: list[str]) -> int:
+    if "--corpus" in argv:
+        where = argv.index("--corpus") + 1
+        lock = Path(argv[where] if where < len(argv) else "eval/corpus.lock")
+        return over_corpus(lock)
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         into = Path(tmp)
         task = fixture(into)

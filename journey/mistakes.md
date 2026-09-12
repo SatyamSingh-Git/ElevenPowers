@@ -442,3 +442,51 @@ reads in the loop, rather than of the replicate, which is what is paid for.
 
 *Changed:* the count is compared against the replicate index. The probe writes a
 journal with one run of a three-replicate task and asserts exactly two follow.
+
+### A round trip through one library agrees with itself
+
+`bundle.write` saved every patch with `write_text`, which translates `\n` to the
+platform separator, so every `patch.diff` on disk held carriage returns git had
+never emitted. The probe guarding that file asserts `read(bundle)["patch"] ==
+patch` and passed the whole time, because `read_text` translates the damage back
+out on the way in.
+
+*Cause:* the probe tested a round trip rather than a representation. A file
+written and read by the same library agrees with itself whatever it put on disk.
+
+*Cost:* every bundle produced before this was unusable outside Python, and a
+patch exported under the defect cannot be applied to a tree extracted after the
+fix. The two Phase-A sweeps' bundles are in that state.
+
+*Changed:* the probe compares `patch.diff` on disk to `patch.encode("utf-8")`.
+
+### The pre-flight was green because it got lucky twice
+
+Before spending, two live agent runs were made on two real repositories. Both
+scored correctly. A five-way adversarial matrix on one of them returned five
+different grades including a `regressed` naming the exact broken test. 480 tests
+passed. It was declared ready.
+
+The first task of the real sweep failed to apply its patch at all, twice.
+
+`apply_patch` passed the patch through a text pipe (`input=patch, text=True`),
+which adds a carriage return to every line on Windows. `git apply` tolerates
+that for some hunks and not others. markupsafe's tolerated it; attrs' did not.
+So the grader had been corrupting every patch it was ever handed, and the two
+samples chosen to prove it worked both landed on the tolerant side.
+
+*Cause:* the pre-flight sampled outcomes. Two tasks out of fifteen, two
+repositories out of five, both from the `small` band — and outcome is exactly
+the observable that luck can supply. Nothing checked the *representation* being
+passed between stages, which was wrong every single time and would have shown up
+on the first look.
+
+*Cost:* two paid runs, about ninety cents, and the finding. Had the corpus been
+ordered differently the sweep would have run ninety times and reported a score
+that silently excluded every repository without a `.gitattributes`, under the
+heading "harness breakage, never the agent".
+
+*The lesson:* **a sample of successes is not a test of a pipeline.** When two
+stages hand something to each other, assert on the thing handed over, not on
+whether the far end happened to like it. The bytes were checkable for free at
+any point in the six hours spent preparing to spend money.
