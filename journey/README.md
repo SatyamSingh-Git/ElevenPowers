@@ -28,6 +28,7 @@ command in this repository and can be reproduced.
 | [14-null.md](14-null.md) | Twelve real bugs, a fair test at last, a gate that changed nothing, and why the obvious fix is theatre |
 | [15-correction.md](15-correction.md) | An external critique, an answer key that should have been read first, and six of seven failures turning out reachable |
 | [16-audit.md](16-audit.md) | Sixteen reproduced defects, a grader blind to regressions, a change of objective, and two bad attempts at responding to it |
+| [17-preservation.md](17-preservation.md) | Two evaluator defects closed, the hole that fixing the first one opened, and a probe that could never have passed |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -218,10 +219,11 @@ Every figure below comes from a command in this repository.
 | Reading tool results, real commands | 174 of 174 failures, 5,916 of 5,916 successes over 36,034 commands | `python -m eval.replay --all` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
-| Real mined instances | validated from upstream history, no Docker | `python -m eval.mine --repo DIR --out mined.json` |
+| Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
+| Audit defects closed | 2 of 16; the rest still reproduce as strict xfails | `python -m pytest tests/test_audit_probes.py -q` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 379 | `python -m pytest tests -q` |
-| P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost | `python -m eval.live --suite mined --arm vanilla,gate` |
+| Tests | 387 | `python -m pytest tests -q` |
+| P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
 

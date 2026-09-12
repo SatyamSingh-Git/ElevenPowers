@@ -32,7 +32,9 @@ def load() -> list[Task]:
             prompt=row["prompt"],
             files={},
             hidden="",
-            why=f"{len(row['f2p'])} test(s) from {row['fix'][:8]} must go green",
-            source={k: row[k] for k in ("repo", "base", "env", "hidden_files", "f2p")},
+            why=(f"{len(row['f2p'])} test(s) from {row['fix'][:8]} must go green "
+                 f"and {len(row.get('p2p', []))} must stay green"),
+            source={**{k: row[k] for k in ("repo", "base", "env", "hidden_files", "f2p")},
+                    "p2p": row.get("p2p", [])},
         ))
     return out

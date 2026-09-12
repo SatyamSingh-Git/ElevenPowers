@@ -1,13 +1,14 @@
 """The sixteen defects an external audit reproduced, as tests.
 
-Each test asserts the behaviour the system is supposed to have, and is marked
-`xfail(strict=True)` because it does not have it yet. That choice is deliberate:
-the suite stays green so ordinary work is not drowned in noise, the defects are
-recorded as known rather than forgotten, and the moment one is fixed its test
-turns from xfail to xpass and **fails the run**, which forces the marker off.
+Each test asserts the behaviour the system is supposed to have. One still
+carrying `xfail(strict=True)` is a defect that is still there; the marker keeps
+the suite green so ordinary work is not drowned in noise, and the moment the
+defect is fixed the test turns from xfail to xpass and **fails the run**, which
+forces the marker off. The ones without a marker are fixed, and will fail if
+that stops being true.
 
 A defect that lives in a document is a note. A defect that lives here cannot be
-quietly un-fixed.
+quietly un-fixed. The count of remaining `xfail`s is how many are left.
 
 Source: `docs/research/audit_2026_09_11/`. Identifiers match PLAN.md section 4.
 """
@@ -19,7 +20,6 @@ import io
 import json
 import math
 import subprocess
-import sys
 from pathlib import Path
 from unittest.mock import patch
 
@@ -27,11 +27,12 @@ import pytest
 
 from core import hook, parsers
 from core.config import Config
-from core.evidence import Evidence, Freshness, Kind, Result, source_files, tree_hash, vcs_state
+from core.evidence import Evidence, Freshness, Kind, Result, source_files, tree_hash
 from core.ledger import Ledger, Status
 from core.obligations import Claim
 from core.repeat import runs_needed
 from core.verify import dischargeable
+from eval.live import verify
 
 defect = lambda ident, why: pytest.mark.xfail(strict=True, reason=f"{ident}: {why}")  # noqa: E731
 
@@ -214,29 +215,142 @@ def test_stale_evidence_is_schedulable_for_re_running(project):
     assert dischargeable(ledger) == ["tests"]
 
 
-# --- E1, E2: the evaluator ---------------------------------------------------
+# --- E1: the grader ----------------------------------------------------------
 
-@defect("E1", "the grader runs only the fail-to-pass set; there is no preservation set")
-def test_the_grader_runs_a_preservation_set(project):
-    from eval.live import _verify_real
+BUGGY = "def double(n):\n    return n\n\n\ndef label():\n    return 'ok'\n"
+FIXED = "def double(n):\n    return n * 2\n\n\ndef label():\n    return 'ok'\n"
+KEEP = "from src.app import label\n\n\ndef test_label():\n    assert label() == 'ok'\n"
+NEW = "from src.app import double\n\n\ndef test_double():\n    assert double(2) == 4\n"
+
+
+@pytest.fixture
+def upstream(tmp_path):
+    """A repository with a bug at one commit and its maintainer's fix at the next.
+
+    Real subprocesses rather than a mocked `subprocess.run`. The audit's own
+    probe established what the grader invoked, and what it invokes is not the
+    claim: the claim is what it then says about a patch.
+    """
+    from eval.live import materialise
     from eval.task import Task
 
-    task = Task(name="audit", prompt="Fix it", files={}, hidden="", why="audit",
-                source={"hidden_files": {}, "f2p": ["tests/test_new.py::test_requested"], "env": {}})
-    done = subprocess.CompletedProcess([], 0, "", "")
-    with patch("eval.live.subprocess.run", return_value=done) as ran:
-        _verify_real(task, project)
-    invoked = " ".join(str(a) for a in ran.call_args.args[0])
-    assert "p2p" in invoked or invoked.count("::") == 0, (
-        "grading must also run tests that were passing and must stay passing")
+    repo = tmp_path / "upstream"
+    (repo / "src").mkdir(parents=True)
+    (repo / "tests").mkdir()
+    for rel, body in (("conftest.py", ""), ("src/__init__.py", ""),
+                      ("src/app.py", BUGGY), ("tests/test_keep.py", KEEP)):
+        (repo / rel).write_text(body, encoding="utf-8")
+    subprocess.run(["git", "-C", str(repo), "init", "-q"], check=True, capture_output=True)
+    base = _commit(repo, "the code before the fix")
+
+    (repo / "src/app.py").write_text(FIXED, encoding="utf-8")
+    (repo / "tests/test_new.py").write_text(NEW, encoding="utf-8")
+    _commit(repo, "double() returned its argument unchanged")
+
+    task = Task(name="graded", prompt="double is wrong", files={}, hidden="", why="E1",
+                source={"repo": str(repo), "base": base, "env": {},
+                        "hidden_files": {"tests/test_new.py": NEW},
+                        "f2p": ["tests/test_new.py::test_double"],
+                        "p2p": ["tests/test_keep.py::test_label"]})
+    root = tmp_path / "work"
+    materialise(task, root)
+    return task, root
 
 
-@defect("E2", "analyse keeps one row per task and arm, so replicates overwrite each other")
+def _commit(repo: Path, message: str) -> str:
+    subprocess.run(["git", "-C", str(repo), "add", "-A"], check=True, capture_output=True)
+    subprocess.run(["git", "-C", str(repo), "-c", "user.name=A",
+                    "-c", "user.email=a@example.invalid", "commit", "-qm", message],
+                   check=True, capture_output=True)
+    return subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                          check=True, capture_output=True, text=True).stdout.strip()
+
+
+def test_a_correct_patch_grades_as_resolved(upstream):
+    """The control. A preservation check that rejects everything proves nothing."""
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED, encoding="utf-8")
+    assert verify(task, root).resolved
+
+
+def test_a_patch_that_breaks_an_existing_test_is_not_resolved(upstream):
+    """E1: this returned True, on the measurement built to catch exactly it."""
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED.replace("'ok'", "'broken'"), encoding="utf-8")
+    graded = verify(task, root)
+    assert not graded.resolved
+    assert graded.outcome == "regressed"
+
+
+def test_editing_the_preserved_test_does_not_rescue_the_patch(upstream):
+    """Otherwise the preservation set asks the agent to mark its own work twice."""
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED.replace("'ok'", "'broken'"), encoding="utf-8")
+    (root / "tests/test_keep.py").write_text(KEEP.replace("'ok'", "'broken'"), encoding="utf-8")
+    assert verify(task, root).outcome == "regressed"
+
+
+def test_a_required_test_that_never_ran_is_not_a_pass(upstream):
+    """A node that was never collected is not a node that passed."""
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED, encoding="utf-8")
+    task.source["f2p"] = ["tests/test_new.py::test_never_written"]
+    assert verify(task, root).outcome == "unfixed"
+
+
+def test_a_broken_workspace_is_reported_as_setup_and_not_as_a_failed_task(upstream, tmp_path):
+    """Otherwise the harness quietly counts its own breakage against the agent."""
+    task, root = upstream
+    task.source["repo"] = str(tmp_path / "not-a-repository")
+    assert verify(task, root).outcome == "setup"
+
+
+def test_the_miner_records_a_preservation_set(upstream):
+    """E1's other half: nothing could be preserved because nothing was recorded."""
+    import tempfile
+
+    from eval import mine
+
+    task, _ = upstream
+    repo = Path(task.source["repo"])
+    fix = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                         check=True, capture_output=True, text=True).stdout.strip()
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        instance = mine.validate(repo, fix, ["tests/test_new.py"], {}, Path(tmp))
+    assert instance is not None
+    assert instance.f2p == ["tests/test_new.py::test_double"]
+    assert "tests/test_keep.py::test_label" in instance.p2p
+    assert not set(instance.p2p) & set(instance.f2p)
+
+
+# --- E2: the analysis --------------------------------------------------------
+
+
 def test_repeated_runs_are_all_retained(project):
+    """The assertion counts runs, not arms.
+
+    As first written it summed `len(v)` over the per-task values, which counts
+    arms — so it failed against the defect and would have gone on failing
+    against the fix. A strict xfail that can never xpass is a defect recorded as
+    permanently unfixed, which is worse than not recording it at all.
+    """
     from eval.analyse import load
 
     rows = [dict(task="same", arm="vanilla", resolved=value, claimed=True)
             for value in (True, False, True)]
     data = project / "runs.json"
     data.write_text(json.dumps(rows), encoding="utf-8")
-    assert sum(len(v) for v in load(data).values()) == len(rows)
+    kept = [run for arms in load(data).values() for runs in arms.values() for run in runs]
+    assert [r["resolved"] for r in kept] == [True, False, True]
+
+
+def test_one_pass_per_file_is_enforced_rather_than_assumed(project):
+    """`eval.noise` compares two passes; a file of replicates is not a pass."""
+    from eval.noise import outcomes
+
+    rows = [dict(task="same", arm="vanilla", resolved=value, claimed=True)
+            for value in (True, False)]
+    data = project / "runs.json"
+    data.write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(ValueError, match="not one pass"):
+        outcomes(data, "vanilla")

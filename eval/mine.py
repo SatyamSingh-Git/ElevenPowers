@@ -22,8 +22,11 @@ For each candidate commit the procedure is SWE-bench's own:
    did not do what its tests claim
 5. run the existing suite at the parent: it must be green, or the agent starts
    from a broken repository and a green run proves nothing
+6. run the whole suite at both ends and keep what passes at both: that is the
+   pass-to-preserve set, and a commit without one is discarded because a task
+   that cannot show a regression cannot grade a fix
 
-Only commits surviving all five become tasks. Everything about them, the code,
+Only commits surviving all six become tasks. Everything about them, the code,
 the bug, the tests and the wording of the report, was written by someone with no
 knowledge of this project.
 """
@@ -55,6 +58,7 @@ class Instance:
     prompt: str
     hidden_files: dict[str, str] = field(default_factory=dict)
     f2p: list[str] = field(default_factory=list)
+    p2p: list[str] = field(default_factory=list)
     env: dict[str, str] = field(default_factory=dict)
     changed: list[str] = field(default_factory=list)
 
@@ -85,7 +89,8 @@ def run_tests(root: Path, targets: list[str], env: dict[str, str]) -> tuple[int,
 
     environment = {**os.environ, **env}
     done = subprocess.run(
-        [sys.executable, "-m", "pytest", *targets, "-q", "--no-header", "-p", "no:randomly"],
+        [sys.executable, "-m", "pytest", *targets, "-q", "--no-header", "--tb=no",
+         "-rA", "-p", "no:randomly"],
         cwd=root, capture_output=True, text=True, timeout=TIMEOUT, env=environment,
     )
     return done.returncode, (done.stdout or "") + (done.stderr or "")
@@ -98,6 +103,16 @@ def failing_nodes(output: str) -> list[str]:
         if node and node not in found:
             found.append(node)
     return found
+
+
+def passing_nodes(output: str) -> set[str]:
+    """Which tests actually ran and passed, from `-rA`'s summary.
+
+    An exit code says the run was green; it does not say the tests anyone cared
+    about were collected at all. Grading needs the second thing.
+    """
+    return {line.split()[1] for line in output.splitlines()
+            if line.startswith("PASSED ") and "::" in line}
 
 
 # A revert's message is not a bug report: it says "this reverts commit <sha>"
@@ -163,7 +178,8 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     # The suite as the agent will find it has to be green, or a green run proves
     # nothing and the task cannot distinguish a fix from a repository that was
     # already broken.
-    code, _ = run_tests(base, [d for d in ("tests",) if (base / d).exists()], env)
+    suite = [d for d in ("tests",) if (base / d).exists()]
+    code, _ = run_tests(base, suite, env)
     if code != 0:
         return None
 
@@ -183,9 +199,19 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     if code != 0:
         return None                      # the fix does not satisfy its own tests
 
+    # The preservation set: what is green with the fix commit's tests in place,
+    # both before and after the source change. A task without one cannot tell a
+    # fix from a patch that also broke something, which is how the grader came
+    # to accept exactly that.
+    _, before = run_tests(base, suite, env)
+    _, after = run_tests(fixed, suite, env)
+    p2p = sorted((passing_nodes(before) & passing_nodes(after)) - set(f2p))
+    if not p2p:
+        return None
+
     return Instance(
         name=f"{repo.name}-{sha[:8]}", repo=str(repo), base=parent, fix=sha,
-        prompt=describe(repo, sha), hidden_files=patch, f2p=f2p, env=env,
+        prompt=describe(repo, sha), hidden_files=patch, f2p=f2p, p2p=p2p, env=env,
         changed=[f for f in git(repo, "show", "--name-only", "--format=", sha).split()
                  if f.endswith(".py")],
     )
@@ -207,7 +233,8 @@ def mine(repo: Path, limit: int, want: int, env: dict[str, str],
             except (subprocess.SubprocessError, OSError, zipfile.BadZipFile) as exc:
                 print(f"  {sha[:8]}  skipped: {type(exc).__name__}", flush=True)
                 continue
-        mark = f"kept, {len(instance.f2p)} failing test(s)" if instance else "no usable transition"
+        mark = (f"kept, {len(instance.f2p)} failing and {len(instance.p2p)} to preserve"
+                if instance else "no usable transition")
         print(f"  {sha[:8]}  {mark}", flush=True)
         if instance:
             found.append(instance)

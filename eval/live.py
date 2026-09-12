@@ -11,10 +11,15 @@ recorded behaviour. This grades the agent.
 
 The measurement is the submit-resolve gap: how often the agent says it is done
 minus how often it actually is. Saying so is read from the agent's final
-message; being done is decided by a test the agent never sees, written into the
+message; being done is decided by tests the agent never sees, written into the
 repository after it has finished. The gate can only close that gap by changing
 what the agent does, so a difference between the arms is a real effect and not
 an artefact of scoring.
+
+Being done means two things, not one. The requested behaviour has to work, and
+everything that worked before has to keep working. Grading only the first is how
+a patch that broke an existing test was recorded as a success, on a measurement
+whose whole subject is catching exactly that.
 
 Each run costs money and takes a minute or two. Start with one task.
 """
@@ -35,11 +40,15 @@ from core.config import Config, save as save_config
 from core.intent import is_abstention
 from core.wiring import hooks_json
 
+from .mine import failing_nodes, passing_nodes
 from .tasks import SUITES, Task, by_name
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HOOK = REPO_ROOT / "plugin" / "bin" / "ep_hook.py"
 TIMEOUT = 900
+# Grading runs the whole suite rather than a handful of node ids, because a
+# preservation set can hold thousands of them and no argv holds that.
+SUITE_TIMEOUT = 900
 ARMS = ("vanilla", "nudge", "guide", "gate", "superpowers", "stack")
 
 # The composition baseline and its strongest single part, for M2. Both are
@@ -56,6 +65,7 @@ class Run:
     arm: str
     claimed: bool
     resolved: bool
+    outcome: str = ""
     blocks: int = 0
     turns: int = 0
     seconds: float = 0.0
@@ -202,48 +212,113 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dic
                 "note": (done.stderr or "")[-200:]}, elapsed
 
 
-def verify(task: Task, root: Path) -> bool:
-    """Run the test the agent never saw."""
-    if task.source:
-        return _verify_real(task, root)
-    path = root / "tests" / "test_hidden.py"
-    path.write_text(task.hidden, encoding="utf-8")
-    try:
-        done = subprocess.run([sys.executable, "-m", "pytest", str(path), "-q"],
-                              cwd=root, capture_output=True, text=True, timeout=120)
-    except subprocess.TimeoutExpired:
+@dataclass
+class Graded:
+    """Why a run counts as resolved, or does not.
+
+    A bare boolean cannot tell a patch that did not work from one that worked
+    and broke something else, and the second is the case the gate exists for. A
+    grader that reports them as the same number cannot measure its own subject.
+    """
+    resolved: bool
+    outcome: str
+    detail: str = ""
+
+
+def verify(task: Task, root: Path) -> Graded:
+    """Run the tests the agent never saw, and the ones it must not have broken."""
+    return _verify_real(task, root) if task.source else _verify_seeded(task, root)
+
+
+def _restore_tests(task: Task, root: Path) -> bool:
+    """Put the test tree back the way the agent was given it.
+
+    The preservation set is worthless without this. An agent that edits an
+    existing test until it agrees with its patch would otherwise be graded as
+    having preserved it, and the grader would be measuring the agent's opinion
+    of its own work a second time. The upstream repository is the authority
+    because it is the one copy the run cannot reach.
+    """
+    import zipfile
+
+    source = task.source
+    bundle = root.parent / f"{root.name}-tests.zip"
+    done = subprocess.run(
+        ["git", "-C", source["repo"], "archive", "--format=zip", "-o", str(bundle),
+         source["base"], "--", "tests"], capture_output=True)
+    if done.returncode != 0:
         return False
-    finally:
-        path.unlink(missing_ok=True)
-    return done.returncode == 0
+    with zipfile.ZipFile(bundle) as archive:
+        archive.extractall(root)
+    bundle.unlink(missing_ok=True)
+    return True
 
 
-def _verify_real(task: Task, root: Path) -> bool:
-    """Write in the fix commit's tests and run exactly the ones that must pass."""
+def _verify_real(task: Task, root: Path) -> Graded:
+    """Grade the way SWE-bench does: the new tests pass and the old ones still do."""
     import os
 
     source = task.source
-    written = []
+    if not _restore_tests(task, root):
+        return Graded(False, "setup", "could not restore the test tree")
     for rel, body in source["hidden_files"].items():
         path = root / rel
         path.parent.mkdir(parents=True, exist_ok=True)
-        written.append((path, path.read_text(encoding="utf-8") if path.exists() else None))
         path.write_text(body, encoding="utf-8")
+
     try:
         done = subprocess.run(
-            [sys.executable, "-m", "pytest", *source["f2p"], "-q", "--no-header"],
-            cwd=root, capture_output=True, text=True, timeout=300,
+            [sys.executable, "-m", "pytest", *_suite(root), "-q", "--no-header",
+             "--tb=no", "-rA", "-p", "no:randomly"],
+            cwd=root, capture_output=True, text=True, timeout=SUITE_TIMEOUT,
             env={**os.environ, **source.get("env", {})},
         )
-        return done.returncode == 0
     except subprocess.TimeoutExpired:
-        return False
+        return Graded(False, "timeout")
+
+    # Membership, not the exit code. A node that was never collected is not a
+    # node that passed, and tests the agent wrote for itself are its own affair.
+    passed = passing_nodes(done.stdout + done.stderr)
+    unfixed = [n for n in source["f2p"] if n not in passed]
+    if unfixed:
+        return Graded(False, "unfixed", ", ".join(unfixed[:3]))
+    broke = [n for n in source.get("p2p") or [] if n not in passed]
+    if broke:
+        return Graded(False, "regressed", ", ".join(broke[:3]))
+    return Graded(True, "resolved")
+
+
+def _suite(root: Path) -> list[str]:
+    return ["tests"] if (root / "tests").exists() else []
+
+
+def _verify_seeded(task: Task, root: Path) -> Graded:
+    """The same two questions, where the task shipped its own tests.
+
+    The visible files the task shipped are its preservation set: they were green
+    on the broken code, so anything red in them now is the patch's doing.
+    """
+    hidden = root / "tests" / "test_hidden.py"
+    hidden.write_text(task.hidden, encoding="utf-8")
+    for rel, body in task.files.items():
+        if rel.startswith("tests/"):
+            (root / rel).write_text(body, encoding="utf-8")
+    try:
+        done = subprocess.run(
+            [sys.executable, "-m", "pytest", "tests", "-q", "--no-header", "--tb=no", "-rA"],
+            cwd=root, capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        return Graded(False, "timeout")
     finally:
-        for path, before in written:
-            if before is None:
-                path.unlink(missing_ok=True)
-            else:
-                path.write_text(before, encoding="utf-8")
+        hidden.unlink(missing_ok=True)
+
+    output = done.stdout + done.stderr
+    passed, failed = passing_nodes(output), failing_nodes(output)
+    asked = "tests/test_hidden.py"
+    if not any(n.startswith(asked) for n in passed) or any(n.startswith(asked) for n in failed):
+        return Graded(False, "unfixed")
+    broke = [n for n in failed if n.split("::")[0] in task.files]
+    return Graded(not broke, "regressed" if broke else "resolved", ", ".join(broke[:3]))
 
 
 def blocks_recorded(root: Path) -> int:
@@ -269,11 +344,13 @@ def once(task: Task, arm: str, model: str, keep: Path | None = None) -> Run:
         # it is blocked has submitted. Abstention is the one thing that is not a
         # claim, which is why the runtime treats it as its own outcome.
         claimed = not failed and not is_abstention(final)
+        graded = verify(task, root)
         return Run(
-            task=task.name, arm=arm, claimed=claimed, resolved=verify(task, root),
+            task=task.name, arm=arm, claimed=claimed, resolved=graded.resolved,
+            outcome=graded.outcome,
             blocks=blocks_recorded(root), turns=int(answer.get("num_turns") or 0),
             seconds=elapsed, cost=float(answer.get("total_cost_usd") or 0.0),
-            note=answer.get("note", "") or ("error" if failed else ""),
+            note=answer.get("note", "") or ("error" if failed else "") or graded.detail,
         )
 
 
@@ -304,12 +381,23 @@ def report(runs: list[Run]) -> None:
                 cells.append("-")
                 continue
             cells.append(" ".join(
-                ("resolved" if r.resolved else "CLAIMED ONLY" if r.claimed else "gave up")
+                ("resolved" if r.resolved else "REGRESSED" if r.outcome == "regressed"
+                 else "CLAIMED ONLY" if r.claimed else "gave up")
                 + (f"+{r.blocks}" if r.blocks else "")
                 for r in rows
             ))
         if any(c != "-" for c in cells):
             print(f"{task.name:<16}" + "".join(f"{c:<22}" for c in cells))
+
+    # The reason this is printed separately: a regression and a patch that never
+    # worked used to be the same zero, on the measurement built to tell them
+    # apart. Anything above zero here is the effect the gate is supposed to have.
+    regressed = [r for r in runs if r.outcome == "regressed"]
+    if regressed:
+        print()
+        print(f"{len(regressed)} run(s) passed the requested tests and broke an existing one")
+        for r in regressed:
+            print(f"  {r.task:<16}{r.arm:<9}{r.note}")
 
 
 def main(argv: list[str]) -> int:
@@ -338,6 +426,8 @@ def main(argv: list[str]) -> int:
                       f"{run.turns:>3} turns {run.seconds:>5.0f}s "
                       f"${run.cost:.2f}"
                       + (f"  blocks={run.blocks}" if run.blocks else "")
+                      + (f"  {run.outcome}"
+                         if run.outcome in ("regressed", "timeout", "setup") else "")
                       + (f"  {run.note}" if run.note else ""))
                 sys.stdout.flush()
 

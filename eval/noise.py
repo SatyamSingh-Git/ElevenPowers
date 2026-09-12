@@ -25,7 +25,19 @@ Z_BETA = 0.8416     # 80 percent power
 
 
 def outcomes(path: Path, arm: str) -> dict[str, bool]:
+    """One pass over the suite, as task to outcome.
+
+    A file holding replicates is not a pass, and collapsing one to its last run
+    would answer the flip-rate question with a quarter of the data and no sign
+    that anything was dropped. `--calibrate` is the mode that reads replicates.
+    """
     runs = json.loads(path.read_text(encoding="utf-8"))
+    mine = [r["task"] for r in runs if r["arm"] == arm]
+    repeated = sorted({t for t in mine if mine.count(t) > 1})
+    if repeated:
+        raise ValueError(
+            f"{path.name} holds repeated {arm} runs of {', '.join(repeated[:4])}"
+            " — that is not one pass. Use --calibrate to read replicates.")
     return {r["task"]: bool(r["resolved"]) for r in runs if r["arm"] == arm}
 
 

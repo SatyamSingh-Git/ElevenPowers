@@ -44,7 +44,7 @@ def test_the_visible_suite_is_green_on_the_broken_code(seeded):
 def test_the_hidden_test_fails_on_the_broken_code(seeded):
     """Otherwise the task cannot tell a real fix from no fix at all."""
     task, root = seeded
-    assert not verify(task, root), task.why
+    assert not verify(task, root).resolved, task.why
 
 
 def test_the_hidden_test_is_removed_after_checking(seeded):

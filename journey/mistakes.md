@@ -293,3 +293,36 @@ one command.
 
 *Changed:* run the smallest thing that shows the actual state before forming a
 theory.
+
+### Two operations on one working tree
+
+A full test run was in flight when `git stash` was run in the same working tree,
+to time the previous code for comparison. The run reported a number measured
+against a tree that changed underneath it, and the number happened to be right.
+
+*Cost:* nothing, this time. A corrupted result would have been indistinguishable
+from a clean one, which is the part that matters.
+
+*Changed:* a measurement shares its working tree with nothing. This is the same
+class of error as **R7**, the concurrent-writer defect still open in the runtime,
+committed by hand while its fix sits on the list.
+
+### Numbers written from memory into a document about not doing that
+
+The journey entry for the grader fix said the test suite had gone from about
+forty seconds to 164, and drew a conclusion from it: a slowdown accepted as the
+price of better tests. Measured against a worktree at the previous commit, the
+suite had already been taking 167.79 seconds. It did not get slower. The
+trade-off being justified had not occurred.
+
+Correcting that paragraph, the replacement "after" line was typed before the run
+that produced it finished. The counts happened to be right; the time was four
+seconds out.
+
+*Cost:* nothing, both were caught before the commit. The second one was caught
+only because the first had just been caught.
+
+*Changed:* a figure goes into a document after the command that produced it has
+returned, not before. The repository's stated rule already said this — *every
+figure below comes from a command* — which is why writing one from memory is a
+failure of practice rather than of policy.

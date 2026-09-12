@@ -60,39 +60,45 @@ Twelve real bugs said the gate changes nothing on its own. The most promising di
 
 All reproduced by `docs/research/audit_2026_09_11/reproduce.py`. **P0 here means a prerequisite for trusting a research conclusion, not a production emergency**: the tool is usable, and its numbers are not yet evidence. None may be deferred, and no new performance claim is made until each is fixed and covered by a regression test derived from the probe that found it.
 
+Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the system is supposed to have, marked `xfail(strict=True)` until it holds. The marker comes off when the fix lands, and cannot be put back quietly: a fixed defect that regresses turns the test red. **Status below is that file, not this table** — `python -m pytest tests/test_audit_probes.py -q` is the authority, and a row saying `fixed` with an `xfail` still on it is a documentation bug.
+
 ### Evaluator
 
-| | Defect | Consequence |
-|---|---|---|
-| E1 | The grader runs only `f2p`; there is no preservation set | A patch that breaks existing tests scores as resolved. **The gate's main mechanism is regression-catching and the measurement could not see it** |
-| E2 | `eval/analyse.py` keeps one row per task and arm | `--runs N` is incompatible with the analysis. Replicates, uncertainty and cost vanish |
-| E3 | The workspace is deleted; `Run` holds no diff, log or trajectory | Freezing twelve candidate patches is impossible because they no longer exist |
-| E4 | Model alias, inherited environment, silent plugin omission, fixed arm order | An arm can be labelled present and be absent |
-| E5 | Grading happens inside the candidate's mutable workspace | Separation in time is not isolation of authority |
-| E6 | Task selection keyed to the gate's own detection mechanism; flip-rate bound is invalid | Selecting the benchmark around the intervention being tested. A baseline can fail deterministically while a treatment succeeds deterministically, giving zero baseline flips and complete between-arm disagreement |
+| | Defect | Consequence | Status |
+|---|---|---|---|
+| E1 | The grader runs only `f2p`; there is no preservation set | A patch that breaks existing tests scores as resolved. **The gate's main mechanism is regression-catching and the measurement could not see it** | fixed |
+| E2 | `eval/analyse.py` keeps one row per task and arm | `--runs N` is incompatible with the analysis. Replicates, uncertainty and cost vanish | fixed |
+| E3 | The workspace is deleted; `Run` holds no diff, log or trajectory | Freezing twelve candidate patches is impossible because they no longer exist | open |
+| E4 | Model alias, inherited environment, silent plugin omission, fixed arm order | An arm can be labelled present and be absent | open |
+| E5 | Grading happens inside the candidate's mutable workspace | Separation in time is not isolation of authority | open |
+| E6 | Task selection keyed to the gate's own detection mechanism; flip-rate bound is invalid | Selecting the benchmark around the intervention being tested. A baseline can fail deterministically while a treatment succeeds deterministically, giving zero baseline flips and complete between-arm disagreement | open |
 
 ### Evidence layer
 
-| | Defect | Consequence |
-|---|---|---|
-| R1 | Size and mtime, with `vcs_state` as tie-breaker | Two different contents of an already-modified file share a porcelain status; evidence survives a real change |
-| R2 | `observed` is a stored list; additions escape it | A new failing test file does not stale anything. Environment and dependency changes are not fingerprinted at all |
-| R3 | Only `STALE` is rejected | Deleting an observed file yields `GONE` and still verifies |
-| R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED |
-| R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests |
-| R6 | `_test_written_and_suite_green` searches `touched ∪ seen` | **Reading** an existing test counts as writing one. Added in M1 to cut false blocks, and cut them partly by being wrong |
-| R7 | `on_prompt` reuses the task id | A new request inherits the previous task's evidence, read set and `guided` flag; concurrent writers lose updates |
-| R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low |
-| R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence |
+| | Defect | Consequence | Status |
+|---|---|---|---|
+| R1 | Size and mtime, with `vcs_state` as tie-breaker | Two different contents of an already-modified file share a porcelain status; evidence survives a real change | open |
+| R2 | `observed` is a stored list; additions escape it | A new failing test file does not stale anything. Environment and dependency changes are not fingerprinted at all | open |
+| R3 | Only `STALE` is rejected | Deleting an observed file yields `GONE` and still verifies | open |
+| R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED | open |
+| R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests | open |
+| R6 | `_test_written_and_suite_green` searches `touched ∪ seen` | **Reading** an existing test counts as writing one. Added in M1 to cut false blocks, and cut them partly by being wrong | open |
+| R7 | `on_prompt` reuses the task id | A new request inherits the previous task's evidence, read set and `guided` flag; concurrent writers lose updates | open |
+| R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low | open |
+| R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence | open |
 
 ### Host contract
 
-| | Defect | Consequence |
-|---|---|---|
-| H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity |
-| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path |
-| H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it |
-| H4 | Bash-only subscription | PowerShell commands are invisible |
+| | Defect | Consequence | Status |
+|---|---|---|---|
+| H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity | open |
+| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | open |
+| H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | open |
+| H4 | Bash-only subscription | PowerShell commands are invisible | open |
+
+**E2, closed 2026-09-12.** `load` keeps every replicate. The rates are then over runs and the paired test over tasks, because runs of one task are not independent and pairing replicate against replicate would multiply the apparent sample size while the correlation stayed — buying significance by claiming independence that was never there. At one replicate each the test is exactly McNemar again. `eval/noise.py::outcomes` refuses a file holding replicates instead of silently reading its last run, since that mode's question is what two separate passes did.
+
+**E1, closed 2026-09-12.** `eval/mine.py` now records a pass-to-preserve set — everything green with the fix commit's tests in place both before and after the source change — and rejects a commit that yields none, because a task that cannot show a regression cannot grade a fix. `eval/live.py` grades on membership in the passing set of a whole-suite run rather than on the exit code of a handful of node ids, which also answers *were the required tests collected at all*. Before running it, the test tree is restored from the upstream repository: without that the preservation set asks the agent to mark its own work a second time, since an agent that edits an existing test until it agrees with its patch would be recorded as having preserved it. `Graded` reports `resolved`, `unfixed`, `regressed`, `timeout` or `setup` separately, because a regression and a patch that never worked were previously the same zero.
 
 ---
 
@@ -200,7 +206,7 @@ Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audi
 
 **Exit, as commands:**
 
-- `python -m pytest tests/test_audit_probes.py -q` → 16 passed, one per reproduced defect
+- `python -m pytest tests/test_audit_probes.py -q` → **zero xfailed**; every reproduced defect keeps the test that found it, now passing
 - `python -m eval.validate` → gold patch resolves; a known regression fails; a wrong patch fails; a setup failure is reported as setup failure, not as an unresolved task
 - `python -m eval.live --runs 2 && python -m eval.analyse` → two rows retained per task and arm, not one
 - `python plugin/bin/ep_doctor.py --host` → success, failure and stop paths observed against a pinned host
