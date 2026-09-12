@@ -116,6 +116,11 @@ def write(into: Path, *, task: str, arm: str, model: str, asked: str, patch: str
         "base": {k: source.get(k) for k in ("repo", "base")} if source else None,
         "required": {"f2p": (source or {}).get("f2p", []),
                      "p2p": (source or {}).get("p2p", [])},
+        # What the maintainer changed, so a reader of this bundle alone can ask
+        # whether the candidate found the right files. A bundle that needs the
+        # corpus to be interpretable is not the self-contained thing E3 bought.
+        "gold": (source or {}).get("changed", []),
+        "gold_lines": (source or {}).get("gold_lines", 0),
         "env": (source or {}).get("env", {}),
         "limits": limits,
         "environment": environment or {},

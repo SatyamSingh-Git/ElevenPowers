@@ -68,6 +68,7 @@ class Run:
     resolved: bool
     outcome: str = ""
     bundle: str = ""
+    context_tokens: int = 0
     blocks: int = 0
     turns: int = 0
     seconds: float = 0.0
@@ -216,6 +217,24 @@ def arm_order(arms: list[str], shuffler: random.Random) -> list[str]:
     order = list(arms)
     shuffler.shuffle(order)
     return order
+
+
+def context_tokens(answer: dict) -> int:
+    """How much stable context the host actually sent, as far as usage reveals it.
+
+    The prefix — system prompt, tool definitions, whatever a plugin injected —
+    is written to the cache once and read back on every later turn, so cache
+    *creation* is the closest available measure of what a configuration put in
+    front of the model. Read tokens are not: they grow with the number of turns
+    and say nothing about what was installed.
+
+    This is the measurement E4 lacked. An arm that declares a plugin and loads
+    nothing scores like plain vanilla and looks like a null result; the same arm
+    sending the same context as vanilla says plainly that nothing arrived.
+    """
+    usage = answer.get("modelUsage") or {}
+    return sum(int(u.get("cacheCreationInputTokens") or 0) + int(u.get("inputTokens") or 0)
+               for u in usage.values())
 
 
 def resolved_model(answer: dict, asked: str) -> str:
@@ -485,6 +504,7 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None) -> Run:
         return Run(
             task=task.name, arm=arm, claimed=claimed, resolved=graded.resolved,
             outcome=graded.outcome, bundle=str(kept) if kept else "",
+            context_tokens=context_tokens(answer),
             blocks=blocks, turns=int(answer.get("num_turns") or 0),
             seconds=elapsed, cost=float(answer.get("total_cost_usd") or 0.0),
             note=answer.get("note", "") or ("error" if failed else "") or graded.detail,

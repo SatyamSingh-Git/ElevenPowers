@@ -35,6 +35,15 @@ def load() -> list[Task]:
             why=(f"{len(row['f2p'])} test(s) from {row['fix'][:8]} must go green "
                  f"and {len(row.get('p2p', []))} must stay green"),
             source={**{k: row[k] for k in ("repo", "base", "env", "hidden_files", "f2p")},
-                    "p2p": row.get("p2p", [])},
+                    "p2p": row.get("p2p", []),
+                    "origin": row.get("origin", ""),
+                    # Carried so a score can be reported by difficulty band. A
+                    # label, never a filter: see eval/corpus.py.
+                    "gold_lines": row.get("gold_lines", 0),
+                    # The source files the maintainer touched. Carried so a
+                    # bundle can say whether a candidate even found the right
+                    # code, which separates a localisation failure from an
+                    # implementation one.
+                    "changed": row.get("changed", [])},
         ))
     return out
