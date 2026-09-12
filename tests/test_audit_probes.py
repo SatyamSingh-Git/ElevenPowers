@@ -26,12 +26,13 @@ from unittest.mock import patch
 import pytest
 
 from core import hook, parsers
-from core.config import Config
+from core.config import Config, save as save_config
 from core.evidence import (
     Evidence, Freshness, Kind, Result, source_files, tree_hash, vcs_state,
 )
 from core.ledger import Ledger, Status
 from core.obligations import Claim
+from core.payload import read_result
 from core.repeat import runs_needed
 from core.verify import dischargeable
 from eval.live import verify
@@ -411,3 +412,149 @@ def test_writing_a_test_and_a_green_suite_still_counts(project):
                     touched=["tests/test_new.py"], evidence=evidence)
     met = [c.caveat for c in ledger.verdicts()[0].checks if c.met]
     assert any(c.startswith("a test was written") for c in met), met
+
+
+# --- H1-H4: the host contract ------------------------------------------------
+#
+# These four were source findings rather than reproductions: the audit read the
+# documented contract and the code, and its script never executed them. So the
+# probes are written here rather than derived, and they are written against the
+# documented shapes rather than against a replayed transcript — replay fidelity
+# is not delivery fidelity, and confusing the two is H1 itself.
+
+def test_a_documented_failure_hook_yields_evidence(project):
+    """H1: the documented failure shape puts the error at the top level.
+
+    `read_result` looks only under nested result keys, so this payload produced
+    `readable=False`, no evidence, and a blind-spot entry — the runtime going
+    quiet against a shape the host is documented to send.
+    """
+    payload = {
+        "hook_event_name": "PostToolUseFailure",
+        "tool_name": "Bash",
+        "tool_input": {"command": "python -m pytest -q"},
+        "error": "Exit code 1\n1 failed in 0.1s",
+        "is_interrupt": False,
+    }
+    result = read_result(payload)
+    assert result.readable
+    assert result.exit_code == 1
+    assert "1 failed" in result.output
+
+
+def test_a_documented_interrupt_is_skipped_rather_than_scored(project):
+    """The same payload's interrupt flag is top-level too."""
+    payload = {
+        "hook_event_name": "PostToolUseFailure",
+        "tool_name": "Bash",
+        "tool_input": {"command": "python -m pytest -q"},
+        "error": "Exit code 130\n",
+        "is_interrupt": True,
+    }
+    assert read_result(payload).skip == "interrupted"
+
+
+def test_the_hook_timeout_outlasts_the_verification_it_runs():
+    """H2: a callback that dies at twenty seconds cannot run a 300-second suite.
+
+    The host's documented default for a command hook is 600 seconds. The twenty
+    was this project's own choice, and it was shorter than the work the hook
+    does — a timed-out hook loses its output and makes no decision at all.
+    """
+    from core.verify import TIMEOUT as VERIFICATION
+    from core.wiring import hooks_json
+
+    # The shipped subscription, not the constant: what matters is the number the
+    # host is actually told, on the event that does the long work.
+    stop = hooks_json()["hooks"]["Stop"][0]["hooks"][0]["timeout"]
+    assert stop > VERIFICATION
+
+
+def test_stop_never_emits_additional_context(project, capsys):
+    """H3: Stop does not honour `additionalContext`, so a report sent that way is lost."""
+    save_config(project, Config(profile="guide"))
+    Ledger(project, request="Fix the bug", claims=[Claim.BUG_FIXED]).save()
+    hook.on_stop({"last_assistant_message": "Done."}, project)
+    emitted = [json.loads(line) for line in capsys.readouterr().out.splitlines()
+               if line.startswith("{")]
+    stops = [e["hookSpecificOutput"] for e in emitted
+             if e.get("hookSpecificOutput", {}).get("hookEventName") == "Stop"]
+    assert stops, "the report-only path should say something"
+    assert all("additionalContext" not in s for s in stops)
+    assert all(s.get("systemMessage") for s in stops)
+
+
+def test_powershell_commands_are_seen(project):
+    """H4: on Windows the shell tool is called PowerShell, and it was not subscribed."""
+    from core.wiring import COMMAND_TOOLS, hooks_json
+
+    assert "PowerShell" in COMMAND_TOOLS
+    subscribed = hooks_json()["hooks"]["PostToolUseFailure"][0]["matcher"]
+    assert "PowerShell" in subscribed
+
+    hook.on_post_tool({
+        "hook_event_name": "PostToolUse",
+        "tool_name": "PowerShell",
+        "tool_input": {"command": "python -m pytest -q"},
+        "tool_response": {"stdout": "2 passed in 0.1s\n", "stderr": ""},
+    }, project)
+    assert [e for e in Ledger.load(project).evidence if e.kind is Kind.SUITE]
+
+
+# The other direction for H1-H4. Each probe above asserts the runtime now
+# accepts something it used to drop; these assert it still rejects what it
+# should. A reader that accepts everything passes every probe above.
+
+def test_an_unreadable_payload_is_still_reported_rather_than_scored(project):
+    """H1 forward: widening the reader must not turn a contract change silent.
+
+    The blind-spot log is how the last three defects in this layer were found.
+    A reader that answers "fine" to a shape it does not understand is the
+    failure mode, not the fix for it.
+    """
+    result = read_result({"hook_event_name": "PostToolUse", "tool_name": "Bash",
+                          "something_new": {"status": "ok"}})
+    assert not result.readable
+
+
+def test_an_empty_error_is_not_read_as_a_passing_command(project):
+    """An `error` key present but empty is not evidence that anything passed."""
+    result = read_result({"hook_event_name": "PostToolUseFailure",
+                          "tool_name": "Bash", "error": ""})
+    assert not result.readable or not result.ok
+
+
+def test_only_the_stop_hook_gets_the_long_timeout():
+    """H2 forward: a hook that hangs is worse than one that gives up.
+
+    Stop runs the project's suite. Nothing else does, and a long timeout on
+    every event would turn an unrelated failure into a stalled session.
+    """
+    from core.wiring import TIMEOUT, hooks_json
+
+    for event, entries in hooks_json()["hooks"].items():
+        given = entries[0]["hooks"][0]["timeout"]
+        assert given == TIMEOUT or event == "Stop", f"{event} got {given}"
+
+
+def test_a_blocking_stop_still_speaks_through_the_channel_that_blocks(project, capsys):
+    """H3 forward: moving the report must not silence the refusal.
+
+    A blocked stop says why on stderr and exits 2. That is a different channel
+    from the report, and changing one had every opportunity to break the other.
+    """
+    save_config(project, Config(profile="strict"))
+    Ledger(project, request="Fix the bug", claims=[Claim.BUG_FIXED]).save()
+    code = hook.on_stop({"last_assistant_message": "All done."}, project)
+    assert code == 2
+    assert capsys.readouterr().err.strip()
+
+
+def test_a_tool_that_is_not_a_shell_produces_no_command_evidence(project):
+    """H4 forward: subscribing a second shell must not make every tool a shell."""
+    hook.on_post_tool({
+        "hook_event_name": "PostToolUse", "tool_name": "WebFetch",
+        "tool_input": {"command": "python -m pytest -q"},
+        "tool_response": {"stdout": "2 passed in 0.1s\n", "stderr": ""},
+    }, project)
+    assert not Ledger.load(project).evidence

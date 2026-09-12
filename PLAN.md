@@ -89,16 +89,24 @@ While any remained, the marker was `xfail(strict=True)`. The marker comes off wh
 | R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low | fixed |
 | R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence | fixed |
 
-**The eight still open have no probes.** `reproduce.py` covered R1–R9, E1 and E2; E3–E6 and H1–H4 were source findings the audit did not execute. So *zero xfails* is necessary and not sufficient for Phase A, and each of the eight needs a test written rather than derived — for H1–H4 against the documented host contract rather than against a replayed transcript, since **replay fidelity is not delivery fidelity** and that confusion is what H1 is.
+**The four still open have no probes.** `reproduce.py` covered R1–R9, E1 and E2; E3–E6 and H1–H4 were source findings the audit did not execute. H1–H4 have since been given probes written against the documented host contract rather than a replayed transcript — **replay fidelity is not delivery fidelity**, and that confusion is what H1 is. E3–E6 still need theirs, so *zero xfails* remains necessary and not sufficient for Phase A.
 
 ### Host contract
 
 | | Defect | Consequence | Status |
 |---|---|---|---|
-| H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity | open |
-| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | open |
-| H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | open |
-| H4 | Bash-only subscription | PowerShell commands are invisible | open |
+| H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity | fixed |
+| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | fixed |
+| H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | fixed |
+| H4 | Bash-only subscription | PowerShell commands are invisible | fixed |
+
+**H1–H4, closed 2026-09-12.** Checked against the live documentation rather than against what the code assumed, which changed two of the four answers. The documented failure hook carries no result object at all — a top-level `error`, and `is_interrupt` alongside it — so a shape the host is documented to send produced no evidence and a blind-spot entry. The exit-code pattern now accepts a bare `Exit code 1`, since only the transcript form writes `Error:` first.
+
+The 20-second hook timeout was **this project's own choice**, not a host limit: the documented default for a command hook is 600 seconds. Stop now gets 600, because it may run the project's whole suite to compute evidence rather than demand it, and every other event keeps 20 — a hook that hangs is worse than one that gives up.
+
+`additionalContext` is not honoured on Stop, so three report-only branches were writing their reports into a field the contract discards; they use `systemMessage`. And `PowerShell` is a distinct tool name used on Windows where Git Bash is absent, so on those machines the runtime was subscribed to a shell that never ran — including the machine this is developed on.
+
+Each was written as a failing probe first and watched fail, and each has both directions per §5.0: the reader still reports a shape it does not understand, only Stop gets the long timeout, a blocked stop still speaks on stderr, and a second shell did not turn every tool into a shell.
 
 **R7 and R9, closed 2026-09-12.** A prompt that states its own subject starts a task, and a task starts empty — the id was reused and nothing was cleared, so a suite run for the previous bug could discharge an obligation for this one purely because the ledger sat in the same directory. `save` merges the append-only fields against whatever is on disk at the moment of writing and names its temporary file per process; atomic replacement stops a torn file and does nothing about a lost update. SQLite remains the right answer and this covers the case that happens.
 
@@ -138,6 +146,23 @@ task + permitted context
 ```
 
 The held-out evaluator's answers are unavailable to the worker, the selector and the within-task repair policy.
+
+**5.0 Verification is adversarial, not observational.** *(standing requirement, 2026-09-12)*
+
+The runtime watches commands the agent chose to run and reads their output. That is passive, and passive observation cannot tell a test that discriminates from one that agrees with whatever it is handed — which is the oracle problem restated as an implementation fact. **Every check the system performs is run in both directions:**
+
+| | |
+|---|---|
+| **forward** | the thing does what it should — the legitimate case is accepted, the rule still fires |
+| **adversarial** | the thing refuses what it should — the system actively tries to break, defeat or dishonestly satisfy its own check |
+
+Concretely, the system must **do the breaking itself** rather than wait to observe it: revert the candidate's source change and confirm the new test goes red; mutate the patch and confirm something notices; empty or weaken a test and confirm the check stops being satisfied; run the preserved set against the pre-patch tree to establish which failures are the agent's. A check that survives none of these is not evidence, and a check that survives all of them by refusing everything is not evidence either.
+
+**Both directions, then conclude from the four states** — `VERIFIED`, `UNVERIFIED`, `STALE`, `CONTRADICTED` — not from a pass/fail bit. The four already distinguish *no evidence* from *evidence that no longer applies* from *evidence pointing the other way*, and an adversarial pass that produces a bare boolean throws that away.
+
+This is why it is a requirement rather than a testing habit: a check that refuses everything passes every adversarial test, and a check that accepts everything passes every forward test. Either alone is indistinguishable from the feature being deleted, and this project has already come within one control of proving it — fixing **R6** without a forward control would have looked exactly like reverting the M1 work that cut live blocking from 75 percent of runs to 12.
+
+It applies to this project's own development with the same force: every narrowing fix ships a control asserting the rule still fires, and every behavioural fix is checked against a worktree at the previous commit, where it must fail.
 
 **5.1 Measure the generation ceiling before building a better examiner.** For a frozen pool of N candidates: *pool coverage* is the fraction of tasks where at least one candidate is correct; *selected success* is the fraction where the chosen one is correct; the difference is **selection regret**. If every candidate is wrong, no reranking helps and the investment belongs in localisation, models or diagnosis diversity. Pilot at N = 1, 4, 8.
 

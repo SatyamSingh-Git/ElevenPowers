@@ -110,7 +110,7 @@ def test_full_cycle_reaches_verified(repo):
     _record_run(repo, "pytest tests/", WHOLE_SUITE)
     result = run_hook("Stop", {"cwd": str(repo)}, repo)
     assert result.returncode == 0
-    assert "VERIFIED" in json.loads(result.stdout)["hookSpecificOutput"]["additionalContext"]
+    assert "VERIFIED" in json.loads(result.stdout)["hookSpecificOutput"]["systemMessage"]
 
 
 def test_one_test_file_does_not_prove_the_suite(repo):

@@ -19,8 +19,10 @@ import json
 EDIT_TOOLS = ("Edit", "Write", "NotebookEdit")
 # Tools whose use tells the task what it has looked at.
 FILE_TOOLS = ("Read", "Edit", "Write", "NotebookEdit", "NotebookRead")
-# Tools that produce evidence.
-COMMAND_TOOLS = ("Bash",)
+# Tools that produce evidence. `PowerShell` is a separate tool name, used on
+# Windows where Git Bash is not installed — so on those machines the runtime was
+# subscribed to a shell that never ran and saw no commands at all.
+COMMAND_TOOLS = ("Bash", "PowerShell")
 
 GUARDED = COMMAND_TOOLS + EDIT_TOOLS
 RECORDED = COMMAND_TOOLS + FILE_TOOLS
@@ -37,7 +39,14 @@ EVENTS: dict[str, str] = {
     "Stop": "",
 }
 
+# Reading a payload and appending to the ledger is fast, and a hook that hangs
+# is worse than one that gives up. Stop is the exception: it may run the
+# project's whole test suite to compute the evidence rather than demand it, and
+# a callback killed at twenty seconds loses its output and makes no decision at
+# all. The host's documented default for a command hook is 600 seconds, and this
+# has to outlast `core.verify.TIMEOUT` or self-discharge cannot finish.
 TIMEOUT = 20
+STOP_TIMEOUT = 600
 
 
 def hooks_json(command: str = 'python "${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py"') -> dict:
@@ -50,7 +59,7 @@ def hooks_json(command: str = 'python "${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py"') -
         entry["hooks"] = [{
             "type": "command",
             "command": f"{command} {event}",
-            "timeout": TIMEOUT,
+            "timeout": STOP_TIMEOUT if event == "Stop" else TIMEOUT,
         }]
         hooks[event] = [entry]
     return {"hooks": hooks}

@@ -225,7 +225,7 @@ def on_stop(payload: dict, root: Path) -> int:
     if not ledger.config.speaks:
         return 0
     if status is Status.VERIFIED:
-        _emit("Stop", additionalContext=end_report(ledger))
+        _emit("Stop", systemMessage=end_report(ledger))
         return 0
 
     # Which obligation was unmet, not merely that something was. Every block so
@@ -237,13 +237,13 @@ def on_stop(payload: dict, root: Path) -> int:
     if not ledger.config.blocks:
         ledger.note("gate reported", detail)
         ledger.save()
-        _emit("Stop", additionalContext=end_report(ledger))
+        _emit("Stop", systemMessage=end_report(ledger))
         return 0
 
     if ledger.blocks >= MAX_BLOCKS:
         ledger.note("gate gave up", f"{detail} after {ledger.blocks} blocks")
         ledger.save()
-        _emit("Stop", additionalContext=end_report(ledger) + "\n\nReported as UNVERIFIED to the user.")
+        _emit("Stop", systemMessage=end_report(ledger) + "\n\nReported as UNVERIFIED to the user.")
         return 0
 
     ledger.blocks += 1

@@ -33,7 +33,10 @@ TEXT_KEYS = ("output", "content", "result", "text")
 CODE_KEYS = ("exit_code", "exitCode", "returncode", "return_code", "code")
 ERROR_KEYS = ("is_error", "isError", "error")
 
-EXIT_CODE = re.compile(r"^Error: Exit code (\d+)[ \t]*\r?\n?")
+# Two spellings, because the transcript writes `Error: Exit code 1` into a
+# result string and the documented failure hook writes `Exit code 1` into a
+# top-level `error`. Matching only the first read the second as output.
+EXIT_CODE = re.compile(r"^(?:Error:[ \t]*)?Exit code (\d+)[ \t]*\r?\n?")
 
 _MISSING = object()
 
@@ -61,8 +64,19 @@ def read_result(payload: dict, event: str = "") -> ToolResult:
     event = event or payload.get("hook_event_name", "")
     failed = event.endswith("Failure")
 
+    # The documented failure hook carries no result object at all: the message
+    # is a top-level `error` and the interrupt flag a top-level `is_interrupt`.
+    # Looking only under the nested result keys meant a shape the host is
+    # documented to send produced no evidence and a blind-spot entry — the
+    # runtime going quiet, which is how every defect in this layer has hidden.
+    if payload.get("is_interrupt"):
+        return ToolResult("", 0, skip="interrupted")
+
     raw = next((payload[key] for key in RESULT_KEYS if key in payload), _MISSING)
     if raw is _MISSING or raw is None:
+        message = payload.get("error")
+        if isinstance(message, str) and message:
+            return _from_text(message, True)
         return ToolResult("", 1 if failed else 0, readable=False)
     if isinstance(raw, str):
         return _from_text(raw, failed)

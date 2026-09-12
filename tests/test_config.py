@@ -119,9 +119,16 @@ def edit(root):
 
 
 def context_of(result):
+    """Whatever the event used to speak.
+
+    Stop honours `systemMessage`; the context-injecting events honour
+    `additionalContext`. Reading only the second made this helper assert the
+    defect that Stop was emitting a field Stop discards.
+    """
     if not result.stdout.strip():
         return ""
-    return json.loads(result.stdout)["hookSpecificOutput"].get("additionalContext", "")
+    out = json.loads(result.stdout)["hookSpecificOutput"]
+    return out.get("additionalContext") or out.get("systemMessage") or ""
 
 
 def test_the_first_edit_says_what_will_be_needed(project):
