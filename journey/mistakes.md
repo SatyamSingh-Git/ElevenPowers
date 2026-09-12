@@ -326,3 +326,33 @@ only because the first had just been caught.
 returned, not before. The repository's stated rule already said this — *every
 figure below comes from a command* — which is why writing one from memory is a
 failure of practice rather than of policy.
+
+### Probes that could not observe their own fix
+
+Four of the sixteen audit probes, written in one afternoon, could not detect the
+repair of the defect they recorded.
+
+- **E2's** summed `len(v)` over per-task values, counting arms rather than runs.
+  It failed against the defect and would have gone on failing against the fix.
+- **R1's** pinned `vcs_state` to a constant to work around a platform flake. That
+  stubbed out the exact function the fix changed, and silently converted the
+  test's demand from *correct the tie-breaker* to *remove it*.
+- **R2's** built its evidence record by hand, so it said nothing about what a
+  real suite run records.
+- **R4's** second probe asserted against a three-line `detail` string rather than
+  the per-test records that name failures.
+
+*Cause:* a probe that fails against a defect looks correct. There is no way to
+distinguish one that captured the defect from one failing for its own reasons
+until the defect is fixed and the test is watched.
+
+*Cost:* none directly — each was caught while implementing the fix. The cost
+avoided is larger: `xfail(strict=True)` on a test that can never xpass records a
+defect as permanently unfixed, and the file exists to stop defects being
+forgotten.
+
+*Changed:* a probe is not evidence that a defect is captured until it has been
+seen to flip. Where the fix is behavioural, check it against a worktree at the
+previous commit — it must fail there and pass here. And every fix that narrows a
+rule needs a control asserting the rule still fires, because "fixed" and
+"disabled" are indistinguishable from a test that only asserts refusal.

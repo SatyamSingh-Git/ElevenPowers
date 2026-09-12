@@ -258,6 +258,7 @@ def _tail(output: str, lines: int = 3) -> str:
 def _counted(kind: Kind, command: str, output: str, exit_code: int, root: Path,
              pattern: re.Pattern) -> Evidence:
     record = _record(kind, _scope(command), exit_code, command, root, output)
+    record.counted = kind is Kind.SUITE
     match = pattern.search(output)
     if not match:
         return record
@@ -332,7 +333,8 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
             kind=Kind.SUITE, identity=_scope(command),
             result=Result.PASS if exit_code == 0 else Result.FAIL,
             observed=observed, tree=tree, scope="source", command=command,
-            detail=_tail(output), passed=passed, failed=failed, at=now, vcs=vcs,
+            detail=_tail(output), passed=passed, failed=failed, counted=True,
+            at=now, vcs=vcs,
         )
     )
     return records

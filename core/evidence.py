@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import os
 import subprocess
+import time
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from pathlib import Path
@@ -58,6 +59,21 @@ class Evidence:
     run: str = ""
     runs: int = 0
     vcs: str = ""
+    """The working tree as version control saw it, recorded as provenance.
+
+    It used to be a tie-breaker: when modification times moved but git reported
+    no change, the evidence was kept. That was the unsound step. A fingerprint
+    over file contents needs no tie-breaker — identical bytes hash identically,
+    so a formatter rewriting a file no longer stales anything, which is the only
+    thing the tie-breaker was there to prevent.
+    """
+    counted: bool = False
+    """Whether this record comes from a parser that counts tests and looked.
+
+    Zero tests then means zero tests ran. Without it, a wrapper whose output
+    nobody can count is indistinguishable from `echo pytest`, and refusing both
+    would block agents whose projects run tests through `make`.
+    """
     scope: str = ""
     """Where `observed` came from, when it was a scan rather than a fixed list.
 
@@ -79,12 +95,19 @@ class Evidence:
             return Freshness.FRESH
         if any(not (root / p).exists() for p in self.observed):
             return Freshness.GONE
-        # Modification times moved. Git compares content rather than timestamps,
-        # so an unchanged working-tree state means a formatter or a checkout
-        # rewrote bytes that were already there, and the evidence still holds.
-        if self.vcs and self.vcs == vcs_state(root):
-            return Freshness.FRESH
         return Freshness.STALE
+
+    @property
+    def ran_tests(self) -> bool:
+        """Whether a run that counts tests saw any test execute.
+
+        `echo pytest` exits zero and contains a runner's name. The record it
+        produced counted no tests and satisfied "the related test suite passes"
+        anyway, because a completed process and an executed test were the same
+        thing here. They are four separate facts: the command was recognised,
+        the process finished, tests ran, and the required ones passed.
+        """
+        return not self.counted or (self.passed + self.failed) > 0
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -97,27 +120,56 @@ class Evidence:
         return cls(**{**d, "kind": Kind(d["kind"]), "result": Result(d["result"])})
 
 
+# A file modified this recently is re-read whatever the cache holds, because
+# this is the window where size and modification time cannot resolve an edit —
+# and it is the window an agent's edits land in. Git calls the same rule
+# racily-clean and applies it for the same reason.
+RACY_NS = 2_000_000_000
+
+_DIGESTS: dict[tuple[str, str], tuple[int, int, str]] = {}
+
+
+def _digest(root: Path, rel: str) -> str:
+    """One file's content hash, with stat as a cache key rather than the answer.
+
+    This used to be size and modification time alone, on the argument that a
+    file rewritten with identical bytes would merely read as stale and cost one
+    redundant re-run. The error was in the other direction: **a rewrite that
+    keeps the length and lands inside the filesystem's timestamp resolution is
+    invisible.** Rewriting a two-line lock file was invisible to stat in 220 of
+    300 attempts on the machine this was measured on, so evidence surviving a
+    real edit was the common case rather than a race.
+    """
+    path = root / rel
+    try:
+        stat = path.stat()
+    except OSError:
+        return "missing"
+    hit = _DIGESTS.get((str(root), rel))
+    if (hit and (hit[0], hit[1]) == (stat.st_size, stat.st_mtime_ns)
+            and time.time_ns() - stat.st_mtime_ns > RACY_NS):
+        return hit[2]
+    try:
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+    except OSError:
+        return "missing"
+    _DIGESTS[(str(root), rel)] = (stat.st_size, stat.st_mtime_ns, digest)
+    return digest
+
+
 def tree_hash(root: Path, paths: Iterable[str]) -> str:
-    """A signature over a set of repository-relative paths.
+    """A signature over the contents of a set of repository-relative paths.
 
-    Size and modification time rather than contents. Reading every file was
-    measured at about 6 seconds on an 8,000 file repository, which would be paid
-    on every test run; stat brings the same work to roughly 200 milliseconds.
-
-    The trade is that a file rewritten with identical bytes changes its
-    modification time and so reads as stale. That costs one redundant re-run and
-    is self-correcting, where the slow version would have made the tool unusable
-    on any large codebase. Build systems make the same trade for the same
-    reason.
+    Measured on this repository: 6ms to hash 59 files against 1ms to stat them.
+    The cache is what keeps that affordable at scale, since a status check hashes
+    the tree once per evidence record, and an uncached full pass on a large
+    repository would run into the host's 20-second hook timeout rather than
+    merely being slow.
     """
     h = hashlib.sha256()
     for rel in sorted(paths):
         h.update(rel.encode())
-        try:
-            stat = (root / rel).stat()
-            h.update(f"\0{stat.st_size}\0{stat.st_mtime_ns}\0".encode())
-        except OSError:
-            h.update(b"\0missing\0")
+        h.update(f"\0{_digest(root, rel)}\0".encode())
     return h.hexdigest()[:16]
 
 

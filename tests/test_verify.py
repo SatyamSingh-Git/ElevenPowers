@@ -36,8 +36,15 @@ def project(tmp_path):
 
 
 def open_task(root):
-    """A task that has changed the code and its test, which is the usual shape."""
+    """A task that has changed the code and its test, which is the usual shape.
+
+    `touched` as well as `seen`, because that is what changing a file means and
+    what `observe_edit` records. Setting only `seen` described an agent that had
+    read both files and edited neither, and the obligations were satisfied all
+    the same — which was R6.
+    """
     return Ledger(root=root, request="fix the addition bug", claims=[Claim.BUG_FIXED],
+                  touched=["src/app.py", "tests/test_app.py"],
                   seen=["src/app.py", "tests/test_app.py"])
 
 

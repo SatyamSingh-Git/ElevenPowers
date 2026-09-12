@@ -104,7 +104,6 @@ def test_adding_a_test_file_stales_a_suite_result(project):
     assert evidence.freshness(project) is Freshness.STALE
 
 
-@defect("R3", "the ledger rejects STALE and says nothing about GONE")
 def test_deleting_an_observed_file_is_not_verified(project):
     ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE],
                     evidence=[suite_record(project, Result.PASS, 1)])
@@ -115,7 +114,6 @@ def test_deleting_an_observed_file_is_not_verified(project):
 
 # --- R4: which record speaks for an identity ---------------------------------
 
-@defect("R4", "an older pass satisfies while the newest failure is excused as pre-existing")
 def test_a_failure_after_a_pass_is_not_verified(project):
     ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE], evidence=[
         suite_record(project, Result.FAIL, 1),
@@ -126,12 +124,25 @@ def test_a_failure_after_a_pass_is_not_verified(project):
     assert ledger.status() is not Status.VERIFIED
 
 
-@defect("R4", "no-new-failures compares counts, not which tests failed")
 def test_the_same_number_of_different_failures_is_not_tolerated(project):
-    first, last = suite_record(project, Result.FAIL, 1), suite_record(project, Result.FAIL, 2)
-    first.detail = "FAILED tests/test_old.py::test_old"
-    last.detail = "FAILED tests/test_new.py::test_new"
-    ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE], evidence=[first, last])
+    """Through the parser, so the per-test records that name the failures exist.
+
+    Hand-built suite records carry a count and a detail string; the question is
+    which tests failed, and only a real parse answers it. Timestamps are set
+    explicitly because two parses can land in the same clock tick on Windows,
+    and the comparison is between the first run and the last.
+    """
+    before = parsers.parse(
+        "pytest -q", "FAILED tests/test_old.py::test_old - assert 0\n"
+        "1 failed, 1 passed in 0.1s\n", 1, project)
+    after = parsers.parse(
+        "pytest -q", "FAILED tests/test_new.py::test_new - assert 0\n"
+        "1 failed, 1 passed in 0.2s\n", 1, project)
+    for e in before:
+        e.at = 1.0
+    for e in after:
+        e.at = 2.0
+    ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE], evidence=before + after)
     assert ledger.status() is not Status.VERIFIED
 
 
@@ -141,7 +152,6 @@ def test_the_same_number_of_different_failures_is_not_tolerated(project):
     ("echo pytest", "pytest\n"),
     ("python -m pytest --version", "pytest 9.1.1\n"),
 ])
-@defect("R5", "a substring match plus a zero exit code is treated as a suite run")
 def test_a_command_that_ran_no_tests_is_not_a_passing_suite(project, command, output):
     evidence = parsers.parse(command, output, 0, project)
     ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE], evidence=evidence)
@@ -150,7 +160,6 @@ def test_a_command_that_ran_no_tests_is_not_a_passing_suite(project, command, ou
 
 # --- R6: reading is not writing ----------------------------------------------
 
-@defect("R6", "_test_written_and_suite_green searches touched union seen, and seen includes reads")
 def test_reading_an_existing_test_is_not_writing_one(project):
     with patch.object(parsers, "vcs_state", return_value=""):
         evidence = parsers.parse("pytest -q", "1 passed in 0.1s", 0, project)
@@ -188,7 +197,6 @@ def test_concurrent_writers_do_not_lose_decisions(project):
     assert kept == {"event-A", "event-B"}
 
 
-@defect("R8", "observe_edit returns before updating touched and risk when a claim exists")
 def test_a_later_sensitive_edit_raises_risk(project):
     ledger = Ledger(project, request="Fix the bug", claims=[Claim.BUG_FIXED])
     ledger.observe_edit("src/auth/session.py")
@@ -376,3 +384,38 @@ def test_a_dependency_change_stales_a_suite_result(project):
     evidence = parsers.parse("pytest -q", "1 passed in 0.1s", 0, project)[-1]
     (project / "poetry.lock").write_text('name = "x"\nversion = "2.0"\n', encoding="utf-8")
     assert evidence.freshness(project) is Freshness.STALE
+
+
+# --- controls: the fixes must not work by refusing everything ----------------
+
+def test_a_pass_after_a_failure_still_verifies(project):
+    """R4's control. The newest record speaks; here the newest one passes."""
+    ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE], evidence=[
+        suite_record(project, Result.FAIL, 1),
+        suite_record(project, Result.PASS, 2),
+    ])
+    assert ledger.status() is Status.VERIFIED
+
+
+def test_a_suite_that_really_ran_still_satisfies(project):
+    """R5's control. Zero tests is the disqualifier, not the runner's name."""
+    evidence = parsers.parse("pytest -q", "2 passed in 0.4s", 0, project)
+    ledger = Ledger(project, claims=[Claim.REFACTOR_SAFE], evidence=evidence)
+    assert ledger.status() is Status.VERIFIED
+
+
+def test_writing_a_test_and_a_green_suite_still_counts(project):
+    """R6's control, and the one that matters most.
+
+    Cutting `seen` out of that rule is a fix only if the rule still fires for an
+    agent that actually wrote the test. Otherwise it is the M1 concession
+    deleted, which would put live blocking back where it was before the work
+    that brought it from 75 percent of runs to 12.
+    """
+    (project / "tests/test_new.py").write_text(
+        "def test_covers_the_change():\n    assert True\n", encoding="utf-8")
+    evidence = parsers.parse("pytest -q", "2 passed in 0.1s", 0, project)
+    ledger = Ledger(project, claims=[Claim.BUG_FIXED], request="Fix the bug",
+                    touched=["tests/test_new.py"], evidence=evidence)
+    met = [c.caveat for c in ledger.verdicts()[0].checks if c.met]
+    assert any(c.startswith("a test was written") for c in met), met

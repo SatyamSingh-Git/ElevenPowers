@@ -92,12 +92,32 @@ class Obligation:
     def satisfied_by(self, records: list[Evidence]) -> Evidence | None:
         candidates = [e for e in records if self.matches(e)]
         if self.require_pass:
-            candidates = [e for e in candidates if e.result is Result.PASS]
+            candidates = _current(candidates)
         if candidates:
             return candidates[-1]
         if self.fixed_transition:
             return _demonstrated_fix(records)
         return None
+
+
+def _current(records: list[Evidence]) -> list[Evidence]:
+    """Passing records, where nothing matched is currently failing.
+
+    The newest record for an identity is the one that speaks for it. Selecting
+    among *all* passing records let a fail → pass → fail history satisfy the
+    obligation on the middle one, while the newest failure was written off as
+    pre-existing breakage. And one target passing does not answer for another
+    that is red right now, so a single stale failure withholds the whole thing
+    rather than being outvoted.
+    """
+    newest: dict[tuple, Evidence] = {}
+    for e in records:
+        key = (e.kind, e.identity)
+        if key not in newest or e.at >= newest[key].at:
+            newest[key] = e
+    if any(e.result is not Result.PASS for e in newest.values()):
+        return []
+    return sorted((e for e in newest.values() if e.ran_tests), key=lambda e: e.at)
 
 
 def _demonstrated_fix(records: list[Evidence]) -> Evidence | None:

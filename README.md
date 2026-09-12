@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
-[![Tests](https://img.shields.io/badge/tests-387%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-401%20passing-brightgreen.svg)](tests/)
 [![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**

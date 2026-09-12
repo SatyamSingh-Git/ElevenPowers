@@ -54,7 +54,14 @@ class Verdict:
 
     @property
     def stale(self) -> list[Check]:
-        return [c for c in self.checks if c.met and c.freshness is Freshness.STALE]
+        """Met, but no longer speaking for the repository as it is now.
+
+        `GONE` belongs here as much as `STALE` does. Rejecting only `STALE` left
+        a claim verified by a test result whose files had been deleted — the
+        strongest possible form of out of date.
+        """
+        return [c for c in self.checks
+                if c.met and c.freshness in (Freshness.STALE, Freshness.GONE)]
 
 
 @dataclass
@@ -170,13 +177,17 @@ class Ledger:
         """
         rel = normalise(path, self.root)
         self.saw(rel)
+        # An edit is a fact about the task whatever claim is already open.
+        # Recording it only on the path that opens one meant every later edit
+        # was invisible: a task that started on a README and then reached into
+        # `src/auth/` kept the risk the README earned it.
+        self.touched = sorted(set(self.touched) | {rel})
+        self.risk, self.domains = risk_of(self.touched, self.request)
         if self.claims or not self.request or opens_new_task(self.request):
             return
         if is_manifest(rel) or is_prose(rel):
             return
         self.claims = [Claim.FEATURE_ADDED]
-        self.touched = sorted(set(self.touched) | {rel})
-        self.risk, self.domains = risk_of(self.touched, self.request)
         self.note("claim opened by an edit", f"{rel} changed with no claim stated")
 
     def note(self, what: str, why: str) -> None:
@@ -221,7 +232,7 @@ class Ledger:
             status = Status.CONTRADICTED
         elif any(not c.met for c in checks):
             status = Status.UNVERIFIED
-        elif any(c.freshness is Freshness.STALE for c in checks):
+        elif any(c.freshness in (Freshness.STALE, Freshness.GONE) for c in checks):
             status = Status.STALE
         else:
             status = Status.VERIFIED
@@ -355,15 +366,22 @@ class Ledger:
         """
         if not obligation.scoped or obligation.kind is not Kind.TEST:
             return None
-        # The file must still declare a test. Emptying one is how a suite goes
-        # green without the bug being fixed, and the held-out scenarios caught
-        # exactly that the first time this rule was written without the check.
+        # Written, not read. `seen` includes files the agent merely opened, so
+        # reading an existing test and running a green suite satisfied "a test
+        # covering the change passes" — with a caveat that said a test had been
+        # written. Nuisance blocking is not a reason to upgrade weaker evidence
+        # into a stronger claim.
+        #
+        # The file must also still declare a test. Emptying one is how a suite
+        # goes green without the bug being fixed, and the held-out scenarios
+        # caught exactly that the first time this rule was written without it.
         if not any(TEST_NAME.search(p) and declares_a_test(self.root / p)
-                   for p in set(self.touched) | set(self.seen)):
+                   for p in self.touched):
             return None
         green = [
             e for e in self.evidence
-            if e.kind is Kind.SUITE and e.result is Result.PASS and not Obligation._is_scoped(e)
+            if e.kind is Kind.SUITE and e.result is Result.PASS and e.ran_tests
+            and not Obligation._is_scoped(e)
         ]
         return green[-1] if green else None
 
@@ -385,4 +403,21 @@ class Ledger:
         first, last = runs[0], runs[-1]
         if first.result is Result.PASS or last.result is Result.PASS:
             return None
+        # Which tests failed, not how many. A suite that swapped an old failure
+        # for a new one keeps its count and has regressed, and counting alone
+        # cannot tell those apart. Where the runner reported no per-test detail
+        # there is nothing to compare, and the concession is refused rather than
+        # granted on a number that cannot support it.
+        was, now = self._failing_tests(first.at), self._failing_tests(last.at)
+        if not was or not now or now - was:
+            return None
         return last if last.failed <= first.failed else None
+
+    def _failing_tests(self, when: float) -> set[str]:
+        """The tests a single suite run reported failing, by name.
+
+        Per-test records share the timestamp of the run that produced them,
+        which is what ties them to one invocation rather than to the task.
+        """
+        return {e.identity for e in self.evidence
+                if e.kind is Kind.TEST and e.result is not Result.PASS and e.at == when}

@@ -50,7 +50,7 @@ Twelve real bugs said the gate changes nothing on its own. The most promising di
 
 **Working, and still useful.** Evidence capture from ordinary tool output; provenance and staleness; self-discharge of declared commands; profiles and config; `ep-status`; a scope guard; a repeat runner with derived run counts; a miner that builds real tasks from upstream history without Docker; a live harness driving the real CLI.
 
-**Not trustworthy until §4 is done.** Every number this project has published rests on an evaluator that does not check preservation, an analysis that discards replicates, and an evidence layer with nine reproduced soundness defects.
+**Not trustworthy until §4 is done.** Every number this project published before 2026-09-12 rests on an evaluator that did not check preservation, an analysis that discarded replicates, and an evidence layer with nine reproduced soundness defects. Eight of those sixteen are now closed and one narrowed, which changes what future runs mean and nothing about what past ones did: **the candidates were deleted with their workspaces (E3), so no past result can be re-graded.**
 
 **Never built.** Candidate pools, selection, diagnosis branching, localisation, run bundles, an isolated benchmark environment.
 
@@ -79,12 +79,12 @@ Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the
 |---|---|---|---|
 | R1 | Size and mtime, with `vcs_state` as tie-breaker | Two different contents of an already-modified file share a porcelain status; evidence survives a real change | fixed |
 | R2 | `observed` is a stored list; additions escape it | A new failing test file does not stale anything. Environment and dependency changes are not fingerprinted at all | part |
-| R3 | Only `STALE` is rejected | Deleting an observed file yields `GONE` and still verifies | open |
-| R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED | open |
-| R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests | open |
-| R6 | `_test_written_and_suite_green` searches `touched ∪ seen` | **Reading** an existing test counts as writing one. Added in M1 to cut false blocks, and cut them partly by being wrong | open |
+| R3 | Only `STALE` is rejected | Deleting an observed file yields `GONE` and still verifies | fixed |
+| R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED | fixed |
+| R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests | fixed |
+| R6 | `_test_written_and_suite_green` searches `touched ∪ seen` | **Reading** an existing test counts as writing one. Added in M1 to cut false blocks, and cut them partly by being wrong | fixed |
 | R7 | `on_prompt` reuses the task id | A new request inherits the previous task's evidence, read set and `guided` flag; concurrent writers lose updates | open |
-| R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low | open |
+| R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low | fixed |
 | R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence | open |
 
 ### Host contract
@@ -96,7 +96,15 @@ Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the
 | H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | open |
 | H4 | Bash-only subscription | PowerShell commands are invisible | open |
 
-**R1, closed 2026-09-12.** `vcs_state` is a content fingerprint rather than a status listing: the porcelain output names which files differ from HEAD and not how, so two edits of one already-modified file shared a line and evidence recorded against the first survived the second. It now folds in `git diff HEAD` for tracked content and reads untracked files directly, because a test file written a minute ago is untracked and is exactly what changes next.
+**R3–R6 and R8, closed 2026-09-12.** `GONE` now counts as not-fresh alongside `STALE`, so a claim can no longer be verified by a test result whose files were deleted. The newest record for an identity speaks for it, and a target that is red right now withholds the obligation rather than being outvoted by an older pass; the no-new-failures concession compares which tests failed rather than how many, and is refused outright where the runner reported no per-test detail, because a stable count is not evidence of preserved behaviour. A suite record that counted zero tests can no longer satisfy an obligation that a suite passes — the command being recognised, the process finishing, tests running and the required ones passing are four facts that had become one. `_test_written_and_suite_green` reads `touched` alone, which only works because `observe_edit` no longer returns before recording an edit when a claim is already open: R6 and R8 had to land together or the first would have deleted the M1 concession rather than narrowing it.
+
+Each ships with a control asserting the rule still fires — a fail → pass history still verifies, a suite that really ran still satisfies, and an agent that did write the test still gets the concession. Without those, *fixed* and *disabled* are indistinguishable.
+
+**R1, closed 2026-09-12 — and the reported defect was the smaller half.** The audit named the tie-breaker: `vcs_state` compared a porcelain status, which says which files differ from HEAD and not how, so two edits of one already-modified file shared a line. It now folds in `git diff HEAD` and reads untracked files directly.
+
+That fix does not close the case the audit described, because `freshness` returns fresh on a `tree_hash` match **before** the tie-breaker is reached. The fingerprint itself was size and modification time, and a rewrite that keeps the length and lands inside the filesystem's timestamp resolution is invisible to it — measured at **220 of 300 attempts** on a two-line lock file. Evidence surviving a real edit was the common case, not a race, and the original docstring defended the trade while reasoning only about the harmless direction: falsely stale costs a re-run, falsely fresh is the failure this project exists to prevent.
+
+`tree_hash` now hashes content, with stat as a cache key rather than the answer, and re-reads any file touched within two seconds whatever the cache holds — the window stat cannot resolve is where an agent's edits land. Measured at 6ms against 1ms for stat over 59 files; the cache is what keeps that affordable against the host's 20-second hook timeout (**H2**). The tie-breaker is now unreachable by construction and has been removed.
 
 **R2, part closed 2026-09-12.** A record produced by scanning the tree now says so, and freshness re-derives the file set instead of consulting a stored list that cannot grow — a file that did not exist when the suite ran could never have appeared in it, so a new failing test staled nothing. Dependency manifests and lock files joined the observed set, since a dependency upgrade changes behaviour exactly as an edit does. **Still open:** a package installed without touching a manifest is invisible, and there is no fingerprint of the interpreter or the environment the command actually ran in. Marked `part` rather than `fixed` because the row claims more than the fix delivers.
 
