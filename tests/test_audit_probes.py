@@ -19,6 +19,9 @@ import contextlib
 import io
 import json
 import math
+import os
+import shutil
+import stat
 import subprocess
 from pathlib import Path
 from unittest.mock import patch
@@ -36,6 +39,7 @@ from core.payload import read_result
 from core.repeat import runs_needed
 from core.verify import dischargeable
 from eval.live import verify
+
 
 @pytest.fixture
 def project(tmp_path):
@@ -245,14 +249,19 @@ def upstream(tmp_path):
     probe established what the grader invoked, and what it invokes is not the
     claim: the claim is what it then says about a patch.
     """
-    from eval.live import materialise
+    from eval.live import _seed_git, materialise
     from eval.task import Task
 
     repo = tmp_path / "upstream"
     (repo / "src").mkdir(parents=True)
     (repo / "tests").mkdir()
-    for rel, body in (("conftest.py", ""), ("src/__init__.py", ""),
-                      ("src/app.py", BUGGY), ("tests/test_keep.py", KEEP)):
+    # `tests/__init__.py` rather than a root conftest: pytest walks up past a
+    # package to find the base directory, so the repository root lands on
+    # sys.path and `from src.app import ...` resolves. It also leaves
+    # `conftest.py` as a name nothing at base owns, which one probe needs.
+    for rel, body in ((".gitignore", "__pycache__/\n"), ("src/__init__.py", ""),
+                      ("src/app.py", BUGGY), ("tests/__init__.py", ""),
+                      ("tests/test_keep.py", KEEP)):
         (repo / rel).write_text(body, encoding="utf-8")
     subprocess.run(["git", "-C", str(repo), "init", "-q"], check=True, capture_output=True)
     base = _commit(repo, "the code before the fix")
@@ -268,7 +277,22 @@ def upstream(tmp_path):
                         "p2p": ["tests/test_keep.py::test_label"]})
     root = tmp_path / "work"
     materialise(task, root)
+    _seed_git(root)
     return task, root
+
+
+def _erase(root: Path) -> None:
+    """Delete a workspace the way losing one feels: completely.
+
+    Git marks its object files read-only and Windows honours that, so a plain
+    rmtree stops halfway and the test would be asserting against a tree that is
+    still half there.
+    """
+    def unlock(func, path, _):
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+
+    shutil.rmtree(root, onexc=unlock)
 
 
 def _commit(repo: Path, message: str) -> str:
@@ -558,3 +582,146 @@ def test_a_tool_that_is_not_a_shell_produces_no_command_evidence(project):
         "tool_response": {"stdout": "2 passed in 0.1s\n", "stderr": ""},
     }, project)
     assert not Ledger.load(project).evidence
+
+
+# --- E3, E5: the run survives, and the evaluator owns the courtroom ----------
+
+def test_the_candidate_survives_its_workspace(upstream, tmp_path):
+    """E3: the twelve candidate patches went with their TemporaryDirectory.
+
+    When the grader turned out to be blind to regressions there was nothing
+    left to re-grade, so a published null became permanently uncheckable rather
+    than merely wrong.
+    """
+    from eval.bundle import export_patch, read, record_grade, write
+
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED, encoding="utf-8")
+    (root / "notes.txt").write_text("scratch\n", encoding="utf-8")
+
+    patch = export_patch(root)
+    assert "def double(n):" in patch and "notes.txt" in patch, "new files count too"
+
+    kept = write(tmp_path / "bundles" / "run", task=task.name, arm="vanilla",
+                 model="claude-opus-5", patch=patch, answer={"num_turns": 3},
+                 limits={"agent_seconds": 900}, ledger=None, source=task.source)
+    record_grade(kept, verify(task, root))
+
+    # The workspace is gone; the run is not.
+    _erase(root)
+    back = read(kept)
+    assert back["patch"] == patch
+    assert back["manifest"]["required"]["p2p"] == ["tests/test_keep.py::test_label"]
+    assert back["manifest"]["model"] == "claude-opus-5"
+    assert back["grade"]["resolved"] is True
+    assert back["grade"]["passed"] == ["tests/test_keep.py::test_label",
+                                       "tests/test_new.py::test_double"]
+
+
+def test_a_preserved_patch_regrades_to_the_same_answer(upstream, tmp_path):
+    """E3 forward: a bundle nobody can re-grade from is a receipt, not evidence."""
+    from eval.bundle import export_patch
+    from eval.live import grade_patch
+
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED.replace("'ok'", "'broken'"), encoding="utf-8")
+    patch = export_patch(root)
+    _erase(root)
+
+    again = grade_patch(task, patch, tmp_path / "court")
+    assert again.outcome == "regressed"
+
+
+def test_grading_ignores_what_the_patch_does_not_carry(upstream, tmp_path):
+    """E5: the grade is a function of the base and the patch, and nothing else.
+
+    A workspace holds more than a patch does — ignored build output, an
+    editable install, anything the agent did outside the repository. Grading
+    inside it makes the verdict depend on state no bundle preserves and no
+    second opinion can reconstruct, which is what "separation in time is not
+    isolation of authority" means in practice.
+
+    The lever here is an ignored `conftest.py`; it stands for all of that. In
+    its own tree the agent's patch looks resolved. Graded from the patch in a
+    tree the evaluator built, the regression is visible.
+    """
+    from eval.bundle import export_patch
+    from eval.live import grade_patch
+
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED.replace("'ok'", "'broken'"), encoding="utf-8")
+    (root / ".gitignore").write_text("__pycache__/\nconftest.py\n", encoding="utf-8")
+    (root / "conftest.py").write_text(
+        "import src.app\n\nsrc.app.label = lambda: 'ok'\n", encoding="utf-8")
+
+    assert verify(task, root).resolved, "in its own tree the workspace answers for itself"
+
+    patch = export_patch(root)
+    assert "conftest.py" not in patch or "src.app.label" not in patch
+    assert grade_patch(task, patch, tmp_path / "court").outcome == "regressed"
+
+
+# --- E4, E6: an arm that is present, and a bound that holds -------------------
+
+def test_a_missing_plugin_stops_the_run_instead_of_relabelling_vanilla():
+    """E4: an arm named for a plugin that is not installed ran as vanilla.
+
+    It was still recorded under the plugin's name, so a comparison between two
+    identical configurations would have been reported as a composition result.
+    """
+    from eval.live import PLUGINS, _plugin_dir
+
+    PLUGINS["superpowers"] = ""
+    with pytest.raises(SystemExit, match="EP_SUPERPOWERS_DIR"):
+        _plugin_dir("superpowers")
+
+
+def test_a_present_plugin_is_used(tmp_path):
+    """E4 forward: refusing every arm is not a fix."""
+    from eval.live import PLUGINS, _plugin_dir
+
+    (tmp_path / "plugin").mkdir()
+    PLUGINS["superpowers"] = str(tmp_path / "plugin")
+    assert _plugin_dir("superpowers") == str(tmp_path / "plugin")
+
+
+def test_the_run_records_the_environment_it_happened_in():
+    """E4: an inherited environment is not a controlled one, and was not recorded."""
+    from eval.live import environment
+
+    seen = environment()
+    assert seen["python"] and seen["platform"]
+
+
+def test_arm_order_is_not_fixed():
+    """E4: a fixed order confounds the arm with anything that drifts mid-sweep.
+
+    Against `eval.live`'s own ordering rather than against `random.shuffle`: a
+    test of the standard library would pass whether or not the sweep used it.
+    """
+    import random
+
+    from eval.live import arm_order
+
+    arms = ["vanilla", "nudge", "guide", "gate"]
+    seen = {tuple(arm_order(arms, random.Random(seed))) for seed in range(40)}
+    assert len(seen) > 1
+    assert all(sorted(order) == sorted(arms) for order in seen), "every arm still runs"
+
+
+def test_the_run_count_is_not_derived_from_the_flip_rate():
+    """E6: flipping is within one arm, disagreement is between two.
+
+    A baseline that fails every time against a treatment that succeeds every
+    time flips never and disagrees always, so dividing by the flip rate gave a
+    run count with nothing behind it — and the smaller the flip rate, the more
+    confident the wrong answer looked.
+    """
+    from eval.noise import discordant_pairs_needed, runs_for
+
+    pairs = discordant_pairs_needed()
+    assert pairs > 0
+    # Total disagreement needs exactly the pairs, whatever anything flips.
+    assert runs_for(1.0) == pairs
+    assert runs_for(0.5) == 2 * pairs
+    assert runs_for(0.0) == 0

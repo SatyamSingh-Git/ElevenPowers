@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
-[![Tests](https://img.shields.io/badge/tests-418%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-433%20passing-brightgreen.svg)](tests/)
 [![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
@@ -291,7 +291,7 @@ Every figure below was produced by the command printed next to it.
 | Claim inference, real turns | 21% over-claim, 25% missed work, across 3,557 turns | `python -m eval.claims_run` |
 | Live blocking | **12% of runs, down from 75%** | `python -m eval.live --arm gate --model haiku` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
-| Audit probes | **all 16 fixed plus the four host findings**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
+| Audit probes | **all 20 fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
 | **Does the work come out better?** | **unanswered — the noise floor is larger than the effect** | `python -m eval.noise a.json b.json` |
 
 **On the first row.** Claude Code writes a transcript of every session including each tool result exactly as the host produced it, so replaying those costs no inference and needs no hand labelling — the host already recorded whether each command failed. The reader this replaced agreed on 0 of 174 failures. It is reported as two rates rather than one because the corpus is 97% successes: a reader that answers "passed" to everything scores 97% accuracy while being wrong about the only thing the gate needs to know.

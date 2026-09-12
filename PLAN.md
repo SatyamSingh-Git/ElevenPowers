@@ -70,10 +70,10 @@ While any remained, the marker was `xfail(strict=True)`. The marker comes off wh
 |---|---|---|---|
 | E1 | The grader runs only `f2p`; there is no preservation set | A patch that breaks existing tests scores as resolved. **The gate's main mechanism is regression-catching and the measurement could not see it** | fixed |
 | E2 | `eval/analyse.py` keeps one row per task and arm | `--runs N` is incompatible with the analysis. Replicates, uncertainty and cost vanish | fixed |
-| E3 | The workspace is deleted; `Run` holds no diff, log or trajectory | Freezing twelve candidate patches is impossible because they no longer exist | open |
-| E4 | Model alias, inherited environment, silent plugin omission, fixed arm order | An arm can be labelled present and be absent | open |
-| E5 | Grading happens inside the candidate's mutable workspace | Separation in time is not isolation of authority | open |
-| E6 | Task selection keyed to the gate's own detection mechanism; flip-rate bound is invalid | Selecting the benchmark around the intervention being tested. A baseline can fail deterministically while a treatment succeeds deterministically, giving zero baseline flips and complete between-arm disagreement | open |
+| E3 | The workspace is deleted; `Run` holds no diff, log or trajectory | Freezing twelve candidate patches is impossible because they no longer exist | fixed |
+| E4 | Model alias, inherited environment, silent plugin omission, fixed arm order | An arm can be labelled present and be absent | fixed |
+| E5 | Grading happens inside the candidate's mutable workspace | Separation in time is not isolation of authority | fixed |
+| E6 | Task selection keyed to the gate's own detection mechanism; flip-rate bound is invalid | Selecting the benchmark around the intervention being tested. A baseline can fail deterministically while a treatment succeeds deterministically, giving zero baseline flips and complete between-arm disagreement | fixed |
 
 ### Evidence layer
 
@@ -89,7 +89,7 @@ While any remained, the marker was `xfail(strict=True)`. The marker comes off wh
 | R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low | fixed |
 | R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence | fixed |
 
-**The four still open have no probes.** `reproduce.py` covered R1–R9, E1 and E2; E3–E6 and H1–H4 were source findings the audit did not execute. H1–H4 have since been given probes written against the documented host contract rather than a replayed transcript — **replay fidelity is not delivery fidelity**, and that confusion is what H1 is. E3–E6 still need theirs, so *zero xfails* remains necessary and not sufficient for Phase A.
+**Every one now has a probe**, including the eight the audit reported without executing. `reproduce.py` covered R1–R9, E1 and E2; E3–E6 and H1–H4 were source findings it never ran, so their probes were written here rather than derived — H1–H4 against the documented host contract rather than a replayed transcript, since **replay fidelity is not delivery fidelity** and that confusion is what H1 is.
 
 ### Host contract
 
@@ -99,6 +99,14 @@ While any remained, the marker was `xfail(strict=True)`. The marker comes off wh
 | H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | fixed |
 | H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | fixed |
 | H4 | Bash-only subscription | PowerShell commands are invisible | fixed |
+
+**E3–E6, closed 2026-09-12.** A run now survives its workspace: `eval/bundle.py` exports the candidate as a patch against the seeded base and keeps it with the manifest, the host's answer, the ledger, the blind-spot log and the grade with the node outcomes behind it. Grading happens from that patch in a tree the evaluator builds, so anything the workspace acquired and the patch does not carry — ignored output, an editable install, a helpfully edited runner — does not come along. The grade is a function of the base and the patch, which is what makes a second opinion possible at all.
+
+An arm named for a plugin whose directory is unset used to run as vanilla under the plugin's name; that is now a hard error naming the variable to set, because a comparison of two identical configurations reported under two names is worse than no comparison. Arm order is shuffled per task with a recorded seed, the environment the run happened in is recorded, and the model written down is the one the host resolved rather than the alias asked for.
+
+The flip-rate bound is withdrawn. Converting discordant pairs into paired runs by dividing by the within-arm flip rate has nothing behind it: a baseline that fails every time against a treatment that succeeds every time flips never and disagrees always, so the smaller the flip rate the more confident the wrong answer looked. Discordance must be measured with both arms running, and `runs_for` takes it as an input rather than inventing it.
+
+**Found while closing these:** `git apply` resolves paths against the enclosing repository rather than the working directory, and skips every file while exiting zero when the two differ. A home directory under version control is enough to trigger it, so every re-grade would have silently graded the base tree.
 
 **H1–H4, closed 2026-09-12.** Checked against the live documentation rather than against what the code assumed, which changed two of the four answers. The documented failure hook carries no result object at all — a top-level `error`, and `is_interrupt` alongside it — so a shape the host is documented to send produced no evidence and a blind-spot entry. The exit-code pattern now accepts a bare `Exit code 1`, since only the transcript form writes `Error:` first.
 

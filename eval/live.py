@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import shutil
 import subprocess
 import sys
@@ -40,6 +41,8 @@ from core.config import Config, save as save_config
 from core.intent import is_abstention
 from core.wiring import hooks_json
 
+from . import bundle
+from .bundle import apply_patch, export_patch
 from .mine import failing_nodes, passing_nodes
 from .tasks import SUITES, Task, by_name
 
@@ -53,10 +56,8 @@ ARMS = ("vanilla", "nudge", "guide", "gate", "superpowers", "stack")
 
 # The composition baseline and its strongest single part, for M2. Both are
 # ordinary Claude Code plugins, so the host loads them the way a user would.
-PLUGINS = {
-    "superpowers": os.environ.get("EP_SUPERPOWERS_DIR", ""),
-    "stack": os.environ.get("EP_STACK_DIR", ""),
-}
+PLUGIN_VARS = {"superpowers": "EP_SUPERPOWERS_DIR", "stack": "EP_STACK_DIR"}
+PLUGINS = {arm: os.environ.get(var, "") for arm, var in PLUGIN_VARS.items()}
 
 
 @dataclass
@@ -66,6 +67,7 @@ class Run:
     claimed: bool
     resolved: bool
     outcome: str = ""
+    bundle: str = ""
     blocks: int = 0
     turns: int = 0
     seconds: float = 0.0
@@ -78,12 +80,12 @@ def materialise(task: Task, root: Path) -> None:
     import zipfile
 
     source = task.source
-    bundle = root.parent / f"{task.name}.zip"
-    subprocess.run(["git", "-C", source["repo"], "archive", "--format=zip",
-                    "-o", str(bundle), source["base"]], check=True, capture_output=True)
-    with zipfile.ZipFile(bundle) as archive:
+    archive_path = root.parent / f"{task.name}.zip"
+    subprocess.run(["git", "-C", source["repo"], "archive", "--format=zip", "-o",
+                    str(archive_path), source["base"]], check=True, capture_output=True)
+    with zipfile.ZipFile(archive_path) as archive:
         archive.extractall(root)
-    bundle.unlink(missing_ok=True)
+    archive_path.unlink(missing_ok=True)
 
     # SWE-bench installs the package into its container; a src-layout project
     # needs the same thing here. A root conftest is the portable equivalent, and
@@ -108,10 +110,17 @@ def materialise(task: Task, root: Path) -> None:
         )
 
 
-def build(task: Task, root: Path, arm: str) -> None:
+def base_tree(task: Task, root: Path) -> None:
+    """The repository as the agent will be given it, and nothing else.
+
+    Separated from `build` so the evaluator can construct one for itself. A
+    workspace the candidate ran in is not a neutral place to grade it: the agent
+    may have left a conftest, a `sitecustomize`, a patched runner or an edited
+    test behind, and the grade would be computed inside all of it. Separation in
+    time is not isolation of authority.
+    """
     if task.source:
         materialise(task, root)
-        _install(task, root, arm)
         return
     for rel, body in task.files.items():
         path = root / rel
@@ -121,6 +130,13 @@ def build(task: Task, root: Path, arm: str) -> None:
     # pytest adds the directory holding the root conftest to sys.path, which is
     # how `from src.paging import ...` resolves without an installed package.
     (root / "conftest.py").write_text("", encoding="utf-8")
+
+
+def build(task: Task, root: Path, arm: str) -> None:
+    base_tree(task, root)
+    if task.source:
+        _install(task, root, arm)
+        return
 
     if arm in ("guide", "gate"):
         # The same subscription the plugin ships, with the launcher's real path
@@ -185,6 +201,57 @@ NUDGE = (
 )
 
 
+def arm_order(arms: list[str], shuffler: random.Random) -> list[str]:
+    """The arms for one task, in an order that is not the same every time.
+
+    A fixed order confounds the arm with everything that drifts during a sweep:
+    a model updated mid-run, a machine that got busier, a rate limit that bit
+    the third call every time. Shuffling does not remove drift; it stops the
+    drift lining up with one arm.
+    """
+    order = list(arms)
+    shuffler.shuffle(order)
+    return order
+
+
+def _plugin_dir(arm: str) -> str:
+    where = PLUGINS.get(arm) or ""
+    if not where or not Path(where).is_dir():
+        raise SystemExit(
+            f"arm '{arm}' needs a plugin directory. Set {PLUGIN_VARS[arm]} to it, or "
+            f"drop the arm. Running it without one measures vanilla under another name.")
+    return where
+
+
+def environment() -> dict:
+    """What the run actually happened in, recorded rather than assumed.
+
+    An inherited environment is not a controlled one. This does not control it
+    either — it records enough that two runs which disagree can be asked whether
+    they were the same experiment.
+    """
+    import platform
+
+    return {
+        "python": sys.version.split()[0],
+        "platform": platform.platform(),
+        "claude": _claude_version(),
+        "git": _tool_version(["git", "--version"]),
+    }
+
+
+def _claude_version() -> str:
+    return _tool_version([shutil.which("claude") or "claude", "--version"])
+
+
+def _tool_version(command: list[str]) -> str:
+    try:
+        done = subprocess.run(command, capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return (done.stdout or "").strip().splitlines()[0] if done.stdout.strip() else ""
+
+
 def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dict, float]:
     started = time.perf_counter()
     command = [
@@ -196,9 +263,12 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dic
     ]
     if arm == "nudge":
         command += ["--append-system-prompt", NUDGE]
-    plugin = PLUGINS.get(arm)
-    if plugin:
-        command += ["--plugin-dir", plugin]
+    if arm in PLUGINS:
+        # An arm named for a plugin that is not installed ran as vanilla and was
+        # still labelled with the plugin's name. A missing arm has to be an
+        # error: a comparison between two identical configurations reported
+        # under two names is worse than no comparison.
+        command += ["--plugin-dir", _plugin_dir(arm)]
     try:
         done = subprocess.run(command, cwd=root, capture_output=True, text=True,
                               timeout=TIMEOUT)
@@ -223,11 +293,31 @@ class Graded:
     resolved: bool
     outcome: str
     detail: str = ""
+    observed: tuple[str, ...] = ()
+    """Which required nodes were seen to pass, so the verdict can be checked.
+
+    A stored verdict nobody can recompute is the problem this whole slice
+    exists to fix, one level up.
+    """
 
 
 def verify(task: Task, root: Path) -> Graded:
     """Run the tests the agent never saw, and the ones it must not have broken."""
     return _verify_real(task, root) if task.source else _verify_seeded(task, root)
+
+
+def grade_patch(task: Task, patch: str, work: Path) -> Graded:
+    """Grade an exported candidate in a workspace the evaluator built.
+
+    The patch is the candidate. Anything else the agent's workspace acquired —
+    a stray conftest, an installed package, a helpfully edited test runner — is
+    not part of the answer and does not come along.
+    """
+    base_tree(task, work)
+    trouble = apply_patch(work, patch)
+    if trouble:
+        return Graded(False, "setup", trouble[:300])
+    return verify(task, work)
 
 
 def _restore_tests(task: Task, root: Path) -> bool:
@@ -242,15 +332,15 @@ def _restore_tests(task: Task, root: Path) -> bool:
     import zipfile
 
     source = task.source
-    bundle = root.parent / f"{root.name}-tests.zip"
+    archive_path = root.parent / f"{root.name}-tests.zip"
     done = subprocess.run(
-        ["git", "-C", source["repo"], "archive", "--format=zip", "-o", str(bundle),
+        ["git", "-C", source["repo"], "archive", "--format=zip", "-o", str(archive_path),
          source["base"], "--", "tests"], capture_output=True)
     if done.returncode != 0:
         return False
-    with zipfile.ZipFile(bundle) as archive:
+    with zipfile.ZipFile(archive_path) as archive:
         archive.extractall(root)
-    bundle.unlink(missing_ok=True)
+    archive_path.unlink(missing_ok=True)
     return True
 
 
@@ -279,13 +369,15 @@ def _verify_real(task: Task, root: Path) -> Graded:
     # Membership, not the exit code. A node that was never collected is not a
     # node that passed, and tests the agent wrote for itself are its own affair.
     passed = passing_nodes(done.stdout + done.stderr)
+    required = list(source["f2p"]) + list(source.get("p2p") or [])
+    seen = tuple(sorted(set(required) & passed))
     unfixed = [n for n in source["f2p"] if n not in passed]
     if unfixed:
-        return Graded(False, "unfixed", ", ".join(unfixed[:3]))
+        return Graded(False, "unfixed", ", ".join(unfixed[:3]), seen)
     broke = [n for n in source.get("p2p") or [] if n not in passed]
     if broke:
-        return Graded(False, "regressed", ", ".join(broke[:3]))
-    return Graded(True, "resolved")
+        return Graded(False, "regressed", ", ".join(broke[:3]), seen)
+    return Graded(True, "resolved", "", seen)
 
 
 def _suite(root: Path) -> list[str]:
@@ -332,8 +424,8 @@ def blocks_recorded(root: Path) -> int:
     return sum(1 for d in decisions if d.get("what") == "gate blocked")
 
 
-def once(task: Task, arm: str, model: str, keep: Path | None = None) -> Run:
-    with tempfile.TemporaryDirectory(dir=keep) as tmp:
+def once(task: Task, arm: str, model: str, bundles: Path | None = None) -> Run:
+    with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         build(task, root, arm)
         answer, elapsed = drive(task, root, model, arm)
@@ -344,11 +436,34 @@ def once(task: Task, arm: str, model: str, keep: Path | None = None) -> Run:
         # it is blocked has submitted. Abstention is the one thing that is not a
         # claim, which is why the runtime treats it as its own outcome.
         claimed = not failed and not is_abstention(final)
-        graded = verify(task, root)
+
+        # Export before grading, and before the workspace goes. A verdict whose
+        # evidence has been deleted cannot be rechecked when the grader turns
+        # out to have been wrong, which is not hypothetical here.
+        patch = export_patch(root)
+        blocks = blocks_recorded(root)
+        kept = None
+        if bundles is not None:
+            kept = bundle.write(
+                bundles / f"{task.name}--{arm}--{int(time.time() * 1000)}",
+                task=task.name, arm=arm, model=answer.get("model") or model,
+                patch=patch, answer=answer,
+                limits={"agent_seconds": TIMEOUT, "suite_seconds": SUITE_TIMEOUT},
+                environment=environment(),
+                ledger=root / ".elevenpowers" / "ledger.json",
+                blindspots=root / ".elevenpowers" / "blindspots.jsonl",
+                source=task.source,
+            )
+
+        with tempfile.TemporaryDirectory() as court:
+            graded = grade_patch(task, patch, Path(court))
+        if kept is not None:
+            bundle.record_grade(kept, graded)
+
         return Run(
             task=task.name, arm=arm, claimed=claimed, resolved=graded.resolved,
-            outcome=graded.outcome,
-            blocks=blocks_recorded(root), turns=int(answer.get("num_turns") or 0),
+            outcome=graded.outcome, bundle=str(kept) if kept else "",
+            blocks=blocks, turns=int(answer.get("num_turns") or 0),
             seconds=elapsed, cost=float(answer.get("total_cost_usd") or 0.0),
             note=answer.get("note", "") or ("error" if failed else "") or graded.detail,
         )
@@ -415,11 +530,17 @@ def main(argv: list[str]) -> int:
     arms = ["vanilla", "gate"] if arm == "both" else (
         list(ARMS) if arm == "all" else [a.strip() for a in arm.split(",") if a.strip()])
 
+    bundles = Path(option("--bundles", "runs"))
+    seed = int(option("--seed", "0")) or int(time.time())
+    shuffler = random.Random(seed)
+    print(f"environment: {environment()}")
+    print(f"bundles -> {bundles}   arm order seeded with {seed}")
+
     results: list[Run] = []
     for task in chosen:
-        for which in arms:
+        for which in arm_order(arms, shuffler):
             for _ in range(runs_each):
-                run = once(task, which, model)
+                run = once(task, which, model, bundles)
                 results.append(run)
                 mark = "resolved" if run.resolved else ("claimed" if run.claimed else "gave up")
                 print(f"  {task.name:<16}{which:<9}{mark:<10}"

@@ -1,0 +1,70 @@
+[
+ {
+  "name": "documented failure: no result object, error at the top level",
+  "source": "documented contract",
+  "payload": {
+   "hook_event_name": "PostToolUseFailure",
+   "tool_name": "Bash",
+   "tool_input": {"command": "python -m pytest tests -q"},
+   "error": "Exit code 1\nF\n1 failed, 2 passed in 0.31s\n",
+   "is_interrupt": false
+  },
+  "expect": {"readable": true, "exit_code": 1, "skip": "", "output_has": "1 failed"}
+ },
+ {
+  "name": "documented interrupt: is_interrupt at the top level",
+  "source": "documented contract",
+  "payload": {
+   "hook_event_name": "PostToolUseFailure",
+   "tool_name": "Bash",
+   "tool_input": {"command": "python -m pytest tests -q"},
+   "error": "Exit code 130\n",
+   "is_interrupt": true
+  },
+  "expect": {"readable": true, "exit_code": 0, "skip": "interrupted", "output_has": ""}
+ },
+ {
+  "name": "success: a result object with stdout",
+  "source": "captured session",
+  "payload": {
+   "hook_event_name": "PostToolUse",
+   "tool_name": "Bash",
+   "tool_input": {"command": "python -m pytest tests -q"},
+   "tool_response": {"stdout": "...\n3 passed in 0.29s\n", "stderr": "", "interrupted": false}
+  },
+  "expect": {"readable": true, "exit_code": 0, "skip": "", "output_has": "3 passed"}
+ },
+ {
+  "name": "failure as a plain string, the transcript spelling",
+  "source": "captured session",
+  "payload": {
+   "hook_event_name": "PostToolUseFailure",
+   "tool_name": "Bash",
+   "tool_input": {"command": "python -m pytest tests -q"},
+   "tool_result": "Error: Exit code 1\nF\n1 failed, 2 passed in 0.31s\n"
+  },
+  "expect": {"readable": true, "exit_code": 1, "skip": "", "output_has": "1 failed"}
+ },
+ {
+  "name": "a shape nobody has seen before",
+  "source": "invented on purpose",
+  "payload": {
+   "hook_event_name": "PostToolUse",
+   "tool_name": "Bash",
+   "tool_input": {"command": "python -m pytest tests -q"},
+   "outcome": {"status": "finished"}
+  },
+  "expect": {"readable": false, "exit_code": 0, "skip": "", "output_has": ""}
+ },
+ {
+  "name": "a PowerShell command, which is a separate tool name on Windows",
+  "source": "documented contract",
+  "payload": {
+   "hook_event_name": "PostToolUse",
+   "tool_name": "PowerShell",
+   "tool_input": {"command": "python -m pytest tests -q"},
+   "tool_response": {"stdout": "2 passed in 0.11s\n", "stderr": ""}
+  },
+  "expect": {"readable": true, "exit_code": 0, "skip": "", "output_has": "2 passed"}
+ }
+]

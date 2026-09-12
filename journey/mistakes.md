@@ -356,3 +356,39 @@ seen to flip. Where the fix is behavioural, check it against a worktree at the
 previous commit — it must fail there and pass here. And every fix that narrows a
 rule needs a control asserting the rule still fires, because "fixed" and
 "disabled" are indistinguishable from a test that only asserts refusal.
+
+### A successful exit code that meant nothing, again
+
+`git apply` returned 0 and applied nothing. It resolves paths against the
+enclosing git repository rather than the working directory, and this machine's
+home directory is itself a repository, so it walked up out of the temporary
+workspace, matched no files, and reported success. The skip message appears only
+under `--verbose`.
+
+*Cost:* an hour of debugging, and it would have been far worse undetected: every
+re-grade would have silently graded the base tree, with bundles written and
+verdicts recorded for code nobody had applied.
+
+*Changed:* the evaluator's workspace is now its own repository, so the working
+directory is the top level, and the zero exit is checked against the skip list
+rather than trusted.
+
+*The general lesson, for the third time in this project:* a successful exit code
+is a claim about the process, not about the work. R5 is the same sentence about
+`echo pytest`; phase 8 was the same sentence about a host that signals failure by
+changing shape. Each time it looked like a different problem.
+
+### A test that asserted the wrong property
+
+The first probe for E5 had an agent write a `conftest.py` monkey-patching the
+broken function, expecting the trick to work in its own tree and fail when graded
+from the patch. It worked in both, because `conftest.py` is an ordinary tracked
+file and travels with the patch exactly as it should.
+
+*Cause:* the test was written from a story about cheating rather than from the
+property being defended. The property is that the grade is a function of the base
+and the patch and nothing else, which is about determinism, not deception.
+
+*Changed:* the probe uses something the patch cannot carry, and says in its
+docstring that it stands for the whole class rather than pretending the scenario
+is common.

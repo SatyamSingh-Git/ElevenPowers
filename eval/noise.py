@@ -59,6 +59,30 @@ def paired_runs_needed(flip_rate: float, share_favouring: float = 0.75) -> tuple
     return int(discordant + 0.5), int(discordant / flip_rate + 0.5)
 
 
+def discordant_pairs_needed(share_favouring: float = 0.75) -> int:
+    """Disagreeing pairs an effect of this shape needs, at 0.05 and 80 percent."""
+    edge = 2 * share_favouring - 1
+    return int(((Z_ALPHA + Z_BETA) / edge) ** 2 + 0.5) if edge > 0 else 0
+
+
+def runs_for(discordance: float, share_favouring: float = 0.75) -> int:
+    """Paired runs, given a **measured** rate of between-arm disagreement.
+
+    Not derived from the within-arm flip rate. `paired_runs_needed` did that, on
+    the reasoning that a task must be able to change answer before the arms can
+    disagree about it, and the reasoning is wrong: a baseline that fails
+    deterministically and a treatment that succeeds deterministically flip never
+    and disagree always. Zero flip rate, complete discordance. The flip rate
+    neither bounds nor estimates discordance, so dividing by it produced a run
+    count with nothing behind it.
+
+    Discordance has to come from a pilot that runs both arms. There is no way to
+    get it from one.
+    """
+    needed = discordant_pairs_needed(share_favouring)
+    return int(needed / discordance + 0.5) if discordance > 0 else 0
+
+
 def report(first: dict[str, bool], second: dict[str, bool], arm: str) -> None:
     shared = sorted(set(first) & set(second))
     if not shared:
@@ -88,11 +112,16 @@ def report(first: dict[str, bool], second: dict[str, bool], arm: str) -> None:
     print("never resolves is only useful if an arm can actually overturn it. The rest")
     print("of the suite is noise generators.")
 
-    discordant, pairs = paired_runs_needed(flip_rate)
+    discordant = discordant_pairs_needed()
     print()
-    print(f"to detect an arm winning three of every four disagreements, at 0.05 and")
-    print(f"80 percent power: {discordant} discordant pairs, which at this flip rate")
-    print(f"means about {pairs} paired runs, so {pairs * 2} agent runs per comparison.")
+    print("to detect an arm winning three of every four disagreements, at 0.05 and")
+    print(f"80 percent power: {discordant} pairs where the two arms disagree.")
+    print()
+    print("This does not convert into a number of runs from the flip rate above, and")
+    print("it used to. Flipping is within one arm; disagreement is between two, and a")
+    print("baseline that fails every time against a treatment that succeeds every time")
+    print("flips never and disagrees always. Run both arms on a pilot, measure how")
+    print("often they actually disagree, and put that through `runs_for`.")
 
 
 def calibrate(path: Path, arm: str = "vanilla", low: float = 0.3, high: float = 0.7) -> None:

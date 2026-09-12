@@ -127,8 +127,105 @@ def _blindspots(root: Path) -> Check:
                  f"latest: {found[-1].get('detail', '')}")
 
 
-def report(root: Path, plugin: Path | None = None) -> tuple[str, bool]:
-    results = checks(root, plugin)
+# The shape the documentation gives for a failing tool call: no result object,
+# the message in a top-level `error`. The checks above run the reader in this
+# process; these run the launcher as a process with a pipe, which is the only
+# way to exercise the join rather than one side of it.
+DOCUMENTED_FAILURE = {
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Bash",
+    "tool_input": {"command": "python -m pytest tests -q"},
+    "error": "Exit code 1\nF\n1 failed, 2 passed in 0.31s\n",
+    "is_interrupt": False,
+}
+
+
+def _call(event: str, payload: dict, project: Path):
+    import subprocess
+
+    launcher = Path(__file__).resolve().parents[1] / "plugin" / "bin" / "ep_hook.py"
+    return subprocess.run(
+        [sys.executable, str(launcher), event],
+        input=json.dumps({**payload, "cwd": str(project)}),
+        capture_output=True, text=True, timeout=120,
+    )
+
+
+def host_checks() -> list[Check]:
+    """Success, failure and stop, driven the way the host drives them.
+
+    A launcher that never runs is a launcher that has never been checked. The
+    three defects this module exists for were all in the join, and every one of
+    them failed by doing nothing while the unit tests stayed green.
+    """
+    import tempfile
+
+    from .config import Config, save as save_config
+    from .ledger import Ledger
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        project = Path(tmp)
+        (project / "src").mkdir()
+        (project / "tests").mkdir()
+        (project / "src/app.py").write_text("value = 0\n", encoding="utf-8")
+        (project / "tests/test_app.py").write_text(
+            "def test_ok():\n    assert True\n", encoding="utf-8")
+        save_config(project, Config(profile="guide"))
+
+        opened = _call("UserPromptSubmit", {"prompt": "fix the login bug"}, project)
+        out = [Check("the launcher accepts a prompt and opens a task",
+                     opened.returncode == 0 and bool(Ledger.load(project).claims),
+                     opened.stderr.strip()[:200])]
+
+        failed = _call("PostToolUseFailure", DOCUMENTED_FAILURE, project)
+        recorded = [e for e in Ledger.load(project).evidence if e.result is not Result.PASS]
+        out.append(Check(
+            "the documented failure shape reaches the ledger",
+            failed.returncode == 0 and bool(recorded),
+            "" if recorded else "no failing record; the top-level `error` form is being dropped"))
+
+        passed = _call("PostToolUse", PASSING_PAYLOAD, project)
+        greens = [e for e in Ledger.load(project).evidence if e.result is Result.PASS]
+        out.append(Check("a passing command reaches the ledger",
+                         passed.returncode == 0 and bool(greens),
+                         passed.stderr.strip()[:200]))
+
+        stop = _call("Stop", {"last_assistant_message": "All done."}, project)
+        spoken = _spoken(stop.stdout)
+        speaks = (stop.returncode == 0 and bool(spoken.get("systemMessage"))
+                  and "additionalContext" not in spoken)
+        out.append(Check("the report path speaks through a field Stop honours", speaks,
+                         "" if speaks else f"stdout={stop.stdout.strip()[:200]}"))
+
+    # A separate project, because the one above has satisfied its obligations by
+    # now and a gate with nothing to object to is not a test of blocking.
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        strict = Path(tmp)
+        (strict / "tests").mkdir()
+        (strict / "tests" / "test_app.py").write_text(
+            "def test_ok():\n    assert True\n", encoding="utf-8")
+        save_config(strict, Config(profile="strict"))
+        _call("UserPromptSubmit", {"prompt": "fix the login bug"}, strict)
+        blocked = _call("Stop", {"last_assistant_message": "All done."}, strict)
+        refused = blocked.returncode == 2 and bool(blocked.stderr.strip())
+        out.append(Check("the blocking path refuses the stop and says why", refused,
+                         "" if refused else f"exit={blocked.returncode}, "
+                                            f"stderr={blocked.stderr.strip()[:120]!r}"))
+    return out
+
+
+def _spoken(stdout: str) -> dict:
+    for line in stdout.splitlines():
+        if line.startswith("{"):
+            try:
+                return json.loads(line).get("hookSpecificOutput", {})
+            except json.JSONDecodeError:
+                continue
+    return {}
+
+
+def report(root: Path, plugin: Path | None = None, host: bool = False) -> tuple[str, bool]:
+    results = checks(root, plugin) + (host_checks() if host else [])
     body = "\n".join(c.line() for c in results)
     ok = all(c.ok for c in results)
     tail = "" if ok else "\n\nA failing check means the runtime is not seeing what it needs."
