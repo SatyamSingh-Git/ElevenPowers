@@ -187,14 +187,85 @@ not theoretical, since several defects closed this week were platform-shaped: a
 shell tool the runtime never subscribed to, and a `git apply` that did nothing
 because of where somebody's home directory happened to be.
 
+## The live run, which failed usefully
+
+The fourth exit needed real agent runs. Four of them — `last_page`, vanilla and
+gate, two replicates each, on haiku, for $0.36.
+
+All four came back `setup`:
+
+```
+error: git diff header lacks filename information when removing
+1 leading pathname component (line 4)
+```
+
+The seeded workspace had no ignore rules, so `git add -A` staged
+`__pycache__`, the pytest cache and the runtime's own ledger. The exported
+candidate was mostly `.pyc` blobs and `git apply` rejected the whole patch.
+
+**Two things made that a good outcome rather than a bad one.**
+
+The harness said `setup`, not `unfixed`. Four runs of *I broke*, not four runs of
+*the agent failed* — which is the fourth row of `eval.validate` earning its place
+on its first real outing. Under the grader this project used last week, those
+would have been four silent zeroes against the agent.
+
+And the bundles made it diagnosable. I read the offending `patch.diff` from a run
+whose workspace had been deleted twenty minutes earlier, which is the entire
+point of E3, demonstrated by accident.
+
+The fix keeps artefacts out through `.git/info/exclude` rather than a
+`.gitignore` — per-repository, untracked, so the agent never sees it, it does not
+alter the base the task presents, and it cannot collide with an ignore file a
+mined repository already ships. Excluding `.elevenpowers/` matters for a reason I
+had not thought of: **it is written only under the gated arms**, so leaving it in
+would make every gated patch differ from every plain one for a reason that has
+nothing to do with the code.
+
+The second sweep worked, and `gate` ran before `vanilla` — E4's shuffling,
+visible in the log.
+
+```
+arm       runs tasks  claimed  resolved    gap  turns  blocks    cost
+vanilla      2     1     100%      100%     0%    7.0       0    0.13
+gate         2     1     100%      100%     0%   16.0       2    0.23
+```
+
+`runs 2, tasks 1`. Replicates retained on real data, where before E2 the second
+run silently overwrote the first.
+
+## Then the bundle caught two more
+
+Reading the preserved manifest, rather than trusting the code that wrote it:
+
+**`"model": "haiku"`.** The alias. The host reports usage per concrete model id
+under `modelUsage` and has no top-level `model` key, so `answer.get("model")`
+fell back every time — while the docstring immediately above it said "what the
+host resolved, not the alias asked for". A false claim in a docstring is still a
+false claim, and this one would have survived a model alias being repointed
+between two sweeps without a word.
+
+**`"passed": []`.** `_verify_seeded` never filled in the node outcomes that
+`_verify_real` does, so every bundle from the simple suite carried a verdict with
+nothing behind it — the exact failure this slice exists to fix, reproduced inside
+the fix.
+
+Both were repaired against the real `answer.json` the run had preserved, so
+neither needed another sweep. That is the second time in one afternoon the
+artifacts paid for themselves.
+
 ## Where this leaves Phase A
 
 **Twenty of twenty defects closed**, R2 narrowed rather than closed and marked as
-such. 426 tests, no xfails. Three of the four exit criteria pass as commands, and
-the fourth needs live agent runs, which cost money and are the one thing that
-cannot be settled by writing code.
+such. 436 tests, no xfails. All four exit criteria pass as commands. Total live
+spend $0.72 against a $5 envelope, and the half that bought a defect was the
+better half.
 
 What Phase A bought is not a better score. It is that the next number this
 project produces can be disbelieved productively: the candidate is kept, the
 grade is reproducible from it, the arms are what they say they are, and the
 grader has itself been graded against answers known in advance.
+
+The first live sweep after all of it still found something no test had. That is
+not a failure of the tests — it is the reason the plan says every phase ships
+something runnable before it ships something complete.

@@ -42,7 +42,7 @@ from core.intent import is_abstention
 from core.wiring import hooks_json
 
 from . import bundle
-from .bundle import apply_patch, export_patch
+from .bundle import apply_patch, export_patch, ignore_artefacts
 from .mine import failing_nodes, passing_nodes
 from .tasks import SUITES, Task, by_name
 
@@ -184,7 +184,11 @@ def _test_command(task: Task) -> str:
 
 
 def _seed_git(root: Path) -> None:
-    for args in (["init", "-q"], ["add", "-A"],
+    subprocess.run(["git", "init", "-q"], cwd=root, capture_output=True)
+    # Before the first `add`, so bytecode and runtime state never enter the
+    # workspace's history and cannot reach the exported candidate.
+    ignore_artefacts(root)
+    for args in (["add", "-A"],
                  ["-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "seed"]):
         subprocess.run(["git", *args], cwd=root, capture_output=True)
 
@@ -212,6 +216,18 @@ def arm_order(arms: list[str], shuffler: random.Random) -> list[str]:
     order = list(arms)
     shuffler.shuffle(order)
     return order
+
+
+def resolved_model(answer: dict, asked: str) -> str:
+    """The model the host actually used, not the alias it was asked for.
+
+    An alias points somewhere else between releases and the comparison would
+    never say so. The host reports usage per concrete model id under
+    `modelUsage`; there is no top-level `model` field, which is why reading one
+    quietly recorded the alias while claiming to record the answer.
+    """
+    used = sorted(answer.get("modelUsage") or {})
+    return ", ".join(used) if used else asked
 
 
 def _plugin_dir(arm: str) -> str:
@@ -407,10 +423,16 @@ def _verify_seeded(task: Task, root: Path) -> Graded:
     output = done.stdout + done.stderr
     passed, failed = passing_nodes(output), failing_nodes(output)
     asked = "tests/test_hidden.py"
+    # The node outcomes belong in the record for a seeded task too. Leaving them
+    # empty made every bundle from the simple suite carry a verdict with nothing
+    # behind it, which is the failure this whole slice is about.
+    seen = tuple(sorted(n for n in passed
+                        if n.startswith(asked) or n.split("::")[0] in task.files))
     if not any(n.startswith(asked) for n in passed) or any(n.startswith(asked) for n in failed):
-        return Graded(False, "unfixed")
+        return Graded(False, "unfixed", "", seen)
     broke = [n for n in failed if n.split("::")[0] in task.files]
-    return Graded(not broke, "regressed" if broke else "resolved", ", ".join(broke[:3]))
+    return Graded(not broke, "regressed" if broke else "resolved",
+                  ", ".join(broke[:3]), seen)
 
 
 def blocks_recorded(root: Path) -> int:
@@ -446,7 +468,7 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None) -> Run:
         if bundles is not None:
             kept = bundle.write(
                 bundles / f"{task.name}--{arm}--{int(time.time() * 1000)}",
-                task=task.name, arm=arm, model=answer.get("model") or model,
+                task=task.name, arm=arm, model=resolved_model(answer, model), asked=model,
                 patch=patch, answer=answer,
                 limits={"agent_seconds": TIMEOUT, "suite_seconds": SUITE_TIMEOUT},
                 environment=environment(),

@@ -392,3 +392,20 @@ and the patch and nothing else, which is about determinism, not deception.
 *Changed:* the probe uses something the patch cannot carry, and says in its
 docstring that it stands for the whole class rather than pretending the scenario
 is common.
+
+### A docstring that claimed what the code did not do
+
+`bundle.write` said `model` was "what the host resolved, not the alias asked
+for". The code read `answer.get("model")`, which the host does not send — it
+reports usage per concrete model id under `modelUsage` — so every manifest
+recorded the alias, and the sentence directly above the field said otherwise.
+
+*Cost:* none yet. A model alias repointed between two sweeps would have produced
+a comparison across two different models with nothing anywhere to show it.
+
+*Changed:* both are recorded, and the probe uses the real `answer.json` shape a
+live run preserved rather than an invented one.
+
+*The lesson:* a docstring is a claim and gets checked like one. This one was
+written at the same moment as the code it describes, which is exactly when the
+intention and the implementation are easiest to confuse.

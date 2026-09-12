@@ -32,7 +32,7 @@ command in this repository and can be reproduced.
 | [17-preservation.md](17-preservation.md) | Two evaluator defects closed, the hole that fixing the first one opened, and a probe that could never have passed |
 | [18-evidence.md](18-evidence.md) | Repairing the foundation: all nine evidence-layer defects, the controls that stop a fix being a removal, and the defect underneath the one that was reported |
 | [19-host.md](19-host.md) | The host contract read rather than assumed: a 20-second timeout that was self-inflicted, a shell the runtime never subscribed to, and adversarial verification as a standing requirement |
-| [20-reconstructible.md](20-reconstructible.md) | Closing Phase A: a run that survives its workspace, a grader graded against known answers, an exit criterion that was lying, and `git apply` exiting zero while doing nothing |
+| [20-reconstructible.md](20-reconstructible.md) | Closing Phase A: a run that survives its workspace, a grader graded against known answers, an exit criterion that was lying, and a live sweep that failed usefully |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -227,7 +227,7 @@ Every figure below comes from a command in this repository.
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 433 | `python -m pytest tests -q` |
+| Tests | 436 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.

@@ -22,6 +22,32 @@ import subprocess
 from pathlib import Path
 
 
+# Not part of anybody's answer: compiled bytecode, test-runner caches, the
+# host's own settings, and the runtime's ledger. Staged by `git add -A` in a
+# workspace with no ignore rules of its own, they made the exported candidate
+# mostly `.pyc` blobs — and `git apply` rejects the whole patch over them.
+# Excluding the ledger matters for a second reason: it is written only under the
+# gated arms, so leaving it in would make those patches differ from the plain
+# ones for a reason that has nothing to do with the code.
+ARTEFACTS = (
+    "__pycache__/", "*.pyc", "*.pyo", ".pytest_cache/", ".mypy_cache/",
+    ".ruff_cache/", ".elevenpowers/", ".claude/", "*.egg-info/",
+)
+
+
+def ignore_artefacts(root: Path) -> None:
+    """Keep workspace noise out of the candidate, without touching the tree.
+
+    `.git/info/exclude` rather than a `.gitignore`: it is per-repository and
+    untracked, so the agent never sees it, it does not alter the base the task
+    presents, and it cannot collide with an ignore file a mined repository
+    already ships.
+    """
+    info = root / ".git" / "info"
+    info.mkdir(parents=True, exist_ok=True)
+    (info / "exclude").write_text("\n".join(ARTEFACTS) + "\n", encoding="utf-8")
+
+
 def seed_commit(root: Path) -> str:
     """The commit the workspace was built at, before the agent touched it."""
     done = subprocess.run(["git", "-C", str(root), "rev-list", "--max-parents=0", "HEAD"],
@@ -71,20 +97,22 @@ def apply_patch(root: Path, patch: str) -> str:
     return "; ".join(skipped)
 
 
-def write(into: Path, *, task: str, arm: str, model: str, patch: str,
+def write(into: Path, *, task: str, arm: str, model: str, asked: str, patch: str,
           answer: dict, limits: dict, ledger: Path | None,
           source: dict | None, environment: dict | None = None,
           blindspots: Path | None = None) -> Path:
     """One directory per run, named so a person can find it.
 
-    `model` is what the host resolved, not the alias asked for: an alias can
-    point somewhere else between two runs and the comparison would never say so.
+    Both models are recorded: `model` is what the host resolved and `asked` is
+    the alias requested. An alias can point somewhere else between two runs, and
+    a comparison that keeps only the alias could never say so.
     """
     into.mkdir(parents=True, exist_ok=True)
     (into / "manifest.json").write_text(json.dumps({
         "task": task,
         "arm": arm,
         "model": model,
+        "model_asked": asked,
         "base": {k: source.get(k) for k in ("repo", "base")} if source else None,
         "required": {"f2p": (source or {}).get("f2p", []),
                      "p2p": (source or {}).get("p2p", [])},

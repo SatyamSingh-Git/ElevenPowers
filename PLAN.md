@@ -259,10 +259,14 @@ Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audi
 
 **Exit, as commands:**
 
-- `python -m pytest tests/test_audit_probes.py -q` → **zero xfailed**; every reproduced defect keeps the test that found it, now passing
-- `python -m eval.validate` → gold patch resolves; a known regression fails; a wrong patch fails; a setup failure is reported as setup failure, not as an unresolved task
-- `python -m eval.live --runs 2 && python -m eval.analyse` → two rows retained per task and arm, not one
-- `python plugin/bin/ep_doctor.py --host` → success, failure and stop paths observed against a pinned host
+- `python -m pytest tests/test_audit_probes.py -q` → **zero xfailed**; every reproduced defect keeps the test that found it, now passing — **met**, 48 passed
+- `python -m eval.validate` → gold patch resolves; a known regression fails; a wrong patch fails; a setup failure is reported as setup failure, not as an unresolved task — **met**, four of four
+- `python -m eval.live --runs 2 && python -m eval.analyse` → two rows retained per task and arm, not one — **met 2026-09-12**: `runs 2, tasks 1` on four real agent runs of `last_page` at $0.36
+- `python plugin/bin/ep_doctor.py --host` → success, failure and stop paths observed against a pinned host — **met**, and note that this criterion passed for weeks by discarding the flag
+
+**Phase A is closed, 2026-09-12.** All twenty defects fixed, R2 narrowed and marked as such, 436 tests with no xfails, and all four exits passing as commands. Total live spend: $0.72 against a $5 envelope.
+
+The first live sweep after the repairs failed all four runs, and failed *usefully*: the exported candidate was mostly compiled bytecode because the seeded workspace had no ignore rules, `git apply` rejected it, and the harness recorded `setup` rather than counting four failures against the agent. The bundles made it diagnosable from a workspace that no longer existed. Both of those are the point of the phase, demonstrated by accident on the first outing. Inspecting the surviving bundle then caught two more: the manifest recorded the model *alias* while its docstring claimed it recorded what the host resolved, and seeded tasks recorded a verdict with no node outcomes behind it.
 
 ### Phase B — Establish the strongest useful baseline
 

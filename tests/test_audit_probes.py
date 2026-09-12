@@ -603,8 +603,9 @@ def test_the_candidate_survives_its_workspace(upstream, tmp_path):
     assert "def double(n):" in patch and "notes.txt" in patch, "new files count too"
 
     kept = write(tmp_path / "bundles" / "run", task=task.name, arm="vanilla",
-                 model="claude-opus-5", patch=patch, answer={"num_turns": 3},
-                 limits={"agent_seconds": 900}, ledger=None, source=task.source)
+                 model="claude-opus-5", asked="opus", patch=patch,
+                 answer={"num_turns": 3}, limits={"agent_seconds": 900},
+                 ledger=None, source=task.source)
     record_grade(kept, verify(task, root))
 
     # The workspace is gone; the run is not.
@@ -725,3 +726,65 @@ def test_the_run_count_is_not_derived_from_the_flip_rate():
     assert runs_for(1.0) == pairs
     assert runs_for(0.5) == 2 * pairs
     assert runs_for(0.0) == 0
+
+
+def test_the_candidate_is_the_code_and_not_the_workspace_noise(upstream):
+    """A live run made every exported patch mostly compiled bytecode.
+
+    The seeded workspace had no ignore rules, so `git add -A` staged
+    `__pycache__`, the pytest cache and the runtime's own ledger. `git apply`
+    then rejected the whole patch over the binary entries, and all four runs
+    came back as `setup` — correctly, since it was the harness that broke, but
+    the candidate was not the agent's answer either way.
+    """
+    from eval.bundle import export_patch
+
+    task, root = upstream
+    (root / "src/app.py").write_text(FIXED, encoding="utf-8")
+    for rel in ("src/__pycache__/app.cpython-313.pyc", ".pytest_cache/v/cache/lastfailed",
+                ".elevenpowers/ledger.json"):
+        noise = root / rel
+        noise.parent.mkdir(parents=True, exist_ok=True)
+        noise.write_bytes(b"\x00\x01not the answer\x00")
+
+    patch = export_patch(root)
+    assert "src/app.py" in patch
+    for unwanted in ("__pycache__", ".pytest_cache", ".elevenpowers"):
+        assert unwanted not in patch, f"{unwanted} is workspace noise, not a candidate"
+
+
+def test_the_model_recorded_is_the_one_the_host_used():
+    """E4: the alias was being recorded while the docstring claimed otherwise.
+
+    The shape below is from a real `claude --output-format json` answer: there
+    is no top-level `model` key, so reading one fell back to the alias every
+    time and nothing said so. Usage is reported per concrete model id.
+    """
+    from eval.live import resolved_model
+
+    answer = {"modelUsage": {"claude-haiku-4-5-20251001": {"costUSD": 0.11}},
+              "num_turns": 16}
+    assert resolved_model(answer, "haiku") == "claude-haiku-4-5-20251001"
+    # A host that reports no usage leaves the alias, which is honest: it is all
+    # there is. It must not invent a resolution.
+    assert resolved_model({"num_turns": 3}, "haiku") == "haiku"
+
+
+def test_a_seeded_task_records_which_tests_were_seen_to_pass():
+    """A verdict with nothing behind it is the failure this slice is about.
+
+    Every bundle from the simple suite carried `passed: []`, because the seeded
+    grader never filled in the node outcomes the real-task one does.
+    """
+    import tempfile
+
+    from eval.live import build, verify
+    from eval.tasks import by_name
+
+    task = by_name("last_page")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        root = Path(tmp)
+        build(task, root, arm="vanilla")
+        graded = verify(task, root)
+        assert not graded.resolved, "the seeded bug is still there"
+        assert any(n.startswith("tests/") for n in graded.observed), graded.observed
