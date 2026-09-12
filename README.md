@@ -2,7 +2,9 @@
 
 # ElevenPowers
 
-### Your coding agent says it's done.<br/>This asks for the receipts.
+### *The path is ours to walk.*<br/>*Where it ends was never ours to choose.*
+
+**So walk it honestly — and keep the receipts.**
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
@@ -18,6 +20,14 @@
 > It watches the commands your agent already runs, turns their output into **evidence**, and binds each record to the exact bytes of the files it observed.
 > When the agent claims it's done, a state gets **computed** instead of believed.
 > Edit a file afterwards and its green tests go **stale** — the way `make` invalidates an object file.
+
+---
+
+<div align="center">
+
+### Your coding agent says it's done.<br/>This asks for the receipts.
+
+</div>
 
 ---
 
@@ -304,12 +314,6 @@ Every number quoted anywhere in that folder was produced by a command in this re
 ---
 
 <div align="center">
-
-### *The path is ours to walk.*<br/>*Where it ends was never ours to choose.*
-
-**So walk it honestly — and keep the receipts.**
-
-<br/>
 
 **Apache-2.0** · Built on the work of fourteen better-established projects, with attribution for every one.
 
