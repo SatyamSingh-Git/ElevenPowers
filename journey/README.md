@@ -221,7 +221,7 @@ Every figure below comes from a command in this repository.
 | Claim inference, real turns | 21 percent over-claim, 25 percent missed work over 3,557 turns | `python -m eval.claims_run` |
 | Claim inference, labelled | 31 of 31 | `python -m eval.claims_run --cases` |
 | Reading tool results, real commands | 174 of 174 failures, 5,916 of 5,916 successes over 36,034 commands | `python -m eval.replay --all` |
-| Host integration | six checks | `python plugin/bin/ep_doctor.py` |
+| Host integration | eleven checks, five of them driving the launcher as a process | `python plugin/bin/ep_doctor.py --host` |
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
 | The grader, graded | four patches with known answers, four correct | `python -m eval.validate` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
@@ -230,12 +230,22 @@ Every figure below comes from a command in this repository.
 | Tests | 436 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
-About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.
+About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.
 
 **What none of it establishes.** P1, the hypothesis the whole thesis rests on,
-is still unanswered, and now for a stated reason: the run-to-run noise floor is
-larger than the effect. Answering it needs about 252 agent runs per comparison
-and a task suite rebuilt so that most of it discriminates, since eleven of the
-current sixteen tasks are resolved by a plain agent every time. Replay still
-cannot measure staleness at all, because the working tree at each moment is not
-recoverable from a transcript.
+is still unanswered, and the run-to-run noise floor is larger than the effect.
+
+Earlier versions of this page said answering it needs about 252 agent runs per
+comparison. **That number is withdrawn.** It came from dividing the required
+discordant pairs by the within-arm flip rate, and flipping is not disagreement:
+a baseline that fails every time against a treatment that succeeds every time
+flips never and disagrees always. What the arithmetic actually supports is **31
+pairs on which the two arms disagree**. Turning that into a number of runs needs
+a measured rate of disagreement, which no run here has produced — if the arms
+differed on one task in four it would be 124 paired runs, and that *if* is doing
+all the work.
+
+The task suite still needs rebuilding so that most of it discriminates, since
+eleven of the current sixteen tasks are resolved by a plain agent every time.
+Replay still cannot measure staleness at all, because the working tree at each
+moment is not recoverable from a transcript.

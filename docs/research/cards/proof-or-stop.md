@@ -82,7 +82,10 @@ all but the automatic-capture and no-process parts.
 - The endpoint has a name and published comparators: visible-pass/hidden-fail
   amplification, 1.72% for naive retry.
 - Base rates are small, so effects are small: 9,240 cells for a CI that excludes
-  zero. This corroborates the 252-runs-per-comparison estimate rather than
-  contradicting it, and argues for task suites engineered to raise the base rate.
+  zero. That argues for task suites engineered to raise the base rate. It used
+  to be described here as corroborating this project's 252-runs-per-comparison
+  estimate; that estimate is withdrawn (it divided discordant pairs by a flip
+  rate that does not bound them), so the corroboration was of a number that
+  should not have been there.
 - Their cost figures (1.2x tokens, 1.5x time) sit just below the 1.4x to 2.5x
   measured here, which is a useful sanity check on both.

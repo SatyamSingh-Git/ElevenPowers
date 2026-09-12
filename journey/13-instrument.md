@@ -177,3 +177,5 @@ The instrument no longer depends on an install this machine cannot do, and no
 longer depends on my imagination about how agents fail. Mining more instances is
 now a matter of CPU time rather than of invention, and a second repository can be
 added by pointing the miner at it.
+
+> **The 252 figure was withdrawn on 2026-09-12** as audit finding E6: it divided discordant pairs by the within-arm flip rate, which does not bound them. Left here as written, because this is what was believed at the time. See [20-reconstructible.md](20-reconstructible.md).

@@ -247,6 +247,13 @@ the thing most likely to make someone switch it off.
 **Cost of an answer:** about 252 agent runs per comparison, roughly $25 and
 several hours per arm, plus a rebuilt suite.
 
+> **Withdrawn 2026-09-12.** That figure divided the required discordant pairs by
+> the within-arm flip rate, which does not bound them: a baseline that fails
+> every time against a treatment that succeeds every time flips never and
+> disagrees always. What the arithmetic supports is 31 pairs on which the arms
+> disagree; the run count needs a measured disagreement rate that no run here has
+> produced. See `journey/20-reconstructible.md`.
+
 ## 2026-09-09, making the gate usable
 
 Four live passes over the same sixteen tasks and model, 64 runs, about $10. Two

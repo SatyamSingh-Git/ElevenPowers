@@ -166,3 +166,5 @@ every later number is unreadable". I went straight to comparing arms and
 measured the floor only when a result came out backwards. Three comparisons and
 about $12 bought nothing that a two-hour noise measurement would not have
 predicted.
+
+> **The 252 figure was withdrawn on 2026-09-12** as audit finding E6: it divided discordant pairs by the within-arm flip rate, which does not bound them. Left here as written, because this is what was believed at the time. See [20-reconstructible.md](20-reconstructible.md).
