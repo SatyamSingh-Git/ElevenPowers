@@ -409,3 +409,36 @@ live run preserved rather than an invented one.
 *The lesson:* a docstring is a claim and gets checked like one. This one was
 written at the same moment as the code it describes, which is exactly when the
 intention and the implementation are easiest to confuse.
+
+### A flag parsed, printed, reported, and never sent
+
+`--effort high` was read from the command line, echoed in the run banner and
+written into the report. It was never added to the command that launches the
+agent. The sweep would have run at the default effort under the name `high`.
+
+*Cause:* the flag was plumbed from the outside in — argument parsing, display,
+serialisation — and the one place it had to arrive was the only place with no
+output to look at.
+
+*Cost:* none, caught in the dry run. Had it survived the night it would have
+produced a scored, intervalled, pinned result for a configuration that was never
+used, and the pinning would have made it *more* convincing, not less.
+
+*The lesson:* this is **E4 exactly** — an arm labelled for a plugin whose
+directory was unset ran vanilla and was reported under the plugin's name. The
+shape recurs because a label and the thing it names are written in different
+files, and only the label is ever read back. So the label is now checked against
+the bundle, and the sweep stops rather than warns.
+
+### A resume that would have skipped what it still owed
+
+The first version counted completed runs per task and skipped any task already
+present in the journal. A task interrupted after its second of three replicates
+would have been skipped entirely, and the report would have carried a task with
+two replicates while claiming three.
+
+*Cause:* "already done" was written as a property of the task, which is how it
+reads in the loop, rather than of the replicate, which is what is paid for.
+
+*Changed:* the count is compared against the replicate index. The probe writes a
+journal with one run of a three-replicate task and asserts exactly two follow.

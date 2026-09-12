@@ -220,20 +220,76 @@ def compare(first: Path, second: Path) -> int:
     return 1
 
 
+def done_already(journal: Path) -> dict[str, int]:
+    """How many replicates of each task are already on disk.
+
+    A long unattended sweep that keeps its results only in memory loses all of
+    them to one crash at run eighty. Every run is appended the moment it
+    finishes, and a restart picks up where the file ends.
+    """
+    if not journal.exists():
+        return {}
+    counted: dict[str, int] = {}
+    for row in read_journal(journal):
+        counted[row["task"]] = counted.get(row["task"], 0) + 1
+    return counted
+
+
+def read_journal(journal: Path) -> list[dict]:
+    if not journal.exists():
+        return []
+    return [json.loads(line) for line in journal.read_text(encoding="utf-8").splitlines()
+            if line.strip()]
+
+
 def run_baseline(tasks: list[Task], arm: str, model: str, replicates: int,
-                 bundles: Path, seed: int) -> list[Run]:
+                 bundles: Path, seed: int, journal: Path, effort: str = "",
+                 budget: float = 0.0, expect: str = "") -> list[dict]:
     shuffler = random.Random(seed)
-    out: list[Run] = []
+    already = done_already(journal)
+    if already:
+        print(f"resuming: {sum(already.values())} run(s) already recorded")
+
     for task in tasks:
         for which in arm_order([arm], shuffler):
-            for _ in range(replicates):
-                run = once(task, which, model, bundles)
-                out.append(run)
+            for replicate in range(replicates):
+                if already.get(task.name, 0) > replicate:
+                    continue
+                run = once(task, which, model, bundles, effort, budget)
+                row = run.__dict__
+                # Appended before anything else can fail. The bundle is already
+                # on disk by this point; this is the row that makes it countable.
+                with journal.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(row) + "\n")
+                wrong = bool(expect) and not _used(run, expect)
                 print(f"  {task.name:<26}{which:<9}"
-                      f"{'resolved' if run.resolved else run.outcome:<10}"
-                      f"{run.turns:>3} turns {run.seconds:>5.0f}s ${run.cost:.2f}",
-                      flush=True)
-    return out
+                      f"{'resolved' if run.resolved else run.outcome:<11}"
+                      f"{run.turns:>3} turns {run.seconds:>5.0f}s ${run.cost:.2f}"
+                      + ("   MODEL MISMATCH" if wrong else ""), flush=True)
+                if wrong:
+                    # An unattended sweep that keeps going here spends the whole
+                    # night measuring a model nobody asked for. The journal is
+                    # already written, so stopping costs only what is left.
+                    raise SystemExit(
+                        f"stopping: asked for {expect}, the bundle manifest says "
+                        f"otherwise. {sum(already.values()) if already else 0} prior "
+                        f"run(s) kept in {journal}.")
+    return read_journal(journal)
+
+
+def _used(run: Run, expect: str) -> bool:
+    """Whether the run's bundle records the model that was asked for.
+
+    An arm labelled present and absent is E4; a model labelled present and
+    absent is the same defect one field over, and an overnight sweep is exactly
+    where it would go unnoticed until the bill arrived.
+    """
+    if not run.bundle:
+        return True
+    manifest = Path(run.bundle) / "manifest.json"
+    if not manifest.exists():
+        return True
+    return expect in json.loads(manifest.read_text(encoding="utf-8")).get("model", "")
 
 
 def main(argv: list[str]) -> int:
@@ -279,8 +335,17 @@ def main(argv: list[str]) -> int:
     print(f"bundles  {bundles}")
     print()
 
-    runs = run_baseline(tasks, arm, model, replicates, bundles, seed)
-    rows = [r.__dict__ for r in runs]
+    out = Path(option("--out", "baseline.json"))
+    journal = out.with_suffix(".jsonl")
+    effort = option("--effort", "")
+    budget = float(option("--budget", "0") or 0)
+    print(f"effort   {effort or 'default'}   per-run budget "
+          f"{('$' + format(budget, '.2f')) if budget else 'none'}")
+    print(f"journal  {journal}   (every run appended as it finishes)")
+    print()
+
+    rows = run_baseline(tasks, arm, model, replicates, bundles, seed, journal,
+                        effort, budget, expect=option("--expect", ""))
     report = {
         "model": model,
         "arm": arm,
@@ -290,9 +355,9 @@ def main(argv: list[str]) -> int:
         "score": score(rows, seed),
         "bands": bands_of(rows, {t.name: (t.source or {}).get("gold_lines", 0)
                                  for t in tasks}),
+        "effort": effort,
         "runs": rows,
     }
-    out = Path(option("--out", "baseline.json"))
     out.write_text(json.dumps(report, indent=1), encoding="utf-8")
     print(f"\nwrote {out}")
     return show(out)

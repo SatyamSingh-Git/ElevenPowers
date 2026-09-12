@@ -287,7 +287,8 @@ def _tool_version(command: list[str]) -> str:
     return (done.stdout or "").strip().splitlines()[0] if done.stdout.strip() else ""
 
 
-def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dict, float]:
+def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
+          effort: str = "", budget: float = 0.0) -> tuple[dict, float]:
     started = time.perf_counter()
     command = [
         shutil.which("claude") or "claude",
@@ -296,6 +297,14 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla") -> tuple[dic
         "--permission-mode", "bypassPermissions",
         "--model", model,
     ]
+    # Both of these were absent while the run claimed to have them. An effort
+    # level asked for and never sent is E4 in a different costume: the label
+    # says one configuration and the process runs another, and only the token
+    # bill would ever have disagreed.
+    if effort:
+        command += ["--effort", effort]
+    if budget:
+        command += ["--max-budget-usd", str(budget)]
     if arm == "nudge":
         command += ["--append-system-prompt", NUDGE]
     if arm in PLUGINS:
@@ -465,11 +474,12 @@ def blocks_recorded(root: Path) -> int:
     return sum(1 for d in decisions if d.get("what") == "gate blocked")
 
 
-def once(task: Task, arm: str, model: str, bundles: Path | None = None) -> Run:
+def once(task: Task, arm: str, model: str, bundles: Path | None = None,
+         effort: str = "", budget: float = 0.0) -> Run:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         build(task, root, arm)
-        answer, elapsed = drive(task, root, model, arm)
+        answer, elapsed = drive(task, root, model, arm, effort, budget)
 
         final = answer.get("result") or ""
         failed = bool(answer.get("is_error"))

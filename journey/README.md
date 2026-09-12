@@ -35,6 +35,7 @@ command in this repository and can be reproduced.
 | [20-reconstructible.md](20-reconstructible.md) | Closing Phase A: a run that survives its workspace, a grader graded against known answers, an exit criterion that was lying, and a live sweep that failed usefully |
 | [21-corpus.md](21-corpus.md) | Phase B1: fifteen instances from five repositories, difficulty as a label rather than a filter, and three repositories that contributed nothing without saying why |
 | [22-instrument.md](22-instrument.md) | Phase B2 and B3: a score that refuses to run unpinned, an interval over tasks rather than runs, and a taxonomy whose every category can be opened |
+| [23-spend.md](23-spend.md) | Phase B4: the four defects a unit test cannot find, a grader asked five questions on somebody else's code, and the first run allowed to cost money |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -230,7 +231,7 @@ Every figure below comes from a command in this repository.
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 476 | `python -m pytest tests -q` |
+| Tests | 480 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

@@ -16,8 +16,11 @@ from pathlib import Path
 import pytest
 
 from eval.baseline import (
-    compare, corpus_fingerprint, interval, is_alias, reached_the_model, score,
+    compare, corpus_fingerprint, interval, is_alias, read_journal,
+    reached_the_model, run_baseline, score,
 )
+from eval.live import Run
+from eval.task import Task
 from eval.live import context_tokens
 
 
@@ -225,3 +228,81 @@ def test_bands_average_over_tasks_not_over_runs():
     data = rows({"a": [True], "b": [False] * 9})
     out = bands_of(data, {"a": 1, "b": 1})
     assert out["one-liner"]["resolved"] == 0.5
+
+
+def _task(name):
+    return Task(name=name, prompt="", files={}, hidden="", why="")
+
+
+def _recording_once(bundles, manifest_model, spent):
+    """A stand-in for a paid run that records what it was asked to do."""
+    def once(task, arm, model, root, effort="", budget=0.0):
+        spent.append((task.name, effort, budget))
+        bundle = Path(bundles) / f"{task.name}-{len(spent)}"
+        bundle.mkdir(parents=True)
+        (bundle / "manifest.json").write_text(json.dumps({"model": manifest_model}),
+                                              encoding="utf-8")
+        return Run(task=task.name, arm=arm, claimed=True, resolved=True,
+                   outcome="resolved", bundle=str(bundle))
+    return once
+
+
+def test_a_sweep_stops_the_moment_a_bundle_names_another_model(tmp_path, monkeypatch):
+    """Adversarial. E4 was an arm labelled present and running absent; a model
+    pin that only warns is the same defect one field over, and an unattended
+    sweep is where it would buy a whole night of the wrong model."""
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once",
+                        _recording_once(tmp_path / "b", "claude-haiku-4-5-20251001", spent))
+    journal = tmp_path / "j.jsonl"
+
+    with pytest.raises(SystemExit):
+        run_baseline([_task("a"), _task("b")], "vanilla", "claude-sonnet-5", 3,
+                     tmp_path / "b", 0, journal, expect="claude-sonnet-5")
+
+    assert len(spent) == 1, "it kept paying after the mismatch"
+    assert len(read_journal(journal)) == 1, "the run it did pay for was thrown away"
+
+
+def test_a_sweep_on_the_model_it_asked_for_runs_every_replicate(tmp_path, monkeypatch):
+    """The forward direction. A guard that fires on the right model stops
+    everything, and only this test tells that apart from a working one."""
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once",
+                        _recording_once(tmp_path / "b", "claude-sonnet-5", spent))
+
+    rows = run_baseline([_task("a"), _task("b")], "vanilla", "claude-sonnet-5", 3,
+                        tmp_path / "b", 0, tmp_path / "j.jsonl", effort="high",
+                        budget=6.0, expect="claude-sonnet-5")
+
+    assert len(rows) == 6
+    assert {(effort, budget) for _, effort, budget in spent} == {("high", 6.0)}
+
+
+def test_a_restart_repeats_nothing_it_already_paid_for(tmp_path, monkeypatch):
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once",
+                        _recording_once(tmp_path / "b", "m", spent))
+    journal = tmp_path / "j.jsonl"
+
+    run_baseline([_task("a")], "vanilla", "m", 3, tmp_path / "b", 0, journal)
+    assert len(spent) == 3
+    rows = run_baseline([_task("a"), _task("b")], "vanilla", "m", 3, tmp_path / "b",
+                        0, journal)
+
+    assert len(spent) == 6, "it bought task a a second time"
+    assert len(rows) == 6
+
+
+def test_a_restart_finishes_a_task_that_died_between_replicates(tmp_path, monkeypatch):
+    """Resume by task name alone would skip the two replicates still owed."""
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once",
+                        _recording_once(tmp_path / "b", "m", spent))
+    journal = tmp_path / "j.jsonl"
+    journal.write_text(json.dumps({"task": "a", "resolved": True}) + "\n",
+                       encoding="utf-8")
+
+    run_baseline([_task("a")], "vanilla", "m", 3, tmp_path / "b", 0, journal)
+
+    assert len(spent) == 2
