@@ -354,8 +354,8 @@ def test_the_miner_records_a_preservation_set(upstream):
     fix = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
                          check=True, capture_output=True, text=True).stdout.strip()
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
-        instance = mine.validate(repo, fix, ["tests/test_new.py"], {}, Path(tmp))
-    assert instance is not None
+        instance, why = mine.validate(repo, fix, ["tests/test_new.py"], {}, Path(tmp))
+    assert instance is not None, why
     assert instance.f2p == ["tests/test_new.py::test_double"]
     assert "tests/test_keep.py::test_label" in instance.p2p
     assert not set(instance.p2p) & set(instance.f2p)

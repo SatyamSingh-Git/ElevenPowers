@@ -1,0 +1,138 @@
+[
+ {
+  "name": "attrs-f53fc544",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "f38b8a3f1625060aa4245930822c34c11c252f83",
+  "fix": "f53fc5440d7f86aac4328aec7a563eb48634177f",
+  "tests": [
+   "tests/test_functional.py"
+  ]
+ },
+ {
+  "name": "attrs-97f8d175",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "6851ab593cd25f3c14393e9355d57d22bec2a074",
+  "fix": "97f8d175656bc03c373a1c9038048a4d312c307c",
+  "tests": [
+   "tests/test_annotations.py"
+  ]
+ },
+ {
+  "name": "attrs-0f758fe5",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "57b314c0dc8e0b80c0ed8f61c0be81965137ea41",
+  "fix": "0f758fe54a8742110f730ebbaf146e79f3937c8d",
+  "tests": [
+   "tests/test_make.py"
+  ]
+ },
+ {
+  "name": "attrs-48b8611c",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "3a68d4913221abc6f8ad3be50937f7ae49300a98",
+  "fix": "48b8611c27779811d161200e17de8da24aae7feb",
+  "tests": [
+   "tests/test_make.py"
+  ]
+ },
+ {
+  "name": "click-fc518e41",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "08a7bc6d2a2af02268b09b3b5fd8079546c81c03",
+  "fix": "fc518e41218b447e875fe27244ae692c269bcb77",
+  "tests": [
+   "tests/test_abort_interrupt.py"
+  ]
+ },
+ {
+  "name": "click-f58ca3e8",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "420c8fb44eeadb537cae69d2fee3796e808558dd",
+  "fix": "f58ca3e81424a35626c8a475eb59ab95589008ce",
+  "tests": [
+   "tests/test_utils/test_sentinel.py"
+  ]
+ },
+ {
+  "name": "click-bc32a92c",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "cbd7a4109da16ce58f54c2a618b4c986e3041fcf",
+  "fix": "bc32a92cd2ae77afb2352f79ebdf00997f35d333",
+  "tests": [
+   "tests/test_termui.py",
+   "tests/test_utils/test_echo_via_pager.py"
+  ]
+ },
+ {
+  "name": "click-1f9cd54f",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "150d1071d69c5cdad7de78590013ffe56cf9e3bb",
+  "fix": "1f9cd54f686eb343cec714230ad825ce972739ab",
+  "tests": [
+   "tests/test_termui.py"
+  ]
+ },
+ {
+  "name": "itsdangerous-177196d3",
+  "origin": "https://github.com/pallets/itsdangerous.git",
+  "base": "37f09970fa32a330a6660ded3abdb264086531b5",
+  "fix": "177196d3a5c7ad37b8ccbd0f88445aced07f1ca0",
+  "tests": [
+   "tests/test_itsdangerous/test_timed.py"
+  ]
+ },
+ {
+  "name": "jinja2-065334d1",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "033c20015c7ca899ab52eb921bb0f08e6d3dd145",
+  "fix": "065334d1ee5b7210e1a0a93c37238c86858f2af7",
+  "tests": [
+   "tests/test_security.py"
+  ]
+ },
+ {
+  "name": "jinja2-66587ce9",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "fbc3a696c729d177340cc089531de7e2e5b6f065",
+  "fix": "66587ce989e5a478e0bb165371fa2b9d42b7040f",
+  "tests": [
+   "tests/test_regression.py"
+  ]
+ },
+ {
+  "name": "jinja2-ee832194",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "1d55cddbb28e433779511f28f13a2d8c4ec45826",
+  "fix": "ee832194cd9f55f75e5a51359b709d535efe957f",
+  "tests": [
+   "tests/test_core_tags.py"
+  ]
+ },
+ {
+  "name": "jinja2-d05bd385",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "7a41ddb915a540c7a35c6cf823a8b50a2553e46b",
+  "fix": "d05bd3858c3f4990e91201dae058147caf317462",
+  "tests": [
+   "tests/test_regression.py"
+  ]
+ },
+ {
+  "name": "markupsafe-0b6bee07",
+  "origin": "https://github.com/pallets/markupsafe.git",
+  "base": "73e6a4886564a554c4a19983d29c97f9fc95457d",
+  "fix": "0b6bee071fbd8d3171fb1ac4fb669baace808438",
+  "tests": [
+   "tests/test_markupsafe.py"
+  ]
+ },
+ {
+  "name": "markupsafe-391aa07d",
+  "origin": "https://github.com/pallets/markupsafe.git",
+  "base": "60e7eb97e65947a83fa290010f3dde71be8fed84",
+  "fix": "391aa07d3c68d4d0888b31fdea62516df9e19cb8",
+  "tests": [
+   "tests/test_markupsafe.py"
+  ]
+ }
+]

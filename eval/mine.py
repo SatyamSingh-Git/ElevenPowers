@@ -53,6 +53,14 @@ TIMEOUT = 120
 class Instance:
     name: str
     repo: str
+    origin: str
+    """Where the repository came from, so the instance is not tied to one disk.
+
+    `repo` is a path on the machine that mined it. On its own that makes an
+    instance unreconstructible anywhere else, which is the same defect as
+    keeping a verdict without its evidence — recorded here rather than
+    rediscovered later.
+    """
     base: str
     fix: str
     prompt: str
@@ -61,6 +69,16 @@ class Instance:
     p2p: list[str] = field(default_factory=list)
     env: dict[str, str] = field(default_factory=dict)
     changed: list[str] = field(default_factory=list)
+    gold_files: int = 0
+    gold_lines: int = 0
+    """How large the maintainer's own source change was.
+
+    Recorded so difficulty can be a **label** rather than a filter. The rule
+    this project used before — keep a task only if the naive fix breaks the
+    visible suite — selected the benchmark around the mechanism being measured,
+    which is audit finding E6. A measured property of the gold patch says
+    something about the task without deciding which tasks are allowed to exist.
+    """
 
 
 def git(repo: Path, *args: str) -> str:
@@ -84,13 +102,22 @@ def materialise(repo: Path, sha: str, into: Path) -> None:
     bundle.unlink(missing_ok=True)
 
 
-def run_tests(root: Path, targets: list[str], env: dict[str, str]) -> tuple[int, str]:
+def run_tests(root: Path, targets: list[str], env: dict[str, str],
+              traceback: str = "no") -> tuple[int, str]:
+    """Run a suite and return its exit code with everything it said.
+
+    `traceback` defaults to none because the callers that parse node ids do not
+    want it. The one caller that needs a *reason* asks for it: with `--tb=no` a
+    collection failure prints "2 errors during collection" and nothing else, so
+    the missing module's name — the only actionable part — is thrown away before
+    anyone can read it.
+    """
     import os
 
     environment = {**os.environ, **env}
     done = subprocess.run(
-        [sys.executable, "-m", "pytest", *targets, "-q", "--no-header", "--tb=no",
-         "-rA", "-p", "no:randomly"],
+        [sys.executable, "-m", "pytest", *targets, "-q", "--no-header",
+         f"--tb={traceback}", "-rA", "-p", "no:randomly"],
         cwd=root, capture_output=True, text=True, timeout=TIMEOUT, env=environment,
     )
     return done.returncode, (done.stdout or "") + (done.stderr or "")
@@ -149,6 +176,28 @@ def candidates(repo: Path, limit: int, source_dir: str, test_dir: str) -> list[t
     return out
 
 
+def origin(repo: Path) -> str:
+    return git(repo, "config", "--get", "remote.origin.url").strip()
+
+
+def changed_lines(repo: Path, sha: str, paths: list[str]) -> int:
+    """Lines the maintainer changed in source, tests excluded.
+
+    The test files are the answer key; counting them would make a task look
+    large because its author wrote thorough tests, which says nothing about the
+    change an agent has to find.
+    """
+    if not paths:
+        return 0
+    stat = git(repo, "show", "--numstat", "--format=", sha)
+    total = 0
+    for line in stat.splitlines():
+        parts = line.split("\t")
+        if len(parts) == 3 and parts[2] in paths and parts[0].isdigit() and parts[1].isdigit():
+            total += int(parts[0]) + int(parts[1])
+    return total
+
+
 def describe(repo: Path, sha: str) -> str:
     """The bug report, which is the commit message as its author wrote it."""
     body = git(repo, "log", "-1", "--format=%s%n%n%b", sha).strip()
@@ -157,10 +206,18 @@ def describe(repo: Path, sha: str) -> str:
 
 
 def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
-             work: Path) -> Instance | None:
+             work: Path) -> tuple[Instance | None, str]:
+    """A usable instance, or the reason there is not one.
+
+    The reason matters as much as the instance. Five different rejections used
+    to return a bare `None`, so a repository that yielded nothing because its
+    test dependencies were missing looked exactly like one with no bugs in it —
+    and the caller printed neither. A corpus that quietly cannot be built is the
+    same failure as a check that quietly does nothing.
+    """
     parent = git(repo, "rev-parse", f"{sha}^").strip()
     if not parent:
-        return None
+        return None, "no parent commit"
 
     fixed = work / "fixed"
     materialise(repo, sha, fixed)
@@ -170,7 +227,7 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
         if path.exists():
             patch[rel] = path.read_text(encoding="utf-8", errors="ignore")
     if not patch:
-        return None
+        return None, "the commit's test files are not in its tree"
 
     base = work / "base"
     materialise(repo, parent, base)
@@ -179,9 +236,9 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     # nothing and the task cannot distinguish a fix from a repository that was
     # already broken.
     suite = [d for d in ("tests",) if (base / d).exists()]
-    code, _ = run_tests(base, suite, env)
+    code, output = run_tests(base, suite, env, traceback="line")
     if code != 0:
-        return None
+        return None, _why_red(output)
 
     for rel, body in patch.items():
         target = base / rel
@@ -190,14 +247,14 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
 
     code, output = run_tests(base, list(patch), env)
     if code == 0:
-        return None                      # nothing fails, so nothing is proved
+        return None, "the new tests already pass before the fix"
     f2p = failing_nodes(output)
     if not f2p:
-        return None
+        return None, "the new tests fail without naming a node id"
 
     code, output = run_tests(fixed, f2p, env)
     if code != 0:
-        return None                      # the fix does not satisfy its own tests
+        return None, "the fix does not satisfy its own tests"
 
     # The preservation set: what is green with the fix commit's tests in place,
     # both before and after the source change. A task without one cannot tell a
@@ -207,14 +264,33 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     _, after = run_tests(fixed, suite, env)
     p2p = sorted((passing_nodes(before) & passing_nodes(after)) - set(f2p))
     if not p2p:
-        return None
+        return None, "nothing to preserve, so a regression could not be seen"
 
+    changed = [f for f in git(repo, "show", "--name-only", "--format=", sha).split()
+               if f.endswith(".py")]
+    source_only = [f for f in changed if f not in patch]
     return Instance(
-        name=f"{repo.name}-{sha[:8]}", repo=str(repo), base=parent, fix=sha,
-        prompt=describe(repo, sha), hidden_files=patch, f2p=f2p, p2p=p2p, env=env,
-        changed=[f for f in git(repo, "show", "--name-only", "--format=", sha).split()
-                 if f.endswith(".py")],
-    )
+        name=f"{repo.name}-{sha[:8]}", repo=str(repo), origin=origin(repo),
+        base=parent, fix=sha, prompt=describe(repo, sha), hidden_files=patch,
+        f2p=f2p, p2p=p2p, env=env, changed=changed,
+        gold_files=len(source_only), gold_lines=changed_lines(repo, sha, source_only),
+    ), "kept"
+
+
+def _why_red(output: str) -> str:
+    """Separate a repository that cannot be set up from one that is broken.
+
+    A missing test dependency is an environment problem and is fixable by
+    installing it; a genuinely failing suite at the base commit is a property of
+    the repository. Reporting both as "rejected" is how three of five
+    repositories contributed nothing without anyone being told.
+    """
+    missing = sorted(set(re.findall(r"No module named '([^']+)'", output)))
+    if missing:
+        return f"setup: missing dependency {', '.join(missing)}"
+    if "errors during collection" in output:
+        return "setup: the test suite does not collect, cause not named"
+    return "the suite is already red at the parent commit"
 
 
 def mine(repo: Path, limit: int, want: int, env: dict[str, str],
@@ -229,12 +305,12 @@ def mine(repo: Path, limit: int, want: int, env: dict[str, str],
         # strict cleanup takes the whole run down on somebody else's temp file.
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             try:
-                instance = validate(repo, sha, tests, env, Path(tmp))
+                instance, why = validate(repo, sha, tests, env, Path(tmp))
             except (subprocess.SubprocessError, OSError, zipfile.BadZipFile) as exc:
                 print(f"  {sha[:8]}  skipped: {type(exc).__name__}", flush=True)
                 continue
         mark = (f"kept, {len(instance.f2p)} failing and {len(instance.p2p)} to preserve"
-                if instance else "no usable transition")
+                if instance else why)
         print(f"  {sha[:8]}  {mark}", flush=True)
         if instance:
             found.append(instance)
