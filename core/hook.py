@@ -95,7 +95,13 @@ def on_prompt(payload: dict, root: Path) -> int:
         ledger.save()
         return 0
 
-    ledger.task = ledger.task or f"t-{int(time.time())}"
+    if request != ledger.request:
+        # A prompt that states its own subject starts a task, and a task starts
+        # empty. Keeping the id meant the new request inherited the previous
+        # one's evidence, read set and guided flag — so a suite run for the last
+        # bug could discharge an obligation for this one, purely because the
+        # ledger happened to still be sitting in the same directory.
+        ledger = Ledger(root=root, task=f"t-{time.time_ns()}")
     ledger.request = request
     ledger.claims = claims
     ledger.touched = _changed_paths(root)

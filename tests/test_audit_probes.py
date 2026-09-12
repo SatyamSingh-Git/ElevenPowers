@@ -36,9 +36,6 @@ from core.repeat import runs_needed
 from core.verify import dischargeable
 from eval.live import verify
 
-defect = lambda ident, why: pytest.mark.xfail(strict=True, reason=f"{ident}: {why}")  # noqa: E731
-
-
 @pytest.fixture
 def project(tmp_path):
     (tmp_path / "src").mkdir()
@@ -170,7 +167,6 @@ def test_reading_an_existing_test_is_not_writing_one(project):
 
 # --- R7, R8: task identity and risk ------------------------------------------
 
-@defect("R7", "on_prompt reuses the task id and carries the previous task's state forward")
 def test_a_new_request_starts_a_clean_task(project):
     before = Ledger(project, task="previous", request="Fix the previous bug",
                     claims=[Claim.BUG_FIXED], seen=["tests/test_app.py"],
@@ -185,7 +181,6 @@ def test_a_new_request_starts_a_clean_task(project):
     assert after.guided is False
 
 
-@defect("R7", "two readers, two writers: the first writer's decision is lost")
 def test_concurrent_writers_do_not_lose_decisions(project):
     Ledger(project, claims=[Claim.BUG_FIXED]).save()
     a, b = Ledger.load(project), Ledger.load(project)
@@ -206,7 +201,6 @@ def test_a_later_sensitive_edit_raises_risk(project):
 
 # --- R9: what repetition certifies -------------------------------------------
 
-@defect("R9", "any STABILITY record satisfies, whatever command it repeated")
 def test_repeating_an_unrelated_command_does_not_certify_stability(project):
     flaky = suite_record(project, Result.FAIL, 1)
     flaky.kind, flaky.identity, flaky.runs, flaky.failed = Kind.STABILITY, "pytest test_worker.py", 10, 1
@@ -218,7 +212,6 @@ def test_repeating_an_unrelated_command_does_not_certify_stability(project):
     assert not (stability.met and stability.evidence.identity == "python -c pass")
 
 
-@defect("R9", "the cap returns 300 where the arithmetic needs 2995, and the report does not say so")
 def test_the_run_cap_does_not_overstate_confidence(project):
     rate = 0.001
     needed = runs_needed(rate)
@@ -226,7 +219,6 @@ def test_the_run_cap_does_not_overstate_confidence(project):
     assert needed >= exact or (1 - rate) ** needed <= 0.05
 
 
-@defect("R3/R1", "stale evidence is not offered to self-discharge, so it is never refreshed")
 def test_stale_evidence_is_schedulable_for_re_running(project):
     evidence = suite_record(project, Result.PASS, 1)
     (project / "src/app.py").write_text("value = 98765\n", encoding="utf-8")

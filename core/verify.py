@@ -28,14 +28,21 @@ TIMEOUT = 300
 
 
 def dischargeable(ledger) -> list[str]:
-    """The needs that are unmet and that this project has told us how to check."""
+    """The needs this project told us how to check, that evidence does not cover.
+
+    Missing and stale are different reasons and the same remedy. A stale check
+    stays `met=True`, so scheduling only the unmet ones meant genuinely stale
+    evidence was never refreshed: the runtime could see that a result no longer
+    spoke for the repository, knew the command that would settle it, and did
+    nothing. Deleted inputs count too, for the same reason.
+    """
     config = ledger.config
     if not config.commands:
         return []
     unmet = {
         check.obligation.needs
         for verdict in ledger.verdicts()
-        for check in verdict.missing
+        for check in verdict.missing + verdict.stale
         if check.obligation.needs
     }
     return sorted(need for need in unmet if config.declares(need))

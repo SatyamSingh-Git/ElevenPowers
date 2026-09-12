@@ -60,7 +60,12 @@ class Outcome:
             return f"{head}\n  stable across {self.runs} runs ({rules_out(self.runs):.1%} failure rate ruled out)"
         if self.verdict == "always-fails":
             return f"{head}\n  fails every time, so this is not intermittent"
-        return f"{head}\n  flaky at about {self.rate:.1%}; {runs_needed(self.rate)} clean runs would show it fixed"
+        needed = runs_needed(self.rate)
+        if needed > MAX_RUNS:
+            return (f"{head}\n  flaky at about {self.rate:.1%}; {needed} clean runs would show it "
+                    f"fixed, which is past the {MAX_RUNS}-run budget — repetition cannot settle "
+                    f"this, since {MAX_RUNS} clean runs only rule out {rules_out(MAX_RUNS):.2%}")
+        return f"{head}\n  flaky at about {self.rate:.1%}; {needed} clean runs would show it fixed"
 
 
 def runs_needed(rate: float, confidence: float = DEFAULT_CONFIDENCE) -> int:
@@ -69,13 +74,19 @@ def runs_needed(rate: float, confidence: float = DEFAULT_CONFIDENCE) -> int:
     If a fault still occurs with probability p, the chance of n clean runs in a
     row is (1-p)^n. Requiring that to fall below 1 - confidence gives
     n >= log(1 - confidence) / log(1 - p).
+
+    The answer is not clamped to `MAX_RUNS`. It used to be, which meant a 0.1
+    percent failure rate asked for 300 runs where the arithmetic needs 2,995 —
+    and 300 clean runs leave that fault alive with about 74 percent probability.
+    The cap is a budget, and a budget that cannot buy the confidence has to say
+    so rather than quietly lower the sample size and keep the claim.
     """
     if rate <= 0:
         return MIN_RUNS
     if rate >= 1:
         return 1
     needed = math.ceil(math.log(1 - confidence) / math.log(1 - rate))
-    return max(MIN_RUNS, min(MAX_RUNS, needed))
+    return max(MIN_RUNS, needed)
 
 
 def rules_out(runs: int, confidence: float = DEFAULT_CONFIDENCE) -> float:

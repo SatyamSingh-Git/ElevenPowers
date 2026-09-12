@@ -53,8 +53,13 @@ def test_run_count_matches_the_confidence_formula():
 
 def test_run_count_is_bounded_at_both_ends():
     assert runs_needed(0.999) == MIN_RUNS or runs_needed(0.999) >= 1
-    assert runs_needed(0.0001) == MAX_RUNS
     assert runs_needed(0.0) == MIN_RUNS
+    # The budget is not the answer. Capping here returned a number that does not
+    # buy the confidence it claims, and the caller could not tell. The floor
+    # stays: one clean run of anything proves nothing.
+    needed = runs_needed(0.0001)
+    assert needed > MAX_RUNS
+    assert (1 - 0.0001) ** needed <= 0.05
 
 
 def test_rules_out_inverts_runs_needed():

@@ -8,6 +8,7 @@ it survives compaction, resumption and a change of host.
 from __future__ import annotations
 
 import json
+import os
 import time
 from dataclasses import dataclass, field
 from enum import Enum
@@ -18,7 +19,7 @@ from .config import Config, load as load_config
 from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for, risk_of
-from .repeat import MIN_RUNS, runs_needed
+from .repeat import MAX_RUNS, MIN_RUNS, rules_out, runs_needed
 from .scope import is_manifest, is_prose, normalise
 from .surface import TEST_NAME, Surface, declares_a_test, detect
 
@@ -30,6 +31,17 @@ class Status(str, Enum):
     UNVERIFIED = "UNVERIFIED"
     CONTRADICTED = "CONTRADICTED"
     STALE = "STALE"
+
+
+def _appended(disk: list, mine: list, key) -> list:
+    """Everything on disk, plus whatever of mine is not already there."""
+    out = list(disk)
+    known = {key(item) for item in disk}
+    for item in mine:
+        if key(item) not in known:
+            known.add(key(item))
+            out.append(item)
+    return out
 
 
 @dataclass
@@ -136,7 +148,18 @@ class Ledger:
         )
 
     def save(self) -> None:
+        """Write the ledger, keeping anything another writer appended meanwhile.
+
+        Atomic replacement stops a half-written file. It does not make
+        read-modify-write transactional, and two handlers for the same session
+        do exactly that: both load, both append, and the second write drops the
+        first one's work silently. The append-only fields are merged against
+        whatever is on disk at the moment of writing, which is the cheap half of
+        what a real transaction would buy and covers the case that actually
+        happens here.
+        """
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._keep_concurrent_appends()
         payload = {
             "task": self.task,
             "request": self.request,
@@ -151,9 +174,29 @@ class Ledger:
             "guided": self.guided,
             "created": self.created,
         }
-        tmp = self.path.with_suffix(".tmp")
+        # Named per process: a shared temporary file is its own race, where two
+        # writers interleave into one buffer and the winner replaces with a
+        # mixture of both.
+        tmp = self.path.with_suffix(f".{os.getpid()}.tmp")
         tmp.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         tmp.replace(self.path)
+
+    def _keep_concurrent_appends(self) -> None:
+        if not self.path.exists():
+            return
+        try:
+            disk = Ledger.load(self.root)
+        except (json.JSONDecodeError, OSError, ValueError):
+            return          # unreadable: this write is the repair
+        if disk.task != self.task:
+            return          # a different task; its history is not ours to carry
+        self.decisions = _appended(disk.decisions, self.decisions,
+                                   lambda d: json.dumps(d, sort_keys=True))
+        self.evidence = _appended(disk.evidence, self.evidence,
+                                  lambda e: json.dumps(e.to_dict(), sort_keys=True))
+        self.seen = sorted(set(disk.seen) | set(self.seen))
+        self.touched = sorted(set(disk.touched) | set(self.touched))
+        self.blocks = max(disk.blocks, self.blocks)
 
     def add(self, records: list[Evidence]) -> None:
         self.evidence.extend(records)
@@ -336,7 +379,29 @@ class Ledger:
         if not records:
             return Check(obligation=obligation, met=False)
 
+        # Bound to what actually failed here. Any stability record would do
+        # before, so three hundred clean repeats of `python -c pass` certified a
+        # flaky test: nothing asked what had been repeated. The match is by name
+        # because the record carries the command it repeated and not the target
+        # it was aimed at, which is the sharper fix and a larger one.
+        failed_here = {e.identity for e in self.evidence if e.result is not Result.PASS}
+        records = [e for e in records
+                   if any(t and (t in e.identity or t in e.command) for t in failed_here)]
+        if not records:
+            return Check(obligation=obligation, met=False,
+                         caveat="no repeated run names a target that failed here")
+
         needed = self.required_runs()
+        if needed > MAX_RUNS:
+            # Insufficient evidence, not a smaller sample. A budget that cannot
+            # buy the confidence says so.
+            return Check(
+                obligation=obligation, met=False,
+                evidence=max(records, key=lambda e: e.runs),
+                caveat=(f"{needed} clean runs needed at the rate observed, past the "
+                        f"{MAX_RUNS}-run budget; {MAX_RUNS} clean runs rule out only "
+                        f"{rules_out(MAX_RUNS):.2%}"),
+            )
         clean = [e for e in records if e.failed == 0 and e.runs >= needed]
         if clean:
             best = max(clean, key=lambda e: e.runs)

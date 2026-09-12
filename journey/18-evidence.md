@@ -8,8 +8,12 @@ The evidence layer is different. It is what this project claims to have built �
 completion computed from dependency-tracked evidence rather than asserted — and
 the audit reproduced **nine soundness defects in it**.
 
-Six are now closed, one partly. What follows is what each actually was,
-because in every case the one-line description understates it.
+All nine are now closed, one of them only partly, and with them the last of
+the sixteen probes: `python -m pytest tests/test_audit_probes.py -q` reports
+**27 passed and no xfails**, where it reported sixteen xfails this morning.
+
+What follows is what each defect actually was, because in every case the
+one-line description understates it.
 
 ## R1: a status names files, not contents
 
@@ -179,6 +183,52 @@ reached into `src/auth/` kept the risk the README earned it.
 
 Fixing R6 without R8 would have deleted the concession rather than narrowing
 it. They had to land together.
+
+## R7: a task that inherits another task's evidence
+
+`on_prompt` reused the task id and cleared nothing. A new request arrived with
+its own subject and its own claims, and kept the previous task's evidence, read
+set and `guided` flag. **A suite run for the last bug could discharge an
+obligation for this one**, purely because the ledger was still sitting in the
+same directory.
+
+A prompt that states its own subject now starts a task, and a task starts empty.
+
+The second half is concurrency. `save` writes atomically, which stops a
+half-written file and does nothing about read-modify-write: two handlers for
+one session both load, both append a decision, and the second write drops the
+first silently. The append-only fields are now merged against whatever is on
+disk at the moment of writing, and the temporary file is named per process —
+a shared one is its own race, where two writers interleave into a single buffer
+and the winner replaces with a mixture.
+
+That is the cheap half of what a transaction buys. The audit suggests SQLite,
+and it is right; this covers the case that actually happens without the
+migration.
+
+The two halves compose in a way worth noticing: the merge only applies when the
+task id matches, so starting a clean task and keeping concurrent appends are the
+same rule seen from two directions.
+
+## R9: repetition certified the wrong thing, twice
+
+Three hundred clean runs of `python -c pass` certified a flaky test. Any
+`STABILITY` record satisfied the obligation and nothing asked what it had
+repeated. Records are now bound to a target that actually failed in this task.
+
+And the run count was capped at 300. For a 0.1 percent failure rate the
+arithmetic needs **2,995**, and 300 clean runs leave that fault alive with about
+74 percent probability. The cap silently lowered the sample and kept the claim.
+
+`runs_needed` no longer clamps. Where the budget cannot buy the confidence, the
+check reports insufficient evidence and says what 300 runs actually rule out —
+which is a failure rate of about 1 percent or worse, not the 0.1 percent in
+question. An existing test asserted `runs_needed(0.0001) == MAX_RUNS`; it
+encoded the defect, and it has been changed to assert the honest number.
+
+**Repetition is a statistical test under assumptions, not a proof.** The cap was
+the project quietly deciding it had run out of patience and reporting that as
+confidence.
 
 ## The controls, which are the actual work
 

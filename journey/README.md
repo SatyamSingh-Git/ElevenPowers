@@ -30,7 +30,7 @@ command in this repository and can be reproduced.
 | [15-correction.md](15-correction.md) | An external critique, an answer key that should have been read first, and six of seven failures turning out reachable |
 | [16-audit.md](16-audit.md) | Sixteen reproduced defects, a grader blind to regressions, a change of objective, and two bad attempts at responding to it |
 | [17-preservation.md](17-preservation.md) | Two evaluator defects closed, the hole that fixing the first one opened, and a probe that could never have passed |
-| [18-evidence.md](18-evidence.md) | Repairing the foundation: six evidence-layer defects, the controls that stop a fix being a removal, and three probes that could not see their own fix |
+| [18-evidence.md](18-evidence.md) | Repairing the foundation: all nine evidence-layer defects, the controls that stop a fix being a removal, and the defect underneath the one that was reported |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -222,9 +222,9 @@ Every figure below comes from a command in this repository.
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
-| Audit defects closed | 11 of 16, one narrowed; the rest still reproduce as strict xfails | `python -m pytest tests/test_audit_probes.py -q` |
+| Audit defects closed | all 16, one narrowed rather than closed; eight more from the audit have no probes yet | `python -m pytest tests/test_audit_probes.py -q` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent | `python -m eval.noise a.json b.json` |
-| Tests | 401 | `python -m pytest tests -q` |
+| Tests | 406 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 2,400 lines of runtime, 1,600 of evaluation, 1,200 of tests.

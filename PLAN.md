@@ -60,7 +60,9 @@ Twelve real bugs said the gate changes nothing on its own. The most promising di
 
 All reproduced by `docs/research/audit_2026_09_11/reproduce.py`. **P0 here means a prerequisite for trusting a research conclusion, not a production emergency**: the tool is usable, and its numbers are not yet evidence. None may be deferred, and no new performance claim is made until each is fixed and covered by a regression test derived from the probe that found it.
 
-Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the system is supposed to have, marked `xfail(strict=True)` until it holds. The marker comes off when the fix lands, and cannot be put back quietly: a fixed defect that regresses turns the test red. **Status below is that file, not this table** — `python -m pytest tests/test_audit_probes.py -q` is the authority, and a row saying `fixed` with an `xfail` still on it is a documentation bug.
+Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the system is supposed to have. **All sixteen now pass and no `xfail` marker remains in that file**, which is the state Phase A's first exit criterion asks for.
+
+While any remained, the marker was `xfail(strict=True)`. The marker comes off when the fix lands, and cannot be put back quietly: a fixed defect that regresses turns the test red. **Status below is that file, not this table** — `python -m pytest tests/test_audit_probes.py -q` is the authority, and a row saying `fixed` with an `xfail` still on it is a documentation bug.
 
 ### Evaluator
 
@@ -83,9 +85,11 @@ Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the
 | R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED | fixed |
 | R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests | fixed |
 | R6 | `_test_written_and_suite_green` searches `touched ∪ seen` | **Reading** an existing test counts as writing one. Added in M1 to cut false blocks, and cut them partly by being wrong | fixed |
-| R7 | `on_prompt` reuses the task id | A new request inherits the previous task's evidence, read set and `guided` flag; concurrent writers lose updates | open |
+| R7 | `on_prompt` reuses the task id | A new request inherits the previous task's evidence, read set and `guided` flag; concurrent writers lose updates | fixed |
 | R8 | `observe_edit` returns early when a claim exists | An edit under `src/auth/` leaves risk low | fixed |
-| R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence | open |
+| R9 | Stability accepts any `Kind.STABILITY` record | Clean repeats of an unrelated command certify a flaky test; the cap overstates confidence | fixed |
+
+**The eight still open have no probes.** `reproduce.py` covered R1–R9, E1 and E2; E3–E6 and H1–H4 were source findings the audit did not execute. So *zero xfails* is necessary and not sufficient for Phase A, and each of the eight needs a test written rather than derived — for H1–H4 against the documented host contract rather than against a replayed transcript, since **replay fidelity is not delivery fidelity** and that confusion is what H1 is.
 
 ### Host contract
 
@@ -95,6 +99,10 @@ Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the
 | H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | open |
 | H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | open |
 | H4 | Bash-only subscription | PowerShell commands are invisible | open |
+
+**R7 and R9, closed 2026-09-12.** A prompt that states its own subject starts a task, and a task starts empty — the id was reused and nothing was cleared, so a suite run for the previous bug could discharge an obligation for this one purely because the ledger sat in the same directory. `save` merges the append-only fields against whatever is on disk at the moment of writing and names its temporary file per process; atomic replacement stops a torn file and does nothing about a lost update. SQLite remains the right answer and this covers the case that happens.
+
+Stability records are bound to a target that actually failed in the task, so three hundred clean repeats of `python -c pass` no longer certify a flaky test. `runs_needed` no longer clamps to the 300-run budget: a 0.1 percent rate needs 2,995 clean runs, and 300 leave that fault alive with about 74 percent probability. Where the budget cannot buy the confidence the check reports insufficient evidence and says what the budget does rule out. An existing test asserted the cap and encoded the defect; it now asserts the honest number.
 
 **R3–R6 and R8, closed 2026-09-12.** `GONE` now counts as not-fresh alongside `STALE`, so a claim can no longer be verified by a test result whose files were deleted. The newest record for an identity speaks for it, and a target that is red right now withholds the obligation rather than being outvoted by an older pass; the no-new-failures concession compares which tests failed rather than how many, and is refused outright where the runner reported no per-test detail, because a stable count is not evidence of preserved behaviour. A suite record that counted zero tests can no longer satisfy an obligation that a suite passes — the command being recognised, the process finishing, tests running and the required ones passing are four facts that had become one. `_test_written_and_suite_green` reads `touched` alone, which only works because `observe_edit` no longer returns before recording an edit when a claim is already open: R6 and R8 had to land together or the first would have deleted the M1 concession rather than narrowing it.
 
