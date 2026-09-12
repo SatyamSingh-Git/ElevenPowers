@@ -2,7 +2,8 @@
 
 ## The brief
 
-The project began with `prompt.md`, a long and deliberately ambitious document.
+The project began with [`00-brief.md`](00-brief.md), a long and deliberately
+ambitious document, kept here in full because later plans are judged against it.
 Its core instruction:
 
 > Design and build a genuinely next-generation agentic software engineering

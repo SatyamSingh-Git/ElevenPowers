@@ -12,6 +12,7 @@ command in this repository and can be reproduced.
 
 | File | Covers |
 |---|---|
+| [00-brief.md](00-brief.md) | The original brief, verbatim and unedited — the document everything here is answering, and the one later plans are judged against |
 | [01-origins.md](01-origins.md) | The original brief, the first plan written from memory, and why that was the wrong way to start |
 | [02-research.md](02-research.md) | Reading fourteen systems from source: method, what each one actually does, and the findings that overturned assumptions |
 | [03-architecture.md](03-architecture.md) | Two rewrites of the plan, the pivot from classifying tasks to deriving proof obligations, and what the thing actually is |

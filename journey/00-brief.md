@@ -1,3 +1,17 @@
+> **The original brief, kept verbatim.**
+>
+> This is the document the project started from, committed 2026-09-09 before any
+> research or code existed. It is preserved unedited, with nothing revised in
+> hindsight, because every later plan is judged against it — `PLAN.md` v0.7 exists
+> precisely because an external audit argued the work had drifted from what this
+> asked for, and the argument only stands because the ask is on record.
+>
+> It is a brief, not documentation. What actually happened is
+> [01-origins.md](01-origins.md), which begins by explaining why the first plan
+> written from this was the wrong way to start.
+
+---
+
 You are not being asked to build another collection of prompts, another coding-agent wrapper, another skills repository, or a simple combination of existing open-source projects.
 
 Your objective is much more ambitious:
