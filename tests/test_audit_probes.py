@@ -27,7 +27,9 @@ import pytest
 
 from core import hook, parsers
 from core.config import Config
-from core.evidence import Evidence, Freshness, Kind, Result, source_files, tree_hash
+from core.evidence import (
+    Evidence, Freshness, Kind, Result, source_files, tree_hash, vcs_state,
+)
 from core.ledger import Ledger, Status
 from core.obligations import Claim
 from core.repeat import runs_needed
@@ -64,29 +66,40 @@ def suite_record(root: Path, outcome: Result, when: float, identity: str = "pyte
 
 # --- R1, R2, R3: what invalidates evidence -----------------------------------
 
-@defect("R1", "size and mtime with a vcs_state tie-breaker; two contents share one porcelain status")
 def test_changing_an_already_dirty_file_stales_its_evidence(committed):
     """The whole promise is that editing a file invalidates what depended on it.
 
-    `vcs_state` is pinned because the defect lives only in the branch where git
-    resolves: an unpinned version of this passed alone and failed in the full
-    suite, since git's path form does not always match `tmp_path` on Windows and
-    an empty `vcs_state` hides the bug rather than fixing it.
+    An earlier version of this pinned `vcs_state` to a constant, to force the
+    branch where git resolves. That made the test demand the tie-breaker be
+    removed rather than corrected, and it stubbed out the exact function the fix
+    changed — so the fix landed and the test could not see it. Real git, no
+    mocks: two edits of an already-modified file now differ, and where git does
+    not resolve the answer is `STALE` anyway, so this is the same either way.
     """
     app = committed / "src/app.py"
     app.write_text("value = 1\n", encoding="utf-8")
-    # Both bindings: `parsers` imported the name, so patching only the module it
-    # came from leaves the two calls disagreeing and hides the defect.
-    with patch("core.evidence.vcs_state", return_value="pinned"), \
-         patch("core.parsers.vcs_state", return_value="pinned"):
-        evidence = parsers.parse("pytest -q", "1 passed in 0.1s", 0, committed)[-1]
-        app.write_text("value = 999\n", encoding="utf-8")
-        assert evidence.freshness(committed) is Freshness.STALE
+    evidence = parsers.parse("pytest -q", "1 passed in 0.1s", 0, committed)[-1]
+    app.write_text("value = 999\n", encoding="utf-8")
+    assert evidence.freshness(committed) is Freshness.STALE
 
 
-@defect("R2", "observed is a stored list, so files that did not exist cannot appear in it")
+def test_two_edits_of_a_dirty_file_are_told_apart(committed):
+    """What R1 was underneath: a porcelain status names files, not contents."""
+    app = committed / "src/app.py"
+    app.write_text("value = 1\n", encoding="utf-8")
+    first = vcs_state(committed)
+    app.write_text("value = 999\n", encoding="utf-8")
+    assert first and vcs_state(committed) != first
+
+
 def test_adding_a_test_file_stales_a_suite_result(project):
-    evidence = suite_record(project, Result.PASS, 1)
+    """Built through the parser, because the record has to carry its own scope.
+
+    Constructed by hand it proves nothing about what a real suite run records,
+    and a hand-built record is what let this pass while the production path
+    still stored a list that could never grow.
+    """
+    evidence = parsers.parse("pytest -q", "1 passed in 0.1s", 0, project)[-1]
     (project / "tests/test_new.py").write_text("def test_no():\n    assert False\n", encoding="utf-8")
     assert evidence.freshness(project) is Freshness.STALE
 
@@ -354,3 +367,12 @@ def test_one_pass_per_file_is_enforced_rather_than_assumed(project):
     data.write_text(json.dumps(rows), encoding="utf-8")
     with pytest.raises(ValueError, match="not one pass"):
         outcomes(data, "vanilla")
+
+
+def test_a_dependency_change_stales_a_suite_result(project):
+    """R2's other half, as far as it goes: a lock file is not source, and the
+    code depends on it exactly as much."""
+    (project / "poetry.lock").write_text('name = "x"\nversion = "1.0"\n', encoding="utf-8")
+    evidence = parsers.parse("pytest -q", "1 passed in 0.1s", 0, project)[-1]
+    (project / "poetry.lock").write_text('name = "x"\nversion = "2.0"\n', encoding="utf-8")
+    assert evidence.freshness(project) is Freshness.STALE

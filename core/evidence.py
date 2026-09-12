@@ -58,6 +58,15 @@ class Evidence:
     run: str = ""
     runs: int = 0
     vcs: str = ""
+    scope: str = ""
+    """Where `observed` came from, when it was a scan rather than a fixed list.
+
+    `source` means every source file in the tree. Such a record has to be
+    checked against the tree as it is now, not against the list stored inside
+    it: a file that did not exist when the suite ran cannot be in that list, so
+    a stored list can never notice one being added. A new failing test is the
+    ordinary case, and it stales nothing at all.
+    """
 
     def freshness(self, root: Path) -> Freshness:
         if not self.observed:
@@ -65,7 +74,8 @@ class Evidence:
             # blocker is the case that matters: it is about the world, not
             # about the code.
             return Freshness.FRESH
-        if tree_hash(root, self.observed) == self.tree:
+        current = source_files(root) if self.scope == "source" else self.observed
+        if tree_hash(root, current) == self.tree:
             return Freshness.FRESH
         if any(not (root / p).exists() for p in self.observed):
             return Freshness.GONE
@@ -112,13 +122,21 @@ def tree_hash(root: Path, paths: Iterable[str]) -> str:
 
 
 def vcs_state(root: Path) -> str:
-    """A fingerprint of the working tree as version control sees it.
+    """A fingerprint of the working tree's content as version control sees it.
 
     Git compares file content, using timestamps only as a cache, so two calls
     returning the same value mean no file content changed between them. That is
     the distinction stat alone cannot make and the reason a formatter rewriting
     identical bytes should not invalidate a test result. Returns an empty string
     outside a repository, where the caller falls back to timestamps.
+
+    A porcelain status alone is not that fingerprint. It names which files
+    differ from HEAD and not how they differ, so two different edits to one
+    already-modified file share a status line — and evidence recorded against
+    the first survived the second, which is the one thing this layer promises
+    never to happen. The diff carries content for tracked files. Untracked ones
+    are read directly, because a test file the agent wrote a minute ago is
+    untracked and is exactly what changes next.
     """
     def git(*args: str) -> str | None:
         try:
@@ -132,10 +150,18 @@ def vcs_state(root: Path) -> str:
     if top is None or Path(top.strip()).resolve() != root.resolve():
         return ""
     head = git("rev-parse", "HEAD") or ""
-    status = git("status", "--porcelain")
-    if status is None:
+    status = git("status", "--porcelain", "--untracked-files=all")
+    changes = git("diff", "HEAD")
+    if status is None or changes is None:
         return ""
-    return hashlib.sha256((head + "\n--\n" + status).encode()).hexdigest()[:16]
+    h = hashlib.sha256((head + "\n--\n" + status + "\n--\n" + changes).encode())
+    for line in status.splitlines():
+        if not line.startswith("??"):
+            continue
+        path = root / line[3:].strip().strip('"')
+        if path.is_file():
+            h.update(path.read_bytes())
+    return h.hexdigest()[:16]
 
 
 IGNORED_DIRS = {
@@ -151,20 +177,35 @@ SOURCE_SUFFIXES = {
     ".toml",
 }
 
+# What the code depends on that is not code. A dependency upgrade changes
+# behaviour exactly as an edit does, and a suite that passed before one has no
+# claim on the repository after it. Named rather than matched by suffix,
+# because `.lock` and `.txt` and `.mod` say nothing on their own.
+DEPENDENCY_FILES = {
+    "requirements.txt", "requirements-dev.txt", "dev-requirements.txt",
+    "constraints.txt", "Pipfile", "Pipfile.lock", "poetry.lock", "uv.lock",
+    "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "npm-shrinkwrap.json",
+    "Cargo.lock", "go.mod", "go.sum", "Gemfile", "Gemfile.lock",
+    "composer.lock", "mix.lock", "gradle.lockfile",
+}
+
 
 def source_files(root: Path, limit: int = 20000) -> list[str]:
-    """Every tracked-looking source file, repository-relative, sorted.
+    """Every tracked-looking source file and dependency manifest, sorted.
 
     Used as the observed set for coarse invalidation: any source edit stales
     everything. Pessimistic on purpose. Static import-closure narrowing is the
     documented next step, gated on measuring that this is too coarse to live
     with (P4).
+
+    It still cannot see a package installed without touching a manifest. That
+    is the part of R2 left open, and it is stated rather than papered over.
     """
     out = []
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in IGNORED_DIRS and not d.startswith(".")]
         for name in filenames:
-            if Path(name).suffix in SOURCE_SUFFIXES:
+            if Path(name).suffix in SOURCE_SUFFIXES or name in DEPENDENCY_FILES:
                 out.append(str(Path(dirpath, name).relative_to(root)).replace("\\", "/"))
                 if len(out) >= limit:
                     return sorted(out)

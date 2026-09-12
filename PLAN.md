@@ -77,8 +77,8 @@ Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the
 
 | | Defect | Consequence | Status |
 |---|---|---|---|
-| R1 | Size and mtime, with `vcs_state` as tie-breaker | Two different contents of an already-modified file share a porcelain status; evidence survives a real change | open |
-| R2 | `observed` is a stored list; additions escape it | A new failing test file does not stale anything. Environment and dependency changes are not fingerprinted at all | open |
+| R1 | Size and mtime, with `vcs_state` as tie-breaker | Two different contents of an already-modified file share a porcelain status; evidence survives a real change | fixed |
+| R2 | `observed` is a stored list; additions escape it | A new failing test file does not stale anything. Environment and dependency changes are not fingerprinted at all | part |
 | R3 | Only `STALE` is rejected | Deleting an observed file yields `GONE` and still verifies | open |
 | R4 | Older passes satisfy; first failure excused as pre-existing | fail → pass → fail returns VERIFIED | open |
 | R5 | Substring match plus exit code | `echo pytest` is a passing suite with zero tests | open |
@@ -95,6 +95,10 @@ Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the
 | H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | open |
 | H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | open |
 | H4 | Bash-only subscription | PowerShell commands are invisible | open |
+
+**R1, closed 2026-09-12.** `vcs_state` is a content fingerprint rather than a status listing: the porcelain output names which files differ from HEAD and not how, so two edits of one already-modified file shared a line and evidence recorded against the first survived the second. It now folds in `git diff HEAD` for tracked content and reads untracked files directly, because a test file written a minute ago is untracked and is exactly what changes next.
+
+**R2, part closed 2026-09-12.** A record produced by scanning the tree now says so, and freshness re-derives the file set instead of consulting a stored list that cannot grow — a file that did not exist when the suite ran could never have appeared in it, so a new failing test staled nothing. Dependency manifests and lock files joined the observed set, since a dependency upgrade changes behaviour exactly as an edit does. **Still open:** a package installed without touching a manifest is invisible, and there is no fingerprint of the interpreter or the environment the command actually ran in. Marked `part` rather than `fixed` because the row claims more than the fix delivers.
 
 **E2, closed 2026-09-12.** `load` keeps every replicate. The rates are then over runs and the paired test over tasks, because runs of one task are not independent and pairing replicate against replicate would multiply the apparent sample size while the correlation stayed — buying significance by claiming independence that was never there. At one replicate each the test is exactly McNemar again. `eval/noise.py::outcomes` refuses a file holding replicates instead of silently reading its last run, since that mode's question is what two separate passes did.
 

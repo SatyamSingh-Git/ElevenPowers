@@ -243,6 +243,7 @@ def _record(kind: Kind, identity: str, exit_code: int, command: str, root: Path,
         result=Result.PASS if exit_code == 0 else Result.FAIL,
         observed=observed,
         tree=tree_hash(root, observed),
+        scope="source",
         command=command,
         detail=_tail(output),
         at=time.time(),
@@ -311,7 +312,8 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
             Evidence(
                 kind=Kind.TEST, identity=node,
                 result=Result.PASS if status == "PASSED" else Result.FAIL,
-                observed=observed, tree=tree, command=command, at=now, vcs=vcs,
+                observed=observed, tree=tree, scope="source", command=command,
+                at=now, vcs=vcs,
             )
         )
 
@@ -329,8 +331,8 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
         Evidence(
             kind=Kind.SUITE, identity=_scope(command),
             result=Result.PASS if exit_code == 0 else Result.FAIL,
-            observed=observed, tree=tree, command=command, detail=_tail(output),
-            passed=passed, failed=failed, at=now, vcs=vcs,
+            observed=observed, tree=tree, scope="source", command=command,
+            detail=_tail(output), passed=passed, failed=failed, at=now, vcs=vcs,
         )
     )
     return records
