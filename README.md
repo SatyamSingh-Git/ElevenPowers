@@ -1,18 +1,37 @@
+<div align="center">
+
 # ElevenPowers
 
-Decides when a coding agent's work is actually done, and keeps that answer honest as the code changes.
+### Your coding agent says it's done.<br/>This asks for the receipts.
 
-Status: week-one vertical slice. Working on Claude Code. Not yet evaluated at scale.
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
+[![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
+[![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
+[![Tests](https://img.shields.io/badge/tests-385%20passing-brightgreen.svg)](tests/)
+[![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
 
-## The problem
+</div>
 
-Ask a coding agent to fix a bug and it will tell you the bug is fixed. Published measurements put the gap between claiming completion and actually resolving the task in the tens of percent: one study found a frontier model that submitted a patch on every run and resolved 44 percent of them. Prompting the model to be careful does not close that gap.
+---
 
-Fourteen agent systems were read from source for this project (notes in `docs/research/`). In all of them, "done" is either the model saying so or the model stopping. One of them binds a single declared command to a working-tree hash. None computes completion from evidence.
+> **What this is.** A completion gate for coding agents.
+> It watches the commands your agent already runs, turns their output into **evidence**, and binds each record to the exact bytes of the files it observed.
+> When the agent claims it's done, a state gets **computed** instead of believed.
+> Edit a file afterwards and its green tests go **stale** — the way `make` invalidates an object file.
 
-## What this does
+---
 
-It watches the commands your agent already runs, turns their output into evidence records, and binds each record to the exact content of the files it observed. A claim like `bug_fixed` carries obligations. The gate computes a state rather than accepting an assertion:
+## The thirty-second version
+
+Ask a coding agent to fix a bug and it will tell you the bug is fixed.
+
+It is telling the truth as it understands it. That is the problem. Published measurements put the gap between *claiming* completion and *achieving* it in the tens of percent — one study found a frontier model that submitted a patch on every single run and resolved 44% of them. Prompting the model to be more careful does not close that gap, because the model was never lying. It simply has no way to know.
+
+So stop asking it.
+
+Every agent already runs commands. Tests, typechecks, builds, the failing reproduction it wrote three minutes ago. All of that output is flowing past unread on its way to the scrollback. ElevenPowers reads it, files it as evidence, and stamps each record with a fingerprint of the files it saw.
+
+Then "done" stops being a sentence the model emits and becomes a state you can compute:
 
 ```
 UNVERIFIED  bug_fixed
@@ -23,7 +42,7 @@ UNVERIFIED  bug_fixed
   met      the related test suite passes
 ```
 
-And because evidence is bound to file content, editing a file after the tests were green invalidates them, the way a build system invalidates an object file:
+And because each record is bound to file content, evidence rots when the code moves under it:
 
 ```
 STALE  bug_fixed
@@ -34,111 +53,59 @@ STALE  bug_fixed
 
 The closest analogue is not another agent framework. It is `make`.
 
-## States
-
 | State | Meaning |
 |---|---|
 | `VERIFIED` | every obligation met by fresh evidence |
 | `UNVERIFIED` | an obligation has no evidence |
-| `STALE` | evidence exists but the files it observed have changed |
+| `STALE` | evidence exists, but the files it observed have changed |
 | `CONTRADICTED` | the latest evidence for something is failing |
 
-A failure that was later fixed is reproduction evidence, not a contradiction. Only the most recent record per identity counts.
+---
 
-## Install
+## First, I went and read the competition
 
-Requires Python 3.11 or later and Claude Code.
+Before writing a line of runtime, I cloned fourteen agent systems, pinned each to a commit, and read them from source. Not the READMEs — the source. Where the loop exits. What is actually *enforced in code* versus what is merely *requested in a prompt*. Where each one is genuinely brilliant, and where it quietly gives up.
 
-```bash
-git clone https://github.com/SatyamSingh-Git/ElevenPowers.git
-claude --plugin-dir ElevenPowers/plugin
-```
+**62,575 words of notes. 2,329 lines of runtime.** A reading-to-writing ratio of roughly 25:1, which felt indulgent right up until the fourth system turned out to have the same blind spot as the first three.
 
-Nothing to configure. Ask for a change as you normally would.
+Every card is in [`docs/research/cards/`](docs/research/cards/) with `file:line` citations at a recorded commit, and anything *inferred* rather than read is marked as inferred.
 
-To check that the runtime is seeing what the host sends:
-
-```bash
-python plugin/bin/ep_doctor.py
-```
-
-## How it decides what to prove
-
-Claims are inferred from the request with pattern matching, no model call and no added latency. A question or a request to read code yields no claim at all, and the runtime stays out of the way entirely.
-
-A request often states no claim, because one real prompt in five is four words or fewer and "continue" carries its subject in the conversation rather than in the message. So the claim follows the work: the first edit to a source file opens one, and a prompt with no subject of its own leaves an open claim alone rather than clearing it. A prompt that explicitly asked for something else, a question or a review, is never overridden by an edit.
-
-Measured on 3,557 turns from real sessions: obligations attach to 21 percent of turns that changed nothing, down from 51 percent when any sentence longer than two words claimed a feature.
-
-Risk comes from the paths a task touches: anything under auth, payments, migrations, infrastructure or secrets is high risk and carries more obligations. Everything else is scored by size.
-
-| Claim | Low risk | High risk adds |
+| | Where it's genuinely great | Where it stops |
 |---|---|---|
-| `bug_fixed` | covering test passes, suite green | prior failure on record, stability over repeated runs |
-| `feature_added` | suite green | covering test, typecheck, build |
-| `refactor_safe` | suite green | typecheck, build |
-| `migration_safe` | applies and reverts | suite green, stability |
-| `perf_improved` | benchmark | suite green, stability |
-| `deps_updated` | suite green | build, typecheck |
-| `docs_changed` | nothing | nothing |
-| `cannot_complete` | a reason and what was tried | evidence the blocker is real |
+| **Aider** | the best repository map in the field — tree-sitter tags, a symbol graph, personalized PageRank, budgeted render | tests are off by default |
+| **Continue** | a real index: FTS5 trigrams, embeddings, collapsed-AST chunks, incremental | done = the loop ended |
+| **Cline** | checkpoints that survive anything — three-parent stashes in private refs | no verification mechanism at all |
+| **OpenCode** | the message list *is* the state machine; resume, fork and revert fall out for free | done = finish reason |
+| **OpenHands** | append-only event log, condensers, resumes cleanly after anything | done = the model stopped |
+| **SWE-agent** | full queryable trajectories, revert-on-lint | the patch *is* the deliverable |
+| **mini** | 190 lines, one `bash` tool, and a score that embarrasses scaffolds ten times its size | that's rather the point |
+| **Agentless** | no agent at all — 40 candidate patches, execution-based selection, majority vote | hard-wired to one benchmark, one language |
+| **AutoCodeRover** | an AST-aware search API a model can actually aim | not open source; ideas only |
+| **gstack** | evidence bound to a working-tree hash — the closest thing to a contract anyone ships | exactly one declared command |
+| **Superpowers** | real discipline: TDD, file handoff, a ledger that survives compaction | enforced by prose — its own `CLAUDE.md` admits agents ignore the rules |
+| **ECC** | hooks that fire whether or not the model cooperates; a shell classifier that catches `sh -c` bypasses | 21–23k tokens loaded before you've typed anything |
+| **Spec Kit** | one template source rendered to 41 hosts; exit-code prerequisite gates | a completion checklist it ticks itself |
+| **BMAD** | blind review — reviewers see the diff and never the author's story | prose, plus a finding floor that guarantees noise on tiny diffs |
 
-`cannot_complete` is a real outcome. A system with no way to say "this should not be done as asked" reproduces the action bias that causes false completion in the first place.
+### The pattern that made this project exist
 
-## Flaky and intermittent bugs
+Read fourteen of these in a row and the same shape shows up in every one:
 
-The one case where a single green run proves nothing. Ask about something
-intermittent and the runtime requires repeated evidence, and computes how much
-is enough from the failure rate the agent actually measured:
+> ### "Done" means the model said so, or the model stopped.
 
-```
-missing  repeated runs show the failure is gone
-         ep-repeat 29 -- python -m pytest tests/test_worker.py -q
-         so far: still failed 3 of 30
-```
+One of the fourteen binds a single declared command to a tree hash. **None computes completion from evidence.** None ships tooling for intermittent bugs. Nine of ten enforce their process through text the model is free to ignore — and three admit it in their own repositories.
 
-Three failures in thirty runs is a ten percent rate, and ruling that out with 95
-percent confidence needs 29 clean runs, since 0.9 to the power 29 is under 0.05.
-The agent is told the number rather than left to pick one.
+That is not a knock on any of them. Every one is better engineered than this project, most are years older, and I borrowed from all of them. They were simply solving the turn *before* this one.
 
-The runner stands alone too:
+---
 
-```bash
-ep-repeat 50 -- pytest tests/test_login.py     # is this flaky, and how flaky
-ep-repeat 50 --jobs 8 -- pytest tests/test_login.py
-```
+## What's different here
 
-None of the fourteen systems surveyed ships a repeat runner or any other
-tooling for nondeterministic bugs.
+**Evidence is collected, not demanded.** No new ceremony, no protocol for the agent to follow, no sentinel lines to emit. It runs its tests the way it always did; the runtime reads the output. If the agent never cooperates once, the evidence is still there.
 
-## Staying inside the task
+**Evidence expires.** Every record carries a fingerprint of what it observed. Change those files and the record goes `STALE`, with the exact command to re-run. This is the whole idea, and it is borrowed shamelessly from Test Impact Analysis — which has tracked test-to-source dependencies in industry for years — pointed at agent completion instead of test selection.
 
-Agents wander. The guard asks when an edit lands somewhere the task has neither
-read nor been asked about:
-
-```
-src/billing/stripe.py is in billing, which this task has not read or edited,
-and the request does not mention it. Edit it anyway, or read it first.
-```
-
-It asks rather than denies, because the person is the judge. Scope is not
-declared up front, since nobody knows which files a change will touch before
-making it. It is derived from what the task established: files read, files
-edited, and the areas the request named.
-
-Silent for all the edits that look unrelated and are not: creating a file,
-changing a manifest or lockfile, editing the test for the code being changed,
-touching a sibling in the same module, or anything the request mentioned. On 25
-labelled cases the guard raises no question it should not.
-
-## Saying what it needs, before the end
-
-The gate speaks at the end. Measured live, that was too late: it stopped nearly
-every first attempt to finish, and nearly always on work that was already
-correct, because the agent had done the job and not shown it.
-
-So the obligations are also stated at the moment they can still change what
-happens, once, at the first edit that opens a claim:
+**Obligations scale with risk, and arrive early.** Touching `auth/`, `payments/`, migrations, infra or secrets costs more proof than touching a README. And they are announced at the *first edit*, while the agent can still act on them, rather than sprung at the end as an ambush:
 
 ```
 this task will need, before it can be called done:
@@ -150,16 +117,63 @@ this task will need, before it can be called done:
     ep-repeat 20 -- <the command that reproduced it>
 ```
 
-And you can ask at any point rather than waiting to be told:
+**`cannot_complete` is a first-class outcome.** A system with no way to say *"this should not be done as asked"* has quietly reproduced the action bias that causes false completion in the first place.
 
-```bash
-python plugin/bin/ep_status.py
+**Intermittent bugs get arithmetic instead of vibes.** The one case where a single green run proves nothing. Ask about something flaky and the runtime computes how many clean runs are actually enough, from the failure rate the agent itself measured:
+
+```
+missing  repeated runs show the failure is gone
+         ep-repeat 29 -- python -m pytest tests/test_worker.py -q
+         so far: still failed 3 of 30
 ```
 
-## Choosing how much it interrupts
+Three failures in thirty is a 10% rate; ruling that out at 95% confidence needs 29 clean runs, because 0.9²⁹ < 0.05. The agent is handed the number rather than left to invent one. The runner stands alone, too:
 
-Optional, in `.elevenpowers/config.json`. A project with no config behaves
-exactly as it did before.
+```bash
+ep-repeat 50 --jobs 8 -- pytest tests/test_login.py   # is this flaky, and how flaky
+```
+
+None of the fourteen ships anything like it.
+
+**The seam is tested, not assumed.** A verification layer that silently stops working is worse than none — and this is not hypothetical: three defects in the layer between this runtime and its host each failed *by doing nothing*, while every unit test stayed green. So `ep-doctor` feeds the runtime a tool result shaped exactly the way the host shapes one, and checks the answer comes back right:
+
+```
+ok    python 3.13.2
+ok    a failing command is recorded as failing
+ok    a passing command is recorded as passing
+ok    hooks.json subscribes to every event the runtime handles (6 tools recorded)
+ok    the ledger directory is writable
+ok    nothing unreadable has arrived from the host
+```
+
+Anything it cannot parse lands in `.elevenpowers/blindspots.jsonl` — so a host that renames a field becomes a diagnosable symptom instead of a tool that quietly went quiet.
+
+**It also stays inside the task.** Agents wander. When an edit lands somewhere the task has neither read nor been asked about, the guard *asks* — it never denies, because you are the judge:
+
+```
+src/billing/stripe.py is in billing, which this task has not read or edited,
+and the request does not mention it. Edit it anyway, or read it first.
+```
+
+Scope is never declared up front, because nobody knows which files a change will touch before making it. It is derived from what the task established: files read, files edited, and the areas the request named.
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/SatyamSingh-Git/ElevenPowers.git
+claude --plugin-dir ElevenPowers/plugin
+```
+
+Nothing to configure. Ask for a change the way you normally would.
+
+```bash
+python plugin/bin/ep_doctor.py    # is the runtime seeing what the host sends?
+python plugin/bin/ep_status.py    # what do I still owe on this task?
+```
+
+Optionally, in `.elevenpowers/config.json` — a project with no config behaves exactly as it did before:
 
 ```json
 {
@@ -172,79 +186,133 @@ exactly as it did before.
 |---|---|
 | `off` | record evidence, say nothing, never block |
 | `guide` | say what would prove the work, report at the end, never block |
-| `strict` | the above, and refuse to stop while obligations are unmet |
+| `strict` | all of the above, and refuse to stop while obligations are unmet |
 
-`EP_PROFILE` overrides the file for one session.
+Declaring your commands does two things: it tells the runtime this project *has* a suite even when the suite hides behind a Makefile, and it replaces a guessed hint with the command you actually use. It also lets the runtime discharge obligations by running them itself — which turned out to matter enormously (see below).
 
-Declaring commands does two things: it tells the runtime this project has a test
-suite even when the suite lives behind a Makefile and no scan would find it, and
-it replaces a guessed hint with the command you actually use.
+---
 
-## Checking that it is actually working
+## What claims cost
 
-A verification layer that silently stops working is worse than none, and the
-failure mode is real: three defects in the layer between this runtime and its
-host each failed by doing nothing, while every unit test passed. So the join is
-tested rather than assumed.
+Claims are inferred from the request by pattern matching — no model call, no added latency. Ask a question or request a code read and no claim opens at all; the runtime stays entirely out of the way.
 
-`ep-doctor` feeds the runtime a tool result shaped the way the host shapes one
-and checks the answer comes back right:
+Most requests state no claim, because one real prompt in five is four words or fewer and "continue" carries its subject in the conversation rather than in the message. So the claim follows the work: the first edit to a source file opens one. Measured across **3,557 turns of real sessions**, obligations attach to 21% of turns that changed nothing — down from 51% under the naive rule.
 
-```
-ok    python 3.13.2
-ok    a failing command is recorded as failing
-ok    a passing command is recorded as passing
-ok    hooks.json subscribes to every event the runtime handles (6 tools recorded)
-ok    the ledger directory is writable
-ok    nothing unreadable has arrived from the host
-```
+| Claim | Low risk | High risk adds |
+|---|---|---|
+| `bug_fixed` | covering test passes, suite green | prior failure on record, stability over repeated runs |
+| `feature_added` | suite green | covering test, typecheck, build |
+| `refactor_safe` | suite green | typecheck, build |
+| `migration_safe` | applies and reverts | suite green, stability |
+| `perf_improved` | benchmark | suite green, stability |
+| `deps_updated` | suite green | build, typecheck |
+| `docs_changed` | nothing | nothing |
+| `cannot_complete` | a reason and what was tried | evidence the blocker is real |
 
-Anything the runtime cannot read is appended to `.elevenpowers/blindspots.jsonl`
-and reported by that last check, so a host that changes a field becomes a
-diagnosable symptom rather than a tool that quietly went quiet.
+---
 
-## Known defects, 2026-09-11
+## Where this actually is
 
-An external audit reproduced sixteen defects in the runtime and the evaluator;
-`docs/research/audit_2026_09_11/` holds the report and a script that reproduces
-them. Until they are fixed, treat every number below as provisional. The most
-consequential: the task grader runs only the fail-to-pass set, so a patch that
-breaks existing tests still scores as resolved; a deleted observed file still
-verifies; `echo pytest` counts as a passing suite; and reading an existing test
-counts as writing one.
+Week one. Here is the unflattering version, because the alternative is becoming the thing this project was built to catch.
 
-## Measured against real sessions
-
-Claude Code writes a transcript of every session, including each tool result
-exactly as the host produced it. Replaying those costs no inference and needs no
-hand labelling, because the host itself records whether each command failed:
+**Measured against real sessions.** Claude Code writes a transcript of every session, including each tool result exactly as the host produced it. Replaying those costs no inference and needs no hand labelling, because the host itself already recorded whether each command failed.
 
 ```bash
 python -m eval.replay --all
 ```
 
-Across 241 real sessions and 36,034 commands, the runtime agrees with the host
-about whether a command failed on 174 of 174 failures and 5,916 of 5,916
-successes. The reader this replaced agreed on 0 of 174.
+Across **241 real sessions and 36,034 commands**, the runtime agrees with the host on **174 of 174 failures** and **5,916 of 5,916 successes**. The reader it replaced agreed on 0 of 174. Reported as two rates rather than one, because the corpus is 97% successes — a reader that answers "passed" to everything scores 97% accuracy while being wrong about the only thing the gate needs to know.
 
-Reported as two rates rather than one, because the corpus is 97 percent
-successes: a reader that answers "passed" to everything scores 97 percent
-accuracy while being wrong about the only thing the gate needs to know.
+**It runs live.** 89 real agent runs through the CLI, where the gate fires, refuses the stop, and the agent goes back and does more work.
 
-## What it does not do yet
+**What that has not yet shown is whether the work comes out better.** Two identical plain passes over the same sixteen tasks resolved eleven and fifteen — run-to-run noise is currently larger than the effect. Answering the question honestly needs roughly 252 agent runs per arm, against a task suite rebuilt so that most of it actually discriminates.
 
-No workflow engine, no repository index, no memory, no model routing, no subagents. Each is postponed with a written trigger in `docs/postponed.md`. Invalidation is currently coarse: any source edit stales everything. Narrowing it to the import closure of each test is the documented next step, and only once measurement shows the coarse version is too pessimistic to live with.
+The gate used to stop nearly every first attempt to finish, and nearly always on work a plain agent had already got right. Across four live passes that is now **12% of runs rather than 75%** — because when a project declares how its tests run, the runtime runs them itself and computes the evidence instead of interrupting to demand it. Turns fell by a quarter; nothing a plain agent reliably resolves regressed.
 
-It now runs live: 89 real agent runs through the CLI, where the gate fires, refuses the stop, and the agent goes back and does more work. What that has not yet shown is whether the work comes out better. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen, so the run-to-run noise is larger than the effect, and answering the question properly needs about 252 agent runs per comparison against a task suite rebuilt so that most of it discriminates.
+**An external audit found sixteen defects** in the runtime and the evaluator. Rather than quietly fixing the embarrassing ones, each became a test that fails on purpose until it doesn't:
 
-The gate used to stop nearly every first attempt to finish, and nearly always on work a plain agent had already got right. Measured across four live passes, that is now 12 percent of runs rather than 75, because when a project declares how its tests run the runtime runs them itself and computes the evidence instead of interrupting to demand it. Turns fell by a quarter and none of the tasks a plain agent reliably resolves regressed.
+```bash
+python -m pytest tests/test_audit_probes.py -q
+# 8 passed, 14 xfailed
+```
 
-## Design notes
+Eight fixed, fourteen probes still reproducing. **That file is the authority, not this README** — a defect marked `xfail(strict=True)` that starts passing *fails the run*, which forces the marker off and makes it impossible to fix something quietly.
 
-`PLAN.md` holds the thesis, the architecture, the hypotheses being tested, and the honest bounds on what is new here. `docs/research/` holds the study of fourteen systems that produced it, with every claim cited to a file at a recorded commit.
+The worst one deserves naming out loud: **the task grader ran only the fail-to-pass set**, so a patch that broke existing tests scored as *resolved* — on a measurement whose entire subject is catching exactly that. Fixed 2026-09-12; mined tasks now carry a pass-to-preserve set and the test tree is restored from upstream first, so editing a test until it agrees with the patch no longer counts as preserving it. Every number published before that date deserves the appropriate suspicion.
 
-The mechanism is not invented. Test Impact Analysis has tracked test-to-source dependencies in industry for years, and falls back to running everything when its map goes stale. This borrows that and points it at agent completion instead of test selection.
+**Not built yet:** no workflow engine, no repository index, no memory, no model routing, no subagents. Each is postponed with a written trigger in [`docs/postponed.md`](docs/postponed.md). Invalidation is coarse — any source edit stales everything — and narrowing it to each test's import closure is the documented next step, but only once measurement shows the coarse version is too pessimistic to live with.
 
-## License
+---
 
-Apache-2.0. Attribution for every reused idea and file is in `docs/research/licenses.md`.
+## Standing on fourteen sets of shoulders
+
+Nothing here was invented from nothing, and pretending otherwise would be both dishonest and a waste of fourteen excellent codebases.
+
+The method was deliberate: read each system from source, separate what it enforces in **code** from what it merely requests in **prose**, inventory every strength and every weakness, then map which system's strength covers which other system's weakness. Whatever remained uncovered by all fourteen — *that* was the only honest place to build something new. The full mapping is in [`complementarity-matrix.md`](docs/research/complementarity-matrix.md). It found ten residual gaps; this runtime attacks three of them.
+
+What came from where:
+
+- **gstack** — evidence fingerprinted against a working tree, and a Stop hook that can refuse. The nearest prior art to this entire project, and the starting point rather than the competition.
+- **Aider** — how a repository map should be built, and what a reproducible benchmark harness looks like.
+- **BMAD** — blind-then-claims review ordering, and provenance rules for admitting evidence at all.
+- **ECC** — a hook runtime that fails open, writes atomically, and survives its own errors.
+- **Spec Kit** — exit-code prerequisites, and one template source rendered to many hosts.
+- **Superpowers** — an append-only ledger as the answer to compaction, and the idea of testing a *skill* against a baseline that does not have it.
+- **OpenCode / Cline / OpenHands** — state you can resume, fork and revert.
+- **SWE-agent / mini** — trajectories worth querying, and a 190-line reminder that the floor is far higher than anyone's marketing suggests.
+- **Agentless / AutoCodeRover** — generate many candidates, then *select* by execution rather than by vibe.
+- **Test Impact Analysis**, from ordinary industry practice — dependency-tracked invalidation, the mechanism at the centre of this.
+- **Proof-or-Stop** (arXiv 2607.14890) — found *after* the design was settled, and closer to this thesis than anything in the fourteen. Cited rather than buried.
+
+Licenses, commits, copyright holders and reuse obligations for all of it: [`docs/research/licenses.md`](docs/research/licenses.md). Where a system's terms forbid reuse, only the *idea* was taken, and it says so.
+
+And yes — this was built with coding agents, mostly Claude and Codex. A project about whether agent output can be trusted would be a strange place to get coy about that. The evidence layer was pointed at its own construction from day one, and [`docs/dogfood-log.md`](docs/dogfood-log.md) records where it caught its own author. The sixteen-defect audit above is what happened when someone else's agent was pointed at it too.
+
+---
+
+## Reading further
+
+| | |
+|---|---|
+| [`PLAN.md`](PLAN.md) | the thesis, the architecture, the hypotheses under test, and honest bounds on what is new |
+| [`docs/research/`](docs/research/) | fourteen systems read from source, every claim cited to a file at a recorded commit |
+| [`competitor-map.md`](docs/research/competitor-map.md) | ten systems × thirteen architectural axes, on one screen |
+| [`docs/postponed.md`](docs/postponed.md) | what is not built, and the trigger that would start it |
+
+---
+
+## This is a work in progress, and says so on purpose
+
+Everything above is a snapshot. The thesis has already been demoted once, the objective rewritten once, and a published result withdrawn once — and the open probes in `tests/test_audit_probes.py` guarantee more of that is coming. Numbers here will be superseded. Sections will be rewritten. Some of what this README currently argues will turn out to be wrong, and when it does, it gets corrected rather than quietly dropped.
+
+**So if you want the real story, don't read this file — read [`journey/`](journey/).**
+
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. Seventeen chapters, in order:
+
+- **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
+- **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.
+- **How the design changed** — [two rewrites and the pivot](journey/03-architecture.md), from classifying tasks to deriving proof obligations.
+- **What building it taught** — [the first working version](journey/04-build.md) and the three defects that only surfaced in use; [a guard that shipped as dead code](journey/07-scope.md), twice; [three more defects](journey/08-wiring.md) in the one layer nobody had measured, found by reading 36,000 real commands.
+- **What measurement destroyed** — [75% false blocks](journey/05-measurement.md) and every fix; [89 live runs](journey/10-live.md) where the mechanism works and the measurement doesn't; [twelve real bugs](journey/14-null.md) where the gate changed nothing at all and the obvious fix turned out to be theatre; [an external critique](journey/15-correction.md) that dismantled a conclusion I had just reached.
+- **Where it is now** — [sixteen reproduced defects](journey/16-audit.md), a grader blind to the exact regressions it existed to catch, a change of objective, and [two evaluator defects closed](journey/17-preservation.md).
+- **Where it's heading** — [`PLAN.md`](PLAN.md) §7, three tracks with explicit prerequisites rather than a chain.
+
+Two files there are worth more than the chapters: [`decisions.md`](journey/decisions.md), every significant decision with its reasoning and whether it still stands — and [`mistakes.md`](journey/mistakes.md), every mistake made, kept in full, because the corrections turned out to be the most transferable part of the whole thing.
+
+Every number quoted anywhere in that folder was produced by a command in this repository, and the command is printed next to it.
+
+---
+
+<div align="center">
+
+### *The path is ours to walk.*<br/>*Where it ends was never ours to choose.*
+
+**So walk it honestly — and keep the receipts.**
+
+<br/>
+
+**Apache-2.0** · Built on the work of fourteen better-established projects, with attribution for every one.
+
+*If you maintain one of them and I have misread your code — open an issue.<br/>The card is pinned to a commit, and I would much rather be corrected than cited wrongly.*
+
+</div>
