@@ -2,9 +2,7 @@
 
 # ElevenPowers
 
-### *The path is ours to walk.*<br/>*Where it ends was never ours to choose.*
-
-**So walk it honestly — and keep the receipts.**
+### Your coding agent says it's done.<br/>This asks for the receipts.
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
@@ -25,7 +23,9 @@
 
 <div align="center">
 
-### Your coding agent says it's done.<br/>This asks for the receipts.
+### *The path is ours to walk.*<br/>*Where it ends was never ours to choose.*
+
+**So walk it honestly — and keep the receipts.**
 
 </div>
 
