@@ -50,7 +50,7 @@ NEW = "from src.app import double\n\n\ndef test_double():\n    assert double(2) 
 
 def _git(repo: Path, *args: str) -> str:
     done = subprocess.run([*GIT, "-C", str(repo), *args], check=True,
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, encoding="utf-8", errors="replace")
     return done.stdout.strip()
 
 

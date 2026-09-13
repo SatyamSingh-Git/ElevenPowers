@@ -147,7 +147,7 @@ def _call(event: str, payload: dict, project: Path):
     return subprocess.run(
         [sys.executable, str(launcher), event],
         input=json.dumps({**payload, "cwd": str(project)}),
-        capture_output=True, text=True, timeout=120,
+        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120,
     )
 
 

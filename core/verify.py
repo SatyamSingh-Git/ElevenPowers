@@ -62,7 +62,7 @@ def discharge(ledger) -> list[Evidence]:
         try:
             done = subprocess.run(
                 command, shell=True, cwd=ledger.root, capture_output=True,
-                text=True, timeout=TIMEOUT,
+                text=True, encoding="utf-8", errors="replace", timeout=TIMEOUT,
             )
         except (OSError, subprocess.SubprocessError):
             continue

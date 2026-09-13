@@ -1,6 +1,7 @@
 """Mine several repositories into one corpus, and say what is in it.
 
     python -m eval.corpus --repos DIR --out corpus.json [--want 6] [--limit 200]
+    python -m eval.corpus --repos DIR --out corpus.json --only markupsafe,jinja2
     python -m eval.corpus --show corpus.json
     python -m eval.corpus --lock corpus.json --out corpus.lock
     python -m eval.corpus --rebuild corpus.lock --repos DIR --out corpus.json
@@ -200,6 +201,9 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 1
     repos = sorted(d for d in where.iterdir() if (d / ".git").exists())
+    only = option("--only", "")
+    if only:
+        repos = [d for d in repos if d.name in only.split(",")]
     if not repos:
         print(f"no git repositories under {where}")
         return 1

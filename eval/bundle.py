@@ -60,7 +60,7 @@ def ignore_artefacts(root: Path) -> None:
 def seed_commit(root: Path) -> str:
     """The commit the workspace was built at, before the agent touched it."""
     done = subprocess.run([*GIT, "-C", str(root), "rev-list", "--max-parents=0", "HEAD"],
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, encoding="utf-8", errors="replace")
     return done.stdout.split()[0] if done.returncode == 0 and done.stdout.split() else ""
 
 

@@ -124,3 +124,39 @@ def test_a_rebuild_refuses_rather_than_substituting(upstream, tmp_path):
     out = tmp_path / "rebuilt.json"
     assert rebuild(lockfile, repo.parent, {"PYTHONPATH": "src"}, out) == 1
     assert json.loads(out.read_text(encoding="utf-8")) == []
+
+
+def test_a_node_id_carrying_an_installed_version_is_refused():
+    """A pinned identifier holding a value from the machine is not pinned.
+
+    Four click tasks pinned `test_attr_deprecated[click-__version__-8.4.2.dev0]`
+    into their preservation sets. That version is click's at none of those
+    commits: it is setuptools-scm's fallback inside a tree with no git history,
+    which is what a stray editable install saw. Install click properly and the
+    node is renamed, so a preserved test appears to have vanished and the
+    maintainer's own fix grades as a regression.
+    """
+    import importlib.metadata
+
+    from eval.mine import machine_dependent
+
+    version = importlib.metadata.version("pytest")
+    node = f"tests/test_deprecations.py::test_attr_deprecated[pytest-__version__-{version}]"
+
+    assert machine_dependent([node]) == [node]
+
+
+def test_an_ordinary_parameter_that_looks_like_a_version_is_kept():
+    """The forward direction. A rule that refuses every parametrised node would
+    empty the preservation sets, and a corpus with nothing to preserve cannot
+    tell a fix from a patch that also broke something -- which is the defect the
+    preservation set exists to catch. Both halves are required, the
+    distribution's name and its version, and only this says so.
+    """
+    from eval.mine import machine_dependent
+
+    assert machine_dependent([
+        "tests/test_compat.py::test_strip_ansi[IP-192.1.0.2]",
+        "tests/test_basic.py::test_group",
+        "tests/test_versions.py::test_parse[1.2.3-expected]",
+    ]) == []

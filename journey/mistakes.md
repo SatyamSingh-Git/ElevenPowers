@@ -567,3 +567,28 @@ look identical from the outcome alone.
 
 *The lesson:* isolation that was never tested is a belief. Nothing here had ever
 asked what one run could do to the next, and the answer was: quite a lot.
+
+### A depth limit nobody chose
+
+Mining scanned "the last 200 commits" because that was the default, and the
+default looked like a judgement about diminishing returns. It was not. Two
+things held it there.
+
+`candidates()` spent two subprocesses per commit — one for the subject, one for
+the file list — so scanning deep history meant tens of thousands of process
+spawns. One `git log --name-only` returns both. The same 400 commits went from
+eighteen seconds to three hundredths of one, and the output is identical.
+
+And `git()` decoded with the platform codepage, so a commit subject in click's
+history with a byte cp1252 has no character for raised inside subprocess's
+reader thread. The call returned `None` and mining died on `.strip()` several
+frames away, with a traceback that named neither the commit nor the encoding.
+Only scanning deeper than usual ever reached it.
+
+*Cost:* the corpus was mined from about 130 candidates when 451 were reachable,
+and the reason was never a decision.
+
+*The lesson:* a default that has never been questioned is not a measurement. The
+number of tasks in this benchmark was set by a constant, a subprocess spawn cost
+and an unhandled encoding, and it was reported as though it were a property of
+the repositories.

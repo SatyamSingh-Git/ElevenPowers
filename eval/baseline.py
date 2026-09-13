@@ -73,7 +73,7 @@ def is_alias(model: str) -> bool:
 
 def working_tree_clean(root: Path) -> bool:
     done = subprocess.run(["git", "-C", str(root), "status", "--porcelain"],
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, encoding="utf-8", errors="replace")
     return done.returncode == 0 and not done.stdout.strip()
 
 

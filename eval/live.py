@@ -281,7 +281,7 @@ def _claude_version() -> str:
 
 def _tool_version(command: list[str]) -> str:
     try:
-        done = subprocess.run(command, capture_output=True, text=True, timeout=30)
+        done = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=30)
     except (OSError, subprocess.SubprocessError):
         return ""
     return (done.stdout or "").strip().splitlines()[0] if done.stdout.strip() else ""
@@ -336,7 +336,7 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
         # under two names is worse than no comparison.
         command += ["--plugin-dir", _plugin_dir(arm)]
     try:
-        done = subprocess.run(command, cwd=root, capture_output=True, text=True,
+        done = subprocess.run(command, cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace",
                               timeout=TIMEOUT, env=_sandboxed(root))
     except subprocess.TimeoutExpired:
         return {"is_error": True, "result": "", "note": "timed out"}, TIMEOUT
@@ -426,7 +426,7 @@ def _verify_real(task: Task, root: Path) -> Graded:
         done = subprocess.run(
             [sys.executable, "-m", "pytest", *_suite(root), "-q", "--no-header",
              "--tb=no", "-rA", "-p", "no:randomly"],
-            cwd=root, capture_output=True, text=True, timeout=SUITE_TIMEOUT,
+            cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=SUITE_TIMEOUT,
             env={**os.environ, **source.get("env", {})},
         )
     except subprocess.TimeoutExpired:
@@ -472,7 +472,7 @@ def _base_collects(task: Task, root: Path) -> bool:
         done = subprocess.run(
             [sys.executable, "-m", "pytest", *_suite(control), "-q", "--no-header",
              "--collect-only"],
-            cwd=control, capture_output=True, text=True, timeout=SUITE_TIMEOUT,
+            cwd=control, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=SUITE_TIMEOUT,
             env={**os.environ, **(task.source.get("env") or {})},
         )
     return done.returncode == 0
@@ -496,7 +496,7 @@ def _verify_seeded(task: Task, root: Path) -> Graded:
     try:
         done = subprocess.run(
             [sys.executable, "-m", "pytest", "tests", "-q", "--no-header", "--tb=no", "-rA"],
-            cwd=root, capture_output=True, text=True, timeout=120)
+            cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     except subprocess.TimeoutExpired:
         return Graded(False, "timeout")
     finally:

@@ -106,7 +106,7 @@ def run(command: str, times: int, cwd: Path, jobs: int = 1, timeout: int = 300,
     def once(_: int) -> bool:
         try:
             done = subprocess.run(command, shell=True, cwd=cwd, capture_output=True,
-                                  text=True, timeout=timeout)
+                                  text=True, encoding="utf-8", errors="replace", timeout=timeout)
             return done.returncode == 0
         except subprocess.TimeoutExpired:
             return False

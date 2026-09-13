@@ -84,9 +84,17 @@ class Instance:
 
 
 def git(repo: Path, *args: str) -> str:
+    """Always a string, decoded as utf-8 rather than the machine's codepage.
+
+    A commit subject in click's history carries a byte cp1252 has no character
+    for, and the default decode raised inside subprocess's reader thread: the
+    call returned None, and mining crashed on `.strip()` several frames away.
+    Scanning deeper history was the only thing that reached it, so the corpus
+    had a depth limit nobody had chosen.
+    """
     done = subprocess.run([*GIT, "-C", str(repo), *args], capture_output=True,
-                          text=True, timeout=TIMEOUT)
-    return done.stdout if done.returncode == 0 else ""
+                          text=True, encoding="utf-8", errors="replace", timeout=TIMEOUT)
+    return (done.stdout or "") if done.returncode == 0 else ""
 
 
 def materialise(repo: Path, sha: str, into: Path) -> None:
@@ -120,7 +128,7 @@ def run_tests(root: Path, targets: list[str], env: dict[str, str],
     done = subprocess.run(
         [sys.executable, "-m", "pytest", *targets, "-q", "--no-header",
          f"--tb={traceback}", "-rA", "-p", "no:randomly"],
-        cwd=root, capture_output=True, text=True, timeout=TIMEOUT, env=environment,
+        cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=TIMEOUT, env=environment,
     )
     return done.returncode, (done.stdout or "") + (done.stderr or "")
 
@@ -163,13 +171,20 @@ def candidates(repo: Path, limit: int, source_dir: str, test_dir: str) -> list[t
     A fix without a test cannot be verified, and a test without a fix is not a
     bug report. Merges are skipped because their diff is not one change.
     """
-    log = git(repo, "log", "--no-merges", "--format=%H", f"-{limit}")
+    # One `git log`, not two subprocesses per commit. At the depth needed to
+    # find enough instances that is twenty thousand process spawns, which on
+    # Windows is most of an hour spent on nothing -- and it was the reason the
+    # corpus had never been mined deeper than a couple of hundred commits.
+    log = git(repo, "log", "--no-merges", "--name-only",
+              "--format=%x1e%H%x1f%s", f"-{limit}")
     out, seen = [], set()
-    for sha in log.split():
-        subject = git(repo, "log", "-1", "--format=%s", sha).strip()
+    for chunk in log.split("\x1e")[1:]:
+        header, _, listing = chunk.partition("\n")
+        sha, _, subject = header.partition("\x1f")
+        subject = subject.strip()
         if not usable_report(subject, seen):
             continue
-        files = git(repo, "show", "--name-only", "--format=", sha).split()
+        files = listing.split()
         touched_source = [f for f in files if f.startswith(source_dir)]
         touched_tests = [f for f in files if f.startswith(test_dir) and f.endswith(".py")]
         if touched_source and touched_tests:
@@ -233,30 +248,40 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
 
     base = work / "base"
     materialise(repo, parent, base)
-
-    # The suite as the agent will find it has to be green, or a green run proves
-    # nothing and the task cannot distinguish a fix from a repository that was
-    # already broken.
     suite = [d for d in ("tests",) if (base / d).exists()]
-    code, output = run_tests(base, suite, env, traceback="line")
-    if code != 0:
-        return None, _why_red(output)
 
     for rel, body in patch.items():
         target = base / rel
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(body, encoding="utf-8")
 
-    code, output = run_tests(base, list(patch), env)
+    # The cheap questions first. Running the whole suite before them costs a
+    # full test run on every candidate, and on markupsafe eight of nine are
+    # rejected by checks that only ever needed the commit's own test files. The
+    # set of instances kept is unchanged -- these are all conjuncts -- but the
+    # depth of history that can be searched in an afternoon is not.
+    code, output = run_tests(base, list(patch), env, traceback="line")
     if code == 0:
         return None, "the new tests already pass before the fix"
     f2p = failing_nodes(output)
     if not f2p:
-        return None, "the new tests fail without naming a node id"
+        # A suite that cannot import its dependencies also exits non-zero with
+        # nothing named, and reporting that as "no node id" is how a repository
+        # with a missing package looked like a repository with no bugs.
+        return None, _why_red(output)
 
     code, output = run_tests(fixed, f2p, env)
     if code != 0:
         return None, "the fix does not satisfy its own tests"
+
+    # The suite as the agent will find it has to be green, or a green run proves
+    # nothing and the task cannot distinguish a fix from a repository that was
+    # already broken. Asked of survivors only.
+    green = work / "green"
+    materialise(repo, parent, green)
+    code, output = run_tests(green, suite, env, traceback="line")
+    if code != 0:
+        return None, _why_red(output)
 
     # The preservation set: what is green with the fix commit's tests in place,
     # both before and after the source change. A task without one cannot tell a
@@ -265,6 +290,13 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     _, before = run_tests(base, suite, env)
     _, after = run_tests(fixed, suite, env)
     p2p = sorted((passing_nodes(before) & passing_nodes(after)) - set(f2p))
+    unstable = machine_dependent(p2p + f2p)
+    if unstable:
+        # Dropping them from the preservation set would leave a task that scores
+        # differently on two machines and says nothing about it. Refusing the
+        # whole instance is the same choice --rebuild makes: a corpus that
+        # substitutes quietly is worse than one that is smaller.
+        return None, f"machine-dependent node id: {unstable[0]}"
     if not p2p:
         return None, "nothing to preserve, so a regression could not be seen"
 
@@ -277,6 +309,43 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
         f2p=f2p, p2p=p2p, env=env, changed=changed,
         gold_files=len(source_only), gold_lines=changed_lines(repo, sha, source_only),
     ), "kept"
+
+
+def machine_dependent(nodes: list[str]) -> list[str]:
+    """Node ids that name an installed distribution and its version.
+
+    A pinned identifier containing a value read from the machine is not pinned.
+    click's `test_attr_deprecated` parametrises on
+    `importlib.metadata.version("click")`, so the version lands inside the id,
+    and the corpus pinned `...[click-__version__-8.4.2.dev0]` into four
+    preservation sets. That version is click's at none of those commits: it is
+    what setuptools-scm falls back to inside a tree with no git history, which
+    is what a stray `pip install -e .` saw. Install click properly and the node
+    is renamed, never collected, and reported as a regression that is really an
+    absence.
+
+    Both halves are required -- the distribution's name *and* its version -- so
+    that an ordinary parameter that happens to look like a version is left
+    alone. This catches the class that has actually bitten, not every way an id
+    can be unstable.
+    """
+    import importlib.metadata
+
+    installed = []
+    for dist in importlib.metadata.distributions():
+        name = (dist.metadata["Name"] or "").strip()
+        version = (dist.version or "").strip()
+        if name and version:
+            installed.append((name.lower(), version))
+    out = []
+    for node in nodes:
+        _, _, params = node.partition("[")
+        if not params:
+            continue
+        low = params.lower()
+        if any(name in low and version in params for name, version in installed):
+            out.append(node)
+    return out
 
 
 def _why_red(output: str) -> str:

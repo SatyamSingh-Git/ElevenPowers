@@ -265,7 +265,7 @@ def _changed_paths(root: Path) -> list[str]:
     def git(*args: str) -> str | None:
         try:
             done = subprocess.run(
-                ["git", *args], cwd=root, capture_output=True, text=True, timeout=5
+                ["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5
             )
         except (OSError, subprocess.SubprocessError):
             return None
