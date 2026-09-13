@@ -224,3 +224,25 @@ def test_an_unselected_corpus_does_not_claim_a_selection(tmp_path, capsys):
     printed = capsys.readouterr().out
     assert "Nothing was dropped" in printed
     assert "Selected:" not in printed
+
+
+def test_the_prompt_asks_for_something(upstream):
+    """A commit message describes work already done and does not read as a task.
+
+    Across ninety paid runs, ten percent ended within three turns with the agent
+    replying that this looked like a pasted PR title and asking what it was
+    supposed to do. That is a fair reading of what it was handed, and every one
+    of those runs was recorded as a task the agent failed.
+
+    It matters beyond the wasted money. The gate works by refusing to let an
+    agent stop, so on a prompt that does not ask for anything it would score a
+    gain for talking the agent out of a reasonable question -- an effect that
+    has nothing to do with whether it writes better patches.
+    """
+    from eval.mine import ASK, describe
+
+    repo, sha = upstream
+    written = describe(repo, sha)
+
+    assert written.startswith(ASK), "the commit message is handed over bare"
+    assert written[len(ASK):].strip(), "the message itself was dropped"

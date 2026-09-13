@@ -50,7 +50,8 @@ BOOTSTRAP_DRAWS = 10_000
 def graded_fingerprint(tasks: list[Task]) -> str:
     """What is actually graded, which is not the same as which commits are pinned.
 
-    The lock names origin, base and fix. The preservation sets decide verdicts,
+    The lock names origin, base and fix. The prompt decides what is asked and the
+    preservation sets decide verdicts,
     and they are resolved on whichever machine built the corpus: one click node
     carried `importlib.metadata.version("click")` inside its id, so two builds
     of the same pins disagreed about what counts as a regression while reporting
@@ -58,7 +59,7 @@ def graded_fingerprint(tasks: list[Task]) -> str:
     either, and nothing said so.
     """
     seed = json.dumps(sorted(
-        (t.name, list(t.source["f2p"]), list(t.source.get("p2p") or []))
+        (t.name, t.prompt, list(t.source["f2p"]), list(t.source.get("p2p") or []))
         for t in tasks))
     return hashlib.sha256(seed.encode()).hexdigest()[:16]
 

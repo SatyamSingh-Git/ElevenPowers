@@ -224,11 +224,33 @@ def changed_lines(repo: Path, sha: str, paths: list[str]) -> int:
     return total
 
 
+ASK = """Make this change to the repository in the current directory.
+
+What follows is the message from the commit that made it upstream, written
+after the fact by its author. The change itself has not been made here: the
+code in front of you is the state before it.
+
+"""
+
+
 def describe(repo: Path, sha: str) -> str:
-    """The bug report, which is the commit message as its author wrote it."""
+    """The commit message, framed as a request rather than pasted as one.
+
+    A commit message describes work already done, and handed over bare it does
+    not read as a task. Measured across ninety runs, ten percent ended within
+    three turns with the agent replying that this looks like a pasted PR title
+    and asking what it was meant to do -- a fair reading, and nothing to do
+    with whether it can fix bugs. Every one was recorded as a task it failed.
+
+    The wrapper is identical for every instance, so it cannot favour an arm,
+    and it adds nothing about the fix the message did not already carry. That
+    matters more than the wasted money: the gate works by refusing to let an
+    agent stop, so on an ambiguous prompt it would show a gain for talking the
+    agent out of asking a reasonable question, which is not the claim at issue.
+    """
     body = git(repo, "log", "-1", "--format=%s%n%n%b", sha).strip()
     lines = [ln for ln in body.splitlines() if not ln.startswith("Co-authored-by")]
-    return "\n".join(lines).strip()[:1200]
+    return ASK + "\n".join(lines).strip()[:1200]
 
 
 def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],

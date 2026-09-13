@@ -308,8 +308,8 @@ def test_a_restart_finishes_a_task_that_died_between_replicates(tmp_path, monkey
     assert len(spent) == 2
 
 
-def _pinned(name, f2p, p2p):
-    return Task(name=name, prompt="", files={}, hidden="", why="",
+def _pinned(name, f2p, p2p, prompt=""):
+    return Task(name=name, prompt=prompt, files={}, hidden="", why="",
                 source={"f2p": list(f2p), "p2p": list(p2p)})
 
 
@@ -444,3 +444,21 @@ def test_a_sweep_stops_when_everything_fails(tmp_path, monkeypatch):
 
     assert len(spent) == 3, "it kept going past three consecutive failures"
     assert len(read_journal(journal)) == 3
+
+
+def test_changing_what_is_asked_changes_the_graded_digest():
+    """The prompt decides what the agent is asked, so it decides the benchmark.
+
+    Ten percent of the B4 runs ended within three turns with the agent saying
+    the message looked like a pasted commit title and asking what it should do.
+    Framing the same message as a request fixes that, and it is a different
+    benchmark afterwards -- the pins are identical and the preservation sets are
+    identical, so nothing else here would have noticed.
+    """
+    from eval.baseline import graded_fingerprint
+
+    bare = [_pinned("a", ["t::f"], ["t::keep"], "Expose converter as a decorator")]
+    asked = [_pinned("a", ["t::f"], ["t::keep"],
+                     "Make this change.\n\nExpose converter as a decorator")]
+
+    assert graded_fingerprint(bare) != graded_fingerprint(asked)
