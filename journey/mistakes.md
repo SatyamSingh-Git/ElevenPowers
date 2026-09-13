@@ -618,3 +618,29 @@ to quote, which is exactly the kind that goes unchecked.
 somebody else's document is checkable in thirty seconds against that document,
 and this one survived a month in a project whose subject is not believing a
 claim until it has been computed.
+
+### An isolation fix that would have failed every task
+
+The contamination fix shipped as `PYTHONUSERBASE` pointed inside the workspace.
+It contains pip's writes. It also removes the real user site from `sys.path`,
+and measured against a live interpreter that hides **pytest, setuptools, trio
+and attrs** from the agent. Every task in the next sweep would have failed.
+
+The attempt before it was worse in a quieter way: `PIP_USER=0` forbids the user
+fallback instead of redirecting it, so pip targets a system site it cannot write
+and the install fails. Nothing leaks, nothing works, and a test asserting the
+environment variables passes.
+
+*Cause:* the fix was reasoned about rather than run. Both wrong versions satisfy
+the sentence "the agent's installs are confined to its workspace", and the only
+thing that separates them from the right one — `PIP_PREFIX` — is an actual `pip
+install -e .` against an actual interpreter.
+
+*Cost:* none, caught before the next sweep. It was committed for about an hour,
+which is exactly how long it took to get round to running it.
+
+*The lesson:* the same one the whole night keeps producing. **A fix verified by
+argument is a hypothesis.** The probe now runs real pip and asserts three
+things — the install succeeds, nothing reaches the shared site, and the agent
+can still import what the tasks need — because each wrong version satisfies two
+of the three.

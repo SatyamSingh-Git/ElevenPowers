@@ -910,3 +910,58 @@ def test_an_agent_that_breaks_the_module_is_still_the_agents_fault(upstream, tmp
     graded = grade_patch(task, patch, tmp_path / "court")
 
     assert graded.outcome == "unfixed", graded.detail
+
+
+def test_an_agents_editable_install_cannot_reach_the_shared_site(tmp_path):
+    """The isolation fix, run against real pip rather than asserted.
+
+    An agent ran `pip install -e .` in its workspace; the system site was not
+    writable, so pip wrote a .pth into the *shared user site* pointing at that
+    temp directory and replaced a distribution's metadata. The workspace was
+    deleted, `import attrs` broke machine-wide, and twelve graded runs were
+    scored against agents that had solved their tasks.
+
+    Two earlier attempts at this fix pass an assertion about environment
+    variables and fail here. `PIP_USER=0` forbids the fallback instead of
+    redirecting it, so pip targets a system site it cannot write and the install
+    fails: nothing leaks and nothing works. `PYTHONUSERBASE` contains the writes
+    and also takes the real user site off `sys.path`, which hides pytest,
+    setuptools, trio and attrs from the agent. Only running pip tells any of
+    these apart.
+    """
+    import glob
+    import importlib.util
+    import site
+    import subprocess
+    import sys
+
+    from eval.live import _sandboxed
+
+    project = tmp_path / "project"
+    (project / "src" / "ep_probe_pkg").mkdir(parents=True)
+    (project / "src" / "ep_probe_pkg" / "__init__.py").write_bytes(b"VALUE = 1\n")
+    (project / "pyproject.toml").write_bytes(
+        b'[project]\nname = "ep-probe-pkg"\nversion = "0.0.1"\n'
+        b'[build-system]\nrequires = ["setuptools"]\n'
+        b'build-backend = "setuptools.build_meta"\n'
+        b'[tool.setuptools.packages.find]\nwhere = ["src"]\n')
+
+    environment = _sandboxed(project)
+    shared = site.getusersitepackages()
+    before = set(glob.glob(shared + "/*"))
+    done = subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-e", ".", "--quiet"],
+        cwd=project, env=environment, capture_output=True, text=True,
+        encoding="utf-8", errors="replace", timeout=600)
+
+    assert done.returncode == 0, f"the install failed, so nothing is contained: {done.stderr[-300:]}"
+    assert set(glob.glob(shared + "/*")) == before, "it reached the shared user site"
+    assert glob.glob(str(project / ".pips") + "/**/*ep_probe_pkg*", recursive=True), \
+        "it went somewhere, and not into the workspace"
+
+    seen = subprocess.run(
+        [sys.executable, "-c",
+         "import importlib.util as u; import sys; "
+         "sys.exit(0 if all(u.find_spec(m) for m in ('pytest', 'setuptools')) else 1)"],
+        env=environment, capture_output=True, timeout=60)
+    assert seen.returncode == 0, "the agent can no longer import what the tasks need"

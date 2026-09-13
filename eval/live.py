@@ -291,22 +291,36 @@ def _sandboxed(root: Path) -> dict[str, str]:
     """The agent's environment, with its installs pointed at its own workspace.
 
     An agent ran `pip install -e .` inside its temp tree. Because the system
-    site-packages is not writable, pip wrote a `.pth` into the *user* site
-    instead, pointing `attrs` at that temp directory and replacing the real
+    site-packages is not writable, pip wrote a `.pth` into the *shared user*
+    site instead, pointing `attrs` at that temp directory and replacing the real
     distribution's metadata. The workspace was deleted when the run ended, and
     every later task whose tests import trio -- which imports attrs -- collected
-    nothing at all. Twelve runs of four jinja2 tasks were graded against the
-    agent for a package another agent had uninstalled from underneath them.
+    nothing at all. Twelve runs of four jinja2 tasks were graded against agents
+    that had solved them.
 
-    `PYTHONUSERBASE` moves those writes inside the workspace, so they die with
-    it. It is not a sandbox; it is the difference between a run that can damage
-    the next one and a run that cannot.
+    `PIP_PREFIX`, and not `PYTHONUSERBASE`. Redirecting the user base does
+    contain the writes, and it also takes the real user site off `sys.path`:
+    measured, that hides pytest, setuptools, trio and attrs from the agent, so
+    every task would have failed. `PIP_PREFIX` moves only what pip installs.
+    Nor `PIP_USER=0`, which forbids the fallback rather than redirecting it --
+    pip then targets a system site it cannot write and the install simply fails.
+
+    It is not a sandbox. An agent that overrides the variable is not stopped by
+    it; `shared_site_changed` is there for that.
     """
     import os
 
-    userbase = root / ".userbase"
-    userbase.mkdir(exist_ok=True)
-    return {**os.environ, "PYTHONUSERBASE": str(userbase), "PIP_USER": "0"}
+    prefix = root / ".pips"
+    prefix.mkdir(exist_ok=True)
+    return {**os.environ, "PIP_PREFIX": str(prefix)}
+
+
+def shared_site() -> frozenset[str]:
+    """What is installed where every run on this machine can see it."""
+    import glob
+    import site
+
+    return frozenset(glob.glob(site.getusersitepackages() + "/*"))
 
 
 def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
@@ -533,7 +547,12 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         build(task, root, arm)
+        # An environment variable is a request, not a boundary: an agent that
+        # overrides PIP_PREFIX is not stopped by it. What cannot be hidden is
+        # the shared site having changed, so it is compared rather than trusted.
+        installed = shared_site()
         answer, elapsed = drive(task, root, model, arm, effort, budget)
+        escaped = sorted(Path(p).name for p in shared_site() - installed)
 
         final = answer.get("result") or ""
         failed = bool(answer.get("is_error"))
@@ -571,7 +590,11 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
             context_tokens=context_tokens(answer),
             blocks=blocks, turns=int(answer.get("num_turns") or 0),
             seconds=elapsed, cost=float(answer.get("total_cost_usd") or 0.0),
-            note=answer.get("note", "") or ("error" if failed else "") or graded.detail,
+            note=("; ".join(["reached the shared site: " + ", ".join(escaped[:4])]
+                             + [answer.get("note", "") or ("error" if failed else "")
+                                or graded.detail])
+                  if escaped else
+                  answer.get("note", "") or ("error" if failed else "") or graded.detail),
         )
 
 
