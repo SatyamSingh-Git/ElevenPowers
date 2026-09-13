@@ -251,6 +251,43 @@ Pass A not moving at all is the control. It says the re-grade is deterministic,
 that the bundles round-trip, and that the contamination is confined to what came
 after 05:22.
 
+### The corpus was mined on the same contaminated machine
+
+Repairing `click` broke four tasks, and that is the useful part.
+
+`tests/test_deprecations.py::test_attr_deprecated` parametrises on
+`importlib.metadata.version("click")`, so the version string ends up **inside
+the node id**. The corpus pinned it as
+`test_attr_deprecated[click-__version__-8.4.2.dev0]`, in the preservation set of
+all four click tasks.
+
+`8.4.2.dev0` is not click's version at any of those commits — `git describe`
+there says `8.5.0`. It is what setuptools-scm falls back to when it is run
+inside a tree with no git history, which is exactly what an agent's `pip install
+-e .` saw in a workspace built by `git archive`. **The number was invented by
+the contamination and then pinned into the benchmark.**
+
+So with click correctly installed, that node is never collected, a preserved
+test appears to have vanished, and the gold patch itself grades `regressed`.
+`eval.validate --corpus` reports 4 of 15 WRONG, which is the honest answer: this
+machine can no longer grade those four tasks.
+
+Nothing was invented to make it pass again. Recreating `8.4.2.dev0` would mean
+reproducing a stray install on purpose so a benchmark keeps agreeing with it.
+
+Two ways out, and the choice is not the harness's to make quietly:
+
+- **drop the node** from those four preservation sets. Correct, cheap, and it
+  changes the corpus fingerprint, so tonight's numbers stop being comparable to
+  anything measured after it.
+- **leave it and re-mine later**, with mining taught to reject any node whose id
+  is not stable across two collections in different environments — which is the
+  general form of the defect and would have caught it at B1.
+
+Either way the lesson is fixed: **a pinned identifier that contains a value from
+the machine is not pinned.** It is the corpus version of the same sentence this
+night has now written three times.
+
 ### What the night actually measured
 
 | | as recorded | corrected |
