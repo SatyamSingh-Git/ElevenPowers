@@ -288,31 +288,32 @@ def _tool_version(command: list[str]) -> str:
 
 
 def _sandboxed(root: Path) -> dict[str, str]:
-    """The agent's environment, with its installs pointed at its own workspace.
+    """The agent's environment, with its package manager made inert.
 
-    An agent ran `pip install -e .` inside its temp tree. Because the system
-    site-packages is not writable, pip wrote a `.pth` into the *shared user*
-    site instead, pointing `attrs` at that temp directory and replacing the real
-    distribution's metadata. The workspace was deleted when the run ended, and
-    every later task whose tests import trio -- which imports attrs -- collected
-    nothing at all. Twelve runs of four jinja2 tasks were graded against agents
-    that had solved them.
+    An agent ran `pip install -e .` in its workspace, pip wrote into the shared
+    user site because the system one is not writable, and when the workspace was
+    deleted `import attrs` broke machine-wide. Twelve graded runs were scored
+    against agents that had solved their tasks.
 
-    `PIP_PREFIX`, and not `PYTHONUSERBASE`. Redirecting the user base does
-    contain the writes, and it also takes the real user site off `sys.path`:
-    measured, that hides pytest, setuptools, trio and attrs from the agent, so
-    every task would have failed. `PIP_PREFIX` moves only what pip installs.
-    Nor `PIP_USER=0`, which forbids the fallback rather than redirecting it --
-    pip then targets a system site it cannot write and the install simply fails.
+    The first fix redirected installs with `PIP_PREFIX`. Four runs later an
+    agent working an attrs task **uninstalled attrs from the machine**, which
+    `PIP_PREFIX` says nothing about: it steers where a package is written, not
+    where one is removed from. The corpus is the problem here. Every repository
+    in it -- attrs, click, jinja2, markupsafe, itsdangerous -- is also installed
+    in the environment that grades it, so an agent working on one is one `pip`
+    away from the grader's own dependencies.
 
-    It is not a sandbox. An agent that overrides the variable is not stopped by
-    it; `shared_site_changed` is there for that.
+    `PIP_REQUIRE_VIRTUALENV` makes pip refuse both, outside a virtualenv. An
+    agent that wants one can still build it inside its workspace, where it dies
+    with the run. Nothing in the corpus needs an install anyway: `materialise`
+    writes a root conftest that puts the package on the path.
+
+    This is still not a sandbox. It is a lock on the one door that has been
+    walked through twice in a day, and `shared_site` watches the rest.
     """
     import os
 
-    prefix = root / ".pips"
-    prefix.mkdir(exist_ok=True)
-    return {**os.environ, "PIP_PREFIX": str(prefix)}
+    return {**os.environ, "PIP_REQUIRE_VIRTUALENV": "1"}
 
 
 def shared_site() -> frozenset[str]:
@@ -547,12 +548,14 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         build(task, root, arm)
-        # An environment variable is a request, not a boundary: an agent that
-        # overrides PIP_PREFIX is not stopped by it. What cannot be hidden is
-        # the shared site having changed, so it is compared rather than trusted.
+        # An environment variable is a request, not a boundary. What cannot be
+        # hidden is the shared site having changed, so it is compared rather
+        # than trusted -- in both directions, because the second time this
+        # happened a package was *removed* and a check for new entries saw
+        # nothing at all.
         installed = shared_site()
         answer, elapsed = drive(task, root, model, arm, effort, budget)
-        escaped = sorted(Path(p).name for p in shared_site() - installed)
+        moved = sorted(Path(p).name for p in shared_site() ^ installed)
 
         final = answer.get("result") or ""
         failed = bool(answer.get("is_error"))
@@ -581,6 +584,16 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
 
         with tempfile.TemporaryDirectory() as court:
             graded = grade_patch(task, patch, Path(court))
+        if moved:
+            # The environment the grade was computed in is not the one the run
+            # started in, so the verdict is about neither. Setup is the
+            # taxonomy's word for harness breakage and is never counted against
+            # the agent, which is the right side to err on: the alternative is
+            # what happened in pass B, where a changed `attrs` turned solved
+            # tasks into failures and a version string into a regression.
+            graded = Graded(False, "setup",
+                            "the shared site changed during this run: "
+                            + ", ".join(moved[:6]), graded.observed)
         if kept is not None:
             bundle.record_grade(kept, graded)
 
@@ -590,11 +603,7 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
             context_tokens=context_tokens(answer),
             blocks=blocks, turns=int(answer.get("num_turns") or 0),
             seconds=elapsed, cost=float(answer.get("total_cost_usd") or 0.0),
-            note=("; ".join(["reached the shared site: " + ", ".join(escaped[:4])]
-                             + [answer.get("note", "") or ("error" if failed else "")
-                                or graded.detail])
-                  if escaped else
-                  answer.get("note", "") or ("error" if failed else "") or graded.detail),
+            note=answer.get("note", "") or ("error" if failed else "") or graded.detail,
         )
 
 

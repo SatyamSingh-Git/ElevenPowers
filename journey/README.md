@@ -36,6 +36,7 @@ command in this repository and can be reproduced.
 | [21-corpus.md](21-corpus.md) | Phase B1: fifteen instances from five repositories, difficulty as a label rather than a filter, and three repositories that contributed nothing without saying why |
 | [22-instrument.md](22-instrument.md) | Phase B2 and B3: a score that refuses to run unpinned, an interval over tasks rather than runs, and a taxonomy whose every category can be opened |
 | [23-spend.md](23-spend.md) | Phase B4: the four defects a unit test cannot find, a grader asked five questions on somebody else's code, and the first run allowed to cost money |
+| [24-move.md](24-move.md) | A corpus of 15 that could not move becomes 49 that can, why its size had been set by a default and an unhandled encoding, and a second agent that uninstalled a package from the machine mid-measurement |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -227,15 +228,16 @@ Every figure below comes from a command in this repository.
 | Host integration | eleven checks, five of them driving the launcher as a process | `python plugin/bin/ep_doctor.py --host` |
 | Live blocking, P2 | 12 percent of runs, down from 75 | `python -m eval.live --arm gate --model haiku` |
 | The grader, graded | four patches with known answers, four correct | `python -m eval.validate` |
-| The corpus, graded | 11 of 15. The four click tasks pin a node id containing an installed version string that was invented by a stray editable install, so a correctly installed click cannot collect it | `python -m eval.validate --corpus eval/corpus.lock` |
+| The corpus, graded | 11 of 15 against the corpus as it was mined: four click tasks pinned a node id holding an installed version string a stray editable install had invented. Mining now drops such a node and records it, and the lock rebuilds 15 of 15 identical on every other field | `python -m eval.validate --corpus eval/corpus.lock` |
 | Corpus, pinned | 15 instances from 5 repositories, rebuilt identically from a 3.8KB lock | `python -m eval.corpus --rebuild eval/corpus.lock --repos DIR` |
+| Corpus, widened | 451 candidates reachable against about 130 before, 94 instances mined, 49 pinned on band | `python -m eval.corpus --select mined.json --bands substantial,one-liner` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
 | Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show results/b4-passA-regraded.json` |
 | Every grade recomputed from its bundle | pass A 0 of 45 changed; pass B 9 of 45, all of them an agent's editable install breaking a later task | `python -m eval.baseline --regrade results/b4-passB.json results/bundles-B` |
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 495 | `python -m pytest tests -q` |
+| Tests | 497 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

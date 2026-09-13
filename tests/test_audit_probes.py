@@ -912,25 +912,20 @@ def test_an_agent_that_breaks_the_module_is_still_the_agents_fault(upstream, tmp
     assert graded.outcome == "unfixed", graded.detail
 
 
-def test_an_agents_editable_install_cannot_reach_the_shared_site(tmp_path):
-    """The isolation fix, run against real pip rather than asserted.
+def test_the_agents_package_manager_cannot_touch_the_shared_site(tmp_path):
+    """Run against real pip, because reasoning about this has been wrong twice.
 
-    An agent ran `pip install -e .` in its workspace; the system site was not
-    writable, so pip wrote a .pth into the *shared user site* pointing at that
-    temp directory and replaced a distribution's metadata. The workspace was
-    deleted, `import attrs` broke machine-wide, and twelve graded runs were
-    scored against agents that had solved their tasks.
+    An agent installed into the shared user site and broke `import attrs`
+    machine-wide, costing twelve graded runs. `PIP_PREFIX` was the fix. Four
+    runs later another agent **uninstalled attrs**, which `PIP_PREFIX` says
+    nothing about -- it steers where a package is written, not where one is
+    removed from. `PIP_REQUIRE_VIRTUALENV` refuses both.
 
-    Two earlier attempts at this fix pass an assertion about environment
-    variables and fail here. `PIP_USER=0` forbids the fallback instead of
-    redirecting it, so pip targets a system site it cannot write and the install
-    fails: nothing leaks and nothing works. `PYTHONUSERBASE` contains the writes
-    and also takes the real user site off `sys.path`, which hides pytest,
-    setuptools, trio and attrs from the agent. Only running pip tells any of
-    these apart.
+    Every repository in the corpus is also installed in the environment that
+    grades it, so this is not an exotic failure: an agent working on attrs is
+    one `pip uninstall` from the grader's own dependency.
     """
     import glob
-    import importlib.util
     import site
     import subprocess
     import sys
@@ -938,30 +933,73 @@ def test_an_agents_editable_install_cannot_reach_the_shared_site(tmp_path):
     from eval.live import _sandboxed
 
     project = tmp_path / "project"
-    (project / "src" / "ep_probe_pkg").mkdir(parents=True)
-    (project / "src" / "ep_probe_pkg" / "__init__.py").write_bytes(b"VALUE = 1\n")
+    project.mkdir()
     (project / "pyproject.toml").write_bytes(
-        b'[project]\nname = "ep-probe-pkg"\nversion = "0.0.1"\n'
-        b'[build-system]\nrequires = ["setuptools"]\n'
-        b'build-backend = "setuptools.build_meta"\n'
-        b'[tool.setuptools.packages.find]\nwhere = ["src"]\n')
+        b'[project]\nname = "ep-probe-pkg"\nversion = "0.0.1"\n')
 
-    environment = _sandboxed(project)
     shared = site.getusersitepackages()
     before = set(glob.glob(shared + "/*"))
-    done = subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-e", ".", "--quiet"],
-        cwd=project, env=environment, capture_output=True, text=True,
-        encoding="utf-8", errors="replace", timeout=600)
+    environment = _sandboxed(project)
 
-    assert done.returncode == 0, f"the install failed, so nothing is contained: {done.stderr[-300:]}"
-    assert set(glob.glob(shared + "/*")) == before, "it reached the shared user site"
-    assert glob.glob(str(project / ".pips") + "/**/*ep_probe_pkg*", recursive=True), \
-        "it went somewhere, and not into the workspace"
+    for command in (["install", "-e", "."], ["uninstall", "-y", "attrs"]):
+        done = subprocess.run([sys.executable, "-m", "pip", *command],
+                              cwd=project, env=environment, capture_output=True,
+                              text=True, encoding="utf-8", errors="replace",
+                              timeout=300)
+        assert done.returncode != 0, f"pip {command[0]} was allowed to run"
 
-    seen = subprocess.run(
-        [sys.executable, "-c",
-         "import importlib.util as u; import sys; "
-         "sys.exit(0 if all(u.find_spec(m) for m in ('pytest', 'setuptools')) else 1)"],
-        env=environment, capture_output=True, timeout=60)
-    assert seen.returncode == 0, "the agent can no longer import what the tasks need"
+    assert set(glob.glob(shared + "/*")) == before
+    import importlib.util
+    assert importlib.util.find_spec("attrs"), "attrs was removed from the machine"
+
+
+def test_a_run_whose_environment_changed_is_not_the_agents_fault(upstream, tmp_path,
+                                                                 monkeypatch):
+    """A removal, not an addition, which is what the first detector missed.
+
+    It compared the shared site for *new* entries only. The second
+    contamination deleted `attrs`, so the check saw nothing, and thirty-eight
+    corpus instances silently stopped rebuilding. The comparison is symmetric
+    now, and a run whose environment moved underneath it is graded `setup` --
+    harness breakage, never counted against the agent, because the alternative
+    is what pass B did: turn solved tasks into failures and a changed version
+    string into a regression.
+    """
+    import eval.live
+
+    task, root = upstream
+    (root / "src/app.py").write_bytes(FIXED.encode("utf-8"))
+
+    monkeypatch.setattr(eval.live, "drive",
+                        lambda *a, **k: ({"result": "done", "num_turns": 1}, 1.0))
+    sites = iter([frozenset({"attrs", "trio"}), frozenset({"trio"})])
+    monkeypatch.setattr(eval.live, "shared_site", lambda: next(sites))
+    monkeypatch.setattr(eval.live, "build", lambda t, r, a: shutil.copytree(
+        root, r, dirs_exist_ok=True))
+
+    run = eval.live.once(task, "vanilla", "claude-sonnet-5")
+
+    assert run.outcome == "setup", "a patch graded in a different environment"
+    assert "attrs" in run.note, run.note
+    assert run.resolved is False
+
+
+def test_an_untouched_environment_grades_the_patch_normally(upstream, tmp_path,
+                                                            monkeypatch):
+    """The forward direction. A guard that fires when nothing moved would mark
+    every run as harness breakage and the sweep would score nothing at all.
+    """
+    import eval.live
+
+    task, root = upstream
+    (root / "src/app.py").write_bytes(FIXED.encode("utf-8"))
+
+    monkeypatch.setattr(eval.live, "drive",
+                        lambda *a, **k: ({"result": "done", "num_turns": 1}, 1.0))
+    monkeypatch.setattr(eval.live, "shared_site", lambda: frozenset({"attrs", "trio"}))
+    monkeypatch.setattr(eval.live, "build", lambda t, r, a: shutil.copytree(
+        root, r, dirs_exist_ok=True))
+
+    run = eval.live.once(task, "vanilla", "claude-sonnet-5")
+
+    assert run.outcome == "resolved", run.note
