@@ -7,10 +7,12 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
-[![Tests](https://img.shields.io/badge/tests-436%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-486%20passing-brightgreen.svg)](tests/)
 [![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
+
+**[The Guide](the-guide/)** — install, commands, configuration, troubleshooting  ·  **[What's Offered](whats-offered/)** — features, roadmap, how it compares
 
 </div>
 
@@ -238,6 +240,9 @@ python plugin/bin/ep_doctor.py    # is the runtime seeing what the host sends?
 python plugin/bin/ep_status.py    # what do I still owe on this task?
 ```
 
+> [!TIP]
+> Full instructions, every command and flag, and what to do when something breaks: **[The Guide](the-guide/)**. Run `ep_doctor.py --host` once after installing — the shallower check passed for weeks while silently discarding the flag.
+
 Optionally, in `.elevenpowers/config.json` — a project with no config behaves exactly as it did before:
 
 ```json
@@ -292,11 +297,14 @@ Every figure below was produced by the command printed next to it.
 | Live blocking | **12% of runs, down from 75%** | `python -m eval.live --arm gate --model haiku` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
 | Audit probes | **all 20 fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
-| **Does the work come out better?** | **unanswered — the noise floor is larger than the effect** | `python -m eval.noise a.json b.json` |
+| A pinned baseline | 68.9 and 73.3 across two passes of ninety paid runs, $67.42 | `python -m eval.baseline --pinned` |
+| **Does the work come out better?** | **unanswered — one arm was measured, not two** | `python -m eval.noise a.json b.json` |
 
 **On the first row.** Claude Code writes a transcript of every session including each tool result exactly as the host produced it, so replaying those costs no inference and needs no hand labelling — the host already recorded whether each command failed. The reader this replaced agreed on 0 of 174 failures. It is reported as two rates rather than one because the corpus is 97% successes: a reader that answers "passed" to everything scores 97% accuracy while being wrong about the only thing the gate needs to know.
 
-**On the last row.** It runs live — 89 real agent runs through the CLI, where the gate fires, refuses the stop, and the agent goes back and does more work. What that has *not* shown is whether the output is better. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen.
+**On the last row.** It runs live — 89 free runs through the CLI where the gate fires, refuses the stop and the agent goes back to work, and since then ninety paid ones against a pinned corpus and a pinned model. What none of that has shown is whether the output is *better*, because the paid sweep measured one arm rather than two. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen.
+
+That night also contradicted something the harness assumed twice over: the grade turned out to be a function of the grader's Git configuration, and then of what an unrelated agent installed on the machine mid-run. Three claims from the write-up were withdrawn afterwards. [23-spend.md](journey/23-spend.md) has it, including the part where the verification that should have prevented a bad measurement looked exactly like success.
 
 Answering it honestly needs **31 pairs on which the two arms disagree**, against a task suite rebuilt so most of it actually discriminates. This page used to say 252 agent runs; that figure is withdrawn. It came from dividing the required pairs by the within-arm flip rate, and flipping is not disagreement — a baseline that fails every time against a treatment that succeeds every time flips never and disagrees always. Converting pairs into runs needs a measured rate of disagreement, and no run here has produced one.
 
@@ -347,23 +355,25 @@ And yes — this was built with coding agents, mostly Claude and Codex. A projec
 | [`docs/research/`](docs/research/) | fourteen systems read from source, every claim cited to a file at a recorded commit |
 | [`competitor-map.md`](docs/research/competitor-map.md) | ten systems × thirteen architectural axes, on one screen |
 | [`docs/postponed.md`](docs/postponed.md) | what is not built, and the trigger that would start it |
+| [`the-guide/`](the-guide/) | install, commands, configuration, troubleshooting — the practical manual |
+| [`whats-offered/`](whats-offered/) | features as they stand, the five-phase roadmap, and an honest comparison |
 
 ---
 
 ## This is a work in progress, and says so on purpose
 
-Everything above is a snapshot. The thesis has already been demoted once, the objective rewritten once, and a published result withdrawn once — and the eight defects still open in `PLAN.md` §4 guarantee more of that is coming. Numbers here will be superseded. Sections will be rewritten. Some of what this README currently argues will turn out to be wrong, and when it does, it gets corrected rather than quietly dropped.
+Everything above is a snapshot. The thesis has already been demoted once, the objective rewritten once, and a published result withdrawn once — and the questions still open in `PLAN.md` §7 guarantee more of that is coming. Numbers here will be superseded. Sections will be rewritten. Some of what this README currently argues will turn out to be wrong, and when it does, it gets corrected rather than quietly dropped.
 
 **So if you want the real story, don't read this file — read [`journey/`](journey/).**
 
-It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. Seventeen chapters, in order:
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. Twenty-four chapters, in order:
 
 - **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
 - **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.
 - **How the design changed** — [two rewrites and the pivot](journey/03-architecture.md), from classifying tasks to deriving proof obligations.
 - **What building it taught** — [the first working version](journey/04-build.md) and the three defects that only surfaced in use; [a guard that shipped as dead code](journey/07-scope.md), twice; [three more defects](journey/08-wiring.md) in the one layer nobody had measured, found by reading 36,000 real commands.
 - **What measurement destroyed** — [75% false blocks](journey/05-measurement.md) and every fix; [89 live runs](journey/10-live.md) where the mechanism works and the measurement doesn't; [twelve real bugs](journey/14-null.md) where the gate changed nothing at all and the obvious fix turned out to be theatre; [an external critique](journey/15-correction.md) that dismantled a conclusion I had just reached.
-- **Where it is now** — [sixteen reproduced defects](journey/16-audit.md), a grader blind to the exact regressions it existed to catch, a change of objective, then [the evaluator](journey/17-preservation.md) and [the evidence layer](journey/18-evidence.md) repaired, all sixteen closed.
+- **Where it is now** — [sixteen reproduced defects](journey/16-audit.md), a grader blind to the exact regressions it existed to catch, a change of objective, then [the evaluator](journey/17-preservation.md), [the evidence layer](journey/18-evidence.md) and [the host contract](journey/19-host.md) repaired; [Phase A closed](journey/20-reconstructible.md); [a corpus](journey/21-corpus.md) and [an instrument](journey/22-instrument.md) that refuse to run unpinned; and [the first night allowed to cost money](journey/23-spend.md).
 - **Where it's heading** — [`PLAN.md`](PLAN.md) §7, three tracks with explicit prerequisites rather than a chain.
 
 Two files there are worth more than the chapters: [`decisions.md`](journey/decisions.md), every significant decision with its reasoning and whether it still stands — and [`mistakes.md`](journey/mistakes.md), every mistake made, kept in full, because the corrections turned out to be the most transferable part of the whole thing.
