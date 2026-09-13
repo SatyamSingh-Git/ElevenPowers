@@ -302,8 +302,8 @@ def regrade(report: Path, bundles: Path, out: Path) -> int:
     return show(out)
 
 
-def done_already(journal: Path) -> dict[str, int]:
-    """How many replicates of each task are already on disk.
+def done_already(journal: Path) -> dict[tuple[str, str], int]:
+    """How many replicates of each task *and arm* are already on disk.
 
     A long unattended sweep that keeps its results only in memory loses all of
     them to one crash at run eighty. Every run is appended the moment it
@@ -311,9 +311,10 @@ def done_already(journal: Path) -> dict[str, int]:
     """
     if not journal.exists():
         return {}
-    counted: dict[str, int] = {}
+    counted: dict[tuple[str, str], int] = {}
     for row in read_journal(journal):
-        counted[row["task"]] = counted.get(row["task"], 0) + 1
+        key = (row["task"], row["arm"])
+        counted[key] = counted.get(key, 0) + 1
     return counted
 
 
@@ -324,7 +325,7 @@ def read_journal(journal: Path) -> list[dict]:
             if line.strip()]
 
 
-def run_baseline(tasks: list[Task], arm: str, model: str, replicates: int,
+def run_baseline(tasks: list[Task], arms: list[str], model: str, replicates: int,
                  bundles: Path, seed: int, journal: Path, effort: str = "",
                  budget: float = 0.0, expect: str = "") -> list[dict]:
     shuffler = random.Random(seed)
@@ -333,9 +334,14 @@ def run_baseline(tasks: list[Task], arm: str, model: str, replicates: int,
         print(f"resuming: {sum(already.values())} run(s) already recorded")
 
     for task in tasks:
-        for which in arm_order([arm], shuffler):
+        # Both arms of a task, back to back, before the next task. A sweep that
+        # runs one arm to completion and then the other lets anything that
+        # drifts in between land entirely on one side: that is exactly what
+        # happened when an agent broke the machine partway through pass B, and
+        # every affected run was in the same arm because there was only one.
+        for which in arm_order(arms, shuffler):
             for replicate in range(replicates):
-                if already.get(task.name, 0) > replicate:
+                if already.get((task.name, which), 0) > replicate:
                     continue
                 run = once(task, which, model, bundles, effort, budget)
                 row = run.__dict__
@@ -395,7 +401,7 @@ def main(argv: list[str]) -> int:
         return compare(Path(rest[0]), Path(rest[1]))
 
     model = option("--model", "")
-    arm = option("--arm", "vanilla")
+    arms = [a.strip() for a in option("--arm", "vanilla").split(",") if a.strip()]
     replicates = int(option("--runs", "3"))
     seed = int(option("--seed", "0")) or int(time.time())
     lock = Path(option("--lock", "eval/corpus.lock"))
@@ -413,14 +419,15 @@ def main(argv: list[str]) -> int:
     if not tasks:
         print("no mined tasks. Set EP_MINED to a corpus built by python -m eval.corpus")
         return 1
-    if arm not in ARMS:
-        print(f"unknown arm {arm}; one of {', '.join(ARMS)}")
+    unknown = [a for a in arms if a not in ARMS]
+    if unknown:
+        print(f"unknown arm(s) {', '.join(unknown)}; one of {', '.join(ARMS)}")
         return 1
 
     bundles = Path(option("--bundles", "runs"))
     print(f"model    {model}")
     print(f"corpus   {corpus_fingerprint(lock)}  ({len(tasks)} tasks)")
-    print(f"seed     {seed}   arm {arm}, {replicates} replicate(s) per task")
+    print(f"seed     {seed}   arm(s) {', '.join(arms)}, {replicates} replicate(s) each")
     print(f"bundles  {bundles}")
     print()
 
@@ -433,11 +440,11 @@ def main(argv: list[str]) -> int:
     print(f"journal  {journal}   (every run appended as it finishes)")
     print()
 
-    rows = run_baseline(tasks, arm, model, replicates, bundles, seed, journal,
+    rows = run_baseline(tasks, arms, model, replicates, bundles, seed, journal,
                         effort, budget, expect=option("--expect", ""))
     report = {
         "model": model,
-        "arm": arm,
+        "arm": ",".join(arms),
         "corpus": corpus_fingerprint(lock),
         "graded": graded_fingerprint(tasks),
         "seed": seed,

@@ -1,0 +1,459 @@
+[
+ {
+  "name": "attrs-97f8d175",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "6851ab593cd25f3c14393e9355d57d22bec2a074",
+  "fix": "97f8d175656bc03c373a1c9038048a4d312c307c",
+  "tests": [
+   "tests/test_annotations.py"
+  ]
+ },
+ {
+  "name": "attrs-0f758fe5",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "57b314c0dc8e0b80c0ed8f61c0be81965137ea41",
+  "fix": "0f758fe54a8742110f730ebbaf146e79f3937c8d",
+  "tests": [
+   "tests/test_make.py"
+  ]
+ },
+ {
+  "name": "attrs-a572c3a4",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "af9c510912ce604a94896cc35c27368d5baf6ae6",
+  "fix": "a572c3a4c558a8b9b48cf989fcd956ab1a279439",
+  "tests": [
+   "tests/test_setattr.py"
+  ]
+ },
+ {
+  "name": "attrs-6e3786c5",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "af349876f4fb5df2b71a3f4878239b775bc89230",
+  "fix": "6e3786c599279f24e91b0d57ef448f7a85d7a69f",
+  "tests": [
+   "tests/test_make.py"
+  ]
+ },
+ {
+  "name": "attrs-577c782c",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "a6ae894aad9bc09edc7cdad8c416898784ceec9b",
+  "fix": "577c782c328d79db38361ac7a302cfd919748521",
+  "tests": [
+   "tests/test_version_info.py"
+  ]
+ },
+ {
+  "name": "attrs-3b0378dd",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "19943b775d40c018e844f2cb1728442f58112a3b",
+  "fix": "3b0378dd66d33ebddb52be85b8c4aac6a914b1a2",
+  "tests": [
+   "tests/test_hooks.py"
+  ]
+ },
+ {
+  "name": "attrs-1c962d15",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "6bde3618237cdae312e4e7fb006690be2a3ee0f6",
+  "fix": "1c962d15a743a3c18401f0c788f0fd0cb3d9acf8",
+  "tests": [
+   "tests/test_annotations.py"
+  ]
+ },
+ {
+  "name": "attrs-62bdbf23",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "103d51f6efa36efcc7be4adecfd571da3f63291c",
+  "fix": "62bdbf234f45195e75bfc2bb0648dab6fd2f0d33",
+  "tests": [
+   "tests/test_functional.py"
+  ]
+ },
+ {
+  "name": "attrs-1e07f468",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "2a76643e36aa7e07d13f9438857a7cff48b4a1d6",
+  "fix": "1e07f46897488350bb44ed88f1c70d4d7461dde0",
+  "tests": [
+   "tests/test_annotations.py",
+   "tests/test_converters.py"
+  ]
+ },
+ {
+  "name": "attrs-13105a64",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "e21793e90a25c7ea47a9c0369150067cc8322de0",
+  "fix": "13105a64f2de2e257a537ad20c06ffdd1c9d7f94",
+  "tests": [
+   "tests/test_converters.py"
+  ]
+ },
+ {
+  "name": "attrs-e21793e9",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "ee0f19b696c60064c58cdc08b3265aef56d49ff8",
+  "fix": "e21793e90a25c7ea47a9c0369150067cc8322de0",
+  "tests": [
+   "tests/test_converters.py"
+  ]
+ },
+ {
+  "name": "attrs-5d6d21aa",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "876528893a10dc7cd866e5fa0e1165cb2ac5b83b",
+  "fix": "5d6d21aa5e598c600a3610a4721a63e58d89dc5e",
+  "tests": [
+   "tests/test_converters.py"
+  ]
+ },
+ {
+  "name": "attrs-6fda0a4e",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "53e632c5218b729da6ac37a35b4b68379dc18999",
+  "fix": "6fda0a4e086b56d7058855e4c15112c8f58de74c",
+  "tests": [
+   "tests/test_converters.py",
+   "tests/test_setattr.py"
+  ]
+ },
+ {
+  "name": "attrs-bde3f58c",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "dbb25ce34787a30e2ffa65685f6c689a269c3521",
+  "fix": "bde3f58cfe7bfe29e8dbf3fa8b86e819fe7a93e4",
+  "tests": [
+   "tests/test_dunders.py",
+   "tests/test_functional.py",
+   "tests/test_make.py",
+   "tests/test_slots.py",
+   "tests/utils.py"
+  ]
+ },
+ {
+  "name": "attrs-dbb25ce3",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "fd7538f0e23a49ec34b636484de2d1b4b690c7fb",
+  "fix": "dbb25ce34787a30e2ffa65685f6c689a269c3521",
+  "tests": [
+   "tests/test_functional.py"
+  ]
+ },
+ {
+  "name": "attrs-fd7538f0",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "09161fc9181bf94aa3bbc5509c663d736a9553dc",
+  "fix": "fd7538f0e23a49ec34b636484de2d1b4b690c7fb",
+  "tests": [
+   "tests/test_validators.py"
+  ]
+ },
+ {
+  "name": "attrs-278d3a5b",
+  "origin": "https://github.com/python-attrs/attrs.git",
+  "base": "09e35d448ef99f55b516f1440b4548c64fb2e6cf",
+  "fix": "278d3a5bc6b271baccd0244b20b8a4016a6e35c4",
+  "tests": [
+   "tests/test_funcs.py"
+  ]
+ },
+ {
+  "name": "click-fc518e41",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "08a7bc6d2a2af02268b09b3b5fd8079546c81c03",
+  "fix": "fc518e41218b447e875fe27244ae692c269bcb77",
+  "tests": [
+   "tests/test_abort_interrupt.py"
+  ]
+ },
+ {
+  "name": "click-bc32a92c",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "cbd7a4109da16ce58f54c2a618b4c986e3041fcf",
+  "fix": "bc32a92cd2ae77afb2352f79ebdf00997f35d333",
+  "tests": [
+   "tests/test_termui.py",
+   "tests/test_utils/test_echo_via_pager.py"
+  ]
+ },
+ {
+  "name": "click-c2ed4149",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "333c28d79cd982990ee98eef61ec20ab1a4f38ba",
+  "fix": "c2ed41490baa08002714ab79afa4a41f2d67c02c",
+  "tests": [
+   "tests/test_arguments.py",
+   "tests/test_basic.py",
+   "tests/test_deprecations.py",
+   "tests/test_shell_completion.py",
+   "tests/test_testing.py",
+   "tests/test_utils/test_open_file.py"
+  ]
+ },
+ {
+  "name": "click-9f9b149e",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "16fc00e2f4a2717a521084f193709a6058afc693",
+  "fix": "9f9b149ea30287b4977b800a024ee68144b8c869",
+  "tests": [
+   "tests/test_basic.py"
+  ]
+ },
+ {
+  "name": "click-6f85d26d",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "df2e5ed8c4e89f51ff4eddb9600d913083613e62",
+  "fix": "6f85d26dcd50c1745e81040ed4f2b61f8bf293cf",
+  "tests": [
+   "tests/test_types.py"
+  ]
+ },
+ {
+  "name": "click-bec59289",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "916883afad450c0c9bbc4212817900949131adbd",
+  "fix": "bec59289d8cf9b9b4010642b2fee483e5f8eeefc",
+  "tests": [
+   "tests/test_basic.py"
+  ]
+ },
+ {
+  "name": "click-051bb0f3",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "cd9bdd96a9dcc8e4ecabd45b5c244dbc70034484",
+  "fix": "051bb0f30b545cf7426deef819811815297c2798",
+  "tests": [
+   "tests/test_termui.py"
+  ]
+ },
+ {
+  "name": "click-b7e5fd4c",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "5b1aba82745cbde04c75e0bab995e5ddf0804196",
+  "fix": "b7e5fd4cc7de70280eccd39f2bb956df617e5519",
+  "tests": [
+   "tests/test_shell_completion.py"
+  ]
+ },
+ {
+  "name": "click-becbde5c",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "a5f5aa6d4012d256ccca24638f2642fc371e9f77",
+  "fix": "becbde5cf416441627f779e8dd34e57738ee1c1f",
+  "tests": [
+   "tests/test_termui.py",
+   "tests/test_testing.py"
+  ]
+ },
+ {
+  "name": "click-32ae2acd",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "bee33141650ce7c91551f5fac9ebfb0c8fca473e",
+  "fix": "32ae2acd3474a57d2450ea849545b2e1258bf76a",
+  "tests": [
+   "tests/test_shell_completion.py"
+  ]
+ },
+ {
+  "name": "click-ad39d749",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "0039359443e73ab1034c63a1f6d58aba22c0ebc8",
+  "fix": "ad39d749be85af02bf191636062eef51323ad5ab",
+  "tests": [
+   "tests/test_testing.py"
+  ]
+ },
+ {
+  "name": "click-0f71fe77",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "c943271a269e6941fcc51e3506ead074b9dda6be",
+  "fix": "0f71fe771ceefd5715b3b375c9b2e3a701c0648e",
+  "tests": [
+   "tests/test_options.py"
+  ]
+ },
+ {
+  "name": "click-d946074a",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "fc6c7c47edd6110b6bd5a1a5297b2035214b0cd1",
+  "fix": "d946074a8fd4bd743dcde12e08e1561f062a2a68",
+  "tests": [
+   "tests/test_formatting.py"
+  ]
+ },
+ {
+  "name": "click-19fd4d6e",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "c69643b60cf971cd5d8e5d3902632807ceab9b8f",
+  "fix": "19fd4d6e18bc9fce451f92f422696b11169faa57",
+  "tests": [
+   "tests/test_shell_completion.py"
+  ]
+ },
+ {
+  "name": "click-8762c775",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "878de46100e9c29aea9dab5b385b8116863cb5e3",
+  "fix": "8762c7752cf1632d082c76922b15fef06ac3a2f1",
+  "tests": [
+   "tests/test_testing.py"
+  ]
+ },
+ {
+  "name": "click-c653ec82",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "878de46100e9c29aea9dab5b385b8116863cb5e3",
+  "fix": "c653ec820093ed1dda41aae8d35bff7834b0344a",
+  "tests": [
+   "tests/test_options.py",
+   "tests/test_termui.py"
+  ]
+ },
+ {
+  "name": "click-4f9086bf",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "1339fd3323357119a9c7a6326c788f80295954ce",
+  "fix": "4f9086bf8fd98aca1d804bf742f4f1ceb6c12295",
+  "tests": [
+   "tests/test_testing.py"
+  ]
+ },
+ {
+  "name": "click-6de21215",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "1339fd3323357119a9c7a6326c788f80295954ce",
+  "fix": "6de212151893e4072ca21779b7b6f4cb82452f51",
+  "tests": [
+   "tests/test_defaults.py"
+  ]
+ },
+ {
+  "name": "click-d340b0c1",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "04ef3a6f473deb2499721a8d11f92a7d2c0912f2",
+  "fix": "d340b0c1202284a1b9d0ca892549208527d586ce",
+  "tests": [
+   "tests/test_options.py"
+  ]
+ },
+ {
+  "name": "click-437e1e32",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "ea70da487b05d6bb758d472a3a9ffab4a5b7fcd5",
+  "fix": "437e1e3295c7ec979fc1bf285bb402ca20d847e7",
+  "tests": [
+   "tests/test_context.py"
+  ]
+ },
+ {
+  "name": "click-18d29196",
+  "origin": "https://github.com/pallets/click.git",
+  "base": "27aaed3fe5bcd6adedd6e91de234914af9859cf1",
+  "fix": "18d29196c508b249ef1111f1f29c9133e0a8b097",
+  "tests": [
+   "tests/test_arguments.py",
+   "tests/test_options.py"
+  ]
+ },
+ {
+  "name": "itsdangerous-526b1ea0",
+  "origin": "https://github.com/pallets/itsdangerous.git",
+  "base": "b11475aa0e1534f1fe7736d56140d81e872b1f5f",
+  "fix": "526b1ea02934f529606dcbf3c3340ab429dcde04",
+  "tests": [
+   "tests/test_itsdangerous/test_timed.py"
+  ]
+ },
+ {
+  "name": "itsdangerous-6c58e969",
+  "origin": "https://github.com/pallets/itsdangerous.git",
+  "base": "f966a62e4c0031b885566b529cc33fe9f6ae9f18",
+  "fix": "6c58e969a513646c8e37260417929770a4ab1b67",
+  "tests": [
+   "tests/test_itsdangerous/test_timed.py"
+  ]
+ },
+ {
+  "name": "itsdangerous-f966a62e",
+  "origin": "https://github.com/pallets/itsdangerous.git",
+  "base": "2ef8fe08c159de9f1232dbab86f8606aecd6392b",
+  "fix": "f966a62e4c0031b885566b529cc33fe9f6ae9f18",
+  "tests": [
+   "tests/test_itsdangerous/test_serializer.py"
+  ]
+ },
+ {
+  "name": "jinja2-065334d1",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "033c20015c7ca899ab52eb921bb0f08e6d3dd145",
+  "fix": "065334d1ee5b7210e1a0a93c37238c86858f2af7",
+  "tests": [
+   "tests/test_security.py"
+  ]
+ },
+ {
+  "name": "jinja2-ee832194",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "1d55cddbb28e433779511f28f13a2d8c4ec45826",
+  "fix": "ee832194cd9f55f75e5a51359b709d535efe957f",
+  "tests": [
+   "tests/test_core_tags.py"
+  ]
+ },
+ {
+  "name": "jinja2-d05bd385",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "7a41ddb915a540c7a35c6cf823a8b50a2553e46b",
+  "fix": "d05bd3858c3f4990e91201dae058147caf317462",
+  "tests": [
+   "tests/test_regression.py"
+  ]
+ },
+ {
+  "name": "jinja2-0cd69481",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "106d61cba58e3ca0ecd176712f187c6685d6d76d",
+  "fix": "0cd6948192591b2c31e3dba294ed9300813d1d44",
+  "tests": [
+   "tests/test_utils.py"
+  ]
+ },
+ {
+  "name": "jinja2-91a972f5",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "0871c71d0166152801798c1e59b3b32d3fb7469e",
+  "fix": "91a972f5808973cd441f4dc06873b2f8378f30c7",
+  "tests": [
+   "tests/test_security.py"
+  ]
+ },
+ {
+  "name": "jinja2-d4fb0e8c",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "39d9ffff1f33a5e5141af655857f9dbe6b6df03d",
+  "fix": "d4fb0e8c401a8596be0e67622174b5ad35daeec2",
+  "tests": [
+   "tests/test_api.py",
+   "tests/test_runtime.py"
+  ]
+ },
+ {
+  "name": "jinja2-2eb4542c",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "20be10e566a505cc47bdec5fa6ad56d5fbdfb4ae",
+  "fix": "2eb4542cbab101910d220229a8f09c94f76c19d1",
+  "tests": [
+   "tests/test_filters.py"
+  ]
+ },
+ {
+  "name": "jinja2-679af7f8",
+  "origin": "https://github.com/pallets/jinja2.git",
+  "base": "e82013c39970c336ed33906b3c38464f1fadbd30",
+  "fix": "679af7f816ced8941ed5cf9b151a0cac543d0336",
+  "tests": [
+   "tests/test_loader.py"
+  ]
+ }
+]

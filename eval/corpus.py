@@ -2,6 +2,7 @@
 
     python -m eval.corpus --repos DIR --out corpus.json [--want 6] [--limit 200]
     python -m eval.corpus --repos DIR --out corpus.json --only markupsafe,jinja2
+    python -m eval.corpus --select mined.json --bands substantial,one-liner --out corpus.json
     python -m eval.corpus --show corpus.json
     python -m eval.corpus --lock corpus.json --out corpus.lock
     python -m eval.corpus --rebuild corpus.lock --repos DIR --out corpus.json
@@ -22,7 +23,30 @@ kilobytes that identify it — origin, base and fix commit per instance — and
 `--rebuild` reconstructs it from exactly those, refusing rather than
 substituting when a commit is missing.
 
-**Difficulty is a label here, never a filter.** The rule this project used
+**Difficulty is a label, and `--bands` is the one declared exception.** The rule
+this project used before — keep a task only if the naive fix breaks the visible
+suite — selected the benchmark around the mechanism being measured, which is
+audit finding E6. Gold-patch size is not that: it is fixed by the upstream commit
+before any arm exists, and it cannot favour one arm over another.
+
+What it can do is waste money. Measured over six replicates, a plain agent solved
+**seven of eight** `small` tasks every single time, against three of five
+`substantial` tasks that varied. Half a corpus that every arm scores identically
+is not neutrality, it is budget spent on tasks that cannot answer the question.
+
+So a selection is allowed and must be **declared in the lock it produces**: the
+band filter is applied before the pins are written, so a rebuild reproduces the
+selected corpus exactly and the bands table shows what was kept. What remains
+forbidden is selecting on anything an arm influences.
+
+**Two asymmetries in how this was sampled**, recorded because they are invisible
+in the result. `--want` caps each repository, and at 40 it bound click, which
+contributed 40 instances from the newest 76 of its 255 candidate commits while
+attrs was mined to the bottom of all 60 of its. So click is biased toward recent
+history and attrs is not. And markupsafe contributed four instances, all `small`,
+so it drops out of a corpus selected on band.
+
+**Difficulty was a label and never a filter, before that.** The rule this project used
 before — keep a task only if the naive fix breaks the visible suite — selected
 the benchmark around the mechanism being measured, which is audit finding E6. A
 corpus that only contains tasks the gate can win is not evidence about the gate.
@@ -104,6 +128,31 @@ def lock(corpus: Path, out: Path) -> int:
     return 0
 
 
+def select(mined: Path, bands: str, out: Path) -> int:
+    """Keep only the named bands, and say what that dropped.
+
+    Applied before the pins are written, so the lock names exactly the corpus
+    that was scored and a rebuild reproduces it. Silence here would be the real
+    defect: a benchmark that quietly excluded half its tasks by difficulty is
+    the E6 mistake wearing a different hat, even when the criterion itself is
+    arm-independent.
+    """
+    keep = [b.strip() for b in bands.split(",") if b.strip()]
+    if not keep:
+        print("--select needs --bands, e.g. --bands substantial,one-liner")
+        return 1
+    rows = json.loads(mined.read_text(encoding="utf-8"))
+    kept = [r for r in rows if band(r["gold_lines"]) in keep]
+    dropped = len(rows) - len(kept)
+    if not kept:
+        print(f"no instance is in {', '.join(keep)}")
+        return 1
+    out.write_text(json.dumps(kept, indent=1), encoding="utf-8")
+    print(f"kept {len(kept)} of {len(rows)} instance(s) in {', '.join(keep)}; "
+          f"dropped {dropped}")
+    return show(out)
+
+
 def rebuild(lockfile: Path, where: Path, env: dict[str, str], out: Path) -> int:
     """Reconstruct exactly the pinned instances, or say which are unreachable.
 
@@ -174,8 +223,19 @@ def show(path: Path) -> int:
     if unpinned:
         print(f"{len(unpinned)} instance(s) record no origin and are tied to this disk")
     print()
-    print("Bands are labels. Nothing was dropped for being easy or hard, because a")
-    print("corpus filtered around the mechanism under test is not evidence about it.")
+    present = {band(r.get("gold_lines", 0)) for r in rows}
+    absent = [name for name, _, _ in BANDS if name not in present]
+    if absent:
+        # Said out loud every time it is shown. A corpus that quietly excluded
+        # half its tasks by difficulty would be E6 wearing a different hat, even
+        # though gold-patch size is fixed upstream and cannot favour an arm.
+        print(f"Selected: no {', '.join(absent)} task(s) in this corpus. A plain agent")
+        print("solved seven of eight small tasks on every replicate, so they were")
+        print("dropped as budget rather than kept as evidence. Nothing here was")
+        print("selected on anything an arm can influence, which is the E6 line.")
+    else:
+        print("Bands are labels. Nothing was dropped for being easy or hard, because a")
+        print("corpus filtered around the mechanism under test is not evidence about it.")
     return 0
 
 
@@ -195,6 +255,10 @@ def main(argv: list[str]) -> int:
         return rebuild(Path(option("--rebuild", "corpus.lock")), where,
                        {"PYTHONPATH": option("--pythonpath", "src")},
                        Path(option("--out", "corpus.json")))
+
+    if "--select" in argv:
+        return select(Path(option("--select", "")), option("--bands", ""),
+                      Path(option("--out", "corpus.json")))
 
     where = Path(option("--repos", ""))
     if not where.is_dir():

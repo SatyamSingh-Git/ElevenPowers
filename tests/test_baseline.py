@@ -257,7 +257,7 @@ def test_a_sweep_stops_the_moment_a_bundle_names_another_model(tmp_path, monkeyp
     journal = tmp_path / "j.jsonl"
 
     with pytest.raises(SystemExit):
-        run_baseline([_task("a"), _task("b")], "vanilla", "claude-sonnet-5", 3,
+        run_baseline([_task("a"), _task("b")], ["vanilla"], "claude-sonnet-5", 3,
                      tmp_path / "b", 0, journal, expect="claude-sonnet-5")
 
     assert len(spent) == 1, "it kept paying after the mismatch"
@@ -271,7 +271,7 @@ def test_a_sweep_on_the_model_it_asked_for_runs_every_replicate(tmp_path, monkey
     monkeypatch.setattr("eval.baseline.once",
                         _recording_once(tmp_path / "b", "claude-sonnet-5", spent))
 
-    rows = run_baseline([_task("a"), _task("b")], "vanilla", "claude-sonnet-5", 3,
+    rows = run_baseline([_task("a"), _task("b")], ["vanilla"], "claude-sonnet-5", 3,
                         tmp_path / "b", 0, tmp_path / "j.jsonl", effort="high",
                         budget=6.0, expect="claude-sonnet-5")
 
@@ -285,9 +285,9 @@ def test_a_restart_repeats_nothing_it_already_paid_for(tmp_path, monkeypatch):
                         _recording_once(tmp_path / "b", "m", spent))
     journal = tmp_path / "j.jsonl"
 
-    run_baseline([_task("a")], "vanilla", "m", 3, tmp_path / "b", 0, journal)
+    run_baseline([_task("a")], ["vanilla"], "m", 3, tmp_path / "b", 0, journal)
     assert len(spent) == 3
-    rows = run_baseline([_task("a"), _task("b")], "vanilla", "m", 3, tmp_path / "b",
+    rows = run_baseline([_task("a"), _task("b")], ["vanilla"], "m", 3, tmp_path / "b",
                         0, journal)
 
     assert len(spent) == 6, "it bought task a a second time"
@@ -300,10 +300,10 @@ def test_a_restart_finishes_a_task_that_died_between_replicates(tmp_path, monkey
     monkeypatch.setattr("eval.baseline.once",
                         _recording_once(tmp_path / "b", "m", spent))
     journal = tmp_path / "j.jsonl"
-    journal.write_text(json.dumps({"task": "a", "resolved": True}) + "\n",
+    journal.write_text(json.dumps({"task": "a", "arm": "vanilla", "resolved": True}) + "\n",
                        encoding="utf-8")
 
-    run_baseline([_task("a")], "vanilla", "m", 3, tmp_path / "b", 0, journal)
+    run_baseline([_task("a")], ["vanilla"], "m", 3, tmp_path / "b", 0, journal)
 
     assert len(spent) == 2
 
@@ -359,3 +359,37 @@ def test_compare_refuses_two_runs_whose_preservation_sets_differ(tmp_path, capsy
 
     assert compare(first, second) == 1
     assert "different preservation sets" in capsys.readouterr().out
+
+
+def test_both_arms_of_a_task_run_before_the_next_task(tmp_path, monkeypatch):
+    """A sweep that finishes one arm and then starts the other lets anything
+    that drifts in between land entirely on one side. That is what happened
+    when an agent broke the machine partway through pass B; every affected run
+    was in the same arm because there was only one arm in flight.
+    """
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once", _recording_once(tmp_path / "b", "m", spent))
+
+    run_baseline([_task("a"), _task("b")], ["vanilla", "gate"], "m", 2,
+                 tmp_path / "b", 7, tmp_path / "j.jsonl")
+
+    order = [name for name, _, _ in spent]
+    assert order == ["a", "a", "a", "a", "b", "b", "b", "b"], order
+
+
+def test_a_restart_counts_each_arm_separately(tmp_path, monkeypatch):
+    """Resume keyed on the task alone would see three runs of `a`, skip the gate
+    arm entirely, and report a paired comparison with one side missing.
+    """
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once", _recording_once(tmp_path / "b", "m", spent))
+    journal = tmp_path / "j.jsonl"
+    journal.write_text("".join(
+        json.dumps({"task": "a", "arm": "vanilla", "resolved": True}) + "\n"
+        for _ in range(3)), encoding="utf-8")
+
+    run_baseline([_task("a")], ["vanilla", "gate"], "m", 3, tmp_path / "b", 0, journal)
+
+    assert len(spent) == 3, "it owes three gate runs and no vanilla ones"
+    arms = [row["arm"] for row in read_journal(journal)]
+    assert arms == ["vanilla"] * 3 + ["gate"] * 3, arms

@@ -181,3 +181,46 @@ def test_an_ordinary_parameter_that_looks_like_a_version_is_kept():
         "tests/test_basic.py::test_group",
         "tests/test_versions.py::test_parse[1.2.3-expected]",
     ]) == []
+
+
+def _instance(name, lines):
+    return {"name": name, "origin": "u", "base": "b", "fix": "f", "gold_lines": lines,
+            "f2p": ["t::f"], "p2p": ["t::keep"], "hidden_files": {}, "env": {},
+            "changed": [], "prompt": ""}
+
+
+def test_a_band_selected_corpus_says_so_every_time_it_is_shown(tmp_path, capsys):
+    """A benchmark that quietly excluded half its tasks by difficulty would be
+    E6 wearing a different hat, even though gold-patch size is fixed upstream
+    and cannot favour an arm. The line that used to print here asserted the
+    opposite -- "nothing was dropped for being easy or hard" -- and would have
+    gone on asserting it over a corpus with forty-five tasks removed.
+    """
+    from eval.corpus import show
+
+    selected = tmp_path / "selected.json"
+    selected.write_text(json.dumps(
+        [_instance("a", 2), _instance("b", 40)]), encoding="utf-8")
+
+    show(selected)
+
+    printed = capsys.readouterr().out
+    assert "no small task(s)" in printed
+    assert "Nothing was dropped" not in printed
+
+
+def test_an_unselected_corpus_does_not_claim_a_selection(tmp_path, capsys):
+    """The forward direction. A notice that fires on every corpus says nothing,
+    and would make the real one invisible.
+    """
+    from eval.corpus import show
+
+    everything = tmp_path / "all.json"
+    everything.write_text(json.dumps(
+        [_instance("a", 2), _instance("b", 10), _instance("c", 40)]), encoding="utf-8")
+
+    show(everything)
+
+    printed = capsys.readouterr().out
+    assert "Nothing was dropped" in printed
+    assert "Selected:" not in printed
