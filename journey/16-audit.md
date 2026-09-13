@@ -1,11 +1,11 @@
-# 16. An audit, sixteen reproduced defects, and a different objective
+# 16. An audit, its reproduced defects, and a different objective
 
 ## What arrived
 
 An external audit of revision `9a21de1`, with a reproduction script, an evidence
-appendix, and a report that does two things at once: it reproduces sixteen
-defects in the runtime and the evaluator, and it argues the project has been
-optimising the wrong objective.
+appendix, and a report that does two things at once: it records sixteen
+observations naming fifteen defects in the runtime and the evaluator, and it
+argues the project has been optimising the wrong objective.
 
 Both halves are accepted. The second is the larger change.
 
@@ -90,7 +90,7 @@ The system now owns an **outer loop**: generate candidates, select among them,
 decide what to try next. Verification is one component rather than the purpose.
 The completion state is an output, not the organising principle.
 
-Phase A is blocking and unglamorous: fix all sixteen defects with regression
+Phase A is blocking and unglamorous: fix every one of them with regression
 tests, add run bundles that make a run reconstructible, grade in an
 evaluator-owned workspace from an exported patch, and provision an isolated
 Linux worker — because letting the absence of Docker on one laptop define the
@@ -149,3 +149,21 @@ carefully.
 The uncomfortable part is the pattern. The audit found what it found by opening
 the source and running it. That is the same move that produced every real finding
 in this journey, and it keeps having to come from outside.
+
+## A correction, 2026-09-13
+
+This entry, the README and the plan all said **sixteen defects** for a month.
+The audit says no such thing. Its appendix says, in as many words:
+
+> These are sixteen observations, not sixteen statistically independent
+> findings or a representative defect rate. Several exercise the same
+> underlying design defect.
+
+Sixteen observations; fifteen named defects, E1 to E6 and R1 to R9. Four more
+(H1 to H4) were found here afterwards and are not the audit's, so the tables hold
+nineteen — eighteen fixed and R2 narrowed.
+
+The number this project put on its own front page was the one reading the audit
+had explicitly warned against. Nobody checked it against the document it came
+from, for a month, in a project whose entire subject is not believing a claim
+until it has been computed.

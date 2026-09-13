@@ -2,7 +2,7 @@
 
 ## The one that changes what past numbers mean
 
-Of the sixteen defects, **E1** goes first because it is the only one that
+Of the audit's fifteen, **E1** goes first because it is the only one that
 reaches backwards. The others make future measurements untrustworthy. This one
 made a published null mean something narrower than it was reported to mean.
 

@@ -6,5 +6,5 @@
 
 # Preserved run evidence: kept exactly as the harness wrote it, so a bundle
 # re-grades to the same answer on any machine.
-eval/results/** -text
+results/** -text
 eval/corpus.lock -text

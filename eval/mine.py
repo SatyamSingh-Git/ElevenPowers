@@ -69,6 +69,15 @@ class Instance:
     hidden_files: dict[str, str] = field(default_factory=dict)
     f2p: list[str] = field(default_factory=list)
     p2p: list[str] = field(default_factory=list)
+    dropped: list[str] = field(default_factory=list)
+    """Nodes excluded from the preservation set for naming the machine.
+
+    click parametrises a test on `importlib.metadata.version("click")`, so the
+    installed version lands inside the node id and the next machine collects a
+    differently named node. Keeping it would report an absence as a regression;
+    dropping it silently would be a preservation set that quietly shrank. It is
+    one node out of eighteen hundred, and it is written down.
+    """
     env: dict[str, str] = field(default_factory=dict)
     changed: list[str] = field(default_factory=list)
     gold_files: int = 0
@@ -290,13 +299,12 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     _, before = run_tests(base, suite, env)
     _, after = run_tests(fixed, suite, env)
     p2p = sorted((passing_nodes(before) & passing_nodes(after)) - set(f2p))
-    unstable = machine_dependent(p2p + f2p)
-    if unstable:
-        # Dropping them from the preservation set would leave a task that scores
-        # differently on two machines and says nothing about it. Refusing the
-        # whole instance is the same choice --rebuild makes: a corpus that
-        # substitutes quietly is worse than one that is smaller.
-        return None, f"machine-dependent node id: {unstable[0]}"
+    if machine_dependent(f2p):
+        # The required test itself. There is nothing to fall back on: the task
+        # asks for a node whose name the next machine will not produce.
+        return None, f"machine-dependent required node: {machine_dependent(f2p)[0]}"
+    dropped = machine_dependent(p2p)
+    p2p = [n for n in p2p if n not in set(dropped)]
     if not p2p:
         return None, "nothing to preserve, so a regression could not be seen"
 
@@ -306,7 +314,7 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     return Instance(
         name=f"{repo.name}-{sha[:8]}", repo=str(repo), origin=origin(repo),
         base=parent, fix=sha, prompt=describe(repo, sha), hidden_files=patch,
-        f2p=f2p, p2p=p2p, env=env, changed=changed,
+        f2p=f2p, p2p=p2p, dropped=dropped, env=env, changed=changed,
         gold_files=len(source_only), gold_lines=changed_lines(repo, sha, source_only),
     ), "kept"
 

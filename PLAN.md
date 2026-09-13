@@ -1,6 +1,6 @@
 # Master Plan v0.7
 
-2026-09-11. Supersedes v0.6. Written after an external audit reproduced sixteen defects in the runtime and the evaluator, and argued that the project has been optimising the wrong objective. Both halves of that are accepted. Earlier plans are in git history; `docs/research/` and `journey/` are unchanged and still govern.
+2026-09-11. Supersedes v0.6. Written after an external audit recorded sixteen observations, naming fifteen defects in the runtime and the evaluator (E1-E6, R1-R9), and argued that the project has been optimising the wrong objective. Both halves of that are accepted. Earlier plans are in git history; `docs/research/` and `journey/` are unchanged and still govern.
 
 **This is a larger change than any previous revision.** v0.4 restored the mission, v0.5 and v0.6 adjusted the thesis. v0.7 changes what the system is for.
 
@@ -50,7 +50,7 @@ Twelve real bugs said the gate changes nothing on its own. The most promising di
 
 **Working, and still useful.** Evidence capture from ordinary tool output; provenance and staleness; self-discharge of declared commands; profiles and config; `ep-status`; a scope guard; a repeat runner with derived run counts; a miner that builds real tasks from upstream history without Docker; a live harness driving the real CLI.
 
-**Not trustworthy until §4 is done.** Every number this project published before 2026-09-12 rests on an evaluator that did not check preservation, an analysis that discarded replicates, and an evidence layer with nine reproduced soundness defects. Eight of those sixteen are now closed and one narrowed, which changes what future runs mean and nothing about what past ones did: **the candidates were deleted with their workspaces (E3), so no past result can be re-graded.**
+**§4 is done; the old numbers are still not trustworthy.** Every number this project published before 2026-09-12 rests on an evaluator that did not check preservation, an analysis that discarded replicates, and an evidence layer with nine reproduced soundness defects. All nineteen are now closed — eighteen fixed and R2 narrowed — which changes what future runs mean and nothing about what past ones did: **the candidates were deleted with their workspaces (E3), so no past result can be re-graded.**
 
 **Never built.** Candidate pools, selection, diagnosis branching, localisation, run bundles, an isolated benchmark environment.
 
@@ -60,7 +60,7 @@ Twelve real bugs said the gate changes nothing on its own. The most promising di
 
 All reproduced by `docs/research/audit_2026_09_11/reproduce.py`. **P0 here means a prerequisite for trusting a research conclusion, not a production emergency**: the tool is usable, and its numbers are not yet evidence. None may be deferred, and no new performance claim is made until each is fixed and covered by a regression test derived from the probe that found it.
 
-Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the system is supposed to have. **All sixteen now pass and no `xfail` marker remains in that file**, which is the state Phase A's first exit criterion asks for.
+Each lives in `tests/test_audit_probes.py` as a test asserting the behaviour the system is supposed to have. **All nineteen now pass and no `xfail` marker remains in that file**, which is the state Phase A's first exit criterion asks for. The file holds more tests than there are rows below, because defects found after the audit keep their probes there too.
 
 While any remained, the marker was `xfail(strict=True)`. The marker comes off when the fix lands, and cannot be put back quietly: a fixed defect that regresses turns the test red. **Status below is that file, not this table** — `python -m pytest tests/test_audit_probes.py -q` is the authority, and a row saying `fixed` with an `xfail` still on it is a documentation bug.
 
@@ -227,7 +227,7 @@ seven-day vertical slice and that was the correction that made the project real.
 v0.7 is a larger design than v0.2, which was rejected for being a laboratory, and
 the difference has to be enforced rather than asserted: **every phase ships
 something runnable before it ships something complete.** Phase A's first slice is
-the sixteen audit probes promoted from a script to `tests/test_audit_probes.py`,
+the audit's probes promoted from a script to `tests/test_audit_probes.py`,
 which takes an afternoon and makes every later repair verifiable.
 
 **The shipped tool keeps working meanwhile.** The plugin installs, captures
@@ -259,12 +259,12 @@ Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audi
 
 **Exit, as commands:**
 
-- `python -m pytest tests/test_audit_probes.py -q` → **zero xfailed**; every reproduced defect keeps the test that found it, now passing — **met**, 48 passed
+- `python -m pytest tests/test_audit_probes.py -q` → **zero xfailed**; every reproduced defect keeps the test that found it, now passing — **met**, 52 passed (48 at Phase A's close; later defects add their probes to the same file)
 - `python -m eval.validate` → gold patch resolves; a known regression fails; a wrong patch fails; a setup failure is reported as setup failure, not as an unresolved task — **met**, four of four
 - `python -m eval.live --runs 2 && python -m eval.analyse` → two rows retained per task and arm, not one — **met 2026-09-12**: `runs 2, tasks 1` on four real agent runs of `last_page` at $0.36
 - `python plugin/bin/ep_doctor.py --host` → success, failure and stop paths observed against a pinned host — **met**, and note that this criterion passed for weeks by discarding the flag
 
-**Phase A is closed, 2026-09-12.** All twenty defects fixed, R2 narrowed and marked as such, 436 tests with no xfails, and all four exits passing as commands. Total live spend: $0.72 against a $5 envelope.
+**Phase A is closed, 2026-09-12.** All nineteen defects closed — eighteen fixed, R2 narrowed and marked as such — 436 tests with no xfails at that date, and all four exits passing as commands. Total live spend: $0.72 against a $5 envelope.
 
 The first live sweep after the repairs failed all four runs, and failed *usefully*: the exported candidate was mostly compiled bytecode because the seeded workspace had no ignore rules, `git apply` rejected it, and the harness recorded `setup` rather than counting four failures against the agent. The bundles made it diagnosable from a workspace that no longer existed. Both of those are the point of the phase, demonstrated by accident on the first outing. Inspecting the surviving bundle then caught two more: the manifest recorded the model *alias* while its docstring claimed it recorded what the host resolved, and seeded tasks recorded a verdict with no node outcomes behind it.
 

@@ -592,3 +592,29 @@ and the reason was never a decision.
 number of tasks in this benchmark was set by a constant, a subprocess spawn cost
 and an unhandled encoding, and it was reported as though it were a property of
 the repositories.
+
+### The headline number was the one the audit warned against
+
+"An external audit found **sixteen defects**" led the README for a month, sat in
+the plan three times, and titled a journey entry.
+
+The audit says the opposite, in its own appendix:
+
+> These are sixteen observations, not sixteen statistically independent
+> findings or a representative defect rate. Several exercise the same
+> underlying design defect.
+
+Sixteen observations. Fifteen named defects, E1 to E6 and R1 to R9. Four more,
+H1 to H4, were found here afterwards and are not the audit's at all, so the
+tables hold nineteen — eighteen fixed and R2 narrowed. The plan managed to say
+sixteen, nineteen and twenty within one document, and the front page inherited
+the ambiguity.
+
+*Cause:* the number came from a summary of the report rather than the report,
+and it was never read back against the source. It was also a flattering number
+to quote, which is exactly the kind that goes unchecked.
+
+*The lesson:* the same sentence as the rest of this file. A claim about
+somebody else's document is checkable in thirty seconds against that document,
+and this one survived a month in a project whose subject is not believing a
+claim until it has been computed.

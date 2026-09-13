@@ -158,7 +158,7 @@ could help was withdrawn, two citations that had been trimmed the flattering way
 were corrected, and the plan gained the distinction it was missing: establish what
 the expected behaviour is before judging whether the patch implements it.
 
-**Then an audit reproduced sixteen defects and changed the objective.** The worst
+**Then an audit recorded sixteen observations, naming fifteen defects, and changed the objective.** The worst
 is that the grader never ran a preservation set: a patch breaking existing tests
 scored as resolved, so the measurement was blind to regressions, which is the
 gate's main mechanism. Beneath the defects a harder argument — better stopping
@@ -231,11 +231,11 @@ Every figure below comes from a command in this repository.
 | Corpus, pinned | 15 instances from 5 repositories, rebuilt identically from a 3.8KB lock | `python -m eval.corpus --rebuild eval/corpus.lock --repos DIR` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
-| Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show eval/results/b4-passA-regraded.json` |
-| Every grade recomputed from its bundle | pass A 0 of 45 changed; pass B 9 of 45, all of them an agent's editable install breaking a later task | `python -m eval.baseline --regrade eval/results/b4-passB.json eval/results/bundles-B` |
-| Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures eval/results/bundles-B` |
+| Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show results/b4-passA-regraded.json` |
+| Every grade recomputed from its bundle | pass A 0 of 45 changed; pass B 9 of 45, all of them an agent's editable install breaking a later task | `python -m eval.baseline --regrade results/b4-passB.json results/bundles-B` |
+| Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 486 | `python -m pytest tests -q` |
+| Tests | 490 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

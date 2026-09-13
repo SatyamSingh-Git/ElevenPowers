@@ -146,6 +146,27 @@ def test_a_node_id_carrying_an_installed_version_is_refused():
     assert machine_dependent([node]) == [node]
 
 
+def test_a_machine_dependent_node_is_dropped_not_the_whole_instance(upstream, tmp_path):
+    """Refusing the instance would have deleted a repository from the corpus.
+
+    The offending node passes at every click commit, so it is in every click
+    task's preservation set: rejecting on it removes all of click rather than
+    one observation out of eighteen hundred. It is dropped and recorded instead,
+    because a preservation set that quietly shrank would be its own defect.
+    """
+    import importlib.metadata
+
+    from eval.mine import machine_dependent
+
+    version = importlib.metadata.version("pytest")
+    unstable = f"tests/t.py::test_attr[pytest-__version__-{version}]"
+    p2p = ["tests/test_keep.py::test_label", unstable]
+
+    dropped = machine_dependent(p2p)
+    assert dropped == [unstable]
+    assert [n for n in p2p if n not in set(dropped)] == ["tests/test_keep.py::test_label"]
+
+
 def test_an_ordinary_parameter_that_looks_like_a_version_is_kept():
     """The forward direction. A rule that refuses every parametrised node would
     empty the preservation sets, and a corpus with nothing to preserve cannot

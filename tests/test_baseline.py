@@ -306,3 +306,56 @@ def test_a_restart_finishes_a_task_that_died_between_replicates(tmp_path, monkey
     run_baseline([_task("a")], "vanilla", "m", 3, tmp_path / "b", 0, journal)
 
     assert len(spent) == 2
+
+
+def _pinned(name, f2p, p2p):
+    return Task(name=name, prompt="", files={}, hidden="", why="",
+                source={"f2p": list(f2p), "p2p": list(p2p)})
+
+
+def test_two_corpora_with_the_same_pins_and_different_preservation_sets_differ():
+    """The lock names commits; the preservation sets decide verdicts.
+
+    One click node carried `importlib.metadata.version("click")` inside its id,
+    so two builds of the same pins disagreed about what counts as a regression
+    while reporting the same corpus fingerprint. A comparison across those two
+    is not a reproduction either, and nothing said so.
+    """
+    from eval.baseline import graded_fingerprint
+
+    before = [_pinned("a", ["t::f"], ["t::keep", "t::v[click-8.4.2.dev0]"])]
+    after = [_pinned("a", ["t::f"], ["t::keep"])]
+
+    assert graded_fingerprint(before) != graded_fingerprint(after)
+
+
+def test_the_graded_digest_ignores_the_order_tasks_come_in():
+    """The forward direction. A digest that changed with ordering would refuse
+    every honest rerun, which is the failure mode of a check nobody can satisfy
+    -- and the same mistake the corpus fingerprint was written to avoid.
+    """
+    from eval.baseline import graded_fingerprint
+
+    one = _pinned("a", ["t::f"], ["t::keep"])
+    two = _pinned("b", ["u::f"], ["u::keep"])
+
+    assert graded_fingerprint([one, two]) == graded_fingerprint([two, one])
+
+
+def test_compare_refuses_two_runs_whose_preservation_sets_differ(tmp_path, capsys):
+    """Same pins, different graded sets, overlapping scores: still not a rerun."""
+    from eval.baseline import compare
+
+    def report(path, graded):
+        path.write_text(json.dumps({
+            "model": "claude-sonnet-5", "corpus": "same", "graded": graded,
+            "score": {"resolved": 0.5, "low": 0.3, "high": 0.7, "tasks": 2,
+                      "runs": 2, "setup_failures": 0, "context": None},
+        }), encoding="utf-8")
+        return path
+
+    first = report(tmp_path / "a.json", "aaaaaaaaaaaaaaaa")
+    second = report(tmp_path / "b.json", "bbbbbbbbbbbbbbbb")
+
+    assert compare(first, second) == 1
+    assert "different preservation sets" in capsys.readouterr().out

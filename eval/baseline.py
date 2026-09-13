@@ -47,8 +47,24 @@ from .task import Task
 BOOTSTRAP_DRAWS = 10_000
 
 
+def graded_fingerprint(tasks: list[Task]) -> str:
+    """What is actually graded, which is not the same as which commits are pinned.
+
+    The lock names origin, base and fix. The preservation sets decide verdicts,
+    and they are resolved on whichever machine built the corpus: one click node
+    carried `importlib.metadata.version("click")` inside its id, so two builds
+    of the same pins disagreed about what counts as a regression while reporting
+    the same fingerprint. A comparison across those two is not a reproduction
+    either, and nothing said so.
+    """
+    seed = json.dumps(sorted(
+        (t.name, list(t.source["f2p"]), list(t.source.get("p2p") or []))
+        for t in tasks))
+    return hashlib.sha256(seed.encode()).hexdigest()[:16]
+
+
 def corpus_fingerprint(lock: Path) -> str:
-    """What was graded, in sixteen characters.
+    """Which commits were pinned, in sixteen characters.
 
     Two scores are comparable only if this matches. A corpus is easy to change
     without noticing — one more instance mined, one repository updated — and a
@@ -202,6 +218,15 @@ def compare(first: Path, second: Path) -> int:
         print(f"different corpora: {a['corpus']} vs {b['corpus']}")
         print("Two scores from two benchmarks are not a reproduction, however close.")
         return 1
+    graded = (a.get("graded"), b.get("graded"))
+    if all(graded) and graded[0] != graded[1]:
+        print(f"same pins, different preservation sets: {graded[0]} vs {graded[1]}")
+        print("The commits match and what counts as a regression does not, which is")
+        print("two benchmarks under one name -- the case the fingerprint missed.")
+        return 1
+    if not all(graded):
+        print("one of these reports predates the graded-set digest, so whether the")
+        print("preservation sets matched cannot be checked. Treat with suspicion.")
     if a["model"] != b["model"]:
         print(f"different models: {a['model']} vs {b['model']}")
         return 1
@@ -414,6 +439,7 @@ def main(argv: list[str]) -> int:
         "model": model,
         "arm": arm,
         "corpus": corpus_fingerprint(lock),
+        "graded": graded_fingerprint(tasks),
         "seed": seed,
         "environment": environment(),
         "score": score(rows, seed),
