@@ -220,6 +220,63 @@ def compare(first: Path, second: Path) -> int:
     return 1
 
 
+def regrade(report: Path, bundles: Path, out: Path) -> int:
+    """Grade every preserved candidate again, and say what moved.
+
+    This is the whole point of D54. A run kept as a patch against a recorded
+    base can be graded again when the grader changes; twelve candidates that
+    went with their TemporaryDirectory could not, which is why a null published
+    from a defective grader is still uncheckable.
+
+    It was needed within four hours of the first paid sweep. An agent's editable
+    install broke a dependency for every task that ran after it, and twelve runs
+    were scored against agents that had in fact solved their tasks.
+    """
+    import tempfile
+
+    from .bundle import record_grade
+    from .live import grade_patch
+    from .mined import load as load_mined
+
+    tasks = {t.name: t for t in load_mined()}
+    data = json.loads(report.read_text(encoding="utf-8"))
+    moved = []
+    for row in data["runs"]:
+        directory = bundles / Path(row["bundle"]).name
+        if not directory.exists():
+            print(f"  missing bundle for {row['task']}: {directory}")
+            return 1
+        patch = (directory / "patch.diff").read_bytes().decode("utf-8")
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+            graded = grade_patch(tasks[row["task"]], patch, Path(tmp) / "court")
+        was = row["outcome"]
+        if was != graded.outcome:
+            moved.append((row["task"], was, graded.outcome))
+            print(f"  {row['task']:<26}{was:<11}-> {graded.outcome}", flush=True)
+            # Both records are kept. What the grader said at the time is how the
+            # contamination is visible at all; overwriting it would erase the
+            # evidence that the first answer was wrong.
+            first = directory / "grade.as-run.json"
+            if not first.exists():
+                first.write_bytes((directory / "grade.json").read_bytes())
+            record_grade(directory, graded)
+        row["outcome"] = graded.outcome
+        row["resolved"] = graded.resolved
+        row["note"] = graded.detail
+
+    data["score"] = score(data["runs"], data["seed"])
+    # The bands are derived too. Leaving them stale would publish a report whose
+    # table disagrees with its own headline, which is worse than not having one.
+    data["bands"] = bands_of(data["runs"],
+                             {n: (t.source or {}).get("gold_lines", 0)
+                              for n, t in tasks.items()})
+    data["regraded_from"] = str(report)
+    out.write_text(json.dumps(data, indent=1), encoding="utf-8")
+    print()
+    print(f"{len(moved)} of {len(data['runs'])} grade(s) changed. wrote {out}")
+    return show(out)
+
+
 def done_already(journal: Path) -> dict[str, int]:
     """How many replicates of each task are already on disk.
 
@@ -296,6 +353,13 @@ def main(argv: list[str]) -> int:
     def option(flag, default):
         return argv[argv.index(flag) + 1] if flag in argv else default
 
+    if "--regrade" in argv:
+        rest = [a for a in argv[argv.index("--regrade") + 1:] if not a.startswith("-")]
+        if len(rest) < 2:
+            print("usage: --regrade REPORT.json BUNDLES_DIR [--out corrected.json]")
+            return 1
+        return regrade(Path(rest[0]), Path(rest[1]),
+                       Path(option("--out", "regraded.json")))
     if "--show" in argv:
         return show(Path(option("--show", "baseline.json")))
     if "--compare" in argv:

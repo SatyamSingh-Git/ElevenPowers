@@ -1,0 +1,6 @@
+{
+ "resolved": false,
+ "outcome": "unfixed",
+ "detail": "tests/test_core_tags.py::TestSet::test_namespace_set_tuple",
+ "passed": []
+}

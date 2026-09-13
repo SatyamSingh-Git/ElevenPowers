@@ -853,3 +853,60 @@ def test_the_patch_reaching_git_is_the_patch_that_was_exported(upstream, tmp_pat
         "so git receives carriage returns this patch does not contain")
     assert handed == [patch.encode("utf-8")]
     assert graded.outcome == "resolved", "the byte check must not come at the cost of the grade"
+
+
+# --- an agent uninstalled a package from under the next task ------------------
+
+def test_a_run_that_collected_nothing_is_not_the_agents_fault(upstream, tmp_path,
+                                                              monkeypatch):
+    """Twelve runs were scored against the agent for a missing dependency.
+
+    One agent ran `pip install -e .` in its temp workspace; pip wrote a .pth into
+    the shared user site pointing at that directory, and when the workspace was
+    deleted `import attrs` broke machine-wide. Every later task whose tests
+    import trio collected nothing, and every one of those runs was filed as the
+    agent having failed to fix the bug. The taxonomy already promised that
+    harness breakage is "never the agent"; the code had no way to tell.
+    """
+    from eval.live import grade_patch
+
+    task, root = upstream
+    # A conftest the evaluator restores with the test tree, so the failure is at
+    # import time and belongs to the environment, exactly as a missing package
+    # would be -- and it is there for the base commit too.
+    (Path(task.source["repo"]) / "tests" / "conftest.py").write_bytes(
+        b"import a_package_that_is_not_installed\n")
+    import subprocess
+    subprocess.run(["git", "-C", task.source["repo"], "add", "-A"],
+                   capture_output=True)
+    subprocess.run(["git", "-C", task.source["repo"], "-c", "user.email=e@e",
+                    "-c", "user.name=e", "commit", "-qm", "break the environment"],
+                   capture_output=True)
+    task.source["base"] = subprocess.run(
+        ["git", "-C", task.source["repo"], "rev-parse", "HEAD"],
+        capture_output=True, text=True).stdout.strip()
+
+    graded = grade_patch(task, "", tmp_path / "court")
+
+    assert graded.outcome == "setup", (
+        "a run where nothing collected and the base does not collect either is "
+        "the harness, and the score excludes setup from the agent's record")
+
+
+def test_an_agent_that_breaks_the_module_is_still_the_agents_fault(upstream, tmp_path):
+    """The forward direction, and the one the control exists to protect.
+
+    An agent that breaks a module and a machine missing a dependency both
+    observe nothing. A check that blamed the harness for both would excuse every
+    candidate that failed to import, which is worse than the defect it fixes.
+    """
+    from eval.bundle import export_patch
+    from eval.live import grade_patch
+
+    task, root = upstream
+    (root / "src/app.py").write_bytes(b"syntax ( error\n")
+    patch = export_patch(root)
+
+    graded = grade_patch(task, patch, tmp_path / "court")
+
+    assert graded.outcome == "unfixed", graded.detail

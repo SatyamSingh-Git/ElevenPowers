@@ -498,19 +498,72 @@ three times running. That was reported as a finding: the baseline is
 near-deterministic, replicates buy almost nothing, and the sample size for any
 comparison follows from that.
 
-Pass B split seven of fifteen. Two tasks that had been solved three times out of
-three were solved zero times out of three.
+Over both passes it is ten of fifteen, not fourteen.
 
 *Cause:* three replicates run back to back inside one sitting are not three
-independent observations of the same quantity, and treating agreement among them
-as evidence of determinism assumes exactly what needed testing. The project has
-made this correction twice already — E2 about runs within a task, E6 about the
-flip rate — and this is the same shape one level up, about tasks within a pass.
+independent observations, and treating agreement among them as evidence of
+determinism assumes exactly what needed testing. The project has made this
+correction twice — E2 about runs within a task, E6 about the flip rate.
 
-*Cost:* none, because the second pass was already running. Had the night stopped
-after pass A, that conclusion would have set the sample size for every
-comparison after it.
+*Cost:* none, because the second pass was already running.
 
 *The lesson:* agreement inside one sitting is the cheapest evidence available
-and the easiest to mistake for the strongest. The only thing that told these
-apart was running it twice.
+and the easiest to mistake for the strongest.
+
+### Four hours of careful reasoning about numbers nobody had checked
+
+The sweep finished, the numbers were written up, a journey entry was composed
+around them, and it was committed and reported. It said the preservation set had
+caught its first real regression in the wild, that two tasks had reversed from
+3/3 to 0/3 between passes, and that this proved replicates inside one sitting
+are correlated in a way the interval does not price.
+
+All three are false. The regressions were a version string a different agent had
+overwritten. The reversal was twelve runs in which nothing was collected at all.
+The conclusion about correlation was inferred entirely from the reversal that
+did not happen.
+
+*Cause:* the grades were taken as data. Every step after them was sound — the
+interval was computed correctly, the taxonomy cited its bundles, the categories
+were counted honestly — and the whole structure rested on forty-five numbers
+that had never been checked against the thing they described.
+
+*What found it:* re-grading one committed bundle from a fresh clone, as a test
+of whether the archive worked. It disagreed. That was the only signal, and it
+came from asking the evidence a question rather than reading it.
+
+*The lesson:* this project has now done the same thing three times — a null
+diagnosed from an agent's own test without reading the answer key, a conclusion
+about unreachable information when six of seven were reachable, and this. The
+shape is always the same: **a careful argument built on an unopened number.**
+The defence is not more care. It is that every published number has to survive
+being recomputed from the evidence it claims to summarise, and that check has to
+be a command somebody runs, not an intention.
+
+
+### An agent uninstalled a package from under the next task
+
+An agent ran `pip install -e .` in its temporary workspace. The system
+site-packages is not writable, so pip wrote into the shared *user* site: a
+`.pth` pointing `attrs` at that temp directory, and an `attrs-0.1.dev1.dist-info`
+over the real distribution's metadata. When the workspace was deleted, `import
+attrs` failed machine-wide, and every later task whose tests import `trio`
+collected nothing at all.
+
+*Cause:* the workspace was treated as the boundary. It is the boundary for
+files, and it is not the boundary for anything a package manager does, because
+the interpreter's search path is shared and writable.
+
+*Cost:* twelve runs graded against agents that had solved their tasks, two more
+recorded as regressions for a version string somebody else overwrote, one wrong
+headline, and a published claim that the preservation set had caught its first
+real regression.
+
+*Changed:* the agent runs with `PYTHONUSERBASE` inside its own workspace, so its
+installs die with it. And the grader now treats a run that observed nothing as
+`setup` when the unpatched base cannot collect either — the control that
+separates an agent breaking a module from a machine missing a package, which
+look identical from the outcome alone.
+
+*The lesson:* isolation that was never tested is a belief. Nothing here had ever
+asked what one run could do to the next, and the answer was: quite a lot.

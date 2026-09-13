@@ -1,7 +1,7 @@
 {
- "resolved": false,
- "outcome": "regressed",
- "detail": "tests/test_packaging.py::TestLegacyMetadataHack::test_version_info[attr], tests/test_packaging.py::TestLegacyMetadataHack::test_version_info[attrs]",
+ "resolved": true,
+ "outcome": "resolved",
+ "detail": "",
  "passed": [
   "tests/test_3rd_party.py::TestCloudpickleCompat::test_repr",
   "tests/test_abc.py::TestUpdateAbstractMethods::test_abc_implementation[False]",
@@ -1113,6 +1113,8 @@
   "tests/test_packaging.py::TestLegacyMetadataHack::test_does_not_exist[attrs]",
   "tests/test_packaging.py::TestLegacyMetadataHack::test_version[attr]",
   "tests/test_packaging.py::TestLegacyMetadataHack::test_version[attrs]",
+  "tests/test_packaging.py::TestLegacyMetadataHack::test_version_info[attr]",
+  "tests/test_packaging.py::TestLegacyMetadataHack::test_version_info[attrs]",
   "tests/test_pattern_matching.py::TestPatternMatching::test_explicit_match_args",
   "tests/test_pattern_matching.py::TestPatternMatching::test_match_args_kw_only",
   "tests/test_pattern_matching.py::TestPatternMatching::test_simple_match_case[attrs]",

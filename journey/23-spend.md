@@ -101,9 +101,8 @@ was extracted with CRLF line endings; attrs ships `* text=auto eol=lf`, so it
 was not. **The grade was a function of the grader's git configuration** — which
 is D55 not merely bent but inverted, in the one module written to enforce it.
 
-**Every saved patch was damaged on the way to disk.** `write_text` translates
-`
-` to the platform separator, so every `patch.diff` in every bundle held CRLF
+**Every saved patch was damaged on the way to disk.** `write_text` translates a newline
+to the platform separator, so every `patch.diff` in every bundle held CRLF
 that git never emitted — including inside the `--binary` blocks.
 
 **Every patch was damaged again on the way into git.** `subprocess.run(...,
@@ -200,86 +199,102 @@ Each score falls inside the other's interval: the rerun reproduces.
 Phase B's exit is met on its own terms. What follows is why those terms are
 weaker than they look.
 
-### The categories stopped being hypothetical
+### An agent uninstalled a package from under the next task
 
-Before this every failure category was unit-tested and unseen; the only real
-bundles available classified as `resolved`, four for four. Ninety runs put four
-categories in the wild:
+Four hours after the sweep finished, a committed bundle was re-graded from a
+fresh clone as a check that the archive works at all. It came back with a
+different answer, and that was the thread.
 
-| category | pass A | pass B |
-|---|---|---|
-| resolved | 31 | 24 |
-| no-patch | 12 | 9 |
-| localised | 2 | 10 |
-| regressed | 0 | 2 |
+An agent working an attrs task in pass B ran `pip install -e .` inside its temp
+workspace. The system site-packages is not writable, so pip wrote into the
+**shared user site** instead: a `.pth` pointing `attrs` at
+`.../Temp/tmpiwikiyyk/src`, and an `attrs-0.1.dev1.dist-info` on top of the
+real distribution's metadata. The file is timestamped 05:22:59, which is
+twenty-six minutes into pass B.
 
-`regressed` is the one worth naming. Twice in pass B, on `attrs-48b8611c`, the
-agent made the requested test pass and broke
-`tests/test_packaging.py::TestLegacyMetadataHack::test_version_info[attr]`.
-Every grader this project had before Phase A would have scored both as
-successes, because they ran only the tests the patch was supposed to fix. This
-is the first time the preservation set has caught a real agent doing it on
-somebody else's code.
+The workspace was deleted when that run ended. From then on `import attrs`
+failed machine-wide, and jinja2's `tests/test_async.py` imports `trio`, which
+imports `attrs`. **Every jinja2 run for the rest of the night collected zero
+nodes**, and every one of them was recorded as the agent having failed to fix
+the bug.
 
-`setup`, `timeout`, `host-error`, `abstained`, `misplaced` and `unattributed`
-remain unit-tested and unseen.
+The same metadata corruption broke
+`tests/test_packaging.py::TestLegacyMetadataHack::test_version_info`, which
+reads attrs' own installed version — so two runs were recorded as `regressed`
+for a version string another agent had overwritten.
 
-### Two passes, and one of them is lying
+**A run's grade depended on what a different run had done to the machine.** That
+is D55 for the third time in one night, in a way no amount of care inside the
+grader would have caught, because nothing inside the grader was wrong.
 
-The score moved 15.6 points between two passes of the same configuration on the
-same corpus two hours apart. The per-task detail is worse than the headline:
+### What the bundles were for
 
-| | tasks |
+Every candidate is preserved as a patch against a recorded base precisely so
+that a grade can be taken again when the grader, or the machine, turns out to
+have been wrong. This is the first time that has been needed, and it was needed
+within four hours.
+
+`attrs` was reinstalled and all ninety bundles re-graded from disk, free:
+
+| | grades changed |
 |---|---|
-| same answer all six times | 8 |
-| split | **7** |
+| pass A | **0 of 45** |
+| pass B | 9 of 45 |
 
-And two tasks did not merely wobble. `jinja2-66587ce9` and `jinja2-ee832194`
-were solved **three times out of three in pass A and zero times out of three in
-pass B.** In both cases the test that failed is the `f2p` — the agent did not
-break something else, it simply failed to fix the bug, repeatedly, on a task it
-had just solved repeatedly.
+Pass A not moving at all is the control. It says the re-grade is deterministic,
+that the bundles round-trip, and that the contamination is confined to what came
+after 05:22.
 
-Read only pass A and those two tasks look perfectly deterministic. So does
-almost everything: after pass A alone, fourteen of fifteen tasks had given the
-same answer three times, and the obvious conclusion — *replicates buy nothing,
-this baseline is near-deterministic* — was wrong, and would have set the sample
-size for every comparison that follows.
+### What the night actually measured
 
-**The replicates inside one pass are more correlated with each other than two
-passes are with each other.** This is the clustering correction one level up.
-E2, E6 and the interval each forced the same lesson about runs within a task;
-this is the same shape about tasks within a pass, and the interval — correctly
-computed over tasks — is still estimated from a sample that understates how much
-moves between sittings.
+| | as recorded | corrected |
+|---|---|---|
+| pass A | 68.9% [46.7, 88.9] | **68.9%** [46.7, 88.9] |
+| pass B | 53.3% [33.3, 73.3] | **73.3%** [55.6, 88.9] |
+| gap | 15.6 points | **4.4 points** |
+| `regressed` runs | 2 | **0** |
 
-So the two passes overlapping is not much of a reproduction. The criterion is
-satisfied mostly because a 42-point interval is hard to miss.
+Over six replicates: **nine tasks solved every time, one never, five split.**
 
-### What it did buy
+That is a better reproduction than the contaminated numbers showed and a worse
+benchmark. Nine of fifteen tasks cannot demonstrate an improvement, because a
+plain agent already solves them every time, and one is never solved at all.
+**Five tasks carry the entire ability of this corpus to detect an effect.**
 
-A first real measurement of within-arm variation, which is what D57 said the
-sample size has to come from and what no run here had ever produced. Seven of
-fifteen tasks vary within one arm. Two tasks are never solved in six attempts.
-Six are always solved.
+### Everything this entry claimed four hours ago and got wrong
 
-That last number is the constraint. **Six tasks out of fifteen cannot show an
-improvement**, because a plain agent already solves them every time, and two
-more may be out of reach entirely. The discriminating middle is seven tasks, and
-those are the ones a treatment has to move.
+Written up at 07:00 from the numbers as recorded, committed, and reported:
 
-The old suite was worse — eleven of sixteen solved every time — so this is
-progress. It is not yet a benchmark that can measure a small effect.
+- *"`regressed` caught a real agent breaking something else — the first time the
+  preservation set has done that on somebody else's code."* **Withdrawn.** Both
+  cases were the corrupted attrs metadata. That category has still never been
+  seen in the wild.
+- *"`jinja2-66587ce9` and `jinja2-ee832194` were solved 3/3 in pass A and 0/3 in
+  pass B — the agent failed to fix a bug it had solved an hour earlier."*
+  **Withdrawn.** Both are 3/3 and 3/3. Nothing ran.
+- *"Replicates inside one sitting are more correlated with each other than two
+  sittings are."* **Withdrawn as stated.** It was inferred entirely from the
+  reversal that did not happen. Five tasks split rather than seven, and the two
+  passes agree to within 4.4 points.
+
+The pattern is the one this project keeps writing down: **a story told from a
+number without opening the evidence underneath it.** A null was once diagnosed
+from an agent's own test without reading the answer key. Here a failure
+taxonomy, an interval and a reproduction were all computed correctly from grades
+that were wrong, and the reasoning on top of them was careful, specific, and
+about nothing.
+
+What found it was not more care. It was running the archive against itself.
 
 ## Four states, not a pass mark
 
 | claim | state |
 |---|---|
 | the harness survives ninety unattended paid runs | **verified** — nothing broke, nothing needed a human |
-| the grade is a function of the base and the patch | **verified** — after being *contradicted* eight hours earlier, when it was a function of the grader's git config |
-| a rerun reproduces | **verified, weakly** — the criterion is met, and it is met mostly because a 42-point interval is hard to miss |
-| the score is a stable quantity | **contradicted** — 68.9 and 53.3 from the same configuration two hours apart |
-| the taxonomy describes real runs | **verified for four of ten categories**; six have still never been seen |
+| the grade is a function of the base and the patch | **contradicted twice in one night** — first by the grader's git config, then by what another agent installed on the machine |
+| a rerun reproduces | **verified, weakly** — 68.9 and 73.3, and the criterion is met mostly because a 42-point interval is hard to miss |
+| a grade survives being taken again from the bundle | **verified** — pass A moved on none of its 45; pass B on 9, every one of them the contamination |
+| the taxonomy describes real runs | **verified for three of ten categories**; `regressed` is not one of them, and seven have still never been seen |
 | P1, the hypothesis | **unverified**, and not addressed by this run at all — one arm was measured, not two |
 
 The last line is the one to keep. This phase built an instrument and pointed it

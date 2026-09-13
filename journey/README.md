@@ -231,10 +231,11 @@ Every figure below comes from a command in this repository.
 | Corpus, pinned | 15 instances from 5 repositories, rebuilt identically from a 3.8KB lock | `python -m eval.corpus --rebuild eval/corpus.lock --repos DIR` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
-| Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 53.3% over two passes, overlapping intervals, no harness failure | `python -m eval.baseline --show E:/ep-runs/passA.json` |
-| Failure taxonomy, in the wild | four categories seen on real runs, including a `regressed` a pre-Phase-A grader would have scored as a success | `python -m eval.failures E:/ep-runs/B` |
+| Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show eval/results/b4-passA-regraded.json` |
+| Every grade recomputed from its bundle | pass A 0 of 45 changed; pass B 9 of 45, all of them an agent's editable install breaking a later task | `python -m eval.baseline --regrade eval/results/b4-passB.json eval/results/bundles-B` |
+| Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures eval/results/bundles-B` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 482 | `python -m pytest tests -q` |
+| Tests | 484 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.
@@ -252,10 +253,10 @@ a measured rate of disagreement, which no run here has produced — if the arms
 differed on one task in four it would be 124 paired runs, and that *if* is doing
 all the work.
 
-The task suite still needs rebuilding so that most of it discriminates. Six of
+The task suite still needs rebuilding so that most of it discriminates. Nine of
 the pinned fifteen are resolved by a plain agent every time across six
-replicates and two of them never, so seven tasks carry the whole measurement.
-The old suite was worse — eleven of sixteen — but this is not yet a benchmark
-that can measure a small effect.
+replicates and one never is, so **five tasks carry the whole measurement**. The
+old suite was worse — eleven of sixteen — but this is not yet a benchmark that
+can measure a small effect.
 Replay still cannot measure staleness at all, because the working tree at each
 moment is not recoverable from a transcript.

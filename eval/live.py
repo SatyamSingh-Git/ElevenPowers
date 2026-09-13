@@ -287,6 +287,28 @@ def _tool_version(command: list[str]) -> str:
     return (done.stdout or "").strip().splitlines()[0] if done.stdout.strip() else ""
 
 
+def _sandboxed(root: Path) -> dict[str, str]:
+    """The agent's environment, with its installs pointed at its own workspace.
+
+    An agent ran `pip install -e .` inside its temp tree. Because the system
+    site-packages is not writable, pip wrote a `.pth` into the *user* site
+    instead, pointing `attrs` at that temp directory and replacing the real
+    distribution's metadata. The workspace was deleted when the run ended, and
+    every later task whose tests import trio -- which imports attrs -- collected
+    nothing at all. Twelve runs of four jinja2 tasks were graded against the
+    agent for a package another agent had uninstalled from underneath them.
+
+    `PYTHONUSERBASE` moves those writes inside the workspace, so they die with
+    it. It is not a sandbox; it is the difference between a run that can damage
+    the next one and a run that cannot.
+    """
+    import os
+
+    userbase = root / ".userbase"
+    userbase.mkdir(exist_ok=True)
+    return {**os.environ, "PYTHONUSERBASE": str(userbase), "PIP_USER": "0"}
+
+
 def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
           effort: str = "", budget: float = 0.0) -> tuple[dict, float]:
     started = time.perf_counter()
@@ -315,7 +337,7 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
         command += ["--plugin-dir", _plugin_dir(arm)]
     try:
         done = subprocess.run(command, cwd=root, capture_output=True, text=True,
-                              timeout=TIMEOUT)
+                              timeout=TIMEOUT, env=_sandboxed(root))
     except subprocess.TimeoutExpired:
         return {"is_error": True, "result": "", "note": "timed out"}, TIMEOUT
     elapsed = time.perf_counter() - started
@@ -416,12 +438,44 @@ def _verify_real(task: Task, root: Path) -> Graded:
     required = list(source["f2p"]) + list(source.get("p2p") or [])
     seen = tuple(sorted(set(required) & passed))
     unfixed = [n for n in source["f2p"] if n not in passed]
+    if unfixed and not seen and not _base_collects(task, root):
+        # Not one required node ran, and the unpatched base cannot collect
+        # either, so this is the environment and not the candidate. Without the
+        # control these look identical: an agent that breaks a module and a
+        # machine missing a dependency both observe nothing. The difference is
+        # that only one of them is the agent's doing.
+        return Graded(False, "setup", "nothing collected, and the base commit "
+                      "does not collect either: the environment is broken")
     if unfixed:
         return Graded(False, "unfixed", ", ".join(unfixed[:3]), seen)
     broke = [n for n in source.get("p2p") or [] if n not in passed]
     if broke:
         return Graded(False, "regressed", ", ".join(broke[:3]), seen)
     return Graded(True, "resolved", "", seen)
+
+
+def _base_collects(task: Task, root: Path) -> bool:
+    """Can the task's own tests be collected with no patch applied at all?
+
+    Only asked when a candidate observed nothing, and only to decide whose
+    fault that is. A full suite run would be the honest control and is far too
+    slow to spend on every failure, so collection is the proxy: the failures
+    this separates are import-time ones.
+    """
+    import os
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        control = Path(tmp) / "base"
+        base_tree(task, control)
+        if not _restore_tests(task, control):
+            return False
+        done = subprocess.run(
+            [sys.executable, "-m", "pytest", *_suite(control), "-q", "--no-header",
+             "--collect-only"],
+            cwd=control, capture_output=True, text=True, timeout=SUITE_TIMEOUT,
+            env={**os.environ, **(task.source.get("env") or {})},
+        )
+    return done.returncode == 0
 
 
 def _suite(root: Path) -> list[str]:
