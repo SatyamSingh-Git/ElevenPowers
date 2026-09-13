@@ -227,6 +227,12 @@ for a version string another agent had overwritten.
 is D55 for the third time in one night, in a way no amount of care inside the
 grader would have caught, because nothing inside the grader was wrong.
 
+It had been happening for days. A second dangling pointer, `click.pth`, is dated
+three days earlier and had left `import click` broken machine-wide that whole
+time. It never showed up because click's own tasks put `src` on `PYTHONPATH`
+ahead of site-packages, so the one repository that could have noticed was the
+one immune to it. Both were repaired; neither was ever reported by anything.
+
 ### What the bundles were for
 
 Every candidate is preserved as a patch against a recorded base precisely so
