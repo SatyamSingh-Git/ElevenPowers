@@ -559,8 +559,10 @@ recorded as regressions for a version string somebody else overwrote, one wrong
 headline, and a published claim that the preservation set had caught its first
 real regression.
 
-*Changed:* the agent runs with `PYTHONUSERBASE` inside its own workspace, so its
-installs die with it. And the grader now treats a run that observed nothing as
+*Changed:* the agent runs with `PIP_PREFIX` inside its own workspace, so its
+installs die with it (that took three attempts — see below), and the shared
+site is listed before and after every run, because an environment variable is a
+request and not a boundary. And the grader now treats a run that observed nothing as
 `setup` when the unpatched base cannot collect either — the control that
 separates an agent breaking a module from a machine missing a package, which
 look identical from the outcome alone.

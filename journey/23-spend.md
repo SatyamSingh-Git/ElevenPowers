@@ -136,6 +136,19 @@ omitted every task in every repository without a `.gitattributes`.
 
 ### The fix, and the probe that would have caught it
 
+The agent now runs with `PIP_PREFIX` inside its own workspace, so what it
+installs dies with it. That took three attempts, and the first two satisfy any
+test written about the environment variables: `PIP_USER=0` forbids the fallback
+rather than redirecting it, so pip targets a system site it cannot write and the
+install fails outright; `PYTHONUSERBASE` contains the writes and *also takes the
+real user site off `sys.path`*, which measured against a live interpreter hides
+pytest, setuptools, trio and attrs from the agent. Every task in the next sweep
+would have failed. Only running real pip separates the three.
+
+An environment variable is a request, not a boundary, so the shared site is
+listed before and after every run and anything new is written into that run's
+own record.
+
 Every git call in the evaluation pipeline now pins `core.autocrlf=false` and
 `core.eol=lf`, so a base tree is the repository's own bytes on any machine. A
 patch moves as bytes from `git diff` to disk to `git apply`, never through a
