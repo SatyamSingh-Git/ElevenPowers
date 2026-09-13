@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 157317,
+ "num_turns": 19,
+ "stop_reason": "end_turn",
+ "session_id": "8aa8232c-b260-4410-86a0-5cab420abe67",
+ "total_cost_usd": 0.768019,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 44339,
+  "cache_read_input_tokens": 956420,
+  "output_tokens": 12767,
+  "output_tokens_details": {
+   "thinking_tokens": 8844
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 44339,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 384,
+    "cache_read_input_tokens": 81229,
+    "cache_creation_input_tokens": 375,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 375
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 11715,
+   "outputTokens": 351,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.023469999999999998,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 12767,
+   "cacheReadInputTokens": 956420,
+   "cacheCreationInputTokens": 44339,
+   "webSearchRequests": 0,
+   "costUSD": 0.744549,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 59 tests pass, including the new regression test.\n\nApplied the upstream Jinja2 fix (pallets/jinja@66587ce) for this bug in `src/jinja2/idtracking.py`:\n\n- `Symbols.branch_update` previously skipped fixing up a variable's load if it was stored in *every* branch of an if/elif/else (`if branch_count == len(branch_symbols): continue`). That \"all branches set it\" check was based on a flawed per-target loop that also incorrectly `continue`d early whenever a target happened to already be in `self.stores`, which masked cases where the variable still needed to fall back to a resolve/alias load \u00e2\u20ac\u201d causing it to end up `undefined`.\n- Replaced the counting logic with a simpler set-difference (`stores.difference_update(self.stores)`) and removed the `branch_count == len(branch_symbols)` skip entirely, so the parameter is always re-loaded correctly regardless of how many branches set it.\n\nAlso added the upstream regression test (`test_load_parameter_when_set_in_all_if_branches` in `tests/test_regression.py`) and the CHANGES.rst entry (`:issue:1253`).",
+ "ttft_ms": 2227,
+ "ttft_stream_ms": 1203,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 191411,
+ "uuid": "ea558e40-2620-43c8-8dcb-3bd3646cd315"
+}

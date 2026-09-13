@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 157406,
+ "num_turns": 27,
+ "stop_reason": "end_turn",
+ "session_id": "d3a6b838-8fff-4c99-b2c7-99e5d43f2d8c",
+ "total_cost_usd": 0.8835976,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 38122,
+  "cache_read_input_tokens": 1677872,
+  "output_tokens": 10048,
+  "output_tokens_details": {
+   "thinking_tokens": 3404
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 38122,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 444,
+    "cache_read_input_tokens": 74983,
+    "cache_creation_input_tokens": 404,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 404
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 548,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000628,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 10048,
+   "cacheReadInputTokens": 1677872,
+   "cacheCreationInputTokens": 38122,
+   "webSearchRequests": 0,
+   "costUSD": 0.8829696,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Implemented instance support for `attrs.fields()` (matching the real upstream PR #1529, fixing #1400):\n\n- **`src/attr/_make.py`**: `fields()` now, when given a non-type/non-generic object, checks `type(obj).__attrs_attrs__`; if the instance's class is an attrs class, it recurses with the class. Otherwise raises `TypeError: Passed object must be a class or attrs instance.`\n- **`src/attr/__init__.pyi`**: widened `fields`'s type hint to `type[AttrsInstance] | AttrsInstance`.\n- **`docs/api.rst`**: added an example showing `attrs.fields(C(1, 2)) is attrs.fields(C)`.\n- **`tests/test_make.py`**: `test_instance` now asserts instances resolve to the same fields tuple; added `test_handler_non_attrs_instance` for the new error case.\n- **`tests/test_mypy.yml`**: added a passing type-check case for instance input, updated the expected error message for plain classes.\n- **`changelog.d/1529.change.md`**: added.\n\nAll 275 tests in `test_make.py` plus 499 in `test_funcs.py`/`test_functional.py`/`test_next_gen.py` pass. No files were staged or committed \u00e2\u20ac\u201d let me know if you'd like this committed.",
+ "ttft_ms": 8445,
+ "ttft_stream_ms": 6484,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 180447,
+ "uuid": "31cb0c71-24bb-450b-bfd8-be287df41bc3"
+}

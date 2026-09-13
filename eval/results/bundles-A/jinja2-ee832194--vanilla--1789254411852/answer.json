@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 317970,
+ "num_turns": 47,
+ "stop_reason": "end_turn",
+ "session_id": "f2181fd1-bf29-4703-8c2f-5527bcd2b114",
+ "total_cost_usd": 2.038937,
+ "usage": {
+  "input_tokens": 86,
+  "cache_creation_input_tokens": 77464,
+  "cache_read_input_tokens": 3979300,
+  "output_tokens": 25290,
+  "output_tokens_details": {
+   "thinking_tokens": 12425
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 77464,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 395,
+    "cache_read_input_tokens": 114286,
+    "cache_creation_input_tokens": 443,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 443
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 685,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007549999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 86,
+   "outputTokens": 25290,
+   "cacheReadInputTokens": 3979300,
+   "cacheCreationInputTokens": 77464,
+   "webSearchRequests": 0,
+   "costUSD": 2.038182,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 909 tests pass (906 existing + 3 new). Summary of the changes implementing \"Add support for namespaces in tuple assignment\":\n\n- **`src/jinja2/parser.py`**: Removed the special-cased top-level namespace check in `parse_assign_target`. Instead, `with_namespace` is now threaded through `parse_tuple` into `parse_primary`, so each element of a tuple target can independently be parsed as a plain name or a namespace (`ns.attr`) reference \u00e2\u20ac\u201d fixing `{% set ns.a, b = 1, 2 %}`, which previously silently dropped the tuple parsing.\n- **`src/jinja2/compiler.py`**: Namespace instance checks (`isinstance(ref, Namespace)`) are now collected up front via a new `_write_namespace_checks` helper \u00e2\u20ac\u201d deduplicated by name \u00e2\u20ac\u201d and emitted as statements before the assignment line, instead of inline inside `visit_NSRef`. This avoids emitting an `if`/`raise` statement in the middle of a tuple expression, which would have produced invalid Python.\n- Added a changelog entry and three regression tests covering single-namespace, multi-namespace, and invalid-target tuple assignment.",
+ "ttft_ms": 3550,
+ "ttft_stream_ms": 1780,
+ "time_to_request_ms": 42,
+ "type": "result",
+ "duration_ms": 331678,
+ "uuid": "d0b85df2-9ea7-49e2-a3da-ae09258251fe"
+}

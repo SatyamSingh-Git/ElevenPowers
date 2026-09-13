@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 85356,
+ "num_turns": 13,
+ "stop_reason": "end_turn",
+ "session_id": "daa641ac-ed5a-48e4-aa3d-496cd728cf74",
+ "total_cost_usd": 0.46347720000000003,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 24303,
+  "cache_read_input_tokens": 691764,
+  "output_tokens": 7297,
+  "output_tokens_details": {
+   "thinking_tokens": 4665
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 24303,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 133,
+    "cache_read_input_tokens": 59913,
+    "cache_creation_input_tokens": 1655,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1655
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000597,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 26,
+   "outputTokens": 7297,
+   "cacheReadInputTokens": 691764,
+   "cacheCreationInputTokens": 24303,
+   "webSearchRequests": 0,
+   "costUSD": 0.4628802000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 25 tests pass (5 skipped due to unavailable C speedups build, unrelated). The fix in `src/markupsafe/__init__.py`'s `striptags` now collapses whitespace after removing comments/tags rather than before, which correctly handles cases like `\"foo <br/> bar\"` (previously left as `\"foo  bar\"` with a double space, now correctly `\"foo bar\"`).",
+ "ttft_ms": 2426,
+ "ttft_stream_ms": 967,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 88752,
+ "uuid": "a6ec3267-13b8-4449-beb7-334c3c1f01e2"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 46462,
+ "num_turns": 13,
+ "stop_reason": "end_turn",
+ "session_id": "5b2327bb-b125-470e-9473-36e9284310cb",
+ "total_cost_usd": 0.4013566,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 23435,
+  "cache_read_input_tokens": 712422,
+  "output_tokens": 3090,
+  "output_tokens_details": {
+   "thinking_tokens": 587
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 23435,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 107,
+    "cache_read_input_tokens": 60478,
+    "cache_creation_input_tokens": 222,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 222
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000592,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 26,
+   "outputTokens": 3090,
+   "cacheReadInputTokens": 712422,
+   "cacheCreationInputTokens": 23435,
+   "webSearchRequests": 0,
+   "costUSD": 0.4007646,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 6 format-related tests pass, including the new `test_format_map`.\n\nImplemented `Markup.format_map` in `src/markupsafe/__init__.py:212-215`, mirroring `format` but passing the mapping directly (no positional args), matching `str.format_map` semantics. Added a changelog entry and a test.",
+ "ttft_ms": 2809,
+ "ttft_stream_ms": 1608,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 48913,
+ "uuid": "d624fc5d-b5c9-4aef-baa8-97d36cb6bd85"
+}

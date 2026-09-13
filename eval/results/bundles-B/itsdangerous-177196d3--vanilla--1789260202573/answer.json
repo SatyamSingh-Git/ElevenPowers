@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 27893,
+ "num_turns": 4,
+ "stop_reason": "end_turn",
+ "session_id": "676e38aa-1916-4749-9895-199b8d5e7e30",
+ "total_cost_usd": 0.1883472,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 16727,
+  "cache_read_input_tokens": 191734,
+  "output_tokens": 1990,
+  "output_tokens_details": {
+   "thinking_tokens": 1046
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16727,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1081,
+    "cache_read_input_tokens": 53038,
+    "cache_creation_input_tokens": 954,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 954
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005909999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 8,
+   "outputTokens": 1990,
+   "cacheReadInputTokens": 191734,
+   "cacheCreationInputTokens": 16727,
+   "webSearchRequests": 0,
+   "costUSD": 0.18775619999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "On Windows, `OSError` is the single exception class that also covers what used to be `WindowsError` (Python 3.3+ merged them). A minimal, correct catch looks like:\n\n```python\ntry:\n    do_something()\nexcept OSError as e:\n    if e.winerror == 5:      # Access is denied\n        ...\n    else:\n        raise\n```\n\nKey points:\n- `WindowsError` still exists as an alias of `OSError` for backward compatibility, but there's no reason to use it \u00e2\u20ac\u201d just catch `OSError`.\n- `e.errno` is the portable (POSIX-style) error number; `e.winerror` is the raw Windows error code and is only present on Windows (it's `None` elsewhere) \u00e2\u20ac\u201d don't check `winerror` on non-Windows code paths.\n- Common built-in subclasses (`FileNotFoundError`, `PermissionError`, `FileExistsError`, etc.) are raised on Windows too and are usually easier to catch than inspecting `winerror` codes directly.\n- Only catch it where the failure is actually expected/recoverable \u00e2\u20ac\u201d don't wrap calls in `except OSError: pass` defensively.\n\nI checked this repo (itsdangerous \u00e2\u20ac\u201d a signing library with no filesystem/OS calls), and nothing there does file/OS operations that would raise `OSError`, so there's no specific spot to patch. If you meant a particular file or a different project, point me at it and I'll make the actual edit.",
+ "ttft_ms": 2305,
+ "ttft_stream_ms": 940,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 27347,
+ "uuid": "0c779225-597a-4dd5-bf6d-5f4a20630957"
+}

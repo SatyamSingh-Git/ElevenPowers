@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 25195,
+ "num_turns": 6,
+ "stop_reason": "end_turn",
+ "session_id": "4df80d37-fa78-481e-be18-d0218fb90780",
+ "total_cost_usd": 0.19471259999999999,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 14995,
+  "cache_read_input_tokens": 288702,
+  "output_tokens": 1166,
+  "output_tokens_details": {
+   "thinking_tokens": 282
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14995,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 210,
+    "cache_read_input_tokens": 51791,
+    "cache_creation_input_tokens": 469,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 469
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 526,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000606,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 12,
+   "outputTokens": 1166,
+   "cacheReadInputTokens": 288702,
+   "cacheCreationInputTokens": 14995,
+   "webSearchRequests": 0,
+   "costUSD": 0.1941066,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed `_tempfilepager` in `src/click/_termui_impl.py:640-641` \u00e2\u20ac\u201d the `finally` block was calling `os.unlink(f.name)` without closing `f` first when an exception occurred before the normal `f.close()` call. On Windows, unlinking a still-open file handle fails. Added `f.close()` before `os.unlink()`; closing an already-closed file object is a no-op, so the normal success path is unaffected.",
+ "ttft_ms": 3744,
+ "ttft_stream_ms": 2838,
+ "time_to_request_ms": 104,
+ "type": "result",
+ "duration_ms": 24422,
+ "uuid": "cf78e15b-ff83-496d-b4e4-6bdfb1d2d0fa"
+}

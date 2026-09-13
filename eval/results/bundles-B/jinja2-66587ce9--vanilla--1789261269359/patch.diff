@@ -1,0 +1,49 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 2b81798..604b53e 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -45,6 +45,9 @@ Unreleased
+     filter. :issue:`1624`
+ -   Using ``set`` for multiple assignment (``a, b = 1, 2``) does not fail when the
+     target is a namespace attribute. :issue:`1413`
++-   Fix identifier tracking for a variable name that is assigned in all
++    branches of an ``if``/``elif``/``else`` block, which could incorrectly
++    leave it undefined.
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/idtracking.py b/src/jinja2/idtracking.py
+index cb4bccb..e6dd8cd 100644
+--- a/src/jinja2/idtracking.py
++++ b/src/jinja2/idtracking.py
+@@ -121,23 +121,20 @@ class Symbols:
+             self._define_ref(name, load=(VAR_LOAD_RESOLVE, name))
+ 
+     def branch_update(self, branch_symbols: t.Sequence["Symbols"]) -> None:
+-        stores: t.Dict[str, int] = {}
++        stores: t.Set[str] = set()
++
+         for branch in branch_symbols:
+-            for target in branch.stores:
+-                if target in self.stores:
+-                    continue
+-                stores[target] = stores.get(target, 0) + 1
++            stores.update(branch.stores)
++
++        stores.difference_update(self.stores)
+ 
+         for sym in branch_symbols:
+             self.refs.update(sym.refs)
+             self.loads.update(sym.loads)
+             self.stores.update(sym.stores)
+ 
+-        for name, branch_count in stores.items():
+-            if branch_count == len(branch_symbols):
+-                continue
+-
+-            target = self.find_ref(name)  # type: ignore
++        for name in stores:
++            target = self.find_ref(name)
+             assert target is not None, "should not happen"
+ 
+             if self.parent is not None:

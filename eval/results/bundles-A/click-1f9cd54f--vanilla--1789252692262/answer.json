@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 29030,
+ "num_turns": 5,
+ "stop_reason": "end_turn",
+ "session_id": "93fedba7-f9a5-4d4d-a4fd-2b42a2d12345",
+ "total_cost_usd": 0.1938927,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 16288,
+  "cache_read_input_tokens": 238829,
+  "output_tokens": 1592,
+  "output_tokens_details": {
+   "thinking_tokens": 712
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16288,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 75,
+    "cache_read_input_tokens": 52413,
+    "cache_creation_input_tokens": 1140,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1140
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 526,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000606,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 10,
+   "outputTokens": 1592,
+   "cacheReadInputTokens": 238829,
+   "cacheCreationInputTokens": 16288,
+   "webSearchRequests": 0,
+   "costUSD": 0.1932867,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "`f.close()` is idempotent, so this is safe on both the success path and the exception path \u00e2\u20ac\u201d the `finally` now always closes the file before unlinking, fixing the Windows failure when an exception occurs while the caller is writing to the pager.",
+ "ttft_ms": 6142,
+ "ttft_stream_ms": 4391,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 28505,
+ "uuid": "58389311-163e-45de-bf15-acc2d04a294d"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 34009,
+ "num_turns": 8,
+ "stop_reason": "end_turn",
+ "session_id": "24641125-17c1-4e22-a5ba-cd11880dc9f5",
+ "total_cost_usd": 0.23689119999999997,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 19339,
+  "cache_read_input_tokens": 303394,
+  "output_tokens": 1947,
+  "output_tokens_details": {
+   "thinking_tokens": 540
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19339,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 371,
+    "cache_read_input_tokens": 55155,
+    "cache_creation_input_tokens": 1449,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1449
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 523,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000598,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 12,
+   "outputTokens": 1947,
+   "cacheReadInputTokens": 303394,
+   "cacheCreationInputTokens": 19339,
+   "webSearchRequests": 0,
+   "costUSD": 0.23629319999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This is the Jinja2 source repo. The claim doesn't match what's actually there.\n\n`do_attr` (the `attr` filter, `src/jinja2/filters.py:1410-1438`) calls the builtin `getattr(obj, name)` directly, not `environment.getattr()`. `Environment.getattr()` (`src/jinja2/environment.py:485-496`) is a separate method \u00e2\u20ac\u201d it falls back to `obj[attribute]` if the plain attribute lookup fails, and returns `self.undefined(...)` instead of raising. `do_attr` doesn't use that fallback path at all: on `AttributeError` it just falls through to `environment.undefined(obj=obj, name=name)` and never tries `obj[name]`, matching the docstring's claim that `attr` looks up attributes only, not items.\n\nSo: `attr` filter \u00e2\u2030\u00a0 uses `env.getattr`. It replicates part of that logic (get attribute, sandboxed check, fall back to `environment.undefined`) inline instead of delegating to `Environment.getattr`.\n\nWas this meant as something to fix/verify, or were you checking your understanding of the code?",
+ "ttft_ms": 7546,
+ "ttft_stream_ms": 3881,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 34172,
+ "uuid": "4120e509-3474-456e-8219-07498ba33ce3"
+}

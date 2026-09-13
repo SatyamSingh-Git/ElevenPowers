@@ -1,0 +1,45 @@
+diff --git a/src/click/_utils.py b/src/click/_utils.py
+index 05ee2e9..6f8d518 100644
+--- a/src/click/_utils.py
++++ b/src/click/_utils.py
+@@ -18,6 +18,12 @@ class Sentinel(enum.Enum):
+     def __repr__(self) -> str:
+         return f"{self.__class__.__name__}.{self.name}"
+ 
++    def __reduce_ex__(self, proto: object) -> tuple[t.Any, ...]:
++        # Members hold `object()` values, which don't survive a
++        # pickle round-trip with their identity intact. Reconstruct
++        # by name instead of by value.
++        return getattr, (self.__class__, self._name_)
++
+ 
+ UNSET: t.Literal[Sentinel.UNSET] = Sentinel.UNSET
+ """Sentinel used to indicate that a value is not set."""
+diff --git a/tests/test_utils/test_sentinel.py b/tests/test_utils/test_sentinel.py
+index 1dd5b15..b271604 100644
+--- a/tests/test_utils/test_sentinel.py
++++ b/tests/test_utils/test_sentinel.py
+@@ -1,9 +1,23 @@
++import copy
++import pickle
+ from decimal import Decimal
+ from fractions import Fraction
+ 
++import pytest
++
++from click._utils import FLAG_NEEDS_VALUE
+ from click._utils import UNSET
+ 
+ 
++@pytest.mark.parametrize("member", [UNSET, FLAG_NEEDS_VALUE])
++def test_sentinel_copy_deepcopy_pickle(member):
++    assert copy.copy(member) is member
++    assert copy.deepcopy(member) is member
++
++    for protocol in range(pickle.HIGHEST_PROTOCOL + 1):
++        assert pickle.loads(pickle.dumps(member, protocol=protocol)) is member
++
++
+ def test_unset_sentinel():
+     value = UNSET
+ 

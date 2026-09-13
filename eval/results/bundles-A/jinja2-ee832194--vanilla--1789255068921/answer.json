@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 276864,
+ "num_turns": 47,
+ "stop_reason": "end_turn",
+ "session_id": "b4275690-8c62-40b1-b565-e719214d7f58",
+ "total_cost_usd": 1.9327262,
+ "usage": {
+  "input_tokens": 94,
+  "cache_creation_input_tokens": 69189,
+  "cache_read_input_tokens": 3973484,
+  "output_tokens": 21634,
+  "output_tokens_details": {
+   "thinking_tokens": 9499
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 69189,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 509,
+    "cache_read_input_tokens": 106200,
+    "cache_creation_input_tokens": 254,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 254
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 685,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007549999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 94,
+   "outputTokens": 21634,
+   "cacheReadInputTokens": 3973484,
+   "cacheCreationInputTokens": 69189,
+   "webSearchRequests": 0,
+   "costUSD": 1.9319712000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 909 tests pass. Summary of the fix:\n\n**Bug:** `{% set %}` special-cased namespace assignment (`ns.attr = ...`) by intercepting it before tuple parsing, so `{% set a, ns.attr = 1, 2 %}` failed to parse at all, and `visit_NSRef` emitted a multi-line isinstance check inline \u00e2\u20ac\u201d which would corrupt generated Python if it ever ended up inside a tuple literal.\n\n**Fix:**\n- `src/jinja2/parser.py`: removed the special-case branch in `parse_assign_target`. Made `parse_primary` and `parse_tuple` namespace-aware via a `with_namespace` parameter, so each item in a tuple assignment target can independently be a plain name or a namespace ref (`ns.attr`).\n- `src/jinja2/compiler.py`: moved the \"is this a Namespace instance\" runtime check out of `visit_NSRef` (which just emits `ref['attr']` now) into a new `_assert_namespace_targets` helper called once per `Assign`/`AssignBlock`, before the assignment line. It walks all `NSRef` nodes in the target (including the target itself, since `find_all` only checks children) and dedupes by namespace name so `ns.a, ns.b = 1, 2` emits one check, not two.\n- Added regression tests in `tests/test_core_tags.py` for tuple assignment with namespaces (pure, mixed with plain names, and the runtime error case), plus a `CHANGES.rst` entry.",
+ "ttft_ms": 2884,
+ "ttft_stream_ms": 1305,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 299853,
+ "uuid": "9959448f-1be7-4c00-89ba-8a0a4c4d174a"
+}

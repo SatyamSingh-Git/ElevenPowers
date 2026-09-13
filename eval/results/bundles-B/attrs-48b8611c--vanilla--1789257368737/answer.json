@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 85112,
+ "num_turns": 20,
+ "stop_reason": "end_turn",
+ "session_id": "a85ab496-1d69-4da3-803e-ffc4297fc1fa",
+ "total_cost_usd": 0.597568,
+ "usage": {
+  "input_tokens": 40,
+  "cache_creation_input_tokens": 27815,
+  "cache_read_input_tokens": 1136900,
+  "output_tokens": 5924,
+  "output_tokens_details": {
+   "thinking_tokens": 831
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 27815,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 197,
+    "cache_read_input_tokens": 64865,
+    "cache_creation_input_tokens": 215,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 215
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 548,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000628,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 40,
+   "outputTokens": 5924,
+   "cacheReadInputTokens": 1136900,
+   "cacheCreationInputTokens": 27815,
+   "webSearchRequests": 0,
+   "costUSD": 0.5969399999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 10 `TestFields` tests pass, including the new instance-support and non-attrs-instance cases.\n\nSummary: implemented `attrs.fields()` instance support (matching upstream PR #1529, fixes #1400) \u00e2\u20ac\u201d it now accepts an *attrs* instance and resolves to its class's fields, raising `TypeError` only for non-class/non-attrs-instance objects. Updated `_make.py`, the `.pyi` stub, `docs/api.rst`, `tests/test_make.py`, `tests/test_mypy.yml`, and added `changelog.d/1529.change.md`.",
+ "ttft_ms": 3531,
+ "ttft_stream_ms": 1976,
+ "time_to_request_ms": 99,
+ "type": "result",
+ "duration_ms": 94286,
+ "uuid": "92fb7bc8-6c69-4783-97c1-54ac5705a22a"
+}

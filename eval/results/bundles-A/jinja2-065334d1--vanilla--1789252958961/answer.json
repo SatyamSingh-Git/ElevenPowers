@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 24004,
+ "num_turns": 5,
+ "stop_reason": "end_turn",
+ "session_id": "1c946e0a-6a62-44a2-b428-189b1b773d84",
+ "total_cost_usd": 0.1979434,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 16592,
+  "cache_read_input_tokens": 242528,
+  "output_tokens": 1667,
+  "output_tokens_details": {
+   "thinking_tokens": 983
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16592,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 832,
+    "cache_read_input_tokens": 52963,
+    "cache_creation_input_tokens": 894,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 894
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 523,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000598,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 10,
+   "outputTokens": 1667,
+   "cacheReadInputTokens": 242528,
+   "cacheCreationInputTokens": 16592,
+   "webSearchRequests": 0,
+   "costUSD": 0.1973454,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "I looked at `do_attr` in `src/jinja2/filters.py:1411`. It doesn't currently call `environment.getattr` \u00e2\u20ac\u201d it calls Python's builtin `getattr(obj, name)` directly, then re-implements the sandbox safety check inline (`environment.is_safe_attribute` / `environment.unsafe_undefined`) instead of delegating to `environment.getattr`, which already does that in `SandboxedEnvironment.getattr` (sandbox.py:314-319).\n\nWhat would you like me to do here \u00e2\u20ac\u201d refactor `do_attr` to call `environment.getattr` instead of duplicating the logic, or something else?",
+ "ttft_ms": 2738,
+ "ttft_stream_ms": 1139,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 24004,
+ "uuid": "23cddc95-b096-4551-81b5-939a520a9f74"
+}

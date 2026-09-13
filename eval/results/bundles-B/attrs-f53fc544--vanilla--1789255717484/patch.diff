@@ -1,0 +1,64 @@
+diff --git a/changelog.d/1606.change.md b/changelog.d/1606.change.md
+new file mode 100644
+index 0000000..6c174d6
+--- /dev/null
++++ b/changelog.d/1606.change.md
+@@ -0,0 +1 @@
++Generating `__replace__` no longer mutates the `__module__`, `__qualname__`, and `__doc__` of the shared `attrs.evolve()` function.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index c7cf364..3b79dc4 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1108,7 +1108,10 @@ class _ClassBuilder:
+         return self
+ 
+     def add_replace(self):
+-        self._cls_dict["__replace__"] = self._add_method_dunders(evolve)
++        def __replace__(self, **changes):
++            return evolve(self, **changes)
++
++        self._cls_dict["__replace__"] = self._add_method_dunders(__replace__)
+         return self
+ 
+     def add_match_args(self):
+diff --git a/tests/test_functional.py b/tests/test_functional.py
+index b8dfa45..62ad94a 100644
+--- a/tests/test_functional.py
++++ b/tests/test_functional.py
+@@ -806,6 +806,36 @@ class TestReplace:
+ 
+         assert sentinel == C.__replace__
+ 
++    @pytest.mark.parametrize("slots", [True, False])
++    def test_does_not_mutate_evolve(self, slots):
++        """
++        Adding __replace__ to a class does not mutate attrs.evolve's
++        __module__/__qualname__/__doc__, and __replace__ is bound to the
++        class it belongs to -- not to whichever class was built last.
++        """
++        qualname, module, doc = (
++            attr.evolve.__qualname__,
++            attr.evolve.__module__,
++            attr.evolve.__doc__,
++        )
++
++        @attr.s(slots=slots)
++        class First:
++            x = attr.ib()
++
++        @attr.s(slots=slots)
++        class Second:
++            y = attr.ib()
++
++        assert attr.evolve.__qualname__ == qualname
++        assert attr.evolve.__module__ == module
++        assert attr.evolve.__doc__ == doc
++
++        assert First.__replace__.__qualname__.endswith("First.__replace__")
++        assert Second.__replace__.__qualname__.endswith(
++            "Second.__replace__"
++        )
++
+     def test_invalid_field_name(self):
+         """
+         Invalid field names raise a TypeError.

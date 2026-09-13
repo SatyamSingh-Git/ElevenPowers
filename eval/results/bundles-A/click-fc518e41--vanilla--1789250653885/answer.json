@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 162493,
+ "num_turns": 31,
+ "stop_reason": "end_turn",
+ "session_id": "3436badf-bae1-4b35-8ef0-b1c79c1f22d1",
+ "total_cost_usd": 0.9424176999999998,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 44771,
+  "cache_read_input_tokens": 1610489,
+  "output_tokens": 12657,
+  "output_tokens_details": {
+   "thinking_tokens": 2835
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 44771,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 353,
+    "cache_read_input_tokens": 81465,
+    "cache_creation_input_tokens": 571,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 571
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 540,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00064,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 12657,
+   "cacheReadInputTokens": 1610489,
+   "cacheCreationInputTokens": 44771,
+   "webSearchRequests": 0,
+   "costUSD": 0.9417776999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed. Root cause: `Command.main()` handled `KeyboardInterrupt` and reported errors from inside `except` blocks (`echo`/`e.show()`/`sys.exit()`), which sit outside the `try` that catches `KeyboardInterrupt` \u00e2\u20ac\u201d a second Ctrl-C during that reporting step escaped as an unhandled traceback instead of exiting cleanly (upstream click issue #3802).\n\nApplied the upstream fix (PR #3818): handlers now only collect a `report` callback and `exit_code`, with the actual message-printing and `sys.exit()` moved to one place at the end of an outer `try`/`except (EOFError, KeyboardInterrupt)` \u00e2\u20ac\u201d so a late interrupt can only cost the \"Aborted!\" message, never the correct exit code or cause a raw traceback. Updated `CHANGES.md` and `docs/exceptions.md` to match, and added `tests/test_abort_interrupt.py` covering interrupts during abort/error reporting and during the final exit. Full test suite (1931 tests) passes.",
+ "ttft_ms": 5031,
+ "ttft_stream_ms": 4572,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 180197,
+ "uuid": "06db0270-de95-4613-942f-f021314bfcff"
+}

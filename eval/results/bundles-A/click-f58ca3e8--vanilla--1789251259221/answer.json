@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 126957,
+ "num_turns": 24,
+ "stop_reason": "end_turn",
+ "session_id": "06ce7c76-ecad-4189-bde2-4e61a5a70ead",
+ "total_cost_usd": 0.7096246999999999,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 29142,
+  "cache_read_input_tokens": 1326849,
+  "output_tokens": 9063,
+  "output_tokens_details": {
+   "thinking_tokens": 4468
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29142,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 430,
+    "cache_read_input_tokens": 65892,
+    "cache_creation_input_tokens": 515,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 515
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 535,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000635,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 9063,
+   "cacheReadInputTokens": 1326849,
+   "cacheCreationInputTokens": 29142,
+   "webSearchRequests": 0,
+   "costUSD": 0.7089897,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full suite passes.\n\n**Root cause**: `Sentinel` (in `src/click/_utils.py`) is a plain `enum.Enum` whose members hold an `object()` as their value. `copy()`/`deepcopy()` already worked because `enum.Enum` defines `__copy__`/`__deepcopy__` to return `self`. But `pickle` uses `__reduce_ex__`, which stock `Enum` implements as `(cls, (self._value_,))` \u00e2\u20ac\u201d reconstructing via `Sentinel(value)`. Since the value is a bare `object()`, pickling/unpickling it produces a *new* object with no equality to the original, so `Sentinel(new_value)` raised `ValueError: ... is not a valid Sentinel`.\n\n**Fix**: override `__reduce_ex__` on `Sentinel` to reconstruct by name instead of by value:\n\n```python\ndef __reduce_ex__(self, protocol: object) -> tuple[t.Any, ...]:\n    return getattr, (self.__class__, self._name_)\n```\n\nAlso added regression tests for `copy`, `deepcopy`, and `pickle` (across all pickle protocols) in `tests/test_utils/test_sentinel.py`, and a CHANGES.md entry. Full test suite (1922 passed) is green.",
+ "ttft_ms": 3388,
+ "ttft_stream_ms": 2124,
+ "time_to_request_ms": 38,
+ "type": "result",
+ "duration_ms": 141477,
+ "uuid": "6c5938f7-c4a9-4638-bfde-8898049a3855"
+}

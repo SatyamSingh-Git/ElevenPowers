@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 22191,
+ "num_turns": 4,
+ "stop_reason": "end_turn",
+ "session_id": "9233e494-d38a-4dce-a040-269ce7e1bb4a",
+ "total_cost_usd": 0.16917870000000002,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 15937,
+  "cache_read_input_tokens": 189849,
+  "output_tokens": 1065,
+  "output_tokens_details": {
+   "thinking_tokens": 357
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15937,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 329,
+    "cache_read_input_tokens": 52359,
+    "cache_creation_input_tokens": 843,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 843
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 523,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000603,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 8,
+   "outputTokens": 1065,
+   "cacheReadInputTokens": 189849,
+   "cacheCreationInputTokens": 15937,
+   "webSearchRequests": 0,
+   "costUSD": 0.16857570000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Actually, `do_attr` (the `attr` filter) at `src/jinja2/filters.py:1411-1438` calls Python's builtin `getattr(obj, name)` directly \u00e2\u20ac\u201d not `environment.getattr`. It only consults the environment afterward for sandbox safety checks (`environment.is_safe_attribute`).\n\nBy contrast, `environment.getattr` (`src/jinja2/environment.py:485`) is used for normal `.` attribute-access expressions in templates (via `nodes.py:872` and `compiler.py:1756`), and it falls back to item lookup (`obj[attr]`) if the plain attribute lookup fails \u00e2\u20ac\u201d that's the whole point of `Environment.getattr` vs. the `attr` filter, which is documented as \"only look up attributes, not items.\"\n\nSo the claim \"attr filter uses env.getattr\" is incorrect for non-sandboxed environments \u00e2\u20ac\u201d it uses plain `getattr`. Did you want this changed, or were you flagging it as a bug/question about the current behavior?",
+ "ttft_ms": 8522,
+ "ttft_stream_ms": 5324,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 22531,
+ "uuid": "f1445675-4f8b-4ff6-a070-bfc077b29c93"
+}

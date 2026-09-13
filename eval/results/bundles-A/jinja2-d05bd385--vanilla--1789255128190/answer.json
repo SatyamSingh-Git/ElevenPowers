@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 32256,
+ "num_turns": 5,
+ "stop_reason": "end_turn",
+ "session_id": "4fe97dd4-c16d-4a71-afa8-fd03766b17a5",
+ "total_cost_usd": 0.1954621,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 14800,
+  "cache_read_input_tokens": 240537,
+  "output_tokens": 2259,
+  "output_tokens_details": {
+   "thinking_tokens": 1199
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14800,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 76,
+    "cache_read_input_tokens": 51763,
+    "cache_creation_input_tokens": 302,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 302
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005859999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 10,
+   "outputTokens": 2259,
+   "cacheReadInputTokens": 240537,
+   "cacheCreationInputTokens": 14800,
+   "webSearchRequests": 0,
+   "costUSD": 0.19487610000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Got it \u00e2\u20ac\u201d saved as a standing preference: when I use `ToolSearch` with a `select:` query, I'll include context/keywords alongside the tool name(s) instead of passing bare names. Let me know what you'd like to work on next.",
+ "ttft_ms": 14419,
+ "ttft_stream_ms": 1508,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 31538,
+ "uuid": "9a774d58-088e-4032-be68-c955c45f5423"
+}

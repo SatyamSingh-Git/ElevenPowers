@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 45119,
+ "num_turns": 11,
+ "stop_reason": "end_turn",
+ "session_id": "4b165438-aca2-47c9-aa18-2d56c8efb3b6",
+ "total_cost_usd": 0.3699595,
+ "usage": {
+  "input_tokens": 22,
+  "cache_creation_input_tokens": 23963,
+  "cache_read_input_tokens": 612495,
+  "output_tokens": 2785,
+  "output_tokens_details": {
+   "thinking_tokens": 648
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 23963,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 155,
+    "cache_read_input_tokens": 61030,
+    "cache_creation_input_tokens": 198,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 198
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000592,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 22,
+   "outputTokens": 2785,
+   "cacheReadInputTokens": 612495,
+   "cacheCreationInputTokens": 23963,
+   "webSearchRequests": 0,
+   "costUSD": 0.36936749999999996,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Added `Markup.format_map` in `src/markupsafe/__init__.py:212-215`, mirroring the existing `format` method but delegating to `EscapeFormatter.vformat` with the given mapping (matching `str.format_map` semantics \u00e2\u20ac\u201d no positional args, arbitrary mapping instead of a copied dict). Also added a test (`tests/test_markupsafe.py`) and a changelog entry. Full test suite passes (36 passed, 17 skipped).",
+ "ttft_ms": 3880,
+ "ttft_stream_ms": 2376,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 48708,
+ "uuid": "dd9e1816-5471-4f14-a1a6-b4a4ef580868"
+}

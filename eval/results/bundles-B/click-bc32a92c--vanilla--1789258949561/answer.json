@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 410132,
+ "num_turns": 39,
+ "stop_reason": "end_turn",
+ "session_id": "dd2e5d23-e70c-4352-8ad8-7dad4c6b4374",
+ "total_cost_usd": 2.1949256000000004,
+ "usage": {
+  "input_tokens": 78,
+  "cache_creation_input_tokens": 93639,
+  "cache_read_input_tokens": 3642592,
+  "output_tokens": 35965,
+  "output_tokens_details": {
+   "thinking_tokens": 21028
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 93639,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 776,
+    "cache_read_input_tokens": 130489,
+    "cache_creation_input_tokens": 415,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 415
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 530,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000605,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 78,
+   "outputTokens": 35965,
+   "cacheReadInputTokens": 3642592,
+   "cacheCreationInputTokens": 93639,
+   "webSearchRequests": 0,
+   "costUSD": 2.1943206,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "## Summary\n\nRefactored pager stream handling in `src/click/_termui_impl.py` to drop the deferred text/binary branching:\n\n- **Removed `_pager_contextmanager`** \u00e2\u20ac\u201d its dispatch logic (choosing `_nullpager`/`_tempfilepager`/`_pipepager`) is now `get_pager_file` itself, which returns the chosen backend's context manager directly instead of round-tripping through a `(stream, encoding, color)` tuple.\n- **`_pipepager` and `_tempfilepager` now build genuine binary streams** (plain `Popen(..., stdin=PIPE)` and `NamedTemporaryFile(mode=\"wb\")`, dropping the pointless `text=True`/`mode=\"w\"` that `get_pager_file` used to immediately detach and rewrap anyway) and wrap them once, locally, via a new small helper `_wrap_pager_stream`.\n- **`_wrap_pager_stream`** centralizes the \"wrap in `MaybeStripAnsi`, flush-then-detach on exit\" pattern that used to live in `get_pager_file` and apply uniformly to a `t.BinaryIO | t.TextIO` union.\n- **`_nullpager`** is now the only place that still has to ask \"does this stream even have a binary buffer?\" (via `_has_binary_buffer`/`_BufferedTextPagerStream`, moved next to it) \u00e2\u20ac\u201d because it's the only backend where the answer can genuinely be no (e.g. `StringIO` fallback when there's no real stdout). It reuses `_wrap_pager_stream` when a buffer exists, and now explicitly flushes in a `finally` when it doesn't, since that responsibility isn't done by a shared outer layer anymore.\n\nOne test (`test_get_pager_file_flushes_stream_on_exception`) monkeypatched the removed `_pager_contextmanager` directly; I rewrote it to monkeypatch `isatty`/`_default_text_stdout` instead, exercising the real no-buffer `_nullpager` path.\n\nVerified with the full test suite: 1900 passed, 94 skipped (Windows-only skips are the Unix pipe-pager tests, expected on this machine), plus a targeted run confirming the Windows `_tempfilepager` path (including ANSI strip/preserve) passes end-to-end.",
+ "ttft_ms": 2375,
+ "ttft_stream_ms": 1766,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 437164,
+ "uuid": "c7f6b2c1-6d88-4527-a95a-24e8f5e89f55"
+}

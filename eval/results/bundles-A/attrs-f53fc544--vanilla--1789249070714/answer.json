@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 134457,
+ "num_turns": 24,
+ "stop_reason": "end_turn",
+ "session_id": "43da6438-cf1a-429a-8c38-1a89db825873",
+ "total_cost_usd": 0.7397644000000001,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 35026,
+  "cache_read_input_tokens": 1309888,
+  "output_tokens": 9059,
+  "output_tokens_details": {
+   "thinking_tokens": 3785
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 35026,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 478,
+    "cache_read_input_tokens": 71283,
+    "cache_creation_input_tokens": 1008,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1008
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 546,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000631,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 42,
+   "outputTokens": 9059,
+   "cacheReadInputTokens": 1309888,
+   "cacheCreationInputTokens": 35026,
+   "webSearchRequests": 0,
+   "costUSD": 0.7391334,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "I've implemented the PR \"Stop evolve dunders from being modified (#1606)\".\n\n**The bug:** `_ClassBuilder.add_replace()` assigned the module-level `evolve` function object directly as each class's `__replace__` dunder, then `_add_method_dunders()` mutated that *same shared object's* `__module__`/`__qualname__`/`__doc__` in place. Effect: defining any attrs class with `__replace__` (Python 3.13+) corrupted `attrs.evolve`'s own metadata, and every class's `__replace__` was literally the identical function object (`Foo.__replace__ is Bar.__replace__ is attr.evolve`), with its qualname wrongly showing `evolve` instead of `__replace__`.\n\n**The fix** (`src/attr/_make.py`): wrap the call in a small per-class `__replace__` function instead of reassigning `evolve` itself, so each class gets its own function object to stamp dunders onto.\n\nI verified the bug reproduces on the original code (`attr.evolve.__qualname__` became `Bar.evolve` after defining an unrelated class) and confirmed the fix resolves it. Added a regression test (`test_does_not_share_or_mutate_evolve`) checking both directions \u00e2\u20ac\u201d `evolve`'s own dunders stay untouched, and each class's `__replace__` is distinct with a correct qualname \u00e2\u20ac\u201d plus a changelog entry. Full test suite: 1405 passed.",
+ "ttft_ms": 5768,
+ "ttft_stream_ms": 2615,
+ "time_to_request_ms": 59,
+ "type": "result",
+ "duration_ms": 159354,
+ "uuid": "de4f8086-7abf-47fd-8e79-56527b1dbf20"
+}

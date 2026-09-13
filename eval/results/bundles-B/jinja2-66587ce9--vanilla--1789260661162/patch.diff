@@ -1,0 +1,70 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 2b81798..b6a5a1a 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -45,6 +45,9 @@ Unreleased
+     filter. :issue:`1624`
+ -   Using ``set`` for multiple assignment (``a, b = 1, 2``) does not fail when the
+     target is a namespace attribute. :issue:`1413`
++-   Using ``set`` in all branches of ``{% if %}{% elif %}{% else %}`` blocks
++    does not cause the variable to be considered initially undefined.
++    :issue:`1253`
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/idtracking.py b/src/jinja2/idtracking.py
+index cb4bccb..e6dd8cd 100644
+--- a/src/jinja2/idtracking.py
++++ b/src/jinja2/idtracking.py
+@@ -121,23 +121,20 @@ class Symbols:
+             self._define_ref(name, load=(VAR_LOAD_RESOLVE, name))
+ 
+     def branch_update(self, branch_symbols: t.Sequence["Symbols"]) -> None:
+-        stores: t.Dict[str, int] = {}
++        stores: t.Set[str] = set()
++
+         for branch in branch_symbols:
+-            for target in branch.stores:
+-                if target in self.stores:
+-                    continue
+-                stores[target] = stores.get(target, 0) + 1
++            stores.update(branch.stores)
++
++        stores.difference_update(self.stores)
+ 
+         for sym in branch_symbols:
+             self.refs.update(sym.refs)
+             self.loads.update(sym.loads)
+             self.stores.update(sym.stores)
+ 
+-        for name, branch_count in stores.items():
+-            if branch_count == len(branch_symbols):
+-                continue
+-
+-            target = self.find_ref(name)  # type: ignore
++        for name in stores:
++            target = self.find_ref(name)
+             assert target is not None, "should not happen"
+ 
+             if self.parent is not None:
+diff --git a/tests/test_regression.py b/tests/test_regression.py
+index 10df2d1..93d72c5 100644
+--- a/tests/test_regression.py
++++ b/tests/test_regression.py
+@@ -750,6 +750,16 @@ End"""
+         assert tmpl.render() == "foo"
+ 
+ 
++def test_load_parameter_when_set_in_all_if_branches(env):
++    tmpl = env.from_string(
++        "{% if True %}{{ a.b }}{% set a = 1 %}"
++        "{% elif False %}{% set a = 2 %}"
++        "{% else %}{% set a = 3 %}{% endif %}"
++        "{{ a }}"
++    )
++    assert tmpl.render(a={"b": 0}) == "01"
++
++
+ @pytest.mark.parametrize("unicode_char", ["\N{FORM FEED}", "\x85"])
+ def test_unicode_whitespace(env, unicode_char):
+     content = "Lorem ipsum\n" + unicode_char + "\nMore text"

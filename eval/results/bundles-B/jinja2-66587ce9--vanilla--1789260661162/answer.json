@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 232555,
+ "num_turns": 32,
+ "stop_reason": "end_turn",
+ "session_id": "319d29c7-509d-4c5b-bba1-5196593a543c",
+ "total_cost_usd": 1.2486068999999997,
+ "usage": {
+  "input_tokens": 54,
+  "cache_creation_input_tokens": 54881,
+  "cache_read_input_tokens": 2011323,
+  "output_tokens": 15686,
+  "output_tokens_details": {
+   "thinking_tokens": 9437
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 54881,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 433,
+    "cache_read_input_tokens": 91707,
+    "cache_creation_input_tokens": 439,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 439
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 54892,
+   "outputTokens": 1116,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.08047199999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 54,
+   "outputTokens": 15686,
+   "cacheReadInputTokens": 2011323,
+   "cacheCreationInputTokens": 54881,
+   "webSearchRequests": 0,
+   "costUSD": 1.1681348999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 783 tests pass. Summary of the fix applied to this Jinja2 checkout (matching upstream PR #1665):\n\n- **`src/jinja2/idtracking.py`**: `Symbols.branch_update` previously counted per-branch stores and skipped re-resolving a name (`continue`) whenever it was stored in *all* branches, on the assumption it was a fresh local variable now always defined. That assumption broke when the name was actually a parameter/outer variable being reassigned in every branch \u00e2\u20ac\u201d it left the load instruction as `VAR_LOAD_PARAMETER`/stale instead of falling back correctly, so it resolved to `missing`/undefined. Replaced the branch-count logic with a plain set difference (`stores.difference_update(self.stores)`) so every name stored in all branches still goes through the resolve/alias logic.\n- **`tests/test_regression.py`**: added `test_load_parameter_when_set_in_all_if_branches`, which fails without the fix.\n- **`CHANGES.rst`**: added changelog entry linking `:issue:`1253``.\n\nVerified: the new test and the full `idtracking` test suite pass, plus the entire test suite (783 tests, excluding two modules that fail to collect due to a missing `attrs` package needed by `trio` \u00e2\u20ac\u201d unrelated to this change).",
+ "ttft_ms": 4311,
+ "ttft_stream_ms": 2243,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 247415,
+ "uuid": "b7960f09-fcd9-479c-addc-f1a0cdd6cdae"
+}

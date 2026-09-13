@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 190338,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "79777442-7d22-45af-9200-cda98945487d",
+ "total_cost_usd": 0.9254597999999999,
+ "usage": {
+  "input_tokens": 60,
+  "cache_creation_input_tokens": 31932,
+  "cache_read_input_tokens": 1778016,
+  "output_tokens": 11317,
+  "output_tokens_details": {
+   "thinking_tokens": 5929
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 31932,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 310,
+    "cache_read_input_tokens": 68879,
+    "cache_creation_input_tokens": 318,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 318
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 18033,
+   "outputTokens": 499,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.030528,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 60,
+   "outputTokens": 11317,
+   "cacheReadInputTokens": 1778016,
+   "cacheCreationInputTokens": 31932,
+   "webSearchRequests": 0,
+   "costUSD": 0.8949317999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed. `_is_class_var` in `src/attr/_make.py` now unwraps `ForwardRef.__forward_arg__` before applying the string-prefix checks, so `ClassVar` annotations that only resolve to a `ForwardRef` (e.g. `ClassVar` imported solely under `TYPE_CHECKING`, or Python 3.14's lazy `ForwardRef(\"ClassVar[str]\", is_class=True)`) are correctly recognized as class variables instead of being treated as regular attrs fields.\n\nChanges:\n- `src/attr/_make.py:292` \u00e2\u20ac\u201d unwrap `__forward_arg__` before the prefix check.\n- `tests/test_annotations.py` \u00e2\u20ac\u201d added a `ForwardRef` case to `test_is_class_var`.\n- `changelog.d/1593.change.md` \u00e2\u20ac\u201d changelog fragment.\n\nFull test suite passes (1388 passed, 5 skipped, 1 xfailed).",
+ "ttft_ms": 3822,
+ "ttft_stream_ms": 2840,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 213831,
+ "uuid": "7451e5b3-5d69-415d-afb4-17cfac336b3d"
+}

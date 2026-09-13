@@ -1,0 +1,38 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index d1074d3..ae1ef44 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -3,6 +3,9 @@ Version 2.1.5
+ 
+ Unreleased
+ 
++-   Fix ``striptags`` not collapsing whitespace left behind after multiple
++    tags/comments bordered by single spaces are removed.
++
+ 
+ Version 2.1.4
+ -------------
+diff --git a/src/markupsafe/__init__.py b/src/markupsafe/__init__.py
+index 1e0f022..0584701 100644
+--- a/src/markupsafe/__init__.py
++++ b/src/markupsafe/__init__.py
+@@ -158,8 +158,7 @@ class Markup(str):
+         >>> Markup("Main &raquo;\t<em>About</em>").striptags()
+         'Main » About'
+         """
+-        # collapse spaces
+-        value = " ".join(self.split())
++        value = str(self)
+ 
+         # Look for comments then tags separately. Otherwise, a comment that
+         # contains a tag would end early, leaving some of the comment behind.
+@@ -193,6 +192,9 @@ class Markup(str):
+ 
+             value = f"{value[:start]}{value[end + 1:]}"
+ 
++        # collapse spaces
++        value = " ".join(value.split())
++
+         return self.__class__(value).unescape()
+ 
+     @classmethod

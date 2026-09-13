@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 142126,
+ "num_turns": 36,
+ "stop_reason": "end_turn",
+ "session_id": "0326a640-210f-4acf-a9e1-44fb2f9e2d5c",
+ "total_cost_usd": 1.0611061,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 40147,
+  "cache_read_input_tokens": 2270007,
+  "output_tokens": 9224,
+  "output_tokens_details": {
+   "thinking_tokens": 1654
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 40147,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 306,
+    "cache_read_input_tokens": 76942,
+    "cache_creation_input_tokens": 470,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 470
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 588,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000658,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 68,
+   "outputTokens": 9224,
+   "cacheReadInputTokens": 2270007,
+   "cacheCreationInputTokens": 40147,
+   "webSearchRequests": 0,
+   "costUSD": 1.0604481,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This exactly matches the real upstream PR #1541 (\"Expose converter as a decorator\") diff shape. Summary of changes:\n\n- **`src/attr/_make.py`**: renamed `_CountingAttr.converter` \u00e2\u2020\u2019 `_converter` (matching `_default`/`_validator`), added a new `.converter` decorator method that wraps the decorated method in a `Converter(takes_self=True, takes_field=True)` and composes with any existing converter via `pipe`.\n- **`docs/init.md`**: added the decorator usage example.\n- **`tests/test_make.py`** and **`tests/test_mypy.yml`**: added the corresponding unit and mypy-plugin test cases.\n- **`changelog.d/240.change.md`**: new changelog fragment.\n\nAll 280 existing tests plus the 4 new converter-decorator tests pass, and I manually verified the `docs/init.md` example runs correctly against the local source.",
+ "ttft_ms": 4762,
+ "ttft_stream_ms": 1558,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 159122,
+ "uuid": "565ba0c6-6a6d-4ace-9b62-5930c0fbdddb"
+}

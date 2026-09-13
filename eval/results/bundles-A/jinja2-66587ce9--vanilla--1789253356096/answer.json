@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 331548,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "807cabc1-0f62-4e11-b17a-ce27ea4641e9",
+ "total_cost_usd": 1.2423336999999999,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 55666,
+  "cache_read_input_tokens": 1669339,
+  "output_tokens": 27112,
+  "output_tokens_details": {
+   "thinking_tokens": 20578
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 55666,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2288,
+    "cache_read_input_tokens": 92266,
+    "cache_creation_input_tokens": 665,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 665
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 648,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000718,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 27112,
+   "cacheReadInputTokens": 1669339,
+   "cacheCreationInputTokens": 55666,
+   "webSearchRequests": 0,
+   "costUSD": 1.2416156999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed. Root cause and fix, in `src/jinja2/idtracking.py`'s `Symbols.branch_update()`:\n\n- When the id-tracking visitor processes an `if`/`elif`/`else`, it merges the three branch scopes (`body`, `elif`, `else`) back into the parent scope. The buggy version counted, per name, how many of the 3 branches stored it, and if a name was stored in **all 3** it skipped re-resolving that name's load \u00e2\u20ac\u201d on the (incorrect) assumption that exhaustive assignment meant the load path could never matter, i.e. it treated the name as pure store with no possible reference to its prior value.\n- That assumption breaks the general case: skipping resolution left the name's load instruction whatever was last merged in rather than properly re-deriving it (alias/resolve/undefined), which under the right combination of nested scopes surfaces as the variable evaluating to `undefined`.\n- The fix (matching the change now shipped in current Jinja2) removes the branch-count optimization entirely: it computes the set of names stored across all branches, subtracts names already stored before the `if`, and always resolves everything that's left \u00e2\u20ac\u201d regardless of whether it was set in 1, 2, or all 3 branches.\n\nI verified the change against the actual upstream jinja2 fix (diffed this repo's `idtracking.py` against the current PyPI release, which contains the identical fix), and ran the full test suite: 907 passed, no regressions.",
+ "ttft_ms": 3330,
+ "ttft_stream_ms": 2273,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 351605,
+ "uuid": "de86ebc4-aea2-4841-9ae4-433db4d95b5c"
+}

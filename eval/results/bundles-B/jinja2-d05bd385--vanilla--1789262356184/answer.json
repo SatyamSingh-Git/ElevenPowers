@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 9168,
+ "num_turns": 1,
+ "stop_reason": "end_turn",
+ "session_id": "8461c235-cb70-44e1-86a3-3c67c8469dcc",
+ "total_cost_usd": 0.0844615,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 10675,
+  "cache_read_input_tokens": 37265,
+  "output_tokens": 576,
+  "output_tokens_details": {
+   "thinking_tokens": 377
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10675,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 576,
+    "cache_read_input_tokens": 37265,
+    "cache_creation_input_tokens": 10675,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 10675
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005859999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 2,
+   "outputTokens": 576,
+   "cacheReadInputTokens": 37265,
+   "cacheCreationInputTokens": 10675,
+   "webSearchRequests": 0,
+   "costUSD": 0.08387549999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Could you clarify what you'd like me to do? \"Pass context when using select\" is ambiguous to me \u00e2\u20ac\u201d a few possibilities:\n\n1. You want me to remember a preference: when I use `ToolSearch` with a `select:<name>` query, I should also include descriptive context/keywords rather than a bare name.\n2. You're referring to some other \"select\" (e.g., a dropdown/select in code you're working on) and want me to pass additional context/props into it.\n3. Something else entirely \u00e2\u20ac\u201d a snippet from a larger request that got cut off.\n\nLet me know which you mean (or paste more of what you're working on) and I'll proceed.",
+ "ttft_ms": 5944,
+ "ttft_stream_ms": 1676,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 8288,
+ "uuid": "3d086ede-536c-4cbf-a018-5da3fde8a64a"
+}

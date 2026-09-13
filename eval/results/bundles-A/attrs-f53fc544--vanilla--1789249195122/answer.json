@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 86577,
+ "num_turns": 19,
+ "stop_reason": "end_turn",
+ "session_id": "71a24aac-b3e5-45ef-a4ba-26d05b26e886",
+ "total_cost_usd": 0.6936956999999999,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 29501,
+  "cache_read_input_tokens": 999619,
+  "output_tokens": 4589,
+  "output_tokens_details": {
+   "thinking_tokens": 1544
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29501,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 251,
+    "cache_read_input_tokens": 66403,
+    "cache_creation_input_tokens": 363,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 363
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 95182,
+   "outputTokens": 537,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 5,
+   "costUSD": 0.147867,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 4589,
+   "cacheReadInputTokens": 999619,
+   "cacheCreationInputTokens": 29501,
+   "webSearchRequests": 0,
+   "costUSD": 0.5458286999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 790 tests pass. I reproduced upstream `attrs` PR #1606: `__replace__` was previously set to the `evolve` function object directly, so `_add_method_dunders` mutated `evolve.__doc__`/`__qualname__`/etc. in place \u00e2\u20ac\u201d corrupting `attrs.evolve`'s own dunders globally. The fix wraps it in a local proxy function so only the proxy's dunders get updated.\n\nChanges made:\n- `src/attr/_make.py` \u00e2\u20ac\u201d `add_replace()` now defines a local `__replace__` proxy instead of aliasing `evolve` directly.\n- `tests/test_functional.py` \u00e2\u20ac\u201d added `test_is_not_evolve` regression test.\n- `changelog.d/1606.change.md` \u00e2\u20ac\u201d changelog fragment.",
+ "ttft_ms": 7176,
+ "ttft_stream_ms": 2411,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 102345,
+ "uuid": "f5117b81-511f-4430-b1ce-1bae704aef60"
+}

@@ -490,3 +490,27 @@ heading "harness breakage, never the agent".
 stages hand something to each other, assert on the thing handed over, not on
 whether the far end happened to like it. The bytes were checkable for free at
 any point in the six hours spent preparing to spend money.
+
+### A determinism claim made from one pass
+
+Pass A finished and fourteen of its fifteen tasks had given the same answer
+three times running. That was reported as a finding: the baseline is
+near-deterministic, replicates buy almost nothing, and the sample size for any
+comparison follows from that.
+
+Pass B split seven of fifteen. Two tasks that had been solved three times out of
+three were solved zero times out of three.
+
+*Cause:* three replicates run back to back inside one sitting are not three
+independent observations of the same quantity, and treating agreement among them
+as evidence of determinism assumes exactly what needed testing. The project has
+made this correction twice already — E2 about runs within a task, E6 about the
+flip rate — and this is the same shape one level up, about tasks within a pass.
+
+*Cost:* none, because the second pass was already running. Had the night stopped
+after pass A, that conclusion would have set the sample size for every
+comparison after it.
+
+*The lesson:* agreement inside one sitting is the cheapest evidence available
+and the easiest to mistake for the strongest. The only thing that told these
+apart was running it twice.

@@ -1,0 +1,6 @@
+{
+ "resolved": false,
+ "outcome": "unfixed",
+ "detail": "tests/test_regression.py::TestBug::test_pass_context_with_select",
+ "passed": []
+}

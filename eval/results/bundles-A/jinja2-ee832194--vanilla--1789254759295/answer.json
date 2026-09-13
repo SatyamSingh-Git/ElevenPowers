@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 326334,
+ "num_turns": 40,
+ "stop_reason": "end_turn",
+ "session_id": "ffeb9ac2-adbe-4a96-bf73-f11b6ef62bc0",
+ "total_cost_usd": 1.8966760999999999,
+ "usage": {
+  "input_tokens": 80,
+  "cache_creation_input_tokens": 75215,
+  "cache_read_input_tokens": 3452037,
+  "output_tokens": 27252,
+  "output_tokens_details": {
+   "thinking_tokens": 15841
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 75215,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 544,
+    "cache_read_input_tokens": 109360,
+    "cache_creation_input_tokens": 3120,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3120
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 685,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007549999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 80,
+   "outputTokens": 27252,
+   "cacheReadInputTokens": 3452037,
+   "cacheCreationInputTokens": 75215,
+   "webSearchRequests": 0,
+   "costUSD": 1.8959210999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The diff is clean and minimal. All tests pass (909/909). Summary of changes:\n\n- **`src/jinja2/parser.py`**: `parse_primary` now accepts `with_namespace`, recognizing `name.attr` as an `NSRef` inline (instead of only as a special case before tuple parsing). `parse_tuple` threads `with_namespace` down to its simplified-mode primary parser, and `parse_assign_target` forwards it in both the tuple and non-tuple branches. This lets namespace refs appear anywhere inside an assignment tuple, e.g. `{% set a, ns.x = 1, 2 %}`, while leaving every other `parse_primary` call site (and non-`set` contexts like `for`) unaffected since they don't pass `with_namespace=True`.\n- **`src/jinja2/compiler.py`**: added `_write_ns_ref_checks`, which walks the assignment target (handling both a bare `NSRef` and one nested in a `Tuple`), dedupes by namespace name, and emits the `isinstance(..., Namespace)` runtime check for each ahead of the assignment line. `visit_Assign`/`visit_AssignBlock` call it before visiting the target; `visit_NSRef` now just writes `ref[attr]` inline instead of emitting the check itself, so it works correctly whether it's the whole target or one item in a tuple.\n- Added tests in `tests/test_core_tags.py` covering tuple assignment with all-namespace targets, mixed name/namespace targets, and the non-namespace-object runtime error inside a tuple; added a `CHANGES.rst` entry.",
+ "ttft_ms": 2903,
+ "ttft_stream_ms": 2121,
+ "time_to_request_ms": 99,
+ "type": "result",
+ "duration_ms": 339364,
+ "uuid": "6b7a03bc-fbd9-4a80-a6d4-89b7d882feb3"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 99446,
+ "num_turns": 17,
+ "stop_reason": "end_turn",
+ "session_id": "31bfe493-3fbe-4992-a268-9c67285afbef",
+ "total_cost_usd": 0.5210082,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 22989,
+  "cache_read_input_tokens": 922284,
+  "output_tokens": 7046,
+  "output_tokens_details": {
+   "thinking_tokens": 3930
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22989,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 149,
+    "cache_read_input_tokens": 59755,
+    "cache_creation_input_tokens": 499,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 499
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000597,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 7046,
+   "cacheReadInputTokens": 922284,
+   "cacheCreationInputTokens": 22989,
+   "webSearchRequests": 0,
+   "costUSD": 0.5204112,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed `striptags` in `src/markupsafe/__init__.py` to strip tags/comments first and collapse whitespace afterward, rather than before. Previously, adjacent tags/comments each bordered by a single space (e.g. `\"a <!--x--> <!--y--> b\"`) left behind runs of multiple spaces that never got re-collapsed. All 36 existing tests still pass, and I added a `CHANGES.rst` entry.",
+ "ttft_ms": 3225,
+ "ttft_stream_ms": 1766,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 103475,
+ "uuid": "1929aaa9-3d9c-4638-9bde-a4e680d13049"
+}

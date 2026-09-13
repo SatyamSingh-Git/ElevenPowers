@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 103503,
+ "num_turns": 19,
+ "stop_reason": "end_turn",
+ "session_id": "18ec6da0-d0f5-45fe-90a2-d2004c9f0e32",
+ "total_cost_usd": 0.6203713000000002,
+ "usage": {
+  "input_tokens": 36,
+  "cache_creation_input_tokens": 30910,
+  "cache_read_input_tokens": 1077941,
+  "output_tokens": 7386,
+  "output_tokens_details": {
+   "thinking_tokens": 3764
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 30910,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 383,
+    "cache_read_input_tokens": 67656,
+    "cache_creation_input_tokens": 519,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 519
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 546,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000631,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 36,
+   "outputTokens": 7386,
+   "cacheReadInputTokens": 1077941,
+   "cacheCreationInputTokens": 30910,
+   "webSearchRequests": 0,
+   "costUSD": 0.6197403000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 728 tests pass.\n\n**The bug:** `_ClassBuilder.add_replace()` (`src/attr/_make.py`) generated `__replace__` by passing the module-level `evolve` function straight into `_add_method_dunders`, which mutates a method's `__module__`/`__qualname__`/`__doc__` in place. Since `evolve` is a single shared object, every class built with `__replace__` (Python 3.13+'s `copy.replace` support) clobbered the public `attrs.evolve`'s dunders, and each new class's `__replace__` would stomp on the previous class's qualname too.\n\n**Fix:** `add_replace()` now defines a small per-class wrapper function that calls `evolve()`, so each class gets its own distinct function object to stamp dunders on \u00e2\u20ac\u201d `evolve` itself is left untouched.\n\nAlso added a test (`TestReplace.test_does_not_mutate_evolve`, parametrized over slots) verifying `attr.evolve`'s dunders survive class creation and that each class's `__replace__.__qualname__` correctly reflects its own class, plus a changelog fragment (`changelog.d/1606.change.md`).",
+ "ttft_ms": 4352,
+ "ttft_stream_ms": 1979,
+ "time_to_request_ms": 37,
+ "type": "result",
+ "duration_ms": 118471,
+ "uuid": "b0beb327-85fb-4b3a-ab5a-1e77c7ed989d"
+}

@@ -1,0 +1,63 @@
+diff --git a/changelog.d/1606.change.md b/changelog.d/1606.change.md
+new file mode 100644
+index 0000000..e3dff4f
+--- /dev/null
++++ b/changelog.d/1606.change.md
+@@ -0,0 +1 @@
++The automatically-generated `__replace__` dunder method (used by `copy.replace()`) no longer mutates the dunder attributes of `attrs.evolve` itself.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index c7cf364..eaf6b4a 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1108,7 +1108,14 @@ class _ClassBuilder:
+         return self
+ 
+     def add_replace(self):
+-        self._cls_dict["__replace__"] = self._add_method_dunders(evolve)
++        # We use a defensive wrapper here instead of passing `evolve` itself
++        # to `_add_method_dunders` because that would mutate the shared
++        # `evolve` function's dunders (e.g. __qualname__) instead of setting
++        # them on a copy that belongs solely to *cls*.
++        def __replace__(self, **changes):
++            return evolve(self, **changes)
++
++        self._cls_dict["__replace__"] = self._add_method_dunders(__replace__)
+         return self
+ 
+     def add_match_args(self):
+diff --git a/tests/test_functional.py b/tests/test_functional.py
+index b8dfa45..6429c46 100644
+--- a/tests/test_functional.py
++++ b/tests/test_functional.py
+@@ -806,6 +806,31 @@ class TestReplace:
+ 
+         assert sentinel == C.__replace__
+ 
++    def test_does_not_mutate_evolve(self):
++        """
++        Generating __replace__ does not mutate attr.evolve's own dunders,
++        and each class's __replace__ gets its own, correct dunders.
++        """
++        module = attr.evolve.__module__
++        qualname = attr.evolve.__qualname__
++        doc = attr.evolve.__doc__
++
++        @attr.s
++        class C:
++            x = attr.ib()
++
++        @attr.s
++        class D:
++            x = attr.ib()
++
++        assert C.__replace__.__qualname__.endswith("C.__replace__")
++        assert D.__replace__.__qualname__.endswith("D.__replace__")
++        assert C.__replace__ is not D.__replace__
++
++        assert module == attr.evolve.__module__
++        assert qualname == attr.evolve.__qualname__
++        assert doc == attr.evolve.__doc__
++
+     def test_invalid_field_name(self):
+         """
+         Invalid field names raise a TypeError.

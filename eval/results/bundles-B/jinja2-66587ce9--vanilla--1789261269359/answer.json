@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 279239,
+ "num_turns": 33,
+ "stop_reason": "end_turn",
+ "session_id": "c48128c1-8fc8-4da3-9639-37cf73ab31f1",
+ "total_cost_usd": 1.3208278,
+ "usage": {
+  "input_tokens": 60,
+  "cache_creation_input_tokens": 55626,
+  "cache_read_input_tokens": 2308096,
+  "output_tokens": 19583,
+  "output_tokens_details": {
+   "thinking_tokens": 12629
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 55626,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 399,
+    "cache_read_input_tokens": 92430,
+    "cache_creation_input_tokens": 461,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 461
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 648,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000718,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 60,
+   "outputTokens": 19583,
+   "cacheReadInputTokens": 2308096,
+   "cacheCreationInputTokens": 55626,
+   "webSearchRequests": 0,
+   "costUSD": 1.3201098,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The fix is in `src/jinja2/idtracking.py`'s `Symbols.branch_update`. The old code tracked how many of an if/elif/else's branches stored each variable, and skipped re-resolving a variable's load if it was set in *every* branch \u00e2\u20ac\u201d the optimization assumed \"stored everywhere\" meant \"always safe as-is.\" That assumption broke for names that already had a load registered before the branch (e.g. a macro parameter, `VAR_LOAD_PARAMETER`): skipping the resolve step left the stale `param` load in place instead of re-deriving it, so the reference could evaluate to `undefined` at runtime.\n\nThe fix (matching the real upstream Jinja resolution) drops the per-branch counting/skip logic entirely: it just collects the union of names stored across branches, subtracts names already stored in the outer scope, and always resolves/aliases the rest \u00e2\u20ac\u201d regardless of whether they were set in all, some, or one branch.\n\nVerified: `tests/test_idtracking.py` (127 tests) and the full suite (782 tests, excluding two files that fail to collect due to an unrelated missing `attrs`/`trio` dependency in this environment) pass. Added a `CHANGES.rst` entry.",
+ "ttft_ms": 4322,
+ "ttft_stream_ms": 2835,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 291133,
+ "uuid": "4a1da346-c03c-4fce-97c2-b70b009b431d"
+}

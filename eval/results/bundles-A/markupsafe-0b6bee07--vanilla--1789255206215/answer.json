@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 36192,
+ "num_turns": 11,
+ "stop_reason": "end_turn",
+ "session_id": "c5962c6a-d056-489e-9f36-d0cfaee6a9dd",
+ "total_cost_usd": 0.31202189999999996,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 18389,
+  "cache_read_input_tokens": 514003,
+  "output_tokens": 3122,
+  "output_tokens_details": {
+   "thinking_tokens": 877
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18389,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 128,
+    "cache_read_input_tokens": 55442,
+    "cache_creation_input_tokens": 212,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 212
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000597,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 20,
+   "outputTokens": 3122,
+   "cacheReadInputTokens": 514003,
+   "cacheCreationInputTokens": 18389,
+   "webSearchRequests": 0,
+   "costUSD": 0.3114249,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All tests pass. Changed `Markup.striptags()` in `src/markupsafe/__init__.py:154` to collapse whitespace after stripping comments/tags rather than before, fixing double-spaces left behind by removed tags (e.g. `\"Main <br> About\"` now yields `\"Main About\"` instead of `\"Main  About\"`). Added a CHANGES.rst entry.",
+ "ttft_ms": 2978,
+ "ttft_stream_ms": 1370,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 38443,
+ "uuid": "4a310d13-ca6a-4990-8880-877e443f584f"
+}

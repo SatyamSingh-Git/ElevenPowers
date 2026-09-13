@@ -1,0 +1,57 @@
+diff --git a/changelog.d/1606.change.md b/changelog.d/1606.change.md
+new file mode 100644
+index 0000000..8e8ef6a
+--- /dev/null
++++ b/changelog.d/1606.change.md
+@@ -0,0 +1 @@
++Generating `__replace__` for `copy.replace()` support no longer mutates `attrs.evolve`'s own `__module__`/`__qualname__`/`__doc__` as a side effect.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index c7cf364..3b79dc4 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1108,7 +1108,10 @@ class _ClassBuilder:
+         return self
+ 
+     def add_replace(self):
+-        self._cls_dict["__replace__"] = self._add_method_dunders(evolve)
++        def __replace__(self, **changes):
++            return evolve(self, **changes)
++
++        self._cls_dict["__replace__"] = self._add_method_dunders(__replace__)
+         return self
+ 
+     def add_match_args(self):
+diff --git a/tests/test_functional.py b/tests/test_functional.py
+index b8dfa45..998b842 100644
+--- a/tests/test_functional.py
++++ b/tests/test_functional.py
+@@ -806,6 +806,29 @@ class TestReplace:
+ 
+         assert sentinel == C.__replace__
+ 
++    def test_does_not_mutate_evolve(self):
++        """
++        Generating __replace__ for a class doesn't clobber attr.evolve's own
++        __module__/__qualname__/__doc__ -- it used to be assigned directly,
++        mutating the shared function object.
++        """
++        module = attr.evolve.__module__
++        qualname = attr.evolve.__qualname__
++        doc = attr.evolve.__doc__
++
++        @attr.s
++        class C:
++            x = attr.ib()
++
++        assert module == attr.evolve.__module__
++        assert qualname == attr.evolve.__qualname__
++        assert doc == attr.evolve.__doc__
++
++        # And __replace__ still works like attr.evolve.
++        inst = C(1)
++
++        assert C(42) == copy.replace(inst, x=42)
++
+     def test_invalid_field_name(self):
+         """
+         Invalid field names raise a TypeError.

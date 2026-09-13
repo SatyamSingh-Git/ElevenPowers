@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 162572,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "142d64f1-e345-4405-8919-a5627751b211",
+ "total_cost_usd": 0.8471371,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 36129,
+  "cache_read_input_tokens": 1587447,
+  "output_tokens": 10223,
+  "output_tokens_details": {
+   "thinking_tokens": 3735
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 36129,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 419,
+    "cache_read_input_tokens": 72966,
+    "cache_creation_input_tokens": 428,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 428
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 548,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000628,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 10223,
+   "cacheReadInputTokens": 1587447,
+   "cacheCreationInputTokens": 36129,
+   "webSearchRequests": 0,
+   "costUSD": 0.8465091,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All green. I implemented PR #1529 (\"Add instance support to `attrs.fields()`\", fixing #1400) by porting the upstream diff:\n\n- **`src/attr/_make.py`**: `fields()` now, when given a non-type, non-generic object, checks whether `type(cls)` is an *attrs* class and if so recurses on that type instead of raising; error message updated to \"Passed object must be a class or attrs instance.\"\n- **`src/attr/__init__.pyi`**: widened `fields()`'s type hint to `type[AttrsInstance] | AttrsInstance`.\n- **`docs/api.rst`**: added a doctest line showing `attrs.fields(C(1, 2)) is attrs.fields(C)`.\n- **`tests/test_make.py`**: `test_instance` now asserts instance support works; added `test_handler_non_attrs_instance` for the new error path.\n- **`tests/test_mypy.yml`**: added `testFieldsInstance` case and updated the expected mypy error text for `testFieldsError`.\n- **`changelog.d/1529.change.md`**: added the changelog fragment.\n\nAll 686 tests in `test_make.py`/`test_functional.py` pass (1 skip unrelated, Python-version-gated).",
+ "ttft_ms": 5473,
+ "ttft_stream_ms": 2596,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 187410,
+ "uuid": "a49a68ab-3fda-40f2-8ef8-31c122387ccd"
+}

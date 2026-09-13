@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 61974,
+ "num_turns": 16,
+ "stop_reason": "end_turn",
+ "session_id": "dc38352e-168b-41a7-b4b2-b4307900759b",
+ "total_cost_usd": 0.4793435,
+ "usage": {
+  "input_tokens": 32,
+  "cache_creation_input_tokens": 26188,
+  "cache_read_input_tokens": 901075,
+  "output_tokens": 3414,
+  "output_tokens_details": {
+   "thinking_tokens": 364
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26188,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 123,
+    "cache_read_input_tokens": 63007,
+    "cache_creation_input_tokens": 446,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 446
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000587,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 32,
+   "outputTokens": 3414,
+   "cacheReadInputTokens": 901075,
+   "cacheCreationInputTokens": 26188,
+   "webSearchRequests": 0,
+   "costUSD": 0.4787565,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Implemented `Markup.format_map` in `src/markupsafe/__init__.py:210-214`, mirroring `format` but forwarding the mapping straight to `EscapeFormatter.vformat` with empty positional args (matching `str.format_map` semantics). Added a test in `tests/test_markupsafe.py` and a `CHANGES.rst` entry.",
+ "ttft_ms": 4013,
+ "ttft_stream_ms": 2995,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 64532,
+ "uuid": "d6751da2-59b2-44e1-bda0-b031f5b62bab"
+}

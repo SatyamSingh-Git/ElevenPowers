@@ -1,0 +1,10 @@
+# A saved patch is bytes, not text. Git's newline conversion would hand back a
+# CRLF patch that no longer applies to the tree it was made against, which is
+# exactly the defect that filed two solved runs under harness breakage.
+*.diff -text
+*.patch -text
+
+# Preserved run evidence: kept exactly as the harness wrote it, so a bundle
+# re-grades to the same answer on any machine.
+eval/results/** -text
+eval/corpus.lock -text

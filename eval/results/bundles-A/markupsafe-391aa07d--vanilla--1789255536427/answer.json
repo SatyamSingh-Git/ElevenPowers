@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 59943,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "00709360-2c9c-4492-b69c-b4c84d90b263",
+ "total_cost_usd": 0.48790209999999995,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 29232,
+  "cache_read_input_tokens": 827547,
+  "output_tokens": 4238,
+  "output_tokens_details": {
+   "thinking_tokens": 1204
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29232,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 148,
+    "cache_read_input_tokens": 66109,
+    "cache_creation_input_tokens": 388,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 388
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000592,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 4238,
+   "cacheReadInputTokens": 827547,
+   "cacheCreationInputTokens": 29232,
+   "webSearchRequests": 0,
+   "costUSD": 0.4873101,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Implemented `Markup.format_map` in `src/markupsafe/__init__.py:212-216`, mirroring `format`'s use of `EscapeFormatter` but with empty positional args (matching `str.format_map` semantics \u00e2\u20ac\u201d no positional/auto-numbered fields allowed). Added tests in `tests/test_markupsafe.py` and a changelog entry. Full suite (36 passed, 17 skipped unrelated) confirms it works.",
+ "ttft_ms": 3580,
+ "ttft_stream_ms": 1772,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 63991,
+ "uuid": "2c574b69-9d57-4ce6-a88f-dfb811866b55"
+}

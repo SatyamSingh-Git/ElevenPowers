@@ -1,0 +1,30 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 3c9a94e..f68d406 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -1,3 +1,8 @@
++## Unreleased
++
++- `Sentinel` members (`UNSET`, `FLAG_NEEDS_VALUE`) can be copied, deep
++  copied, and pickled without losing their identity.
++
+ ## Version 8.5.0
+ 
+ Released 2026-08-24
+diff --git a/src/click/_utils.py b/src/click/_utils.py
+index 05ee2e9..3165b3d 100644
+--- a/src/click/_utils.py
++++ b/src/click/_utils.py
+@@ -18,6 +18,12 @@ class Sentinel(enum.Enum):
+     def __repr__(self) -> str:
+         return f"{self.__class__.__name__}.{self.name}"
+ 
++    def __reduce_ex__(self, protocol: int) -> tuple[t.Any, ...]:
++        # The default Enum.__reduce_ex__ reconstructs members by value, but
++        # the values here are plain `object()` instances that don't survive
++        # copy/pickle with their identity intact. Reconstruct by name instead.
++        return getattr, (self.__class__, self.name)
++
+ 
+ UNSET: t.Literal[Sentinel.UNSET] = Sentinel.UNSET
+ """Sentinel used to indicate that a value is not set."""

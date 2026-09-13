@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 9187,
+ "num_turns": 1,
+ "stop_reason": "end_turn",
+ "session_id": "4b71fcdc-40f3-47cd-b15f-d33f4eeabd31",
+ "total_cost_usd": 0.08375049999999999,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 10674,
+  "cache_read_input_tokens": 37265,
+  "output_tokens": 529,
+  "output_tokens_details": {
+   "thinking_tokens": 426
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10674,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 529,
+    "cache_read_input_tokens": 37265,
+    "cache_creation_input_tokens": 10674,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 10674
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005859999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 2,
+   "outputTokens": 529,
+   "cacheReadInputTokens": 37265,
+   "cacheCreationInputTokens": 10674,
+   "webSearchRequests": 0,
+   "costUSD": 0.08316449999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Could you clarify what you mean by \"select\" here \u00e2\u20ac\u201d a UI `<select>` element, a database `SELECT`, a specific function/API in your codebase, or something else? And what \"context\" should be passed (e.g., a value, an object, request context)? A quick pointer to the file or snippet you're working on would help me make the right change.",
+ "ttft_ms": 6893,
+ "ttft_stream_ms": 1828,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 8184,
+ "uuid": "b29ef2d4-3444-4c71-8225-0164ec1c519c"
+}

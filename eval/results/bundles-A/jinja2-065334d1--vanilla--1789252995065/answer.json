@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 28669,
+ "num_turns": 6,
+ "stop_reason": "end_turn",
+ "session_id": "179e8705-3107-4f37-992e-16b2cb06aa7f",
+ "total_cost_usd": 0.23686800000000002,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 22414,
+  "cache_read_input_tokens": 258520,
+  "output_tokens": 1613,
+  "output_tokens_details": {
+   "thinking_tokens": 285
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22414,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 409,
+    "cache_read_input_tokens": 58893,
+    "cache_creation_input_tokens": 786,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 786
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 523,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000603,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 10,
+   "outputTokens": 1613,
+   "cacheReadInputTokens": 258520,
+   "cacheCreationInputTokens": 22414,
+   "webSearchRequests": 0,
+   "costUSD": 0.236265,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Here's the actual picture in this Jinja2 source tree (`src/jinja2/filters.py:1410-1438`):\n\nThe `attr` filter (`do_attr`) does **not** use `env.getattr`. It calls Python's builtin `getattr(obj, name)` directly (line 1426), and only falls back to `environment.undefined(...)` if that raises `AttributeError` (line 1438). It also adds sandbox-specific safety checks (`is_safe_attribute`/`unsafe_undefined`) that `Environment.getattr` doesn't have.\n\nFor comparison, `Environment.getattr` (`src/jinja2/environment.py:485-496`) is a different method used elsewhere \u00e2\u20ac\u201d e.g. in `getitem` as a fallback, and by compiled template code for `foo.bar` attribute access. It tries `getattr` then falls back to item access (`obj[attribute]`), unlike `do_attr` which is attribute-only (per its docstring: \"items are not looked up\").\n\nSo the statement \"attr filter uses env.getattr\" is incorrect for this codebase \u00e2\u20ac\u201d did you mean something else, e.g. asking me to change `do_attr` to delegate to `environment.getattr`, or were you recalling a different version/fork of Jinja2?",
+ "ttft_ms": 3327,
+ "ttft_stream_ms": 1865,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 27895,
+ "uuid": "6b05d901-4026-4c1e-a9ac-632c147705c6"
+}

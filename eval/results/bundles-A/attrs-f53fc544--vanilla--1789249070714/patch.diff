@@ -1,0 +1,50 @@
+diff --git a/changelog.d/1606.change.md b/changelog.d/1606.change.md
+new file mode 100644
+index 0000000..0f25b27
+--- /dev/null
++++ b/changelog.d/1606.change.md
+@@ -0,0 +1 @@
++The automatically-added `__replace__` dunder method (used by `copy.replace()`) no longer shares -- and mutates -- the `attrs.evolve()` function object across classes.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index c7cf364..3b79dc4 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1108,7 +1108,10 @@ class _ClassBuilder:
+         return self
+ 
+     def add_replace(self):
+-        self._cls_dict["__replace__"] = self._add_method_dunders(evolve)
++        def __replace__(self, **changes):
++            return evolve(self, **changes)
++
++        self._cls_dict["__replace__"] = self._add_method_dunders(__replace__)
+         return self
+ 
+     def add_match_args(self):
+diff --git a/tests/test_functional.py b/tests/test_functional.py
+index b8dfa45..7489f7f 100644
+--- a/tests/test_functional.py
++++ b/tests/test_functional.py
+@@ -816,3 +816,22 @@ class TestReplace:
+ 
+         with pytest.raises(TypeError):
+             copy.replace(inst, z=42)
++
++    def test_does_not_share_or_mutate_evolve(self):
++        """
++        Each class gets its own __replace__ instead of all of them sharing
++        (and overwriting the dunders of) `attrs.evolve` itself.
++        """
++        before_qualname = attr.evolve.__qualname__
++        before_doc = attr.evolve.__doc__
++
++        @attr.s
++        class C2:
++            x = attr.ib()
++
++        assert C1.__replace__ is not C2.__replace__
++        assert C1.__replace__ is not attr.evolve
++        assert attr.evolve.__qualname__ == before_qualname
++        assert attr.evolve.__doc__ == before_doc
++
++        assert C2(1).__replace__.__qualname__.endswith("C2.__replace__")

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 116253,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "94a3866f-5426-41bb-84b2-f8cbb732097f",
+ "total_cost_usd": 0.7529883999999999,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 30726,
+  "cache_read_input_tokens": 1472638,
+  "output_tokens": 8404,
+  "output_tokens_details": {
+   "thinking_tokens": 4034
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 30726,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 462,
+    "cache_read_input_tokens": 67698,
+    "cache_creation_input_tokens": 293,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 293
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 546,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000631,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 8404,
+   "cacheReadInputTokens": 1472638,
+   "cacheCreationInputTokens": 30726,
+   "webSearchRequests": 0,
+   "costUSD": 0.7523574,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Implemented the fix for issue #1606 (\"Stop evolve dunders from being modified\"):\n\n- **Root cause**: `_ClassBuilder.add_replace()` in `src/attr/_make.py` passed the shared global `attrs.evolve` function object straight into `_add_method_dunders`, which mutates `__module__`/`__qualname__`/`__doc__` **in place**. Every attrs class built with `__replace__` support (Python 3.13+ `copy.replace()`) was clobbering the global `evolve` function's identity \u00e2\u20ac\u201d I verified this by reverting the fix and showing `attr.evolve.__qualname__` had leaked to `'FrozenToo.__replace__'` from an unrelated test class.\n- **Fix**: `add_replace()` now defines a small per-class `__replace__` wrapper that calls `evolve()`, so the dunder mutation lands on a fresh function object each time instead of the shared global.\n- **Test**: added `test_does_not_mutate_evolve` to `TestReplace` in `tests/test_functional.py`, checking both directions \u00e2\u20ac\u201d that `attr.evolve`'s own dunders stay untouched after building a class, and that `__replace__`/`copy.replace()` still works correctly.\n- Added a changelog fragment (`changelog.d/1606.change.md`).\n\nFull `test_functional.py` + `test_make.py` suite (691 tests) passes.",
+ "ttft_ms": 4039,
+ "ttft_stream_ms": 1691,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 134175,
+ "uuid": "85b56c0b-3430-498c-903c-41e3b35549a5"
+}

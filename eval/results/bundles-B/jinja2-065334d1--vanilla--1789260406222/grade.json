@@ -1,0 +1,6 @@
+{
+ "resolved": false,
+ "outcome": "unfixed",
+ "detail": "tests/test_security.py::TestStringFormatMap::test_attr_filter",
+ "passed": []
+}

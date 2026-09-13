@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 118571,
+ "num_turns": 19,
+ "stop_reason": "end_turn",
+ "session_id": "db5b8be1-33e7-4834-a896-5d16f9a7e340",
+ "total_cost_usd": 0.608339,
+ "usage": {
+  "input_tokens": 38,
+  "cache_creation_input_tokens": 26662,
+  "cache_read_input_tokens": 1069260,
+  "output_tokens": 8456,
+  "output_tokens_details": {
+   "thinking_tokens": 5687
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26662,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 299,
+    "cache_read_input_tokens": 63443,
+    "cache_creation_input_tokens": 484,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 484
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 535,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000635,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 38,
+   "outputTokens": 8456,
+   "cacheReadInputTokens": 1069260,
+   "cacheCreationInputTokens": 26662,
+   "webSearchRequests": 0,
+   "costUSD": 0.607704,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed. In `src/click/_utils.py`, `Sentinel` members' enum values are plain `object()` instances, so the default `Enum.__reduce_ex__` (which reconstructs by value) fails identity/equality lookup during `pickle` and \u00e2\u20ac\u201d on Python versions without `Enum.__copy__`/`__deepcopy__` \u00e2\u20ac\u201d during `copy`/`deepcopy` too, raising `ValueError: ... is not a valid Sentinel`.\n\nAdded an `__reduce_ex__` override that reconstructs via `getattr(Sentinel, name)` instead, so `copy.copy`, `copy.deepcopy`, and `pickle.loads(pickle.dumps(...))` all return the same `UNSET`/`FLAG_NEEDS_VALUE` singleton. Verified with manual round-trip tests and the full test suite (all passing). Also added a CHANGES.md entry.",
+ "ttft_ms": 3450,
+ "ttft_stream_ms": 2248,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 144356,
+ "uuid": "de5af27c-cdeb-441b-b9e0-3475493507ba"
+}

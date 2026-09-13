@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 71440,
+ "num_turns": 9,
+ "stop_reason": "end_turn",
+ "session_id": "959fec3e-b05c-4929-9d90-acfa8475b14e",
+ "total_cost_usd": 0.47634170000000003,
+ "usage": {
+  "input_tokens": 18,
+  "cache_creation_input_tokens": 38155,
+  "cache_read_input_tokens": 540659,
+  "output_tokens": 5637,
+  "output_tokens_details": {
+   "thinking_tokens": 4197
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 38155,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 523,
+    "cache_read_input_tokens": 74608,
+    "cache_creation_input_tokens": 812,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 812
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 530,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000605,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 18,
+   "outputTokens": 5637,
+   "cacheReadInputTokens": 540659,
+   "cacheCreationInputTokens": 38155,
+   "webSearchRequests": 0,
+   "costUSD": 0.47573670000000007,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All pager tests pass. I looked at `src/click/_termui_impl.py`'s pager handling and this refactor already exists in the codebase \u00e2\u20ac\u201d it's the fix from the 8.5.0 changelog entries (issues #3731/#3732/#3739/#3764):\n\n- `get_pager_file` (`_termui_impl.py:439-474`) yields a single unified `TextIO`, with `_has_binary_buffer` (a `TypeGuard`) checking whether the underlying stream exposes a binary buffer to wrap in `MaybeStripAnsi`, rather than branching on `TextIO`/`BinaryIO` type annotations.\n- `_tempfilepager` opens its temp file in text mode (`mode=\"w\"`), not binary \u00e2\u20ac\u201d that was the regression this fixed.\n- `_pipepager` runs its subprocess with `text=True` consistently.\n- `_nullpager` wraps the borrowed stream in `_KeepOpenFile` so it isn't closed.\n\n27 pager-related tests pass, including ones specifically covering the pipe/tempfile/nullpager fallback paths and the binary-buffer unwrap.\n\nSince git status is clean and this is exactly the seed commit, there's nothing to change here \u00e2\u20ac\u201d the working tree already reflects this refactor. If you had a different starting point in mind (e.g., you meant to apply this against an older version of the file, or want further cleanup like simplifying the `t.cast(t.BinaryIO, ...)` calls in `_pipepager`/`_tempfilepager` since those streams are now always text-mode), let me know and I can dig into that specifically.",
+ "ttft_ms": 1385,
+ "ttft_stream_ms": 900,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 74071,
+ "uuid": "d8bd357a-a932-43d1-a5a4-d17770c10b87"
+}

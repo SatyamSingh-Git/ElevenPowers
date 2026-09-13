@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 7948,
+ "num_turns": 1,
+ "stop_reason": "end_turn",
+ "session_id": "560a5229-e706-4e68-862b-59823dbc080c",
+ "total_cost_usd": 0.08934850000000001,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 12320,
+  "cache_read_input_tokens": 37265,
+  "output_tokens": 239,
+  "output_tokens_details": {
+   "thinking_tokens": 152
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12320,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 239,
+    "cache_read_input_tokens": 37265,
+    "cache_creation_input_tokens": 12320,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 12320
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 588,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000658,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 2,
+   "outputTokens": 239,
+   "cacheReadInputTokens": 37265,
+   "cacheCreationInputTokens": 12320,
+   "webSearchRequests": 0,
+   "costUSD": 0.0886905,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "That looks like a commit message (from the `attrs` library, PR #1541 exposing `converter` as a decorator) rather than a question or task. What would you like me to do with it \u00e2\u20ac\u201d are you looking to implement something similar, review a diff, or is this just context for a follow-up request?",
+ "ttft_ms": 6015,
+ "ttft_stream_ms": 4260,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 7013,
+ "uuid": "5d019d66-3e3d-4605-b6fc-048d049aa3d8"
+}

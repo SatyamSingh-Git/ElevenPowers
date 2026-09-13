@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 9379,
+ "num_turns": 1,
+ "stop_reason": "end_turn",
+ "session_id": "3483a1cb-915d-4e6b-8519-fd2c13169f3f",
+ "total_cost_usd": 0.0943165,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 12235,
+  "cache_read_input_tokens": 37265,
+  "output_tokens": 609,
+  "output_tokens_details": {
+   "thinking_tokens": 406
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12235,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 609,
+    "cache_read_input_tokens": 37265,
+    "cache_creation_input_tokens": 12235,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 12235
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005859999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 2,
+   "outputTokens": 609,
+   "cacheReadInputTokens": 37265,
+   "cacheCreationInputTokens": 12235,
+   "webSearchRequests": 0,
+   "costUSD": 0.0937305,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Could you clarify what you'd like me to do? \"Pass context when using select\" is ambiguous to me \u00e2\u20ac\u201d a few possibilities:\n\n1. You want me to include more surrounding context/rationale whenever I use `ToolSearch` with a `select:<name>` query (rather than just fetching tools bare).\n2. This is feedback about how I should call the `Agent` tool's `subagent_type` selection \u00e2\u20ac\u201d always passing task context alongside picking the agent.\n3. Something else entirely (a coding task involving a `select` statement/dropdown/query needing context passed in).\n\nLet me know which one (or describe the actual task), and I'll proceed.",
+ "ttft_ms": 5970,
+ "ttft_stream_ms": 1311,
+ "time_to_request_ms": 38,
+ "type": "result",
+ "duration_ms": 8235,
+ "uuid": "82817b64-e4c5-4901-8ea8-f2e6aa2016f3"
+}

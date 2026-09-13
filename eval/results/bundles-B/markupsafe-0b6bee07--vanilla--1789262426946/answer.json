@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 58701,
+ "num_turns": 15,
+ "stop_reason": "end_turn",
+ "session_id": "e06b615f-ffe1-4fe1-b0de-551277020ee4",
+ "total_cost_usd": 0.40885859999999996,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 21035,
+  "cache_read_input_tokens": 746042,
+  "output_tokens": 3877,
+  "output_tokens_details": {
+   "thinking_tokens": 1211
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21035,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 442,
+    "cache_read_input_tokens": 58015,
+    "cache_creation_input_tokens": 285,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 285
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000597,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 3877,
+   "cacheReadInputTokens": 746042,
+   "cacheCreationInputTokens": 21035,
+   "webSearchRequests": 0,
+   "costUSD": 0.4082616,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed `Markup.striptags()` in `src\\markupsafe\\__init__.py` to collapse whitespace after removing comments/tags instead of before. Previously, `\"foo <br> bar\"` collapsed spaces first (no-op), then tag removal left a double space (`\"foo  bar\"`); now it correctly yields `\"foo bar\"`. Full test suite still passes (25 passed, 5 skipped).",
+ "ttft_ms": 3425,
+ "ttft_stream_ms": 2492,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 63074,
+ "uuid": "1c429b4e-a426-4d4b-a557-22e2f069d1ff"
+}

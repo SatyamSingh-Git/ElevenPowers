@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 61673,
+ "num_turns": 18,
+ "stop_reason": "end_turn",
+ "session_id": "55d9697a-7ac3-42ea-8737-4a7bc61304d8",
+ "total_cost_usd": 0.5032258000000001,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 28071,
+  "cache_read_input_tokens": 882546,
+  "output_tokens": 4621,
+  "output_tokens_details": {
+   "thinking_tokens": 1664
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 28071,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 315,
+    "cache_read_input_tokens": 64875,
+    "cache_creation_input_tokens": 461,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 461
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 546,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000631,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 4621,
+   "cacheReadInputTokens": 882546,
+   "cacheCreationInputTokens": 28071,
+   "webSearchRequests": 0,
+   "costUSD": 0.5025948,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied upstream attrs PR #1606 to this repo, matching its exact diff:\n\n- **`src/attr/_make.py`**: `_ClassBuilder.add_replace` used to assign the shared `evolve` function directly to `__replace__` and then run `_add_method_dunders` on it, which mutated `evolve.__doc__`/`__qualname__`/`__module__` in place \u00e2\u20ac\u201d corrupting the real `attrs.evolve` for every class that used `__replace__`. Fixed by wrapping it in a local `__replace__` proxy so only the proxy's dunders get touched.\n- **`tests/test_functional.py`**: added `test_is_not_evolve`, asserting `__replace__` and `attrs.evolve` retain distinct `str()` reprs.\n- **`changelog.d/1606.change.md`**: added the changelog fragment.\n\nAll related tests (`test_funcs.py`, `test_functional.py`, 464 total) pass.",
+ "ttft_ms": 3378,
+ "ttft_stream_ms": 1195,
+ "time_to_request_ms": 37,
+ "type": "result",
+ "duration_ms": 76991,
+ "uuid": "3ace38f6-50ee-4c16-aeee-4c6b392ab333"
+}

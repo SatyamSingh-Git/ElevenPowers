@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 282127,
+ "num_turns": 35,
+ "stop_reason": "end_turn",
+ "session_id": "8ce09184-5ebc-4be9-adb7-e0046af69cb1",
+ "total_cost_usd": 1.5730784999999996,
+ "usage": {
+  "input_tokens": 70,
+  "cache_creation_input_tokens": 61722,
+  "cache_read_input_tokens": 2764645,
+  "output_tokens": 21569,
+  "output_tokens_details": {
+   "thinking_tokens": 14585
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 61722,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 512,
+    "cache_read_input_tokens": 98296,
+    "cache_creation_input_tokens": 691,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 691
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 27848,
+   "outputTokens": 352,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.049608,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 70,
+   "outputTokens": 21569,
+   "cacheReadInputTokens": 2764645,
+   "cacheCreationInputTokens": 61722,
+   "webSearchRequests": 0,
+   "costUSD": 1.5234705,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed the bug in `src/jinja2/idtracking.py`'s `Symbols.branch_update`.\n\n**Root cause**: the old code had an optimization that, when a name was already stored in the outer scope before an `if`, skipped tracking it entirely per-branch \u00e2\u20ac\u201d and separately, when a name was stored in *all* branches of an if/elif/else, skipped forcing a reload. Combined, this meant a variable set in all three branches while never referenced beforehand was left with a stale `undefined` load instead of picking up the real value, since the \"all branches covered\" case was treated as \"no update needed\" rather than \"still needs to load.\"\n\n**Fix** (matching the real upstream Jinja fix, commit `66587ce9`): replaced the branch-count bookkeeping with a simpler set-difference approach \u00e2\u20ac\u201d collect all names stored across branches, subtract names already stored in the outer scope, and then always resolve/alias every remaining name, regardless of whether it was set in all branches or just some.\n\nChanges:\n- `src/jinja2/idtracking.py` \u00e2\u20ac\u201d the actual fix\n- `tests/test_regression.py` \u00e2\u20ac\u201d added `test_load_parameter_when_set_in_all_if_branches`, reproducing the exact edge case (a name referenced then set in all three branches of `if`/`elif`/`else`)\n- `CHANGES.rst` \u00e2\u20ac\u201d changelog entry\n\nVerified: the new test and the full existing suite pass (only unrelated pre-existing collection errors in `test_async.py`/`test_async_filters.py` due to a missing `attrs` package for `trio`, not caused by this change).",
+ "ttft_ms": 1638,
+ "ttft_stream_ms": 970,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 301668,
+ "uuid": "763dfcd4-245c-49d1-b3d2-9b9a6f101839"
+}

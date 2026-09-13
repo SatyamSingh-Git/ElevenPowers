@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 423030,
+ "num_turns": 48,
+ "stop_reason": "end_turn",
+ "session_id": "dbb06f85-445a-487c-9718-7bc1255b27ec",
+ "total_cost_usd": 2.4269677999999995,
+ "usage": {
+  "input_tokens": 96,
+  "cache_creation_input_tokens": 89840,
+  "cache_read_input_tokens": 4699916,
+  "output_tokens": 31804,
+  "output_tokens_details": {
+   "thinking_tokens": 20105
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 89840,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 491,
+    "cache_read_input_tokens": 126713,
+    "cache_creation_input_tokens": 392,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 392
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 530,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000605,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 96,
+   "outputTokens": 31804,
+   "cacheReadInputTokens": 4699916,
+   "cacheCreationInputTokens": 89840,
+   "webSearchRequests": 0,
+   "costUSD": 2.4263627999999993,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Refactored `src/click/_termui_impl.py`'s pager stream handling: removed `_has_binary_buffer`/`_BufferedTextPagerStream`, and turned `MaybeStripAnsi` from an `io.TextIOWrapper` subclass (which required unwrapping a stream's raw `.buffer` and rewrapping it, plus a `detach()` dance to avoid closing borrowed streams) into a plain composition wrapper applied uniformly to every pager backend's stream. All backends (`_pipepager`, `_tempfilepager`, `_nullpager`) now yield a simple `(stream, color)` pair instead of `(stream, encoding, color)`, since the encoding was only ever needed to reconstruct the old rewrapped `TextIOWrapper`.\n\nThis also fixed a real inconsistency: previously, ANSI stripping only worked for streams exposing a `.buffer` (i.e. most real streams), but silently didn't apply for buffer-less streams like `StringIO` (the no-stdout fallback), so `color=False` had no effect there. Now stripping is applied consistently regardless of the underlying stream type. Updated `tests/test_termui.py` accordingly (fixed the test that had locked in the old buggy behavior, updated the fake-context-manager test to the new 2-tuple shape, and refreshed stale docstrings referencing `_has_binary_buffer`). Full test suite passes (1900 passed, 94 skipped).",
+ "ttft_ms": 3368,
+ "ttft_stream_ms": 3052,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 448612,
+ "uuid": "ea521464-511e-4fdb-be90-d1f0a79b994c"
+}

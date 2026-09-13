@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 146245,
+ "num_turns": 27,
+ "stop_reason": "end_turn",
+ "session_id": "4ec11ed8-def7-4578-9102-74d9e36d59e0",
+ "total_cost_usd": 0.9431768999999998,
+ "usage": {
+  "input_tokens": 54,
+  "cache_creation_input_tokens": 43032,
+  "cache_read_input_tokens": 1733643,
+  "output_tokens": 10939,
+  "output_tokens_details": {
+   "thinking_tokens": 969
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 43032,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 474,
+    "cache_read_input_tokens": 79906,
+    "cache_creation_input_tokens": 391,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 391
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 540,
+   "outputTokens": 21,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000645,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 54,
+   "outputTokens": 10939,
+   "cacheReadInputTokens": 1733643,
+   "cacheCreationInputTokens": 43032,
+   "webSearchRequests": 0,
+   "costUSD": 0.9425318999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed. Summary of the change in `Command.main()` (`src/click/core.py`):\n\n**The bug:** the old code called `sys.exit(...)`/`echo(...)` for `Abort`/`ClickException`/`OSError(EPIPE)` from `except` clauses that sat *outside* the `try` that caught `KeyboardInterrupt`. A second Ctrl-C arriving while writing the \"Aborted!\" message or while `sys.exit` unwound could then escape as an unhandled traceback instead of being handled.\n\n**The fix:** every branch now just records what to do (`report` callable + `exit_code`) instead of acting immediately; a single teardown after the `try` block calls `report()` then `sys.exit(exit_code)`, and that whole teardown is wrapped by an outer `except (EOFError, KeyboardInterrupt)` that re-exits with the already-decided code. So a late interrupt can only cost the printed message, never the correct exit code, matching the policy `_termui_impl.py`'s pager has used since PR #351.\n\nAlso updated `CHANGES.md`, `docs/exceptions.md` (replaced the old handling narrative with a table of every exit path, and added a non-standalone-mode example for customizing the abort message), and added `tests/test_abort_interrupt.py` with 8 regression tests. Full suite: 1931 passed, 101 skipped, 1 xfailed \u00e2\u20ac\u201d no regressions.",
+ "ttft_ms": 3560,
+ "ttft_stream_ms": 2576,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 169790,
+ "uuid": "432a4602-4b10-4d40-baf7-5c2e9fd78369"
+}

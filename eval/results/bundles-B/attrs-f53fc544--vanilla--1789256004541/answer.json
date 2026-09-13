@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 86002,
+ "num_turns": 21,
+ "stop_reason": "end_turn",
+ "session_id": "e2c6704b-0801-4528-a3c8-bd034ee5f160",
+ "total_cost_usd": 0.6248332000000001,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 27079,
+  "cache_read_input_tokens": 1182774,
+  "output_tokens": 7118,
+  "output_tokens_details": {
+   "thinking_tokens": 3336
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 27079,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 423,
+    "cache_read_input_tokens": 63650,
+    "cache_creation_input_tokens": 694,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 694
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 546,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000631,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 42,
+   "outputTokens": 7118,
+   "cacheReadInputTokens": 1182774,
+   "cacheCreationInputTokens": 27079,
+   "webSearchRequests": 0,
+   "costUSD": 0.6242022,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full suite passes (1405 passed). Summary:\n\n**Bug**: `_ClassBuilder.add_replace()` passed the shared, module-level `attr._make.evolve` function object directly into `_add_method_dunders`, which mutates `__module__`/`__qualname__`/`__doc__` on whatever it's given *in place*. Since `evolve` is reused for every class's `__replace__`, this both clobbered the public `attrs.evolve` function's own dunders and made every class's `__replace__.__qualname__` reflect whichever class was processed last.\n\n**Fix** (`src/attr/_make.py`): `add_replace` now defines a small per-class `__replace__` wrapper (`return evolve(self, **changes)`) so each class gets its own function object to have dunders set on, leaving `attrs.evolve` untouched.\n\nAdded `tests/test_functional.py::TestReplace::test_does_not_mutate_evolve`, verifying both directions \u00e2\u20ac\u201d each class's `__replace__.__qualname__` is correct and distinct, and `attrs.evolve`'s own `__module__`/`__qualname__`/`__doc__` are unchanged afterward \u00e2\u20ac\u201d plus a changelog entry (`changelog.d/1606.change.md`). Full test suite (1405 tests) passes.",
+ "ttft_ms": 3454,
+ "ttft_stream_ms": 885,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 109062,
+ "uuid": "e716006b-fcb5-4046-8522-3a48fd4442d5"
+}

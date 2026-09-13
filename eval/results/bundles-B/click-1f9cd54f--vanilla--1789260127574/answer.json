@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 21047,
+ "num_turns": 4,
+ "stop_reason": "end_turn",
+ "session_id": "494e55ba-f06d-4cab-a5b1-cab220327774",
+ "total_cost_usd": 0.1625283,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 15053,
+  "cache_read_input_tokens": 186751,
+  "output_tokens": 1037,
+  "output_tokens_details": {
+   "thinking_tokens": 439
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15053,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 141,
+    "cache_read_input_tokens": 51627,
+    "cache_creation_input_tokens": 691,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 691
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 526,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000606,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 8,
+   "outputTokens": 1037,
+   "cacheReadInputTokens": 186751,
+   "cacheCreationInputTokens": 15053,
+   "webSearchRequests": 0,
+   "costUSD": 0.1619223,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed in `src/click/_termui_impl.py:640-642` \u00e2\u20ac\u201d the `finally` block now calls `f.close()` before `os.unlink(f.name)`. Previously, if an exception occurred before the explicit `f.close()` on line 638 (e.g., during the `yield` or `f.flush()`), the file handle was still open when `os.unlink` ran, which fails on Windows since it won't remove a file that's still held open.",
+ "ttft_ms": 3967,
+ "ttft_stream_ms": 3038,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 20489,
+ "uuid": "63fda4b8-e9a5-4461-a952-ee7ee2933f5e"
+}

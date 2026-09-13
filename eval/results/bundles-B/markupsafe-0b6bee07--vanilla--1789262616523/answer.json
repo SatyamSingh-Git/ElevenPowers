@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 86184,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "72b48c0b-c463-4dec-b415-3a5df8aad1ec",
+ "total_cost_usd": 0.48074310000000003,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 25449,
+  "cache_read_input_tokens": 761677,
+  "output_tokens": 6591,
+  "output_tokens_details": {
+   "thinking_tokens": 3949
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 25449,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 118,
+    "cache_read_input_tokens": 62126,
+    "cache_creation_input_tokens": 588,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 588
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000597,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 6591,
+   "cacheReadInputTokens": 761677,
+   "cacheCreationInputTokens": 25449,
+   "webSearchRequests": 0,
+   "costUSD": 0.4801461000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "That's just an import-path issue running as a script, unrelated to the fix \u00e2\u20ac\u201d the pytest run already exercised the module correctly and confirmed the docstring example's behavior. The change is complete: `striptags` now collapses whitespace after removing comments/tags rather than before, fixing leftover double-spaces where a tag/comment was surrounded by spaces on both sides.",
+ "ttft_ms": 3222,
+ "ttft_stream_ms": 1731,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 91080,
+ "uuid": "c9879403-c39e-4516-b008-d858cdbb3108"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 88460,
+ "num_turns": 24,
+ "stop_reason": "end_turn",
+ "session_id": "f9629171-ff53-4511-8789-f64f0ee02935",
+ "total_cost_usd": 0.7437607000000002,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 35712,
+  "cache_read_input_tokens": 1417349,
+  "output_tokens": 6904,
+  "output_tokens_details": {
+   "thinking_tokens": 2216
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 35712,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 334,
+    "cache_read_input_tokens": 72530,
+    "cache_creation_input_tokens": 447,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 447
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005859999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 6904,
+   "cacheReadInputTokens": 1417349,
+   "cacheCreationInputTokens": 35712,
+   "webSearchRequests": 0,
+   "costUSD": 0.7431747000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed the bug: `prepare_select_or_reject` in `src/jinja2/filters.py` (used by `select`/`reject`/`selectattr`/`rejectattr`, both sync and async) called `call_test` without passing `context`, unlike `prepare_map`'s equivalent call to `call_filter`. This meant a custom test decorated with `@pass_context`/`@pass_environment`/`@pass_eval_context` would break (context misinterpreted as a positional test arg) when used through these filters, even though the compiler passes context correctly for direct `is` test usage.\n\nChanges:\n- `src/jinja2/filters.py:1782-1785` \u00e2\u20ac\u201d now passes `context=context` to `call_test`.\n- `CHANGES.rst` \u00e2\u20ac\u201d added changelog entry.\n\nVerified with a manual repro (context-aware test worked with `|select` after the fix) and the full test suite (780 passed; two unrelated files fail to collect due to a missing `attrs` package for `trio` in this environment, unconnected to this change).",
+ "ttft_ms": 6782,
+ "ttft_stream_ms": 1312,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 96649,
+ "uuid": "5657b846-da9d-43cd-8cd1-6ec05461ffd6"
+}

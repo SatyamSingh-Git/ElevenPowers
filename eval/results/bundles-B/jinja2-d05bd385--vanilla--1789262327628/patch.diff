@@ -1,0 +1,29 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index e31de85..01ea68f 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -28,6 +28,9 @@ Unreleased
+     async-aware filter. :issue:`1781`
+ -   ``|int`` filter handles ``OverflowError`` from scientific notation.
+     :issue:`1921`
++-   ``select``, ``reject``, ``selectattr``, and ``rejectattr`` filters pass the
++    current context to the test, so a test decorated with ``@pass_context`` (or
++    similar) works correctly when used with these filters.
+ -   Make compiling deterministic for tuple unpacking in a ``{% set ... %}``
+     call. :issue:`2021`
+ -   Fix dunder protocol (`copy`/`pickle`/etc) interaction with ``Undefined``
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index a92832a..b970a34 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -1780,7 +1780,9 @@ def prepare_select_or_reject(
+         args = args[1 + off :]
+ 
+         def func(item: t.Any) -> t.Any:
+-            return context.environment.call_test(name, item, args, kwargs)
++            return context.environment.call_test(
++                name, item, args, kwargs, context=context
++            )
+ 
+     except LookupError:
+         func = bool  # type: ignore

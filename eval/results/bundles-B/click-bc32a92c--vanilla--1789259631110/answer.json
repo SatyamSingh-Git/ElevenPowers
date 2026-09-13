@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 647703,
+ "num_turns": 44,
+ "stop_reason": "end_turn",
+ "session_id": "c1ff7294-50d9-4d3b-8d16-e6a6de5e8967",
+ "total_cost_usd": 2.9555213,
+ "usage": {
+  "input_tokens": 88,
+  "cache_creation_input_tokens": 114871,
+  "cache_read_input_tokens": 4948571,
+  "output_tokens": 52057,
+  "output_tokens_details": {
+   "thinking_tokens": 41401
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 114871,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 474,
+    "cache_read_input_tokens": 151487,
+    "cache_creation_input_tokens": 649,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 649
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 530,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000605,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 88,
+   "outputTokens": 52057,
+   "cacheReadInputTokens": 4948571,
+   "cacheCreationInputTokens": 114871,
+   "webSearchRequests": 0,
+   "costUSD": 2.9549163000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "That remaining reference is just prose in a test docstring describing historical behavior \u00e2\u20ac\u201d harmless, no code dependency. The refactor is complete and verified.\n\n**Summary:** In `src/click/_termui_impl.py`, replaced the `_BufferedTextPagerStream` `Protocol` + `_has_binary_buffer` `TypeGuard` (a type-narrowing branching construct that existed only to let mypy narrow `stream` before accessing `.buffer`) with a plain `_pager_stream_buffer()` helper that returns the buffer or `None`. `get_pager_file` now does ordinary `is not None` narrowing instead of the TypeGuard dance \u00e2\u20ac\u201d same runtime behavior, less ceremony. Verified with the full test suite (1900 passed, 0 failed) including all pager-specific tests.\n\nI deliberately didn't go further and make `_pipepager`/`_tempfilepager` yield genuinely-binary streams (dropping their text-mode Popen/tempfile setup) \u00e2\u20ac\u201d I tried that first, but it breaks `test_get_pager_file_flushes_stream_on_exception` and `test_echo_via_pager_streams_each_write`: those backends rely on being opened in text mode specifically so `.buffer` is a reliable, side-effect-free signal that a stream needs re-wrapping, while plain text streams (like a bare `StringIO`) must be passed through untouched. That distinction is load-bearing, not incidental.",
+ "ttft_ms": 11526,
+ "ttft_stream_ms": 10909,
+ "time_to_request_ms": 32,
+ "type": "result",
+ "duration_ms": 668978,
+ "uuid": "38854c62-9ccd-4661-ad61-da6d7f0a8560"
+}

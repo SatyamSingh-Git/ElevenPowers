@@ -1,0 +1,54 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 3c9a94e..3b3bf1d 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -1,3 +1,10 @@
++## Unreleased
++
++- Fix `copy.copy()`, `copy.deepcopy()`, and `pickle` support for `Sentinel`
++  members such as `UNSET`. Previously, pickling raised a `ValueError`
++  because the sentinel's `object()` value is not itself picklable back
++  into an equal instance.
++
+ ## Version 8.5.0
+ 
+ Released 2026-08-24
+diff --git a/src/click/_utils.py b/src/click/_utils.py
+index 05ee2e9..cfb0c24 100644
+--- a/src/click/_utils.py
++++ b/src/click/_utils.py
+@@ -18,6 +18,9 @@ class Sentinel(enum.Enum):
+     def __repr__(self) -> str:
+         return f"{self.__class__.__name__}.{self.name}"
+ 
++    def __reduce_ex__(self, protocol: int) -> tuple[t.Any, ...]:
++        return getattr, (self.__class__, self._name_)
++
+ 
+ UNSET: t.Literal[Sentinel.UNSET] = Sentinel.UNSET
+ """Sentinel used to indicate that a value is not set."""
+diff --git a/tests/test_utils/test_sentinel.py b/tests/test_utils/test_sentinel.py
+index 1dd5b15..977b544 100644
+--- a/tests/test_utils/test_sentinel.py
++++ b/tests/test_utils/test_sentinel.py
+@@ -1,6 +1,9 @@
++import copy
++import pickle
+ from decimal import Decimal
+ from fractions import Fraction
+ 
++from click._utils import FLAG_NEEDS_VALUE
+ from click._utils import UNSET
+ 
+ 
+@@ -50,3 +53,10 @@ def test_unset_sentinel():
+         assert value is not real_value
+ 
+     assert value not in real_values
++
++
++def test_sentinel_copy_deepcopy_pickle():
++    for value in (UNSET, FLAG_NEEDS_VALUE):
++        assert copy.copy(value) is value
++        assert copy.deepcopy(value) is value
++        assert pickle.loads(pickle.dumps(value)) is value

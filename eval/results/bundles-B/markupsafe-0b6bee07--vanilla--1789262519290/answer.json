@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 82609,
+ "num_turns": 16,
+ "stop_reason": "end_turn",
+ "session_id": "ba24cb27-1592-454e-a408-3a208836cef7",
+ "total_cost_usd": 0.49921770000000004,
+ "usage": {
+  "input_tokens": 32,
+  "cache_creation_input_tokens": 24914,
+  "cache_read_input_tokens": 869719,
+  "output_tokens": 5875,
+  "output_tokens_details": {
+   "thinking_tokens": 3028
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 24914,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 159,
+    "cache_read_input_tokens": 60630,
+    "cache_creation_input_tokens": 1549,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1549
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000597,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 32,
+   "outputTokens": 5875,
+   "cacheReadInputTokens": 869719,
+   "cacheCreationInputTokens": 24914,
+   "webSearchRequests": 0,
+   "costUSD": 0.4986207,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 25 tests pass (5 skipped due to missing C speedups module, unrelated). Fix confirmed:\n\n`src/markupsafe/__init__.py` \u00e2\u20ac\u201d `striptags()` now removes comments/tags first, then collapses whitespace, instead of collapsing before stripping. This also fixes a latent bug where a tag surrounded by spaces (e.g. `\"a <b> </b> b\"`) used to leave a double space behind; now it correctly collapses to `\"a b\"`.",
+ "ttft_ms": 3492,
+ "ttft_stream_ms": 2111,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 86404,
+ "uuid": "529f386f-8f26-4f38-8371-33b2fb349908"
+}

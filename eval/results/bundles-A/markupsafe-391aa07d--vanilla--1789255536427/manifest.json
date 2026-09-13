@@ -1,0 +1,70 @@
+{
+ "task": "markupsafe-391aa07d",
+ "arm": "vanilla",
+ "model": "claude-haiku-4-5-20251001, claude-sonnet-5",
+ "model_asked": "claude-sonnet-5",
+ "base": {
+  "repo": "E:\\ep-corpus\\markupsafe",
+  "base": "60e7eb97e65947a83fa290010f3dde71be8fed84"
+ },
+ "required": {
+  "f2p": [
+   "tests/test_markupsafe.py::test_format_map"
+  ],
+  "p2p": [
+   "tests/test_escape.py::test_escape[markupsafe._native-&><'\"\\U0001f37a",
+   "tests/test_escape.py::test_escape[markupsafe._native-&><'\"\\u3053\\u3093\\u3070\\u3093\\u306f-&amp;&gt;&lt;&#39;&#34;\\u3053\\u3093\\u3070\\u3093\\u306f]",
+   "tests/test_escape.py::test_escape[markupsafe._native-&><'\"efgh-&amp;&gt;&lt;&#39;&#34;efgh]",
+   "tests/test_escape.py::test_escape[markupsafe._native--]",
+   "tests/test_escape.py::test_escape[markupsafe._native-\\U0001f363\\U0001f362&><'\"-\\U0001f363\\U0001f362&amp;&gt;&lt;&#39;&#34;]",
+   "tests/test_escape.py::test_escape[markupsafe._native-\\U0001f363\\U0001f362&><'\"\\U0001f37a",
+   "tests/test_escape.py::test_escape[markupsafe._native-\\u3053\\u3093\\u306b\\u3061\\u306f&><'\"-\\u3053\\u3093\\u306b\\u3061\\u306f&amp;&gt;&lt;&#39;&#34;]",
+   "tests/test_escape.py::test_escape[markupsafe._native-\\u3053\\u3093\\u306b\\u3061\\u306f&><'\"\\u3053\\u3093\\u3070\\u3093\\u306f-\\u3053\\u3093\\u306b\\u3061\\u306f&amp;&gt;&lt;&#39;&#34;\\u3053\\u3093\\u3070\\u3093\\u306f]",
+   "tests/test_escape.py::test_escape[markupsafe._native-abcd&><'\"-abcd&amp;&gt;&lt;&#39;&#34;]",
+   "tests/test_escape.py::test_escape[markupsafe._native-abcd&><'\"efgh-abcd&amp;&gt;&lt;&#39;&#34;efgh]",
+   "tests/test_exception_custom_html.py::test_exception_custom_html[markupsafe._native]",
+   "tests/test_markupsafe.py::test_adding[markupsafe._native]",
+   "tests/test_markupsafe.py::test_complex_custom_formatting",
+   "tests/test_markupsafe.py::test_custom_formatting",
+   "tests/test_markupsafe.py::test_dict_interpol",
+   "tests/test_markupsafe.py::test_escape_return_type[markupsafe._native]",
+   "tests/test_markupsafe.py::test_escape_silent[markupsafe._native]",
+   "tests/test_markupsafe.py::test_escaping[markupsafe._native]",
+   "tests/test_markupsafe.py::test_format",
+   "tests/test_markupsafe.py::test_formatting_empty",
+   "tests/test_markupsafe.py::test_formatting_with_objects",
+   "tests/test_markupsafe.py::test_html_interop",
+   "tests/test_markupsafe.py::test_missing_interpol[42]",
+   "tests/test_markupsafe.py::test_missing_interpol[args2]",
+   "tests/test_markupsafe.py::test_missing_interpol[foo]",
+   "tests/test_markupsafe.py::test_mul",
+   "tests/test_markupsafe.py::test_soft_str[markupsafe._native]",
+   "tests/test_markupsafe.py::test_splitting",
+   "tests/test_markupsafe.py::test_string_interpolation[%.2f-3.14-3.14]",
+   "tests/test_markupsafe.py::test_string_interpolation[%i-3.14-3]",
+   "tests/test_markupsafe.py::test_string_interpolation[<em>%(username)s</em>-data1-<em>&lt;bad",
+   "tests/test_markupsafe.py::test_string_interpolation[<em>%s</em>-<bad",
+   "tests/test_markupsafe.py::test_tuple_interpol",
+   "tests/test_markupsafe.py::test_type_behavior",
+   "tests/test_markupsafe.py::test_unescape"
+  ]
+ },
+ "gold": [
+  "src/markupsafe/__init__.py",
+  "tests/test_markupsafe.py"
+ ],
+ "gold_lines": 4,
+ "env": {
+  "PYTHONPATH": "src"
+ },
+ "limits": {
+  "agent_seconds": 900,
+  "suite_seconds": 900
+ },
+ "environment": {
+  "python": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "claude": "2.1.228 (Claude Code)",
+  "git": "git version 2.45.1.windows.1"
+ }
+}

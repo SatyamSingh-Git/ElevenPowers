@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 146101,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "14b37464-7448-4a29-9319-8d73b69a5c89",
+ "total_cost_usd": 0.9100707000000001,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 45639,
+  "cache_read_input_tokens": 1595239,
+  "output_tokens": 10458,
+  "output_tokens_details": {
+   "thinking_tokens": 1883
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 45639,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 318,
+    "cache_read_input_tokens": 82626,
+    "cache_creation_input_tokens": 278,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 278
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 540,
+   "outputTokens": 21,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000645,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 10458,
+   "cacheReadInputTokens": 1595239,
+   "cacheCreationInputTokens": 45639,
+   "webSearchRequests": 0,
+   "costUSD": 0.9094257000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Good, already imported. The fix is complete:\n\n- `src/click/core.py`: `Command.main()` now collects the report callback and exit code from each handler instead of calling `echo()`/`sys.exit()` inside the `except` blocks directly, then does the reporting and `sys.exit()` in a single spot wrapped by an outer `except (EOFError, KeyboardInterrupt)` \u00e2\u20ac\u201d so a second/late Ctrl-C during that final reporting step no longer escapes as an unhandled traceback; it just falls back to exiting with the already-decided code, message best-effort.\n- `CHANGES.md` and `docs/exceptions.md` updated to document the new behavior.\n- Added `tests/test_abort_interrupt.py` covering the race for prompt-raised aborts, body-raised interrupts, `ClickException.show()` interruption, non-standalone propagation, and interruption during a successful exit.\n\nFull test suite: 1931 passed, 0 failed.",
+ "ttft_ms": 5182,
+ "ttft_stream_ms": 4566,
+ "time_to_request_ms": 32,
+ "type": "result",
+ "duration_ms": 162841,
+ "uuid": "21408b58-0c89-4f8d-9910-c2be2d190b34"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 288715,
+ "num_turns": 29,
+ "stop_reason": "end_turn",
+ "session_id": "d15407ab-f8ff-40f9-8c97-4cc5463c1b45",
+ "total_cost_usd": 1.7018818999999994,
+ "usage": {
+  "input_tokens": 58,
+  "cache_creation_input_tokens": 91847,
+  "cache_read_input_tokens": 2870003,
+  "output_tokens": 19268,
+  "output_tokens_details": {
+   "thinking_tokens": 14088
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 91847,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 593,
+    "cache_read_input_tokens": 127726,
+    "cache_creation_input_tokens": 1386,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1386
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 530,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000605,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 58,
+   "outputTokens": 19268,
+   "cacheReadInputTokens": 2870003,
+   "cacheCreationInputTokens": 91847,
+   "webSearchRequests": 0,
+   "costUSD": 1.7012768999999996,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Good, `encoding` is already defined correctly before use. The diff applied consistently. Everything checks out \u00e2\u20ac\u201d tests pass, the code matches the real upstream refactor.\n\nThe commit **\"Refactor pager stream handling; drop text/binary branching\"** (pallets/click `bc32a92c`) is now applied:\n\n- `MaybeStripAnsi` (an `io.TextIOWrapper` subclass requiring a binary buffer) is replaced by `_PagerWriter`, a plain wrapper around whatever text stream a pager backend yields.\n- `_has_binary_buffer`/`_BufferedTextPagerStream` (the runtime TypeGuard that decided whether to unwrap a stream's `.buffer`) is deleted \u00e2\u20ac\u201d every backend (`_pipepager`, `_tempfilepager`, `_nullpager`) now consistently yields a `TextIO`, so `get_pager_file` no longer branches on stream capability.\n- `_tempfilepager`'s temp file is opened with the same `encoding`/`errors=\"replace\"` as the pipe backend, and `_pipepager`'s `c.stdin` is used directly as text (no more casting through `BinaryIO`).\n- `_KeepOpenFile` is no longer needed for the null-pager path; `_PagerWriter.close()` flushes but never closes the borrowed stream, so lifecycle ownership is explicit.\n- `_compat.should_strip_ansi`'s comment and tests were updated to reference `_PagerWriter` instead of `MaybeStripAnsi`, plus a new test (`test_get_pager_file_close_does_not_close_borrowed_stream`) covering the writer's `close()` behavior.\n\nFull test suite: 1901 passed, 94 skipped, 1 xfailed \u00e2\u20ac\u201d no regressions.",
+ "ttft_ms": 4910,
+ "ttft_stream_ms": 4638,
+ "time_to_request_ms": 142,
+ "type": "result",
+ "duration_ms": 413974,
+ "uuid": "d695e450-8e32-42d2-bf7b-fc26264620b1"
+}

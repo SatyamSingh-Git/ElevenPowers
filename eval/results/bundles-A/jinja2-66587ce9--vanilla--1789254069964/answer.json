@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 476360,
+ "num_turns": 43,
+ "stop_reason": "end_turn",
+ "session_id": "dd10fe46-28a9-4d5d-b649-c7c801e46270",
+ "total_cost_usd": 2.2000904999999995,
+ "usage": {
+  "input_tokens": 82,
+  "cache_creation_input_tokens": 82870,
+  "cache_read_input_tokens": 3698405,
+  "output_tokens": 39492,
+  "output_tokens_details": {
+   "thinking_tokens": 28206
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 82870,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 567,
+    "cache_read_input_tokens": 119893,
+    "cache_creation_input_tokens": 242,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 242
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 648,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000723,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 82,
+   "outputTokens": 39492,
+   "cacheReadInputTokens": 3698405,
+   "cacheCreationInputTokens": 82870,
+   "webSearchRequests": 0,
+   "costUSD": 2.1993674999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed in `src/jinja2/idtracking.py`'s `Symbols.branch_update`.\n\n**Root cause:** the old code counted, per name, how many of the 3 if/elif/else branches stored it, and if all 3 did, it skipped recomputing that name's load instruction \u00e2\u20ac\u201d assuming whatever load type happened to survive the branch merge was already correct. But `elif` clauses are processed via a recursive `visit_If` call (each elif is its own `If` node with fake empty elif/else siblings), so its \"branch count\" is computed independently and can force an early resolve/alias fallback for names it sets. When merged back into the outer branch_update, dict-update ordering meant the last-processed branch's load type silently won \u00e2\u20ac\u201d and if that happened to be a fresh top-level store with no outer scope, it wrote `VAR_LOAD_UNDEFINED`, overriding a correct `VAR_LOAD_RESOLVE`/`VAR_LOAD_ALIAS` from a sibling branch.\n\nI confirmed this concretely: a `for` loop with `{% if %}...{% elif %}...{% else %}` all setting `x` (unreferenced before) produced `l_1_x: ('undefined', None)` pre-fix vs. the correct `l_1_x: ('resolve', 'x')` post-fix.\n\n**Fix:** removed the `branch_count == len(branch_symbols)` shortcut \u00e2\u20ac\u201d now every name stored in any branch (and not already stored before the `if`) always goes through the resolve/alias fallback, matching upstream Jinja's actual fix (verified byte-identical against the real 3.1.6 release). Also added the corresponding `CHANGES.rst` entry. Full test suite (907 tests) passes.",
+ "ttft_ms": 3724,
+ "ttft_stream_ms": 2056,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 504614,
+ "uuid": "987fb052-4a84-490d-bbd9-332325150bae"
+}

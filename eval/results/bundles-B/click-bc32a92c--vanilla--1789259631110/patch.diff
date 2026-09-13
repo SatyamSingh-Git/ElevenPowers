@@ -1,0 +1,46 @@
+diff --git a/src/click/_termui_impl.py b/src/click/_termui_impl.py
+index 4f8c091..ec09444 100644
+--- a/src/click/_termui_impl.py
++++ b/src/click/_termui_impl.py
+@@ -34,16 +34,15 @@ from .utils import echo
+ V = t.TypeVar("V")
+ 
+ 
+-class _BufferedTextPagerStream(t.Protocol):
+-    buffer: t.BinaryIO
++def _pager_stream_buffer(stream: t.BinaryIO | t.TextIO) -> t.BinaryIO | None:
++    """Return the binary buffer backing ``stream``, if it has one.
+ 
+-
+-def _has_binary_buffer(
+-    stream: t.BinaryIO | t.TextIO,
+-) -> t.TypeGuard[_BufferedTextPagerStream]:
+-    # TextIO is wider than TextIOWrapper; text-only streams such as StringIO
+-    # are valid TextIO values but do not expose a binary buffer to wrap.
+-    return getattr(stream, "buffer", None) is not None
++    A text stream backed by a binary buffer (a subprocess pipe, a temp file
++    opened in text mode) can be unwrapped so :class:`MaybeStripAnsi` controls
++    its encoding and ANSI handling directly. Text-only streams such as
++    ``StringIO`` have no buffer to unwrap and are used as-is.
++    """
++    return getattr(stream, "buffer", None)
+ 
+ 
+ if os.name == "nt":
+@@ -448,13 +447,10 @@ def get_pager_file(color: bool | None = None) -> t.Generator[t.TextIO, None, Non
+                   default is autodetection.
+     """
+     with _pager_contextmanager(color=color) as (stream, encoding, color):
+-        # Split streams by capabilities rather than the abstract TextIO /
+-        # BinaryIO annotations: buffered text streams can be unwrapped to bytes,
+-        # while other streams are yielded as-is.
+         wrapper: MaybeStripAnsi | None = None
+-        if _has_binary_buffer(stream):
+-            # Text stream backed by a binary buffer.
+-            wrapper = MaybeStripAnsi(stream.buffer, color=color, encoding=encoding)
++        buffer = _pager_stream_buffer(stream)
++        if buffer is not None:
++            wrapper = MaybeStripAnsi(buffer, color=color, encoding=encoding)
+             stream = wrapper
+         try:
+             # Narrow the BinaryIO | TextIO union that _pager_contextmanager

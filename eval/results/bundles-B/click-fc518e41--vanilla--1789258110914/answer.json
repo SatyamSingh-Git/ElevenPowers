@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 224894,
+ "num_turns": 34,
+ "stop_reason": "end_turn",
+ "session_id": "67d0b873-2b75-4b30-b9b9-5af0504e96cf",
+ "total_cost_usd": 1.2289316,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 50441,
+  "cache_read_input_tokens": 2217292,
+  "output_tokens": 13039,
+  "output_tokens_details": {
+   "thinking_tokens": 2953
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50441,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 503,
+    "cache_read_input_tokens": 86878,
+    "cache_creation_input_tokens": 828,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 828
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 28329,
+   "outputTokens": 5396,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.065309,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 68,
+   "outputTokens": 13039,
+   "cacheReadInputTokens": 2217292,
+   "cacheCreationInputTokens": 50441,
+   "webSearchRequests": 0,
+   "costUSD": 1.1636225999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1931 tests pass with no regressions. Full summary of the fix:\n\n**Bug**: In `Command.main()`, the `Aborted!`/error-message reporting and the final `sys.exit()` ran directly inside `except` blocks \u00e2\u20ac\u201d outside any `try` that caught `KeyboardInterrupt`. A second Ctrl-C arriving while Click was writing that message (e.g., inside `echo()`'s `isatty()` check) escaped as an unhandled traceback instead of a clean exit.\n\n**Fix** (`src/click/core.py`): restructured `main()` so every handler only *collects* a `report` callback and `exit_code`, deferring the actual `echo`/`sys.exit()` calls to a single teardown wrapped in an outer `try/except (EOFError, KeyboardInterrupt)`. A late interrupt during reporting can now only cost the message \u00e2\u20ac\u201d the previously determined exit code always wins.\n\nAlso updated `CHANGES.md`, `docs/exceptions.md` (replaced the old 4-step prose with a full outcome table, plus a \"replace the Aborted! message\" recipe), and added `tests/test_abort_interrupt.py` with 8 regression tests covering interrupts during prompts, command bodies, error reporting, non-standalone mode, and successful exits.",
+ "ttft_ms": 4516,
+ "ttft_stream_ms": 3601,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 241036,
+ "uuid": "c26cd623-a104-44cb-a7c0-61fd2188c4cb"
+}

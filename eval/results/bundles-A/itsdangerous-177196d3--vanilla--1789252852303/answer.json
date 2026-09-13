@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 71793,
+ "num_turns": 16,
+ "stop_reason": "end_turn",
+ "session_id": "fe9d8d6b-5f37-4181-9fe9-5ce0d4550192",
+ "total_cost_usd": 0.455805,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 27130,
+  "cache_read_input_tokens": 765200,
+  "output_tokens": 4186,
+  "output_tokens_details": {
+   "thinking_tokens": 1380
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 27130,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 189,
+    "cache_read_input_tokens": 62286,
+    "cache_creation_input_tokens": 2109,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2109
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005909999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 4186,
+   "cacheReadInputTokens": 765200,
+   "cacheCreationInputTokens": 27130,
+   "webSearchRequests": 0,
+   "costUSD": 0.455214,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 101 tests pass, including `test_malformed_future_timestamp`, which previously had to be skipped on Windows.\n\n**Fix:** `datetime.fromtimestamp()` raises `OSError` (not `ValueError`) on Windows for out-of-range timestamps. `src/itsdangerous/timed.py` now catches both in `unsign()`, and the Windows `skipif` on `test_malformed_future_timestamp` in `tests/test_itsdangerous/test_timed.py` was removed (along with the now-unused `sys` import) since the test passes.",
+ "ttft_ms": 2955,
+ "ttft_stream_ms": 2300,
+ "time_to_request_ms": 37,
+ "type": "result",
+ "duration_ms": 74693,
+ "uuid": "bfcf5010-edda-4b0a-852e-656b6552936d"
+}

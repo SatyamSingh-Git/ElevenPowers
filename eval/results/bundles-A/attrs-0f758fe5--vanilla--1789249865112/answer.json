@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 10639,
+ "num_turns": 2,
+ "stop_reason": "end_turn",
+ "session_id": "e7a815fc-2f4a-4c6e-8ea9-48decc5433d0",
+ "total_cost_usd": 0.1113406,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 12830,
+  "cache_read_input_tokens": 86852,
+  "output_tokens": 509,
+  "output_tokens_details": {
+   "thinking_tokens": 254
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12830,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 155,
+    "cache_read_input_tokens": 49587,
+    "cache_creation_input_tokens": 508,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 508
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 588,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000658,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 4,
+   "outputTokens": 509,
+   "cacheReadInputTokens": 86852,
+   "cacheCreationInputTokens": 12830,
+   "webSearchRequests": 0,
+   "costUSD": 0.11068259999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This looks like the `attrs` Python library repo, and your message reads like a PR title/commit description (\"Expose converter as a decorator (#1541)\") rather than an instruction \u00e2\u20ac\u201d there's no actual task stated.\n\nCould you clarify what you'd like me to do? For example:\n- Implement this feature (expose `converter` as a decorator, similar to `validator`/`default`) from scratch\n- Look up/recreate the real PR #1541 changes and apply them here\n- Something else entirely",
+ "ttft_ms": 5156,
+ "ttft_stream_ms": 1904,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 10398,
+ "uuid": "1d64f028-8a90-489f-b2d5-20b1cd922592"
+}

@@ -1,0 +1,6 @@
+{
+ "resolved": false,
+ "outcome": "unfixed",
+ "detail": "tests/test_regression.py::test_load_parameter_when_set_in_all_if_branches",
+ "passed": []
+}

@@ -1,0 +1,136 @@
+diff --git a/changelog.d/1529.change.md b/changelog.d/1529.change.md
+new file mode 100644
+index 0000000..531e1d9
+--- /dev/null
++++ b/changelog.d/1529.change.md
+@@ -0,0 +1 @@
++It's now possible to pass *attrs* **instances** in addition to *attrs* **classes** to `attrs.fields()`.
+diff --git a/docs/api.rst b/docs/api.rst
+index dc1d955..ee84d9d 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -154,6 +154,8 @@ Helpers
+       ...     y = field()
+       >>> attrs.fields(C)
+       (Attribute(name='x', default=NOTHING, validator=None, repr=True, eq=True, eq_key=None, order=True, order_key=None, hash=None, init=True, metadata=mappingproxy({}), type=None, converter=None, kw_only=False, inherited=False, on_setattr=None, alias='x'), Attribute(name='y', default=NOTHING, validator=None, repr=True, eq=True, eq_key=None, order=True, order_key=None, hash=None, init=True, metadata=mappingproxy({}), type=None, converter=None, kw_only=False, inherited=False, on_setattr=None, alias='y'))
++      >>> attrs.fields(C(1, 2)) is attrs.fields(C)
++      True
+       >>> attrs.fields(C)[1]
+       Attribute(name='y', default=NOTHING, validator=None, repr=True, eq=True, eq_key=None, order=True, order_key=None, hash=None, init=True, metadata=mappingproxy({}), type=None, converter=None, kw_only=False, inherited=False, on_setattr=None, alias='y')
+       >>> attrs.fields(C).y is attrs.fields(C)[1]
+diff --git a/src/attr/__init__.pyi b/src/attr/__init__.pyi
+index 8d78fa1..758decf 100644
+--- a/src/attr/__init__.pyi
++++ b/src/attr/__init__.pyi
+@@ -308,7 +308,7 @@ def attrs(
+     match_args: bool = ...,
+     unsafe_hash: bool | None = ...,
+ ) -> Callable[[_C], _C]: ...
+-def fields(cls: type[AttrsInstance]) -> Any: ...
++def fields(cls: type[AttrsInstance] | AttrsInstance) -> Any: ...
+ def fields_dict(cls: type[AttrsInstance]) -> dict[str, Attribute[Any]]: ...
+ def validate(inst: AttrsInstance) -> None: ...
+ def resolve_types(
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 9081236..4b32d6a 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1890,16 +1890,16 @@ def _add_repr(cls, ns=None, attrs=None):
+ 
+ def fields(cls):
+     """
+-    Return the tuple of *attrs* attributes for a class.
++    Return the tuple of *attrs* attributes for a class or instance.
+ 
+     The tuple also allows accessing the fields by their names (see below for
+     examples).
+ 
+     Args:
+-        cls (type): Class to introspect.
++        cls (type): Class or instance to introspect.
+ 
+     Raises:
+-        TypeError: If *cls* is not a class.
++        TypeError: If *cls* is neither a class nor an *attrs* instance.
+ 
+         attrs.exceptions.NotAnAttrsClassError:
+             If *cls* is not an *attrs* class.
+@@ -1910,12 +1910,17 @@ def fields(cls):
+     .. versionchanged:: 16.2.0 Returned tuple allows accessing the fields
+        by name.
+     .. versionchanged:: 23.1.0 Add support for generic classes.
++    .. versionchanged:: 26.1.0 Add support for instances.
+     """
+     generic_base = get_generic_base(cls)
+ 
+     if generic_base is None and not isinstance(cls, type):
+-        msg = "Passed object must be a class."
+-        raise TypeError(msg)
++        type_ = type(cls)
++        if getattr(type_, "__attrs_attrs__", None) is None:
++            msg = "Passed object must be a class or attrs instance."
++            raise TypeError(msg)
++
++        return fields(type_)
+ 
+     attrs = getattr(cls, "__attrs_attrs__", None)
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 6430195..6f226c6 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -1550,12 +1550,19 @@ class TestFields:
+     @given(simple_classes())
+     def test_instance(self, C):
+         """
+-        Raises `TypeError` on non-classes.
++        Returns the class fields for *attrs* instances too.
+         """
+-        with pytest.raises(TypeError) as e:
+-            fields(C())
++        assert fields(C()) is fields(C)
+ 
+-        assert "Passed object must be a class." == e.value.args[0]
++    def test_handler_non_attrs_instance(self):
++        """
++        Raises `TypeError` on non-*attrs* instances.
++        """
++        with pytest.raises(
++            TypeError,
++            match=r"Passed object must be a class or attrs instance\.",
++        ):
++            fields(object())
+ 
+     def test_handler_non_attrs_class(self):
+         """
+diff --git a/tests/test_mypy.yml b/tests/test_mypy.yml
+index 7351fd9..0c120f6 100644
+--- a/tests/test_mypy.yml
++++ b/tests/test_mypy.yml
+@@ -1431,6 +1431,17 @@
+ 
+     reveal_type(fields(A))  # N: Revealed type is "[Tt]uple\[attr.Attribute\[builtins.int\], attr.Attribute\[builtins.str\], fallback=main.A.__main_A_AttrsAttributes__\]"
+ 
++- case: testFieldsInstance
++  main: |
++    from attrs import define, fields
++
++    @define
++    class A:
++      a: int
++      b: str
++
++    fields(A(1, "x"))
++
+ - case: testFieldsError
+   regex: true
+   main: |
+@@ -1440,7 +1451,7 @@
+       a: int
+       b: str
+ 
+-    fields(A)  # E: Argument 1 to "fields" has incompatible type "[Tt]ype\[A\]"; expected "[Tt]ype\[AttrsInstance\]"  \[arg-type\]
++    fields(A)  # E: Argument 1 to "fields" has incompatible type "type\[A\]"; expected "type\[AttrsInstance\] \| AttrsInstance"  \[arg-type\]
+ 
+ - case: testAsDict
+   main: |

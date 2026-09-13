@@ -180,16 +180,123 @@ its four cases came out `setup`. It had been passing only because the machine's
 `autocrlf` was quietly normalising both sides — which means the grader's own
 grader would have failed on any machine configured differently.
 
-## What this step still cannot answer
-
-Every failure category remains unit-tested and unseen. The single real check
-available before tonight — Phase A's four bundles — classifies all four as
-`resolved`, which exercises the happy path and nothing else.
-
-That is the same position Phase A was in before its first live sweep found a
-defect in twenty minutes. The difference is only that this time the harness was
-made to fail five ways on purpose first.
-
 ## The run
 
-<!-- filled in once the sweep completes -->
+Ninety runs, two passes of fifteen tasks at three replicates, `claude-sonnet-5`
+at `--effort high`, from 03:05 to 06:56. **$67.42**, three hours thirty-seven of
+agent time, against the $20-40 this phase had written down before it had
+measured anything.
+
+**Nothing broke.** Zero setup failures, zero timeouts, zero host errors, no
+model mismatch, in ninety paid runs.
+
+```
+pass A   68.9%   [46.7%, 88.9%]
+pass B   53.3%   [33.3%, 73.3%]
+
+Each score falls inside the other's interval: the rerun reproduces.
+```
+
+Phase B's exit is met on its own terms. What follows is why those terms are
+weaker than they look.
+
+### The categories stopped being hypothetical
+
+Before this every failure category was unit-tested and unseen; the only real
+bundles available classified as `resolved`, four for four. Ninety runs put four
+categories in the wild:
+
+| category | pass A | pass B |
+|---|---|---|
+| resolved | 31 | 24 |
+| no-patch | 12 | 9 |
+| localised | 2 | 10 |
+| regressed | 0 | 2 |
+
+`regressed` is the one worth naming. Twice in pass B, on `attrs-48b8611c`, the
+agent made the requested test pass and broke
+`tests/test_packaging.py::TestLegacyMetadataHack::test_version_info[attr]`.
+Every grader this project had before Phase A would have scored both as
+successes, because they ran only the tests the patch was supposed to fix. This
+is the first time the preservation set has caught a real agent doing it on
+somebody else's code.
+
+`setup`, `timeout`, `host-error`, `abstained`, `misplaced` and `unattributed`
+remain unit-tested and unseen.
+
+### Two passes, and one of them is lying
+
+The score moved 15.6 points between two passes of the same configuration on the
+same corpus two hours apart. The per-task detail is worse than the headline:
+
+| | tasks |
+|---|---|
+| same answer all six times | 8 |
+| split | **7** |
+
+And two tasks did not merely wobble. `jinja2-66587ce9` and `jinja2-ee832194`
+were solved **three times out of three in pass A and zero times out of three in
+pass B.** In both cases the test that failed is the `f2p` — the agent did not
+break something else, it simply failed to fix the bug, repeatedly, on a task it
+had just solved repeatedly.
+
+Read only pass A and those two tasks look perfectly deterministic. So does
+almost everything: after pass A alone, fourteen of fifteen tasks had given the
+same answer three times, and the obvious conclusion — *replicates buy nothing,
+this baseline is near-deterministic* — was wrong, and would have set the sample
+size for every comparison that follows.
+
+**The replicates inside one pass are more correlated with each other than two
+passes are with each other.** This is the clustering correction one level up.
+E2, E6 and the interval each forced the same lesson about runs within a task;
+this is the same shape about tasks within a pass, and the interval — correctly
+computed over tasks — is still estimated from a sample that understates how much
+moves between sittings.
+
+So the two passes overlapping is not much of a reproduction. The criterion is
+satisfied mostly because a 42-point interval is hard to miss.
+
+### What it did buy
+
+A first real measurement of within-arm variation, which is what D57 said the
+sample size has to come from and what no run here had ever produced. Seven of
+fifteen tasks vary within one arm. Two tasks are never solved in six attempts.
+Six are always solved.
+
+That last number is the constraint. **Six tasks out of fifteen cannot show an
+improvement**, because a plain agent already solves them every time, and two
+more may be out of reach entirely. The discriminating middle is seven tasks, and
+those are the ones a treatment has to move.
+
+The old suite was worse — eleven of sixteen solved every time — so this is
+progress. It is not yet a benchmark that can measure a small effect.
+
+## Four states, not a pass mark
+
+| claim | state |
+|---|---|
+| the harness survives ninety unattended paid runs | **verified** — nothing broke, nothing needed a human |
+| the grade is a function of the base and the patch | **verified** — after being *contradicted* eight hours earlier, when it was a function of the grader's git config |
+| a rerun reproduces | **verified, weakly** — the criterion is met, and it is met mostly because a 42-point interval is hard to miss |
+| the score is a stable quantity | **contradicted** — 68.9 and 53.3 from the same configuration two hours apart |
+| the taxonomy describes real runs | **verified for four of ten categories**; six have still never been seen |
+| P1, the hypothesis | **unverified**, and not addressed by this run at all — one arm was measured, not two |
+
+The last line is the one to keep. This phase built an instrument and pointed it
+at a baseline. It did not test the idea the project exists to test.
+
+## What the night actually cost, and what it bought
+
+$67.42 and about four hours, against a $20-40 envelope written before anything
+had been measured. Roughly a dollar of that went on the two runs that found the
+line-ending defect, which is the cheapest thing that happened.
+
+The defect is what makes the rest of it worth the money. Ninety runs of clean
+data are worth having; ninety runs that silently filed every solved attrs task
+under "harness breakage" would have been worth less than nothing, because they
+would have carried a pinned corpus, a pinned model, an interval and a
+reproduction, and been wrong.
+
+**The verification that was supposed to prevent that looked exactly like
+success.** That is the part to remember the next time something is declared
+ready.

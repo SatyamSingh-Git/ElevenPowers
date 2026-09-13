@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 64798,
+ "num_turns": 15,
+ "stop_reason": "end_turn",
+ "session_id": "f18af6cf-8d02-4c19-85c4-6170851619ba",
+ "total_cost_usd": 0.4921650000000001,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 28226,
+  "cache_read_input_tokens": 831310,
+  "output_tokens": 4849,
+  "output_tokens_details": {
+   "thinking_tokens": 1778
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 28226,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 240,
+    "cache_read_input_tokens": 63008,
+    "cache_creation_input_tokens": 2483,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2483
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 521,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0005909999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 4849,
+   "cacheReadInputTokens": 831310,
+   "cacheCreationInputTokens": 28226,
+   "webSearchRequests": 0,
+   "costUSD": 0.49157400000000007,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 297 tests pass, no skips. Summary:\n\n- `src/itsdangerous/timed.py:130` \u00e2\u20ac\u201d `timestamp_to_datetime` now catches `OSError` alongside `ValueError` when converting an out-of-range timestamp, since Windows' C runtime raises `OSError: [Errno 22] Invalid argument` for values Linux would raise `ValueError`/`OverflowError` for. Updated the docstring to match.\n- `tests/test_itsdangerous/test_timed.py` \u00e2\u20ac\u201d removed the `skipif(sys.platform == \"win32\", ...)` on `test_malformed_future_timestamp` (and the now-unused `sys` import), since the underlying bug is fixed and the test passes on Windows.",
+ "ttft_ms": 2461,
+ "ttft_stream_ms": 994,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 68410,
+ "uuid": "949342e4-f2bf-4909-bef6-28ea6b7cc552"
+}

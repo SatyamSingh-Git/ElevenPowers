@@ -1,0 +1,39 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index d1074d3..4d240a9 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -3,6 +3,10 @@ Version 2.1.5
+ 
+ Unreleased
+ 
++-   ``striptags`` collapses whitespace after removing tags and comments,
++    instead of before, so that whitespace left behind by a removed tag is
++    correctly collapsed.
++
+ 
+ Version 2.1.4
+ -------------
+diff --git a/src/markupsafe/__init__.py b/src/markupsafe/__init__.py
+index 1e0f022..0584701 100644
+--- a/src/markupsafe/__init__.py
++++ b/src/markupsafe/__init__.py
+@@ -158,8 +158,7 @@ class Markup(str):
+         >>> Markup("Main &raquo;\t<em>About</em>").striptags()
+         'Main » About'
+         """
+-        # collapse spaces
+-        value = " ".join(self.split())
++        value = str(self)
+ 
+         # Look for comments then tags separately. Otherwise, a comment that
+         # contains a tag would end early, leaving some of the comment behind.
+@@ -193,6 +192,9 @@ class Markup(str):
+ 
+             value = f"{value[:start]}{value[end + 1:]}"
+ 
++        # collapse spaces
++        value = " ".join(value.split())
++
+         return self.__class__(value).unescape()
+ 
+     @classmethod

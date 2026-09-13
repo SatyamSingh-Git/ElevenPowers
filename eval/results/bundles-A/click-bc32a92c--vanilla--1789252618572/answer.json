@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 484398,
+ "num_turns": 44,
+ "stop_reason": "end_turn",
+ "session_id": "e1a12a67-0d4b-432a-a9b4-aec1f8db3dbd",
+ "total_cost_usd": 2.2532209999999995,
+ "usage": {
+  "input_tokens": 88,
+  "cache_creation_input_tokens": 83283,
+  "cache_read_input_tokens": 3781730,
+  "output_tokens": 41209,
+  "output_tokens_details": {
+   "thinking_tokens": 27537
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 83283,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 531,
+    "cache_read_input_tokens": 117255,
+    "cache_creation_input_tokens": 3293,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3293
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 530,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000605,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 88,
+   "outputTokens": 41209,
+   "cacheReadInputTokens": 3781730,
+   "cacheCreationInputTokens": 83283,
+   "webSearchRequests": 0,
+   "costUSD": 2.2526159999999993,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This diff is clean and does exactly what was asked. Summary of the refactor:\n\n- **`src/click/_termui_impl.py`**: replaced the `_has_binary_buffer`/`_BufferedTextPagerStream` type-guard branch in `get_pager_file` with an unconditional path \u00e2\u20ac\u201d every pager backend now guarantees a text stream with a real `.buffer`, so `MaybeStripAnsi(stream.buffer, ...)` always applies. The one gap (the \"no stdout attached\" fallback, previously a bare `StringIO()` with no `.buffer`) is now `_binary_backed_stdout()`, backed by a small `_BinaryBackedStdout` class exposing `.buffer`/`.encoding`/`.isatty()` \u00e2\u20ac\u201d deliberately not a `TextIOWrapper`, since that would auto-close its buffer on GC once nothing else references it (a real bug I hit and fixed while testing). Also dropped the misleading `t.cast(t.BinaryIO, ...)` casts on inherently text-mode streams (`c.stdin`, the tempfile handle) in favor of honest `t.TextIO` types, and simplified all three backends' return-type annotations from `t.BinaryIO | t.TextIO` to plain `t.TextIO`.\n- **`tests/test_termui.py`**: updated three tests that had locked in the old branching (bufferless-stream) behavior, and refreshed an outdated docstring referencing the removed `_has_binary_buffer` probe.\n\nFull test suite: 1900 passed, 94 skipped, 1 xfailed \u00e2\u20ac\u201d no regressions.",
+ "ttft_ms": 2394,
+ "ttft_stream_ms": 1904,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 507303,
+ "uuid": "1e201ed5-c921-4dc9-a823-34a65c3f2504"
+}

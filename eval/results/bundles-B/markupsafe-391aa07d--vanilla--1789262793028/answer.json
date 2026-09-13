@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 40952,
+ "num_turns": 13,
+ "stop_reason": "end_turn",
+ "session_id": "3913bc93-4e78-4cbf-a149-1e25ff7c2020",
+ "total_cost_usd": 0.34901499999999996,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 24448,
+  "cache_read_input_tokens": 543300,
+  "output_tokens": 2579,
+  "output_tokens_details": {
+   "thinking_tokens": 472
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 24448,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 114,
+    "cache_read_input_tokens": 61421,
+    "cache_creation_input_tokens": 292,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 292
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000592,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 20,
+   "outputTokens": 2579,
+   "cacheReadInputTokens": 543300,
+   "cacheCreationInputTokens": 24448,
+   "webSearchRequests": 0,
+   "costUSD": 0.3484229999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 6 format-related tests pass, including the new `test_format_map`.\n\nAdded `Markup.format_map` to `src/markupsafe/__init__.py:212-216`, mirroring `format` but calling `EscapeFormatter.vformat` with an empty args tuple and the mapping as kwargs. Also added a test and a changelog entry.",
+ "ttft_ms": 3158,
+ "ttft_stream_ms": 2028,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 43331,
+ "uuid": "060a833c-be05-41ac-a3e0-7106dd528bc1"
+}

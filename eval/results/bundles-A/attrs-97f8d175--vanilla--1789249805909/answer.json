@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 123049,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "f6b441d4-935c-4bf1-8f6e-acbec7679b22",
+ "total_cost_usd": 0.7463004999999999,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 29701,
+  "cache_read_input_tokens": 1509365,
+  "output_tokens": 7635,
+  "output_tokens_details": {
+   "thinking_tokens": 2719
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29701,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 403,
+    "cache_read_input_tokens": 66322,
+    "cache_creation_input_tokens": 644,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 644
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 534,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006039999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 7635,
+   "cacheReadInputTokens": 1509365,
+   "cacheCreationInputTokens": 29701,
+   "webSearchRequests": 0,
+   "costUSD": 0.7456964999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full test suite passes (1388 passed, expected skips only). Here's a summary of the fix.\n\n## Summary\n\nApplied the upstream fix for GitHub issue #1575/#1593 in `attrs`:\n\n- **`src/attr/_make.py`**: `_is_class_var()` now unwraps `ForwardRef.__forward_arg__` before doing the string-prefix check, so `ClassVar` annotations that get turned into `ForwardRef` objects (e.g. Python 3.14's new deferred annotation evaluation, or when `ClassVar` is only imported under `TYPE_CHECKING`) are correctly recognized as class variables instead of being treated as regular attributes.\n- **`tests/test_annotations.py`**: added `typing.ForwardRef(\"ClassVar[str]\")` to the `test_is_class_var` parametrization, and added `test_missing_classvar_import` (skipped below Python 3.14) reproducing the original issue's repro case.\n- **`changelog.d/1593.change.md`**: added the changelog fragment.\n\nFull test suite passes (1388 passed, 7 skipped, 1 xfailed \u00e2\u20ac\u201d all expected, e.g. the new test skips since local Python is 3.13).",
+ "ttft_ms": 3442,
+ "ttft_stream_ms": 2316,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 152227,
+ "uuid": "81b484c3-2111-45f0-963e-473941017cf2"
+}

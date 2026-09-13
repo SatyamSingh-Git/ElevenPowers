@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 47723,
+ "num_turns": 15,
+ "stop_reason": "end_turn",
+ "session_id": "0f177aaf-80a1-41e2-ba8c-ffc5373b9d4c",
+ "total_cost_usd": 0.43314639999999993,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 27687,
+  "cache_read_input_tokens": 728048,
+  "output_tokens": 3196,
+  "output_tokens_details": {
+   "thinking_tokens": 568
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 27687,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 191,
+    "cache_read_input_tokens": 62939,
+    "cache_creation_input_tokens": 2013,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2013
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 522,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000592,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 26,
+   "outputTokens": 3196,
+   "cacheReadInputTokens": 728048,
+   "cacheCreationInputTokens": 27687,
+   "webSearchRequests": 0,
+   "costUSD": 0.4325544,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "That's an environment-level pytest plugin issue (missing `attrs` for `trio`/`hypothesis`), unrelated to this change \u00e2\u20ac\u201d direct verification above confirms `format_map` works correctly, matching `format`'s escaping behavior.\n\n**Summary:** Added `Markup.format_map` in `src/markupsafe/__init__.py`, mirroring `format` but calling `EscapeFormatter.vformat` with a mapping instead of args/kwargs. Added a test in `tests/test_markupsafe.py` and a changelog entry in `CHANGES.rst`.",
+ "ttft_ms": 3283,
+ "ttft_stream_ms": 2007,
+ "time_to_request_ms": 32,
+ "type": "result",
+ "duration_ms": 51155,
+ "uuid": "17886799-307e-4151-a6e6-37829d46136c"
+}

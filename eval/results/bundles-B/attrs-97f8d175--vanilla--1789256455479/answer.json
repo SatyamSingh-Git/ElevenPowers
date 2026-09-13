@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 108216,
+ "num_turns": 20,
+ "stop_reason": "end_turn",
+ "session_id": "90a3fafc-126f-4578-a7d6-a4b0f94af7f1",
+ "total_cost_usd": 0.7169539000000001,
+ "usage": {
+  "input_tokens": 40,
+  "cache_creation_input_tokens": 37190,
+  "cache_read_input_tokens": 1272483,
+  "output_tokens": 7423,
+  "output_tokens_details": {
+   "thinking_tokens": 3775
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 37190,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 190,
+    "cache_read_input_tokens": 74106,
+    "cache_creation_input_tokens": 349,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 349
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 534,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006039999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 40,
+   "outputTokens": 7423,
+   "cacheReadInputTokens": 1272483,
+   "cacheCreationInputTokens": 37190,
+   "webSearchRequests": 0,
+   "costUSD": 0.7163499000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All pass. Applied the upstream fix (`_is_class_var` now unwraps `__forward_arg__` before the string-prefix check), added matching tests, and the changelog fragment.\n\n- `src/attr/_make.py:300` \u00e2\u20ac\u201d unwrap `ForwardRef.__forward_arg__` first\n- `tests/test_annotations.py` \u00e2\u20ac\u201d new `test_missing_classvar_import` (Py3.14+) and a `typing.ForwardRef(\"ClassVar[str]\")` case in `test_is_class_var`\n- `changelog.d/1593.change.md` \u00e2\u20ac\u201d new fragment",
+ "ttft_ms": 3461,
+ "ttft_stream_ms": 2315,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 115472,
+ "uuid": "b20a217d-f9b9-4c1a-86c9-46565bab77e2"
+}

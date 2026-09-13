@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 264418,
+ "num_turns": 43,
+ "stop_reason": "end_turn",
+ "session_id": "b22eedb6-f27e-4b6c-9368-ffe15b011105",
+ "total_cost_usd": 1.4079216,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 52963,
+  "cache_read_input_tokens": 2645572,
+  "output_tokens": 19707,
+  "output_tokens_details": {
+   "thinking_tokens": 11566
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 52963,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 417,
+    "cache_read_input_tokens": 89998,
+    "cache_creation_input_tokens": 230,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 230
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 540,
+   "outputTokens": 21,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000645,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 19707,
+   "cacheReadInputTokens": 2645572,
+   "cacheCreationInputTokens": 52963,
+   "webSearchRequests": 0,
+   "costUSD": 1.4072766,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Clean. Summary of the fix:\n\n**Bug**: In `Command.main()` (`src/click/core.py`), the `KeyboardInterrupt`/`EOFError` handler and the `Abort` handler each do an `echo()` write to stderr before exiting. If a second `KeyboardInterrupt` (e.g. two rapid Ctrl+C presses) arrived while that write was in flight, it escaped `main()` entirely as a raw, unhandled exception instead of producing the intended clean \"Aborted!\" message and exit code \u00e2\u20ac\u201d confirmed with a reproduction before fixing, and it crashed the test harness itself.\n\n**Fix**: Wrapped the two vulnerable `echo()` calls in their own `try/except (EOFError, KeyboardInterrupt)` so a re-entrant interrupt/EOF during cleanup is swallowed rather than propagating, letting control still reach `sys.exit()`.\n\n**Verification**: Added `test_second_interrupt_during_abort_handling_does_not_escape` in `tests/test_commands.py`, confirmed it fails against the unfixed code (reproducing the exact escape) and passes with the fix; full suite (1925 tests) still passes; also added a `CHANGES.md` entry for #3802.",
+ "ttft_ms": 2428,
+ "ttft_stream_ms": 1883,
+ "time_to_request_ms": 37,
+ "type": "result",
+ "duration_ms": 290121,
+ "uuid": "1dfa082d-cdf5-441a-8076-a0e738361e6d"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 19195,
+ "num_turns": 2,
+ "stop_reason": "end_turn",
+ "session_id": "1a879d40-6499-4465-8ffe-9938713402f6",
+ "total_cost_usd": 0.11001910000000001,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 12755,
+  "cache_read_input_tokens": 86847,
+  "output_tokens": 451,
+  "output_tokens_details": {
+   "thinking_tokens": 197
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12755,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 164,
+    "cache_read_input_tokens": 49582,
+    "cache_creation_input_tokens": 438,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 438
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 588,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000658,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 4,
+   "outputTokens": 451,
+   "cacheReadInputTokens": 86847,
+   "cacheCreationInputTokens": 12755,
+   "webSearchRequests": 0,
+   "costUSD": 0.1093611,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This looks like the `attrs` Python library repo, and your message is just a PR title/commit description (\"Expose converter as a decorator (#1541)\") rather than an actual request. The working tree is clean at a single \"seed\" commit \u00e2\u20ac\u201d there's no in-progress change matching this yet.\n\nCould you clarify what you'd like me to do? For example:\n- Implement this feature (add a `@attrs.converters.pipe`/decorator-style API for converters) from scratch, or\n- Something else you had in mind referencing this PR",
+ "ttft_ms": 7604,
+ "ttft_stream_ms": 4887,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 18459,
+ "uuid": "1347d89c-9d5e-4823-9260-cf700bb99778"
+}
