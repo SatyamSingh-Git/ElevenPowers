@@ -101,7 +101,7 @@ You do not need these to use the tool. They exist so that every number the proje
 | `python -m eval.scope_run` | does the scope guard ask only when it should? |
 | `python -m eval.claims_run` | does claim inference fire on the right turns, across real prompts? |
 | `python -m eval.claims_run --cases` | the same, against hand-labelled cases |
-| `python -m pytest tests/ -q` | the full suite — 486 tests |
+| `python -m pytest tests/ -q` | the full suite |
 | `python -m pytest tests/test_audit_probes.py -q` | the external audit's defects, each as a test. Zero xfails means all of them are fixed |
 
 ### Measuring against real tasks

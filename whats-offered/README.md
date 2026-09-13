@@ -29,7 +29,7 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 
 ## The honest summary
 
-**What is genuinely solid.** The evidence layer works and is now well tested — 486 tests, and all twenty defects an external audit reproduced are fixed rather than argued with. The runtime agrees with the host about which commands failed on 174 of 174 real failures across 36,034 commands. The measurement instrument is reproducible: a pinned corpus across five repositories, a pinned model, a score with an interval, and run bundles complete enough for someone who was not there to re-grade them.
+**What is genuinely solid.** The evidence layer works and is now well tested, and every defect an external audit reproduced is fixed rather than argued with. The runtime agrees with the host about which commands failed on 174 of 174 real failures across 36,034 commands. The measurement instrument is reproducible: a pinned corpus across five repositories, a pinned model, a score with an interval, and run bundles complete enough for someone who was not there to re-grade them.
 
 **What is genuinely useful today.** The repeat runner, which stands alone and which nothing else ships. Automatic evidence capture, which costs nothing because it reads work you were doing anyway. And the fact that editing a file invalidates the tests that covered it, which is the idea at the centre of this and the reason `make` is the closest analogue.
 

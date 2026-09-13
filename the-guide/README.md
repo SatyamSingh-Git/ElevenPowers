@@ -80,7 +80,7 @@ On the default `strict` profile, an `UNVERIFIED` claim stops the turn and the ag
 
 ## An honest note on maturity
 
-This is early software. The plugin installs, captures evidence, discharges declared commands and reports, and 486 tests cover it. What has **not** been established is whether work produced with the gate on is actually better than work produced without it — that measurement is still open, and the project says so in its own [README](../README.md) and [PLAN.md](../PLAN.md).
+This is early software. The plugin installs, captures evidence, discharges declared commands and reports, and the suite covering it is green — `python -m pytest tests -q` is the authority, not a number written on a page. What has **not** been established is whether work produced with the gate on is actually better than work produced without it — that measurement is still open, and the project says so in its own [README](../README.md) and [PLAN.md](../PLAN.md).
 
 So: use it, and tell me when it is wrong. Bug reports are the most valuable thing anyone can send right now.
 

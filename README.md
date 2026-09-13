@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
-[![Tests](https://img.shields.io/badge/tests-486%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](tests/)
 [![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
@@ -118,7 +118,7 @@ stateDiagram-v2
 Before writing a line of runtime, I cloned fourteen agent systems, pinned each to a commit, and read them from source. Not the READMEs — the source. Where the loop exits. What is actually *enforced in code* versus what is merely *requested in a prompt*. Where each one is genuinely brilliant, and where it quietly gives up.
 
 > [!NOTE]
-> **62,575 words of notes. 2,329 lines of runtime.** A reading-to-writing ratio of roughly 25:1, which felt indulgent right up until the fourth system turned out to have the same blind spot as the first three.
+> **62,608 words of notes. 2,646 lines of runtime.** A reading-to-writing ratio of roughly 24:1, which felt indulgent right up until the fourth system turned out to have the same blind spot as the first three.
 
 Every card is in [`docs/research/cards/`](docs/research/cards/) with `file:line` citations at a recorded commit, and anything *inferred* rather than read is marked as inferred.
 
@@ -296,7 +296,7 @@ Every figure below was produced by the command printed next to it.
 | Claim inference, real turns | 21% over-claim, 25% missed work, across 3,557 turns | `python -m eval.claims_run` |
 | Live blocking | **12% of runs, down from 75%** | `python -m eval.live --arm gate --model haiku` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
-| Audit probes | **all 20 fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
+| Audit probes | **every reproduced defect fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
 | A pinned baseline | 68.9 and 73.3 across two passes of ninety paid runs, $67.42 | `python -m eval.baseline --pinned` |
 | **Does the work come out better?** | **unanswered — one arm was measured, not two** | `python -m eval.noise a.json b.json` |
 

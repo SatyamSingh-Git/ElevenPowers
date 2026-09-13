@@ -126,7 +126,7 @@ Less visible than the rest, and arguably the most valuable thing here.
 
 ## Tested, including against itself
 
-486 tests. All twenty defects reproduced by an external audit are fixed, each keeping the test that found it — and a probe marked `xfail(strict=True)` that starts passing **fails the run**, so a fix cannot land quietly and a regression cannot hide.
+Every defect an external audit reproduced is fixed, each keeping the test that found it — and a probe marked `xfail(strict=True)` that starts passing **fails the run**, so a fix cannot land quietly and a regression cannot hide.
 
 Four of those probes turned out to be unable to detect the repair of the defect they recorded, which is its own lesson: a regression test is not evidence until it has been watched failing before the fix and passing after.
 
