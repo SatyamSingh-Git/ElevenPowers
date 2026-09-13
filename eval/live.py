@@ -545,7 +545,12 @@ def blocks_recorded(root: Path) -> int:
 
 def once(task: Task, arm: str, model: str, bundles: Path | None = None,
          effort: str = "", budget: float = 0.0) -> Run:
-    with tempfile.TemporaryDirectory() as tmp:
+    # `ignore_cleanup_errors`, because Windows holds a handle open for a moment
+    # after a child exits and a strict cleanup raises `PermissionError` on the
+    # way out of the block -- after the run is graded and journalled, so it
+    # destroys nothing except the rest of the sweep. `eval.mine` learned this
+    # and said so in a comment; the module that spends money did not.
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         root = Path(tmp)
         build(task, root, arm)
         # An environment variable is a request, not a boundary. What cannot be
@@ -582,7 +587,7 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
                 source=task.source,
             )
 
-        with tempfile.TemporaryDirectory() as court:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as court:
             graded = grade_patch(task, patch, Path(court))
         if moved:
             # The environment the grade was computed in is not the one the run

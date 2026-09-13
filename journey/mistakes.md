@@ -646,3 +646,30 @@ argument is a hypothesis.** The probe now runs real pip and asserts three
 things — the install succeeds, nothing reaches the shared site, and the agent
 can still import what the tasks need — because each wrong version satisfies two
 of the three.
+
+### A cleanup error ended a paid sweep
+
+The four-run live check stopped after three. `TemporaryDirectory` raised
+`PermissionError: [WinError 32]` cleaning up the workspace, because Windows
+holds a handle open for a moment after a child process exits. The run it
+happened to was already graded, already journalled, already in a bundle. The
+exception destroyed nothing except the rest of the sweep.
+
+`eval/mine.py` passes `ignore_cleanup_errors=True` and says why in a comment:
+*"Windows holds file handles open a moment after pytest exits, so a strict
+cleanup takes the whole run down on somebody else's temp file."* The module that
+spends money did not.
+
+*Cause:* the lesson was learned in the module where it first bit and never
+looked for anywhere else. Nothing searched for the same call with the same
+exposure, which is the identical shape as fifteen subprocess pipes decoding with
+the platform codepage because one of them had been noticed.
+
+*Changed:* `once` and its grading workspace both ignore cleanup errors, and
+`run_baseline` catches any exception from a paid run, records it as `setup`,
+and carries on — stopping only when three fail in a row, which is a harness and
+not a task. Both directions probed: a sweep that pushed through anything would
+turn a broken machine into a page of setup rows and a score of zero.
+
+*The lesson:* a fix belongs everywhere the defect can occur, not where it was
+found. Each of these would have been a `grep` away at the time.

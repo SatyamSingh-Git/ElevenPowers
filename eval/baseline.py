@@ -329,6 +329,7 @@ def run_baseline(tasks: list[Task], arms: list[str], model: str, replicates: int
                  bundles: Path, seed: int, journal: Path, effort: str = "",
                  budget: float = 0.0, expect: str = "") -> list[dict]:
     shuffler = random.Random(seed)
+    consecutive = 0
     already = done_already(journal)
     if already:
         print(f"resuming: {sum(already.values())} run(s) already recorded")
@@ -343,12 +344,31 @@ def run_baseline(tasks: list[Task], arms: list[str], model: str, replicates: int
             for replicate in range(replicates):
                 if already.get((task.name, which), 0) > replicate:
                     continue
-                run = once(task, which, model, bundles, effort, budget)
-                row = run.__dict__
-                # Appended before anything else can fail. The bundle is already
-                # on disk by this point; this is the row that makes it countable.
-                with journal.open("a", encoding="utf-8") as handle:
-                    handle.write(json.dumps(row) + "\n")
+                try:
+                    run = once(task, which, model, bundles, effort, budget)
+                    consecutive = 0
+                except Exception as trouble:
+                    # One run dying must not take the sweep with it. A
+                    # Windows handle held open a moment too long raised out
+                    # of the workspace cleanup *after* the run was graded,
+                    # and killed the rest of a paid sweep with nobody awake.
+                    # Recorded as setup, which is never counted against the
+                    # agent, and the sweep carries on.
+                    consecutive += 1
+                    run = Run(task=task.name, arm=which, claimed=False,
+                              resolved=False, outcome="setup",
+                              note=f"{type(trouble).__name__}: {trouble}"[:300])
+                    if consecutive >= 3:
+                        _append(journal, run)
+                        raise SystemExit(
+                            f"stopping: {consecutive} runs in a row failed "
+                            f"outright, the last with "
+                            f"{type(trouble).__name__}. That is the harness, "
+                            f"not the tasks.")
+                # Appended before anything else can fail. The bundle is
+                # already on disk by this point; this is the row that
+                # makes it countable.
+                _append(journal, run)
                 wrong = bool(expect) and not _used(run, expect)
                 print(f"  {task.name:<26}{which:<9}"
                       f"{'resolved' if run.resolved else run.outcome:<11}"
@@ -363,6 +383,11 @@ def run_baseline(tasks: list[Task], arms: list[str], model: str, replicates: int
                         f"otherwise. {sum(already.values()) if already else 0} prior "
                         f"run(s) kept in {journal}.")
     return read_journal(journal)
+
+
+def _append(journal: Path, run: Run) -> None:
+    with journal.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(run.__dict__) + "\n")
 
 
 def _used(run: Run, expect: str) -> bool:

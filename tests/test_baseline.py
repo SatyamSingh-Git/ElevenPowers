@@ -393,3 +393,54 @@ def test_a_restart_counts_each_arm_separately(tmp_path, monkeypatch):
     assert len(spent) == 3, "it owes three gate runs and no vanilla ones"
     arms = [row["arm"] for row in read_journal(journal)]
     assert arms == ["vanilla"] * 3 + ["gate"] * 3, arms
+
+
+def _flaky_once(bundles, fail_on, spent):
+    """Raises on the listed attempt numbers, the way a cleanup error does."""
+    def once(task, arm, model, root, effort="", budget=0.0):
+        spent.append(task.name)
+        if len(spent) in fail_on:
+            raise PermissionError("[WinError 32] the file is used by another process")
+        bundle = Path(bundles) / f"{task.name}-{len(spent)}"
+        bundle.mkdir(parents=True)
+        (bundle / "manifest.json").write_text(json.dumps({"model": "m"}), encoding="utf-8")
+        return Run(task=task.name, arm=arm, claimed=True, resolved=True,
+                   outcome="resolved", bundle=str(bundle))
+    return once
+
+
+def test_one_run_dying_does_not_take_the_sweep_with_it(tmp_path, monkeypatch):
+    """A Windows handle held open a moment too long raised out of the workspace
+    cleanup, *after* the run was graded, and ended a paid sweep on its fourth
+    run with nobody awake to restart it.
+    """
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once",
+                        _flaky_once(tmp_path / "b", {2}, spent))
+    journal = tmp_path / "j.jsonl"
+
+    rows = run_baseline([_task("a"), _task("b")], ["vanilla"], "m", 2,
+                        tmp_path / "b", 0, journal)
+
+    assert len(spent) == 4, "it stopped early"
+    assert len(rows) == 4, "the failed run was not recorded"
+    failed = [r for r in rows if r["outcome"] == "setup"]
+    assert len(failed) == 1 and "WinError 32" in failed[0]["note"]
+
+
+def test_a_sweep_stops_when_everything_fails(tmp_path, monkeypatch):
+    """The adversarial direction. Carrying on through anything would turn a
+    broken harness into a corpus of setup rows and a score of zero, which is
+    the failure this project has published once already.
+    """
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once",
+                        _flaky_once(tmp_path / "b", set(range(1, 20)), spent))
+    journal = tmp_path / "j.jsonl"
+
+    with pytest.raises(SystemExit):
+        run_baseline([_task("a"), _task("b")], ["vanilla"], "m", 3,
+                     tmp_path / "b", 0, journal)
+
+    assert len(spent) == 3, "it kept going past three consecutive failures"
+    assert len(read_journal(journal)) == 3
