@@ -231,6 +231,7 @@ Every figure below comes from a command in this repository.
 | The corpus, graded | 11 of 15 against the corpus as it was mined: four click tasks pinned a node id holding an installed version string a stray editable install had invented. Mining now drops such a node and records it, and the lock rebuilds 15 of 15 identical on every other field | `python -m eval.validate --corpus eval/corpus.lock` |
 | Corpus, pinned | 15 instances from 5 repositories, rebuilt identically from a 3.8KB lock | `python -m eval.corpus --rebuild eval/corpus.lock --repos DIR` |
 | Corpus, widened | 451 candidates reachable against about 130 before, 94 instances mined, 49 pinned on band | `python -m eval.corpus --select mined.json --bands substantial,one-liner` |
+| The 49, rebuilt | 49 of 49 from a 12KB lock, identical on every field that decides a score | `python -m eval.corpus --rebuild eval/corpus-paired.lock --repos DIR` |
 | Real mined instances | validated from upstream history, no Docker, with a preservation set | `python -m eval.mine --repo DIR --out mined.json` |
 | Audit defects closed | all 20, R2 narrowed rather than closed; every one has a probe | `python -m pytest tests/test_audit_probes.py -q` |
 | Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show results/b4-passA-regraded.json` |

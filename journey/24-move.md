@@ -139,6 +139,17 @@ run, on a contaminated machine, and it is not evidence of anything yet.
 It also cost 3.3x the plain arm rather than the 1.4x the budget assumed, which
 if it holds changes what a paired sweep costs.
 
+## The corpus is pinned, on the second attempt
+
+The first rebuild of the forty-nine returned **eleven**, because the machine had
+been changed underneath it by the agent above. The second was killed partway
+when the session holding it exited. The third, on a repaired machine and with
+pip locked, returned **49 of 49, identical on every field that decides a score**.
+
+That is what pinned has to mean: a twelve-kilobyte lock, and the same benchmark
+on the other side of it. The first attempt is worth keeping in mind though —
+the lock was fine both times. What moved was the room it was measured in.
+
 ## What is still not known
 
 P1. Nothing here measures it. This chapter built the thing that could.
