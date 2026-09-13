@@ -341,6 +341,12 @@ The 1.4× gate result stands for its narrow configuration. It is not an argument
 - **"Real commits remove the population problem."** They improve authenticity. Sampling bias, underspecification and grader defects remain.
 - **"A useful task requires the naive fix to break the visible suite."** That defines a diagnostic subset for one mechanism, not coding correctness, and selecting the benchmark that way favours the intervention.
 - **"If the evidence layer cannot decide done, the project has failed."** Withdrawn. It can be valuable inside a search system without being a semantic oracle.
+- **"About 252 agent runs per comparison."** Withdrawn 2026-09-12. It divided the required discordant pairs by the within-arm *flip* rate, and flipping is not disagreement: a baseline that fails every time against a treatment that succeeds every time flips never and disagrees always. What the arithmetic supports is **31 pairs on which the arms disagree**; converting that to runs needs a measured rate of disagreement, which no run here has produced.
+- **"An external audit found sixteen defects."** Withdrawn 2026-09-13. The audit's own appendix says "sixteen observations, not sixteen statistically independent findings ... several exercise the same underlying design defect". It named **fifteen** (E1–E6, R1–R9). H1–H4 were found here afterwards, so §4 holds nineteen: eighteen fixed, R2 narrowed.
+- **"The preservation set caught its first real regression in the wild."** Withdrawn 2026-09-13. Both `regressed` runs in the B4 sweep were an `attrs` version string that a *different* agent's editable install had overwritten. The category has still never been seen outside a test.
+- **"Two tasks were solved 3/3 in one pass and 0/3 in the next."** Withdrawn 2026-09-13. Twelve jinja2 runs collected zero nodes because that same install broke `import attrs`, which `trio` needs. Re-graded from their bundles, both tasks are 3/3 and 3/3.
+- **"Replicates inside one sitting are more correlated with each other than two sittings are."** Withdrawn 2026-09-13. It was inferred entirely from the reversal above, which did not happen. Five of fifteen tasks split over six replicates, and the two passes agree to within 4.4 points.
+- **"Pass B of the B4 sweep resolved 53.3%."** Corrected to **73.3%** after re-grading every bundle. Pass A re-graded to the same score it was given, on all forty-five runs, which is the control that says the re-grade is deterministic.
 
 ---
 
