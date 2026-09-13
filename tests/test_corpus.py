@@ -246,3 +246,31 @@ def test_the_prompt_asks_for_something(upstream):
 
     assert written.startswith(ASK), "the commit message is handed over bare"
     assert written[len(ASK):].strip(), "the message itself was dropped"
+
+
+def test_the_chunk_split_is_the_same_every_time(tmp_path, monkeypatch):
+    """A later chunk has to agree with an earlier one about who is in it.
+
+    The sweep is cut into chunks so a subscription can be watched in pieces, and
+    each chunk carries both arms and every replicate of its tasks. If the
+    assignment moved between sittings, a task could be measured twice in one arm
+    and never in the other, which is the shape of defect that made pass B's
+    numbers wrong.
+    """
+    import eval.chunks
+
+    corpus = tmp_path / "corpus.json"
+    corpus.write_text(json.dumps(
+        [_instance(f"t{i}", 2 if i % 3 else 40) for i in range(20)]), encoding="utf-8")
+    out = tmp_path / "chunks.json"
+    monkeypatch.setattr(eval.chunks, "CORPUS", corpus)
+    monkeypatch.setattr(eval.chunks, "OUT", out)
+
+    eval.chunks.split()
+    first = json.loads(out.read_text(encoding="utf-8"))
+    eval.chunks.split()
+    second = json.loads(out.read_text(encoding="utf-8"))
+
+    assert first == second
+    assert sorted(t for c in first.values() for t in c) == sorted(
+        f"t{i}" for i in range(20)), "a task went missing or was counted twice"

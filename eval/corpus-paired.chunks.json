@@ -1,0 +1,59 @@
+{
+ "chunk1": [
+  "attrs-0f758fe5",
+  "attrs-1c962d15",
+  "attrs-577c782c",
+  "attrs-62bdbf23",
+  "attrs-bde3f58c",
+  "click-4f9086bf",
+  "click-b7e5fd4c",
+  "click-bec59289",
+  "itsdangerous-526b1ea0",
+  "itsdangerous-f966a62e",
+  "jinja2-065334d1",
+  "jinja2-679af7f8",
+  "jinja2-d05bd385"
+ ],
+ "chunk2": [
+  "attrs-1e07f468",
+  "attrs-3b0378dd",
+  "attrs-6fda0a4e",
+  "attrs-97f8d175",
+  "attrs-e21793e9",
+  "click-051bb0f3",
+  "click-9f9b149e",
+  "click-becbde5c",
+  "click-c2ed4149",
+  "jinja2-2eb4542c",
+  "jinja2-91a972f5",
+  "jinja2-ee832194"
+ ],
+ "chunk3": [
+  "attrs-6e3786c5",
+  "attrs-a572c3a4",
+  "attrs-dbb25ce3",
+  "attrs-fd7538f0",
+  "click-18d29196",
+  "click-19fd4d6e",
+  "click-32ae2acd",
+  "click-6de21215",
+  "click-ad39d749",
+  "itsdangerous-6c58e969",
+  "jinja2-0cd69481",
+  "jinja2-d4fb0e8c"
+ ],
+ "chunk4": [
+  "attrs-13105a64",
+  "attrs-278d3a5b",
+  "attrs-5d6d21aa",
+  "click-0f71fe77",
+  "click-437e1e32",
+  "click-6f85d26d",
+  "click-8762c775",
+  "click-bc32a92c",
+  "click-c653ec82",
+  "click-d340b0c1",
+  "click-d946074a",
+  "click-fc518e41"
+ ]
+}
