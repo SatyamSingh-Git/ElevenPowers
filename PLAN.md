@@ -306,7 +306,29 @@ The binding problem is **not** the ceiling, and the earlier reading of it here w
 
 Phase C does not wait on a definitive P1 result. Selection and repair development proceed against saved candidates while P1 becomes a bounded component experiment at a declared decision point.
 
-### Phase C — Separate generation from selection
+### Phase B′ — P1 becomes a bounded component experiment *(2026-09-14, decided)*
+
+P1 is no longer a prerequisite for anything else. It had become one by habit: every phase waited on a result the experiment could not produce, and the waiting cost two audits to notice.
+
+**What replaces the arm comparison.** A vanilla-versus-package sweep asks whether the whole product helps on a whole workload, which is the expensive question and the one least able to explain a weak answer. The bounded version asks a narrower thing at a place the system already reaches: **the first proposed stop.**
+
+Save the candidate and its evidence at that point. Randomise between submitting it and continuing with specific evidence. Compare that against equally funded generic continuation — the same extra turns, without the gate's feedback. Three things then come apart that the paired sweep could not separate:
+
+- whether the gate **finds** a real defect in the proposed patch
+- whether its feedback **repairs** the defect
+- whether the same repair comes from **extra compute alone**
+
+The last is the null this project has never controlled for. A gated arm that runs forty turns against a plain arm that runs thirty is not a test of the gate.
+
+**Why this is cheaper and says more.** The unit is a decision, not a task, and decisions are what the treatment acts on: 6 Stop blocks in 50 runs means a task-level sweep buys mostly nothing, while a checkpoint design spends only where the intervention applies. Exposure still has to be closed for any repair claim (§4.1), but a within-candidate comparison is less damaged by it than an absolute score, since both branches start from the same retrieved state.
+
+### Phase C — Separate generation from selection *(started early, 2026-09-14)*
+
+Selection development does not wait on P1 or on a clean benchmark. Across the two chunks, the two vanilla attempts already contain a graded success on 24 of 25 tasks and all four attempts contain one on 25 of 25. That is **oracle coverage, not achieved performance**, and it is exposure-contaminated — but it is a ready development set for the question "does the system choose the better candidate", which does not need a closed benchmark to be worth working on. Performance claims wait for a clean holdout.
+
+This also makes the candidate the product's central object rather than a by-product: every proposed patch, its evidence and its ancestry preserved, the strongest incumbent kept while repairs are explored, and a session's final patch not automatically outranking a better earlier one.
+
+
 
 Candidate pools at several budgets, graded offline. Evaluate selectors without exposing hidden outcomes: patch text, structured summaries plus evidence, and the existing gate. Run the A/B/C oracle diagnostics — frozen issue-derived checks, differential comparison against the original program, interpretation probes — independently on frozen candidates.
 
