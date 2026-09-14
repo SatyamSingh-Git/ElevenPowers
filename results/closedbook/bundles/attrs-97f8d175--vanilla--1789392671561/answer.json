@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 117559,
+ "num_turns": 28,
+ "stop_reason": "end_turn",
+ "session_id": "d6496a06-273e-4c68-8ba9-01ce402ca761",
+ "total_cost_usd": 0.7888342000000002,
+ "usage": {
+  "input_tokens": 54,
+  "cache_creation_input_tokens": 29854,
+  "cache_read_input_tokens": 1565574,
+  "output_tokens": 9281,
+  "output_tokens_details": {
+   "thinking_tokens": 4802
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29854,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 340,
+    "cache_read_input_tokens": 66282,
+    "cache_creation_input_tokens": 837,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 837
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 591,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000661,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 54,
+   "outputTokens": 9281,
+   "cacheReadInputTokens": 1565574,
+   "cacheCreationInputTokens": 29854,
+   "webSearchRequests": 0,
+   "costUSD": 0.7881732000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1389 tests pass. Summary of the change made to replicate the upstream fix (attrs #1593):\n\n- **`src/attr/_make.py`**: `_is_class_var` now unwraps `ForwardRef` objects (checking `__forward_arg__`) before stringifying, so a `ClassVar` annotation that comes back as a forward reference \u2014 e.g. on Python 3.14+ where `annotationlib.get_annotations(..., format=FORWARDREF)` returns unresolved names as `ForwardRef` instead of raising \u2014 is still correctly recognized.\n- **`tests/test_annotations.py`**: added `typing.ForwardRef(...)` cases to `test_is_class_var`.\n- **`changelog.d/1593.change.md`**: changelog fragment describing the fix.\n\nFull test suite (1389 tests) passes against the local `src` (note: the environment also has a separately pip-installed `attrs` in site-packages \u2014 I ran tests with `PYTHONPATH=src` to exercise the edited source).",
+ "ttft_ms": 2154,
+ "ttft_stream_ms": 1173,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 147933,
+ "uuid": "537159bc-a5ea-40cf-a449-f1170bd2730b"
+}

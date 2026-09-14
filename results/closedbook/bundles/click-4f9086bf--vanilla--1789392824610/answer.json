@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 91780,
+ "num_turns": 17,
+ "stop_reason": "end_turn",
+ "session_id": "f55866a4-9596-4e9a-b761-64e5bfb0783d",
+ "total_cost_usd": 0.6088193000000001,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 33567,
+  "cache_read_input_tokens": 1053461,
+  "output_tokens": 6038,
+  "output_tokens_details": {
+   "thinking_tokens": 1699
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 33567,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 289,
+    "cache_read_input_tokens": 70422,
+    "cache_creation_input_tokens": 410,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 410
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 607,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007070000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 6038,
+   "cacheReadInputTokens": 1053461,
+   "cacheCreationInputTokens": 33567,
+   "webSearchRequests": 0,
+   "costUSD": 0.6081123,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: inside `CliRunner.isolation()`, `pdb.Pdb()` now defaults to the real terminal `stdin`/`stdout`, and the patch is properly reverted afterward. Full test suite (1347 passed) is unaffected.\n\n**Summary:** Patched `src/click/testing.py` \u2014 `CliRunner.isolation()` now temporarily overrides `pdb.Pdb.__init__` so any debugger instance created during a test run (via `pdb.set_trace()`, `breakpoint()`, `post_mortem()`, or subclasses like ipdb/pdbpp) defaults to `sys.__stdin__`/`sys.__stdout__` instead of the captured/redirected streams, restoring the original `__init__` when isolation exits. Added a CHANGES.rst entry referencing issues #654, #824, #843, #951.",
+ "ttft_ms": 4434,
+ "ttft_stream_ms": 2934,
+ "time_to_request_ms": 52,
+ "type": "result",
+ "duration_ms": 120567,
+ "uuid": "7763687b-77ab-43b6-a868-619d2941858a"
+}

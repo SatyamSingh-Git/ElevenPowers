@@ -152,6 +152,8 @@ Three properties this has to have, from what has already gone wrong here:
 - **Declared as part of the benchmark.** Network permission is a property of the task, versioned with the corpus and covered by the graded digest, not an incidental setting of whichever machine ran it.
 - **Checked after every sweep, not assumed.** The screen that found this is a read-only pass over saved transcripts against each task’s own `fix` sha. It costs nothing and should run with the taxonomy.
 
+**Measured, 2026-09-14.** The channel was the network alone: of a hundred runs, zero reached the local clones and zero reached evaluator assets. With `WebFetch`, `WebSearch` and the Bash network commands denied, ten open-book successes were rerun closed-book and **nine resolved** — so exposure was convenience rather than necessity, and most of the 92 percent survives the book closing. The tenth reached GitHub through a **sub-agent**, which `--disallowed-tools` does not cover; `Agent` and `Task` are denied now. Ten tasks selected for having succeeded is not a corpus-wide rate, and the corpus-wide closed-book rate is still unmeasured.
+
 The existing runs are retained under their real conditions. Dropping the 42 flagged runs and recomputing would select on a behaviour that may itself depend on difficulty and treatment, which is the E6 mistake in a new place.
 
 ## 5. The architecture to build toward

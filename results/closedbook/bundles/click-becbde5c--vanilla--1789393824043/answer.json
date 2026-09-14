@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 166945,
+ "num_turns": 21,
+ "stop_reason": "end_turn",
+ "session_id": "c4c2666c-89f2-40a0-ae96-3f7f0ad48259",
+ "total_cost_usd": 0.7627099,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 35828,
+  "cache_read_input_tokens": 1314753,
+  "output_tokens": 10169,
+  "output_tokens_details": {
+   "thinking_tokens": 6360
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 35828,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 366,
+    "cache_read_input_tokens": 72436,
+    "cache_creation_input_tokens": 657,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 657
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 580,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000655,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 42,
+   "outputTokens": 10169,
+   "cacheReadInputTokens": 1314753,
+   "cacheCreationInputTokens": 35828,
+   "webSearchRequests": 0,
+   "costUSD": 0.7620549,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: before the fix, `buf.closed` would be `True` after the wrapper is garbage collected (since `io.TextIOWrapper.__del__` closes its underlying buffer); now it stays open.\n\n## Summary\n\n`MaybeStripAnsi` in `src/click/_termui_impl.py` (used by `get_pager_file`) wraps the real `stdin`/`stdout` binary buffer in a plain `io.TextIOWrapper`. Since `get_pager_file` only calls `.flush()` on exit, never `.close()`, the wrapper object gets garbage collected later \u2014 and `TextIOWrapper.__del__` closes its underlying buffer by default, silently closing the process's real standard stream (or the pager subprocess's stdin pipe).\n\nFixed by giving `MaybeStripAnsi` a `__del__` that calls `self.detach()` instead, mirroring the existing `_NonClosingTextIOWrapper` pattern already used in `_compat.py` for the same reason. Added a changelog entry and verified with the existing pager test suite plus a manual GC repro.",
+ "ttft_ms": 5160,
+ "ttft_stream_ms": 4233,
+ "time_to_request_ms": 66,
+ "type": "result",
+ "duration_ms": 177645,
+ "uuid": "a784ffc8-a590-4e5c-9b54-e2b7c93be377"
+}

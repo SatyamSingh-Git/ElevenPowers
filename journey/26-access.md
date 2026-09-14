@@ -104,6 +104,49 @@ agent never ran.
 The fix was twelve hours old and had a passing test. The test covered the case
 that had already bitten.
 
+## Closing it, and finding out what it was worth
+
+The channel was the network, and only the network. Screening all hundred runs:
+zero referenced the local corpus clones, zero referenced evaluator assets,
+twenty-four named a fix commit fetched from GitHub. The earlier reading of three
+open doors was wrong; there was one.
+
+`--disallowed-tools` closes it for `WebFetch`, `WebSearch` and the Bash forms of
+`gh`, `curl`, `wget` and `git fetch`. Verified live that the denial survives
+`--permission-mode bypassPermissions`, which is the flag that made the sweep
+unconstrained in the first place.
+
+Then ten tasks were rerun closed-book, chosen for having resolved twice out of
+twice in the open-book sweep: seven with confirmed exposure, three without.
+**Nine of ten resolved.** $11.19, thirty-five minutes.
+
+One of the ten named its fix sha anyway. That run had spawned a **sub-agent** —
+`general-purpose`, titled *"Find attrs 'update ruff' commit details"* — and
+`--disallowed-tools` does not propagate to it. A policy with a delegation hole
+is not a policy. `Agent` and `Task` are denied now, verified the same way.
+
+So of nine genuinely closed-book runs, eight resolved.
+
+## What that says, and what it does not
+
+**Exposure was convenience, not necessity.** These agents solve these tasks
+without the answer; retrieval was a shortcut they took because nothing stopped
+them. The audit's finding stands entirely — the boundary was never drawn, and a
+score without one is not a repair score — but its strongest reading, that 92
+percent tells us nothing about independent repair, is too strong for this
+corpus. Most of it survives the book closing.
+
+Which puts the earlier diagnosis back: **these tasks are too easy**, and that is
+now a claim with a closed-book measurement behind it rather than an inference
+from a contaminated one.
+
+The measurement is narrow and should be read narrowly. Ten tasks and one
+replicate. And they were **selected for having succeeded**, so nine-of-ten is
+not a corpus-wide rate: it is the fraction of open-book successes that survive
+closing the book. Conditioning on success is the right move for *that* question —
+you can only lose a success you already had — and the wrong move for any other.
+The corpus-wide closed-book rate is still unmeasured.
+
 ## What this changes
 
 The corpus work was not wasted — the mining, the lock, the chunking and the

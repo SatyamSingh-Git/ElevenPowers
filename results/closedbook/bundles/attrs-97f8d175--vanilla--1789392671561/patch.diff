@@ -1,0 +1,39 @@
+diff --git a/changelog.d/1593.change.md b/changelog.d/1593.change.md
+new file mode 100644
+index 0000000..32081b9
+--- /dev/null
++++ b/changelog.d/1593.change.md
+@@ -0,0 +1 @@
++`typing.ClassVar` is now correctly detected when it appears as a forward reference (e.g. on Python 3.14+ where unresolved annotations may come back as `ForwardRef` objects).
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 04104d9..69a5ac3 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -297,7 +297,7 @@ def _is_class_var(annot):
+     annotations which would put attrs-based classes at a performance
+     disadvantage compared to plain old classes.
+     """
+-    annot = str(annot)
++    annot = str(getattr(annot, "__forward_arg__", annot))
+ 
+     # Annotation can be quoted.
+     if annot.startswith(("'", '"')) and annot.endswith(("'", '"')):
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index e193d4b..9cff442 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -691,10 +691,13 @@ class TestAnnotations:
+         "typing.ClassVar",
+         "'typing.ClassVar[dict]'",
+         "t.ClassVar[int]",
++        typing.ForwardRef("typing.ClassVar[int]"),
++        typing.ForwardRef("'typing.ClassVar[dict]'"),
+     ],
+ )
+ def test_is_class_var(annot):
+     """
+-    ClassVars are detected, even if they're a string or quoted.
++    ClassVars are detected, even if they're a string, quoted, or a forward
++    reference.
+     """
+     assert _is_class_var(annot)

@@ -1,0 +1,32 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index c640740..933dccf 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -11,6 +11,8 @@ Unreleased
+ -   Shell completion of `Choice` `Enum` values produces a valid completion
+     result. :issue:`3015`
+ -   Fix empty byte-string handling in echo. :issue:`3487`
++-   ``get_pager_file`` no longer closes the underlying standard stream when
++    its wrapper is garbage collected.
+ 
+ 
+ Version 8.4.0
+diff --git a/src/click/_termui_impl.py b/src/click/_termui_impl.py
+index 1d23026..840aeed 100644
+--- a/src/click/_termui_impl.py
++++ b/src/click/_termui_impl.py
+@@ -390,6 +390,14 @@ class MaybeStripAnsi(io.TextIOWrapper):
+         super().__init__(stream, **kwargs)
+         self.color = color
+ 
++    def __del__(self) -> None:
++        # Closing this wrapper would close the underlying buffer, which may
++        # be a std stream or pipe that's still owned and managed elsewhere.
++        try:
++            self.detach()
++        except Exception:
++            pass
++
+     def write(self, text: str) -> int:
+         if not self.color:
+             text = strip_ansi(text)

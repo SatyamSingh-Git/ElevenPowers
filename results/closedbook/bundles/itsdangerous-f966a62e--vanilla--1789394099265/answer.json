@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 239240,
+ "num_turns": 48,
+ "stop_reason": "end_turn",
+ "session_id": "2b71bb8f-a3a9-4ae1-86cb-d8d0126072ed",
+ "total_cost_usd": 1.8340909999999995,
+ "usage": {
+  "input_tokens": 80,
+  "cache_creation_input_tokens": 78634,
+  "cache_read_input_tokens": 3451410,
+  "output_tokens": 21730,
+  "output_tokens_details": {
+   "thinking_tokens": 10227
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 78634,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 421,
+    "cache_read_input_tokens": 115474,
+    "cache_creation_input_tokens": 425,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 425
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 584,
+   "outputTokens": 18,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000674,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 80,
+   "outputTokens": 21730,
+   "cacheReadInputTokens": 3451410,
+   "cacheCreationInputTokens": 78634,
+   "webSearchRequests": 0,
+   "costUSD": 1.8334169999999996,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 418 tests pass. The change is complete:\n\n- **`src/itsdangerous/signer.py`**: reverted `default_digest_method` from SHA-512 back to SHA-1 in both `HMACAlgorithm` and `Signer`.\n- **`src/itsdangerous/serializer.py`**: added `fallback_signers` support \u2014 a `fallback_signers` constructor arg, `default_fallback_signers` class attr, and an `iter_unsigners()` generator that `loads()` walks through (primary signer first, then each fallback) so values signed under an old configuration can still be unsigned.\n- **`src/itsdangerous/timed.py`**: `TimedSerializer.loads()` updated to use `iter_unsigners()` too, so `URLSafeTimedSerializer` (used for things like Flask session cookies) also benefits from fallback signers.\n- **`tests/`**: added coverage for fallback signers (dict kwargs and `(signer_cls, kwargs)` tuple forms), and opted JWS out since its signer construction isn't pluggable the same way.\n- **`docs/` and `CHANGES.rst`**: documented the new `fallback_signers` feature and the SHA-1 revert; bumped `__version__` to `1.1.0`.",
+ "ttft_ms": 2206,
+ "ttft_stream_ms": 1784,
+ "time_to_request_ms": 43,
+ "type": "result",
+ "duration_ms": 261644,
+ "uuid": "bb5994b1-ffd8-44d6-b4d6-e922db157607"
+}

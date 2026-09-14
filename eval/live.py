@@ -337,6 +337,12 @@ def shared_site() -> frozenset[str]:
 CLOSED_BOOK = (
     "WebFetch",
     "WebSearch",
+    # A sub-agent does not inherit this list. One closed-book run spawned a
+    # general-purpose agent titled "Find attrs 'update ruff' commit details",
+    # which reached GitHub on its behalf and reported back the fix sha. Denying
+    # tools by name is a policy, and a policy with a delegation hole is not one.
+    "Agent",
+    "Task",
     "Bash(gh:*)",
     "Bash(curl:*)",
     "Bash(wget:*)",

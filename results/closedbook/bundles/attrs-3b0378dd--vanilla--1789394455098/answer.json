@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 41513,
+ "num_turns": 10,
+ "stop_reason": "end_turn",
+ "session_id": "4f581e58-de0c-474a-8b2d-0bd4e59ed305",
+ "total_cost_usd": 0.2835732,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 17151,
+  "cache_read_input_tokens": 505274,
+  "output_tokens": 1888,
+  "output_tokens_details": {
+   "thinking_tokens": 459
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17151,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 143,
+    "cache_read_input_tokens": 53772,
+    "cache_creation_input_tokens": 644,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 644
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 635,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000705,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 20,
+   "outputTokens": 1888,
+   "cacheReadInputTokens": 505274,
+   "cacheCreationInputTokens": 17151,
+   "webSearchRequests": 0,
+   "costUSD": 0.2828682,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fix confirmed working. Changed `src/attr/_make.py` to wrap the `field_transformer` result in `list(...)`, since the code iterates over `attrs` multiple times afterward (for order-checking, alias resolution, and building `AttrsClass`), which silently broke when a generator was passed since it gets exhausted after the first pass. Also added `changelog.d/1417.change.md` per the project's towncrier convention.",
+ "ttft_ms": 3047,
+ "ttft_stream_ms": 2674,
+ "time_to_request_ms": 64,
+ "type": "result",
+ "duration_ms": 42697,
+ "uuid": "e90bb37a-c746-4b4b-85f5-fe15946e65a3"
+}

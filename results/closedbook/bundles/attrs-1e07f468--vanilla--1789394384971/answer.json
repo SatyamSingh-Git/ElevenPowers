@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 163712,
+ "num_turns": 41,
+ "stop_reason": "end_turn",
+ "session_id": "0bfd74a5-6c8a-4761-b97b-43b0f894137e",
+ "total_cost_usd": 1.1770466999999996,
+ "usage": {
+  "input_tokens": 72,
+  "cache_creation_input_tokens": 43005,
+  "cache_read_input_tokens": 2402809,
+  "output_tokens": 13149,
+  "output_tokens_details": {
+   "thinking_tokens": 3990
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 43005,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 357,
+    "cache_read_input_tokens": 80010,
+    "cache_creation_input_tokens": 260,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 260
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 633,
+   "outputTokens": 18,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000723,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 72,
+   "outputTokens": 13149,
+   "cacheReadInputTokens": 2402809,
+   "cacheCreationInputTokens": 43005,
+   "webSearchRequests": 0,
+   "costUSD": 1.1763236999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All changes are in place and the full test suite (1336 tests) passes. Summary of the change implementing \"Make `attrs.converters.pipe` only return a `Converter` instance if one is passed\" (#1380):\n\n- **`src/attr/_make.py`**: `pipe()` now only wraps its result in an `attrs.Converter` when at least one of the passed converters is itself a `Converter` instance; otherwise it returns a plain callable, matching the input.\n- **`src/attr/converters.pyi`**: added type overloads so passing plain callables to `pipe()` types as returning a plain callable, while passing a `Converter` (or a mix) types as returning `Converter`.\n- **`tests/test_converters.py`** / **`tests/test_annotations.py`**: updated cases that pass only plain callables to `pipe()` to call/inspect the returned plain function directly instead of via `.converter`, and added a test asserting `pipe()` with no `Converter` args returns a non-`Converter` callable.\n- **`changelog.d/1380.change.md`**: added the changelog fragment.",
+ "ttft_ms": 2767,
+ "ttft_stream_ms": 2766,
+ "time_to_request_ms": 146,
+ "type": "result",
+ "duration_ms": 212218,
+ "uuid": "8f727be8-463a-4819-9020-6da0490ffa71"
+}

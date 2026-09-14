@@ -1,0 +1,180 @@
+{
+ "model": "claude-sonnet-5",
+ "arm": "vanilla",
+ "corpus": "e2d721482fbdd2a5",
+ "graded": "b2ed79775c08fc3e",
+ "seed": 21,
+ "environment": {
+  "python": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "claude": "2.1.228 (Claude Code)",
+  "git": "git version 2.45.1.windows.1"
+ },
+ "score": {
+  "tasks": 10,
+  "runs": 10,
+  "resolved": 0.9,
+  "low": 0.7,
+  "high": 1.0,
+  "setup_failures": 0,
+  "context": {
+   "runs": 10,
+   "median": 40080,
+   "low": 17347,
+   "high": 161933
+  }
+ },
+ "bands": {
+  "one-liner": {
+   "tasks": 4,
+   "resolved": 1.0
+  },
+  "substantial": {
+   "tasks": 6,
+   "resolved": 0.8333333333333334
+  }
+ },
+ "effort": "high",
+ "runs": [
+  {
+   "task": "attrs-577c782c",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\attrs-577c782c--vanilla--1789392485007",
+   "context_tokens": 161933,
+   "blocks": 0,
+   "turns": 19,
+   "seconds": 268.6735031999997,
+   "cost": 1.5026867499999996,
+   "note": ""
+  },
+  {
+   "task": "attrs-97f8d175",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\attrs-97f8d175--vanilla--1789392671561",
+   "context_tokens": 30499,
+   "blocks": 0,
+   "turns": 28,
+   "seconds": 151.86209429999872,
+   "cost": 0.7888342000000002,
+   "note": ""
+  },
+  {
+   "task": "click-4f9086bf",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\click-4f9086bf--vanilla--1789392824610",
+   "context_tokens": 34208,
+   "blocks": 0,
+   "turns": 17,
+   "seconds": 124.98090910000064,
+   "cost": 0.6088193000000001,
+   "note": ""
+  },
+  {
+   "task": "click-9f9b149e",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\click-9f9b149e--vanilla--1789393081488",
+   "context_tokens": 54127,
+   "blocks": 0,
+   "turns": 37,
+   "seconds": 245.8667275000007,
+   "cost": 1.2845197,
+   "note": ""
+  },
+  {
+   "task": "click-b7e5fd4c",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": false,
+   "outcome": "unfixed",
+   "bundle": "E:\\ep-runs\\closedbook\\click-b7e5fd4c--vanilla--1789393629251",
+   "context_tokens": 85248,
+   "blocks": 0,
+   "turns": 59,
+   "seconds": 534.1213349999998,
+   "cost": 2.6320007999999993,
+   "note": "tests/test_shell_completion.py::test_full_complete[fish-env4-plain,a\\nplain,b\\tbee\\n], tests/test_shell_completion.py::test_full_complete[fish-env5-plain,b\\tbee\\n], tests/test_shell_completion.py::test_full_complete[fish-env6-plain,b\\tbee\\n]"
+  },
+  {
+   "task": "click-becbde5c",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\click-becbde5c--vanilla--1789393824043",
+   "context_tokens": 36450,
+   "blocks": 0,
+   "turns": 21,
+   "seconds": 181.76738119999936,
+   "cost": 0.7627099,
+   "note": ""
+  },
+  {
+   "task": "itsdangerous-f966a62e",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\itsdangerous-f966a62e--vanilla--1789394099265",
+   "context_tokens": 79298,
+   "blocks": 0,
+   "turns": 48,
+   "seconds": 263.8026236000005,
+   "cost": 1.8340909999999995,
+   "note": ""
+  },
+  {
+   "task": "attrs-1c962d15",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\attrs-1c962d15--vanilla--1789394143707",
+   "context_tokens": 17347,
+   "blocks": 0,
+   "turns": 12,
+   "seconds": 37.995042900000044,
+   "cost": 0.31379359999999995,
+   "note": ""
+  },
+  {
+   "task": "attrs-1e07f468",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\attrs-1e07f468--vanilla--1789394384971",
+   "context_tokens": 43710,
+   "blocks": 0,
+   "turns": 41,
+   "seconds": 214.60495880000053,
+   "cost": 1.1770466999999996,
+   "note": ""
+  },
+  {
+   "task": "attrs-3b0378dd",
+   "arm": "vanilla",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "E:\\ep-runs\\closedbook\\attrs-3b0378dd--vanilla--1789394455098",
+   "context_tokens": 17806,
+   "blocks": 0,
+   "turns": 10,
+   "seconds": 46.91151649999847,
+   "cost": 0.2835732,
+   "note": ""
+  }
+ ]
+}

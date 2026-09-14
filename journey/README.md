@@ -241,6 +241,7 @@ Every figure below comes from a command in this repository.
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
+| What exposure was worth | 10 open-book successes rerun closed-book: **9 resolved**. The tenth reached GitHub through a sub-agent, which the denial did not cover | `python -m eval.exposure results/closedbook/bundles --corpus results/closedbook/tasks.json` |
 | Where the treatment applied | Stop blocks in 4 of 50 gated runs (8%), 6 events. Pre-Stop interventions are **not** counted by that field: one gated run has 4 scope questions and 0 blocks | `python -m eval.failures results/chunks/bundles-chunk2` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
 | Tests | 508 | `python -m pytest tests -q` |

@@ -1,0 +1,286 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index ec526d4..da2393b 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -1,3 +1,23 @@
++Version 1.1.0
++-------------
++
++Unreleased
++
++-   Revert the change to default the intermediate digest for key
++    derivation to SHA-512. Too many external tools depend on the
++    default configuration matching the Django default digest. If you
++    started using the SHA-512 default in 1.0.0, you will need to
++    migrate your tokens to specify SHA-512 or they will fail to load
++    with the SHA-1 default. (`#134`_)
++-   Add support for fallback signatures. This makes it possible to
++    switch to a new secret key, salt, or any other configuration
++    while still being able to unsign values that were signed with the
++    previous configuration. (`#71`_)
++
++.. _#71: https://github.com/pallets/itsdangerous/issues/71
++.. _#134: https://github.com/pallets/itsdangerous/issues/134
++
++
+ Version 1.0.0
+ -------------
+ 
+diff --git a/docs/index.rst b/docs/index.rst
+index 6db655a..bd93849 100644
+--- a/docs/index.rst
++++ b/docs/index.rst
+@@ -17,7 +17,7 @@ Granted, the receiver can decode the contents and look into the package,
+ but they can not modify the contents unless they also have your secret
+ key.  So if you keep the key secret and complex, you will be fine.
+ 
+-Internally itsdangerous uses HMAC and SHA-512 for signing by default.
++Internally itsdangerous uses HMAC and SHA1 for signing by default.
+ The initial implementation was inspired by `Django's signing module
+ <https://docs.djangoproject.com/en/dev/topics/signing/>`_. It also
+ supports JSON Web Signatures (JWS). The library is BSD licensed.
+diff --git a/docs/serializer.rst b/docs/serializer.rst
+index 1b1da66..9d9bd23 100644
+--- a/docs/serializer.rst
++++ b/docs/serializer.rst
+@@ -127,6 +127,30 @@ wrong you can also use :meth:`~Serializer.loads_unsafe`:
+ The first item in the returned tuple is a boolean that indicates if the
+ signature was correct.
+ 
++
++Fallback Signatures
++--------------------
++
++Occasionally you may want to change the signing parameters of your
++application, such as the ``digest_method`` or ``key_derivation``, while
++still being able to unsign values that were signed under the old
++configuration. Pass the old configuration(s) as ``fallback_signers``
++when constructing the serializer:
++
++.. code-block:: python
++
++    import hashlib
++    s = Serializer(
++        "secret-key",
++        fallback_signers=[{"digest_method": hashlib.sha512}],
++    )
++
++Each entry in ``fallback_signers`` may be a dict of keyword arguments
++passed to the signer class, a ``(signer_cls, kwargs)`` tuple, or a
++signer class to use with the serializer's ``signer_kwargs``. When
++unsigning, each fallback is tried in order after the primary signer
++fails.
++
+ API
+ ---
+ 
+diff --git a/src/itsdangerous/__init__.py b/src/itsdangerous/__init__.py
+index e88aa49..9335919 100644
+--- a/src/itsdangerous/__init__.py
++++ b/src/itsdangerous/__init__.py
+@@ -18,4 +18,4 @@ from .timed import TimestampSigner
+ from .url_safe import URLSafeSerializer
+ from .url_safe import URLSafeTimedSerializer
+ 
+-__version__ = "1.0.0"
++__version__ = "1.1.0"
+diff --git a/src/itsdangerous/serializer.py b/src/itsdangerous/serializer.py
+index 1e764d5..5ef0c20 100644
+--- a/src/itsdangerous/serializer.py
++++ b/src/itsdangerous/serializer.py
+@@ -47,6 +47,12 @@ class Serializer(object):
+     #: .. versionadded:: 0.14
+     default_signer = Signer
+ 
++    #: The default fallback signers to use if the primary signer fails
++    #: to unsign a value.
++    #:
++    #: .. versionadded:: 1.1.0
++    default_fallback_signers = []
++
+     def __init__(
+         self,
+         secret_key,
+@@ -55,6 +61,7 @@ class Serializer(object):
+         serializer_kwargs=None,
+         signer=None,
+         signer_kwargs=None,
++        fallback_signers=None,
+     ):
+         self.secret_key = want_bytes(secret_key)
+         self.salt = want_bytes(salt)
+@@ -66,6 +73,9 @@ class Serializer(object):
+             signer = self.default_signer
+         self.signer = signer
+         self.signer_kwargs = signer_kwargs or {}
++        if fallback_signers is None:
++            fallback_signers = list(self.default_fallback_signers or ())
++        self.fallback_signers = fallback_signers
+         self.serializer_kwargs = serializer_kwargs or {}
+ 
+     def load_payload(self, payload, serializer=None):
+@@ -106,6 +116,27 @@ class Serializer(object):
+             salt = self.salt
+         return self.signer(self.secret_key, salt=salt, **self.signer_kwargs)
+ 
++    def iter_unsigners(self, salt=None):
++        """Iterates over all signers to be tried for unsigning. Starts
++        with the configured signer, then constructs each signer
++        specified in ``fallback_signers``.
++
++        .. versionadded:: 1.1.0
++        """
++        if salt is None:
++            salt = self.salt
++        yield self.make_signer(salt)
++        for fallback in self.fallback_signers:
++            if type(fallback) is dict:
++                kwargs = fallback
++                signer = self.signer
++            elif type(fallback) is tuple:
++                signer, kwargs = fallback
++            else:
++                signer = fallback
++                kwargs = self.signer_kwargs
++            yield signer(self.secret_key, salt=salt, **kwargs)
++
+     def dumps(self, obj, salt=None):
+         """Returns a signed string serialized with the internal
+         serializer. The return value can be either a byte or unicode
+@@ -128,7 +159,16 @@ class Serializer(object):
+         signature validation fails.
+         """
+         s = want_bytes(s)
+-        return self.load_payload(self.make_signer(salt).unsign(s))
++        last_exception = None
++
++        for signer in self.iter_unsigners(salt):
++            try:
++                base64d = signer.unsign(s)
++                return self.load_payload(base64d)
++            except BadSignature as err:
++                last_exception = err
++
++        raise last_exception
+ 
+     def load(self, f, salt=None):
+         """Like :meth:`loads` but loads from a file."""
+diff --git a/src/itsdangerous/signer.py b/src/itsdangerous/signer.py
+index 5b3d6c3..6bddc03 100644
+--- a/src/itsdangerous/signer.py
++++ b/src/itsdangerous/signer.py
+@@ -38,12 +38,9 @@ class HMACAlgorithm(SigningAlgorithm):
+     """Provides signature generation using HMACs."""
+ 
+     #: The digest method to use with the MAC algorithm. This defaults to
+-    #: SHA-512, but can be changed to any other function in the hashlib
++    #: SHA1, but can be changed to any other function in the hashlib
+     #: module.
+-    #:
+-    #: .. versionchanged:: 1.0
+-    #:     The default was changed from SHA-1 to SHA-512.
+-    default_digest_method = staticmethod(hashlib.sha512)
++    default_digest_method = staticmethod(hashlib.sha1)
+ 
+     def __init__(self, digest_method=None):
+         if digest_method is None:
+@@ -77,14 +74,11 @@ class Signer(object):
+     """
+ 
+     #: The digest method to use for the signer.  This defaults to
+-    #: SHA-512 but can be changed to any other function in the hashlib
++    #: SHA1 but can be changed to any other function in the hashlib
+     #: module.
+     #:
+-    #: .. versionchanged:: 1.0
+-    #:     The default was changed from SHA-1 to SHA-512.
+-    #:
+     #: .. versionadded:: 0.14
+-    default_digest_method = staticmethod(hashlib.sha512)
++    default_digest_method = staticmethod(hashlib.sha1)
+ 
+     #: Controls how the key is derived. The default is Django-style
+     #: concatenation. Possible values are ``concat``, ``django-concat``
+diff --git a/src/itsdangerous/timed.py b/src/itsdangerous/timed.py
+index 3599a7e..c85107a 100644
+--- a/src/itsdangerous/timed.py
++++ b/src/itsdangerous/timed.py
+@@ -123,13 +123,22 @@ class TimedSerializer(Serializer):
+         raised. All arguments are forwarded to the signer's
+         :meth:`~TimestampSigner.unsign` method.
+         """
+-        base64d, timestamp = self.make_signer(salt).unsign(
+-            s, max_age, return_timestamp=True
+-        )
+-        payload = self.load_payload(base64d)
+-        if return_timestamp:
+-            return payload, timestamp
+-        return payload
++        s = want_bytes(s)
++        last_exception = None
++
++        for signer in self.iter_unsigners(salt):
++            try:
++                base64d, timestamp = signer.unsign(s, max_age, return_timestamp=True)
++            except BadSignature as err:
++                last_exception = err
++                continue
++
++            payload = self.load_payload(base64d)
++            if return_timestamp:
++                return payload, timestamp
++            return payload
++
++        raise last_exception
+ 
+     def loads_unsafe(self, s, max_age=None, salt=None):
+         load_kwargs = {"max_age": max_age}
+diff --git a/tests/test_itsdangerous/test_jws.py b/tests/test_itsdangerous/test_jws.py
+index 89de244..c6da247 100644
+--- a/tests/test_itsdangerous/test_jws.py
++++ b/tests/test_itsdangerous/test_jws.py
+@@ -21,6 +21,8 @@ class TestJWSSerializer(TestSerializer):
+ 
+     test_signer_cls = None
+     test_signer_kwargs = None
++    test_fallback_signers = None
++    test_fallback_signers_cls_tuple = None
+ 
+     @pytest.mark.parametrize("algorithm_name", ("HS256", "HS384", "HS512", "none"))
+     def test_algorithm(self, serializer_factory, algorithm_name):
+diff --git a/tests/test_itsdangerous/test_serializer.py b/tests/test_itsdangerous/test_serializer.py
+index 465d507..a1a0672 100644
+--- a/tests/test_itsdangerous/test_serializer.py
++++ b/tests/test_itsdangerous/test_serializer.py
+@@ -1,3 +1,4 @@
++import hashlib
+ import pickle
+ from functools import partial
+ from io import BytesIO
+@@ -122,6 +123,26 @@ class TestSerializer(object):
+         assert other.loads(other.dumps(value)) == value
+         assert other.dumps("value") != serializer.dumps("value")
+ 
++    def test_fallback_signers(self, serializer_factory, value):
++        old = serializer_factory(signer_kwargs={"digest_method": hashlib.sha512})
++        signed = old.dumps(value)
++
++        new = serializer_factory(fallback_signers=[{"digest_method": hashlib.sha512}])
++        assert new.loads(signed) == value
++
++        no_fallback = serializer_factory()
++        with pytest.raises(BadSignature):
++            no_fallback.loads(signed)
++
++    def test_fallback_signers_cls_tuple(self, serializer_factory, value):
++        old = serializer_factory(signer_kwargs={"digest_method": hashlib.sha512})
++        signed = old.dumps(value)
++
++        new = serializer_factory(
++            fallback_signers=[(old.signer, {"digest_method": hashlib.sha512})]
++        )
++        assert new.loads(signed) == value
++
+     def test_serializer_kwargs(self, serializer_factory):
+         serializer = serializer_factory(serializer_kwargs={"skipkeys": True})
+ 

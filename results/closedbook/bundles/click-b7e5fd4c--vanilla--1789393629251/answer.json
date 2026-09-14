@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 456978,
+ "num_turns": 59,
+ "stop_reason": "end_turn",
+ "session_id": "51a1e5d3-50ef-4f4a-b899-f16f62dfb9dd",
+ "total_cost_usd": 2.6320007999999993,
+ "usage": {
+  "input_tokens": 118,
+  "cache_creation_input_tokens": 84520,
+  "cache_read_input_tokens": 5323556,
+  "output_tokens": 35118,
+  "output_tokens_details": {
+   "thinking_tokens": 22439
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 84520,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 449,
+    "cache_read_input_tokens": 121213,
+    "cache_creation_input_tokens": 572,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 572
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 610,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00069,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 118,
+   "outputTokens": 35118,
+   "cacheReadInputTokens": 5323556,
+   "cacheCreationInputTokens": 84520,
+   "webSearchRequests": 0,
+   "costUSD": 2.6313107999999987,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All tests pass. Summary of the fix applied to `src/click/shell_completion.py`:\n\n**The bug:** The 8.4.0 fix for multi-line help text in Fish completion (#3126) had two flaws:\n1. `_SOURCE_FISH`'s `string split \\n $completion` line had an unescaped `\\n` inside a normal (non-raw) Python triple-quoted string, so it embedded a literal newline byte in the generated fish script instead of the two-character escape sequence `\\n` \u2014 corrupting the script's syntax and breaking Fish completion entirely.\n2. `FishComplete.format_completion` joined the `type`/`value`/`help` fields with a **real** newline. Since Fish's command substitution auto-splits output on real newlines, each item's three fields were scattered across separate `$response` entries instead of staying grouped as one item \u2014 so even ordinary (non-multiline) completions broke.\n\n**The fix:** Escaped the backslash in the fish script (`\\\\n`) so it emits the literal escape sequence, and changed `format_completion` to join fields with that same literal `\\n` escape rather than a real newline, so each completion item stays on one line and survives Fish's line-splitting intact \u2014 while `string split \\n` in the script correctly un-escapes it back into the three fields. Updated the corresponding tests and added a `CHANGES.rst` entry.",
+ "ttft_ms": 1945,
+ "ttft_stream_ms": 1112,
+ "time_to_request_ms": 54,
+ "type": "result",
+ "duration_ms": 529800,
+ "uuid": "a14e3c4a-b3c6-499e-92bd-63adc3678722"
+}

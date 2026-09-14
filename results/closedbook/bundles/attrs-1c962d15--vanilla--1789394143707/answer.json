@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 29147,
+ "num_turns": 12,
+ "stop_reason": "end_turn",
+ "session_id": "a6d77ea9-ab48-4722-a836-ace5e743d0be",
+ "total_cost_usd": 0.31379359999999995,
+ "usage": {
+  "input_tokens": 24,
+  "cache_creation_input_tokens": 16691,
+  "cache_read_input_tokens": 606462,
+  "output_tokens": 2062,
+  "output_tokens_details": {
+   "thinking_tokens": 240
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16691,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 115,
+    "cache_read_input_tokens": 53734,
+    "cache_creation_input_tokens": 222,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 222
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 632,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000707,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 24,
+   "outputTokens": 2062,
+   "cacheReadInputTokens": 606462,
+   "cacheCreationInputTokens": 16691,
+   "webSearchRequests": 0,
+   "costUSD": 0.31308659999999994,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Test passes. Made the requested change:\n\n- `src/attr/_make.py`: the \"Type annotation and type argument cannot both be present\" error now includes the argument name (`for '{name}'.`).\n- `tests/test_annotations.py`: updated the expected message accordingly.\n- `changelog.d/1410.change.md`: added the news fragment.",
+ "ttft_ms": 2283,
+ "ttft_stream_ms": 1210,
+ "time_to_request_ms": 50,
+ "type": "result",
+ "duration_ms": 33732,
+ "uuid": "1a14f62d-01d8-4238-a82f-2485ea3a292a"
+}
