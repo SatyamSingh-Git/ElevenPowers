@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 82395,
+ "num_turns": 22,
+ "stop_reason": "end_turn",
+ "session_id": "43df919a-0c13-4e31-b17f-ad89db8eeadd",
+ "total_cost_usd": 0.713997,
+ "usage": {
+  "input_tokens": 44,
+  "cache_creation_input_tokens": 34829,
+  "cache_read_input_tokens": 1345070,
+  "output_tokens": 6758,
+  "output_tokens_details": {
+   "thinking_tokens": 2494
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 34829,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 223,
+    "cache_read_input_tokens": 71471,
+    "cache_creation_input_tokens": 623,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 623
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 44,
+   "outputTokens": 6758,
+   "cacheReadInputTokens": 1345070,
+   "cacheCreationInputTokens": 34829,
+   "webSearchRequests": 0,
+   "costUSD": 0.713997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All tests pass with the local `src` picked up. The fix is applied and verified.\n\n**Summary:** Ported click's `becbde5cf4` fix (\"pager doesn't close std streams\") \u2014 `_nullpager` now wraps the caller-provided stream in a `_SkipClose` proxy so `get_pager_file`/`echo_via_pager` don't close a stream (like `sys.stdout`) that click doesn't own. Updated `src/click/_termui_impl.py`, `CHANGES.rst`, and the corresponding tests in `tests/test_termui.py` and `tests/test_testing.py`. Full test suite (1563 passed) runs clean against `src`.",
+ "ttft_ms": 2169,
+ "ttft_stream_ms": 1194,
+ "time_to_request_ms": 270,
+ "type": "result",
+ "duration_ms": 139496,
+ "uuid": "e056a442-f2da-4981-80a3-ff706a346d4a"
+}

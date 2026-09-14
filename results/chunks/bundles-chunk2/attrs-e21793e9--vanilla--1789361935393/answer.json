@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 163108,
+ "num_turns": 35,
+ "stop_reason": "end_turn",
+ "session_id": "beb06afd-d564-492f-81d3-be6df91c83a6",
+ "total_cost_usd": 0.9742282000000001,
+ "usage": {
+  "input_tokens": 70,
+  "cache_creation_input_tokens": 33502,
+  "cache_read_input_tokens": 2147664,
+  "output_tokens": 8529,
+  "output_tokens_details": {
+   "thinking_tokens": 3194
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 33502,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 296,
+    "cache_read_input_tokens": 70238,
+    "cache_creation_input_tokens": 529,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 529
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 687,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000772,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 70,
+   "outputTokens": 8529,
+   "cacheReadInputTokens": 2147664,
+   "cacheCreationInputTokens": 33502,
+   "webSearchRequests": 0,
+   "costUSD": 0.9734562000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Changes are in place:\n\n- `src/attr/converters.py` \u2014 `optional()` now checks `isinstance(converter, Converter)`: when true, it builds an `optional_converter(val, inst, field)` that unwraps `Converter`-style calls (e.g. from `converter.pipe`), then wraps the result back in a `Converter` at the end (after annotations are set, since the `Converter` constructor consumes `__annotations__`).\n- `tests/test_converters.py` \u2014 added a test confirming `optional(pipe(int, str))` returns a `Converter` instance and behaves correctly for both a value and `None`.\n- `changelog.d/1372.change.md` \u2014 added a changelog fragment per the project's towncrier convention.\n\nVerified with the local source (`PYTHONPATH=src`): all 34 tests in `test_converters.py` pass, and the full suite (1331 passed) is unaffected.",
+ "ttft_ms": 6030,
+ "ttft_stream_ms": 3988,
+ "time_to_request_ms": 48,
+ "type": "result",
+ "duration_ms": 195000,
+ "uuid": "74d085da-ac44-4776-93dc-fbb5a67a1f67"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 90089,
+ "num_turns": 22,
+ "stop_reason": "end_turn",
+ "session_id": "9e8088c2-e3b4-4322-ad4c-74e0653d690b",
+ "total_cost_usd": 0.6398446999999999,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 30599,
+  "cache_read_input_tokens": 1220899,
+  "output_tokens": 5947,
+  "output_tokens_details": {
+   "thinking_tokens": 1836
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 30599,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 321,
+    "cache_read_input_tokens": 67300,
+    "cache_creation_input_tokens": 564,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 564
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 580,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00065,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 42,
+   "outputTokens": 5947,
+   "cacheReadInputTokens": 1220899,
+   "cacheCreationInputTokens": 30599,
+   "webSearchRequests": 0,
+   "costUSD": 0.6391947,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full suite passes (1562 passed, no failures).\n\n## Summary\n\nFixed the bug in `src/click/_termui_impl.py`: `MaybeStripAnsi` (used by `get_pager_file`/`echo_via_pager`) subclasses `io.TextIOWrapper` wrapping the real stdin/stdout buffer or a pager subprocess's stdin pipe. `TextIOWrapper`'s default `__del__` closes its underlying buffer when garbage collected, which meant that after paging finished, the process's real stdin/stdout (or the pager's pipe) could get closed out from under the rest of the program.\n\nAdded a `__del__` override that calls `self.detach()` instead, matching the existing `_NonClosingTextIOWrapper` pattern already used elsewhere in Click (`_compat.py`) for the same reason. Also added a `CHANGES.rst` entry. Full test suite (1562 tests) passes against the local `src/click`.",
+ "ttft_ms": 1627,
+ "ttft_stream_ms": 891,
+ "time_to_request_ms": 42,
+ "type": "result",
+ "duration_ms": 107239,
+ "uuid": "b0e8eb0b-3d9a-4e15-b592-dc8abb94498f"
+}

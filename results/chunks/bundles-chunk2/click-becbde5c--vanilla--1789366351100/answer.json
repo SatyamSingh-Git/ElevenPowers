@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 204717,
+ "num_turns": 33,
+ "stop_reason": "end_turn",
+ "session_id": "be2f2bc4-e831-4d37-9130-ed523968e6d2",
+ "total_cost_usd": 1.2630465999999994,
+ "usage": {
+  "input_tokens": 66,
+  "cache_creation_input_tokens": 53343,
+  "cache_read_input_tokens": 2378302,
+  "output_tokens": 13401,
+  "output_tokens_details": {
+   "thinking_tokens": 7572
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 53343,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 361,
+    "cache_read_input_tokens": 89914,
+    "cache_creation_input_tokens": 694,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 694
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 15870,
+   "outputTokens": 483,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.028285000000000005,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 66,
+   "outputTokens": 13401,
+   "cacheReadInputTokens": 2378302,
+   "cacheCreationInputTokens": 53343,
+   "webSearchRequests": 0,
+   "costUSD": 1.2347615999999995,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full suite passes. I've applied the upstream fix (pallets/click PR #3482, \"pager doesn't close std streams\"):\n\n- `src/click/_termui_impl.py`: added a `_SkipClose` wrapper that proxies all attributes to a borrowed stream but no-ops `close()` and preserves the wrapper through `.buffer`. `_nullpager` now yields `_SkipClose(stream)` instead of the raw stream, so `echo_via_pager`/`get_pager_file` no longer close a caller-owned stdout/stderr (e.g. under `CliRunner`) when no external pager program runs.\n- `CHANGES.rst`: added the changelog entry.\n- `tests/test_termui.py`: simplified `test_get_pager_file_nullpager_keeps_stringio_stream` to assert the stream stays open (`not stream.closed`) instead of just checking identity.\n- `tests/test_testing.py`: added `test_with_echo_via_pager`, a regression test using `CliRunner`.\n\nAll 1563 tests pass when run against the local `src` package.",
+ "ttft_ms": 3607,
+ "ttft_stream_ms": 2499,
+ "time_to_request_ms": 50,
+ "type": "result",
+ "duration_ms": 228022,
+ "uuid": "fa7c24a0-0feb-4e23-88ee-aad4a44d14cb"
+}

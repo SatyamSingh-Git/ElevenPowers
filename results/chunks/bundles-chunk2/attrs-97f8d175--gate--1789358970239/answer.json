@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 118004,
+ "num_turns": 23,
+ "stop_reason": "end_turn",
+ "session_id": "3364729b-7e0a-464c-bb2b-7100f6195b39",
+ "total_cost_usd": 0.6704876999999999,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 26870,
+  "cache_read_input_tokens": 1281649,
+  "output_tokens": 8309,
+  "output_tokens_details": {
+   "thinking_tokens": 5186
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26870,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 368,
+    "cache_read_input_tokens": 63478,
+    "cache_creation_input_tokens": 657,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 657
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 8309,
+   "cacheReadInputTokens": 1281649,
+   "cacheCreationInputTokens": 26870,
+   "webSearchRequests": 0,
+   "costUSD": 0.6704876999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1389 tests pass, including the new `ForwardRef` cases for `_is_class_var`. The earlier failures were caused by pytest picking up a globally-installed `attrs` package instead of this repo's `src` \u2014 unrelated to the change.\n\n## Summary\n\nFixed `_is_class_var` in `src/attr/_make.py` to detect `ClassVar` annotations that come back as unresolved `ForwardRef` objects (as happens on Python 3.14+ via `annotationlib.get_annotations(..., format=Format.FORWARDREF)` when an annotation can't be evaluated). `str()` on a `ForwardRef` produces `\"ForwardRef('ClassVar[int]')\"`, which never matched the expected prefixes \u2014 now the function unwraps `__forward_arg__` first to recover the original source text before checking.\n\n- `src/attr/_make.py` \u2014 unwrap `__forward_arg__` before the prefix check\n- `tests/test_annotations.py` \u2014 added `ForwardRef` cases to `test_is_class_var`\n- `changelog.d/1593.change.md` \u2014 changelog fragment",
+ "ttft_ms": 7229,
+ "ttft_stream_ms": 6726,
+ "time_to_request_ms": 330,
+ "type": "result",
+ "duration_ms": 192919,
+ "uuid": "60357430-351a-451c-b80e-c8627ae225e1"
+}

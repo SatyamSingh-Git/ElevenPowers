@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 211886,
+ "num_turns": 32,
+ "stop_reason": "end_turn",
+ "session_id": "1bb19983-2557-425c-85e2-1e33643ca201",
+ "total_cost_usd": 0.9719838999999999,
+ "usage": {
+  "input_tokens": 64,
+  "cache_creation_input_tokens": 38754,
+  "cache_read_input_tokens": 1988543,
+  "output_tokens": 9464,
+  "output_tokens_details": {
+   "thinking_tokens": 3186
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 38754,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 381,
+    "cache_read_input_tokens": 75239,
+    "cache_creation_input_tokens": 780,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 780
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 650,
+   "outputTokens": 19,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000745,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 64,
+   "outputTokens": 9464,
+   "cacheReadInputTokens": 1988543,
+   "cacheCreationInputTokens": 38754,
+   "webSearchRequests": 0,
+   "costUSD": 0.9712388999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1328 tests pass with the local `src` on path (the earlier failures were from a stale globally-installed `attr` package shadowing the repo, unrelated to this change). The implementation matches the upstream PR exactly:\n\n- `src/attr/_make.py`: `Converter.__init__` now builds a bound `self.__call__` dispatcher (`_takes_only_value`/`_takes_instance`/`_takes_field`/`_takes_both`) based on `takes_self`/`takes_field`, making `Converter` instances directly callable as `(value, instance, field)` adapters. `pipe()`'s inner loop now just calls `c(val, inst, field)` for `Converter` instances instead of misusing the flags as positional args.\n- `src/attr/setters.py`: `convert()` detects a `Converter` instance and calls it with `(new_value, instance, attrib)` instead of just `(new_value)` (with a local import of `Converter` to avoid an import cycle).\n- Added/updated tests in `tests/test_converters.py` and `tests/test_setattr.py`, plus the changelog fragment `changelog.d/1328.change.md`.",
+ "ttft_ms": 5326,
+ "ttft_stream_ms": 3219,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 249394,
+ "uuid": "1719c854-7e3d-401c-b89e-633cb148143b"
+}

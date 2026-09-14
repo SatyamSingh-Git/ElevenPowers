@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 63377,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "b8e5a09d-10fe-4270-93bc-21b1a391855d",
+ "total_cost_usd": 0.4435656000000001,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 26368,
+  "cache_read_input_tokens": 753412,
+  "output_tokens": 3950,
+  "output_tokens_details": {
+   "thinking_tokens": 1125
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26368,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 396,
+    "cache_read_input_tokens": 62642,
+    "cache_creation_input_tokens": 991,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 991
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 3950,
+   "cacheReadInputTokens": 753412,
+   "cacheCreationInputTokens": 26368,
+   "webSearchRequests": 0,
+   "costUSD": 0.4435656000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Same 12 pre-existing failures as baseline (identical set, unrelated to this fix \u2014 they're API mismatches like `_ClassBuilder.__init__() got an unexpected keyword argument 'slots'`), and 1330 passed vs 1329 before (my new regression test now passes).\n\n## Summary\n\nFixed `_transform_attrs` in `src/attr/_make.py`: PR #1401 added an order-check loop right after `field_transformer` runs, which consumed `attrs` if it was a generator (a valid pattern for `field_transformer`, working since 25.1.0). Once consumed, the subsequent alias-resolution loop and `AttrsClass` construction saw an empty sequence, silently dropping all fields.\n\nAdded `attrs = tuple(attrs)` right after the `field_transformer` call to materialize it before any loop consumes it, plus a regression test (`test_field_transformer_returns_generator` in `tests/test_hooks.py`) verifying a generator-based `field_transformer` still produces the expected fields and `asdict()` output.\n\nFull test suite: 1330 passed / 12 failed, same 12 pre-existing unrelated failures present on the base commit before this change.",
+ "ttft_ms": 3923,
+ "ttft_stream_ms": 3103,
+ "time_to_request_ms": 321,
+ "type": "result",
+ "duration_ms": 139255,
+ "uuid": "b3bac5f1-4f25-4c16-bf1a-6f17fe14702d"
+}

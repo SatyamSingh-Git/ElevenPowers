@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 262577,
+ "num_turns": 43,
+ "stop_reason": "end_turn",
+ "session_id": "d31462fb-210f-4821-9541-ff3a12e36ac3",
+ "total_cost_usd": 1.6029506999999996,
+ "usage": {
+  "input_tokens": 64,
+  "cache_creation_input_tokens": 76499,
+  "cache_read_input_tokens": 2718799,
+  "output_tokens": 21875,
+  "output_tokens_details": {
+   "thinking_tokens": 13348
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 76499,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 526,
+    "cache_read_input_tokens": 112109,
+    "cache_creation_input_tokens": 1655,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1655
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 64,
+   "outputTokens": 21875,
+   "cacheReadInputTokens": 2718799,
+   "cacheCreationInputTokens": 76499,
+   "webSearchRequests": 0,
+   "costUSD": 1.6029506999999996,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Both proof obligations discharged: the targeted test passes and the full suite (1584 passed, 94 skipped) is clean.\n\n## Summary\n\nApplied the fix described in the commit message: **`MaybeStripAnsi`** (in `src/click/_termui_impl.py`), used by `get_pager_file()`, wraps whatever binary buffer the pager stream provides \u2014 which can be a *borrowed* one, namely the real `sys.stdout.buffer`, whenever no external pager is available (dumb terminal, missing `PAGER`/`less`/`more` binary, non-tty). Since it subclassed `io.TextIOWrapper` without overriding `__del__`, garbage-collecting the wrapper triggered the default `close()`, which closed the process's real stdout \u2014 producing \"I/O operation on closed file\" on any later write, exactly like issue #3449.\n\nThe fix mirrors the existing `_NonClosingTextIOWrapper` pattern in `_compat.py` (from the earlier #3482 fix): override `__del__` to call `self.detach()` instead of closing, so GC releases the wrapper without closing a stream it doesn't own.\n\nAlso added a `CHANGES.rst` entry. Note: the sandbox's globally-installed `click` package was shadowing the repo's `src/click` under plain `pytest` due to a third-party plugin eagerly importing `click` at pytest startup \u2014 that's an environment artifact, not a repo bug; running with `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` avoids it and confirms the fix is correct.",
+ "ttft_ms": 2084,
+ "ttft_stream_ms": 1425,
+ "time_to_request_ms": 369,
+ "type": "result",
+ "duration_ms": 348308,
+ "uuid": "112697fb-7d53-4a23-8af1-1837b4170cfe"
+}

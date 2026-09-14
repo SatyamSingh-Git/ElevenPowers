@@ -1,0 +1,47 @@
+diff --git a/changelog.d/1417.change.md b/changelog.d/1417.change.md
+new file mode 100644
+index 0000000..9650207
+--- /dev/null
++++ b/changelog.d/1417.change.md
+@@ -0,0 +1 @@
++`field_transformer` can once again be a generator, which was inadvertently broken in 25.1.0.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 7439dc2..e84d979 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -448,7 +448,7 @@ def _transform_attrs(
+     attrs = base_attrs + own_attrs
+ 
+     if field_transformer is not None:
+-        attrs = field_transformer(cls, attrs)
++        attrs = tuple(field_transformer(cls, attrs))
+ 
+     # Check attr order after executing the field_transformer.
+     # Mandatory vs non-mandatory attr order only matters when they are part of
+diff --git a/tests/test_hooks.py b/tests/test_hooks.py
+index 6b34206..c099652 100644
+--- a/tests/test_hooks.py
++++ b/tests/test_hooks.py
+@@ -217,6 +217,22 @@ class TestTransformHook:
+         assert "CAttributes" == fields_type.__name__
+         assert issubclass(fields_type, tuple)
+ 
++    def test_field_transformer_generator(self):
++        """
++        field_transformer can return a generator of attributes.
++
++        Regression test for #1417.
++        """
++
++        def hook(cls, attribs):
++            yield from attribs
++
++        @attr.s(auto_attribs=True, field_transformer=hook)
++        class C:
++            x: int
++
++        assert {"x": 1} == attr.asdict(C(1))
++
+ 
+ class TestAsDictHook:
+     def test_asdict(self):

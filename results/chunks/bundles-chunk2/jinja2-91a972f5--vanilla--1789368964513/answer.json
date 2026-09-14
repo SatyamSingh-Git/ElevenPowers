@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 115585,
+ "num_turns": 23,
+ "stop_reason": "end_turn",
+ "session_id": "32020665-2aac-449b-bed3-a5edc7beb74c",
+ "total_cost_usd": 0.7802766000000001,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 45535,
+  "cache_read_input_tokens": 1178282,
+  "output_tokens": 10188,
+  "output_tokens_details": {
+   "thinking_tokens": 4197
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 45535,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 440,
+    "cache_read_input_tokens": 82338,
+    "cache_creation_input_tokens": 462,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 462
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 580,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00066,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 10188,
+   "cacheReadInputTokens": 1178282,
+   "cacheCreationInputTokens": 45535,
+   "webSearchRequests": 0,
+   "costUSD": 0.7796166,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream fix (jinja/pallets commit `91a972f`, GHSA-q2x7-8rv6-6q7h) to `src/jinja2/sandbox.py`:\n\n- Removed the old `inspect_format_method` helper and the `format_string`/`call`-based interception, which only sandboxed `str.format`/`format_map` when called *directly* as `obj.format(...)`.\n- Added `wrap_str_format`, invoked from both `getattr` and `getitem` at attribute-access time. It wraps any retrieved `str.format`/`format_map` bound method in a sandboxed closure immediately, so the safety check travels with the method reference itself \u2014 closing the gap where a template could store the method (e.g., via `namespace(...)` or pass it to a filter) and call it indirectly, bypassing the sandboxed formatter.\n- Added the corresponding changelog entry and the `test_indirect_call` regression test from upstream.\n\nVerified: `tests/test_security.py` (16 tests) and the full suite (900 tests) pass.",
+ "ttft_ms": 1862,
+ "ttft_stream_ms": 1041,
+ "time_to_request_ms": 44,
+ "type": "result",
+ "duration_ms": 130296,
+ "uuid": "89f1e830-c76c-4acf-9ff3-1b86305ebfc3"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 109542,
+ "num_turns": 24,
+ "stop_reason": "end_turn",
+ "session_id": "ddb61d25-31cc-4512-99ed-859577bb12d7",
+ "total_cost_usd": 0.7245220000000001,
+ "usage": {
+  "input_tokens": 48,
+  "cache_creation_input_tokens": 33137,
+  "cache_read_input_tokens": 1447130,
+  "output_tokens": 5029,
+  "output_tokens_details": {
+   "thinking_tokens": 756
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 33137,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 224,
+    "cache_read_input_tokens": 69552,
+    "cache_creation_input_tokens": 850,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 850
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 48,
+   "outputTokens": 5029,
+   "cacheReadInputTokens": 1447130,
+   "cacheCreationInputTokens": 33137,
+   "webSearchRequests": 0,
+   "costUSD": 0.70854,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  },
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 12802,
+   "outputTokens": 636,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.015982,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: the same 36 failures exist pre-change (unrelated environment/deprecation issues), and my change adds 3 new passing tests (1576 \u2192 1579 passed) with no regressions.\n\nThe change is applied:\n- `src/click/decorators.py`: added `custom_version_option()` decorator (callback-based `--version` output) and a freeze note on `version_option()`'s docstring pointing to it.\n- `src/click/__init__.py`: exported `custom_version_option`.\n- `docs/api.md`: documented the new function.\n- `CHANGES.md`: changelog entry.\n- `tests/test_basic.py`: two new tests covering the callback and context passing.",
+ "ttft_ms": 3618,
+ "ttft_stream_ms": 3267,
+ "time_to_request_ms": 352,
+ "type": "result",
+ "duration_ms": 153786,
+ "uuid": "866e3610-a5fb-426a-a19f-73302f7f08ca"
+}

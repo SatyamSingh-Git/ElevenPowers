@@ -1,0 +1,109 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index c640740..45d5572 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -11,6 +11,7 @@ Unreleased
+ -   Shell completion of `Choice` `Enum` values produces a valid completion
+     result. :issue:`3015`
+ -   Fix empty byte-string handling in echo. :issue:`3487`
++-   Fix closed file error with `echo_via_pager`. :issue:`3449`
+ 
+ 
+ Version 8.4.0
+diff --git a/src/click/_termui_impl.py b/src/click/_termui_impl.py
+index 1d23026..76113e9 100644
+--- a/src/click/_termui_impl.py
++++ b/src/click/_termui_impl.py
+@@ -606,15 +606,35 @@ def _tempfilepager(
+         os.unlink(f.name)
+ 
+ 
++class _SkipClose:
++    def __init__(self, stream: t.IO[t.Any]) -> None:
++        self.stream = stream
++
++    def __getattr__(self, name: str) -> t.Any:
++        return getattr(self.stream, name)
++
++    @property
++    def buffer(self) -> t.BinaryIO:
++        return _SkipClose(self.stream.buffer)  # type: ignore[attr-defined, return-value]
++
++    def close(self) -> None:
++        pass
++
++
+ @contextlib.contextmanager
+ def _nullpager(
+     stream: t.TextIO, color: bool | None = None
+ ) -> t.Iterator[tuple[t.TextIO, str, bool]]:
+-    """Simply print unformatted text.  This is the ultimate fallback."""
++    """Simply print unformatted text. This is the ultimate fallback. Don't close the
++    output stream in this case, since it's coming from elsewhere rather than our
++    internal helpers.
++    """
+     encoding = get_best_encoding(stream)
++
+     if color is None:
+         color = False
+-    yield stream, encoding, color
++
++    yield _SkipClose(stream), encoding, color  # type: ignore[misc]
+ 
+ 
+ class Editor:
+diff --git a/tests/test_termui.py b/tests/test_termui.py
+index 9cd6258..f715154 100644
+--- a/tests/test_termui.py
++++ b/tests/test_termui.py
+@@ -798,24 +798,18 @@ def test_get_pager_file_nullpager_wraps_textio_stream(
+ def test_get_pager_file_nullpager_keeps_stringio_stream(monkeypatch):
+     """The no-stdout fallback should keep a text-only stream and set ``.color``."""
+ 
+-    created = []
+-
+-    def make_stringio():
+-        stream = io.StringIO()
+-        created.append(stream)
+-        return stream
+-
++    stream = io.StringIO()
+     monkeypatch.setattr(sys, "stdout", None)
+-    monkeypatch.setattr(click._termui_impl, "StringIO", make_stringio)
++    monkeypatch.setattr(click._termui_impl, "StringIO", lambda: stream)
+     monkeypatch.setattr(click._termui_impl, "isatty", lambda _: False)
+ 
+     styled_text = click.style("hello", fg="red")
+ 
+     with click.get_pager_file(color=False) as pager:
+-        assert pager is created[0]
+         pager.write(styled_text)
+ 
+-    assert created[0].getvalue() == styled_text
++    assert not stream.closed
++    assert stream.getvalue() == styled_text
+ 
+ 
+ def test_get_pager_file_flushes_stream_on_exception(monkeypatch):
+diff --git a/tests/test_testing.py b/tests/test_testing.py
+index 649db6e..a7508b9 100644
+--- a/tests/test_testing.py
++++ b/tests/test_testing.py
+@@ -256,6 +256,17 @@ def test_with_color_but_pause_not_blocking():
+     assert result.output == ""
+ 
+ 
++def test_with_echo_via_pager():
++    @click.command()
++    def cli():
++        click.echo_via_pager("Hello, Click!")
++
++    runner = CliRunner()
++    result = runner.invoke(cli)
++    assert not result.exception
++    assert result.output == "Hello, Click!\n"
++
++
+ def test_exit_code_and_output_from_sys_exit():
+     # See issue #362
+     @click.command()

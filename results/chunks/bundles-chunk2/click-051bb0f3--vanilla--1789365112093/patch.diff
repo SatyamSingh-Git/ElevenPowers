@@ -1,0 +1,34 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index a39471f..791f6ae 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -17,6 +17,9 @@ Unreleased
+ -   ``echo_via_pager`` flushes after each write, so passing a generator streams
+     output to the pager incrementally instead of staying hidden until the pipe
+     buffer fills. :issue:`3242` :issue:`2542` :pr:`3534`
++-   Fix a remaining case of the closed file error with ``echo_via_pager``: a
++    borrowed stdout stream is no longer closed when the garbage collector
++    frees the internal pager wrapper. :issue:`3449` :pr:`3482`
+ 
+ 
+ Version 8.4.1
+diff --git a/src/click/_termui_impl.py b/src/click/_termui_impl.py
+index 3336c37..de5d193 100644
+--- a/src/click/_termui_impl.py
++++ b/src/click/_termui_impl.py
+@@ -390,6 +390,15 @@ class MaybeStripAnsi(io.TextIOWrapper):
+         super().__init__(stream, **kwargs)
+         self.color = color
+ 
++    def __del__(self) -> None:
++        # The wrapped stream may be borrowed (e.g. stdout), so don't let the
++        # GC close it. Detach instead, as io.TextIOWrapper.__del__ would
++        # otherwise close the underlying stream.
++        try:
++            self.detach()
++        except Exception:
++            pass
++
+     def write(self, text: str) -> int:
+         if not self.color:
+             text = strip_ansi(text)

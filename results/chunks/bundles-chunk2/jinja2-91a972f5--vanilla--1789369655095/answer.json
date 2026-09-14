@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 428621,
+ "num_turns": 53,
+ "stop_reason": "end_turn",
+ "session_id": "8c61cd6f-4b82-4dc0-864c-323700c76213",
+ "total_cost_usd": 2.465478299999999,
+ "usage": {
+  "input_tokens": 106,
+  "cache_creation_input_tokens": 87903,
+  "cache_read_input_tokens": 4881391,
+  "output_tokens": 31511,
+  "output_tokens_details": {
+   "thinking_tokens": 20200
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 87903,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 374,
+    "cache_read_input_tokens": 124819,
+    "cache_creation_input_tokens": 349,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 349
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 580,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00066,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 106,
+   "outputTokens": 31511,
+   "cacheReadInputTokens": 4881391,
+   "cacheCreationInputTokens": 87903,
+   "webSearchRequests": 0,
+   "costUSD": 2.4648182999999992,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This matches the upstream commit's stat exactly (3 files, +63/-38 net). The change is complete and verified:\n\n- **`src/jinja2/sandbox.py`**: moved `str.format`/`str.format_map` sandboxing from call-time (`inspect_format_method` + `format_string`, invoked only from `SandboxedEnvironment.call()`) to access-time (`wrap_str_format`, invoked from `getattr`/`getitem`). Now the bound method returned by attribute/item access is itself replaced with a safe wrapper, so any indirect call to it \u2014 e.g. storing it and invoking it from inside a custom filter's own Python code, bypassing `environment.call()` entirely \u2014 is still sandboxed.\n- **`tests/test_security.py`**: added `test_indirect_call`, which reproduces exactly this bypass (a filter that calls `value.run(arg)` directly) and confirms it raises `SecurityError` \u2014 I verified it fails without the fix and passes with it.\n- **`CHANGES.rst`**: added the changelog entry with the GHSA reference.\n\nFull test suite (900 tests) passes.",
+ "ttft_ms": 3928,
+ "ttft_stream_ms": 1734,
+ "time_to_request_ms": 47,
+ "type": "result",
+ "duration_ms": 673540,
+ "uuid": "19830c7c-3350-4a40-bea7-2d401aec7004"
+}

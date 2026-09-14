@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 16952,
+ "num_turns": 5,
+ "stop_reason": "end_turn",
+ "session_id": "1c7abc7e-8174-492c-b706-4b59f9569f5b",
+ "total_cost_usd": 0.17337190000000002,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 14659,
+  "cache_read_input_tokens": 239293,
+  "output_tokens": 861,
+  "output_tokens_details": {
+   "thinking_tokens": 224
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14659,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 82,
+    "cache_read_input_tokens": 51578,
+    "cache_creation_input_tokens": 346,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 346
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 585,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006850000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 10,
+   "outputTokens": 861,
+   "cacheReadInputTokens": 239293,
+   "cacheCreationInputTokens": 14659,
+   "webSearchRequests": 0,
+   "costUSD": 0.17268689999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Added `OverflowError` to the caught exceptions in `do_int` (`src/jinja2/filters.py`), so values like `\"1e1000\"` (which overflow `int(float(value))` to infinity) fall back to `default` instead of raising.",
+ "ttft_ms": 2820,
+ "ttft_stream_ms": 1895,
+ "time_to_request_ms": 55,
+ "type": "result",
+ "duration_ms": 16892,
+ "uuid": "96736195-ddc1-4427-bd58-247a571d41fc"
+}

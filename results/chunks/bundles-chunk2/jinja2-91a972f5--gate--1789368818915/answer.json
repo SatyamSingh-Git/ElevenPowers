@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 255953,
+ "num_turns": 34,
+ "stop_reason": "end_turn",
+ "session_id": "0fd6944f-432e-4b27-ae80-97e465e72167",
+ "total_cost_usd": 1.2019637999999997,
+ "usage": {
+  "input_tokens": 48,
+  "cache_creation_input_tokens": 61664,
+  "cache_read_input_tokens": 1868336,
+  "output_tokens": 18089,
+  "output_tokens_details": {
+   "thinking_tokens": 10743
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 61664,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 467,
+    "cache_read_input_tokens": 98376,
+    "cache_creation_input_tokens": 553,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 553
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 48,
+   "outputTokens": 18089,
+   "cacheReadInputTokens": 1868336,
+   "cacheCreationInputTokens": 61664,
+   "webSearchRequests": 0,
+   "costUSD": 1.2019637999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream Jinja2 fix (commit `91a972f`, GHSA-q2x7-8rv6-6q7h) that sandboxes indirect calls to `str.format`/`format_map`.\n\n**The vulnerability:** `SandboxedEnvironment.call()` only wrapped `str.format`/`format_map` calls made directly (e.g. `\"{}\".format(x)`). If a template stored the bound method elsewhere (e.g. via `namespace(run=\"{0.__class__}\".format)`) and a filter later invoked it directly in Python (`value.run(arg)`), that call bypassed `call()` entirely and executed unsandboxed formatting \u2014 a sandbox escape.\n\n**The fix:** move the interception from `call()` to `getattr()`/`getitem()`. Now the moment `.format`/`.format_map` is *accessed* on a string, it's replaced with a wrapped, sandboxed version (`wrap_str_format`), so it stays safe no matter how or where it's later called.\n\nChanges:\n- `src/jinja2/sandbox.py` \u2014 removed `inspect_format_method`/`format_string`, added `wrap_str_format`, hooked into `getattr`/`getitem`\n- `tests/test_security.py` \u2014 added `test_indirect_call` reproducing the bypass\n- `CHANGES.rst` \u2014 changelog entry\n\nAll 900 tests pass, including the new regression test.",
+ "ttft_ms": 3366,
+ "ttft_stream_ms": 2159,
+ "time_to_request_ms": 274,
+ "type": "result",
+ "duration_ms": 406482,
+ "uuid": "87d6d31a-4628-46a6-a0eb-3511c58b6391"
+}

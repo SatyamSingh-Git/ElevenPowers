@@ -348,6 +348,7 @@ The 1.4× gate result stands for its narrow configuration. It is not an argument
 - **"Replicates inside one sitting are more correlated with each other than two sittings are."** Withdrawn 2026-09-13. It was inferred entirely from the reversal above, which did not happen. Five of fifteen tasks split over six replicates, and the two passes agree to within 4.4 points.
 - **"Pass B of the B4 sweep resolved 53.3%."** Corrected to **73.3%** after re-grading every bundle. Pass A re-graded to the same score it was given, on all forty-five runs, which is the control that says the re-grade is deterministic.
 - **"Substantial tasks resolve at 27 to 40 percent."** Qualified 2026-09-14. Measured before the prompts were framed as requests. With the same tasks asking for something, a plain agent resolves 88 percent of them, so a large part of what was read as difficulty was prompts that did not ask. The band selection was made on that measurement and is declared in the lock; what it bought is smaller than it looked.
+- **"The corpus was rebuilt so that most of it discriminates."** Qualified 2026-09-14. Across a hundred paired runs, twenty-three of twenty-five tasks were resolved twice by both arms. A plain agent resolves 92 percent of the selected corpus, so the benchmark is not hard enough to measure a treatment on, and more of it is not the fix.
 
 ---
 

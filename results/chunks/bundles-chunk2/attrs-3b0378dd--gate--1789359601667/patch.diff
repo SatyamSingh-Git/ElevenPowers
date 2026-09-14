@@ -1,0 +1,45 @@
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 7439dc2..065cb83 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -450,6 +450,9 @@ def _transform_attrs(
+     if field_transformer is not None:
+         attrs = field_transformer(cls, attrs)
+ 
++    # Resolve attrs into a tuple in case field_transformer returned a generator.
++    attrs = tuple(attrs)
++
+     # Check attr order after executing the field_transformer.
+     # Mandatory vs non-mandatory attr order only matters when they are part of
+     # the __init__ signature and when they aren't kw_only (which are moved to
+diff --git a/tests/test_hooks.py b/tests/test_hooks.py
+index 6b34206..240d40d 100644
+--- a/tests/test_hooks.py
++++ b/tests/test_hooks.py
+@@ -217,6 +217,26 @@ class TestTransformHook:
+         assert "CAttributes" == fields_type.__name__
+         assert issubclass(fields_type, tuple)
+ 
++    def test_field_transformer_returns_generator(self):
++        """
++        A field_transformer that returns a generator (instead of a list or
++        tuple) is supported.
++
++        Regression test for #1417.
++        """
++
++        def hook(cls, attribs):
++            for a in attribs:
++                yield a
++
++        @attr.s(auto_attribs=True, field_transformer=hook)
++        class C:
++            x: int
++            y: int
++
++        assert ["x", "y"] == [a.name for a in attr.fields(C)]
++        assert {"x": 1, "y": 2} == attr.asdict(C(1, 2))
++
+ 
+ class TestAsDictHook:
+     def test_asdict(self):

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 68423,
+ "num_turns": 18,
+ "stop_reason": "end_turn",
+ "session_id": "d60c870c-75d6-4fc1-8d05-3dd09950ab43",
+ "total_cost_usd": 0.5992721999999999,
+ "usage": {
+  "input_tokens": 32,
+  "cache_creation_input_tokens": 41889,
+  "cache_read_input_tokens": 965804,
+  "output_tokens": 3828,
+  "output_tokens_details": {
+   "thinking_tokens": 595
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 41889,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 421,
+    "cache_read_input_tokens": 78243,
+    "cache_creation_input_tokens": 911,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 911
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 596,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000681,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 32,
+   "outputTokens": 3828,
+   "cacheReadInputTokens": 965804,
+   "cacheCreationInputTokens": 41889,
+   "webSearchRequests": 0,
+   "costUSD": 0.5985912,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed pre-existing, unrelated to this change (an environment/site-packages issue with pager tests). The applied change is verified working: all tests touching `isolated_filesystem` pass, and the full suite shows no new failures.\n\nSummary of what was applied (matching upstream commit for pallets/click issues #3700/#3501):\n- `src/click/testing.py`: `isolated_filesystem` now emits a `DeprecationWarning` and gained docstring warnings/`.. deprecated:: 8.5.0` notes about its non-thread-safety.\n- `docs/testing.md`: rewrote the File System Isolation section to recommend `tmp_path`/`tempfile.TemporaryDirectory` with absolute paths, and added a \"Running tests in parallel\" subsection.\n- `docs/upgrade-guides.md` and `CHANGES.md`: documented the deprecation.\n- Test files (`test_arguments.py`, `test_basic.py`, `test_shell_completion.py`, `test_utils/test_open_file.py`): migrated off `isolated_filesystem` to `tmp_path`.\n- `test_testing.py`/`test_deprecations.py`: added deprecation-warning filters/tests, plus a new thread-safety demonstration test.",
+ "ttft_ms": 2694,
+ "ttft_stream_ms": 1764,
+ "time_to_request_ms": 49,
+ "type": "result",
+ "duration_ms": 93681,
+ "uuid": "e44acb26-b016-43aa-83f8-a102ca276b69"
+}

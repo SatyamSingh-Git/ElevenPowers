@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 205523,
+ "num_turns": 29,
+ "stop_reason": "end_turn",
+ "session_id": "73217246-f362-456a-b840-e08dcfd7165b",
+ "total_cost_usd": 1.3241204999999998,
+ "usage": {
+  "input_tokens": 58,
+  "cache_creation_input_tokens": 65576,
+  "cache_read_input_tokens": 2405635,
+  "output_tokens": 13920,
+  "output_tokens_details": {
+   "thinking_tokens": 9043
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 65576,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 291,
+    "cache_read_input_tokens": 102314,
+    "cache_creation_input_tokens": 527,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 527
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 58,
+   "outputTokens": 13920,
+   "cacheReadInputTokens": 2405635,
+   "cacheCreationInputTokens": 65576,
+   "webSearchRequests": 0,
+   "costUSD": 1.3241204999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: previously, garbage-collecting the `MaybeStripAnsi` wrapper would close the underlying buffer (e.g. real `sys.stdout.buffer`); now it stays open.\n\n## Summary\n\nFixed `MaybeStripAnsi` in `src/click/_termui_impl.py` (used by `get_pager_file`/`echo_via_pager`) so it no longer closes the underlying stream \u2014 which is often the real `stdout`/pager stdin, not something it owns \u2014 when the wrapper is garbage collected. Added a `__del__` override that detaches instead of closing, mirroring the existing `_NonClosingTextIOWrapper` pattern in `_compat.py`. Also added a `CHANGES.rst` entry. Full test suite (1562 passed) confirms no regressions, and a manual GC test confirms the underlying buffer now stays open.",
+ "ttft_ms": 4263,
+ "ttft_stream_ms": 3943,
+ "time_to_request_ms": 254,
+ "type": "result",
+ "duration_ms": 235283,
+ "uuid": "c2f1b909-2a57-4375-8573-5b9003e5b03d"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 65768,
+ "num_turns": 8,
+ "stop_reason": "end_turn",
+ "session_id": "7034bea1-8cc8-4dd6-b0ba-fcc8df0bf0f1",
+ "total_cost_usd": 0.24267839999999996,
+ "usage": {
+  "input_tokens": 16,
+  "cache_creation_input_tokens": 16204,
+  "cache_read_input_tokens": 397588,
+  "output_tokens": 1695,
+  "output_tokens_details": {
+   "thinking_tokens": 397
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16204,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 148,
+    "cache_read_input_tokens": 53173,
+    "cache_creation_input_tokens": 296,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 296
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 635,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000705,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 16,
+   "outputTokens": 1695,
+   "cacheReadInputTokens": 397588,
+   "cacheCreationInputTokens": 16204,
+   "webSearchRequests": 0,
+   "costUSD": 0.24197339999999995,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The fix works. Changed `src/attr/_make.py` so `field_transformer`'s return value is materialized with `tuple(...)` instead of used directly \u2014 previously a generator would get exhausted after the first pass over `attrs` (order-checking loop) and appear empty in every subsequent loop (alias resolution, `AttrsClass` creation), silently dropping all fields. Added a changelog fragment at `changelog.d/1417.change.md`.",
+ "ttft_ms": 6779,
+ "ttft_stream_ms": 6776,
+ "time_to_request_ms": 53,
+ "type": "result",
+ "duration_ms": 66245,
+ "uuid": "51adec44-77b4-4ad0-a35f-43e5d76dfecb"
+}

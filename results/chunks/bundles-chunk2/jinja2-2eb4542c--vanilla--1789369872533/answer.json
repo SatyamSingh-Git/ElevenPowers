@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 19458,
+ "num_turns": 7,
+ "stop_reason": "end_turn",
+ "session_id": "8049e503-42aa-44ba-bc56-37d57abbc808",
+ "total_cost_usd": 0.2001637,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 15383,
+  "cache_read_input_tokens": 291999,
+  "output_tokens": 1303,
+  "output_tokens_details": {
+   "thinking_tokens": 207
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15383,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 120,
+    "cache_read_input_tokens": 52232,
+    "cache_creation_input_tokens": 416,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 416
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 585,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006850000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 12,
+   "outputTokens": 1303,
+   "cacheReadInputTokens": 291999,
+   "cacheCreationInputTokens": 15383,
+   "webSearchRequests": 0,
+   "costUSD": 0.1994787,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Made the fix in `src/jinja2/filters.py:1002` \u2014 the `int` filter's float-fallback now also catches `OverflowError`, so values like `\"1e999\"` (which overflow to `inf` and raise `OverflowError` on `int(float(...))`) return the default instead of crashing. Also added a changelog entry in `CHANGES.rst`.",
+ "ttft_ms": 3169,
+ "ttft_stream_ms": 2212,
+ "time_to_request_ms": 184,
+ "type": "result",
+ "duration_ms": 22431,
+ "uuid": "b41fa6a0-4f28-4f2f-a24f-3ba6b26a0b8b"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 90172,
+ "num_turns": 22,
+ "stop_reason": "end_turn",
+ "session_id": "23989829-9554-42df-8e7c-9f31511d98c8",
+ "total_cost_usd": 0.5586976,
+ "usage": {
+  "input_tokens": 36,
+  "cache_creation_input_tokens": 28541,
+  "cache_read_input_tokens": 1023792,
+  "output_tokens": 4856,
+  "output_tokens_details": {
+   "thinking_tokens": 477
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 28541,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 98,
+    "cache_read_input_tokens": 65337,
+    "cache_creation_input_tokens": 469,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 469
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 5916,
+   "outputTokens": 290,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.007366000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 36,
+   "outputTokens": 4856,
+   "cacheReadInputTokens": 1023792,
+   "cacheCreationInputTokens": 28541,
+   "webSearchRequests": 0,
+   "costUSD": 0.5513316,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Matches the upstream commit's diffstat exactly (5 files, +84). Done \u2014 added `custom_version_option` (mirroring `help_option`/`version_option`, taking a callback that builds the full version string) and documented `version_option`'s frozen feature set, per pallets/click PR #3581.",
+ "ttft_ms": 2981,
+ "ttft_stream_ms": 2476,
+ "time_to_request_ms": 46,
+ "type": "result",
+ "duration_ms": 98508,
+ "uuid": "a4065e0d-5754-4e83-bdfe-be877ce3288d"
+}

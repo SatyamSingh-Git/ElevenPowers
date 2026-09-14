@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 168920,
+ "num_turns": 37,
+ "stop_reason": "end_turn",
+ "session_id": "2c9fd395-644d-46b5-bef7-a8af432e3ec4",
+ "total_cost_usd": 1.1823775000000003,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 39670,
+  "cache_read_input_tokens": 2385735,
+  "output_tokens": 10188,
+  "output_tokens_details": {
+   "thinking_tokens": 5398
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 39670,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 374,
+    "cache_read_input_tokens": 76664,
+    "cache_creation_input_tokens": 271,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 271
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 10188,
+   "cacheReadInputTokens": 2385735,
+   "cacheCreationInputTokens": 39670,
+   "webSearchRequests": 0,
+   "costUSD": 1.1067825000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  },
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 53780,
+   "outputTokens": 363,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.075595,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "- `src/attr/_make.py`: `_is_class_var` now unwraps `annot.__forward_arg__` before the string-prefix check, so Python 3.14-style `ForwardRef` annotations (produced when `ClassVar` isn't imported at class-definition time) are recognized as class variables instead of `str(ForwardRef(...))` falling through as `\"ForwardRef('ClassVar[str]')\"`.\n- `tests/test_annotations.py`: added a regression test (`test_missing_classvar_import`, skipped below 3.14) and a `typing.ForwardRef(\"ClassVar[str]\")` case to the `test_is_class_var` parametrization.\n- Added `changelog.d/1593.change.md`.\n\nNote: the untracked `changelog.d/1593.change.md` and `git diff` above only show tracked-file changes \u2014 the new changelog fragment is untracked but present. Full suite passes (1388 passed) when run against the local `src` (a stale `attrs` 26.1.0 was shadowing it from a global site-packages install \u2014 worth noting if you run tests again, use `PYTHONPATH=src`).",
+ "ttft_ms": 4635,
+ "ttft_stream_ms": 3518,
+ "time_to_request_ms": 328,
+ "type": "result",
+ "duration_ms": 218913,
+ "uuid": "8539b5e2-59bb-4207-b84b-0a05822d0089"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 31342,
+ "num_turns": 12,
+ "stop_reason": "end_turn",
+ "session_id": "aa0f435d-44b6-4735-8b25-e9cc9ed1bc7f",
+ "total_cost_usd": 0.3201171,
+ "usage": {
+  "input_tokens": 22,
+  "cache_creation_input_tokens": 18413,
+  "cache_read_input_tokens": 560727,
+  "output_tokens": 2757,
+  "output_tokens_details": {
+   "thinking_tokens": 531
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18413,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 131,
+    "cache_read_input_tokens": 55333,
+    "cache_creation_input_tokens": 345,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 345
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 22,
+   "outputTokens": 2757,
+   "cacheReadInputTokens": 560727,
+   "cacheCreationInputTokens": 18413,
+   "webSearchRequests": 0,
+   "costUSD": 0.3201171,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 877 tests pass. The fix in `src/jinja2/filters.py` now catches `OverflowError` in `do_int`'s fallback path (`int(float(value))`), so scientific-notation strings like `\"1e1000\"` \u2014 which overflow to `inf` and raise `OverflowError` on `int()` \u2014 return the default instead of propagating an unhandled exception. Added a regression test case for it.",
+ "ttft_ms": 2238,
+ "ttft_stream_ms": 1284,
+ "time_to_request_ms": 520,
+ "type": "result",
+ "duration_ms": 48799,
+ "uuid": "3f490c0a-1d40-422d-a391-78dbff27b397"
+}

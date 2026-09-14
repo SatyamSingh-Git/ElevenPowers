@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 131072,
+ "num_turns": 22,
+ "stop_reason": "end_turn",
+ "session_id": "0c3d9fbc-5689-47a4-9992-b716ea65751a",
+ "total_cost_usd": 0.8062115999999998,
+ "usage": {
+  "input_tokens": 44,
+  "cache_creation_input_tokens": 40511,
+  "cache_read_input_tokens": 1442912,
+  "output_tokens": 8676,
+  "output_tokens_details": {
+   "thinking_tokens": 3305
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 40511,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 236,
+    "cache_read_input_tokens": 77428,
+    "cache_creation_input_tokens": 348,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 348
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 44,
+   "outputTokens": 8676,
+   "cacheReadInputTokens": 1442912,
+   "cacheCreationInputTokens": 40511,
+   "webSearchRequests": 0,
+   "costUSD": 0.8062115999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 900 tests pass, including the new `test_indirect_call` regression test.\n\nApplied the upstream fix (GHSA-q2x7-8rv6-6q7h) to `src/jinja2/sandbox.py`: replaced `inspect_format_method`/`format_string` (which only sandboxed `str.format`/`format_map` when called directly through `environment.call`) with `wrap_str_format`, invoked from `getattr`/`getitem` so the sandboxing wrapper is applied at attribute-access time \u2014 closing the bypass where a template stores the bound method and invokes it indirectly (e.g. via a filter). Also updated `CHANGES.rst` and added the `test_indirect_call` regression test.",
+ "ttft_ms": 3818,
+ "ttft_stream_ms": 1963,
+ "time_to_request_ms": 303,
+ "type": "result",
+ "duration_ms": 151392,
+ "uuid": "110f0a2b-74f1-4be4-bcb6-2ddd1f702478"
+}

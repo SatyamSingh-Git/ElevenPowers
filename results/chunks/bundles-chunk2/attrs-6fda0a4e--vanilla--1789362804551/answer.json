@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 210036,
+ "num_turns": 39,
+ "stop_reason": "end_turn",
+ "session_id": "a4241f5c-4956-4abb-b86d-640389646f07",
+ "total_cost_usd": 1.1689954,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 43359,
+  "cache_read_input_tokens": 2276608,
+  "output_tokens": 14994,
+  "output_tokens_details": {
+   "thinking_tokens": 7533
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 43359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 448,
+    "cache_read_input_tokens": 80003,
+    "cache_creation_input_tokens": 621,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 621
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 650,
+   "outputTokens": 19,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000745,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 68,
+   "outputTokens": 14994,
+   "cacheReadInputTokens": 2276608,
+   "cacheCreationInputTokens": 43359,
+   "webSearchRequests": 0,
+   "costUSD": 1.1682504,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1330 tests pass. Summary of the change (matching upstream PR #1328):\n\n- **`src/attr/_make.py`** \u2014 `Converter.__init__` now builds a `self.__call__` adapter closure based on `takes_self`/`takes_field`, so a `Converter` instance can always be invoked uniformly as `converter(value, instance, field)` and it dispatches to the wrapped callable with the right subset of arguments.\n- **`pipe_converter`** (inside `pipe()`) was buggy \u2014 it built a dict keyed by `(takes_self, takes_field)` whose values were the *boolean flags themselves*, so it accidentally passed `True`/`False` as positional arguments instead of the actual `inst`/`field` values. Replaced with `c(val, inst, field) if isinstance(c, Converter) else c(val)`, relying on the new adapter.\n- **`tests/test_make.py`** \u2014 added a parametrized test exercising all four `takes_self`/`takes_field` combinations to verify the adapter passes exactly the right arguments through.\n- **`changelog.d/1328.change.md`** \u2014 added a news fragment.\n\nVerified with the full test suite (1330 passed) run against the local `src` (note: a globally installed `attrs` package shadows it unless `PYTHONPATH=src` is set \u2014 worth knowing if you run tests directly).",
+ "ttft_ms": 2887,
+ "ttft_stream_ms": 2166,
+ "time_to_request_ms": 49,
+ "type": "result",
+ "duration_ms": 384908,
+ "uuid": "9920b6a1-7836-4a96-84ea-829be5a73992"
+}

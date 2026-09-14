@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 175077,
+ "num_turns": 35,
+ "stop_reason": "end_turn",
+ "session_id": "a67419ce-0a47-4030-b969-d4dbd32d00eb",
+ "total_cost_usd": 1.2855240000000001,
+ "usage": {
+  "input_tokens": 44,
+  "cache_creation_input_tokens": 77479,
+  "cache_read_input_tokens": 2063160,
+  "output_tokens": 13438,
+  "output_tokens_details": {
+   "thinking_tokens": 5969
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 77479,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 610,
+    "cache_read_input_tokens": 114273,
+    "cache_creation_input_tokens": 471,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 471
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 44,
+   "outputTokens": 13438,
+   "cacheReadInputTokens": 2063160,
+   "cacheCreationInputTokens": 77479,
+   "webSearchRequests": 0,
+   "costUSD": 1.2855240000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All tests pass, including the new adapter/pipe tests, when running against the local `src/` (the earlier failures were an environment artifact of pytest picking up a globally-installed `attrs` package instead of this repo's source).\n\n## Summary\n\nApplied the upstream fix for python-attrs PR #1328 (\"Make Converter a kind of adapter, fix converters.pipe\"):\n\n- **`src/attr/_make.py`**: `Converter.__init__` now builds a proper `__call__` adapter (`_takes_only_value`/`_takes_instance`/`_takes_field`/`_takes_both`) selected by `(takes_self, takes_field)`, so a `Converter` instance is uniformly callable as `c(value, instance, field)`. Fixed `pipe()`'s `pipe_converter` to actually forward `inst`/`field` to nested `Converter`s instead of the previous bug, which passed the `takes_self`/`takes_field` booleans themselves as arguments.\n- **`src/attr/setters.py`**: `convert()` now special-cases `Converter` instances (importing `Converter` lazily inside the function to avoid a circular import) and calls them with `(new_value, instance, attrib)` instead of just `(new_value)`, fixing `on_setattr=setters.convert` for piped/wrapped converters.\n- **Tests**: ported the upstream additions to `tests/test_converters.py` (adapter behavior, pickling `__call__`) and `tests/test_setattr.py` (pipe passes correct args, regression test for issue #1327).\n- Added `changelog.d/1328.change.md`.\n\nFull suite: 1328 passed, 4 skipped, 1 xfailed (must run with `PYTHONPATH=src`, since a newer `attrs` is installed globally in this environment and otherwise shadows the local source).",
+ "ttft_ms": 3573,
+ "ttft_stream_ms": 2907,
+ "time_to_request_ms": 466,
+ "type": "result",
+ "duration_ms": 228502,
+ "uuid": "77b41535-691d-41d7-80e7-51ff33c925f9"
+}

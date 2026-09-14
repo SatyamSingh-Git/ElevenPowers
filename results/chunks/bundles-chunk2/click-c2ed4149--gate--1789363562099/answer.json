@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 188100,
+ "num_turns": 45,
+ "stop_reason": "end_turn",
+ "session_id": "3d52dcf8-9396-401b-b40f-61a958d827d6",
+ "total_cost_usd": 1.2484457999999998,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 68353,
+  "cache_read_input_tokens": 1785966,
+  "output_tokens": 20160,
+  "output_tokens_details": {
+   "thinking_tokens": 2029
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 68353,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 449,
+    "cache_read_input_tokens": 104925,
+    "cache_creation_input_tokens": 693,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 693
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 20160,
+   "cacheReadInputTokens": 1785966,
+   "cacheCreationInputTokens": 68353,
+   "webSearchRequests": 0,
+   "costUSD": 1.2484457999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. Applied the upstream `pallets/click` PR #3704 (\"Deprecate `isolated_filesystem` and document its limits\", fixing #3700, refs #3501):\n\n- **`src/click/testing.py`**: `isolated_filesystem()` now emits a `DeprecationWarning` and documents why (relies on `os.chdir`, not thread-safe) and what to use instead.\n- **`docs/testing.md`** / **`docs/upgrade-guides.md`**: rewrote the File System Isolation section around `tmp_path`/`tempfile.TemporaryDirectory` + absolute paths, added a \"Running tests in parallel\" section, and noted the deprecation.\n- **`CHANGES.md`**: added the changelog entry.\n- **Tests**: migrated all internal usages off `isolated_filesystem()` to `tmp_path`, added `test_isolated_filesystem_deprecated`, and two new tests (`test_tempdir_replacement_pattern`, `test_tempdir_isolation_is_thread_safe`) demonstrating the replacement pattern.\n\nVerified by running the suite against the local `src` (not the unrelated globally-installed `click` package, which initially caused two misleading, unrelated failures in `test_termui.py`): `1848 passed, 94 skipped, 1 xfailed`, no failures.",
+ "ttft_ms": 4370,
+ "ttft_stream_ms": 3298,
+ "time_to_request_ms": 368,
+ "type": "result",
+ "duration_ms": 228464,
+ "uuid": "63460a95-4ec8-48e8-bb35-84d2d4adda5f"
+}

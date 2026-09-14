@@ -1,0 +1,712 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index f61cf1c..9c4881a 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -43,6 +43,14 @@ Unreleased
+   `DeprecationWarning` until Click 9.0: `LazyFile`, `KeepOpenFile`,
+   `make_default_short_help`, `PacifyFlushWrapper`, and `safecall`.
+   {issue}`3099` {pr}`3695`
++- Deprecate {meth}`CliRunner.isolated_filesystem`. It relies on
++  {func}`os.chdir`, which mutates process-global state and is not
++  thread-safe. The helper predates Python 3 and modern pytest: use a
++  temporary directory ({class}`tempfile.TemporaryDirectory` or pytest's
++  `tmp_path` fixture) with absolute paths instead. For running tests in
++  parallel, use process-based isolation (such as `pytest-xdist`) rather
++  than threads, since {meth}`CliRunner.invoke` also redirects the
++  process-global standard streams. {issue}`3501` {issue}`3700` {pr}`3704`
+ 
+ ## Version 8.4.2
+ 
+diff --git a/docs/testing.md b/docs/testing.md
+index 3c2efe0..f4ee0cb 100644
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -7,8 +7,12 @@
+ Click provides the {ref}`click.testing <testing>` module to help you invoke
+ command line applications and check their behavior.
+ 
+-These tools should only be used for testing since they change
+-the entire interpreter state for simplicity. They are not thread-safe!
++```{warning}
++These tools should only be used for testing since they change the entire
++interpreter state for simplicity. They are not thread-safe: see
++[Running tests in parallel](#running-tests-in-parallel) for the supported
++way to run CLI tests concurrently.
++```
+ 
+ The examples use [pytest](https://docs.pytest.org/en/stable/) style tests.
+ 
+@@ -119,8 +123,11 @@ def test_sync():
+ 
+ ## File System Isolation
+ 
+-The {meth}`CliRunner.isolated_filesystem` context manager sets the current
+-working directory to a new, empty folder.
++To test a command that reads or writes files, give each test its own
++directory and pass absolute paths to the command. Pytest's
++[`tmp_path`](https://docs.pytest.org/en/stable/how-to/tmp_path.html) fixture
++provides a fresh directory per test; {class}`tempfile.TemporaryDirectory`
++works without pytest.
+ 
+ ```{code-block} python
+ :caption: cat.py
+@@ -139,36 +146,47 @@ def cat(f):
+ from click.testing import CliRunner
+ from cat import cat
+ 
+-def test_cat():
+-   runner = CliRunner()
+-   with runner.isolated_filesystem():
+-      with open('hello.txt', 'w') as f:
+-          f.write('Hello World!')
++def test_cat(tmp_path):
++   hello = tmp_path / 'hello.txt'
++   hello.write_text('Hello World!')
+ 
+-      result = runner.invoke(cat, ['hello.txt'])
+-      assert result.exit_code == 0
+-      assert result.output == 'Hello World!\n'
++   runner = CliRunner()
++   result = runner.invoke(cat, [str(hello)])
++   assert result.exit_code == 0
++   assert result.output == 'Hello World!\n'
+ ```
+ 
+-Pass in a path to control where the temporary directory is created.
+-In this case, the directory will not be removed by Click. Its useful
+-to integrate with a framework like Pytest that manages temporary files.
++Because the directory is unique to the test and the command receives an
++absolute path, nothing leaks between tests and the working directory is never
++changed.
+ 
+-```{code-block} python
+-:caption: test_cat.py
++### Running tests in parallel
+ 
+-from click.testing import CliRunner
+-from cat import cat
++Isolating the file system with pytest is thread-safe: each test, or each thread,
++works in its own directory through absolute paths, with no shared state.
+ 
+-def test_cat_with_path_specified():
+-   runner = CliRunner()
+-   with runner.isolated_filesystem('~/test_folder'):
+-      with open('hello.txt', 'w') as f:
+-          f.write('Hello World!')
++{meth}`CliRunner.invoke` is different. While a command runs it swaps several
++pieces of process-global state into place (like `sys.stdout`, `sys.stderr`,
++`sys.stdin`, etc). Two invocations active at the same time in one interpreter
++overwrite each other's state, so the runner cannot be driven from several
++threads at once.
++
++```{warning}
++Do not parallelize CLI tests with threads. Use process-based isolation
++instead, where each worker has its own interpreter and its own copy of those
++globals. [pytest-xdist](https://pytest-xdist.readthedocs.io/) does this with
++`pytest --numprocesses=auto`.
++```
++
++Click's own test suite uses exactly this setup: the `tests-random` dependency
++group and the `random` tox environment in
++[`pyproject.toml`](https://github.com/pallets/click/blob/main/pyproject.toml)
++run the suite under `pytest-randomly` and `pytest-xdist` to surface ordering
++bugs and races.
+ 
+-      result = runner.invoke(cat, ['hello.txt'])
+-      assert result.exit_code == 0
+-      assert result.output == 'Hello World!\n'
++```{deprecated} 8.5.0
++{meth}`CliRunner.isolated_filesystem` is deprecated and will be removed in
++Click 9.0. Use a temporary directory with absolute paths, as shown above.
+ ```
+ 
+ ## Input Streams
+diff --git a/docs/upgrade-guides.md b/docs/upgrade-guides.md
+index 01da3f9..9111287 100644
+--- a/docs/upgrade-guides.md
++++ b/docs/upgrade-guides.md
+@@ -13,7 +13,7 @@ This guide assumes the user is on version 8.3.X.
+ ### Deprecations
+ 
+ For each deprecation, provide a brief explanation, and direct users to new function / class if available.
+-- TBD
++- `CliRunner.isolated_filesystem()` is deprecated and will be removed in Click 9.0. The helper predates Python 3 and modern pytest, and it relies on `os.chdir`, which mutates process-global state and is therefore not thread-safe. Replace it with a temporary directory (`tempfile.TemporaryDirectory`, or pytest's `tmp_path` fixture) and pass absolute paths to the command instead of relying on the current working directory. To run commands in parallel, use process-based isolation (such as `pytest-xdist`) rather than threads, since `CliRunner.invoke()` also redirects the process-global standard streams and other interpreter-wide state. See [#3700](https://github.com/pallets/click/issues/3700), [#3501](https://github.com/pallets/click/issues/3501) and the [testing guide](testing.md#running-tests-in-parallel).
+ 
+ ### Removals with prior deprecation
+ 
+diff --git a/src/click/testing.py b/src/click/testing.py
+index 19fae4a..cc123d4 100644
+--- a/src/click/testing.py
++++ b/src/click/testing.py
+@@ -747,13 +747,39 @@ class CliRunner:
+         that affect the contents of the CWD to prevent them from
+         interfering with each other.
+ 
++        .. warning::
++            This helper predates Python 3 and modern pytest, and is not
++            thread-safe: it relies on :func:`os.chdir`, which mutates
++            process-global state, and :meth:`invoke` swaps the
++            process-global standard streams too. Parallelize tests with
++            processes (``pytest-xdist``), not threads. Locking the
++            runner (:pr:`3511`, :pr:`3520`, :pr:`3530`) and a
++            ``set_filesystem()`` API (:issue:`3123`) were declined:
++            neither removes the global-state mutation. See :issue:`3700`
++            and :issue:`3501`.
++
+         :param temp_dir: Create the temporary directory under this
+             directory. If given, the created directory is not removed
+             when exiting.
+ 
++        .. deprecated:: 8.5.0
++            Will be removed in Click 9.0. Use
++            :class:`tempfile.TemporaryDirectory` or pytest's
++            ``tmp_path`` fixture with absolute paths instead.
++
+         .. versionchanged:: 8.0
+             Added the ``temp_dir`` parameter.
+         """
++        import warnings
++
++        warnings.warn(
++            "'isolated_filesystem' is deprecated and will be removed in Click"
++            " 9.0. Use 'tempfile.TemporaryDirectory' or pytest's 'tmp_path'"
++            " fixture with absolute paths instead.",
++            DeprecationWarning,
++            stacklevel=3,
++        )
++
+         cwd = os.getcwd()
+         dt = tempfile.mkdtemp(dir=temp_dir)
+         os.chdir(dt)
+diff --git a/tests/test_arguments.py b/tests/test_arguments.py
+index f4b4523..fea48cc 100644
+--- a/tests/test_arguments.py
++++ b/tests/test_arguments.py
+@@ -102,7 +102,7 @@ def test_bytes_args(runner, monkeypatch):
+     )
+ 
+ 
+-def test_file_args(runner):
++def test_file_args(runner, tmp_path):
+     @click.command()
+     @click.argument("input", type=click.File("rb"))
+     @click.argument("output", type=click.File("wb"))
+@@ -113,16 +113,15 @@ def test_file_args(runner):
+                 break
+             output.write(chunk)
+ 
+-    with runner.isolated_filesystem():
+-        result = runner.invoke(inout, ["-", "hello.txt"], input="Hey!")
+-        assert result.output == ""
+-        assert result.exit_code == 0
+-        with open("hello.txt", "rb") as f:
+-            assert f.read() == b"Hey!"
++    hello = tmp_path / "hello.txt"
++    result = runner.invoke(inout, ["-", str(hello)], input="Hey!")
++    assert result.output == ""
++    assert result.exit_code == 0
++    assert hello.read_bytes() == b"Hey!"
+ 
+-        result = runner.invoke(inout, ["hello.txt", "-"])
+-        assert result.output == "Hey!"
+-        assert result.exit_code == 0
++    result = runner.invoke(inout, [str(hello), "-"])
++    assert result.output == "Hey!"
++    assert result.exit_code == 0
+ 
+ 
+ def test_path_allow_dash(runner):
+@@ -136,7 +135,7 @@ def test_path_allow_dash(runner):
+     assert result.exit_code == 0
+ 
+ 
+-def test_file_atomics(runner):
++def test_file_atomics(runner, tmp_path):
+     @click.command()
+     @click.argument("output", type=click.File("wb", atomic=True))
+     def inout(output):
+@@ -146,14 +145,12 @@ def test_file_atomics(runner):
+             old_content = f.read()
+             assert old_content == b"OLD\n"
+ 
+-    with runner.isolated_filesystem():
+-        with open("foo.txt", "wb") as f:
+-            f.write(b"OLD\n")
+-        result = runner.invoke(inout, ["foo.txt"], input="Hey!", catch_exceptions=False)
+-        assert result.output == ""
+-        assert result.exit_code == 0
+-        with open("foo.txt", "rb") as f:
+-            assert f.read() == b"Foo bar baz\n"
++    foo = tmp_path / "foo.txt"
++    foo.write_bytes(b"OLD\n")
++    result = runner.invoke(inout, [str(foo)], input="Hey!", catch_exceptions=False)
++    assert result.output == ""
++    assert result.exit_code == 0
++    assert foo.read_bytes() == b"Foo bar baz\n"
+ 
+ 
+ def test_stdout_default(runner):
+diff --git a/tests/test_basic.py b/tests/test_basic.py
+index 1c9c0c1..3ab9654 100644
+--- a/tests/test_basic.py
++++ b/tests/test_basic.py
+@@ -415,7 +415,7 @@ def test_flag_value_dual_options(runner, default, args, expected):
+     assert result.output == repr(expected)
+ 
+ 
+-def test_file_option(runner):
++def test_file_option(runner, tmp_path):
+     @click.command()
+     @click.option("--file", type=click.File("w"))
+     def input(file):
+@@ -426,9 +426,9 @@ def test_file_option(runner):
+     def output(file):
+         click.echo(file.read())
+ 
+-    with runner.isolated_filesystem():
+-        result_in = runner.invoke(input, ["--file=example.txt"])
+-        result_out = runner.invoke(output, ["--file=example.txt"])
++    example = tmp_path / "example.txt"
++    result_in = runner.invoke(input, [f"--file={example}"])
++    result_out = runner.invoke(output, [f"--file={example}"])
+ 
+     assert not result_in.exception
+     assert result_in.output == ""
+@@ -436,7 +436,7 @@ def test_file_option(runner):
+     assert result_out.output == "Hello World!\n\n"
+ 
+ 
+-def test_file_lazy_mode(runner):
++def test_file_lazy_mode(runner, tmp_path):
+     do_io = False
+ 
+     @click.command()
+@@ -450,50 +450,50 @@ def test_file_lazy_mode(runner):
+     def output(file):
+         pass
+ 
+-    with runner.isolated_filesystem():
+-        os.mkdir("example.txt")
++    example = tmp_path / "example.txt"
++    example.mkdir()
+ 
+-        do_io = True
+-        result_in = runner.invoke(input, ["--file=example.txt"])
+-        assert result_in.exit_code == 1
++    do_io = True
++    result_in = runner.invoke(input, [f"--file={example}"])
++    assert result_in.exit_code == 1
+ 
+-        do_io = False
+-        result_in = runner.invoke(input, ["--file=example.txt"])
+-        assert result_in.exit_code == 0
++    do_io = False
++    result_in = runner.invoke(input, [f"--file={example}"])
++    assert result_in.exit_code == 0
+ 
+-        result_out = runner.invoke(output, ["--file=example.txt"])
+-        assert result_out.exception
++    result_out = runner.invoke(output, [f"--file={example}"])
++    assert result_out.exception
+ 
+     @click.command()
+     @click.option("--file", type=click.File("w", lazy=False))
+     def input_non_lazy(file):
+         file.write("Hello World!\n")
+ 
+-    with runner.isolated_filesystem():
+-        os.mkdir("example.txt")
+-        result_in = runner.invoke(input_non_lazy, ["--file=example.txt"])
+-        assert result_in.exit_code == 2
+-        assert "Invalid value for '--file': 'example.txt'" in result_in.output
++    non_lazy = tmp_path / "non_lazy.txt"
++    non_lazy.mkdir()
++    result_in = runner.invoke(input_non_lazy, [f"--file={non_lazy}"])
++    assert result_in.exit_code == 2
++    assert f"Invalid value for '--file': '{non_lazy}'" in result_in.output
+ 
+ 
+-def test_path_option(runner):
++def test_path_option(runner, tmp_path):
+     @click.command()
+     @click.option("-O", type=click.Path(file_okay=False, exists=True, writable=True))
+     def write_to_dir(o):
+         with open(os.path.join(o, "foo.txt"), "wb") as f:
+             f.write(b"meh\n")
+ 
+-    with runner.isolated_filesystem():
+-        os.mkdir("test")
++    test_dir = tmp_path / "test"
++    test_dir.mkdir()
+ 
+-        result = runner.invoke(write_to_dir, ["-O", "test"])
+-        assert not result.exception
++    result = runner.invoke(write_to_dir, ["-O", str(test_dir)])
++    assert not result.exception
+ 
+-        with open("test/foo.txt", "rb") as f:
+-            assert f.read() == b"meh\n"
++    with open(test_dir / "foo.txt", "rb") as f:
++        assert f.read() == b"meh\n"
+ 
+-        result = runner.invoke(write_to_dir, ["-O", "test/foo.txt"])
+-        assert "is a file" in result.output
++    result = runner.invoke(write_to_dir, ["-O", str(test_dir / "foo.txt")])
++    assert "is a file" in result.output
+ 
+     @click.command()
+     @click.option("-f", type=click.Path(exists=True))
+@@ -501,25 +501,23 @@ def test_path_option(runner):
+         click.echo(f"is_file={os.path.isfile(f)}")
+         click.echo(f"is_dir={os.path.isdir(f)}")
+ 
+-    with runner.isolated_filesystem():
+-        result = runner.invoke(showtype, ["-f", "xxx"])
+-        assert "does not exist" in result.output
++    result = runner.invoke(showtype, ["-f", str(tmp_path / "xxx")])
++    assert "does not exist" in result.output
+ 
+-        result = runner.invoke(showtype, ["-f", "."])
+-        assert "is_file=False" in result.output
+-        assert "is_dir=True" in result.output
++    result = runner.invoke(showtype, ["-f", str(tmp_path)])
++    assert "is_file=False" in result.output
++    assert "is_dir=True" in result.output
+ 
+     @click.command()
+     @click.option("-f", type=click.Path())
+     def exists(f):
+         click.echo(f"exists={os.path.exists(f)}")
+ 
+-    with runner.isolated_filesystem():
+-        result = runner.invoke(exists, ["-f", "xxx"])
+-        assert "exists=False" in result.output
++    result = runner.invoke(exists, ["-f", str(tmp_path / "xxx")])
++    assert "exists=False" in result.output
+ 
+-        result = runner.invoke(exists, ["-f", "."])
+-        assert "exists=True" in result.output
++    result = runner.invoke(exists, ["-f", str(tmp_path)])
++    assert "exists=True" in result.output
+ 
+ 
+ def test_choice_option(runner):
+diff --git a/tests/test_deprecations.py b/tests/test_deprecations.py
+index 9985faa..0034498 100644
+--- a/tests/test_deprecations.py
++++ b/tests/test_deprecations.py
+@@ -23,3 +23,9 @@ def test_stream_helper_deprecated(module, name):
+ def test_utilities_deprecated(name):
+     with pytest.warns(DeprecationWarning, match=name):
+         getattr(click.utils, name)
++
++
++def test_isolated_filesystem_deprecated(runner):
++    with pytest.warns(DeprecationWarning, match="isolated_filesystem"):
++        with runner.isolated_filesystem():
++            pass
+diff --git a/tests/test_shell_completion.py b/tests/test_shell_completion.py
+index a06a1cd..10d5cfa 100644
+--- a/tests/test_shell_completion.py
++++ b/tests/test_shell_completion.py
+@@ -574,27 +574,26 @@ def test_add_completion_class_decorator():
+ 
+ 
+ # Don't make the ResourceWarning give an error
+-@pytest.mark.filterwarnings("default")
+-def test_files_closed(runner) -> None:
+-    with runner.isolated_filesystem():
+-        config_file = "foo.txt"
+-        with open(config_file, "w") as f:
+-            f.write("bar")
+-
+-        @click.group()
+-        @click.option(
+-            "--config-file",
+-            default=config_file,
+-            type=click.File(mode="r"),
+-        )
+-        @click.pass_context
+-        def cli(ctx, config_file):
+-            pass
+-
+-        with warnings.catch_warnings(record=True) as current_warnings:
+-            assert not current_warnings, "There should be no warnings to start"
+-            _get_completions(cli, args=[], incomplete="")
+-            assert not current_warnings, "There should be no warnings after either"
++@pytest.mark.filterwarnings("default::ResourceWarning")
++def test_files_closed(tmp_path) -> None:
++    config_file = str(tmp_path / "foo.txt")
++    with open(config_file, "w") as f:
++        f.write("bar")
++
++    @click.group()
++    @click.option(
++        "--config-file",
++        default=config_file,
++        type=click.File(mode="r"),
++    )
++    @click.pass_context
++    def cli(ctx, config_file):
++        pass
++
++    with warnings.catch_warnings(record=True) as current_warnings:
++        assert not current_warnings, "There should be no warnings to start"
++        _get_completions(cli, args=[], incomplete="")
++        assert not current_warnings, "There should be no warnings after either"
+ 
+ 
+ def test_fish_format_completion_escapes_help():
+diff --git a/tests/test_testing.py b/tests/test_testing.py
+index eb30d88..870d95c 100644
+--- a/tests/test_testing.py
++++ b/tests/test_testing.py
+@@ -440,6 +440,7 @@ def test_file_stdin_attrs(runner):
+     assert result.output == "<stdin>\nr"
+ 
+ 
++@pytest.mark.filterwarnings("ignore:'isolated_filesystem':DeprecationWarning")
+ def test_isolated_runner(runner):
+     with runner.isolated_filesystem() as d:
+         assert os.path.exists(d)
+@@ -447,6 +448,7 @@ def test_isolated_runner(runner):
+     assert not os.path.exists(d)
+ 
+ 
++@pytest.mark.filterwarnings("ignore:'isolated_filesystem':DeprecationWarning")
+ def test_isolated_runner_custom_tempdir(runner, tmp_path):
+     with runner.isolated_filesystem(temp_dir=tmp_path) as d:
+         assert os.path.exists(d)
+@@ -455,6 +457,83 @@ def test_isolated_runner_custom_tempdir(runner, tmp_path):
+     os.rmdir(d)
+ 
+ 
++def test_tempdir_replacement_pattern(runner, tmp_path):
++    """The replacement for ``isolated_filesystem()``: a temp dir and absolute paths.
++
++    Rather than changing the working directory, create a directory (here with
++    pytest's ``tmp_path``; ``tempfile.TemporaryDirectory`` works the same) and
++    pass absolute paths to the command.
++    """
++
++    @click.command()
++    @click.argument("path", type=click.Path())
++    def write_marker(path):
++        with open(path, "w") as f:
++            f.write("written")
++
++    target = tmp_path / "marker.txt"
++    result = runner.invoke(write_marker, [str(target)])
++
++    assert result.exit_code == 0
++    assert target.read_text() == "written"
++
++
++def test_tempdir_isolation_is_thread_safe():
++    """The recommended replacement is thread-safe, unlike ``isolated_filesystem()``.
++
++    Each thread owns a ``tempfile.TemporaryDirectory`` and works through
++    absolute paths, so there is no ``os.chdir`` and no process-global CWD race
++    (the reason ``isolated_filesystem()`` is not thread-safe, issue #3501).
++
++    ``invoke()`` is deliberately not called concurrently here: it redirects the
++    process-global standard streams, so parallel invocations in one process
++    corrupt each other regardless of the filesystem. To run commands in
++    parallel, use separate processes (like pytest-xdist), not threads.
++    """
++    import tempfile
++    import threading
++
++    workers = 8
++    cwd_before = os.path.realpath(os.getcwd())
++    results: list[tuple[str, str, str]] = []
++    barrier = threading.Barrier(workers)
++    lock = threading.Lock()
++
++    def worker(index):
++        with tempfile.TemporaryDirectory() as d:
++            target = os.path.join(d, "data.txt")
++            # Release every thread at once to maximize contention.
++            barrier.wait(timeout=10)
++            with open(target, "w") as f:
++                f.write(f"payload-{index}")
++            with open(target) as f:
++                content = f.read()
++            with lock:
++                results.append(
++                    (
++                        os.path.realpath(d),
++                        os.path.realpath(os.getcwd()),
++                        content,
++                    )
++                )
++
++    threads = [threading.Thread(target=worker, args=(i,)) for i in range(workers)]
++    for t in threads:
++        t.start()
++    for t in threads:
++        t.join(timeout=10)
++
++    assert len(results) == workers
++    # Every thread had its own distinct directory.
++    assert len({d for d, _, _ in results}) == workers
++    # No thread mutated the process-global working directory.
++    assert {cwd for _, cwd, _ in results} == {cwd_before}
++    # Each thread read back exactly the payload it wrote, with no cross-talk.
++    assert sorted(content for _, _, content in results) == sorted(
++        f"payload-{i}" for i in range(workers)
++    )
++
++
+ def test_isolation_stderr_errors():
+     """Writing to stderr should escape invalid characters instead of
+     raising a UnicodeEncodeError.
+diff --git a/tests/test_utils/test_open_file.py b/tests/test_utils/test_open_file.py
+index 0c61a82..3f500f4 100644
+--- a/tests/test_utils/test_open_file.py
++++ b/tests/test_utils/test_open_file.py
+@@ -8,7 +8,7 @@ import click
+ from click._compat import WIN
+ 
+ 
+-def test_open_file(runner):
++def test_open_file(runner, tmp_path):
+     @click.command()
+     @click.argument("filename")
+     def cli(filename):
+@@ -17,17 +17,16 @@ def test_open_file(runner):
+ 
+         click.echo("meep")
+ 
+-    with runner.isolated_filesystem():
+-        with open("hello.txt", "w") as f:
+-            f.write("Cool stuff")
++    hello = tmp_path / "hello.txt"
++    hello.write_text("Cool stuff")
+ 
+-        result = runner.invoke(cli, ["hello.txt"])
+-        assert result.exception is None
+-        assert result.output == "Cool stuff\nmeep\n"
++    result = runner.invoke(cli, [str(hello)])
++    assert result.exception is None
++    assert result.output == "Cool stuff\nmeep\n"
+ 
+-        result = runner.invoke(cli, ["-"], input="foobar")
+-        assert result.exception is None
+-        assert result.output == "foobar\nmeep\n"
++    result = runner.invoke(cli, ["-"], input="foobar")
++    assert result.exception is None
++    assert result.output == "foobar\nmeep\n"
+ 
+ 
+ def test_open_file_pathlib_dash(runner):
+@@ -57,66 +56,62 @@ def test_open_file_ignore_errors_stdin(runner):
+     assert result.exception is None
+ 
+ 
+-def test_open_file_respects_ignore(runner):
+-    with runner.isolated_filesystem():
+-        with open("test.txt", "w") as f:
+-            f.write("Hello world!")
++def test_open_file_respects_ignore(tmp_path):
++    path = tmp_path / "test.txt"
++    path.write_text("Hello world!")
+ 
+-        with click.open_file("test.txt", encoding="utf8", errors="ignore") as f:
+-            assert f.errors == "ignore"
++    with click.open_file(str(path), encoding="utf8", errors="ignore") as f:
++        assert f.errors == "ignore"
+ 
+ 
+-def test_open_file_ignore_invalid_utf8(runner):
+-    with runner.isolated_filesystem():
+-        with open("test.txt", "wb") as f:
+-            f.write(b"\xe2\x28\xa1")
++def test_open_file_ignore_invalid_utf8(tmp_path):
++    path = tmp_path / "test.txt"
++    path.write_bytes(b"\xe2\x28\xa1")
+ 
+-        with click.open_file("test.txt", encoding="utf8", errors="ignore") as f:
+-            f.read()
++    with click.open_file(str(path), encoding="utf8", errors="ignore") as f:
++        f.read()
+ 
+ 
+-def test_open_file_ignore_no_encoding(runner):
+-    with runner.isolated_filesystem():
+-        with open("test.bin", "wb") as f:
+-            f.write(os.urandom(16))
++def test_open_file_ignore_no_encoding(tmp_path):
++    path = tmp_path / "test.bin"
++    path.write_bytes(os.urandom(16))
+ 
+-        with click.open_file("test.bin", errors="ignore") as f:
+-            f.read()
++    with click.open_file(str(path), errors="ignore") as f:
++        f.read()
+ 
+ 
+ @pytest.mark.skipif(WIN, reason="os.chmod() is not fully supported on Windows.")
+ @pytest.mark.parametrize("permissions", [0o400, 0o444, 0o600, 0o644])
+-def test_open_file_atomic_permissions_existing_file(runner, permissions):
+-    with runner.isolated_filesystem():
+-        with open("existing.txt", "w") as f:
+-            f.write("content")
+-        os.chmod("existing.txt", permissions)
+-
+-        @click.command()
+-        @click.argument("filename")
+-        def cli(filename):
+-            click.open_file(filename, "w", atomic=True).close()
+-
+-        result = runner.invoke(cli, ["existing.txt"])
+-        assert result.exception is None
+-        assert stat.S_IMODE(os.stat("existing.txt").st_mode) == permissions
++def test_open_file_atomic_permissions_existing_file(runner, tmp_path, permissions):
++    existing = tmp_path / "existing.txt"
++    existing.write_text("content")
++    os.chmod(existing, permissions)
+ 
++    @click.command()
++    @click.argument("filename")
++    def cli(filename):
++        click.open_file(filename, "w", atomic=True).close()
++
++    result = runner.invoke(cli, [str(existing)])
++    assert result.exception is None
++    assert stat.S_IMODE(os.stat(existing).st_mode) == permissions
+ 
+-@pytest.mark.skipif(WIN, reason="os.stat() is not fully supported on Windows.")
+-def test_open_file_atomic_permissions_new_file(runner):
+-    with runner.isolated_filesystem():
+ 
+-        @click.command()
+-        @click.argument("filename")
+-        def cli(filename):
+-            click.open_file(filename, "w", atomic=True).close()
++@pytest.mark.skipif(WIN, reason="os.stat() is not fully supported on Windows.")
++def test_open_file_atomic_permissions_new_file(runner, tmp_path):
++    @click.command()
++    @click.argument("filename")
++    def cli(filename):
++        click.open_file(filename, "w", atomic=True).close()
+ 
+-        # Create a test file to get the expected permissions for new files
+-        # according to the current umask.
+-        with open("test.txt", "w"):
+-            pass
+-        permissions = stat.S_IMODE(os.stat("test.txt").st_mode)
++    # Create a test file to get the expected permissions for new files
++    # according to the current umask.
++    probe = tmp_path / "test.txt"
++    with open(probe, "w"):
++        pass
++    permissions = stat.S_IMODE(os.stat(probe).st_mode)
+ 
+-        result = runner.invoke(cli, ["new.txt"])
+-        assert result.exception is None
+-        assert stat.S_IMODE(os.stat("new.txt").st_mode) == permissions
++    new = tmp_path / "new.txt"
++    result = runner.invoke(cli, [str(new)])
++    assert result.exception is None
++    assert stat.S_IMODE(os.stat(new).st_mode) == permissions

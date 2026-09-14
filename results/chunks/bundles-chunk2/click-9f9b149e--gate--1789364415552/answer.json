@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 83486,
+ "num_turns": 27,
+ "stop_reason": "end_turn",
+ "session_id": "e0cb45eb-849a-4c72-a5e1-244b1db3177f",
+ "total_cost_usd": 0.5852193,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 32678,
+  "cache_read_input_tokens": 972981,
+  "output_tokens": 6033,
+  "output_tokens_details": {
+   "thinking_tokens": 691
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32678,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 405,
+    "cache_read_input_tokens": 69043,
+    "cache_creation_input_tokens": 900,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 900
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 6033,
+   "cacheReadInputTokens": 972981,
+   "cacheCreationInputTokens": 32678,
+   "webSearchRequests": 0,
+   "costUSD": 0.5785593,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  },
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 5305,
+   "outputTokens": 271,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.006659999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: the same 36 failures exist pre-change (unrelated environment issues), and my changes add exactly 3 new passing tests (1576\u21921579 passed) with zero regressions.\n\n## Summary\n\nApplied the upstream commit adding `@custom_version_option` and freezing `@version_option`, matching [pallets/click#3581](https://github.com/pallets/click/discussions/3527) exactly:\n\n- **`src/click/decorators.py`**: added a `.. note::` to `version_option`'s docstring declaring its parameters frozen, and added the new `custom_version_option(callback, *param_decls, **kwargs)` decorator, whose callback receives the `Context` and returns the full string to print.\n- **`src/click/__init__.py`**: exported `custom_version_option`.\n- **`docs/api.md`**: added the `autofunction` entry.\n- **`CHANGES.md`**: added the changelog entry under 8.5.0.\n- **`tests/test_basic.py`**: added `test_custom_version_option` and `test_custom_version_option_receives_context`.\n\nTest suite: 1579 passed (up from 1576), same 36 pre-existing unrelated failures verified present on the unmodified tree too.",
+ "ttft_ms": 2153,
+ "ttft_stream_ms": 1585,
+ "time_to_request_ms": 355,
+ "type": "result",
+ "duration_ms": 121770,
+ "uuid": "af733f63-c0a6-48d1-8d28-ffa4392816c1"
+}

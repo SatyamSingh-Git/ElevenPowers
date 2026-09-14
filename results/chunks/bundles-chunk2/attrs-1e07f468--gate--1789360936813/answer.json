@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 331049,
+ "num_turns": 64,
+ "stop_reason": "end_turn",
+ "session_id": "60447023-3aa9-400b-9599-2529f2421628",
+ "total_cost_usd": 2.1382614,
+ "usage": {
+  "input_tokens": 122,
+  "cache_creation_input_tokens": 65492,
+  "cache_read_input_tokens": 4642378,
+  "output_tokens": 23482,
+  "output_tokens_details": {
+   "thinking_tokens": 9283
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 65492,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 127,
+    "cache_read_input_tokens": 101679,
+    "cache_creation_input_tokens": 1078,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1078
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 122,
+   "outputTokens": 23482,
+   "cacheReadInputTokens": 4642378,
+   "cacheCreationInputTokens": 65492,
+   "webSearchRequests": 0,
+   "costUSD": 2.1382614,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Type checking is clean: `mypy` reports **Success: no issues found** on both the project's typed stub files (`src/attr/converters.pyi` and the other `.pyi` files checked in this repo's own tox config) and `tests/typing_example.py`. Combined with the full passing test suite (1335 passed, 4 skipped, 1 xfailed), both obligations are discharged.",
+ "ttft_ms": 2950,
+ "ttft_stream_ms": 2284,
+ "time_to_request_ms": 340,
+ "type": "result",
+ "duration_ms": 467182,
+ "uuid": "8698f9fc-1695-4380-bc08-33fd9fd3528f"
+}

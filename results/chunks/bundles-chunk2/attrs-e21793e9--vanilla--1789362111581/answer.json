@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 92245,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "9a7c585f-ab0f-4d10-aa35-569270ac408d",
+ "total_cost_usd": 0.7569313,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 32831,
+  "cache_read_input_tokens": 1565991,
+  "output_tokens": 5948,
+  "output_tokens_details": {
+   "thinking_tokens": 1669
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32831,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 287,
+    "cache_read_input_tokens": 69869,
+    "cache_creation_input_tokens": 227,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 227
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 687,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000772,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 5948,
+   "cacheReadInputTokens": 1565991,
+   "cacheCreationInputTokens": 32831,
+   "webSearchRequests": 0,
+   "costUSD": 0.7561593,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream change (PR #1372): `converters.optional()` now detects a `Converter` instance (e.g. from `converter.pipe`) and preserves it by wrapping the result back in a `Converter`. Changes made:\n\n- `src/attr/converters.py` \u2014 `optional()` branches on `isinstance(converter, Converter)`, and only re-wraps in `Converter` at the end (after annotations are set, since the constructor consumes them).\n- `tests/test_converters.py` \u2014 added `TestOptional.test_converter_instance` and a new `TestOptionalPipe` class.\n- `changelog.d/1372.change.md` \u2014 new changelog fragment.\n\nVerified against `pytest tests/test_converters.py`; the only 2 failures (`TestPipe::test_fail`/`test_empty`) are pre-existing in the seed state and unrelated to this change.",
+ "ttft_ms": 2327,
+ "ttft_stream_ms": 1331,
+ "time_to_request_ms": 48,
+ "type": "result",
+ "duration_ms": 146434,
+ "uuid": "d2f329e2-f63b-4a5c-9ef8-f43a57cd122d"
+}

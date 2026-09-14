@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 45950,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "9ffcf5d8-b635-4e44-ae07-279e5f05c3f6",
+ "total_cost_usd": 0.41084100000000007,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 22303,
+  "cache_read_input_tokens": 738230,
+  "output_tokens": 3698,
+  "output_tokens_details": {
+   "thinking_tokens": 906
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22303,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 339,
+    "cache_read_input_tokens": 58385,
+    "cache_creation_input_tokens": 1183,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1183
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 3698,
+   "cacheReadInputTokens": 738230,
+   "cacheCreationInputTokens": 22303,
+   "webSearchRequests": 0,
+   "costUSD": 0.41084100000000007,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: all 12 failures are pre-existing on the unmodified baseline (unrelated environment/version issues), identical before and after my change. My change adds one new passing test (1330 vs 1329 passed) with zero new failures.\n\nSummary of the fix:\n\n**`src/attr/_make.py`** \u2014 `field_transformer(cls, attrs)` result is now wrapped in `list(...)`. Previously the result was assigned directly to `attrs`, but that value gets iterated multiple times afterward (mandatory-attribute-order check, alias resolution, `attr_names` list comprehension). If a user's `field_transformer` returned a generator instead of a list \u2014 which worked before #1401 introduced the extra iterations \u2014 only the first pass would see any items, silently dropping fields on subsequent passes.\n\n**`tests/test_hooks.py`** \u2014 added `test_field_transformer_returns_generator`, a regression test using `field_transformer=lambda c, a: iter(a)` to ensure a generator-based transformer still produces correct fields.",
+ "ttft_ms": 2443,
+ "ttft_stream_ms": 1599,
+ "time_to_request_ms": 364,
+ "type": "result",
+ "duration_ms": 113152,
+ "uuid": "1bd87b47-b9f5-412b-8164-8c5eca6d4d2b"
+}

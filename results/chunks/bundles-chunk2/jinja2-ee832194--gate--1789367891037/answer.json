@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 282739,
+ "num_turns": 52,
+ "stop_reason": "end_turn",
+ "session_id": "ca11b623-ad39-4942-86ba-b93d7d2f3d2a",
+ "total_cost_usd": 1.9712499,
+ "usage": {
+  "input_tokens": 104,
+  "cache_creation_input_tokens": 63607,
+  "cache_read_input_tokens": 4094553,
+  "output_tokens": 24062,
+  "output_tokens_details": {
+   "thinking_tokens": 10957
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 63607,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 695,
+    "cache_read_input_tokens": 100496,
+    "cache_creation_input_tokens": 376,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 376
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 104,
+   "outputTokens": 24062,
+   "cacheReadInputTokens": 4094553,
+   "cacheCreationInputTokens": 63607,
+   "webSearchRequests": 0,
+   "costUSD": 1.9712499,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 908 tests pass, including the two new tests covering namespace tuple assignment.\n\n## Summary\n\nImplemented the fix as described in the commit message, in `src/jinja2/parser.py` and `src/jinja2/compiler.py`:\n\n**Parser (`parser.py`)**\n- `parse_primary` gained a `with_namespace` parameter: when set and a `name` token is followed by a `dot`, it parses an `NSRef` instead of treating the dot as a regular attribute access \u2014 but only when explicitly asked for, so ordinary expression parsing is unaffected.\n- `parse_tuple`'s `simplified` mode now forwards `with_namespace` into `parse_primary`, so tuple items can be namespace targets.\n- `parse_assign_target` no longer special-cases the single-namespace-target lookahead separately from tuple parsing; it now always routes through `parse_tuple`/`parse_primary` with `with_namespace` passed along, so `{% set ns.a, b = 1, 2 %}` parses correctly instead of failing on the bypassed tuple path.\n\n**Compiler (`compiler.py`)**\n- `visit_NSRef` no longer emits its `isinstance(..., Namespace)` runtime check inline (which broke when an `NSRef` occurred mid-tuple, since an `if`/`raise` statement can't sit inside a tuple expression). It now just writes the subscript.\n- New `visit_assign_target` collects all `NSRef` nodes in the assignment target (including the target itself, plus any nested inside a `Tuple`), deduplicates by namespace name, and emits one `isinstance` check per unique namespace before the assignment statement \u2014 matching \"checks moved earlier, deduplicated\" in the commit message. `visit_Assign` and `visit_AssignBlock` were updated to call it.\n\nAlso added `CHANGES.rst` entry and two regression tests in `tests/test_core_tags.py` covering tuple assignment with a namespace target (including a repeated namespace) and the still-correct runtime error for a non-namespace object. Full suite: 908 passed.",
+ "ttft_ms": 2982,
+ "ttft_stream_ms": 1838,
+ "time_to_request_ms": 345,
+ "type": "result",
+ "duration_ms": 341738,
+ "uuid": "a08d16e8-3d47-4126-a9b3-6511ee05283f"
+}

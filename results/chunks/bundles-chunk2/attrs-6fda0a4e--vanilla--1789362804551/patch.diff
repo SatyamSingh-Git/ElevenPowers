@@ -1,0 +1,103 @@
+diff --git a/changelog.d/1328.change.md b/changelog.d/1328.change.md
+new file mode 100644
+index 0000000..ea44ec5
+--- /dev/null
++++ b/changelog.d/1328.change.md
+@@ -0,0 +1 @@
++`attrs.Converter`'s wrapped converters are now called with the correct arguments when composed using `attrs.converters.pipe()`.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index e251e0c..1d58939 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2705,9 +2705,27 @@ class Converter:
+         self.takes_self = takes_self
+         self.takes_field = takes_field
+ 
+-        self._first_param_type = _AnnotationExtractor(
+-            converter
+-        ).get_first_param_type()
++        ex = _AnnotationExtractor(converter)
++        self._first_param_type = ex.get_first_param_type()
++
++        if not (self.takes_self or self.takes_field):
++            self.__call__ = lambda value, _, __: self.converter(value)
++        elif self.takes_self and not self.takes_field:
++            self.__call__ = lambda value, instance, __: self.converter(
++                value, instance
++            )
++        elif not self.takes_self and self.takes_field:
++            self.__call__ = lambda value, __, field: self.converter(
++                value, field
++            )
++        else:
++            self.__call__ = lambda value, instance, field: self.converter(
++                value, instance, field
++            )
++
++        rt = ex.get_return_type()
++        if rt is not None:
++            self.__call__.__annotations__["return"] = rt
+ 
+     @staticmethod
+     def _get_global_name(attr_name: str) -> str:
+@@ -2915,18 +2933,7 @@ def pipe(*converters):
+ 
+     def pipe_converter(val, inst, field):
+         for c in converters:
+-            if isinstance(c, Converter):
+-                val = c.converter(
+-                    val,
+-                    *{
+-                        (False, False): (),
+-                        (True, False): (c.takes_self,),
+-                        (False, True): (c.takes_field,),
+-                        (True, True): (c.takes_self, c.takes_field),
+-                    }[c.takes_self, c.takes_field],
+-                )
+-            else:
+-                val = c(val)
++            val = c(val, inst, field) if isinstance(c, Converter) else c(val)
+ 
+         return val
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 7ef8071..9d28be9 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -1450,6 +1450,36 @@ class TestConverter:
+         )
+         C("1")
+ 
++    @pytest.mark.parametrize(
++        ("takes_self", "takes_field"), itertools.product([True, False], repeat=2)
++    )
++    def test_adapter_gets_the_correct_args(self, takes_self, takes_field):
++        """
++        Depending on the flags, the adapter passes the correct arguments to
++        the wrapped converter.
++        """
++        received = None
++
++        def sink(*args):
++            nonlocal received
++            received = args
++            return args[0]
++
++        c = attr.Converter(
++            sink, takes_self=takes_self, takes_field=takes_field
++        )
++        instance, field = object(), object()
++
++        c(1, instance, field)
++
++        expected = (1,)
++        if takes_self:
++            expected += (instance,)
++        if takes_field:
++            expected += (field,)
++
++        assert expected == received
++
+ 
+ class TestValidate:
+     """

@@ -1,0 +1,187 @@
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 239ea2c..530ce39 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2932,11 +2932,25 @@ def pipe(*converters):
+     .. versionadded:: 20.1.0
+     """
+ 
+-    def pipe_converter(val, inst, field):
+-        for c in converters:
+-            val = c(val, inst, field) if isinstance(c, Converter) else c(val)
++    return_instance = any(isinstance(c, Converter) for c in converters)
+ 
+-        return val
++    if return_instance:
++
++        def pipe_converter(val, inst, field):
++            for c in converters:
++                val = (
++                    c(val, inst, field) if isinstance(c, Converter) else c(val)
++                )
++
++            return val
++
++    else:
++
++        def pipe_converter(val):
++            for c in converters:
++                val = c(val)
++
++            return val
+ 
+     if not converters:
+         # If the converter list is empty, pipe_converter is the identity.
+@@ -2957,4 +2971,6 @@ def pipe(*converters):
+         if rt:
+             pipe_converter.__annotations__["return"] = rt
+ 
+-    return Converter(pipe_converter, takes_self=True, takes_field=True)
++    if return_instance:
++        return Converter(pipe_converter, takes_self=True, takes_field=True)
++    return pipe_converter
+diff --git a/src/attr/converters.pyi b/src/attr/converters.pyi
+index f902e18..12bd0c4 100644
+--- a/src/attr/converters.pyi
++++ b/src/attr/converters.pyi
+@@ -1,13 +1,19 @@
+-from typing import Callable, TypeVar, overload
++from typing import Callable, Any, overload
+ 
+-from attrs import _ConverterType
+-
+-_T = TypeVar("_T")
++from attrs import _ConverterType, _CallableConverterType
+ 
++@overload
++def pipe(*validators: _CallableConverterType) -> _CallableConverterType: ...
++@overload
+ def pipe(*validators: _ConverterType) -> _ConverterType: ...
++@overload
++def optional(converter: _CallableConverterType) -> _CallableConverterType: ...
++@overload
+ def optional(converter: _ConverterType) -> _ConverterType: ...
+ @overload
+-def default_if_none(default: _T) -> _ConverterType: ...
++def default_if_none(default: Any) -> _CallableConverterType: ...
+ @overload
+-def default_if_none(*, factory: Callable[[], _T]) -> _ConverterType: ...
++def default_if_none(
++    *, factory: Callable[[], Any]
++) -> _CallableConverterType: ...
+ def to_bool(val: str | int | bool) -> bool: ...
+diff --git a/src/attrs/__init__.pyi b/src/attrs/__init__.pyi
+index c6902bd..05e5a0c 100644
+--- a/src/attrs/__init__.pyi
++++ b/src/attrs/__init__.pyi
+@@ -51,7 +51,8 @@ _C = TypeVar("_C", bound=type)
+ 
+ _EqOrderType = bool | Callable[[Any], Any]
+ _ValidatorType = Callable[[Any, "Attribute[_T]", _T], Any]
+-_ConverterType = Callable[[Any], Any] | Converter[Any, _T]
++_CallableConverterType = Callable[[Any], Any]
++_ConverterType = _CallableConverterType | Converter[Any, Any]
+ _ReprType = Callable[[Any], str]
+ _ReprArgType = bool | _ReprType
+ _OnSetAttrType = Callable[[Any, "Attribute[Any]", Any], Any]
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index cd09a8c..6fbae3c 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -278,27 +278,25 @@ class TestAnnotations:
+         def identity(z):
+             return z
+ 
+-        assert attr.converters.pipe(int2str).converter.__annotations__ == {
++        assert attr.converters.pipe(int2str).__annotations__ == {
+             "val": int,
+             "return": str,
+         }
+-        assert attr.converters.pipe(
+-            int2str, strlen
+-        ).converter.__annotations__ == {
++        assert attr.converters.pipe(int2str, strlen).__annotations__ == {
+             "val": int,
+             "return": int,
+         }
+-        assert attr.converters.pipe(
+-            identity, strlen
+-        ).converter.__annotations__ == {"return": int}
+-        assert attr.converters.pipe(
+-            int2str, identity
+-        ).converter.__annotations__ == {"val": int}
++        assert attr.converters.pipe(identity, strlen).__annotations__ == {
++            "return": int
++        }
++        assert attr.converters.pipe(int2str, identity).__annotations__ == {
++            "val": int
++        }
+ 
+         def int2str_(x: int, y: int = 0) -> str:
+             return str(x)
+ 
+-        assert attr.converters.pipe(int2str_).converter.__annotations__ == {
++        assert attr.converters.pipe(int2str_).__annotations__ == {
+             "val": int,
+             "return": str,
+         }
+@@ -310,19 +308,19 @@ class TestAnnotations:
+ 
+         p = attr.converters.pipe()
+ 
+-        assert "val" in p.converter.__annotations__
++        assert "val" in p.__annotations__
+ 
+-        t = p.converter.__annotations__["val"]
++        t = p.__annotations__["val"]
+ 
+         assert isinstance(t, typing.TypeVar)
+-        assert p.converter.__annotations__ == {"val": t, "return": t}
++        assert p.__annotations__ == {"val": t, "return": t}
+ 
+     def test_pipe_non_introspectable(self):
+         """
+         pipe() doesn't crash when passed a non-introspectable converter.
+         """
+ 
+-        assert attr.converters.pipe(print).converter.__annotations__ == {}
++        assert attr.converters.pipe(print).__annotations__ == {}
+ 
+     def test_pipe_nullary(self):
+         """
+@@ -332,7 +330,7 @@ class TestAnnotations:
+         def noop():
+             pass
+ 
+-        assert attr.converters.pipe(noop).converter.__annotations__ == {}
++        assert attr.converters.pipe(noop).__annotations__ == {}
+ 
+     def test_optional(self):
+         """
+diff --git a/tests/test_converters.py b/tests/test_converters.py
+index 4747f13..5726ae2 100644
+--- a/tests/test_converters.py
++++ b/tests/test_converters.py
+@@ -248,11 +248,11 @@ class TestPipe:
+ 
+         # First wrapped converter fails:
+         with pytest.raises(ValueError):
+-            c.converter(33, None, None)
++            c(33)
+ 
+         # Last wrapped converter fails:
+         with pytest.raises(ValueError):
+-            c.converter("33", None, None)
++            c("33")
+ 
+     def test_sugar(self):
+         """
+@@ -273,7 +273,7 @@ class TestPipe:
+         """
+         o = object()
+ 
+-        assert o is pipe().converter(o, None, None)
++        assert o is pipe()(o)
+ 
+     def test_wrapped_annotation(self):
+         """

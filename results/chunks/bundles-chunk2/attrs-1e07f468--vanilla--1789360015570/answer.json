@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 187840,
+ "num_turns": 38,
+ "stop_reason": "end_turn",
+ "session_id": "6e99c777-306c-4501-b823-83752273f21c",
+ "total_cost_usd": 1.1546143000000002,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 42643,
+  "cache_read_input_tokens": 2406321,
+  "output_tokens": 11728,
+  "output_tokens_details": {
+   "thinking_tokens": 3552
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 42643,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 265,
+    "cache_read_input_tokens": 79402,
+    "cache_creation_input_tokens": 506,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 506
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 633,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000718,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 11728,
+   "cacheReadInputTokens": 2406321,
+   "cacheCreationInputTokens": 42643,
+   "webSearchRequests": 0,
+   "costUSD": 1.1538963000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1336 tests pass. The change is complete:\n\n- **`src/attr/_make.py`**: `pipe()` now only wraps its result in a `Converter` instance when at least one of the passed converters is itself a `Converter`; otherwise it returns a plain callable.\n- **`src/attr/converters.pyi`**: Added type overloads so passing plain callables to `pipe()` types the result as a plain callable, while passing any `Converter`/`_ConverterType` types the result as `Converter`.\n- **Tests**: Updated `test_converters.py` and `test_annotations.py` to call the plain-callable result directly instead of via `.converter(...)`, and added a test asserting `pipe()` only returns a `Converter` when one was passed.\n- Added `changelog.d/1380.change.md`.",
+ "ttft_ms": 4449,
+ "ttft_stream_ms": 3778,
+ "time_to_request_ms": 63,
+ "type": "result",
+ "duration_ms": 244665,
+ "uuid": "c48268ff-2fe0-44e8-924e-6730e815f276"
+}

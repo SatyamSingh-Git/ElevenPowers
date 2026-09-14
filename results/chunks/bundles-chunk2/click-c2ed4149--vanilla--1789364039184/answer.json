@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 233456,
+ "num_turns": 40,
+ "stop_reason": "end_turn",
+ "session_id": "9ad58836-9160-496b-b0a5-bb59bf6df618",
+ "total_cost_usd": 1.4802518,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 61586,
+  "cache_read_input_tokens": 2750236,
+  "output_tokens": 16818,
+  "output_tokens_details": {
+   "thinking_tokens": 883
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 61586,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 582,
+    "cache_read_input_tokens": 97518,
+    "cache_creation_input_tokens": 1333,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1333
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 27328,
+   "outputTokens": 1169,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.033173,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 16818,
+   "cacheReadInputTokens": 2750236,
+   "cacheCreationInputTokens": 61586,
+   "webSearchRequests": 0,
+   "costUSD": 1.4470787999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed pre-existing and unrelated (a globally-installed `click` package shadowing issue, not caused by this change). My changes are complete and verified.\n\n## Summary\n\nApplied the upstream `isolated_filesystem` deprecation commit (Fix #3700, Refs #3501) across 10 files:\n\n- **`src/click/testing.py`**: `isolated_filesystem()` now emits a `DeprecationWarning` and documents why (relies on `os.chdir`, not thread-safe, predates modern pytest) with pointers to declined alternatives (`:pr:`3511/3520/3530``, `:issue:`3123``).\n- **`CHANGES.md`** / **`docs/upgrade-guides.md`**: changelog and upgrade-guide entries pointing users to `tempfile.TemporaryDirectory`/pytest's `tmp_path`.\n- **`docs/testing.md`**: rewrote the \"File System Isolation\" section around `tmp_path` + absolute paths, and added a new \"Running tests in parallel\" section explaining why threads don't work and recommending `pytest-xdist`.\n- **Test files** (`test_arguments.py`, `test_basic.py`, `test_shell_completion.py`, `test_utils/test_open_file.py`): migrated off `isolated_filesystem()` to `tmp_path`-based fixtures.\n- **`test_deprecations.py`** / **`test_testing.py`**: added coverage for the new warning and two new tests demonstrating the recommended replacement pattern and its thread-safety.\n\nFull test suite passes except 2 pre-existing, unrelated failures in `test_termui.py` (confirmed present before this change too, caused by a globally-installed `click` package shadowing the local source).",
+ "ttft_ms": 3698,
+ "ttft_stream_ms": 3128,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 254679,
+ "uuid": "c100baa9-f8b2-4762-bdd4-18ca697485e8"
+}

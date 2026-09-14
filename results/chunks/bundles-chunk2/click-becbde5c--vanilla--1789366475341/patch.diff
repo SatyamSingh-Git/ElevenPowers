@@ -1,0 +1,34 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index c640740..612401e 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -11,6 +11,8 @@ Unreleased
+ -   Shell completion of `Choice` `Enum` values produces a valid completion
+     result. :issue:`3015`
+ -   Fix empty byte-string handling in echo. :issue:`3487`
++-   ``echo_via_pager`` no longer closes stdin/stdout when the pager stream is
++    garbage collected.
+ 
+ 
+ Version 8.4.0
+diff --git a/src/click/_termui_impl.py b/src/click/_termui_impl.py
+index 1d23026..ee7cb59 100644
+--- a/src/click/_termui_impl.py
++++ b/src/click/_termui_impl.py
+@@ -395,6 +395,16 @@ class MaybeStripAnsi(io.TextIOWrapper):
+             text = strip_ansi(text)
+         return super().write(text)
+ 
++    def __del__(self) -> None:
++        # Closing a TextIOWrapper closes the underlying buffer too, which
++        # would close stdin/stdout or the pager's pipe out from under the
++        # rest of the process. Detach instead so garbage collection doesn't
++        # close those streams.
++        try:
++            self.detach()
++        except Exception:
++            pass
++
+ 
+ def _pager_contextmanager(
+     color: bool | None = None,

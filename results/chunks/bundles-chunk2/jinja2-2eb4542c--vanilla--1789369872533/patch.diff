@@ -1,0 +1,26 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index e4bffbf..44a22ce 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -18,6 +18,8 @@ Unreleased
+     when calling block references. :issue:`1701`
+ -   Make ``|unique`` async-aware, allowing it to be used after another
+     async-aware filter. :issue:`1781`
++-   ``|int`` filter handles ``OverflowError`` to handle scientific notation.
++    :issue:`1921`
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index af9f6bc..a92832a 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -999,7 +999,7 @@ def do_int(value: t.Any, default: int = 0, base: int = 10) -> int:
+         # this quirk is necessary so that "42.23"|int gives 42.
+         try:
+             return int(float(value))
+-        except (TypeError, ValueError):
++        except (TypeError, ValueError, OverflowError):
+             return default
+ 
+ 

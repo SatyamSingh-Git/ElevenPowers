@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 139174,
+ "num_turns": 33,
+ "stop_reason": "end_turn",
+ "session_id": "1ac37cde-1de5-435e-b01d-ea5d5c61242e",
+ "total_cost_usd": 0.9099939,
+ "usage": {
+  "input_tokens": 54,
+  "cache_creation_input_tokens": 38074,
+  "cache_read_input_tokens": 1764143,
+  "output_tokens": 10143,
+  "output_tokens_details": {
+   "thinking_tokens": 3985
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 38074,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 506,
+    "cache_read_input_tokens": 74553,
+    "cache_creation_input_tokens": 786,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 786
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 54,
+   "outputTokens": 10143,
+   "cacheReadInputTokens": 1764143,
+   "cacheCreationInputTokens": 38074,
+   "webSearchRequests": 0,
+   "costUSD": 0.9099939,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1331 tests pass. The obligation from the hook (`python -m pytest tests -q`) is discharged \u2014 it just needs `PYTHONPATH=src` since a globally installed `attrs` shadows the local source otherwise, which is an environment quirk, not a code issue.\n\n## Summary\n\nImplemented the upstream change allowing `attrs.converters.optional()` to accept a `Converter` instance (e.g. `converters.pipe(...)`), not just plain callables:\n\n- `src/attr/converters.py`: `optional()` now detects if the input is a `Converter` and, if so, builds an `optional_converter(val, inst, field)` that unwraps to `None` or delegates to the wrapped `Converter`'s three-arg call. Annotations are copied first, and only then is the result wrapped in a new `Converter` (since `Converter.__init__` reads `__annotations__` from its argument at construction time \u2014 wrapping too early would drop them).\n- `src/attr/converters.pyi`: updated the `optional()` stub to accept `_ConverterType | Converter[Any, Any]`.\n- `tests/test_converters.py`: added `test_converter_instance` covering `optional(pipe(...))`.\n- `changelog.d/1372.change.md`: added a changelog fragment.\n\nFull test suite (1331 passed, 4 skipped, 1 xfailed) passes when run with `PYTHONPATH=src` (needed here because a global `attrs==26.1.0` install otherwise shadows the repo's `src/attr`).",
+ "ttft_ms": 5437,
+ "ttft_stream_ms": 2877,
+ "time_to_request_ms": 335,
+ "type": "result",
+ "duration_ms": 178547,
+ "uuid": "11ff3611-48d1-4e8b-9ddb-3fea74a7db79"
+}

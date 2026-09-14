@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 161228,
+ "num_turns": 37,
+ "stop_reason": "end_turn",
+ "session_id": "af4c0399-268d-47b4-851f-5082a061e5bc",
+ "total_cost_usd": 1.1113047999999996,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 45371,
+  "cache_read_input_tokens": 2279906,
+  "output_tokens": 10278,
+  "output_tokens_details": {
+   "thinking_tokens": 2736
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 45371,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 342,
+    "cache_read_input_tokens": 82200,
+    "cache_creation_input_tokens": 436,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 436
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 633,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000733,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 68,
+   "outputTokens": 10278,
+   "cacheReadInputTokens": 2279906,
+   "cacheCreationInputTokens": 45371,
+   "webSearchRequests": 0,
+   "costUSD": 1.1105717999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream change: `attrs.converters.pipe()` now only returns a `Converter` instance when at least one of the passed converters is itself a `Converter`; otherwise it returns a plain callable. Updated:\n\n- `src/attr/_make.py` \u2014 `pipe()` branches on `return_instance = any(isinstance(c, Converter) for c in converters)`.\n- `src/attr/converters.pyi` / `src/attrs/__init__.pyi` \u2014 added a `_CallableConverterType` alias and overloads so plain-callable inputs are typed as returning a plain callable.\n- `tests/test_annotations.py`, `tests/test_converters.py` \u2014 updated to call the returned converter directly (`c(...)`/`p.__annotations__`) instead of via `.converter`, matching the new behavior.\n\nAll previously-failing `pipe`-related tests now pass; remaining test failures in this environment are pre-existing and caused by an installed `attrs` package shadowing local sources (unrelated to this change, confirmed present before it too).",
+ "ttft_ms": 2657,
+ "ttft_stream_ms": 2014,
+ "time_to_request_ms": 48,
+ "type": "result",
+ "duration_ms": 222442,
+ "uuid": "7f3032a2-312f-4ec3-87c9-f9e135240e6b"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 192966,
+ "num_turns": 23,
+ "stop_reason": "end_turn",
+ "session_id": "20f8872f-67c3-487b-915d-25d0a2ffcecb",
+ "total_cost_usd": 0.9927878999999997,
+ "usage": {
+  "input_tokens": 44,
+  "cache_creation_input_tokens": 50082,
+  "cache_read_input_tokens": 1490563,
+  "output_tokens": 16287,
+  "output_tokens_details": {
+   "thinking_tokens": 11567
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50082,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 385,
+    "cache_read_input_tokens": 86726,
+    "cache_creation_input_tokens": 621,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 621
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 610,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00069,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 44,
+   "outputTokens": 16287,
+   "cacheReadInputTokens": 1490563,
+   "cacheCreationInputTokens": 50082,
+   "webSearchRequests": 0,
+   "costUSD": 0.9920978999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full suite passes (1584 passed, 94 skipped, 1 xfailed as expected).\n\n## Summary\n\n`MaybeStripAnsi` in `src/click/_termui_impl.py` subclasses `io.TextIOWrapper` directly but never overrode `__del__`. When it wraps a borrowed stream (e.g. the cached default stdout, via the `_pipepager`/`_tempfilepager` fallback branches that run when no `PAGER` is set or the command isn't found), the default `IOBase.__del__` calls `close()` on garbage collection \u2014 closing the shared, cached stdout wrapper and producing \"I/O operation on closed file\" on later writes (#3449). The `_SkipClose` wrapper from #3482 only guarded the `_nullpager` path, not this one.\n\nFixed by giving `MaybeStripAnsi` the same `__del__` pattern already used by `_NonClosingTextIOWrapper` in `_compat.py`: call `detach()` instead of letting GC implicitly `close()` the underlying stream. Also added a `CHANGES.rst` entry. Full test suite (1584 tests) passes against the local source.",
+ "ttft_ms": 2814,
+ "ttft_stream_ms": 2024,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 210584,
+ "uuid": "78ce8915-07bc-4676-9594-28543562bf8c"
+}

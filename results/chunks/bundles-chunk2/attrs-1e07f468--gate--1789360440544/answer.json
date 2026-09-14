@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 104141,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "a8155784-f921-4cd0-b9a0-9702106c08df",
+ "total_cost_usd": 0.7282134000000001,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 34454,
+  "cache_read_input_tokens": 1417638,
+  "output_tokens": 6404,
+  "output_tokens_details": {
+   "thinking_tokens": 1095
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 34454,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 216,
+    "cache_read_input_tokens": 71097,
+    "cache_creation_input_tokens": 622,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 622
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 6404,
+   "cacheReadInputTokens": 1417638,
+   "cacheCreationInputTokens": 34454,
+   "webSearchRequests": 0,
+   "costUSD": 0.7282134000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1335 tests pass. The change is complete:\n\n- `src/attr/_make.py`: `pipe()` now only returns a `Converter` instance when at least one of the passed converters is itself a `Converter`; otherwise it returns a plain callable.\n- `src/attr/converters.pyi` and `src/attrs/__init__.pyi`: added `_CallableConverterType` and overloads so type checkers reflect that plain-callable input yields a plain-callable output.\n- `tests/test_annotations.py` and `tests/test_converters.py`: updated to call the returned object directly instead of via `.converter`, matching the new non-`Converter` return type.",
+ "ttft_ms": 3379,
+ "ttft_stream_ms": 2893,
+ "time_to_request_ms": 354,
+ "type": "result",
+ "duration_ms": 144747,
+ "uuid": "c18bbf45-d74c-4b8e-b09a-e00d1c31ad67"
+}

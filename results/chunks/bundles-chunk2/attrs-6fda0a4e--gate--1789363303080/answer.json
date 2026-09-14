@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 163781,
+ "num_turns": 40,
+ "stop_reason": "end_turn",
+ "session_id": "0e6f7f66-cb41-476d-8c04-937351c40846",
+ "total_cost_usd": 1.0178424,
+ "usage": {
+  "input_tokens": 58,
+  "cache_creation_input_tokens": 41840,
+  "cache_read_input_tokens": 1922778,
+  "output_tokens": 12653,
+  "output_tokens_details": {
+   "thinking_tokens": 4568
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 41840,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 312,
+    "cache_read_input_tokens": 78706,
+    "cache_creation_input_tokens": 399,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 399
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 58,
+   "outputTokens": 12653,
+   "cacheReadInputTokens": 1922778,
+   "cacheCreationInputTokens": 41840,
+   "webSearchRequests": 0,
+   "costUSD": 1.0178424,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The diff matches the upstream PR exactly, plus the changelog fragment. All 1328 tests pass against the local source (`PYTHONPATH=src`), confirming the change is correctly applied.\n\n**Summary:** Made `attr._make.Converter` instances callable adapters (a `__call__` slot dispatching to `_takes_only_value`/`_takes_instance`/`_takes_field`/`_takes_both` based on `takes_self`/`takes_field`), simplified `converters.pipe()`'s inner loop to just call `c(val, inst, field)` on `Converter` instances, and fixed `setters.convert` to pass `(new_value, instance, attrib)` to `Converter`-wrapped converters instead of just `new_value` \u2014 which is what broke piped converters combined with `on_setattr=setters.convert` (attrs' default). Added the corresponding tests and changelog fragment (`changelog.d/1328.change.md`).",
+ "ttft_ms": 3090,
+ "ttft_stream_ms": 2324,
+ "time_to_request_ms": 385,
+ "type": "result",
+ "duration_ms": 211319,
+ "uuid": "28932cdc-ae4b-4e4d-b45c-5a9468434ec6"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 281250,
+ "num_turns": 43,
+ "stop_reason": "end_turn",
+ "session_id": "52050129-a6a5-41a4-a62e-337052ce4d17",
+ "total_cost_usd": 1.5537327,
+ "usage": {
+  "input_tokens": 86,
+  "cache_creation_input_tokens": 53898,
+  "cache_read_input_tokens": 3128239,
+  "output_tokens": 19441,
+  "output_tokens_details": {
+   "thinking_tokens": 9316
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 53898,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 514,
+    "cache_read_input_tokens": 90873,
+    "cache_creation_input_tokens": 290,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 290
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 86,
+   "outputTokens": 19441,
+   "cacheReadInputTokens": 3128239,
+   "cacheCreationInputTokens": 53898,
+   "webSearchRequests": 0,
+   "costUSD": 1.5537327,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 908 tests pass, including the 2 new tests for namespace tuple assignment.\n\n**Summary of the fix** (mirrors the upstream commit):\n\n- `parser.py`: removed the special-case top-level check in `parse_assign_target` that only recognized `ns.attr` as the *entire* assignment target. Instead, `parse_primary` and `parse_tuple` now take a `with_namespace` flag threaded down from `parse_assign_target`, so a namespace ref can appear as one element of a tuple target (e.g. `{% set ns.a, x = 1, 2 %}`). The flag defaults to `False` everywhere else, so `ns.attr` in ordinary expressions still parses as normal attribute access.\n- `compiler.py`: the \"is this actually a `Namespace`?\" runtime check was previously emitted inline by `visit_NSRef`, using `writeline`, which broke when an `NSRef` appeared mid-tuple (a statement can't sit inside an expression). It's now emitted upfront in `visit_Assign`/`visit_AssignBlock` via a new `_assert_namespace_targets` helper that walks the target for all `NSRef`s (deduping by name) and writes the checks before the assignment line. `visit_NSRef` now just emits the subscript expression.\n- Added `CHANGES.rst` entry and two regression tests in `tests/test_core_tags.py` covering tuple assignment with a namespace ref alongside a plain name, and two namespace refs to the same namespace in one tuple (verifying dedup).",
+ "ttft_ms": 3965,
+ "ttft_stream_ms": 3173,
+ "time_to_request_ms": 352,
+ "type": "result",
+ "duration_ms": 327000,
+ "uuid": "adf3f24d-3695-4d2a-aba9-6b0e7548cf0a"
+}

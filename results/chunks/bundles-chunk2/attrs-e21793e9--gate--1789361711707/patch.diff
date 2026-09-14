@@ -1,0 +1,102 @@
+diff --git a/changelog.d/1372.change.md b/changelog.d/1372.change.md
+new file mode 100644
+index 0000000..eac10ec
+--- /dev/null
++++ b/changelog.d/1372.change.md
+@@ -0,0 +1 @@
++`attrs.converters.optional()` now accepts a `Converter` instance -- for example the one returned by `attrs.converters.pipe()` -- in addition to plain callables.
+diff --git a/src/attr/converters.py b/src/attr/converters.py
+index cac62dd..66e1647 100644
+--- a/src/attr/converters.py
++++ b/src/attr/converters.py
+@@ -7,7 +7,7 @@ Commonly useful converters.
+ import typing
+ 
+ from ._compat import _AnnotationExtractor
+-from ._make import NOTHING, Factory, pipe
++from ._make import NOTHING, Converter, Factory, pipe
+ 
+ 
+ __all__ = [
+@@ -31,12 +31,22 @@ def optional(converter):
+             the converter that is used for non-`None` values.
+ 
+     .. versionadded:: 17.1.0
++    .. versionchanged:: 23.2.0 ``converter`` can now be a `Converter`.
+     """
+ 
+-    def optional_converter(val):
+-        if val is None:
+-            return None
+-        return converter(val)
++    if isinstance(converter, Converter):
++
++        def optional_converter(val, inst, field):
++            if val is None:
++                return None
++            return converter(val, inst, field)
++
++    else:
++
++        def optional_converter(val):
++            if val is None:
++                return None
++            return converter(val)
+ 
+     xtr = _AnnotationExtractor(converter)
+ 
+@@ -48,6 +58,11 @@ def optional(converter):
+     if rt:
+         optional_converter.__annotations__["return"] = typing.Optional[rt]
+ 
++    if isinstance(converter, Converter):
++        return Converter(
++            optional_converter, takes_self=True, takes_field=True
++        )
++
+     return optional_converter
+ 
+ 
+diff --git a/src/attr/converters.pyi b/src/attr/converters.pyi
+index 9ef478f..c6973b6 100644
+--- a/src/attr/converters.pyi
++++ b/src/attr/converters.pyi
+@@ -1,11 +1,13 @@
+-from typing import Callable, TypeVar, overload
++from typing import Any, Callable, TypeVar, overload
+ 
+-from attrs import _ConverterType
++from attrs import Converter, _ConverterType
+ 
+ _T = TypeVar("_T")
+ 
+ def pipe(*validators: _ConverterType) -> _ConverterType: ...
+-def optional(converter: _ConverterType) -> _ConverterType: ...
++def optional(
++    converter: _ConverterType | Converter[Any, Any]
++) -> _ConverterType: ...
+ @overload
+ def default_if_none(default: _T) -> _ConverterType: ...
+ @overload
+diff --git a/tests/test_converters.py b/tests/test_converters.py
+index 164fb0f..428e0ed 100644
+--- a/tests/test_converters.py
++++ b/tests/test_converters.py
+@@ -143,6 +143,17 @@ class TestOptional:
+         with pytest.raises(ValueError):
+             c("not_an_int")
+ 
++    def test_converter_instance(self):
++        """
++        Works when passed a Converter instance, e.g. the one returned by
++        `attrs.converters.pipe`.
++        """
++        c = optional(pipe(str, to_bool))
++
++        assert True is c.converter(True, None, None)
++        assert True is c.converter("True", None, None)
++        assert None is c.converter(None, None, None)
++
+ 
+ class TestDefaultIfNone:
+     def test_missing_default(self):

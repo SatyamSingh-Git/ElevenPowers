@@ -1,0 +1,52 @@
+diff --git a/changelog.d/1593.change.md b/changelog.d/1593.change.md
+new file mode 100644
+index 0000000..d3fd8eb
+--- /dev/null
++++ b/changelog.d/1593.change.md
+@@ -0,0 +1 @@
++Unimported `typing.ClassVar` annotations created as forward references are now detected as class variables.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 04104d9..18af776 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -297,6 +297,8 @@ def _is_class_var(annot):
+     annotations which would put attrs-based classes at a performance
+     disadvantage compared to plain old classes.
+     """
++    annot = getattr(annot, "__forward_arg__", annot)
++
+     annot = str(annot)
+ 
+     # Annotation can be quoted.
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index e193d4b..52957f5 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -434,6 +434,19 @@ class TestAnnotations:
+ 
+         assert_init_annotations(C)
+ 
++    def test_missing_classvar_import(self, slots):
++        """
++        Unimported ClassVar annotations created as forward references are
++        detected as class variables.
++        """
++
++        @attr.s(auto_attribs=True, slots=slots)
++        class C:
++            cls_var: "ClassVar[int]" = 23  # noqa: F821
++            a: int = 1
++
++        assert_init_annotations(C, a=int)
++
+     def test_keyword_only_auto_attribs(self):
+         """
+         `kw_only` propagates to attributes defined via `auto_attribs`.
+@@ -691,6 +704,7 @@ class TestAnnotations:
+         "typing.ClassVar",
+         "'typing.ClassVar[dict]'",
+         "t.ClassVar[int]",
++        typing.ForwardRef("ClassVar[str]"),
+     ],
+ )
+ def test_is_class_var(annot):

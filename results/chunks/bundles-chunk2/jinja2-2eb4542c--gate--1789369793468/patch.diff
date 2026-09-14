@@ -1,0 +1,25 @@
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index af9f6bc..a92832a 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -999,7 +999,7 @@ def do_int(value: t.Any, default: int = 0, base: int = 10) -> int:
+         # this quirk is necessary so that "42.23"|int gives 42.
+         try:
+             return int(float(value))
+-        except (TypeError, ValueError):
++        except (TypeError, ValueError, OverflowError):
+             return default
+ 
+ 
+diff --git a/tests/test_filters.py b/tests/test_filters.py
+index d8e9114..4cff0d8 100644
+--- a/tests/test_filters.py
++++ b/tests/test_filters.py
+@@ -196,6 +196,7 @@ class TestFilter:
+             ("abc", "0"),
+             ("32.32", "32"),
+             ("12345678901234567890", "12345678901234567890"),
++            ("1e1000", "0"),
+         ),
+     )
+     def test_int(self, env, value, expect):

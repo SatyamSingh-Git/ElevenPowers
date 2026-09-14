@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 42731,
+ "num_turns": 15,
+ "stop_reason": "end_turn",
+ "session_id": "6135c25e-4514-418e-a5b7-2442c1074d80",
+ "total_cost_usd": 0.6540009,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 50076,
+  "cache_read_input_tokens": 1030383,
+  "output_tokens": 2956,
+  "output_tokens_details": {
+   "thinking_tokens": 708
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50076,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 605,
+    "cache_read_input_tokens": 86390,
+    "cache_creation_input_tokens": 951,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 951
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 2956,
+   "cacheReadInputTokens": 1030383,
+   "cacheCreationInputTokens": 50076,
+   "webSearchRequests": 0,
+   "costUSD": 0.6540009,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed \u2014 those 2 failures are pre-existing (an environment issue where a stale `click` install in site-packages shadows `_termui_impl.py`), unrelated to this change, and present before my edit too. The change itself is clean and fully tested.\n\n## Summary\n\nApplied the upstream commit \"Deprecate `isolated_filesystem` and document its limits\" (pallets/click PR #3704, fixing #3700, refs #3501):\n\n- **`src/click/testing.py`**: `CliRunner.isolated_filesystem` now emits a `DeprecationWarning` and gained docstring notes explaining why (`os.chdir` mutates process-global state, isn't thread-safe) plus a `.. deprecated:: 8.5.0` note.\n- **`docs/testing.md`**: Rewrote the \"File System Isolation\" section to recommend `tmp_path`/`tempfile.TemporaryDirectory` with absolute paths, and added a new \"Running tests in parallel\" subsection warning against threading `CliRunner.invoke`.\n- **`docs/upgrade-guides.md`** and **`CHANGES.md`**: Documented the deprecation.\n- **Tests** (`test_arguments.py`, `test_basic.py`, `test_shell_completion.py`, `test_utils/test_open_file.py`): Migrated off `isolated_filesystem` to `tmp_path`. `test_testing.py` kept the two direct tests of the deprecated method (now filtering the warning) and added new tests demonstrating the replacement pattern and its thread-safety. `test_deprecations.py` gained a test asserting the warning fires.\n\nFull test suite passes (1846 passed) except two pre-existing, unrelated failures caused by a stale `click` package shadowing the local source in site-packages \u2014 confirmed present before this change too.",
+ "ttft_ms": 2624,
+ "ttft_stream_ms": 1550,
+ "time_to_request_ms": 358,
+ "type": "result",
+ "duration_ms": 73386,
+ "uuid": "e2aa801a-a5ac-49bb-9458-c53b6cf79cc6"
+}

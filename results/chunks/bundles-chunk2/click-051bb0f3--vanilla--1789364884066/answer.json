@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 254555,
+ "num_turns": 36,
+ "stop_reason": "end_turn",
+ "session_id": "b887e31e-6f6d-419f-9644-b04b3f14fb90",
+ "total_cost_usd": 1.6865766,
+ "usage": {
+  "input_tokens": 72,
+  "cache_creation_input_tokens": 77915,
+  "cache_read_input_tokens": 3040502,
+  "output_tokens": 20402,
+  "output_tokens_details": {
+   "thinking_tokens": 14321
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 77915,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 528,
+    "cache_read_input_tokens": 114636,
+    "cache_creation_input_tokens": 544,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 544
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 610,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00069,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 72,
+   "outputTokens": 20402,
+   "cacheReadInputTokens": 3040502,
+   "cacheCreationInputTokens": 77915,
+   "webSearchRequests": 0,
+   "costUSD": 1.6858866,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The change is complete. Summary:\n\n**Bug**: In `src/click/_termui_impl.py`, when `_pipepager`/`_tempfilepager` fell back to stdout (empty `PAGER`, or the configured pager binary not found via `shutil.which`), they yielded the borrowed `sys.stdout` stream directly, unwrapped. `get_pager_file` then wraps such a stream's `.buffer` in `MaybeStripAnsi` (an `io.TextIOWrapper`). Since nothing ever called `.close()` explicitly, that wrapper's finalizer (`IOBase.__del__` \u2192 `close()`) ran on garbage collection and closed the *real* `sys.stdout.buffer` \u2014 causing `ValueError: I/O operation on closed file` on any later write to stdout (issue #3449, the case PR #3482 didn't fully cover, since it only protected `_nullpager`'s own fallback path).\n\n**Fix**: route all four fallback sites (two in `_pipepager`, two in `_tempfilepager`) through the existing `_nullpager` helper, which wraps the stream in `_SkipClose` so `close()` is a no-op \u2014 consistent with how `_pager_contextmanager` already handles its own no-tty fallback.\n\nVerified the fix closes the gap with a direct repro (GC-triggered close no longer touches the real stdout buffer) and ran the full test suite (1496 passed, unrelated pre-existing pytest-version collection error in `test_basic.py` confirmed present on unmodified master too). Added a `CHANGES.rst` entry.",
+ "ttft_ms": 2664,
+ "ttft_stream_ms": 1125,
+ "time_to_request_ms": 49,
+ "type": "result",
+ "duration_ms": 279927,
+ "uuid": "870931a2-195a-42c2-8eb8-a1115a5062a7"
+}

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 77957,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "c67bdf5b-e490-46cd-a2f8-db2aae9dc68e",
+ "total_cost_usd": 0.5426182999999999,
+ "usage": {
+  "input_tokens": 32,
+  "cache_creation_input_tokens": 31534,
+  "cache_read_input_tokens": 902931,
+  "output_tokens": 4999,
+  "output_tokens_details": {
+   "thinking_tokens": 442
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 31534,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 308,
+    "cache_read_input_tokens": 68006,
+    "cache_creation_input_tokens": 793,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 793
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 5904,
+   "outputTokens": 310,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0074540000000000006,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 32,
+   "outputTokens": 4999,
+   "cacheReadInputTokens": 902931,
+   "cacheCreationInputTokens": 31534,
+   "webSearchRequests": 0,
+   "costUSD": 0.5351642999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed pre-existing, unrelated to this change. Changes applied successfully:\n\n- **`src/click/decorators.py`**: added `custom_version_option()` decorator (takes a `callback(ctx) -> str` to build the version string), and added a note to `version_option()`'s docstring stating its parameters/message variables are now frozen, pointing to `custom_version_option` for anything beyond that.\n- **`src/click/__init__.py`**: exported `custom_version_option`.\n- **`docs/api.md`**: added the autofunction entry.\n- **`CHANGES.md`**: added the changelog entry under 8.5.0.\n- **`tests/test_basic.py`**: added `test_custom_version_option` and `test_custom_version_option_receives_context`.\n\nAll 6 version-option tests pass; the 36 failing tests are pre-existing deprecation-warning failures in `test_utils.py` unrelated to this change.",
+ "ttft_ms": 5941,
+ "ttft_stream_ms": 5431,
+ "time_to_request_ms": 48,
+ "type": "result",
+ "duration_ms": 103173,
+ "uuid": "4c66d702-0ad6-486a-82bc-245811ef5334"
+}
