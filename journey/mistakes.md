@@ -673,3 +673,29 @@ turn a broken machine into a page of setup rows and a score of zero.
 
 *The lesson:* a fix belongs everywhere the defect can occur, not where it was
 found. Each of these would have been a `grep` away at the time.
+
+### An experiment sized on the wrong number
+
+Thirteen tasks, two replicates, two arms, fifty-two runs, fifty-one dollars. It
+could not have produced a result, and that was calculable before it started.
+
+The gate blocks on about twelve percent of runs. That figure was measured in
+Phase A and has been sitting in this project's own exits table ever since. With
+two replicates a task sees a block at all roughly one time in five, so thirteen
+tasks offer at most two or three pairs the mechanism could possibly have caused —
+against thirty-one needed. The run came back with one discordant pair, and the
+gate had not fired on it.
+
+*Cause:* the chunk was sized on how many tasks the budget could buy. The
+question it should have been sized on is how often the treatment applies, and
+the two are not related. One multiplication, with a number already in the repo.
+
+*Cost:* a hundred dollars and two chunks, against the sixteen hundred the same
+mistake would have cost carried to the end of the design.
+
+*The lesson:* **an experiment's size comes from the rate at which the
+intervention engages, not from the rate at which tasks can be afforded.** D57
+made the neighbouring correction — sample size comes from measured discordance
+rather than the flip rate — and this is the same sentence one step earlier: a
+treatment that touches one run in eight needs the arithmetic done before the
+first dollar, not after the hundredth.

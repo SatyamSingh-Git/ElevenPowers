@@ -259,10 +259,19 @@ a measured rate of disagreement, which no run here has produced — if the arms
 differed on one task in four it would be 124 paired runs, and that *if* is doing
 all the work.
 
-The task suite still needs rebuilding so that most of it discriminates. Nine of
-the pinned fifteen are resolved by a plain agent every time across six
-replicates and one never is, so **five tasks carry the whole measurement**. The
-old suite was worse — eleven of sixteen — but this is not yet a benchmark that
-can measure a small effect.
+The task suite still needs rebuilding, and the reason is now measured rather
+than suspected. A plain agent resolves **92 percent** of the selected corpus, so
+twenty-three of twenty-five tasks were solved twice by both arms and four
+failures in fifty runs are all the room a treatment has. The likely cause is
+that the prompts are the maintainers' commit messages, which name the change
+instead of reporting a fault — the agent implements a specification and is then
+graded on tests for that specification. SWE-bench uses the issue text for
+exactly this reason.
+
+And the comparison needs sizing on how often the gate engages, not on how many
+tasks the budget buys. It blocks on twelve percent of runs, so thirteen tasks at
+two replicates could produce two or three pairs it might have caused, against
+thirty-one needed. That arithmetic was available before the run and was not
+done.
 Replay still cannot measure staleness at all, because the working tree at each
 moment is not recoverable from a transcript.

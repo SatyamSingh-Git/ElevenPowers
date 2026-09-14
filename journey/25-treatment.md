@@ -121,6 +121,38 @@ to bound the effect — it is consistent with no effect and with an effect too
 small to see — but it is the first time this project has been able to say where
 the treatment applied rather than only what the scores were.
 
+## Why the baseline is at ninety-two percent
+
+The prompts hand the agent the answer.
+
+They are the maintainer's commit messages, and a commit message describes the
+change that was made:
+
+- *Expose converter as a decorator*
+- *Make `kw_only=True` behavior consistent with dataclasses*
+- *Allow field(on_setattr=NO_OP) on frozen classes*
+
+Each names the thing to build. The agent is not diagnosing a bug, it is
+implementing a described specification, and then it is graded on tests written
+for exactly that behaviour. SWE-bench uses the **issue** text — somebody
+reporting that something is broken — for precisely this reason: the commit
+message leaks the solution.
+
+That is the most likely cause of a ceiling, and a ceiling is fatal to a
+comparison in a way a hard benchmark is not. With the baseline at ninety-two
+percent there are four failures in fifty runs for any treatment to improve on,
+so an effect has almost nowhere to appear even if it exists.
+
+It is a likely cause, not a proven one. The corpus might simply be easy for this
+model. Distinguishing those costs about ten dollars — a handful of tasks with
+problem-shaped prompts, one arm — and is worth doing before anything is rebuilt
+on the assumption.
+
+**One shortcut to refuse.** The tempting fix is to keep only tasks the plain arm
+fails. That selects on the control arm's own outcome, and regression to the mean
+then manufactures an effect out of nothing. It is E6 again in a new costume, and
+it would produce a positive result that means nothing at all.
+
 ## What finishing would cost
 
 One clean discordant pair in twenty-five tasks, two counting the partial. Thirty

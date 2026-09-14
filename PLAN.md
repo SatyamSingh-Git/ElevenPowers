@@ -188,6 +188,8 @@ Build the **candidate-by-probe outcome matrix**: inputs down one axis, candidate
 
 **5.6 Keep an incumbent, allow nonmonotonic search.** A long attempt ends at its latest patch, not its best. Candidates are immutable; a failed repair must not destroy an earlier one. After integration, snapshot again and rerun checks: evidence from two passing branches does not transfer to their merge.
 
+**5.9 An experiment is sized on how often the intervention engages.** *(2026-09-14, paid for)* The gate blocks on about twelve percent of runs. At two replicates that gives a task roughly one chance in five of seeing a block at all, so thirteen tasks offer two or three pairs the mechanism could have caused against the thirty-one needed. A hundred paired runs returned two discordant pairs and the gate had fired on neither. The engagement rate was measured in Phase A and had been in §3's exits table ever since; the chunk was sized on what the budget could buy instead. Before any comparison: multiply the engagement rate by the replicates, and if the product cannot reach the required pairs, the experiment does not exist yet. This is D57 one step earlier — that one says sample size comes from measured discordance rather than the flip rate, and this one says the discordance a treatment can even produce is bounded by how often it applies.
+
 **5.7 Route for complementary capability.** The question is not which model is cheaper but whether different configurations solve different tasks. Measure overlap between strong pinned configurations before assuming scaffolding helps. Model-mixing experiments show complementary benefit in some combinations and none in others, and multi-agent benefit depends strongly on task structure, so a committee is not assumed to help every sequential task.
 
 **5.8 Learn from decisions, not from successful transcripts.** Per-task working memory and attempt histories first. Replay validates parsers and retrieval; it cannot establish the causal benefit of an action never executed. Prompt and procedure optimisation from execution feedback is worth testing once that data exists, at Phase E, keeping training, development selection and final evaluation separate.
@@ -276,6 +278,14 @@ Measure what actually reaches the model rather than what is installed.
 
 **Exit, as commands:** `python -m eval.baseline --pinned` reports a score with an interval that a rerun reproduces, and `python -m eval.failures` prints a taxonomy where every category cites saved trajectories. Enough repeats to separate setup problems from coding failures.
 
+**Phase B is closed, 2026-09-14.** Both exits pass. 199 paid runs, $175.69: ninety one arm against a pinned corpus and model, a hundred with both arms, the rest dry checks. All of it preserved and re-gradable.
+
+What it established, none of which existed before: the gate fires on **12 percent** of runs, confirmed twice by different routes; a plain `claude-sonnet-5` at high effort resolves **92 percent** of the selected corpus; discordance runs at **2 tasks in 25**, and the gate had fired on **neither** of them.
+
+What it did not establish is P1, and it could not have. The arithmetic was available beforehand and was not done: a treatment engaging on 12 percent of runs, at two replicates, gives a task about one chance in five of seeing it at all, so thirteen tasks offer two or three pairs the mechanism could have caused against thirty-one needed. **§5.9 is the correction** — size on the engagement rate, not the task count. And **§5.1 is the same principle inverted**: it says that when every candidate is wrong no reranking helps, and the investment belongs upstream. When every candidate is *right* no gate helps either, and the investment belongs in the benchmark.
+
+The binding problem is not sample size. The prompts are the maintainers' commit messages, which name the change rather than report a fault, so the corpus asks the agent to implement a specification and then grades it on tests for that specification. A 92 percent baseline is a ceiling, and a ceiling leaves an effect nowhere to appear. Phase C does not start until that is fixed and re-measured.
+
 ### Phase C — Separate generation from selection
 
 Candidate pools at several budgets, graded offline. Evaluate selectors without exposing hidden outcomes: patch text, structured summaries plus evidence, and the existing gate. Run the A/B/C oracle diagnostics — frozen issue-derived checks, differential comparison against the original program, interpretation probes — independently on frozen candidates.
@@ -348,6 +358,7 @@ The 1.4× gate result stands for its narrow configuration. It is not an argument
 - **"Replicates inside one sitting are more correlated with each other than two sittings are."** Withdrawn 2026-09-13. It was inferred entirely from the reversal above, which did not happen. Five of fifteen tasks split over six replicates, and the two passes agree to within 4.4 points.
 - **"Pass B of the B4 sweep resolved 53.3%."** Corrected to **73.3%** after re-grading every bundle. Pass A re-graded to the same score it was given, on all forty-five runs, which is the control that says the re-grade is deterministic.
 - **"Substantial tasks resolve at 27 to 40 percent."** Qualified 2026-09-14. Measured before the prompts were framed as requests. With the same tasks asking for something, a plain agent resolves 88 percent of them, so a large part of what was read as difficulty was prompts that did not ask. The band selection was made on that measurement and is declared in the lock; what it bought is smaller than it looked.
+- **"A paired comparison at this corpus size can answer P1."** Withdrawn 2026-09-14. Thirteen tasks at two replicates cannot produce thirty-one discordant pairs when the treatment engages on twelve percent of runs; it offers two or three. The figure was in §3's own exits table before the chunk was designed.
 - **"The corpus was rebuilt so that most of it discriminates."** Qualified 2026-09-14. Across a hundred paired runs, twenty-three of twenty-five tasks were resolved twice by both arms. A plain agent resolves 92 percent of the selected corpus, so the benchmark is not hard enough to measure a treatment on, and more of it is not the fix.
 
 ---
