@@ -1,0 +1,7 @@
+[
+ {
+  "at": 1789396009.7419527,
+  "session": "d61c19c2-8852-44be-ab12-b3ffbd629523",
+  "patch": "diff --git a/changelog.d/1354.change.md b/changelog.d/1354.change.md\nnew file mode 100644\nindex 0000000..3740cd3\n--- /dev/null\n+++ b/changelog.d/1354.change.md\n@@ -0,0 +1 @@\n+The error raised when both a type annotation and a type argument are present now mentions which argument is affected.\ndiff --git a/src/attr/_make.py b/src/attr/_make.py\nindex 0c5aa0b..c493b68 100644\n--- a/src/attr/_make.py\n+++ b/src/attr/_make.py\n@@ -2491,7 +2491,10 @@ class Attribute:\n         if type is None:\n             type = ca.type\n         elif ca.type is not None:\n-            msg = \"Type annotation and type argument cannot both be present\"\n+            msg = (\n+                f\"Type annotation and type argument cannot both be present \"\n+                f\"for {name!r}.\"\n+            )\n             raise ValueError(msg)\n         return cls(\n             name,\ndiff --git a/tests/test_annotations.py b/tests/test_annotations.py\nindex f37a1c0..c5f8502 100644\n--- a/tests/test_annotations.py\n+++ b/tests/test_annotations.py\n@@ -62,7 +62,8 @@ class TestAnnotations:\n                 x: int = attr.ib(type=int)\n \n         assert (\n-            \"Type annotation and type argument cannot both be present\",\n+            \"Type annotation and type argument cannot both be present \"\n+            \"for 'x'.\",\n         ) == e.value.args\n \n     def test_typing_annotations(self):\n"
+ }
+]

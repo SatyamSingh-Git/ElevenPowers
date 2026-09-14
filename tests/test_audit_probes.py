@@ -1155,3 +1155,65 @@ def test_the_answer_channels_are_denied_on_the_command_line(upstream, monkeypatc
     assert "--disallowed-tools" in line
     for denied in ("WebFetch", "WebSearch", "Bash(gh:*)"):
         assert denied in line, f"{denied} was never sent"
+
+
+def test_the_recorder_is_installed_in_both_arms(upstream, tmp_path):
+    """An instrument in one arm and not the other is the difference between them.
+
+    The checkpoint recorder exports the candidate at each proposed stop. It goes
+    in the plain arm too, because a comparison where only one side is
+    instrumented measures the instrument. E4 was an arm labelled present and
+    absent; this is the same sentence about the thing doing the measuring.
+    """
+    from eval.live import build
+
+    task, _ = upstream
+    seen = {}
+    for arm in ("vanilla", "gate"):
+        root = tmp_path / arm
+        root.mkdir()
+        build(task, root, arm)
+        wiring = json.loads((root / ".claude" / "settings.json").read_text(encoding="utf-8"))
+        commands = [h["command"] for entry in wiring["hooks"].get("Stop", [])
+                    for h in entry.get("hooks", [])]
+        seen[arm] = commands
+
+    for arm, commands in seen.items():
+        assert any("checkpoint.py" in c for c in commands), f"{arm} records nothing"
+    assert len(seen["gate"]) > len(seen["vanilla"]), "the gate lost its own Stop hook"
+
+
+def test_the_recorder_allows_the_stop_and_stays_out_of_the_candidate(tmp_path):
+    """Recording at a decision point is not neutral if the recorder can change it.
+
+    So it writes a file and exits zero. And it takes the diff *before* opening
+    its own journal: opening creates the file, `git add -A` stages it, and the
+    recorder would appear inside the candidate it is recording.
+    """
+    import subprocess
+    import sys
+
+    work = tmp_path / "w"
+    work.mkdir()
+    subprocess.run(["git", "init", "-q", "."], cwd=work, capture_output=True)
+    (work / "a.txt").write_bytes(b"one")
+    subprocess.run(["git", "add", "-A"], cwd=work, capture_output=True)
+    subprocess.run(["git", "-c", "user.email=e@e", "-c", "user.name=e",
+                    "commit", "-qm", "seed"], cwd=work, capture_output=True)
+    (work / "a.txt").write_bytes(b"two")
+
+    done = subprocess.run(
+        [sys.executable, str(Path("eval/checkpoint.py").resolve()), "Stop"],
+        input=json.dumps({"cwd": str(work), "session_id": "s1"}),
+        capture_output=True, text=True, encoding="utf-8", timeout=120)
+
+    assert done.returncode == 0, done.stderr
+    assert not done.stdout.strip(), "a Stop hook that prints can change the decision"
+
+    recorded = [json.loads(line) for line in
+                (work / ".elevenpowers" / "checkpoints.jsonl").read_text(
+                    encoding="utf-8").splitlines() if line.strip()]
+    assert len(recorded) == 1
+    touched = [l.split()[-1] for l in recorded[0]["patch"].splitlines()
+               if l.startswith("diff --git")]
+    assert touched == ["b/a.txt"], touched

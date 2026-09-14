@@ -1,0 +1,41 @@
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 7439dc2..41bc412 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -448,7 +448,7 @@ def _transform_attrs(
+     attrs = base_attrs + own_attrs
+ 
+     if field_transformer is not None:
+-        attrs = field_transformer(cls, attrs)
++        attrs = list(field_transformer(cls, attrs))
+ 
+     # Check attr order after executing the field_transformer.
+     # Mandatory vs non-mandatory attr order only matters when they are part of
+diff --git a/tests/test_hooks.py b/tests/test_hooks.py
+index 6b34206..92be80c 100644
+--- a/tests/test_hooks.py
++++ b/tests/test_hooks.py
+@@ -201,6 +201,23 @@ class TestTransformHook:
+ 
+         assert {"y": 2} == attr.asdict(Sub(2))
+ 
++    def test_hook_generator(self):
++        """
++        The hook can return a generator instead of a list.
++
++        Regression test for #1417
++        """
++
++        def hook(cls, attribs):
++            return (a.evolve(default=0) for a in attribs)
++
++        @attr.s(auto_attribs=True, field_transformer=hook)
++        class C:
++            x: int
++            y: int
++
++        assert C() == C(0, 0)
++
+     def test_attrs_attrclass(self):
+         """
+         The list of attrs returned by a field_transformer is converted to

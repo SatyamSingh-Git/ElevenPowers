@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 24873,
+ "num_turns": 10,
+ "stop_reason": "end_turn",
+ "session_id": "105c204b-2d58-4217-904a-73e7c071906a",
+ "total_cost_usd": 0.2627886,
+ "usage": {
+  "input_tokens": 20,
+  "cache_creation_input_tokens": 16199,
+  "cache_read_input_tokens": 461982,
+  "output_tokens": 1749,
+  "output_tokens_details": {
+   "thinking_tokens": 304
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 113,
+    "cache_read_input_tokens": 49147,
+    "cache_creation_input_tokens": 1498,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1498
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 635,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000705,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 20,
+   "outputTokens": 1749,
+   "cacheReadInputTokens": 461982,
+   "cacheCreationInputTokens": 16199,
+   "webSearchRequests": 0,
+   "costUSD": 0.26208359999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Good, confirms #1401 landed in 25.2.0. My changelog fragment is accurate.\n\nBoth the fix in `src/attr/_make.py` and the changelog fragment `changelog.d/1417.change.md` are in place \u2014 `field_transformer` results are now materialized into a list so generators work correctly across the multiple iterations that follow.",
+ "ttft_ms": 1804,
+ "ttft_stream_ms": 1224,
+ "time_to_request_ms": 48,
+ "type": "result",
+ "duration_ms": 27165,
+ "uuid": "bdf4dda7-ead6-4b34-b0b9-01498bdd546c"
+}

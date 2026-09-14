@@ -1,0 +1,7 @@
+[
+ {
+  "at": 1789395943.428747,
+  "session": "105c204b-2d58-4217-904a-73e7c071906a",
+  "patch": "diff --git a/changelog.d/1417.change.md b/changelog.d/1417.change.md\nnew file mode 100644\nindex 0000000..1bf4aac\n--- /dev/null\n+++ b/changelog.d/1417.change.md\n@@ -0,0 +1 @@\n+`field_transformer`s that return a generator instead of a list are now supported again, fixing a regression introduced in 25.2.0.\ndiff --git a/src/attr/_make.py b/src/attr/_make.py\nindex 7439dc2..41bc412 100644\n--- a/src/attr/_make.py\n+++ b/src/attr/_make.py\n@@ -448,7 +448,7 @@ def _transform_attrs(\n     attrs = base_attrs + own_attrs\n \n     if field_transformer is not None:\n-        attrs = field_transformer(cls, attrs)\n+        attrs = list(field_transformer(cls, attrs))\n \n     # Check attr order after executing the field_transformer.\n     # Mandatory vs non-mandatory attr order only matters when they are part of\n"
+ }
+]

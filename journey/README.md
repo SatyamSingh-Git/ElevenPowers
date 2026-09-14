@@ -39,6 +39,7 @@ command in this repository and can be reproduced.
 | [24-move.md](24-move.md) | A corpus of 15 that could not move becomes 49 that can, why its size had been set by a default and an unhandled encoding, and a second agent that uninstalled a package from the machine mid-measurement |
 | [25-treatment.md](25-treatment.md) | Two paired chunks and 100 runs: the gate fired on four tasks of twenty-five and changed none of them, and on both tasks where the arms differed it never fired at all |
 | [26-access.md](26-access.md) | A second audit: the agents fetched the upstream fix, twelve percent was the wrong denominator, and the hook that “never fired” had asked four scope questions |
+| [27-checkpoint.md](27-checkpoint.md) | A passive recorder that captures the candidate at every proposed stop, in both arms — and within four runs, a gate refusing a patch that was already correct |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -241,10 +242,11 @@ Every figure below comes from a command in this repository.
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
+| A false block, graded at the block | the gate refused a candidate that was already `resolved`, twice, and the run took 43 more turns and 6.6x the cost to reach another correct patch | `python -m eval.checkpoint --grade results/checkpoint/bundles --corpus results/checkpoint/tasks.json` |
 | What exposure was worth | 10 open-book successes rerun closed-book: **9 resolved**. The tenth reached GitHub through a sub-agent, which the denial did not cover | `python -m eval.exposure results/closedbook/bundles --corpus results/closedbook/tasks.json` |
 | Where the treatment applied | Stop blocks in 4 of 50 gated runs (8%), 6 events. Pre-Stop interventions are **not** counted by that field: one gated run has 4 scope questions and 0 blocks | `python -m eval.failures results/chunks/bundles-chunk2` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 508 | `python -m pytest tests -q` |
+| Tests | 510 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

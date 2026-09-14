@@ -161,18 +161,38 @@ def build(task: Task, root: Path, arm: str) -> None:
 
 
 def _install(task: Task, root: Path, arm: str) -> None:
+    settings = root / ".claude" / "settings.json"
+    settings.parent.mkdir(parents=True, exist_ok=True)
+    wiring = hooks_json(f'python "{HOOK.as_posix()}"') if arm in ("guide", "gate") else {"hooks": {}}
+    _record_checkpoints(wiring)
+    settings.write_text(json.dumps(wiring, indent=2), encoding="utf-8")
     if arm in ("guide", "gate"):
-        settings = root / ".claude" / "settings.json"
-        settings.parent.mkdir(parents=True, exist_ok=True)
-        settings.write_text(
-            json.dumps(hooks_json(f'python "{HOOK.as_posix()}"'), indent=2),
-            encoding="utf-8",
-        )
         save_config(root, Config(
             profile="guide" if arm == "guide" else "strict",
             commands={"tests": _test_command(task)},
         ))
     _seed_git(root)
+
+
+def _record_checkpoints(wiring: dict) -> None:
+    """Add the passive recorder to whatever wiring this arm already has.
+
+    In **both** arms. It exports the candidate at each proposed stop and always
+    allows, so it records the decision without being able to change it. Present
+    in one arm and absent in the other it would be the difference between the
+    arms, which is E4 and has already been paid for twice.
+
+    It runs after the gate's own Stop hook where there is one, so a blocked stop
+    is still recorded: the question is what the agent was proposing, not what it
+    was allowed to do.
+    """
+    recorder = {
+        "type": "command",
+        "command": f'python "{(REPO_ROOT / "eval" / "checkpoint.py").as_posix()}"',
+        "timeout": 120,
+    }
+    stops = wiring.setdefault("hooks", {}).setdefault("Stop", [{}])
+    stops[-1].setdefault("hooks", []).append(recorder)
 
 
 def _test_command(task: Task) -> str:
@@ -783,6 +803,15 @@ def _verify_seeded(task: Task, root: Path) -> Graded:
                   ", ".join(broke[:3]), seen)
 
 
+def checkpoints(root: Path) -> list[dict]:
+    """Every candidate the agent proposed, in the order it proposed them."""
+    record = root / ".elevenpowers" / "checkpoints.jsonl"
+    if not record.exists():
+        return []
+    return [json.loads(line) for line
+            in record.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
 def blocks_recorded(root: Path) -> int:
     path = root / ".elevenpowers" / "ledger.json"
     if not path.exists():
@@ -825,6 +854,7 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
         # out to have been wrong, which is not hypothetical here.
         patch = export_patch(root)
         blocks = blocks_recorded(root)
+        proposals = checkpoints(root)
         kept = None
         if bundles is not None:
             kept = bundle.write(
@@ -837,6 +867,9 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
                 blindspots=root / ".elevenpowers" / "blindspots.jsonl",
                 source=task.source,
             )
+            if proposals:
+                (kept / "proposals.json").write_bytes(
+                    json.dumps(proposals, indent=1).encode("utf-8"))
 
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as court:
             graded = grade_patch(task, patch, Path(court))
