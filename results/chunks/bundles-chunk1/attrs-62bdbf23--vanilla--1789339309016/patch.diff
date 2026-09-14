@@ -1,0 +1,281 @@
+diff --git a/changelog.d/1383.change.md b/changelog.d/1383.change.md
+new file mode 100644
+index 0000000..5fb25d5
+--- /dev/null
++++ b/changelog.d/1383.change.md
+@@ -0,0 +1 @@
++All generated attributes now come with the `__replace__` method required for `copy.replace()` to work on Python 3.13 and later.
+diff --git a/docs/api.rst b/docs/api.rst
+index cd5df2d..37fc915 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -285,6 +285,10 @@ All objects from ``attrs.filters`` are also available from ``attr.filters`` (it'
+    * attributes with ``init=False`` can't be set with ``evolve``.
+    * the usual ``__init__`` validators will validate the new values.
+ 
++   .. tip::
++
++      On Python 3.13 and later, you can also use `copy.replace` instead.
++
+ .. autofunction:: attrs.validate
+ 
+    For example:
+diff --git a/src/attr/__init__.py b/src/attr/__init__.py
+index 2e3b7c0..5c6e065 100644
+--- a/src/attr/__init__.py
++++ b/src/attr/__init__.py
+@@ -10,7 +10,7 @@ from typing import Callable, Literal, Protocol
+ from . import converters, exceptions, filters, setters, validators
+ from ._cmp import cmp_using
+ from ._config import get_run_validators, set_run_validators
+-from ._funcs import asdict, assoc, astuple, evolve, has, resolve_types
++from ._funcs import asdict, assoc, astuple, has, resolve_types
+ from ._make import (
+     NOTHING,
+     Attribute,
+@@ -19,6 +19,7 @@ from ._make import (
+     _Nothing,
+     attrib,
+     attrs,
++    evolve,
+     fields,
+     fields_dict,
+     make_class,
+diff --git a/src/attr/_funcs.py b/src/attr/_funcs.py
+index 355cef4..c39fb8a 100644
+--- a/src/attr/_funcs.py
++++ b/src/attr/_funcs.py
+@@ -394,60 +394,6 @@ def assoc(inst, **changes):
+     return new
+ 
+ 
+-def evolve(*args, **changes):
+-    """
+-    Create a new instance, based on the first positional argument with
+-    *changes* applied.
+-
+-    Args:
+-
+-        inst:
+-            Instance of a class with *attrs* attributes. *inst* must be passed
+-            as a positional argument.
+-
+-        changes:
+-            Keyword changes in the new copy.
+-
+-    Returns:
+-        A copy of inst with *changes* incorporated.
+-
+-    Raises:
+-        TypeError:
+-            If *attr_name* couldn't be found in the class ``__init__``.
+-
+-        attrs.exceptions.NotAnAttrsClassError:
+-            If *cls* is not an *attrs* class.
+-
+-    .. versionadded:: 17.1.0
+-    .. deprecated:: 23.1.0
+-       It is now deprecated to pass the instance using the keyword argument
+-       *inst*. It will raise a warning until at least April 2024, after which
+-       it will become an error. Always pass the instance as a positional
+-       argument.
+-    .. versionchanged:: 24.1.0
+-       *inst* can't be passed as a keyword argument anymore.
+-    """
+-    try:
+-        (inst,) = args
+-    except ValueError:
+-        msg = (
+-            f"evolve() takes 1 positional argument, but {len(args)} were given"
+-        )
+-        raise TypeError(msg) from None
+-
+-    cls = inst.__class__
+-    attrs = fields(cls)
+-    for a in attrs:
+-        if not a.init:
+-            continue
+-        attr_name = a.name  # To deal with private attributes.
+-        init_name = a.alias
+-        if init_name not in changes:
+-            changes[init_name] = getattr(inst, attr_name)
+-
+-    return cls(**changes)
+-
+-
+ def resolve_types(
+     cls, globalns=None, localns=None, attribs=None, include_extras=True
+ ):
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index eac5888..98d6373 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -22,11 +22,13 @@ from . import _compat, _config, setters
+ from ._compat import (
+     PY_3_10_PLUS,
+     PY_3_11_PLUS,
++    PY_3_13_PLUS,
+     _AnnotationExtractor,
+     _get_annotations,
+     get_generic_base,
+ )
+ from .exceptions import (
++    AttrsAttributeNotFoundError,
+     DefaultAlreadySetError,
+     FrozenInstanceError,
+     NotAnAttrsClassError,
+@@ -565,6 +567,64 @@ def _frozen_delattrs(self, name):
+     raise FrozenInstanceError
+ 
+ 
++def evolve(*args, **changes):
++    """
++    Create a new instance, based on the first positional argument with
++    *changes* applied.
++
++    .. tip::
++
++       On Python 3.13 and later, you can also use `copy.replace` instead.
++
++    Args:
++
++        inst:
++            Instance of a class with *attrs* attributes. *inst* must be passed
++            as a positional argument.
++
++        changes:
++            Keyword changes in the new copy.
++
++    Returns:
++        A copy of inst with *changes* incorporated.
++
++    Raises:
++        TypeError:
++            If *attr_name* couldn't be found in the class ``__init__``.
++
++        attrs.exceptions.NotAnAttrsClassError:
++            If *cls* is not an *attrs* class.
++
++    .. versionadded:: 17.1.0
++    .. deprecated:: 23.1.0
++       It is now deprecated to pass the instance using the keyword argument
++       *inst*. It will raise a warning until at least April 2024, after which
++       it will become an error. Always pass the instance as a positional
++       argument.
++    .. versionchanged:: 24.1.0
++       *inst* can't be passed as a keyword argument anymore.
++    """
++    try:
++        (inst,) = args
++    except ValueError:
++        msg = (
++            f"evolve() takes 1 positional argument, but {len(args)} were given"
++        )
++        raise TypeError(msg) from None
++
++    cls = inst.__class__
++    attrs = fields(cls)
++    for a in attrs:
++        if not a.init:
++            continue
++        attr_name = a.name  # To deal with private attributes.
++        init_name = a.alias
++        if init_name not in changes:
++            changes[init_name] = getattr(inst, attr_name)
++
++    return cls(**changes)
++
++
+ class _ClassBuilder:
+     """
+     Iteratively build *one* class.
+@@ -979,6 +1039,10 @@ class _ClassBuilder:
+ 
+         return self
+ 
++    def add_replace(self):
++        self._cls_dict["__replace__"] = self._add_method_dunders(evolve)
++        return self
++
+     def add_match_args(self):
+         self._cls_dict["__match_args__"] = tuple(
+             field.name
+@@ -1381,6 +1445,9 @@ def attrs(
+                 msg = "Invalid value for cache_hash.  To use hash caching, init must be True."
+                 raise TypeError(msg)
+ 
++        if PY_3_13_PLUS and not _has_own_attribute(cls, "__replace__"):
++            builder.add_replace()
++
+         if (
+             PY_3_10_PLUS
+             and match_args
+diff --git a/tests/test_make.py b/tests/test_make.py
+index cc78cb3..03b9c36 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -22,7 +22,7 @@ from hypothesis.strategies import booleans, integers, lists, sampled_from, text
+ import attr
+ 
+ from attr import _config
+-from attr._compat import PY_3_10_PLUS, PY_3_14_PLUS
++from attr._compat import PY_3_10_PLUS, PY_3_13_PLUS, PY_3_14_PLUS
+ from attr._make import (
+     Attribute,
+     Factory,
+@@ -2692,3 +2692,55 @@ class TestMatchArgs:
+ 
+         C1 = make_class("C1", {"a": attr.ib(kw_only=True), "b": attr.ib()})
+         assert ("b",) == C1.__match_args__
++
++
++@pytest.mark.skipif(not PY_3_13_PLUS, reason="copy.replace() is 3.13+")
++class TestReplace:
++    """
++    Tests for __replace__ and copy.replace() integration.
++    """
++
++    def test_replace(self):
++        """
++        copy.replace() creates a new instance with changes applied.
++        """
++
++        @attr.s
++        class C:
++            a = attr.ib()
++            b = attr.ib()
++
++        i1 = C(1, 2)
++        i2 = copy.replace(i1, a=3)
++
++        assert i1 is not i2
++        assert C(3, 2) == i2
++
++    def test_no_changes(self):
++        """
++        copy.replace() without changes returns an equal but distinct copy.
++        """
++
++        @attr.s
++        class C:
++            a = attr.ib()
++
++        i1 = C(1)
++        i2 = copy.replace(i1)
++
++        assert i1 is not i2
++        assert i1 == i2
++
++    def test_explicit_replace(self):
++        """
++        A custom __replace__ is not overwritten.
++        """
++
++        @attr.s
++        class C:
++            a = attr.ib()
++
++            def __replace__(self, **changes):
++                return "not replaced"
++
++        assert "not replaced" == copy.replace(C(1), a=2)

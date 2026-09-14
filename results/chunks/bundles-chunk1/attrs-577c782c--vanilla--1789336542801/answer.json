@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 62820,
+ "num_turns": 24,
+ "stop_reason": "end_turn",
+ "session_id": "6bc01957-64fd-44ac-bb85-99ffe4b91fcb",
+ "total_cost_usd": 0.4958125000000001,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 32859,
+  "cache_read_input_tokens": 747465,
+  "output_tokens": 4914,
+  "output_tokens_details": {
+   "thinking_tokens": 560
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32859,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 331,
+    "cache_read_input_tokens": 69845,
+    "cache_creation_input_tokens": 279,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 279
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 576,
+   "outputTokens": 11,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000631,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 26,
+   "outputTokens": 4914,
+   "cacheReadInputTokens": 747465,
+   "cacheCreationInputTokens": 32859,
+   "webSearchRequests": 0,
+   "costUSD": 0.49518150000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This exactly matches the upstream commit's stats (18 additions, 4 deletions across the same 5 files \u2014 the reported \"22 total\" in the API includes context, matching here). Applied `python-attrs/attrs` commit `577c782c` (\"update ruff\"):\n\n- `.pre-commit-config.yaml`: ruff-pre-commit `v0.11.12` \u2192 `v0.12.0`\n- `pyproject.toml`: added `per-file-target-version` for `test_pattern_matching.py`, plus new lint ignores `PLC0415` and `PLW1641` needed under the updated ruff\n- `src/attr/_version_info.py`: added `__hash__` to `VersionInfo` (flagged by new `PLW1641`/hash-consistency check)\n- `tests/test_version_info.py`: renamed fixture function, added `test_hash`\n- `uv.lock`: narrowed `typing-extensions`/`zipp` markers for `exceptiongroup`/`importlib-metadata`",
+ "ttft_ms": 3064,
+ "ttft_stream_ms": 1597,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 65097,
+ "uuid": "87fe5cb5-6365-4a46-8b06-b92e5af52a15"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 42508,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "d1fb3004-af1c-4ea1-8fac-fbf5c41d2703",
+ "total_cost_usd": 0.36651750000000005,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 18748,
+  "cache_read_input_tokens": 718485,
+  "output_tokens": 2560,
+  "output_tokens_details": {
+   "thinking_tokens": 266
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18748,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 171,
+    "cache_read_input_tokens": 55351,
+    "cache_creation_input_tokens": 662,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 662
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 2560,
+   "cacheReadInputTokens": 718485,
+   "cacheCreationInputTokens": 18748,
+   "webSearchRequests": 0,
+   "costUSD": 0.36651750000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed \u2014 those 12 failures pre-exist on the unmodified `seed` commit and are unrelated to this change (a signature mismatch in `_ClassBuilder`). My change and its test pass cleanly.\n\n**Summary:** Updated the `ValueError` message in `src/attr/_make.py` (`from_counting_attr`) to include the argument name when both a type annotation and a type argument are given, updated the matching test in `tests/test_annotations.py`, and added `changelog.d/1410.change.md`.",
+ "ttft_ms": 2357,
+ "ttft_stream_ms": 1185,
+ "time_to_request_ms": 266,
+ "type": "result",
+ "duration_ms": 79611,
+ "uuid": "e8f92c64-bb62-45e3-b0dd-eeefd4ea2f1b"
+}

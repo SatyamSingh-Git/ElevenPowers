@@ -1,0 +1,37 @@
+diff --git a/changelog.d/1354.change.md b/changelog.d/1354.change.md
+new file mode 100644
+index 0000000..4b9b0ff
+--- /dev/null
++++ b/changelog.d/1354.change.md
+@@ -0,0 +1 @@
++The `ValueError` that's raised when an attribute has both a type annotation and a `type` argument now mentions the name of the offending argument.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 0c5aa0b..da4546c 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2491,7 +2491,10 @@ class Attribute:
+         if type is None:
+             type = ca.type
+         elif ca.type is not None:
+-            msg = "Type annotation and type argument cannot both be present"
++            msg = (
++                f"Type annotation and type argument cannot both be present "
++                f"for '{name}'."
++            )
+             raise ValueError(msg)
+         return cls(
+             name,
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index f37a1c0..c5f8502 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -62,7 +62,8 @@ class TestAnnotations:
+                 x: int = attr.ib(type=int)
+ 
+         assert (
+-            "Type annotation and type argument cannot both be present",
++            "Type annotation and type argument cannot both be present "
++            "for 'x'.",
+         ) == e.value.args
+ 
+     def test_typing_annotations(self):

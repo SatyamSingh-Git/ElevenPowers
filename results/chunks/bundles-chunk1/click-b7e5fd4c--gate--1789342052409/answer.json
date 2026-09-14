@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 148926,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "c9dc18dd-cbb4-49f3-b6f3-4d13ea6b353e",
+ "total_cost_usd": 1.0228298999999998,
+ "usage": {
+  "input_tokens": 60,
+  "cache_creation_input_tokens": 47474,
+  "cache_read_input_tokens": 2037053,
+  "output_tokens": 8446,
+  "output_tokens_details": {
+   "thinking_tokens": 2586
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 47474,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 360,
+    "cache_read_input_tokens": 82323,
+    "cache_creation_input_tokens": 2416,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2416
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 60,
+   "outputTokens": 8446,
+   "cacheReadInputTokens": 2037053,
+   "cacheCreationInputTokens": 47474,
+   "webSearchRequests": 0,
+   "costUSD": 1.0228298999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This matches upstream `pallets/click` PR #3504 exactly. Summary of the change:\n\n- Reverted the broken `\\n`-based fish field separator from #3126 back to `,`, and simplified the fish script's help-text branching (fish command substitution flattens real newlines, so the old separator scheme could never work).\n- `FishComplete.format_completion` now emits `type,value` or `type,value\\thelp` (per the Fish `complete` docs: comma-separated value, tab-separated description), escaping embedded `\\n` as literal `\\n` and collapsing `\\t` to a space in help text.\n- Updated `test_full_complete` fish expectations to the new `type,value\\thelp` format and removed the now-obsolete `test_fish_multiline_help_complete` test (its assumption of a 3-line-per-item newline format no longer applies).\n\nVerified with `uv run pytest tests -q`: 1562 passed, 93 skipped, 1 xfailed \u2014 the earlier failure I hit was from a stray globally-installed `click` package shadowing the repo's `src`, unrelated to this change.",
+ "ttft_ms": 4628,
+ "ttft_stream_ms": 3671,
+ "time_to_request_ms": 302,
+ "type": "result",
+ "duration_ms": 193434,
+ "uuid": "6d3828c9-6938-47ca-9dee-4a956a56ab29"
+}

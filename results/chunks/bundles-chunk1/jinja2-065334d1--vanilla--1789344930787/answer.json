@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 146042,
+ "num_turns": 28,
+ "stop_reason": "end_turn",
+ "session_id": "15203314-6394-492e-a0a8-8fb2b3f9b556",
+ "total_cost_usd": 0.8436783,
+ "usage": {
+  "input_tokens": 56,
+  "cache_creation_input_tokens": 31004,
+  "cache_read_input_tokens": 1675261,
+  "output_tokens": 7815,
+  "output_tokens_details": {
+   "thinking_tokens": 2509
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 31004,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 155,
+    "cache_read_input_tokens": 68088,
+    "cache_creation_input_tokens": 181,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 181
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 25633,
+   "outputTokens": 410,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.037683,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 56,
+   "outputTokens": 7815,
+   "cacheReadInputTokens": 1675261,
+   "cacheCreationInputTokens": 31004,
+   "webSearchRequests": 0,
+   "costUSD": 0.8059952999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream security fix (Jinja's GHSA-cpwx-vrp4-4pq7): `do_attr` in `src/jinja2/filters.py` now delegates to `environment.getattr` instead of duplicating the sandbox-check logic, closing the bypass where `|attr` skipped sandboxed attribute checks. Also added the matching `CHANGES.rst` entry. Full test suite for attr/filters/security passes against the local `src`.",
+ "ttft_ms": 4859,
+ "ttft_stream_ms": 4133,
+ "time_to_request_ms": 50,
+ "type": "result",
+ "duration_ms": 293116,
+ "uuid": "42865bdd-38d8-4ed0-ad3e-349fcc2b0461"
+}

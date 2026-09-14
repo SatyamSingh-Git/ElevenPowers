@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 127778,
+ "num_turns": 27,
+ "stop_reason": "end_turn",
+ "session_id": "b8a1a996-9cec-456e-bae6-45e203fbe1b2",
+ "total_cost_usd": 0.9664089000000001,
+ "usage": {
+  "input_tokens": 49,
+  "cache_creation_input_tokens": 52126,
+  "cache_read_input_tokens": 1767303,
+  "output_tokens": 8221,
+  "output_tokens_details": {
+   "thinking_tokens": 2182
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 52126,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 203,
+    "cache_read_input_tokens": 88871,
+    "cache_creation_input_tokens": 520,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 520
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 49,
+   "outputTokens": 8221,
+   "cacheReadInputTokens": 1767303,
+   "cacheCreationInputTokens": 52126,
+   "webSearchRequests": 0,
+   "costUSD": 0.9664089000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1350 tests pass (72 skipped, 1 xfailed \u2014 pre-existing, unrelated to this change) when run against the actual repo source instead of the globally installed `click` package. The full suite, including the three new pdb tests, is green.\n\n**Root cause of the earlier failures**: this environment has `click` 8.5.0 installed globally in site-packages, which was shadowing `src/click` on `sys.path` \u2014 so the previous runs were testing an unrelated installed version, not this repo's code (and not even including my edits). Running with `PYTHONPATH=src` prioritizes the local source, as it should for this repo.",
+ "ttft_ms": 3359,
+ "ttft_stream_ms": 2067,
+ "time_to_request_ms": 228,
+ "type": "result",
+ "duration_ms": 184350,
+ "uuid": "62ec60c5-f3e5-490c-8086-b549572b4940"
+}

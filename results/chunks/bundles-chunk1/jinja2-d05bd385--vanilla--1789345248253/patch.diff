@@ -1,0 +1,28 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index e31de85..9c7c8b5 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -41,6 +41,8 @@ Unreleased
+     contain the templates directory. :issue:`1705`
+ -   Improve annotations for methods returning copies. :pr:`1880`
+ -   ``urlize`` does not add ``mailto:`` to values like `@a@b`. :pr:`1870`
++-   ``|select`` and other selection filters pass through the ``context`` when
++    calling a test that has ``@pass_context``.
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index a92832a..b970a34 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -1780,7 +1780,9 @@ def prepare_select_or_reject(
+         args = args[1 + off :]
+ 
+         def func(item: t.Any) -> t.Any:
+-            return context.environment.call_test(name, item, args, kwargs)
++            return context.environment.call_test(
++                name, item, args, kwargs, context=context
++            )
+ 
+     except LookupError:
+         func = bool  # type: ignore

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 99192,
+ "num_turns": 21,
+ "stop_reason": "end_turn",
+ "session_id": "ff70df21-86a3-4a98-817f-d956241402ad",
+ "total_cost_usd": 0.6951736999999999,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 35048,
+  "cache_read_input_tokens": 1327559,
+  "output_tokens": 5719,
+  "output_tokens_details": {
+   "thinking_tokens": 648
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 35048,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 158,
+    "cache_read_input_tokens": 71799,
+    "cache_creation_input_tokens": 514,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 514
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 607,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007070000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 42,
+   "outputTokens": 5719,
+   "cacheReadInputTokens": 1327559,
+   "cacheCreationInputTokens": 35048,
+   "webSearchRequests": 0,
+   "costUSD": 0.6944666999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full test suite passes. The change is applied and verified: `CliRunner.isolation()` now temporarily patches `pdb.Pdb.__init__` to default to real terminal streams (`sys.__stdin__`/`sys.__stdout__`) instead of the captured `BytesIO` streams, restoring the original on exit, plus matching `CHANGES.rst`, `.pre-commit-config.yaml`, and test additions from upstream PR pallets/click#3235.",
+ "ttft_ms": 4602,
+ "ttft_stream_ms": 3141,
+ "time_to_request_ms": 104,
+ "type": "result",
+ "duration_ms": 115832,
+ "uuid": "abfc30c4-1ccf-410b-b00f-43365f5832f5"
+}

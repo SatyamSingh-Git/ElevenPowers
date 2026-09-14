@@ -1,0 +1,328 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index ec526d4..97a0d0c 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -1,8 +1,23 @@
++Version 1.1.0
++-------------
++
++Released 2018-10-26
++
++-   Change algorithm back to SHA-1
++-   Add support for fallback algorithm
++-   Changed capitalization of packages back to lowercase as the
++    change in capitalization broke some tooling.
++
+ Version 1.0.0
+ -------------
+ 
+ Released 2018-10-18
+ 
++YANKED
++
++*Note*: this release was yanked from pypi because it changed the default
++algorithm to SHA-512.  This decision was reverted and it remains at SHA1.
++
+ -   Drop support for Python 2.6 and 3.3.
+ -   Refactor code from a single module to a package. Any object in the
+     API docs is still importable from the top-level ``itsdangerous``
+diff --git a/README.rst b/README.rst
+index 84b61b3..02aad6f 100644
+--- a/README.rst
++++ b/README.rst
+@@ -19,7 +19,7 @@ Install and update using `pip`_:
+ 
+ .. code-block:: text
+ 
+-    pip install -U ItsDangerous
++    pip install -U itsdangerous
+ 
+ .. _pip: https://pip.pypa.io/en/stable/quickstart/
+ 
+@@ -33,13 +33,11 @@ name between web requests.
+ .. code-block:: python
+ 
+     from itsdangerous import URLSafeSerializer
+-
+     auth_s = URLSafeSerializer("secret key", "auth")
+     token = auth_s.dumps({"id": 5, "name": "itsdangerous"})
+ 
+     print(token)
+-    # eyJpZCI6NSwibmFtZSI6Iml0c2Rhbmdlcm91cyJ9.AmSPrPa_iZ6q-ERXXdQxt6ce8NEqt
+-    # 3i2Uke3sIRnDG0riZD6OoqckqC72VJ9SBIu-vAf_XlwNHnt7dLEClT0JA
++    # eyJpZCI6NSwibmFtZSI6Iml0c2Rhbmdlcm91cyJ9.6YP6T0BaO67XP--9UzTrmurXSmg
+ 
+     data = auth_s.loads(token)
+     print(data["name"])
+diff --git a/docs/conf.py b/docs/conf.py
+index 88f36bb..30bb3ae 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -6,7 +6,7 @@ from pallets_sphinx_themes import ProjectLink
+ project = "It's Dangerous"
+ copyright = "2011 Pallets Team"
+ author = "Pallets Team"
+-release, version = get_version("ItsDangerous")
++release, version = get_version("itsdangerous")
+ 
+ # General --------------------------------------------------------------
+ 
+@@ -22,7 +22,7 @@ html_context = {
+     "project_links": [
+         ProjectLink("Donate to Pallets", "https://palletsprojects.com/donate"),
+         ProjectLink("Website", "https://palletsprojects.com/p/itsdangerous/"),
+-        ProjectLink("PyPI releases", "https://pypi.org/project/ItsDangerous/"),
++        ProjectLink("PyPI releases", "https://pypi.org/project/itsdangerous/"),
+         ProjectLink("Source Code", "https://github.com/pallets/itsdangerous/"),
+         ProjectLink("Issue Tracker", "https://github.com/pallets/itsdangerous/issues/"),
+     ]
+diff --git a/docs/index.rst b/docs/index.rst
+index 6db655a..5b3a1eb 100644
+--- a/docs/index.rst
++++ b/docs/index.rst
+@@ -30,7 +30,7 @@ Install and update using `pip`_:
+ 
+ .. code-block:: text
+ 
+-    pip install -U ItsDangerous
++    pip install -U itsdangerous
+ 
+ .. _pip: https://pip.pypa.io/en/stable/quickstart/
+ 
+diff --git a/setup.py b/setup.py
+index e9d56cc..6cdcf7b 100644
+--- a/setup.py
++++ b/setup.py
+@@ -11,7 +11,7 @@ with io.open("src/itsdangerous/__init__.py", "rt", encoding="utf8") as f:
+     version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
+ 
+ setup(
+-    name="ItsDangerous",
++    name="itsdangerous",
+     version=version,
+     url="https://palletsprojects.com/p/itsdangerous/",
+     project_urls={
+diff --git a/src/itsdangerous/serializer.py b/src/itsdangerous/serializer.py
+index 1e764d5..3b6e16d 100644
+--- a/src/itsdangerous/serializer.py
++++ b/src/itsdangerous/serializer.py
+@@ -32,9 +32,29 @@ class Serializer(object):
+ 
+         s = Serializer(signer_kwargs={'key_derivation': 'hmac'})
+ 
++    Additionally as of 1.1 fallback signers can be defined by providing
++    a list as `fallback_signers`.  These are used for deserialization as a
++    fallback.  Each item can be one of the following:
++    a signer class (which is instantiated with `signer_kwargs`, salt and
++    secret key), a tuple `(signer_class, signer_kwargs)` or just `signer_kwargs`.
++    If kwargs are provided they need to be a dict.
++
++    For instance this is a serializer that supports deserialization that
++    supports both SHA1 and SHA512:
++
++    .. code-block:: python3
++
++        s = Serializer(
++            signer_kwargs={'digest_method': hashlib.sha512},
++            fallback_signers=[{'digest_method': hashlib.sha1}]
++        )
++
+     .. versionchanged:: 0.14:
+         The ``signer`` and ``signer_kwargs`` parameters were added to
+         the constructor.
++
++    .. versionchanged:: 1.1:
++        Added support for `fallback_signers`.
+     """
+ 
+     #: If a serializer module or class is not passed to the constructor
+@@ -55,6 +75,7 @@ class Serializer(object):
+         serializer_kwargs=None,
+         signer=None,
+         signer_kwargs=None,
++        fallback_signers=None,
+     ):
+         self.secret_key = want_bytes(secret_key)
+         self.salt = want_bytes(salt)
+@@ -66,6 +87,7 @@ class Serializer(object):
+             signer = self.default_signer
+         self.signer = signer
+         self.signer_kwargs = signer_kwargs or {}
++        self.fallback_signers = fallback_signers or ()
+         self.serializer_kwargs = serializer_kwargs or {}
+ 
+     def load_payload(self, payload, serializer=None):
+@@ -106,6 +128,21 @@ class Serializer(object):
+             salt = self.salt
+         return self.signer(self.secret_key, salt=salt, **self.signer_kwargs)
+ 
++    def iter_unsigners(self, salt=None):
++        """Iterates over all signers for unsigning."""
++        if salt is None:
++            salt = self.salt
++        yield self.make_signer(salt)
++        for fallback in self.fallback_signers:
++            if type(fallback) is dict:
++                kwargs = fallback
++                fallback = self.signer
++            elif type(fallback) is tuple:
++                fallback, kwargs = fallback
++            else:
++                kwargs = self.signer_kwargs
++            yield fallback(self.secret_key, salt=salt, **kwargs)
++
+     def dumps(self, obj, salt=None):
+         """Returns a signed string serialized with the internal
+         serializer. The return value can be either a byte or unicode
+@@ -128,7 +165,13 @@ class Serializer(object):
+         signature validation fails.
+         """
+         s = want_bytes(s)
+-        return self.load_payload(self.make_signer(salt).unsign(s))
++        last_exception = None
++        for signer in self.iter_unsigners(salt):
++            try:
++                return self.load_payload(signer.unsign(s))
++            except BadSignature as err:
++                last_exception = err
++        raise last_exception
+ 
+     def load(self, f, salt=None):
+         """Like :meth:`loads` but loads from a file."""
+diff --git a/src/itsdangerous/signer.py b/src/itsdangerous/signer.py
+index 5b3d6c3..6bddc03 100644
+--- a/src/itsdangerous/signer.py
++++ b/src/itsdangerous/signer.py
+@@ -38,12 +38,9 @@ class HMACAlgorithm(SigningAlgorithm):
+     """Provides signature generation using HMACs."""
+ 
+     #: The digest method to use with the MAC algorithm. This defaults to
+-    #: SHA-512, but can be changed to any other function in the hashlib
++    #: SHA1, but can be changed to any other function in the hashlib
+     #: module.
+-    #:
+-    #: .. versionchanged:: 1.0
+-    #:     The default was changed from SHA-1 to SHA-512.
+-    default_digest_method = staticmethod(hashlib.sha512)
++    default_digest_method = staticmethod(hashlib.sha1)
+ 
+     def __init__(self, digest_method=None):
+         if digest_method is None:
+@@ -77,14 +74,11 @@ class Signer(object):
+     """
+ 
+     #: The digest method to use for the signer.  This defaults to
+-    #: SHA-512 but can be changed to any other function in the hashlib
++    #: SHA1 but can be changed to any other function in the hashlib
+     #: module.
+     #:
+-    #: .. versionchanged:: 1.0
+-    #:     The default was changed from SHA-1 to SHA-512.
+-    #:
+     #: .. versionadded:: 0.14
+-    default_digest_method = staticmethod(hashlib.sha512)
++    default_digest_method = staticmethod(hashlib.sha1)
+ 
+     #: Controls how the key is derived. The default is Django-style
+     #: concatenation. Possible values are ``concat``, ``django-concat``
+diff --git a/src/itsdangerous/timed.py b/src/itsdangerous/timed.py
+index 3599a7e..b106c5a 100644
+--- a/src/itsdangerous/timed.py
++++ b/src/itsdangerous/timed.py
+@@ -123,13 +123,18 @@ class TimedSerializer(Serializer):
+         raised. All arguments are forwarded to the signer's
+         :meth:`~TimestampSigner.unsign` method.
+         """
+-        base64d, timestamp = self.make_signer(salt).unsign(
+-            s, max_age, return_timestamp=True
+-        )
+-        payload = self.load_payload(base64d)
+-        if return_timestamp:
+-            return payload, timestamp
+-        return payload
++        s = want_bytes(s)
++        last_exception = None
++        for signer in self.iter_unsigners(salt):
++            try:
++                base64d, timestamp = signer.unsign(s, max_age, return_timestamp=True)
++                payload = self.load_payload(base64d)
++                if return_timestamp:
++                    return payload, timestamp
++                return payload
++            except BadSignature as err:
++                last_exception = err
++        raise last_exception
+ 
+     def loads_unsafe(self, s, max_age=None, salt=None):
+         load_kwargs = {"max_age": max_age}
+diff --git a/tests/test_itsdangerous/test_serializer.py b/tests/test_itsdangerous/test_serializer.py
+index 465d507..485dcca 100644
+--- a/tests/test_itsdangerous/test_serializer.py
++++ b/tests/test_itsdangerous/test_serializer.py
+@@ -1,3 +1,4 @@
++import hashlib
+ import pickle
+ from functools import partial
+ from io import BytesIO
+@@ -131,3 +132,36 @@ class TestSerializer(object):
+             return
+ 
+         assert serializer.loads(serializer.dumps({(): 1})) == {}
++
++    def test_fallback_signers(self):
++        serializer = Serializer(
++            secret_key="foo", signer_kwargs={"digest_method": hashlib.sha512}
++        )
++        value = serializer.dumps([1, 2, 3])
++        fallback_serializer = Serializer(
++            secret_key="foo",
++            signer_kwargs={"digest_method": hashlib.sha1},
++            fallback_signers=[{"digest_method": hashlib.sha512}],
++        )
++        assert fallback_serializer.loads(value) == [1, 2, 3]
++
++    def test_digests(self):
++        default_value = Serializer(
++            secret_key="dev key", salt="dev salt", signer_kwargs={}
++        ).dumps([42])
++        sha1_value = Serializer(
++            secret_key="dev key",
++            salt="dev salt",
++            signer_kwargs={"digest_method": hashlib.sha1},
++        ).dumps([42])
++        sha512_value = Serializer(
++            secret_key="dev key",
++            salt="dev salt",
++            signer_kwargs={"digest_method": hashlib.sha512},
++        ).dumps([42])
++        assert default_value == sha1_value
++        assert sha1_value == "[42].-9cNi0CxsSB3hZPNCe9a2eEs1ZM"
++        assert sha512_value == (
++            "[42].MKCz_0nXQqv7wKpfHZcRtJRmpT2T5uvs9YQsJEhJimqxc"
++            "9bCLxG31QzS5uC8OVBI1i6jyOLAFNoKaF5ckO9L5Q"
++        )
+diff --git a/tests/test_itsdangerous/test_timed.py b/tests/test_itsdangerous/test_timed.py
+index 71ac8d9..69eb6f8 100644
+--- a/tests/test_itsdangerous/test_timed.py
++++ b/tests/test_itsdangerous/test_timed.py
+@@ -1,3 +1,4 @@
++import hashlib
+ from datetime import datetime
+ from datetime import timedelta
+ from functools import partial
+@@ -84,3 +85,15 @@ class TestTimedSerializer(FreezeMixin, TestSerializer):
+     def test_return_payload(self, serializer, value, ts):
+         signed = serializer.dumps(value)
+         assert serializer.loads(signed, return_timestamp=True) == (value, ts)
++
++    def test_fallback_signers(self):
++        serializer = TimedSerializer(
++            secret_key="foo", signer_kwargs={"digest_method": hashlib.sha512}
++        )
++        value = serializer.dumps([1, 2, 3])
++        fallback_serializer = TimedSerializer(
++            secret_key="foo",
++            signer_kwargs={"digest_method": hashlib.sha1},
++            fallback_signers=[{"digest_method": hashlib.sha512}],
++        )
++        assert fallback_serializer.loads(value) == [1, 2, 3]

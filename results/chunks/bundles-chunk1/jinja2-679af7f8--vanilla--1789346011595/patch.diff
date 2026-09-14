@@ -1,0 +1,71 @@
+diff --git a/src/jinja2/loaders.py b/src/jinja2/loaders.py
+index 9eaf647..d1a8565 100644
+--- a/src/jinja2/loaders.py
++++ b/src/jinja2/loaders.py
+@@ -238,6 +238,31 @@ class FileSystemLoader(BaseLoader):
+         return sorted(found)
+ 
+ 
++if sys.version_info >= (3, 13):
++
++    def _get_zipimporter_files(z: t.Any) -> t.Dict[str, object]:
++        try:
++            get_files = z._get_files
++        except AttributeError as e:
++            raise TypeError(
++                "This zip import does not have the required"
++                " metadata to list templates."
++            ) from e
++        return get_files()
++
++else:
++
++    def _get_zipimporter_files(z: t.Any) -> t.Dict[str, object]:
++        try:
++            files = z._files
++        except AttributeError as e:
++            raise TypeError(
++                "This zip import does not have the required"
++                " metadata to list templates."
++            ) from e
++        return files  # type: ignore[no-any-return]
++
++
+ class PackageLoader(BaseLoader):
+     """Load templates from a directory in a Python package.
+ 
+@@ -382,11 +407,7 @@ class PackageLoader(BaseLoader):
+                     for name in filenames
+                 )
+         else:
+-            if not hasattr(self._loader, "_files"):
+-                raise TypeError(
+-                    "This zip import does not have the required"
+-                    " metadata to list templates."
+-                )
++            files = _get_zipimporter_files(self._loader)
+ 
+             # Package is a zip file.
+             prefix = (
+@@ -395,7 +416,7 @@ class PackageLoader(BaseLoader):
+             )
+             offset = len(prefix)
+ 
+-            for name in self._loader._files.keys():
++            for name in files:
+                 # Find names under the templates directory that aren't directories.
+                 if name.startswith(prefix) and name[-1] != os.path.sep:
+                     results.append(name[offset:].replace(os.path.sep, "/"))
+diff --git a/tests/test_loader.py b/tests/test_loader.py
+index 3e64f62..e0cff67 100644
+--- a/tests/test_loader.py
++++ b/tests/test_loader.py
+@@ -363,7 +363,7 @@ def test_package_zip_source(package_zip_loader, template, expect):
+ 
+ 
+ @pytest.mark.xfail(
+-    sys.implementation.name == "pypy" or sys.version_info > (3, 13),
++    sys.implementation.name == "pypy",
+     reason="zipimporter doesn't have a '_files' attribute",
+     raises=TypeError,
+ )

@@ -1,0 +1,60 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index e31de85..874c6c1 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -41,6 +41,9 @@ Unreleased
+     contain the templates directory. :issue:`1705`
+ -   Improve annotations for methods returning copies. :pr:`1880`
+ -   ``urlize`` does not add ``mailto:`` to values like `@a@b`. :pr:`1870`
++-   The ``select``, ``reject``, ``selectattr``, and ``rejectattr`` filters pass
++    the current context to the test they call, allowing tests decorated with
++    ``@pass_context`` to be used.
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index a92832a..b970a34 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -1780,7 +1780,9 @@ def prepare_select_or_reject(
+         args = args[1 + off :]
+ 
+         def func(item: t.Any) -> t.Any:
+-            return context.environment.call_test(name, item, args, kwargs)
++            return context.environment.call_test(
++                name, item, args, kwargs, context=context
++            )
+ 
+     except LookupError:
+         func = bool  # type: ignore
+diff --git a/tests/test_filters.py b/tests/test_filters.py
+index 2cb53ac..0e32bdb 100644
+--- a/tests/test_filters.py
++++ b/tests/test_filters.py
+@@ -5,6 +5,7 @@ import pytest
+ from markupsafe import Markup
+ 
+ from jinja2 import Environment
++from jinja2 import pass_context
+ from jinja2 import StrictUndefined
+ from jinja2 import TemplateRuntimeError
+ from jinja2 import UndefinedError
+@@ -813,6 +814,18 @@ class TestFilter:
+         )
+         assert tmpl.render(users=users) == "jane"
+ 
++    def test_select_pass_context(self, env):
++        def is_default(context, value):
++            return value == context.resolve("default_value")
++
++        env = Environment()
++        env.tests["is_default"] = pass_context(is_default)
++        tmpl = env.from_string(
++            "{% set default_value = 2 %}"
++            '{{ [1, 2, 3]|select("is_default")|join("|") }}'
++        )
++        assert tmpl.render() == "2"
++
+     def test_json_dump(self):
+         env = Environment(autoescape=True)
+         t = env.from_string("{{ x|tojson }}")

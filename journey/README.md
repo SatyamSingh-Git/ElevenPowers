@@ -37,6 +37,7 @@ command in this repository and can be reproduced.
 | [22-instrument.md](22-instrument.md) | Phase B2 and B3: a score that refuses to run unpinned, an interval over tasks rather than runs, and a taxonomy whose every category can be opened |
 | [23-spend.md](23-spend.md) | Phase B4: the four defects a unit test cannot find, a grader asked five questions on somebody else's code, and the first run allowed to cost money |
 | [24-move.md](24-move.md) | A corpus of 15 that could not move becomes 49 that can, why its size had been set by a default and an unhandled encoding, and a second agent that uninstalled a package from the machine mid-measurement |
+| [25-treatment.md](25-treatment.md) | The first paired comparison: eleven of thirteen tasks agreed, the one that disagreed had no gate block on it, and the treatment turned out to apply to one run in twelve |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -237,6 +238,8 @@ Every figure below comes from a command in this repository.
 | Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show results/b4-passA-regraded.json` |
 | Every grade recomputed from its bundle | pass A 0 of 45 changed; pass B 9 of 45, all of them an agent's editable install breaking a later task | `python -m eval.baseline --regrade results/b4-passB.json results/bundles-B` |
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
+| First paired chunk | 52 runs, $51.60: vanilla 23/26, gate 25/26, and **1 discordant pair of 13 tasks** | `python -m eval.baseline --show results/chunks/chunk1.json` |
+| How often the treatment applies | the gate blocked in 2 of 26 gated runs, and in 0 of the runs on the one discordant task | `python -m eval.failures results/chunks/bundles-chunk1` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
 | Tests | 502 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |

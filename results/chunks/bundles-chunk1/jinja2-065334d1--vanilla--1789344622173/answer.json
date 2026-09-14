@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 116210,
+ "num_turns": 29,
+ "stop_reason": "end_turn",
+ "session_id": "e98f742c-ee7c-49ef-af24-a8333d4fab27",
+ "total_cost_usd": 0.9781139000000001,
+ "usage": {
+  "input_tokens": 58,
+  "cache_creation_input_tokens": 43879,
+  "cache_read_input_tokens": 1952103,
+  "output_tokens": 8558,
+  "output_tokens_details": {
+   "thinking_tokens": 3518
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 43879,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 320,
+    "cache_read_input_tokens": 80761,
+    "cache_creation_input_tokens": 383,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 383
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 580,
+   "outputTokens": 17,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000665,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 58,
+   "outputTokens": 8558,
+   "cacheReadInputTokens": 1952103,
+   "cacheCreationInputTokens": 43879,
+   "webSearchRequests": 0,
+   "costUSD": 0.9774489000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 909 tests pass. I applied the upstream Jinja2 security fix (GHSA-cpwx-vrp4-4pq7):\n\n- `src/jinja2/filters.py`: `do_attr` now delegates to `environment.getattr()` instead of doing a raw `getattr()` + manual sandbox check. This ensures the `SandboxedEnvironment`'s overridden `getattr` (which wraps `str.format`/`format_map` and applies `is_safe_attribute`) is actually used, closing a bypass where `{{ obj|attr(\"format\") }}` could reach unwrapped format methods in sandboxed templates. `getattr_static` is used first to check attribute existence without triggering descriptors, preserving `attr`'s \"no item-lookup fallback\" semantics.\n- `CHANGES.rst`: added the changelog entry.\n- `tests/test_security.py`: added the upstream regression test demonstrating the sandbox bypass is closed.",
+ "ttft_ms": 1924,
+ "ttft_stream_ms": 1060,
+ "time_to_request_ms": 37,
+ "type": "result",
+ "duration_ms": 124913,
+ "uuid": "18f5a05f-8d1b-4a40-9f91-63ee9ee0c20e"
+}

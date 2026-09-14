@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 146855,
+ "num_turns": 35,
+ "stop_reason": "end_turn",
+ "session_id": "46ea752d-0432-465a-8524-57711cf02f3a",
+ "total_cost_usd": 0.9510586000000001,
+ "usage": {
+  "input_tokens": 70,
+  "cache_creation_input_tokens": 32749,
+  "cache_read_input_tokens": 2138982,
+  "output_tokens": 7463,
+  "output_tokens_details": {
+   "thinking_tokens": 1078
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32749,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 255,
+    "cache_read_input_tokens": 69625,
+    "cache_creation_input_tokens": 389,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 389
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 645,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007149999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 70,
+   "outputTokens": 7463,
+   "cacheReadInputTokens": 2138982,
+   "cacheCreationInputTokens": 32749,
+   "webSearchRequests": 0,
+   "costUSD": 0.9503436000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Matches the doc example exactly. The change is fully applied and verified:\n\n- `src/attr/_make.py`: renamed `_CountingAttr.converter` slot/attribute to `_converter`, added a new `converter()` decorator method (mirrors `validator`), updated `from_counting_attr` to read `ca._converter`.\n- `docs/init.md`: added the decorator usage example.\n- `tests/test_make.py`: added `test_converter_decorator_single`, `test_converter_decorator`, and `test_converter_decorated`.\n- `tests/test_mypy.yml`: added `testAttrsConverterDecorator` case.\n- `changelog.d/240.change.md`: added changelog fragment.\n\nAll new and existing tests pass against the local `src` tree.",
+ "ttft_ms": 5335,
+ "ttft_stream_ms": 3062,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 171086,
+ "uuid": "a5d128cc-886b-4016-8178-c416d32554ea"
+}

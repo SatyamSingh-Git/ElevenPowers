@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 303074,
+ "num_turns": 51,
+ "stop_reason": "end_turn",
+ "session_id": "62267600-1691-4b31-a745-71fe0d0d7e0e",
+ "total_cost_usd": 1.7428505999999995,
+ "usage": {
+  "input_tokens": 102,
+  "cache_creation_input_tokens": 58693,
+  "cache_read_input_tokens": 3714922,
+  "output_tokens": 18348,
+  "output_tokens_details": {
+   "thinking_tokens": 7851
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 58693,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 488,
+    "cache_read_input_tokens": 95516,
+    "cache_creation_input_tokens": 442,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 442
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 610,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00069,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 102,
+   "outputTokens": 18348,
+   "cacheReadInputTokens": 3714922,
+   "cacheCreationInputTokens": 58693,
+   "webSearchRequests": 0,
+   "costUSD": 1.7421605999999994,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream fix for click's fish shell completion regression. Summary of changes:\n\n- **`src/click/shell_completion.py`**: Reworked `FishComplete.format_completion` to go back to the pre-8.4.0, single-line `type,value\\thelp` format (matching fish's documented `complete` convention of newline-separated arguments with a tab-separated description) instead of the broken 3-line `type\\nvalue\\nhelp` scheme from #3126, which corrupted the fish script's line-based parsing for any completion list with more than one item. Newlines in help text are escaped to `\\n` and tabs replaced with spaces so multi-line help still renders on one line. Simplified the fish script itself (`_SOURCE_FISH`) to split on `,` instead of re-splitting on already-consumed newlines.\n- **`tests/test_shell_completion.py`**: Updated expected output for the format change, removed the now-obsolete `test_fish_multiline_help_complete` test (which only \"passed\" by coincidence with a single item), and added `test_fish_format_completion_escapes_help` verifying newline/tab escaping directly.\n- **`CHANGES.rst`**: Added the changelog entry for 8.4.2 referencing the original regression and issues #3502/#3043.\n\nAll 54 tests in `test_shell_completion.py` pass; the full suite's remaining failures are pre-existing/unrelated (deprecation warnings, environment issues) and untouched by this change.",
+ "ttft_ms": 3137,
+ "ttft_stream_ms": 1810,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 452909,
+ "uuid": "b910131e-768c-41d6-8039-954e3acdf625"
+}

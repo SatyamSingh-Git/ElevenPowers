@@ -1,0 +1,85 @@
+{
+  "task": "",
+  "request": "Make this change to the repository in the current directory.\n\nWhat follows is the message from the commit that made it upstream, written\nafter the fact by its author. The change itself has not been made here: the\ncode in front of you is the state before it.\n\nAdded fallback signers and switch back to sha1",
+  "claims": [
+    "feature_added"
+  ],
+  "risk": "medium",
+  "domains": [],
+  "touched": [
+    "CHANGES.rst",
+    "setup.py",
+    "src/itsdangerous/__init__.py",
+    "src/itsdangerous/serializer.py",
+    "src/itsdangerous/signer.py",
+    "src/itsdangerous/timed.py",
+    "tests/test_itsdangerous/test_jws.py",
+    "tests/test_itsdangerous/test_serializer.py"
+  ],
+  "seen": [
+    "C:/Users/Satyam/AppData/Roaming/Python/Python313/site-packages/itsdangerous/serializer.py",
+    "CHANGES.rst",
+    "docs/serializer.rst",
+    "setup.py",
+    "src/itsdangerous/__init__.py",
+    "src/itsdangerous/serializer.py",
+    "src/itsdangerous/signer.py",
+    "src/itsdangerous/timed.py",
+    "tests/test_itsdangerous/test_jws.py",
+    "tests/test_itsdangerous/test_serializer.py"
+  ],
+  "evidence": [
+    {
+      "kind": "test_suite",
+      "identity": "python pytest",
+      "result": "pass",
+      "observed": [
+        ".pre-commit-config.yaml",
+        ".travis.yml",
+        "conftest.py",
+        "docs/conf.py",
+        "docs/requirements.txt",
+        "setup.py",
+        "src/itsdangerous/__init__.py",
+        "src/itsdangerous/_compat.py",
+        "src/itsdangerous/_json.py",
+        "src/itsdangerous/encoding.py",
+        "src/itsdangerous/exc.py",
+        "src/itsdangerous/jws.py",
+        "src/itsdangerous/serializer.py",
+        "src/itsdangerous/signer.py",
+        "src/itsdangerous/timed.py",
+        "src/itsdangerous/url_safe.py",
+        "tests/test_itsdangerous/__init__.py",
+        "tests/test_itsdangerous/test_compat.py",
+        "tests/test_itsdangerous/test_encoding.py",
+        "tests/test_itsdangerous/test_jws.py",
+        "tests/test_itsdangerous/test_serializer.py",
+        "tests/test_itsdangerous/test_signer.py",
+        "tests/test_itsdangerous/test_timed.py",
+        "tests/test_itsdangerous/test_url_safe.py"
+      ],
+      "tree": "e26d5dcffbfc5fe9",
+      "command": "cd \"C:/Users/Satyam/AppData/Local/Temp/tmpv8sxzvdv\" && python -m pytest tests -q 2>&1 | tail -40",
+      "detail": "return datetime.utcfromtimestamp(int(rv)) | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html | 417 passed, 107 warnings in 1.97s",
+      "passed": 417,
+      "failed": 0,
+      "at": 1789344199.362393,
+      "run": "",
+      "runs": 0,
+      "vcs": "6aa1eabc2dbe3853",
+      "counted": true,
+      "scope": "source"
+    }
+  ],
+  "decisions": [
+    {
+      "what": "claim opened by an edit",
+      "why": "src/itsdangerous/signer.py changed with no claim stated",
+      "at": 1789344120.7210407
+    }
+  ],
+  "blocks": 0,
+  "guided": true,
+  "created": 1789343985.6851566
+}

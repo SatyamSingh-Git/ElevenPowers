@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 244277,
+ "num_turns": 54,
+ "stop_reason": "end_turn",
+ "session_id": "eb16f5ee-f61c-4848-b725-c45e050b2c2c",
+ "total_cost_usd": 1.4225428999999998,
+ "usage": {
+  "input_tokens": 92,
+  "cache_creation_input_tokens": 45296,
+  "cache_read_input_tokens": 3118993,
+  "output_tokens": 14271,
+  "output_tokens_details": {
+   "thinking_tokens": 4731
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 45296,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 357,
+    "cache_read_input_tokens": 81787,
+    "cache_creation_input_tokens": 774,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 774
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 633,
+   "outputTokens": 19,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000728,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 92,
+   "outputTokens": 14271,
+   "cacheReadInputTokens": 3118993,
+   "cacheCreationInputTokens": 45296,
+   "webSearchRequests": 0,
+   "costUSD": 1.4218148999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This is a clean, minimal, working implementation. Summary of changes:\n\n- **`src/attr/_make.py`**: added `add_replace()` to `_ClassBuilder` and a `_make_replace()` helper that generates `__replace__` delegating to `attrs.evolve()`; wired it into the `attrs()` decorator, gated on `PY_3_13_PLUS`, skipping classes that already define their own `__replace__`.\n- **`tests/test_make.py`**: added a `TestReplace` class covering `copy.replace()` on plain and frozen attrs classes, plus respecting an explicit user-defined `__replace__`.\n- **`docs/api.rst`**: added a tip under `attrs.evolve` pointing to `copy.replace`/`object.__replace__` on 3.13+.\n- **`changelog.d/1383.change.md`**: news fragment.\n\nVerified on Python 3.13 (`copy.replace` works, respects overrides) and 3.11 (`__replace__` correctly absent); full test suite passes on 3.13 (1338 passed).",
+ "ttft_ms": 3120,
+ "ttft_stream_ms": 2420,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 409982,
+ "uuid": "05e57cf9-010f-49d9-a5e2-94fbbb338446"
+}

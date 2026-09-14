@@ -1,0 +1,59 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index e31de85..7d2f463 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -37,6 +37,9 @@ Unreleased
+ -   ``Environment.overlay(enable_async)`` is applied correctly. :pr:`2061`
+ -   The error message from ``FileSystemLoader`` includes the paths that were
+     searched. :issue:`1661`
++-   ``|select``, ``|reject``, ``|selectattr``, and ``|rejectattr`` filters
++    pass ``context`` to tests, allowing use of tests decorated with
++    ``@pass_context``.
+ -   ``PackageLoader`` shows a clearer error message when the package does not
+     contain the templates directory. :issue:`1705`
+ -   Improve annotations for methods returning copies. :pr:`1880`
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index a92832a..b970a34 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -1780,7 +1780,9 @@ def prepare_select_or_reject(
+         args = args[1 + off :]
+ 
+         def func(item: t.Any) -> t.Any:
+-            return context.environment.call_test(name, item, args, kwargs)
++            return context.environment.call_test(
++                name, item, args, kwargs, context=context
++            )
+ 
+     except LookupError:
+         func = bool  # type: ignore
+diff --git a/tests/test_filters.py b/tests/test_filters.py
+index 2cb53ac..6cd1579 100644
+--- a/tests/test_filters.py
++++ b/tests/test_filters.py
+@@ -5,6 +5,7 @@ import pytest
+ from markupsafe import Markup
+ 
+ from jinja2 import Environment
++from jinja2 import pass_context
+ from jinja2 import StrictUndefined
+ from jinja2 import TemplateRuntimeError
+ from jinja2 import UndefinedError
+@@ -751,6 +752,17 @@ class TestFilter:
+         tmpl = env.from_string('{{ [none, false, 0, 1, 2, 3, 4, 5]|select|join("|") }}')
+         assert tmpl.render() == "1|2|3|4|5"
+ 
++    def test_select_context(self, env):
++        env = Environment()
++
++        @pass_context
++        def is_selected(context, value):
++            return value == context["selected"]
++
++        env.tests["selected"] = is_selected
++        tmpl = env.from_string('{{ [1, 2, 3]|select("selected")|join("|") }}')
++        assert tmpl.render(selected=2) == "2"
++
+     def test_simple_reject(self, env):
+         env = Environment()
+         tmpl = env.from_string('{{ [1, 2, 3, 4, 5]|reject("odd")|join("|") }}')

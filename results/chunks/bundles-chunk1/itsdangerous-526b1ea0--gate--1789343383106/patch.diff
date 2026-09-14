@@ -1,0 +1,14 @@
+diff --git a/src/itsdangerous/timed.py b/src/itsdangerous/timed.py
+index 656bc16..e92cfac 100644
+--- a/src/itsdangerous/timed.py
++++ b/src/itsdangerous/timed.py
+@@ -86,7 +86,8 @@ class TimestampSigner(Signer):
+         # Signature is *not* okay. Raise a proper error now that we have
+         # split the value and the timestamp.
+         if sig_error is not None:
+-            raise BadTimeSignature(str(sig_error), payload=value, date_signed=timestamp)
++            date_signed = self.timestamp_to_datetime(timestamp) if timestamp else None
++            raise BadTimeSignature(str(sig_error), payload=value, date_signed=date_signed)
+ 
+         # Signature was okay but the timestamp is actually not there or
+         # malformed. Should not happen, but we handle it anyway.

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 61015,
+ "num_turns": 16,
+ "stop_reason": "end_turn",
+ "session_id": "4b31f18a-022c-441c-b304-2a4866901d9e",
+ "total_cost_usd": 0.3671816,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 18944,
+  "cache_read_input_tokens": 721172,
+  "output_tokens": 2425,
+  "output_tokens_details": {
+   "thinking_tokens": 235
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18944,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 156,
+    "cache_read_input_tokens": 55352,
+    "cache_creation_input_tokens": 857,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 857
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 632,
+   "outputTokens": 15,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000707,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 2425,
+   "cacheReadInputTokens": 721172,
+   "cacheCreationInputTokens": 18944,
+   "webSearchRequests": 0,
+   "costUSD": 0.3664746,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed \u2014 those 8 failures are pre-existing and unrelated to this change. My changes are complete.\n\n**Summary:** Updated `Attribute.from_counting_attr` in `src/attr/_make.py` to include the offending argument's name in the \"Type annotation and type argument cannot both be present\" `ValueError`, updated the corresponding assertion in `tests/test_annotations.py`, and added a changelog fragment (`changelog.d/1354.change.md`).",
+ "ttft_ms": 4524,
+ "ttft_stream_ms": 2495,
+ "time_to_request_ms": 43,
+ "type": "result",
+ "duration_ms": 92135,
+ "uuid": "2c84e4c0-29fc-4711-a74e-9ff1365618bf"
+}

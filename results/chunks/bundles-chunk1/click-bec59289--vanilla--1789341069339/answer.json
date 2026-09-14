@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 171737,
+ "num_turns": 37,
+ "stop_reason": "end_turn",
+ "session_id": "e2da8789-4048-4252-9d98-eb0834b655fb",
+ "total_cost_usd": 1.1446306000000002,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 40975,
+  "cache_read_input_tokens": 2341682,
+  "output_tokens": 13024,
+  "output_tokens_details": {
+   "thinking_tokens": 4999
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 40975,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 304,
+    "cache_read_input_tokens": 75998,
+    "cache_creation_input_tokens": 2242,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2242
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 604,
+   "outputTokens": 18,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006940000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 13024,
+   "cacheReadInputTokens": 2341682,
+   "cacheCreationInputTokens": 40975,
+   "webSearchRequests": 0,
+   "costUSD": 1.1439366,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The change resolves `package_name` for `version_option` correctly when the importable top-level module name doesn't match the installed distribution name (e.g. `yaml` vs `PyYAML`), using `importlib.metadata.packages_distributions()` for the mapping, falling back to the old module-name behavior when the mapping is missing or ambiguous.\n\nSummary of changes:\n- `src/click/decorators.py`: `version_option` now maps the detected top-level module name to its distribution name via `importlib.metadata.packages_distributions()` when unambiguous.\n- `CHANGES.md`: added changelog entry referencing issues #1884, #2331, #3125.\n- `tests/test_command_decorators.py`: added tests covering the mapped case and the ambiguous-fallback case.\n\nAll 1590 tests pass (via `uv run pytest`, which builds the local package into a venv rather than using a stale globally-installed `click`).",
+ "ttft_ms": 3391,
+ "ttft_stream_ms": 2017,
+ "time_to_request_ms": 34,
+ "type": "result",
+ "duration_ms": 196944,
+ "uuid": "21d1bb62-4af5-4e7d-9595-0f2d7e1ce211"
+}

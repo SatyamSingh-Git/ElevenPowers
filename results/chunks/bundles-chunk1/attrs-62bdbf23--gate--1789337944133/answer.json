@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 252669,
+ "num_turns": 52,
+ "stop_reason": "end_turn",
+ "session_id": "9c73f006-6b0e-4a69-884a-4e83c930a07d",
+ "total_cost_usd": 1.5586242000000001,
+ "usage": {
+  "input_tokens": 104,
+  "cache_creation_input_tokens": 47203,
+  "cache_read_input_tokens": 3587814,
+  "output_tokens": 13250,
+  "output_tokens_details": {
+   "thinking_tokens": 4774
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 47203,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 338,
+    "cache_read_input_tokens": 84118,
+    "cache_creation_input_tokens": 350,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 350
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 104,
+   "outputTokens": 13250,
+   "cacheReadInputTokens": 3587814,
+   "cacheCreationInputTokens": 47203,
+   "webSearchRequests": 0,
+   "costUSD": 1.5586242000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Implemented `__replace__` support for `copy.replace()` on Python 3.13+:\n\n- **`src/attr/_make.py`**: added `_make_replace()` (delegates to `attrs.evolve()`, with a deferred import to avoid the `_make`/`_funcs` circular import) and `_ClassBuilder.add_replace()`; wired it into `attrs()` gated on `PY_3_13_PLUS` and skipped if the class defines its own `__replace__`.\n- **`docs/api.rst`**: added a tip under `evolve` pointing to `copy.replace()`.\n- **`tests/test_make.py`**: added `TestReplace` covering basic replace, `init=False` fields being left alone, and that an explicit `__replace__` isn't clobbered.\n- **`changelog.d/1383.change.md`**: news fragment.\n\nFull test suite passes (1338 passed, 4 skipped, 1 xfailed), and manually verified it works with slotted, private-attribute, and frozen classes.",
+ "ttft_ms": 3390,
+ "ttft_stream_ms": 2562,
+ "time_to_request_ms": 265,
+ "type": "result",
+ "duration_ms": 301524,
+ "uuid": "fadc687a-6e9a-4837-8d5a-1d142e899290"
+}

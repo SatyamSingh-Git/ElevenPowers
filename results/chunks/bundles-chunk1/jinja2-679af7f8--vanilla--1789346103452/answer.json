@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 72626,
+ "num_turns": 17,
+ "stop_reason": "end_turn",
+ "session_id": "8fb0daed-449d-467a-b965-2f488ab461d0",
+ "total_cost_usd": 0.4731369,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 22906,
+  "cache_read_input_tokens": 905243,
+  "output_tokens": 4222,
+  "output_tokens_details": {
+   "thinking_tokens": 921
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22906,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 321,
+    "cache_read_input_tokens": 59830,
+    "cache_creation_input_tokens": 341,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 341
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 586,
+   "outputTokens": 22,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000696,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 4222,
+   "cacheReadInputTokens": 905243,
+   "cacheCreationInputTokens": 22906,
+   "webSearchRequests": 0,
+   "costUSD": 0.4724409,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed `PackageLoader.list_templates()` for zip packages on Python 3.13. CPython 3.13 renamed `zipimporter._files` (an attribute) to `zipimporter._get_files()` (a method), which was silently making the loader raise `TypeError` for all 3.13 zip-package users, not just PyPy as the old xfail assumed.\n\nChanges:\n- `src/jinja2/loaders.py`: `list_templates()` now checks for `_get_files()` first (3.13+), falls back to `_files` (older CPython), and still raises `TypeError` only for implementations lacking both (PyPy).\n- `tests/test_loader.py`: narrowed the `xfail` on `test_package_zip_list` to PyPy only, since 3.13 is now fully supported.\n- `CHANGES.rst`: noted the fix.\n\nVerified `tests/test_loader.py` (all 41 tests) passes on both Python 3.11 and 3.13.",
+ "ttft_ms": 3717,
+ "ttft_stream_ms": 2808,
+ "time_to_request_ms": 45,
+ "type": "result",
+ "duration_ms": 80584,
+ "uuid": "0878027c-4ccc-4b3e-aea5-d3ab28e1c014"
+}

@@ -1,0 +1,101 @@
+diff --git a/changelog.d/1323.deprecation.md b/changelog.d/1323.deprecation.md
+new file mode 100644
+index 0000000..339e0e6
+--- /dev/null
++++ b/changelog.d/1323.deprecation.md
+@@ -0,0 +1 @@
++The *hash* argument to `attr.s` is now deprecated in favor of *unsafe_hash* which is the same, but its name follows the standard library's naming convention.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 53e6a94..d3e7858 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1270,6 +1270,7 @@ def attrs(
+     .. versionadded:: 24.1.0
+        If a class has an *inherited* classmethod called
+        ``__attrs_init_subclass__``, it is executed after the class is created.
++    .. deprecated:: 24.1.0 *hash* is deprecated in favor of *unsafe_hash*.
+     """
+     if repr_ns is not None:
+         import warnings
+@@ -1283,6 +1284,16 @@ def attrs(
+ 
+     eq_, order_ = _determine_attrs_eq_order(cmp, eq, order, None)
+ 
++    if hash is not None:
++        import warnings
++
++        warnings.warn(
++            DeprecationWarning(
++                "The `hash` argument is deprecated in favor of `unsafe_hash` and will be removed in or after August 2025."
++            ),
++            stacklevel=2,
++        )
++
+     # unsafe_hash takes precedence due to PEP 681.
+     if unsafe_hash is not None:
+         hash = unsafe_hash
+diff --git a/src/attr/_next_gen.py b/src/attr/_next_gen.py
+index b4bcb29..77e3bfe 100644
+--- a/src/attr/_next_gen.py
++++ b/src/attr/_next_gen.py
+@@ -320,6 +320,7 @@ def define(
+     .. versionadded:: 24.1.0
+        If a class has an *inherited* classmethod called
+        ``__attrs_init_subclass__``, it is executed after the class is created.
++    .. deprecated:: 24.1.0 *hash* is deprecated in favor of *unsafe_hash*.
+ 
+     .. note::
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index e1ad150..534a89e 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -2415,16 +2415,43 @@ class TestAutoDetect:
+         """
+         If hash=True is passed, ignore __hash__.
+         """
++        with pytest.deprecated_call(match="The `hash` argument"):
+ 
+-        @attr.s(hash=True, auto_detect=True, slots=slots, frozen=frozen)
+-        class C:
+-            x = attr.ib()
++            @attr.s(hash=True, auto_detect=True, slots=slots, frozen=frozen)
++            class C:
++                x = attr.ib()
+ 
+-            def __hash__(self):
+-                pytest.fail("should not be called")
++                def __hash__(self):
++                    pytest.fail("should not be called")
+ 
+         assert hash(C(1))
+ 
++    def test_hash_deprecated(self, slots, frozen):
++        """
++        Passing the `hash` argument raises a DeprecationWarning that recommends
++        `unsafe_hash` instead.
++        """
++        with pytest.deprecated_call(
++            match="The `hash` argument is deprecated in favor of `unsafe_hash`"
++        ):
++
++            @attr.s(hash=True, slots=slots, frozen=frozen)
++            class C:
++                x = attr.ib()
++
++    def test_unsafe_hash_not_deprecated(self, slots, frozen, recwarn):
++        """
++        Passing `unsafe_hash` alone does not raise a DeprecationWarning.
++        """
++
++        @attr.s(unsafe_hash=True, slots=slots, frozen=frozen)
++        class C:
++            x = attr.ib()
++
++        assert [] == [
++            w for w in recwarn.list if issubclass(w.category, DeprecationWarning)
++        ]
++
+     def test_override_eq(self, slots, frozen):
+         """
+         If eq=True is passed, ignore __eq__ and __ne__.

@@ -1,0 +1,584 @@
+diff --git a/changelog.d/1323.deprecation.md b/changelog.d/1323.deprecation.md
+new file mode 100644
+index 0000000..b699885
+--- /dev/null
++++ b/changelog.d/1323.deprecation.md
+@@ -0,0 +1 @@
++The *hash* argument to `@attr.s`, `@attrs.define`, and `make_class()` is now deprecated in favor of *unsafe_hash*, as defined by PEP 681.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 53e6a94..0e09281 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -1270,20 +1270,30 @@ def attrs(
+     .. versionadded:: 24.1.0
+        If a class has an *inherited* classmethod called
+        ``__attrs_init_subclass__``, it is executed after the class is created.
++    .. deprecated:: 24.1.0 *hash* is deprecated in favor of *unsafe_hash*.
+     """
+     if repr_ns is not None:
+         import warnings
+ 
+         warnings.warn(
+             DeprecationWarning(
+-                "The `repr_ns` argument is deprecated and will be removed in or after April 2025."
++                "The `repr_ns` argument is deprecated and will be removed in or after August 2025."
+             ),
+             stacklevel=2,
+         )
+ 
+     eq_, order_ = _determine_attrs_eq_order(cmp, eq, order, None)
+ 
+-    # unsafe_hash takes precedence due to PEP 681.
++    # hash is deprecated & unsafe_hash takes precedence due to PEP 681.
++    if hash is not None:
++        import warnings
++
++        warnings.warn(
++            DeprecationWarning(
++                "The `hash` argument is deprecated in favor of `unsafe_hash` and will be removed in or after August 2025."
++            ),
++            stacklevel=2,
++        )
+     if unsafe_hash is not None:
+         hash = unsafe_hash
+ 
+@@ -2854,6 +2864,19 @@ def make_class(
+         True,
+     )
+ 
++    hash = attributes_arguments.pop("hash", _SENTINEL)
++    if hash is not _SENTINEL:
++        import warnings
++
++        warnings.warn(
++            DeprecationWarning(
++                "The `hash` argument is deprecated in favor of `unsafe_hash` and will be removed in or after August 2025."
++            ),
++            stacklevel=2,
++        )
++
++        attributes_arguments["unsafe_hash"] = hash
++
+     cls = _attrs(these=cls_dict, **attributes_arguments)(type_)
+     # Only add type annotations now or "_attrs()" will complain:
+     cls.__annotations__ = {
+@@ -2866,7 +2889,7 @@ def make_class(
+ # import into .validators / .converters.
+ 
+ 
+-@attrs(slots=True, hash=True)
++@attrs(slots=True, unsafe_hash=True)
+ class _AndValidator:
+     """
+     Compose many validators to a single one.
+diff --git a/src/attr/_next_gen.py b/src/attr/_next_gen.py
+index b4bcb29..dbb65cc 100644
+--- a/src/attr/_next_gen.py
++++ b/src/attr/_next_gen.py
+@@ -184,7 +184,7 @@ def define(
+                   details.
+ 
+         hash (bool | None):
+-            Alias for *unsafe_hash*. *unsafe_hash* takes precedence.
++            Deprecated alias for *unsafe_hash*. *unsafe_hash* takes precedence.
+ 
+         cache_hash (bool):
+             Ensure that the object's hash code is computed only once and stored
+@@ -320,6 +320,7 @@ def define(
+     .. versionadded:: 24.1.0
+        If a class has an *inherited* classmethod called
+        ``__attrs_init_subclass__``, it is executed after the class is created.
++    .. deprecated:: 24.1.0 *hash* is deprecated in favor of *unsafe_hash*.
+ 
+     .. note::
+ 
+diff --git a/src/attr/validators.py b/src/attr/validators.py
+index 17c216a..8a56717 100644
+--- a/src/attr/validators.py
++++ b/src/attr/validators.py
+@@ -88,7 +88,7 @@ def disabled():
+         set_run_validators(True)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _InstanceOfValidator:
+     type = attrib()
+ 
+@@ -196,7 +196,7 @@ def matches_re(regex, flags=0, func=None):
+     return _MatchesReValidator(pattern, match_func)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _OptionalValidator:
+     validator = attrib()
+ 
+@@ -231,7 +231,7 @@ def optional(validator):
+     return _OptionalValidator(validator)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _InValidator:
+     options = attrib()
+     _original_options = attrib(hash=False)
+@@ -290,7 +290,7 @@ def in_(options):
+     return _InValidator(options, repr_options)
+ 
+ 
+-@attrs(repr=False, slots=False, hash=True)
++@attrs(repr=False, slots=False, unsafe_hash=True)
+ class _IsCallableValidator:
+     def __call__(self, inst, attr, value):
+         """
+@@ -328,7 +328,7 @@ def is_callable():
+     return _IsCallableValidator()
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _DeepIterable:
+     member_validator = attrib(validator=is_callable())
+     iterable_validator = attrib(
+@@ -377,7 +377,7 @@ def deep_iterable(member_validator, iterable_validator=None):
+     return _DeepIterable(member_validator, iterable_validator)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _DeepMapping:
+     key_validator = attrib(validator=is_callable())
+     value_validator = attrib(validator=is_callable())
+@@ -554,7 +554,7 @@ def min_len(length):
+     return _MinLengthValidator(length)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _SubclassOfValidator:
+     type = attrib()
+ 
+@@ -592,7 +592,7 @@ def _subclass_of(type):
+     return _SubclassOfValidator(type)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _NotValidator:
+     validator = attrib()
+     msg = attrib(
+@@ -665,7 +665,7 @@ def not_(validator, *, msg=None, exc_types=(ValueError, TypeError)):
+     return _NotValidator(validator, msg, exc_types)
+ 
+ 
+-@attrs(repr=False, slots=True, hash=True)
++@attrs(repr=False, slots=True, unsafe_hash=True)
+ class _OrValidator:
+     validators = attrib()
+ 
+diff --git a/tests/test_dunders.py b/tests/test_dunders.py
+index 85c9309..89d2b3a 100644
+--- a/tests/test_dunders.py
++++ b/tests/test_dunders.py
+@@ -64,16 +64,16 @@ class OrderCallableCSlots:
+ # HashC is hashable by explicit definition while HashCSlots is hashable
+ # implicitly.  The "Cached" versions are the same, except with hash code
+ # caching enabled
+-HashC = simple_class(hash=True)
+-HashCSlots = simple_class(hash=None, eq=True, frozen=True, slots=True)
+-HashCCached = simple_class(hash=True, cache_hash=True)
++HashC = simple_class(unsafe_hash=True)
++HashCSlots = simple_class(unsafe_hash=None, eq=True, frozen=True, slots=True)
++HashCCached = simple_class(unsafe_hash=True, cache_hash=True)
+ HashCSlotsCached = simple_class(
+-    hash=None, eq=True, frozen=True, slots=True, cache_hash=True
++    unsafe_hash=None, eq=True, frozen=True, slots=True, cache_hash=True
+ )
+ # the cached hash code is stored slightly differently in this case
+ # so it needs to be tested separately
+ HashCFrozenNotSlotsCached = simple_class(
+-    frozen=True, slots=False, hash=True, cache_hash=True
++    frozen=True, slots=False, unsafe_hash=True, cache_hash=True
+ )
+ 
+ 
+@@ -443,17 +443,17 @@ class TestAddRepr:
+ 
+ # these are for use in TestAddHash.test_cache_hash_serialization
+ # they need to be out here so they can be un-pickled
+-@attr.attrs(hash=True, cache_hash=False)
++@attr.attrs(unsafe_hash=True, cache_hash=False)
+ class HashCacheSerializationTestUncached:
+     foo_value = attr.ib()
+ 
+ 
+-@attr.attrs(hash=True, cache_hash=True)
++@attr.attrs(unsafe_hash=True, cache_hash=True)
+ class HashCacheSerializationTestCached:
+     foo_value = attr.ib()
+ 
+ 
+-@attr.attrs(slots=True, hash=True, cache_hash=True)
++@attr.attrs(slots=True, unsafe_hash=True, cache_hash=True)
+ class HashCacheSerializationTestCachedSlots:
+     foo_value = attr.ib()
+ 
+@@ -660,7 +660,7 @@ class TestAddHash:
+ 
+         # Give it an explicit hash if we don't have an implicit one
+         if not frozen:
+-            kwargs["hash"] = True
++            kwargs["unsafe_hash"] = True
+ 
+         @attr.s(**kwargs)
+         class C:
+@@ -711,7 +711,7 @@ class TestAddHash:
+         __reduce__ generated when cache_hash=True works in that case.
+         """
+ 
+-        @attr.s(frozen=frozen, cache_hash=True, hash=True)
++        @attr.s(frozen=frozen, cache_hash=True, unsafe_hash=True)
+         class C:
+             x = attr.ib()
+ 
+@@ -965,7 +965,7 @@ class TestNothing:
+         assert False is bool(NOTHING)
+ 
+ 
+-@attr.s(hash=True, order=True)
++@attr.s(unsafe_hash=True, order=True)
+ class C:
+     pass
+ 
+@@ -974,7 +974,7 @@ class C:
+ OriginalC = C
+ 
+ 
+-@attr.s(hash=True, order=True)
++@attr.s(unsafe_hash=True, order=True)
+ class C:
+     pass
+ 
+@@ -982,7 +982,7 @@ class C:
+ CopyC = C
+ 
+ 
+-@attr.s(hash=True, order=True)
++@attr.s(unsafe_hash=True, order=True)
+ class C:
+     """A different class, to generate different methods."""
+ 
+diff --git a/tests/test_functional.py b/tests/test_functional.py
+index 05a9aac..a1c7f75 100644
+--- a/tests/test_functional.py
++++ b/tests/test_functional.py
+@@ -379,12 +379,12 @@ class TestFunctional:
+ 
+     def test_hash_by_id(self):
+         """
+-        With dict classes, hashing by ID is active for hash=False even on
+-        Python 3.  This is incorrect behavior but we have to retain it for
+-        backward compatibility.
++        With dict classes, hashing by ID is active for hash=False.  This is
++        incorrect behavior but we have to retain it for
++        backwards-compatibility.
+         """
+ 
+-        @attr.s(hash=False)
++        @attr.s(unsafe_hash=False)
+         class HashByIDBackwardCompat:
+             x = attr.ib()
+ 
+@@ -392,13 +392,13 @@ class TestFunctional:
+             HashByIDBackwardCompat(1)
+         )
+ 
+-        @attr.s(hash=False, eq=False)
++        @attr.s(unsafe_hash=False, eq=False)
+         class HashByID:
+             x = attr.ib()
+ 
+         assert hash(HashByID(1)) != hash(HashByID(1))
+ 
+-        @attr.s(hash=True)
++        @attr.s(unsafe_hash=True)
+         class HashByValues:
+             x = attr.ib()
+ 
+@@ -421,17 +421,22 @@ class TestFunctional:
+         class D(C):
+             pass
+ 
+-    def test_hash_false_eq_false(self, slots):
++    def test_unsafe_hash_false_eq_false(self, slots):
+         """
+-        hash=False and eq=False make a class hashable by ID.
++        unsafe_hash=False and eq=False make a class hashable by ID.
+         """
+ 
+-        @attr.s(hash=False, eq=False, slots=slots)
++        @attr.s(unsafe_hash=False, eq=False, slots=slots)
+         class C:
+             pass
+ 
+         assert hash(C()) != hash(C())
+ 
++    def test_hash_deprecated(self):
++        """
++        Using the hash argument is deprecated.
++        """
++
+     def test_eq_false(self, slots):
+         """
+         eq=False makes a class hashable by ID.
+diff --git a/tests/test_make.py b/tests/test_make.py
+index e1ad150..0ef7db6 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -69,6 +69,18 @@ def _with_and_without_validation(request):
+         attr.validators.set_disabled(False)
+ 
+ 
++@pytest.mark.parametrize("hash", [True, False])
++def test_hash_is_deprecated(hash):
++    """
++    Passing anything else than None to hash raises a deprecation warning.
++    """
++    with pytest.deprecated_call():
++
++        @attr.s(hash=hash)
++        class C:
++            pass
++
++
+ class TestCountingAttr:
+     """
+     Tests for `attr`.
+@@ -534,7 +546,7 @@ class TestAttributes:
+             ("repr", "__repr__"),
+             ("eq", "__eq__"),
+             ("order", "__le__"),
+-            ("hash", "__hash__"),
++            ("unsafe_hash", "__hash__"),
+             ("init", "__init__"),
+         ],
+     )
+@@ -550,7 +562,7 @@ class TestAttributes:
+             "repr": True,
+             "eq": True,
+             "order": True,
+-            "hash": True,
++            "unsafe_hash": True,
+             "init": True,
+         }
+         am_args[arg_name] = False
+@@ -1211,6 +1223,15 @@ class TestMakeClass:
+         assert attr.fields(C).a.type is bool
+         assert {"a": "bool"} == C.__annotations__
+ 
++    @pytest.mark.parametrize("hash", [True, False])
++    def test_hash_is_deprecated(self, hash):
++        """
++        Passing anything else than None to hash raises a deprecation warning.
++        """
++        with pytest.deprecated_call():
++
++            make_class("CH", {}, hash=hash)
++
+ 
+ class TestFields:
+     """
+@@ -1747,12 +1768,12 @@ class TestClassBuilder:
+         attributes.
+         """
+ 
+-        @attr.s(hash=True, str=True)
++        @attr.s(unsafe_hash=True, str=True)
+         class C:
+             def organic(self):
+                 pass
+ 
+-        @attr.s(hash=True, str=True)
++        @attr.s(unsafe_hash=True, str=True)
+         class D:
+             pass
+ 
+@@ -1862,7 +1883,7 @@ class TestClassBuilder:
+         """
+         Generate a list of compatible attr.s arguments for the `copy` tests.
+         """
+-        options = ["frozen", "hash", "cache_hash"]
++        options = ["frozen", "unsafe_hash", "cache_hash"]
+ 
+         if include_slots:
+             options.extend(["slots", "weakref_slot"])
+@@ -1871,10 +1892,10 @@ class TestClassBuilder:
+         for args in itertools.product([True, False], repeat=len(options)):
+             kwargs = dict(zip(options, args))
+ 
+-            kwargs["hash"] = kwargs["hash"] or None
++            kwargs["unsafe_hash"] = kwargs["unsafe_hash"] or None
+ 
+             if kwargs["cache_hash"] and not (
+-                kwargs["frozen"] or kwargs["hash"]
++                kwargs["frozen"] or kwargs["unsafe_hash"]
+             ):
+                 continue
+ 
+@@ -2233,7 +2254,7 @@ class TestAutoDetect:
+     def test_make_all_by_default(self, slots, frozen):
+         """
+         If nothing is there to be detected, imply init=True, repr=True,
+-        hash=None, eq=True, order=True.
++        unsafe_hash=None, eq=True, order=True.
+         """
+ 
+         @attr.s(auto_detect=True, slots=slots, frozen=frozen)
+@@ -2286,11 +2307,11 @@ class TestAutoDetect:
+         to generate the hash code.
+         """
+ 
+-        @attr.s(slots=slots, frozen=frozen, hash=True)
++        @attr.s(slots=slots, frozen=frozen, unsafe_hash=True)
+         class C:
+             x = attr.ib(eq=str)
+ 
+-        @attr.s(slots=slots, frozen=frozen, hash=True)
++        @attr.s(slots=slots, frozen=frozen, unsafe_hash=True)
+         class D:
+             x = attr.ib()
+ 
+@@ -2413,10 +2434,10 @@ class TestAutoDetect:
+ 
+     def test_override_hash(self, slots, frozen):
+         """
+-        If hash=True is passed, ignore __hash__.
++        If unsafe_hash=True is passed, ignore __hash__.
+         """
+ 
+-        @attr.s(hash=True, auto_detect=True, slots=slots, frozen=frozen)
++        @attr.s(unsafe_hash=True, auto_detect=True, slots=slots, frozen=frozen)
+         class C:
+             x = attr.ib()
+ 
+diff --git a/tests/test_slots.py b/tests/test_slots.py
+index 78215ea..57b7fdb 100644
+--- a/tests/test_slots.py
++++ b/tests/test_slots.py
+@@ -50,7 +50,7 @@ class C1:
+         return super().__repr__()
+ 
+ 
+-@attr.s(slots=True, hash=True)
++@attr.s(slots=True, unsafe_hash=True)
+ class C1Slots:
+     x = attr.ib(validator=attr.validators.instance_of(int))
+     y = attr.ib()
+@@ -133,7 +133,7 @@ def test_inheritance_from_nonslots():
+     the benefits of slotted classes, but it should still work.
+     """
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class C2Slots(C1):
+         z = attr.ib()
+ 
+@@ -196,7 +196,7 @@ def test_nonslots_these():
+         these={"x": attr.ib(), "y": attr.ib(), "z": attr.ib()},
+         init=False,
+         slots=True,
+-        hash=True,
++        unsafe_hash=True,
+     )(SimpleOrdinaryClass)
+ 
+     c2 = C2Slots(x=1, y=2, z="test")
+@@ -229,11 +229,11 @@ def test_inheritance_from_slots():
+     Inheriting from an attrs slotted class works.
+     """
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class C2Slots(C1Slots):
+         z = attr.ib()
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class C2(C1):
+         z = attr.ib()
+ 
+@@ -275,13 +275,13 @@ def test_inheritance_from_slots_with_attribute_override():
+     class HasXSlot:
+         __slots__ = ("x",)
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class C2Slots(C1Slots):
+         # y re-defined here but it shouldn't get a slot
+         y = attr.ib()
+         z = attr.ib()
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class NonAttrsChild(HasXSlot):
+         # Parent class has slot for "x" already, so we skip it
+         x = attr.ib()
+@@ -337,7 +337,12 @@ def test_bare_inheritance_from_slots():
+     """
+ 
+     @attr.s(
+-        init=False, eq=False, order=False, hash=False, repr=False, slots=True
++        init=False,
++        eq=False,
++        order=False,
++        unsafe_hash=False,
++        repr=False,
++        slots=True,
+     )
+     class C1BareSlots:
+         x = attr.ib(validator=attr.validators.instance_of(int))
+@@ -354,7 +359,7 @@ def test_bare_inheritance_from_slots():
+         def staticmethod():
+             return "staticmethod"
+ 
+-    @attr.s(init=False, eq=False, order=False, hash=False, repr=False)
++    @attr.s(init=False, eq=False, order=False, unsafe_hash=False, repr=False)
+     class C1Bare:
+         x = attr.ib(validator=attr.validators.instance_of(int))
+         y = attr.ib()
+@@ -370,11 +375,11 @@ def test_bare_inheritance_from_slots():
+         def staticmethod():
+             return "staticmethod"
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class C2Slots(C1BareSlots):
+         z = attr.ib()
+ 
+-    @attr.s(slots=True, hash=True)
++    @attr.s(slots=True, unsafe_hash=True)
+     class C2(C1Bare):
+         z = attr.ib()
+ 
+diff --git a/tests/utils.py b/tests/utils.py
+index 9e678f0..3ad484e 100644
+--- a/tests/utils.py
++++ b/tests/utils.py
+@@ -13,7 +13,7 @@ def simple_class(
+     eq=False,
+     order=False,
+     repr=False,
+-    hash=False,
++    unsafe_hash=False,
+     str=False,
+     slots=False,
+     frozen=False,
+@@ -28,7 +28,7 @@ def simple_class(
+         eq=eq or order,
+         order=order,
+         repr=repr,
+-        hash=hash,
++        unsafe_hash=unsafe_hash,
+         init=True,
+         slots=slots,
+         str=str,

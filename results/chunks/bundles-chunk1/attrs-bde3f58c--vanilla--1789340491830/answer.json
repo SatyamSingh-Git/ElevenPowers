@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 124335,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "b9bc4819-fd66-472b-b47b-ac86f4a0c2fb",
+ "total_cost_usd": 0.8823190999999999,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 48391,
+  "cache_read_input_tokens": 1685617,
+  "output_tokens": 5696,
+  "output_tokens_details": {
+   "thinking_tokens": 1830
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 48391,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 587,
+    "cache_read_input_tokens": 84620,
+    "cache_creation_input_tokens": 1036,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1036
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 618,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006979999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 5696,
+   "cacheReadInputTokens": 1685617,
+   "cacheCreationInputTokens": 48391,
+   "webSearchRequests": 0,
+   "costUSD": 0.8816210999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Full suite passes (1330 passed). The change is applied and verified.\n\n## Summary\n\nApplied the upstream `Deprecate hash for unsafe_hash` change to this attrs checkout:\n\n- **`src/attr/_make.py`**: `attrs()` now emits a `DeprecationWarning` when `hash` is passed (any non-`None` value), pointing users to `unsafe_hash`. `make_class()` gained the same deprecation warning and now translates a passed `hash=` kwarg into `unsafe_hash=` before delegating. Internal use of `hash=True` on `_AndValidator` switched to `unsafe_hash=True`.\n- **`src/attr/_next_gen.py`**: updated `define()`'s docstring to mark `hash` as a deprecated alias.\n- **`src/attr/validators.py`**: all internal `@attrs(..., hash=True)` usages switched to `unsafe_hash=True` to avoid triggering the new warning.\n- **Tests** (`test_make.py`, `test_dunders.py`, `test_functional.py`, `test_slots.py`, `utils.py`): updated internal call sites to use `unsafe_hash`, and added new tests asserting `pytest.deprecated_call()` fires for both `attr.s(hash=...)` and `make_class(..., hash=...)`.\n- **`changelog.d/1323.deprecation.md`**: added the news fragment.\n\nVerified by running the full test suite (`1330 passed, 4 skipped, 1 xfailed`), with the expected deprecation warnings surfacing only from the intentionally-unmigrated `make_class(..., hash=...)` calls in `test_dunders.py`'s `TestAddHash` tests (which exercise that exact deprecated path).",
+ "ttft_ms": 3656,
+ "ttft_stream_ms": 2951,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 162255,
+ "uuid": "5520b347-f534-4c5b-ae3b-5e154af34518"
+}

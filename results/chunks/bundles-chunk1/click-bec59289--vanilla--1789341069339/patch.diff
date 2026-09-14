@@ -1,0 +1,144 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 90b93ed..64dbe4d 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -20,6 +20,10 @@ Unreleased
+   {pr}`3533`
+ - Fix CLI usage symopsis for optional arguments producing double square brackets
+   `[[a|b|c]]...` whose type already brackets their metavar. {pr}`3578`
++- `version_option` correctly detects the version when the top-level module
++  name doesn't match the installed distribution name, by mapping it with
++  `importlib.metadata.packages_distributions()`. {issue}`1884` {issue}`2331`
++  {issue}`3125`
+ 
+ ## Version 8.4.1
+ 
+diff --git a/src/click/decorators.py b/src/click/decorators.py
+index 14aee42..4062716 100644
+--- a/src/click/decorators.py
++++ b/src/click/decorators.py
+@@ -434,8 +434,10 @@ def version_option(
+     ``package_name``.
+ 
+     If ``package_name`` is not provided, Click will try to detect it by
+-    inspecting the stack frames. This will be used to detect the
+-    version, so it must match the name of the installed package.
++    inspecting the stack frames, then map that to an installed
++    distribution name using :func:`importlib.metadata.packages_distributions`.
++    This will be used to detect the version, so it must match the name of
++    the installed distribution.
+ 
+     :param version: The version number to show. If not provided, Click
+         will try to detect it.
+@@ -451,6 +453,13 @@ def version_option(
+     :param kwargs: Extra arguments are passed to :func:`option`.
+     :raise RuntimeError: ``version`` could not be detected.
+ 
++    .. versionchanged:: 8.4.2
++        The detected top-level module name is mapped to its installed
++        distribution name using
++        :func:`importlib.metadata.packages_distributions` when
++        unambiguous, so detection works when the module name differs
++        from the distribution name.
++
+     .. versionchanged:: 8.0
+         Add the ``package_name`` parameter, and the ``%(package)s``
+         value for messages.
+@@ -473,13 +482,30 @@ def version_option(
+         del frame
+ 
+         if f_globals is not None:
+-            package_name = f_globals.get("__name__")
++            module_name = f_globals.get("__name__")
++
++            if module_name == "__main__":
++                module_name = f_globals.get("__package__")
++
++            if module_name:
++                module_name = module_name.partition(".")[0]
+ 
+-            if package_name == "__main__":
+-                package_name = f_globals.get("__package__")
++            if module_name:
++                import importlib.metadata
++
++                # The top-level module name doesn't always match the
++                # name of the distribution that provides it, for
++                # example "yaml" is provided by "PyYAML". Look up the
++                # distribution(s) that provide this module and prefer
++                # that name when it's unambiguous.
++                distributions = importlib.metadata.packages_distributions().get(
++                    module_name, []
++                )
+ 
+-            if package_name:
+-                package_name = package_name.partition(".")[0]
++                if len(distributions) == 1:
++                    package_name = distributions[0]
++                else:
++                    package_name = module_name
+ 
+     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+         if not value or ctx.resilient_parsing:
+diff --git a/tests/test_command_decorators.py b/tests/test_command_decorators.py
+index 5bd268c..52303f9 100644
+--- a/tests/test_command_decorators.py
++++ b/tests/test_command_decorators.py
+@@ -1,3 +1,5 @@
++import importlib.metadata
++
+ import pytest
+ 
+ import click
+@@ -90,3 +92,51 @@ def test_generate_name(name: str) -> None:
+     f.__name__ = name
+     f = click.command(f)
+     assert f.name == "init-data"
++
++
++def test_version_option_maps_module_to_distribution_name(runner, monkeypatch):
++    module_name = __name__
++    monkeypatch.setattr(
++        importlib.metadata,
++        "packages_distributions",
++        lambda: {module_name: ["Test-Dist"]},
++    )
++    seen = []
++    monkeypatch.setattr(
++        importlib.metadata,
++        "version",
++        lambda name: seen.append(name) or "1.2.3",
++    )
++
++    @click.command()
++    @click.version_option()
++    def cli():
++        pass
++
++    result = runner.invoke(cli, ["--version"])
++    assert result.exit_code == 0, result.output
++    assert seen == ["Test-Dist"]
++    assert "1.2.3" in result.output
++
++
++def test_version_option_falls_back_on_ambiguous_module(runner, monkeypatch):
++    module_name = __name__
++    monkeypatch.setattr(
++        importlib.metadata,
++        "packages_distributions",
++        lambda: {module_name: ["Dist-A", "Dist-B"]},
++    )
++    monkeypatch.setattr(
++        importlib.metadata,
++        "version",
++        lambda name: "4.5.6" if name == module_name else 1 / 0,
++    )
++
++    @click.command()
++    @click.version_option()
++    def cli():
++        pass
++
++    result = runner.invoke(cli, ["--version"])
++    assert result.exit_code == 0
++    assert "4.5.6" in result.output

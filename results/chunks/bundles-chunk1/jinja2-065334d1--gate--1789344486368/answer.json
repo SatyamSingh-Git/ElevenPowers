@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 71832,
+ "num_turns": 18,
+ "stop_reason": "end_turn",
+ "session_id": "ff6525d6-5874-4e8b-9f72-31a0314e1b8f",
+ "total_cost_usd": 0.5202471,
+ "usage": {
+  "input_tokens": 36,
+  "cache_creation_input_tokens": 25288,
+  "cache_read_input_tokens": 1003887,
+  "output_tokens": 4483,
+  "output_tokens_details": {
+   "thinking_tokens": 1312
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 25288,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 140,
+    "cache_read_input_tokens": 62193,
+    "cache_creation_input_tokens": 360,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 360
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 36,
+   "outputTokens": 4483,
+   "cacheReadInputTokens": 1003887,
+   "cacheCreationInputTokens": 25288,
+   "webSearchRequests": 0,
+   "costUSD": 0.5202471,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 909 tests pass. Applied the upstream security fix (GHSA-cpwx-vrp4-4pq7): the `attr` filter now delegates to `environment.getattr()` instead of calling `getattr()` directly, so the sandboxed environment's safety checks apply. Updated `src/jinja2/filters.py`, `CHANGES.rst`, and added the regression test in `tests/test_security.py`.",
+ "ttft_ms": 4138,
+ "ttft_stream_ms": 3203,
+ "time_to_request_ms": 228,
+ "type": "result",
+ "duration_ms": 85422,
+ "uuid": "34096c3f-e122-4406-8ae4-a4815ff8a234"
+}

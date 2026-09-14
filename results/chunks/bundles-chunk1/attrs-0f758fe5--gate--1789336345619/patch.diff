@@ -1,0 +1,103 @@
+diff --git a/changelog.d/1541.change.md b/changelog.d/1541.change.md
+new file mode 100644
+index 0000000..8573b6c
+--- /dev/null
++++ b/changelog.d/1541.change.md
+@@ -0,0 +1 @@
++`Attribute`s now have a `converter` method that can be used as a decorator to set the attribute's converter, mirroring the existing `validator` decorator.
+diff --git a/docs/init.md b/docs/init.md
+index e4bb78e..39f0757 100644
+--- a/docs/init.md
++++ b/docs/init.md
+@@ -311,6 +311,25 @@ TypeError: ("'x' must be <class 'int'> (got '128' that is a <class 'str'>).", At
+ 
+ Sometimes, it is necessary to normalize the values coming in, therefore *attrs* comes with converters.
+ 
++
++### Decorator
++
++Similarly to validators, the most straightforward way to add a converter to an attribute is using its `converter` method as a decorator.
++
++```{doctest}
++>>> @define
++... class C:
++...     x: str = field()
++...     @x.converter
++...     def _(value):
++...         return value.lower()
++>>> C("ABC").x
++'abc'
++```
++
++
++### Callables
++
+ Attributes can have a `converter` function specified, which will be called with the attribute's passed-in value to get a new value to use.
+ This can be useful for doing type-conversions on values that you don't want to force your callers to do.
+ 
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 4b32d6a..e5d5609 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2581,7 +2581,7 @@ class Attribute:
+             False,
+             ca.metadata,
+             type,
+-            ca.converter,
++            ca._converter,
+             kw_only if ca.kw_only is None else ca.kw_only,
+             ca.eq,
+             ca.eq_key,
+@@ -2703,10 +2703,10 @@ class _CountingAttr:
+     """
+ 
+     __slots__ = (
++        "_converter",
+         "_default",
+         "_validator",
+         "alias",
+-        "converter",
+         "counter",
+         "eq",
+         "eq_key",
+@@ -2794,7 +2794,7 @@ class _CountingAttr:
+         self.counter = _CountingAttr.cls_counter
+         self._default = default
+         self._validator = validator
+-        self.converter = converter
++        self._converter = converter
+         self.repr = repr
+         self.eq = eq
+         self.eq_key = eq_key
+@@ -2840,6 +2840,18 @@ class _CountingAttr:
+ 
+         return meth
+ 
++    def converter(self, meth):
++        """
++        Decorator that adds *meth* as a converter for this attribute.
++
++        Returns *meth* unchanged.
++
++        .. versionadded:: 26.2.0
++        """
++        self._converter = meth
++
++        return meth
++
+ 
+ _CountingAttr = _add_eq(_add_repr(_CountingAttr))
+ 
+diff --git a/tests/strategies.py b/tests/strategies.py
+index c745e3f..8514151 100644
+--- a/tests/strategies.py
++++ b/tests/strategies.py
+@@ -106,7 +106,7 @@ def simple_attrs_with_metadata(draw):
+         init=c_attr.init,
+         metadata=metadata,
+         type=None,
+-        converter=c_attr.converter,
++        converter=c_attr._converter,
+     )
+ 
+ 

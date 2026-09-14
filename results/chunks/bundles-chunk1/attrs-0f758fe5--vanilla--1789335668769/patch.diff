@@ -1,0 +1,189 @@
+diff --git a/changelog.d/240.change.md b/changelog.d/240.change.md
+new file mode 100644
+index 0000000..2952221
+--- /dev/null
++++ b/changelog.d/240.change.md
+@@ -0,0 +1 @@
++Converters can now be provided as a decorator to the field.
+diff --git a/docs/init.md b/docs/init.md
+index e4bb78e..d6ec01b 100644
+--- a/docs/init.md
++++ b/docs/init.md
+@@ -385,6 +385,21 @@ C(x=410)
+ ```
+ 
+ 
++Or as a decorator
++```{doctest}
++>>> from typing import ClassVar
++>>> @define
++... class C:
++...     factor: ClassVar[int] = 5  # ClassVars are ignored by attrs
++...     x: int = field(metadata={"offset": 200})
++...     @x.converter
++...     def _convert_x(self, attribute, value):
++...         return int(value) * self.factor + attribute.metadata["offset"]
++>>> C("42")
++C(x=410)
++```
++
++
+ ## Hooking Yourself Into Initialization
+ 
+ Generally speaking, the moment you realize the need of finer control – than what *attrs* offers – over how a class is instantiated, it's usually best to use a {obj}`classmethod` factory or to apply the [builder pattern](https://en.wikipedia.org/wiki/Builder_pattern).
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 4b32d6a..793bfd8 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2581,7 +2581,7 @@ class Attribute:
+             False,
+             ca.metadata,
+             type,
+-            ca.converter,
++            ca._converter,
+             kw_only if ca.kw_only is None else ca.kw_only,
+             ca.eq,
+             ca.eq_key,
+@@ -2703,10 +2703,10 @@ class _CountingAttr:
+     """
+ 
+     __slots__ = (
++        "_converter",
+         "_default",
+         "_validator",
+         "alias",
+-        "converter",
+         "counter",
+         "eq",
+         "eq_key",
+@@ -2794,7 +2794,7 @@ class _CountingAttr:
+         self.counter = _CountingAttr.cls_counter
+         self._default = default
+         self._validator = validator
+-        self.converter = converter
++        self._converter = converter
+         self.repr = repr
+         self.eq = eq
+         self.eq_key = eq_key
+@@ -2840,6 +2840,26 @@ class _CountingAttr:
+ 
+         return meth
+ 
++    def converter(self, meth):
++        """
++        Decorator that appends *meth* to the list of converters.
++
++        Returns *meth* unchanged.
++
++        .. versionadded:: 26.2.0
++        """
++        decorated_converter = Converter(
++            lambda value, _self, field: meth(_self, field, value),
++            takes_self=True,
++            takes_field=True,
++        )
++        if self._converter is None:
++            self._converter = decorated_converter
++        else:
++            self._converter = pipe(self._converter, decorated_converter)
++
++        return meth
++
+ 
+ _CountingAttr = _add_eq(_add_repr(_CountingAttr))
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 6f226c6..f83f852 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -136,6 +136,43 @@ class TestCountingAttr:
+ 
+         assert _AndValidator((v, v2)) == a._validator
+ 
++    def test_converter_decorator_single(self):
++        """
++        If _CountingAttr.converter is used as a decorator and there is no
++        decorator set, the decorated method is used as the converter.
++        """
++        a = attr.ib()
++
++        @a.converter
++        def v(self, value, field):
++            pass
++
++        assert isinstance(a._converter, attr.Converter)
++        assert a._converter.takes_self
++        assert a._converter.takes_field
++
++    @pytest.mark.parametrize(
++        "wrap", [lambda v: v, lambda v: [v], attr.converters.pipe]
++    )
++    def test_converter_decorator(self, wrap):
++        """
++        If _CountingAttr.converter is used as a decorator and there is already
++        a decorator set, the decorators are composed using `pipe`.
++        """
++
++        def v(_):
++            pass
++
++        a = attr.ib(converter=wrap(v))
++
++        @a.converter
++        def v2(self, value, field):
++            pass
++
++        assert isinstance(a._converter, attr.Converter)
++        assert a._converter.takes_self
++        assert a._converter.takes_field
++
+     def test_default_decorator_already_set(self):
+         """
+         Raise DefaultAlreadySetError if the decorator is used after a default
+@@ -1720,6 +1757,23 @@ class TestConverter:
+ 
+         assert 84 == C(2).x
+ 
++    def test_converter_decorated(self):
++        """
++        Same as Converter with both `takes_field` and `takes_self`
++        """
++
++        @attr.define
++        class C:
++            factor: int = 5
++            x: int = attr.field(default=0, metadata={"offset": 200})
++
++            @x.converter
++            def _convert_x(self, field, value):
++                assert isinstance(field, attr.Attribute)
++                return int(value) * self.factor + field.metadata["offset"]
++
++        assert 410 == C(x="42").x
++
+     @given(integers(), booleans())
+     def test_convert_property(self, val, init):
+         """
+diff --git a/tests/test_mypy.yml b/tests/test_mypy.yml
+index 60285e4..2476be0 100644
+--- a/tests/test_mypy.yml
++++ b/tests/test_mypy.yml
+@@ -712,6 +712,18 @@
+     C(42)
+     C(43)
+ 
++- case: testAttrsConverterDecorator
++  main: |
++    import attr
++    @attr.s
++    class C:
++        x = attr.ib()
++        @x.converter
++        def convert(self, attribute, value):
++            return value + 1
++
++    C(42)
++
+ - case: testAttrsLocalVariablesInClassMethod
+   main: |
+     import attr

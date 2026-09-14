@@ -1,0 +1,166 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 70fdd34..78d15c6 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -13,6 +13,7 @@ repos:
+     hooks:
+       - id: check-merge-conflict
+       - id: debug-statements
++        exclude: ^(src/click/testing\.py|tests/test_testing\.py)$
+       - id: fix-byte-order-marker
+       - id: trailing-whitespace
+       - id: end-of-file-fixer
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 3521fe1..a92e21c 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -13,6 +13,10 @@ Unreleased
+     ``semver.Version``. :issue:`3298` :pr:`3299`
+ -   Fix pager test pollution under parallel execution by using pytest's
+     ``tmp_path`` fixture instead of a shared temporary file path. :pr:`3238`
++-   Patch ``pdb.Pdb`` in ``CliRunner`` isolation so ``pdb.set_trace()``,
++    ``breakpoint()``, and debuggers subclassing ``pdb.Pdb`` (ipdb, pdbpp) can
++    interact with the real terminal instead of the captured I/O streams.
++    :issue:`654` :issue:`824` :issue:`843` :pr:`951` :pr:`3235`
+ 
+ Version 8.3.2
+ -------------
+diff --git a/src/click/testing.py b/src/click/testing.py
+index ebfd54d..fe079ba 100644
+--- a/src/click/testing.py
++++ b/src/click/testing.py
+@@ -4,6 +4,7 @@ import collections.abc as cabc
+ import contextlib
+ import io
+ import os
++import pdb
+ import shlex
+ import sys
+ import tempfile
+@@ -390,12 +391,55 @@ class CliRunner:
+         old__getchar_func = termui._getchar
+         old_should_strip_ansi = utils.should_strip_ansi  # type: ignore
+         old__compat_should_strip_ansi = _compat.should_strip_ansi
++        old_pdb_init = pdb.Pdb.__init__
+         termui.visible_prompt_func = visible_input
+         termui.hidden_prompt_func = hidden_input
+         termui._getchar = _getchar
+         utils.should_strip_ansi = should_strip_ansi  # type: ignore
+         _compat.should_strip_ansi = should_strip_ansi
+ 
++        def _patched_pdb_init(
++            self: pdb.Pdb,
++            completekey: str = "tab",
++            stdin: t.IO[str] | None = None,
++            stdout: t.IO[str] | None = None,
++            **kwargs: t.Any,
++        ) -> None:
++            """Default ``pdb.Pdb`` to real terminal streams during
++            ``CliRunner`` isolation.
++
++            Without this patch, ``pdb.Pdb.__init__`` inherits from
++            ``cmd.Cmd`` which falls back to ``sys.stdin``/``sys.stdout``
++            when no explicit streams are provided. During isolation
++            those are ``BytesIO``-backed wrappers, so the debugger
++            reads from an empty buffer and writes to captured output,
++            making interactive debugging impossible.
++
++            By defaulting to ``sys.__stdin__``/``sys.__stdout__`` (the
++            original terminal streams Python preserves regardless of
++            redirection), debuggers can interact with the user while
++            ``click.echo`` output is still captured normally.
++
++            This covers ``pdb.set_trace()``, ``breakpoint()``,
++            ``pdb.post_mortem()``, and debuggers that subclass
++            ``pdb.Pdb`` (ipdb, pdbpp). Explicit ``stdin``/``stdout``
++            arguments are honored and not overridden. Debuggers that
++            do not subclass ``pdb.Pdb`` (pudb, debugpy) are not
++            covered.
++
++            See: https://github.com/pallets/click/issues/654 and
++            https://github.com/pallets/click/issues/824
++            """
++            if stdin is None:
++                stdin = sys.__stdin__
++            if stdout is None:
++                stdout = sys.__stdout__
++            old_pdb_init(
++                self, completekey=completekey, stdin=stdin, stdout=stdout, **kwargs
++            )
++
++        pdb.Pdb.__init__ = _patched_pdb_init  # type: ignore[assignment]
++
+         old_env = {}
+         try:
+             for key, value in env.items():
+@@ -426,6 +470,7 @@ class CliRunner:
+             utils.should_strip_ansi = old_should_strip_ansi  # type: ignore
+             _compat.should_strip_ansi = old__compat_should_strip_ansi
+             formatting.FORCED_WIDTH = old_forced_width
++            pdb.Pdb.__init__ = old_pdb_init  # type: ignore[method-assign]
+ 
+     def invoke(
+         self,
+diff --git a/tests/test_testing.py b/tests/test_testing.py
+index 11fe29d..4714471 100644
+--- a/tests/test_testing.py
++++ b/tests/test_testing.py
+@@ -1,4 +1,5 @@
+ import os
++import pdb
+ import sys
+ from io import BytesIO
+ 
+@@ -469,3 +470,52 @@ def test_isolation_flushes_unflushed_stderr():
+ 
+     result = runner.invoke(cli)
+     assert result.stderr == "gyarados gyarados gyarados"
++
++
++def test_pdb_uses_real_streams():
++    """``pdb.Pdb()`` inside ``CliRunner`` defaults to real terminal streams
++    so that interactive debuggers work instead of reading from the
++    captured ``BytesIO`` stdin.
++    """
++
++    @click.command()
++    def cli():
++        debugger = pdb.Pdb()
++        assert debugger.stdin is sys.__stdin__
++        assert debugger.stdout is sys.__stdout__
++        click.echo("after debugger")
++
++    runner = CliRunner()
++    result = runner.invoke(cli, catch_exceptions=False)
++    assert result.output == "after debugger\n"
++
++
++def test_pdb_explicit_streams_honored():
++    """Explicit ``stdin``/``stdout`` arguments to ``pdb.Pdb()`` are not
++    overridden by the ``CliRunner`` patch.
++    """
++
++    @click.command()
++    def cli():
++        custom_in = sys.stdin
++        custom_out = sys.stdout
++        debugger = pdb.Pdb(stdin=custom_in, stdout=custom_out)
++        assert debugger.stdin is custom_in
++        assert debugger.stdout is custom_out
++
++    runner = CliRunner()
++    runner.invoke(cli, catch_exceptions=False)
++
++
++def test_pdb_init_restored_after_invoke():
++    """``pdb.Pdb.__init__`` is restored to its original after invoke."""
++    original = pdb.Pdb.__init__
++
++    @click.command()
++    def cli():
++        pass
++
++    runner = CliRunner()
++    runner.invoke(cli)
++
++    assert pdb.Pdb.__init__ is original

@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 78639,
+ "num_turns": 18,
+ "stop_reason": "end_turn",
+ "session_id": "ca322db4-2649-431f-b876-f121b7d5908d",
+ "total_cost_usd": 0.5702699999999998,
+ "usage": {
+  "input_tokens": 36,
+  "cache_creation_input_tokens": 29649,
+  "cache_read_input_tokens": 1059490,
+  "output_tokens": 4919,
+  "output_tokens_details": {
+   "thinking_tokens": 1000
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29649,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 270,
+    "cache_read_input_tokens": 66435,
+    "cache_creation_input_tokens": 479,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 479
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 576,
+   "outputTokens": 12,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006360000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 36,
+   "outputTokens": 4919,
+   "cacheReadInputTokens": 1059490,
+   "cacheCreationInputTokens": 29649,
+   "webSearchRequests": 0,
+   "costUSD": 0.5696339999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All changes applied, matching upstream commit `577c782` exactly:\n\n- `.pre-commit-config.yaml`: ruff-pre-commit `v0.11.12` \u2192 `v0.12.0`\n- `pyproject.toml`: added `[tool.ruff.per-file-target-version]` for `tests/test_pattern_matching.py`, plus new lint ignores `PLC0415` and `PLW1641`\n- `src/attr/_version_info.py`: added `__hash__` to `VersionInfo`\n- `tests/test_version_info.py`: renamed fixture function to `_vi`, added `test_hash`\n- `uv.lock`: updated `typing-extensions`/`zipp` markers for `exceptiongroup` and `importlib-metadata` (fallout from the ruff/uv version bump)",
+ "ttft_ms": 3813,
+ "ttft_stream_ms": 2669,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 81310,
+ "uuid": "c478aec7-fbb4-43c0-a1be-8a6fe04d691a"
+}

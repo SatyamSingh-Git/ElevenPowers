@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 184566,
+ "num_turns": 39,
+ "stop_reason": "end_turn",
+ "session_id": "f7f1b2fc-3a55-4969-8d10-e8ac5726e26b",
+ "total_cost_usd": 1.1132949,
+ "usage": {
+  "input_tokens": 55,
+  "cache_creation_input_tokens": 54612,
+  "cache_read_input_tokens": 2060793,
+  "output_tokens": 11148,
+  "output_tokens_details": {
+   "thinking_tokens": 4542
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 54612,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 918,
+    "cache_read_input_tokens": 91007,
+    "cache_creation_input_tokens": 870,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 870
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 55,
+   "outputTokens": 11148,
+   "cacheReadInputTokens": 2060793,
+   "cacheCreationInputTokens": 54612,
+   "webSearchRequests": 0,
+   "costUSD": 1.1132949,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The relevant `python -m pytest tests -q` command needs to run against the local `src/attr`, not a stale globally-installed `attrs` package. Using `uv run --group tests pytest tests -q` fixes that isolation problem and brings failures down from 12 to 2. Those remaining 2 (`test_packaging.py::test_version_info`) are also pre-existing and unrelated to this change \u2014 confirmed via `git stash` \u2014 caused by this sandbox repo having zero git tags, so `hatch-vcs` derives version `\"0.1.dev1\"`, which `VersionInfo._from_version_string` can't parse (`\"dev1\"` isn't an int). That's an environment artifact of this seeded repo snapshot, not something the ruff-update change touches or should fix (e.g., by fabricating a git tag).\n\n**cannot_complete** for the sub-obligation \"full `pytest tests -q` run, zero failures\": reason \u2014 2 of the remaining failures require the repo to have a real version tag (hatch-vcs versioning), which this ephemeral snapshot doesn't have and which is out of scope for a ruff-config update to manufacture. All failures related to the actual change (ruff config, ` __hash__` addition, fixture rename) pass, and the previously-reported 12 failures were a false signal from pytest picking up a stray global `attrs` install rather than this repo's source.",
+ "ttft_ms": 3856,
+ "ttft_stream_ms": 3430,
+ "time_to_request_ms": 215,
+ "type": "result",
+ "duration_ms": 364207,
+ "uuid": "c0812581-fc80-475a-a0d4-d51104f5c09d"
+}

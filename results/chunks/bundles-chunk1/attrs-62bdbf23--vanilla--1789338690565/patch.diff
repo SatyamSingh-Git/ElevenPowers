@@ -1,0 +1,147 @@
+diff --git a/changelog.d/1383.change.md b/changelog.d/1383.change.md
+new file mode 100644
+index 0000000..005c972
+--- /dev/null
++++ b/changelog.d/1383.change.md
+@@ -0,0 +1 @@
++*attrs* now implements `object.__replace__` on Python 3.13 and later, so that `copy.replace` works on *attrs* classes.
+diff --git a/docs/api.rst b/docs/api.rst
+index cd5df2d..fda3170 100644
+--- a/docs/api.rst
++++ b/docs/api.rst
+@@ -285,6 +285,10 @@ All objects from ``attrs.filters`` are also available from ``attr.filters`` (it'
+    * attributes with ``init=False`` can't be set with ``evolve``.
+    * the usual ``__init__`` validators will validate the new values.
+ 
++   .. tip::
++
++      On Python 3.13 and later, you can also use `copy.replace` instead of `attrs.evolve`, since *attrs* implements `object.__replace__`.
++
+ .. autofunction:: attrs.validate
+ 
+    For example:
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index eac5888..44b00c1 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -22,6 +22,7 @@ from . import _compat, _config, setters
+ from ._compat import (
+     PY_3_10_PLUS,
+     PY_3_11_PLUS,
++    PY_3_13_PLUS,
+     _AnnotationExtractor,
+     _get_annotations,
+     get_generic_base,
+@@ -986,6 +987,13 @@ class _ClassBuilder:
+             if field.init and not field.kw_only
+         )
+ 
++    def add_replace(self):
++        self._cls_dict["__replace__"] = self._add_method_dunders(
++            _make_replace()
++        )
++
++        return self
++
+     def add_attrs_init(self):
+         self._cls_dict["__attrs_init__"] = self._add_method_dunders(
+             _make_init(
+@@ -1388,6 +1396,9 @@ def attrs(
+         ):
+             builder.add_match_args()
+ 
++        if PY_3_13_PLUS and not _has_own_attribute(cls, "__replace__"):
++            builder.add_replace()
++
+         return builder.build_class()
+ 
+     # maybe_cls's type depends on the usage of the decorator.  It's a class
+@@ -1521,6 +1532,18 @@ def _make_ne():
+     return __ne__
+ 
+ 
++def _make_replace():
++    def __replace__(self, **changes):
++        """
++        Automatically created by attrs.
++        """
++        from ._funcs import evolve
++
++        return evolve(self, **changes)
++
++    return __replace__
++
++
+ def _make_eq(cls, attrs):
+     """
+     Create __eq__ method for *cls* with *attrs*.
+diff --git a/tests/test_make.py b/tests/test_make.py
+index cc78cb3..e5ac30f 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -22,7 +22,7 @@ from hypothesis.strategies import booleans, integers, lists, sampled_from, text
+ import attr
+ 
+ from attr import _config
+-from attr._compat import PY_3_10_PLUS, PY_3_14_PLUS
++from attr._compat import PY_3_10_PLUS, PY_3_13_PLUS, PY_3_14_PLUS
+ from attr._make import (
+     Attribute,
+     Factory,
+@@ -2690,5 +2690,56 @@ class TestMatchArgs:
+         C1 = make_class("C1", ["a", "b"], kw_only=True)
+         assert () == C1.__match_args__
+ 
++
++@pytest.mark.skipif(not PY_3_13_PLUS, reason="copy.replace is 3.13+")
++class TestReplace:
++    """
++    Tests for __replace__ and interaction with copy.replace().
++    """
++
++    def test_replace(self):
++        """
++        copy.replace() creates a new instance with changes applied.
++        """
++
++        @attr.define
++        class C:
++            a = attr.field()
++            b = attr.field()
++
++        i1 = C(1, 2)
++        i2 = copy.replace(i1, b=3)
++
++        assert i1 is not i2
++        assert i2 == C(1, 3)
++
++    def test_replace_frozen(self):
++        """
++        copy.replace() works on frozen classes.
++        """
++
++        @attr.frozen
++        class C:
++            a = attr.field()
++
++        i1 = C(1)
++        i2 = copy.replace(i1, a=2)
++
++        assert i2 == C(2)
++
++    def test_explicit_replace(self):
++        """
++        A custom __replace__ is not overwritten.
++        """
++
++        @attr.define
++        class C:
++            a = attr.field()
++
++            def __replace__(self, **changes):
++                return "custom"
++
++        assert copy.replace(C(1), a=2) == "custom"
++
+         C1 = make_class("C1", {"a": attr.ib(kw_only=True), "b": attr.ib()})
+         assert ("b",) == C1.__match_args__

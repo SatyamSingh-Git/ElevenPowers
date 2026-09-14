@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 240473,
+ "num_turns": 57,
+ "stop_reason": "end_turn",
+ "session_id": "9e7c5894-5514-4dbc-8975-d3caf922e505",
+ "total_cost_usd": 1.7868715000000004,
+ "usage": {
+  "input_tokens": 110,
+  "cache_creation_input_tokens": 54630,
+  "cache_read_input_tokens": 3970905,
+  "output_tokens": 17785,
+  "output_tokens_details": {
+   "thinking_tokens": 7782
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 54630,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 228,
+    "cache_read_input_tokens": 91290,
+    "cache_creation_input_tokens": 605,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 605
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 645,
+   "outputTokens": 14,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007149999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 110,
+   "outputTokens": 17785,
+   "cacheReadInputTokens": 3970905,
+   "cacheCreationInputTokens": 54630,
+   "webSearchRequests": 0,
+   "costUSD": 1.7861565000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1382 tests pass. Summary of the change:\n\n- `src/attr/_make.py`: renamed `_CountingAttr`'s `converter` slot to `_converter` (matching the `_default`/`_validator` convention) and added a public `converter` decorator method, mirroring `validator`/`default`. Updated `Attribute.from_counting_attr` to read `ca._converter`.\n- `docs/init.md`: documented the new `@x.converter` decorator in the Converters section.\n- `tests/test_make.py`, `tests/test_next_gen.py`: added unit and functional tests for the decorator.\n- `changelog.d/1541.change.md`: added a changelog fragment.",
+ "ttft_ms": 2067,
+ "ttft_stream_ms": 1294,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 295854,
+ "uuid": "79df8b09-6ef0-4618-b29c-1ff72260854b"
+}

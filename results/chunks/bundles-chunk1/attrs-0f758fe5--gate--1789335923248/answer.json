@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 169456,
+ "num_turns": 46,
+ "stop_reason": "end_turn",
+ "session_id": "91f5a9d8-f390-421f-9fb0-341a51fedfdf",
+ "total_cost_usd": 1.2353315999999999,
+ "usage": {
+  "input_tokens": 78,
+  "cache_creation_input_tokens": 46279,
+  "cache_read_input_tokens": 2684112,
+  "output_tokens": 10146,
+  "output_tokens_details": {
+   "thinking_tokens": 2852
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 46279,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 283,
+    "cache_read_input_tokens": 83045,
+    "cache_creation_input_tokens": 499,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 499
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 78,
+   "outputTokens": 10146,
+   "cacheReadInputTokens": 2684112,
+   "cacheCreationInputTokens": 46279,
+   "webSearchRequests": 0,
+   "costUSD": 1.2353315999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Matches the expected doctest output exactly. The change is complete and verified.\n\n**Summary:** Implemented `@x.converter` decorator support in `attrs`, matching upstream PR #1541:\n- `src/attr/_make.py`: renamed `_CountingAttr.converter` slot to `_converter` (freeing up `converter` as a method name), and added a `converter()` decorator method that wraps the decorated function in a `Converter(takes_self=True, takes_field=True)` and composes with any existing converter via `pipe()`.\n- `docs/init.md`: added a decorator usage example.\n- `tests/test_make.py` and `tests/test_mypy.yml`: added corresponding tests.\n- `changelog.d/240.change.md`: added changelog entry.\n\nFull test suite (1385 tests) passes with `PYTHONPATH=src`.",
+ "ttft_ms": 4239,
+ "ttft_stream_ms": 2307,
+ "time_to_request_ms": 261,
+ "type": "result",
+ "duration_ms": 231954,
+ "uuid": "9c3dd6cf-bebd-4b33-8c00-0c2920307367"
+}

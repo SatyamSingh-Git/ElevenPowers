@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 208832,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "dc448d2c-8938-4099-a11a-c5db6770802d",
+ "total_cost_usd": 1.0284422999999998,
+ "usage": {
+  "input_tokens": 60,
+  "cache_creation_input_tokens": 40828,
+  "cache_read_input_tokens": 1877811,
+  "output_tokens": 14617,
+  "output_tokens_details": {
+   "thinking_tokens": 9567
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 40828,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 339,
+    "cache_read_input_tokens": 77683,
+    "cache_creation_input_tokens": 410,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 410
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 586,
+   "outputTokens": 22,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000696,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 60,
+   "outputTokens": 14617,
+   "cacheReadInputTokens": 1877811,
+   "cacheCreationInputTokens": 40828,
+   "webSearchRequests": 0,
+   "costUSD": 1.0277462999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 874 tests pass on Python 3.13.\n\n## Summary\n\nFixed `test_package_zip_list` for Python 3.13, where `zipimport.zipimporter` replaced the `_files` attribute with a `_get_files()` method:\n\n- **`src/jinja2/loaders.py`**: Added a version-gated `_get_zipimporter_files()` helper \u2014 calls `z._get_files()` on Python 3.13+, falls back to `z._files` on older versions, both raising `TypeError` if neither is available (e.g. PyPy). `PackageLoader.list_templates()` now uses this helper instead of directly poking `_files`.\n- **`tests/test_loader.py`**: Removed the `sys.version_info > (3, 13)` clause from the `xfail` marker so the test now genuinely passes on 3.13+, keeping it xfail only for PyPy.\n\nVerified against both the sandbox's Python 3.11 and an available Python 3.13.2 install \u2014 full suite (874 tests) passes on 3.13.",
+ "ttft_ms": 3154,
+ "ttft_stream_ms": 2326,
+ "time_to_request_ms": 44,
+ "type": "result",
+ "duration_ms": 229931,
+ "uuid": "0677a38f-19d2-4827-a073-d4fd7b034887"
+}

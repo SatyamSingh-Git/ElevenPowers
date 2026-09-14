@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 398575,
+ "num_turns": 83,
+ "stop_reason": "end_turn",
+ "session_id": "7221047a-6b66-44d7-922b-ea1078b8fbe7",
+ "total_cost_usd": 2.9487032,
+ "usage": {
+  "input_tokens": 166,
+  "cache_creation_input_tokens": 80356,
+  "cache_read_input_tokens": 6879454,
+  "output_tokens": 26767,
+  "output_tokens_details": {
+   "thinking_tokens": 11829
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 80356,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 535,
+    "cache_read_input_tokens": 116709,
+    "cache_creation_input_tokens": 912,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 912
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 633,
+   "outputTokens": 19,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000728,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 166,
+   "outputTokens": 26767,
+   "cacheReadInputTokens": 6879454,
+   "cacheCreationInputTokens": 80356,
+   "webSearchRequests": 0,
+   "costUSD": 2.9479752000000006,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "With `PYTHONPATH=src` correctly pointing at the local source, the entire test suite passes: 1338 passed, 4 skipped, 1 xfailed \u2014 confirming the implementation is correct and nothing regressed.\n\n## Summary\n\nImplemented `__replace__` support for Python 3.13's `copy.replace()`, matching upstream attrs PR #1383:\n\n- **`src/attr/_make.py`**: moved `evolve()` from `_funcs.py` here (avoids a circular import, since `_funcs.py` imports from `_make.py`), added `_ClassBuilder.add_replace()` which assigns the shared `evolve` function as `__replace__`, and wired it into the `attrs()` decorator to auto-add `__replace__` on Python 3.13+ unless the class defines its own.\n- **`src/attr/_funcs.py`**: removed the now-relocated `evolve()`.\n- **`src/attr/__init__.py`**: re-pointed the `evolve` import to `._make`.\n- **`tests/test_make.py`**: added `TestReplace` covering `copy.replace()` basic use, no-op replace, and respecting a user-defined `__replace__`.\n- **`docs/api.rst`**: added a tip about `copy.replace` under `attrs.evolve`.\n- **`changelog.d/1383.change.md`**: news fragment.\n\nVerified with the local source on `PYTHONPATH` (the environment's `attr` install is a separate site-packages copy, unrelated pre-existing issue): full suite passes, 1338 passed / 4 skipped / 1 xfailed.",
+ "ttft_ms": 3171,
+ "ttft_stream_ms": 2094,
+ "time_to_request_ms": 35,
+ "type": "result",
+ "duration_ms": 589042,
+ "uuid": "83614ded-63d9-4f59-92c9-5c932fb545e6"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 83065,
+ "num_turns": 22,
+ "stop_reason": "end_turn",
+ "session_id": "b0b272ac-5b96-41fb-ac3d-38263126a8d4",
+ "total_cost_usd": 0.6125664000000001,
+ "usage": {
+  "input_tokens": 40,
+  "cache_creation_input_tokens": 29912,
+  "cache_read_input_tokens": 1193048,
+  "output_tokens": 5004,
+  "output_tokens_details": {
+   "thinking_tokens": 846
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29912,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 233,
+    "cache_read_input_tokens": 66840,
+    "cache_creation_input_tokens": 337,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 337
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 40,
+   "outputTokens": 5004,
+   "cacheReadInputTokens": 1193048,
+   "cacheCreationInputTokens": 29912,
+   "webSearchRequests": 0,
+   "costUSD": 0.6125664000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 906 tests pass.\n\n## Summary\n\nFixed `prepare_select_or_reject` in `src/jinja2/filters.py` (used by `select`/`reject`/`selectattr`/`rejectattr`) to pass `context=context` when calling `environment.call_test`, matching what `prepare_map` already does for filters. Without this, tests decorated with `@pass_context` raised `TemplateRuntimeError: Attempted to invoke a context test without context` when used with these filters.\n\nAlso added a regression test (`test_select_test_with_context`) and a changelog entry in `CHANGES.rst`. Verified the new test fails on the old code and passes with the fix; full suite is green (906 passed).",
+ "ttft_ms": 3272,
+ "ttft_stream_ms": 2666,
+ "time_to_request_ms": 229,
+ "type": "result",
+ "duration_ms": 105916,
+ "uuid": "cf62881a-e154-4d30-aa90-50f689d36d99"
+}

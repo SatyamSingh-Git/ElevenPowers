@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 135112,
+ "num_turns": 39,
+ "stop_reason": "end_turn",
+ "session_id": "41e22a7f-8ac1-4c5a-81a3-bdbf860d5273",
+ "total_cost_usd": 1.0420423,
+ "usage": {
+  "input_tokens": 48,
+  "cache_creation_input_tokens": 56087,
+  "cache_read_input_tokens": 1780991,
+  "output_tokens": 11360,
+  "output_tokens_details": {
+   "thinking_tokens": 2337
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 56087,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 401,
+    "cache_read_input_tokens": 92145,
+    "cache_creation_input_tokens": 1207,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1207
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 584,
+   "outputTokens": 19,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000679,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 48,
+   "outputTokens": 11360,
+   "cacheReadInputTokens": 1780991,
+   "cacheCreationInputTokens": 56087,
+   "webSearchRequests": 0,
+   "costUSD": 1.0413633000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This matches the upstream commit's file set exactly, and the full test suite (410 tests) passes. Summary of the change (matching upstream commit `af4856a`, \"Added fallback signers and switch back to sha1\"):\n\n- `signer.py`: reverted `default_digest_method` on both `HMACAlgorithm` and `Signer` from SHA-512 back to SHA-1.\n- `serializer.py`: added a `fallback_signers` constructor param and `iter_unsigners()`, so `loads()` tries the primary signer then each fallback until one verifies \u2014 enabling key/algorithm rotation.\n- `timed.py`: `TimedSerializer.loads()` updated to iterate fallback signers the same way.\n- `CHANGES.rst`: added the 1.1.0 entry and a yanked note on 1.0.0.\n- `README.rst`/`docs/conf.py`/`docs/index.rst`/`setup.py`: reverted package name capitalization from `ItsDangerous` back to lowercase `itsdangerous`.\n- Tests added for fallback signers in both `test_serializer.py` and `test_timed.py`, plus a `test_digests` regression test pinning the SHA-1 output.",
+ "ttft_ms": 4018,
+ "ttft_stream_ms": 3190,
+ "time_to_request_ms": 38,
+ "type": "result",
+ "duration_ms": 143854,
+ "uuid": "6755ba75-3dbb-4272-adc9-882d82300284"
+}

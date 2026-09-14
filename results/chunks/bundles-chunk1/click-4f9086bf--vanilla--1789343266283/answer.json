@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 97352,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "8df249c2-4bd9-4866-82d6-a5214c3e480a",
+ "total_cost_usd": 0.8316068000000001,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 37716,
+  "cache_read_input_tokens": 1629446,
+  "output_tokens": 7708,
+  "output_tokens_details": {
+   "thinking_tokens": 1971
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 37716,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 401,
+    "cache_read_input_tokens": 74486,
+    "cache_creation_input_tokens": 495,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 495
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 607,
+   "outputTokens": 20,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0007070000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 7708,
+   "cacheReadInputTokens": 1629446,
+   "cacheCreationInputTokens": 37716,
+   "webSearchRequests": 0,
+   "costUSD": 0.8308998000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All green. The change is applied and verified against the exact upstream commit (pallets/click PR #3235, `ac2dd7aadf08aa0ce7f75bf0e96b95ad5e62d1b9`):\n\n- `src/click/testing.py` \u2014 patches `pdb.Pdb.__init__` during `CliRunner.isolation()` to default `stdin`/`stdout` to `sys.__stdin__`/`sys.__stdout__` (restored in the `finally` block), so `pdb.set_trace()`, `breakpoint()`, and pdb subclasses (ipdb, pdbpp) can interact with the real terminal instead of the captured streams.\n- `tests/test_testing.py` \u2014 added 3 tests covering the patched defaults, explicit-stream override, and restoration after invoke.\n- `CHANGES.rst` \u2014 changelog entry referencing issues #654, #824, #843 and PRs #951, #3235.\n- `.pre-commit-config.yaml` \u2014 excluded the two touched files from the `debug-statements` hook (since they now legitimately reference `pdb`).\n\nFull test suite (run against local `src/click`) passes: 1350 passed, 72 skipped, 1 xfailed.",
+ "ttft_ms": 2361,
+ "ttft_stream_ms": 1072,
+ "time_to_request_ms": 48,
+ "type": "result",
+ "duration_ms": 116144,
+ "uuid": "2cc7a396-1eb0-4246-af4f-128fa81be8c5"
+}

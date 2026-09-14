@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 71231,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "80abcd21-519d-41ad-bf17-2bb62baf2713",
+ "total_cost_usd": 0.37219109999999994,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 19276,
+  "cache_read_input_tokens": 723687,
+  "output_tokens": 2623,
+  "output_tokens_details": {
+   "thinking_tokens": 369
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19276,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 126,
+    "cache_read_input_tokens": 55880,
+    "cache_creation_input_tokens": 661,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 661
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 2623,
+   "cacheReadInputTokens": 723687,
+   "cacheCreationInputTokens": 19276,
+   "webSearchRequests": 0,
+   "costUSD": 0.37219109999999994,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed \u2014 that failure pre-exists on master without my change, so it's unrelated pre-existing test/environment drift. My change is isolated to the error message and its test.\n\nSummary: updated the `ValueError` in `_make.py`'s `from_counting_attr` to include the field name, and updated `tests/test_annotations.py` plus added `changelog.d/1410.change.md`.",
+ "ttft_ms": 6747,
+ "ttft_stream_ms": 3928,
+ "time_to_request_ms": 280,
+ "type": "result",
+ "duration_ms": 109416,
+ "uuid": "e5c6f267-5711-4146-827e-adbb7ac2b5ca"
+}

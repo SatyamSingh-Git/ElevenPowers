@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 128662,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "b9290265-3fc3-4c46-ad54-713a2f1de42c",
+ "total_cost_usd": 0.8264847,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 39629,
+  "cache_read_input_tokens": 1619999,
+  "output_tokens": 6791,
+  "output_tokens_details": {
+   "thinking_tokens": 1499
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 39629,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 131,
+    "cache_read_input_tokens": 76556,
+    "cache_creation_input_tokens": 338,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 338
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 610,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.00069,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 6791,
+   "cacheReadInputTokens": 1619999,
+   "cacheCreationInputTokens": 39629,
+   "webSearchRequests": 0,
+   "costUSD": 0.8257947,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream fix exactly: the fish completion script now splits on `,` (matching bash's format) instead of literal `\\n`, `format_completion` emits `type,value` with an optional tab-separated help field per the fish `complete` docs, and the now-obsolete regression test for the old multi-line-escaping scheme was removed. All 53 tests in `test_shell_completion.py` pass.",
+ "ttft_ms": 3205,
+ "ttft_stream_ms": 2267,
+ "time_to_request_ms": 40,
+ "type": "result",
+ "duration_ms": 137642,
+ "uuid": "a2ee3b5f-849d-4f69-b96e-3a66e55fbcf8"
+}

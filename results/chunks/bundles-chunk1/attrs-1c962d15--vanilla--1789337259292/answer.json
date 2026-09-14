@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 50130,
+ "num_turns": 12,
+ "stop_reason": "end_turn",
+ "session_id": "6a19f1ea-09fa-463f-bcbc-debf172364bf",
+ "total_cost_usd": 0.3122706999999999,
+ "usage": {
+  "input_tokens": 24,
+  "cache_creation_input_tokens": 16508,
+  "cache_read_input_tokens": 605029,
+  "output_tokens": 2062,
+  "output_tokens_details": {
+   "thinking_tokens": 193
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16508,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 93,
+    "cache_read_input_tokens": 53524,
+    "cache_creation_input_tokens": 249,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 249
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 632,
+   "outputTokens": 16,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.000712,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 24,
+   "outputTokens": 2062,
+   "cacheReadInputTokens": 605029,
+   "cacheCreationInputTokens": 16508,
+   "webSearchRequests": 0,
+   "costUSD": 0.3115586999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Test passes. Changes made: the `ValueError` in `src/attr/_make.py` (`Attribute.from_counting_attr`) now includes the attribute's name, the corresponding test assertion was updated, and a `changelog.d/1354.change.md` news fragment was added.",
+ "ttft_ms": 7613,
+ "ttft_stream_ms": 6621,
+ "time_to_request_ms": 33,
+ "type": "result",
+ "duration_ms": 52784,
+ "uuid": "6f63c240-e26e-4a12-8e82-8879308bb5d7"
+}

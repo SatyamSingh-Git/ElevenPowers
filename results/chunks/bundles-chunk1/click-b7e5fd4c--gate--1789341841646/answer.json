@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 180294,
+ "num_turns": 24,
+ "stop_reason": "end_turn",
+ "session_id": "f0d7b1bd-65e4-46ac-9c76-fcc78b8b9cd6",
+ "total_cost_usd": 1.0957593,
+ "usage": {
+  "input_tokens": 48,
+  "cache_creation_input_tokens": 59164,
+  "cache_read_input_tokens": 1849371,
+  "output_tokens": 12388,
+  "output_tokens_details": {
+   "thinking_tokens": 6920
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 59164,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 398,
+    "cache_read_input_tokens": 95939,
+    "cache_creation_input_tokens": 490,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 490
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 48,
+   "outputTokens": 12388,
+   "cacheReadInputTokens": 1849371,
+   "cacheCreationInputTokens": 59164,
+   "webSearchRequests": 0,
+   "costUSD": 1.0957593,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "This matches upstream PR #3504 exactly (14 insertions, 65 deletions there vs. our 14/70 \u2014 the small difference is git's line-ending diff bookkeeping, not content).\n\nSummary of the fix:\n- **`src/click/shell_completion.py`**: Reverted the broken 8.4.0 newline-based fish record format. `FishComplete.format_completion` now returns `type,value` (or `type,value\\tescaped_help` when help text exists), escaping embedded `\\n` in help as literal `\\n` and collapsing tabs to spaces. The `_SOURCE_FISH` script now splits each response line on `\",\"` again instead of on a literal (and unquoted, syntactically broken) `\\n`, and just echoes `value\\thelp` directly \u2014 matching fish's documented `complete` format where each line is `value<TAB>description`.\n- **`tests/test_shell_completion.py`**: Updated expected fish completion output to the new `plain,a` / `plain,b\\tbee` format, and removed the now-obsolete `test_fish_multiline_help_complete` test tied to the old three-line format.\n\nFull test suite: 1562 passed, 93 skipped, 1 xfailed \u2014 no failures.",
+ "ttft_ms": 4042,
+ "ttft_stream_ms": 2690,
+ "time_to_request_ms": 291,
+ "type": "result",
+ "duration_ms": 212280,
+ "uuid": "340d8cb1-07da-4249-8ccc-d63201dedce1"
+}

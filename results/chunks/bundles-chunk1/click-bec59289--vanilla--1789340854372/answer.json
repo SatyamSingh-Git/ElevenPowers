@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 124789,
+ "num_turns": 28,
+ "stop_reason": "end_turn",
+ "session_id": "da35aac3-5be3-430a-8372-b1fcde37c912",
+ "total_cost_usd": 0.8216307000000002,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 34532,
+  "cache_read_input_tokens": 1593629,
+  "output_tokens": 9033,
+  "output_tokens_details": {
+   "thinking_tokens": 3646
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 34532,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 311,
+    "cache_read_input_tokens": 71000,
+    "cache_creation_input_tokens": 797,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 797
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 604,
+   "outputTokens": 19,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006990000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 9033,
+   "cacheReadInputTokens": 1593629,
+   "cacheCreationInputTokens": 34532,
+   "webSearchRequests": 0,
+   "costUSD": 0.8209317000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: those 37 failures are pre-existing and unrelated to this change. The fix is complete and my two new tests pass cleanly.\n\n## Summary\n\nFixed `version_option`'s package-name resolution in `src/click/decorators.py`: when the auto-detected top-level module name doesn't match the installed distribution's name (e.g. `flask_sqlalchemy` module vs. `Flask-SQLAlchemy` distribution), it now falls back to `importlib.metadata.packages_distributions()` to map the module name to its actual distribution name before giving up with a `RuntimeError`.\n\nAlso added `CHANGES.md` entry and two regression tests in `tests/test_command_decorators.py` covering the mismatch-resolves case and the still-fails-when-unmapped case. Pre-existing unrelated test failures (`test_utils.py`, due to a deprecation warning) are present on `master` too and unaffected by this change.",
+ "ttft_ms": 8333,
+ "ttft_stream_ms": 7086,
+ "time_to_request_ms": 104,
+ "type": "result",
+ "duration_ms": 147880,
+ "uuid": "24c4f428-178c-4927-b8ce-83c38d08c4d8"
+}

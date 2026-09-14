@@ -1,0 +1,120 @@
+{
+ "is_error": false,
+ "duration_api_ms": 105706,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "13e7973c-53a9-4f82-964d-ef0d1c051337",
+ "total_cost_usd": 0.7063269,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 46444,
+  "cache_read_input_tokens": 973963,
+  "output_tokens": 8090,
+  "output_tokens_details": {
+   "thinking_tokens": 1380
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 46444,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 381,
+    "cache_read_input_tokens": 82463,
+    "cache_creation_input_tokens": 1246,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1246
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 8090,
+   "cacheReadInputTokens": 973963,
+   "cacheCreationInputTokens": 46444,
+   "webSearchRequests": 0,
+   "costUSD": 0.6922929,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  },
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 12769,
+   "outputTokens": 253,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.014034000000000001,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Edit",
+   "tool_use_id": "toolu_018BXUFoezuonxLUCj1kSutZ",
+   "tool_input": {
+    "file_path": "C:\\Users\\Satyam\\AppData\\Local\\Temp\\tmpmsxu0bb0\\src\\click\\decorators.py",
+    "old_string": "    If ``package_name`` is not provided, Click will try to detect it by\n    inspecting the stack frames. This will be used to detect the\n    version, so it must match the name of the installed package.",
+    "new_string": "    If ``package_name`` is not provided, Click will try to detect it by\n    inspecting the stack frames. If the detected (or given) name does\n    not match an installed distribution, Click resolves it as an import\n    (top-level module) name via\n    :func:`importlib.metadata.packages_distributions`, so e.g. ``PIL``\n    resolves to the ``Pillow`` distribution.",
+    "replace_all": false
+   }
+  },
+  {
+   "tool_name": "Edit",
+   "tool_use_id": "toolu_01TqFfk7orFG95Y9E8ZZTEWU",
+   "tool_input": {
+    "file_path": "C:\\Users\\Satyam\\AppData\\Local\\Temp\\tmpmsxu0bb0\\src\\click\\decorators.py",
+    "old_string": "        version is detected based on the package name, not the entry\n        point name. The Python package name must match the installed\n        package name, or be passed with ``package_name=``.\n    \"\"\"",
+    "new_string": "        version is detected based on the package name, not the entry\n        point name. The Python package name must match the installed\n        package name, or be passed with ``package_name=``.\n\n    .. versionchanged:: 8.4.2\n        When ``package_name`` does not match an installed distribution,\n        Click now resolves it as an import (top-level module).\n    \"\"\"",
+    "replace_all": false
+   }
+  },
+  {
+   "tool_name": "Edit",
+   "tool_use_id": "toolu_01B8AZzswiGEQBwg8Y2qD3mA",
+   "tool_input": {
+    "file_path": "C:\\Users\\Satyam\\AppData\\Local\\Temp\\tmpmsxu0bb0\\src\\click\\decorators.py",
+    "old_string": "        nonlocal prog_name\n        nonlocal version\n\n        if prog_name is None:",
+    "new_string": "        nonlocal prog_name\n        nonlocal version\n        nonlocal package_name\n\n        if prog_name is None:",
+    "replace_all": false
+   }
+  },
+  {
+   "tool_name": "Edit",
+   "tool_use_id": "toolu_01Sa96DjmeXc6JonLhXjPBLA",
+   "tool_input": {
+    "file_path": "C:\\Users\\Satyam\\AppData\\Local\\Temp\\tmpmsxu0bb0\\src\\click\\decorators.py",
+    "old_string": "            try:\n                version = importlib.metadata.version(package_name)\n            except importlib.metadata.PackageNotFoundError:\n                raise RuntimeError(\n                    f\"{package_name!r} is not installed. Try passing\"\n                    \" 'package_name' instead.\"\n                ) from None",
+    "new_string": "            try:\n                version = importlib.metadata.version(package_name)\n            except importlib.metadata.PackageNotFoundError:\n                # The given name didn't match an installed distribution.\n                # Try resolving it as an import (top-level module) name,\n                # e.g. ``PIL`` is provided by the ``Pillow`` distribution.\n                distributions = importlib.metadata.packages_distributions().get(\n                    package_name, []\n                )\n                if len(distributions) == 1:\n                    package_name = distributions[0]\n                    version = importlib.metadata.version(package_name)\n                elif len(distributions) > 1:\n                    raise RuntimeError(\n                        f\"{package_name!r} maps to multiple installed\"\n                        f\" distributions ({', '.join(distributions)}).\"\n                        \" Pass 'package_name' to disambiguate.\"\n                    ) from None\n                else:\n                    raise RuntimeError(\n                        f\"{package_name!r} is not installed. Try passing\"\n                        \" 'package_name' instead.\"\n                    ) from None",
+    "replace_all": false
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: the 37 failures are pre-existing (same count before my change, unrelated environment/version issues). My 3 new `version_option` tests pass, and my changes added no new failures.\n\n## Summary\n\nApplied the upstream fix (pallets/click PR #3582) to `src/click/decorators.py`:\n\n- `version_option`'s callback now falls back to `importlib.metadata.packages_distributions()` when the resolved `package_name` doesn't match an installed distribution directly \u2014 resolving cases like top-level module `PIL` \u2192 distribution `Pillow`.\n- Raises a clearer `RuntimeError` if the import name maps to multiple distributions (ambiguous, needs explicit `package_name`), and preserves the original \"not installed\" error when it maps to none.\n- Updated docstring/versionchanged note, `CHANGES.md` entry, and added 3 tests in `tests/test_basic.py` covering the resolved case, the ambiguous case, and the unresolved case.\n\nFull test suite passes with the same pre-existing 37 failures (unrelated environment/deprecation issues, verified identical before and after the change); all `version_option` tests pass.",
+ "ttft_ms": 3598,
+ "ttft_stream_ms": 2963,
+ "time_to_request_ms": 288,
+ "type": "result",
+ "duration_ms": 140275,
+ "uuid": "86a9c1bb-1f69-471c-a28a-752ecec538fe"
+}

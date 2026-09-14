@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 62016,
+ "num_turns": 21,
+ "stop_reason": "end_turn",
+ "session_id": "92c32561-f01c-45de-9c84-96f94fee6db5",
+ "total_cost_usd": 0.5606911,
+ "usage": {
+  "input_tokens": 36,
+  "cache_creation_input_tokens": 28689,
+  "cache_read_input_tokens": 1059637,
+  "output_tokens": 4661,
+  "output_tokens_details": {
+   "thinking_tokens": 850
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 28689,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 149,
+    "cache_read_input_tokens": 65532,
+    "cache_creation_input_tokens": 422,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 422
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 578,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006429999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 36,
+   "outputTokens": 4661,
+   "cacheReadInputTokens": 1059637,
+   "cacheCreationInputTokens": 28689,
+   "webSearchRequests": 0,
+   "costUSD": 0.5600480999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Made the change: `filters.py`'s `prepare_select_or_reject` now passes `context=context` into `environment.call_test`, matching what `prepare_map` already does for filters \u2014 so `select`/`reject`/`selectattr`/`rejectattr` now work with tests decorated with `@pass_context`. Added a regression test (`test_select_context`) and a changelog entry. Full `tests/test_filters.py` suite (133 tests) passes.",
+ "ttft_ms": 2084,
+ "ttft_stream_ms": 1136,
+ "time_to_request_ms": 47,
+ "type": "result",
+ "duration_ms": 66554,
+ "uuid": "d90cbb58-86bc-49a8-9c79-a35c89e057ef"
+}

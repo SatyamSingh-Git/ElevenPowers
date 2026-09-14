@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 152360,
+ "num_turns": 26,
+ "stop_reason": "end_turn",
+ "session_id": "ec3614c0-75b9-4f05-9524-ac42892838dc",
+ "total_cost_usd": 0.9536514000000001,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 45636,
+  "cache_read_input_tokens": 1746148,
+  "output_tokens": 10389,
+  "output_tokens_details": {
+   "thinking_tokens": 5578
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 45636,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 279,
+    "cache_read_input_tokens": 82414,
+    "cache_creation_input_tokens": 487,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 487
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 10389,
+   "cacheReadInputTokens": 1746148,
+   "cacheCreationInputTokens": 45636,
+   "webSearchRequests": 0,
+   "costUSD": 0.9536514000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 909 tests pass.\n\n**Summary:** `do_attr` (the `attr` filter, `src/jinja2/filters.py`) now delegates entirely to `environment.getattr(obj, name)` instead of reimplementing `getattr` + a manual `is_safe_attribute` check. This fixes a sandbox gap: `SandboxedEnvironment.getattr` also wraps results through `wrap_str_format`, so `{{ obj|attr(\"format\") }}` in a sandboxed environment is now protected against the same indirect `str.format` exploitation that `.format()` and `getitem` already guard against \u2014 previously the `attr` filter's own inline check skipped that wrapping. Added a changelog entry and a regression test (`test_attr_filter_wraps_str_format`) confirming the format string is neutralized when accessed via `attr`.",
+ "ttft_ms": 4089,
+ "ttft_stream_ms": 3067,
+ "time_to_request_ms": 229,
+ "type": "result",
+ "duration_ms": 170545,
+ "uuid": "52933d71-1d21-40cd-b90e-f5adfd40453a"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 360836,
+ "num_turns": 77,
+ "stop_reason": "end_turn",
+ "session_id": "63d7bd5d-d17e-40c9-b542-b3cdd7236e58",
+ "total_cost_usd": 2.6147871000000005,
+ "usage": {
+  "input_tokens": 154,
+  "cache_creation_input_tokens": 68939,
+  "cache_read_input_tokens": 6342937,
+  "output_tokens": 19854,
+  "output_tokens_details": {
+   "thinking_tokens": 3236
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 68939,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 172,
+    "cache_read_input_tokens": 105883,
+    "cache_creation_input_tokens": 321,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 321
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 154,
+   "outputTokens": 19854,
+   "cacheReadInputTokens": 6342937,
+   "cacheCreationInputTokens": 68939,
+   "webSearchRequests": 0,
+   "costUSD": 2.6147871000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream commit \"Deprecate hash for unsafe_hash\" (#1323): `@attr.s`, `@attrs.define`, and `make_class()` now emit a `DeprecationWarning` when the *hash* argument is passed, directing users to *unsafe_hash* instead. All internal usages were switched to `unsafe_hash`, deprecation tests were added, docs updated, and a changelog fragment was created. Full test suite passes (1330 passed, 4 skipped, 1 xfailed).",
+ "ttft_ms": 3870,
+ "ttft_stream_ms": 2998,
+ "time_to_request_ms": 278,
+ "type": "result",
+ "duration_ms": 415205,
+ "uuid": "2d7f258b-ca00-4268-9a75-31c51610d1ff"
+}

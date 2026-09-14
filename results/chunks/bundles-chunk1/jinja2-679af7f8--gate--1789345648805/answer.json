@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 164195,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "c5bbe92b-c56b-4c98-849b-5e5c916842b2",
+ "total_cost_usd": 0.9211663999999999,
+ "usage": {
+  "input_tokens": 60,
+  "cache_creation_input_tokens": 33631,
+  "cache_read_input_tokens": 1809998,
+  "output_tokens": 8273,
+  "output_tokens_details": {
+   "thinking_tokens": 3516
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 33631,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 253,
+    "cache_read_input_tokens": 70767,
+    "cache_creation_input_tokens": 129,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 129
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 60,
+   "outputTokens": 8273,
+   "cacheReadInputTokens": 1809998,
+   "cacheCreationInputTokens": 33631,
+   "webSearchRequests": 0,
+   "costUSD": 0.8690604,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  },
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 27431,
+   "outputTokens": 935,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.052106,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 874 tests pass on Python 3.13.2, confirming `test_package_zip_list` now runs (not xfail) and succeeds. This matches upstream [pallets/jinja#1979](https://github.com/pallets/jinja/pull/1979) exactly:\n\n- `src/jinja2/loaders.py`: added a version-gated `_get_zipimporter_files()` helper that calls `zipimporter._get_files()` on Python 3.13+ (since `_files` was removed) and falls back to `._files` on older versions; `PackageLoader.list_templates()` now uses this helper.\n- `tests/test_loader.py`: narrowed the `xfail` marker on `test_package_zip_list` back to pypy-only, since 3.13 is now handled.",
+ "ttft_ms": 3966,
+ "ttft_stream_ms": 3052,
+ "time_to_request_ms": 288,
+ "type": "result",
+ "duration_ms": 307151,
+ "uuid": "02ce8cd1-8db2-4924-9567-6d4fac342399"
+}

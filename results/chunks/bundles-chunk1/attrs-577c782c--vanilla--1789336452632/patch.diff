@@ -1,0 +1,99 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 7156b12..72604c3 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -4,7 +4,7 @@ ci:
+ 
+ repos:
+   - repo: https://github.com/astral-sh/ruff-pre-commit
+-    rev: v0.11.12
++    rev: v0.12.0
+     hooks:
+       - id: ruff-check
+         args: [--fix, --exit-non-zero-on-fix]
+diff --git a/pyproject.toml b/pyproject.toml
+index 4428d97..23914fd 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -203,6 +203,9 @@ toplevel = ["attr", "attrs"]
+ src = ["src", "tests", "conftest.py", "docs"]
+ line-length = 79
+ 
++[tool.ruff.per-file-target-version]
++"tests/test_pattern_matching.py" = "py310"
++
+ [tool.ruff.lint]
+ select = ["ALL"]
+ ignore = [
+@@ -221,6 +224,7 @@ ignore = [
+   "ISC001",  # conflicts with ruff format
+   "N",       # we need more naming freedom
+   "PD",      # we're not pandas
++  "PLC0415", # sometimes, imports have to live elsewhere
+   "PLR0912", # we're complex software
+   "PLR0913", # yes, many arguments, but most have defaults
+   "PLR0915", # we're complex software
+@@ -247,6 +251,7 @@ ignore = [
+   "DTZ",     # datetime best practices don't matter in tests
+   "EM",      # no need for exception msg hygiene in tests
+   "PLE0309", # hash doesn't have to return anything in tests
++  "PLW1641", # it's OK to rely object's __hash__
+   "PLR0124", # pointless comparison in tests aren't pointless
+   "PT011",   # broad is fine
+   "PT012",   # sometimes we need more than a single stmt
+diff --git a/src/attr/_version_info.py b/src/attr/_version_info.py
+index 51a1312..27f1888 100644
+--- a/src/attr/_version_info.py
++++ b/src/attr/_version_info.py
+@@ -84,3 +84,6 @@ class VersionInfo:
+         # Since alphabetically "dev0" < "final" < "post1" < "post2", we don't
+         # have to do anything special with releaselevel for now.
+         return us < them
++
++    def __hash__(self):
++        return hash((self.year, self.minor, self.micro, self.releaselevel))
+diff --git a/tests/test_version_info.py b/tests/test_version_info.py
+index 5bd101b..e645550 100644
+--- a/tests/test_version_info.py
++++ b/tests/test_version_info.py
+@@ -7,7 +7,7 @@ from attr import VersionInfo
+ 
+ 
+ @pytest.fixture(name="vi")
+-def fixture_vi():
++def _vi():
+     return VersionInfo(19, 2, 0, "final")
+ 
+ 
+@@ -55,3 +55,9 @@ class TestVersionInfo:
+         assert vi >= (19, 2)
+         assert vi > (19, 2, 0, "dev0")
+         assert vi < (19, 2, 0, "post1")
++
++    def test_hash(self, vi):
++        """
++        Same values, same hash.
++        """
++        assert hash(vi) == hash(VersionInfo(19, 2, 0, "final"))
+diff --git a/uv.lock b/uv.lock
+index 505c678..8b4f0d5 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -540,7 +540,7 @@ name = "exceptiongroup"
+ version = "1.3.0"
+ source = { registry = "https://pypi.org/simple" }
+ dependencies = [
+-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
++    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+ ]
+ sdist = { url = "https://files.pythonhosted.org/packages/0b/9f/a65090624ecf468cdca03533906e7c69ed7588582240cfe7cc9e770b50eb/exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88", size = 29749, upload-time = "2025-05-10T17:42:51.123Z" }
+ wheels = [
+@@ -610,7 +610,7 @@ name = "importlib-metadata"
+ version = "8.7.0"
+ source = { registry = "https://pypi.org/simple" }
+ dependencies = [
+-    { name = "zipp", marker = "python_full_version < '3.10' or platform_python_implementation != 'CPython'" },
++    { name = "zipp", marker = "python_full_version < '3.10'" },
+ ]
+ sdist = { url = "https://files.pythonhosted.org/packages/76/66/650a33bd90f786193e4de4b3ad86ea60b53c89b669a5c7be931fac31cdb0/importlib_metadata-8.7.0.tar.gz", hash = "sha256:d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000", size = 56641, upload-time = "2025-04-27T15:29:01.736Z" }
+ wheels = [

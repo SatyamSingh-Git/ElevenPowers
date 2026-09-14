@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 60517,
+ "num_turns": 17,
+ "stop_reason": "end_turn",
+ "session_id": "3a755112-6dd0-4822-93c0-5c71c9c7ad90",
+ "total_cost_usd": 0.4708408,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 25644,
+  "cache_read_input_tokens": 858796,
+  "output_tokens": 3907,
+  "output_tokens_details": {
+   "thinking_tokens": 829
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 25644,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 149,
+    "cache_read_input_tokens": 62642,
+    "cache_creation_input_tokens": 267,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 267
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 578,
+   "outputTokens": 13,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0006429999999999999,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  },
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 3907,
+   "cacheReadInputTokens": 858796,
+   "cacheCreationInputTokens": 25644,
+   "webSearchRequests": 0,
+   "costUSD": 0.47019779999999994,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 132 tests pass. Made the fix to `prepare_select_or_reject` in `src/jinja2/filters.py:1782-1785` so `select`/`reject`/`selectattr`/`rejectattr` now pass `context=context` to `call_test`, matching how `prepare_map` already does it for filters \u2014 this lets context-aware (`@pass_context`) tests work with the selection filters. Added a corresponding CHANGES.rst entry.",
+ "ttft_ms": 2917,
+ "ttft_stream_ms": 1947,
+ "time_to_request_ms": 36,
+ "type": "result",
+ "duration_ms": 64135,
+ "uuid": "24efe82f-be4c-4de7-b6da-c89d3d003f01"
+}

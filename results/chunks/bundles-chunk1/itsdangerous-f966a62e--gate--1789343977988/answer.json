@@ -1,0 +1,79 @@
+{
+ "is_error": false,
+ "duration_api_ms": 127016,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "3a75ba45-b417-4bfb-9f26-afeb0015fe6d",
+ "total_cost_usd": 1.0016304,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 79489,
+  "cache_read_input_tokens": 1238648,
+  "output_tokens": 9070,
+  "output_tokens_details": {
+   "thinking_tokens": 3172
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 79489,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 156,
+    "cache_read_input_tokens": 115925,
+    "cache_creation_input_tokens": 829,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 829
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 9070,
+   "cacheReadInputTokens": 1238648,
+   "cacheCreationInputTokens": 79489,
+   "webSearchRequests": 0,
+   "costUSD": 0.9846684,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  },
+  "claude-haiku-4-5-20251001": {
+   "inputTokens": 6182,
+   "outputTokens": 2156,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.016962,
+   "contextWindow": 200000,
+   "maxOutputTokens": 32000,
+   "canonicalModel": "claude-haiku-4-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 399 tests pass. The change is applied and verified: reverted the default digest method in `signer.py` back to SHA-1 (from the yanked SHA-512 default), and added `fallback_signers`/`iter_unsigners` support to `Serializer` in `serializer.py` so it can be signed with one algorithm while still unsigning older tokens signed with another, plus the corresponding test in `test_serializer.py` \u2014 matching upstream commit `f966a62` exactly.",
+ "ttft_ms": 2799,
+ "ttft_stream_ms": 2020,
+ "time_to_request_ms": 215,
+ "type": "result",
+ "duration_ms": 134022,
+ "uuid": "6571fe23-ac9a-4c7b-995a-35ed4b379204"
+}

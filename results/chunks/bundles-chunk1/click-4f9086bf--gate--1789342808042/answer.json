@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 76109,
+ "num_turns": 25,
+ "stop_reason": "end_turn",
+ "session_id": "5633b74f-d64e-4961-be60-1be7b29872ec",
+ "total_cost_usd": 0.7852716,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 36340,
+  "cache_read_input_tokens": 1581422,
+  "output_tokens": 6177,
+  "output_tokens_details": {
+   "thinking_tokens": 810
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 36340,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 269,
+    "cache_read_input_tokens": 72765,
+    "cache_creation_input_tokens": 840,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 840
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 6177,
+   "cacheReadInputTokens": 1581422,
+   "cacheCreationInputTokens": 36340,
+   "webSearchRequests": 0,
+   "costUSD": 0.7852716,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: same 54 pre-existing failures on master before my change \u2014 unrelated to this patch. My change adds 3 new passing tests (1293 \u2192 1296 passed) with no new failures.\n\nThe `pdb` patch has been applied successfully across all 4 files (`src/click/testing.py`, `tests/test_testing.py`, `CHANGES.rst`, `.pre-commit-config.yaml`), matching the upstream commit. `pdb.Pdb.__init__` is now patched during `CliRunner` isolation to default to real terminal streams (`sys.__stdin__`/`sys.__stdout__`), so `pdb.set_trace()`, `breakpoint()`, and pdb subclasses (ipdb, pdbpp) can interact with the developer instead of the captured test I/O buffers.",
+ "ttft_ms": 3184,
+ "ttft_stream_ms": 1665,
+ "time_to_request_ms": 222,
+ "type": "result",
+ "duration_ms": 114405,
+ "uuid": "49d21ad2-2e68-4cc0-b9d5-f621e7052ba3"
+}

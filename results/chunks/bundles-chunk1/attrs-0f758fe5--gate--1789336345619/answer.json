@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 260657,
+ "num_turns": 49,
+ "stop_reason": "end_turn",
+ "session_id": "8c3e27fc-56fc-4c6c-9c4a-a275a9fdf044",
+ "total_cost_usd": 1.6466357999999996,
+ "usage": {
+  "input_tokens": 98,
+  "cache_creation_input_tokens": 54074,
+  "cache_read_input_tokens": 3508776,
+  "output_tokens": 17951,
+  "output_tokens_details": {
+   "thinking_tokens": 9252
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 54074,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 402,
+    "cache_read_input_tokens": 90833,
+    "cache_creation_input_tokens": 506,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 506
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 98,
+   "outputTokens": 17951,
+   "cacheReadInputTokens": 3508776,
+   "cacheCreationInputTokens": 54074,
+   "webSearchRequests": 0,
+   "costUSD": 1.6466357999999996,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Implemented \"Expose converter as a decorator\" (#1541):\n\n- **`src/attr/_make.py`**: renamed `_CountingAttr`'s internal `converter` slot/storage to `_converter` (matching the existing `_default`/`_validator` pattern), and added a `converter()` decorator method that sets `self._converter = meth` and returns `meth` unchanged \u2014 mirroring the existing `validator()` decorator. Updated `Attribute.from_counting_attr` to read `ca._converter`.\n- **`tests/strategies.py`**: updated the one other reference to the renamed private attribute.\n- **`docs/init.md`**: added a \"Decorator\" subsection under Converters (mirroring the Validators section) showing `@x.converter` usage, with the existing example moved under a new \"Callables\" subsection.\n- **`changelog.d/1541.change.md`**: added a changelog fragment.\n\nVerified with the full test suite (`PYTHONPATH=src python -m pytest`): 1380 passed, 5 skipped, 1 xfailed \u2014 plus manual checks that `@x.converter` works for both `attrs.define`/`field()` and legacy `attr.s`/`attr.ib()` classes.",
+ "ttft_ms": 4756,
+ "ttft_stream_ms": 2813,
+ "time_to_request_ms": 314,
+ "type": "result",
+ "duration_ms": 395929,
+ "uuid": "c68f3c5a-a883-487f-b6eb-514f27f5b2b9"
+}

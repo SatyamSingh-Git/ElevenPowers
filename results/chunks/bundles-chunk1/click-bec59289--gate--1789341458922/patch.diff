@@ -1,0 +1,174 @@
+diff --git a/CHANGES.md b/CHANGES.md
+index 90b93ed..3eba25e 100644
+--- a/CHANGES.md
++++ b/CHANGES.md
+@@ -20,6 +20,11 @@ Unreleased
+   {pr}`3533`
+ - Fix CLI usage symopsis for optional arguments producing double square brackets
+   `[[a|b|c]]...` whose type already brackets their metavar. {pr}`3578`
++- `version_option` resolves `package_name` as an import (top-level module)
++  name via `importlib.metadata.packages_distributions()` when it doesn't
++  match an installed distribution directly, fixing detection when the
++  distribution name differs from the top-level module name (e.g. `PIL` /
++  `Pillow`). {issue}`1884` {issue}`2331` {issue}`3125`
+ 
+ ## Version 8.4.1
+ 
+diff --git a/src/click/decorators.py b/src/click/decorators.py
+index 14aee42..db6a45e 100644
+--- a/src/click/decorators.py
++++ b/src/click/decorators.py
+@@ -434,8 +434,11 @@ def version_option(
+     ``package_name``.
+ 
+     If ``package_name`` is not provided, Click will try to detect it by
+-    inspecting the stack frames. This will be used to detect the
+-    version, so it must match the name of the installed package.
++    inspecting the stack frames. If the detected (or given) name does
++    not match an installed distribution, Click resolves it as an import
++    (top-level module) name via
++    :func:`importlib.metadata.packages_distributions`, so e.g. ``PIL``
++    resolves to the ``Pillow`` distribution.
+ 
+     :param version: The version number to show. If not provided, Click
+         will try to detect it.
+@@ -460,6 +463,10 @@ def version_option(
+         version is detected based on the package name, not the entry
+         point name. The Python package name must match the installed
+         package name, or be passed with ``package_name=``.
++
++    .. versionchanged:: 8.4.2
++        When ``package_name`` does not match an installed distribution,
++        Click now resolves it as an import (top-level module).
+     """
+     if message is None:
+         message = _("%(prog)s, version %(version)s")
+@@ -487,6 +494,7 @@ def version_option(
+ 
+         nonlocal prog_name
+         nonlocal version
++        nonlocal package_name
+ 
+         if prog_name is None:
+             prog_name = ctx.find_root().info_name
+@@ -497,10 +505,26 @@ def version_option(
+             try:
+                 version = importlib.metadata.version(package_name)
+             except importlib.metadata.PackageNotFoundError:
+-                raise RuntimeError(
+-                    f"{package_name!r} is not installed. Try passing"
+-                    " 'package_name' instead."
+-                ) from None
++                # The given name didn't match an installed distribution.
++                # Try resolving it as an import (top-level module) name,
++                # e.g. ``PIL`` is provided by the ``Pillow`` distribution.
++                distributions = importlib.metadata.packages_distributions().get(
++                    package_name, []
++                )
++                if len(distributions) == 1:
++                    package_name = distributions[0]
++                    version = importlib.metadata.version(package_name)
++                elif len(distributions) > 1:
++                    raise RuntimeError(
++                        f"{package_name!r} maps to multiple installed"
++                        f" distributions ({', '.join(distributions)})."
++                        " Pass 'package_name' to disambiguate."
++                    ) from None
++                else:
++                    raise RuntimeError(
++                        f"{package_name!r} is not installed. Try passing"
++                        " 'package_name' instead."
++                    ) from None
+ 
+         if version is None:
+             raise RuntimeError(
+diff --git a/tests/test_basic.py b/tests/test_basic.py
+index 0d54115..72a5a33 100644
+--- a/tests/test_basic.py
++++ b/tests/test_basic.py
+@@ -276,6 +276,85 @@ def test_boolean_conversion(runner, value, expect):
+     assert result.output == expect
+ 
+ 
++def test_version_option_resolves_import_name_to_distribution(runner, monkeypatch):
++    """When ``package_name`` (detected or passed) is an import name that
++    differs from its installed distribution name (``PIL`` vs ``Pillow``),
++    ``version_option`` resolves it via ``packages_distributions()`` instead
++    of raising ``RuntimeError``.
++    """
++    import importlib.metadata
++
++    def fake_version(name):
++        if name == "pillow":
++            return "10.4.0"
++        raise importlib.metadata.PackageNotFoundError(name)
++
++    monkeypatch.setattr(importlib.metadata, "version", fake_version)
++    monkeypatch.setattr(
++        importlib.metadata,
++        "packages_distributions",
++        lambda: {"PIL": ["pillow"]},
++    )
++
++    @click.command()
++    @click.version_option(package_name="PIL")
++    def cli():
++        pass
++
++    result = runner.invoke(cli, ["--version"], prog_name="imageapp")
++    assert result.exit_code == 0
++    assert "10.4.0" in result.output
++
++
++def test_version_option_ambiguous_import_name_errors(runner, monkeypatch):
++    """When an import name maps to multiple installed distributions, the
++    user must disambiguate. The error names the candidates.
++    """
++    import importlib.metadata
++
++    def fake_version(name):
++        raise importlib.metadata.PackageNotFoundError(name)
++
++    monkeypatch.setattr(importlib.metadata, "version", fake_version)
++    monkeypatch.setattr(
++        importlib.metadata,
++        "packages_distributions",
++        lambda: {"plug": ["foo-plug", "bar-plug"]},
++    )
++
++    @click.command()
++    @click.version_option(package_name="plug")
++    def cli():
++        pass
++
++    result = runner.invoke(cli, ["--version"])
++    assert result.exit_code != 0
++    msg = str(result.exception)
++    assert "multiple installed distributions" in msg
++    assert "foo-plug" in msg
++    assert "bar-plug" in msg
++
++
++def test_version_option_unknown_package_errors(runner, monkeypatch):
++    """When the name resolves to no distribution, keep the existing error."""
++    import importlib.metadata
++
++    def fake_version(name):
++        raise importlib.metadata.PackageNotFoundError(name)
++
++    monkeypatch.setattr(importlib.metadata, "version", fake_version)
++    monkeypatch.setattr(importlib.metadata, "packages_distributions", lambda: {})
++
++    @click.command()
++    @click.version_option(package_name="nonexistent")
++    def cli():
++        pass
++
++    result = runner.invoke(cli, ["--version"])
++    assert result.exit_code != 0
++    assert "not installed" in str(result.exception)
++
++
+ @pytest.mark.parametrize(
+     ("default", "args", "expected"),
+     # These test cases are similar to the ones in

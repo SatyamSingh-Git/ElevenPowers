@@ -1,0 +1,132 @@
+diff --git a/changelog.d/1541.change.md b/changelog.d/1541.change.md
+new file mode 100644
+index 0000000..82cd680
+--- /dev/null
++++ b/changelog.d/1541.change.md
+@@ -0,0 +1 @@
++`attrs.field()`'s converter can now also be set using the `@field_name.converter` decorator, analogous to validators.
+diff --git a/docs/init.md b/docs/init.md
+index e4bb78e..da68617 100644
+--- a/docs/init.md
++++ b/docs/init.md
+@@ -326,6 +326,19 @@ This can be useful for doing type-conversions on values that you don't want to f
+ 2
+ ```
+ 
++Similarly to validators, you can also define a converter using a decorator:
++
++```{doctest}
++>>> @define
++... class C:
++...     x = field()
++...     @x.converter
++...     def _parse_x(value):
++...         return int(value)
++>>> C("1").x
++1
++```
++
+ Converters are run *before* validators, so you can use validators to check the final form of the value.
+ 
+ ```{doctest}
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 4b32d6a..05f8cca 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2581,7 +2581,7 @@ class Attribute:
+             False,
+             ca.metadata,
+             type,
+-            ca.converter,
++            ca._converter,
+             kw_only if ca.kw_only is None else ca.kw_only,
+             ca.eq,
+             ca.eq_key,
+@@ -2705,8 +2705,8 @@ class _CountingAttr:
+     __slots__ = (
+         "_default",
+         "_validator",
++        "_converter",
+         "alias",
+-        "converter",
+         "counter",
+         "eq",
+         "eq_key",
+@@ -2794,7 +2794,7 @@ class _CountingAttr:
+         self.counter = _CountingAttr.cls_counter
+         self._default = default
+         self._validator = validator
+-        self.converter = converter
++        self._converter = converter
+         self.repr = repr
+         self.eq = eq
+         self.eq_key = eq_key
+@@ -2840,6 +2840,18 @@ class _CountingAttr:
+ 
+         return meth
+ 
++    def converter(self, meth):
++        """
++        Decorator that adds *meth* as a converter.
++
++        Returns *meth* unchanged.
++
++        .. versionadded:: 26.2.0
++        """
++        self._converter = meth
++
++        return meth
++
+ 
+ _CountingAttr = _add_eq(_add_repr(_CountingAttr))
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 6f226c6..6218fca 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -162,6 +162,18 @@ class TestCountingAttr:
+ 
+         assert Factory(f, True) == a._default
+ 
++    def test_converter_decorator_sets(self):
++        """
++        Decorator sets the converter for the attribute.
++        """
++        a = attr.ib()
++
++        @a.converter
++        def f(self):
++            pass
++
++        assert f == a._converter
++
+ 
+ def make_tc():
+     class TransformC:
+diff --git a/tests/test_next_gen.py b/tests/test_next_gen.py
+index 7241cfa..bf4e253 100644
+--- a/tests/test_next_gen.py
++++ b/tests/test_next_gen.py
+@@ -149,6 +149,22 @@ class TestNextGen:
+             NewSchool(1, -1)
+         assert list(attrs.fields_dict(NewSchool).keys()) == ["x", "y"]
+ 
++    def test_converter_decorator(self):
++        """
++        The converter decorator can be used to set the converter for an
++        attribute.
++        """
++
++        @attrs.define
++        class C:
++            x: int = attrs.field()
++
++            @x.converter
++            def _convert_x(value):
++                return int(value)
++
++        assert C("1") == C(1)
++
+     def test_auto_attribs_partially_annotated(self):
+         """
+         define infers auto_attribs=True if any type annotations are found

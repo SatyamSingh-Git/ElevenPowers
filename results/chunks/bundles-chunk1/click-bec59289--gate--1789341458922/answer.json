@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 186944,
+ "num_turns": 40,
+ "stop_reason": "end_turn",
+ "session_id": "d5813124-d437-4584-9a2c-b1eaddfa22ae",
+ "total_cost_usd": 1.1886281999999997,
+ "usage": {
+  "input_tokens": 80,
+  "cache_creation_input_tokens": 41738,
+  "cache_read_input_tokens": 2560134,
+  "output_tokens": 11328,
+  "output_tokens_details": {
+   "thinking_tokens": 1651
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 41738,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 248,
+    "cache_read_input_tokens": 78410,
+    "cache_creation_input_tokens": 593,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 593
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 80,
+   "outputTokens": 11328,
+   "cacheReadInputTokens": 2560134,
+   "cacheCreationInputTokens": 41738,
+   "webSearchRequests": 0,
+   "costUSD": 1.1886281999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the fix in `click.version_option`: when `package_name` doesn't match an installed distribution, it now falls back to resolving it as an import/top-level-module name via `importlib.metadata.packages_distributions()` (e.g. `PIL` \u2192 `Pillow`), raising a clear error if that maps to zero or multiple distributions.\n\n- `src/click/decorators.py` \u2014 the resolution fix plus doc updates\n- `tests/test_basic.py` \u2014 3 regression tests (resolved single match, ambiguous multiple matches, unresolvable name)\n- `CHANGES.md` \u2014 changelog entry referencing #1884, #2331, #3125\n\nFull suite: 1591 passed, 94 skipped, 1 xfailed (no regressions).",
+ "ttft_ms": 11733,
+ "ttft_stream_ms": 10427,
+ "time_to_request_ms": 274,
+ "type": "result",
+ "duration_ms": 368240,
+ "uuid": "6b237a5f-20f7-4eae-ab90-2d88f74b55d4"
+}

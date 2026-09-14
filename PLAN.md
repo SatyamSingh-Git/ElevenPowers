@@ -347,6 +347,7 @@ The 1.4× gate result stands for its narrow configuration. It is not an argument
 - **"Two tasks were solved 3/3 in one pass and 0/3 in the next."** Withdrawn 2026-09-13. Twelve jinja2 runs collected zero nodes because that same install broke `import attrs`, which `trio` needs. Re-graded from their bundles, both tasks are 3/3 and 3/3.
 - **"Replicates inside one sitting are more correlated with each other than two sittings are."** Withdrawn 2026-09-13. It was inferred entirely from the reversal above, which did not happen. Five of fifteen tasks split over six replicates, and the two passes agree to within 4.4 points.
 - **"Pass B of the B4 sweep resolved 53.3%."** Corrected to **73.3%** after re-grading every bundle. Pass A re-graded to the same score it was given, on all forty-five runs, which is the control that says the re-grade is deterministic.
+- **"Substantial tasks resolve at 27 to 40 percent."** Qualified 2026-09-14. Measured before the prompts were framed as requests. With the same tasks asking for something, a plain agent resolves 88 percent of them, so a large part of what was read as difficulty was prompts that did not ask. The band selection was made on that measurement and is declared in the lock; what it bought is smaller than it looked.
 
 ---
 

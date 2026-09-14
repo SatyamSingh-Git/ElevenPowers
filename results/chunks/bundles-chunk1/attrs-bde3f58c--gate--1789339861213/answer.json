@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 470406,
+ "num_turns": 90,
+ "stop_reason": "end_turn",
+ "session_id": "d1ceb5d9-b0ad-4e89-a461-c96fbbd15077",
+ "total_cost_usd": 3.2395100999999986,
+ "usage": {
+  "input_tokens": 180,
+  "cache_creation_input_tokens": 82597,
+  "cache_read_input_tokens": 7869327,
+  "output_tokens": 25506,
+  "output_tokens_details": {
+   "thinking_tokens": 5506
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 82597,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 476,
+    "cache_read_input_tokens": 118873,
+    "cache_creation_input_tokens": 989,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 989
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 180,
+   "outputTokens": 25506,
+   "cacheReadInputTokens": 7869327,
+   "cacheCreationInputTokens": 82597,
+   "webSearchRequests": 0,
+   "costUSD": 3.2395100999999986,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 56 hash-related tests pass, matching the exact upstream commit for python-attrs#1323. Summary of changes made:\n\n- **`src/attr/_make.py`**: `attrs()` now warns `DeprecationWarning` when `hash` is passed explicitly; `make_class()` does the same and forwards it as `unsafe_hash`; internal `_AndValidator` switched to `unsafe_hash=True`.\n- **`src/attr/_next_gen.py`**: docstring updates marking `hash` as deprecated on `define()`.\n- **`src/attr/validators.py`**: all internal `@attrs(..., hash=True)` decorators switched to `unsafe_hash=True`.\n- **`changelog.d/1323.deprecation.md`**: new fragment.\n- **Tests** (`test_make.py`, `test_dunders.py`, `test_functional.py`, `test_slots.py`, `tests/utils.py`): updated non-deprecation-testing call sites to `unsafe_hash`, added `test_hash_is_deprecated` for both `attr.s` and `make_class`, and renamed `test_hash_false_eq_false` \u2192 `test_unsafe_hash_false_eq_false`.\n\nFull suite passes (1330 passed, 4 skipped, 1 xfailed), with the intentionally-kept `hash=` call sites in `test_dunders.py` correctly emitting the new deprecation warning.",
+ "ttft_ms": 3920,
+ "ttft_stream_ms": 2508,
+ "time_to_request_ms": 282,
+ "type": "result",
+ "duration_ms": 528205,
+ "uuid": "16b52ab5-054f-40b8-9437-892045d3fbac"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 89479,
+ "num_turns": 23,
+ "stop_reason": "end_turn",
+ "session_id": "578d4350-7a9c-4344-88f7-751a683411b1",
+ "total_cost_usd": 0.6830438999999998,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 31010,
+  "cache_read_input_tokens": 1380103,
+  "output_tokens": 5521,
+  "output_tokens_details": {
+   "thinking_tokens": 1869
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 31010,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 238,
+    "cache_read_input_tokens": 67933,
+    "cache_creation_input_tokens": 342,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 342
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 5521,
+   "cacheReadInputTokens": 1380103,
+   "cacheCreationInputTokens": 31010,
+   "webSearchRequests": 0,
+   "costUSD": 0.6830438999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 874 tests pass, including `test_package_zip_list` now passing for real (not xfailed) on Python 3.13.\n\n**Summary:** Applied the upstream fix from pallets/jinja commit `679af7f8` \u2014 `src/jinja2/loaders.py` now has a version-gated `_get_zipimporter_files` helper that uses `zipimporter._get_files()` on Python 3.13+ (where `_files` was removed) and falls back to `._files` on older versions; `PackageLoader.list_templates()` uses this helper. The test's `xfail` marker in `tests/test_loader.py` dropped the `sys.version_info > (3, 13)` clause since the test now genuinely passes on 3.13.",
+ "ttft_ms": 3135,
+ "ttft_stream_ms": 2376,
+ "time_to_request_ms": 310,
+ "type": "result",
+ "duration_ms": 110680,
+ "uuid": "a09f0104-8adb-4ff3-a3ca-aa5439913a0a"
+}
