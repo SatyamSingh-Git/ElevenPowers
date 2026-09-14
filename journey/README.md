@@ -241,7 +241,7 @@ Every figure below comes from a command in this repository.
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, and 23 of 25 tasks concordant | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Where the treatment applied | the gate fired on 4 tasks of 25 and changed the outcome on none; on both tasks where the arms differed it never fired | `python -m eval.failures results/chunks/bundles-chunk2` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 502 | `python -m pytest tests -q` |
+| Tests | 503 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

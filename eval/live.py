@@ -324,6 +324,102 @@ def shared_site() -> frozenset[str]:
     return frozenset(glob.glob(site.getusersitepackages() + "/*"))
 
 
+def contained(command: list[str], cwd: Path, env: dict[str, str],
+              timeout: int) -> tuple[str, str, bool]:
+    """Run the agent so that nothing it spawned outlives it.
+
+    `subprocess.run` kills the process it started and nothing beneath it. An
+    agent looking for a file runs `find / -iname sandbox.py`, which walks the
+    whole drive; when the agent exits with that search still going, the search
+    is **orphaned** and keeps running. Eleven of them accumulated across two
+    chunks and took ninety percent of a machine, and by then killing by process
+    tree could not reach them: an orphan has no parent to walk down from.
+
+    So the containment has to be set up before the work starts, not cleaned up
+    after. On Windows that is a job object with kill-on-close: every descendant
+    is bound to it however the parent exits. On POSIX it is a process group.
+    Either way the sweep's own timeout is not what protects the machine -- a run
+    that finishes perfectly can still leave a search behind.
+    """
+    import os
+
+    creation, setup = 0, None
+    if os.name == "nt":
+        creation = 0x00000200  # CREATE_NEW_PROCESS_GROUP
+    else:
+        setup = os.setsid
+
+    child = subprocess.Popen(
+        command, cwd=str(cwd), env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, encoding="utf-8", errors="replace",
+        creationflags=creation, preexec_fn=setup)
+    job = _bind_to_job(child.pid) if os.name == "nt" else None
+    try:
+        out, err = child.communicate(timeout=timeout)
+        return out or "", err or "", False
+    except subprocess.TimeoutExpired:
+        return "", "", True
+    finally:
+        _end_tree(child, job)
+
+
+def _bind_to_job(pid: int):
+    """A Windows job object that kills everything in it when it is closed."""
+    import ctypes
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    job = kernel32.CreateJobObjectW(None, None)
+    if not job:
+        return None
+
+    class Limits(ctypes.Structure):
+        _fields_ = [("PerProcessUserTimeLimit", ctypes.c_int64),
+                    ("PerJobUserTimeLimit", ctypes.c_int64),
+                    ("LimitFlags", ctypes.c_uint32),
+                    ("MinimumWorkingSetSize", ctypes.c_size_t),
+                    ("MaximumWorkingSetSize", ctypes.c_size_t),
+                    ("ActiveProcessLimit", ctypes.c_uint32),
+                    ("Affinity", ctypes.POINTER(ctypes.c_ulong)),
+                    ("PriorityClass", ctypes.c_uint32),
+                    ("SchedulingClass", ctypes.c_uint32)]
+
+    class Extended(ctypes.Structure):
+        _fields_ = [("BasicLimitInformation", Limits),
+                    ("IoInfo", ctypes.c_byte * 48),
+                    ("ProcessMemoryLimit", ctypes.c_size_t),
+                    ("JobMemoryLimit", ctypes.c_size_t),
+                    ("PeakProcessMemoryUsed", ctypes.c_size_t),
+                    ("PeakJobMemoryUsed", ctypes.c_size_t)]
+
+    info = Extended()
+    info.BasicLimitInformation.LimitFlags = 0x2000  # KILL_ON_JOB_CLOSE
+    kernel32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info))
+    handle = kernel32.OpenProcess(0x1F0FFF, False, pid)
+    if handle:
+        kernel32.AssignProcessToJobObject(job, handle)
+        kernel32.CloseHandle(handle)
+    return job
+
+
+def _end_tree(child: subprocess.Popen, job) -> None:
+    """Closing the job kills every descendant, orphaned or not."""
+    import os
+
+    try:
+        child.kill()
+    except OSError:
+        pass
+    if job:
+        import ctypes
+
+        ctypes.WinDLL("kernel32", use_last_error=True).CloseHandle(job)
+    elif os.name != "nt":
+        try:
+            os.killpg(child.pid, 9)
+        except (OSError, ProcessLookupError):
+            pass
+
+
 def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
           effort: str = "", budget: float = 0.0) -> tuple[dict, float]:
     started = time.perf_counter()
@@ -350,17 +446,14 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
         # error: a comparison between two identical configurations reported
         # under two names is worse than no comparison.
         command += ["--plugin-dir", _plugin_dir(arm)]
-    try:
-        done = subprocess.run(command, cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace",
-                              timeout=TIMEOUT, env=_sandboxed(root))
-    except subprocess.TimeoutExpired:
+    out, err, timed_out = contained(command, root, _sandboxed(root), TIMEOUT)
+    if timed_out:
         return {"is_error": True, "result": "", "note": "timed out"}, TIMEOUT
     elapsed = time.perf_counter() - started
     try:
-        return json.loads(done.stdout or "{}"), elapsed
+        return json.loads(out or "{}"), elapsed
     except json.JSONDecodeError:
-        return {"is_error": True, "result": done.stdout[-400:],
-                "note": (done.stderr or "")[-200:]}, elapsed
+        return {"is_error": True, "result": out[-400:], "note": err[-200:]}, elapsed
 
 
 @dataclass

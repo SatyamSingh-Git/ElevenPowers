@@ -699,3 +699,36 @@ made the neighbouring correction — sample size comes from measured discordance
 rather than the flip rate — and this is the same sentence one step earlier: a
 treatment that touches one run in eight needs the arithmetic done before the
 first dollar, not after the hundredth.
+
+### Eleven searches of the whole drive, with no parent left to kill them
+
+Two paid chunks left eleven `find.exe` processes running, each walking the
+entire C: drive, together taking ninety percent of the machine. The user had to
+restart to clear them.
+
+They were not commands this project wrote. They are what an agent runs when it
+is looking for a file — `find / -iname sandbox.py -path *jinja2*` — and on Git
+Bash for Windows that means every directory on the disk.
+
+*Cause:* `drive` launched the agent with `subprocess.run`, which kills the
+process it started and knows nothing about what that process started. When an
+agent exited with a search still going, the search was **orphaned**, and by then
+no process tree led to it: the parent ids in the user's own listing were blank.
+Cleaning up afterwards cannot work, because afterwards there is nothing left to
+walk down from.
+
+*Cost:* a machine unusable until it was restarted, and it was the user who
+noticed rather than the harness. Nothing in this project watched what it spawned.
+
+*Changed:* the agent runs inside a Windows job object with kill-on-close, so
+every descendant is bound to it however the parent exits, and a process group on
+POSIX. Containment is arranged **before** the work starts rather than tidied
+after. The probe spawns a grandchild, lets the child exit while it is still
+running, and asserts the grandchild is gone — watched failing first, naming the
+process id that survived.
+
+*The lesson:* the sweep's own timeouts protected the sweep, not the machine. A
+run that finishes perfectly can still leave something behind, and every guard
+written so far — budget caps, model pins, cleanup handling, three attempts at
+containing pip — had been about what the agent did to the *measurement*. Nothing
+had been about what it does to the computer it is running on.

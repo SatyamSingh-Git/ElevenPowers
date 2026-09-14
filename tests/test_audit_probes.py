@@ -1003,3 +1003,74 @@ def test_an_untouched_environment_grades_the_patch_normally(upstream, tmp_path,
     run = eval.live.once(task, "vanilla", "claude-sonnet-5")
 
     assert run.outcome == "resolved", run.note
+
+
+def _alive(pid: int) -> bool:
+    import subprocess
+    import sys
+
+    if sys.platform == "win32":
+        done = subprocess.run(["tasklist", "/FI", f"PID eq {pid}"],
+                              capture_output=True, text=True, encoding="utf-8",
+                              errors="replace")
+        return str(pid) in (done.stdout or "")
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def test_nothing_the_agent_spawned_outlives_the_run(tmp_path):
+    """An orphan cannot be killed by walking down from its parent.
+
+    An agent looking for a file runs `find / -iname sandbox.py`, which walks the
+    whole drive. When the agent exits with that search still going the search is
+    orphaned, and `subprocess.run` never knew about it in the first place.
+    Eleven accumulated across two paid chunks and took ninety percent of the
+    machine; by the time they were noticed no process tree led to them.
+
+    So this spawns a grandchild, lets the child exit immediately, and asks
+    whether the grandchild is still running afterwards. Containment has to be
+    arranged before the work starts, which is why the fix is a job object rather
+    than a tidy-up.
+    """
+    import sys
+    import time
+
+    from eval.live import contained
+
+    marker = tmp_path / "grandchild.pid"
+    # DEVNULL, so this measures the job object rather than pipe inheritance:
+    # a grandchild holding the parent's stdout keeps communicate() waiting on
+    # its own account, which is a different defect with a different fix.
+    inner = (
+        "import os, sys, time; "
+        "open(sys.argv[1], \"w\").write(str(os.getpid())); "
+        "time.sleep(300)"
+    )
+    spawn = (
+        "import os, subprocess, sys, time;"
+        "subprocess.Popen([sys.executable, '-c', sys.argv[1], sys.argv[2]],"
+        " stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,"
+        " stdin=subprocess.DEVNULL);"
+        # Wait until it has recorded itself, then leave: the point is a child
+        # that exits while its own child is still going, which is how the
+        # `find /` searches came to have no parent left to walk down from.
+        "[time.sleep(0.05) for _ in range(200) if not os.path.exists(sys.argv[2])]"
+    )
+
+    out, err, timed_out = contained(
+        [sys.executable, "-c", spawn, inner, str(marker)], tmp_path,
+        dict(os.environ), 60)
+
+    assert not timed_out, err
+    for _ in range(50):
+        if marker.exists():
+            break
+        time.sleep(0.1)
+    assert marker.exists(), "the grandchild never started, so this proves nothing"
+    stray = int(marker.read_text().strip())
+
+    time.sleep(1)
+    assert not _alive(stray), f"process {stray} outlived the run"
