@@ -274,3 +274,52 @@ def test_the_chunk_split_is_the_same_every_time(tmp_path, monkeypatch):
     assert first == second
     assert sorted(t for c in first.values() for t in c) == sorted(
         f"t{i}" for i in range(20)), "a task went missing or was counted twice"
+
+
+def test_a_run_that_fetched_its_own_answer_is_flagged(tmp_path, monkeypatch):
+    """A repair score is a claim about what the worker could not see.
+
+    A hundred runs were published as a 92 percent repair rate. Twenty-four of
+    them name their own task's fix commit, returned from the GitHub API as a
+    tool result -- including `click-bec59289`, the single discordant pair the
+    comparison rested on. Nothing in the harness looked, so nothing knew.
+    """
+    import eval.exposure
+
+    fix = "bec59289d8cf9b9b4010642b2fee483e5f8eeefc"
+    bundle = tmp_path / "click-bec59289--gate--1"
+    bundle.mkdir()
+    (bundle / "answer.json").write_text(json.dumps({"session_id": "abc"}),
+                                        encoding="utf-8")
+    transcript = tmp_path / "abc.jsonl"
+    transcript.write_text(
+        json.dumps({"type": "user", "message": {"content": [
+            {"type": "tool_result",
+             "content": f'[{{"blob_url":"https://github.com/pallets/click/blob/{fix}/CHANGES.md"}}]'}]}}),
+        encoding="utf-8")
+    monkeypatch.setattr(eval.exposure, "transcript", lambda sid: transcript)
+
+    seen = eval.exposure.exposure(bundle, fix)
+
+    assert any("fix sha" in s for s in seen), seen
+
+
+def test_a_clean_run_is_not_flagged(tmp_path, monkeypatch):
+    """The forward direction. A screen that flags everything says nothing, and
+    would make the real exposure invisible inside the noise.
+    """
+    import eval.exposure
+
+    bundle = tmp_path / "click-bec59289--vanilla--1"
+    bundle.mkdir()
+    (bundle / "answer.json").write_text(json.dumps({"session_id": "abc"}),
+                                        encoding="utf-8")
+    transcript = tmp_path / "abc.jsonl"
+    transcript.write_text(
+        json.dumps({"type": "assistant", "message": {"content": [
+            {"type": "text", "text": "I read src/click/termui.py and changed the pager."}]}}),
+        encoding="utf-8")
+    monkeypatch.setattr(eval.exposure, "transcript", lambda sid: transcript)
+
+    assert eval.exposure.exposure(
+        bundle, "bec59289d8cf9b9b4010642b2fee483e5f8eeefc") == []

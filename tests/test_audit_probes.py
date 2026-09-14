@@ -1074,3 +1074,57 @@ def test_nothing_the_agent_spawned_outlives_the_run(tmp_path):
 
     time.sleep(1)
     assert not _alive(stray), f"process {stray} outlived the run"
+
+
+@pytest.mark.skipif(os.name != "nt", reason="the job object is the Windows path")
+def test_the_agent_is_contained_before_it_runs(tmp_path, monkeypatch):
+    """Assigning the job after `Popen` returns leaves a window.
+
+    The first version created the process and assigned it afterwards. In between
+    the agent is already executing, and anything it starts in that window need
+    not belong to the job -- which is the whole guarantee. It is now created
+    suspended and resumed only once membership is confirmed, so with the resume
+    removed nothing should happen at all.
+    """
+    import subprocess
+    import sys
+    import time
+
+    import eval.live
+
+    marker = tmp_path / "ran"
+    monkeypatch.setattr(eval.live, "_resume", lambda pid: None)
+
+    def run():
+        return eval.live.contained(
+            [sys.executable, "-c", f"open({str(marker)!r}, 'w').write('x')"],
+            tmp_path, dict(os.environ), 3)
+
+    out, err, timed_out = run()
+
+    assert timed_out, "it ran despite never being resumed"
+    assert not marker.exists(), "the agent executed before it was contained"
+
+
+@pytest.mark.skipif(os.name != "nt", reason="the job object is the Windows path")
+def test_a_run_that_cannot_be_contained_does_not_happen(tmp_path, monkeypatch):
+    """Containment that fails silently is worse than none: it reads as success.
+
+    `CreateJobObject` can succeed while kill-on-close was never configured, and
+    configuring it proves nothing about whether the process was assigned. The
+    first version checked neither and would have returned a job holding nothing.
+    """
+    import sys
+
+    import eval.live
+
+    monkeypatch.setattr(eval.live, "_bind_to_job",
+                        lambda pid: (_ for _ in ()).throw(OSError("no job for you")))
+    marker = tmp_path / "ran"
+
+    with pytest.raises(OSError):
+        eval.live.contained(
+            [sys.executable, "-c", f"open({str(marker)!r}, 'w').write('x')"],
+            tmp_path, dict(os.environ), 10)
+
+    assert not marker.exists(), "the agent ran anyway"

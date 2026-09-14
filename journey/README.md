@@ -38,6 +38,7 @@ command in this repository and can be reproduced.
 | [23-spend.md](23-spend.md) | Phase B4: the four defects a unit test cannot find, a grader asked five questions on somebody else's code, and the first run allowed to cost money |
 | [24-move.md](24-move.md) | A corpus of 15 that could not move becomes 49 that can, why its size had been set by a default and an unhandled encoding, and a second agent that uninstalled a package from the machine mid-measurement |
 | [25-treatment.md](25-treatment.md) | Two paired chunks and 100 runs: the gate fired on four tasks of twenty-five and changed none of them, and on both tasks where the arms differed it never fired at all |
+| [26-access.md](26-access.md) | A second audit: the agents fetched the upstream fix, twelve percent was the wrong denominator, and the hook that “never fired” had asked four scope questions |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -238,10 +239,11 @@ Every figure below comes from a command in this repository.
 | Baseline, pinned and paid for | 90 runs, $67.42: 68.9% and 73.3% over two passes, overlapping intervals | `python -m eval.baseline --show results/b4-passA-regraded.json` |
 | Every grade recomputed from its bundle | pass A 0 of 45 changed; pass B 9 of 45, all of them an agent's editable install breaking a later task | `python -m eval.baseline --regrade results/b4-passB.json results/bundles-B` |
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
-| Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, and 23 of 25 tasks concordant | `python -m eval.baseline --show results/chunks/chunk2.json` |
-| Where the treatment applied | the gate fired on 4 tasks of 25 and changed the outcome on none; on both tasks where the arms differed it never fired | `python -m eval.failures results/chunks/bundles-chunk2` |
+| Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
+| Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
+| Where the treatment applied | Stop blocks in 4 of 50 gated runs (8%), 6 events. Pre-Stop interventions are **not** counted by that field: one gated run has 4 scope questions and 0 blocks | `python -m eval.failures results/chunks/bundles-chunk2` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 503 | `python -m pytest tests -q` |
+| Tests | 507 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.
@@ -259,19 +261,20 @@ a measured rate of disagreement, which no run here has produced — if the arms
 differed on one task in four it would be 124 paired runs, and that *if* is doing
 all the work.
 
-The task suite still needs rebuilding, and the reason is now measured rather
-than suspected. A plain agent resolves **92 percent** of the selected corpus, so
-twenty-three of twenty-five tasks were solved twice by both arms and four
-failures in fifty runs are all the room a treatment has. The likely cause is
-that the prompts are the maintainers' commit messages, which name the change
-instead of reporting a fault — the agent implements a specification and is then
-graded on tests for that specification. SWE-bench uses the issue text for
-exactly this reason.
+**The 92 percent is not a repair score.** Twenty-four of the hundred runs name
+their own task's fix commit in full, fetched from GitHub as a tool result; a
+broader screen finds returned diff hunks in forty-two. The sweep had no
+closed-book condition, so it measures applying a described upstream change with
+access to that change. The corpus being easy is a symptom and possibly not the
+disease: vaguer prompts do not close a channel that returns the patch on request.
 
-And the comparison needs sizing on how often the gate engages, not on how many
-tasks the budget buys. It blocks on twelve percent of runs, so thirteen tasks at
-two replicates could produce two or three pairs it might have caused, against
-thirty-one needed. That arithmetic was available before the run and was not
-done.
+What is needed first is an information boundary — a worker that sees the base
+snapshot, the task text and its dependencies, and cannot see the fix, the hidden
+tests, the corpus metadata, other attempts or the upstream repository.
+
+The gate's Stop blocks land on **8 percent of gated runs** (6 events across 4 of
+50), and that field does not count the package's pre-Stop interventions at all:
+one gated run carries four scope questions and zero blocks. Sizing an experiment
+needs a declared intervention boundary before it needs a task count.
 Replay still cannot measure staleness at all, because the working tree at each
 moment is not recoverable from a transcript.

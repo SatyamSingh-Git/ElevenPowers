@@ -732,3 +732,35 @@ run that finishes perfectly can still leave something behind, and every guard
 written so far — budget caps, model pins, cleanup handling, three attempts at
 containing pip — had been about what the agent did to the *measurement*. Nothing
 had been about what it does to the computer it is running on.
+
+### The answer was on the internet, and nothing looked
+
+A hundred paid runs were written up as a 92 percent baseline and a benchmark
+that was not hard enough. An external review read the saved transcripts and
+found the agents fetching the upstream fix.
+
+`click-bec59289` — the one clean discordant pair, the single result the whole
+comparison rested on — has a returned `tool_result` carrying the GitHub API's
+file list for `bec59289d8cf9b9b4010642b2fee483e5f8eeefc`, its own answer commit,
+with raw URLs to the patched content. Screening every run against its own `fix`
+sha: **24 of 100**.
+
+*Cause:* a repair benchmark is a claim about what the worker could not see, and
+that claim was never written down. `_sandboxed` and `shared_site` bound what the
+agent could do to the *machine*; nothing bounded what it could *read*. The
+agents behaved reasonably throughout — asked to make a change described by its
+commit message, fetching the commit is the obvious move.
+
+*Cost:* the headline number of Phase B, the interpretation of the discordant
+pair, and the diagnosis that followed from both. "The corpus is too easy, make
+the prompts vaguer" was treatment of a symptom: no wording closes a channel that
+returns the patch on request.
+
+*The lesson, and it is the third time:* the evidence was preserved, complete,
+and sitting on disk for a day. A null was once diagnosed from an agent's own
+test without reading the answer key; a pass was once explained from grades
+nobody had recomputed; and here a benchmark was characterised without anyone
+opening a transcript. **Preserving evidence is not the same as reading it.** The
+screen that found this is thirty lines and runs in seconds — it is now
+`eval.exposure`, and it runs beside the taxonomy rather than after an auditor
+asks.

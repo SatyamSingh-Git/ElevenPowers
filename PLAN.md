@@ -138,6 +138,22 @@ That fix does not close the case the audit described, because `freshness` return
 
 ---
 
+## 4.1 P0: the information boundary *(2026-09-14)*
+
+A repair benchmark is a claim about what the worker could not see. This project has never stated that claim, and the first sweep to be checked against it failed: 24 of 100 runs retrieved their own answer commit from GitHub, one of them the single discordant pair the comparison rested on.
+
+**Permitted, and written down before the next run:** the base snapshot, the task text, prepared dependencies, and model connectivity through the host or a constrained proxy.
+
+**Excluded:** the fix commit, hidden tests, corpus metadata, other attempts, the local corpus clones, and general network access to the upstream repository.
+
+Three properties this has to have, from what has already gone wrong here:
+
+- **Enforced, not requested.** `PIP_REQUIRE_VIRTUALENV` and a job object bound what the agent does to the machine; neither says anything about what it can read. An environment variable is a request.
+- **Declared as part of the benchmark.** Network permission is a property of the task, versioned with the corpus and covered by the graded digest, not an incidental setting of whichever machine ran it.
+- **Checked after every sweep, not assumed.** The screen that found this is a read-only pass over saved transcripts against each task’s own `fix` sha. It costs nothing and should run with the taxonomy.
+
+The existing runs are retained under their real conditions. Dropping the 42 flagged runs and recomputing would select on a behaviour that may itself depend on difficulty and treatment, which is the E6 mistake in a new place.
+
 ## 5. The architecture to build toward
 
 ```
@@ -280,11 +296,15 @@ Measure what actually reaches the model rather than what is installed.
 
 **Phase B is closed, 2026-09-14.** Both exits pass. 199 paid runs, $175.69: ninety one arm against a pinned corpus and model, a hundred with both arms, the rest dry checks. All of it preserved and re-gradable.
 
-What it established, none of which existed before: the gate fires on **12 percent** of runs, confirmed twice by different routes; a plain `claude-sonnet-5` at high effort resolves **92 percent** of the selected corpus; discordance runs at **2 tasks in 25**, and the gate had fired on **neither** of them.
+What it established, none of which existed before: Stop blocks land on **8 percent** of gated runs (6 events across 4 of 50); a plain `claude-sonnet-5` at high effort resolves **92 percent** of the selected corpus **with upstream answer access**; discordance runs at 2 tasks in 25.
+
+A second external review, [audit_2026_09_14](docs/research/audit_2026_09_14/findings.md), then established the thing that reframes all of it: **24 of the 100 runs name their own task’s fix commit sha**, returned from the GitHub API as a tool result, and a broader screen finds returned diff hunks in 42. The sweep was never closed-book. Verified here against the archive before being accepted.
 
 What it did not establish is P1, and it could not have. The arithmetic was available beforehand and was not done: a treatment engaging on 12 percent of runs, at two replicates, gives a task about one chance in five of seeing it at all, so thirteen tasks offer two or three pairs the mechanism could have caused against thirty-one needed. **§5.9 is the correction** — size on the engagement rate, not the task count. And **§5.1 is the same principle inverted**: it says that when every candidate is wrong no reranking helps, and the investment belongs upstream. When every candidate is *right* no gate helps either, and the investment belongs in the benchmark.
 
-The binding problem is not sample size. The prompts are the maintainers' commit messages, which name the change rather than report a fault, so the corpus asks the agent to implement a specification and then grades it on tests for that specification. A 92 percent baseline is a ceiling, and a ceiling leaves an effect nowhere to appear. Phase C does not start until that is fixed and re-measured.
+The binding problem is **not** the ceiling, and the earlier reading of it here was treatment of a symptom. Making prompts vaguer does not close a channel that returns the patch on request. **§4.1 is the prerequisite**: an information boundary, defined and enforced, before difficulty is recalibrated or another comparison is bought.
+
+Phase C does not wait on a definitive P1 result. Selection and repair development proceed against saved candidates while P1 becomes a bounded component experiment at a declared decision point.
 
 ### Phase C — Separate generation from selection
 
@@ -358,6 +378,10 @@ The 1.4× gate result stands for its narrow configuration. It is not an argument
 - **"Replicates inside one sitting are more correlated with each other than two sittings are."** Withdrawn 2026-09-13. It was inferred entirely from the reversal above, which did not happen. Five of fifteen tasks split over six replicates, and the two passes agree to within 4.4 points.
 - **"Pass B of the B4 sweep resolved 53.3%."** Corrected to **73.3%** after re-grading every bundle. Pass A re-graded to the same score it was given, on all forty-five runs, which is the control that says the re-grade is deterministic.
 - **"Substantial tasks resolve at 27 to 40 percent."** Qualified 2026-09-14. Measured before the prompts were framed as requests. With the same tasks asking for something, a plain agent resolves 88 percent of them, so a large part of what was read as difficulty was prompts that did not ask. The band selection was made on that measurement and is declared in the lock; what it bought is smaller than it looked.
+- **"A plain agent resolves 92 percent of the selected corpus."** Withdrawn 2026-09-14 as a repair score. Twenty-four of the hundred runs name their own task’s fix commit sha in full, returned from the GitHub API as a tool result; a broader screen found returned diff hunks in forty-two. The sweep had no closed-book condition, so it measures applying a described upstream change **with access to that change**. The runs are kept under their actual access conditions rather than filtered, because retrieval may itself depend on difficulty and treatment.
+- **"The gate fires on twelve percent of runs."** Corrected 2026-09-14. Six Stop-block events across **four of fifty gated runs**: 8 percent of runs, 0.12 events per run. `blocks_recorded` counts events, and D94’s sizing arithmetic was built on the mixture.
+- **"On the discordant tasks the arms differed by a hook that never fired."** Withdrawn 2026-09-14. The gated `click-bec59289` run records zero Stop blocks and **four scope questions**. The package intervenes before Stop and that field counts none of it, so the arms were not identical and the comparison cannot separate chance, pre-Stop intervention and unequal retrieval.
+- **"Thirty-one discordant pairs are needed."** Qualified 2026-09-14. That is a power calculation for one alternative — a 75 percent win rate among disagreements — not a universal minimum. Six discordant pairs all favouring one arm give a two-sided exact p of 0.031. The observed comparison is p = 0.5: weak evidence, not the absence of a measurement.
 - **"A paired comparison at this corpus size can answer P1."** Withdrawn 2026-09-14. Thirteen tasks at two replicates cannot produce thirty-one discordant pairs when the treatment engages on twelve percent of runs; it offers two or three. The figure was in §3's own exits table before the chunk was designed.
 - **"The corpus was rebuilt so that most of it discriminates."** Qualified 2026-09-14. Across a hundred paired runs, twenty-three of twenty-five tasks were resolved twice by both arms. A plain agent resolves 92 percent of the selected corpus, so the benchmark is not hard enough to measure a treatment on, and more of it is not the fix.
 

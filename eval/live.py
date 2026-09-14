@@ -330,30 +330,44 @@ def contained(command: list[str], cwd: Path, env: dict[str, str],
 
     `subprocess.run` kills the process it started and nothing beneath it. An
     agent looking for a file runs `find / -iname sandbox.py`, which walks the
-    whole drive; when the agent exits with that search still going, the search
-    is **orphaned** and keeps running. Eleven of them accumulated across two
-    chunks and took ninety percent of a machine, and by then killing by process
-    tree could not reach them: an orphan has no parent to walk down from.
+    whole drive; when the agent exits with that search still going the search is
+    **orphaned** and keeps running. Eleven accumulated across two chunks and took
+    ninety percent of a machine, and by then killing by process tree could not
+    reach them: an orphan has no parent to walk down from.
 
-    So the containment has to be set up before the work starts, not cleaned up
-    after. On Windows that is a job object with kill-on-close: every descendant
-    is bound to it however the parent exits. On POSIX it is a process group.
-    Either way the sweep's own timeout is not what protects the machine -- a run
-    that finishes perfectly can still leave a search behind.
+    So containment is arranged before the work starts. On Windows the process is
+    created **suspended**, assigned to a kill-on-close job, checked for
+    membership, and only then resumed. A first attempt assigned it after `Popen`
+    returned, which leaves a window where the agent is already running and
+    anything it starts in that window need not belong to the job.
+
+    Failing to contain is an error, not a warning. A run that cannot be bounded
+    is not worth the machine it would be bounded on.
     """
     import os
 
-    creation, setup = 0, None
-    if os.name == "nt":
-        creation = 0x00000200  # CREATE_NEW_PROCESS_GROUP
-    else:
-        setup = os.setsid
+    if os.name != "nt":
+        child = subprocess.Popen(
+            command, cwd=str(cwd), env=env, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE, text=True, encoding="utf-8",
+            errors="replace", preexec_fn=os.setsid)
+        return _wait(child, None, timeout)
 
     child = subprocess.Popen(
-        command, cwd=str(cwd), env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-        text=True, encoding="utf-8", errors="replace",
-        creationflags=creation, preexec_fn=setup)
-    job = _bind_to_job(child.pid) if os.name == "nt" else None
+        command, cwd=str(cwd), env=env, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, text=True, encoding="utf-8", errors="replace",
+        creationflags=_CREATE_SUSPENDED | _CREATE_NEW_PROCESS_GROUP)
+    try:
+        job = _bind_to_job(child.pid)
+    except OSError:
+        child.kill()
+        child.wait()
+        raise
+    _resume(child.pid)
+    return _wait(child, job, timeout)
+
+
+def _wait(child: subprocess.Popen, job, timeout: int) -> tuple[str, str, bool]:
     try:
         out, err = child.communicate(timeout=timeout)
         return out or "", err or "", False
@@ -363,25 +377,81 @@ def contained(command: list[str], cwd: Path, env: dict[str, str],
         _end_tree(child, job)
 
 
-def _bind_to_job(pid: int):
-    """A Windows job object that kills everything in it when it is closed."""
+_CREATE_SUSPENDED = 0x00000004
+_CREATE_NEW_PROCESS_GROUP = 0x00000200
+_KILL_ON_JOB_CLOSE = 0x2000
+_PROCESS_ALL_ACCESS = 0x1F0FFF
+_THREAD_SUSPEND_RESUME = 0x0002
+_EXTENDED_LIMIT_INFORMATION = 9
+_SNAP_THREAD = 0x00000004
+
+
+def _kernel32():
+    """The Win32 entry points, with their signatures declared.
+
+    Without `argtypes` and `restype` ctypes passes a handle as a C `int`.
+    Handles are pointer-sized, so in a 64-bit process one can be truncated and
+    the call then works on something else or fails quietly. Not observed here,
+    and not a thing to leave to luck in the code that decides whether a machine
+    gets its CPU back.
+    """
+    import ctypes
+    from ctypes import wintypes
+
+    lib = ctypes.WinDLL("kernel32", use_last_error=True)
+    lib.CreateJobObjectW.restype = wintypes.HANDLE
+    lib.CreateJobObjectW.argtypes = [wintypes.LPVOID, wintypes.LPCWSTR]
+    lib.SetInformationJobObject.restype = wintypes.BOOL
+    lib.SetInformationJobObject.argtypes = [wintypes.HANDLE, ctypes.c_int,
+                                            wintypes.LPVOID, wintypes.DWORD]
+    lib.AssignProcessToJobObject.restype = wintypes.BOOL
+    lib.AssignProcessToJobObject.argtypes = [wintypes.HANDLE, wintypes.HANDLE]
+    lib.IsProcessInJob.restype = wintypes.BOOL
+    lib.IsProcessInJob.argtypes = [wintypes.HANDLE, wintypes.HANDLE,
+                                   ctypes.POINTER(wintypes.BOOL)]
+    lib.OpenProcess.restype = wintypes.HANDLE
+    lib.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    lib.OpenThread.restype = wintypes.HANDLE
+    lib.OpenThread.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    lib.ResumeThread.restype = wintypes.DWORD
+    lib.ResumeThread.argtypes = [wintypes.HANDLE]
+    lib.CloseHandle.restype = wintypes.BOOL
+    lib.CloseHandle.argtypes = [wintypes.HANDLE]
+    lib.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    lib.CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+    return lib
+
+
+def _refuse(what: str) -> OSError:
     import ctypes
 
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    job = kernel32.CreateJobObjectW(None, None)
-    if not job:
-        return None
+    return OSError(f"cannot contain the agent: {what} failed, "
+                   f"error {ctypes.get_last_error()}")
+
+
+def _bind_to_job(pid: int):
+    """A kill-on-close job holding the process, or an error saying why not.
+
+    Every return is checked. A non-null job handle does not mean kill-on-close
+    was configured, and configuring it does not mean the process was assigned;
+    a first attempt ignored both and would have handed back a job containing
+    nothing at all, with no way to tell.
+    """
+    import ctypes
+    from ctypes import wintypes
+
+    lib = _kernel32()
 
     class Limits(ctypes.Structure):
         _fields_ = [("PerProcessUserTimeLimit", ctypes.c_int64),
                     ("PerJobUserTimeLimit", ctypes.c_int64),
-                    ("LimitFlags", ctypes.c_uint32),
+                    ("LimitFlags", wintypes.DWORD),
                     ("MinimumWorkingSetSize", ctypes.c_size_t),
                     ("MaximumWorkingSetSize", ctypes.c_size_t),
-                    ("ActiveProcessLimit", ctypes.c_uint32),
+                    ("ActiveProcessLimit", wintypes.DWORD),
                     ("Affinity", ctypes.POINTER(ctypes.c_ulong)),
-                    ("PriorityClass", ctypes.c_uint32),
-                    ("SchedulingClass", ctypes.c_uint32)]
+                    ("PriorityClass", wintypes.DWORD),
+                    ("SchedulingClass", wintypes.DWORD)]
 
     class Extended(ctypes.Structure):
         _fields_ = [("BasicLimitInformation", Limits),
@@ -391,14 +461,75 @@ def _bind_to_job(pid: int):
                     ("PeakProcessMemoryUsed", ctypes.c_size_t),
                     ("PeakJobMemoryUsed", ctypes.c_size_t)]
 
+    job = lib.CreateJobObjectW(None, None)
+    if not job:
+        raise _refuse("CreateJobObject")
     info = Extended()
-    info.BasicLimitInformation.LimitFlags = 0x2000  # KILL_ON_JOB_CLOSE
-    kernel32.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info))
-    handle = kernel32.OpenProcess(0x1F0FFF, False, pid)
-    if handle:
-        kernel32.AssignProcessToJobObject(job, handle)
-        kernel32.CloseHandle(handle)
+    info.BasicLimitInformation.LimitFlags = _KILL_ON_JOB_CLOSE
+    if not lib.SetInformationJobObject(job, _EXTENDED_LIMIT_INFORMATION,
+                                       ctypes.byref(info), ctypes.sizeof(info)):
+        lib.CloseHandle(job)
+        raise _refuse("SetInformationJobObject")
+
+    handle = lib.OpenProcess(_PROCESS_ALL_ACCESS, False, pid)
+    if not handle:
+        lib.CloseHandle(job)
+        raise _refuse("OpenProcess")
+    try:
+        if not lib.AssignProcessToJobObject(job, handle):
+            raise _refuse("AssignProcessToJobObject")
+        inside = wintypes.BOOL()
+        if not lib.IsProcessInJob(handle, job, ctypes.byref(inside)):
+            raise _refuse("IsProcessInJob")
+        if not inside.value:
+            raise _refuse("the membership check")
+    except OSError:
+        lib.CloseHandle(job)
+        raise
+    finally:
+        lib.CloseHandle(handle)
     return job
+
+
+def _resume(pid: int) -> None:
+    """Let the process start running, now that it is contained."""
+    import ctypes
+    from ctypes import wintypes
+
+    class Entry(ctypes.Structure):
+        _fields_ = [("dwSize", wintypes.DWORD), ("cntUsage", wintypes.DWORD),
+                    ("th32ThreadID", wintypes.DWORD),
+                    ("th32OwnerProcessID", wintypes.DWORD),
+                    ("tpBasePri", ctypes.c_long), ("tpDeltaPri", ctypes.c_long),
+                    ("dwFlags", wintypes.DWORD)]
+
+    lib = _kernel32()
+    lib.Thread32First.argtypes = [wintypes.HANDLE, ctypes.POINTER(Entry)]
+    lib.Thread32First.restype = wintypes.BOOL
+    lib.Thread32Next.argtypes = [wintypes.HANDLE, ctypes.POINTER(Entry)]
+    lib.Thread32Next.restype = wintypes.BOOL
+
+    snapshot = lib.CreateToolhelp32Snapshot(_SNAP_THREAD, 0)
+    if not snapshot or snapshot == ctypes.c_void_p(-1).value:
+        raise _refuse("CreateToolhelp32Snapshot")
+    entry = Entry()
+    entry.dwSize = ctypes.sizeof(Entry)
+    woken = 0
+    try:
+        more = lib.Thread32First(snapshot, ctypes.byref(entry))
+        while more:
+            if entry.th32OwnerProcessID == pid:
+                thread = lib.OpenThread(_THREAD_SUSPEND_RESUME, False,
+                                        entry.th32ThreadID)
+                if thread:
+                    lib.ResumeThread(thread)
+                    lib.CloseHandle(thread)
+                    woken += 1
+            more = lib.Thread32Next(snapshot, ctypes.byref(entry))
+    finally:
+        lib.CloseHandle(snapshot)
+    if not woken:
+        raise _refuse("resuming the agent, which is still suspended")
 
 
 def _end_tree(child: subprocess.Popen, job) -> None:
@@ -410,9 +541,7 @@ def _end_tree(child: subprocess.Popen, job) -> None:
     except OSError:
         pass
     if job:
-        import ctypes
-
-        ctypes.WinDLL("kernel32", use_last_error=True).CloseHandle(job)
+        _kernel32().CloseHandle(job)
     elif os.name != "nt":
         try:
             os.killpg(child.pid, 9)
