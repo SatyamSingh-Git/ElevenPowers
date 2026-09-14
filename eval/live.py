@@ -324,6 +324,28 @@ def shared_site() -> frozenset[str]:
     return frozenset(glob.glob(site.getusersitepackages() + "/*"))
 
 
+# The answer channels, denied by name. Twenty-four of a hundred runs named their
+# own task's fix commit, fetched from GitHub as a tool result -- including the
+# single discordant pair a comparison rested on. The agents were asked to make a
+# change described by its commit message and fetching that commit is the obvious
+# move; no boundary had been drawn, so there was nothing to cross.
+#
+# This is a **policy inside the agent's own runtime**, not an operating-system
+# boundary. It is worth having and it is not a closed-book certificate: a local
+# clone still holds the history, and `eval.exposure` is what says afterwards
+# whether the denial actually held. Enforce, then check, then believe.
+CLOSED_BOOK = (
+    "WebFetch",
+    "WebSearch",
+    "Bash(gh:*)",
+    "Bash(curl:*)",
+    "Bash(wget:*)",
+    "Bash(git fetch:*)",
+    "Bash(git pull:*)",
+    "Bash(git clone:*)",
+)
+
+
 def contained(command: list[str], cwd: Path, env: dict[str, str],
               timeout: int) -> tuple[str, str, bool]:
     """Run the agent so that nothing it spawned outlives it.
@@ -558,6 +580,7 @@ def drive(task: Task, root: Path, model: str, arm: str = "vanilla",
         "--output-format", "json",
         "--permission-mode", "bypassPermissions",
         "--model", model,
+        "--disallowed-tools", *CLOSED_BOOK,
     ]
     # Both of these were absent while the run claimed to have them. An effort
     # level asked for and never sent is E4 in a different costume: the label

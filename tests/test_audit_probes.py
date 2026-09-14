@@ -1128,3 +1128,30 @@ def test_a_run_that_cannot_be_contained_does_not_happen(tmp_path, monkeypatch):
             tmp_path, dict(os.environ), 10)
 
     assert not marker.exists(), "the agent ran anyway"
+
+
+def test_the_answer_channels_are_denied_on_the_command_line(upstream, monkeypatch):
+    """A flag parsed and never sent is E4, and this one decides a benchmark.
+
+    Twenty-four of a hundred runs named their own task's fix commit, fetched
+    from GitHub as a tool result. Denying the tools is a policy inside the
+    agent's runtime rather than an operating-system boundary, so it is worth
+    exactly as much as the evidence that it arrived -- which is this, plus
+    `eval.exposure` afterwards saying whether it held.
+    """
+    import eval.live
+
+    task, root = upstream
+    sent = {}
+
+    def watch(command, cwd, env, timeout):
+        sent["command"] = command
+        return '{"result": "done", "num_turns": 1}', "", False
+
+    monkeypatch.setattr(eval.live, "contained", watch)
+    eval.live.drive(task, root, "claude-sonnet-5")
+
+    line = " ".join(sent["command"])
+    assert "--disallowed-tools" in line
+    for denied in ("WebFetch", "WebSearch", "Bash(gh:*)"):
+        assert denied in line, f"{denied} was never sent"
