@@ -304,6 +304,15 @@ Every figure below was produced by the command printed next to it.
 
 **On the last row.** It runs live — 89 free runs through the CLI where the gate fires, refuses the stop and the agent goes back to work, then ninety paid runs of one arm against a pinned corpus and model, and then a hundred more with **both** arms. Nineteen of those gated runs have since been graded **at the moment the gate refused**, which nothing here had ever done. The mechanism fired four times and changed no outcome: it blocked a patch that was already correct, one that stayed broken, and one regression that it then failed to catch. Measured cost is 1.3x vanilla; measured benefit is none so far. The fair qualifier is that the case it exists for barely occurs on this corpus, because 80 percent of first proposals are already right.
 
+A literature sweep on 2026-09-15 then explained that null, and re-aimed the plan to
+[v0.8](PLAN.md). Independently measured: **46% of agent validation evidence carries no
+bug-discriminating information**, and **every model saturates the visible test suite**. So
+`PASS` and `FRESH` are two facts about a record and neither is the one that matters — a check
+is not evidence until it is shown to *discriminate*. Separately, the **median decisive error
+lands at step 7 of 27** steps, which is why a gate at the end changes little. Both fixes were
+already written in this repository's own plan and neither had been built. The thesis survives
+and is better supported than it has ever been; the *placement* did not.
+
 > The rest came out of auditing the sweep afterwards: **24 of the 100 runs name their own task's fix commit**, fetched from GitHub, so the 92 percent is a score for applying a described upstream change with access to that change — not for repairing anything unseen. Whether the output is *better* is still unanswered, and the next thing to build is not a harder corpus but an information boundary. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen.
 
 That night also contradicted something the harness assumed twice over: the grade turned out to be a function of the grader's Git configuration, and then of what an unrelated agent installed on the machine mid-run. Three claims from the write-up were withdrawn afterwards. [23-spend.md](journey/23-spend.md) has it, including the part where the verification that should have prevented a bad measurement looked exactly like success.

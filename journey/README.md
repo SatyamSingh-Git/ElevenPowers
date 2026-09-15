@@ -42,6 +42,7 @@ command in this repository and can be reproduced.
 | [27-checkpoint.md](27-checkpoint.md) | A passive recorder that captures the candidate at every proposed stop, in both arms — and within four runs, a gate refusing a patch that was already correct |
 | [28-nothing-changed.md](28-nothing-changed.md) | Sixteen gated runs: every outcome identical to its own first proposal, four blocks across nineteen runs that changed nothing, and `pip` fetching the answer through a wall that denied `git clone` |
 | [29-outside.md](29-outside.md) | Reading the field instead of buying runs: the premise confirmed by independent survey data, the mechanism aimed at freshness when the measured failure is sufficiency, two shipping projects that arrived at stale-on-edit independently, and the answer sitting unbuilt in our own §5.0 |
+| [30-reaimed.md](30-reaimed.md) | Five research passes and Master Plan v0.8: 46 percent of agent validation evidence discriminates nothing, the reproduction test is worth +28pp against localisation's +8, the decisive error lands at step 7 of 27 — and both fixes were already written in our own plan, unbuilt |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -244,6 +245,7 @@ Every figure below comes from a command in this repository.
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
+| Evidence that cannot fail | **46% of agent validation evidence carries no bug-discriminating information**, measured elsewhere on 3,730 validation events. Ours has never been measured — Phase B2.1, $0 | `python -m eval.discriminate --bundles results/` *(not built)* |
 | The gate's blocks, graded at the block | **4 blocks across 19 runs, none changed an outcome.** One blocked a correct patch, one a broken one, one a regression it then failed to catch | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
 | First proposals already correct | 12 of 15 (80%), so the case the gate exists for barely occurs on this corpus | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
 | A false block, graded at the block | the gate refused a candidate that was already `resolved`, twice, and the run took 43 more turns and 6.6x the cost to reach another correct patch | `python -m eval.checkpoint --grade results/checkpoint/bundles --corpus results/checkpoint/tasks.json` |
