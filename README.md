@@ -12,6 +12,8 @@
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
 
+**[The Architecture Graph](architecture/)** — four live views of the whole system; open `architecture/index.html` in any browser
+
 **[The Guide](the-guide/)** — install, commands, configuration, troubleshooting  ·  **[What's Offered](whats-offered/)** — features, roadmap, how it compares
 
 </div>

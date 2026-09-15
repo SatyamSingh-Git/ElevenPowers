@@ -6,3 +6,6 @@ corpus.json
 baseline.json
 baseline.jsonl
 runs/
+
+# render-check screenshots (proof artefacts, regenerated on demand)
+architecture/.render-check/

@@ -208,10 +208,21 @@ boundary that has never failed.
 an isolated benchmark environment, the reversion check, the ratchet, and
 reproduction-test synthesis.
 
-**No longer distinctive.** Stale-on-edit and no-evidence-no-close now ship
-elsewhere. What is still unclaimed is discrimination (§2.1) and the ratchet
-(§1.2), and the ratchet is unclaimed specifically because everyone else would
-have to pay the 10-40x test cost this design already avoids.
+**Built and never run.** `eval/stack.py` — the composition baseline. This is the
+one that should be uncomfortable: [complementarity-matrix.md](docs/research/complementarity-matrix.md)
+§6 says the bar this project is judged against is **a stack of best-of-breed
+pieces installed together**, not vanilla, and every comparison bought so far has
+been against vanilla. The code exists. The measurement has never been taken, and
+it was not in the experiment queue until 2026-09-15.
+
+**No longer distinctive, which is not the question.** Stale-on-edit and
+no-evidence-no-close now ship elsewhere, and §1.5 retired novelty as a filter.
+The useful statement is about *fit*, not about who got there first:
+discrimination (§2.1) and the ratchet (§1.2) are the two places where **this
+design has an advantage that is structural rather than chronological.** Others
+would have to pay the 10-40x test cost that invalidation already avoids here.
+If somebody ships either one tomorrow, the right response is to read their
+implementation, not to look for a different gap.
 
 ---
 
@@ -526,6 +537,21 @@ result about the design, not a reason to spend more.
 
 Tracks run in parallel where prerequisites allow: **evaluation infrastructure**, **candidate generation**, **candidate assessment**. Oracle diagnostics can proceed on frozen candidates while the harness is being made reproducible.
 
+**Where to start, unambiguously.** Phases A and B are closed; B′ and C are
+decisions rather than work. The live order is:
+
+| | | Costs | Blocks |
+|---|---|---|---|
+| **1** | **B2** — the three free measurements against saved bundles | **$0** | nothing; start here |
+| 2 | **B3** — the boundary, with a canary seen to flip | <$5 | every paid run after it |
+| 3 | **C0** — the ratchet | build | its own contribution experiment |
+| 4 | **C1** — derive the reproduction test | build | — |
+| 5 | Composition baseline (`eval/stack.py`, never run) | paid | any claim that this system is worth installing |
+
+B2 needs two modules that **do not exist yet** — `eval/discriminate.py` and a
+`--from-bundles` mode for `eval/pool.py`. Writing them is the work; running them
+is free. That is the whole reason B2 is first.
+
 ### Phase A — Make conclusions reconstructible *(blocking)*
 
 Fix E1–E6, R1–R9, H1–H4, each with a regression test derived from the audit's probe. Add run bundles: task manifest, base identity, candidate diff and snapshot, host events, prompts and model configuration, trajectory, test node outcomes, limits, result. Grade in an evaluator-owned workspace from an exported patch. Keep raw host-event fixtures separate from transcript fixtures. Provision an isolated Linux worker.
@@ -595,7 +621,7 @@ Every paid experiment this project has run was an attempt to *detect an effect*.
 
 **Exit, as commands:** the canary probe is **found with the boundary off and absent with it on**, both observed; a task whose dependencies cannot be pre-staged appears in a drops manifest and not in the denominator; `python -m eval.exposure` on a boundary-on sweep returns a floor of zero. **Envelope: under $5.**
 
-### Phase C0 — Build the ratchet *(the largest unclaimed lever)*
+### Phase C0 — Build the ratchet *(the largest measured recovery in the field)*
 
 **Built on:** Cline's 3-parent stash commits in private refs and its compare-and-swap restore (Apache-2.0), OpenCode's side-gitdir per-step snapshots (MIT), SWE-agent's autosubmit-on-every-failure-path (MIT). See [build-on.md](docs/research/build-on.md) for what each gives and what its limit is. **We are not writing a checkpoint store.**
 
@@ -661,6 +687,7 @@ Reordered by measured effect size, with the free ones first.
 | **Oracle gap** | pool coverage vs selected success on saved attempts | is a selector worth building, or under the 4pp harm line? | **$0** |
 | **Checkpoint density** | best intermediate candidate vs submitted | is there a better state to ratchet back to? | **$0** |
 | Boundary canary | nonsense token in the fix, boundary off vs on | is the book actually closed? | <$5 |
+| **Composition baseline** | vanilla vs a best-of-breed stack vs this system | **the bar this project is actually judged against** — `eval/stack.py` exists and has never been run | scoped after B3 |
 | Ratchet contribution | ratchet on vs off, matched compute | does preserving the best proven state change outcomes? | scoped after B2.3 |
 | Reproduction synthesis | derived reproduction test vs none, matched compute | does the +28pp lever transfer to our setting? | scoped after C1 |
 | Instrument validation | gold patch, known regression, wrong patch, setup failure | can the evaluator tell these apart? | done |
@@ -724,7 +751,7 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 - **"Letting the agent execute freely during repair is what grounds the work."** Qualified 2026-09-15. Across 7,745 traces the resolve-rate difference between prohibiting and permitting execution during repair was **1.25pp and not statistically significant**, while prohibition saved substantial tokens and wall-clock. Execution matters intensely on a few problems and not at all on most. What grounds the work is possessing the right test, not the freedom to run tests.
 - **"A gate that detects a real defect will improve the outcome."** Withdrawn 2026-09-15. Detection and prevention are separate properties; measured harm from intervening concentrates in early interruptions of runs that would have succeeded. This project produced that result before reading it and did not recognise it as the general case (§5.12).
 - **"Our benchmark can resolve differences of a few points."** Withdrawn 2026-09-15. Differential testing of plausible SWE-bench Verified patches finds **29.6% behaviourally divergent from ground truth**, **7.8% counted correct while failing the developer suite**, and reported resolution rates **inflated by 6.2 absolute points**. No claim is made here on a delta smaller than the instrument's own validity error.
-- **"None of the surveyed systems computes completion from evidence."** True of those fourteen at their pinned commits on 2026-09-09; **no longer a description of the field.** At least two shipping projects independently arrived at no-evidence-no-close with stale-on-edit invalidation. What remains unclaimed is discrimination and the ratchet, not the ledger.
+- **"None of the surveyed systems computes completion from evidence."** True of those fourteen at their pinned commits on 2026-09-09; **no longer a description of the field.** At least two shipping projects independently arrived at no-evidence-no-close with stale-on-edit invalidation. What this design still has a structural advantage in is discrimination and the ratchet — not the ledger, and not because nobody else thought of it.
 - **"Denying the answer tools makes a run closed-book."** Withdrawn 2026-09-15. `git clone` was denied and the transcript shows the refusal; the agent then ran `pip download --no-binary :all: "click @ git+https://github.com/pallets/click.git@main"`, because **pip clones git URLs internally**, extracted the exact fix commit with `git format-patch`, and applied it. That run graded `resolved` and repaired nothing. Denying commands by name cannot bound a network boundary — block the package manager too and `python -c "import urllib"` remains. Only an operating-system or network boundary closes this, and it is not built.
 - **"The gate improves the patch."** No support as of 2026-09-15, and this is the central claim. Graded **at the moment of the block** across nineteen gated runs, the mechanism fired four times and changed no outcome: it refused a patch that was already correct (43 extra turns, 6.6x cost), one that stayed `unfixed`, one that stayed `regressed` — the single regression it met went past it — and a fourth that stayed `resolved`. Cost is measured at 1.3x vanilla over fifty runs against fifty; benefit is unmeasured after $195. Four events is too few to conclude the gate never helps, and the asymmetry is still not neutral: a tool earns its cost with positive evidence. **The case it exists for barely occurs here** — 80 percent of first proposals are already correct — so the next test needs tasks where the agent is wrong and says otherwise.
 - **"A plain agent resolves 92 percent of the selected corpus."** Withdrawn 2026-09-14 as a repair score. Twenty-four of the hundred runs name their own task’s fix commit sha in full, returned from the GitHub API as a tool result; a broader screen found returned diff hunks in forty-two. The sweep had no closed-book condition, so it measures applying a described upstream change **with access to that change**. The runs are kept under their actual access conditions rather than filtered, because retrieval may itself depend on difficulty and treatment.
@@ -760,6 +787,12 @@ Added by v0.8, and each is answerable cheaply:
 - **No better intermediate state ever exists.** If runs never pass through a verified state superior to the one submitted, the ratchet has nothing to hold and §1.2 is wrong for this workload whatever it measured elsewhere.
 - **The oracle gap is under four points.** Then selection is not the bottleneck, Phase C is cancelled rather than merely deprioritised, and the investment belongs entirely in generation and reproduction synthesis.
 - **Derived reproduction tests are wrong often enough to cost more than they buy.** The +28pp figure is an *oracle* signal. A derived test that encodes the wrong failure condition is a false premise with a green tick on it — the exact failure this project exists to prevent, manufactured by this project. §5.5's correct-candidate survival is the check, and it must be measured before C1 ships, not after.
+- **A best-of-breed stack already does this.** The comparison that matters is
+  not against vanilla, which every measurement so far has used, but against
+  Superpowers + ECC's hard blocks + gstack's evidence ledger + Aider's map
+  installed together. If that stack matches this system, the honest outcome is
+  to contribute the discrimination check upstream rather than ship a fourth
+  framework. `eval/stack.py` exists; it has never been run.
 - **Surfacing changes nothing either.** If a report that names which claims rest on nothing is ignored as reliably as the block was, then the evidence layer is not a product on its own, and the honest outcome is a library the search system in §5 consumes internally.
 
 ---
