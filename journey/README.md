@@ -41,6 +41,7 @@ command in this repository and can be reproduced.
 | [26-access.md](26-access.md) | A second audit: the agents fetched the upstream fix, twelve percent was the wrong denominator, and the hook that “never fired” had asked four scope questions |
 | [27-checkpoint.md](27-checkpoint.md) | A passive recorder that captures the candidate at every proposed stop, in both arms — and within four runs, a gate refusing a patch that was already correct |
 | [28-nothing-changed.md](28-nothing-changed.md) | Sixteen gated runs: every outcome identical to its own first proposal, four blocks across nineteen runs that changed nothing, and `pip` fetching the answer through a wall that denied `git clone` |
+| [29-outside.md](29-outside.md) | Reading the field instead of buying runs: the premise confirmed by independent survey data, the mechanism aimed at freshness when the measured failure is sufficiency, two shipping projects that arrived at stale-on-edit independently, and the answer sitting unbuilt in our own §5.0 |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
