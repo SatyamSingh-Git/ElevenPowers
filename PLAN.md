@@ -85,11 +85,47 @@ provenance, honest unresolved outcomes, and a recorded history of failed
 hypotheses. These were always the valuable part and every one of them is load
 bearing for §1.1 to §1.3.
 
-**1.5 What stops governing investment.** Unchanged from v0.7: work is ranked by
-the failure it addresses, not by whether anyone else built it. Note that the
-mechanism is no longer novel — at least two shipping projects independently
-arrived at no-evidence-no-close and stale-on-edit, and none of them closes the
-discrimination gap either.
+**1.5 Borrowing is the method, not a fallback.** *(restored 2026-09-15)*
+
+The founding document of this project is a source-read of fourteen systems, and
+[complementarity-matrix.md](docs/research/complementarity-matrix.md) exists to
+map each one's weakness onto another's strength. That was always the plan. v0.7
+said work is ranked by the failure it addresses rather than by whether anyone
+else built it, which is correct — and v0.8's first draft then drifted into
+asking what remains *unclaimed*, which is the novelty filter under a new name.
+
+**Restated, and it governs:**
+
+> Every component starts from the best existing implementation of it. We name
+> that implementation, its licence and its limit, and then state the one thing
+> we add. A component with no prior art listed is one nobody researched, not
+> one that is original.
+
+[build-on.md](docs/research/build-on.md) does this for every v0.8 component.
+The short version: the checkpoint store is **Cline's**, the revert-and-recheck
+loop is **SWE-agent's**, the reproduce-first procedure is **Superpowers'**, the
+"when to ask" rule is **BMAD's**, the bounded clarify is **Spec Kit's**, the
+repository map is **Aider's**, the `--no-verify` block is **ECC's**, and the
+mutation engines already exist. Everything is MIT or Apache-2.0 and compatible
+with ours ([licenses.md](docs/research/licenses.md)); every reused file carries
+a provenance header and a `NOTICE` entry.
+
+One of those borrowings is worth calling out as the pattern. The 2026
+literature on checkpointing names a trap — *a saved state is not necessarily a
+suitable place to resume*, and task success cannot detect a bad recovery
+decision. **Cline had already shipped the answer**: a
+compare-and-swap restore that refuses when HEAD moved underneath it, which is
+an eligibility check on the restore rather than a check on its outcome. A paper
+found the gap; a product had closed it. Reading both is how that gets noticed.
+
+**What is left as ours, narrowly:** invalidation as an economic mechanism
+rather than a correctness detail (§1.2); discrimination as a stored fact
+(§5.10); and obligations that arrive at the first edit and survive compaction
+(§5.14). Three things. Everything else on the roadmap has a better
+implementation already written by somebody else.
+
+**Residual-gap ranking is retired as an investment filter.** It stays useful as
+what it actually is — a map of where the borrowing runs out.
 
 ---
 
@@ -403,6 +439,30 @@ Across 1,323 episodes and seven models, constraint violation rises from **0% in 
 
 Two directives. Re-assert obligations after every compaction rather than trusting them to persist — the runtime already subscribes to `compact`. And treat any claim inherited from a summary as unverified provenance rather than as established, since summarisation measurably strips hedges and broadens claims.
 
+**5.15 Combine first, invent last.** *(standing requirement, 2026-09-15)*
+
+A design is not finished until it names what it borrows. Before any component is
+built:
+
+1. Search the fourteen cards and the reading list for the nearest existing
+   implementation. `docs/research/` is a source-read at pinned commits; it is
+   faster to read than to rediscover.
+2. Record the licence and the reuse obligation from [licenses.md](docs/research/licenses.md),
+   and the limit the card found — every strength in the matrix ships with the
+   place it stops.
+3. State the **one thing** being added. If that sentence cannot be written, the
+   component is a reimplementation and should be replaced by the borrow.
+4. Prefer a **code** strength over a **protocol** strength over a **prose** one,
+   per the matrix's §1 taxonomy: nine of ten surveyed systems enforce process
+   through text the model may ignore, and §5.14 measures how fast that text
+   evaporates under compaction.
+
+The composition baseline in [complementarity-matrix.md](docs/research/complementarity-matrix.md)
+§6 remains the bar this project is judged against: **beating vanilla is not the
+test; beating a stack of best-of-breed pieces is.** That comparison has still
+never been run, and it is cheaper than it was, because the boundary (§4.1) and
+the free measurements (Phase B2) come first anyway.
+
 ---
 
 ## 6. Measurement discipline
@@ -521,7 +581,7 @@ The last is the null this project has never controlled for. A gated arm that run
 
 Every paid experiment this project has run was an attempt to *detect an effect*. These three measure a *property*, and the data was bought already: `results/` holds candidate patches, bases, grades and evidence for over a hundred runs, preserved since Phase A made runs survive their workspaces. Local compute and wall-clock only.
 
-**B2.1 — What fraction of our passing evidence discriminates?** For every record graded `PASS`, revert the change it was bound to and re-run the recorded command. Still passing means vacuous. This is §5.10's reversion mutant against runs already paid for, and it is the first number this project would have on whether its own central mechanism measures anything. Forward and adversarial: a record known discriminating (a `reproduced` pair) must be seen to survive, and a record known vacuous (a check bound to an untouched file) must be seen to fail.
+**B2.1 — What fraction of our passing evidence discriminates?** *(built on SWE-agent's revert-on-new-lint loop, MIT — the same apply/re-check/revert shape pointed at tests instead of lint; mutation engines exist and we are not writing one)* For every record graded `PASS`, revert the change it was bound to and re-run the recorded command. Still passing means vacuous. This is §5.10's reversion mutant against runs already paid for, and it is the first number this project would have on whether its own central mechanism measures anything. Forward and adversarial: a record known discriminating (a `reproduced` pair) must be seen to survive, and a record known vacuous (a check bound to an untouched file) must be seen to fail.
 
 **B2.2 — What is our oracle gap?** Across the saved chunks, four attempts exist per task. Report pool coverage, selected success and selection regret together (§5.1). **If the gap is under about four points, no selector will help and most measured selectors actively harm** — that single number can cancel Phase C, which is why it comes before it.
 
@@ -537,7 +597,9 @@ Every paid experiment this project has run was an attempt to *detect an effect*.
 
 ### Phase C0 — Build the ratchet *(the largest unclaimed lever)*
 
-The runtime already computes, on every edit, whether a given set of files still hashes to the tree a passing record observed. Keep the answer instead of printing it.
+**Built on:** Cline's 3-parent stash commits in private refs and its compare-and-swap restore (Apache-2.0), OpenCode's side-gitdir per-step snapshots (MIT), SWE-agent's autosubmit-on-every-failure-path (MIT). See [build-on.md](docs/research/build-on.md) for what each gives and what its limit is. **We are not writing a checkpoint store.**
+
+The runtime already computes, on every edit, whether a given set of files still hashes to the tree a passing record observed. Keep the answer instead of printing it. Our contribution is exactly one thing: **when to snapshot** — on green-and-fresh rather than per edit, which is what turns 10-40x test invocations into roughly the cost of the check that was already running.
 
 - On `PostToolUse`, when declared checks are green and fresh, snapshot the working tree against that fingerprint. The plugin already subscribes to `Bash|Edit|Write` and `core/verify.py` already runs declared commands unasked.
 - At Stop, if the current state is not verified and a snapshot is, **say so and offer the snapshot**. Under §5.12 this is surfacing, not refusing.
@@ -548,6 +610,8 @@ The runtime already computes, on every edit, whether a given set of files still 
 **Exit, as a command:** on a seeded run where a known-good intermediate state is deliberately corrupted, the ratchet recovers it; on a run with no better prior state, it stays silent. Both directions observed, per §5.0.
 
 ### Phase C1 — Derive the reproduction test, do not wait for it
+
+**Built on:** Superpowers' systematic-debugging procedure, which already opens with reproduce-first (MIT); BMAD's open-question admission rule — *the request does not say, the code cannot settle, the user would notice* — as the test for **when to ask**, which is the thing models are measured worst at (MIT); Spec Kit's bounded clarify, at most five, one at a time, recommendation first (MIT); and the contract-before-tests ordering that carries the +9.8pp result.
 
 §5.13's +28pp lever. At the first edit, if the task describes a failure and no `reproduced` record exists, the runtime proposes a failing test for the described condition and records whether it was seen red on the pre-change tree. That record is discriminating by construction (§2.1), which means C1 and §5.10 are the same build seen from two ends.
 

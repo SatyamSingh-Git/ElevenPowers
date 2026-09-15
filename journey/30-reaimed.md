@@ -121,3 +121,36 @@ The next experiment costs nothing either. `results/` holds over a hundred paid
 runs with candidates, bases and grades preserved since entry 20. Asking how
 many of our passing records also pass on the reverted tree needs no agent, no
 API and no money — only the discipline to run the control in both directions.
+
+## A correction to this entry, the same day
+
+The section above ends by naming what is "unclaimed" — discrimination and the
+ratchet. That framing was wrong, and it was corrected immediately:
+
+> it was never the idea to come up with something new, idea was always to use
+> their work, their findings, why re invent the wheel.
+
+Which is what [complementarity-matrix.md](../docs/research/complementarity-matrix.md)
+has said since 2026-09-09: its purpose is to map each system's weakness onto
+another's strength, and its §7 says outright that ideas with prior art *"must be
+cited and built on rather than reinvented."* The matrix was written for v0.7's
+architecture. v0.8's three builds never got the same treatment, and the gap
+showed up as novelty language.
+
+[build-on.md](../docs/research/build-on.md) fixes it. Every v0.8 component now
+names its prior art, licence and limit before its design. The checkpoint store
+is **Cline's**, the revert-and-recheck loop is **SWE-agent's**, reproduce-first
+is **Superpowers'**, the when-to-ask rule is **BMAD's**, bounded clarify is
+**Spec Kit's**, the repository map is **Aider's**, the `--no-verify` block is
+**ECC's**, and the mutation engines already exist.
+
+**The best thing reading both halves produced.** The recoverability paper's
+warning is that a saved state may be an unsuitable place to resume, and that
+task success cannot detect a bad recovery decision. **Cline had already shipped the answer** — a compare-and-swap restore that refuses when HEAD
+moved underneath it, which is an eligibility check on the restore rather than a
+check on its outcome. A paper named the gap; a product read from source in this repo's own survey had closed it.
+Neither half alone gets you there, and that is the whole argument for doing both.
+
+What is left as ours is three things, and the list is short on purpose:
+invalidation as an *economic* mechanism rather than a correctness detail,
+discrimination as a stored fact, and obligations that survive compaction.
