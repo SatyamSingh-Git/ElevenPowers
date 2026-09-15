@@ -116,6 +116,9 @@ validate the chosen release independently before adopting it.
 
 ## The 2026-09-15 sweep — what re-aimed the plan
 
+**The complete source list for this sweep is [audit_2026_09_15/sources.md](audit_2026_09_15/sources.md)** — every source with what it contributed, organised by topic. What follows here is the subset that changed the plan; the audit folder is the credit record.
+
+
 Five parallel research passes, no paid runs. Sources below drive PLAN v0.8
 sections 5.10 to 5.14 and the withdrawals added to section 10.
 

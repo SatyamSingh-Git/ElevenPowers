@@ -334,7 +334,12 @@ Answering it honestly needs **31 pairs on which the two arms disagree**, against
 
 Nothing here was invented from nothing, and pretending otherwise would be both dishonest and a waste of fourteen excellent codebases.
 
-The method was deliberate: read each system from source, separate what it enforces in **code** from what it merely requests in **prose**, inventory every strength and every weakness, then map which system's strength covers which other system's weakness. Whatever remained uncovered by all fourteen — *that* was the only honest place to build something new. The full mapping is in [`complementarity-matrix.md`](docs/research/complementarity-matrix.md). It found ten residual gaps; this runtime attacks three of them.
+The method was deliberate: read each system from source, separate what it enforces in **code** from what it merely requests in **prose**, inventory every strength and every weakness, then map which system's strength covers which other system's weakness. The full mapping is in [`complementarity-matrix.md`](docs/research/complementarity-matrix.md), and [`build-on.md`](docs/research/build-on.md) does the same for every component currently being built — naming its prior art, licence and limit *before* its design.
+
+> [!IMPORTANT]
+> **Originality was never the goal.** An earlier version of this section said the only honest place to build was wherever all fourteen left a gap. That is a novelty filter, and it was retired: a component starts from the best existing implementation, and what we add is stated in one sentence. If that sentence cannot be written, the component is a reimplementation and the borrow wins.
+
+The same applies to research. **Every paper, article, survey, dataset and documentation page that changed a decision here is credited in [`audit_2026_09_15/sources.md`](docs/research/audit_2026_09_15/sources.md)** — 167 links, each with what it contributed and how strongly it was verified, including the ones we relied on and then disagreed with.
 
 What came from where:
 

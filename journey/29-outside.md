@@ -167,3 +167,9 @@ detect an effect, and this one is an attempt to measure a property.
 [cursor]: https://cursor.com/blog/reward-hacking-coding-benchmarks
 [gates]: https://arxiv.org/abs/2606.28679
 [evibound]: https://arxiv.org/abs/2511.05524
+
+---
+
+*Every source behind this entry is credited in
+[docs/research/audit_2026_09_15/sources.md](../docs/research/audit_2026_09_15/sources.md),
+with what it contributed and how strongly it was verified.*

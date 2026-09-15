@@ -154,3 +154,11 @@ Neither half alone gets you there, and that is the whole argument for doing both
 What is left as ours is three things, and the list is short on purpose:
 invalidation as an *economic* mechanism rather than a correctness detail,
 discrimination as a stored fact, and obligations that survive compaction.
+
+---
+
+*The audit this entry summarises is
+[docs/research/audit_2026_09_15/findings.md](../docs/research/audit_2026_09_15/findings.md);
+every source is credited in
+[sources.md](../docs/research/audit_2026_09_15/sources.md), and the borrowing
+map is [build-on.md](../docs/research/build-on.md).*
