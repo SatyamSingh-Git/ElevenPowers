@@ -4,8 +4,8 @@
  */
 window.ELEVENPOWERS_GRAPH = {
   "meta": {
-    "updated": "2026-09-15",
-    "changelog": "2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
+    "updated": "2026-09-16",
+    "changelog": "2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
     "title": "ElevenPowers - System Topology"
   },
   "planes": {
@@ -289,6 +289,17 @@ window.ELEVENPOWERS_GRAPH = {
       "desc": "Noticing when an edit has wandered away from the task. Scope is never declared up front \u2014 it is derived from what the task established: files read, files edited, and the areas the request named. It asks; it never denies, because the user is the judge.",
       "files": [
         "core/scope.py"
+      ]
+    },
+    {
+      "id": "stress",
+      "plane": "runtime",
+      "kind": "engine",
+      "size": 3,
+      "label": "stress.py",
+      "desc": "PLAN 5.0 pointed at the product instead of at the test suite. A passing check is two facts short of evidence: it must be FRESH, which evidence.py answers, and it must be able to FAIL, which nothing answered until now. Runs every declared check the other way round - in a detached git worktree built from the commit the task started at - and if it already passed there, the record is not evidence the change works. Reports, never refuses: 5.12 says detection and intervention are separately justified, and this gate once blocked 75% of runs on a signal it had not measured. Only declared commands are run, same rule as verify.py. The user's working tree is never touched, and the answer is cached per task because the base does not move.",
+      "files": [
+        "core/stress.py"
       ]
     },
     {
@@ -849,6 +860,26 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "hook",
       "target": "scope",
       "label": "normalise / unrelated"
+    },
+    {
+      "source": "hook",
+      "target": "stress",
+      "label": "at Stop: would these checks have failed without the change?"
+    },
+    {
+      "source": "stress",
+      "target": "git",
+      "label": "detached worktree at the base commit - the working tree is untouched"
+    },
+    {
+      "source": "stress",
+      "target": "ledger-json",
+      "label": "cached per task; the base does not move"
+    },
+    {
+      "source": "report",
+      "target": "stress",
+      "label": "\"could not fail\" lines"
     },
     {
       "source": "hook",

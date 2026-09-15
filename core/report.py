@@ -6,6 +6,7 @@ import re
 
 from .evidence import Freshness, Kind, Result
 from .ledger import Ledger, Status, Verdict
+from .stress import wording
 
 MARK = {True: "met     ", False: "missing "}
 
@@ -164,6 +165,11 @@ def end_report(ledger: Ledger) -> str:
     if pre:
         lines.append("  pre-existing failures, not attributed to this change: "
                      + ", ".join(e.identity for e in pre))
+    # A check that could not have failed is worth saying out loud even when the
+    # verdict is green, because a green verdict resting on one is the failure
+    # this whole layer exists to prevent.
+    for said in wording(ledger.discrimination):
+        lines.append(f"  could not fail: {said}")
     note = coverage_note(ledger)
     if note:
         lines.append(f"  {note}")

@@ -25,6 +25,7 @@ from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
 from .verify import discharge
 from .report import end_report, gate_message, guidance, start_banner
+from .stress import base_commit, stress, wording
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 
 MAX_BLOCKS = 2
@@ -101,7 +102,7 @@ def on_prompt(payload: dict, root: Path) -> int:
         # one's evidence, read set and guided flag — so a suite run for the last
         # bug could discharge an obligation for this one, purely because the
         # ledger happened to still be sitting in the same directory.
-        ledger = Ledger(root=root, task=f"t-{time.time_ns()}")
+        ledger = Ledger(root=root, task=f"t-{time.time_ns()}", base=base_commit(root))
     ledger.request = request
     ledger.claims = claims
     ledger.touched = _changed_paths(root)
@@ -220,6 +221,13 @@ def on_stop(payload: dict, root: Path) -> int:
         if found:
             ledger.add(found)
             status = ledger.status()
+
+    # PLAN 5.0, pointed at the product: a declared check that already passed
+    # before this task began is not evidence the change works. Asked once per
+    # task and cached, and it never alters the verdict - 5.12 says detection and
+    # intervention are separately justified, and this project blocked 75 percent
+    # of runs once already on a signal it had not measured.
+    ledger.discrimination = stress(ledger)
     ledger.save()
 
     if not ledger.config.speaks:

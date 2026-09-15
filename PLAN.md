@@ -411,6 +411,10 @@ So P22 is no longer this project's discovery to make. What Phase B2.1 buys is th
 
 **And the obvious repair does not work.** The same study fed the discrimination contrast back to the agent and reported it as a negative result against a prespecified threshold: evidence-inadequate closures fell 7.8 points and discriminating evidence rose 7.4, **both below the 10-point smallest effect size of interest declared in advance**. Detecting vacuity is established. Fixing it by telling the agent is not. §5.12 applies to this mechanism as much as to the gate, and the honest first use of the discrimination signal is to *report* it.
 
+**Built 2026-09-16: `core/stress.py`.** The runtime runs every declared check against a detached `git worktree` at the commit the task began from. A check that already passed there is reported — in the end report, as `could not fail` — without altering the verdict, per §5.12. Only declared commands are run (the `core/verify.py` rule), the working tree is never touched, the base is captured at task open so a mid-task commit cannot move it, and *unknown* is a distinct third answer rather than a guess. Tested both ways against a real repository, including the control that a genuinely discriminating check must **not** be reported as weak. [journey/32](journey/32-could-not-fail.md).
+
+What it does **not** cover: commands the agent chose rather than the project declared. That is most of the evidence in a real session, and closing it means deciding when re-running somebody else's shell line somewhere new is safe.
+
 Two mechanisms, cheapest first:
 
 - **Reversion.** Undo the change the record was bound to, re-run the recorded command. Still passing means the record proved nothing about the change. One mutant, guaranteed meaningful, and the ground truth is free.

@@ -91,6 +91,20 @@ class Ledger:
     blocks: int = 0
     guided: bool = False
     created: float = field(default_factory=time.time)
+    base: str = ""
+    """The commit this task started from, captured before anything was edited.
+
+    Recorded at task open rather than read on demand, because an agent that
+    commits mid-task would otherwise move the thing its own work is compared
+    against, and `core/stress.py` would be asking whether the change
+    discriminates from itself.
+    """
+    discrimination: dict = field(default_factory=dict)
+    """Per declared need: did that check pass before the change, or not?
+
+    Cached because the base does not move while a task runs, so a declared
+    command is run against the old tree once rather than at every stop.
+    """
     _surface: Surface | None = None
     _config: Config | None = None
 
@@ -145,6 +159,8 @@ class Ledger:
             blocks=raw.get("blocks", 0),
             guided=raw.get("guided", False),
             created=raw.get("created", time.time()),
+            base=raw.get("base", ""),
+            discrimination=raw.get("discrimination", {}) or {},
         )
 
     def save(self) -> None:
@@ -173,6 +189,8 @@ class Ledger:
             "blocks": self.blocks,
             "guided": self.guided,
             "created": self.created,
+            "base": self.base,
+            "discrimination": self.discrimination,
         }
         # Named per process: a shared temporary file is its own race, where two
         # writers interleave into one buffer and the winner replaces with a
