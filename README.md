@@ -9,10 +9,11 @@
 [![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](tests/)
 [![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
+[![Architecture graph](https://img.shields.io/badge/architecture-live%20graph-a78bfa.svg)](https://satyamsingh-git.github.io/ElevenPowers/architecture/)
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
 
-**[The Architecture Graph](architecture/)** — four live views of the whole system; open `architecture/index.html` in any browser
+**[🗺️ The Architecture Graph → live](https://satyamsingh-git.github.io/ElevenPowers/architecture/)** — four interactive views of the whole system, rendered in your browser. *(The [`architecture/`](architecture/) folder here shows the source; the link above shows the page.)*
 
 **[The Guide](the-guide/)** — install, commands, configuration, troubleshooting  ·  **[What's Offered](whats-offered/)** — features, roadmap, how it compares
 

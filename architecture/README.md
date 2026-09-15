@@ -4,14 +4,16 @@ Four views of the whole system — the runtime, the plugin seam it reaches the
 host through, the durable ledger, and the evaluation harness — in one
 self-contained HTML file.
 
-**Open [`index.html`](index.html) in any browser.** No server, no build, no
-network. Double-click it.
+### ▶ **[Open the live graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)**
 
-> On GitHub, clicking an `.html` file shows its *source*, not the page — that is
-> GitHub's viewer, not a problem with the file. To get a link that renders,
-> enable GitHub Pages for this repository (Settings → Pages → Deploy from
-> branch → `main`), after which it is served at
-> `https://<owner>.github.io/ElevenPowers/architecture/`.
+Or open [`index.html`](index.html) from a local clone — double-click it. No
+server, no build, no network either way.
+
+> **Why clicking the file on github.com shows code.** github.com is a source
+> browser: it renders `.md` and shows every other file as text. That is its
+> viewer, not a problem with the page. The live link above is the same file
+> served by GitHub Pages, where it renders. Both are verified — all four tabs
+> were confirmed drawing over HTTPS, not just from `file://`.
 
 ## The four views (tabs across the top)
 

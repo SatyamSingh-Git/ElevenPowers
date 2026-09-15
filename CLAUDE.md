@@ -9,6 +9,8 @@ commits, plus the literature audits. Read those rather than re-deriving them.
 > **After any work session that changes the architecture, data flow, or
 > workflow, refresh [`architecture/`](architecture/) before finishing.**
 
+Published at **<https://satyamsingh-git.github.io/ElevenPowers/architecture/>** (GitHub Pages, `main` / root).
+
 `architecture/index.html` is the live source; `graph-data.js` is generated from
 it. Edit the inlined `GRAPH` block and any affected structured view, bump
 `meta.updated`, prepend a `meta.changelog` line, then:
