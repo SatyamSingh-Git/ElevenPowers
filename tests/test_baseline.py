@@ -462,3 +462,42 @@ def test_changing_what_is_asked_changes_the_graded_digest():
                      "Make this change.\n\nExpose converter as a decorator")]
 
     assert graded_fingerprint(bare) != graded_fingerprint(asked)
+
+
+def test_a_sweep_stops_when_the_machine_changes_under_it(tmp_path, monkeypatch):
+    """A per-run comparison cannot see damage that was already done.
+
+    An agent installed into the shared site; that run was caught and graded
+    `setup`. The next run started in the broken environment, changed nothing
+    itself, and was scored as if the machine were fine. Its grade happened to
+    survive a re-check, which is luck rather than a property.
+    """
+    import eval.baseline
+
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once", _recording_once(tmp_path / "b", "m", spent))
+    sites = iter([frozenset({"attrs"}), frozenset({"attrs"}), frozenset()])
+    monkeypatch.setattr(eval.baseline, "shared_site", lambda: next(sites))
+
+    with pytest.raises(SystemExit) as stopped:
+        run_baseline([_task("a"), _task("b")], ["vanilla"], "m", 2,
+                     tmp_path / "b", 0, tmp_path / "j.jsonl")
+
+    assert "not the one this sweep started on" in str(stopped.value)
+    assert len(spent) == 1, "it kept running on a machine that had changed"
+
+
+def test_a_sweep_on_a_steady_machine_runs_through(tmp_path, monkeypatch):
+    """The forward direction. A drift check that fires on an unchanged machine
+    stops every sweep, which is indistinguishable from the feature being absent.
+    """
+    import eval.baseline
+
+    spent: list = []
+    monkeypatch.setattr("eval.baseline.once", _recording_once(tmp_path / "b", "m", spent))
+    monkeypatch.setattr(eval.baseline, "shared_site", lambda: frozenset({"attrs"}))
+
+    rows = run_baseline([_task("a"), _task("b")], ["vanilla"], "m", 2,
+                        tmp_path / "b", 0, tmp_path / "j.jsonl")
+
+    assert len(rows) == 4

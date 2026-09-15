@@ -40,7 +40,7 @@ import sys
 import time
 from pathlib import Path
 
-from .live import ARMS, Run, arm_order, environment, once
+from .live import ARMS, Run, arm_order, environment, once, shared_site
 from .mined import load as load_mined
 from .task import Task
 
@@ -331,6 +331,12 @@ def run_baseline(tasks: list[Task], arms: list[str], model: str, replicates: int
                  budget: float = 0.0, expect: str = "") -> list[dict]:
     shuffler = random.Random(seed)
     consecutive = 0
+    # What the machine looked like when the sweep began. `once` compares the
+    # shared site across each run and grades a changed one `setup`, which caught
+    # an agent installing into the machine -- and then the *next* run started in
+    # the broken environment, changed nothing itself, and was scored normally.
+    # A per-run comparison cannot see damage that was already done.
+    started_with = shared_site()
     already = done_already(journal)
     if already:
         print(f"resuming: {sum(already.values())} run(s) already recorded")
@@ -345,6 +351,13 @@ def run_baseline(tasks: list[Task], arms: list[str], model: str, replicates: int
             for replicate in range(replicates):
                 if already.get((task.name, which), 0) > replicate:
                     continue
+                drifted = sorted(Path(p).name for p in shared_site() ^ started_with)
+                if drifted:
+                    raise SystemExit(
+                        "stopping: the machine is not the one this sweep started "
+                        f"on. {', '.join(drifted[:6])}. Runs after this point "
+                        "would be graded somewhere else, and the per-run check "
+                        "cannot see damage that was already done.")
                 try:
                     run = once(task, which, model, bundles, effort, budget)
                     consecutive = 0
