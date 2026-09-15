@@ -250,6 +250,25 @@ def _record(kind: Kind, identity: str, exit_code: int, command: str, root: Path,
     )
 
 
+def _counts_decide(record: Evidence) -> Evidence:
+    """A counted failure outranks the exit code.
+
+    Every parser below calls `_record`, which has nothing but the exit code to
+    go on, and *then* fills in the counts. Unless the verdict is revisited
+    afterwards the counts are decoration — which is what they were:
+    `pytest ... | tail -80` exits with `tail`'s status, and **123 of the 295
+    preserved passing suite records in `results/` say PASS while holding a
+    non-zero failure count**, the worst at `failed=87, passed=1339`.
+
+    The exit code still decides when nothing was counted. A runner this module
+    does not recognise is exactly the case that rule exists for, and a record
+    that counted nothing is already disqualified by `Evidence.ran_tests`.
+    """
+    if record.failed:
+        record.result = Result.FAIL
+    return record
+
+
 def _tail(output: str, lines: int = 3) -> str:
     kept = [ln for ln in output.strip().splitlines() if ln.strip()][-lines:]
     return " | ".join(ln.strip()[:160] for ln in kept)
@@ -265,12 +284,12 @@ def _counted(kind: Kind, command: str, output: str, exit_code: int, root: Path,
     groups = match.groupdict()
     if "body" in groups:
         record.passed, record.failed = _counts(groups["body"])
-        return record
+        return _counts_decide(record)
     failed = int(groups.get("failed") or 0)
     total = int(groups.get("total") or 0)
     record.failed = failed
     record.passed = int(groups.get("passed") or 0) or max(total - failed, 0)
-    return record
+    return _counts_decide(record)
 
 
 def _wrapped(command: str, output: str, exit_code: int, root: Path) -> Evidence:
@@ -293,7 +312,7 @@ def _wrapped(command: str, output: str, exit_code: int, root: Path) -> Evidence:
             record.failed = failed
             record.passed = int(groups.get("passed") or 0) or max(total - failed, 0)
         break
-    return record
+    return _counts_decide(record)
 
 
 def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
@@ -331,19 +350,13 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
     records.append(
         Evidence(
             kind=Kind.SUITE, identity=_scope(command),
-            # A counted failure outranks the exit code, because the exit code is
-            # not always the runner's. `pytest ... | tail -80` exits with
-            # `tail`'s status, and 123 of the 295 passing suite records in
-            # `results/` were written that way — the worst reading
-            # `failed=5, passed=0` and saying PASS. Exit code still decides when
-            # nothing could be counted: a runner this module does not recognise
-            # is the case that rule is for.
-            result=Result.PASS if exit_code == 0 and not failed else Result.FAIL,
+            result=Result.PASS if exit_code == 0 else Result.FAIL,
             observed=observed, tree=tree, scope="source", command=command,
             detail=_tail(output), passed=passed, failed=failed, counted=True,
             at=now, vcs=vcs,
         )
     )
+    _counts_decide(records[-1])
     return records
 
 
@@ -351,7 +364,7 @@ def _tsc(command: str, output: str, exit_code: int, root: Path) -> Evidence:
     record = _record(Kind.TYPECHECK, _scope(command), exit_code, command, root, output)
     count = TSC_COUNT.search(output)
     record.failed = int(count.group("n")) if count else len(set(TSC_ERROR.findall(output)))
-    return record
+    return _counts_decide(record)
 
 
 def _go(command: str, output: str, exit_code: int, root: Path) -> Evidence:
@@ -359,7 +372,7 @@ def _go(command: str, output: str, exit_code: int, root: Path) -> Evidence:
     results = GO_RESULT.findall(output)
     record.passed = sum(1 for status, _ in results if status == "ok")
     record.failed = sum(1 for status, _ in results if status != "ok")
-    return record
+    return _counts_decide(record)
 
 
 def _cargo(command: str, output: str, exit_code: int, root: Path) -> Evidence:
@@ -367,7 +380,7 @@ def _cargo(command: str, output: str, exit_code: int, root: Path) -> Evidence:
     for _, passed, failed in CARGO_RESULT.findall(output):
         record.passed += int(passed)
         record.failed += int(failed)
-    return record
+    return _counts_decide(record)
 
 
 def _stability(match: re.Match, command: str, root: Path) -> Evidence:

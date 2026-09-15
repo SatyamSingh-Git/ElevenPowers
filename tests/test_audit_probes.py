@@ -20,6 +20,7 @@ import io
 import json
 import math
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -1307,3 +1308,130 @@ def test_a_green_suite_behind_a_pipe_still_passes(project):
     suite = [e for e in evidence if e.kind is Kind.SUITE]
     assert suite and suite[0].result is Result.PASS
     assert suite[0].passed == 1352
+
+
+# --- R10 again: the fix in `_pytest` alone was not the fix -------------------
+
+@pytest.mark.parametrize("command,output,failures", [
+    ("npx vitest run 2>&1 | tail -20", "\n Tests  2 failed | 18 passed (20)\n", 2),
+    ("npx jest 2>&1 | tail -20", "\nTests:       3 failed, 17 passed, 20 total\n", 3),
+    ("go test ./... 2>&1 | tail -20", "ok  \texample/a\t0.01s\nFAIL\texample/b\t0.02s\n", 1),
+    ("cargo test 2>&1 | tail -20", "test result: FAILED. 9 passed; 4 failed; 0 ignored\n", 4),
+    ("bundle exec rspec 2>&1 | tail -20", "\n20 examples, 5 failures\n", 5),
+    ("mix test 2>&1 | tail -20", "\n20 tests, 6 failures\n", 6),
+    ("npm test 2>&1 | tail -20", "\nTests:       7 failed, 13 passed, 20 total\n", 7),
+])
+def test_no_runner_reports_a_failing_suite_as_passing(project, command, output, failures):
+    """R10 is a family, and fixing `_pytest` alone left six siblings open.
+
+    Every one of these parsers calls `_record`, which decides the result from
+    the exit code, and *then* fills in `record.failed` without revisiting the
+    verdict. So the same `| tail` that hid pytest's failures hides everyone's.
+
+    Recorded here rather than in a note because R5 is the precedent: its fix
+    put the counts within reach of the decision and stopped one line short of
+    using them, and this is that stopping-short repeated across seven runners.
+    """
+    evidence = parsers.parse(command, output, 0, project)
+    assert evidence, f"{command} produced no evidence at all"
+    assert evidence[-1].failed == failures, "the count the decision should have used"
+    assert evidence[-1].result is Result.FAIL
+
+
+@pytest.mark.parametrize("command,output,passes", [
+    ("npx vitest run 2>&1 | tail -20", "\n Tests  20 passed (20)\n", 20),
+    ("npx jest 2>&1 | tail -20", "\nTests:       20 passed, 20 total\n", 20),
+    ("cargo test 2>&1 | tail -20", "test result: ok. 20 passed; 0 failed; 0 ignored\n", 20),
+    ("npm test 2>&1 | tail -20", "\nTests:       20 passed, 20 total\n", 20),
+])
+def test_a_green_run_of_any_runner_still_passes_behind_a_pipe(project, command, output, passes):
+    """The control for the family, and the reason the fix is not `piped is failed`."""
+    evidence = parsers.parse(command, output, 0, project)
+    assert evidence and evidence[-1].result is Result.PASS
+    assert evidence[-1].passed == passes
+
+
+def test_a_typecheck_with_counted_errors_is_not_clean(project):
+    """`tsc` counts its errors into `failed` and then reports the exit code."""
+    evidence = parsers.parse("npx tsc --noEmit 2>&1 | tail -20",
+                             "src/a.ts(3,10): error TS2345: no.\nFound 1 error.\n", 0, project)
+    assert evidence and evidence[-1].failed == 1
+    assert evidence[-1].result is Result.FAIL
+
+
+# --- the two-way rule, enforced rather than remembered -----------------------
+
+# Every runner `parse` recognises, with output that should be read as failing
+# and output that should be read as passing. PLAN §5.0 says a check is only
+# evidence if it has been run both ways; this table is that rule made
+# mechanical, so a runner cannot be added with one direction tested.
+BOTH_WAYS = {
+    "pytest": ("python -m pytest tests -q 2>&1 | tail -20",
+               "2 failed, 18 passed in 1.0s\n", "20 passed in 1.0s\n"),
+    "vitest": ("npx vitest run 2>&1 | tail -20",
+               "\n Tests  2 failed | 18 passed (20)\n", "\n Tests  20 passed (20)\n"),
+    "jest": ("npx jest 2>&1 | tail -20",
+             "\nTests:       2 failed, 18 passed, 20 total\n", "\nTests:       20 passed, 20 total\n"),
+    "tsc": ("npx tsc --noEmit 2>&1 | tail -20",
+            "src/a.ts(3,10): error TS2345: no.\nFound 2 errors.\n", "\n"),
+    "go": ("go test ./... 2>&1 | tail -20",
+           "ok  \texample/a\t0.01s\nFAIL\texample/b\t0.02s\n", "ok  \texample/a\t0.01s\n"),
+    "cargo": ("cargo test 2>&1 | tail -20",
+              "test result: FAILED. 18 passed; 2 failed; 0 ignored\n",
+              "test result: ok. 20 passed; 0 failed; 0 ignored\n"),
+    "rspec": ("bundle exec rspec 2>&1 | tail -20",
+              "\n20 examples, 2 failures\n", "\n20 examples, 0 failures\n"),
+    "mix": ("mix test 2>&1 | tail -20",
+            "\n20 tests, 2 failures\n", "\n20 tests, 0 failures\n"),
+    "phpunit": ("./vendor/bin/phpunit 2>&1 | tail -20",
+                "Tests: 20, Assertions: 40, Failures: 2\n", "Tests: 20, Assertions: 40\n"),
+    "dotnet": ("dotnet test 2>&1 | tail -20",
+               "Failed: 2, Passed: 18\n", "Failed: 0, Passed: 20\n"),
+    "wrapper": ("npm test 2>&1 | tail -20",
+                "\nTests:       2 failed, 18 passed, 20 total\n", "\nTests:       20 passed, 20 total\n"),
+    # `parse` reaches `_wrapped` through two different doors: a recognised
+    # wrapper command, and a command it cannot read at all whose *output* is
+    # unmistakably a runner's. A project's own `run_tests.py` arrives by the
+    # second, so it gets its own pair rather than riding on the first.
+    "output-sniffed": ("python run_tests.py 2>&1 | tail -20",
+                       "2 failed, 18 passed in 1.0s\n", "20 passed in 1.0s\n"),
+}
+
+
+@pytest.mark.parametrize("runner", sorted(BOTH_WAYS))
+def test_every_runner_is_read_both_ways(project, runner):
+    """Forward and adversarial for each runner, in one test so neither can ship alone.
+
+    A parser that never reports failure passes every adversarial probe by
+    refusing everything; one that never reports success passes every forward
+    probe the same way. Either alone is indistinguishable from the feature being
+    deleted, which is why §5.0 requires the pair.
+    """
+    command, failing, green = BOTH_WAYS[runner]
+    # adversarial: the runner said things failed, and the exit code says nothing
+    # because a pipe swallowed it
+    bad = parsers.parse(command, failing, 0, project)
+    assert bad, f"{runner}: failing output produced no evidence"
+    assert bad[-1].result is Result.FAIL, f"{runner}: a failing run was recorded as passing"
+    # forward: the same command, genuinely green, must still be accepted
+    good = parsers.parse(command, green, 0, project)
+    assert good, f"{runner}: green output produced no evidence"
+    assert good[-1].result is Result.PASS, f"{runner}: a green run was recorded as failing"
+
+
+def test_the_both_ways_table_covers_every_runner_parse_dispatches_to():
+    """If a runner is added to `parse`, this fails until it is tested both ways.
+
+    Counting dispatch sites in the source is blunt, and it is the bluntness that
+    makes it hard to skip: there is no way to add a branch and quietly leave the
+    table alone.
+    """
+    import inspect
+
+    source = inspect.getsource(parsers.parse)
+    dispatches = len(re.findall(r"_counted\(|_pytest\(|_tsc\(|_go\(|_cargo\(|_wrapped\(", source))
+    assert dispatches == len(BOTH_WAYS), (
+        f"`parse` dispatches to {dispatches} counting parsers but BOTH_WAYS covers "
+        f"{len(BOTH_WAYS)}. A runner was added or removed without being tested in "
+        f"both directions (PLAN §5.0)."
+    )
