@@ -5,7 +5,7 @@
 window.ELEVENPOWERS_GRAPH = {
   "meta": {
     "updated": "2026-09-15",
-    "changelog": "2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
+    "changelog": "2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
     "title": "ElevenPowers - System Topology"
   },
   "planes": {
@@ -623,6 +623,28 @@ window.ELEVENPOWERS_GRAPH = {
       ]
     },
     {
+      "id": "discriminate",
+      "plane": "eval",
+      "kind": "engine",
+      "size": 2,
+      "label": "discriminate.py",
+      "desc": "Phase B2.1, and the first experiment this project ever ran for nothing. Asks whether our own recorded evidence measures anything, against runs already bought. It found a prior defect before it could ask its own question: a passing suite record was decided by the exit code alone, and 288 of 295 such records ran pytest through `| tail -N`, where the pipeline reports tail's status. 123 of them (42%) say PASS while holding a non-zero failure count; the worst reads failed=87, passed=1339. Corrects the history without re-running anything, because every record carries the counts the decision should have used. Reports the confound rather than burying it: affected runs ran a median of five suite records against two, so exposure is tangled with difficulty and the outcome split is NOT causal.",
+      "files": [
+        "eval/discriminate.py"
+      ]
+    },
+    {
+      "id": "pool",
+      "plane": "eval",
+      "kind": "lib",
+      "size": 2,
+      "label": "pool.py",
+      "desc": "Phase B2.2. Pool coverage against a random pick from the same pool, which is selection regret (\u00a75.1). Keyed by sweep, task and arm, because `closedbook` is a different condition by construction and pooling it would lend the others attempts they never had. Measured: the gap runs from +2.0 to +20.0 points across comparable pools, and the `mixed` column says why - it is produced entirely by the 1 to 5 tasks per pool whose attempts disagree. On the same 15 tasks, two passes of the same sweep gave +4.4 and +20.0, a difference of five single lucky runs.",
+      "files": [
+        "eval/pool.py"
+      ]
+    },
+    {
       "id": "stack",
       "plane": "eval",
       "kind": "lib",
@@ -1162,6 +1184,21 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "failures",
       "target": "bundle",
       "label": ""
+    },
+    {
+      "source": "discriminate",
+      "target": "results",
+      "label": "re-derive what the record should have said, from counts already on disk"
+    },
+    {
+      "source": "discriminate",
+      "target": "parsers",
+      "label": "the defect it found lives here"
+    },
+    {
+      "source": "pool",
+      "target": "results",
+      "label": "coverage vs a random pick, per sweep"
     },
     {
       "source": "exposure",

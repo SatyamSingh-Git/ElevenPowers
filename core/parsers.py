@@ -331,7 +331,14 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
     records.append(
         Evidence(
             kind=Kind.SUITE, identity=_scope(command),
-            result=Result.PASS if exit_code == 0 else Result.FAIL,
+            # A counted failure outranks the exit code, because the exit code is
+            # not always the runner's. `pytest ... | tail -80` exits with
+            # `tail`'s status, and 123 of the 295 passing suite records in
+            # `results/` were written that way — the worst reading
+            # `failed=5, passed=0` and saying PASS. Exit code still decides when
+            # nothing could be counted: a runner this module does not recognise
+            # is the case that rule is for.
+            result=Result.PASS if exit_code == 0 and not failed else Result.FAIL,
             observed=observed, tree=tree, scope="source", command=command,
             detail=_tail(output), passed=passed, failed=failed, counted=True,
             at=now, vcs=vcs,

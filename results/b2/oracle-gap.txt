@@ -1,0 +1,64 @@
+results\chunks: 100 graded attempts
+results\bundles-A: 45 graded attempts
+results\bundles-B: 45 graded attempts
+results\prevalence: 18 graded attempts
+results\checkpoint: 4 graded attempts
+results\closedbook: 10 graded attempts
+
+sweep                  arm       tasks   2+  mixed  runs  coverage   random    last      gap
+--------------------------------------------------------------------------------------------
+bundles-A              vanilla      15   15      1    45    73.3%    68.9%   66.7%    +4.4p
+bundles-B              vanilla      15   15      5    45    93.3%    73.3%   73.3%   +20.0p
+checkpoint             gate          2    0      0     2   100.0%   100.0%  100.0%    +0.0p
+checkpoint             vanilla       2    0      0     2   100.0%   100.0%  100.0%    +0.0p
+chunks                 gate         25   25      1    50   100.0%    98.0%   96.0%    +2.0p
+chunks                 vanilla      25   25      2    50    96.0%    92.0%   92.0%    +4.0p
+closedbook             vanilla      10    0      0    10    90.0%    90.0%   90.0%    +0.0p
+prevalence             gate         16    1      0    17    75.0%    75.0%   75.0%    +0.0p
+
+bundles-A / vanilla: coverage 73.3%, a random pick 68.9% — selection regret +4.4 points.
+  The whole gap comes from 1 task(s) whose attempts disagree — a task that always passes, or always fails, contributes nothing to it. At this corpus size that makes the figure a statement about per-run flakiness on a handful of tasks, not about a stable property of the pool.
+  Above the 4-point line: 4.4 points a selector could in principle recover. Measure correct-candidate survival through every filter before believing it (PLAN §6).
+
+bundles-B / vanilla: coverage 93.3%, a random pick 73.3% — selection regret +20.0 points.
+  The whole gap comes from 5 task(s) whose attempts disagree — a task that always passes, or always fails, contributes nothing to it. At this corpus size that makes the figure a statement about per-run flakiness on a handful of tasks, not about a stable property of the pool.
+  Above the 4-point line: 20.0 points a selector could in principle recover. Measure correct-candidate survival through every filter before believing it (PLAN §6).
+
+checkpoint / gate: coverage 100.0%, a random pick 100.0% — selection regret +0.0 points.
+  2 of 2 tasks have a single attempt and cannot show any gap, so this understates what a replicated pool would show.
+  Under the 4-point line. On this evidence a selector is not worth building: below this gap, measured selectors destroy more correct answers than they rescue. The investment belongs upstream, in generation and in reproduction synthesis (PLAN §5.13).
+
+checkpoint / vanilla: coverage 100.0%, a random pick 100.0% — selection regret +0.0 points.
+  2 of 2 tasks have a single attempt and cannot show any gap, so this understates what a replicated pool would show.
+  Under the 4-point line. On this evidence a selector is not worth building: below this gap, measured selectors destroy more correct answers than they rescue. The investment belongs upstream, in generation and in reproduction synthesis (PLAN §5.13).
+
+chunks / gate: coverage 100.0%, a random pick 98.0% — selection regret +2.0 points.
+  The whole gap comes from 1 task(s) whose attempts disagree — a task that always passes, or always fails, contributes nothing to it. At this corpus size that makes the figure a statement about per-run flakiness on a handful of tasks, not about a stable property of the pool.
+  Under the 4-point line. On this evidence a selector is not worth building: below this gap, measured selectors destroy more correct answers than they rescue. The investment belongs upstream, in generation and in reproduction synthesis (PLAN §5.13).
+
+chunks / vanilla: coverage 96.0%, a random pick 92.0% — selection regret +4.0 points.
+  The whole gap comes from 2 task(s) whose attempts disagree — a task that always passes, or always fails, contributes nothing to it. At this corpus size that makes the figure a statement about per-run flakiness on a handful of tasks, not about a stable property of the pool.
+  Under the 4-point line. On this evidence a selector is not worth building: below this gap, measured selectors destroy more correct answers than they rescue. The investment belongs upstream, in generation and in reproduction synthesis (PLAN §5.13).
+
+closedbook / vanilla: coverage 90.0%, a random pick 90.0% — selection regret +0.0 points.
+  10 of 10 tasks have a single attempt and cannot show any gap, so this understates what a replicated pool would show.
+  Under the 4-point line. On this evidence a selector is not worth building: below this gap, measured selectors destroy more correct answers than they rescue. The investment belongs upstream, in generation and in reproduction synthesis (PLAN §5.13).
+
+prevalence / gate: coverage 75.0%, a random pick 75.0% — selection regret +0.0 points.
+  15 of 16 tasks have a single attempt and cannot show any gap, so this understates what a replicated pool would show.
+  No task's attempts disagree, so there is nothing for any selector to pick between.
+  1 attempt(s) excluded as `setup`: the machine, not the candidate.
+  Under the 4-point line. On this evidence a selector is not worth building: below this gap, measured selectors destroy more correct answers than they rescue. The investment belongs upstream, in generation and in reproduction synthesis (PLAN §5.13).
+
+========================================================================
+Pooled across sweeps — NOT a figure to quote. `closedbook` is a different
+condition by construction, so pooling lends its tasks attempts the others
+never had. Shown only so the per-sweep rows above can be checked against it.
+========================================================================
+sweep                  arm       tasks   2+  mixed  runs  coverage   random    last      gap
+--------------------------------------------------------------------------------------------
+ALL POOLED             gate         33   16      1    49    87.9%    86.4%   84.8%    +1.5p
+ALL POOLED             vanilla      35   25      6    74    91.4%    81.4%   80.0%   +10.0p
+
+Coverage is measured with answer access on most of this corpus (PLAN §4.1);
+it is an upper bound. `python -m eval.exposure` reports the floor.

@@ -1,0 +1,33 @@
+runs with a preserved ledger : 70
+passing suite records        : 295
+  behind a pipe              : 288 (98%)
+  PASS with failures counted : 123 (42%)
+  worst single record        : failed=87, passed=1339 (attrs-1c962d15)
+runs carrying at least one   : 43 of 70 (61%)
+
+outcome, by whether the run carried a falsely-passing suite record:
+  carried one   n= 43  regressed=1  resolved=36  setup=1  unfixed=5
+  carried none  n= 27  resolved=27
+
+suite records run, median    : 5 when affected, 2 when not
+A run that never ran a failing suite cannot exhibit this defect, and a run in
+trouble runs more suites. Exposure is confounded with difficulty, so the
+outcome split above is NOT evidence that the defect caused the failures.
+
+runs that did not resolve and carried at least one:
+  click-c2ed4149           gate     regressed  suites=  5 wrong=3
+  attrs-97f8d175           gate     setup      suites=  7 wrong=3
+  attrs-0f758fe5           gate     unfixed    suites=  7 wrong=4
+  attrs-577c782c           gate     unfixed    suites=  3 wrong=2
+  attrs-5d6d21aa           gate     unfixed    suites=  1 wrong=1
+  attrs-6e3786c5           gate     unfixed    suites= 11 wrong=5
+  attrs-6e3786c5           gate     unfixed    suites=  2 wrong=1
+
+What this changes: for every affected run, the obligation "the related test
+suite passes" could be met by a suite that did not pass. Those runs were not
+measuring what the ledger says they measured. Fixed in core/parsers.py; the
+probe is in tests/test_audit_probes.py and was seen to flip.
+
+Still unanswered, and the actual §5.10 question: of the records that really
+did pass, how many would have passed with the change reverted? That needs
+execution against the base tree, not arithmetic on saved counts.

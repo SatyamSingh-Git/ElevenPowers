@@ -1268,3 +1268,42 @@ def test_an_install_stays_in_the_workspace_even_when_the_guard_is_off(tmp_path):
     seen = subprocess.run('python -c "import pytest, attrs"', shell=True, cwd=project,
                           env=defeated, capture_output=True, timeout=120)
     assert seen.returncode == 0, "the workspace interpreter cannot see the machine"
+
+
+# --- R10: a pipeline reports the exit code of its last command ---------------
+
+def test_a_suite_with_failures_is_not_a_passing_suite(project):
+    """Found 2026-09-15 by reading preserved ledgers, not by reasoning.
+
+    123 of the 295 passing suite records in `results/` carry `failed > 0`, and
+    288 of the 295 ran the suite through `| tail -N`. A shell pipeline exits
+    with the status of its *last* command, so `tail` returns 0 however pytest
+    finished, and `_pytest` decided the suite record purely on that exit code
+    while holding the parsed failure count in its hand.
+
+    R5 established that a completed process and an executed test are different
+    facts. This is the third: an executed test and a *passing* test are also
+    different facts. The worst preserved record reads `failed=5, passed=0` and
+    says PASS.
+    """
+    output = ("FAILED tests/test_packaging.py::TestLegacy::test_version_info[attr]\n"
+              "2 failed, 1352 passed, 4 skipped, 1 xfailed in 23.59s\n")
+    evidence = parsers.parse("python -m pytest tests -q 2>&1 | tail -80", output, 0, project)
+    suite = [e for e in evidence if e.kind is Kind.SUITE]
+    assert suite, "no suite record at all"
+    assert suite[0].failed == 2, "the count the decision should have used"
+    assert suite[0].result is Result.FAIL
+
+
+def test_a_green_suite_behind_a_pipe_still_passes(project):
+    """R10's control, and the reason the fix is not `always FAIL when piped`.
+
+    Piping is not the defect — believing the pipeline's exit code over a
+    counted failure is. An agent that runs its suite through `tail` and sees it
+    green must still be recorded as green, or this fix is the feature deleted.
+    """
+    evidence = parsers.parse("python -m pytest tests -q 2>&1 | tail -80",
+                             "1352 passed, 4 skipped in 23.59s\n", 0, project)
+    suite = [e for e in evidence if e.kind is Kind.SUITE]
+    assert suite and suite[0].result is Result.PASS
+    assert suite[0].passed == 1352
