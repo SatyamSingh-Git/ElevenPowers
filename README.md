@@ -1,4 +1,4 @@
-<div align="center">
+<div align="center" markdown="1">
 
 # ElevenPowers
 
@@ -28,7 +28,7 @@
 
 ---
 
-<div align="center">
+<div align="center" markdown="1">
 
 ### *The path is ours to walk.*<br/>*Where it ends was never ours to choose.*
 
@@ -401,7 +401,7 @@ Every number quoted anywhere in that folder was produced by a command in this re
 
 ---
 
-<div align="center">
+<div align="center" markdown="1">
 
 **Apache-2.0** · Built on the work of fourteen better-established projects, with attribution for every one.
 
