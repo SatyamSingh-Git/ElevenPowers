@@ -13,9 +13,7 @@
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
 
-**[🗺️ The Architecture Graph → live](https://satyamsingh-git.github.io/ElevenPowers/architecture/)** — four interactive views of the whole system, rendered in your browser. *(The [`architecture/`](architecture/) folder here shows the source; the link above shows the page.)*
-
-**[The Guide](the-guide/)** — install, commands, configuration, troubleshooting  ·  **[What's Offered](whats-offered/)** — features, roadmap, how it compares
+**[🗺️ Open the live architecture graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)** — four interactive views of the whole system
 
 </div>
 
@@ -374,6 +372,7 @@ And yes — this was built with coding agents, mostly Claude and Codex. A projec
 | [`docs/research/`](docs/research/) | fourteen systems read from source, every claim cited to a file at a recorded commit |
 | [`competitor-map.md`](docs/research/competitor-map.md) | ten systems × thirteen architectural axes, on one screen |
 | [`docs/postponed.md`](docs/postponed.md) | what is not built, and the trigger that would start it |
+| [`architecture/`](architecture/) | the living graph — 60 nodes, 99 edges, four views; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
 | [`the-guide/`](the-guide/) | install, commands, configuration, troubleshooting — the practical manual |
 | [`whats-offered/`](whats-offered/) | features as they stand, the five-phase roadmap, and an honest comparison |
 
