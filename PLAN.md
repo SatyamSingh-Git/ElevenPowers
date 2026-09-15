@@ -333,9 +333,48 @@ Two further traps, both confirmed and both worth recording because the obvious f
 
 The plan of record, feasible on this machine today via Docker Desktop on WSL2: clone at the base commit, strip and stash `.git` out of band keyed by run id, resolve and build the dependency closure once while online (`pip wheel -w ./wheelhouse`), then run with `--network none`, `PIP_NO_INDEX=1` and `PIP_FIND_LINKS=/wheels`. `pip download --no-binary :all: "pkg @ git+https://..."` then has no socket to open. A task whose dependencies could not be pre-staged is a **drop, reported in a drops manifest, not a task failure in the denominator**.
 
+**Two corrections to this recipe, 2026-09-16, found before spending.**
+
+**`--network none` cannot work as written.** The `claude` CLI is launched by
+`eval/live.py` as a child process and the agent's shell tools are *its*
+children, so they share one network namespace. Cutting the network cuts the
+CLI's own path to the model API and the run does not happen at all. The boundary
+has to be an **egress allowlist containing the model endpoint and nothing
+else** - which is also what Cursor's harness does, and what the agent's own
+`gh`, `curl` and `pip download` then fail against.
+
+**A network boundary would not have closed the biggest door anyway.** The
+workspace virtualenv is built with `--system-site-packages` (§27, the fix that
+finally stopped agents installing into the machine), so the *installed* copy of
+the library under test is readable from inside the workspace - and it is a newer
+release that **already contains the fix**. `eval/canary.py` caught four runs
+reading exactly that: `cat`, `Read` and `diff -u` against
+`AppData/Roaming/Python/Python313/site-packages/`. No egress policy touches it.
+Closing it means pinning the workspace interpreter to the *base* version of the
+package under test, or dropping `--system-site-packages` and paying back the
+cost §27 avoided. Neither is built.
+
+**Blocked on this machine, 2026-09-16.** No Docker, no WSL distribution. The
+Claude Code sandbox is documented as unsupported on native Windows. So B3 needs
+an install decision before it can proceed, and the honest state is that **every
+score this project has published was measured with the book open**, with a floor
+now measured rather than guessed (below).
+
 **The probe must be seen to flip.** Plant a run whose true fix contains a unique nonsense token, then grep every transcript and patch for it. It must be **found with the boundary off and absent with it on**. Until both states have been observed, the boundary is untested prevention, which §5.0 says is not prevention at all.
 
-**Measured again, 2026-09-15, and the denial does not hold.** `git clone` is refused and `pip download` fetches the same repository, because pip clones `git+` URLs internally. An agent used that route to extract its own fix commit with `git format-patch` and apply it verbatim; the run graded `resolved`. Two of sixteen runs did this. Tool denial closes the doors it names and a package manager walks through the wall, so §4.1 needs an operating-system or network boundary rather than a longer list. `eval.exposure` is what keeps this honest in the meantime, and it is the only part of the boundary that has never failed.
+**Measured again, 2026-09-15, and the denial does not hold.** `git clone` is refused and `pip download` fetches the same repository, because pip clones `git+` URLs internally. An agent used that route to extract its own fix commit with `git format-patch` and apply it verbatim; the run graded `resolved`. Two of sixteen runs did this. Tool denial closes the doors it names and a package manager walks through the wall, so §4.1 needs an operating-system or network boundary rather than a longer list. `eval.exposure` is what keeps this honest in the meantime, and it is
+the only part of the boundary that has never failed.
+
+**Measured far higher, 2026-09-16, by a sharper screen.** `eval/canary.py` looks
+for the answer's *vocabulary* rather than its sha: identifiers the upstream fix
+**defines** which appear nowhere in the base tree, counted only when a tool
+result hands one to the run **before the run ever uses it**. On chunk1 it finds
+**21 of 36 watchable runs** against `eval.exposure`'s 2 on the same bundles, and
+it names the door: **14 upstream network** (`gh api`, `gh pr diff`, `WebFetch`,
+`curl`), **4 the machine's own site-packages**, 3 local. Five runs reached the
+same vocabulary unaided, which is the control that says the screen can still
+tell convergence from retrieval. The figure sits beside Cursor's independently
+audited 63 percent.
 
 **Measured, 2026-09-14.** The channel was the network alone: of a hundred runs, zero reached the local clones and zero reached evaluator assets. With `WebFetch`, `WebSearch` and the Bash network commands denied, ten open-book successes were rerun closed-book and **nine resolved** — so exposure was convenience rather than necessity, and most of the 92 percent survives the book closing. The tenth reached GitHub through a **sub-agent**, which `--disallowed-tools` does not cover; `Agent` and `Task` are denied now. Ten tasks selected for having succeeded is not a corpus-wide rate, and the corpus-wide closed-book rate is still unmeasured.
 

@@ -45,6 +45,7 @@ command in this repository and can be reproduced.
 | [30-reaimed.md](30-reaimed.md) | Five research passes and Master Plan v0.8: 46 percent of agent validation evidence discriminates nothing, the reproduction test is worth +28pp against localisation's +8, the decisive error lands at step 7 of 27 — and both fixes were already written in our own plan, unbuilt. Plus the correction that mattered most: borrowing is the method, so every component now names its prior art, licence and limit before its design |
 | [31-forty-two-percent.md](31-forty-two-percent.md) | Phase B2, the first experiment that cost nothing: 42 percent of preserved passing suite records say PASS while holding a failure count, because pytest piped to `tail` exits 0 — and an oracle gap that swings from +4.4 to +20.0 on the same fifteen tasks, on five lucky runs |
 | [32-could-not-fail.md](32-could-not-fail.md) | The two-way rule stops being a habit: enforced in code for every runner, and shipped as `core/stress.py` — the runtime now runs each declared check against the pre-change tree and reports the ones that could not have failed |
+| [33-which-door.md](33-which-door.md) | The boundary recipe was wrong, `--network none` would have killed the CLI's own API access — and a sharper exposure screen finds 21 of 36 runs handed the fix's own vocabulary, four of them from the machine's site-packages, a door no network policy closes |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -247,6 +248,7 @@ Every figure below comes from a command in this repository.
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
+| Which door the answer came through | **21 of 36 watchable runs** handed the fix's own invented identifiers — 14 upstream network, **4 the machine's own site-packages** | `python -m eval.canary --corpus E:/ep-corpus/paired.json results/chunks/bundles-chunk1` |
 | A check that could not have failed | The runtime says so, in the report, without refusing the stop | `python -m pytest tests/test_stress.py -q` |
 | A suite that failed, recorded as passing | **123 of 295 (42%)** preserved passing suite records carry `failed > 0`; 61% of gated runs carry one. Fixed, probed, controlled | `python -m eval.discriminate --bundles results --verbose` |
 | The oracle gap does not settle | +2.0 to +20.0 across comparable pools, from 1-5 disagreeing tasks each | `python -m eval.pool --from-bundles results/chunks results/bundles-A results/bundles-B` |

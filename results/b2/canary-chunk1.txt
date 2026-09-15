@@ -1,0 +1,60 @@
+  HANDED  attrs-0f758fe5--gate--1789335923248: _convert_x, decorated_converter, test_converter_decorated
+          via Bash gh pr diff 1541 --repo python-attrs/attrs 2>&1 | head -400
+  reached attrs-0f758fe5--vanilla--1789335475496: _convert_x, test_converter_decorator
+  HANDED  attrs-0f758fe5--vanilla--1789335668769: _convert_x, decorated_converter, test_converter_decorated
+          via Bash gh pr diff 1541 --repo python-attrs/attrs 2>&1 | head -500
+  reached attrs-62bdbf23--gate--1789337944133: TestReplace, __replace__, add_replace
+  HANDED  attrs-62bdbf23--gate--1789338250134: TestReplace, add_replace, test_already_has_one
+          via Bash gh pr view 1383 --repo python-attrs/attrs --json title,body 2>&1 | head -50; echo "
+  reached attrs-62bdbf23--vanilla--1789338690565: TestReplace, __replace__, add_replace
+  HANDED  attrs-62bdbf23--vanilla--1789339309016: add_replace
+          via Bash grep -n "replace" "C:\Users\Satyam\AppData\Roaming\Python\Python313\site-packages\a
+  HANDED  attrs-bde3f58c--gate--1789339861213: test_hash_deprecated, test_hash_is_deprecated, test_unsafe_hash_false_eq_false
+          via Bash gh pr diff 1323 --repo python-attrs/attrs 2>&1
+  HANDED  attrs-bde3f58c--gate--1789340302687: test_hash_deprecated, test_hash_is_deprecated, test_unsafe_hash_false_eq_false
+          via Bash gh pr diff 1323 --repo python-attrs/attrs 2>&1
+  HANDED  attrs-bde3f58c--vanilla--1789340491830: test_hash_deprecated, test_hash_is_deprecated, test_unsafe_hash_false_eq_false
+          via Read C:\Users\Satyam\AppData\Local\Temp\claude\C--Users-Satyam-AppData-Local-Temp-tmpb1d
+  reached attrs-bde3f58c--vanilla--1789340680447: test_hash_deprecated
+  HANDED  click-4f9086bf--gate--1789342808042: _patched_pdb_init, custom_in, custom_out
+          via Bash gh api repos/pallets/click/commits/4f9086bf8fd98aca1d804bf742f4f1ceb6c12295 --jq '.
+  HANDED  click-4f9086bf--gate--1789343006762: _patched_pdb_init, custom_in, custom_out
+          via Bash gh api repos/pallets/click/commits/4f9086bf8fd98aca1d804bf742f4f1ceb6c12295 -H "Acc
+  HANDED  click-4f9086bf--vanilla--1789343135595: _patched_pdb_init, custom_in, custom_out
+          via Bash gh pr diff 3235 --repo pallets/click 2>&1
+  HANDED  click-4f9086bf--vanilla--1789343266283: _patched_pdb_init, custom_in, custom_out
+          via Bash gh api repos/pallets/click/commits/ac2dd7aadf08aa0ce7f75bf0e96b95ad5e62d1b9 --jq '.
+  HANDED  click-bec59289--gate--1789341458922: fake_version, test_version_option_ambiguous_import_name_errors, test_version_option_resolves_import_name_to_distribution
+          via Grep
+  HANDED  click-bec59289--gate--1789341614289: fake_version, test_version_option_ambiguous_import_name_errors, test_version_option_resolves_import_name_to_distribution
+          via Bash gh api repos/pallets/click/pulls/3582/files 2>&1 | head -c 6000
+  reached click-bec59289--vanilla--1789340854372: fake_version
+  HANDED  itsdangerous-f966a62e--gate--1789343977988: fallback_serializer, fallback_signers, iter_unsigners
+          via Bash curl -s https://github.com/pallets/itsdangerous/compare/1.0.0...1.1.0.diff
+  HANDED  itsdangerous-f966a62e--gate--1789344211036: fallback_serializer, fallback_signers, iter_unsigners
+          via Read C:\Users\Satyam\AppData\Roaming\Python\Python313\site-packages\itsdangerous\seriali
+  HANDED  itsdangerous-f966a62e--vanilla--1789343564068: fallback_serializer, fallback_signers, iter_unsigners
+          via Bash gh api repos/pallets/itsdangerous/commits/af4856aeaa648369b3bc8176089221b038b7a873 
+  HANDED  itsdangerous-f966a62e--vanilla--1789343837483: fallback_serializer, fallback_signers, iter_unsigners
+          via Bash cat "C:\Users\Satyam\AppData\Roaming\Python\Python313\site-packages\itsdangerous\se
+  HANDED  jinja2-679af7f8--gate--1789345648805: _get_zipimporter_files, get_files
+          via WebFetch
+  HANDED  jinja2-679af7f8--gate--1789345770698: _get_zipimporter_files, get_files
+          via Bash gh api repos/pallets/jinja/commits/679af7f816ced8941ed5cf9b151a0cac543d0336 --jq '.
+  HANDED  jinja2-679af7f8--vanilla--1789346011595: _get_zipimporter_files, get_files
+          via Bash diff -u src/jinja2/loaders.py "/c/Users/Satyam/AppData/Roaming/Python/Python313/sit
+  HANDED  jinja2-679af7f8--vanilla--1789346103452: get_files
+          via Bash py -3.13 -c "
+import zipimport, inspect
+print(zipimport.zipimporter)
+z = zipimport.
+
+52 runs, 13 tasks, 9 with a usable canary
+runs the screen could see at all   : 36
+handed the answer's own vocabulary : 21  (58% of watchable)
+reached it without being handed it : 5  (convergence, not retrieval)
+
+where the answer came from:
+  upstream network       14
+  installed package      4
+  local workspace        3

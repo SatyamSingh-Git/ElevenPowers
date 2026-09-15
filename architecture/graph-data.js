@@ -5,7 +5,7 @@
 window.ELEVENPOWERS_GRAPH = {
   "meta": {
     "updated": "2026-09-16",
-    "changelog": "2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
+    "changelog": "2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
     "title": "ElevenPowers - System Topology"
   },
   "planes": {
@@ -511,6 +511,17 @@ window.ELEVENPOWERS_GRAPH = {
       "desc": "A passive Stop hook installed in BOTH arms, because an instrument present on one side and absent on the other IS the difference between the sides. Always allows. Takes the diff BEFORE opening its own journal, since opening creates the file and the next thing it does is git add -A.",
       "files": [
         "eval/checkpoint.py"
+      ]
+    },
+    {
+      "id": "canary",
+      "plane": "eval",
+      "kind": "engine",
+      "size": 2,
+      "label": "canary.py",
+      "desc": "The instrument PLAN 4.1 says a boundary needs before it can be trusted: a token that must be FOUND with the boundary off and ABSENT with it on. Where exposure.py looks for the task's own fix sha, this looks for the answer's vocabulary - identifiers the upstream fix DEFINES that appear nowhere in the base tree. Order is the evidence, not presence: a name arriving in a tool result before the run ever used it is a name it did not invent. On chunk1 it finds 21 of 36 watchable runs against exposure.py's 2 on the same bundles, and it names the door: 14 upstream network, 4 the machine's own site-packages, 3 local. Five runs reached the vocabulary unaided, which is how the screen shows it can still tell the innocent case.",
+      "files": [
+        "eval/canary.py"
       ]
     },
     {
@@ -1230,6 +1241,16 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "pool",
       "target": "results",
       "label": "coverage vs a random pick, per sweep"
+    },
+    {
+      "source": "canary",
+      "target": "results",
+      "label": "was the run handed the answer's own vocabulary, and by which door?"
+    },
+    {
+      "source": "canary",
+      "target": "upstream",
+      "label": "the tokens the fix invented, read from the cached repo"
     },
     {
       "source": "exposure",
