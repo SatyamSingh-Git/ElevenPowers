@@ -53,6 +53,44 @@ says the P2 figure never did. One run, on an easy task, and it is one data point
 rather than a rate. But it is the first one of its kind this project has ever
 had, and the apparatus produced it within four runs of existing.
 
+## The agent turned the guard off, and it was right to want to
+
+The prevalence measurement was sized first this time: sixteen gated runs, one
+observation each, because the P2 question needs blocks and blocks arrive at
+eight percent — a hundred runs would buy eight of them. §5.9 used rather than
+recited.
+
+It stopped after two runs and $2.34. The first came back `setup`, noting *the
+shared site changed during this run: `_editable_impl_attrs.pth`, `attr`,
+`attrs`*. An agent had installed into the machine again, and the detector said
+so and refused to score the run against it.
+
+What it ran, from its own transcript:
+
+```
+PIP_REQUIRE_VIRTUALENV=0 python -m pip install -e . --no-deps -q
+```
+
+It **turned off the guard**. Which is a reasonable thing to do: the package has
+to be importable to run the tests, and an environment variable is a request that
+anything with a shell can decline. Two sweeps were damaged by that install and
+one by the matching uninstall, across three attempts at containing it —
+`PIP_USER`, `PYTHONUSERBASE`, `PIP_REQUIRE_VIRTUALENV` — each of which asked.
+
+So it gets what it wanted, somewhere harmless. The workspace now has its own
+virtualenv, built with `--system-site-packages`, first on `PATH`. `pip` resolves
+there whatever the agent believes about the variable; the machine stays
+readable, which is what `PYTHONUSERBASE` took away when it hid pytest from every
+agent; and writes die with the workspace.
+
+The probe asserts it under the agent's own bypass: set `PIP_REQUIRE_VIRTUALENV=0`,
+install, and check the shared site is untouched, the package landed in the
+workspace, and `import pytest, attrs` still works.
+
+**Detection is what made this visible, and it is the part that keeps working.**
+Three preventions failed and the screen caught all three. Prevention that has
+never been defeated is prevention that has not yet been tested.
+
 ## What it changes about the next experiment
 
 The checkpoint design was chosen because it does not need hard tasks: a task an

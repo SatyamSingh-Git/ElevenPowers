@@ -246,7 +246,7 @@ Every figure below comes from a command in this repository.
 | What exposure was worth | 10 open-book successes rerun closed-book: **9 resolved**. The tenth reached GitHub through a sub-agent, which the denial did not cover | `python -m eval.exposure results/closedbook/bundles --corpus results/closedbook/tasks.json` |
 | Where the treatment applied | Stop blocks in 4 of 50 gated runs (8%), 6 events. Pre-Stop interventions are **not** counted by that field: one gated run has 4 scope questions and 0 blocks | `python -m eval.failures results/chunks/bundles-chunk2` |
 | Live agent runs, P1 | unanswered: two identical passes scored 69 and 94 percent, and later 68.9 and 53.3 | `python -m eval.noise a.json b.json` |
-| Tests | 510 | `python -m pytest tests -q` |
+| Tests | 511 | `python -m pytest tests -q` |
 | P1, twelve real bugs | no effect: identical outcomes both arms, 1.4x cost — **graded before the preservation set existed, and the candidates were deleted, so it cannot be re-graded** | `python -m eval.live --suite mined --arm vanilla,gate` |
 
 About 3,150 lines of runtime, 5,050 of evaluation, 2,550 of tests.

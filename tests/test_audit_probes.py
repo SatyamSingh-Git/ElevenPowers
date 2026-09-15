@@ -1217,3 +1217,54 @@ def test_the_recorder_allows_the_stop_and_stays_out_of_the_candidate(tmp_path):
     touched = [l.split()[-1] for l in recorded[0]["patch"].splitlines()
                if l.startswith("diff --git")]
     assert touched == ["b/a.txt"], touched
+
+
+def test_an_install_stays_in_the_workspace_even_when_the_guard_is_off(tmp_path):
+    """The agent turned the guard off, and it was right to want to.
+
+    Told it could not install, an agent working an attrs task ran
+
+        PIP_REQUIRE_VIRTUALENV=0 python -m pip install -e . --no-deps -q
+
+    and put an editable install in the shared user site. It needed the package
+    importable to run the tests; the guard was a request and it declined. Two
+    sweeps were damaged by that install and one by the matching uninstall.
+
+    So this asserts containment under the agent's own bypass. A workspace
+    virtualenv with system site packages gives it what it wanted somewhere
+    harmless: `pip` resolves to the workspace whatever it believes about the
+    variable, and the machine stays readable -- which `PYTHONUSERBASE` took
+    away, hiding pytest from every agent.
+    """
+    import glob
+    import site
+    import subprocess
+
+    from eval.live import _own_interpreter, _sandboxed
+
+    project = tmp_path / "w"
+    (project / "src" / "ep_probe_pkg").mkdir(parents=True)
+    (project / "src" / "ep_probe_pkg" / "__init__.py").write_bytes(b"V = 1\n")
+    (project / "pyproject.toml").write_bytes(
+        b'[project]\nname = "ep-probe-pkg"\nversion = "0.0.1"\n'
+        b'[build-system]\nrequires = ["setuptools"]\n'
+        b'build-backend = "setuptools.build_meta"\n'
+        b'[tool.setuptools.packages.find]\nwhere = ["src"]\n')
+    _own_interpreter(project)
+
+    defeated = {**_sandboxed(project), "PIP_REQUIRE_VIRTUALENV": "0"}
+    shared = site.getusersitepackages()
+    before = set(glob.glob(shared + "/*"))
+
+    done = subprocess.run("python -m pip install -e . --no-deps -q", shell=True,
+                          cwd=project, env=defeated, capture_output=True, text=True,
+                          encoding="utf-8", errors="replace", timeout=600)
+
+    assert done.returncode == 0, f"the agent could not install at all: {done.stderr[-200:]}"
+    assert set(glob.glob(shared + "/*")) == before, "it reached the shared user site"
+    assert glob.glob(str(project / ".venv") + "/**/*ep_probe_pkg*", recursive=True), \
+        "it installed somewhere that is not the workspace"
+
+    seen = subprocess.run('python -c "import pytest, attrs"', shell=True, cwd=project,
+                          env=defeated, capture_output=True, timeout=120)
+    assert seen.returncode == 0, "the workspace interpreter cannot see the machine"

@@ -171,7 +171,31 @@ def _install(task: Task, root: Path, arm: str) -> None:
             profile="guide" if arm == "guide" else "strict",
             commands={"tests": _test_command(task)},
         ))
+    _own_interpreter(root)
     _seed_git(root)
+
+
+def _own_interpreter(root: Path) -> None:
+    """A virtualenv inside the workspace, seeing the machine's packages.
+
+    An agent that needs the package under test importable will install it. Told
+    not to, it does this:
+
+        PIP_REQUIRE_VIRTUALENV=0 python -m pip install -e . --no-deps -q
+
+    which is a reasonable thing to want and a demonstration that an environment
+    variable is a request. Two sweeps were damaged by that install landing in
+    the shared user site and one by the matching uninstall.
+
+    So it gets an interpreter of its own. `--system-site-packages` keeps
+    everything on the machine readable, which is what `PYTHONUSERBASE` took away
+    and why that attempt hid pytest from the agent. Writes land in the workspace
+    and die with it, and `PIP_REQUIRE_VIRTUALENV` is satisfied rather than
+    fought, so there is nothing to override.
+    """
+    home = root / ".venv"
+    subprocess.run([sys.executable, "-m", "venv", "--system-site-packages", str(home)],
+                   capture_output=True, timeout=180)
 
 
 def _record_checkpoints(wiring: dict) -> None:
@@ -333,7 +357,17 @@ def _sandboxed(root: Path) -> dict[str, str]:
     """
     import os
 
-    return {**os.environ, "PIP_REQUIRE_VIRTUALENV": "1"}
+    home = root / ".venv"
+    scripts = home / ("Scripts" if os.name == "nt" else "bin")
+    environment = {**os.environ, "PIP_REQUIRE_VIRTUALENV": "1"}
+    if scripts.is_dir():
+        # First on PATH, and VIRTUAL_ENV set, so `python` and `pip` are the
+        # workspace's own. An install then lands here whether or not the agent
+        # believes the guard, which is the difference between a boundary and a
+        # request.
+        environment["VIRTUAL_ENV"] = str(home)
+        environment["PATH"] = str(scripts) + os.pathsep + environment.get("PATH", "")
+    return environment
 
 
 def shared_site() -> frozenset[str]:
