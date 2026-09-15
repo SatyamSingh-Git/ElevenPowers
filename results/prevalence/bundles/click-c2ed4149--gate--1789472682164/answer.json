@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 248324,
+ "num_turns": 48,
+ "stop_reason": "end_turn",
+ "session_id": "8ad31b75-842e-40ff-b888-fa959ff6020b",
+ "total_cost_usd": 1.88763,
+ "usage": {
+  "input_tokens": 95,
+  "cache_creation_input_tokens": 72378,
+  "cache_read_input_tokens": 3657140,
+  "output_tokens": 23729,
+  "output_tokens_details": {
+   "thinking_tokens": 7479
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 72378,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 129,
+    "cache_read_input_tokens": 101897,
+    "cache_creation_input_tokens": 1572,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1572
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 95,
+   "outputTokens": 23729,
+   "cacheReadInputTokens": 3657140,
+   "cacheCreationInputTokens": 72378,
+   "webSearchRequests": 0,
+   "costUSD": 1.88763,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The full suite has been re-run against the current tree: 1844 passed, 94 skipped, 1 xfailed, and the same 2 failures that are pre-existing and unrelated to this change (confirmed earlier via `git stash` \u2014 they fail identically on the unmodified codebase, caused by a stale globally-installed `click` package being picked up by `test_termui.py` rather than anything touched here).",
+ "ttft_ms": 2078,
+ "ttft_stream_ms": 1250,
+ "time_to_request_ms": 355,
+ "type": "result",
+ "duration_ms": 306841,
+ "uuid": "21292bd4-5728-49d9-a12a-bf41d2754d62"
+}

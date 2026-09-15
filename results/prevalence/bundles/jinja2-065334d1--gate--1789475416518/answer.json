@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 59912,
+ "num_turns": 15,
+ "stop_reason": "end_turn",
+ "session_id": "16ecb5a2-1eb8-4675-8e3b-edf5e47aa699",
+ "total_cost_usd": 0.40397219999999995,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 21480,
+  "cache_read_input_tokens": 677124,
+  "output_tokens": 4791,
+  "output_tokens_details": {
+   "thinking_tokens": 2575
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21480,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 109,
+    "cache_read_input_tokens": 52234,
+    "cache_creation_input_tokens": 337,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 337
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 30,
+   "outputTokens": 4791,
+   "cacheReadInputTokens": 677124,
+   "cacheCreationInputTokens": 21480,
+   "webSearchRequests": 0,
+   "costUSD": 0.40397219999999995,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 908 tests pass. The `attr` filter now delegates to `environment.getattr()` (`src/jinja2/filters.py:1410-1419`) instead of duplicating the sandbox check inline \u2014 this also means sandboxed environments get `wrap_str_format` protection on `|attr(\"format\")` that the old inline check missed.",
+ "ttft_ms": 2933,
+ "ttft_stream_ms": 2082,
+ "time_to_request_ms": 223,
+ "type": "result",
+ "duration_ms": 70422,
+ "uuid": "fa4e3b5f-5702-4e65-8b4d-34df9709824a"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 57422,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "477ba78d-9826-4066-b3c8-3304a807f8a9",
+ "total_cost_usd": 0.5427755999999999,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 39770,
+  "cache_read_input_tokens": 770972,
+  "output_tokens": 4852,
+  "output_tokens_details": {
+   "thinking_tokens": 873
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 39770,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 160,
+    "cache_read_input_tokens": 69902,
+    "cache_creation_input_tokens": 959,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 959
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 4852,
+   "cacheReadInputTokens": 770972,
+   "cacheCreationInputTokens": 39770,
+   "webSearchRequests": 0,
+   "costUSD": 0.5427755999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: same 41 failures pre-exist on the unmodified codebase (environment-related, not caused by this change). The test suite passes identically with and without the fix.\n\n`_wrap_chunks` (and `_handle_long_word`) in `src/click/_textwrap.py` now measure widths via `term_len` / `_truncate_visible` instead of `len`, so ANSI escape codes in styled help text no longer inflate the wrap width and cause premature/mid-word breaks.",
+ "ttft_ms": 2185,
+ "ttft_stream_ms": 1274,
+ "time_to_request_ms": 224,
+ "type": "result",
+ "duration_ms": 81897,
+ "uuid": "ad295006-addd-48a1-9d30-ba83663b48e4"
+}

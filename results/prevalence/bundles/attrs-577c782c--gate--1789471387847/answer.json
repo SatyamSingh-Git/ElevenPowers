@@ -1,0 +1,75 @@
+{
+ "is_error": false,
+ "duration_api_ms": 304839,
+ "num_turns": 39,
+ "stop_reason": "end_turn",
+ "session_id": "1c700720-98b6-414a-b8a3-eeb753204ab3",
+ "total_cost_usd": 1.2637911000000002,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 49909,
+  "cache_read_input_tokens": 2228817,
+  "output_tokens": 19698,
+  "output_tokens_details": {
+   "thinking_tokens": 14438
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 49909,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 121,
+    "cache_read_input_tokens": 80554,
+    "cache_creation_input_tokens": 446,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 446
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 19698,
+   "cacheReadInputTokens": 2228817,
+   "cacheCreationInputTokens": 49909,
+   "webSearchRequests": 0,
+   "costUSD": 1.2637911000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019KrmwTuqbMy8qm5QVCpZ4x",
+   "tool_input": {
+    "command": "cd C:/Users/Satyam/AppData/Local/Temp/tmpswbouph1 && curl -s -m 5 https://pypi.org/pypi/ruff/json -o /tmp/ruff.json 2>&1; echo \"exit:$?\"; wc -c /tmp/ruff.json 2>/dev/null"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Bumped the pinned `ruff-pre-commit` revision in `.pre-commit-config.yaml` from `v0.11.12` to `v0.11.13`. Verified the full test suite (1342 tests) still passes against the local source (the environment's editable install and version tag were only test scaffolding, not part of the change \u2014 cleaned up the temporary tag afterward).",
+ "ttft_ms": 5793,
+ "ttft_stream_ms": 5208,
+ "time_to_request_ms": 1074,
+ "type": "result",
+ "duration_ms": 577081,
+ "uuid": "077dc53c-e3a1-4e7b-9437-d4a67433b1f9"
+}

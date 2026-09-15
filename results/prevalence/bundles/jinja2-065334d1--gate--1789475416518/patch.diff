@@ -1,0 +1,29 @@
+diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py
+index e5b5a00..5025057 100644
+--- a/src/jinja2/filters.py
++++ b/src/jinja2/filters.py
+@@ -1420,22 +1420,9 @@ def do_attr(
+     try:
+         name = str(name)
+     except UnicodeError:
+-        pass
+-    else:
+-        try:
+-            value = getattr(obj, name)
+-        except AttributeError:
+-            pass
+-        else:
+-            if environment.sandboxed:
+-                environment = t.cast("SandboxedEnvironment", environment)
+-
+-                if not environment.is_safe_attribute(obj, name, value):
+-                    return environment.unsafe_undefined(obj, name)
+-
+-            return value
++        return environment.undefined(obj=obj, name=name)
+ 
+-    return environment.undefined(obj=obj, name=name)
++    return environment.getattr(obj, name)
+ 
+ 
+ @typing.overload

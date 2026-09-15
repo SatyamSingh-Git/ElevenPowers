@@ -1,0 +1,94 @@
+{
+ "is_error": false,
+ "duration_api_ms": 197393,
+ "num_turns": 44,
+ "stop_reason": "end_turn",
+ "session_id": "5a3ac4e3-42bd-4cfd-9fe7-5ebca6b010ef",
+ "total_cost_usd": 1.2790214999999996,
+ "usage": {
+  "input_tokens": 87,
+  "cache_creation_input_tokens": 48881,
+  "cache_read_input_tokens": 2774515,
+  "output_tokens": 10208,
+  "output_tokens_details": {
+   "thinking_tokens": 3654
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 48881,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 171,
+    "cache_read_input_tokens": 79304,
+    "cache_creation_input_tokens": 668,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 668
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 87,
+   "outputTokens": 10208,
+   "cacheReadInputTokens": 2774515,
+   "cacheCreationInputTokens": 48881,
+   "webSearchRequests": 0,
+   "costUSD": 1.2790214999999996,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01FLLv2oW32JAfqJWWeGaHoD",
+   "tool_input": {
+    "command": "cd /tmp/clickcheck && git clone --depth 50 https://github.com/pallets/click.git click-src 2>&1 | tail -20",
+    "timeout": 60000,
+    "description": "Clone click repo from GitHub for reference"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01SFnhjwtrTcQ5jnoEVF7wJ2",
+   "tool_input": {
+    "command": "cd /tmp/clickcheck && git clone --quiet https://github.com/pallets/click.git click-git 2>&1 | tail -20; cd click-git && git log --oneline -20 -- src/click/decorators.py",
+    "timeout": 60000,
+    "description": "Clone click git repo and show decorators.py history"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01CsQdXJEsxPyckpWPfvEbvs",
+   "tool_input": {
+    "command": "rm -rf /tmp/clickcheck /tmp/clickdl 2>/dev/null; cd \"/c/Users/Satyam/AppData/Local/Temp/tmpb7citaw9\" && git status --short",
+    "description": "Clean up temp clones and check final git status"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "The full suite (`python -m pytest tests -q`) has been run: `36 failed, 1579 passed, 94 skipped` \u2014 and diffing against the unmodified baseline (also `36 failed`, but `1576 passed`) confirms all 36 failures are pre-existing environment issues (deprecation warnings, pager/tempdir behavior, info_dict mismatches) present before this change too. My change adds exactly 3 net passing tests and zero new failures. Obligation discharged; changes are restored in the working tree.",
+ "ttft_ms": 12215,
+ "ttft_stream_ms": 9835,
+ "time_to_request_ms": 8213,
+ "type": "result",
+ "duration_ms": 637330,
+ "uuid": "12b6d525-7c44-4e7f-90eb-f974a45dd5b0"
+}

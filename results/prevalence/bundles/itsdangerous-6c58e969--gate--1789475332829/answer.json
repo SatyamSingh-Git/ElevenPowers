@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 57192,
+ "num_turns": 19,
+ "stop_reason": "end_turn",
+ "session_id": "bfd05484-275f-4041-8f62-42630568ab98",
+ "total_cost_usd": 0.5507855999999999,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 33244,
+  "cache_read_input_tokens": 910232,
+  "output_tokens": 5210,
+  "output_tokens_details": {
+   "thinking_tokens": 2063
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 33244,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 289,
+    "cache_read_input_tokens": 63779,
+    "cache_creation_input_tokens": 556,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 556
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 5210,
+   "cacheReadInputTokens": 910232,
+   "cacheCreationInputTokens": 33244,
+   "webSearchRequests": 0,
+   "costUSD": 0.5507855999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Made `TimedSerializer.loads` iterate through `iter_unsigners` (primary + `fallback_signers`) instead of only using the primary signer, matching the fallback behavior `Serializer.loads` already had \u2014 `SignatureExpired` still propagates immediately (a valid-but-expired signature shouldn't fall through to another signer), while `BadSignature` from one signer now lets the next fallback signer attempt unsigning.\n\nChanges:\n- `src/itsdangerous/timed.py` \u2014 `TimedSerializer.loads` now loops over `self.iter_unsigners(salt)`.\n- `tests/test_itsdangerous/test_timed.py` \u2014 added `test_fallback_signers` mirroring the existing `Serializer` test.\n- `CHANGES.rst` \u2014 noted the addition under a new 1.1.0 entry.\n\nAll 400 tests pass.",
+ "ttft_ms": 2122,
+ "ttft_stream_ms": 1151,
+ "time_to_request_ms": 272,
+ "type": "result",
+ "duration_ms": 77308,
+ "uuid": "7a15e0e2-16f2-41af-b163-02b5b4e49ca3"
+}

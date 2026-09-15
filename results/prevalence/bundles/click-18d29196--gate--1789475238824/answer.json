@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 702096,
+ "num_turns": 88,
+ "stop_reason": "end_turn",
+ "session_id": "fbde5417-4c5d-464a-a7fc-6ccfabb6cfd8",
+ "total_cost_usd": 3.698092199999998,
+ "usage": {
+  "input_tokens": 178,
+  "cache_creation_input_tokens": 99410,
+  "cache_read_input_tokens": 8131794,
+  "output_tokens": 44104,
+  "output_tokens_details": {
+   "thinking_tokens": 26785
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 99410,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 611,
+    "cache_read_input_tokens": 130167,
+    "cache_creation_input_tokens": 334,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 334
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 178,
+   "outputTokens": 44104,
+   "cacheReadInputTokens": 8131794,
+   "cacheCreationInputTokens": 99410,
+   "webSearchRequests": 0,
+   "costUSD": 3.698092199999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1266 tests pass. Summary of the change to `src/click/core.py`:\n\n- `Parameter.process_value` now checks for `UNSET` before calling `type_cast_value`: when the value is `UNSET`, it calls a new `process_unset_value(ctx)` hook instead, so `type_cast_value` is never invoked with `UNSET`.\n- Added `Parameter.process_unset_value()`, which returns `()` for `multiple`/`nargs=-1` params and `UNSET` otherwise \u2014 preserving prior missing-value semantics used by `value_is_missing` and the callback step.\n- `Option` no longer overrides `type_cast_value` for its bool-flag-defaults-to-`False` special case; that logic moved into `Option.process_unset_value`, calling `type_cast_value(ctx, False)` explicitly with a concrete value.\n- `Parameter.type_cast_value`'s early-return check narrowed from `value in (None, UNSET)` to `value is None`, since `UNSET` is now guaranteed to never reach it.\n\nAlso added regression tests in `tests/test_options.py` and `tests/test_arguments.py` that install a custom `type_cast_value` override and assert it never observes `UNSET` \u2014 these fail on the pre-fix code and pass after. Added a `CHANGES.rst` entry.\n\nNote: I discovered along the way that this environment's `pytest` was silently importing the pip-installed `click` (8.5.0) instead of the local `src/click` unless `PYTHONPATH=src` is set explicitly before invoking Python \u2014 `conftest.py`'s runtime `sys.path.insert` doesn't win the race against `click` being imported earlier by a pytest plugin. Worth keeping in mind for future work in this repo (I didn't change `conftest.py` since that's outside the scope of this commit).",
+ "ttft_ms": 3192,
+ "ttft_stream_ms": 2966,
+ "time_to_request_ms": 228,
+ "type": "result",
+ "duration_ms": 817505,
+ "uuid": "b803ca62-51d4-4d0f-a4a2-d924f3eed3af"
+}

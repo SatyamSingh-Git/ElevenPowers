@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 127431,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "19a37db4-0c4f-459a-8fd6-a44f10f63feb",
+ "total_cost_usd": 0.8326167000000001,
+ "usage": {
+  "input_tokens": 50,
+  "cache_creation_input_tokens": 40768,
+  "cache_read_input_tokens": 1392479,
+  "output_tokens": 11341,
+  "output_tokens_details": {
+   "thinking_tokens": 4398
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 40768,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 214,
+    "cache_read_input_tokens": 71163,
+    "cache_creation_input_tokens": 696,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 696
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 50,
+   "outputTokens": 11341,
+   "cacheReadInputTokens": 1392479,
+   "cacheCreationInputTokens": 40768,
+   "webSearchRequests": 0,
+   "costUSD": 0.8326167000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1335 tests pass. The change is complete:\n\n- `src/attr/_make.py`: `pipe()` now only wraps its result in a `Converter` when at least one argument passed to it is itself a `Converter` instance; otherwise it returns a plain callable.\n- `src/attr/converters.pyi`: added overloads so type checkers infer a plain `Callable` return for plain-callable input, and a `Converter` return when a `Converter` is passed.\n- Updated `tests/test_converters.py` and `tests/test_annotations.py` to match the new return type in the plain-callable cases.\n- Added `changelog.d/1380.change.md`.",
+ "ttft_ms": 3832,
+ "ttft_stream_ms": 3359,
+ "time_to_request_ms": 288,
+ "type": "result",
+ "duration_ms": 160032,
+ "uuid": "9f57bf0e-7016-4bbe-8552-302d3bf1867a"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 161123,
+ "num_turns": 37,
+ "stop_reason": "end_turn",
+ "session_id": "02966eb5-0d22-4772-a474-6eebd6480b89",
+ "total_cost_usd": 1.1340231,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 47398,
+  "cache_read_input_tokens": 2351077,
+  "output_tokens": 9606,
+  "output_tokens_details": {
+   "thinking_tokens": 4608
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 47398,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 453,
+    "cache_read_input_tokens": 78138,
+    "cache_creation_input_tokens": 351,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 351
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 74,
+   "outputTokens": 9606,
+   "cacheReadInputTokens": 2351077,
+   "cacheCreationInputTokens": 47398,
+   "webSearchRequests": 0,
+   "costUSD": 1.1340231,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the change to `CliRunner`. Summary:\n\n- **`src/click/testing.py`**: Added a `capture` parameter (`\"sys\"` default, `\"fd\"`) to `CliRunner`. In `\"fd\"` mode, a new `_FDCapture`-style mechanism redirects file descriptors 1/2 via `os.dup2` so writes that bypass `sys.stdout`/`sys.stderr` (C extensions, subprocesses, `faulthandler`) are still captured. Reverted the 8.3.3 behavior where `fileno()` on the redirected streams returned the *original* fd by default \u2014 that let `os.dup2(w, sys.stdout.fileno())` calls inside a CLI mutate the real host fd, which broke pytest's own fd-level capture teardown. `\"sys\"` mode now raises `io.UnsupportedOperation` on `fileno()` again, matching pre-8.3.3 behavior.\n- **`tests/test_testing.py`**: Added coverage for both capture modes, including the fd-mutation regression.\n- **`docs/testing.md`** / **`CHANGES.rst`**: Documented the new parameter and the revert, closing #3384 (refs #3244).\n\nAll 1459 tests pass (`PYTHONPATH=src python -m pytest`, run against `src/click` rather than the globally-installed click package).",
+ "ttft_ms": 2318,
+ "ttft_stream_ms": 1301,
+ "time_to_request_ms": 292,
+ "type": "result",
+ "duration_ms": 330474,
+ "uuid": "05f43aaf-b6de-4449-b9e4-430ab689cbde"
+}

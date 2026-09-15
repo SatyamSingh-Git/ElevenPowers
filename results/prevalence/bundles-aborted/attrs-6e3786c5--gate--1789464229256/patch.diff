@@ -1,0 +1,85 @@
+diff --git a/changelog.d/1457.change.md b/changelog.d/1457.change.md
+new file mode 100644
+index 0000000..d3a4c01
+--- /dev/null
++++ b/changelog.d/1457.change.md
+@@ -0,0 +1 @@
++Setting `kw_only=True` on a class no longer makes attributes inherited from a base class keyword-only -- only the attributes defined on that class are affected, matching the behavior of standard library `dataclasses`.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index b24c8d0..766616e 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -444,7 +444,6 @@ def _transform_attrs(
+ 
+     if kw_only:
+         own_attrs = [a.evolve(kw_only=True) for a in own_attrs]
+-        base_attrs = [a.evolve(kw_only=True) for a in base_attrs]
+ 
+     attrs = base_attrs + own_attrs
+ 
+diff --git a/src/attr/_next_gen.py b/src/attr/_next_gen.py
+index 4f4b23e..8524c16 100644
+--- a/src/attr/_next_gen.py
++++ b/src/attr/_next_gen.py
+@@ -217,6 +217,10 @@ def define(
+             Make all attributes keyword-only in the generated ``__init__`` (if
+             *init* is False, this parameter is ignored).
+ 
++            Only the attributes defined directly on the decorated class are
++            affected -- inherited attributes keep their original
++            keyword-only-ness, mirroring the behavior of `dataclasses`.
++
+         weakref_slot (bool):
+             Make instances weak-referenceable.  This has no effect unless
+             *slots* is True.
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 8f4846a..4a38a07 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -242,9 +242,9 @@ class TestTransformAttrs:
+ 
+     def test_kw_only(self):
+         """
+-        Converts all attributes, including base class' attributes, if `kw_only`
+-        is provided. Therefore, `kw_only` allows attributes with defaults to
+-        precede mandatory attributes.
++        Converts the class' own attributes, but not inherited base class
++        attributes, if `kw_only` is provided. This matches the behavior of
++        `dataclasses`.
+ 
+         Updates in the subclass *don't* affect the base class attributes.
+         """
+@@ -268,7 +268,10 @@ class TestTransformAttrs:
+         assert len(base_attrs) == 1
+ 
+         for a in attrs:
+-            assert a.kw_only is True
++            if a.name == "b":
++                assert a.kw_only is False
++            else:
++                assert a.kw_only is True
+ 
+         for b_a in B.__attrs_attrs__:
+             assert b_a.kw_only is False
+@@ -1018,8 +1021,9 @@ class TestKeywordOnlyAttributes:
+ 
+     def test_keyword_only_class_level_subclassing(self):
+         """
+-        Subclass `kw_only` propagates to attrs inherited from the base,
+-        allowing non-default following default.
++        Subclass `kw_only` doesn't affect attrs inherited from the base --
++        only the subclass' own attributes become keyword-only, matching
++        `dataclasses`.
+         """
+ 
+         @attr.s
+@@ -1030,6 +1034,9 @@ class TestKeywordOnlyAttributes:
+         class C(Base):
+             y = attr.ib()
+ 
++        assert attr.fields(C).x.kw_only is False
++        assert attr.fields(C).y.kw_only is True
++
+         with pytest.raises(TypeError):
+             C(1)
+ 

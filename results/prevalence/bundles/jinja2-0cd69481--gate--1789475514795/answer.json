@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 69204,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "9c2a88d6-6b38-4b48-8256-ca847c8ad321",
+ "total_cost_usd": 0.46941360000000004,
+ "usage": {
+  "input_tokens": 28,
+  "cache_creation_input_tokens": 30720,
+  "cache_read_input_tokens": 740832,
+  "output_tokens": 4184,
+  "output_tokens_details": {
+   "thinking_tokens": 2319
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 30720,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 80,
+    "cache_read_input_tokens": 61427,
+    "cache_creation_input_tokens": 384,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 384
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 28,
+   "outputTokens": 4184,
+   "cacheReadInputTokens": 740832,
+   "cacheCreationInputTokens": 30720,
+   "webSearchRequests": 0,
+   "costUSD": 0.46941360000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Applied the upstream fix: `urlize` now skips values starting with `@` (like `@a@b`) so they're never wrapped in a `mailto:` link. Tests pass (904 passed), and I added a CHANGES.rst entry.",
+ "ttft_ms": 2584,
+ "ttft_stream_ms": 2305,
+ "time_to_request_ms": 228,
+ "type": "result",
+ "duration_ms": 81539,
+ "uuid": "6642f400-15b7-4040-9a8b-9d159c9e0323"
+}

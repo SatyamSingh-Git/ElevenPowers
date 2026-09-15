@@ -1,0 +1,114 @@
+diff --git a/changelog.d/1457.change.md b/changelog.d/1457.change.md
+new file mode 100644
+index 0000000..3d413a5
+--- /dev/null
++++ b/changelog.d/1457.change.md
+@@ -0,0 +1 @@
++`kw_only=True` on `attr.s`/`attrs.define` now only applies to the attributes defined on that class -- not to attributes it inherits from a base class -- matching the behavior of `dataclasses.dataclass`.
+diff --git a/docs/examples.md b/docs/examples.md
+index 2393dec..54d5253 100644
+--- a/docs/examples.md
++++ b/docs/examples.md
+@@ -173,6 +173,19 @@ A(a=1, b=2)
+ 
+ If you create an attribute with `init=False`, the `kw_only` argument is ignored.
+ 
++Just like {func}`dataclasses.dataclass`, `kw_only` at the decorator level only affects the attributes defined in that class -- it does *not* make attributes that are inherited from a base class keyword-only:
++
++```{doctest}
++>>> @define
++... class A:
++...     a: int = 0
++>>> @define(kw_only=True)
++... class B(A):
++...     b: int = 1
++>>> B(0, b=1)
++B(a=0, b=1)
++```
++
+ Keyword-only attributes allow subclasses to add attributes without default values, even if the base class defines attributes with default values:
+ 
+ ```{doctest}
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index b24c8d0..766616e 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -444,7 +444,6 @@ def _transform_attrs(
+ 
+     if kw_only:
+         own_attrs = [a.evolve(kw_only=True) for a in own_attrs]
+-        base_attrs = [a.evolve(kw_only=True) for a in base_attrs]
+ 
+     attrs = base_attrs + own_attrs
+ 
+diff --git a/src/attr/_next_gen.py b/src/attr/_next_gen.py
+index 4f4b23e..e108abc 100644
+--- a/src/attr/_next_gen.py
++++ b/src/attr/_next_gen.py
+@@ -217,6 +217,9 @@ def define(
+             Make all attributes keyword-only in the generated ``__init__`` (if
+             *init* is False, this parameter is ignored).
+ 
++            This does *not* affect attributes that are inherited from a base
++            class -- consistent with `dataclasses.dataclass`.
++
+         weakref_slot (bool):
+             Make instances weak-referenceable.  This has no effect unless
+             *slots* is True.
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 8f4846a..79beb7b 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -242,9 +242,9 @@ class TestTransformAttrs:
+ 
+     def test_kw_only(self):
+         """
+-        Converts all attributes, including base class' attributes, if `kw_only`
+-        is provided. Therefore, `kw_only` allows attributes with defaults to
+-        precede mandatory attributes.
++        Converts all *own* attributes to `kw_only`, if `kw_only` is provided,
++        but does *not* affect attributes inherited from a base class --
++        consistent with `dataclasses.dataclass`.
+ 
+         Updates in the subclass *don't* affect the base class attributes.
+         """
+@@ -267,7 +267,10 @@ class TestTransformAttrs:
+         assert len(attrs) == 3
+         assert len(base_attrs) == 1
+ 
+-        for a in attrs:
++        assert attrs[0].name == "b"
++        assert attrs[0].kw_only is False
++
++        for a in attrs[1:]:
+             assert a.kw_only is True
+ 
+         for b_a in B.__attrs_attrs__:
+@@ -1018,8 +1021,11 @@ class TestKeywordOnlyAttributes:
+ 
+     def test_keyword_only_class_level_subclassing(self):
+         """
+-        Subclass `kw_only` propagates to attrs inherited from the base,
+-        allowing non-default following default.
++        Subclass `kw_only` doesn't propagate to attrs inherited from the
++        base -- only to attrs newly defined on the subclass -- consistent
++        with `dataclasses.dataclass`. This still allows a non-default
++        attribute to be added in the subclass after a base attribute with a
++        default.
+         """
+ 
+         @attr.s
+@@ -1031,7 +1037,12 @@ class TestKeywordOnlyAttributes:
+             y = attr.ib()
+ 
+         with pytest.raises(TypeError):
+-            C(1)
++            C(1, 2)
++
++        c = C(1, y=2)
++
++        assert c.x == 1
++        assert c.y == 2
+ 
+         c = C(x=0, y=1)
+ 

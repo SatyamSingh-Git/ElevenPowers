@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 149471,
+ "num_turns": 37,
+ "stop_reason": "end_turn",
+ "session_id": "e6c2a692-0237-414e-850e-c1c9c2bba5e2",
+ "total_cost_usd": 1.1187590999999997,
+ "usage": {
+  "input_tokens": 70,
+  "cache_creation_input_tokens": 66485,
+  "cache_read_input_tokens": 1847997,
+  "output_tokens": 11016,
+  "output_tokens_details": {
+   "thinking_tokens": 5385
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 66485,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 229,
+    "cache_read_input_tokens": 65527,
+    "cache_creation_input_tokens": 958,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 958
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 70,
+   "outputTokens": 11016,
+   "cacheReadInputTokens": 1847997,
+   "cacheCreationInputTokens": 66485,
+   "webSearchRequests": 0,
+   "costUSD": 1.1187590999999997,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed `_is_class_var` in `src/attr/_make.py:292` to detect `ClassVar` when the annotation is an unresolvable `ForwardRef` (as produced by Python 3.14+'s `FORWARDREF` annotation format used in `_get_annotations`) \u2014 previously `str(ForwardRef('ClassVar[int]'))` produced `\"ForwardRef('ClassVar[int]')\"`, which never matched the `ClassVar` prefixes, so such class variables were incorrectly treated as regular attrs fields. Added test cases and a changelog fragment. Full test suite passes except two pre-existing, unrelated failures caused by the local editable-install version string.",
+ "ttft_ms": 3164,
+ "ttft_stream_ms": 2165,
+ "time_to_request_ms": 300,
+ "type": "result",
+ "duration_ms": 215427,
+ "uuid": "f75f05ea-71f5-474e-9908-0e2bc4d2f947"
+}

@@ -1,0 +1,64 @@
+{
+ "is_error": true,
+ "duration_api_ms": 264581,
+ "num_turns": 38,
+ "stop_reason": "stop_sequence",
+ "session_id": "00908709-849c-4353-9087-fe9ed8457d89",
+ "total_cost_usd": 0.9820346999999998,
+ "usage": {
+  "input_tokens": 62,
+  "cache_creation_input_tokens": 39458,
+  "cache_read_input_tokens": 1744160,
+  "output_tokens": 13254,
+  "output_tokens_details": {
+   "thinking_tokens": 8588
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 39458,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 163,
+    "cache_read_input_tokens": 70158,
+    "cache_creation_input_tokens": 391,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 391
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 64,
+   "outputTokens": 13260,
+   "cacheReadInputTokens": 1814709,
+   "cacheCreationInputTokens": 39755,
+   "webSearchRequests": 0,
+   "costUSD": 0.9820346999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "api_error",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "API Error: Connection lost mid-response. The response above may be incomplete.",
+ "type": "result",
+ "duration_ms": 280213,
+ "uuid": "60f90082-5a3d-4cf8-aa6f-50c2fb3ebbc8"
+}

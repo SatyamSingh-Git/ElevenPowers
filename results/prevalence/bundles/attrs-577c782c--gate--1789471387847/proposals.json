@@ -1,0 +1,7 @@
+[
+ {
+  "at": 1789471382.173316,
+  "session": "1c700720-98b6-414a-b8a3-eeb753204ab3",
+  "patch": "diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml\nindex 7156b12..e1feb99 100644\n--- a/.pre-commit-config.yaml\n+++ b/.pre-commit-config.yaml\n@@ -4,7 +4,7 @@ ci:\n \n repos:\n   - repo: https://github.com/astral-sh/ruff-pre-commit\n-    rev: v0.11.12\n+    rev: v0.11.13\n     hooks:\n       - id: ruff-check\n         args: [--fix, --exit-non-zero-on-fix]\n"
+ }
+]

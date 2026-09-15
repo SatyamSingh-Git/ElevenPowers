@@ -1,0 +1,300 @@
+diff --git a/changelog.d/1328.change.md b/changelog.d/1328.change.md
+new file mode 100644
+index 0000000..f834774
+--- /dev/null
++++ b/changelog.d/1328.change.md
+@@ -0,0 +1 @@
++`attrs.converters.pipe()` (and its syntactic sugar of passing a list for `attrs.field()`'s / `attr.ib()`'s *converter* argument) works again when passing `attrs.setters.convert` to *on_setattr* (which is default for `attrs.define`).
+diff --git a/src/attr/_compat.py b/src/attr/_compat.py
+index 4c515d2..104eeb0 100644
+--- a/src/attr/_compat.py
++++ b/src/attr/_compat.py
+@@ -13,6 +13,7 @@ PYPY = platform.python_implementation() == "PyPy"
+ PY_3_8_PLUS = sys.version_info[:2] >= (3, 8)
+ PY_3_9_PLUS = sys.version_info[:2] >= (3, 9)
+ PY_3_10_PLUS = sys.version_info[:2] >= (3, 10)
++PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)
+ PY_3_12_PLUS = sys.version_info[:2] >= (3, 12)
+ PY_3_13_PLUS = sys.version_info[:2] >= (3, 13)
+ PY_3_14_PLUS = sys.version_info[:2] >= (3, 14)
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index e251e0c..bf00c5f 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -22,6 +22,7 @@ from . import _compat, _config, setters
+ from ._compat import (
+     PY_3_8_PLUS,
+     PY_3_10_PLUS,
++    PY_3_11_PLUS,
+     _AnnotationExtractor,
+     _get_annotations,
+     get_generic_base,
+@@ -2705,9 +2706,27 @@ class Converter:
+         self.takes_self = takes_self
+         self.takes_field = takes_field
+ 
+-        self._first_param_type = _AnnotationExtractor(
+-            converter
+-        ).get_first_param_type()
++        ex = _AnnotationExtractor(converter)
++        self._first_param_type = ex.get_first_param_type()
++
++        if not (self.takes_self or self.takes_field):
++            self.__call__ = lambda value, _, __: self.converter(value)
++        elif self.takes_self and not self.takes_field:
++            self.__call__ = lambda value, instance, __: self.converter(
++                value, instance
++            )
++        elif not self.takes_self and self.takes_field:
++            self.__call__ = lambda value, __, field: self.converter(
++                value, field
++            )
++        else:
++            self.__call__ = lambda value, instance, field: self.converter(
++                value, instance, field
++            )
++
++        rt = ex.get_return_type()
++        if rt is not None:
++            self.__call__.__annotations__["return"] = rt
+ 
+     @staticmethod
+     def _get_global_name(attr_name: str) -> str:
+@@ -2915,18 +2934,7 @@ def pipe(*converters):
+ 
+     def pipe_converter(val, inst, field):
+         for c in converters:
+-            if isinstance(c, Converter):
+-                val = c.converter(
+-                    val,
+-                    *{
+-                        (False, False): (),
+-                        (True, False): (c.takes_self,),
+-                        (False, True): (c.takes_field,),
+-                        (True, True): (c.takes_self, c.takes_field),
+-                    }[c.takes_self, c.takes_field],
+-                )
+-            else:
+-                val = c(val)
++            val = c(val, inst, field) if isinstance(c, Converter) else c(val)
+ 
+         return val
+ 
+@@ -2940,8 +2948,12 @@ def pipe(*converters):
+         if t:
+             pipe_converter.__annotations__["val"] = t
+ 
++        last = converters[-1]
++        if not PY_3_11_PLUS and isinstance(last, Converter):
++            last = last.__call__
++
+         # Get return type from last converter.
+-        rt = _AnnotationExtractor(converters[-1]).get_return_type()
++        rt = _AnnotationExtractor(last).get_return_type()
+         if rt:
+             pipe_converter.__annotations__["return"] = rt
+ 
+diff --git a/src/attr/setters.py b/src/attr/setters.py
+index 3922adb..a9ce016 100644
+--- a/src/attr/setters.py
++++ b/src/attr/setters.py
+@@ -4,7 +4,6 @@
+ Commonly used hooks for on_setattr.
+ """
+ 
+-
+ from . import _config
+ from .exceptions import FrozenAttributeError
+ 
+@@ -56,14 +55,20 @@ def validate(instance, attrib, new_value):
+ 
+ def convert(instance, attrib, new_value):
+     """
+-    Run *attrib*'s converter -- if it has one --  on *new_value* and return the
++    Run *attrib*'s converter -- if it has one -- on *new_value* and return the
+     result.
+ 
+     .. versionadded:: 20.1.0
+     """
+     c = attrib.converter
+     if c:
+-        return c(new_value)
++        # This can be removed once we drop 3.8 and use attrs.Converter instead.
++        from ._make import Converter
++
++        if not isinstance(c, Converter):
++            return c(new_value)
++
++        return c(new_value, instance, attrib)
+ 
+     return new_value
+ 
+diff --git a/tests/test_converters.py b/tests/test_converters.py
+index 4de08d9..164fb0f 100644
+--- a/tests/test_converters.py
++++ b/tests/test_converters.py
+@@ -11,6 +11,7 @@ import pytest
+ import attr
+ 
+ from attr import Converter, Factory, attrib
++from attr._compat import _AnnotationExtractor
+ from attr.converters import default_if_none, optional, pipe, to_bool
+ 
+ 
+@@ -28,6 +29,7 @@ class TestConverter:
+         assert c == new_c
+         assert takes_self == new_c.takes_self
+         assert takes_field == new_c.takes_field
++        assert c.__call__.__name__ == new_c.__call__.__name__
+ 
+     @pytest.mark.parametrize(
+         "scenario",
+@@ -58,6 +60,58 @@ class TestConverter:
+ 
+         assert expect == c._fmt_converter_call("le_name", "le_value")
+ 
++    def test_works_as_adapter(self):
++        """
++        Converter instances work as adapters and pass the correct arguments to
++        the wrapped converter callable.
++        """
++        taken = None
++        instance = object()
++        field = object()
++
++        def save_args(*args):
++            nonlocal taken
++            taken = args
++            return args[0]
++
++        Converter(save_args)(42, instance, field)
++
++        assert (42,) == taken
++
++        Converter(save_args, takes_self=True)(42, instance, field)
++
++        assert (42, instance) == taken
++
++        Converter(save_args, takes_field=True)(42, instance, field)
++
++        assert (42, field) == taken
++
++        Converter(save_args, takes_self=True, takes_field=True)(
++            42, instance, field
++        )
++
++        assert (42, instance, field) == taken
++
++    def test_annotations_if_last_in_pipe(self):
++        """
++        If the wrapped converter has annotations, they are copied to the
++        Converter __call__.
++        """
++
++        def wrapped(_, __, ___) -> float:
++            pass
++
++        c = Converter(wrapped)
++
++        assert float is c.__call__.__annotations__["return"]
++
++        # Doesn't overwrite globally.
++
++        c2 = Converter(int)
++
++        assert float is c.__call__.__annotations__["return"]
++        assert None is c2.__call__.__annotations__.get("return")
++
+ 
+ class TestOptional:
+     """
+@@ -194,6 +248,29 @@ class TestPipe:
+ 
+         assert o is pipe().converter(o, None, None)
+ 
++    def test_wrapped_annotation(self):
++        """
++        The return type of the wrapped converter is copied into its __call__
++        and ultimately into pipe's wrapped converter.
++        """
++
++        def last(value) -> bool:
++            return bool(value)
++
++        @attr.s
++        class C:
++            x = attr.ib(converter=[Converter(int), Converter(last)])
++
++        i = C(5)
++
++        assert True is i.x
++        assert (
++            bool
++            is _AnnotationExtractor(
++                attr.fields(C).x.converter.__call__
++            ).get_return_type()
++        )
++
+ 
+ class TestToBool:
+     def test_unhashable(self):
+diff --git a/tests/test_setattr.py b/tests/test_setattr.py
+index c7b90da..9b7c5e1 100644
+--- a/tests/test_setattr.py
++++ b/tests/test_setattr.py
+@@ -109,16 +109,34 @@ class TestSetAttr:
+         used. They can be supplied using the pipe functions or by passing a
+         list to on_setattr.
+         """
++        taken = None
++
++        def takes_all(val, instance, attrib):
++            nonlocal taken
++            taken = val, instance, attrib
++
++            return val
+ 
+         s = [setters.convert, lambda _, __, nv: nv + 1]
+ 
+         @attr.s
+         class Piped:
+-            x1 = attr.ib(converter=int, on_setattr=setters.pipe(*s))
++            x1 = attr.ib(
++                converter=[
++                    attr.Converter(
++                        takes_all, takes_field=True, takes_self=True
++                    ),
++                    int,
++                ],
++                on_setattr=setters.pipe(*s),
++            )
+             x2 = attr.ib(converter=int, on_setattr=s)
+ 
+         p = Piped("41", "22")
+ 
++        assert ("41", p) == taken[:-1]
++        assert "x1" == taken[-1].name
++
+         assert 41 == p.x1
+         assert 22 == p.x2
+ 
+@@ -417,3 +435,19 @@ class TestSetAttr:
+             "Method generated by attrs for class WithOnSetAttrHook."
+             == WithOnSetAttrHook.__setattr__.__doc__
+         )
++
++    def test_setattr_converter_piped(self):
++        """
++        If a converter is used, it is piped through the on_setattr hooks.
++
++        Regression test for https://github.com/python-attrs/attrs/issues/1327
++        """
++
++        @attr.define  # converter on setattr is implied in NG
++        class C:
++            x = attr.field(converter=[int])
++
++        c = C("1")
++        c.x = "2"
++
++        assert 2 == c.x

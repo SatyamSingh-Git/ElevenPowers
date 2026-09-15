@@ -1,0 +1,7 @@
+[
+ {
+  "at": 1789475415.7888658,
+  "session": "16ecb5a2-1eb8-4675-8e3b-edf5e47aa699",
+  "patch": "diff --git a/src/jinja2/filters.py b/src/jinja2/filters.py\nindex e5b5a00..5025057 100644\n--- a/src/jinja2/filters.py\n+++ b/src/jinja2/filters.py\n@@ -1420,22 +1420,9 @@ def do_attr(\n     try:\n         name = str(name)\n     except UnicodeError:\n-        pass\n-    else:\n-        try:\n-            value = getattr(obj, name)\n-        except AttributeError:\n-            pass\n-        else:\n-            if environment.sandboxed:\n-                environment = t.cast(\"SandboxedEnvironment\", environment)\n-\n-                if not environment.is_safe_attribute(obj, name, value):\n-                    return environment.unsafe_undefined(obj, name)\n-\n-            return value\n+        return environment.undefined(obj=obj, name=name)\n \n-    return environment.undefined(obj=obj, name=name)\n+    return environment.getattr(obj, name)\n \n \n @typing.overload\n"
+ }
+]

@@ -40,6 +40,7 @@ command in this repository and can be reproduced.
 | [25-treatment.md](25-treatment.md) | Two paired chunks and 100 runs: the gate fired on four tasks of twenty-five and changed none of them, and on both tasks where the arms differed it never fired at all |
 | [26-access.md](26-access.md) | A second audit: the agents fetched the upstream fix, twelve percent was the wrong denominator, and the hook that “never fired” had asked four scope questions |
 | [27-checkpoint.md](27-checkpoint.md) | A passive recorder that captures the candidate at every proposed stop, in both arms — and within four runs, a gate refusing a patch that was already correct |
+| [28-nothing-changed.md](28-nothing-changed.md) | Sixteen gated runs: every outcome identical to its own first proposal, four blocks across nineteen runs that changed nothing, and `pip` fetching the answer through a wall that denied `git clone` |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -242,6 +243,8 @@ Every figure below comes from a command in this repository.
 | Failure taxonomy, in the wild | three categories seen on real runs: resolved, no-patch, localised. `regressed` still never seen outside a test | `python -m eval.failures results/bundles-B` |
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
+| The gate's blocks, graded at the block | **4 blocks across 19 runs, none changed an outcome.** One blocked a correct patch, one a broken one, one a regression it then failed to catch | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
+| First proposals already correct | 12 of 15 (80%), so the case the gate exists for barely occurs on this corpus | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
 | A false block, graded at the block | the gate refused a candidate that was already `resolved`, twice, and the run took 43 more turns and 6.6x the cost to reach another correct patch | `python -m eval.checkpoint --grade results/checkpoint/bundles --corpus results/checkpoint/tasks.json` |
 | What exposure was worth | 10 open-book successes rerun closed-book: **9 resolved**. The tenth reached GitHub through a sub-agent, which the denial did not cover | `python -m eval.exposure results/closedbook/bundles --corpus results/closedbook/tasks.json` |
 | Where the treatment applied | Stop blocks in 4 of 50 gated runs (8%), 6 events. Pre-Stop interventions are **not** counted by that field: one gated run has 4 scope questions and 0 blocks | `python -m eval.failures results/chunks/bundles-chunk2` |
@@ -263,6 +266,15 @@ pairs on which the two arms disagree**. Turning that into a number of runs needs
 a measured rate of disagreement, which no run here has produced — if the arms
 differed on one task in four it would be 124 paired runs, and that *if* is doing
 all the work.
+
+**The gate has not been shown to help, and it costs more.** Across nineteen
+gated runs the mechanism fired four times and changed no outcome; one of those
+blocks refused a patch that was already correct and cost 43 extra turns, and one
+met a regression and let it through. The cost side is well measured at 1.3x
+vanilla over fifty runs against fifty. The benefit side is unmeasured after $195
+of looking, and that asymmetry is not neutral. The honest qualifier is that the
+case the gate exists for — an agent wrong and saying otherwise — barely occurs
+here, since 80 percent of first proposals are already correct.
 
 **The 92 percent is not a repair score.** Twenty-four of the hundred runs name
 their own task's fix commit in full, fetched from GitHub as a tool result; a

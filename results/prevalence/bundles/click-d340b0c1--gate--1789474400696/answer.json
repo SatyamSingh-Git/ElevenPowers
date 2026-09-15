@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 88962,
+ "num_turns": 21,
+ "stop_reason": "end_turn",
+ "session_id": "4d588573-7ee2-4279-ba35-5cfb2c2b5d95",
+ "total_cost_usd": 0.5412843,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 29092,
+  "cache_read_input_tokens": 854601,
+  "output_tokens": 7350,
+  "output_tokens_details": {
+   "thinking_tokens": 3780
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29092,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 198,
+    "cache_read_input_tokens": 59691,
+    "cache_creation_input_tokens": 492,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 492
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 34,
+   "outputTokens": 7350,
+   "cacheReadInputTokens": 854601,
+   "cacheCreationInputTokens": 29092,
+   "webSearchRequests": 0,
+   "costUSD": 0.5412843,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Fixed the bug in `Parameter.get_help_extra()` (`src/click/core.py`): the default-value rendering compared any non-`None`/`UNSET` default directly against `\"\"`, which crashes for defaults whose `__eq__` doesn't support string comparison (e.g. raises or returns a non-bool). Now it only does that comparison when the default is actually a `str`. Added a regression test in `tests/test_options.py` and a `CHANGES.rst` entry for `#3298`; full test suite shows no new failures (54 pre-existing unrelated failures on baseline, unchanged).",
+ "ttft_ms": 2864,
+ "ttft_stream_ms": 1814,
+ "time_to_request_ms": 279,
+ "type": "result",
+ "duration_ms": 121477,
+ "uuid": "f2e02b97-04f0-40c6-860e-3b0f7b0f88c7"
+}

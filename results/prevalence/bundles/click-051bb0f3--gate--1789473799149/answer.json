@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 342424,
+ "num_turns": 41,
+ "stop_reason": "end_turn",
+ "session_id": "0da1639a-f667-4dd1-85b9-493b24710195",
+ "total_cost_usd": 1.7129229,
+ "usage": {
+  "input_tokens": 82,
+  "cache_creation_input_tokens": 67509,
+  "cache_read_input_tokens": 2896243,
+  "output_tokens": 29250,
+  "output_tokens_details": {
+   "thinking_tokens": 22364
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 67509,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 328,
+    "cache_read_input_tokens": 98223,
+    "cache_creation_input_tokens": 377,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 377
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 82,
+   "outputTokens": 29250,
+   "cacheReadInputTokens": 2896243,
+   "cacheCreationInputTokens": 67509,
+   "webSearchRequests": 0,
+   "costUSD": 1.7129229,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1584 tests pass. Note: running `pytest` in this environment requires `PYTHONPATH=\"$(pwd)/src\"` \u2014 a globally-installed `click` package (pulled in as a dependency by several other tools) otherwise shadows the repo's own `src/click`, silently testing the wrong code.\n\n**Change:** `MaybeStripAnsi` (used by `get_pager_file`/`echo_via_pager` to wrap the pager's output stream) now overrides `__del__` to `detach()` instead of relying on the default `close()`, matching the pattern `_NonClosingTextIOWrapper` already uses for the same reason. Without it, when this wrapper is garbage collected it would flush/close the stream it wraps \u2014 which for the null-pager fallback is a borrowed `stdout`, and for the pipe/tempfile pagers is a buffer already owned and closed elsewhere \u2014 risking an \"I/O operation on closed file\" error. Also added a `CHANGES.rst` entry.",
+ "ttft_ms": 2772,
+ "ttft_stream_ms": 1299,
+ "time_to_request_ms": 350,
+ "type": "result",
+ "duration_ms": 415625,
+ "uuid": "09f4742a-f7f5-429b-ab2f-de063559e138"
+}

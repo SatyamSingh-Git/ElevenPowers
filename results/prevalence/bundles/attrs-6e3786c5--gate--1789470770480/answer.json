@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 398280,
+ "num_turns": 48,
+ "stop_reason": "end_turn",
+ "session_id": "1700d6aa-d1c4-42da-b8e1-181ea9c38f60",
+ "total_cost_usd": 1.6327227,
+ "usage": {
+  "input_tokens": 95,
+  "cache_creation_input_tokens": 63546,
+  "cache_read_input_tokens": 3301689,
+  "output_tokens": 17377,
+  "output_tokens_details": {
+   "thinking_tokens": 8040
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 63546,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 103,
+    "cache_read_input_tokens": 93849,
+    "cache_creation_input_tokens": 788,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 788
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 95,
+   "outputTokens": 17377,
+   "cacheReadInputTokens": 3301689,
+   "cacheCreationInputTokens": 63546,
+   "webSearchRequests": 0,
+   "costUSD": 1.6327227,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Both obligations re-verified against the current tree state:\n\n- Targeted test covering the change: `test_kw_only` and `test_keyword_only_class_level_subclassing` \u2014 **2 passed**.\n- Full related test suite: **1354 passed**, 4 skipped, 1 xfailed, 0 failed.",
+ "ttft_ms": 3653,
+ "ttft_stream_ms": 3044,
+ "time_to_request_ms": 299,
+ "type": "result",
+ "duration_ms": 583848,
+ "uuid": "a4ddfafd-325e-47d0-96a6-6849783f6b38"
+}

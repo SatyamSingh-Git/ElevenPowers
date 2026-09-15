@@ -1,0 +1,54 @@
+diff --git a/changelog.d/1593.change.md b/changelog.d/1593.change.md
+new file mode 100644
+index 0000000..28611ad
+--- /dev/null
++++ b/changelog.d/1593.change.md
+@@ -0,0 +1 @@
++Fixed detection of `ClassVar` annotations that are unresolvable forward references (as produced by the `FORWARDREF` annotation format on Python 3.14+).
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 04104d9..4963202 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -14,7 +14,7 @@ import weakref
+ 
+ from collections.abc import Callable, Mapping
+ from functools import cached_property
+-from typing import Any, NamedTuple, TypeVar
++from typing import Any, ForwardRef, NamedTuple, TypeVar
+ 
+ # We need to import _compat itself in addition to the _compat members to avoid
+ # having the thread-local in the globals here.
+@@ -297,7 +297,13 @@ def _is_class_var(annot):
+     annotations which would put attrs-based classes at a performance
+     disadvantage compared to plain old classes.
+     """
+-    annot = str(annot)
++    # Unresolvable forward references (e.g. from the FORWARDREF annotation
++    # format on Python 3.14+) carry the original source text in
++    # __forward_arg__ instead of stringifying to it directly.
++    if isinstance(annot, ForwardRef):
++        annot = annot.__forward_arg__
++    else:
++        annot = str(annot)
+ 
+     # Annotation can be quoted.
+     if annot.startswith(("'", '"')) and annot.endswith(("'", '"')):
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index e193d4b..69cf92d 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -691,10 +691,13 @@ class TestAnnotations:
+         "typing.ClassVar",
+         "'typing.ClassVar[dict]'",
+         "t.ClassVar[int]",
++        typing.ForwardRef("ClassVar[int]"),
++        typing.ForwardRef("typing.ClassVar"),
+     ],
+ )
+ def test_is_class_var(annot):
+     """
+-    ClassVars are detected, even if they're a string or quoted.
++    ClassVars are detected, even if they're a string, quoted, or an
++    unresolved forward reference.
+     """
+     assert _is_class_var(annot)
