@@ -127,10 +127,17 @@ def coverage_note(ledger: Ledger) -> str:
             f"than {', '.join(sorted(ran))}")
 
 
+# Data and configuration living under `tests/`. `TEST_NAME` matches the
+# directory, so attrs' `tests/test_mypy.yml` came back as the test to run, and
+# `tests/__init__.py` came back as the closest cover for eight callers. Neither
+# can be run, and naming an unrunnable file is worse than naming none.
+NOT_RUNNABLE = re.compile(r"\.(ya?ml|json|toml|cfg|ini|txt|md|rst|lock)$|(^|/)__init__\.py$")
+
+
 def _test_files(root) -> list[str]:
     from .surface import TEST_NAME, _walk
 
-    return [p for p in _walk(root) if TEST_NAME.search(p)]
+    return [p for p in _walk(root) if TEST_NAME.search(p) and not NOT_RUNNABLE.search(p)]
 
 
 def _tokens(path: str) -> set[str]:
