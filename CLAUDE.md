@@ -84,3 +84,15 @@ python architecture/check.py --render    # is the graph still true, and does it 
 ```
 
 Paid evaluation runs cost real money and are never started without asking.
+**`claude-sonnet-5` at effort high** is the default model for them unless the
+user says otherwise for that run, and the per-run `--budget` must match the
+model — `$3.00` was sized for Sonnet and truncates most Opus runs mid-task,
+which produces no evidence at all.
+
+Size a sweep against **remaining capacity**, not against what the question
+deserves: a 64-run, four-hour comparison was launched on 2026-09-17 with about
+1% of the week left and had to be killed. State the estimated runs, wall time
+and cost before starting. The next experiment worth running is planned and
+**not yet run** in [`results/b6-paired/design.md`](results/b6-paired/design.md)
+— read its warning before shrinking it, because the cheap version reintroduces
+an error `PLAN.md` §10 has already withdrawn once.
