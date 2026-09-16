@@ -121,6 +121,68 @@ one asset this design has.
 
 ---
 
+## 5.2 — Blast radius: what else depends on what you changed
+
+**What the research says.** 16-37% of applied agent patches break a pre-existing
+test; 14.74% of patches are partially correct, missing cases the fix should have
+covered; recall grows near-linearly while precision saturates. Our own corpus
+holds the case: `click-762c97ee`, an agent fixed `Choice` and never generalised
+to `DateTime`. PLAN 5.2 named the remedy in 2026-09 and it sat unbuilt.
+
+**What we are not writing.** A repository symbol graph. Aider's is better than a
+first attempt would be.
+
+| Piece | From | Licence | What it gives us |
+|---|---|---|---|
+| tree-sitter tags, a symbol graph, personalised PageRank over it | **Aider** `repomap.py` | Apache-2.0 | The demonstrated value of a repo-wide symbol graph, and the polyglot upgrade path |
+| Execution-based file selection from a change | **Agentless** | MIT | Prior art for narrowing from a diff rather than from a prompt |
+
+**Where the borrow stops, and why it is a constraint rather than a preference.**
+`core/` has **zero third-party imports**. `repomap.py` needs `tree_sitter`,
+`grep_ast`, `networkx` and `diskcache`, and a plugin that must install four
+packages before it can watch a test run is a plugin nobody installs. So the idea
+is taken and the Python slice is implemented on the standard library's `ast`,
+which is exact for Python and free. Python only, said out loud, with Aider named
+as the upgrade path the moment a polyglot repository needs one.
+
+**What we add.** Aider's PageRank exists to *choose context under a token
+budget*. There is no budget here and no ranking: every dependent is worth
+naming. What is ours is turning a reference set into an **obligation bound to
+evidence** — and refusing to demand a test that does not exist, per
+`core/surface.py`.
+
+---
+
+## The atlas — the map against the code, and the docs against the code
+
+**What the research says.** Constraint violation rises 0% to 78% across four
+compaction rounds, and soft organisational policy decays about 8.3x faster than
+hard norms. This repository is the worked example: `CLAUDE.md` carries a
+standing rule to refresh `architecture/` and it is forgotten. Separately, over
+3,000 GitHub projects, *"most projects contain at least one outdated code
+element reference at some point in their history"*.
+
+**What we are not writing.** The comparison technique. It has a name and is
+thirty-one years old.
+
+| Piece | From | Licence | What it gives us |
+|---|---|---|---|
+| Stated high-level model vs extracted source model; convergence, divergence, absence | **Murphy, Notkin & Sullivan**, *Software Reflexion Models*, FSE 1995 pp. 18-28 | paper | The entire shape of the check, validated on 250,000 lines of NetBSD |
+| Detect references surviving in docs after the source is deleted | **Tan, Wagner & Treude**, EMSE 29(1):5, 2023 (arXiv 2212.01479) | paper | The absence half, taken verbatim |
+| Name modules in an `ARCHITECTURE.md`, do not link them | **matklad**, *ARCHITECTURE.md*, 2021 | blog | The convention the generated file follows — and the trade-off we invert |
+| A module that nothing draws is the failure to prevent | **our own** `architecture/check.py` | — | The rule this generalises off this repository and onto any repository |
+
+**What we add.** Murphy's engineer states the high-level model by hand and maps
+it to the source by hand, which is why reflexion models never became routine.
+Here the high-level model is **already written** — it is the architecture
+document the repository commits — and the mapping is the repo paths it names, so
+there is nothing to state. The comparison is scoped to the change that caused
+the drift, and standing drift is one number rather than two hundred findings.
+And matklad's trade-off is inverted deliberately: he avoids precise references
+because they go stale undetected, and **detection makes precision affordable**.
+
+---
+
 ## What we deliberately do not build
 
 | Concern | Use instead | Licence | Why not build |

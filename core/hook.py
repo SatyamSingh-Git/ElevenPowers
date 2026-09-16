@@ -16,6 +16,7 @@ import time
 from pathlib import Path
 
 from . import blindspots
+from .atlas import neighbourhood
 from .claims import infer, opens_new_task
 from .evidence import Result
 from .ledger import Ledger, Status
@@ -131,16 +132,29 @@ def on_pre_tool(payload: dict, root: Path) -> int:
 
     if tool in EDIT_TOOLS:
         target = target_file(payload)
-        if not target or not ledger.claims:
+        if not target:
+            return 0
+        here = normalise(target, root)
+        # The architecture, at the one moment it can change the edit. First
+        # touch only: a neighbourhood note on every edit is one nobody reads.
+        brief = neighbourhood(root, here) if here not in ledger.seen else ""
+        if not ledger.claims:
+            if brief:
+                _emit("PreToolUse", additionalContext=brief)
             return 0
         drift = unrelated(
-            normalise(target, root), ledger.seen, ledger.request,
-            exists=Path(target).exists(),
+            here, ledger.seen, ledger.request, exists=Path(target).exists(),
         )
         if drift:
             ledger.note("scope question", drift)
             ledger.save()
-            _emit("PreToolUse", permissionDecision="ask", permissionDecisionReason=drift)
+            # One JSON object per hook call, so the brief rides along with the
+            # decision rather than being printed after it and discarded.
+            extra = {"additionalContext": brief} if brief else {}
+            _emit("PreToolUse", permissionDecision="ask",
+                  permissionDecisionReason=drift, **extra)
+        elif brief:
+            _emit("PreToolUse", additionalContext=brief)
     return 0
 
 

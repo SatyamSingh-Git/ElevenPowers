@@ -718,6 +718,32 @@ This is the one intervention that is **additive rather than restrictive**, so §
 
 **Exit:** correct-candidate survival is measured through the new check, because §5.5 says adding checks raises the chance a correct candidate is falsely rejected and this one is no exception. Both directions are covered in `tests/test_stress.py` — including the control that a test green on the old tree discharges nothing *with a fresh passing record present*, without which the feature would be `return True`. **What it does not claim is +28pp**: that figure is an oracle signal measured by handing an agent a reproduction, and this is the runtime recognising one. What it removes is a false block. [journey/35](journey/35-computed-not-generated.md). Forward and adversarial: the derived test must be seen **red on the pre-change tree** — a derived test that was never observed failing is not a reproduction, it is a guess with a filename.
 
+### Phase C2 — The blast radius, computed *(shipped 2026-09-16)*
+
+**Built on:** Aider's `repomap.py` (Apache-2.0) for the demonstrated value of a repository symbol graph; Agentless (MIT) for narrowing from a diff rather than from a prompt. **We are not writing a symbol graph for every language.** See [build-on.md](docs/research/build-on.md) and the design note [blast-radius.md](docs/design/blast-radius.md).
+
+§5.2 has named the remedy since v0.8 — *sibling implementations of the changed interface, callers with other argument types* — and it sat unbuilt while the corpus held the case: `click-762c97ee`, an agent fixed `Choice` and never generalised to `DateTime`. 16-37% of applied agent patches break a pre-existing test; 14.74% are partially correct.
+
+**Computed, not asked for.** §5.14 (compaction is lossy) and the 16,991-trajectory finding that a bad plan is worse than none rule out the obvious remedy of demanding a plan. `git diff -U0` gives changed line ranges, `ast` gives the symbol whose span intersects them, and a sibling must share a **base class** — not merely a method name, which is the false positive the whole check has to avoid.
+
+**Where the borrow stops:** `core/` has zero third-party imports and `repomap.py` needs four. The idea is taken; the Python slice is stdlib. Said out loud, with Aider named as the polyglot upgrade path.
+
+**Exit, as a command:** `python -m pytest tests/test_radius.py -q`. **Met 2026-09-16**, 12 tests, 3 forward and 9 adversarial. Two defects the fixture could not show and the real click repository did: generic bases are `ast.Subscript` rather than `Name`, so nothing was found at all; and `Generic`/`Protocol`/`ABC` are scaffolding that made a base class a sibling of its own subclass. Both probes watched failing before their fix.
+
+**Measured before obligating**, per §5.9: 125 real commits across five upstream repositories, fires on **43%** (36% on the bug-fix-shaped subset of two files or fewer), median 0 siblings and 2 callers. Report-only. Blocking is not proposed.
+
+### Phase C3 — The atlas: the map and the docs, against the code *(shipped 2026-09-16)*
+
+**Built on:** Murphy, Notkin & Sullivan, *Software Reflexion Models* (FSE 1995, pp. 18-28) for the entire shape of the check; Tan, Wagner & Treude (EMSE 29(1):5, 2023) for the outdated-reference mechanism; matklad's *ARCHITECTURE.md* (2021) for the generated file's convention. Design note: [architecture-atlas.md](docs/design/architecture-atlas.md).
+
+At the user's direction, and from the user's own report that `CLAUDE.md`'s standing instruction to refresh `architecture/` is forgotten or ignored — which is §5.14 restated as lived experience. **Divergence:** a module this task added that no map names. **Absence:** a document still naming a path this task removed. Scoped to what the change caused; standing drift is one number, never an obligation.
+
+**And the half that makes it matter:** the map has to reach the agent. `PreToolUse`, first touch of a file only, hands over that file's neighbourhood — what imports it, what it imports, which document describes it. Radius is symbol-level and runs at completion; atlas is module-level and runs before the edit.
+
+**Exit, as a command:** `python -m pytest tests/test_atlas.py -q`. **Met 2026-09-16**, 13 tests, forward and adversarial including a repository with no architecture document at all, which is asked for nothing. Found by running it against this repository: `docs/design/` is documentation but is **not** the map — `core/radius.py` came back documented because the note proposing it mentioned it by name.
+
+**What it does not do:** block, or dump a repository's pre-existing drift. For a repository with no architecture document it can write the first one from the source model, which is what "everyone using the tool gets this" means concretely.
+
 ### Phase C — Separate generation from selection *(started early, 2026-09-14)*
 
 Selection development does not wait on P1 or on a clean benchmark. Across the two chunks, the two vanilla attempts already contain a graded success on 24 of 25 tasks and all four attempts contain one on 25 of 25. That is **oracle coverage, not achieved performance**, and it is exposure-contaminated — but it is a ready development set for the question "does the system choose the better candidate", which does not need a closed benchmark to be worth working on. Performance claims wait for a clean holdout.

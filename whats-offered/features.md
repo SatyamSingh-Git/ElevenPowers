@@ -98,6 +98,51 @@ and the request does not mention it. Edit it anyway, or read it first.
 
 ---
 
+## The blast radius of a fix
+
+**What it does.** When the task changes a method, it names the other code that implements or calls it:
+
+```
+you changed Choice.convert; 10 sibling implementation(s) (BoolParamType,
+DateTime, File) and 1 file(s) using it. Closest cover: tests/test_termui.py
+```
+
+**Why it matters.** Agents fix one bug and make another. Between **16% and 37%** of applied agent patches break a test that was already passing, and a measured 14.74% are *partially* correct — the fix is right and incomplete. The classic shape is a change to one implementation of an interface and no change to its siblings, which never reference each other and so are invisible to any text search.
+
+It is **computed, never asked for**. An instruction to "consider what else this affects" is soft policy, and soft policy decays: constraint violation rises from 0% to 78% over four rounds of context compaction. Nothing here is asked of the agent's memory, so nothing can be forgotten.
+
+**What it will not do.** It does not block, it does not rank, and it will not demand a test that does not exist — a dependent with no cover is named and nothing is required of it. Python only, honestly: the symbol graph is stdlib `ast`, because the runtime has no third-party dependencies. Aider's `repomap.py` is the upgrade path for a polyglot repository.
+
+**Evidence.** Measured on 125 real commits across five upstream repositories: fires on **43%**, silent on the rest, median 0 siblings and 2 callers. On the bug-fix-shaped subset (two files or fewer) it fires on 36%.
+
+---
+
+## An architecture map that stays true, and gets read
+
+**What it does.** Two things, from one computation.
+
+It checks the map against the code, and reports what your change made stale:
+
+```
+architecture: core/atlas.py, core/radius.py added, and ARCHITECTURE.md does not name them
+docs: docs/design/blast-radius.md still names core/verify.py, which this change removed
+```
+
+And it hands the agent the neighbourhood of a file the first time it edits it, which is the one moment the information can change the edit:
+
+```
+core/store.py: imported by core/api.py, core/jobs.py; it imports core/db.py.
+Described in ARCHITECTURE.md
+```
+
+If your repository has no architecture document, it can write the first one from your code.
+
+**Why it matters.** Telling an agent to keep the docs updated does not work, for the same reason as above. This is the **software reflexion model** (Murphy, Notkin & Sullivan, 1995) — state a high-level model, extract one from the source, report where they disagree — with the difference that you do not state anything: the model is the architecture document you already commit. The stale-reference half is the mechanism from Tan, Wagner & Treude (2023), who found across **3,000+ GitHub projects** that most contain an outdated code reference at some point in their history.
+
+**What it will not do.** It does not block, and it does not dump your repository's existing drift at you: only drift *this change caused* is reported, and pre-existing drift is one number. A repository with no architecture document is asked for nothing at all.
+
+---
+
 ## A self-check on the layer that fails silently
 
 **What it does.** `ep-doctor` feeds the runtime a tool result shaped exactly the way the host shapes one, and checks the answer comes back right. With `--host`, it drives the launcher as a real process with a real payload on stdin.

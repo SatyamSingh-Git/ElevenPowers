@@ -216,6 +216,51 @@ bound to a tree hash) · **ECC** (`block-no-verify`, destructive classifier) ·
 
 ---
 
+## 12. Architecture drift and documentation staleness (added 2026-09-16)
+
+Consulted for `core/atlas.py`. The design note is
+[`docs/design/architecture-atlas.md`](../../design/architecture-atlas.md).
+
+- **Software Reflexion Models: Bridging the Gap Between Source and High-Level
+  Models** - Gail C. Murphy, David Notkin, Kevin Sullivan. FSE 1995, pp. 18-28.
+  [Author's own page](https://www.cs.ubc.ca/~murphy/papers/rm/fse95.html)
+  (html). The technique `atlas.py` implements: state a high-level model, extract
+  one from the source, report where they agree and differ. Case study: NetBSD,
+  250,000 lines of C, "in only a few hours". Abstract quoted verbatim in the
+  design note.
+
+- **Detecting Outdated Code Element References in Software Repository
+  Documentation** - Wen Siang Tan, Markus Wagner, Christoph Treude. Empirical
+  Software Engineering 29(1):5, 2023. [arXiv
+  abs/2212.01479](https://arxiv.org/abs/2212.01479) (html). Over 3,000 GitHub
+  projects; "most projects contain at least one outdated code element reference
+  at some point in their history". Their mechanism - references that survive in
+  documentation after all source instances are deleted - is used verbatim for
+  the absence half of the check.
+  *Held separately:* "more than a quarter of the 1000 most popular projects on
+  GitHub contained at least one outdated reference" comes from the authors'
+  earlier work via a search summary (snippet). Not quoted as established, and
+  not carried into the plan.
+
+- **ARCHITECTURE.md** - matklad (Alex Kladov), 6 Feb 2021.
+  [matklad.github.io](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html)
+  (primary). The convention most repositories with such a file are following.
+  Its advice - "Do name important files, modules, and types. Do not directly
+  link them (links go stale)" and "only specify things that are unlikely to
+  frequently change" - is the *opposite* of what this feature wants, and the
+  design note says so out loud: detection makes precision affordable, and if
+  the detection turns out noisy then his advice to stay vague was better.
+
+- **Automatic Detection of Outdated Comments During Code Changes** - Liu et al.,
+  COMPSAC 2018
+  ([IEEE](https://ieeexplore.ieee.org/document/8377652/)) and follow-on
+  code-comment consistency work (snippet). Consulted for the adjacent problem of
+  stale *comments*. **No figure from these was used**: `atlas.py` checks
+  documentation references to paths, not comment-code semantics, and the
+  detection rates reported there do not transfer.
+
+---
+
 ## A note on the two tools that did not work
 
 Recorded so the next person does not repeat it. **Connected Papers** is a

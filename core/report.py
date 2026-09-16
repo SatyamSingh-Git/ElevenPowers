@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from .atlas import reflexion, since
+from .atlas import wording as drift_wording
 from .evidence import Freshness, Kind, Result
 from .ledger import Ledger, Status, Verdict
 from .ratchet import offer
@@ -187,4 +189,9 @@ def end_report(ledger: Ledger) -> str:
     note = coverage_note(ledger)
     if note:
         lines.append(f"  {note}")
+    # The map and the docs, against the code. Report-only: naming what went
+    # stale is useful even if it never refuses anything, and the false-positive
+    # rate has not been measured on real repositories yet.
+    for said in drift_wording(reflexion(ledger.root, *since(ledger.root, ledger.base))):
+        lines.append(f"  {said}")
     return "\n".join(lines)

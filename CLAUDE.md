@@ -23,6 +23,13 @@ python architecture/check.py --render
 nothing at all. [`architecture/README.md`](architecture/README.md) has the full
 rule, including what does and does not count as an architecture change.
 
+**This rule is no longer only a rule.** It was forgotten often enough to prove
+the point it now makes: `core/atlas.py` computes it. A module this task added
+that no map names is reported at the end of the run, and so is a document still
+naming a path this task removed. `docs/design/` is documentation but is *not*
+the map — writing about a module is not drawing it. The same check ships to
+anyone using the plugin, against their repository's own architecture document.
+
 A stale node is worse than a missing one. The Workflow tab's third lane is
 labelled *planned, NOT built* — when one of those lands, move it out.
 
