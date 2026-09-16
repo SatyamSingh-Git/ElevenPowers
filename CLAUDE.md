@@ -70,7 +70,7 @@ in the papers they were attributed to. See
 ## Running things
 
 ```bash
-python -m pytest -q                      # 513 tests, ~6 minutes
+python -m pytest -q                      # 557 tests, ~6 minutes
 python -m pytest tests/test_audit_probes.py -q   # every reproduced defect, no xfails
 python plugin/bin/ep_doctor.py --host    # is the runtime seeing what the host sends?
 python architecture/check.py --render    # is the graph still true, and does it draw?

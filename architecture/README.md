@@ -49,7 +49,7 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **60 nodes / 99 edges** across 7 planes (as of 2026-09-15).
+Current size: **65 nodes / 112 edges** across 7 planes (as of 2026-09-16).
 
 One thing the graph says out loud: the **Workflow** tab's third lane is
 **planned and not built**. Everything in the Overview tab is real code today.

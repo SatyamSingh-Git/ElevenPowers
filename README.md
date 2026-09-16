@@ -177,6 +177,47 @@ this task will need, before it can be called done:
     ep-repeat 20 -- <the command that reproduced it>
 ```
 
+#### A check that could not have failed is not evidence
+
+Fresh and passing are two facts about a record, and neither is the one that
+matters. A test that would have passed *before* your change proves nothing about
+it — and measured elsewhere, **46% of agent validation evidence carries no
+bug-discriminating information at all**.
+
+So the runtime runs its own checks the other way round: each declared check
+again, in a throwaway worktree built from the commit the task started at. If it
+already passed there, the report says so.
+
+```
+  ok      the related test suite passes  <- python pytest 1 passed, 0 failed
+  could not fail: tests: this check passes without your change, so it is not
+                  evidence the change works
+```
+
+It reports. It never refuses — naming a weak check costs nothing, and blocking
+on one has to earn its cost first.
+
+#### The best state you proved is kept, not overwritten
+
+Published measurements put **60–69% of coding-agent failures** on runs that
+reach and edit the *correct* functions and then produce a wrong patch. A long
+attempt ends at its latest patch, not its best.
+
+When the declared checks are green, the working tree is committed to a private
+ref — your branch, index and stash untouched. If a later edit moves off it, the
+report offers it back, and refuses to offer it if `HEAD` has moved underneath,
+because restoring then would undo whatever moved it.
+
+#### "It failed before the fix" is computed, not demanded
+
+The obligation used to need the agent to have run the test red *first*. Anyone
+who wrote the test afterwards — ordinary practice — could never discharge it,
+and an earlier failure from an unrelated typo counted as proof.
+
+Now the question is asked of the repository: **was this test already failing on
+the commit this task started from?** If it was and it passes now, that is a
+reproduction, whatever order the work happened in. No model call.
+
 #### `cannot_complete` is a first-class outcome
 
 A system with no way to say *"this should not be done as asked"* has quietly reproduced the action bias that causes false completion in the first place.
@@ -295,11 +336,16 @@ Every figure below was produced by the command printed next to it.
 | The gate as a classifier | 0% false blocks, 0% misses on 46 scenarios | `python -m eval.run --all` |
 | The scope guard | 0 false questions, 0 misses on 25 cases | `python -m eval.scope_run` |
 | Claim inference, real turns | 21% over-claim, 25% missed work, across 3,557 turns | `python -m eval.claims_run` |
-| Live blocking | **12% of runs, down from 75%** | `python -m eval.live --arm gate --model haiku` |
+| Live blocking | **75% → 12% of runs** after self-discharge landed (16 runs). On the later pinned sweep it was **8% of runs** — six block *events* across four of fifty, which is the figure that matters for sizing an experiment | `python -m eval.live --arm gate --model haiku` |
 | Host integration | six checks | `python plugin/bin/ep_doctor.py` |
 | Audit probes | **every reproduced defect fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
 | A pinned baseline | 68.9 and 73.3 across two passes of ninety paid runs, $67.42 | `python -m eval.baseline --pinned` |
-| **Does the work come out better?** | **unanswered — one arm was measured, not two** | `python -m eval.noise a.json b.json` |
+| Suite records that were wrong | **123 of 295 (42%)** said PASS while holding a failure count — `pytest \| tail` exits with `tail`'s status | `python -m eval.discriminate --bundles results --verbose` |
+| Does denying the answer channels work? | **yes, for the network**: upstream retrieval **14 → 0** between the pre- and post-denial sweeps | `python -m eval.canary --corpus <corpus> <bundles>` |
+| What survives the denial | the **package registry** and the machine's own `site-packages` — a released version already carrying the fix | same command |
+| Is a selector worth building? | **does not settle**: +2.0 to +20.0 across comparable pools, from 1–5 disagreeing tasks each | `python -m eval.pool --from-bundles results/chunks results/bundles-A` |
+| **Does the work come out better?** | **no effect measured.** Graded at the moment of the block, the gate fired four times across nineteen runs and changed no outcome; cost is 1.3× vanilla | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
+| **Do the three new mechanisms help?** | **unmeasured.** `stress`, `ratchet` and the computed reproduction are unit-tested in both directions and have never run in a sweep | — |
 
 **On the first row.** Claude Code writes a transcript of every session including each tool result exactly as the host produced it, so replaying those costs no inference and needs no hand labelling — the host already recorded whether each command failed. The reader this replaced agreed on 0 of 174 failures. It is reported as two rates rather than one because the corpus is 97% successes: a reader that answers "passed" to everything scores 97% accuracy while being wrong about the only thing the gate needs to know.
 
