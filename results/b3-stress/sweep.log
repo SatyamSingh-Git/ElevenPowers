@@ -1,0 +1,41 @@
+model    claude-sonnet-5
+corpus   e2d721482fbdd2a5  (16 tasks)
+seed     1789570170   arm(s) gate, 1 replicate(s) each
+bundles  results\b3-stress\bundles
+
+effort   high   per-run budget $3.00
+journal  results\b3-stress\runs.jsonl   (every run appended as it finishes)
+
+  attrs-97f8d175            gate     resolved    30 turns   395s $0.84
+  attrs-6e3786c5            gate     unfixed     63 turns   591s $2.09
+  attrs-577c782c            gate     unfixed     56 turns   658s $1.88
+  attrs-1e07f468            gate     resolved    51 turns   597s $1.40
+  attrs-5d6d21aa            gate     unfixed     44 turns   304s $1.35
+  attrs-6fda0a4e            gate     unfixed     35 turns   380s $1.01
+  click-c2ed4149            gate     resolved    67 turns   721s $2.58
+  click-9f9b149e            gate     resolved    40 turns   510s $1.10
+  click-051bb0f3            gate     unfixed     54 turns   978s $3.01
+  click-ad39d749            gate     unfixed     30 turns   386s $1.40
+  click-d946074a            gate     resolved    28 turns   208s $0.98
+  click-d340b0c1            gate     resolved    59 turns   797s $2.86
+  click-18d29196            gate     resolved    65 turns   704s $2.82
+  itsdangerous-6c58e969     gate     resolved     9 turns    56s $0.35
+  jinja2-065334d1           gate     resolved    20 turns   242s $0.64
+  jinja2-0cd69481           gate     resolved    23 turns   122s $0.67
+
+wrote results\b3-stress\runs.json
+model    claude-sonnet-5
+corpus   e2d721482fbdd2a5  (16 tasks, 16 runs)
+seed     1789570170
+
+resolved 62.5%   95% interval 37.5% to 87.5%
+
+context reaching the model: median 51,683 tokens (from 31,717 to 114,809 over 16 run(s))
+
+band           tasks  resolved
+one-liner          4       75%
+substantial       12       58%
+Bands are labels, not filters — a gain in one of them is not a gain.
+
+The interval spans 50%. This is a pilot: it bounds almost nothing,
+and reporting the point estimate alone would be a claim it cannot support.
