@@ -404,7 +404,35 @@ class Ledger:
         return runs_needed(max(rates)) if rates else MIN_RUNS
 
     def _reproduced_on_base(self) -> Evidence | None:
-        """A now-passing test that was already failing before this task began."""
+        """A now-passing check that was already failing before this task began.
+
+        **Suites count, and they are the common case.** The parsers record
+        individual nodes mainly when they *fail* — across every preserved
+        ledger there are 1,256 failing test records and four passing ones,
+        because `pytest -q` lists failures by name and passes as dots. A version
+        matching only node identities engaged on 1.4% of saved runs, which
+        `_demonstrated_fix` would have warned about: it has always accepted
+        `Kind.SUITE` as well, for exactly this reason.
+
+        For a suite the identity is the command's scope rather than a node, so
+        it cannot be matched against node ids. It does not need to be: §5.10
+        already asked whether that declared check passed on the old tree, and
+        `DISCRIMINATES` means it did not. A suite red back there and green now
+        is the same proof at coarser grain.
+        """
+        from .stress import DISCRIMINATES
+
+        for need, verdict in self.discrimination.items():
+            if verdict != DISCRIMINATES:
+                continue
+            command = self.config.command_for(need)
+            suites = [e for e in self.evidence
+                      if e.kind is Kind.SUITE and e.result is Result.PASS
+                      and e.command == command
+                      and e.freshness(self.root) is Freshness.FRESH]
+            if suites:
+                return suites[-1]
+
         if not self.failed_before:
             return None
         red = set(self.failed_before)

@@ -217,3 +217,42 @@ def test_a_test_green_on_the_old_tree_reproduces_nothing(repo):
         observed=source_files(repo), tree=tree_hash(repo, source_files(repo)),
         scope="source", command=SUITE))
     assert led._reproduced_on_base() is None
+
+
+def test_a_suite_red_on_the_old_tree_is_a_reproduction_too(repo):
+    """The common case, and the one a node-only version missed.
+
+    The parsers record individual nodes mainly when they FAIL: across every
+    preserved ledger, 1,256 failing test records against four passing ones.
+    A reproduction that only matched node identities engaged on 1.4% of saved
+    runs, which is how measuring the engagement rate before spending is supposed
+    to work.
+    """
+    (repo / "tests" / "test_new.py").write_text(
+        "import sys; sys.path.insert(0, 'src')\n"
+        "from app import mul\n\n"
+        "def test_mul():\n    assert mul(2, 3) == 6\n",
+        encoding="utf-8")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-qm", "failing test is part of the base")
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+
+    led = ledger_for(repo)
+    led.discrimination, led.failed_before = stress.stress(led)
+    assert led.discrimination["tests"] == stress.DISCRIMINATES
+    # no TEST record at all - only the suite-level pass the fixture carries
+    assert not [e for e in led.evidence if e.kind is Kind.TEST]
+    assert led._reproduced_on_base() is not None
+
+
+def test_a_suite_green_on_the_old_tree_is_not_a_reproduction(repo):
+    """The control. A vacuous suite must not become proof of a fix."""
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+    led = ledger_for(repo)
+    led.discrimination, led.failed_before = stress.stress(led)
+    assert led.discrimination["tests"] == stress.VACUOUS
+    assert led._reproduced_on_base() is None
