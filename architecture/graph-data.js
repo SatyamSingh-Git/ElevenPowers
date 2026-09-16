@@ -5,7 +5,7 @@
 window.ELEVENPOWERS_GRAPH = {
   "meta": {
     "updated": "2026-09-16",
-    "changelog": "2026-09-16 (c) - C1: the reproduction obligation is now COMPUTED. It was satisfiable only if the agent happened to run the test red before writing the fix, which blocked anyone who wrote the test afterwards - ordinary practice. stress.py already builds a worktree at the base commit, so the same run now also reports which tests were already failing there. Collection errors match by file, because a test for behaviour the fix introduces cannot import on the old tree at all. | 2026-09-16 (b) - core/ratchet.py ships: the declared checks going green now commits the tree to a private ref, and the end report offers it back if a later edit moves off it. Cline's store and its compare-and-swap refusal when HEAD has moved; ours is only when to snapshot. PIP_NO_INDEX was tried and reverted the same hour - it closes the registry answer key and breaks pip install -e ., and no environment variable turns build isolation off. | 2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
+    "changelog": "2026-09-16 (d) - eval/wheelhouse.py closes the registry answer key. PIP_NO_INDEX plus PIP_FIND_LINKS at a shelf of the backends the corpus declares, so an isolated build resolves locally while pip download click has nowhere to go. Both directions tested against real pip, plus the fail-safe: no shelf means the index is left alone rather than breaking every install. | 2026-09-16 (c) - C1: the reproduction obligation is now COMPUTED. It was satisfiable only if the agent happened to run the test red before writing the fix, which blocked anyone who wrote the test afterwards - ordinary practice. stress.py already builds a worktree at the base commit, so the same run now also reports which tests were already failing there. Collection errors match by file, because a test for behaviour the fix introduces cannot import on the old tree at all. | 2026-09-16 (b) - core/ratchet.py ships: the declared checks going green now commits the tree to a private ref, and the end report offers it back if a later edit moves off it. Cline's store and its compare-and-swap refusal when HEAD has moved; ours is only when to snapshot. PIP_NO_INDEX was tried and reverted the same hour - it closes the registry answer key and breaks pip install -e ., and no environment variable turns build isolation off. | 2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
     "title": "ElevenPowers - System Topology"
   },
   "planes": {
@@ -455,6 +455,17 @@ window.ELEVENPOWERS_GRAPH = {
       "desc": "Written by the eval recorder, not by the runtime: the candidate patch as it stood at every PROPOSED stop, in both arms. Built to grade a block AT the block, which PLAN 6 says the 12% P2 figure never did.",
       "files": [
         ".elevenpowers/checkpoints.jsonl"
+      ]
+    },
+    {
+      "id": "wheelhouse",
+      "plane": "eval",
+      "kind": "engine",
+      "size": 2,
+      "label": "wheelhouse.py",
+      "desc": "A local shelf of build backends, so the registry can be switched off. Every repository in the corpus has a released version on PyPI that already carries its own fix, and canary.py found three of the four exposures surviving the tool-denial list fetching exactly that. PIP_NO_INDEX shuts it - and could not be set alone, because pip builds in an ISOLATED environment and fetches setuptools into it, and no environment variable turns that isolation off (PIP_NO_BUILD_ISOLATION, PIP_BUILD_ISOLATION=false|0|no and a pip.ini were each measured and each ignored). So the shelf feeds the isolated build instead, via PIP_FIND_LINKS, which pip reads with the index off. Stages the backends the corpus actually declares, read from its pyproject files: hatchling and hatch-vcs (attrs), flit_core (click, jinja2, itsdangerous), setuptools (markupsafe). Engages ONLY when complete - an incomplete shelf plus a closed index breaks every install, and a guard that breaks honest work is the guard an agent turns off.",
+      "files": [
+        "eval/wheelhouse.py"
       ]
     },
     {
@@ -1157,6 +1168,16 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "live",
       "target": "task",
       "label": ""
+    },
+    {
+      "source": "live",
+      "target": "wheelhouse",
+      "label": "shelf complete? then close the index for the run"
+    },
+    {
+      "source": "wheelhouse",
+      "target": "upstream",
+      "label": "staged ONCE while online; every run after is offline"
     },
     {
       "source": "live",

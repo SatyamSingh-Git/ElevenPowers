@@ -41,7 +41,7 @@ from core.config import Config, save as save_config
 from core.intent import is_abstention
 from core.wiring import hooks_json
 
-from . import bundle
+from . import bundle, wheelhouse
 from .bundle import GIT, apply_patch, export_patch, ignore_artefacts
 from .mine import failing_nodes, passing_nodes
 from .tasks import SUITES, Task, by_name
@@ -359,26 +359,27 @@ def _sandboxed(root: Path) -> dict[str, str]:
 
     home = root / ".venv"
     scripts = home / ("Scripts" if os.name == "nt" else "bin")
-    # `PIP_NO_INDEX` was tried here on 2026-09-16 and reverted the same hour.
-    # The registry is an answer key -- every repository in this corpus has a
-    # released version carrying the fix, and the canary found three of the four
-    # surviving exposures in the post-denial sweep fetching exactly that
-    # (`/tmp/attrs_dl/attrs-24.2.0/`, `click-8.5.0-py3-none-any.whl`, a
-    # `clickcheck/installed/` tree). Closing the index blocks all three.
+    # The registry is an answer key: every repository in this corpus has a
+    # released version carrying its own fix, and `eval/canary.py` found three of
+    # the four exposures surviving the tool-denial list fetching exactly that.
+    # `PIP_NO_INDEX` shuts it.
     #
-    # It also breaks `pip install -e .`, because pip builds in an *isolated*
-    # environment and fetches `setuptools` into it from the index. Turning that
-    # off cannot be done from here: `PIP_NO_BUILD_ISOLATION`,
-    # `PIP_BUILD_ISOLATION=false|0|no` and a `pip.ini` with
-    # `no-build-isolation = true` were each measured and each ignored, while the
-    # `--no-build-isolation` flag works. The env is all this function controls.
+    # It cannot be set alone. With the index off, an honest `pip install -e .`
+    # dies fetching `setuptools` into pip's *isolated* build environment, and no
+    # environment variable turns that isolation off -- `PIP_NO_BUILD_ISOLATION`,
+    # `PIP_BUILD_ISOLATION=false|0|no` and a `pip.ini` were each measured and
+    # each ignored. So the shelf feeds the isolated environment instead:
+    # `PIP_FIND_LINKS` is read even with the index off.
     #
-    # Shipping it anyway would be the mistake the three previous guards made:
-    # a guard that breaks honest work is the guard an agent turns off, and one
-    # of them was turned off in a recorded run. The fix is a staged wheelhouse
-    # (setuptools and wheel, built once while online) with `PIP_FIND_LINKS`,
-    # which is real work rather than an environment variable.
+    # Engaged only when the shelf is complete. An incomplete shelf plus a closed
+    # index breaks every install, and a guard that breaks honest work is the
+    # guard an agent turns off -- one of the three before it was observed being
+    # turned off mid-run. So the boundary is opt-in and checkable
+    # (`python -m eval.wheelhouse`) rather than silently assumed.
     environment = {**os.environ, "PIP_REQUIRE_VIRTUALENV": "1"}
+    if wheelhouse.ready():
+        environment["PIP_NO_INDEX"] = "1"
+        environment["PIP_FIND_LINKS"] = str(wheelhouse.SHELF)
     if scripts.is_dir():
         # First on PATH, and VIRTUAL_ENV set, so `python` and `pip` are the
         # workspace's own. An install then lands here whether or not the agent

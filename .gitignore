@@ -9,3 +9,6 @@ runs/
 
 # render-check screenshots (proof artefacts, regenerated on demand)
 architecture/.render-check/
+
+# staged build backends, fetched once while online (python -m eval.wheelhouse --build)
+.wheelhouse/
