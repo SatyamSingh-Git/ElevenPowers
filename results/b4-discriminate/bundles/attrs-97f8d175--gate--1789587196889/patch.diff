@@ -1,0 +1,79 @@
+diff --git a/changelog.d/1593.change.md b/changelog.d/1593.change.md
+new file mode 100644
+index 0000000..56c361f
+--- /dev/null
++++ b/changelog.d/1593.change.md
+@@ -0,0 +1 @@
++On Python 3.14 and later, `typing.ClassVar` annotations are detected again if they can't be resolved -- for example because `ClassVar` is only imported while type checking.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 04104d9..566bd5a 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -297,7 +297,10 @@ def _is_class_var(annot):
+     annotations which would put attrs-based classes at a performance
+     disadvantage compared to plain old classes.
+     """
+-    annot = str(annot)
++    # Annotations that couldn't be resolved -- for example because ClassVar is
++    # only imported while type checking -- are ForwardRefs whose str() is their
++    # repr, so we have to dig out the original source.
++    annot = str(getattr(annot, "__forward_arg__", annot))
+ 
+     # Annotation can be quoted.
+     if annot.startswith(("'", '"')) and annot.endswith(("'", '"')):
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index e193d4b..54267c3 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -691,10 +691,12 @@ class TestAnnotations:
+         "typing.ClassVar",
+         "'typing.ClassVar[dict]'",
+         "t.ClassVar[int]",
++        typing.ForwardRef("typing.ClassVar[int]"),
+     ],
+ )
+ def test_is_class_var(annot):
+     """
+-    ClassVars are detected, even if they're a string or quoted.
++    ClassVars are detected, even if they're a string, quoted, or an unresolved
++    forward reference.
+     """
+     assert _is_class_var(annot)
+diff --git a/tests/test_forward_references.py b/tests/test_forward_references.py
+index 90dfc2b..2455932 100644
+--- a/tests/test_forward_references.py
++++ b/tests/test_forward_references.py
+@@ -2,9 +2,15 @@
+ Tests for behavior specific to forward references via PEP 749.
+ """
+ 
++from typing import TYPE_CHECKING
++
+ from attrs import define, fields, resolve_types
+ 
+ 
++if TYPE_CHECKING:
++    from typing import ClassVar
++
++
+ def test_forward_class_reference():
+     """
+     Class A can reference B even though it is defined later.
+@@ -20,3 +26,17 @@ def test_forward_class_reference():
+     resolve_types(A)
+ 
+     assert fields(A).b.type is B
++
++
++def test_class_var():
++    """
++    ClassVars are ignored, even if ClassVar itself is only imported while type
++    checking and therefore unresolvable.
++    """
++
++    @define
++    class A:
++        cls_var: ClassVar[int] = 23
++        x: int
++
++    assert ["x"] == [f.name for f in fields(A)]

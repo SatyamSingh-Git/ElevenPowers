@@ -1,0 +1,499 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 1b8ae19..5fe5e56 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -57,6 +57,15 @@ Unreleased
+     ``hide_input=True`` fails validation, instead of always showing a
+     generic message. Built-in type messages mask the input value.
+     :issue:`2809` :pr:`3256`
++-   Add the ``capture`` parameter to ``CliRunner``. The default
++    ``capture="sys"`` captures Python-level writes only, and ``fileno()`` on
++    the redirected streams raises ``io.UnsupportedOperation`` again, reverting
++    the 8.3.3 change that exposed the original file descriptor and broke
++    Pytest's fd-level capture teardown. ``capture="fd"`` redirects file
++    descriptors ``1`` and ``2`` to a temporary file instead, capturing output
++    from C extensions and subprocesses as well, and keeping ``faulthandler``
++    working. It is not supported on Windows. :issue:`3384` :issue:`2865`
++    :pr:`3244`
+ 
+ Version 8.3.3
+ -------------
+diff --git a/docs/testing.md b/docs/testing.md
+index 73f88f5..fcd0cef 100644
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -206,7 +206,7 @@ does not happen.
+ 
+ ## File Descriptors and Low-Level I/O
+ 
+-{class}`CliRunner` captures output by replacing
++By default {class}`CliRunner` captures output by replacing
+ `sys.stdout` and `sys.stderr` with in-memory
+ {class}`~io.BytesIO`-backed wrappers. This is
+ Python-level redirection: calls to {func}`~click.echo`,
+@@ -215,39 +215,56 @@ the wrappers have no OS-level file descriptor.
+ 
+ Code that calls `fileno()` on `sys.stdout` or
+ `sys.stderr`, like {mod}`faulthandler`,
+-{mod}`subprocess`, or C extensions, would normally crash
+-with {exc}`io.UnsupportedOperation` inside
+-{class}`CliRunner`.
+-
+-To avoid this, {class}`CliRunner` preserves the original
+-stream's file descriptor and exposes it via `fileno()` on
+-the replacement wrapper.
+-
+-This means:
+-- **Python-level writes** (`print()`, `click.echo()`,
+-  ...) are captured as usual.
+-- **fd-level writes** (C code writing directly to the
+-  file descriptor) go to the original terminal and are
+-  **not** captured.
+-
+-This is the same trade-off that
++{mod}`subprocess`, or C extensions, fails with
++{exc}`io.UnsupportedOperation`, and writes that go
++straight to the file descriptors show up on the terminal
++instead of in the result.
++
++Pass `capture="fd"` to capture at the file descriptor
++level as well. The `<stdout>` and `<stderr>` file
++descriptors are redirected to a temporary file with
++{func}`os.dup2` for the duration of the invocation, and
++`fileno()` returns the saved original descriptor, so code
++that needs a real fd keeps working:
++
++```{code-block} python
++:caption: test_subprocess.py
++
++import subprocess
++import sys
++
++import click
++from click.testing import CliRunner
++
++@click.command()
++def cli():
++   click.echo("from click")
++   subprocess.run([sys.executable, "-c", "print('from subprocess')"])
++
++def test_subprocess_output():
++   runner = CliRunner(capture="fd")
++   result = runner.invoke(cli)
++   assert result.output == "from click\nfrom subprocess\n"
++```
++
++Because the two capture mechanisms are independent, file
++descriptor output cannot be interleaved with Python-level
++output. It is appended to `result.stdout`,
++`result.stderr`, and `result.output` after it.
++
++This is the same split
+ [pytest](https://docs.pytest.org/en/stable/how-to/capture-stdout-stderr.html)
+-makes with its two capture modes:
+-
+-- `capsys`, which captures Python-level output, where
+-  `fileno()` raises `UnsupportedOperation` and fd-level
+-  writes are not captured.
+-- `capfd`, which captures fd-level output via
+-  `os.dup2()`, where `fileno()` works and fd-level
+-  writes *are* captured.
+-
+-Rather than implementing a full `capfd`-style mechanism,
+-{class}`CliRunner` takes the simpler path: expose the
+-original `fd` so that standard library helpers keep
+-working, while accepting that their output is not
+-captured.
+-
+-```{versionchanged} 8.3.3
+-`fileno()` on the redirected streams now returns the
+-original stream's file descriptor instead of raising.
++makes with its `capsys` and `capfd` fixtures. As with
++`capfd`, the `fd` mode is only useful when real file
++descriptors are available; it is not supported on Windows.
++
++`<stdin>` is not redirected at the file descriptor level
++in either mode, so a subprocess that inherits it reads
++from the real terminal rather than from the `input` passed
++to {meth}`~click.testing.CliRunner.invoke`.
++
++```{versionchanged} 8.4.0
++Added the `capture` parameter. The default `sys` mode no
++longer exposes the original file descriptor through
++`fileno()`, reverting the behavior introduced in 8.3.3.
+ ```
+diff --git a/src/click/testing.py b/src/click/testing.py
+index 04e7f1d..e6a44d2 100644
+--- a/src/click/testing.py
++++ b/src/click/testing.py
+@@ -22,6 +22,11 @@ if t.TYPE_CHECKING:
+ 
+     from .core import Command
+ 
++if sys.platform == "win32":
++    CaptureMode: t.TypeAlias = t.Literal["sys"]  # pyright: ignore[reportRedeclaration]
++else:
++    CaptureMode: t.TypeAlias = t.Literal["sys", "fd"]  # pyright: ignore[reportRedeclaration]
++
+ 
+ class EchoingStdin:
+     def __init__(self, input: t.BinaryIO, output: t.BinaryIO) -> None:
+@@ -67,6 +72,39 @@ def _pause_echo(stream: EchoingStdin | None) -> cabc.Iterator[None]:
+         stream._paused = False
+ 
+ 
++class _FDCapture:
++    """Redirect a file descriptor to a temporary file for capture.
++
++    Saves the current target of *targetfd* via :func:`os.dup`, then
++    redirects it to a temporary file via :func:`os.dup2`. On
++    :meth:`stop`, restores the original ``fd`` and returns the captured
++    bytes. Inspired by Pytest's ``FDCapture``.
++
++    .. versionadded:: 8.4.0
++    """
++
++    def __init__(self, targetfd: int) -> None:
++        self._targetfd = targetfd
++        self.saved_fd = -1
++        self._tmpfile: t.BinaryIO | None = None
++
++    def start(self) -> None:
++        self.saved_fd = os.dup(self._targetfd)
++        self._tmpfile = tempfile.TemporaryFile(buffering=0)
++        os.dup2(self._tmpfile.fileno(), self._targetfd)
++
++    def stop(self) -> bytes:
++        assert self._tmpfile is not None, "_FDCapture.start() was not called"
++        os.dup2(self.saved_fd, self._targetfd)
++        os.close(self.saved_fd)
++        self.saved_fd = -1
++        self._tmpfile.seek(0)
++        data = self._tmpfile.read()
++        self._tmpfile.close()
++        self._tmpfile = None
++        return data
++
++
+ class BytesIOCopy(io.BytesIO):
+     """Patch ``io.BytesIO`` to let the written stream be copied to another.
+ 
+@@ -104,11 +142,16 @@ class _NamedTextIOWrapper(io.TextIOWrapper):
+     """A :class:`~io.TextIOWrapper` with custom ``name`` and ``mode``
+     that does not close its underlying buffer.
+ 
+-    An optional ``original_fd`` preserves the file descriptor of the
+-    stream being replaced, so that C-level consumers that call
+-    :meth:`fileno` (``faulthandler``, ``subprocess``, ...) still work.
+-    Inspired by pytest's ``capsys``/``capfd`` split: see :doc:`/testing`
+-    for details.
++    When ``CliRunner`` runs in ``fd`` mode, ``_original_fd`` is patched to
++    point at the saved (pre-redirection) ``fd``, so C-level consumers that call
++    :meth:`fileno` (like ``faulthandler`` or ``subprocess``) keep working. In
++    the default ``sys`` mode ``_original_fd`` stays at ``-1`` and
++    :meth:`fileno` raises :exc:`io.UnsupportedOperation`, matching the
++    pre-``8.3.3`` behavior.
++
++    .. versionchanged:: 8.4.0
++        ``original_fd`` parameter replaced by the ``_original_fd`` attribute,
++        which is only set in ``fd`` mode.
+ 
+     .. versionchanged:: 8.3.3
+         Added ``original_fd`` parameter and :meth:`fileno` override.
+@@ -119,14 +162,12 @@ class _NamedTextIOWrapper(io.TextIOWrapper):
+         buffer: t.BinaryIO,
+         name: str,
+         mode: str,
+-        *,
+-        original_fd: int = -1,
+         **kwargs: t.Any,
+     ) -> None:
+         super().__init__(buffer, **kwargs)
+         self._name = name
+         self._mode = mode
+-        self._original_fd = original_fd
++        self._original_fd = -1
+ 
+     def close(self) -> None:
+         """The buffer this object contains belongs to some other object,
+@@ -137,13 +178,10 @@ class _NamedTextIOWrapper(io.TextIOWrapper):
+         """
+ 
+     def fileno(self) -> int:
+-        """Return the file descriptor of the original stream, if one was
+-        provided at construction time.
+-
+-        This allows C-level consumers (``faulthandler``, ``subprocess``,
+-        signal handlers, ...) to obtain a valid fd without crashing, even
+-        though the Python-level writes are redirected to an in-memory
+-        buffer.
++        """Return the file descriptor of the saved original stream when
++        ``CliRunner`` runs in ``fd`` mode. Otherwise delegate to
++        :class:`~io.TextIOWrapper`, which raises
++        :exc:`io.UnsupportedOperation` for a ``BytesIO``-backed buffer.
+ 
+         .. versionadded:: 8.3.3
+         """
+@@ -272,6 +310,21 @@ class CliRunner:
+                        will automatically echo the input.
+     :param catch_exceptions: Whether to catch any exceptions other than
+                              ``SystemExit`` when running :meth:`~CliRunner.invoke`.
++    :param capture: Selects the output capture strategy. ``sys`` (default)
++        captures Python-level writes only and leaves
++        :meth:`sys.stdout.fileno` raising :exc:`io.UnsupportedOperation`, so
++        user code that calls :func:`os.dup2` on ``sys.stdout.fileno()`` cannot
++        clobber the host runner's stdout. ``fd`` redirects file descriptors
++        ``1`` and ``2`` via :func:`os.dup2` to a temporary file, also catching
++        output from stale stream references, C extensions, and subprocesses.
++        ``fd`` is not supported on Windows.
++
++    .. versionchanged:: 8.4.0
++        Added the ``capture`` parameter. The default ``sys`` mode no longer
++        exposes the original fd through :meth:`fileno`, reverting the change
++        introduced in ``8.3.3`` that broke Pytest's ``fd``-level capture
++        teardown. Use ``capture="fd"`` to restore that behavior with proper
++        isolation. :issue:`3384`
+ 
+     .. versionchanged:: 8.2
+         Added the ``catch_exceptions`` parameter.
+@@ -286,11 +339,23 @@ class CliRunner:
+         env: cabc.Mapping[str, str | None] | None = None,
+         echo_stdin: bool = False,
+         catch_exceptions: bool = True,
++        capture: CaptureMode = "sys",
+     ) -> None:
++        if capture not in {"sys", "fd"}:
++            raise ValueError(
++                f"capture={capture!r} is not valid. Choose from 'sys' or 'fd'."
++            )
++
++        if capture == "fd" and sys.platform == "win32":
++            raise ValueError(
++                f"capture={capture!r} is not supported on Windows. Use 'sys'."
++            )
++
+         self.charset = charset
+         self.env: cabc.Mapping[str, str | None] = env or {}
+         self.echo_stdin = echo_stdin
+         self.catch_exceptions = catch_exceptions
++        self.capture = capture
+ 
+     def get_default_prog_name(self, cli: Command) -> str:
+         """Given a command object it will return the default program name
+@@ -355,20 +420,6 @@ class CliRunner:
+ 
+         stream_mixer = StreamMixer()
+ 
+-        # Preserve the original file descriptors so that C-level
+-        # consumers (faulthandler, subprocess, etc.) can still obtain a
+-        # valid fd from the redirected streams. The original streams
+-        # may themselves lack a fileno() (e.g. when CliRunner is used
+-        # inside pytest's capsys), so we fall back to -1.
+-        def _safe_fileno(stream: t.IO[t.Any]) -> int:
+-            try:
+-                return stream.fileno()
+-            except (AttributeError, io.UnsupportedOperation):
+-                return -1
+-
+-        old_stdout_fd = _safe_fileno(old_stdout)
+-        old_stderr_fd = _safe_fileno(old_stderr)
+-
+         if self.echo_stdin:
+             bytes_input = echo_input = t.cast(
+                 t.BinaryIO, EchoingStdin(bytes_input, stream_mixer.stdout)
+@@ -388,7 +439,6 @@ class CliRunner:
+             encoding=self.charset,
+             name="<stdout>",
+             mode="w",
+-            original_fd=old_stdout_fd,
+         )
+ 
+         sys.stderr = _NamedTextIOWrapper(
+@@ -397,7 +447,6 @@ class CliRunner:
+             name="<stderr>",
+             mode="w",
+             errors="backslashreplace",
+-            original_fd=old_stderr_fd,
+         )
+ 
+         @_pause_echo(echo_input)  # type: ignore
+@@ -553,6 +602,11 @@ class CliRunner:
+         :param color: whether the output should contain color codes. The
+                       application can still override this explicitly.
+ 
++        .. versionchanged:: 8.4.0
++            With ``CliRunner(capture="fd")``, output written to the
++            ``<stdout>`` and ``<stderr>`` file descriptors is appended to the
++            result streams.
++
+         .. versionadded:: 8.2
+             The result object has the ``output_bytes`` attribute with
+             the mix of ``stdout_bytes`` and ``stderr_bytes``, as the user would
+@@ -579,7 +633,27 @@ class CliRunner:
+         if catch_exceptions is None:
+             catch_exceptions = self.catch_exceptions
+ 
++        # Set up fd capture before isolation replaces sys.stdout and sys.stderr.
++        cap_out: _FDCapture | None = None
++        cap_err: _FDCapture | None = None
++
++        if self.capture == "fd":
++            cap_out = _FDCapture(1)
++            cap_err = _FDCapture(2)
++            try:
++                cap_out.start()
++                cap_err.start()
++            except OSError:
++                cap_out = cap_err = None
++
+         with self.isolation(input=input, env=env, color=color) as outstreams:
++            # Point the captured streams' fileno() at the saved (original)
++            # fd so that C-level consumers like faulthandler keep working
++            # while fd 1/2 are redirected to the capture tmpfile.
++            if cap_out is not None and cap_err is not None:
++                sys.stdout._original_fd = cap_out.saved_fd  # type: ignore[union-attr]
++                sys.stderr._original_fd = cap_err.saved_fd  # type: ignore[union-attr]
++
+             return_value = None
+             exception: BaseException | None = None
+             exit_code = 0
+@@ -620,6 +694,18 @@ class CliRunner:
+             finally:
+                 sys.stdout.flush()
+                 sys.stderr.flush()
++
++                # Stop fd capture and merge the captured bytes into
++                # the stdout/stderr BytesIO streams. BytesIOCopy mirrors
++                # those writes into outstreams[2] automatically.
++                if cap_out is not None and cap_err is not None:
++                    fd_out = cap_out.stop()
++                    fd_err = cap_err.stop()
++                    if fd_out:
++                        outstreams[0].write(fd_out)
++                    if fd_err:
++                        outstreams[1].write(fd_err)
++
+                 stdout = outstreams[0].getvalue()
+                 stderr = outstreams[1].getvalue()
+                 output = outstreams[2].getvalue()
+diff --git a/tests/test_testing.py b/tests/test_testing.py
+index c8fca4d..178b842 100644
+--- a/tests/test_testing.py
++++ b/tests/test_testing.py
+@@ -1,6 +1,8 @@
+ import faulthandler
++import io
+ import os
+ import pdb
++import subprocess
+ import sys
+ from io import BytesIO
+ 
+@@ -10,6 +12,10 @@ import click
+ from click.exceptions import ClickException
+ from click.testing import CliRunner
+ 
++needs_fd_capture = pytest.mark.skipif(
++    sys.platform == "win32", reason="fd capture is not supported on Windows"
++)
++
+ 
+ def test_runner():
+     @click.command()
+@@ -522,13 +528,10 @@ def test_pdb_init_restored_after_invoke():
+     assert pdb.Pdb.__init__ is original
+ 
+ 
+-def test_faulthandler_enable(runner):
+-    """``faulthandler.enable()`` inside ``CliRunner`` should not crash with
+-    ``io.UnsupportedOperation: fileno``.
+-
+-    ``faulthandler.enable()`` needs a real OS file descriptor to register
+-    its signal handler. ``CliRunner`` replaces ``sys.stderr`` with a
+-    ``BytesIO`` wrapper that has no ``fileno()``, causing the call to fail.
++@needs_fd_capture
++def test_faulthandler_enable():
++    """``faulthandler.enable()`` needs a real OS file descriptor to register
++    its signal handler, which the ``fd`` capture mode provides.
+ 
+     Reproduce:https://github.com/pallets/click/issues/2865
+     """
+@@ -542,6 +545,77 @@ def test_faulthandler_enable(runner):
+             faulthandler.enable()
+         click.echo("Finished executing main function.")
+ 
+-    result = runner.invoke(cli, ["--flag", True])
++    result = CliRunner(capture="fd").invoke(cli, ["--flag", True])
+     assert result.exit_code == 0, result.output
+     assert "Finished executing main function." in result.output
++
++
++def test_sys_capture_has_no_fileno(runner):
++    """The default streams are backed by ``BytesIO`` only, so exposing a file
++    descriptor would let code redirect or write past the capture.
++    """
++
++    @click.command()
++    def cli():
++        with pytest.raises(io.UnsupportedOperation):
++            sys.stdout.fileno()
++
++        with pytest.raises(io.UnsupportedOperation):
++            sys.stderr.fileno()
++
++    result = runner.invoke(cli, catch_exceptions=False)
++    assert result.exit_code == 0
++
++
++@needs_fd_capture
++def test_fd_capture():
++    """Writes going straight to the `<stdout>` and `<stderr>` file descriptors
++    are captured too, appended after the Python-level output.
++    """
++
++    @click.command()
++    def cli():
++        click.echo("from click")
++        click.echo("from click, err", err=True)
++        os.write(1, b"from fd\n")
++        os.write(2, b"from fd, err\n")
++
++    result = CliRunner(capture="fd").invoke(cli, catch_exceptions=False)
++    assert result.stdout == "from click\nfrom fd\n"
++    assert result.stderr == "from click, err\nfrom fd, err\n"
++    assert result.output == "from click\nfrom click, err\nfrom fd\nfrom fd, err\n"
++
++
++@needs_fd_capture
++def test_fd_capture_subprocess():
++    @click.command()
++    def cli():
++        subprocess.run([sys.executable, "-c", "print('from subprocess')"], check=True)
++
++    result = CliRunner(capture="fd").invoke(cli, catch_exceptions=False)
++    assert result.stdout == "from subprocess\n"
++
++
++@needs_fd_capture
++def test_fd_capture_restores_fds(capfd):
++    @click.command()
++    def cli():
++        os.write(1, b"captured\n")
++
++    result = CliRunner(capture="fd").invoke(cli, catch_exceptions=False)
++    assert result.stdout == "captured\n"
++
++    os.write(1, b"not captured by click\n")
++    out, _ = capfd.readouterr()
++    assert out == "not captured by click\n"
++
++
++def test_invalid_capture_mode():
++    with pytest.raises(ValueError, match="Choose from 'sys' or 'fd'"):
++        CliRunner(capture="stdio")
++
++
++@pytest.mark.skipif(sys.platform != "win32", reason="Windows only")
++def test_fd_capture_rejected_on_windows():
++    with pytest.raises(ValueError, match="not supported on Windows"):
++        CliRunner(capture="fd")

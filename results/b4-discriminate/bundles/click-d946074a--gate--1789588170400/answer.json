@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 174390,
+ "num_turns": 29,
+ "stop_reason": "end_turn",
+ "session_id": "323be7f4-99fb-4a7e-a19b-e95df4cf9aa5",
+ "total_cost_usd": 1.4370235,
+ "usage": {
+  "input_tokens": 58,
+  "cache_creation_input_tokens": 43130,
+  "cache_read_input_tokens": 1399767,
+  "output_tokens": 12222,
+  "output_tokens_details": {
+   "thinking_tokens": 5417
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 43130,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 503,
+    "cache_read_input_tokens": 60343,
+    "cache_creation_input_tokens": 490,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 490
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 58,
+   "outputTokens": 12222,
+   "cacheReadInputTokens": 1399767,
+   "cacheCreationInputTokens": 43130,
+   "webSearchRequests": 0,
+   "costUSD": 1.4370235,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Obligation discharged. Evidence:\n\n**Full suite, final state:** `python -m pytest tests -q` \u2192 **41 failed, 1401 passed, 76 skipped, 1 xfailed**\n\n**Full suite, seed commit (stashed change):** \u2192 **41 failed, 1400 passed, 76 skipped, 1 xfailed**\n\n**Failure sets are byte-identical** \u2014 `diff` of the sorted `FAILED` node-id lists before vs. after returns no differences (41 vs 41). The passed count rose by exactly 1: the `test_wrapping_ignores_ansi_codes` test I added. So the change introduces zero regressions; every failure is pre-existing on the untouched seed commit and unrelated to text wrapping. They're `DeprecationWarning`-as-error failures (the repo's pytest config turns warnings into errors) plus a few `test_shell_completion` fish cases \u2014 e.g.:\n\n```\nE  DeprecationWarning: 'click.utils.make_default_short_help' is deprecated and will be removed in Click 9.0.\nE  DeprecationWarning: 'isolated_filesystem' ...\n```\n\n**Suites that actually exercise wrapping all pass clean:** `tests/test_formatting.py tests/test_options.py tests/test_commands.py` \u2192 **666 passed, 0 failed**.\n\nI can't make the full suite green without fixing 41 unrelated pre-existing deprecation failures, which is outside this change's scope \u2014 say the word if you want that cleanup as separate work.",
+ "ttft_ms": 1980,
+ "ttft_stream_ms": 1641,
+ "time_to_request_ms": 259,
+ "type": "result",
+ "duration_ms": 300618,
+ "uuid": "e098a303-a189-46ec-af71-52d5b354a69f"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 113666,
+ "num_turns": 17,
+ "stop_reason": "end_turn",
+ "session_id": "7df85478-d785-4f6a-885d-c4cd8940c1d5",
+ "total_cost_usd": 1.0343205000000002,
+ "usage": {
+  "input_tokens": 34,
+  "cache_creation_input_tokens": 41922,
+  "cache_read_input_tokens": 809461,
+  "output_tokens": 8408,
+  "output_tokens_details": {
+   "thinking_tokens": 3422
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 41922,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 217,
+    "cache_read_input_tokens": 59193,
+    "cache_creation_input_tokens": 401,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 401
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 34,
+   "outputTokens": 8408,
+   "cacheReadInputTokens": 809461,
+   "cacheCreationInputTokens": 41922,
+   "webSearchRequests": 0,
+   "costUSD": 1.0343205000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "`python -m pytest tests -q` \u2192 **401 passed**, 0 failed.\n\nThe obligation is discharged. The feature and its tests are complete:\n\n- `src/itsdangerous/timed.py` \u2014 `TimedSerializer.loads` iterates `iter_unsigners(salt)` instead of using only `make_signer`, so `fallback_signers` now works for timed payloads; `SignatureExpired` re-raises immediately rather than degrading into a generic `BadSignature` from a later signer.\n- `tests/test_itsdangerous/test_timed.py` \u2014 `test_fallback_signers` and `test_fallback_signers_expired` cover both paths.",
+ "ttft_ms": 1728,
+ "ttft_stream_ms": 1326,
+ "time_to_request_ms": 397,
+ "type": "result",
+ "duration_ms": 162690,
+ "uuid": "0b6f0ce9-6785-4caa-b594-f9e4abce092f"
+}

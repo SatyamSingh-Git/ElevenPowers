@@ -1,0 +1,96 @@
+{
+ "model": "claude-opus-5",
+ "arm": "gate",
+ "corpus": "e2d721482fbdd2a5",
+ "graded": "1692c98d8acad075",
+ "seed": 20260917,
+ "environment": {
+  "python": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "claude": "2.1.228 (Claude Code)",
+  "git": "git version 2.45.1.windows.1"
+ },
+ "score": {
+  "tasks": 4,
+  "runs": 4,
+  "resolved": 0.5,
+  "low": 0.0,
+  "high": 1.0,
+  "setup_failures": 0,
+  "context": {
+   "runs": 4,
+   "median": 51123,
+   "low": 32920,
+   "high": 82593
+  }
+ },
+ "bands": {
+  "one-liner": {
+   "tasks": 1,
+   "resolved": 0.0
+  },
+  "substantial": {
+   "tasks": 3,
+   "resolved": 0.6666666666666666
+  }
+ },
+ "effort": "high",
+ "runs": [
+  {
+   "task": "attrs-577c782c",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": false,
+   "outcome": "unfixed",
+   "bundle": "results\\b4-discriminate\\bundles\\attrs-577c782c--gate--1789587182405",
+   "context_tokens": 59059,
+   "blocks": 2,
+   "turns": 46,
+   "seconds": 528.8721658999857,
+   "cost": 2.569355,
+   "note": "tests/test_version_info.py::TestVersionInfo::test_hash"
+  },
+  {
+   "task": "click-c2ed4149",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b4-discriminate\\bundles\\click-c2ed4149--gate--1789587848867",
+   "context_tokens": 82593,
+   "blocks": 2,
+   "turns": 60,
+   "seconds": 636.2972466000065,
+   "cost": 3.742300999999999,
+   "note": ""
+  },
+  {
+   "task": "click-d946074a",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": false,
+   "outcome": "unfixed",
+   "bundle": "results\\b4-discriminate\\bundles\\click-d946074a--gate--1789588170400",
+   "context_tokens": 43188,
+   "blocks": 1,
+   "turns": 29,
+   "seconds": 302.38084140000865,
+   "cost": 1.4370235,
+   "note": "tests/test_formatting.py::test_wrap_text_visible_width[styled-long-word-breaks-on-visible-width]"
+  },
+  {
+   "task": "jinja2-065334d1",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b4-discriminate\\bundles\\jinja2-065334d1--gate--1789588413704",
+   "context_tokens": 32920,
+   "blocks": 0,
+   "turns": 20,
+   "seconds": 224.17074729999877,
+   "cost": 0.9664989999999999,
+   "note": ""
+  }
+ ]
+}

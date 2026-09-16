@@ -1,0 +1,96 @@
+{
+ "model": "claude-opus-5",
+ "arm": "gate",
+ "corpus": "e2d721482fbdd2a5",
+ "graded": "927024e8ae91ce55",
+ "seed": 20260917,
+ "environment": {
+  "python": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "claude": "2.1.228 (Claude Code)",
+  "git": "git version 2.45.1.windows.1"
+ },
+ "score": {
+  "tasks": 4,
+  "runs": 4,
+  "resolved": 1.0,
+  "low": 1.0,
+  "high": 1.0,
+  "setup_failures": 0,
+  "context": {
+   "runs": 4,
+   "median": 50897,
+   "low": 25521,
+   "high": 141539
+  }
+ },
+ "bands": {
+  "one-liner": {
+   "tasks": 2,
+   "resolved": 1.0
+  },
+  "substantial": {
+   "tasks": 2,
+   "resolved": 1.0
+  }
+ },
+ "effort": "high",
+ "runs": [
+  {
+   "task": "attrs-1e07f468",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b4-discriminate\\bundles\\attrs-1e07f468--gate--1789586897513",
+   "context_tokens": 40106,
+   "blocks": 0,
+   "turns": 34,
+   "seconds": 243.95565650000935,
+   "cost": 1.5644224999999998,
+   "note": ""
+  },
+  {
+   "task": "click-9f9b149e",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b4-discriminate\\bundles\\click-9f9b149e--gate--1789587319297",
+   "context_tokens": 61689,
+   "blocks": 0,
+   "turns": 39,
+   "seconds": 391.7226301000046,
+   "cost": 2.2293614999999996,
+   "note": ""
+  },
+  {
+   "task": "click-d340b0c1",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b4-discriminate\\bundles\\click-d340b0c1--gate--1789588256777",
+   "context_tokens": 141539,
+   "blocks": 2,
+   "turns": 99,
+   "seconds": 919.2995230000233,
+   "cost": 7.818474,
+   "note": ""
+  },
+  {
+   "task": "jinja2-0cd69481",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b4-discriminate\\bundles\\jinja2-0cd69481--gate--1789588334757",
+   "context_tokens": 25521,
+   "blocks": 0,
+   "turns": 14,
+   "seconds": 57.049801699991804,
+   "cost": 0.5678245000000001,
+   "note": ""
+  }
+ ]
+}

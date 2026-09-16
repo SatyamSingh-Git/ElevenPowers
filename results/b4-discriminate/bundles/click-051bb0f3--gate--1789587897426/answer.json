@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 208352,
+ "num_turns": 34,
+ "stop_reason": "end_turn",
+ "session_id": "d6a5fecf-b590-4091-a990-25ee7cab2a8e",
+ "total_cost_usd": 1.6180005,
+ "usage": {
+  "input_tokens": 54,
+  "cache_creation_input_tokens": 50404,
+  "cache_read_input_tokens": 1459581,
+  "output_tokens": 15356,
+  "output_tokens_details": {
+   "thinking_tokens": 7429
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50404,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 669,
+    "cache_read_input_tokens": 67807,
+    "cache_creation_input_tokens": 233,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 233
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 54,
+   "outputTokens": 15356,
+   "cacheReadInputTokens": 1459581,
+   "cacheCreationInputTokens": 50404,
+   "webSearchRequests": 0,
+   "costUSD": 1.6180005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done.\n\n## What was wrong\n\n`get_pager_file` wraps the pager stream in `MaybeStripAnsi`, an `io.TextIOWrapper`. When the pager falls back to the borrowed stdout \u2014 `PAGER` pointing at a missing binary, or no pager binary installed (`src/click/_termui_impl.py:476`, `:485`, and the equivalents in `_tempfilepager`) \u2014 the wrapper is built over `stdout.buffer`. A `TextIOWrapper` closes whatever it wraps when the GC finalizes it, so as soon as `echo_via_pager` returned and dropped its reference, the real stdout buffer was closed and every later `click.echo` raised `ValueError: I/O operation on closed file`.\n\nThe `_SkipClose` shim added in #3482 only covers the `_nullpager` path; it never reaches these fallbacks. Verified both before and after:\n\n```\nbefore fix:  underlying binary buffer closed? True\nafter fix:   underlying binary buffer closed? False\n```\n\n## The fix\n\n`MaybeStripAnsi.__del__` now detaches instead of closing \u2014 flushing pending output while leaving the borrowed stream open. This mirrors the existing `_NonClosingTextIOWrapper.__del__` idiom in `_compat.py:72`, and covers every pager backend rather than patching the fallback sites one at a time.\n\n## Verification\n\n- New regression test `test_echo_via_pager_leaves_stdout_open` \u2014 fails on the pre-fix tree (`assert not text_stream.closed`), passes after, and asserts the paged text plus a subsequent `echo` both land in the file.\n- Full suite: 1585 passed, 94 skipped, 1 xfailed. `ruff check` and `ruff format --check` clean. (mypy isn't installed in this venv, so the type check didn't run.)\n- `CHANGES.rst` entry added under the unreleased 8.4.2 section.",
+ "ttft_ms": 1971,
+ "ttft_stream_ms": 1455,
+ "time_to_request_ms": 386,
+ "type": "result",
+ "duration_ms": 260760,
+ "uuid": "b57c4644-6ffd-4263-89ef-de6001497f13"
+}

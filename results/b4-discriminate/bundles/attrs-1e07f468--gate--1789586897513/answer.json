@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 167097,
+ "num_turns": 34,
+ "stop_reason": "end_turn",
+ "session_id": "63e589ad-342a-4e91-8d92-a586e87c2b5d",
+ "total_cost_usd": 1.5644224999999998,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 40038,
+  "cache_read_input_tokens": 1691305,
+  "output_tokens": 12722,
+  "output_tokens_details": {
+   "thinking_tokens": 5105
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 40038,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 740,
+    "cache_read_input_tokens": 64249,
+    "cache_creation_input_tokens": 665,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 665
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 68,
+   "outputTokens": 12722,
+   "cacheReadInputTokens": 1691305,
+   "cacheCreationInputTokens": 40038,
+   "webSearchRequests": 0,
+   "costUSD": 1.5644224999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. `attrs.converters.pipe()` now only returns a `Converter` when one is actually passed in.\n\n**`src/attr/_make.py`** \u2014 `pipe()` checks up front whether any argument is a `Converter`. If so, it builds the three-arg `pipe_converter(val, inst, field)` and wraps it in `Converter(..., takes_self=True, takes_field=True)` as before. If not, it builds a plain one-arg `pipe_converter(val)` and returns it bare. Annotation inference is unchanged and applies to either form. The auto-wrap at `_make.py:2024` still lifts the plain callable into a `Converter` when a field needs one, and `setters.convert` already branches on `isinstance(c, Converter)`, so the #1328 fix for `on_setattr=attrs.setters.convert` stays intact.\n\n**`src/attr/converters.pyi`** \u2014 added overloads so type checkers see the same split. Passing only `Callable[[Any], Any]` returns a callable; passing a `Converter` returns a `Converter`. Since the stub's `Converter` class defines no `__call__`, it doesn't match the callable overload, so the ordering resolves correctly. Applied the same pair to `optional()`, which has identical runtime behavior.\n\n**Tests** \u2014 `test_fail`, `test_empty`, and the `pipe` annotation tests in `test_annotations.py` reached through `.converter`; those cases all pass plain callables, so they now call the result directly. Added `test_plain_callables` and `test_converter_instance` to pin the return type both ways. `test_success` and the `TestOptionalPipe` cases pass a `Converter` and were left alone.\n\nAlso added `changelog.d/1380.change.md`.\n\nFull suite: 1337 passed, 4 skipped, 1 xfailed. Two caveats worth naming \u2014 I set `.. versionchanged:: 24.3.0` by inferring the next release from the 24.2.0 changelog heading, so correct it if the release lands under a different number; and neither mypy nor pyright is installed here (`test_pyright.py` skipped), so the new stub overloads are unverified by an actual type checker.",
+ "ttft_ms": 1982,
+ "ttft_stream_ms": 1453,
+ "time_to_request_ms": 359,
+ "type": "result",
+ "duration_ms": 239051,
+ "uuid": "31f32fe1-7da5-40ad-b5e2-1876cb880715"
+}

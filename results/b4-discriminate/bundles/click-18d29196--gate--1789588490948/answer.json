@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 446332,
+ "num_turns": 54,
+ "stop_reason": "end_turn",
+ "session_id": "4dc4905d-424d-437a-b9f7-3f2b6e40fb1b",
+ "total_cost_usd": 3.5782240000000005,
+ "usage": {
+  "input_tokens": 108,
+  "cache_creation_input_tokens": 83817,
+  "cache_read_input_tokens": 3794928,
+  "output_tokens": 33682,
+  "output_tokens_details": {
+   "thinking_tokens": 20250
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 83817,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 718,
+    "cache_read_input_tokens": 100142,
+    "cache_creation_input_tokens": 1066,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1066
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 108,
+   "outputTokens": 33682,
+   "cacheReadInputTokens": 3794928,
+   "cacheCreationInputTokens": 83817,
+   "webSearchRequests": 0,
+   "costUSD": 3.5782240000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Re-ran every static check available on the current tree:\n\n- `ruff check src tests` \u2192 **All checks passed** (this is the repo's configured linter, per `.pre-commit-config.yaml`).\n- `ruff format --check` on both changed files \u2192 **2 files already formatted**.\n- Both changed files compile, `Option.process_value` has a signature identical to the `Parameter.process_value` it overrides, and the removed `Option.type_cast_value` override is confirmed gone.\n\n**`cannot_complete` on the mypy re-run specifically.** The command in the feedback \u2014 `PYTHONPATH=src ~/AppData/Roaming/Python/Python313/Scripts/mypy.exe src/click/core.py` \u2014 cannot run: that binary does not exist, and `mypy` is not importable from any interpreter here (`python -m mypy` \u2192 `No module named mypy`). It can't be installed either; this environment has no package index reachable:\n\n```\n$ .venv/Scripts/python.exe -m pip install mypy\nERROR: Could not find a version that satisfies the requirement mypy (from versions: none)\nERROR: No matching distribution found for mypy\n```\n\n`pyright`, the project's other configured checker (`[tool.pyright]` in `pyproject.toml`), is absent for the same reason. So `mypy --strict` over `src` and `tests/typing` is unverifiable here regardless of my change \u2014 it was equally unverifiable at the seed commit.\n\nWhat I can say about type safety on evidence: the change adds no new annotations, no new `# type: ignore`, and no new call sites. It narrows a branch inside `Parameter.process_value` and relocates an existing override from `type_cast_value` to `process_value` with a signature matching the base class exactly. If you can get me a machine with `mypy` installed, I'll run the strict check and confirm.",
+ "ttft_ms": 2075,
+ "ttft_stream_ms": 1611,
+ "time_to_request_ms": 349,
+ "type": "result",
+ "duration_ms": 573884,
+ "uuid": "7e9ea902-8cc2-466e-9673-ed9f9bdad2af"
+}

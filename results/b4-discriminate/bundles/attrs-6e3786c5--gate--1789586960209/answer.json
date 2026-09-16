@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 183648,
+ "num_turns": 34,
+ "stop_reason": "end_turn",
+ "session_id": "d2bb7e3d-dc2f-488a-816a-a35bc7c37e45",
+ "total_cost_usd": 1.8125225,
+ "usage": {
+  "input_tokens": 68,
+  "cache_creation_input_tokens": 50326,
+  "cache_read_input_tokens": 1918045,
+  "output_tokens": 13996,
+  "output_tokens_details": {
+   "thinking_tokens": 5403
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50326,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 908,
+    "cache_read_input_tokens": 74771,
+    "cache_creation_input_tokens": 431,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 431
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 68,
+   "outputTokens": 13996,
+   "cacheReadInputTokens": 1918045,
+   "cacheCreationInputTokens": 50326,
+   "webSearchRequests": 0,
+   "costUSD": 1.8125225,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. `kw_only=True` at the decorator level now behaves like `dataclasses`.\n\n**The change** (`src/attr/_make.py:445`): `_transform_attrs` no longer re-evolves `base_attrs` with `kw_only=True`. Class-level `kw_only` now applies only to attributes defined on the decorated class; inherited ones keep whatever their own class gave them.\n\n```python\nif kw_only:\n    # Like dataclasses, we only apply kw_only to the attributes that are\n    # defined on this class -- inherited ones keep their own setting.\n    own_attrs = [a.evolve(kw_only=True) for a in own_attrs]\n```\n\nVerified against the stdlib \u2014 `@define(kw_only=True) class B(A)` where `A` has `a: int` now produces `__init__(self, a, *, b)`, matching `@dataclass(kw_only=True)` exactly.\n\n**Also updated:**\n- `src/attr/_next_gen.py` \u2014 `define`'s `kw_only` parameter doc, plus a `.. versionchanged:: 25.4.0` note; matching note on `attr.s` in `_make.py`.\n- `docs/examples.md` \u2014 reworded the decorator-level claim (\"all attributes\" \u2192 \"all attributes that are defined in that class\") and added a doctest showing an inherited attribute staying positional.\n- `changelog.d/1457.change.md`.\n- `tests/test_make.py` \u2014 corrected `TestTransformAttrs::test_kw_only` and `test_keyword_only_class_level_subclassing` (both asserted the old propagation), and added two cases: a `kw_only=True` subclass leaving a mandatory base attribute positional, and a `kw_only=True` base staying keyword-only under a plain subclass.\n\n**Test results:** 1356 passed, 4 skipped, 1 xfailed. Two notes:\n- The suite must run with `PYTHONPATH=src`. Without it, the venv imports a stale `attrs` from user site-packages and 12 tests fail *at baseline* on the unmodified checkout \u2014 unrelated to this change.\n- `ruff format --check` is clean. `ruff check` reports 87 pre-existing errors repo-wide (the venv's ruff isn't picking up the project config); none fall on lines I touched.\n\nOne behavioral consequence worth flagging: a class that previously relied on a `kw_only=True` parent to make a defaulted grandparent attribute keyword-only can now raise `ValueError: No mandatory attributes allowed after an attribute with a default value`. That is the intended consequence \u2014 `dataclasses` raises on the same shape \u2014 but it is a source-breaking change for such hierarchies, which is why the changelog and both `versionchanged` notes call it out.",
+ "ttft_ms": 2040,
+ "ttft_stream_ms": 1636,
+ "time_to_request_ms": 392,
+ "type": "result",
+ "duration_ms": 302406,
+ "uuid": "4e24bcc7-b4a7-417a-855f-231b061c5bef"
+}

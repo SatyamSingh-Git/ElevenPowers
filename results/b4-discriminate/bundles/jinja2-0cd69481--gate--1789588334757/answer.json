@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 41332,
+ "num_turns": 14,
+ "stop_reason": "end_turn",
+ "session_id": "20ca0d85-3ccd-4a24-9a76-810aa84522a0",
+ "total_cost_usd": 0.5678245000000001,
+ "usage": {
+  "input_tokens": 26,
+  "cache_creation_input_tokens": 25495,
+  "cache_read_input_tokens": 484289,
+  "output_tokens": 2824,
+  "output_tokens_details": {
+   "thinking_tokens": 916
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 25495,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 203,
+    "cache_read_input_tokens": 43078,
+    "cache_creation_input_tokens": 140,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 140
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 26,
+   "outputTokens": 2824,
+   "cacheReadInputTokens": 484289,
+   "cacheCreationInputTokens": 25495,
+   "webSearchRequests": 0,
+   "costUSD": 0.5678245000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. `urlize` no longer turns a fediverse-style handle into a `mailto:` link.\n\n- `src/jinja2/utils.py:336` \u2014 the email branch now skips values starting with `@`, so `@a@b.com` matched `_email_re` (via `\\S+` swallowing the leading `@`) but is now left alone.\n- `tests/test_filters.py:376` \u2014 new `test_urlize_at_value` asserting `\"foo @a@b.com bar\"` passes through unchanged.\n- `CHANGES.rst` \u2014 entry under 3.1.5.\n\n`pytest -k urlize`: 5 passed.",
+ "ttft_ms": 1482,
+ "ttft_stream_ms": 1087,
+ "time_to_request_ms": 281,
+ "type": "result",
+ "duration_ms": 55104,
+ "uuid": "a3b40354-42e4-42c9-a6a7-58793ab83207"
+}

@@ -1,0 +1,189 @@
+diff --git a/changelog.d/1457.change.md b/changelog.d/1457.change.md
+new file mode 100644
+index 0000000..da72c28
+--- /dev/null
++++ b/changelog.d/1457.change.md
+@@ -0,0 +1,2 @@
++Passing `kw_only=True` to `attrs.define()` / `attr.s()` now only applies to the attributes that are defined in the decorated class -- inherited attributes keep whatever they were given by their own class.
++This makes the behavior consistent with `dataclasses`.
+diff --git a/docs/examples.md b/docs/examples.md
+index 2393dec..2b24942 100644
+--- a/docs/examples.md
++++ b/docs/examples.md
+@@ -156,7 +156,7 @@ TypeError: A() missing 1 required keyword-only argument: 'a'
+ A(a=1)
+ ```
+ 
+-`kw_only` may also be specified at decorator level, and will apply to all attributes:
++`kw_only` may also be specified at decorator level, and will apply to all attributes that are defined in that class:
+ 
+ ```{doctest}
+ >>> @define(kw_only=True)
+@@ -171,6 +171,19 @@ TypeError: __init__() takes 1 positional argument but 3 were given
+ A(a=1, b=2)
+ ```
+ 
++Just like with {mod}`dataclasses`, inherited attributes are left alone -- if you want them to be keyword-only too, the base class has to say so itself:
++
++```{doctest}
++>>> @define
++... class A:
++...     a: int
++>>> @define(kw_only=True)
++... class B(A):
++...     b: int
++>>> B(1, b=2)
++B(a=1, b=2)
++```
++
+ If you create an attribute with `init=False`, the `kw_only` argument is ignored.
+ 
+ Keyword-only attributes allow subclasses to add attributes without default values, even if the base class defines attributes with default values:
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index b24c8d0..4aa1038 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -443,8 +443,9 @@ def _transform_attrs(
+         )
+ 
+     if kw_only:
++        # Like dataclasses, we only apply kw_only to the attributes that are
++        # defined on this class -- inherited ones keep their own setting.
+         own_attrs = [a.evolve(kw_only=True) for a in own_attrs]
+-        base_attrs = [a.evolve(kw_only=True) for a in base_attrs]
+ 
+     attrs = base_attrs + own_attrs
+ 
+@@ -1418,6 +1419,9 @@ def attrs(
+        If a class has an *inherited* classmethod called
+        ``__attrs_init_subclass__``, it is executed after the class is created.
+     .. deprecated:: 24.1.0 *hash* is deprecated in favor of *unsafe_hash*.
++    .. versionchanged:: 25.4.0
++       *kw_only* does not affect inherited attributes anymore -- only the ones
++       defined in the decorated class. This matches `dataclasses`.
+     """
+     if repr_ns is not None:
+         import warnings
+diff --git a/src/attr/_next_gen.py b/src/attr/_next_gen.py
+index 4f4b23e..d2ff17d 100644
+--- a/src/attr/_next_gen.py
++++ b/src/attr/_next_gen.py
+@@ -214,8 +214,10 @@ def define(
+                 5. Subclasses of a frozen class are frozen too.
+ 
+         kw_only (bool):
+-            Make all attributes keyword-only in the generated ``__init__`` (if
+-            *init* is False, this parameter is ignored).
++            Make all attributes that are defined in this class keyword-only in
++            the generated ``__init__`` (if *init* is False, this parameter is
++            ignored). Just like with `dataclasses`, inherited attributes are
++            left alone.
+ 
+         weakref_slot (bool):
+             Make instances weak-referenceable.  This has no effect unless
+@@ -319,6 +321,9 @@ def define(
+     .. versionadded:: 24.3.0
+        Unless already present, a ``__replace__`` method is automatically
+        created for `copy.replace` (Python 3.13+ only).
++    .. versionchanged:: 25.4.0
++       *kw_only* does not affect inherited attributes anymore -- only the ones
++       defined in the decorated class. This matches `dataclasses`.
+ 
+     .. note::
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 8f4846a..ce9aee1 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -242,9 +242,9 @@ class TestTransformAttrs:
+ 
+     def test_kw_only(self):
+         """
+-        Converts all attributes, including base class' attributes, if `kw_only`
+-        is provided. Therefore, `kw_only` allows attributes with defaults to
+-        precede mandatory attributes.
++        Converts own attributes to `kw_only`, but leaves the base class'
++        attributes alone -- just like `dataclasses`. Therefore, `kw_only`
++        allows attributes with defaults to precede mandatory attributes.
+ 
+         Updates in the subclass *don't* affect the base class attributes.
+         """
+@@ -267,8 +267,7 @@ class TestTransformAttrs:
+         assert len(attrs) == 3
+         assert len(base_attrs) == 1
+ 
+-        for a in attrs:
+-            assert a.kw_only is True
++        assert [a.kw_only for a in attrs] == [False, True, True]
+ 
+         for b_a in B.__attrs_attrs__:
+             assert b_a.kw_only is False
+@@ -1018,8 +1017,8 @@ class TestKeywordOnlyAttributes:
+ 
+     def test_keyword_only_class_level_subclassing(self):
+         """
+-        Subclass `kw_only` propagates to attrs inherited from the base,
+-        allowing non-default following default.
++        Subclass `kw_only` does not propagate to attrs inherited from the base,
++        but still allows non-default following default.
+         """
+ 
+         @attr.s
+@@ -1033,11 +1032,57 @@ class TestKeywordOnlyAttributes:
+         with pytest.raises(TypeError):
+             C(1)
+ 
++        c = C(1, y=2)
++
++        assert c.x == 1
++        assert c.y == 2
++
+         c = C(x=0, y=1)
+ 
+         assert c.x == 0
+         assert c.y == 1
+ 
++    def test_keyword_only_class_level_base_stays_positional(self):
++        """
++        Like `dataclasses`, a `kw_only=True` subclass leaves the base class'
++        attributes positional.
++        """
++
++        @attr.s
++        class Base:
++            x = attr.ib()
++
++        @attr.s(kw_only=True)
++        class C(Base):
++            y = attr.ib()
++
++        c = C(1, y=2)
++
++        assert c.x == 1
++        assert c.y == 2
++
++    def test_keyword_only_class_level_base_kw_only_is_kept(self):
++        """
++        A base class that is `kw_only` itself stays `kw_only` in subclasses
++        that don't ask for it.
++        """
++
++        @attr.s(kw_only=True)
++        class Base:
++            x = attr.ib()
++
++        @attr.s
++        class C(Base):
++            y = attr.ib()
++
++        with pytest.raises(TypeError):
++            C(1, 2)
++
++        c = C(2, x=1)
++
++        assert c.x == 1
++        assert c.y == 2
++
+     def test_init_false_attribute_after_keyword_attribute(self):
+         """
+         A positional attribute cannot follow a `kw_only` attribute,

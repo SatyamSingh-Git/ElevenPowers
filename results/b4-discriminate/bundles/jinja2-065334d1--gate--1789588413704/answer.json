@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 116077,
+ "num_turns": 20,
+ "stop_reason": "end_turn",
+ "session_id": "9cf3bf39-1bc2-4bdc-904f-9f9f9eb07d84",
+ "total_cost_usd": 0.9664989999999999,
+ "usage": {
+  "input_tokens": 40,
+  "cache_creation_input_tokens": 32880,
+  "cache_read_input_tokens": 843848,
+  "output_tokens": 8623,
+  "output_tokens_details": {
+   "thinking_tokens": 4402
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32880,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 298,
+    "cache_read_input_tokens": 50151,
+    "cache_creation_input_tokens": 450,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 450
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 40,
+   "outputTokens": 8623,
+   "cacheReadInputTokens": 843848,
+   "cacheCreationInputTokens": 32880,
+   "webSearchRequests": 0,
+   "costUSD": 0.9664989999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. `do_attr` now routes through `environment.getattr` instead of calling the builtin `getattr` directly, so sandbox behavior (including `wrap_str_format` and any subclass overrides) applies to `foo|attr(\"bar\")`.\n\n- `src/jinja2/filters.py:1412` \u2014 check existence first with `inspect.getattr_static` (plus a `hasattr` fallback for dynamic attrs) so `env.getattr`'s `obj[name]` fallback can't fire, preserving the attribute-only semantics; docstring updated to describe that precisely.\n- `tests/test_security.py` \u2014 `TestStringFormatMap.test_attr_filter`: `attr(\"format\")` on a str now raises `SecurityError` instead of handing back an unwrapped `str.format`.\n- `CHANGES.rst` \u2014 entry under 3.1.6.\n\nFull suite passes (909 tests).",
+ "ttft_ms": 1819,
+ "ttft_stream_ms": 1423,
+ "time_to_request_ms": 327,
+ "type": "result",
+ "duration_ms": 222385,
+ "uuid": "8a68be56-84ad-4111-8f41-9459e2be4510"
+}

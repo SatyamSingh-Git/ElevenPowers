@@ -1,0 +1,79 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 7156b12..4f36da0 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -4,7 +4,7 @@ ci:
+ 
+ repos:
+   - repo: https://github.com/astral-sh/ruff-pre-commit
+-    rev: v0.11.12
++    rev: v0.16.3
+     hooks:
+       - id: ruff-check
+         args: [--fix, --exit-non-zero-on-fix]
+diff --git a/pyproject.toml b/pyproject.toml
+index 4428d97..a17f163 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -202,6 +202,9 @@ toplevel = ["attr", "attrs"]
+ [tool.ruff]
+ src = ["src", "tests", "conftest.py", "docs"]
+ line-length = 79
++# `match` is a syntax error on our minimum Python; conftest.py skips the file
++# on anything older than 3.10 anyway.
++extend-exclude = ["tests/test_pattern_matching.py"]
+ 
+ [tool.ruff.lint]
+ select = ["ALL"]
+@@ -213,6 +216,7 @@ ignore = [
+   "ARG",     # unused arguments are normal when implementing interfaces
+   "C901",    # we're complex software
+   "COM",     # ruff format takes care of our commas
++  "CPY001",  # we use SPDX headers instead
+   "D",       # We prefer our own docstring style.
+   "E501",    # leave line-length enforcement to ruff format
+   "ERA001",  # we need to keep around some notes
+@@ -221,11 +225,16 @@ ignore = [
+   "ISC001",  # conflicts with ruff format
+   "N",       # we need more naming freedom
+   "PD",      # we're not pandas
++  "PLC0415", # we import lazily on purpose
+   "PLR0912", # we're complex software
+   "PLR0913", # yes, many arguments, but most have defaults
+   "PLR0915", # we're complex software
++  "PLR0917", # ditto, but positional
+   "PLR2004", # numbers are sometimes fine
++  "PLW0108", # wrapping a callable in a lambda is sometimes the point
+   "PLW0603", # sometimes we need globals
++  "PLW1641", # we add __hash__ when we mean to
++  "RUF063",  # we don't depend on typing-extensions
+   "S307",    # eval FTW
+   "SLF001",  # private members are accessed by friendly functions
+   "TC",      # TYPE_CHECKING blocks break autodocs
+@@ -246,11 +255,13 @@ ignore = [
+   "B018",    # pointless expressions in tests aren't pointless
+   "DTZ",     # datetime best practices don't matter in tests
+   "EM",      # no need for exception msg hygiene in tests
++  "ISC004",  # implicitly concatenated strings in tuples are on purpose
+   "PLE0309", # hash doesn't have to return anything in tests
+   "PLR0124", # pointless comparison in tests aren't pointless
+   "PT011",   # broad is fine
+   "PT012",   # sometimes we need more than a single stmt
+   "RUF012",  # we don't do ClassVar annotations in tests
++  "RUF043",  # our match= patterns are meant to be literal
+   "S",       # security concerns don't matter in tests
+   "SIM201",  # sometimes we need to check `not ==`
+   "SIM202",  # sometimes we need to check `not ==`
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index e84d979..8a04a95 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -553,7 +553,7 @@ def _frozen_delattrs(self, name):
+     """
+     Attached to frozen classes as __delattr__.
+     """
+-    if isinstance(self, BaseException) and name in ("__notes__",):
++    if isinstance(self, BaseException) and name == "__notes__":
+         BaseException.__delattr__(self, name)
+         return
+ 

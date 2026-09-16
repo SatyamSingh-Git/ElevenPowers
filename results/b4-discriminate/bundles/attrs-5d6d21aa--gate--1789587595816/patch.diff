@@ -1,0 +1,140 @@
+diff --git a/changelog.d/1331.change.md b/changelog.d/1331.change.md
+new file mode 100644
+index 0000000..7d98994
+--- /dev/null
++++ b/changelog.d/1331.change.md
+@@ -0,0 +1 @@
++`attrs.Converter` now correctly infers the return type of the converter it wraps when it's used in adapter mode -- for example, when it's passed to `attrs.converters.pipe()` (or, equivalently, as part of a list to `attrs.field()`'s / `attr.ib()`'s *converter* argument).
+diff --git a/src/attr/_compat.py b/src/attr/_compat.py
+index 4c515d2..104eeb0 100644
+--- a/src/attr/_compat.py
++++ b/src/attr/_compat.py
+@@ -13,6 +13,7 @@ PYPY = platform.python_implementation() == "PyPy"
+ PY_3_8_PLUS = sys.version_info[:2] >= (3, 8)
+ PY_3_9_PLUS = sys.version_info[:2] >= (3, 9)
+ PY_3_10_PLUS = sys.version_info[:2] >= (3, 10)
++PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)
+ PY_3_12_PLUS = sys.version_info[:2] >= (3, 12)
+ PY_3_13_PLUS = sys.version_info[:2] >= (3, 13)
+ PY_3_14_PLUS = sys.version_info[:2] >= (3, 14)
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 6ff79ba..bf00c5f 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -22,6 +22,7 @@ from . import _compat, _config, setters
+ from ._compat import (
+     PY_3_8_PLUS,
+     PY_3_10_PLUS,
++    PY_3_11_PLUS,
+     _AnnotationExtractor,
+     _get_annotations,
+     get_generic_base,
+@@ -2705,28 +2706,27 @@ class Converter:
+         self.takes_self = takes_self
+         self.takes_field = takes_field
+ 
+-        self._first_param_type = _AnnotationExtractor(
+-            converter
+-        ).get_first_param_type()
++        ex = _AnnotationExtractor(converter)
++        self._first_param_type = ex.get_first_param_type()
+ 
+-        self.__call__ = {
+-            (False, False): self._takes_only_value,
+-            (True, False): self._takes_instance,
+-            (False, True): self._takes_field,
+-            (True, True): self._takes_both,
+-        }[self.takes_self, self.takes_field]
+-
+-    def _takes_only_value(self, value, instance, field):
+-        return self.converter(value)
+-
+-    def _takes_instance(self, value, instance, field):
+-        return self.converter(value, instance)
+-
+-    def _takes_field(self, value, instance, field):
+-        return self.converter(value, field)
++        if not (self.takes_self or self.takes_field):
++            self.__call__ = lambda value, _, __: self.converter(value)
++        elif self.takes_self and not self.takes_field:
++            self.__call__ = lambda value, instance, __: self.converter(
++                value, instance
++            )
++        elif not self.takes_self and self.takes_field:
++            self.__call__ = lambda value, __, field: self.converter(
++                value, field
++            )
++        else:
++            self.__call__ = lambda value, instance, field: self.converter(
++                value, instance, field
++            )
+ 
+-    def _takes_both(self, value, instance, field):
+-        return self.converter(value, instance, field)
++        rt = ex.get_return_type()
++        if rt is not None:
++            self.__call__.__annotations__["return"] = rt
+ 
+     @staticmethod
+     def _get_global_name(attr_name: str) -> str:
+@@ -2948,8 +2948,12 @@ def pipe(*converters):
+         if t:
+             pipe_converter.__annotations__["val"] = t
+ 
++        last = converters[-1]
++        if not PY_3_11_PLUS and isinstance(last, Converter):
++            last = last.__call__
++
+         # Get return type from last converter.
+-        rt = _AnnotationExtractor(converters[-1]).get_return_type()
++        rt = _AnnotationExtractor(last).get_return_type()
+         if rt:
+             pipe_converter.__annotations__["return"] = rt
+ 
+diff --git a/tests/test_annotations.py b/tests/test_annotations.py
+index cd09a8c..5f2136b 100644
+--- a/tests/test_annotations.py
++++ b/tests/test_annotations.py
+@@ -263,6 +263,23 @@ class TestAnnotations:
+ 
+         assert A.__init__.__annotations__ == {"return": None}
+ 
++    def test_converter_adapter_annotations(self):
++        """
++        The adapter that Converter exposes as __call__ has the return
++        annotation of the wrapped converter.
++        """
++
++        def int2str(x: int) -> str:
++            return str(x)
++
++        def identity(x):
++            return x
++
++        assert attr.Converter(int2str).__call__.__annotations__ == {
++            "return": str
++        }
++        assert attr.Converter(identity).__call__.__annotations__ == {}
++
+     def test_pipe(self):
+         """
+         pipe() uses the input annotation of its first argument and the
+@@ -303,6 +320,18 @@ class TestAnnotations:
+             "return": str,
+         }
+ 
++    def test_pipe_converters(self):
++        """
++        pipe() also finds the annotations of Converter instances.
++        """
++
++        def int2str(x: int) -> str:
++            return str(x)
++
++        assert attr.converters.pipe(
++            attr.Converter(int2str)
++        ).converter.__annotations__ == {"return": str}
++
+     def test_pipe_empty(self):
+         """
+         pipe() with no converters is annotated like the identity.

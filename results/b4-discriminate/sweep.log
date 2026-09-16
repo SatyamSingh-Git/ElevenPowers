@@ -1,0 +1,111 @@
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks)
+seed     20260917   arm(s) gate, 1 replicate(s) each
+bundles  results\b4-discriminate\bundles
+
+effort   high   per-run budget $15.00
+journal  results\b4-discriminate\runs1.jsonl   (every run appended as it finishes)
+
+  attrs-97f8d175            gate     resolved    48 turns   543s $2.37
+  attrs-5d6d21aa            gate     resolved    36 turns   367s $2.44
+  click-051bb0f3            gate     resolved    34 turns   263s $1.62
+  click-18d29196            gate     resolved    54 turns   576s $3.58
+
+wrote results\b4-discriminate\runs1.json
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks, 4 runs)
+seed     20260917
+
+resolved 100.0%   95% interval 100.0% to 100.0%
+
+context reaching the model: median 65,716 tokens (from 50,458 to 83,925 over 4 run(s))
+
+band           tasks  resolved
+one-liner          1      100%
+substantial        3      100%
+Bands are labels, not filters — a gain in one of them is not a gain.
+
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks)
+seed     20260917   arm(s) gate, 1 replicate(s) each
+bundles  results\b4-discriminate\bundles
+
+effort   high   per-run budget $15.00
+journal  results\b4-discriminate\runs2.jsonl   (every run appended as it finishes)
+
+  attrs-6e3786c5            gate     unfixed     34 turns   307s $1.81
+  attrs-6fda0a4e            gate     regressed   51 turns   459s $3.08
+  click-ad39d749            gate     resolved    50 turns   609s $4.01
+  itsdangerous-6c58e969     gate     resolved    17 turns   165s $1.03
+
+wrote results\b4-discriminate\runs2.json
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks, 4 runs)
+seed     20260917
+
+resolved 50.0%   95% interval 0.0% to 100.0%
+
+context reaching the model: median 63,843 tokens (from 41,956 to 94,380 over 4 run(s))
+
+band           tasks  resolved
+substantial        4       50%
+Bands are labels, not filters — a gain in one of them is not a gain.
+
+The interval spans 100%. This is a pilot: it bounds almost nothing,
+and reporting the point estimate alone would be a claim it cannot support.
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks)
+seed     20260917   arm(s) gate, 1 replicate(s) each
+bundles  results\b4-discriminate\bundles
+
+effort   high   per-run budget $15.00
+journal  results\b4-discriminate\runs3.jsonl   (every run appended as it finishes)
+
+  attrs-577c782c            gate     unfixed     46 turns   529s $2.57
+  click-c2ed4149            gate     resolved    60 turns   636s $3.74
+  click-d946074a            gate     unfixed     29 turns   302s $1.44
+  jinja2-065334d1           gate     resolved    20 turns   224s $0.97
+
+wrote results\b4-discriminate\runs3.json
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks, 4 runs)
+seed     20260917
+
+resolved 50.0%   95% interval 0.0% to 100.0%
+
+context reaching the model: median 51,123 tokens (from 32,920 to 82,593 over 4 run(s))
+
+band           tasks  resolved
+one-liner          1        0%
+substantial        3       67%
+Bands are labels, not filters — a gain in one of them is not a gain.
+
+The interval spans 100%. This is a pilot: it bounds almost nothing,
+and reporting the point estimate alone would be a claim it cannot support.
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks)
+seed     20260917   arm(s) gate, 1 replicate(s) each
+bundles  results\b4-discriminate\bundles
+
+effort   high   per-run budget $15.00
+journal  results\b4-discriminate\runs4.jsonl   (every run appended as it finishes)
+
+  attrs-1e07f468            gate     resolved    34 turns   244s $1.56
+  click-9f9b149e            gate     resolved    39 turns   392s $2.23
+  click-d340b0c1            gate     resolved    99 turns   919s $7.82
+  jinja2-0cd69481           gate     resolved    14 turns    57s $0.57
+
+wrote results\b4-discriminate\runs4.json
+model    claude-opus-5
+corpus   e2d721482fbdd2a5  (4 tasks, 4 runs)
+seed     20260917
+
+resolved 100.0%   95% interval 100.0% to 100.0%
+
+context reaching the model: median 50,897 tokens (from 25,521 to 141,539 over 4 run(s))
+
+band           tasks  resolved
+one-liner          2      100%
+substantial        2      100%
+Bands are labels, not filters — a gain in one of them is not a gain.
+

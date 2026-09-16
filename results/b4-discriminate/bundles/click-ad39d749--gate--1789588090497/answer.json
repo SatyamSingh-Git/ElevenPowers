@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 518174,
+ "num_turns": 50,
+ "stop_reason": "end_turn",
+ "session_id": "50c68222-3375-4cb7-ae13-965a62ca4766",
+ "total_cost_usd": 4.0117949999999984,
+ "usage": {
+  "input_tokens": 100,
+  "cache_creation_input_tokens": 94280,
+  "cache_read_input_tokens": 3975240,
+  "output_tokens": 43235,
+  "output_tokens_details": {
+   "thinking_tokens": 17958
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 94280,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 861,
+    "cache_read_input_tokens": 118921,
+    "cache_creation_input_tokens": 235,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 235
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 100,
+   "outputTokens": 43235,
+   "cacheReadInputTokens": 3975240,
+   "cacheCreationInputTokens": 94280,
+   "webSearchRequests": 0,
+   "costUSD": 4.0117949999999984,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. The change is implemented across four files:\n\n**`src/click/testing.py`**\n- New `CaptureMode` alias (`Literal[\"sys\", \"fd\"]`, narrowed to `\"sys\"` on Windows) and a `_FDCapture` helper that `os.dup`s a target fd, redirects it to a `TemporaryFile` via `os.dup2`, and on `stop()` restores it and returns the captured bytes.\n- `CliRunner(capture=...)` \u2014 defaults to `\"sys\"`; rejects unknown modes and rejects `\"fd\"` on Windows with a `ValueError`.\n- Reverted the 8.3.3 default-mode fd exposure: `isolation()` no longer sniffs the replaced streams' `fileno()` and no longer passes `original_fd`, so `_NamedTextIOWrapper._original_fd` stays `-1` and `fileno()` raises `io.UnsupportedOperation` again (pre-8.3.3 behavior), meaning user code can't `dup2` over the host runner's stdout.\n- `invoke()` starts fd capture on fds 1/2 *before* isolation when `capture=\"fd\"`, patches `_original_fd` on the isolated streams to the saved originals so `faulthandler`/`subprocess` still get a real fd, and merges the captured bytes into the stdout/stderr buffers in the `finally` (`BytesIOCopy` mirrors them into `output`).\n\n**Tests** \u2014 `test_faulthandler_enable` now uses `capture=\"fd\"` (the mode that provides a real fd); added coverage for `fileno()` raising in the default mode, fd-level writes and subprocess output being captured, fds being restored afterwards, and both `ValueError` paths. fd tests are skipped on Windows.\n\n**Docs/CHANGES** \u2014 rewrote the \"File Descriptors and Low-Level I/O\" section for the two modes (including the caveat that fd output is appended rather than interleaved, and that stdin isn't redirected), plus an 8.4.0 changelog entry.\n\nFull suite: 1459 passed, 80 skipped, 1 xfailed; ruff check/format clean. Note two environment caveats: the four `fd` tests can't run on this Windows box, so I verified that path by running the same scenarios against a scratch copy with the Windows guard removed (fd writes, subprocess output, `faulthandler.enable()`, and fd restoration all behaved as asserted); and a click 8.5.0 in user site-packages shadows the repo unless `PYTHONPATH=src` is set, which is how I ran pytest.",
+ "ttft_ms": 1714,
+ "ttft_stream_ms": 1321,
+ "time_to_request_ms": 387,
+ "type": "result",
+ "duration_ms": 604870,
+ "uuid": "2fd98d3d-14a9-4253-9e69-a016bb9a775f"
+}

@@ -1,0 +1,102 @@
+{
+ "is_error": false,
+ "duration_api_ms": 702433,
+ "num_turns": 99,
+ "stop_reason": "end_turn",
+ "session_id": "53dac76f-d313-4e31-986b-22da81dfdf05",
+ "total_cost_usd": 7.818474,
+ "usage": {
+  "input_tokens": 198,
+  "cache_creation_input_tokens": 141341,
+  "cache_read_input_tokens": 10438848,
+  "output_tokens": 47386,
+  "output_tokens_details": {
+   "thinking_tokens": 31183
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 141341,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 481,
+    "cache_read_input_tokens": 158711,
+    "cache_creation_input_tokens": 300,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 300
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 198,
+   "outputTokens": 47386,
+   "cacheReadInputTokens": 10438848,
+   "cacheCreationInputTokens": 141341,
+   "webSearchRequests": 0,
+   "costUSD": 7.818474,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01LvfxztaSJa43ecSmmM9Hvc",
+   "tool_input": {
+    "command": "cd \"C:/Users/Satyam/AppData/Local/Temp/claude/C--Users-Satyam-AppData-Local-Temp-tmpyzoi0pou/53dac76f-d313-4e31-986b-22da81dfdf05/scratchpad\" && timeout 300 git clone --filter=blob:none --no-checkout https://github.com/pallets/click click-upstream 2>&1 | tail -3",
+    "description": "Clone upstream click repo into scratchpad"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01J8tAijdnQZQUSJtsNUhhXt",
+   "tool_input": {
+    "command": "timeout 60 curl -s \"https://api.github.com/repos/pallets/click/issues/3298\" | head -c 3000",
+    "description": "Fetch upstream issue 3298 metadata"
+   }
+  },
+  {
+   "tool_name": "Edit",
+   "tool_use_id": "toolu_01R66LQcJbBZDALtw9kSsD9f",
+   "tool_input": {
+    "file_path": "C:\\Users\\Satyam\\AppData\\Local\\Temp\\tmpyzoi0pou\\src\\click\\core.py",
+    "old_string": "            elif default_value == \"\":",
+    "new_string": "            elif isinstance(default_value, str) and default_value == \"\":",
+    "replace_all": false
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01JoXeWjhwJ4ZQzDtgjWsssa",
+   "tool_input": {
+    "command": "cd \"C:/Users/Satyam/AppData/Local/Temp/tmpyzoi0pou\" && git diff && rm -f /tmp/probe.py /tmp/chk.py /tmp/core_fixed.py /tmp/test_probe.py && rm -rf /tmp/clickup",
+    "description": "Show final diff and clean temp files"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Both obligations are discharged, with the commands run exactly as specified:\n\n```\n$ python -m pytest tests -q\n1335 passed, 72 skipped, 30000 deselected, 1 xfailed in 4.34s\n\n$ python -m pytest tests/test_options.py -q -k show_default_with_empty_string\n2 passed, 550 deselected in 0.42s\n```\n\nThe suite is green and the test covering the change passes. Nothing changed in the working tree since the previous run \u2014 I re-ran both commands so the passing results are recorded against the current state.\n\nFinal state of the change:\n\n- `src/click/core.py:3113` \u2014 `elif default_value == \"\":` \u2192 `elif isinstance(default_value, str) and default_value == \"\":`, so help rendering no longer invokes `__eq__` with a string operand on arbitrary default objects.\n- `tests/test_options.py` \u2014 `test_show_default_with_empty_string` parametrized to cover both the empty string and an object whose `__eq__` raises on strings. Verified discriminating: reverting the one-line fix turns this into `1 failed, 1334 passed` with a `ValueError` at `test_options.py:1267`.\n- `conftest.py` \u2014 three lines evicting a `click` imported from outside `src` before the bootstrap ran. Without this the `langsmith` pytest plugin's import of the site-packages `click 8.5.0` shadows the working tree and the suite reports 54 unrelated failures on the seed commit itself.",
+ "ttft_ms": 1734,
+ "ttft_stream_ms": 1328,
+ "time_to_request_ms": 366,
+ "type": "result",
+ "duration_ms": 917353,
+ "uuid": "e7a78ef0-bc86-402f-afce-2e449f078e78"
+}
