@@ -138,3 +138,32 @@ fix in place, three of three.
 The fix was verified without spending anything further: the exact prompt from
 `jinja2-065334d1` that produced no base now produces one, replayed through the
 real hook process against a temporary repository.
+
+---
+
+## The rehearsal, widened and re-run: 16 of 16
+
+With the base recorded at task open and the rehearsal driving the real hook,
+the same 16 tasks the paid sweep used now all reach the check - **16 of 16**,
+against 8 of 16 when money was spent on them. The blindness is gone, and it
+was established for nothing.
+
+It also produced the reminder its own docstring warns about. Every task came
+back `verdict=yes` and `reproduced=True`, because the rehearsal applies the
+**gold patch** and a correct fix discriminates by construction. A rehearsal
+where everything discriminates is a rehearsal, not a result. The interesting
+verdict is VACUOUS, and it only exists where an agent's evidence is weak -
+precisely what a gold patch removes.
+
+And it surfaced something nobody asked it: `click-d340b0c1` reports 48 tests red
+on the base tree, all of them real identities rather than collection errors, and
+all in `tests/test_arguments.py` - the one file the task carried across.
+Carrying an updated test file onto old source turns **the whole file** red, not
+just the test that targets the change. So `reproduced=True` on 16 of 16 is true
+but much cheaper than the phrase suggests, and §5.13's reproduction inherits the
+same coarseness already recorded for the `yes` verdict.
+
+That one is written down rather than fixed. Tightening what counts as a
+reproduction would move a published figure, and the decision is not a detail to
+settle inside a debugging session. `results/b3-stress/rehearsal-16.md` holds the
+numbers and the open question.

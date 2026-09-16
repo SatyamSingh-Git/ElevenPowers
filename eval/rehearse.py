@@ -110,6 +110,10 @@ def rehearse(task, fix: str, hold: Path) -> dict:
 
     verdicts, red = stress.stress(ledger)
     ledger.discrimination, ledger.failed_before = verdicts, red
+    # Persisted so a rehearsal can be opened afterwards. Without this the
+    # answers lived only in the return value, and the counts below could not be
+    # checked against the identities behind them.
+    ledger.save()
     return {
         "task": task.name,
         "verdict": verdicts.get("tests", "NOT ASKED"),
