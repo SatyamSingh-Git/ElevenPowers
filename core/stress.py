@@ -208,11 +208,25 @@ def _passing(ledger) -> bool:
     What the question actually needs is a claim that the tests pass *now*; the
     declared command is how the old tree gets asked the same thing, and it does
     not have to be the string the agent typed.
+
+    **Fresh or stale, but not gone.** Requiring FRESH cost two of the sixteen
+    B3 runs their whole answer. The question here is about the *base tree* and
+    the *declared command*, and neither moves when the agent edits a file after
+    running the tests — but that edit staled every passing record, so the gate
+    closed and the run recorded no verdict, no `failed_before` and therefore no
+    reproduction either. Measured on `click-9f9b149e`: the last passing record's
+    tree is not the tree of its last record, so the tree moved underneath it.
+
+    A stale record still *claims* the tests passed, which is the claim §5.10
+    exists to question, and the staleness itself is already reported by the
+    freshness machinery rather than needing to be enforced here. GONE is
+    different: the files a record observed no longer exist, so there is no
+    coherent claim left to question.
     """
     from .evidence import Freshness, Kind, Result
 
     return any(e.kind in (Kind.TEST, Kind.SUITE) and e.result is Result.PASS
-               and e.freshness(ledger.root) is Freshness.FRESH
+               and e.freshness(ledger.root) in (Freshness.FRESH, Freshness.STALE)
                for e in ledger.evidence)
 
 

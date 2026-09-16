@@ -251,3 +251,40 @@ Which makes it the sharpest confirmation yet of the `red_before` caveat: where
 that number is large it is mostly pre-existing failure, and the targeted check
 is what tells the two apart. The suite grain never could, and for seven measured
 runs it did not.
+
+---
+
+## The last two gates, and one of them was a freshness rule doing harm
+
+*2026-09-17.* Both items left open before a paid sweep are closed.
+
+**The staleness gate cost two of sixteen runs their entire answer.** `_passing`
+required a **FRESH** passing record before `stress` would ask anything. An edit
+landing after the last test run stales every record, so the gate closed and the
+run recorded no verdict, no `failed_before`, and therefore no reproduction
+either - three answers lost to one trailing edit, which is the ordinary shape of
+an agent finishing its work.
+
+The evidence rather than the reasoning: on `click-9f9b149e` the last passing
+record's tree is not the tree of its last record, so the tree moved underneath
+it. That is staleness, recorded in the bundle.
+
+The rule was wrong because the question is not about the current tree at all.
+`stress` asks what the *declared command* did on the *base commit*, and neither
+moves when the agent edits a file afterwards. The staleness of the present claim
+is real, and it is already reported by the freshness machinery; enforcing it
+here as well threw away an answer that was still true. Fresh or stale is now
+questioned. **GONE** still is not, because a record whose observed files no
+longer exist claims nothing coherent - and that half has its own probe, because
+a version accepting every freshness passes the forward test just as well.
+
+**And a bundle can now say which gate closed.** `stress` also declines when a
+project declares no command, and on the B3 sweep that could not be told apart
+from the rest afterwards: the config lived only on disk, in a workspace long
+deleted. The saved ledger now records the declared profile and commands. Written
+for diagnosis and never read back - the config on disk is the truth about a
+repository now, and yesterday's snapshot must not quietly override it, which is
+the adversarial half of that probe.
+
+Rehearsed afterwards: 16 of 16 still reached, 6 still targeted. Nothing moved,
+which is what a fix to a gate nobody's rehearsal was hitting should look like.

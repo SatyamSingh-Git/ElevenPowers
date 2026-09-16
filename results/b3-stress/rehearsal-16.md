@@ -129,9 +129,19 @@ targeted check is what tells the two apart - the suite grain never could.
 ## Standing before any further spend
 
 - Fixed: the missing base, and a pre-flight that can now see that class of defect.
-- Open: the two runs that had a base and still skipped — the staleness gate at
-  `core/stress.py:157`, untouched by this work.
-- Open: `config` is not serialised into a bundle, so the `config.commands` gate
-  cannot be diagnosed after a run at all.
+- **Closed 2026-09-17:** the staleness gate. `_passing` required a **FRESH**
+  passing record, so an edit landing after the last test run staled every record
+  and the whole check skipped - no verdict, no `failed_before`, and therefore no
+  reproduction either. Confirmed on `click-9f9b149e`, whose last passing record's
+  tree is not the tree of its last record: the tree moved underneath it. The gate
+  now accepts **fresh or stale, but not gone**. The question is about the base
+  tree and the declared command, and neither moves when the agent edits a file
+  afterwards; the staleness itself is already reported by the freshness
+  machinery rather than needing to be enforced here. GONE still declines,
+  because a record whose observed files no longer exist claims nothing coherent.
+- **Closed 2026-09-17:** the config blind spot. The saved ledger now records the
+  declared profile and commands, so a bundle can say which gate closed. It is
+  written for diagnosis and never read back - the config on disk is the truth
+  about a repository now, and yesterday's snapshot must not quietly override it.
 - Open: both computed signals saturate under a correct patch, so their rates
   cannot be estimated without paying.

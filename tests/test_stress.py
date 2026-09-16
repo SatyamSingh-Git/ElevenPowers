@@ -545,3 +545,74 @@ def test_a_command_it_cannot_read_is_declined(repo):
     assert _targeted("make test", repo, ("tests/test_app.py::test_add",)) == ""
     assert _targeted("python -m pytest src -q", repo,
                      ("tests/test_app.py::test_add",)) == ""
+
+
+def test_an_edit_after_the_tests_does_not_lose_the_whole_check(repo):
+    """Requiring a FRESH pass cost two of sixteen paid runs their answer.
+
+    The question is about the base tree and the declared command, and neither
+    moves when the agent edits a file after running the tests. But that edit
+    stales every passing record, so the gate closed and the run recorded no
+    verdict, no failed_before, and therefore no reproduction either.
+
+    Forward - a stale pass is still a claim that the tests passed, so it is
+    still questioned. Adversarially - a record whose files are GONE claims
+    nothing coherent, and nothing that never passed is questioned at all.
+    """
+    from core.evidence import Freshness
+    from core.stress import _passing
+
+    led = ledger_for(repo)
+    assert _passing(led), "a fresh pass must be questioned"
+
+    # The ordinary shape: tests run green, then one more edit lands.
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b  # one more touch\n", encoding="utf-8")
+    assert led.evidence[0].freshness(repo) is Freshness.STALE
+    assert _passing(led), "an edit after the tests must not lose the check"
+
+    # Gone is different: the files the record observed no longer exist.
+    (repo / "src" / "app.py").unlink()
+    (repo / "tests" / "test_app.py").unlink()
+    assert led.evidence[0].freshness(repo) is Freshness.GONE
+    assert not _passing(led), "a record whose files vanished claims nothing"
+
+
+def test_nothing_claiming_to_pass_is_still_not_questioned(repo):
+    """The guard the change must not remove: no pass, nothing to question."""
+    from core.evidence import Evidence, Kind, Result, source_files, tree_hash
+    from core.ledger import Ledger
+    from core.obligations import Claim
+    from core.stress import _passing
+
+    observed = source_files(repo)
+    failing = Evidence(kind=Kind.SUITE, identity="python pytest", result=Result.FAIL,
+                       observed=observed, tree=tree_hash(repo, observed), scope="source",
+                       command=SUITE, passed=0, failed=1, counted=True)
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], evidence=[failing])
+    assert not _passing(led)
+
+
+def test_the_ledger_records_which_commands_were_declared(repo):
+    """A bundle that cannot say which gate closed cannot explain its result.
+
+    `stress` declines when a project declares no command. On the B3 sweep that
+    gate could not be told apart from the others after the fact, because the
+    config lived only on disk in a workspace that no longer existed.
+
+    Forward - the declared commands are in the saved ledger. Adversarially -
+    loading never takes them from that snapshot, because the config on disk is
+    the truth about a repository now and yesterday's copy must not override it.
+    """
+    import json
+
+    led = ledger_for(repo)
+    led.save()
+    written = json.loads(led.path.read_text(encoding="utf-8"))
+    assert written["config"]["commands"] == {"tests": SUITE}
+    assert written["config"]["profile"] == "guide"
+
+    save_config(repo, Config(profile="strict", commands={"tests": "make check"}))
+    back = Ledger.load(repo)
+    assert back.config.commands == {"tests": "make check"}, "disk must win"
+    assert back.config.profile == "strict"

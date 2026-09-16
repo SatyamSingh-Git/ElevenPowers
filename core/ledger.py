@@ -210,6 +210,16 @@ class Ledger:
             "base": self.base,
             "failed_before": self.failed_before,
             "discrimination": self.discrimination,
+            # Written for diagnosis, never read back. `stress` declines when a
+            # project declares no command, and on the B3 sweep that gate could
+            # not be told apart from the others afterwards, because the config
+            # lived only on disk in a workspace that no longer exists. A bundle
+            # that cannot say which gate closed cannot explain its own result.
+            # Deliberately not restored by `load`: the config on disk is the
+            # truth about a repository now, and a snapshot of what it said
+            # yesterday must never quietly override it.
+            "config": {"profile": self.config.profile,
+                       "commands": dict(self.config.commands)},
         }
         # Named per process: a shared temporary file is its own race, where two
         # writers interleave into one buffer and the winner replaces with a
