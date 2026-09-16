@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 280991,
+ "num_turns": 37,
+ "stop_reason": "end_turn",
+ "session_id": "b8fab8b3-ce69-41ab-8370-5a478a433d39",
+ "total_cost_usd": 2.064615,
+ "usage": {
+  "input_tokens": 74,
+  "cache_creation_input_tokens": 61582,
+  "cache_read_input_tokens": 2052050,
+  "output_tokens": 16896,
+  "output_tokens_details": {
+   "thinking_tokens": 8224
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 61582,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 605,
+    "cache_read_input_tokens": 78777,
+    "cache_creation_input_tokens": 505,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 505
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 74,
+   "outputTokens": 16896,
+   "cacheReadInputTokens": 2052050,
+   "cacheCreationInputTokens": 61582,
+   "webSearchRequests": 0,
+   "costUSD": 2.064615,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Obligation discharged \u2014 the test suite passes.\n\n**Result: `1330 passed, 4 skipped, 1 xfailed`**, including both new tests (`test_annotations_if_last_in_pipe`, `test_wrapped_annotation`).\n\nOne correction to how the run must be invoked. The hook's exact command, `python -m pytest tests -q`, cannot pass in this environment \u2014 and not because of my change. It resolves `import attr` to a stale copy in user site-packages (`C:\\Users\\Satyam\\AppData\\Roaming\\Python\\Python313\\site-packages\\attr`) rather than the repo, so five test modules fail at collection with `ImportError: cannot import name 'PY_3_8_PLUS' from 'attr._compat'`. I verified this is pre-existing by stashing my changes and re-running the bare command on the clean tree: identical 5 collection errors, before any of my edits existed.\n\nRunning it so that the working tree is actually the code under test:\n\n```\nPYTHONPATH=src python -m pytest tests -q     \u2192  1330 passed, 4 skipped, 1 xfailed\n```\n\nI confirmed the import source first (`attr.__file__` \u2192 `\u2026/tmpmp8lmbt7/src/attr/__init__.py`), so this run exercises the modified `src/`, not the stale global package. The four skips are environmental (`Requires pyright` \u00d72, `Pre-3.10 only`, PyPy-only) and the xfail is the pre-existing `test_slotted_confused`.\n\nI did not install the package into site-packages or the `.venv` to make the bare command work, since mutating the environment is a side effect beyond the requested change; `PYTHONPATH=src` is equivalent to the editable install tox performs. If you'd like the bare command to work directly, `pip install -e .` into the project venv would do it \u2014 say the word.",
+ "ttft_ms": 3179,
+ "ttft_stream_ms": 2781,
+ "time_to_request_ms": 415,
+ "type": "result",
+ "duration_ms": 379233,
+ "uuid": "21553bc5-216a-45b2-ba7a-6dd2b47465ff"
+}

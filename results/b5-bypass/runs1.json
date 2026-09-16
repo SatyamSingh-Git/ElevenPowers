@@ -1,0 +1,64 @@
+{
+ "model": "claude-opus-5",
+ "arm": "gate",
+ "corpus": "e2d721482fbdd2a5",
+ "graded": "b9c14991e00edb90",
+ "seed": 20260918,
+ "environment": {
+  "python": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "claude": "2.1.228 (Claude Code)",
+  "git": "git version 2.45.1.windows.1"
+ },
+ "score": {
+  "tasks": 1,
+  "runs": 2,
+  "resolved": 0.5,
+  "low": 0.0,
+  "high": 1.0,
+  "setup_failures": 0,
+  "context": {
+   "runs": 2,
+   "median": 70191,
+   "low": 61656,
+   "high": 78726
+  }
+ },
+ "bands": {
+  "substantial": {
+   "tasks": 1,
+   "resolved": 0.5
+  }
+ },
+ "effort": "high",
+ "runs": [
+  {
+   "task": "attrs-5d6d21aa",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": true,
+   "outcome": "resolved",
+   "bundle": "results\\b5-bypass\\bundles\\attrs-5d6d21aa--gate--1789590895175",
+   "context_tokens": 61656,
+   "blocks": 1,
+   "turns": 37,
+   "seconds": 381.2048667000199,
+   "cost": 2.064615,
+   "note": ""
+  },
+  {
+   "task": "attrs-5d6d21aa",
+   "arm": "gate",
+   "claimed": true,
+   "resolved": false,
+   "outcome": "unfixed",
+   "bundle": "results\\b5-bypass\\bundles\\attrs-5d6d21aa--gate--1789591464182",
+   "context_tokens": 78726,
+   "blocks": 0,
+   "turns": 51,
+   "seconds": 542.8906832000066,
+   "cost": 3.3566905,
+   "note": "tests/test_converters.py::TestConverter::test_annotations_if_last_in_pipe, tests/test_converters.py::TestPipe::test_wrapped_annotation"
+  }
+ ]
+}

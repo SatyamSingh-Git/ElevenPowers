@@ -152,3 +152,33 @@ very examples describing backslashes being eaten - leaving a literal 0x08 in
 the file, inside the sentence about a literal 0x08. Repaired with an editor
 rather than a shell, which is what the standing note about this says to do and
 what was not done.
+
+---
+
+## B5: the bypass fix, watched working on a live agent
+
+*Four runs, $6.87, about ten minutes.* The fix above was verified by replay, and
+a replay cannot reproduce the thing that caused the defect: an agent *choosing*
+to write through the shell. Only an agent can do that. So the two tasks that
+bypassed were re-run, twice each.
+
+| | B4, before | B5, after |
+|---|---|---|
+| gate engaged | 0 of 2 | **4 of 4** |
+| `touched` | 0 and 1 | 3-4 real source files |
+| discrimination | never asked | `yes` on all four |
+
+`src/jinja2/utils.py` and `src/attr/_make.py` are in `touched` now. They are the
+files the gate was blind to.
+
+**And the confound is excluded rather than assumed away.** The obvious
+alternative explanation is that these agents simply used `Edit` and `Write` this
+time, so the fix was never exercised. `ledger.guided` settles it: that flag is
+set only by `_guide`, which runs only from the `EDIT_TOOLS` branch of
+`on_post_tool`. It is **False on all four runs**. No edit-tool event reached the
+runtime in any of them - the agents wrote through the shell again, exactly as
+before - and the claim opened solely because `on_stop` now asks the working tree
+first.
+
+A fix for a defect found in a paid run, verified in a paid run, with the
+alternative explanation ruled out by a flag that could not have been set.

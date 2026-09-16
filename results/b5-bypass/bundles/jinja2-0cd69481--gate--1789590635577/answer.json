@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 73689,
+ "num_turns": 12,
+ "stop_reason": "end_turn",
+ "session_id": "c364ed84-cbf7-4df6-a388-06da221f1ff2",
+ "total_cost_usd": 0.630711,
+ "usage": {
+  "input_tokens": 22,
+  "cache_creation_input_tokens": 29252,
+  "cache_read_input_tokens": 412512,
+  "output_tokens": 5273,
+  "output_tokens_details": {
+   "thinking_tokens": 3243
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29252,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 237,
+    "cache_read_input_tokens": 45762,
+    "cache_creation_input_tokens": 1207,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1207
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 22,
+   "outputTokens": 5273,
+   "cacheReadInputTokens": 412512,
+   "cacheCreationInputTokens": 29252,
+   "webSearchRequests": 0,
+   "costUSD": 0.630711,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. The email pattern's local part was `\\S+`, which happily consumed a leading `@`, so fediverse-style handles like `@user@example.com` were turned into `mailto:` links.\n\n- `src/jinja2/utils.py:227` \u2014 `_email_re` local part is now `[^\\s@]+`, so a value with a second `@` (leading or otherwise) no longer matches. Real addresses and the `mailto:` branch are unaffected.\n- `tests/test_filters.py` \u2014 new `test_urlize_at_sign_prefix` asserting `@user@example.com` passes through untouched.\n- `CHANGES.rst` \u2014 entry under the unreleased 3.1.5 section.\n\nFull suite: 905 passed.",
+ "ttft_ms": 1873,
+ "ttft_stream_ms": 1513,
+ "time_to_request_ms": 415,
+ "type": "result",
+ "duration_ms": 119773,
+ "uuid": "1de5e62c-3757-4d62-9a65-184281869de1"
+}

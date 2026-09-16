@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 102287,
+ "num_turns": 15,
+ "stop_reason": "end_turn",
+ "session_id": "3991f9a0-c5a5-4533-81aa-c6d2985129f0",
+ "total_cost_usd": 0.8176089999999998,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 32574,
+  "cache_read_input_tokens": 622438,
+  "output_tokens": 7220,
+  "output_tokens_details": {
+   "thinking_tokens": 4139
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 32574,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 412,
+    "cache_read_input_tokens": 49899,
+    "cache_creation_input_tokens": 394,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 394
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 30,
+   "outputTokens": 7220,
+   "cacheReadInputTokens": 622438,
+   "cacheCreationInputTokens": 32574,
+   "webSearchRequests": 0,
+   "costUSD": 0.8176089999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done \u2014 all 904 tests pass against the local source.\n\n**`src/jinja2/utils.py`** \u2014 the bare-email branch of `urlize` now skips words starting with `@`. The `_email_re` pattern (`^\\S+@\\w[\\w.-]*\\.\\w+$`) matches `@user@example.com` because `\\S+` happily swallows the leading `@user`, so fediverse-style handles were being turned into `<a href=\"mailto:@user@example.com\">`:\n\n```python\n        elif (\n            \"@\" in middle\n            and not middle.startswith(\"www.\")\n            # ignore values like `@a@b`\n            and not middle.startswith(\"@\")\n            and \":\" not in middle\n            and _email_re.match(middle)\n        ):\n```\n\nThe guard sits in the condition rather than in `_email_re` so the `mailto:` branch above is untouched \u2014 an explicit `mailto:@a@b.com` still behaves as before.\n\n**`tests/test_filters.py`** \u2014 added a case to `test_urlize` asserting `\"foo @user@example.com bar\"` passes through unlinked.\n\n**`CHANGES.rst`** \u2014 entry under 3.1.5. I referenced `:issue:`2131`` from recall of the upstream issue number; worth a glance if you want it exact.",
+ "ttft_ms": 2450,
+ "ttft_stream_ms": 2169,
+ "time_to_request_ms": 322,
+ "type": "result",
+ "duration_ms": 127178,
+ "uuid": "f0834f10-103d-4ee6-9e84-c5e2a10cf73c"
+}

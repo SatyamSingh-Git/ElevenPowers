@@ -1,0 +1,76 @@
+{
+ "is_error": false,
+ "duration_api_ms": 459077,
+ "num_turns": 51,
+ "stop_reason": "end_turn",
+ "session_id": "5878ef2a-cf19-4679-bf51-7cf25667643d",
+ "total_cost_usd": 3.3566905,
+ "usage": {
+  "input_tokens": 102,
+  "cache_creation_input_tokens": 78624,
+  "cache_read_input_tokens": 3327381,
+  "output_tokens": 36250,
+  "output_tokens_details": {
+   "thinking_tokens": 24542
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 78624,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 929,
+    "cache_read_input_tokens": 95960,
+    "cache_creation_input_tokens": 365,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 365
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-opus-5": {
+   "inputTokens": 102,
+   "outputTokens": 36250,
+   "cacheReadInputTokens": 3327381,
+   "cacheCreationInputTokens": 78624,
+   "webSearchRequests": 0,
+   "costUSD": 3.3566905,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-opus-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Vv6W5Axr6agDfRvXdca3Kn",
+   "tool_input": {
+    "command": "timeout 30 curl -sL https://github.com/python-attrs/attrs/commit/ec0d2e0c0d0c1ee5e7a0e4bbd2d1a9b0.patch -o /dev/null -w \"%{http_code}\\n\" 2>&1 | tail -2",
+    "description": "Test network access to github"
+   }
+  }
+ ],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Done. The change makes `Converter` transparent to `inspect.signature()` when it's in adapter mode.\n\n**The bug:** `Converter` stored its dispatch in the `__call__` slot as a bound method of a generic helper (`_takes_only_value` / `_takes_instance` / `_takes_field` / `_takes_both`). Those helpers all have the flat signature `(value, instance, field)` with no annotations, so introspecting a `Converter` yielded nothing about the callable it wraps. Since `pipe()` always returns a `Converter`, composing pipes (or passing a list of converters to `field()`) silently lost type inference: `attr.converters.pipe(pipe(int2str)).converter.__annotations__` was `{}`.\n\n**The fix** (`src/attr/_make.py:2704`): build `__call__` from small lambdas that close over `self.converter`, and \u2014 in full adapter mode, where the signatures already match \u2014 use the wrapped converter *itself* as `__call__`. `inspect.signature()` on a `Converter` now resolves through the slot to the real callable, so `pipe()` picks up its return annotation again.\n\nSupporting pieces:\n- `src/attr/_compat.py:16` \u2014 added `PY_3_11_PLUS`. Python 3.11 is where `inspect` began resolving a slot descriptor to the stored value; on older versions `pipe()` reaches for `last.__call__` explicitly (`src/attr/_make.py:2945`).\n- `tests/test_annotations.py` \u2014 `test_pipe_of_adapters`, verified to fail with `KeyError: 'return'` before the fix.\n- `changelog.d/1331.change.md`.\n\nOne thing worth flagging: `pipe()` only unwraps the *last* converter, so the `val` annotation taken from the *first* converter is still not inferred from a `Converter` on Python < 3.11 (it works on 3.11+, where `inspect` resolves the slot on its own). That asymmetry is pre-existing in how `pipe` reads its two ends; I left it alone and kept the new test to the return type, which behaves identically across all supported versions.\n\nFull suite: 1329 passed, 4 skipped, 1 xfailed.",
+ "ttft_ms": 1935,
+ "ttft_stream_ms": 1534,
+ "time_to_request_ms": 273,
+ "type": "result",
+ "duration_ms": 541082,
+ "uuid": "fcc18e5d-5e4b-49b7-8b1e-3dae95e1f750"
+}
