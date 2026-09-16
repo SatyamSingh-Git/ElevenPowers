@@ -58,6 +58,9 @@ def repo(tmp_path):
 
 
 SUITE = f'"{sys.executable}" -m pytest tests -q'
+# No path of its own, so node ids can be appended without widening it back to
+# the whole directory. `SUITE` names `tests` and deliberately cannot be.
+NODES = f'"{sys.executable}" -m pytest -q'
 
 
 def ledger_for(repo, command=SUITE):
@@ -454,3 +457,91 @@ def test_a_targeted_reproduction_carries_no_caveat(repo):
     shown, grain = led._reproduction()
     assert shown is not None, "red there, green here, by name"
     assert grain == "", grain
+
+
+# --- the reproduction, asked rather than waited for -------------------------
+
+def test_a_red_test_confirmed_green_is_a_named_reproduction(repo):
+    """The other half of 5.13, and the end of the one-fact-twice problem.
+
+    `stress` already learns which tests were red on the base tree. Running those
+    same node ids against the tree as it is now establishes red-then-green BY
+    NAME, instead of resting on the same base-tree run that decided
+    discrimination - which supplied 0 of 7 reproductions on the B3 sweep.
+    """
+    from core.ledger import Ledger
+    from core.obligations import Claim
+    from core.stress import CONFIRMED, confirm
+
+    save_config(repo, Config(profile="guide", commands={"tests": NODES}))
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], base=stress.base_commit(repo),
+                 failed_before=["tests/test_app.py::test_add"],
+                 touched=["tests/test_app.py"])
+    found = confirm(led)
+
+    assert [e.identity for e in found] == ["tests/test_app.py::test_add"], found
+    led.add(found)
+    shown, grain = led._reproduction()
+    assert shown is not None
+    assert grain == "", "a named red-then-green test is not a suite-level finding"
+
+    # Asked once per task: the base does not move, so neither can the answer.
+    assert any(d["what"] == CONFIRMED for d in led.decisions)
+    assert confirm(led) == []
+
+
+def test_a_test_still_red_is_not_a_reproduction(repo):
+    """Adversarially: confirming must report what it finds, not what it hoped.
+
+    A test red on the base tree and STILL red now is the ordinary shape of
+    unfinished work, and returning it would manufacture a reproduction out of a
+    failure.
+    """
+    from core.ledger import Ledger
+    from core.obligations import Claim
+    from core.stress import confirm
+
+    save_config(repo, Config(profile="guide", commands={"tests": NODES}))
+    (repo / "tests" / "test_app.py").write_text(
+        "def test_add():\n    assert False\n", encoding="utf-8")
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], base=stress.base_commit(repo),
+                 failed_before=["tests/test_app.py::test_add"],
+                 touched=["tests/test_app.py"])
+
+    assert confirm(led) == []
+
+
+def test_a_command_naming_a_path_is_narrowed_not_widened(repo):
+    """`pytest tests -q` is what the whole corpus declares.
+
+    Appending ids to it would run the directory *and* the ids - the suite again
+    at a higher price - so the path is substituted out instead. An append-only
+    version declined on all sixteen corpus tasks, which is a mechanism that is
+    correct and never fires.
+    """
+    from core.stress import _targeted
+
+    run = _targeted(f'"{sys.executable}" -m pytest tests -q', repo,
+                    ("tests/test_app.py::test_add",))
+    assert run.endswith("-q tests/test_app.py::test_add"), run
+    assert " tests " not in run, run
+
+
+def test_a_command_it_cannot_read_is_declined(repo):
+    """Adversarially, twice over.
+
+    `no:cacheprovider` is a flag's value, not a path: no slash, no extension,
+    indistinguishable from `tests` by shape alone. Existence is what separates
+    them, and a token that is neither a flag nor a real path means the command
+    is not understood - which is declined, never guessed at.
+
+    And an id outside the declared path would make the run *wider* than what the
+    project sanctioned, which is the one thing substitution must never do.
+    """
+    from core.stress import _targeted
+
+    assert _targeted("python -m pytest -p no:cacheprovider", repo,
+                     ("tests/test_app.py::test_add",)) == ""
+    assert _targeted("make test", repo, ("tests/test_app.py::test_add",)) == ""
+    assert _targeted("python -m pytest src -q", repo,
+                     ("tests/test_app.py::test_add",)) == ""

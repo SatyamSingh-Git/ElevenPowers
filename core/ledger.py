@@ -450,37 +450,45 @@ class Ledger:
         """
         from .stress import DISCRIMINATES
 
-        # Not `e.command == the declared string`. That is the same exact-match
-        # mistake `stress._passing` made, and it is wrong here for the same
-        # reason: agents run their own invocation, so no record ever carries the
-        # declared text. What `DISCRIMINATES` establishes is that the project's
-        # suite did *not* pass on the old tree; a fresh passing suite record is
-        # the claim that it passes now. Together those are red-then-green.
+        # Targeted FIRST. A named test that was red on the base tree and passes
+        # here is strictly better evidence than "the suite did not pass back
+        # there", and asking the suite first meant `stress.confirm`'s records
+        # were computed and then never reached - all sixteen rehearsed tasks
+        # still reported suite grain with the targeted records sitting in the
+        # ledger unread.
+        red = set(self.failed_before)
+        if red:
+            # A whole file that would not collect back there has no node id, so
+            # a node now passing inside it counts. `tests/test_new.py` against
+            # `tests/test_new.py::test_mul` is the ordinary shape of a fix that
+            # introduces the thing the test imports.
+            files = {p for p in red if p.endswith(".py")}
+
+            def was_red(identity: str) -> bool:
+                here = identity.replace("\\", "/")
+                return identity in red or any(here.startswith(f) for f in files)
+
+            passing = [e for e in self.evidence
+                       if e.kind is Kind.TEST and e.result is Result.PASS
+                       and was_red(e.identity)
+                       and e.freshness(self.root) is Freshness.FRESH]
+            if passing:
+                return passing[-1], ""
+
+        # Otherwise the coarse reading, which is still a true one. Not
+        # `e.command == the declared string`: that is the same exact-match
+        # mistake `stress._passing` made, and wrong here for the same reason -
+        # agents run their own invocation, so no record carries the declared
+        # text. What `DISCRIMINATES` establishes is that the project's suite did
+        # *not* pass on the old tree; a fresh passing suite record is the claim
+        # that it passes now. Together those are red-then-green, at suite grain.
         if DISCRIMINATES in self.discrimination.values():
             suites = [e for e in self.evidence
                       if e.kind is Kind.SUITE and e.result is Result.PASS
                       and e.freshness(self.root) is Freshness.FRESH]
             if suites:
                 return suites[-1], SUITE_GRAIN
-
-        if not self.failed_before:
-            return None, ""
-        red = set(self.failed_before)
-        # A whole file that would not collect back there has no node id, so a
-        # node now passing inside it counts. `tests/test_new.py` against
-        # `tests/test_new.py::test_mul` is the ordinary shape of a fix that
-        # introduces the thing the test imports.
-        files = {p for p in red if p.endswith(".py")}
-
-        def was_red(identity: str) -> bool:
-            here = identity.replace("\\", "/")
-            return identity in red or any(here.startswith(f) for f in files)
-
-        passing = [e for e in self.evidence
-                   if e.kind is Kind.TEST and e.result is Result.PASS
-                   and was_red(e.identity)
-                   and e.freshness(self.root) is Freshness.FRESH]
-        return (passing[-1], "") if passing else (None, "")
+        return None, ""
 
     def _check_stability(self, obligation: Obligation) -> Check:
         """Stability needs enough clean repeats, not one lucky run.

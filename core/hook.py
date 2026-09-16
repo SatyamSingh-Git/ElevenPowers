@@ -27,7 +27,7 @@ from .scope import normalise, unrelated
 from .verify import discharge
 from .report import end_report, gate_message, guidance, start_banner
 from .ratchet import snapshot
-from .stress import base_commit, stress, wording
+from .stress import base_commit, confirm, stress, wording
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 
 MAX_BLOCKS = 2
@@ -251,6 +251,16 @@ def on_stop(payload: dict, root: Path) -> int:
     # intervention are separately justified, and this project blocked 75 percent
     # of runs once already on a signal it had not measured.
     ledger.discrimination, ledger.failed_before = stress(ledger)
+    # And the other half of 5.13, asked rather than waited for. The tests just
+    # found red on the base tree are run against the tree as it is now, so a
+    # reproduction can be established BY NAME instead of resting on the same
+    # base-tree run that decided discrimination. Measured: the targeted path
+    # supplied 0 of 7 reproductions before this, because it waited for a passing
+    # record carrying a node id and `pytest -q` prints passes as dots.
+    proved = confirm(ledger)
+    if proved:
+        ledger.add(proved)
+        status = ledger.status()
     # The best state this task ever proved, kept in a private ref so a later
     # edit cannot lose it. 5.6: a long attempt ends at its latest patch, not its
     # best, and 60-69% of agent failures reach the right code and then damage

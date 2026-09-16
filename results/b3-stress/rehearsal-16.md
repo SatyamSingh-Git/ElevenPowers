@@ -83,6 +83,49 @@ emit a passing record that `pytest -q` never prints. That is a handful of node
 ids, not a suite. It is the real answer to the question, and it is a design
 decision with a cost, recorded here rather than taken quietly.
 
+## Built, 2026-09-17: the reproduction asked for by name
+
+`stress.confirm` now runs the tests just found red on the base tree against the
+tree as it is. Same 16 tasks, no agent, no cost:
+
+| reproduction established at | before | after |
+|---|---|---|
+| **targeted** (a named test red there, green here) | **0 of 16** | **6 of 16** |
+| suite grain (the fallback) | 16 of 16 | 10 of 16 |
+
+Three things had to be right, and two of them were wrong first.
+
+**Substitute the path, do not append to it.** Every corpus task declares
+`python -m pytest tests -q`. Appending node ids to that runs the whole directory
+*and* the ids - the suite again at a higher price - so the first version refused
+whenever the command named a path, and would have declined on all sixteen. The
+declared path is now replaced by the ids, which is strictly narrower, and a
+token counts as a path only if it exists in the repository: that is what
+separates `tests` from the `no:cacheprovider` in `-p no:cacheprovider`, which is
+identical in shape and is not a path at all.
+
+**Subtract the failures; do not look for the passes.** `pytest -q` prints a
+failure by name and a pass as a dot - the same asymmetry that starved the old
+path. But the ids were chosen here, so what ran is known: subtracting the ones
+pytest named leaves the ones that passed. Exit codes other than 0 or 1 mean the
+question was not answered and nothing is claimed.
+
+**Targeted evidence has to outrank the suite reading.** It did not at first, and
+all sixteen tasks still reported suite grain with the targeted records sitting
+in the ledger unread, because `_reproduction` asked the suite question first.
+
+## Why ten tasks still fall back, and why that is correct
+
+Not a limitation of the mechanism - a fact about those repositories. For
+`attrs-6e3786c5` all twelve tests chosen were still red on the current tree,
+failing with `TypeError`, because they are **pre-existing breakage in the seeded
+repo** rather than tests the fix repairs. The check declined to call that a
+reproduction, which is precisely the adversarial behaviour it is probed for.
+
+That is also the sharpest available confirmation of the `red_before` caveat
+above. Where `red_before` is large it is mostly pre-existing failure, and the
+targeted check is what tells the two apart - the suite grain never could.
+
 ## Standing before any further spend
 
 - Fixed: the missing base, and a pre-flight that can now see that class of defect.

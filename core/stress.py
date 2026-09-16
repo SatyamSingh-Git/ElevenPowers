@@ -227,3 +227,124 @@ def wording(verdicts: dict[str, str]) -> list[str]:
             lines.append(f"{need}: could not be run against the tree as it was, "
                          f"so whether it discriminates is unknown")
     return lines
+
+
+CONFIRMED = "targeted reproduction"
+CONFIRM_LIMIT = 12
+
+
+def _targeted(command: str, root: Path, ids: tuple[str, ...]) -> str:
+    """The declared command, narrowed to these node ids, or nothing.
+
+    Appending ids is wrong whenever the command names a path of its own:
+    `pytest tests` plus three ids runs the whole directory *and* the three,
+    which is the suite again at a higher price. Substituting is right, and it is
+    what the corpus needs - every task there declares `python -m pytest tests
+    -q`, so an append-only version would have declined on all sixteen.
+
+    A token is treated as a path only if it exists in the repository. That is
+    what separates `tests` from a flag's value such as the `no:cacheprovider` in
+    `-p no:cacheprovider`, which carries no slash and no extension and would
+    otherwise look exactly as path-like. Anything unrecognised means the command
+    is not understood, and an unrecognised command is declined rather than
+    guessed at.
+    """
+    tokens = command.split()
+    named = next((t for t in tokens if t.endswith("pytest")), "")
+    if not named:
+        return ""
+    cut = tokens.index(named)
+    flags, paths = [], []
+    for token in tokens[cut + 1:]:
+        if token.startswith("-"):
+            flags.append(token)
+        elif (root / token).exists():
+            paths.append(token.replace("\\", "/").rstrip("/"))
+        else:
+            return ""
+    # Never wider than what the project declared: every id has to sit inside a
+    # path the command already covers.
+    if paths and not all(any(i.replace("\\", "/").startswith(p) for p in paths) for i in ids):
+        return ""
+    return " ".join(tokens[:cut + 1] + flags + list(ids))
+
+
+def _worth_confirming(ledger, red: list[str]) -> list[str]:
+    """The red-on-base tests most likely to be about this change.
+
+    Tests in files the task itself touched come first: those are the ones it
+    wrote or edited, and a test the task wrote that was red before is the
+    reproduction in the plainest sense.
+    """
+    mine = {p.replace("\\", "/") for p in ledger.touched}
+    here = [r for r in red if r.split("::")[0].replace("\\", "/") in mine]
+    return (here + [r for r in red if r not in here])[:CONFIRM_LIMIT]
+
+
+def confirm(ledger) -> list:
+    """Run the tests that were red on the base tree against the tree as it is.
+
+    §5.13 asks for a test that was red before the change and is green after it.
+    The runtime already learns the first half for free — `stress` runs the
+    declared check against the base tree and the parsers read the failures out
+    by name. The second half was left to chance: it waited for the agent to
+    emit a *passing* record carrying the same node id, and `pytest -q` prints
+    passes as dots. Measured on the B3 sweep, that path supplied **0 of 7**
+    reproductions while the suite path supplied all seven, so the obligation was
+    really the discrimination check wearing a second hat.
+
+    So ask directly. These are node ids already known to have been red, run
+    against the current tree — a handful of tests, not a suite. Whatever comes
+    back passing is a genuine red-then-green reproduction, by name, whatever
+    order the agent happened to work in.
+
+    Returns evidence records, which is deliberately all it does: the records
+    flow into `Ledger._reproduction`'s existing targeted path rather than adding
+    a third way to satisfy the same obligation.
+    """
+    from .parsers import parse
+
+    if any(d.get("what") == CONFIRMED for d in ledger.decisions):
+        return []
+    red = [r for r in ledger.failed_before if "::" in r]
+    command = ledger.config.commands.get("tests", "")
+    if not red or not command:
+        return []
+    chosen = _worth_confirming(ledger, red)
+    run = _targeted(command, ledger.root, tuple(chosen))
+    if not run:
+        return []
+
+    try:
+        done = subprocess.run(run, shell=True, cwd=ledger.root, capture_output=True,
+                              text=True, encoding="utf-8", errors="replace",
+                              timeout=TIMEOUT)
+    except (OSError, subprocess.SubprocessError):
+        return []
+
+    ledger.note(CONFIRMED, f"ran {len(chosen)} test(s) that were red on {ledger.base[:8]}")
+    output = (done.stdout or "") + (done.stderr or "")
+    # 0 is everything passed, 1 is some test failed. Anything else - a usage
+    # error, nothing collected, an internal error - means the question was not
+    # answered, and an unanswered question must not read as a pass.
+    if done.returncode not in (0, 1):
+        return []
+
+    # The passes cannot be read out of the output, because this is the very
+    # asymmetry that starved the old path: `pytest -q` prints a failure by name
+    # and a pass as a dot. But the ids were chosen here, so what ran is known,
+    # and subtracting the ones pytest named as failing leaves the ones that
+    # passed. The parsers supply the names; the arithmetic supplies the rest.
+    from .evidence import Evidence, Kind, Result, source_files, tree_hash
+
+    failed = {r.identity for r in parse(run, output, done.returncode, ledger.root)
+              if r.result is not Result.PASS}
+    green = [i for i in chosen if i not in failed]
+    if not green:
+        return []
+    observed = source_files(ledger.root)
+    tree = tree_hash(ledger.root, observed)
+    return [Evidence(kind=Kind.TEST, identity=i, result=Result.PASS, observed=observed,
+                     tree=tree, scope="source", command=run, counted=True,
+                     detail=f"red on {ledger.base[:8]}, passes on the tree as it is")
+            for i in green]

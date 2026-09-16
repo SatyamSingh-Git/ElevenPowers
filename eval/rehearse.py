@@ -110,6 +110,11 @@ def rehearse(task, fix: str, hold: Path) -> dict:
 
     verdicts, red = stress.stress(ledger)
     ledger.discrimination, ledger.failed_before = verdicts, red
+    # The other half of 5.13: run the tests just found red on the base tree
+    # against the tree as it is, so a reproduction can be named rather than
+    # inferred from the same run that decided discrimination.
+    ledger.add(stress.confirm(ledger))
+    shown, grain = ledger._reproduction()
     # Persisted so a rehearsal can be opened afterwards. Without this the
     # answers lived only in the return value, and the counts below could not be
     # checked against the identities behind them.
@@ -119,7 +124,8 @@ def rehearse(task, fix: str, hold: Path) -> dict:
         "verdict": verdicts.get("tests", "NOT ASKED"),
         "red_before": len(red),
         "tests_carried": len(stress._tests_the_task_touched(ledger)),
-        "reproduced": ledger._reproduced_on_base() is not None,
+        "reproduced": shown is not None,
+        "grain": "targeted" if shown is not None and not grain else "suite",
         # The preconditions the runtime had to establish by itself. A sweep
         # cannot measure anything without these, whatever the verdict says.
         "base": bool(ledger.base),
@@ -151,7 +157,7 @@ def report(corpus: Path, limit: int) -> int:
             else:
                 print(f"  {last['task']:24s} verdict={last['verdict']:4s} "
                       f"red_before={last['red_before']:3d} carried={last['tests_carried']} "
-                      f"reproduced={last['reproduced']} "
+                      f"reproduced={last['grain'] if last['reproduced'] else False} "
                       f"base={'yes' if last['base'] else 'NO'} "
                       f"claims={','.join(last['claims']) or 'none'}")
 

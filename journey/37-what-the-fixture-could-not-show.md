@@ -205,3 +205,49 @@ What would restore real independence is written down and not built: `stress`
 already knows which node ids were red on the old tree, so the runtime could run
 *those* against the current tree rather than waiting for a passing record the
 agent's command never emits.
+
+---
+
+## Asked, not waited for: 0 of 16 becomes 6 of 16
+
+*2026-09-17.* The thing written down yesterday as "what would restore real
+independence" is built. `stress.confirm` runs the tests just found red on the
+base tree against the tree as it is, so a reproduction can be established by
+name instead of inferred from the run that already decided discrimination.
+
+On the same 16 rehearsed tasks: **targeted reproductions went from 0 of 16 to
+6 of 16**, with the other 10 falling back to suite grain.
+
+Three things had to be right and two were wrong first, both caught by running it
+rather than by reasoning about it.
+
+**Appending was the wrong verb.** Every corpus task declares `python -m pytest
+tests -q`. Appending node ids runs the directory *and* the ids, so the first
+version declined whenever the command named a path - a mechanism that was
+correct and would have fired on none of the sixteen. Substituting the path for
+the ids is strictly narrower. A token counts as a path only if it exists in the
+repository, which is the only thing separating `tests` from the
+`no:cacheprovider` in `-p no:cacheprovider`: identical in shape, and not a path.
+
+**The passes still cannot be read.** `pytest -q` prints failures by name and
+passes as dots - the very asymmetry that starved the old path, met again at the
+other end. But the ids were chosen here, so subtracting the ones pytest names
+leaves the ones that passed. Any exit code but 0 or 1 means the question went
+unanswered and nothing is claimed.
+
+**And the stronger evidence has to be asked for first.** It was not. All sixteen
+tasks kept reporting suite grain while the targeted records sat in the ledger
+unread, because `_reproduction` asked the suite question before the named one.
+
+## The ten that still fall back are the point, not the shortfall
+
+For `attrs-6e3786c5` all twelve chosen tests were still red on the current tree,
+failing with `TypeError`, because they are **pre-existing breakage in that
+seeded repository** and not tests the fix repairs. The check declined to call
+that a reproduction - exactly the adversarial behaviour it is probed for, seen
+on real code rather than in a fixture.
+
+Which makes it the sharpest confirmation yet of the `red_before` caveat: where
+that number is large it is mostly pre-existing failure, and the targeted check
+is what tells the two apart. The suite grain never could, and for seven measured
+runs it did not.
