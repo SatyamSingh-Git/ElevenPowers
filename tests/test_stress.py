@@ -341,3 +341,61 @@ def test_it_still_engages_on_nothing_when_nothing_claims_to_pass(repo):
     led = ledger_for(repo)
     led.evidence[0].result = Result.FAIL
     assert stress.stress(led) == ({}, [])
+
+
+# --- the base a claim-by-edit task is compared against ----------------------
+
+def _hook(event, payload):
+    import json
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    return subprocess.run(
+        [sys.executable, "-m", "core.hook", event],
+        input=json.dumps(payload), capture_output=True, text=True,
+        cwd=Path(__file__).resolve().parents[1],
+    )
+
+
+def test_a_task_opened_by_an_edit_still_has_a_base(repo):
+    """The defect that cost 37% of a paid sweep.
+
+    A prompt that states no claim opens a task anyway, and `Ledger.open_by_edit`
+    attaches `feature_added` at the first edit. That ledger carried no base
+    commit, so `stress` had no old tree to build and the discrimination check
+    silently never ran - on six of sixteen runs, every one of them opened by an
+    edit and no other.
+    """
+    from core.ledger import Ledger
+
+    head = git(repo, "rev-parse", "HEAD")
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "have a look at this"})
+    assert Ledger.load(repo).base == head, "the task opened with nothing to compare against"
+
+    target = repo / "src" / "app.py"
+    _hook("PostToolUse", {"cwd": str(repo), "tool_name": "Edit",
+                          "tool_input": {"file_path": str(target)}})
+    back = Ledger.load(repo)
+    assert back.claims, "the edit should have opened a claim"
+    assert back.base == head, back.base
+
+
+def test_the_base_does_not_move_once_the_task_has_opened(repo):
+    """Adversarially: the base is HEAD at task open, not HEAD whenever asked.
+
+    An agent that commits mid-task would otherwise move the very thing its work
+    is being compared against, and the check would compare the change to itself.
+    """
+    from core.ledger import Ledger
+
+    opened = git(repo, "rev-parse", "HEAD")
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "have a look at this"})
+
+    (repo / "src" / "app.py").write_text("# moved on\n", encoding="utf-8")
+    git(repo, "add", "-A")
+    git(repo, "-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "mid-task")
+    assert git(repo, "rev-parse", "HEAD") != opened
+
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "have a look at this"})
+    assert Ledger.load(repo).base == opened, "the base moved under the task"

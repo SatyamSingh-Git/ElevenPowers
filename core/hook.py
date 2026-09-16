@@ -93,6 +93,14 @@ def on_prompt(payload: dict, root: Path) -> int:
     if not claims:
         if ledger.claims and not opens_new_task(request):
             return 0        # a continuation keeps the obligations already open
+        # A task opens at the prompt, whether or not a claim was inferred from
+        # it. `Ledger.open_by_edit` can attach a claim later, at the first edit,
+        # and until 2026-09-16 that ledger carried no base commit at all -
+        # nothing to compare the change against, so the whole discrimination
+        # check silently never ran. It cost 37% of a paid sweep: six of sixteen
+        # runs, and every one of the six was opened by an edit.
+        if request != ledger.request or not ledger.base:
+            ledger.base = base_commit(root)
         ledger.claims = []
         ledger.request = request
         ledger.save()

@@ -85,3 +85,44 @@ measured across the corpus the way the radius's was — it is wired on the
 strength of a design argument and a repository-of-one, which is weaker evidence
 than this project usually accepts before shipping. It is written here rather
 than left for someone to discover.
+
+---
+
+## Postscript: the sweep finished, and it was worth it for the wrong reason
+
+*Later the same day.* The 16-run sweep completed - $24.97, 62.5% resolved, an
+interval of 37.5% to 87.5% that bounds nothing. It was run to measure how often
+passing evidence is vacuous. **It cannot answer that**: `stress` reached only 8
+of the 16 runs.
+
+It earned its money anyway, twice over.
+
+**One real VACUOUS verdict.** `itsdangerous-6c58e969` came back *resolved* in 9
+turns and 56 seconds, and its evidence would have passed without the change.
+Every previous demonstration of that mechanism was a fixture. This is the first
+time it caught a live agent calling a task done on evidence that could not fail.
+
+**And the instrument was 37% blind.** Six of sixteen ledgers carried no base
+commit, so there was no old tree to build and the check never ran. The
+correlation was exact: **6 of 6** of them had `claim opened by an edit` in their
+decisions, and none of the other ten did. The cause is one line of control flow
+- a prompt that states no claim still opens a task, `Ledger.open_by_edit`
+attaches `feature_added` later, and only the claim-bearing path recorded a base.
+The split was decided by whether `infer()` matched the task's commit message:
+bug-shaped text got a claim and a base, feature-shaped text got neither.
+
+The honest accounting: at this per-run cost a 50-run sweep is about $78, of
+which roughly $29 would have bought nothing while producing a number that looked
+real. Finding it at $25 was cheap.
+
+**What did not catch it, and why that is not a failure of the pre-flight.**
+`eval/rehearse.py:54` already checks for a missing base and bails with *"no base
+commit after seeding"*. It constructs its ledger directly, with the base passed
+in, and it rehearses **one** seeded task. A defect that appears on 6 of 16 real
+runs, on the path where a claim arrives by edit rather than by prompt, is
+invisible to it. The pre-flight is not wrong; it is under-powered. It rehearses
+one path, not the distribution.
+
+The fix was verified without spending anything further: the exact prompt from
+`jinja2-065334d1` that produced no base now produces one, replayed through the
+real hook process against a temporary repository.
