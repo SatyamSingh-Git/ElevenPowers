@@ -97,3 +97,58 @@ rehearsal check run beforehand could not have proved it, because rehearsals run
 no agent and therefore run no `pip`. Four concurrent rehearsals did reproduce
 the sequential answer exactly, which is why the parallel sweep was allowed to
 start at all.
+
+---
+
+## The bypass, fixed the same night
+
+The cause was not a missing tool name. `jinja2-0cd69481` recorded `seen=0` and
+`touched=0` while running Bash commands, and `attrs-5d6d21aa` shows the method
+in its own evidence: a `printf` with a redirect. **The agents write files
+through the shell**, and `written_paths()` recognises only some of those shapes.
+
+Enumerating shell write syntax is a race nobody wins - redirection, heredocs,
+`sed -i`, `python -c`, a script that writes a script. The working tree already
+knows, and `on_stop` was already asking it. One line too late:
+
+    ledger = Ledger.load(root)
+    if not ledger.claims:
+        return 0
+    ledger.touched = ... | set(_changed_paths(root))    # never reached
+
+So the question is asked first, and every changed path goes through
+`observe_edit`, which is the same rule that opens a claim from a tool event -
+not a second way of opening one.
+
+**And the probe caught a defect in the fix before it shipped.** With git
+consulted first, a session that changed *nothing* opened a claim, because
+`_changed_paths` returns everything `git status` lists, including
+`.elevenpowers/` - the runtime's own ledger. It had been scoring risk as though
+the runtime's state were the user's work all along; it only became visible once
+that list could open a claim. The state directory is now filtered out for every
+caller.
+
+## Three probes in two days have been the bug rather than found one
+
+Worth setting down as a pattern, because the cost is real: each one sent an hour
+after the wrong module.
+
+1. A probe spliced `pass` into a multi-line `self.fail(...)` call, the file
+   stopped parsing, and `core/radius.py` looked broken when it was fine.
+2. A heredoc turned a backslash-b escape into byte 0x08, and a regex
+   silently matched nothing.
+3. Tonight: `printf ... > file` under `shell=True` on Windows runs under
+   cmd.exe, where `printf` does not exist. `git status` came back empty, the
+   replay reported the fix had failed, and the fix was correct.
+
+In all three the probe was newer than the code it tested and had no test of its
+own. **A probe is code, and it is the code least likely to have been checked.**
+The tell each time was the same: a result too clean to be true - nothing
+changed, nothing found, nothing matched.
+
+There is a fourth, and it happened while this section was being written: these
+paragraphs were appended through a heredoc, which ate the backslashes out of the
+very examples describing backslashes being eaten - leaving a literal 0x08 in
+the file, inside the sentence about a literal 0x08. Repaired with an editor
+rather than a shell, which is what the standing note about this says to do and
+what was not done.

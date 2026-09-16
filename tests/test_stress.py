@@ -616,3 +616,63 @@ def test_the_ledger_records_which_commands_were_declared(repo):
     back = Ledger.load(repo)
     assert back.config.commands == {"tests": "make check"}, "disk must win"
     assert back.config.profile == "strict"
+
+
+# --- the gate must see work done through the shell --------------------------
+
+def test_a_patch_written_through_the_shell_still_opens_the_gate(repo):
+    """The 12.5% bypass measured on B4.
+
+    `jinja2-0cd69481` shipped a 5,396-line patch touching src/jinja2/utils.py,
+    graded RESOLVED, with ledger.touched empty and seen empty - the agent wrote
+    through `printf` and redirection, so no Read/Edit/Write event ever reached
+    the runtime. No claim opened, and on_stop returned on its first line.
+
+    Enumerating shell write syntax is a race nobody wins. The working tree
+    already knows.
+    """
+    from core.ledger import Ledger
+
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "have a look at this"})
+    assert Ledger.load(repo).claims == [], "the prompt states no claim, by design"
+
+    # Written the way the agent actually wrote it: no tool event, just a shell
+    # redirect landing in the working tree.
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+
+    _hook("Stop", {"cwd": str(repo), "last_assistant_message": "done"})
+    back = Ledger.load(repo)
+    assert back.claims, "source changed and the gate saw nothing"
+    assert "src/app.py" in back.touched, back.touched
+
+
+def test_a_working_tree_of_only_prose_still_opens_nothing(repo):
+    """Adversarially: the fix must not make every session a gated task.
+
+    A changelog or a README is not a claim about behaviour, and `attrs-5d6d21aa`
+    is the case that matters - its ONLY observed edit was a changelog, which is
+    why no claim opened there either. Prose keeps not opening one; what changed
+    is that source no longer goes unseen.
+    """
+    from core.ledger import Ledger
+
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "have a look at this"})
+    (repo / "CHANGES.md").write_text("- a note about the release\n", encoding="utf-8")
+
+    _hook("Stop", {"cwd": str(repo), "last_assistant_message": "done"})
+    assert Ledger.load(repo).claims == [], "prose must not open a claim"
+
+
+def test_a_session_that_was_never_given_a_task_stays_silent(repo):
+    """Adversarially: no request, no gate, whatever the tree looks like.
+
+    Without this the fix would gate a user who merely has uncommitted work
+    sitting in their repository when a session starts.
+    """
+    from core.ledger import Ledger
+
+    (repo / "src" / "app.py").write_text("def add(a, b):\n    return a * b\n", encoding="utf-8")
+    _hook("Stop", {"cwd": str(repo), "last_assistant_message": "done"})
+    assert Ledger.load(repo).claims == []

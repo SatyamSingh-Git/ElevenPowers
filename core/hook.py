@@ -19,7 +19,7 @@ from . import blindspots
 from .atlas import neighbourhood
 from .claims import infer, opens_new_task
 from .evidence import Result
-from .ledger import Ledger, Status
+from .ledger import STATE_DIR, Ledger, Status
 from .obligations import risk_of
 from .parsers import parse, written_paths
 from .payload import command_of, read_result, target_file
@@ -231,10 +231,21 @@ def _guide(ledger: Ledger) -> None:
 
 def on_stop(payload: dict, root: Path) -> int:
     ledger = Ledger.load(root)
+    # Ask the working tree BEFORE concluding there is nothing to gate. Tool
+    # events are a proxy for what changed, and agents write through the shell:
+    # measured on B4, `jinja2-0cd69481` shipped a 5,396-line patch graded
+    # resolved with no Read, Edit or Write event ever reaching the runtime -
+    # it used `printf` and redirection - so no claim opened and this function
+    # returned on its first line. Two of sixteen runs bypassed the gate that
+    # way. Enumerating shell write syntax is a race nobody wins; git already
+    # knows, and was being consulted one line too late.
+    changed = _changed_paths(root)
+    for path in changed:
+        ledger.observe_edit(path)
     if not ledger.claims:
         return 0
 
-    ledger.touched = sorted(set(ledger.touched) | set(_changed_paths(root)))
+    ledger.touched = sorted(set(ledger.touched) | set(changed))
     status = ledger.settle(payload.get("last_assistant_message", ""))
 
     if status is not Status.VERIFIED and ledger.config.speaks:
@@ -323,7 +334,13 @@ def _changed_paths(root: Path) -> list[str]:
         return []
 
     out = git("status", "--porcelain") or ""
-    return [line[3:].strip().replace("\\", "/") for line in out.splitlines() if line.strip()]
+    paths = [line[3:].strip().replace("\\", "/").rstrip("/")
+             for line in out.splitlines() if line.strip()]
+    # The runtime's own ledger is not the task's work. It was already scoring
+    # risk as though it were, and once `on_stop` began opening claims from the
+    # working tree it would have opened one on a session that changed nothing
+    # else - which a probe caught before this shipped.
+    return [p for p in paths if p != STATE_DIR and not p.startswith(STATE_DIR + "/")]
 
 
 if __name__ == "__main__":

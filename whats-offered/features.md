@@ -118,7 +118,7 @@ So this is offered as a thing that is *correct* when it fires, not as a thing th
 
 **What it will not do.** Refuse. Naming a weak check costs nothing; blocking on one has to earn its cost, and this gate blocked 75% of runs once on a signal nobody had measured.
 
-**A known gap, stated here rather than found later.** The same measurement showed **12.5% of runs bypassed the gate entirely** — the runtime never observed the agent's edits, so no claim opened and nothing was asked. Until that is closed, every rate on this page is conditioned on the gate having seen the work.
+**A gap that measurement found, and that is now closed.** The same sweep showed **12.5% of runs bypassed the gate entirely** — the runtime never observed the agent's edits, so no claim opened and nothing was asked. The cause was not a missing tool name: agents write files through the shell, and chasing that syntax is a race nobody wins. The working tree already knows, so the gate now asks it before concluding there is nothing to check. Rates measured *before* that fix are still conditioned on the gate having seen the work, and are labelled as such.
 
 ---
 
