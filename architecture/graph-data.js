@@ -5,7 +5,7 @@
 window.ELEVENPOWERS_GRAPH = {
   "meta": {
     "updated": "2026-09-17",
-    "changelog": "2026-09-17 (c) - B4 took the measurement this whole layer exists for, and it is ZERO. 0 of 14 asked runs came back VACUOUS, against the literature's 46%, and B3's single case did not replicate on the other model - pooled 1 in 22. The frequency claim is withdrawn in PLAN 10; the mechanism is not, because it caught that one case and computes the failed_before 5.13 needs. Coverage 8 of 16 to 14 of 16 and named reproductions 0 of 8 to 5 of 14, which is what made the null readable rather than noise. And the finding that outranks it: 2 of 16 runs BYPASSED THE GATE ENTIRELY - jinja2-0cd69481 shipped a 5,396-line patch graded resolved with ledger.touched empty, so no claim opened and on_stop returned at its first line. Every rate here is conditioned on the gate having seen the work, at a measured 12.5% failure of that condition. | 2026-09-17 (b) - the last two gates that could lose a paid run. _passing required a FRESH passing record, so an edit landing after the tests staled every record and the whole check skipped - no verdict, no failed_before, no reproduction; it cost 2 of 16 B3 runs and is confirmed on click-9f9b149e, whose last passing record's tree is not the tree of its last record. Fresh or stale is now questioned, GONE still is not, and both directions have a probe. And the ledger now records the declared profile and commands, written for diagnosis and never read back, because the B3 bundles could not say which gate closed - the config lived only on disk in a workspace that no longer exists. | 2026-09-17 - stress.confirm closes the half of 5.13 that was left to chance. The reproduction obligation was being satisfied by the suite path on 7 of 7 measured runs and the named path on 0, so reproduced and discriminates were one base-tree run reported twice. Now the red-on-base node ids are run against the current tree: 0 of 16 rehearsed tasks reached a named reproduction before, 6 do now, and the 10 that do not are repos whose red tests are still red - pre-existing breakage the targeted check can tell apart and the suite grain never could. | 2026-09-16 (j) - eval/rehearse.py now drives the real hook instead of hand-building the ledger. It did not predict the missing base commit because it passed base and claims in itself, which tests that a correct ledger works rather than that the runtime builds a correct one. Seen to flip on the very task that lost the sweep: with the fix reverted it reports attrs-577c782c as base=NO and exits 1. | 2026-09-16 (i) - the base commit is now recorded when the TASK opens, not when a claim is inferred. A prompt stating no claim still opens a task, and Ledger.open_by_edit attaches feature_added at the first edit - that ledger carried no base, so stress had no old tree to build and the discrimination check silently never ran. It cost 37% of a paid sweep: 6 of 16 runs, and the correlation with 'claim opened by an edit' was 6 of 6. Where a base existed, stress ran on 8 of 10. Guarded so a later prompt cannot re-base a task mid-flight, which would compare the change against itself; both directions have a probe watched failing. | 2026-09-16 (h) - core/radius.py and core/atlas.py ship together, and they are the same argument applied twice: a rule the agent is asked to remember is soft policy that decays, so compute it instead. radius answers 'what else implements or calls what you just changed' from the diff and the AST; atlas answers 'does the map still describe the code, and do the docs still name files that exist' as a 1995 reflexion model over the committed architecture document. Both report and neither refuses. Both were wrong in ways their fixtures could not show and the real repositories did: radius found no bases at all on click because generic bases are ast.Subscript, then made a base class a sibling of its own subclass through Generic; atlas called radius.py documented because the design note proposing it mentioned it, so docs/design/ is now documentation but not the map. The report also stopped naming tests/test_mypy.yml as the test to run. | 2026-09-16 (g) - eval/rehearse.py: a pre-flight that seeds a real task, applies the gold patch and asks the runtime the sweep's question without paying for an agent. Written because a sweep ran two tasks for $1.42 and recorded discrimination={} on both - stress matched the declared command exactly, agents never type it, and the sizing step measured the wrong predicate. | 2026-09-16 (f) - stress.py now lays the task's new TEST files over the old source before running. Without it a test written after the fix is absent from the base worktree, so every check reports passed-before by construction - the sweep would have measured the harness, not the agent. Caught while sizing the sweep, before spending. | 2026-09-16 (e) - measuring the engagement rate before spending caught a design flaw: the computed reproduction keyed on node identities, and the parsers record nodes mainly when they FAIL - 1,256 failing test records against four passing across every preserved ledger - so it engaged on 1.4% of saved runs. Suites now count, which is what _demonstrated_fix always did. | 2026-09-16 (d) - eval/wheelhouse.py closes the registry answer key. PIP_NO_INDEX plus PIP_FIND_LINKS at a shelf of the backends the corpus declares, so an isolated build resolves locally while pip download click has nowhere to go. Both directions tested against real pip, plus the fail-safe: no shelf means the index is left alone rather than breaking every install. | 2026-09-16 (c) - C1: the reproduction obligation is now COMPUTED. It was satisfiable only if the agent happened to run the test red before writing the fix, which blocked anyone who wrote the test afterwards - ordinary practice. stress.py already builds a worktree at the base commit, so the same run now also reports which tests were already failing there. Collection errors match by file, because a test for behaviour the fix introduces cannot import on the old tree at all. | 2026-09-16 (b) - core/ratchet.py ships: the declared checks going green now commits the tree to a private ref, and the end report offers it back if a later edit moves off it. Cline's store and its compare-and-swap refusal when HEAD has moved; ours is only when to snapshot. PIP_NO_INDEX was tried and reverted the same hour - it closes the registry answer key and breaks pip install -e ., and no environment variable turns build isolation off. | 2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
+    "changelog": "2026-09-17 (d) - the map got 27 edges more detailed, and it did not get them by hand. core/atlas.py - the module built the day before to catch exactly this - was pointed at this repository and asked which real intra-repo imports the graph does not draw. It found 27 of 99: four inside core (doctor and status both write to blindspots, stress reads evidence and surface), three inside eval, and twenty from the eval plane into the runtime it reuses. Every one is a real import read out of the AST rather than a guess, which is the point: the graph is now checkable against the code by the same tool that checks any other repository's. | 2026-09-17 (c) - B4 took the measurement this whole layer exists for, and it is ZERO. 0 of 14 asked runs came back VACUOUS, against the literature's 46%, and B3's single case did not replicate on the other model - pooled 1 in 22. The frequency claim is withdrawn in PLAN 10; the mechanism is not, because it caught that one case and computes the failed_before 5.13 needs. Coverage 8 of 16 to 14 of 16 and named reproductions 0 of 8 to 5 of 14, which is what made the null readable rather than noise. And the finding that outranks it: 2 of 16 runs BYPASSED THE GATE ENTIRELY - jinja2-0cd69481 shipped a 5,396-line patch graded resolved with ledger.touched empty, so no claim opened and on_stop returned at its first line. Every rate here is conditioned on the gate having seen the work, at a measured 12.5% failure of that condition. | 2026-09-17 (b) - the last two gates that could lose a paid run. _passing required a FRESH passing record, so an edit landing after the tests staled every record and the whole check skipped - no verdict, no failed_before, no reproduction; it cost 2 of 16 B3 runs and is confirmed on click-9f9b149e, whose last passing record's tree is not the tree of its last record. Fresh or stale is now questioned, GONE still is not, and both directions have a probe. And the ledger now records the declared profile and commands, written for diagnosis and never read back, because the B3 bundles could not say which gate closed - the config lived only on disk in a workspace that no longer exists. | 2026-09-17 - stress.confirm closes the half of 5.13 that was left to chance. The reproduction obligation was being satisfied by the suite path on 7 of 7 measured runs and the named path on 0, so reproduced and discriminates were one base-tree run reported twice. Now the red-on-base node ids are run against the current tree: 0 of 16 rehearsed tasks reached a named reproduction before, 6 do now, and the 10 that do not are repos whose red tests are still red - pre-existing breakage the targeted check can tell apart and the suite grain never could. | 2026-09-16 (j) - eval/rehearse.py now drives the real hook instead of hand-building the ledger. It did not predict the missing base commit because it passed base and claims in itself, which tests that a correct ledger works rather than that the runtime builds a correct one. Seen to flip on the very task that lost the sweep: with the fix reverted it reports attrs-577c782c as base=NO and exits 1. | 2026-09-16 (i) - the base commit is now recorded when the TASK opens, not when a claim is inferred. A prompt stating no claim still opens a task, and Ledger.open_by_edit attaches feature_added at the first edit - that ledger carried no base, so stress had no old tree to build and the discrimination check silently never ran. It cost 37% of a paid sweep: 6 of 16 runs, and the correlation with 'claim opened by an edit' was 6 of 6. Where a base existed, stress ran on 8 of 10. Guarded so a later prompt cannot re-base a task mid-flight, which would compare the change against itself; both directions have a probe watched failing. | 2026-09-16 (h) - core/radius.py and core/atlas.py ship together, and they are the same argument applied twice: a rule the agent is asked to remember is soft policy that decays, so compute it instead. radius answers 'what else implements or calls what you just changed' from the diff and the AST; atlas answers 'does the map still describe the code, and do the docs still name files that exist' as a 1995 reflexion model over the committed architecture document. Both report and neither refuses. Both were wrong in ways their fixtures could not show and the real repositories did: radius found no bases at all on click because generic bases are ast.Subscript, then made a base class a sibling of its own subclass through Generic; atlas called radius.py documented because the design note proposing it mentioned it, so docs/design/ is now documentation but not the map. The report also stopped naming tests/test_mypy.yml as the test to run. | 2026-09-16 (g) - eval/rehearse.py: a pre-flight that seeds a real task, applies the gold patch and asks the runtime the sweep's question without paying for an agent. Written because a sweep ran two tasks for $1.42 and recorded discrimination={} on both - stress matched the declared command exactly, agents never type it, and the sizing step measured the wrong predicate. | 2026-09-16 (f) - stress.py now lays the task's new TEST files over the old source before running. Without it a test written after the fix is absent from the base worktree, so every check reports passed-before by construction - the sweep would have measured the harness, not the agent. Caught while sizing the sweep, before spending. | 2026-09-16 (e) - measuring the engagement rate before spending caught a design flaw: the computed reproduction keyed on node identities, and the parsers record nodes mainly when they FAIL - 1,256 failing test records against four passing across every preserved ledger - so it engaged on 1.4% of saved runs. Suites now count, which is what _demonstrated_fix always did. | 2026-09-16 (d) - eval/wheelhouse.py closes the registry answer key. PIP_NO_INDEX plus PIP_FIND_LINKS at a shelf of the backends the corpus declares, so an isolated build resolves locally while pip download click has nowhere to go. Both directions tested against real pip, plus the fail-safe: no shelf means the index is left alone rather than breaking every install. | 2026-09-16 (c) - C1: the reproduction obligation is now COMPUTED. It was satisfiable only if the agent happened to run the test red before writing the fix, which blocked anyone who wrote the test afterwards - ordinary practice. stress.py already builds a worktree at the base commit, so the same run now also reports which tests were already failing there. Collection errors match by file, because a test for behaviour the fix introduces cannot import on the old tree at all. | 2026-09-16 (b) - core/ratchet.py ships: the declared checks going green now commits the tree to a private ref, and the end report offers it back if a later edit moves off it. Cline's store and its compare-and-swap refusal when HEAD has moved; ours is only when to snapshot. PIP_NO_INDEX was tried and reverted the same hour - it closes the registry answer key and breaks pip install -e ., and no environment variable turns build isolation off. | 2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
     "title": "ElevenPowers - System Topology"
   },
   "planes": {
@@ -1426,6 +1426,141 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "tests",
       "target": "hook",
       "label": "513, and the probes that found each defect"
+    },
+    {
+      "source": "doctor",
+      "target": "blindspots",
+      "label": "records what it cannot read"
+    },
+    {
+      "source": "status",
+      "target": "blindspots",
+      "label": "surfaces what went unread"
+    },
+    {
+      "source": "stress",
+      "target": "evidence",
+      "label": "reads kinds and results"
+    },
+    {
+      "source": "stress",
+      "target": "surface",
+      "label": "which files look like tests"
+    },
+    {
+      "source": "canary",
+      "target": "exposure",
+      "label": "uses"
+    },
+    {
+      "source": "checkpoint-mod",
+      "target": "task",
+      "label": "uses"
+    },
+    {
+      "source": "cases",
+      "target": "claims",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "cases",
+      "target": "scope",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "live",
+      "target": "config",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "live",
+      "target": "intent",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "live",
+      "target": "wiring",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "transcript",
+      "target": "parsers",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "transcript",
+      "target": "wiring",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "rehearse",
+      "target": "config",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "rehearse",
+      "target": "evidence",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "rehearse",
+      "target": "ledger",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "rehearse",
+      "target": "task",
+      "label": "uses"
+    },
+    {
+      "source": "transcript",
+      "target": "claims",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "transcript",
+      "target": "evidence",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "transcript",
+      "target": "ledger",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "transcript",
+      "target": "obligations",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "transcript",
+      "target": "payload",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "scenarios",
+      "target": "claims",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "scenarios",
+      "target": "evidence",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "scenarios",
+      "target": "ledger",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "scenarios",
+      "target": "obligations",
+      "label": "reuses the runtime"
+    },
+    {
+      "source": "scenarios",
+      "target": "parsers",
+      "label": "reuses the runtime"
     }
   ]
 };
