@@ -256,3 +256,46 @@ def test_a_suite_green_on_the_old_tree_is_not_a_reproduction(repo):
     led.discrimination, led.failed_before = stress.stress(led)
     assert led.discrimination["tests"] == stress.VACUOUS
     assert led._reproduced_on_base() is None
+
+
+def test_a_test_written_after_the_fix_is_carried_to_the_old_source(repo):
+    """The case the base worktree could not see at all.
+
+    An agent fixes the bug and *then* writes a test. That test is uncommitted,
+    so a worktree built from the base commit does not contain it, and the check
+    would come back "passed before" by construction — an answer determined by
+    the harness rather than by the work. Carrying the test across is what a
+    reviewer does by hand: keep the fix out, keep the test in.
+    """
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+    (repo / "tests" / "test_new.py").write_text(
+        "import sys; sys.path.insert(0, 'src')\n"
+        "from app import mul\n\n"
+        "def test_mul():\n    assert mul(2, 3) == 6\n",
+        encoding="utf-8")
+
+    led = ledger_for(repo)
+    led.touched = ["src/app.py", "tests/test_new.py"]
+    verdicts, red = stress.stress(led)
+
+    assert verdicts["tests"] == stress.DISCRIMINATES, \
+        "the new test must be run against the old source, not left behind"
+    assert red == ["tests/test_new.py"]
+
+
+def test_only_tests_are_carried_across(repo):
+    """Adversarial. Carrying the source too would answer the opposite question.
+
+    With `src/app.py` laid over the old tree there is no old behaviour left to
+    fail against, and every check would look discriminating.
+    """
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+    led = ledger_for(repo)
+    led.touched = ["src/app.py"]
+    assert stress._tests_the_task_touched(led) == ()
+    verdicts, _ = stress.stress(led)
+    assert verdicts["tests"] == stress.VACUOUS, "the fix must not be carried over"

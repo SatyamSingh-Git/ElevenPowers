@@ -77,7 +77,8 @@ def base_commit(root: Path) -> str:
 
 
 def on_the_old_tree(root: Path, commit: str, command: str,
-                    timeout: int = TIMEOUT) -> tuple[bool, str] | None:
+                    timeout: int = TIMEOUT,
+                    carry: tuple[str, ...] = ()) -> tuple[bool, str] | None:
     """Run `command` against the tree as it was, and keep what it said.
 
     The output matters as much as the exit code, and for a different question.
@@ -99,6 +100,19 @@ def on_the_old_tree(root: Path, commit: str, command: str,
     try:
         if _git(root, "worktree", "add", "--detach", str(tree), commit, timeout=120) is None:
             return None
+        # The old *source*, with the new *tests* laid over it. Without this the
+        # question cannot be asked at all: a test the agent wrote a minute ago
+        # is not in the base commit, so the old tree could never run it, and
+        # every check would come back "passed before" by construction. Carrying
+        # the tests across is exactly what a reviewer does by hand — keep the
+        # fix out, keep the test in, and see what happens.
+        for rel in carry:
+            source = root / rel
+            if not source.is_file():
+                continue
+            target = tree / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
         try:
             done = subprocess.run(command, shell=True, cwd=tree, capture_output=True,
                                   text=True, encoding="utf-8", errors="replace",
@@ -143,7 +157,8 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         if not _passing(ledger, need):
             # Nothing claims this check passed, so there is nothing to question.
             continue
-        found = on_the_old_tree(ledger.root, ledger.base, command)
+        found = on_the_old_tree(ledger.root, ledger.base, command,
+                                carry=_tests_the_task_touched(ledger))
         if found is None:
             verdicts[need] = UNCHECKABLE
             continue
@@ -162,6 +177,20 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # change it exists to describe.
         already_red |= set(COLLECT_ERROR.findall(output))
     return verdicts, sorted(already_red)
+
+
+def _tests_the_task_touched(ledger) -> tuple[str, ...]:
+    """Test files this task wrote or edited, to lay over the old source.
+
+    Tests only. Carrying a source file across would defeat the whole question —
+    the point is the old behaviour meeting the new test. `surface.TEST_NAME` is
+    the same rule the rest of the runtime uses to decide what looks like a test,
+    so a project whose tests are named unusually is treated consistently
+    everywhere rather than specially here.
+    """
+    from .surface import TEST_NAME
+
+    return tuple(p for p in ledger.touched if TEST_NAME.search(p))
 
 
 def _passing(ledger, need: str) -> bool:
