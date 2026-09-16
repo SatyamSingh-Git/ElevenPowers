@@ -360,6 +360,10 @@ an install decision before it can proceed, and the honest state is that **every
 score this project has published was measured with the book open**, with a floor
 now measured rather than guessed (below).
 
+**The registry is an answer key, and no allowlist closes it.** Measured 2026-09-16 by `eval/canary.py` on the post-denial sweep: the denial list works — upstream network exposure falls **14 → 0** against the pre-denial sweep, which is the canary seen to flip — and every one of the four survivors is *a released version of the package that already contains the fix*: a downloaded `attrs-24.2.0` tree, a downloaded `click-8.5.0` wheel, an installed `clickcheck/` tree, and the machine's own `site-packages`. Every published boundary design allowlists a package registry because dependencies need one, so this door is open in all of them.
+
+`PIP_NO_INDEX=1` blocks three of the four and **was reverted the same hour**: it also breaks `pip install -e .`, because pip fetches `setuptools` into an isolated build environment, and nothing an environment can set turns that isolation off — `PIP_NO_BUILD_ISOLATION`, `PIP_BUILD_ISOLATION=false|0|no` and a `pip.ini` were each measured and each ignored, while the command-line flag works. Shipping it would have repeated `PIP_USER`, `PYTHONUSERBASE` and `PIP_REQUIRE_VIRTUALENV`, one of which was observed being switched off by an agent mid-run. **The fix is a staged wheelhouse with `PIP_FIND_LINKS`, built once while online.** Reading the machine's `site-packages` by absolute path is not preventable without containment at all; it is detectable, and the canary detects it.
+
 **The probe must be seen to flip.** Plant a run whose true fix contains a unique nonsense token, then grep every transcript and patch for it. It must be **found with the boundary off and absent with it on**. Until both states have been observed, the boundary is untested prevention, which §5.0 says is not prevention at all.
 
 **Measured again, 2026-09-15, and the denial does not hold.** `git clone` is refused and `pip download` fetches the same repository, because pip clones `git+` URLs internally. An agent used that route to extract its own fix commit with `git format-patch` and apply it verbatim; the run graded `resolved`. Two of sixteen runs did this. Tool denial closes the doors it names and a package manager walks through the wall, so §4.1 needs an operating-system or network boundary rather than a longer list. `eval.exposure` is what keeps this honest in the meantime, and it is
@@ -676,7 +680,7 @@ Every paid experiment this project has run was an attempt to *detect an effect*.
 
 **Exit, as commands:** the canary probe is **found with the boundary off and absent with it on**, both observed; a task whose dependencies cannot be pre-staged appears in a drops manifest and not in the denominator; `python -m eval.exposure` on a boundary-on sweep returns a floor of zero. **Envelope: under $5.**
 
-### Phase C0 — Build the ratchet *(the largest measured recovery in the field)*
+### Phase C0 — Build the ratchet *(shipped 2026-09-16)*
 
 **Built on:** Cline's 3-parent stash commits in private refs and its compare-and-swap restore (Apache-2.0), OpenCode's side-gitdir per-step snapshots (MIT), SWE-agent's autosubmit-on-every-failure-path (MIT). See [build-on.md](docs/research/build-on.md) for what each gives and what its limit is. **We are not writing a checkpoint store.**
 
@@ -688,7 +692,9 @@ The runtime already computes, on every edit, whether a given set of files still 
 
 **The known trap, recorded before building it.** A restore that produces green tests is not evidence the restore was correct: one study found checkpoint-only recovery selecting an *ineligible* source in every eligibility challenge while restoring bytes exactly and satisfying final invariants 20 times out of 20. **Task success cannot detect a bad recovery decision.** So the snapshot carries its provenance — which checks were green, over which files, at which point — and the eligibility of a restore is asserted separately from its outcome. A probe that only checks the tests pass afterwards would be green for the wrong reason, which is the failure mode this project's own memory note names.
 
-**Exit, as a command:** on a seeded run where a known-good intermediate state is deliberately corrupted, the ratchet recovers it; on a run with no better prior state, it stays silent. Both directions observed, per §5.0.
+**Exit, as a command:** `python -m pytest tests/test_ratchet.py -q`. **Met 2026-09-16**, seven tests against a real repository: a proven state is offered back after the tree moves off it; nothing is offered when nothing was proven, when the tree has not moved, or when HEAD has. The working tree, index, branches, tags and stash are asserted untouched. [journey/34](journey/34-the-ratchet.md).
+
+**What it does not do:** restore. It names the state and prints the command, per §5.12. And it snapshots at a *stop*, not at every edit — the literature's effect is measured at edit granularity, so the cheaper placement is a deliberate under-reach that the contribution experiment will have to account for.
 
 ### Phase C1 — Derive the reproduction test, do not wait for it
 

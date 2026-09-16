@@ -5,7 +5,7 @@
 window.ELEVENPOWERS_GRAPH = {
   "meta": {
     "updated": "2026-09-16",
-    "changelog": "2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
+    "changelog": "2026-09-16 (b) - core/ratchet.py ships: the declared checks going green now commits the tree to a private ref, and the end report offers it back if a later edit moves off it. Cline's store and its compare-and-swap refusal when HEAD has moved; ours is only when to snapshot. PIP_NO_INDEX was tried and reverted the same hour - it closes the registry answer key and breaks pip install -e ., and no environment variable turns build isolation off. | 2026-09-16 - eval/canary.py: the exposure screen the boundary will be tested with. Finds 21 of 36 watchable runs handed the fix's own invented identifiers, against 2 for the sha screen, and names the channel - 14 upstream network, 4 the machine's own site-packages. The site-packages door is one --network none would NOT close, which corrects 4.1. | 2026-09-15 (c) - core/stress.py ships: the runtime now runs every declared check against a detached worktree at the task's base commit and reports the ones that would have passed anyway. PLAN 5.0 as a product feature rather than a development habit, at the user's direction. Reports, never refuses. | 2026-09-15 (b) - Phase B2 ran: eval/pool.py and eval/discriminate.py join the graph. The discrimination census found R10 - a passing suite record was decided by the exit code alone, and pytest piped to tail always exits 0, so 42% of preserved passing suite records say PASS while holding a non-zero failure count. Fixed in core/parsers.py with a probe watched flipping. The v0.8 workflow lane now marks P1 half built rather than planned. | 2026-09-15 - first graph. Built alongside Master Plan v0.8, which moved the project from asking whether evidence EXISTS and is CURRENT to asking whether it DISCRIMINATES, and from acting at Stop to acting where the premise is formed. Two nodes are drawn as they are today and are about to change: evidence.py already computes 'was this tree green, and is it still the same tree' on every edit and prints it as a complaint (Phase C0 keeps it as a snapshot), and obligations.py:149 collects the +28pp reproduction artifact as a receipt at Stop (Phase C1 derives it at the first edit).",
     "title": "ElevenPowers - System Topology"
   },
   "planes": {
@@ -289,6 +289,17 @@ window.ELEVENPOWERS_GRAPH = {
       "desc": "Noticing when an edit has wandered away from the task. Scope is never declared up front \u2014 it is derived from what the task established: files read, files edited, and the areas the request named. It asks; it never denies, because the user is the judge.",
       "files": [
         "core/scope.py"
+      ]
+    },
+    {
+      "id": "ratchet",
+      "plane": "runtime",
+      "kind": "engine",
+      "size": 3,
+      "label": "ratchet.py",
+      "desc": "PLAN 5.6: a long attempt ends at its latest patch, not its best. Measured elsewhere, 60-69% of coding-agent failures reach and edit the CORRECT functions and then produce a wrong patch, and five documented cases produced the reference solution mid-trajectory and corrupted it. When the declared checks are green the working tree is committed to a private ref under refs/elevenpowers/proven - via a temporary index, so the agent's work is never staged as a side effect of observing it - and the end report offers it back if the tree later moves off it. The store and the compare-and-swap restore are Cline's; the refusal when HEAD has moved is the eligibility check the 2026 recoverability work found missing everywhere, having concluded that task success cannot detect a bad recovery decision. Ours is only WHEN: on green-and-fresh rather than per edit, which is what turns a 10-40x test cost into a commit-tree. Offers; never restores.",
+      "files": [
+        "core/ratchet.py"
       ]
     },
     {
@@ -871,6 +882,21 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "hook",
       "target": "scope",
       "label": "normalise / unrelated"
+    },
+    {
+      "source": "hook",
+      "target": "ratchet",
+      "label": "green at Stop: keep this state where a later edit cannot lose it"
+    },
+    {
+      "source": "ratchet",
+      "target": "git",
+      "label": "commit-tree into a private ref, temporary index, nothing of the user's touched"
+    },
+    {
+      "source": "report",
+      "target": "ratchet",
+      "label": "offer the proven state back, or say why it is not eligible"
     },
     {
       "source": "hook",

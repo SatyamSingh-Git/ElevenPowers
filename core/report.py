@@ -6,6 +6,7 @@ import re
 
 from .evidence import Freshness, Kind, Result
 from .ledger import Ledger, Status, Verdict
+from .ratchet import offer
 from .stress import wording
 
 MARK = {True: "met     ", False: "missing "}
@@ -170,6 +171,12 @@ def end_report(ledger: Ledger) -> str:
     # this whole layer exists to prevent.
     for said in wording(ledger.discrimination):
         lines.append(f"  could not fail: {said}")
+    # A state that was proven and has since been moved off is worth naming even
+    # when the current verdict is green: the point of 5.6 is that the latest
+    # patch is not automatically the best one.
+    proven = offer(ledger.root, ledger.task)
+    if proven:
+        lines.append("  " + proven.replace("\n", "\n  "))
     note = coverage_note(ledger)
     if note:
         lines.append(f"  {note}")

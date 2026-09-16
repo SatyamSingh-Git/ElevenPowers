@@ -359,6 +359,25 @@ def _sandboxed(root: Path) -> dict[str, str]:
 
     home = root / ".venv"
     scripts = home / ("Scripts" if os.name == "nt" else "bin")
+    # `PIP_NO_INDEX` was tried here on 2026-09-16 and reverted the same hour.
+    # The registry is an answer key -- every repository in this corpus has a
+    # released version carrying the fix, and the canary found three of the four
+    # surviving exposures in the post-denial sweep fetching exactly that
+    # (`/tmp/attrs_dl/attrs-24.2.0/`, `click-8.5.0-py3-none-any.whl`, a
+    # `clickcheck/installed/` tree). Closing the index blocks all three.
+    #
+    # It also breaks `pip install -e .`, because pip builds in an *isolated*
+    # environment and fetches `setuptools` into it from the index. Turning that
+    # off cannot be done from here: `PIP_NO_BUILD_ISOLATION`,
+    # `PIP_BUILD_ISOLATION=false|0|no` and a `pip.ini` with
+    # `no-build-isolation = true` were each measured and each ignored, while the
+    # `--no-build-isolation` flag works. The env is all this function controls.
+    #
+    # Shipping it anyway would be the mistake the three previous guards made:
+    # a guard that breaks honest work is the guard an agent turns off, and one
+    # of them was turned off in a recorded run. The fix is a staged wheelhouse
+    # (setuptools and wheel, built once while online) with `PIP_FIND_LINKS`,
+    # which is real work rather than an environment variable.
     environment = {**os.environ, "PIP_REQUIRE_VIRTUALENV": "1"}
     if scripts.is_dir():
         # First on PATH, and VIRTUAL_ENV set, so `python` and `pip` are the

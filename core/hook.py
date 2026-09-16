@@ -25,6 +25,7 @@ from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
 from .verify import discharge
 from .report import end_report, gate_message, guidance, start_banner
+from .ratchet import snapshot
 from .stress import base_commit, stress, wording
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 
@@ -228,6 +229,12 @@ def on_stop(payload: dict, root: Path) -> int:
     # intervention are separately justified, and this project blocked 75 percent
     # of runs once already on a signal it had not measured.
     ledger.discrimination = stress(ledger)
+    # The best state this task ever proved, kept in a private ref so a later
+    # edit cannot lose it. 5.6: a long attempt ends at its latest patch, not its
+    # best, and 60-69% of agent failures reach the right code and then damage
+    # it. Cheap because it is a `commit-tree`, not a test run.
+    if status is Status.VERIFIED:
+        snapshot(root, ledger.task, "the declared checks passed here")
     ledger.save()
 
     if not ledger.config.speaks:

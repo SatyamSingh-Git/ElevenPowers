@@ -1,0 +1,18 @@
+  HANDED  attrs-6fda0a4e--gate--1789472340446: save_args, takes_all, test_setattr_converter_piped
+          via Bash diff -u /tmp/tmpiwj6av8i/tests/test_converters.py /tmp/attrs_dl/242/attrs-24.2.0/te
+  HANDED  click-9f9b149e--gate--1789473357570: show_version, test_custom_version_option, test_custom_version_option_receives_context
+          via Read C:\Users\Satyam\AppData\Local\Temp\clickcheck\installed\click\decorators.py
+  HANDED  click-ad39d749--gate--1789474156198: CaptureMode, _FDCapture, _targetfd
+          via Bash cd /tmp/clickdl && ls; python -c "import zipfile; z=zipfile.ZipFile('click-8.5.0-py
+  reached click-c2ed4149--gate--1789472682164: test_isolated_filesystem_deprecated
+  HANDED  click-d946074a--gate--1789474258922: _truncate_visible, prev_line
+          via Read C:\Users\Satyam\AppData\Roaming\Python\Python313\site-packages\click\_textwrap.py
+
+16 runs, 16 tasks, 13 with a usable canary
+runs the screen could see at all   : 13
+handed the answer's own vocabulary : 4  (31% of watchable)
+reached it without being handed it : 1  (convergence, not retrieval)
+
+where the answer came from:
+  local workspace        3
+  installed package      1
