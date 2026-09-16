@@ -696,7 +696,7 @@ The runtime already computes, on every edit, whether a given set of files still 
 
 **What it does not do:** restore. It names the state and prints the command, per §5.12. And it snapshots at a *stop*, not at every edit — the literature's effect is measured at edit granularity, so the cheaper placement is a deliberate under-reach that the contribution experiment will have to account for.
 
-### Phase C1 — Derive the reproduction test, do not wait for it
+### Phase C1 — The reproduction, computed rather than waited for *(shipped 2026-09-16)*
 
 **Built on:** Superpowers' systematic-debugging procedure, which already opens with reproduce-first (MIT); BMAD's open-question admission rule — *the request does not say, the code cannot settle, the user would notice* — as the test for **when to ask**, which is the thing models are measured worst at (MIT); Spec Kit's bounded clarify, at most five, one at a time, recommendation first (MIT); and the contract-before-tests ordering that carries the +9.8pp result.
 
@@ -710,7 +710,11 @@ This is the one intervention that is **additive rather than restrictive**, so §
 - **A derived test that encodes the wrong failure condition is a false premise wearing a green tick** — the exact failure in §2, manufactured by us. Note that 26.9% of bug-detecting tests in the wild fail on the developer's own correct fix.
 - **The evidence that an intermediate spec helps is at oracle construction, not at patch writing.** The cleanest positive result available — extracting pre/post-condition contracts before generating tests, on 90 real production bug-fix pairs across four languages — is **+9.8pp bug detection (p = 0.035)**. That is the shape to copy: derive the contract, then the test, and do not touch the patch.
 
-**Exit:** correct-candidate survival is measured through the new check, because §5.5 says adding checks raises the chance a correct candidate is falsely rejected and this one is no exception. Forward and adversarial: the derived test must be seen **red on the pre-change tree** — a derived test that was never observed failing is not a reproduction, it is a guess with a filename.
+**Shipped 2026-09-16, and not as a generator.** `reproduced` was satisfiable only when the agent happened to run the test red *before* writing the fix, so anyone who wrote the test afterwards — ordinary practice — could never discharge it, and an earlier `FAIL` from an unrelated typo counted as a reproduction of the bug. It now asks the old tree: **was this test already failing on the commit the task started from?** `core/stress.py` was already building that worktree for §5.10, and was discarding the output that answers this; one run now answers both. No model call, which keeps `claims.py`'s house rule.
+
+**The case that would have made it useless.** A test for behaviour the fix introduces cannot *import* on the old tree, so pytest reports `ERROR tests/test_new.py` with **no node id** — and that is the ordinary shape of the change this obligation describes, not an edge case. Collection errors are matched by file. A version handling only node-level failures would have passed every test written for it and worked on almost nothing real.
+
+**Exit:** correct-candidate survival is measured through the new check, because §5.5 says adding checks raises the chance a correct candidate is falsely rejected and this one is no exception. Both directions are covered in `tests/test_stress.py` — including the control that a test green on the old tree discharges nothing *with a fresh passing record present*, without which the feature would be `return True`. **What it does not claim is +28pp**: that figure is an oracle signal measured by handing an agent a reproduction, and this is the runtime recognising one. What it removes is a false block. [journey/35](journey/35-computed-not-generated.md). Forward and adversarial: the derived test must be seen **red on the pre-change tree** — a derived test that was never observed failing is not a reproduction, it is a guess with a filename.
 
 ### Phase C — Separate generation from selection *(started early, 2026-09-14)*
 

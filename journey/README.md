@@ -47,6 +47,7 @@ command in this repository and can be reproduced.
 | [32-could-not-fail.md](32-could-not-fail.md) | The two-way rule stops being a habit: enforced in code for every runner, and shipped as `core/stress.py` — the runtime now runs each declared check against the pre-change tree and reports the ones that could not have failed |
 | [33-which-door.md](33-which-door.md) | The boundary recipe was wrong, `--network none` would have killed the CLI's own API access — and a sharper exposure screen finds 21 of 36 runs handed the fix's own vocabulary, four of them from the machine's site-packages, a door no network policy closes |
 | [34-the-ratchet.md](34-the-ratchet.md) | The best proven state kept in a private ref so a later edit cannot lose it — and a guard that closed the registry answer key, broke `pip install -e .`, and had to come back out |
+| [35-computed-not-generated.md](35-computed-not-generated.md) | The reproduction obligation stops demanding an ordering and starts asking the old tree: a test red there and green now is a reproduction, whoever wrote it and whenever — and collection errors are the common case, not an edge one |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -250,6 +251,7 @@ Every figure below comes from a command in this repository.
 | Two paired chunks | 100 runs, $101.76: vanilla 46/50, gate 49/50, 22 of 25 tasks solved in all four attempts — **with upstream answer access, see below** | `python -m eval.baseline --show results/chunks/chunk2.json` |
 | Answer exposure in that sweep | **24 of 100 runs name their own task's fix commit sha**, returned by the GitHub API as a tool result | `python -m eval.exposure results/chunks/bundles-chunk1 --corpus CORPUS` |
 | The denial list works | Upstream network exposure **14 → 0** between the pre-denial and post-denial sweeps, same screen — the canary seen to flip | `python -m eval.canary --corpus E:/ep-corpus/prevalence.json results/prevalence/bundles` |
+| A reproduction, computed | A test red on the base commit and green now discharges `reproduced` whatever order the agent worked in — no model call | `python -m pytest tests/test_stress.py -q` |
 | The best state is kept | Green at a stop → a private ref; the report offers it back if the tree moves off it | `python -m pytest tests/test_ratchet.py -q` |
 | Which door the answer came through | **21 of 36 watchable runs** handed the fix's own invented identifiers — 14 upstream network, **4 the machine's own site-packages** | `python -m eval.canary --corpus E:/ep-corpus/paired.json results/chunks/bundles-chunk1` |
 | A check that could not have failed | The runtime says so, in the report, without refusing the stop | `python -m pytest tests/test_stress.py -q` |

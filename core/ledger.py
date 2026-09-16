@@ -99,6 +99,14 @@ class Ledger:
     against, and `core/stress.py` would be asking whether the change
     discriminates from itself.
     """
+    failed_before: list = field(default_factory=list)
+    """Test identities that were already red on the tree this task started from.
+
+    A test failing there and passing now is a **reproduction**, and this is what
+    lets the runtime establish that by computation rather than by hoping the
+    agent ran the test before it wrote the fix. Writing the test afterwards is
+    ordinary practice and was previously an obligation nobody could discharge.
+    """
     discrimination: dict = field(default_factory=dict)
     """Per declared need: did that check pass before the change, or not?
 
@@ -160,6 +168,7 @@ class Ledger:
             guided=raw.get("guided", False),
             created=raw.get("created", time.time()),
             base=raw.get("base", ""),
+            failed_before=raw.get("failed_before", []) or [],
             discrimination=raw.get("discrimination", {}) or {},
         )
 
@@ -190,6 +199,7 @@ class Ledger:
             "guided": self.guided,
             "created": self.created,
             "base": self.base,
+            "failed_before": self.failed_before,
             "discrimination": self.discrimination,
         }
         # Named per process: a shared temporary file is its own race, where two
@@ -350,6 +360,13 @@ class Ledger:
             # record to point at, but a target going from red to green is the
             # reproduction by any other name.
             shown = _demonstrated_fix(self.evidence)
+            if shown is None:
+                # The agent did not happen to run it red first, so ask the old
+                # tree directly. A test that was failing there and passes now is
+                # a reproduction however the work was ordered, and demanding the
+                # ordering blocked agents who wrote the test after the fix -
+                # which is ordinary practice, not a mistake.
+                shown = self._reproduced_on_base()
             return Check(obligation=obligation, met=shown is not None, evidence=shown)
 
         if obligation.kind is Kind.STABILITY:
@@ -385,6 +402,27 @@ class Ledger:
             if e.kind is Kind.STABILITY and e.runs and e.failed
         ]
         return runs_needed(max(rates)) if rates else MIN_RUNS
+
+    def _reproduced_on_base(self) -> Evidence | None:
+        """A now-passing test that was already failing before this task began."""
+        if not self.failed_before:
+            return None
+        red = set(self.failed_before)
+        # A whole file that would not collect back there has no node id, so a
+        # node now passing inside it counts. `tests/test_new.py` against
+        # `tests/test_new.py::test_mul` is the ordinary shape of a fix that
+        # introduces the thing the test imports.
+        files = {p for p in red if p.endswith(".py")}
+
+        def was_red(identity: str) -> bool:
+            here = identity.replace("\\", "/")
+            return identity in red or any(here.startswith(f) for f in files)
+
+        passing = [e for e in self.evidence
+                   if e.kind is Kind.TEST and e.result is Result.PASS
+                   and was_red(e.identity)
+                   and e.freshness(self.root) is Freshness.FRESH]
+        return passing[-1] if passing else None
 
     def _check_stability(self, obligation: Obligation) -> Check:
         """Stability needs enough clean repeats, not one lucky run.

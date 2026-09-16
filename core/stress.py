@@ -37,12 +37,18 @@ run this way once, not once per stop.
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import tempfile
 from pathlib import Path
 
 TIMEOUT = 300
+
+# `ERROR tests/test_new.py` — a whole file that would not collect on the old
+# tree. Kept alongside node ids in the same set because it is the same fact,
+# and matched by prefix because it carries no node.
+COLLECT_ERROR = re.compile(r"^ERROR\s+(\S+\.py)\b", re.MULTILINE)
 
 # What the check concluded, stored on the evidence record. Absent means nobody
 # asked — which is the honest default and distinct from "asked, and it could
@@ -70,14 +76,21 @@ def base_commit(root: Path) -> str:
     return _git(root, "rev-parse", "HEAD") or ""
 
 
-def before_the_change(root: Path, commit: str, command: str,
-                      timeout: int = TIMEOUT) -> bool | None:
-    """Did `command` already pass before this task began?
+def on_the_old_tree(root: Path, commit: str, command: str,
+                    timeout: int = TIMEOUT) -> tuple[bool, str] | None:
+    """Run `command` against the tree as it was, and keep what it said.
 
-    True means it passed without the change and therefore could not have been
-    testing it. None means the question could not be asked — no git, no such
-    commit, a worktree that would not build — which is reported as unknown
-    rather than guessed either way.
+    The output matters as much as the exit code, and for a different question.
+    The code answers §5.10 — *could this check have failed?* The output answers
+    §5.13 — *which individual tests were already red back there?* — and a test
+    that was red before and is green now is a reproduction, whatever order the
+    agent happened to work in.
+
+    One run, both answers. Asking them separately would mean building the
+    worktree and running the suite twice for facts that arrive together.
+
+    None means the question could not be asked: no commit, no worktree, a
+    command that would not start. Unknown, never a guess.
     """
     if not commit:
         return None
@@ -92,7 +105,7 @@ def before_the_change(root: Path, commit: str, command: str,
                                   timeout=timeout)
         except (OSError, subprocess.SubprocessError):
             return None
-        return done.returncode == 0
+        return done.returncode == 0, (done.stdout or "") + (done.stderr or "")
     finally:
         _git(root, "worktree", "remove", "--force", str(tree), timeout=60)
         # `ignore_errors` because a test run can leave a file the OS still holds
@@ -103,27 +116,52 @@ def before_the_change(root: Path, commit: str, command: str,
         shutil.rmtree(hold, ignore_errors=True)
 
 
-def stress(ledger) -> dict[str, str]:
+def stress(ledger) -> tuple[dict[str, str], list[str]]:
     """Run every declared check the other way round, once per task.
 
-    Returns the verdict per need. Cached on the ledger, because the base commit
-    does not move while a task runs, so the answer cannot change either.
+    Returns the verdict per need, and every test identity that was **already
+    failing** on the old tree. The second is what makes §5.13's reproduction
+    obligation computable instead of merely observable: a test red back there
+    and green now is a reproduction, and the agent does not have to have run it
+    in that order for it to be true.
+
+    Both are cached on the ledger. The base commit does not move while a task
+    runs, so neither answer can change.
     """
+    from .evidence import Kind, Result
+    from .parsers import parse
+
     config = ledger.config
     if not config.commands or not ledger.base:
-        return dict(ledger.discrimination)
+        return dict(ledger.discrimination), list(ledger.failed_before)
 
     verdicts = dict(ledger.discrimination)
+    already_red = set(ledger.failed_before)
     for need, command in sorted(config.commands.items()):
         if need in verdicts:
             continue
         if not _passing(ledger, need):
             # Nothing claims this check passed, so there is nothing to question.
             continue
-        passed_before = before_the_change(ledger.root, ledger.base, command)
-        verdicts[need] = (UNCHECKABLE if passed_before is None
-                          else VACUOUS if passed_before else DISCRIMINATES)
-    return verdicts
+        found = on_the_old_tree(ledger.root, ledger.base, command)
+        if found is None:
+            verdicts[need] = UNCHECKABLE
+            continue
+        passed_before, output = found
+        verdicts[need] = VACUOUS if passed_before else DISCRIMINATES
+        # The runtime's own parsers, on the old tree's output. Whatever it can
+        # read as a failing test there is a test the change made pass.
+        already_red |= {r.identity for r in parse(command, output, 0 if passed_before else 1,
+                                                  ledger.root)
+                        if r.kind is Kind.TEST and r.result is not Result.PASS}
+        # And the files that could not even be collected. This is the *common*
+        # case, not an edge one: a test for behaviour the fix introduces cannot
+        # import on the old tree, so pytest reports `ERROR tests/test_new.py`
+        # with no node id at all and the parsers above see nothing. Matching by
+        # file is what makes the obligation dischargeable for the shape of
+        # change it exists to describe.
+        already_red |= set(COLLECT_ERROR.findall(output))
+    return verdicts, sorted(already_red)
 
 
 def _passing(ledger, need: str) -> bool:

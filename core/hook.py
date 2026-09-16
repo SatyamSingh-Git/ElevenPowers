@@ -228,7 +228,7 @@ def on_stop(payload: dict, root: Path) -> int:
     # task and cached, and it never alters the verdict - 5.12 says detection and
     # intervention are separately justified, and this project blocked 75 percent
     # of runs once already on a signal it had not measured.
-    ledger.discrimination = stress(ledger)
+    ledger.discrimination, ledger.failed_before = stress(ledger)
     # The best state this task ever proved, kept in a private ref so a later
     # edit cannot lose it. 5.6: a long attempt ends at its latest patch, not its
     # best, and 60-69% of agent failures reach the right code and then damage

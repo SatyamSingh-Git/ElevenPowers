@@ -84,8 +84,9 @@ def test_a_check_that_passed_before_the_change_is_caught(repo):
         "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
         encoding="utf-8")
     led = ledger_for(repo)
-    verdicts = stress.stress(led)
+    verdicts, red = stress.stress(led)
     assert verdicts["tests"] == stress.VACUOUS
+    assert red == [], "a suite green on the old tree reproduced nothing"
     assert "not evidence the change works" in " ".join(stress.wording(verdicts))
 
 
@@ -112,7 +113,7 @@ def test_a_check_that_really_tests_the_change_is_not_called_weak(repo):
     led = ledger_for(repo)
     assert led.base == head
 
-    verdicts = stress.stress(led)
+    verdicts, red = stress.stress(led)
     assert verdicts["tests"] == stress.DISCRIMINATES
     assert stress.wording(verdicts) == [], "a good check must not be reported as weak"
 
@@ -132,7 +133,7 @@ def test_the_working_tree_is_never_touched(repo):
 def test_no_repository_is_unknown_rather_than_a_guess(tmp_path):
     """Absence of an answer is its own answer, and must not read as either one."""
     assert stress.base_commit(tmp_path) == ""
-    assert stress.before_the_change(tmp_path, "", SUITE) is None
+    assert stress.on_the_old_tree(tmp_path, "", SUITE) is None
 
 
 def test_nothing_is_run_for_a_need_with_no_passing_evidence(repo):
@@ -140,7 +141,7 @@ def test_nothing_is_run_for_a_need_with_no_passing_evidence(repo):
     save_config(repo, Config(profile="guide", commands={"tests": SUITE}))
     led = Ledger(root=repo, task="t", claims=[Claim.BUG_FIXED],
                  base=stress.base_commit(repo))
-    assert stress.stress(led) == {}
+    assert stress.stress(led) == ({}, [])
 
 
 def test_the_answer_is_cached_for_the_task(repo):
@@ -150,7 +151,7 @@ def test_the_answer_is_cached_for_the_task(repo):
     # a command that would fail loudly if it were actually run
     save_config(repo, Config(profile="guide", commands={"tests": "exit 1"}))
     led._config = None
-    assert stress.stress(led)["tests"] == stress.DISCRIMINATES
+    assert stress.stress(led)[0]["tests"] == stress.DISCRIMINATES
 
 
 def test_an_undeclared_command_is_never_run(repo):
@@ -158,4 +159,61 @@ def test_an_undeclared_command_is_never_run(repo):
     led = ledger_for(repo)
     save_config(repo, Config(profile="guide", commands={}))
     led._config = None
-    assert stress.stress(led) == {}
+    assert stress.stress(led) == ({}, [])
+
+
+# --- C1: a reproduction the runtime computes rather than waits for ----------
+
+def test_a_test_red_on_the_old_tree_is_reported_as_already_failing(repo):
+    """Forward. The agent wrote the test AFTER the fix, which is ordinary.
+
+    Nothing in the ledger records it ever failing, because it never ran red
+    here. The old tree knows it did.
+    """
+    (repo / "tests" / "test_new.py").write_text(
+        "import sys; sys.path.insert(0, 'src')\n"
+        "from app import mul\n\n"
+        "def test_mul():\n    assert mul(2, 3) == 6\n",
+        encoding="utf-8")
+    git(repo, "add", "-A")
+    git(repo, "commit", "-qm", "the failing test is part of the base")
+
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+    led = ledger_for(repo)
+    _, red = stress.stress(led)
+    # No node id: the file could not be collected back there, because the
+    # function the test imports is what the change introduced.
+    assert red == ["tests/test_new.py"], red
+
+    # And the obligation discharges on it, which is the whole feature.
+    led.failed_before = red
+    led.evidence.append(Evidence(
+        kind=Kind.TEST, identity="tests/test_new.py::test_mul", result=Result.PASS,
+        observed=source_files(repo), tree=tree_hash(repo, source_files(repo)),
+        scope="source", command=SUITE))
+    assert led._reproduced_on_base() is not None
+
+
+def test_a_test_green_on_the_old_tree_reproduces_nothing(repo):
+    """Adversarial, and the control that stops this becoming `everything counts`.
+
+    A test that already passed before the change cannot be a reproduction of
+    anything, however green it is now.
+    """
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+    led = ledger_for(repo)
+    _, red = stress.stress(led)
+    assert red == []
+
+    # And a green test cannot borrow a reproduction it never had, even with a
+    # fresh passing record sitting right there.
+    led.failed_before = red
+    led.evidence.append(Evidence(
+        kind=Kind.TEST, identity="tests/test_app.py::test_add", result=Result.PASS,
+        observed=source_files(repo), tree=tree_hash(repo, source_files(repo)),
+        scope="source", command=SUITE))
+    assert led._reproduced_on_base() is None
