@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 153986,
+ "num_turns": 30,
+ "stop_reason": "end_turn",
+ "session_id": "e3f505f6-ddb7-4c36-88ac-76fdb721def5",
+ "total_cost_usd": 0.8421776999999999,
+ "usage": {
+  "input_tokens": 52,
+  "cache_creation_input_tokens": 35869,
+  "cache_read_input_tokens": 1428759,
+  "output_tokens": 13212,
+  "output_tokens_details": {
+   "thinking_tokens": 8236
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 35869,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 423,
+    "cache_read_input_tokens": 66600,
+    "cache_creation_input_tokens": 360,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 360
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 52,
+   "outputTokens": 13212,
+   "cacheReadInputTokens": 1428759,
+   "cacheCreationInputTokens": 35869,
+   "webSearchRequests": 0,
+   "costUSD": 0.8421776999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "## Summary\n\nFixed `_is_class_var` in `src/attr/_make.py` to unwrap `ForwardRef` objects before stringifying: `str(getattr(annot, \"__forward_arg__\", annot))`.\n\nThe bug: on Python 3.14+, `_get_annotations` uses `annotationlib.get_annotations(cls, format=Format.FORWARDREF)`, which returns unresolvable annotations as `ForwardRef` objects rather than plain strings. `_is_class_var` previously did `str(annot)` directly, which on a `ForwardRef` produces `\"ForwardRef('ClassVar[...]')\"` instead of the actual source text \u2014 so the `ClassVar` prefix check never matched, and such attributes were incorrectly treated as regular fields instead of being ignored.\n\nAdded a `typing.ForwardRef(\"typing.ClassVar[int]\")` case to `test_is_class_var` in `tests/test_annotations.py`, and a changelog fragment (`changelog.d/1593.change.md`). Full suite passes: 1388 passed, 5 skipped, 1 xfailed (run via `PYTHONPATH=src python -m pytest tests -q`, since the environment's installed `attrs` package shadows local `src` otherwise).",
+ "ttft_ms": 2443,
+ "ttft_stream_ms": 1388,
+ "time_to_request_ms": 462,
+ "type": "result",
+ "duration_ms": 392659,
+ "uuid": "805236ce-0538-4c38-9fde-ca6cac94e278"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 413173,
+ "num_turns": 67,
+ "stop_reason": "end_turn",
+ "session_id": "598a965a-4a14-4b37-a2a2-ee079dfd8b66",
+ "total_cost_usd": 2.5782969,
+ "usage": {
+  "input_tokens": 133,
+  "cache_creation_input_tokens": 81845,
+  "cache_read_input_tokens": 5209743,
+  "output_tokens": 34927,
+  "output_tokens_details": {
+   "thinking_tokens": 16119
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 81845,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 442,
+    "cache_read_input_tokens": 112242,
+    "cache_creation_input_tokens": 694,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 694
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 133,
+   "outputTokens": 34927,
+   "cacheReadInputTokens": 5209743,
+   "cacheCreationInputTokens": 81845,
+   "webSearchRequests": 0,
+   "costUSD": 2.5782969,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1846 tests pass now (including the previously-blocked `get_pager_file` tests, since it was purely an environment shadowing issue \u2014 a stale global `click` install was being imported instead of this repo's `src/click`). Root cause fixed by editable-installing the local package into the project's `.venv`.\n\n**Summary:**\n- `src/click/testing.py`: `CliRunner.isolated_filesystem` now emits a `DeprecationWarning` and documents why (relies on `os.chdir`, mutating process-global state \u2014 not thread-safe), pointing users to `tempfile.TemporaryDirectory` or pytest's `tmp_path`.\n- `docs/testing.md`, `CHANGES.md`: documented the deprecation and its limits (`#3700`, `#3501`).\n- Tests: migrated Click's own internal usages off the deprecated helper (`test_arguments.py`, `test_basic.py`, `test_utils/test_open_file.py`), wrapped the two direct `isolated_filesystem` tests in `pytest.warns`, and added a dedicated deprecation test.\n- Fixed the dev environment: editable-installed the local package into `.venv` so tests exercise this repo's code instead of a stale global `click` install.\n\n`python -m pytest tests -q` passes in full (1846 passed, 94 skipped).",
+ "ttft_ms": 2031,
+ "ttft_stream_ms": 1533,
+ "time_to_request_ms": 477,
+ "type": "result",
+ "duration_ms": 714338,
+ "uuid": "0b71454a-a89d-44ba-9c26-5a870c4dabbe"
+}

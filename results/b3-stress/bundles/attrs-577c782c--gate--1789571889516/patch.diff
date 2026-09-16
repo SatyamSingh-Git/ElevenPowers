@@ -1,0 +1,112 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 7156b12..4f36da0 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -4,7 +4,7 @@ ci:
+ 
+ repos:
+   - repo: https://github.com/astral-sh/ruff-pre-commit
+-    rev: v0.11.12
++    rev: v0.16.3
+     hooks:
+       - id: ruff-check
+         args: [--fix, --exit-non-zero-on-fix]
+diff --git a/pyproject.toml b/pyproject.toml
+index 4428d97..5ac811d 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -213,6 +213,7 @@ ignore = [
+   "ARG",     # unused arguments are normal when implementing interfaces
+   "C901",    # we're complex software
+   "COM",     # ruff format takes care of our commas
++  "CPY001",  # we use SPDX headers, not copyright notices
+   "D",       # We prefer our own docstring style.
+   "E501",    # leave line-length enforcement to ruff format
+   "ERA001",  # we need to keep around some notes
+@@ -221,11 +222,15 @@ ignore = [
+   "ISC001",  # conflicts with ruff format
+   "N",       # we need more naming freedom
+   "PD",      # we're not pandas
++  "PLC0415", # imports are sometimes done on purpose deeper in the code
+   "PLR0912", # we're complex software
+   "PLR0913", # yes, many arguments, but most have defaults
+   "PLR0915", # we're complex software
++  "PLR0917", # yes, many arguments, but most have defaults
+   "PLR2004", # numbers are sometimes fine
+   "PLW0603", # sometimes we need globals
++  "PLW1641", # we know what we're doing when we define __eq__ by hand
++  "RUF063",  # we intentionally avoid the newer API in our compat shims
+   "S307",    # eval FTW
+   "SLF001",  # private members are accessed by friendly functions
+   "TC",      # TYPE_CHECKING blocks break autodocs
+@@ -246,11 +251,13 @@ ignore = [
+   "B018",    # pointless expressions in tests aren't pointless
+   "DTZ",     # datetime best practices don't matter in tests
+   "EM",      # no need for exception msg hygiene in tests
++  "ISC004",  # implicit string concat in a 1-tuple isn't a missing comma
+   "PLE0309", # hash doesn't have to return anything in tests
+   "PLR0124", # pointless comparison in tests aren't pointless
+   "PT011",   # broad is fine
+   "PT012",   # sometimes we need more than a single stmt
+   "RUF012",  # we don't do ClassVar annotations in tests
++  "RUF043",  # match text isn't meant to be a regex
+   "S",       # security concerns don't matter in tests
+   "SIM201",  # sometimes we need to check `not ==`
+   "SIM202",  # sometimes we need to check `not ==`
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index e84d979..9db4b40 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -553,7 +553,7 @@ def _frozen_delattrs(self, name):
+     """
+     Attached to frozen classes as __delattr__.
+     """
+-    if isinstance(self, BaseException) and name in ("__notes__",):
++    if isinstance(self, BaseException) and name == "__notes__":
+         BaseException.__delattr__(self, name)
+         return
+ 
+@@ -1082,7 +1082,7 @@ class _ClassBuilder:
+ 
+     def add_replace(self):
+         self._cls_dict["__replace__"] = self._add_method_dunders(
+-            lambda self, **changes: evolve(self, **changes)
++            lambda self, **changes: evolve(self, **changes)  # noqa: PLW0108
+         )
+         return self
+ 
+@@ -2848,7 +2848,7 @@ class Converter:
+                 value, field
+             )
+         else:
+-            self.__call__ = lambda value, instance, field: self.converter(
++            self.__call__ = lambda value, instance, field: self.converter(  # noqa: PLW0108
+                 value, instance, field
+             )
+ 
+diff --git a/tests/test_make.py b/tests/test_make.py
+index 80c0066..933cde0 100644
+--- a/tests/test_make.py
++++ b/tests/test_make.py
+@@ -112,9 +112,7 @@ class TestCountingAttr:
+ 
+         assert v == a._validator
+ 
+-    @pytest.mark.parametrize(
+-        "wrap", [lambda v: v, lambda v: [v], lambda v: and_(v)]
+-    )
++    @pytest.mark.parametrize("wrap", [lambda v: v, lambda v: [v], and_])
+     def test_validator_decorator(self, wrap):
+         """
+         If _CountingAttr.validator is used as a decorator and there is already
+@@ -1489,9 +1487,7 @@ class TestConverter:
+         """
+         Converters circumvent immutability.
+         """
+-        C = make_class(
+-            "C", {"x": attr.ib(converter=lambda v: int(v))}, frozen=True
+-        )
++        C = make_class("C", {"x": attr.ib(converter=int)}, frozen=True)
+         C("1")
+ 
+ 

@@ -1,0 +1,239 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 1b8ae19..26893bd 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -5,6 +5,13 @@ Version 8.4.0
+ 
+ Unreleased
+ 
++-   Add a ``capture`` parameter to :class:`CliRunner`. When set to ``False``,
++    `<stdout>`/`<stderr>` are left untouched instead of being redirected into
++    the :class:`~click.testing.Result`, giving C-level consumers
++    (``faulthandler``, ``subprocess``, ...) a real file descriptor. Revert the
++    8.3.3 change that always exposed the original file descriptor via
++    ``fileno()`` on the redirected streams in the default, captured mode, as
++    it let C-level writes bypass capturing. :issue:`3384` :issue:`3244`
+ -   :class:`ParamType` typing improvements. :pr:`3371`
+ 
+     -   :class:`ParamType` is now a generic abstract base class,
+diff --git a/src/click/testing.py b/src/click/testing.py
+index 04e7f1d..2393f0a 100644
+--- a/src/click/testing.py
++++ b/src/click/testing.py
+@@ -103,30 +103,14 @@ class StreamMixer:
+ class _NamedTextIOWrapper(io.TextIOWrapper):
+     """A :class:`~io.TextIOWrapper` with custom ``name`` and ``mode``
+     that does not close its underlying buffer.
+-
+-    An optional ``original_fd`` preserves the file descriptor of the
+-    stream being replaced, so that C-level consumers that call
+-    :meth:`fileno` (``faulthandler``, ``subprocess``, ...) still work.
+-    Inspired by pytest's ``capsys``/``capfd`` split: see :doc:`/testing`
+-    for details.
+-
+-    .. versionchanged:: 8.3.3
+-        Added ``original_fd`` parameter and :meth:`fileno` override.
+     """
+ 
+     def __init__(
+-        self,
+-        buffer: t.BinaryIO,
+-        name: str,
+-        mode: str,
+-        *,
+-        original_fd: int = -1,
+-        **kwargs: t.Any,
++        self, buffer: t.BinaryIO, name: str, mode: str, **kwargs: t.Any
+     ) -> None:
+         super().__init__(buffer, **kwargs)
+         self._name = name
+         self._mode = mode
+-        self._original_fd = original_fd
+ 
+     def close(self) -> None:
+         """The buffer this object contains belongs to some other object,
+@@ -136,21 +120,6 @@ class _NamedTextIOWrapper(io.TextIOWrapper):
+         .. versionadded:: 8.3.2
+         """
+ 
+-    def fileno(self) -> int:
+-        """Return the file descriptor of the original stream, if one was
+-        provided at construction time.
+-
+-        This allows C-level consumers (``faulthandler``, ``subprocess``,
+-        signal handlers, ...) to obtain a valid fd without crashing, even
+-        though the Python-level writes are redirected to an in-memory
+-        buffer.
+-
+-        .. versionadded:: 8.3.3
+-        """
+-        if self._original_fd >= 0:
+-            return self._original_fd
+-        return super().fileno()
+-
+     @property
+     def name(self) -> str:
+         return self._name
+@@ -272,6 +241,15 @@ class CliRunner:
+                        will automatically echo the input.
+     :param catch_exceptions: Whether to catch any exceptions other than
+                              ``SystemExit`` when running :meth:`~CliRunner.invoke`.
++    :param capture: if this is set to ``False``, `<stdout>` and `<stderr>` are
++                    left untouched instead of being redirected into the
++                    :class:`Result`. This is useful when a C-level consumer
++                    (``faulthandler``, ``subprocess``, ...) needs a real file
++                    descriptor, at the cost of ``Result.output`` and friends
++                    being empty.
++
++    .. versionchanged:: 8.4
++        Added the ``capture`` parameter.
+ 
+     .. versionchanged:: 8.2
+         Added the ``catch_exceptions`` parameter.
+@@ -286,11 +264,13 @@ class CliRunner:
+         env: cabc.Mapping[str, str | None] | None = None,
+         echo_stdin: bool = False,
+         catch_exceptions: bool = True,
++        capture: bool = True,
+     ) -> None:
+         self.charset = charset
+         self.env: cabc.Mapping[str, str | None] = env or {}
+         self.echo_stdin = echo_stdin
+         self.catch_exceptions = catch_exceptions
++        self.capture = capture
+ 
+     def get_default_prog_name(self, cli: Command) -> str:
+         """Given a command object it will return the default program name
+@@ -328,6 +308,10 @@ class CliRunner:
+         :param color: whether the output should contain color codes. The
+                       application can still override this explicitly.
+ 
++        .. versionchanged:: 8.4
++            `<stdout>` and `<stderr>` are left untouched when the runner's
++            ``capture`` parameter is ``False``.
++
+         .. versionadded:: 8.2
+             An additional output stream is returned, which is a mix of
+             `<stdout>` and `<stderr>` streams.
+@@ -355,20 +339,6 @@ class CliRunner:
+ 
+         stream_mixer = StreamMixer()
+ 
+-        # Preserve the original file descriptors so that C-level
+-        # consumers (faulthandler, subprocess, etc.) can still obtain a
+-        # valid fd from the redirected streams. The original streams
+-        # may themselves lack a fileno() (e.g. when CliRunner is used
+-        # inside pytest's capsys), so we fall back to -1.
+-        def _safe_fileno(stream: t.IO[t.Any]) -> int:
+-            try:
+-                return stream.fileno()
+-            except (AttributeError, io.UnsupportedOperation):
+-                return -1
+-
+-        old_stdout_fd = _safe_fileno(old_stdout)
+-        old_stderr_fd = _safe_fileno(old_stderr)
+-
+         if self.echo_stdin:
+             bytes_input = echo_input = t.cast(
+                 t.BinaryIO, EchoingStdin(bytes_input, stream_mixer.stdout)
+@@ -383,22 +353,18 @@ class CliRunner:
+             # large chunk which is echoed early.
+             text_input._CHUNK_SIZE = 1  # type: ignore
+ 
+-        sys.stdout = _NamedTextIOWrapper(
+-            stream_mixer.stdout,
+-            encoding=self.charset,
+-            name="<stdout>",
+-            mode="w",
+-            original_fd=old_stdout_fd,
+-        )
++        if self.capture:
++            sys.stdout = _NamedTextIOWrapper(
++                stream_mixer.stdout, encoding=self.charset, name="<stdout>", mode="w"
++            )
+ 
+-        sys.stderr = _NamedTextIOWrapper(
+-            stream_mixer.stderr,
+-            encoding=self.charset,
+-            name="<stderr>",
+-            mode="w",
+-            errors="backslashreplace",
+-            original_fd=old_stderr_fd,
+-        )
++            sys.stderr = _NamedTextIOWrapper(
++                stream_mixer.stderr,
++                encoding=self.charset,
++                name="<stderr>",
++                mode="w",
++                errors="backslashreplace",
++            )
+ 
+         @_pause_echo(echo_input)  # type: ignore
+         def visible_input(prompt: str | None = None) -> str:
+diff --git a/tests/test_testing.py b/tests/test_testing.py
+index c8fca4d..9db8ae7 100644
+--- a/tests/test_testing.py
++++ b/tests/test_testing.py
+@@ -1,4 +1,5 @@
+ import faulthandler
++import io
+ import os
+ import pdb
+ import sys
+@@ -522,13 +523,15 @@ def test_pdb_init_restored_after_invoke():
+     assert pdb.Pdb.__init__ is original
+ 
+ 
+-def test_faulthandler_enable(runner):
++def test_faulthandler_enable():
+     """``faulthandler.enable()`` inside ``CliRunner`` should not crash with
+     ``io.UnsupportedOperation: fileno``.
+ 
+     ``faulthandler.enable()`` needs a real OS file descriptor to register
+     its signal handler. ``CliRunner`` replaces ``sys.stderr`` with a
+     ``BytesIO`` wrapper that has no ``fileno()``, causing the call to fail.
++    Passing ``capture=False`` leaves ``sys.stderr`` untouched so a real fd
++    is available.
+ 
+     Reproduce:https://github.com/pallets/click/issues/2865
+     """
+@@ -542,6 +545,38 @@ def test_faulthandler_enable(runner):
+             faulthandler.enable()
+         click.echo("Finished executing main function.")
+ 
++    runner = CliRunner(capture=False)
+     result = runner.invoke(cli, ["--flag", True])
+     assert result.exit_code == 0, result.output
+-    assert "Finished executing main function." in result.output
++
++
++def test_capture_false_leaves_streams_untouched():
++    """With ``capture=False``, ``sys.stdout`` is left as-is and
++    ``Result.output`` is empty since nothing was captured.
++    """
++    outer_stdout = sys.stdout
++
++    @click.command()
++    def cli():
++        assert sys.stdout is outer_stdout
++        click.echo("hello")
++
++    runner = CliRunner(capture=False)
++    result = runner.invoke(cli, catch_exceptions=False)
++    assert result.exit_code == 0
++    assert result.output == ""
++
++
++def test_capture_true_hides_fileno_by_default():
++    """By default (``capture=True``), the redirected streams have no real
++    file descriptor, matching pre-8.3.3 behavior.
++    """
++
++    @click.command()
++    def cli():
++        with pytest.raises(io.UnsupportedOperation):
++            sys.stdout.fileno()
++
++    runner = CliRunner()
++    result = runner.invoke(cli, catch_exceptions=False)
++    assert result.exit_code == 0

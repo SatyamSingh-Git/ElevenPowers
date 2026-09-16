@@ -1,0 +1,85 @@
+diff --git a/changelog.d/1331.change.md b/changelog.d/1331.change.md
+new file mode 100644
+index 0000000..b9810e6
+--- /dev/null
++++ b/changelog.d/1331.change.md
+@@ -0,0 +1 @@
++`attrs.Converter` (and therefore `attrs.converters.pipe()`) now correctly infers the return type of a wrapped `attrs.Converter` instance instead of falling back to no type when running in adapter mode (that is, when *takes_self* or *takes_field* is set).
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index 6ff79ba..8b24e7e 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2697,6 +2697,7 @@ class Converter:
+         "takes_field",
+         "_first_param_type",
+         "_global_name",
++        "_return_type",
+         "__call__",
+     )
+ 
+@@ -2705,9 +2706,9 @@ class Converter:
+         self.takes_self = takes_self
+         self.takes_field = takes_field
+ 
+-        self._first_param_type = _AnnotationExtractor(
+-            converter
+-        ).get_first_param_type()
++        ex = _AnnotationExtractor(converter)
++        self._first_param_type = ex.get_first_param_type()
++        self._return_type = ex.get_return_type()
+ 
+         self.__call__ = {
+             (False, False): self._takes_only_value,
+@@ -2944,12 +2945,22 @@ def pipe(*converters):
+         pipe_converter.__annotations__.update({"val": A, "return": A})
+     else:
+         # Get parameter type from first converter.
+-        t = _AnnotationExtractor(converters[0]).get_first_param_type()
++        first_converter = converters[0]
++        if isinstance(first_converter, Converter):
++            t = first_converter._first_param_type
++        else:
++            t = _AnnotationExtractor(first_converter).get_first_param_type()
++
+         if t:
+             pipe_converter.__annotations__["val"] = t
+ 
+         # Get return type from last converter.
+-        rt = _AnnotationExtractor(converters[-1]).get_return_type()
++        last_converter = converters[-1]
++        if isinstance(last_converter, Converter):
++            rt = last_converter._return_type
++        else:
++            rt = _AnnotationExtractor(last_converter).get_return_type()
++
+         if rt:
+             pipe_converter.__annotations__["return"] = rt
+ 
+diff --git a/tests/test_converters.py b/tests/test_converters.py
+index fc812aa..4a21fbf 100644
+--- a/tests/test_converters.py
++++ b/tests/test_converters.py
+@@ -227,6 +227,23 @@ class TestPipe:
+ 
+         assert o is pipe().converter(o, None, None)
+ 
++    def test_infers_type_from_adapter_converters(self):
++        """
++        The parameter and return type are correctly inferred from wrapped
++        `Converter` instances, not just plain callables.
++        """
++
++        def parse(val: str) -> int:
++            return int(val)
++
++        def stringify(val) -> str:
++            return str(val)
++
++        c = pipe(Converter(parse, takes_self=True), stringify)
++
++        assert str is c._first_param_type
++        assert str is c._return_type
++
+ 
+ class TestToBool:
+     def test_unhashable(self):

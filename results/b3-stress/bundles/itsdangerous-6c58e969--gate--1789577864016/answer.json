@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 37917,
+ "num_turns": 9,
+ "stop_reason": "end_turn",
+ "session_id": "5de83d53-6fc8-4db2-ab9b-1e04751803b0",
+ "total_cost_usd": 0.34849110000000005,
+ "usage": {
+  "input_tokens": 18,
+  "cache_creation_input_tokens": 31699,
+  "cache_read_input_tokens": 408877,
+  "output_tokens": 2372,
+  "output_tokens_details": {
+   "thinking_tokens": 747
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 31699,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 89,
+    "cache_read_input_tokens": 53057,
+    "cache_creation_input_tokens": 837,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 837
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 18,
+   "outputTokens": 2372,
+   "cacheReadInputTokens": 408877,
+   "cacheCreationInputTokens": 31699,
+   "webSearchRequests": 0,
+   "costUSD": 0.34849110000000005,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 399 tests pass. `TimedSerializer.loads` now iterates over `iter_unsigners` (like the base `Serializer`), so `fallback_signers` configured on a `TimedSerializer` are actually used during deserialization instead of being silently ignored.",
+ "ttft_ms": 2916,
+ "ttft_stream_ms": 2372,
+ "time_to_request_ms": 362,
+ "type": "result",
+ "duration_ms": 53731,
+ "uuid": "e530fd99-ee6d-4178-9afe-29561cfc2971"
+}

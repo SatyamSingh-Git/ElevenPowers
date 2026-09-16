@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 495701,
+ "num_turns": 59,
+ "stop_reason": "end_turn",
+ "session_id": "a0482d10-f360-4607-a84c-c04280fedb9e",
+ "total_cost_usd": 2.8572165000000003,
+ "usage": {
+  "input_tokens": 117,
+  "cache_creation_input_tokens": 113618,
+  "cache_read_input_tokens": 5296725,
+  "output_tokens": 39076,
+  "output_tokens_details": {
+   "thinking_tokens": 30545
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 113618,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 73,
+    "cache_read_input_tokens": 135384,
+    "cache_creation_input_tokens": 419,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 419
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 117,
+   "outputTokens": 39076,
+   "cacheReadInputTokens": 5296725,
+   "cacheCreationInputTokens": 113618,
+   "webSearchRequests": 0,
+   "costUSD": 2.8572165000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Re-ran the test suite against the current tree \u2014 still passing (4 passed). The fix in `src/click/core.py` (guarding `default_value == \"\"` with `isinstance(default_value, str)`) is confirmed working.",
+ "ttft_ms": 1887,
+ "ttft_stream_ms": 1399,
+ "time_to_request_ms": 406,
+ "type": "result",
+ "duration_ms": 790300,
+ "uuid": "8f057773-9e8a-458b-9674-b36d52969b15"
+}

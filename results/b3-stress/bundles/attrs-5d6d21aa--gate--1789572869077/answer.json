@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 224169,
+ "num_turns": 44,
+ "stop_reason": "end_turn",
+ "session_id": "dc93c860-31e5-4567-8814-0ffe655ed804",
+ "total_cost_usd": 1.3535774999999999,
+ "usage": {
+  "input_tokens": 82,
+  "cache_creation_input_tokens": 51019,
+  "cache_read_input_tokens": 2609375,
+  "output_tokens": 17627,
+  "output_tokens_details": {
+   "thinking_tokens": 9891
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 51019,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 326,
+    "cache_read_input_tokens": 81467,
+    "cache_creation_input_tokens": 643,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 643
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 82,
+   "outputTokens": 17627,
+   "cacheReadInputTokens": 2609375,
+   "cacheCreationInputTokens": 51019,
+   "webSearchRequests": 0,
+   "costUSD": 1.3535774999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 1329 tests pass (1328 previous + 1 new regression test).\n\n## Summary\n\nFixed `attrs.Converter` and `attrs.converters.pipe()` incorrectly inferring parameter/return types when a wrapped converter is itself a `Converter` instance (i.e. running \"in adapter mode\" \u2014 `takes_self`/`takes_field`). Previously, `pipe()` introspected the `Converter` wrapper's `__call__` (a bound dispatch method with no annotations) instead of the underlying user callable, silently dropping type info.\n\n- `src/attr/_make.py`: `Converter.__init__` now caches `_return_type` alongside the existing `_first_param_type`; `pipe()` reads `._first_param_type`/`._return_type` off nested `Converter` instances directly instead of re-inspecting their `__call__`.\n- `tests/test_converters.py`: added a regression test.\n- `changelog.d/1331.change.md`: changelog fragment.",
+ "ttft_ms": 2257,
+ "ttft_stream_ms": 1425,
+ "time_to_request_ms": 320,
+ "type": "result",
+ "duration_ms": 301487,
+ "uuid": "16ecf224-23cc-4d45-8cbc-65d19b32e93a"
+}

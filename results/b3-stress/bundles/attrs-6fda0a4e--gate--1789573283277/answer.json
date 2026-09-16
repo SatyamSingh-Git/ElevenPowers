@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 181834,
+ "num_turns": 35,
+ "stop_reason": "end_turn",
+ "session_id": "2139fb35-b6a4-4abd-be05-b61aabf0fc79",
+ "total_cost_usd": 1.0063776000000002,
+ "usage": {
+  "input_tokens": 62,
+  "cache_creation_input_tokens": 43102,
+  "cache_read_input_tokens": 1897532,
+  "output_tokens": 11888,
+  "output_tokens_details": {
+   "thinking_tokens": 5262
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 43102,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 432,
+    "cache_read_input_tokens": 73871,
+    "cache_creation_input_tokens": 322,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 322
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 62,
+   "outputTokens": 11888,
+   "cacheReadInputTokens": 1897532,
+   "cacheCreationInputTokens": 43102,
+   "webSearchRequests": 0,
+   "costUSD": 1.0063776000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Made the changes and verified them:\n\n- **`src/attr/_make.py`**: `Converter.__init__` now assigns a per-instance `__call__` (already declared in `__slots__` but never set), turning each `Converter` into a proper adapter that normalizes any wrapped converter's signature to `(value, instance, field)`. `converters.pipe()`'s inner `pipe_converter` was rewritten to just call `c(val, inst, field)` on that adapter instead of re-deriving args itself \u2014 which fixed the actual bug: the old code was passing the `takes_self`/`takes_field` **booleans** as arguments instead of the real `inst`/`field` values whenever a nested `Converter` used `takes_self`/`takes_field`.\n- **`tests/test_converters.py`**: added a parametrized test that `Converter.__call__` forwards the right subset of `(value, instance, field)`, plus a `TestPipe` test proving nested `Converter`s inside `pipe()` now receive the real instance/field rather than booleans.\n- **`changelog.d/1328.change.md`**: news fragment describing the fix.\n\nRan `PYTHONPATH=src python -m pytest tests -q`: 1331 passed, 4 skipped, 1 xfailed (all pre-existing) \u2014 no regressions.",
+ "ttft_ms": 3835,
+ "ttft_stream_ms": 2388,
+ "time_to_request_ms": 448,
+ "type": "result",
+ "duration_ms": 373423,
+ "uuid": "377b52bf-e25a-40e8-9b3a-df3812a98f76"
+}

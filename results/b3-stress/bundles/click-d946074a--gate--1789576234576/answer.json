@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 152811,
+ "num_turns": 28,
+ "stop_reason": "end_turn",
+ "session_id": "f4df9549-a871-4523-8d4f-288c11f94fe9",
+ "total_cost_usd": 0.9802497,
+ "usage": {
+  "input_tokens": 56,
+  "cache_creation_input_tokens": 47135,
+  "cache_read_input_tokens": 1732989,
+  "output_tokens": 11825,
+  "output_tokens_details": {
+   "thinking_tokens": 4882
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 47135,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 230,
+    "cache_read_input_tokens": 78621,
+    "cache_creation_input_tokens": 340,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 340
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 56,
+   "outputTokens": 11825,
+   "cacheReadInputTokens": 1732989,
+   "cacheCreationInputTokens": 47135,
+   "webSearchRequests": 0,
+   "costUSD": 0.9802497,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "`_wrap_chunks` in `src/click/_textwrap.py:29` now overrides `textwrap.TextWrapper._wrap_chunks`, measuring chunk/indent/placeholder widths via `term_len` (ANSI-stripped) instead of `len`, so styled help text wraps at the correct visible column instead of counting escape-code bytes toward the width. Full test suite run confirms the 41 failing tests are pre-existing (identical with/without this change, all unrelated `isolated_filesystem`/`make_default_short_help` deprecation-warning issues); `test_formatting.py` passes in full, and a manual check confirms ANSI-colored text now wraps correctly.",
+ "ttft_ms": 3167,
+ "ttft_stream_ms": 2313,
+ "time_to_request_ms": 374,
+ "type": "result",
+ "duration_ms": 204480,
+ "uuid": "a3c90688-5330-42c6-9663-7101f7492ac5"
+}

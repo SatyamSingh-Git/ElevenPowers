@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 405513,
+ "num_turns": 63,
+ "stop_reason": "end_turn",
+ "session_id": "2dd2987c-ce9e-419d-a93c-bdfcaa88430e",
+ "total_cost_usd": 2.0948139000000006,
+ "usage": {
+  "input_tokens": 126,
+  "cache_creation_input_tokens": 65867,
+  "cache_read_input_tokens": 4413513,
+  "output_tokens": 25012,
+  "output_tokens_details": {
+   "thinking_tokens": 14782
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 65867,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 374,
+    "cache_read_input_tokens": 96579,
+    "cache_creation_input_tokens": 379,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 379
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 126,
+   "outputTokens": 25012,
+   "cacheReadInputTokens": 4413513,
+   "cacheCreationInputTokens": 65867,
+   "webSearchRequests": 0,
+   "costUSD": 2.0948139000000006,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Clean. Summary of the change:\n\n- **`src/attr/_make.py`**: `_transform_attrs` no longer forces inherited (`base_attrs`) attributes to `kw_only=True` when the class-level `kw_only=True` is set \u2014 only attributes defined directly on the class (`own_attrs`) are affected now, matching `dataclasses.dataclass(kw_only=True)` semantics.\n- **`src/attr/_next_gen.py`**: documented this behavior in `attrs.define`'s `kw_only` docstring.\n- **`tests/test_make.py`**: updated `test_kw_only` and `test_keyword_only_class_level_subclassing` to assert the new (dataclasses-consistent) behavior instead of the old blanket propagation.\n- **`changelog.d/1457.change.md`**: added changelog fragment.\n\nFull test suite (1354 tests) passes. Note: running tests in this environment requires `PYTHONPATH` pointed at `src` explicitly \u2014 a stray user-site `attrs` 26.1.0 install otherwise shadows the local package when invoked via the `pytest` executable.",
+ "ttft_ms": 3320,
+ "ttft_stream_ms": 2888,
+ "time_to_request_ms": 383,
+ "type": "result",
+ "duration_ms": 589070,
+ "uuid": "6d129e8d-8e90-4186-905d-55b6fd8f58a9"
+}

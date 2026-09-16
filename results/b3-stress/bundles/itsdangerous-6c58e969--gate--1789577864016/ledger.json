@@ -1,0 +1,70 @@
+{
+  "task": "t-1789577809776089400",
+  "request": "Make this change to the repository in the current directory.\n\nWhat follows is the message from the commit that made it upstream, written\nafter the fact by its author. The change itself has not been made here: the\ncode in front of you is the state before it.\n\nAdded fallback signer support to timed serializer",
+  "claims": [
+    "feature_added"
+  ],
+  "risk": "low",
+  "domains": [],
+  "touched": [
+    "src/itsdangerous/timed.py"
+  ],
+  "seen": [
+    "CHANGES.rst",
+    "src/itsdangerous/serializer.py",
+    "src/itsdangerous/timed.py"
+  ],
+  "evidence": [
+    {
+      "kind": "test_suite",
+      "identity": "python pytest",
+      "result": "pass",
+      "observed": [
+        ".pre-commit-config.yaml",
+        ".travis.yml",
+        "conftest.py",
+        "docs/conf.py",
+        "docs/requirements.txt",
+        "setup.py",
+        "src/itsdangerous/__init__.py",
+        "src/itsdangerous/_compat.py",
+        "src/itsdangerous/_json.py",
+        "src/itsdangerous/encoding.py",
+        "src/itsdangerous/exc.py",
+        "src/itsdangerous/jws.py",
+        "src/itsdangerous/serializer.py",
+        "src/itsdangerous/signer.py",
+        "src/itsdangerous/timed.py",
+        "src/itsdangerous/url_safe.py",
+        "tests/test_itsdangerous/__init__.py",
+        "tests/test_itsdangerous/test_compat.py",
+        "tests/test_itsdangerous/test_encoding.py",
+        "tests/test_itsdangerous/test_jws.py",
+        "tests/test_itsdangerous/test_serializer.py",
+        "tests/test_itsdangerous/test_signer.py",
+        "tests/test_itsdangerous/test_timed.py",
+        "tests/test_itsdangerous/test_url_safe.py"
+      ],
+      "tree": "7ccd68af1620a481",
+      "command": "cd \"C:\\Users\\Satyam\\AppData\\Local\\Temp\\tmpo95erp1a\" && python -m pytest tests -q 2>&1 | tail -40",
+      "detail": "return datetime.utcfromtimestamp(int(rv)) | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html | 399 passed, 102 warnings in 2.77s",
+      "passed": 399,
+      "failed": 0,
+      "at": 1789577855.0133202,
+      "run": "",
+      "runs": 0,
+      "vcs": "ae7b1f7db7ce38f5",
+      "counted": true,
+      "scope": "source"
+    }
+  ],
+  "decisions": [],
+  "blocks": 0,
+  "guided": true,
+  "created": 1789577809.8040426,
+  "base": "77293292e3f2d7c94be1740e6c6a8c0f34e24683",
+  "failed_before": [],
+  "discrimination": {
+    "tests": "no"
+  }
+}

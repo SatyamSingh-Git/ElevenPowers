@@ -1,0 +1,132 @@
+diff --git a/changelog.d/1328.change.md b/changelog.d/1328.change.md
+new file mode 100644
+index 0000000..60095e6
+--- /dev/null
++++ b/changelog.d/1328.change.md
+@@ -0,0 +1 @@
++`attrs.Converter`-wrapped converters that use `takes_self` and/or `takes_field` now receive the actual instance and field when composed with `attrs.converters.pipe()`, instead of the `takes_self`/`takes_field` flags themselves.
+diff --git a/src/attr/_make.py b/src/attr/_make.py
+index e251e0c..1465ac0 100644
+--- a/src/attr/_make.py
++++ b/src/attr/_make.py
+@@ -2705,9 +2705,23 @@ class Converter:
+         self.takes_self = takes_self
+         self.takes_field = takes_field
+ 
+-        self._first_param_type = _AnnotationExtractor(
+-            converter
+-        ).get_first_param_type()
++        ex = _AnnotationExtractor(converter)
++        self._first_param_type = ex.get_first_param_type()
++
++        if not (self.takes_self or self.takes_field):
++            self.__call__ = lambda value, _, __: self.converter(value)
++        elif self.takes_self and not self.takes_field:
++            self.__call__ = lambda value, instance, __: self.converter(
++                value, instance
++            )
++        elif not self.takes_self and self.takes_field:
++            self.__call__ = lambda value, __, field: self.converter(
++                value, field
++            )
++        else:
++            self.__call__ = lambda value, instance, field: self.converter(
++                value, instance, field
++            )
+ 
+     @staticmethod
+     def _get_global_name(attr_name: str) -> str:
+@@ -2915,18 +2929,7 @@ def pipe(*converters):
+ 
+     def pipe_converter(val, inst, field):
+         for c in converters:
+-            if isinstance(c, Converter):
+-                val = c.converter(
+-                    val,
+-                    *{
+-                        (False, False): (),
+-                        (True, False): (c.takes_self,),
+-                        (False, True): (c.takes_field,),
+-                        (True, True): (c.takes_self, c.takes_field),
+-                    }[c.takes_self, c.takes_field],
+-                )
+-            else:
+-                val = c(val)
++            val = c(val, inst, field) if isinstance(c, Converter) else c(val)
+ 
+         return val
+ 
+diff --git a/tests/test_converters.py b/tests/test_converters.py
+index 4de08d9..8f81e75 100644
+--- a/tests/test_converters.py
++++ b/tests/test_converters.py
+@@ -58,6 +58,32 @@ class TestConverter:
+ 
+         assert expect == c._fmt_converter_call("le_name", "le_value")
+ 
++    @pytest.mark.parametrize("takes_self", [True, False])
++    @pytest.mark.parametrize("takes_field", [True, False])
++    def test_call(self, takes_self, takes_field):
++        """
++        A Converter instance can be called directly like an adapter; it
++        forwards the value, instance, and field according to `takes_self`
++        and `takes_field`.
++        """
++        seen = []
++
++        def converter(*args):
++            seen.append(args)
++            return args[0]
++
++        c = Converter(converter, takes_self=takes_self, takes_field=takes_field)
++
++        c("value", "instance", "field")
++
++        expect = ["value"]
++        if takes_self:
++            expect.append("instance")
++        if takes_field:
++            expect.append("field")
++
++        assert [tuple(expect)] == seen
++
+ 
+ class TestOptional:
+     """
+@@ -194,6 +220,36 @@ class TestPipe:
+ 
+         assert o is pipe().converter(o, None, None)
+ 
++    def test_wrapped_converter_gets_instance_and_field(self):
++        """
++        A wrapped Converter using `takes_self` and/or `takes_field` receives
++        the actual instance and field, not the `takes_self`/`takes_field`
++        flags.
++        """
++        instance = object()
++        field = object()
++
++        def with_self(val, self_):
++            assert self_ is instance
++            return val
++
++        def with_field(val, field_):
++            assert field_ is field
++            return val
++
++        def with_both(val, self_, field_):
++            assert self_ is instance
++            assert field_ is field
++            return val
++
++        c = pipe(
++            Converter(with_self, takes_self=True),
++            Converter(with_field, takes_field=True),
++            Converter(with_both, takes_self=True, takes_field=True),
++        )
++
++        assert 1 == c.converter(1, instance, field)
++
+ 
+ class TestToBool:
+     def test_unhashable(self):

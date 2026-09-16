@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 365205,
+ "num_turns": 56,
+ "stop_reason": "end_turn",
+ "session_id": "2af59c8a-ee94-41ff-a7b9-ecb6fc475376",
+ "total_cost_usd": 1.8754749,
+ "usage": {
+  "input_tokens": 112,
+  "cache_creation_input_tokens": 60497,
+  "cache_read_input_tokens": 3801523,
+  "output_tokens": 24780,
+  "output_tokens_details": {
+   "thinking_tokens": 14518
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 60497,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 672,
+    "cache_read_input_tokens": 91231,
+    "cache_creation_input_tokens": 357,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 357
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 112,
+   "outputTokens": 24780,
+   "cacheReadInputTokens": 3801523,
+   "cacheCreationInputTokens": 60497,
+   "webSearchRequests": 0,
+   "costUSD": 1.8754749,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirms it's a syntax diagnostic, not an ignorable lint rule \u2014 consistent with it being out of scope for this change.\n\n## Summary\n\nBumped `ruff` from `v0.11.12` to `v0.16.3` in `.pre-commit-config.yaml` and cleared the lint findings the new version's rule set surfaced under `select = [\"ALL\"]`:\n\n- Added `pyproject.toml` ignores (matching the file's existing style/rationale) for new rules that are structural false-positives here: `CPY001` (SPDX headers, not copyright notices), `PLC0415` (intentional lazy imports), `PLR0917` (companion to the already-ignored `PLR0913`), `PLW1641` (hand-written `__eq__` without `__hash__` is deliberate), `RUF063` (compat shim intentionally avoids the newer API), and test-only `ISC004`/`RUF043`.\n- Fixed the one genuine hit: `FURB171` in `src/attr/_make.py` (`name in (\"__notes__\",)` \u2192 `name == \"__notes__\"`).\n- Added targeted `noqa: PLW0108` on two lambdas in `_make.py` that look inlinable but aren't (inlining would mutate a shared function object's dunders).\n- Inlined two genuinely-redundant lambdas in `tests/test_make.py` (`lambda v: and_(v)` \u2192 `and_`, `lambda v: int(v)` \u2192 `int`), reformatted via `ruff format`.\n\n`ruff check .` and `ruff format --check .` are now clean (aside from a pre-existing, unrelated `requires-python`/`match`-statement syntax note in `tests/test_pattern_matching.py`, which isn't a `select`-gated rule and predates this change). Full test suite: 1342 passed, 4 skipped, 1 xfailed (had to run with `PYTHONPATH=src` since the venv was shadowing the local package with a globally-installed `attrs` \u2014 pre-existing environment quirk, not something I changed).",
+ "ttft_ms": 3211,
+ "ttft_stream_ms": 2660,
+ "time_to_request_ms": 329,
+ "type": "result",
+ "duration_ms": 650930,
+ "uuid": "90135b3b-fa55-4ffa-ad1f-5030cf445d0e"
+}

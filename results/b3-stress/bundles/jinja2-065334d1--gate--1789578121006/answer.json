@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 87245,
+ "num_turns": 20,
+ "stop_reason": "end_turn",
+ "session_id": "b0862a17-eaaa-4e0f-82c5-49226b66d176",
+ "total_cost_usd": 0.6375204,
+ "usage": {
+  "input_tokens": 40,
+  "cache_creation_input_tokens": 39268,
+  "cache_read_input_tokens": 1045558,
+  "output_tokens": 5875,
+  "output_tokens_details": {
+   "thinking_tokens": 2613
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 39268,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 166,
+    "cache_read_input_tokens": 61194,
+    "cache_creation_input_tokens": 328,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 328
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 40,
+   "outputTokens": 5875,
+   "cacheReadInputTokens": 1045558,
+   "cacheCreationInputTokens": 39268,
+   "webSearchRequests": 0,
+   "costUSD": 0.6375204,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 908 tests pass. The `attr` filter (`src/jinja2/filters.py`) now delegates to `environment.getattr` (which applies sandboxing, `str.format` wrapping, etc.) instead of duplicating that logic with a bare `getattr()` call, while using `inspect.getattr_static`/`hasattr` first to confirm the attribute actually exists so `environment.getattr`'s item-lookup fallback never triggers \u2014 preserving the filter's \"no item lookup\" contract.",
+ "ttft_ms": 3799,
+ "ttft_stream_ms": 2936,
+ "time_to_request_ms": 651,
+ "type": "result",
+ "duration_ms": 235292,
+ "uuid": "5ece23c3-b681-460b-8a05-66b8327d2fa4"
+}

@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 479857,
+ "num_turns": 65,
+ "stop_reason": "end_turn",
+ "session_id": "be33f3a7-b571-4978-96a4-3d3a24cadb40",
+ "total_cost_usd": 2.8169244000000004,
+ "usage": {
+  "input_tokens": 120,
+  "cache_creation_input_tokens": 99826,
+  "cache_read_input_tokens": 5391478,
+  "output_tokens": 40011,
+  "output_tokens_details": {
+   "thinking_tokens": 26438
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 99826,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 331,
+    "cache_read_input_tokens": 120190,
+    "cache_creation_input_tokens": 1553,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1553
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 120,
+   "outputTokens": 40011,
+   "cacheReadInputTokens": 5391478,
+   "cacheCreationInputTokens": 99826,
+   "webSearchRequests": 0,
+   "costUSD": 2.8169244000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Re-verified with a fresh run: `1259 passed, 72 skipped, 1 xfailed, 0 failed` \u2014 test-suite obligation stays met.\n\n`cannot_complete: feature_added` \u2014 reason: this task, as scoped by the commit message (\"Ensure that `type_cast_value` never gets `UNSET`\", resolves #3069), is a defensive bugfix/behavior-guarantee change to existing internal contract (`Parameter.process_value`/`type_cast_value`), not the introduction of new user-facing functionality. No new public API, option, or capability was added \u2014 the diff only changes when an existing internal method is invoked. There is no feature for me to add here; if a specific feature was intended, I'd need that named explicitly to act on it.",
+ "ttft_ms": 2133,
+ "ttft_stream_ms": 1553,
+ "time_to_request_ms": 404,
+ "type": "result",
+ "duration_ms": 701686,
+ "uuid": "1b363ee5-a601-4200-9854-8af234c8976c"
+}

@@ -1,0 +1,25 @@
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 3955a32..b6ac4a8 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -40,6 +40,7 @@ Unreleased
+ -   ``PackageLoader`` shows a clearer error message when the package does not
+     contain the templates directory. :issue:`1705`
+ -   Improve annotations for methods returning copies. :pr:`1880`
++-   ``urlize`` does not treat values like ``@a@b`` as an email address.
+ 
+ 
+ Version 3.1.4
+diff --git a/src/jinja2/utils.py b/src/jinja2/utils.py
+index d7149bc..7c92262 100644
+--- a/src/jinja2/utils.py
++++ b/src/jinja2/utils.py
+@@ -333,6 +333,8 @@ def urlize(
+         elif (
+             "@" in middle
+             and not middle.startswith("www.")
++            # ignore values like `@a@b`
++            and not middle.startswith("@")
+             and ":" not in middle
+             and _email_re.match(middle)
+         ):

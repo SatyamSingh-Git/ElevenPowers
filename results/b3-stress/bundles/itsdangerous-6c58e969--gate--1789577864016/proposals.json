@@ -1,0 +1,7 @@
+[
+ {
+  "at": 1789577858.0365224,
+  "session": "5de83d53-6fc8-4db2-ab9b-1e04751803b0",
+  "patch": "diff --git a/src/itsdangerous/timed.py b/src/itsdangerous/timed.py\nindex 3599a7e..b106c5a 100644\n--- a/src/itsdangerous/timed.py\n+++ b/src/itsdangerous/timed.py\n@@ -123,13 +123,18 @@ class TimedSerializer(Serializer):\n         raised. All arguments are forwarded to the signer's\n         :meth:`~TimestampSigner.unsign` method.\n         \"\"\"\n-        base64d, timestamp = self.make_signer(salt).unsign(\n-            s, max_age, return_timestamp=True\n-        )\n-        payload = self.load_payload(base64d)\n-        if return_timestamp:\n-            return payload, timestamp\n-        return payload\n+        s = want_bytes(s)\n+        last_exception = None\n+        for signer in self.iter_unsigners(salt):\n+            try:\n+                base64d, timestamp = signer.unsign(s, max_age, return_timestamp=True)\n+                payload = self.load_payload(base64d)\n+                if return_timestamp:\n+                    return payload, timestamp\n+                return payload\n+            except BadSignature as err:\n+                last_exception = err\n+        raise last_exception\n \n     def loads_unsafe(self, s, max_age=None, salt=None):\n         load_kwargs = {\"max_age\": max_age}\n"
+ }
+]

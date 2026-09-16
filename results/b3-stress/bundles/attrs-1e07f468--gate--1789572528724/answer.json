@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 276415,
+ "num_turns": 51,
+ "stop_reason": "end_turn",
+ "session_id": "9fe67c0f-9ce5-46b7-8ffe-c08551eec869",
+ "total_cost_usd": 1.4043527999999998,
+ "usage": {
+  "input_tokens": 80,
+  "cache_creation_input_tokens": 52186,
+  "cache_read_input_tokens": 2648556,
+  "output_tokens": 19762,
+  "output_tokens_details": {
+   "thinking_tokens": 9104
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 52186,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 51,
+    "cache_read_input_tokens": 82518,
+    "cache_creation_input_tokens": 759,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 759
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 80,
+   "outputTokens": 19762,
+   "cacheReadInputTokens": 2648556,
+   "cacheCreationInputTokens": 52186,
+   "webSearchRequests": 0,
+   "costUSD": 1.4043527999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "Confirmed: `python -m pytest tests -q` passes \u2014 1335 passed, 4 skipped, 1 xfailed, exit code 0.",
+ "ttft_ms": 4118,
+ "ttft_stream_ms": 3528,
+ "time_to_request_ms": 414,
+ "type": "result",
+ "duration_ms": 594820,
+ "uuid": "caf0d063-19f6-42b9-8e7c-cacd7ece9338"
+}

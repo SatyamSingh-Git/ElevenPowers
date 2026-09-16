@@ -1,0 +1,67 @@
+{
+ "is_error": false,
+ "duration_api_ms": 89749,
+ "num_turns": 23,
+ "stop_reason": "end_turn",
+ "session_id": "82d2f682-1051-4c3d-a936-d094e566e365",
+ "total_cost_usd": 0.6672678,
+ "usage": {
+  "input_tokens": 46,
+  "cache_creation_input_tokens": 36155,
+  "cache_read_input_tokens": 1161266,
+  "output_tokens": 6788,
+  "output_tokens_details": {
+   "thinking_tokens": 3644
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 36155,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "not_available",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 105,
+    "cache_read_input_tokens": 58051,
+    "cache_creation_input_tokens": 360,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 360
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard"
+ },
+ "modelUsage": {
+  "claude-sonnet-5": {
+   "inputTokens": 46,
+   "outputTokens": 6788,
+   "cacheReadInputTokens": 1161266,
+   "cacheCreationInputTokens": 36155,
+   "webSearchRequests": 0,
+   "costUSD": 0.6672678,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 64000,
+   "canonicalModel": "claude-sonnet-5",
+   "provider": "firstParty"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "All 904 tests pass. The fix in `src/jinja2/utils.py` adds a guard so `urlize` skips the mailto-link branch for strings starting with `@` (e.g. `@a@b`, Mastodon-style handles), matching the exact upstream change. I also added a CHANGES.rst entry.",
+ "ttft_ms": 2945,
+ "ttft_stream_ms": 1526,
+ "time_to_request_ms": 415,
+ "type": "result",
+ "duration_ms": 119394,
+ "uuid": "9d5ef08e-5f61-47e3-8051-60a83b247043"
+}
