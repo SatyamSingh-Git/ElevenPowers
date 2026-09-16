@@ -165,6 +165,8 @@ If your repository has no architecture document, it can write the first one from
 
 **What it will not do.** It does not block, and it does not dump your repository's existing drift at you: only drift *this change caused* is reported, and pre-existing drift is one number. A repository with no architecture document is asked for nothing at all.
 
+**Measured, and the two halves differ sharply.** The neighbourhood brief fires on **47%** of files a real commit touched (63 of 135 across five upstream repositories), median 163 characters. The drift check fired on **0 of 23** commits in those same repositories - because every `.py` they added was a *test* file, which is correctly not something an architecture map should name, and because none of them keeps an architecture document. **The drift half is for a project that both grows modules and maintains a map.** On a mature library it is silent by design, not broken. The brief is the half that earns its place on any Python repository.
+
 ---
 
 ## A self-check on the layer that fails silently

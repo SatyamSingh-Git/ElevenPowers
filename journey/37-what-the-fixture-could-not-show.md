@@ -80,11 +80,28 @@ existed. Naming a file that cannot be run is worse than naming none.
 
 The radius is report-only and the atlas is report-only. Neither blocks. The
 design notes both say phase 4 is "measure the engagement rate on real runs, then
-decide", and neither has reached it. The atlas's own firing rate has **not** been
-measured across the corpus the way the radius's was — it is wired on the
+decide", and neither has reached it. The atlas's own firing rate had **not** been
+measured across the corpus the way the radius's was — it was wired on the
 strength of a design argument and a repository-of-one, which is weaker evidence
-than this project usually accepts before shipping. It is written here rather
+than this project usually accepts before shipping. It was written here rather
 than left for someone to discover.
+
+**Measured 2026-09-17, and the two halves came back very differently.** The
+neighbourhood brief — the module graph handed over at the first edit of a file —
+fires on **63 of 135** files a real commit touched, 47%, median 163 characters.
+That is the same order as the radius's 43% and it is the half that earns its
+place.
+
+The drift check fired on **0 of 23** commits, and the reason is not a defect.
+Every `.py` those repositories added was a **test file**, which correctly is not
+a module an architecture map should name; and none of the five keeps an
+architecture document at all, so click's "map" falls back to its README. The
+check applies to a project that both grows modules and maintains a map. This
+repository is one, which is why it fired here and caught `radius.py` and
+`atlas.py` the day they were written. A mature library is not, and on one the
+feature is silent by design rather than broken.
+
+So it stays, and the claim it is sold under gets narrowed to what was measured.
 
 ---
 

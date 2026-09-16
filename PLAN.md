@@ -742,6 +742,8 @@ At the user's direction, and from the user's own report that `CLAUDE.md`'s stand
 
 **Exit, as a command:** `python -m pytest tests/test_atlas.py -q`. **Met 2026-09-16**, 13 tests, forward and adversarial including a repository with no architecture document at all, which is asked for nothing. Found by running it against this repository: `docs/design/` is documentation but is **not** the map — `core/radius.py` came back documented because the note proposing it mentioned it by name.
 
+**Measured 2026-09-17, which §5.9 required and shipping did not wait for.** The neighbourhood brief fires on **47%** of files a real commit touched (63 of 135, median 163 characters), the same order as the radius's 43%. The drift check fired on **0 of 23** commits: every `.py` those repositories added was a test file, correctly not a module for a map, and none of the five keeps an architecture document. The drift half applies to a project that both grows modules and maintains a map - this repository is one and it fired here; a mature library is not and it is silent by design. The claim is narrowed to that rather than the component withdrawn.
+
 **What it does not do:** block, or dump a repository's pre-existing drift. For a repository with no architecture document it can write the first one from the source model, which is what "everyone using the tool gets this" means concretely.
 
 ### Phase C — Separate generation from selection *(started early, 2026-09-14)*
