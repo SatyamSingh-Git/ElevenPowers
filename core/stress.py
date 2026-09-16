@@ -13,8 +13,22 @@ This is PLAN §5.0 turned on the product instead of on the test suite:
 
 Both, or the record is decoration. Measured elsewhere, **46% of agent
 validation evidence carries no bug-discriminating information**, and **77% of
-SWE-bench Verified instances admit a wrong-but-passing patch**. This project's
-own ledger has never been asked the question.
+SWE-bench Verified instances admit a wrong-but-passing patch**.
+
+**This project's own ledger has now been asked, and it disagreed.** Across B3
+and B4 — 22 runs on 16 real tasks, sonnet and opus — exactly **one** verdict
+came back `VACUOUS`, and it did not replicate when the other model was given the
+identical task. 0 of 14 on B4. Whatever the 46% describes, it is not what this
+corpus produces, and the honest reading is that the effect is rare here rather
+than that the literature is wrong: these are well-specified tasks from
+well-maintained repositories, which is not where sloppy evidence would be
+expected to live. Six of those fourteen also had a base tree so broadly red that
+`VACUOUS` was close to unreachable by construction.
+
+So this module is kept for what it demonstrably does — it caught the one real
+case, and the reproduction and `failed_before` it computes on the same run are
+used by §5.13 — and not for a frequency it has not shown. See
+`results/b4-discriminate/findings.md`.
 
 **It reports; it does not refuse.** A check found undiscriminating leaves the
 verdict exactly where it was. §5.12: detection and intervention are separately

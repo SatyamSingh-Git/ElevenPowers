@@ -184,6 +184,14 @@ matters. A test that would have passed *before* your change proves nothing about
 it — and measured elsewhere, **46% of agent validation evidence carries no
 bug-discriminating information at all**.
 
+**How often does it fire here? Measured 2026-09-17: once in 22 runs.** Across
+two sweeps on the same 16 real tasks — sonnet and opus — exactly one check came
+back non-discriminating, and it did not replicate when the other model was given
+the identical task. The 46% above is somebody else's corpus and it is cited, not
+claimed. On this one the effect is rare, and that is written down rather than
+left for a reader to discover:
+[`results/b4-discriminate/findings.md`](results/b4-discriminate/findings.md).
+
 So the runtime runs its own checks the other way round: each declared check
 again, in a throwaway worktree built from the commit the task started at. If it
 already passed there, the report says so.
@@ -359,6 +367,18 @@ is not evidence until it is shown to *discriminate*. Separately, the **median de
 lands at step 7 of 27** steps, which is why a gate at the end changes little. Both fixes were
 already written in this repository's own plan and neither had been built. The thesis survives
 and is better supported than it has ever been; the *placement* did not.
+
+**And on 2026-09-17 that re-aiming was measured, on the corpus rather than in the
+literature — it came back null.** Sixteen tasks on opus, against the same sixteen on
+sonnet: **0 of 14** checks were non-discriminating, against 1 of 8 before, and the single
+earlier case did not reproduce. So the sentence above needs its qualifier: the 46% is
+**cited, not replicated here**, and the claim that agents routinely finish on evidence that
+could not have failed is *not* supported by this project's own runs. The mechanism works —
+it caught the one case, and it caught a real regression — but a frequency it has not shown
+is not a frequency it may assert. The same sweep found something that outranks the rate:
+**12.5% of runs bypassed the gate entirely**, because the runtime never observed the agent's
+edits. Full numbers and caveats in
+[`results/b4-discriminate/findings.md`](results/b4-discriminate/findings.md).
 
 > The rest came out of auditing the sweep afterwards: **24 of the 100 runs name their own task's fix commit**, fetched from GitHub, so the 92 percent is a score for applying a described upstream change with access to that change — not for repairing anything unseen. Whether the output is *better* is still unanswered, and the next thing to build is not a harder corpus but an information boundary. Two identical plain passes over the same sixteen tasks resolved eleven and fifteen.
 

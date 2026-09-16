@@ -98,6 +98,30 @@ and the request does not mention it. Edit it anyway, or read it first.
 
 ---
 
+## A check that could not have failed is named as one
+
+**What it does.** Every declared check is also run the other way round — in a throwaway git worktree built from the commit your task started at, with your new test files laid over the old source. If the check passed there too, it says so:
+
+```
+  ok      the related test suite passes  <- python pytest 1 passed, 0 failed
+  could not fail: tests: this check passes without your change, so it is not
+                  evidence the change works
+```
+
+Your working tree is never touched, and the answer is computed once per task.
+
+**Why it matters.** `PASS` and `FRESH` are two facts about a record and neither is the one that matters. A test that would have passed before your change proves nothing about your change.
+
+**How often does it actually fire? Measured, and the answer is: rarely.** Across two sweeps on the same 16 real tasks — 22 runs, two models — **exactly one** check came back non-discriminating, and it did not replicate when the other model was handed the identical task. The externally published figure is 46% of agent validation evidence; **this corpus does not reproduce it**, and that figure is cited here rather than claimed. Six of the runs also had a base tree broken enough that the check could not have returned "vacuous" whatever the agent did.
+
+So this is offered as a thing that is *correct* when it fires, not as a thing that fires often. It caught the case it exists for — an agent calling a task done in 9 turns on evidence that would have passed anyway — and it has not been shown to catch much else. Numbers, caveats and the raw bundles: [`results/b4-discriminate/findings.md`](../results/b4-discriminate/findings.md).
+
+**What it will not do.** Refuse. Naming a weak check costs nothing; blocking on one has to earn its cost, and this gate blocked 75% of runs once on a signal nobody had measured.
+
+**A known gap, stated here rather than found later.** The same measurement showed **12.5% of runs bypassed the gate entirely** — the runtime never observed the agent's edits, so no claim opened and nothing was asked. Until that is closed, every rate on this page is conditioned on the gate having seen the work.
+
+---
+
 ## The blast radius of a fix
 
 **What it does.** When the task changes a method, it names the other code that implements or calls it:
