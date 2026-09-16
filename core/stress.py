@@ -154,7 +154,7 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
     for need, command in sorted(config.commands.items()):
         if need in verdicts:
             continue
-        if not _passing(ledger, need):
+        if not _passing(ledger):
             # Nothing claims this check passed, so there is nothing to question.
             continue
         found = on_the_old_tree(ledger.root, ledger.base, command,
@@ -193,12 +193,25 @@ def _tests_the_task_touched(ledger) -> tuple[str, ...]:
     return tuple(p for p in ledger.touched if TEST_NAME.search(p))
 
 
-def _passing(ledger, need: str) -> bool:
-    """Is there a fresh passing record for the command this need declares?"""
-    command = ledger.config.command_for(need)
-    from .evidence import Freshness, Result
+def _passing(ledger) -> bool:
+    """Does anything here claim the tests currently pass?
 
-    return any(e.result is Result.PASS and e.command == command
+    **Not an exact match on the declared command.** That was the first version
+    and it engaged on nothing: agents run their own invocation — measured, a
+    live run produced `cd "C:\\...\\tmp" && PYTHONPATH="src" python -m pytest
+    tests` — and never the bare declared string. The declared command is only
+    run by `core/verify.py`, which fires *when the verdict is not yet VERIFIED*,
+    so on a run that went well nothing ever recorded it and the whole check
+    skipped itself. Two paid runs came back with an empty verdict before that
+    was noticed.
+
+    What the question actually needs is a claim that the tests pass *now*; the
+    declared command is how the old tree gets asked the same thing, and it does
+    not have to be the string the agent typed.
+    """
+    from .evidence import Freshness, Kind, Result
+
+    return any(e.kind in (Kind.TEST, Kind.SUITE) and e.result is Result.PASS
                and e.freshness(ledger.root) is Freshness.FRESH
                for e in ledger.evidence)
 

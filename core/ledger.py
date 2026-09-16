@@ -422,13 +422,15 @@ class Ledger:
         """
         from .stress import DISCRIMINATES
 
-        for need, verdict in self.discrimination.items():
-            if verdict != DISCRIMINATES:
-                continue
-            command = self.config.command_for(need)
+        # Not `e.command == the declared string`. That is the same exact-match
+        # mistake `stress._passing` made, and it is wrong here for the same
+        # reason: agents run their own invocation, so no record ever carries the
+        # declared text. What `DISCRIMINATES` establishes is that the project's
+        # suite did *not* pass on the old tree; a fresh passing suite record is
+        # the claim that it passes now. Together those are red-then-green.
+        if DISCRIMINATES in self.discrimination.values():
             suites = [e for e in self.evidence
                       if e.kind is Kind.SUITE and e.result is Result.PASS
-                      and e.command == command
                       and e.freshness(self.root) is Freshness.FRESH]
             if suites:
                 return suites[-1]

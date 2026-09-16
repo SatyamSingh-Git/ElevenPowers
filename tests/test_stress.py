@@ -299,3 +299,45 @@ def test_only_tests_are_carried_across(repo):
     assert stress._tests_the_task_touched(led) == ()
     verdicts, _ = stress.stress(led)
     assert verdicts["tests"] == stress.VACUOUS, "the fix must not be carried over"
+
+
+def test_it_engages_on_the_agents_own_command_not_the_declared_string(repo):
+    """The defect that made two paid runs measure nothing.
+
+    `_passing` matched the declared command exactly. Agents never type it — a
+    live run recorded the agent typed a `cd ... && PYTHONPATH=... pytest` line of its own,
+    and the declared string is only ever run by `core/verify.py`, which
+    fires when the verdict is NOT yet verified. So a run that went well recorded
+    nothing matching, and the whole check skipped itself and returned `{}`.
+    """
+    (repo / "src" / "app.py").write_text(
+        "def add(a, b):\n    return a + b\n\ndef mul(a, b):\n    return a * b\n",
+        encoding="utf-8")
+    (repo / "tests" / "test_new.py").write_text(
+        "import sys; sys.path.insert(0, 'src')\n"
+        "from app import mul\n\n"
+        "def test_mul():\n    assert mul(2, 3) == 6\n",
+        encoding="utf-8")
+
+    led = ledger_for(repo)
+    led.touched = ["src/app.py", "tests/test_new.py"]
+    # the agent's own invocation: same suite, different string entirely
+    led.evidence[0].command = f'cd "{repo}" && PYTHONPATH="src" {SUITE}'
+
+    verdicts, red = stress.stress(led)
+    assert verdicts, "engaged on nothing, which is what two paid runs measured"
+    assert verdicts["tests"] == stress.DISCRIMINATES
+
+    # The same exact-match lived a second time in `_reproduced_on_base`, and a
+    # rehearsal on a real corpus task is what surfaced it: the verdict said
+    # DISCRIMINATES and the obligation still would not discharge, because the
+    # suite record did not carry the declared string either.
+    led.discrimination, led.failed_before = verdicts, red
+    assert led._reproduced_on_base() is not None
+
+
+def test_it_still_engages_on_nothing_when_nothing_claims_to_pass(repo):
+    """The control. Silence when there is no claim, not silence always."""
+    led = ledger_for(repo)
+    led.evidence[0].result = Result.FAIL
+    assert stress.stress(led) == ({}, [])
