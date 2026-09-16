@@ -48,7 +48,18 @@ from .tasks import SUITES, Task, by_name
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HOOK = REPO_ROOT / "plugin" / "bin" / "ep_hook.py"
-TIMEOUT = 900
+# Raised from 900 on 2026-09-16, because the runtime now spends part of this
+# budget on the agent's behalf. `core/stress.py` runs the declared suite against
+# a worktree of the base commit at the first Stop, and that time comes out of
+# the same wall clock the agent is working against. Measured on the same tasks:
+# attrs-97f8d175 went 220s -> 386s, and attrs-6e3786c5, which already took 588s,
+# hit the cap and was scored `unfixed` with zero turns.
+#
+# A timed-out run yields no verdict at all, which is worse than a slower one, so
+# the budget absorbs the overhead rather than the sample absorbing the
+# timeouts. **Wall-clock is no longer comparable to sweeps run before this
+# date**; turns, cost and outcome still are.
+TIMEOUT = 1500
 # Grading runs the whole suite rather than a handful of node ids, because a
 # preservation set can hold thousands of them and no argv holds that.
 SUITE_TIMEOUT = 900
