@@ -23,6 +23,20 @@ worktree, the parsers.
 end to end and a sweep would return verdicts rather than `{}`. It says nothing
 about what those verdicts will be — a rehearsal where every task discriminates
 is a rehearsal, not a result.
+
+**2026-09-16: the ledger is now built by the runtime, not by this file.** The
+B3 sweep lost six of sixteen runs to a missing base commit and this rehearsal
+did not see it coming, because it constructed the `Ledger` itself — passing in
+`base=base` and `claims=[Claim.BUG_FIXED]` — which is to say it built the
+ledger the way a *correct* run would have built it and then checked that a
+correct ledger works. The defect was in how the runtime builds one: a prompt
+that infers no claim opened a task with no base, and the claim arrived later
+from the first edit.
+
+So the prompt and the edits now go through `core.hook` as real events, with the
+task's real prompt text. Only the evidence record is still injected, because
+there is no agent here to run a command. The rule this encodes: **a rehearsal
+may stand in for the agent, never for the runtime.**
 """
 
 from __future__ import annotations
@@ -35,13 +49,20 @@ import tempfile
 from pathlib import Path
 
 
+def _drive(root: Path, event: str, **fields) -> None:
+    """Send the runtime a real hook event, the way the host would."""
+    subprocess.run([sys.executable, "-m", "core.hook", event],
+                   input=json.dumps({"cwd": str(root), **fields}),
+                   capture_output=True, text=True, timeout=180,
+                   cwd=str(Path(__file__).resolve().parents[1]))
+
+
 def rehearse(task, fix: str, hold: Path) -> dict:
     """One task, seeded and patched, put through the real check."""
     from core import stress
     from core.config import Config, save as save_config
     from core.evidence import Evidence, Kind, Result, source_files, tree_hash
     from core.ledger import Ledger
-    from core.obligations import Claim
     from .live import _seed_git, _test_command, base_tree
 
     root = hold / task.name
@@ -54,6 +75,9 @@ def rehearse(task, fix: str, hold: Path) -> dict:
     base = stress.base_commit(root)
     if not base:
         return {"task": task.name, "why": "no base commit after seeding"}
+
+    # The task opens here, before anything is edited, exactly as in a real run.
+    _drive(root, "UserPromptSubmit", prompt=task.prompt)
 
     gold = subprocess.run(["git", "-C", task.source["repo"], "show", fix],
                           capture_output=True, timeout=180)
@@ -74,8 +98,15 @@ def rehearse(task, fix: str, hold: Path) -> dict:
                       observed=observed, tree=tree_hash(root, observed), scope="source",
                       command=f'cd "{root}" && {command}',
                       passed=10, failed=0, counted=True)
-    ledger = Ledger(root=root, task="rehearsal", claims=[Claim.BUG_FIXED],
-                    evidence=[record], base=base, touched=touched)
+    # Each edit as a real event, so the claim and the base are whatever the
+    # runtime decides they are. Hand-building the ledger here is what hid a
+    # defect that cost 37% of a paid sweep.
+    for path in touched:
+        _drive(root, "PostToolUse", tool_name="Edit",
+               tool_input={"file_path": str(root / path)})
+
+    ledger = Ledger.load(root)
+    ledger.add([record])
 
     verdicts, red = stress.stress(ledger)
     ledger.discrimination, ledger.failed_before = verdicts, red
@@ -85,6 +116,10 @@ def rehearse(task, fix: str, hold: Path) -> dict:
         "red_before": len(red),
         "tests_carried": len(stress._tests_the_task_touched(ledger)),
         "reproduced": ledger._reproduced_on_base() is not None,
+        # The preconditions the runtime had to establish by itself. A sweep
+        # cannot measure anything without these, whatever the verdict says.
+        "base": bool(ledger.base),
+        "claims": [c.value for c in ledger.claims],
     }
 
 
@@ -112,7 +147,19 @@ def report(corpus: Path, limit: int) -> int:
             else:
                 print(f"  {last['task']:24s} verdict={last['verdict']:4s} "
                       f"red_before={last['red_before']:3d} carried={last['tests_carried']} "
-                      f"reproduced={last['reproduced']}")
+                      f"reproduced={last['reproduced']} "
+                      f"base={'yes' if last['base'] else 'NO'} "
+                      f"claims={','.join(last['claims']) or 'none'}")
+
+    # Said before the verdicts, because a missing base is not a weak result, it
+    # is no result: stress has no old tree to build and returns {} in silence.
+    blind = [r for r in results if "why" not in r and not r.get("base")]
+    if blind:
+        print(f"\n{len(blind)} of {len(results)} opened with NO BASE COMMIT: "
+              + ", ".join(r["task"] for r in blind[:4]))
+        print("stress cannot build an old tree without one, so those runs would")
+        print("record nothing at all. This is what the B3 sweep lost 6 of 16 to.")
+        return 1
 
     asked = [r for r in results if r.get("verdict") not in (None, "NOT ASKED")]
     print(f"\nthe check was asked on {len(asked)} of {len(results)}")

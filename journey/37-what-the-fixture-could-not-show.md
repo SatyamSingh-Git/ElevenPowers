@@ -115,13 +115,25 @@ The honest accounting: at this per-run cost a 50-run sweep is about $78, of
 which roughly $29 would have bought nothing while producing a number that looked
 real. Finding it at $25 was cheap.
 
-**What did not catch it, and why that is not a failure of the pre-flight.**
-`eval/rehearse.py:54` already checks for a missing base and bails with *"no base
-commit after seeding"*. It constructs its ledger directly, with the base passed
-in, and it rehearses **one** seeded task. A defect that appears on 6 of 16 real
-runs, on the path where a claim arrives by edit rather than by prompt, is
-invisible to it. The pre-flight is not wrong; it is under-powered. It rehearses
-one path, not the distribution.
+**What did not catch it, and why.** `eval/rehearse.py:54` already checks for a
+missing base and bails with *"no base commit after seeding"*. It rehearses
+several tasks, not one - an earlier draft of this entry said one, which was
+wrong. The real gap was narrower and more interesting: it **constructed the
+`Ledger` itself**, passing in `base=base` and `claims=[Claim.BUG_FIXED]`. That
+is to say it built the ledger the way a correct run would have built one, and
+then confirmed that a correct ledger works. The defect was in how the *runtime*
+builds one.
+
+So the rehearsal now drives `core.hook` with the task's real prompt text and a
+real `PostToolUse` edit per touched file, and only the evidence record is still
+injected, because there is no agent here to run a command. The rule it now
+encodes: **a rehearsal may stand in for the agent, never for the runtime.**
+
+Seen to flip, on the same task that lost the sweep. With the hook fix reverted,
+`python -m eval.rehearse --tasks 3` reports `attrs-577c782c` as
+`base=NO claims=feature_added`, prints *"1 of 3 opened with NO BASE COMMIT"* and
+exits 1 - which would have stopped the sweep before a penny was spent. With the
+fix in place, three of three.
 
 The fix was verified without spending anything further: the exact prompt from
 `jinja2-065334d1` that produced no base now produces one, replayed through the
