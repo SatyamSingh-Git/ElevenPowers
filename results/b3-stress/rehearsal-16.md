@@ -49,10 +49,39 @@ been red and then green. It is still true — a test red before and green now is
 reproduction — but it is much cheaper to satisfy than the phrasing suggests, and
 the same coarseness already noted for the `yes` verdict applies to it.
 
-**Not changed unilaterally.** Tightening what counts as a reproduction would
-move a published figure, so it is recorded here as a question rather than
-answered: should a reproduction require a test that targets the change, or is
-whole-file redness enough?
+**Measured afterwards, and it is sharper than the paragraph above.** Across the
+eight B3 runs where the base tree was asked, **7 of 7** reproductions came from
+the suite path in `Ledger._reproduction` and **0** from a named test. The
+targeted path needs a *passing* evidence record carrying a node id, and
+`pytest -q` prints passes as dots - the parsers hold 1,256 failing node records
+against four passing ones - so it is starved by construction. So `reproduced`
+was not merely coarse, it was **not independent of `discriminates` at all**: one
+base-tree run, one fact, two green lines.
+
+The report now names the grain. `SUITE_GRAIN` says outright that no individual
+test was seen red there and green here, and that this is the same run that
+decided discrimination rather than a second finding. The rule itself is
+unchanged, so engagement does not fall back toward the 1.4% the node-only
+version managed.
+
+**Not tightened, and the earlier reason for hesitating was wrong.** This note
+first said that tightening the rule would move a published figure. It would not:
+§5.13's **+28pp** is a *cited external result* about handing an agent a
+reproduction test, not a measurement of this detector. Nothing published rests
+on how `_reproduction` decides.
+
+The reason not to tighten is different and better. The node-only version of this
+rule engaged on **1.4%** of saved runs, which is why suites were allowed to count
+in the first place; narrowing it again would buy precision by returning to a
+signal that almost never fires. Naming the grain costs nothing and loses no
+engagement.
+
+What *would* restore genuine independence, and is not built: `stress` already
+knows which tests were red on the base tree, so the runtime could run those
+specific node ids against the current tree instead of waiting for the agent to
+emit a passing record that `pytest -q` never prints. That is a handful of node
+ids, not a suite. It is the real answer to the question, and it is a design
+decision with a cost, recorded here rather than taken quietly.
 
 ## Standing before any further spend
 

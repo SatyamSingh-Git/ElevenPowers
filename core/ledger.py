@@ -25,6 +25,15 @@ from .surface import TEST_NAME, Surface, declares_a_test, detect
 
 STATE_DIR = ".elevenpowers"
 
+# Said on a reproduction established only at suite grain. Measured on the B3
+# sweep: 7 of 7 reproductions came this way and 0 from a named test, because the
+# targeted path needs a *passing* record carrying a node id and `pytest -q`
+# prints passes as dots. Left unsaid, the report shows two obligations
+# discharged where one base-tree run established a single fact.
+SUITE_GRAIN = ("suite-level: the declared check failed on the base tree and passes now. "
+               "No individual test was seen red there and green here, so this is the "
+               "same run that decided discrimination, not a second finding")
+
 
 class Status(str, Enum):
     VERIFIED = "VERIFIED"
@@ -360,14 +369,16 @@ class Ledger:
             # record to point at, but a target going from red to green is the
             # reproduction by any other name.
             shown = _demonstrated_fix(self.evidence)
+            grain = ""
             if shown is None:
                 # The agent did not happen to run it red first, so ask the old
                 # tree directly. A test that was failing there and passes now is
                 # a reproduction however the work was ordered, and demanding the
                 # ordering blocked agents who wrote the test after the fix -
                 # which is ordinary practice, not a mistake.
-                shown = self._reproduced_on_base()
-            return Check(obligation=obligation, met=shown is not None, evidence=shown)
+                shown, grain = self._reproduction()
+            return Check(obligation=obligation, met=shown is not None, evidence=shown,
+                         caveat=grain)
 
         if obligation.kind is Kind.STABILITY:
             return self._check_stability(obligation)
@@ -404,7 +415,24 @@ class Ledger:
         return runs_needed(max(rates)) if rates else MIN_RUNS
 
     def _reproduced_on_base(self) -> Evidence | None:
-        """A now-passing check that was already failing before this task began.
+        return self._reproduction()[0]
+
+    def _reproduction(self) -> tuple[Evidence | None, str]:
+        """A now-passing check that was already failing before this task began,
+        and **how coarsely** that was established.
+
+        The grain matters, and measuring it is what showed why. Across the eight
+        B3 runs where the base tree was asked, **seven of seven** reproductions
+        came from the suite path below and **zero** from the targeted one. The
+        targeted path needs a *passing* record carrying a node id, and `pytest
+        -q` prints passes as dots - the parsers hold 1,256 failing node records
+        against four passing ones - so it is starved by construction.
+
+        The consequence is worth stating plainly rather than leaving implied: on
+        real runs this obligation is currently satisfied by the same single
+        base-tree run that decides §5.10, so `reproduced` and `discriminates`
+        are one fact reported twice. Saying so in the caveat is honest;
+        presenting them as two independently discharged obligations is not.
 
         **Suites count, and they are the common case.** The parsers record
         individual nodes mainly when they *fail* — across every preserved
@@ -433,10 +461,10 @@ class Ledger:
                       if e.kind is Kind.SUITE and e.result is Result.PASS
                       and e.freshness(self.root) is Freshness.FRESH]
             if suites:
-                return suites[-1]
+                return suites[-1], SUITE_GRAIN
 
         if not self.failed_before:
-            return None
+            return None, ""
         red = set(self.failed_before)
         # A whole file that would not collect back there has no node id, so a
         # node now passing inside it counts. `tests/test_new.py` against
@@ -452,7 +480,7 @@ class Ledger:
                    if e.kind is Kind.TEST and e.result is Result.PASS
                    and was_red(e.identity)
                    and e.freshness(self.root) is Freshness.FRESH]
-        return passing[-1] if passing else None
+        return (passing[-1], "") if passing else (None, "")
 
     def _check_stability(self, obligation: Obligation) -> Check:
         """Stability needs enough clean repeats, not one lucky run.

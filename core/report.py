@@ -168,6 +168,12 @@ def end_report(ledger: Ledger) -> str:
                     counts = f" {check.evidence.passed} passed, {check.evidence.failed} failed"
                 detail = f"  <- {check.evidence.identity}{counts}"
             lines.append(f"    {state:<8}{check.obligation.description}{detail}")
+            # What an obligation was met *at* can matter as much as that it was
+            # met. A reproduction established only at suite grain is the same
+            # base-tree run that decided discrimination, and printing the two
+            # as separate green lines says more than was established.
+            if check.caveat:
+                lines.append(f"             {check.caveat}")
     captured = len(ledger.evidence)
     fresh = sum(1 for e in ledger.evidence if e.freshness(ledger.root) is Freshness.FRESH)
     lines.append(f"  evidence: {captured} record(s), {fresh} fresh")

@@ -399,3 +399,58 @@ def test_the_base_does_not_move_once_the_task_has_opened(repo):
 
     _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "have a look at this"})
     assert Ledger.load(repo).base == opened, "the base moved under the task"
+
+
+# --- at what grain was the reproduction established? ------------------------
+
+def test_a_suite_level_reproduction_says_so(repo):
+    """Measured on B3: 7 of 7 reproductions came this way, 0 from a named test.
+
+    The targeted path needs a PASSING record carrying a node id, and `pytest -q`
+    prints passes as dots - the parsers hold 1,256 failing node records against
+    four passing ones - so it is starved by construction. What is left is the
+    suite path, which fires on the same single base-tree run that decides
+    discrimination. Reporting both as plain green lines claims two findings
+    where there is one.
+    """
+    from core.evidence import Evidence, Kind, Result, source_files, tree_hash
+    from core.ledger import SUITE_GRAIN, Ledger
+    from core.obligations import Claim
+    from core.stress import DISCRIMINATES
+
+    files = source_files(repo)
+    suite = Evidence(kind=Kind.SUITE, identity="tests", result=Result.PASS,
+                     observed=files, tree=tree_hash(repo, files), scope="source",
+                     command="python -m pytest", passed=3, failed=0, counted=True)
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], evidence=[suite],
+                 base=stress.base_commit(repo),
+                 discrimination={"tests": DISCRIMINATES}, failed_before=[])
+
+    shown, grain = led._reproduction()
+    assert shown is not None, "a suite red before and green now is still a reproduction"
+    assert grain == SUITE_GRAIN, grain
+    assert led._reproduced_on_base() is not None, "the old call must keep working"
+
+
+def test_a_targeted_reproduction_carries_no_caveat(repo):
+    """Adversarially: the caveat must not be pinned to every reproduction.
+
+    A named test that was red on the base tree and passes now IS a second
+    finding, and saying otherwise would understate it exactly as the suite case
+    overstates it.
+    """
+    from core.evidence import Evidence, Kind, Result, source_files, tree_hash
+    from core.ledger import Ledger
+    from core.obligations import Claim
+
+    files = source_files(repo)
+    node = Evidence(kind=Kind.TEST, identity="tests/test_app.py::test_add",
+                    result=Result.PASS, observed=files, tree=tree_hash(repo, files),
+                    scope="source", command="python -m pytest", counted=True)
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], evidence=[node],
+                 base=stress.base_commit(repo), discrimination={},
+                 failed_before=["tests/test_app.py::test_add"])
+
+    shown, grain = led._reproduction()
+    assert shown is not None, "red there, green here, by name"
+    assert grain == "", grain

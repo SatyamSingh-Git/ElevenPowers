@@ -167,3 +167,41 @@ That one is written down rather than fixed. Tightening what counts as a
 reproduction would move a published figure, and the decision is not a detail to
 settle inside a debugging session. `results/b3-stress/rehearsal-16.md` holds the
 numbers and the open question.
+
+---
+
+## The reproduction was not coarse. It was not independent at all.
+
+Following the whole-file observation properly produced a worse answer than the
+one it started from, and corrected something said here a few hours earlier.
+
+`Ledger._reproduction` has two paths. The targeted one matches a *passing*
+evidence record against the identities that were red on the base tree. The suite
+one fires whenever the declared check `DISCRIMINATES` and any fresh passing
+suite exists. Measured across the eight B3 runs where the base tree was asked:
+**7 of 7** reproductions came from the suite path, **0** from a named test.
+
+The targeted path is starved by construction. It needs a passing record carrying
+a node id, and `pytest -q` prints passes as dots - the parsers hold 1,256 failing
+node records against four passing ones. That was already known and is why suites
+were allowed to count. What was not said is the consequence: on real runs
+`reproduced` and `discriminates` are **the same single base-tree run**, and the
+report was printing two green lines for one fact.
+
+Also corrected: this entry said tightening the rule would move a published
+figure. It would not. §5.13's +28pp is a cited external result about handing an
+agent a reproduction test, not a measurement of this detector, so nothing
+published rests on how `_reproduction` decides. The real reason not to tighten is
+that the node-only version engaged on 1.4% of runs.
+
+So the rule is unchanged and the **grain is now named**: a suite-level
+reproduction says outright that no individual test was seen red there and green
+here, and that it is the same run that decided discrimination. Both directions
+have a probe - removing the caveat fails the suite case, and the targeted case
+still carries none, because a named test red-there-and-green-here genuinely is a
+second finding and understating it would be the opposite error.
+
+What would restore real independence is written down and not built: `stress`
+already knows which node ids were red on the old tree, so the runtime could run
+*those* against the current tree rather than waiting for a passing record the
+agent's command never emits.
