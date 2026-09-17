@@ -18,14 +18,22 @@ negative impact of a bad plan is greater than no plan at all*, measured over
 16,991 trajectories. Nothing here is asked of the agent's memory, so nothing can
 be forgotten.
 
-**Python only, deliberately.** The right thing to build on is Aider's
-`repomap.py` — the best repository symbol graph in the field by this project's
-own survey, and Apache-2.0. It needs `tree_sitter`, `grep_ast`, `networkx` and
-`diskcache`, and `core/` has **zero third-party imports**: a plugin that must
-install four packages before it can watch a test run is a plugin nobody
-installs. So the idea is borrowed and the Python slice is implemented on the
-standard library's `ast`, which is exact and free. Aider is the upgrade path the
-moment a polyglot repository needs one.
+**Python through the standard library, everything else through tree-sitter.**
+Python is read with `ast`: exact, free, and already installed. For other
+languages there is no such thing, and the honest answer is the one Aider,
+Continue and OpenCode all reached — **tree-sitter**. There is no clever
+alternative and none of them found one.
+
+That arrives through `core/polyglot.py` as an **optional** dependency, so the
+promise that this plugin installs with nothing is kept. With
+`tree-sitter-language-pack` present it reads TypeScript, TSX, JavaScript, Go,
+Rust, Java, Ruby, PHP and C#; without it, this module behaves exactly as it did
+when it was Python-only, and says so rather than guessing.
+
+What is borrowed from Aider's `repomap.py` (Apache-2.0) is the approach, not the
+code: it extracts *tags* — definitions and references — to select context under
+a token budget, and carries no inheritance at all. A sibling is defined by a
+shared base class, so that part had to be built.
 
 **It names; it does not demand.** A dependent with no test covering it is
 reported and nothing is required of it — `core/surface.py` exists because an
@@ -57,7 +65,15 @@ PLAIN = frozenset({"run", "get", "set", "add", "main", "close", "read", "write",
 # could not show this because fixtures write `class Choice(ParamType)`.
 SCAFFOLD = frozenset({"Generic", "Protocol", "ABC", "ABCMeta", "object",
                       "Enum", "IntEnum", "StrEnum", "Flag", "IntFlag",
-                      "NamedTuple", "TypedDict"})
+                      "NamedTuple", "TypedDict",
+                      # The same trap in the other languages, found the same
+                      # way - by counting real bases in a real repository. A
+                      # TypeScript codebase there has fourteen classes
+                      # extending `Error` and almost nothing else shared, so
+                      # without this every custom error is a sibling of every
+                      # other one the moment any of them changes.
+                      "Error", "Exception", "RuntimeException", "Object",
+                      "Component", "PureComponent", "HTMLElement", "Struct"})
 
 
 @dataclass(frozen=True)
@@ -131,8 +147,32 @@ def _base_name(node: ast.expr) -> str:
     return ""
 
 
+def readable(path: str) -> bool:
+    """Can symbols be extracted from this file at all?
+
+    Python always, through the standard library. Everything else only when the
+    optional grammar pack is installed - see `core/polyglot.py`. Without it this
+    module behaves exactly as it did when it was Python-only.
+    """
+    from . import polyglot
+
+    if path.endswith(".py"):
+        return True
+    return polyglot.available() and bool(polyglot.language_of(path))
+
+
 def _symbols(root: Path, path: str) -> list[Symbol]:
     """Every def and class in one file, with its owner and bases."""
+    from . import polyglot
+
+    if not path.endswith(".py"):
+        try:
+            source = (root / path).read_bytes()
+        except OSError:
+            return []
+        return [Symbol(name, path, line, end, owner, bases)
+                for name, line, end, owner, bases in polyglot.symbols(path, source)]
+
     try:
         tree = ast.parse((root / path).read_text(encoding="utf-8", errors="replace"))
     except (OSError, SyntaxError, ValueError):
@@ -166,6 +206,14 @@ def _references(root: Path, path: str) -> set[str]:
     mention inside a docstring, a comment or a string literal does not count —
     which is most of what a text search would have returned.
     """
+    from . import polyglot
+
+    if not path.endswith(".py"):
+        try:
+            return polyglot.references(path, (root / path).read_bytes())
+        except OSError:
+            return set()
+
     try:
         tree = ast.parse((root / path).read_text(encoding="utf-8", errors="replace"))
     except (OSError, SyntaxError, ValueError):
@@ -182,7 +230,7 @@ def _references(root: Path, path: str) -> set[str]:
 def _python_files(root: Path, limit: int = 4000) -> list[str]:
     from .surface import _walk
 
-    return [p for p in _walk(root) if p.endswith(".py")][:limit]
+    return [p for p in _walk(root) if readable(p)][:limit]
 
 
 def compute(root: Path, base: str, touched: list[str]) -> Radius:
@@ -195,7 +243,7 @@ def compute(root: Path, base: str, touched: list[str]) -> Radius:
     from .surface import TEST_NAME
 
     edited = [p for p in touched
-              if p.endswith(".py") and not TEST_NAME.search(p) and (root / p).is_file()]
+              if readable(p) and not TEST_NAME.search(p) and (root / p).is_file()]
     if not edited or not base:
         return Radius()
 
@@ -276,10 +324,12 @@ def wording(radius: Radius, tests: list[str]) -> str:
     parts = []
     if radius.siblings:
         where = sorted({s.owner for s in radius.siblings})
-        parts.append(f"{len(radius.siblings)} sibling implementation(s) "
-                     f"({', '.join(where[:3])})")
+        n = len(radius.siblings)
+        shown = ", ".join(where[:3]) + (f" and {len(where) - 3} more" if len(where) > 3 else "")
+        parts.append(f"{n} other implementation{'' if n == 1 else 's'} ({shown})")
     if radius.callers:
-        parts.append(f"{len(radius.callers)} file(s) using it")
+        n = len(radius.callers)
+        parts.append(f"{n} file{'' if n == 1 else 's'} using it")
     said = f"you changed {changed}; {' and '.join(parts)}"
     if tests:
         return f"{said}. Closest cover: {', '.join(tests[:2])}"

@@ -12,7 +12,7 @@
 | **Host** | [Claude Code](https://claude.com/claude-code). It is the only host wired today — a second adapter is postponed with a trigger, see [roadmap](../whats-offered/roadmap.md) |
 | **Git** | used to identify the state of the working tree when evidence is recorded |
 | **Network** | none. Nothing here calls out, no key, no account, no telemetry |
-| **Dependencies** | none beyond the Python standard library |
+| **Dependencies** | none beyond the Python standard library. One *optional* extra is described below |
 
 Works on Windows, macOS and Linux. It is developed on Windows, so the Windows paths are the best-tested ones — which is unusual enough to be worth saying.
 
@@ -32,6 +32,22 @@ The `--plugin-dir` flag points Claude Code at [`plugin/`](../plugin/), which con
 ### Making it permanent
 
 Passing `--plugin-dir` every time gets old. To load it for every session, add the plugin directory to your Claude Code settings rather than the command line — see the Claude Code documentation for plugin configuration on your version. If you get this working in a way worth documenting, please send it to me and it will go in this file with credit.
+
+---
+
+## Optional: other languages
+
+Everything works on any repository out of the box. One feature is **Python-only until you opt in**: the blast radius, which names the other implementations and callers of whatever you just changed. It needs to understand inheritance, and Python's standard library can only parse Python.
+
+```bash
+pip install tree-sitter-language-pack
+```
+
+That adds **TypeScript, TSX, JavaScript, Go, Rust, Java, Ruby, PHP and C#**. Nothing else changes, and there is no configuration — the feature notices the pack and starts reading those files.
+
+Without it, nothing breaks and nothing is silently degraded: Python is read exactly as before through the standard library, other languages are simply not read, and the check says nothing rather than guessing. That is why it is optional at all — a plugin you must install four packages to try is a plugin nobody tries.
+
+This is the same approach Aider, Continue and OpenCode use, for the same reason: parsing many languages accurately means tree-sitter, and there is no lighter answer that is still correct.
 
 ---
 

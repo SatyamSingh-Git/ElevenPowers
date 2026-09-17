@@ -148,13 +148,15 @@ So this is offered as a thing that is *correct* when it fires, not as a thing th
 **What it does.** When the task changes a method, it names the other code that implements or calls it:
 
 ```
-you changed Choice.convert; 10 sibling implementation(s) (BoolParamType,
-DateTime, File) and 1 file(s) using it. Closest cover: tests/test_termui.py
+you changed Choice.convert; 10 other implementations (BoolParamType,
+DateTime, File) and 1 file using it. Closest cover: tests/test_termui.py
 ```
 
 **Why it matters.** Agents fix one bug and make another. Between **16% and 37%** of applied agent patches break a test that was already passing, and a measured 14.74% are *partially* correct — the fix is right and incomplete. The classic shape is a change to one implementation of an interface and no change to its siblings, which never reference each other and so are invisible to any text search.
 
 It is **computed, never asked for**. An instruction to "consider what else this affects" is soft policy, and soft policy decays: constraint violation rises from 0% to 78% over four rounds of context compaction. Nothing here is asked of the agent's memory, so nothing can be forgotten.
+
+**It is no longer Python only.** With the optional grammar pack installed (`pip install tree-sitter-language-pack`) the same check reads TypeScript, TSX, JavaScript, Go, Rust, Java, Ruby, PHP and C#. Inheritance is what a sibling is made of, so this is tree-sitter rather than a regex - the approach Aider, Continue and OpenCode all reached, borrowed rather than invented. Without the pack nothing changes and nothing breaks: Python is read through the standard library exactly as before, and other languages are simply not read.
 
 **What it will not do.** It does not block, it does not rank, and it will not demand a test that does not exist — a dependent with no cover is named and nothing is required of it. Python only, honestly: the symbol graph is stdlib `ast`, because the runtime has no third-party dependencies. Aider's `repomap.py` is the upgrade path for a polyglot repository.
 

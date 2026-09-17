@@ -137,13 +137,28 @@ first attempt would be.
 | tree-sitter tags, a symbol graph, personalised PageRank over it | **Aider** `repomap.py` | Apache-2.0 | The demonstrated value of a repo-wide symbol graph, and the polyglot upgrade path |
 | Execution-based file selection from a change | **Agentless** | MIT | Prior art for narrowing from a diff rather than from a prompt |
 
-**Where the borrow stops, and why it is a constraint rather than a preference.**
-`core/` has **zero third-party imports**. `repomap.py` needs `tree_sitter`,
-`grep_ast`, `networkx` and `diskcache`, and a plugin that must install four
-packages before it can watch a test run is a plugin nobody installs. So the idea
-is taken and the Python slice is implemented on the standard library's `ast`,
-which is exact for Python and free. Python only, said out loud, with Aider named
-as the upgrade path the moment a polyglot repository needs one.
+**Where the borrow stopped at first, and why it moved.** `core/` held **zero
+third-party imports**: `repomap.py` needs `tree_sitter`, `grep_ast`, `networkx`
+and `diskcache`, and a plugin that must install four packages before it can
+watch a test run is a plugin nobody installs. So the idea was taken and the
+Python slice implemented on the standard library's `ast`, with Aider named as
+the upgrade path the moment a polyglot repository needed one.
+
+**That moment arrived, 2026-09-17.** Pointed at a real TypeScript repository the
+check had nothing to say about 1,463 files. `core/polyglot.py` now reads
+TypeScript, TSX, JavaScript, Go, Rust, Java, Ruby, PHP and C# through
+**tree-sitter** — the same answer Aider, Continue and OpenCode all reached
+independently, and none of them found a cleverer one. It is an **optional**
+dependency behind a guarded import, so the install-with-nothing promise holds:
+without the grammar pack the module behaves exactly as it did before, and says
+so rather than guessing.
+
+**What is still ours, stated narrowly.** Aider extracts *tags* — definitions and
+references — for context selection under a token budget, and carries **no
+inheritance**. A sibling is defined by a shared base class, so the inheritance
+extraction is built here, as are the scaffolding-base exclusions that stop
+`Generic` in Python and `Error` in TypeScript from making everything a sibling
+of everything.
 
 **What we add.** Aider's PageRank exists to *choose context under a token
 budget*. There is no budget here and no ranking: every dependent is worth

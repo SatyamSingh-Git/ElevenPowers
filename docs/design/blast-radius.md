@@ -110,8 +110,11 @@ plugin that does not get installed.
 So: borrow the *idea and its demonstrated value* — a symbol graph over the
 repository is worth having, and Aider proved it — and implement the Python
 slice with the standard library's own `ast`, which is exact for Python and free.
-**Python only, and said so out loud**, with Aider named as the upgrade path the
-moment a polyglot repository needs one. That is the whole of what is added
+**Python only at first, and said so out loud** — with Aider named as the
+upgrade path. *Taken 2026-09-17:* `core/polyglot.py` adds nine more languages
+through tree-sitter as an optional dependency. The zero-dependency rule is kept
+where it matters, since the plugin still installs with nothing, and relaxed
+where it was only costing coverage. That is the whole of what is added
 beyond the borrow: turning a reference set into an obligation bound to evidence.
 
 ## 6. False positives are the risk, so they get the controls

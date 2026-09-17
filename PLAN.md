@@ -726,7 +726,7 @@ This is the one intervention that is **additive rather than restrictive**, so §
 
 **Computed, not asked for.** §5.14 (compaction is lossy) and the 16,991-trajectory finding that a bad plan is worse than none rule out the obvious remedy of demanding a plan. `git diff -U0` gives changed line ranges, `ast` gives the symbol whose span intersects them, and a sibling must share a **base class** — not merely a method name, which is the false positive the whole check has to avoid.
 
-**Where the borrow stops:** `core/` has zero third-party imports and `repomap.py` needs four. The idea is taken; the Python slice is stdlib. Said out loud, with Aider named as the polyglot upgrade path.
+**Where the borrow stopped, and why it moved:** shipped Python-only under the zero-third-party rule, then extended 2026-09-17. `core/polyglot.py` reads nine more languages through tree-sitter as an **optional** dependency — the answer Aider, Continue and OpenCode all reached — so the install-with-nothing promise holds while a TypeScript repository stops being invisible. Aider's tags carry no inheritance, so the sibling half is still ours.
 
 **Exit, as a command:** `python -m pytest tests/test_radius.py -q`. **Met 2026-09-16**, 12 tests, 3 forward and 9 adversarial. Two defects the fixture could not show and the real click repository did: generic bases are `ast.Subscript` rather than `Name`, so nothing was found at all; and `Generic`/`Protocol`/`ABC` are scaffolding that made a base class a sibling of its own subclass. Both probes watched failing before their fix.
 
