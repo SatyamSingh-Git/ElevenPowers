@@ -676,3 +676,72 @@ def test_a_session_that_was_never_given_a_task_stays_silent(repo):
     (repo / "src" / "app.py").write_text("def add(a, b):\n    return a * b\n", encoding="utf-8")
     _hook("Stop", {"cwd": str(repo), "last_assistant_message": "done"})
     assert Ledger.load(repo).claims == []
+
+
+# --- a real repository is never clean ---------------------------------------
+
+def _dirty_repo(tmp_path):
+    """A repo with work already in flight, which is the normal state of one."""
+    for name in ("app.py", "billing.py", "auth.py"):
+        (tmp_path / name).write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "cache.json").write_text('{"v": 1}\n', encoding="utf-8")
+    git(tmp_path, "init", "-q")
+    git(tmp_path, "config", "user.email", "probe@example.invalid")
+    git(tmp_path, "config", "user.name", "probe")
+    git(tmp_path, "add", "-A")
+    git(tmp_path, "-c", "user.email=e@e", "-c", "user.name=e", "commit", "-qm", "base")
+    # uncommitted work that has nothing to do with what gets asked next
+    (tmp_path / "billing.py").write_text("wip = True\n", encoding="utf-8")
+    (tmp_path / "cache.json").write_text('{"v": 2}\n', encoding="utf-8")
+    return tmp_path
+
+
+def test_work_already_in_flight_is_not_attributed_to_the_next_task(tmp_path):
+    """Measured on a probe: a task that edited one file was credited with four.
+
+    That raised the risk tier, demanded obligations for code the task never
+    touched, and handed core/radius.py a blast radius computed from somebody
+    else's half-finished work. A repository with eleven uncommitted paths - an
+    ordinary one - would hand every session all eleven.
+
+    Forward: the file the task did edit is attributed. Adversarially: the two it
+    did not are left alone, and the risk tier reflects that.
+    """
+    from core.ledger import Ledger
+    from core.obligations import Risk
+
+    repo = _dirty_repo(tmp_path)
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "fix the bug in app.py"})
+    _hook("PostToolUse", {"cwd": str(repo), "tool_name": "Edit",
+                          "tool_input": {"file_path": str(repo / "app.py")}})
+    (repo / "app.py").write_text("x = 2\n", encoding="utf-8")
+    _hook("Stop", {"cwd": str(repo), "last_assistant_message": "fixed"})
+
+    led = Ledger.load(repo)
+    assert led.touched == ["app.py"], led.touched
+    assert led.risk is Risk.LOW, "somebody else's work inflated the risk tier"
+
+
+def test_a_file_already_dirty_that_the_task_edits_is_still_its_work(tmp_path):
+    """Adversarially, the other way: the exclusion must not hide real edits.
+
+    Dropping everything that was dirty at task open would lose a file the agent
+    genuinely worked on, merely because it had uncommitted changes already.
+    `Ledger.observe_edit` is what saves it - the tool event puts the path into
+    `touched` when it happens, and Stop unions that with what git reports.
+
+    A carve-out for this was written into `_since_task_opened` as well, and
+    flipping it proved it did nothing: this test passed with and without it,
+    because the tool event had already done the work. It was removed instead of
+    left in place looking load-bearing.
+    """
+    from core.ledger import Ledger
+
+    repo = _dirty_repo(tmp_path)          # billing.py is already dirty
+    _hook("UserPromptSubmit", {"cwd": str(repo), "prompt": "fix the billing bug"})
+    _hook("PostToolUse", {"cwd": str(repo), "tool_name": "Edit",
+                          "tool_input": {"file_path": str(repo / "billing.py")}})
+    (repo / "billing.py").write_text("wip = True\nfixed = True\n", encoding="utf-8")
+    _hook("Stop", {"cwd": str(repo), "last_assistant_message": "fixed"})
+
+    assert "billing.py" in Ledger.load(repo).touched, "a real edit was discarded"

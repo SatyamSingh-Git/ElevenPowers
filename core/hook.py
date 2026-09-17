@@ -101,6 +101,7 @@ def on_prompt(payload: dict, root: Path) -> int:
         # runs, and every one of the six was opened by an edit.
         if request != ledger.request or not ledger.base:
             ledger.base = base_commit(root)
+            ledger.opened_dirty = _changed_paths(root)
         ledger.claims = []
         ledger.request = request
         ledger.save()
@@ -112,10 +113,11 @@ def on_prompt(payload: dict, root: Path) -> int:
         # one's evidence, read set and guided flag — so a suite run for the last
         # bug could discharge an obligation for this one, purely because the
         # ledger happened to still be sitting in the same directory.
-        ledger = Ledger(root=root, task=f"t-{time.time_ns()}", base=base_commit(root))
+        ledger = Ledger(root=root, task=f"t-{time.time_ns()}", base=base_commit(root),
+                        opened_dirty=_changed_paths(root))
     ledger.request = request
     ledger.claims = claims
-    ledger.touched = _changed_paths(root)
+    ledger.touched = _since_task_opened(ledger, root)
     ledger.risk, ledger.domains = risk_of(ledger.touched, request)
     ledger.blocks = 0
     ledger.save()
@@ -249,7 +251,7 @@ def on_stop(payload: dict, root: Path) -> int:
     # returned on its first line. Two of sixteen runs bypassed the gate that
     # way. Enumerating shell write syntax is a race nobody wins; git already
     # knows, and was being consulted one line too late.
-    changed = _changed_paths(root)
+    changed = _since_task_opened(ledger, root)
     for path in changed:
         ledger.observe_edit(path)
     if not ledger.claims:
@@ -319,6 +321,31 @@ def on_stop(payload: dict, root: Path) -> int:
     ledger.save()
     print(gate_message(ledger), file=sys.stderr)
     return 2
+
+
+def _since_task_opened(ledger: Ledger, root: Path) -> list[str]:
+    """What changed since this task opened, not what was already in flight.
+
+    A real repository is never clean. Attributing every uncommitted file to
+    whatever the developer asks next raised the risk tier, demanded obligations
+    for untouched code, and handed `core/radius.py` a blast radius computed from
+    somebody else's half-finished work: measured on a probe, a task that edited
+    one file was credited with four.
+
+    A file that was already dirty and the task then edits is still attributed,
+    but not by this function: `Ledger.observe_edit` puts watched edits straight
+    into `touched` when the tool event arrives, and Stop unions the two. A
+    carve-out for it was written here and a probe proved it did nothing, so it
+    was removed rather than left looking load-bearing.
+
+    **The known gap, stated rather than discovered later.** A file that was
+    already dirty *and* is edited only through the shell - no tool event - is
+    not attributed. That is a narrower miss than the over-attribution it
+    replaces, and `blindspots.jsonl` is where the shell-write problem is
+    already visible.
+    """
+    before = set(ledger.opened_dirty)
+    return [p for p in _changed_paths(root) if p not in before]
 
 
 def _changed_paths(root: Path) -> list[str]:

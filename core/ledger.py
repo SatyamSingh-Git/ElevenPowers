@@ -108,6 +108,16 @@ class Ledger:
     against, and `core/stress.py` would be asking whether the change
     discriminates from itself.
     """
+    opened_dirty: list[str] = field(default_factory=list)
+    """Paths already modified when this task opened, so they are not its work.
+
+    A real repository is never clean. Without this, every uncommitted file a
+    developer already had in flight is attributed to whatever they ask next: it
+    raises the risk tier, it demands obligations for code the task never
+    touched, and it feeds `core/radius.py` a blast radius computed from
+    somebody else's half-finished work. Measured on a probe, a task that edited
+    one file was credited with four.
+    """
     failed_before: list = field(default_factory=list)
     """Test identities that were already red on the tree this task started from.
 
@@ -177,6 +187,7 @@ class Ledger:
             guided=raw.get("guided", False),
             created=raw.get("created", time.time()),
             base=raw.get("base", ""),
+            opened_dirty=raw.get("opened_dirty", []) or [],
             failed_before=raw.get("failed_before", []) or [],
             discrimination=raw.get("discrimination", {}) or {},
         )
@@ -208,6 +219,7 @@ class Ledger:
             "guided": self.guided,
             "created": self.created,
             "base": self.base,
+            "opened_dirty": self.opened_dirty,
             "failed_before": self.failed_before,
             "discrimination": self.discrimination,
             # Written for diagnosis, never read back. `stress` declines when a
