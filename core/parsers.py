@@ -93,8 +93,16 @@ LOOKS_LIKE_TESTS = re.compile(
 #   TAP   `# pass 2` / `# fail 1`      - the default when stdout is not a TTY,
 #                                        which is exactly what a hook sees
 #   spec  `ℹ pass 2` / `ℹ fail 1`    - `--test-reporter=spec`, or a TTY
-TAP_COUNT = re.compile(r"^\s*(?:#|ℹ|i)\s*(?P<word>pass|fail)\s+(?P<n>\d+)\s*$",
+# `#` and the spec reporter's information sign, and NOT a bare letter `i`: that
+# was here for a moment and `cat notes.txt` containing "i pass 5" came back as a
+# counted, passing suite. Fabricated evidence from a text file is the exact
+# failure this whole project exists to refuse.
+TAP_COUNT = re.compile(r"^\s*(?:#|ℹ)\s*(?P<word>pass|fail)\s+(?P<n>\d+)\s*$",
                        re.MULTILINE)
+# The strong, self-declaring header. A bare `1..10` plan line is not enough on
+# its own to call something a test run - `echo progress` printing a range said
+# so too.
+TAP_VERSION = re.compile(r"^TAP version \d+\s*$", re.MULTILINE)
 # The output declaring itself TAP. Counting `ok` lines without this gate turns
 # any log with a line starting `ok` into test results, which is the
 # false-positive class this project has already paid for four times.
@@ -236,8 +244,15 @@ def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidenc
     # Dispatching on the OUTPUT is what makes this work for a runner this file
     # has never heard of, which is the point of reading a format rather than a
     # tool.
-    if re.search(r"\bnode\s+--test\b", low) or TAP_MARKER.search(output) \
-            or TAP_COUNT.search(output):
+    # The output decides HOW to read a test run. It must not decide THAT
+    # something is one: dispatching on shape alone made `cat README.md` with
+    # `ok 1 install` into a counted passing suite. So the command has to claim
+    # tests as well - which `npm test`, `turbo test` and `deno test` all do -
+    # unless the output declares itself TAP outright.
+    if (re.search(r"\bnode\s+--test\b", low)
+            or TAP_VERSION.search(output)
+            or (claims_to_run_tests(cmd) and (TAP_MARKER.search(output)
+                                              or TAP_COUNT.search(output)))):
         return [_tap(cmd, output, exit_code, root)]
     if WRAPPER.match(bare):
         return [_wrapped(cmd, output, exit_code, root)]

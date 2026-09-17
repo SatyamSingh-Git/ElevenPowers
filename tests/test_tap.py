@@ -248,3 +248,48 @@ def test_a_command_that_never_claimed_to_run_tests_is_not_reported(tmp_path):
         "tool_response": {"stdout": "nothing to commit\n", "exit_code": 0}})
 
     assert _spots(tmp_path) == []
+
+
+# --- found by attacking the shipped version ---------------------------------
+
+def test_a_text_file_cannot_fabricate_a_passing_suite(root):
+    """The worst bug in this change, caught by attacking it after it shipped.
+
+    `TAP_COUNT` briefly accepted a bare letter `i` as the spec reporter's
+    marker, so `cat notes.txt` containing "i pass 5" produced a **counted,
+    passing** suite record - evidence strong enough to discharge an obligation,
+    invented out of a text file. That is the exact failure this project exists
+    to refuse, shipped by the feature meant to make it more universal.
+    """
+    assert parse("cat notes.txt", "i pass 5\n", 0, root) == []
+
+
+def test_a_range_in_ordinary_output_is_not_a_test_plan(root):
+    """`1..10` is a TAP plan and also a thing programs print."""
+    assert parse("echo progress", "1..10\n", 0, root) == []
+
+
+def test_output_shape_alone_does_not_make_a_command_a_test_run(root):
+    """The principle, corrected.
+
+    Reading the format decides HOW to parse a test run. It must not decide
+    THAT something is one - dispatching on shape alone turned a README with
+    `ok 1 install` into a counted passing suite.
+    """
+    readme = "ok 1 install\nok 2 configure\n1..2\n"
+    assert parse("cat README.md", readme, 0, root) == []
+    # ...while a command that does claim tests is read exactly as before
+    got = only(parse("npm test", readme, 0, root))
+    assert (got.passed, got.failed, got.counted) == (2, 0, True)
+
+
+def test_an_explicit_tap_header_is_taken_at_its_word(root):
+    """A deliberate judgement, written down rather than left implicit.
+
+    A script printing `TAP version 13` is declaring itself a TAP producer, so
+    it is read as one even though its command name says nothing. That is the
+    one case where output alone is allowed to decide, because the output is an
+    explicit self-declaration rather than a coincidence of shape.
+    """
+    got = only(parse("bash deploy.sh", "TAP version 13\nok 1 - deployed\n1..1\n", 0, root))
+    assert (got.result, got.passed, got.counted) == (Result.PASS, 1, True)
