@@ -85,6 +85,22 @@ LOOKS_LIKE_TESTS = re.compile(
        )""",
     re.MULTILINE | re.VERBOSE,
 )
+# TAP, which is a format rather than a tool. `node --test`, `tap`, `ava --tap`,
+# `prove` and assorted C, Go and Rust harnesses all emit it, so reading the
+# format covers runners this file has never heard of.
+#
+# Two reporters, both captured from Node 22.17.1 rather than remembered:
+#   TAP   `# pass 2` / `# fail 1`      - the default when stdout is not a TTY,
+#                                        which is exactly what a hook sees
+#   spec  `ℹ pass 2` / `ℹ fail 1`    - `--test-reporter=spec`, or a TTY
+TAP_COUNT = re.compile(r"^\s*(?:#|ℹ|i)\s*(?P<word>pass|fail)\s+(?P<n>\d+)\s*$",
+                       re.MULTILINE)
+# The output declaring itself TAP. Counting `ok` lines without this gate turns
+# any log with a line starting `ok` into test results, which is the
+# false-positive class this project has already paid for four times.
+TAP_MARKER = re.compile(r"^(?:TAP version \d+|1\.\.\d+)\s*$", re.MULTILINE)
+TAP_RESULT = re.compile(r"^(?P<bad>not )?ok\s+\d+\b", re.MULTILINE)
+
 # Running the thing and showing what happened. For a project with no test suite
 # this is the only proof available, so it has to be recognised or such projects
 # can never discharge anything.
@@ -165,6 +181,23 @@ def _bare(command: str) -> str:
         text = shorter
 
 
+def claims_to_run_tests(command: str) -> bool:
+    """Does this command say it runs tests, whatever runner it uses?
+
+    Deliberately broad, because it decides whether *silence is worth reporting*
+    rather than what a record says. No runner can be enumerated for every
+    project on earth, so the honest position is that an unreadable test command
+    becomes a diagnosable symptom instead of a tool that quietly went quiet -
+    which is the same rule `blindspots.py` already applies to host payloads.
+
+    Found the hard way: a real repository ran `node --test` in three of its four
+    packages, this module produced nothing for any of them, and nobody could
+    have known without reading the parsers.
+    """
+    return bool(WRAPPER.match(_bare(command))
+                or re.search(r"\b(tests?|specs?)\b", command.lower()))
+
+
 def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
     """Evidence implied by one command and its output, or an empty list."""
     cmd = command.strip()
@@ -197,6 +230,15 @@ def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidenc
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, PHPUNIT)]
     if re.search(r"\bdotnet test\b", low):
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, DOTNET)]
+    # Before the wrapper fallback, and deliberately: a command name is not a
+    # runner. `npm test`, `yarn test` and `turbo test` all emit the TAP below
+    # while naming nothing, and `_wrapped` would only trust their exit code.
+    # Dispatching on the OUTPUT is what makes this work for a runner this file
+    # has never heard of, which is the point of reading a format rather than a
+    # tool.
+    if re.search(r"\bnode\s+--test\b", low) or TAP_MARKER.search(output) \
+            or TAP_COUNT.search(output):
+        return [_tap(cmd, output, exit_code, root)]
     if WRAPPER.match(bare):
         return [_wrapped(cmd, output, exit_code, root)]
     if BUILD_WRAPPER.match(bare):
@@ -290,6 +332,41 @@ def _counted(kind: Kind, command: str, output: str, exit_code: int, root: Path,
     record.failed = failed
     record.passed = int(groups.get("passed") or 0) or max(total - failed, 0)
     return _counts_decide(record)
+
+
+def _tap(command: str, output: str, exit_code: int, root: Path) -> Evidence:
+    """A TAP 13 run, by whichever tool produced it.
+
+    Counters first, because they are exact and both of Node's reporters emit
+    them. Falling back to counting result lines for producers that print a plan
+    and no summary, which plain TAP from older harnesses does.
+
+    The exit code is not trusted over the counts. `node --test ... | tail -6`
+    exits **0** while `# fail 1` sits in the output - R10, reproduced on this
+    runner rather than assumed - so the verdict goes through `_counts_decide`
+    like every other counting parser here.
+    """
+    record = _record(Kind.SUITE, _scope(command), exit_code, command, root, output)
+
+    counts = {m.group("word"): int(m.group("n")) for m in TAP_COUNT.finditer(output)}
+    if counts:
+        record.passed = counts.get("pass", 0)
+        record.failed = counts.get("fail", 0)
+        record.counted = True
+        return _counts_decide(record)
+
+    if TAP_MARKER.search(output):
+        results = TAP_RESULT.findall(output)
+        if results:
+            record.failed = sum(1 for bad in results if bad)
+            record.passed = len(results) - record.failed
+            record.counted = True
+            return _counts_decide(record)
+
+    # It named `node --test` but said nothing this can read. The exit code is
+    # all there is, and `counted` stays false so `Evidence.ran_tests` does not
+    # treat it as a measured suite.
+    return record
 
 
 def _wrapped(command: str, output: str, exit_code: int, root: Path) -> Evidence:

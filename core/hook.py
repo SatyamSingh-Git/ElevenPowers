@@ -21,7 +21,7 @@ from .claims import infer, opens_new_task
 from .evidence import Result
 from .ledger import STATE_DIR, Ledger, Status
 from .obligations import risk_of
-from .parsers import parse, written_paths
+from .parsers import claims_to_run_tests, parse, written_paths
 from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
 from .verify import discharge
@@ -194,6 +194,16 @@ def on_post_tool(payload: dict, root: Path) -> int:
     records = parse(command, result.output, result.exit_code, root)
     written = written_paths(command) if result.ok else []
     if not records and not written:
+        # A test command this runtime cannot read is the failure that hides
+        # itself: no evidence, no complaint, and under `strict` a refused stop
+        # on work that was genuinely tested. Measured on a real repository -
+        # three of four packages ran `node --test` and produced nothing, and it
+        # took reading the parsers to find out. Now it is in blindspots.jsonl,
+        # where `ep_status` and `ep_doctor` already look.
+        if claims_to_run_tests(command):
+            blindspots.record(root, "unreadable test output",
+                              f"{command.strip()[:120]} -> exit {result.exit_code}, "
+                              f"no runner recognised")
         return 0
 
     ledger = Ledger.load(root)

@@ -1365,6 +1365,30 @@ def test_a_typecheck_with_counted_errors_is_not_clean(project):
 # and output that should be read as passing. PLAN §5.0 says a check is only
 # evidence if it has been run both ways; this table is that rule made
 # mechanical, so a runner cannot be added with one direction tested.
+def _counting_parsers() -> list[str]:
+    """The parsers that count, derived from the module rather than listed here.
+
+    A counting parser is one that returns through `_counts_decide` - that is
+    what R10 made mandatory, and it is a definition the module maintains for
+    itself. The previous version of the guard below hardcoded the names, so
+    adding a parser and forgetting to update the list left the count unmoved
+    and the guard silently satisfied: a guard against forgetting that could
+    itself be forgotten.
+    """
+    import inspect
+
+    source = inspect.getsource(parsers)
+    found = []
+    for block in re.split(r"^def ", source, flags=re.MULTILINE)[1:]:
+        name = block.split("(", 1)[0].strip()
+        if name.startswith("_") and "_counts_decide(" in block and name != "_counts_decide":
+            found.append(name)
+    return found
+
+
+_DISPATCH_PATTERN = "|".join(re.escape(n) + r"\(" for n in _counting_parsers())
+
+
 BOTH_WAYS = {
     "pytest": ("python -m pytest tests -q 2>&1 | tail -20",
                "2 failed, 18 passed in 1.0s\n", "20 passed in 1.0s\n"),
@@ -1372,6 +1396,21 @@ BOTH_WAYS = {
                "\n Tests  2 failed | 18 passed (20)\n", "\n Tests  20 passed (20)\n"),
     "jest": ("npx jest 2>&1 | tail -20",
              "\nTests:       2 failed, 18 passed, 20 total\n", "\nTests:       20 passed, 20 total\n"),
+    # TAP, captured from Node 22.17.1 rather than remembered. Both reporters,
+    # because the default flips with whether stdout is a TTY. Written as
+    # triple-quoted blocks so the sample output needs no escapes at all.
+    "node --test (tap)": (
+        'node --test "src/**/*.test.mjs" 2>&1 | tail -6',
+        """1..3
+# tests 3
+# pass 2
+# fail 1
+""",
+        """1..2
+# tests 2
+# pass 2
+# fail 0
+"""),
     "tsc": ("npx tsc --noEmit 2>&1 | tail -20",
             "src/a.ts(3,10): error TS2345: no.\nFound 2 errors.\n", "\n"),
     "go": ("go test ./... 2>&1 | tail -20",
@@ -1429,7 +1468,7 @@ def test_the_both_ways_table_covers_every_runner_parse_dispatches_to():
     import inspect
 
     source = inspect.getsource(parsers.parse)
-    dispatches = len(re.findall(r"_counted\(|_pytest\(|_tsc\(|_go\(|_cargo\(|_wrapped\(", source))
+    dispatches = len(re.findall(_DISPATCH_PATTERN, source))
     assert dispatches == len(BOTH_WAYS), (
         f"`parse` dispatches to {dispatches} counting parsers but BOTH_WAYS covers "
         f"{len(BOTH_WAYS)}. A runner was added or removed without being tested in "

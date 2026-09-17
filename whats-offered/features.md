@@ -98,6 +98,27 @@ and the request does not mention it. Edit it anyway, or read it first.
 
 ---
 
+## Runners it has never heard of
+
+**What it does.** Test output is read as a **format**, not as a tool name. TAP 13 — what `node --test`, `tap`, `ava --tap` and `prove` all emit — is counted whatever command produced it:
+
+```
+npm test          ← names no runner at all
+yarn test
+turbo test
+node --test "src/**/*.test.mjs"
+```
+
+All four are recognised, because the dispatch looks at the output before it falls back to guessing from the command.
+
+**Why it matters.** A command name is not a runner. Wrappers are how most projects actually invoke tests, and a tool that only knows `pytest` and `jest` sees nothing in a monorepo running `turbo test`. Found the hard way: pointed at a real repository outside this project, three of its four packages ran `node --test` and produced **zero** records — a passing run left no evidence, and under `strict` that means refusing a stop on work that was genuinely tested.
+
+**And when it still cannot read something, it says so.** No project can enumerate every runner on earth, so the honest position is not "supports everything" — it is that an unreadable test command becomes a line in `.elevenpowers/blindspots.jsonl` rather than silence. `deno test` and `zig build test` are unknown today and will tell you so instead of quietly recording nothing.
+
+**Known limit, stated rather than discovered.** TAP names are bare — `this one fails`, with no file qualifier — so TAP evidence is suite-level. Per-test reproduction (`stress.confirm` re-running named tests) stays pytest-only. You get evidence capture, freshness, the gate, the scope guard and suite-grain discrimination; you do not get a named reproduction.
+
+---
+
 ## A check that could not have failed is named as one
 
 **What it does.** Every declared check is also run the other way round — in a throwaway git worktree built from the commit your task started at, with your new test files laid over the old source. If the check passed there too, it says so:
