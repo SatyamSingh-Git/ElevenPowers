@@ -103,10 +103,106 @@ def documents(root: Path) -> list[str]:
 
 
 def _is_module(path: str) -> bool:
+    """A module the architecture map is expected to name.
+
+    **Python only, deliberately, and not for want of a parser.** The import
+    graph below reads TypeScript too, but *divergence* is an obligation: it says
+    a map should have named this. Measured on five upstream repositories the
+    drift check fires on 0 of 23 commits because mature libraries add tests
+    rather than modules - and a TypeScript project that adds files constantly
+    would be the opposite case, on a signal whose noise has never been measured.
+    This gate blocked 75% of runs once on exactly that mistake. The graph is the
+    half with a measured firing rate (47%), so the graph is the half that grew.
+    """
     from .surface import TEST_NAME
 
     return (path.endswith(".py") and not path.endswith("__init__.py")
             and not TEST_NAME.search(path))
+
+
+def _graphable(path: str) -> bool:
+    """A file the import graph can read: Python, plus JS/TS when available."""
+    from . import polyglot
+    from .surface import TEST_NAME
+
+    if _is_module(path):
+        return True
+    return (polyglot.available() and polyglot.language_of(path) in polyglot.IMPORTABLE
+            and not TEST_NAME.search(path))
+
+
+TS_EXTENSIONS = (".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs")
+
+
+def _ts_packages(root: Path) -> dict[str, str]:
+    """`package name -> directory`, so a workspace import resolves.
+
+    A monorepo writes `import {x} from "@scope/core"`, and the only thing that
+    can turn that into a path is the `name` field of some package.json in the
+    tree. Without this every cross-package edge in a monorepo is invisible,
+    which is most of the interesting ones.
+    """
+    import json
+
+    from .surface import _walk
+
+    found: dict[str, str] = {}
+    for path in _walk(root):
+        if not path.endswith("package.json") or "node_modules" in path:
+            continue
+        try:
+            data = json.loads((root / path).read_text(encoding="utf-8", errors="replace"))
+        except (OSError, ValueError):
+            continue
+        name = data.get("name")
+        if isinstance(name, str) and name:
+            found[name] = path.rsplit("/", 1)[0] if "/" in path else ""
+    return found
+
+
+def _resolve_ts(root: Path, importer: str, spec: str, packages: dict[str, str]) -> str:
+    """One specifier to a repo-relative file, or empty if it leaves the repo.
+
+    Relative paths carry no extension in TypeScript and may name a directory
+    holding `index.ts`, so both are tried. A bare specifier is a workspace
+    package when some package.json claims that name, and otherwise a dependency
+    from `node_modules`, which is not this repository's architecture.
+    """
+    here = importer.rsplit("/", 1)[0] if "/" in importer else ""
+    if spec.startswith("."):
+        import posixpath
+
+        target = posixpath.normpath(posixpath.join(here, spec))
+    elif spec in packages or any(spec.startswith(p + "/") for p in packages):
+        name = spec if spec in packages else next(
+            p for p in packages if spec.startswith(p + "/"))
+        rest = spec[len(name):].lstrip("/")
+        base = packages[name]
+        target = f"{base}/{rest}" if rest else base
+        if not rest:
+            # The package root: whatever its entry point turns out to be.
+            for guess in ("src/index", "index", "src/main", "dist/index"):
+                hit = _first_file(root, f"{base}/{guess}" if base else guess)
+                if hit:
+                    return hit
+            return ""
+    else:
+        return ""                       # node_modules, or the standard library
+    return _first_file(root, target)
+
+
+def _first_file(root: Path, target: str) -> str:
+    """`src/store` -> `src/store.ts`, or `src/store/index.ts`, or nothing."""
+    target = target.lstrip("./")
+    if target.endswith(TS_EXTENSIONS) and (root / target).is_file():
+        return target
+    for ext in TS_EXTENSIONS:
+        if (root / f"{target}{ext}").is_file():
+            return f"{target}{ext}"
+    for ext in TS_EXTENSIONS:
+        if (root / f"{target}/index{ext}").is_file():
+            return f"{target}/index{ext}"
+    return ""
 
 
 def source_model(root: Path, limit: int = 1200) -> dict[str, Module]:
@@ -124,9 +220,10 @@ def source_model(root: Path, limit: int = 1200) -> dict[str, Module]:
     """
     from .surface import _walk
 
-    paths = [p for p in _walk(root) if _is_module(p)]
+    paths = [p for p in _walk(root) if _graphable(p)]
     if len(paths) > limit:
         return {}
+    packages = _ts_packages(root) if any(not p.endswith(".py") for p in paths) else {}
     # Every suffix of the dotted path, because the import never spells the path
     # from the repository root: `src/app/store.py` is imported as `app.store`,
     # since `src/` is on sys.path rather than in the package name. Indexing only
@@ -139,6 +236,18 @@ def source_model(root: Path, limit: int = 1200) -> dict[str, Module]:
 
     model = {p: Module(p) for p in paths}
     for path in paths:
+        if not path.endswith(".py"):
+            from . import polyglot
+
+            try:
+                source = (root / path).read_bytes()
+            except OSError:
+                continue
+            for spec in polyglot.imports(path, source):
+                target = _resolve_ts(root, path, spec, packages)
+                if target and target != path and target in model:
+                    model[path].imports.add(target)
+            continue
         try:
             tree = ast.parse((root / path).read_text(encoding="utf-8", errors="replace"))
         except (OSError, SyntaxError, ValueError):
@@ -241,7 +350,10 @@ def neighbourhood(root: Path, path: str, model: dict[str, Module] | None = None)
     the moment before an edit is the only moment the information can change the
     edit.
     """
-    if not _is_module(path):
+    # `_graphable`, not `_is_module`: the brief is information, not an
+    # obligation, so it covers every language the graph can read. Gating it on
+    # the map's rule left TypeScript silent at the one moment it could help.
+    if not _graphable(path):
         return ""
     model = source_model(root) if model is None else model
     if path not in model:
