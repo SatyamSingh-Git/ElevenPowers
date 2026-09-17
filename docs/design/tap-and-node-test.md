@@ -182,6 +182,34 @@ adversarial probe by refusing everything:
 - **the enforcement** — a `BOTH_WAYS` entry for the new runner, and the
   dispatch-site guard repaired so it cannot be satisfied by forgetting.
 
+## 6b. The monorepo, measured on a real turbo run
+
+Verified after the fact, on the command a turborepo actually uses at its root,
+and it failed twice over.
+
+**turbo prefixes every line with the package it came from.**
+
+```
+@probe/a:test: # pass 1
+@probe/a:test: # fail 1
+@probe/b:test: # pass 1
+@probe/b:test: # fail 0
+```
+
+Anchoring the TAP patterns hard at the line start meant `turbo test` produced
+**no records at all** — the same silent failure this whole note exists to fix,
+reappearing one layer up. An optional `<package>:<task>:` prefix is now allowed
+before every TAP marker.
+
+**And the counts were overwritten rather than summed.** An aggregating runner
+reports per package; a dict comprehension keeps the last one. So a failing
+package followed by a passing one reported `fail 0` — **a red monorepo
+laundered into a green record**, which is R10 arriving by a new road. The
+failing package is deliberately first in the test sample, so the bug is not
+invisible to a check that merely looks at the total.
+
+Both are probed and were watched failing before their fix.
+
 ## 7. Phasing
 
 1. `_tap` plus the `_wrapped` change, with the tests above. Each probe watched

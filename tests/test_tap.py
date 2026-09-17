@@ -293,3 +293,61 @@ def test_an_explicit_tap_header_is_taken_at_its_word(root):
     """
     got = only(parse("bash deploy.sh", "TAP version 13\nok 1 - deployed\n1..1\n", 0, root))
     assert (got.result, got.passed, got.counted) == (Result.PASS, 1, True)
+
+
+# --- a monorepo runner, captured from a real turbo run ----------------------
+
+# Trimmed from an actual `npx turbo test` over two workspace packages: one
+# failing, one passing. The prefix is the whole problem - every line carries
+# the package it came from.
+TURBO = """@probe/a:test: not ok 2 - a fails
+@probe/a:test: 1..2
+@probe/a:test: # tests 2
+@probe/a:test: # pass 1
+@probe/a:test: # fail 1
+@probe/b:test: ok 1 - b passes
+@probe/b:test: 1..1
+@probe/b:test: # tests 1
+@probe/b:test: # pass 1
+@probe/b:test: # fail 0
+@probe/a#test:  ERROR  command exited (1)
+
+ Tasks:    0 successful, 2 total
+Failed:    @probe/a#test
+"""
+
+
+def test_a_monorepo_runner_is_read_through_its_prefix(root):
+    """`turbo test` is the root command of a turborepo, and it prefixes lines.
+
+    Measured on a real run rather than assumed: anchoring the TAP patterns hard
+    at the line start meant an entire monorepo produced **no records at all**.
+    """
+    got = only(parse("turbo test", TURBO, 1, root))
+    assert got.counted, "a whole monorepo produced nothing"
+    assert (got.passed, got.failed) == (2, 1), (got.passed, got.failed)
+
+
+def test_counts_are_summed_across_packages_not_overwritten(root):
+    """The dangerous one, and R10 arriving by a new road.
+
+    An aggregating runner reports per package. Keeping only the last match -
+    which a dict comprehension does - meant a failing package followed by a
+    passing one reported `fail 0`, laundering a red monorepo into a green
+    record. The failing package is deliberately first here, so the bug would be
+    invisible to a test that only checked the total looked plausible.
+    """
+    got = only(parse("turbo test", TURBO, 0, root))   # exit eaten by a pipe
+    assert got.failed == 1, "the first package's failure was overwritten"
+    assert got.result is Result.FAIL
+
+
+def test_an_arbitrary_prefixed_line_is_still_not_a_test_run(root):
+    """Adversarially: the prefix must not open the door it was closing.
+
+    Allowing `<pkg>:<task>: ` before a TAP marker must not make every
+    colon-prefixed log line into test results.
+    """
+    log = ("deploy:web: # pass 3 of the checks\n"
+           "deploy:web: ok 1 connection\n")
+    assert parse("cat deploy.log", log, 0, root) == []

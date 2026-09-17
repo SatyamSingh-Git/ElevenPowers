@@ -97,17 +97,23 @@ LOOKS_LIKE_TESTS = re.compile(
 # was here for a moment and `cat notes.txt` containing "i pass 5" came back as a
 # counted, passing suite. Fabricated evidence from a text file is the exact
 # failure this whole project exists to refuse.
-TAP_COUNT = re.compile(r"^\s*(?:#|ℹ)\s*(?P<word>pass|fail)\s+(?P<n>\d+)\s*$",
+# A monorepo runner prefixes every line with the package it came from:
+# `@probe/a:test: # pass 1` is what turbo emits, and a turborepo's root command
+# is `turbo test`. Anchoring hard at the line start meant an entire monorepo
+# produced no records at all - measured on a real turbo run, not assumed.
+TAP_PREFIX = r"(?:[^\s:]+:[^\s:]*:[ \t]*)?"
+TAP_COUNT = re.compile(r"^" + TAP_PREFIX + r"\s*(?:#|ℹ)\s*(?P<word>pass|fail)\s+(?P<n>\d+)\s*$",
                        re.MULTILINE)
 # The strong, self-declaring header. A bare `1..10` plan line is not enough on
 # its own to call something a test run - `echo progress` printing a range said
 # so too.
-TAP_VERSION = re.compile(r"^TAP version \d+\s*$", re.MULTILINE)
+TAP_VERSION = re.compile(r"^" + TAP_PREFIX + r"TAP version \d+\s*$", re.MULTILINE)
 # The output declaring itself TAP. Counting `ok` lines without this gate turns
 # any log with a line starting `ok` into test results, which is the
 # false-positive class this project has already paid for four times.
-TAP_MARKER = re.compile(r"^(?:TAP version \d+|1\.\.\d+)\s*$", re.MULTILINE)
-TAP_RESULT = re.compile(r"^(?P<bad>not )?ok\s+\d+\b", re.MULTILINE)
+TAP_MARKER = re.compile(r"^" + TAP_PREFIX + r"(?:TAP version \d+|1\.\.\d+)\s*$",
+                        re.MULTILINE)
+TAP_RESULT = re.compile(r"^" + TAP_PREFIX + r"(?P<bad>not )?ok\s+\d+\b", re.MULTILINE)
 
 # Running the thing and showing what happened. For a project with no test suite
 # this is the only proof available, so it has to be recognised or such projects
@@ -363,10 +369,18 @@ def _tap(command: str, output: str, exit_code: int, root: Path) -> Evidence:
     """
     record = _record(Kind.SUITE, _scope(command), exit_code, command, root, output)
 
-    counts = {m.group("word"): int(m.group("n")) for m in TAP_COUNT.finditer(output)}
-    if counts:
-        record.passed = counts.get("pass", 0)
-        record.failed = counts.get("fail", 0)
+    # SUMMED, not taken one at a time. An aggregating runner reports per
+    # package, and a dict comprehension kept only the last one: `turbo test`
+    # over a failing package followed by a passing one reported `fail 0`,
+    # laundering a red monorepo into a green record. R10 arriving by a new road.
+    counts = {"pass": 0, "fail": 0}
+    counted_any = False
+    for match in TAP_COUNT.finditer(output):
+        counts[match.group("word")] += int(match.group("n"))
+        counted_any = True
+    if counted_any:
+        record.passed = counts["pass"]
+        record.failed = counts["fail"]
         record.counted = True
         return _counts_decide(record)
 
