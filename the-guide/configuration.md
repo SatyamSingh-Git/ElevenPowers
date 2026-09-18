@@ -138,20 +138,17 @@ A failure that was later fixed is *reproduction evidence*, not a contradiction �
 
 ## Version control
 
-Add this to `.gitignore`:
+**There is nothing to add to your `.gitignore`.** The runtime writes `.elevenpowers/.gitignore` containing `*` on every save, so git ignores the whole directory whatever your own rules say. The ledger holds your prompts, the commands that ran and a bounded amount of what they printed — machine state, and not something to put in a shared history.
+
+`config.json` is the one file there worth committing: it is a statement about how your project is built, and everyone on the team benefits from it. To commit it and nothing else, edit the `.gitignore` the runtime wrote — a file already there is never overwritten:
 
 ```
-.elevenpowers/ledger.json
-.elevenpowers/blindspots.jsonl
+*
+!.gitignore
+!config.json
 ```
 
-`config.json` is worth committing — it is a statement about how your project is built, and everyone on the team benefits from it. The ledger and the blindspots file are machine state and should not be.
-
-To ignore the whole thing:
-
-```
-.elevenpowers/
-```
+Deleting that file instead of editing it does not work; the next save writes it back.
 
 ---
 

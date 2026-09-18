@@ -94,12 +94,17 @@ your-project/
 └── .elevenpowers/
     ├── ledger.json          the evidence records for this project
     ├── blindspots.jsonl     anything arriving from the host that could not be read
-    └── config.json          yours, optional — see configuration.md
+    ├── config.json          yours, optional — see configuration.md
+    └── .gitignore           written by the runtime: `*`
 ```
 
 Nothing is written outside your project directory. Nothing is sent anywhere.
 
-**Add `.elevenpowers/` to your `.gitignore`** unless you specifically want the ledger committed. It is machine state, not source.
+**You do not need to add anything to your `.gitignore`.** The directory ignores itself — the runtime writes a `.gitignore` containing `*` into it on every save, which git honours whatever your own ignore file says, so `git add -A` cannot pick it up. The ledger holds your prompts, the commands that ran and a bounded amount of what they printed; that is machine state and it should not be in your history. If you put your own `.gitignore` there, it is left alone.
+
+Credentials are stripped from captured output before it is written — issuer prefixes, named values like `AWS_SECRET_ACCESS_KEY=`, bearer headers, JWTs and private-key blocks. See [features.md](../whats-offered/features.md) for what that does and does not cover.
+
+If you *want* something in there committed, edit that `.gitignore` rather than deleting it — deleting it only means the runtime writes it again on the next save, while a file that is already there is never touched. `*` then `!config.json` on the next line commits your configuration and nothing else.
 
 ---
 

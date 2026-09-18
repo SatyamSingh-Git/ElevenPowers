@@ -198,6 +198,40 @@ because they go stale undetected, and **detection makes precision affordable**.
 
 ---
 
+## Redaction — the approach borrowed, and the popular one refused
+
+**Borrowed:** the *prefix-first* discipline of every serious secret scanner —
+detect-secrets, TruffleHog, Semgrep, Trivy — and their published prefix tables.
+The two sources used here agree with each other, which is why both are cited
+rather than one: Semgrep, [*Secrets Story: The Prefixed Secrets That Tried to
+Get Away*](https://semgrep.dev/blog/2025/secrets-story-and-prefixed-secrets/)
+(2025), and apikeys.guide, [*Key Formats &
+Prefixes*](https://apikeys.guide/docs/implementation/key-formats-and-prefixes).
+
+**Refused:** the entropy fallback those same tools ship, and which is what a
+first attempt reaches for. Their own documentation is blunt that it carries a
+higher false-positive rate and is a supplement rather than a replacement — and
+this corpus is the worst possible case for it. The text being scanned is
+*command output*: git shas, UUIDs, content hashes, coverage tables, long
+identifiers. Every one is high-entropy and every one must survive, because the
+same text is what `core/assumptions.py` searches. A redactor that eats it turns
+a confirmed pattern into a false accusation.
+
+**What we add, in one sentence:** the scan runs at a single write choke point
+inside the runtime rather than over a repository, so the requirement inverts —
+near-zero false positives on ordinary output matters more than catching every
+possible secret, and the replacement marker is chosen so a pattern still matches
+its own redacted output.
+
+**And we did not take the whole dependency.** detect-secrets and TruffleHog are
+both better scanners than this and neither was installed, because the install-
+with-nothing promise is load-bearing and the job here is 60 lines of prefixes,
+not a scanner. The limit that buys: a high-entropy secret that carries no issuer
+prefix and sits beside no telling name survives, and that is stated in
+`docs/design/unverified-assumptions.md` §6 rather than left to be discovered.
+
+---
+
 ## What we deliberately do not build
 
 | Concern | Use instead | Licence | Why not build |

@@ -19,6 +19,7 @@ from .config import Config, load as load_config
 from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for, risk_of
+from .redact import scrub
 from .repeat import MAX_RUNS, MIN_RUNS, rules_out, runs_needed
 from .scope import is_manifest, is_prose, normalise
 from .surface import TEST_NAME, Surface, declares_a_test, detect
@@ -40,6 +41,29 @@ class Status(str, Enum):
     UNVERIFIED = "UNVERIFIED"
     CONTRADICTED = "CONTRADICTED"
     STALE = "STALE"
+
+
+def _keep_out_of_git(state: Path) -> None:
+    """Make the state directory ignore itself.
+
+    This directory holds the user's prompt, every command string, and - since
+    the assumption check - a bounded amount of what those commands printed. A
+    repository that has never heard of this plugin does not ignore it, and
+    `git add -A` would commit the lot.
+
+    A `.gitignore` containing `*` inside the directory ignores everything in it
+    whatever the repository's own ignore file says. It needs no edit to a file
+    the user owns, protects the whole directory rather than the one field that
+    prompted the question, and leaves the uninstall story intact: the directory
+    is still the only thing to delete.
+    """
+    marker = state / ".gitignore"
+    if marker.exists():
+        return
+    try:
+        marker.write_text("*\n", encoding="utf-8")
+    except OSError:
+        pass                      # never fail a save over housekeeping
 
 
 def _appended(disk: list, mine: list, key) -> list:
@@ -217,6 +241,7 @@ class Ledger:
         happens here.
         """
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        _keep_out_of_git(self.path.parent)
         self._keep_concurrent_appends()
         payload = {
             "task": self.task,
@@ -312,13 +337,17 @@ class Ledger:
         Head and tail, because a runner puts its header at the top and its
         summary at the bottom, and the middle is the part nobody writes a
         pattern for.
+
+        Credentials are removed first. This is the only place output enters the
+        file, so it is the only place that has to do it.
         """
         keep = 4000
         if len(text) <= keep * 2:
             body = text
         else:
             body = text[:keep] + "\n[...]\n" + text[-keep:]
-        self.outputs = (self.outputs + [{"command": command[:200], "text": body}])[-12:]
+        body = scrub(body)
+        self.outputs = (self.outputs + [{"command": scrub(command[:200]), "text": body}])[-12:]
 
     def note(self, what: str, why: str) -> None:
         self.decisions.append({"what": what, "why": why, "at": time.time()})
