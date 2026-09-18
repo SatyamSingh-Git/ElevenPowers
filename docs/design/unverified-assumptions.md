@@ -119,6 +119,14 @@ done rather than after a user asks.
 - **A pattern matched by output the agent never actually inspected.** Running
   the command is necessary, not sufficient - though it is the step that was
   skipped every time here.
+- **A pattern whose producer the code never names.** The §7c narrowing trades
+  this away deliberately: a regex for `ruff`'s output in a file that never
+  writes the word `ruff` is not reported. Silence is the safe direction, and the
+  alternative was firing on every validation regex in the repository.
+- **A credential with no recognisable shape.** `core/redact.py` matches issuer
+  prefixes and named values, not randomness. A bare high-entropy string that
+  nothing labels survives - and the alternative, an entropy threshold, eats
+  every git sha in the ledger.
 
 ## 7. Both ways, before it is believed
 
@@ -136,6 +144,46 @@ done rather than after a user asks.
   tested nothing about this change.
 - **adversarial** — no base commit, or no base-tree run; says nothing rather
   than accusing.
+
+Added with the narrowing and the redaction (§7c):
+
+- **forward** — the TAP case survives the narrowing: `parsers.py` names
+  `node --test`, node was run, the counter matched nothing; **reported**.
+- **adversarial** — an email and a phone validator in a file naming no tool;
+  **silent** - and the same file with the narrowing removed is loud, or the
+  silence proves nothing.
+- **adversarial** — a runner named in one file does not vouch for a regex in
+  another.
+- **forward** — a pattern in a file the task *created*; reported, because the
+  whole new file is what was added.
+- **forward** — fifteen documented example credentials; none survives `scrub`.
+- **adversarial** — eight real producers, 27,700 characters of this project's
+  own output; **not one character changed**. This is the requirement that
+  rules entropy out.
+- **adversarial** — a lowercase English word after `token:` is not a
+  credential, and `token=\w+` still matches its own redacted output.
+
+### And every one of them was watched flipping
+
+A regression test is not evidence until it has been seen failing before the fix
+and passing after. Three of the tests here were written *after* their fix and so
+had never been seen to fail — which is exactly the vacuous probe this module
+computes for everyone else. Each fix was therefore broken in turn and the test
+guarding it re-run:
+
+| fix removed | guard |
+|---|---|
+| the strong-construct rule | `test_source_code_in_a_string_is_not_a_pattern` |
+| escapes blanked before the tool name | `test_an_escape_does_not_hide_the_tool_name` |
+| the tool is the first real token | `test_the_tool_is_the_first_real_token` |
+| `scrub` on the way into the ledger | `test_the_ledger_scrubs_on_the_way_in` |
+| the self-ignoring state directory | `test_state_directory_ignores_itself` |
+| the quote before the separator | the JSON-key case of `test_an_issued_credential...` |
+
+**Six broken, six red, and green again on restore.** A seventh control is built
+into the narrowing tests themselves: the file that must be silent is asserted
+*loud* with the narrowing switched off, in the same run, so the silence can
+never be mistaken for the feature working.
 
 ## 7b. Where it speaks, and the intervention that was researched and refused
 
@@ -182,6 +230,152 @@ in a form that cannot drift.
 **What would license the push:** the 50-task pilot that paper prescribes,
 comparing arms with and without injection. That is the same shape as the unrun
 B6 experiment, and it costs the same kind of money.
+
+## 7c. Two costs this introduced, and what they are worth
+
+Asked plainly whether the check would *hurt*, and the honest answer was yes,
+twice. Both are recorded here because both were created by the fix rather than
+found in the code it checks. Both are now closed; what closing them cost, and
+the three defects that closing them turned up, are below.
+
+### The state directory was never protected, and this widened what is in it
+
+To answer "did anything you ran look like this", the ledger began keeping
+**12 commands x 8KB** of output. Before that it kept `_tail(output)` - three
+lines. That is a real increase in what sits on disk, and if a command prints a
+token it is now written down.
+
+**And the exposure predates the change.** `.elevenpowers/ledger.json` already
+held the user's prompt, every command string, and three lines of every output.
+This repository gitignores `.elevenpowers/`; **a user's repository does not**,
+and the plugin never wrote that line for them. A `git add -A` commits the lot.
+
+**Shipped: the state directory ignores itself.** `Ledger._keep_out_of_git`
+writes `.elevenpowers/.gitignore` containing `*` on every save, which makes git
+ignore everything in that directory regardless of what the repository's own
+ignore file says. It needs no edit to a file the user owns, it protects the
+whole directory rather than the one field that prompted it, and the uninstall
+story is unchanged - the directory is still the only thing to delete. An ignore
+file already there is never overwritten.
+
+Measured both ways on a fresh `git init` that has never heard of this plugin:
+with the marker, `git status --porcelain` is empty; with it removed,
+`?? .elevenpowers/`.
+
+**Shipped: `core/redact.py`, as defence in depth.** Not entropy. Entropy is the
+property of a git sha, a UUID, a content hash and a long identifier, all of
+which this project's own output is made of - and a redactor that eats test
+output breaks the very check the output is kept for. Prefixes are taken from two
+sources that agree, [Semgrep's *Secrets Story: The Prefixed Secrets That Tried
+to Get Away*](https://semgrep.dev/blog/2025/secrets-story-and-prefixed-secrets/)
+and [apikeys.guide, *Key Formats &
+Prefixes*](https://apikeys.guide/docs/implementation/key-formats-and-prefixes),
+plus the named-value form (`AWS_SECRET_ACCESS_KEY=`, whose value has no prefix
+at all), bearer headers, JWTs and PEM blocks.
+
+Measured by running eight real producers in this repository - `git log`,
+`git status`, `git diff --stat`, two `pytest` invocations, `architecture/check.py`,
+`node --test` and `pip list`, 27,700 characters - and diffing before against
+after: **zero characters changed**. Forward, fifteen documented example
+credentials: **zero survived**.
+
+**And the prefixes were confirmed by something outside this project.** The first
+attempt to push this work was **refused by GitHub's own push protection**, which
+named the Slack and Stripe lines in `tests/test_redact.py` — invented values, but
+in shapes real enough that a production scanner treats them as live. That is a
+better check on the table than any amount of re-reading it, and it cost nothing.
+The fixtures are now assembled from a prefix and a body at import time so no
+complete token literal sits in the file; the block was **not** bypassed through
+the allow-this-secret link, because a fixture shaped exactly like a credential is
+one every tool downstream will keep treating as one.
+
+Two things it found by being run rather than reasoned about. A quoted JSON key -
+`"refresh_token": "1//0e..."` - walked straight past the first version, which
+read only `KEY=value`; that is how every JSON and YAML config on earth spells it.
+And the replacement marker is a bare word, not `<redacted>`, because the
+redactor runs over the same text §3 searches: `token=\w+` must still match its
+own redacted output, or a pattern that *was* confirmed gets reported as
+unverified.
+
+### The check assumes every pattern describes command output
+
+It does not. These are all claims about *data*, not about a tool:
+
+```
+^[^@]+@[^@]+\.[a-z]{2,}$     email validation
+^\+?[0-9]{7,15}$              phone validation
+<a href="([^"]+)"             scraping fetched HTML
+```
+
+Nothing a command printed will ever match them, so each is reported as
+unverified, every time. On a repository that parses formats fetched at runtime -
+a scraper, a client library - that is most of the regexes in it, and the feature
+becomes noise.
+
+**Shipped: the code must name a tool the task actually ran.** A pattern in file
+F is reported only when F's added lines mention the bare name of a command this
+task executed. The TAP case qualifies - the same diff added `node --test` to the
+dispatch, and `node --test` was run. An email validator in a file that mentions
+no command does not. Attribution is **per file**, not pooled across the diff, so
+a runner named in `parsers.py` does not vouch for a regex in `validate.py`.
+
+Two refinements, both forced by running it:
+
+- **The launcher is not the tool.** `python -m pytest` is a claim about pytest.
+  Keeping `python` would let the word in any docstring vouch for every regex in
+  the file containing it, which is the narrowing undone. Task words - `test`,
+  `run`, `build` - are dropped for the same reason.
+- **Escapes are blanked before the name is looked for.** The first version used
+  a plain word boundary and went silent on `core/parsers.py`, the single file
+  the whole feature was built for: it names node as `r"\bnode\s+--test\b"`, and
+  the character before `node` there is the `b` of `\b`. The forward test caught
+  it on its first run.
+
+And the flip control found a third defect that had nothing to do with the
+narrowing. `git diff <base> -- <path>` reports **nothing at all** for an
+untracked file, so every pattern in every file a task *creates* was exempt -
+including `core/redact.py`, added in this same change. A new file is read whole,
+because the whole file is what the task added.
+
+This narrows honestly rather than cleverly. It misses a pattern written for a
+tool the code never names, which is the safe direction: silence, not a wrong
+accusation.
+
+### Then it was pointed at its own diff, and found two more
+
+The cheapest possible test of a noise complaint is to run the check on the
+change that fixes it. Eighteen patterns came back. Eleven were real; **seven
+were source code**.
+
+```
+'def secret_santa(names):'
+'self.token_count = len(tokens)'
+'import re\nCOUNT = re.compile(r"{body}")\n{dispatch}'
+```
+
+Those are test *fixtures* — strings holding code — and code is made of brackets
+and parentheses, so a "two or more metacharacters" rule reads them as claims
+about some tool's output. A literal must now also contain a construct that only
+a regular expression has: an anchor, an escape class, alternation, a quantifier,
+a group flag, a real character class.
+
+**Measured before adopting, not after.** Against all **67** pattern literals
+`core/` compiles — read out of the AST, so pieces of a concatenated pattern
+count — the rule loses **none**, and it drops **all seven** fixtures. A test
+re-measures that on every run, so a future pattern shape cannot quietly fall
+out.
+
+The same run showed the tool-name set was too generous: it took *every* token,
+so `git status` vouched for any file containing the word "status" and
+`pytest tests/test_redact.py` vouched for anything containing "test_redact" —
+the narrowing widening itself back out. It is now the first token that is
+neither a flag nor a launcher. Ten real runner shapes were run through it before
+the table was written down, and **two were wrong**: `go test` returned nothing,
+because a two-letter name fell below the length floor, and `bundle exec rspec`
+returned `bundle` — the same launcher idiom as `npx`.
+
+Which is, once again, the rule this whole feature exists to enforce: the shapes
+were written from memory, and running them was what corrected them.
 
 ## 8. Phasing
 

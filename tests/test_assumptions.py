@@ -38,9 +38,16 @@ def repo(tmp_path):
     return tmp_path
 
 
-def add_pattern(repo, body):
-    (repo / "parser.py").write_text(f'import re\nCOUNT = re.compile(r"{body}")\n',
-                                    encoding="utf-8")
+def add_pattern(repo, body, names_tool=True):
+    """Write a pattern into `parser.py`, with or without naming its producer.
+
+    The dispatch line matters. A pattern is only a claim about a runner's output
+    if the code around it is about that runner, and §7c narrows the check to
+    exactly that - so a fixture without it is testing a different feature.
+    """
+    dispatch = "if cmd.startswith('node --test'):\n    pass\n" if names_tool else ""
+    (repo / "parser.py").write_text(
+        f'import re\nCOUNT = re.compile(r"{body}")\n{dispatch}', encoding="utf-8")
 
 
 def ledger_with(repo, output=""):
@@ -251,3 +258,170 @@ def test_nothing_is_ever_injected_into_the_loop(repo):
         "an assumption check reached a mid-trajectory hook; "
         "intervening on a healthy run is measured to cost up to 26pp")
     assert "vacuous_tests(" not in source
+
+
+# --- the narrowing: a pattern is not always a claim about a command ---------
+
+# Most regexes in most repositories describe *data*, not a tool: an email
+# validator, a phone format, a scrape of fetched HTML. No command will ever
+# print something that matches them, so before §7c every one was reported on
+# every run - and on a scraper or a client library that is most of the file.
+VALIDATORS = r'''import re
+
+EMAIL = re.compile(r"^[^@]+@[^@]+\.[a-z]{2,}$")
+PHONE = re.compile(r"^\+?[0-9]{7,15}$")
+'''
+
+
+def test_a_validation_regex_in_a_file_naming_no_tool_is_silent(repo):
+    """Adversarial. The check must not be a noise generator on ordinary code."""
+    (repo / "validate.py").write_text(VALIDATORS, encoding="utf-8")
+    led = ledger_with(repo, REAL_TAP)
+    led.touched = ["validate.py"]
+    assert assumptions.unverified(led) == []
+
+
+def test_the_silence_is_caused_by_the_narrowing_and_not_by_nothing(repo):
+    """The same file, with the narrowing removed, must be loud.
+
+    Without this the test above passes whether the feature works or not - which
+    is precisely the vacuous probe `vacuous_tests` was written to catch.
+    """
+    (repo / "validate.py").write_text(VALIDATORS, encoding="utf-8")
+    base = git(repo, "rev-parse", "HEAD")
+    loud = assumptions.patterns_added(repo, base, ["validate.py"], None)
+    assert len(loud) == 2, loud
+
+
+def test_a_tool_named_in_a_different_file_does_not_vouch(repo):
+    """Adversarial. Attribution is per file, not pooled across the diff."""
+    add_pattern(repo, TAP_PATTERN)
+    (repo / "validate.py").write_text(VALIDATORS, encoding="utf-8")
+    led = ledger_with(repo, "nothing that matches\n")
+    led.touched = ["parser.py", "validate.py"]
+    found = assumptions.unverified(led)
+    assert TAP_PATTERN in found
+    assert not [p for p in found if "@" in p], found
+
+
+def test_an_escape_does_not_hide_the_tool_name():
+    r"""`r"\bnode\s+--test\b"` names node, and a naive word boundary says no.
+
+    The character before `node` there is the `b` of `\b`. The first version of
+    this check used a plain lookbehind and went silent on `core/parsers.py` -
+    the single file the whole feature was built for. Found by running it.
+    """
+    assert assumptions._names_a_tool([r'if re.search(r"\bnode\s+--test\b", cmd):'],
+                                     {"node"})
+
+
+def test_the_launcher_is_not_the_tool():
+    """`python -m pytest` is a claim about pytest.
+
+    Keeping `python` would let the word in any docstring vouch for every regex
+    in the file that contains it, which is the narrowing undone.
+    """
+    assert assumptions._tool_names(["python -m pytest tests/ -q"]) >= {"pytest"}
+    assert "python" not in assumptions._tool_names(["python -m pytest tests/ -q"])
+    assert assumptions._tool_names(["node --test"]) == {"node"}
+    assert "test" not in assumptions._tool_names(["npm test"])
+    assert assumptions._tool_names([]) == set()
+
+
+def test_a_pattern_in_a_file_the_task_created_is_not_invisible(repo):
+    """`git diff base -- path` says nothing at all about an untracked file.
+
+    So every pattern in every *new* module was exempt, silently - including the
+    module that shipped with this narrowing. The whole file is what the task
+    added, and it is read as such. Found by a flip control, not by reading it.
+    """
+    (repo / "runner.py").write_text(
+        'import re\n'
+        'def read(cmd):\n'
+        '    if cmd.startswith("node --test"):\n'
+        f'        return re.search(r"{TAP_PATTERN}", cmd)\n', encoding="utf-8")
+    led = ledger_with(repo, "Ran 3 checks, all good.\n")
+    led.touched = ["runner.py"]
+    assert assumptions.unverified(led) == [TAP_PATTERN]
+
+
+CODE_FIXTURES = [
+    "def read(cmd):",
+    "self.token_count = len(tokens)",
+    "def secret_santa(names):",
+    "if cmd.startswith('node --test'):",
+]
+
+
+@pytest.mark.parametrize("fixture", CODE_FIXTURES)
+def test_source_code_in_a_string_is_not_a_pattern(repo, fixture):
+    """Counting metacharacters alone reports test fixtures holding code.
+
+    Found by pointing the check at its own diff: brackets and parentheses are
+    what *source* is made of, so a fixture like `def secret_santa(names):` read
+    as a claim about some tool's output. A literal must also contain a construct
+    only a regex has. Measured against all 62 compiled patterns in `core/`
+    before adopting: none is lost.
+    """
+    (repo / "runner.py").write_text(
+        f'SAMPLE = "{fixture}"\nif cmd.startswith("node --test"):\n    pass\n',
+        encoding="utf-8")
+    led = ledger_with(repo, "nothing matching\n")
+    led.touched = ["runner.py"]
+    assert assumptions.unverified(led) == []
+
+
+def test_the_strong_rule_keeps_every_real_pattern_in_this_repo():
+    """The forward control on the narrowing above, run against real code.
+
+    A rule that silences noise by silencing everything is the failure mode here,
+    so it is measured rather than trusted: every regex this project actually
+    compiles must still read as one.
+    """
+    import ast
+    from pathlib import Path
+
+    real = []
+    for path in sorted(Path("core").glob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not (isinstance(node, ast.Call) and node.args):
+                continue
+            called = node.func
+            if not (isinstance(called, ast.Attribute) and called.attr == "compile"):
+                continue
+            # `a + b` and implicit concatenation both arrive as one expression;
+            # take every string constant in it, which is how the module itself
+            # reads a pattern built in pieces.
+            real += [n.value for n in ast.walk(node.args[0])
+                     if isinstance(n, ast.Constant) and isinstance(n.value, str)]
+    assert len(real) > 40, f"the extractor stopped working: {len(real)}"
+    lost = [p for p in real if not assumptions.STRONG.search(p)]
+    assert lost == [], lost
+
+
+TOOL_SHAPES = [
+    ("node --test", {"node"}),
+    ("python -m pytest tests/test_redact.py -q", {"pytest"}),
+    ("git status --porcelain", {"git"}),
+    ("turbo test", {"turbo"}),
+    ("npm run build", {"npm"}),
+    ("npx tsc --noEmit", {"tsc"}),
+    ("go test ./...", {"go"}),
+    ("bundle exec rspec", {"rspec"}),
+    ("cargo test", {"cargo"}),
+    ("python", {"python"}),
+]
+
+
+@pytest.mark.parametrize("command,expected", TOOL_SHAPES, ids=[c for c, _ in TOOL_SHAPES])
+def test_the_tool_is_the_first_real_token(command, expected):
+    """Ten runner shapes, read rather than remembered.
+
+    Every one of these was run through the function before being written down,
+    and two were wrong: `go test` returned nothing because a two-letter name was
+    below the length floor, and `bundle exec rspec` returned bundle - the same
+    launcher idiom as npx. Both are in the table above precisely so they stay
+    fixed.
+    """
+    assert assumptions._tool_names([command]) == expected

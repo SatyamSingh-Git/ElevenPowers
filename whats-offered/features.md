@@ -142,7 +142,15 @@ What does work is execution, and the runtime is already watching every command y
 
 **Built from this repository's own worst day.** Seven defects shipped in one day, every one a format written from memory: a test runner's counters, a monorepo's line prefix, how Go attaches methods, what Rust names first, a grammar's spelling, a cost estimate that was 60% off. **Not one** was found by thinking harder. All seven surfaced the moment the real thing was run.
 
-**What it will not do.** Block, or demand anything. And it only reads *patterns* — a misspelled constant or a wrong table entry is not caught, which is said here rather than left to be discovered.
+**It only speaks about code that names the tool.** Most regexes in most repositories are claims about *data*, not about a runner — an email validator, a phone format, a scrape of fetched HTML. No command will ever print something that matches those, so reporting them would make the feature pure noise on a scraper or a client library. A pattern is named only when its own file's new code mentions a command you actually ran. It is per file, so a runner named in one file does not vouch for a regex in another.
+
+**And a string holding source code is not a pattern.** Test fixtures are full of brackets and parentheses, so counting metacharacters alone reported things like `def secret_santa(names):`. A literal must also carry a construct only a regex has — an anchor, an escape class, alternation, a quantifier, a group flag. Measured against all 67 patterns this project itself compiles before it was adopted: **none lost**, and every one of the seven false reports dropped.
+
+**What it will not do.** Block, or demand anything. And it only reads *patterns* — a misspelled constant or a wrong table entry is not caught, which is said here rather than left to be discovered. Nor is a pattern written for a tool your code never names; that trade buys the silence above.
+
+**Your prompts and command output never leave your machine, and now they cannot be committed either.** The state directory writes a `.gitignore` containing `*` into itself on every save, so `git add -A` in your repository cannot pick it up — no edit to any file you own, and nothing to remember. Output is also scrubbed of credentials on the way in: issuer prefixes (GitHub, GitLab, Slack, Stripe, AWS, Google, npm, Anthropic), named values like `AWS_SECRET_ACCESS_KEY=`, bearer headers, JWTs and private-key blocks.
+
+**Deliberately not entropy-based.** High entropy is the property of a git sha, a UUID, a content hash and a long identifier — which is what test output is full of — so an entropy threshold would quietly eat your results. Measured instead: 27,700 characters of real output from eight tools (`git log`, `git status`, `git diff`, two `pytest` runs, `node --test`, `pip list`, this repo's own graph checker) scrubbed with **zero characters changed**, and fifteen documented example credentials with **zero survivors**. The trade is stated: a high-entropy secret that nothing labels and no issuer prefixes will survive.
 
 ---
 

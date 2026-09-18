@@ -180,3 +180,112 @@ intervention are separately justified - enforced rather than remembered.
 "build it" to "do not build it yet".** Every other search confirmed a direction
 already chosen. Worth recording, because the value of looking first is not only
 that it makes the build better; sometimes it cancels the build.
+
+---
+
+## What it cost, and three defects found while paying
+
+Asked plainly whether the check would *hurt*. It would, twice, and both harms
+were created by the fix rather than found in the code it checks.
+
+**It widened what sits on disk.** To ask "did anything you ran look like this",
+the ledger began keeping 12 commands x 8KB of output where it had kept three
+lines. And the real exposure predated that: `.elevenpowers/ledger.json` already
+held the prompt, every command string and a tail of every output, *this*
+repository gitignores the directory, and **a user's repository does not**. A
+`git add -A` would have committed the lot.
+
+The fix is not a line in a README. The state directory ignores itself - a
+`.gitignore` containing `*`, written on every save, which needs no edit to a
+file the user owns. On a fresh `git init` that has never heard of the plugin,
+`git status` is empty with it and `?? .elevenpowers/` without it.
+
+Redaction is the defence in depth, and the design decision worth recording is
+the one that was *refused*: **not entropy**. High entropy is the property of a
+git sha, a UUID, a content hash and a long identifier - which is what this
+project's output is made of - so an entropy threshold would eat the very text
+the check needs. Prefixes instead, from two sources that agree. Measured by
+scrubbing 27,700 characters of eight real producers' output: **zero characters
+changed**, and **zero** of fifteen documented example credentials survived.
+
+**It assumed every pattern describes command output.** It does not.
+`^[^@]+@[^@]+\.[a-z]{2,}$` is a claim about an email address, and no command
+will ever print something that matches it. On a scraper or a client library,
+that is most of the regexes in the repository, reported every run - which is how
+a feature becomes noise and then becomes ignored. Now a pattern is reported only
+when its own file's new code names a tool the task actually ran.
+
+### The three defects, all found by running it
+
+| defect | found by |
+|---|---|
+| a quoted JSON key walked straight past the redactor | scrubbing a real `"refresh_token": "1//0e..."` |
+| the tool name was invisible behind its own regex escape | the forward test, first run |
+| every pattern in every **new** file was exempt | the flip control on an unrelated test |
+
+The second is the one worth reading twice. `core/parsers.py` names node as
+`r"\bnode\s+--test\b"`, so the character before `node` is the `b` of `\b` - and
+a word-boundary lookbehind therefore says the file does not mention node. The
+narrowing went silent on **the single file the entire feature was built for**,
+and the only reason that was noticed within a minute is that a forward control
+existed and was watched.
+
+The third came free. `git diff <base> -- <path>` reports nothing at all for an
+untracked file, so patterns in files a task *creates* were never checked -
+including `core/redact.py`, added in this same change. Nobody was looking for
+that; a probe written to prove a *different* test was not vacuous failed, and
+the reason it failed was this.
+
+Which is the entry's own thesis arriving a third time, uninvited: **three more
+defects, three more found by execution, none by thinking harder.** Including one
+inside the module written to punish exactly that habit.
+
+### Then it was pointed at its own diff
+
+The cheapest test of a noise complaint is to run the check on the change that
+fixes it. Eighteen patterns came back; eleven were real and **seven were source
+code** — `def secret_santa(names):`, `self.token_count = len(tokens)`, test
+fixtures holding code. Code is made of brackets and parentheses, so "two or more
+metacharacters" reads it as a claim about a tool's output. A literal must now
+also carry a construct only a regex has, and that rule was measured against all
+67 pattern literals `core/` compiles before being adopted: **none lost, all
+seven dropped.**
+
+The same run showed the tool names were too generous — every token was taken, so
+`git status` vouched for anything containing "status". First real token now. Ten
+runner shapes went through it before the table was written, and **two were
+wrong**: `go test` returned nothing because a two-letter name fell below the
+length floor, and `bundle exec rspec` returned `bundle`.
+
+Five defects now, in a day's work on a module about not writing things from
+memory, every one found the same way. The tally is the argument.
+
+### And then the probes were made to flip
+
+Three of the tests above were written *after* their fix, so none of them had
+ever been seen to fail — which is precisely the vacuous probe this module
+computes for everybody else. So each fix was broken in turn and its guard
+re-run: the strong-construct rule, the escape blanking, the first-token rule,
+the scrub on the way into the ledger, the self-ignoring directory, and the quote
+before the separator. **Six broken, six red, green again on restore.**
+
+Writing the check and then exempting its own tests from the rule it enforces
+would have been the funniest possible way to ship this.
+
+### The sixth defect arrived from outside
+
+The push was **refused by GitHub's push protection**, which named the Slack and
+Stripe lines in `tests/test_redact.py`. The values are invented, but they are in
+shapes real enough that a production scanner reads them as live.
+
+Two things follow, and the second is the one that matters. The table of prefixes
+was confirmed by a scanner that has never heard of this project — better
+evidence than re-reading it, and free. And the block was **not** bypassed
+through the allow-this-secret link: a fixture shaped exactly like a credential
+is one that every tool downstream keeps treating as a credential, so the
+fixtures are now assembled from a prefix and a body at import time and no
+complete token literal sits in the file.
+
+A commit whose subject is *git would have committed the lot* being stopped by
+git for carrying something that looked like a secret is the kind of symmetry
+this project keeps running into by accident.
