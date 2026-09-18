@@ -362,13 +362,13 @@ def monorepo(tmp_path):
     (tmp_path / "packages" / "core" / "src").mkdir(parents=True)
     (tmp_path / "apps" / "web" / "src").mkdir(parents=True)
     (tmp_path / "packages" / "core" / "package.json").write_text(
-        '{"name": "@snag/core"}', encoding="utf-8")
+        '{"name": "@acme/core"}', encoding="utf-8")
     (tmp_path / "packages" / "core" / "src" / "index.ts").write_text(
         'export * from "./rate";\n', encoding="utf-8")
     (tmp_path / "packages" / "core" / "src" / "rate.ts").write_text(
         "export const limit = 1;\n", encoding="utf-8")
     (tmp_path / "apps" / "web" / "src" / "api.ts").write_text(
-        'import { limit } from "@snag/core";\n'
+        'import { limit } from "@acme/core";\n'
         'import { helper } from "./util";\n'
         'import fetch from "node-fetch";\n', encoding="utf-8")
     (tmp_path / "apps" / "web" / "src" / "util.ts").write_text(
@@ -378,7 +378,7 @@ def monorepo(tmp_path):
 
 @needs_grammars
 def test_a_workspace_import_resolves_across_packages(monorepo):
-    """`@snag/core` is a path only because some package.json claims that name.
+    """`@acme/core` is a path only because some package.json claims that name.
 
     Without reading those, every cross-package edge in a monorepo is invisible,
     which is most of the interesting ones.
@@ -461,3 +461,22 @@ def test_importing_a_directory_resolves_to_its_index(monorepo):
 
     model = atlas.source_model(monorepo)
     assert "apps/web/src/handlers/index.ts" in model["apps/web/src/server.ts"].imports
+
+
+@needs_grammars
+def test_a_repository_too_large_says_so_rather_than_vanishing(monorepo):
+    """Silence is the failure this project keeps rediscovering.
+
+    The cap was 1200, sized from Python's `ast` at ~6ms a module. tree-sitter
+    measures 3.8ms, so a 1,700-file TypeScript repository blew past a limit set
+    for a different parser and the graph silently returned nothing - on exactly
+    the kind of repository it was built for. The number is now taken from the
+    measurement, and exceeding it is recorded instead of hidden.
+    """
+    from core import atlas, blindspots
+
+    assert atlas.source_model(monorepo, limit=1) == {}
+    spots = [b for b in blindspots.read(monorepo)
+             if b["kind"] == "repository too large for the import graph"]
+    assert spots, "the graph gave up without saying so"
+    assert "limit 1" in spots[-1]["detail"]

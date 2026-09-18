@@ -118,9 +118,9 @@ who-imports-whom, new tests, and plan or journey writing.
 ## Credit
 
 The viewer — the canvas force simulation, the three SVG renderers, the
-inspector, the theme toggle — is **reused from the architecture graph in the
-author's `snag` project**, whose README defines the four-view design and the
-update rule above. This repository borrowed it rather than writing a fourth
+inspector, the theme toggle — is **reused from an earlier architecture graph of
+the author's**, which is where the four-view design and the update rule above
+come from. This repository borrowed it rather than writing a fourth
 diagram tool, which is the standing rule in
 [`PLAN.md` §1.5](../PLAN.md) and
 [`docs/research/build-on.md`](../docs/research/build-on.md): start from the best

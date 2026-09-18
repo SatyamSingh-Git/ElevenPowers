@@ -101,7 +101,11 @@ LOOKS_LIKE_TESTS = re.compile(
 # `@probe/a:test: # pass 1` is what turbo emits, and a turborepo's root command
 # is `turbo test`. Anchoring hard at the line start meant an entire monorepo
 # produced no records at all - measured on a real turbo run, not assumed.
-TAP_PREFIX = r"(?:[^\s:]+:[^\s:]*:[ \t]*)?"
+# One or two colon-separated segments, because runners differ: turbo writes
+# `@scope/pkg:task:`, lerna and several pnpm setups write just `pkg:`. Fixing
+# the count at two was fitting the pattern to the one tool that had been looked
+# at, which is the same mistake as reading a runner by its command name.
+TAP_PREFIX = r"(?:(?:[^\s:]+:){1,2}[ \t]*)?"
 TAP_COUNT = re.compile(r"^" + TAP_PREFIX + r"\s*(?:#|ℹ)\s*(?P<word>pass|fail)\s+(?P<n>\d+)\s*$",
                        re.MULTILINE)
 # The strong, self-declaring header. A bare `1..10` plan line is not enough on

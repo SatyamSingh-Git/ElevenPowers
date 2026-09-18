@@ -351,3 +351,23 @@ def test_an_arbitrary_prefixed_line_is_still_not_a_test_run(root):
     log = ("deploy:web: # pass 3 of the checks\n"
            "deploy:web: ok 1 connection\n")
     assert parse("cat deploy.log", log, 0, root) == []
+
+
+def test_a_single_colon_prefix_is_read_too(root):
+    """Runners differ, and fixing the prefix at turbo's shape was over-fitting.
+
+    turbo writes `@scope/pkg:task:`; lerna and several pnpm setups write just
+    `pkg:`. Requiring two segments read the one tool that had been looked at and
+    missed the others - the same mistake as reading a runner by its command
+    name, one level down.
+    """
+    lerna = ("core: 1..2\n"
+             "core: # pass 1\n"
+             "core: # fail 1\n"
+             "web: 1..1\n"
+             "web: # pass 1\n"
+             "web: # fail 0\n")
+    got = only(parse("lerna run test", lerna, 0, root))
+    assert got.counted, "a single-colon prefix was not read"
+    assert (got.passed, got.failed) == (2, 1)
+    assert got.result is Result.FAIL

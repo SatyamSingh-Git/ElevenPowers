@@ -205,7 +205,7 @@ def _first_file(root: Path, target: str) -> str:
     return ""
 
 
-def source_model(root: Path, limit: int = 1200) -> dict[str, Module]:
+def source_model(root: Path, limit: int = 3000) -> dict[str, Module]:
     """Modules, and the intra-repository imports between them.
 
     Third-party and standard-library imports are dropped on purpose. `import os`
@@ -222,6 +222,16 @@ def source_model(root: Path, limit: int = 1200) -> dict[str, Module]:
 
     paths = [p for p in _walk(root) if _graphable(p)]
     if len(paths) > limit:
+        # Say so rather than vanish. The previous cap was 1200, sized from
+        # Python's `ast` at about 6ms a module - and tree-sitter measures 3.8ms,
+        # so a 1,700-file TypeScript repository blew past a limit set for a
+        # different parser and the feature silently did nothing on exactly the
+        # kind of repository it was built for. 3,000 files is about 11 seconds
+        # against a 20-second hook budget.
+        from . import blindspots
+
+        blindspots.record(root, "repository too large for the import graph",
+                          f"{len(paths)} source files, limit {limit}")
         return {}
     packages = _ts_packages(root) if any(not p.endswith(".py") for p in paths) else {}
     # Every suffix of the dotted path, because the import never spells the path
