@@ -142,3 +142,41 @@ reached the state it protects, so a test was written that does.
 Half the family is now machine-checked. The other half is still a habit, and
 habits decay; that is the honest state and it is written here rather than
 implied to be solved.
+
+---
+
+## The improvement that research talked me out of
+
+The obvious next step was placement: say it at step 7 rather than step 27. The
+repo's own numbers back that - median decisive error at step 7 of 27, recovery
+window one step, 82% of doomed runs keep executing - and `guidance()` exists for
+exactly that reason.
+
+Researching *how* to build it found the argument against building it.
+
+*Accurate Failure Prediction in Agents Does Not Imply Effective Failure
+Prevention* ([arXiv:2602.03338](https://arxiv.org/abs/2602.03338)) measures the
+move directly. A critic with **AUROC 0.94** - detection nobody would question -
+caused a **26 percentage point collapse** when allowed to intervene. It helped
+only where runs were already failing, and harmed ones that were succeeding. The
+authors' conclusion is that the value of such a framework is *"identifying when
+not to intervene"*, and that a 50-task pilot is required first.
+
+This repository is the population that paper says gets damaged: **80% of first
+proposals are already right**, and it has already blocked 75% of runs once on an
+unmeasured signal.
+
+So the feature was built as a **pull**: reachable from `ep_status` at any step,
+reported at the stop, and injected nowhere. The blast radius agreed
+independently - `core/hook.py` imports fourteen modules and every event passes
+through it, while `ep_status` imports one. The riskiest placement was also the
+largest.
+
+A test keeps it that way: `test_nothing_is_ever_injected_into_the_loop` reads
+`core/hook.py` and fails if either check appears there. §5.12 - detection and
+intervention are separately justified - enforced rather than remembered.
+
+**This is the first time in this session that research changed a decision from
+"build it" to "do not build it yet".** Every other search confirmed a direction
+already chosen. Worth recording, because the value of looking first is not only
+that it makes the build better; sometimes it cancels the build.

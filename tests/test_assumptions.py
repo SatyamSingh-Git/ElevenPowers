@@ -197,3 +197,57 @@ def test_without_a_base_tree_run_nothing_is_claimed(repo):
                    failed_before=["tests/test_other.py::test_thing"])
     assert assumptions.vacuous_tests(stale) == [], (
         "accused a test without having asked the base tree in this task")
+
+
+# --- available at step 7, pulled rather than pushed -------------------------
+
+def test_an_unverified_pattern_is_visible_on_demand(repo):
+    """Forward. The same fact as the end report, askable while it still helps.
+
+    The median decisive error lands at step 7 of 27 and the recovery window is
+    one step, so a fact only available at step 27 arrives after the run is
+    already built on it. `ep_status` is the pull surface that already exists for
+    exactly this reason.
+    """
+    from core.status import render
+
+    add_pattern(repo, TAP_PATTERN)
+    led = ledger_with(repo, "All files pass linting.\n")
+    led.save()
+
+    said = render(repo)
+    assert "unchecked" in said, said
+    assert "matched nothing you ran" in said, said
+
+
+def test_a_verified_pattern_adds_no_section_at_all(repo):
+    """Adversarial, and the one that keeps this usable.
+
+    A status page that always carries an `unchecked` heading trains the reader
+    to skip it. Nothing to say means nothing said - not an empty section.
+    """
+    from core.status import render
+
+    add_pattern(repo, TAP_PATTERN)
+    led = ledger_with(repo, REAL_TAP)
+    led.save()
+    assert "unchecked" not in render(repo)
+
+
+def test_nothing_is_ever_injected_into_the_loop(repo):
+    """Adversarial, and a measured decision rather than a stylistic one.
+
+    A critic with AUROC 0.94 caused a 26 percentage point collapse when allowed
+    to intervene, helping only where runs were already failing and harming ones
+    that were succeeding (arXiv:2602.03338). This project blocked 75% of runs
+    once on an unmeasured signal. So the check must reach `ep_status` and the
+    end report, and must NOT reach a hook that speaks mid-trajectory.
+    """
+    from pathlib import Path
+
+    hook = Path(__file__).resolve().parents[1] / "core" / "hook.py"
+    source = hook.read_text(encoding="utf-8")
+    assert "unverified(" not in source, (
+        "an assumption check reached a mid-trajectory hook; "
+        "intervening on a healthy run is measured to cost up to 26pp")
+    assert "vacuous_tests(" not in source

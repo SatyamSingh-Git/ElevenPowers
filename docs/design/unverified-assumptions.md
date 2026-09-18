@@ -137,6 +137,52 @@ done rather than after a user asks.
 - **adversarial** — no base commit, or no base-tree run; says nothing rather
   than accusing.
 
+## 7b. Where it speaks, and the intervention that was researched and refused
+
+The obvious improvement is placement. This project's own numbers say so: the
+**median decisive error lands at step 7 of 27**, the recovery window is **one
+step**, observable signals appear about **ten steps later**, and **82% of doomed
+runs keep executing** after recovery is impossible. A fact delivered at the
+proposed stop arrives long after the work was built on it - which is exactly why
+`report.guidance` exists.
+
+So the plan was to inject it into the loop: the moment a command runs, if a
+pattern the task wrote still matches nothing, say so then.
+
+**The evidence says do not.** *Accurate Failure Prediction in Agents Does Not
+Imply Effective Failure Prevention*
+([arXiv:2602.03338](https://arxiv.org/abs/2602.03338)) measures precisely this
+move. A critic with **AUROC 0.94** - detection good enough that nobody would
+question shipping it - caused a **26 percentage point collapse** when allowed to
+intervene. It helped only where runs were already failing (+2.8pp on ALFWorld,
+p=0.014) and harmed ones that were succeeding (0 to -26pp). The authors' own
+conclusion is that the value of such a framework is *"identifying when **not**
+to intervene"*, and that a **50-task pilot** is needed before trusting one in
+deployment.
+
+Related work finds the same shape: richer, context-aware feedback "slightly
+improves" outcomes for some models and "substantially worsens" them for others.
+
+That maps exactly onto this repository's history. It blocked **75% of runs**
+once on a signal nobody had measured, and its own live figure is that **80% of
+first proposals are already right** - which is the population the paper says
+intervention damages most.
+
+**So: pulled, never pushed.** The same computation is reachable from
+`ep_status` at step 7 by an agent or a person who asks, and reported at the
+stop. Nothing is injected into a trajectory that may be going perfectly well.
+`core/status.py` already exists for this reason - *"a verification layer whose
+state can only be observed by tripping over it is one the user cannot reason
+about"*.
+
+A test enforces it rather than a comment: `test_nothing_is_ever_injected_into_
+the_loop` reads `core/hook.py` and fails if either check is called there. §5.12,
+in a form that cannot drift.
+
+**What would license the push:** the 50-task pilot that paper prescribes,
+comparing arms with and without injection. That is the same shape as the unrun
+B6 experiment, and it costs the same kind of money.
+
 ## 8. Phasing
 
 1. `core/assumptions.py` — both rules, with the tests above. No wiring.

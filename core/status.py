@@ -25,7 +25,7 @@ def render(root: Path) -> str:
 
     if not ledger.claims:
         lines.append("claims    none, so the runtime is standing aside")
-        return "\n".join(lines + _evidence_lines(ledger) + _blindspot_lines(root))
+        return "\n".join(lines + _assumption_lines(ledger) + _evidence_lines(ledger) + _blindspot_lines(root))
 
     lines.append(f"task      {ledger.request[:70] or '(none recorded)'}")
     lines.append(f"claims    {', '.join(c.value for c in ledger.claims)}")
@@ -48,7 +48,46 @@ def render(root: Path) -> str:
             if not check.met:
                 lines.append(f"          {_hint(ledger, check)}")
 
-    return "\n".join(lines + _evidence_lines(ledger) + _blindspot_lines(root))
+    return "\n".join(lines + _assumption_lines(ledger) + _evidence_lines(ledger) + _blindspot_lines(root))
+
+
+def _assumption_lines(ledger: Ledger) -> list[str]:
+    """Patterns nothing you ran produced, available while you can still act.
+
+    **Pulled, never pushed, and that is a measured decision rather than a
+    stylistic one.** The same information is reported at the proposed stop,
+    which by this project's own figures is far too late - the median decisive
+    error lands at step 7 of 27 and the recovery window is one step. The obvious
+    remedy is to inject it into the loop the moment a command runs.
+
+    The evidence says do not. A critic with **AUROC 0.94** - excellent detection
+    - caused a **26 percentage point collapse** when it was allowed to intervene,
+    helping only on task sets that were already failing and harming ones that
+    were succeeding (*Accurate Failure Prediction in Agents Does Not Imply
+    Effective Failure Prevention*, arXiv:2602.03338). Its authors' conclusion is
+    that the value of such a framework is "identifying when **not** to
+    intervene", and that a 50-task pilot is needed before trusting one.
+
+    This project has paid that bill once already, blocking 75% of runs on a
+    signal it had not measured. So the information sits here, where an agent or
+    a person can ask for it at step 7 without anything being injected into a
+    trajectory that may be going perfectly well. §5.12: detection and
+    intervention are separately justified.
+    """
+    from .assumptions import unverified, vacuous_tests
+
+    patterns = unverified(ledger)
+    vacuous = vacuous_tests(ledger)
+    if not patterns and not vacuous:
+        return []
+    lines = ["unchecked"]
+    for body in patterns[:3]:
+        lines.append(f"          pattern {body[:56]!r} matched nothing you ran")
+    if len(patterns) > 3:
+        lines.append(f"          ...and {len(patterns) - 3} more")
+    for path in vacuous[:3]:
+        lines.append(f"          {path} passed on the tree as it was")
+    return lines
 
 
 def _evidence_lines(ledger: Ledger) -> list[str]:
