@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 
+from .assumptions import unverified, vacuous_tests
+from .assumptions import wording as assumption_wording
 from .atlas import reflexion, since
 from .atlas import wording as drift_wording
 from .evidence import Freshness, Kind, Result
@@ -199,5 +201,10 @@ def end_report(ledger: Ledger) -> str:
     # stale is useful even if it never refuses anything, and the false-positive
     # rate has not been measured on real repositories yet.
     for said in drift_wording(reflexion(ledger.root, *since(ledger.root, ledger.base))):
+        lines.append(f"  {said}")
+    # A pattern nothing produced, and a test that could not have failed.
+    # Both are claims the ledger can check, and both were shipped here
+    # repeatedly before anything checked them.
+    for said in assumption_wording(unverified(ledger), vacuous_tests(ledger)):
         lines.append(f"  {said}")
     return "\n".join(lines)

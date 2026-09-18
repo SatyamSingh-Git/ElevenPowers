@@ -209,6 +209,9 @@ def on_post_tool(payload: dict, root: Path) -> int:
         return 0
 
     ledger = Ledger.load(root)
+    # Kept so `core/assumptions.py` can ask whether a pattern this task wrote
+    # ever matched anything it actually saw. Bounded, and local only.
+    ledger.saw_output(command, result.output)
     for path in written:
         ledger.observe_edit(path)
     ledger.add(records)

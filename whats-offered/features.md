@@ -119,6 +119,33 @@ All four are recognised, because the dispatch looks at the output before it fall
 
 ---
 
+## A pattern nothing you ran ever produced
+
+**What it does.** When a change introduces a regular expression — a claim about what some tool's output looks like — it checks that against what your commands actually printed:
+
+```
+unverified: '^\s*#\s*(pass|fail)\s+\d+\s*$' matched nothing this task ran.
+A pattern is a claim about output; run the thing and look
+```
+
+And the matching case for tests, using the base-tree run the runtime already does:
+
+```
+tests/test_parser.py passed on the tree as it was, so it did not test this change
+```
+
+**Why it matters.** This is the most-studied failure in LLM code generation and the one you will hit most: writing code against a *remembered* format instead of an observed one. It is **API Knowledge Conflict — 20.41%** of hallucinations in the largest taxonomy of the phenomenon ([arXiv:2409.20550](https://arxiv.org/abs/2409.20550), 1,380 annotated snippets).
+
+**The usual fixes are measured to barely work.** Retrieval-augmented mitigation moved Pass@1 by **0.87–3.05 percentage points** in that same study, and other work finds models still misuse APIs *even with oracle documentation retrieval* — because documentation says **what** to call, not **how** it behaves. Telling the model to be careful fares no better: constraint violation rises **0% to 78%** across four rounds of context compaction.
+
+What does work is execution, and the runtime is already watching every command you run. So it asks a question it can actually answer — *did anything you ran ever look like this?* — instead of asking you to remember.
+
+**Built from this repository's own worst day.** Seven defects shipped in one day, every one a format written from memory: a test runner's counters, a monorepo's line prefix, how Go attaches methods, what Rust names first, a grammar's spelling, a cost estimate that was 60% off. **Not one** was found by thinking harder. All seven surfaced the moment the real thing was run.
+
+**What it will not do.** Block, or demand anything. And it only reads *patterns* — a misspelled constant or a wrong table entry is not caught, which is said here rather than left to be discovered.
+
+---
+
 ## A check that could not have failed is named as one
 
 **What it does.** Every declared check is also run the other way round — in a throwaway git worktree built from the commit your task started at, with your new test files laid over the old source. If the check passed there too, it says so:

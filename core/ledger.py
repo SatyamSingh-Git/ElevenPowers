@@ -108,6 +108,18 @@ class Ledger:
     against, and `core/stress.py` would be asking whether the change
     discriminates from itself.
     """
+    outputs: list = field(default_factory=list)
+    """A bounded record of what commands actually printed, head and tail.
+
+    Kept so that `core/assumptions.py` can ask whether a pattern this task
+    introduced ever matched anything the task really saw. `Evidence.detail`
+    holds only the last three lines, which is a summary rather than the text a
+    pattern would have to match.
+
+    Bounded on purpose: twelve commands, eight thousand characters each, split
+    between the start and the end because a runner's summary is at the bottom
+    and its header at the top. It never leaves the machine.
+    """
     opened_dirty: list[str] = field(default_factory=list)
     """Paths already modified when this task opened, so they are not its work.
 
@@ -187,6 +199,7 @@ class Ledger:
             guided=raw.get("guided", False),
             created=raw.get("created", time.time()),
             base=raw.get("base", ""),
+            outputs=raw.get("outputs", []) or [],
             opened_dirty=raw.get("opened_dirty", []) or [],
             failed_before=raw.get("failed_before", []) or [],
             discrimination=raw.get("discrimination", {}) or {},
@@ -219,6 +232,7 @@ class Ledger:
             "guided": self.guided,
             "created": self.created,
             "base": self.base,
+            "outputs": self.outputs,
             "opened_dirty": self.opened_dirty,
             "failed_before": self.failed_before,
             "discrimination": self.discrimination,
@@ -291,6 +305,20 @@ class Ledger:
             return
         self.claims = [Claim.FEATURE_ADDED]
         self.note("claim opened by an edit", f"{rel} changed with no claim stated")
+
+    def saw_output(self, command: str, text: str) -> None:
+        """Remember enough of what a command printed to check a claim about it.
+
+        Head and tail, because a runner puts its header at the top and its
+        summary at the bottom, and the middle is the part nobody writes a
+        pattern for.
+        """
+        keep = 4000
+        if len(text) <= keep * 2:
+            body = text
+        else:
+            body = text[:keep] + "\n[...]\n" + text[-keep:]
+        self.outputs = (self.outputs + [{"command": command[:200], "text": body}])[-12:]
 
     def note(self, what: str, why: str) -> None:
         self.decisions.append({"what": what, "why": why, "at": time.time()})

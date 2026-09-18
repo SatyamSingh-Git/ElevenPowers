@@ -59,6 +59,27 @@ been watched failing before the fix and passing after. Fixing R6 without a
 forward control would have looked exactly like reverting the work that cut
 blocking from 75% of runs to 12%.
 
+**Run the producer before you write the pattern.** Any claim about the *shape*
+of something external — a runner's output, a parser's node names, a grammar's
+spelling, a cost — is written **after** executing the real thing and reading
+what came back, never from memory. On 2026-09-17 seven defects shipped in a day
+and every one was of this kind; not one was found by thinking harder, and all
+seven surfaced the instant the real producer was run.
+
+This is not a local failing. It is **API Knowledge Conflict**, 20.41% of
+hallucinations in the largest taxonomy of the phenomenon
+([arXiv:2409.20550](https://arxiv.org/abs/2409.20550)), and the usual remedy is
+measured to be nearly useless: retrieval-augmented mitigation moved Pass@1 by
+**0.87–3.05pp**, and models misuse APIs *even with oracle documentation
+retrieval*. Execution is what works.
+
+So, like the rest: **enforced rather than trusted.** `core/assumptions.py`
+reports a pattern this task introduced that never matched any output this task
+actually ran, and a new test that passes on the tree as it was. Expect the
+report to name your shortcuts — and note that it only covers patterns, so
+non-regex assumptions like a misspelled grammar name are still yours to check by
+running something.
+
 **Borrow first, invent last.** *(PLAN §1.5, `docs/research/build-on.md`)* Every
 component starts from the best existing implementation — named, with its licence
 and its limit — and then states in one sentence what we add. If that sentence
