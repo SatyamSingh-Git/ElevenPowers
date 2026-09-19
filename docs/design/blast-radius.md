@@ -61,6 +61,17 @@ already on the ledger (`touched`, `base`).
    range intersects a changed range. Line ranges rather than name matching,
    because a file can define forty symbols and the task changed one.
 
+   A file the task *created* has no diff against the base at all, so the whole
+   file counts as changed. **The test for that used to be "the diff is empty and
+   the file exists", and an unchanged tracked file satisfies it too** — so a file
+   opened and reverted came back with every line altered, which makes a
+   non-change look active and pads the radius with noise. An audit measured it
+   on 2026-09-19. The question is now asked directly, with `git ls-tree` against
+   the base commit, and it distinguishes three states rather than two: present,
+   absent, and *could not be asked*. A git failure is not read as "new", because
+   inventing a whole file's worth of changed lines out of an error is the
+   noisiest guess available.
+
 2. **Siblings.** For a changed *method* `M` on class `C` with bases `B`: other
    classes anywhere in the repository that inherit from something in `B` **and**
    define `M`. This is the `Choice`/`DateTime` case exactly — they never

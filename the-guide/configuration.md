@@ -36,6 +36,20 @@ Two settings. Both matter, and the second one matters more than it looks.
 
 Default is `strict`.
 
+**What `off` does not do, since 2026-09-19.** That row now describes the code.
+Previously `off` also built a temporary git worktree at your task's starting
+commit and ran your declared test command inside it before going quiet — real
+seconds, on the profile chosen by someone who asked for none. An audit measured
+the dispatch. Running checks is now a capability held by `guide` and `strict`
+only.
+
+**And what `guide` and `strict` do, so it is not a surprise.** They run the
+commands you declared, twice over: once against your working tree to discharge
+an obligation rather than interrupt you for it, and once in a throwaway worktree
+at the commit your task began from, to find out whether the check could have
+failed at all. Your own tree is never touched, and the second answer is cached
+for the task. If that is not wanted, `off` is the profile that does none of it.
+
 Override for a single session without touching the file:
 
 ```bash

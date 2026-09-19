@@ -143,6 +143,25 @@ reach the agent at the moment it is deciding something.
 First-touch only, per file, per session. An architecture note on every edit is
 an architecture note nobody reads.
 
+> **The first version of "first touch" meant the wrong thing, and it cost the
+> whole feature.** It was gated on `ledger.seen`, which records *reads* as well
+> as edits — and in this host the edit tool requires the file to have been read
+> first. So the note intended for the first edit was consumed by the read that
+> preceded it, every time. Only a blind `Write` to an unread path ever produced
+> one, and on an unread path there is usually nothing to say.
+>
+> An external audit measured it on 2026-09-19: emitted on a direct edit, silent
+> after `Read` → `Edit`. Delivery is now tracked in its own list, `ledger.briefed`,
+> because observing a file and telling someone about it are different events.
+>
+> **This changes what the published measurement meant.** *"The neighbourhood
+> brief fires on 47% of files a real commit touched"* was computed by calling
+> `atlas.neighbourhood` over real commits — it is what the function can *say*,
+> not what an agent *received*, and the received rate was near zero until that
+> fix. PLAN §10 records the correction. The general lesson is worth more than
+> the fix: **a detector measured by calling it is not a feature measured by
+> using it.**
+
 This composes with `core/radius.py` rather than duplicating it: **radius is
 symbol-level and runs at completion** — the siblings and callers of what
 changed. **Atlas is module-level and runs before the edit** — the neighbourhood

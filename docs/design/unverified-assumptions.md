@@ -70,6 +70,16 @@ something ran*.
 The runtime already watches every command an agent runs and keeps its output.
 So the question "did you look?" is not a matter of trust — it is a lookup.
 
+> **It did not, in fact, keep every command's output — corrected 2026-09-19.**
+> `on_post_tool` returned before storing anything whenever the parsers
+> recognised no evidence, so only *test-runner* output was ever kept. An audit
+> ran `node -e "console.log(...)"` — the textbook case of executing a producer
+> to see its shape, and precisely the habit this check exists to reward — and
+> nothing was captured at all. Capturing output and deciding whether output is
+> evidence are different questions that one `return` was answering. They are
+> separate now, and capture happens only while a task is open so no ledger is
+> invented for an untracked command.
+
 > **A pattern this task introduced, which never matched any output this task
 > captured, is an assumption nobody verified.**
 
@@ -87,6 +97,16 @@ there. Therefore:
 
 That is the vacuous probe, computed. Four of them shipped today and only
 hand-flipping caught them.
+
+**And "passes on the tree as it was" has to be observed, not inferred.** The
+first implementation reported any new test *missing from* `failed_before` — it
+read "nothing failed here" as "this passed". A test is missing from that list
+when it was skipped, deselected, never reached under fail-fast, or when the run
+died before reaching it. None of those is a pass, and an audit reproduced a
+false report built on exactly that gap. The base-tree run now asks pytest to
+name its outcomes and records `passed_before`; only a test seen green back there
+can be called vacuous. Nothing observed, nothing said — which is the same rule
+this whole module is made of, applied to itself.
 
 ## 4. Why a pattern, specifically
 
@@ -288,6 +308,15 @@ The fixtures are now assembled from a prefix and a body at import time so no
 complete token literal sits in the file; the block was **not** bypassed through
 the allow-this-secret link, because a fixture shaped exactly like a credential is
 one every tool downstream will keep treating as one.
+
+> **One redacted copy beside one unredacted copy is not a redaction —
+> corrected 2026-09-19.** `saw_output` was made to scrub and `Evidence.detail`
+> was missed, which holds a tail of the same bytes and is serialized to the same
+> file. An audit found a token surviving there after it had been removed from
+> the output sample. It is scrubbed at construction now, so the record never
+> holds it in memory either. Worth recording as a shape rather than a slip:
+> deciding *where* to redact is deciding every place the same bytes are kept,
+> and this fix shipped the day before with one of two places covered.
 
 Two things it found by being run rather than reasoned about. A quoted JSON key -
 `"refresh_token": "1//0e..."` - walked straight past the first version, which

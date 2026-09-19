@@ -111,6 +111,34 @@ any log containing the word `ok` at the start of a line becomes a test result,
 which is the false-positive class this project has paid for four times on the
 exposure canary.
 
+**And gated on the command too, since 2026-09-19.** The marker above was, for a
+while, allowed to decide on its own: a script printing `TAP version 13` is
+declaring itself a TAP producer, so it was read as one however it was invoked.
+
+An external audit parsed `cat fixture.tap` and got a counted passing suite with
+`ran_tests` true. A file was read; no test ran. The declaration is in the
+**file**, the question is about the **run**, and no output can tell those apart —
+so recognising a report format and attributing it to an execution are now two
+separate conditions and both are required:
+
+```
+runs_tap(cmd)  or  (claims_to_run_tests(cmd) and looks_like_tap(output))
+```
+
+`runs_tap` is an allow-list of harnesses matched at the *front* of the command —
+`prove`, `bats`, `tap`, `tape`, and `node --test`. Anchored at the front on
+purpose: an unanchored `\btap\b` matches `cat fixture.tap`, which is the exact
+hole being closed. An allow-list of runners is the opposite of a deny-list of
+shell words, and fails the right way — an unknown command produces no record
+rather than a wrong one.
+
+**What it costs, stated rather than discovered.** `bash ci.sh` emitting TAP now
+produces no record. It produces a **blindspot** instead, naming the command and
+telling the user to declare the runner in `.elevenpowers/config.json`, so the
+silence is diagnosable rather than quiet. A named harness whose output this
+module cannot read is unaffected: it still yields an honest uncounted record
+decided by the exit code, which is the pre-existing design.
+
 Everything returns through `_counts_decide`, so a counted failure outranks the
 exit code.
 
