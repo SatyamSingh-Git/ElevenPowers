@@ -162,6 +162,17 @@ class Ledger:
     agent ran the test before it wrote the fix. Writing the test afterwards is
     ordinary practice and was previously an obligation nobody could discharge.
     """
+    passed_before: list = field(default_factory=list)
+    """Test identities observed **passing** on the tree this task started from.
+
+    Kept because absence of a failure is not a pass. `vacuous_tests` used to
+    report any new test that was missing from `failed_before`, and a test can be
+    missing from that list for reasons that say nothing at all: it was skipped,
+    deselected, never reached under fail-fast, or the run died before it. An
+    audit reported a test as vacuous on exactly that inference. Accusing correct
+    work is the one thing these checks must not do, so the claim now needs the
+    positive observation rather than the absent negative one.
+    """
     discrimination: dict = field(default_factory=dict)
     """Per declared need: did that check pass before the change, or not?
 
@@ -226,6 +237,7 @@ class Ledger:
             outputs=raw.get("outputs", []) or [],
             opened_dirty=raw.get("opened_dirty", []) or [],
             failed_before=raw.get("failed_before", []) or [],
+            passed_before=raw.get("passed_before", []) or [],
             discrimination=raw.get("discrimination", {}) or {},
         )
 
@@ -260,6 +272,7 @@ class Ledger:
             "outputs": self.outputs,
             "opened_dirty": self.opened_dirty,
             "failed_before": self.failed_before,
+            "passed_before": self.passed_before,
             "discrimination": self.discrimination,
             # Written for diagnosis, never read back. `stress` declines when a
             # project declares no command, and on the B3 sweep that gate could
@@ -561,7 +574,14 @@ class Ledger:
         # text. What `DISCRIMINATES` establishes is that the project's suite did
         # *not* pass on the old tree; a fresh passing suite record is the claim
         # that it passes now. Together those are red-then-green, at suite grain.
-        if DISCRIMINATES in self.discrimination.values():
+        #
+        # The *tests* check, not any check. `discrimination` is keyed by kind,
+        # and reading it with `in .values()` let a discriminating **typecheck**
+        # pair with a passing **test suite** and be reported as one red-then-
+        # green fact. An audit built exactly that: two observations of two
+        # different things, joined because both were true. A reproduction is a
+        # claim about one check, so both halves have to be about that check.
+        if self.discrimination.get("tests") == DISCRIMINATES:
             suites = [e for e in self.evidence
                       if e.kind is Kind.SUITE and e.result is Result.PASS
                       and e.freshness(self.root) is Freshness.FRESH]

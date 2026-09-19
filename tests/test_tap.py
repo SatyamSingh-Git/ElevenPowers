@@ -283,16 +283,28 @@ def test_output_shape_alone_does_not_make_a_command_a_test_run(root):
     assert (got.passed, got.failed, got.counted) == (2, 0, True)
 
 
-def test_an_explicit_tap_header_is_taken_at_its_word(root):
-    """A deliberate judgement, written down rather than left implicit.
+def test_an_explicit_tap_header_is_no_longer_taken_at_its_word(root):
+    """A judgement this file used to assert the other way, reversed on evidence.
 
-    A script printing `TAP version 13` is declaring itself a TAP producer, so
-    it is read as one even though its command name says nothing. That is the
-    one case where output alone is allowed to decide, because the output is an
-    explicit self-declaration rather than a coincidence of shape.
+    It read: *a script printing `TAP version 13` is declaring itself a TAP
+    producer, so it is read as one even though its command name says nothing.
+    That is the one case where output alone is allowed to decide.*
+
+    An external audit pointed `cat fixture.tap` at that rule and got a counted
+    passing suite with `ran_tests` true out of a file being read. The
+    self-declaration is in the file, not in the run, and nothing in the output
+    can tell a harness from a `cat`. The exception is withdrawn.
+
+    What it costs is real and is why the old rule existed: `bash deploy.sh`
+    emitting TAP now produces no record. `core/hook.py` writes a blindspot for
+    exactly this shape so it is diagnosable rather than silent.
     """
-    got = only(parse("bash deploy.sh", "TAP version 13\nok 1 - deployed\n1..1\n", 0, root))
-    assert (got.result, got.passed, got.counted) == (Result.PASS, 1, True)
+    tap = "TAP version 13\nok 1 - deployed\n1..1\n"
+    assert parse("bash deploy.sh", tap, 0, root) == []
+    assert parse("cat fixture.tap", tap, 0, root) == []
+    # ...while a named TAP harness, or a command that says `test`, still reads.
+    assert only(parse("prove -r t/", tap, 0, root)).result is Result.PASS
+    assert only(parse("npm test", tap, 0, root)).result is Result.PASS
 
 
 # --- a monorepo runner, captured from a real turbo run ----------------------

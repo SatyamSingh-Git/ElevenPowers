@@ -199,6 +199,39 @@ def _bare(command: str) -> str:
         text = shorter
 
 
+# Harnesses whose whole job is to run tests and emit TAP, matched at the front
+# of the command so they are a *runner name* and not a word appearing anywhere.
+# `\btap\b` unanchored would match `cat fixture.tap`, which is the exact hole
+# this is here to close.
+TAP_RUNNER = re.compile(r"^(?:prove|bats|tap|tape)$", re.IGNORECASE)
+
+
+def runs_tap(command: str) -> bool:
+    """Does this command name a TAP harness?
+
+    An allow-list of runners, which is the opposite of a deny-list of shell
+    words: an unknown command produces no record rather than a wrong one, and
+    the failure mode of a missing entry is silence plus a blindspot.
+    """
+    bare = _bare(command)
+    if re.search(r"\bnode\s+--test\b", bare.lower()):
+        return True
+    first = bare.split()
+    return bool(first) and bool(TAP_RUNNER.match(first[0].rsplit("/", 1)[-1]))
+
+
+def looks_like_tap(output: str) -> bool:
+    """Is this text a TAP report, whatever produced it?
+
+    Shape only. Whether anything *ran* is a question about the command, and
+    keeping the two apart is the point - `cat fixture.tap` satisfies this and
+    ran no test at all. Used to turn that case into a blindspot rather than
+    either a false record or a silent drop.
+    """
+    return bool(TAP_VERSION.search(output) or TAP_MARKER.search(output)
+                or TAP_COUNT.search(output))
+
+
 def claims_to_run_tests(command: str) -> bool:
     """Does this command say it runs tests, whatever runner it uses?
 
@@ -256,13 +289,25 @@ def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidenc
     # tool.
     # The output decides HOW to read a test run. It must not decide THAT
     # something is one: dispatching on shape alone made `cat README.md` with
-    # `ok 1 install` into a counted passing suite. So the command has to claim
-    # tests as well - which `npm test`, `turbo test` and `deno test` all do -
-    # unless the output declares itself TAP outright.
-    if (re.search(r"\bnode\s+--test\b", low)
-            or TAP_VERSION.search(output)
-            or (claims_to_run_tests(cmd) and (TAP_MARKER.search(output)
-                                              or TAP_COUNT.search(output)))):
+    # `ok 1 install` into a counted passing suite.
+    #
+    # The `TAP version 13` header was the one exception, on the reasoning that a
+    # header is a self-declaration rather than a coincidence of shape. An audit
+    # pointed `cat fixture.tap` at it and got a counted passing suite with
+    # ran_tests true out of a file read. The declaration is in the *file*; the
+    # question is about the *run*; output cannot tell those apart. So the
+    # exception is gone, and both halves are required: a command that runs tests
+    # - it names a TAP harness, or says `test` like `npm test` and `turbo test`
+    # do - and output that is TAP.
+    #
+    # The cost, stated rather than discovered: `bash ci.sh` emitting TAP now
+    # produces no record. It produces a *blindspot* instead (`core/hook.py`), so
+    # it is a diagnosable silence rather than a quiet one.
+    # A named harness is read whatever it printed - unreadable output from a
+    # known runner becomes an honest uncounted record, which is the existing
+    # design and not something this change touches. Shape is required only where
+    # the command is merely *claiming* tests.
+    if runs_tap(cmd) or (claims_to_run_tests(cmd) and looks_like_tap(output)):
         return [_tap(cmd, output, exit_code, root)]
     if WRAPPER.match(bare):
         return [_wrapped(cmd, output, exit_code, root)]

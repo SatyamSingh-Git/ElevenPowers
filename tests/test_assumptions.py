@@ -161,7 +161,8 @@ def test_a_new_test_that_passes_on_the_base_tree_is_named(repo):
                  base=git(repo, "rev-parse", "HEAD"),
                  touched=["tests/test_new.py", "parser.py"],
                  discrimination={"tests": "yes"},
-                 failed_before=["tests/test_other.py::test_thing"])
+                 failed_before=["tests/test_other.py::test_thing"],
+                 passed_before=["tests/test_new.py::test_it"])
     assert assumptions.vacuous_tests(led) == ["tests/test_new.py"]
     assert "did not test this change" in " ".join(
         assumptions.wording([], ["tests/test_new.py"]))

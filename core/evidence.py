@@ -109,6 +109,23 @@ class Evidence:
         """
         return not self.counted or (self.passed + self.failed) > 0
 
+    def __post_init__(self) -> None:
+        """Strip credentials from the text this record carries.
+
+        `Ledger.saw_output` was made to scrub, and this was missed: `detail`
+        holds a tail of the same output, and an audit found a token surviving
+        in serialized evidence after being removed from the output sample. One
+        redacted copy and one unredacted copy of the same bytes is not a
+        redaction. Done at construction rather than at `to_dict`, so the record
+        never holds it in memory either.
+        """
+        from .redact import scrub
+
+        if self.detail:
+            self.detail = scrub(self.detail)
+        if self.command:
+            self.command = scrub(self.command)
+
     def to_dict(self) -> dict:
         d = asdict(self)
         d["kind"] = self.kind.value

@@ -278,9 +278,22 @@ def vacuous_tests(ledger) -> list[str]:
         # reported as a discrimination verdict; repeating it here as a
         # complaint about every new test would be the same fact twice.
         return []
+    # An observed pass, not an absent failure.
+    #
+    # This used to report any new test missing from `failed_before`, which reads
+    # "nothing failed here" as "this passed". A test is missing from that list
+    # when it was skipped, deselected, never reached under fail-fast, or when
+    # the run died before it - none of which says the test would have passed on
+    # the old tree. An audit reproduced exactly that false report. So the base
+    # tree now records which tests it saw *pass* by name, and only those can be
+    # called vacuous. Nothing observed, nothing said.
+    green = {p.split("::")[0].replace("\\", "/") for p in ledger.passed_before}
+    if not green:
+        return []
     added = [p for p in ledger.touched if TEST_NAME.search(p)]
     files_red = {r.split("::")[0].replace("\\", "/") for r in red}
-    return [p for p in added if p not in files_red]
+    return [p for p in added
+            if p.replace("\\", "/") in green and p not in files_red]
 
 
 def wording(patterns: list[str], tests: list[str]) -> list[str]:

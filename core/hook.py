@@ -21,7 +21,7 @@ from .claims import infer, opens_new_task
 from .evidence import Result
 from .ledger import STATE_DIR, Ledger, Status
 from .obligations import risk_of
-from .parsers import claims_to_run_tests, parse, written_paths
+from .parsers import claims_to_run_tests, looks_like_tap, parse, written_paths
 from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
 from .verify import discharge
@@ -195,7 +195,24 @@ def on_post_tool(payload: dict, root: Path) -> int:
 
     records = parse(command, result.output, result.exit_code, root)
     written = written_paths(command) if result.ok else []
+
+    # Capture what the command printed BEFORE deciding whether it was evidence.
+    #
+    # These are different questions and were answered by one `return`. Output
+    # was kept only when the parsers recognised a test runner, so
+    # `core/assumptions.py` - which asks whether a pattern this task wrote ever
+    # matched anything the task actually saw - could only ever see test-runner
+    # output. An audit ran `node -e "console.log(...)"`, the textbook case of
+    # running a producer to check its shape, and nothing was captured at all.
+    #
+    # Only when a task is already open: no task means no state to add to, and
+    # this must not create a ledger for a command nobody asked about.
     if not records and not written:
+        if (root / STATE_DIR / "ledger.json").exists() and result.output.strip():
+            watching = Ledger.load(root)
+            if watching.task:
+                watching.saw_output(command, result.output)
+                watching.save()
         # A test command this runtime cannot read is the failure that hides
         # itself: no evidence, no complaint, and under `strict` a refused stop
         # on work that was genuinely tested. Measured on a real repository -
@@ -206,6 +223,17 @@ def on_post_tool(payload: dict, root: Path) -> int:
             blindspots.record(root, "unreadable test output",
                               f"{command.strip()[:120]} -> exit {result.exit_code}, "
                               f"no runner recognised")
+        elif looks_like_tap(result.output):
+            # TAP that no command claims. It used to be read at its word, on the
+            # reasoning that a `TAP version 13` header is a self-declaration -
+            # until an audit pointed `cat fixture.tap` at it and got a counted
+            # passing suite out of a file read. The declaration is in the file,
+            # not in the run, and nothing here can tell those apart. So: no
+            # record, but not silence either, because a real `bash ci.sh` that
+            # emits TAP deserves to find out why it produced nothing.
+            blindspots.record(root, "TAP output from a command that claims no tests",
+                              f"{command.strip()[:120]} -> looks like TAP; name the "
+                              f"runner in .elevenpowers/config.json to have it counted")
         return 0
 
     ledger = Ledger.load(root)

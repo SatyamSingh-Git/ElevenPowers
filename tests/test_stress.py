@@ -523,7 +523,7 @@ def test_a_command_naming_a_path_is_narrowed_not_widened(repo):
 
     run = _targeted(f'"{sys.executable}" -m pytest tests -q', repo,
                     ("tests/test_app.py::test_add",))
-    assert run.endswith("-q tests/test_app.py::test_add"), run
+    assert run.endswith("-q -rA tests/test_app.py::test_add"), run
     assert " tests " not in run, run
 
 

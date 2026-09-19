@@ -1386,7 +1386,12 @@ def _counting_parsers() -> list[str]:
     return found
 
 
-_DISPATCH_PATTERN = "|".join(re.escape(n) + r"\(" for n in _counting_parsers())
+# The lookbehind is load-bearing, and was found by this test firing wrongly:
+# without it `_tap(` matches inside `runs_tap(` and `looks_like_tap(`, so adding
+# two helper predicates counted as adding two runners. Blunt is the point here,
+# but blunt has to mean "hard to skip", not "counts substrings of other names".
+_DISPATCH_PATTERN = "|".join(r"(?<![A-Za-z0-9_])" + re.escape(n) + r"\("
+                             for n in _counting_parsers())
 
 
 BOTH_WAYS = {

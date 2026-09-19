@@ -165,19 +165,25 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
 
     verdicts = dict(ledger.discrimination)
     already_red = set(ledger.failed_before)
+    already_green = set(ledger.passed_before)
     for need, command in sorted(config.commands.items()):
         if need in verdicts:
             continue
         if not _passing(ledger):
             # Nothing claims this check passed, so there is nothing to question.
             continue
-        found = on_the_old_tree(ledger.root, ledger.base, command,
+        found = on_the_old_tree(ledger.root, ledger.base, _with_outcomes(command),
                                 carry=_tests_the_task_touched(ledger))
         if found is None:
             verdicts[need] = UNCHECKABLE
             continue
         passed_before, output = found
         verdicts[need] = VACUOUS if passed_before else DISCRIMINATES
+        # Which tests were seen *passing* back there, by name. `already_red`
+        # below is the mirror of this, and having only the red half is what let
+        # `assumptions.vacuous_tests` read "absent from the failures" as "passed"
+        # - a test that was skipped or never reached is absent too.
+        already_green |= {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)}
         # The runtime's own parsers, on the old tree's output. Whatever it can
         # read as a failing test there is a test the change made pass.
         already_red |= {r.identity for r in parse(command, output, 0 if passed_before else 1,
@@ -190,7 +196,23 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # file is what makes the obligation dischargeable for the shape of
         # change it exists to describe.
         already_red |= set(COLLECT_ERROR.findall(output))
+    # Assigned rather than returned: every caller unpacks a pair, and the
+    # green half is a cache like the other two rather than a third answer.
+    ledger.passed_before = sorted(already_green)
     return verdicts, sorted(already_red)
+
+
+def _with_outcomes(command: str) -> str:
+    """Ask pytest to name every outcome, when the declared command is pytest.
+
+    Left exactly as declared for anything else. The base-tree run is where
+    `passed_before` comes from, and a pass pytest never printed is a pass
+    nobody can claim.
+    """
+    tokens = command.split()
+    if not any(t.endswith("pytest") for t in tokens) or "-rA" in tokens:
+        return command
+    return command + " -rA"
 
 
 def _tests_the_task_touched(ledger) -> tuple[str, ...]:
@@ -260,6 +282,15 @@ def wording(verdicts: dict[str, str]) -> list[str]:
 CONFIRMED = "targeted reproduction"
 CONFIRM_LIMIT = 12
 
+# pytest's own summary line for a test that ran and passed. Captured from
+# `pytest -q -rA` on 3.13 rather than remembered; the id is the whole token, so
+# parametrised ids like `test_x[case-1]` come through intact.
+PASSED_LINE = re.compile(r"^PASSED\s+(\S+)", re.MULTILINE)
+
+# Stopping early is the right default for a developer and the wrong one for a
+# question about several named tests, so it is dropped for the confirmation run.
+FAIL_FAST = re.compile(r"^(?:-x|--exitfirst|--maxfail(?:=.*)?)$")
+
 
 def _targeted(command: str, root: Path, ids: tuple[str, ...]) -> str:
     """The declared command, narrowed to these node ids, or nothing.
@@ -283,8 +314,15 @@ def _targeted(command: str, root: Path, ids: tuple[str, ...]) -> str:
         return ""
     cut = tokens.index(named)
     flags, paths = [], []
+    skip_value = False
     for token in tokens[cut + 1:]:
+        if skip_value:
+            skip_value = False    # `--maxfail 3` spends its value here
+            continue
         if token.startswith("-"):
+            if FAIL_FAST.match(token):
+                skip_value = token == "--maxfail"
+                continue      # see below
             flags.append(token)
         elif (root / token).exists():
             paths.append(token.replace("\\", "/").rstrip("/"))
@@ -294,7 +332,11 @@ def _targeted(command: str, root: Path, ids: tuple[str, ...]) -> str:
     # path the command already covers.
     if paths and not all(any(i.replace("\\", "/").startswith(p) for p in paths) for i in ids):
         return ""
-    return " ".join(tokens[:cut + 1] + flags + list(ids))
+    # `-rA` asks pytest to name every outcome in the summary, and fail-fast is
+    # dropped because the question here is what happened to *each* chosen id.
+    # Both exist because this run's outcome used to be inferred rather than
+    # read: see `confirm`.
+    return " ".join(tokens[:cut + 1] + flags + ["-rA"] + list(ids))
 
 
 def _worth_confirming(ledger, red: list[str]) -> list[str]:
@@ -330,8 +372,6 @@ def confirm(ledger) -> list:
     flow into `Ledger._reproduction`'s existing targeted path rather than adding
     a third way to satisfy the same obligation.
     """
-    from .parsers import parse
-
     if any(d.get("what") == CONFIRMED for d in ledger.decisions):
         return []
     red = [r for r in ledger.failed_before if "::" in r]
@@ -358,16 +398,26 @@ def confirm(ledger) -> list:
     if done.returncode not in (0, 1):
         return []
 
-    # The passes cannot be read out of the output, because this is the very
-    # asymmetry that starved the old path: `pytest -q` prints a failure by name
-    # and a pass as a dot. But the ids were chosen here, so what ran is known,
-    # and subtracting the ones pytest named as failing leaves the ones that
-    # passed. The parsers supply the names; the arithmetic supplies the rest.
+    # Read the passes; never infer them.
+    #
+    # This used to subtract the ids pytest named as failing and call the
+    # remainder green, on the reasoning that "the ids were chosen here, so what
+    # ran is known". That reasoning is false in every direction that matters. An
+    # audit reproduced two of them: under `-x` a later selected test never
+    # executes and was still emitted as a passing reproduction, and a test
+    # pytest *skipped* was emitted as passing too. Deselection, a collection
+    # error and a crash mid-run do the same thing. Selection is not execution,
+    # and execution is not success.
+    #
+    # `-rA` makes pytest state each outcome, and only an id it names as PASSED
+    # is credited. Read from a real run rather than assumed: SKIPPED lines carry
+    # no node id at all - `SKIPPED [1] tests\test_a.py:9: reason` - so a rule
+    # that subtracted non-passes could not have seen them even in principle,
+    # while a rule that requires a positive PASSED line is unaffected.
     from .evidence import Evidence, Kind, Result, source_files, tree_hash
 
-    failed = {r.identity for r in parse(run, output, done.returncode, ledger.root)
-              if r.result is not Result.PASS}
-    green = [i for i in chosen if i not in failed]
+    passed = {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)}
+    green = [i for i in chosen if i.replace("\\", "/") in passed]
     if not green:
         return []
     observed = source_files(ledger.root)
