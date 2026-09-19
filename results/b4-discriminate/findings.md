@@ -21,7 +21,21 @@ count, same reproduction grain on all 16 tasks.
 
 **The rate this project exists to measure is not detectable at this sample
 size.** Point estimate 0 of 14. By the rule of three the 95% upper bound is
-about **21%**; pooled with B3 it is 1 in 22, about 4.5%, upper bound ~13%.
+about **21%**; pooled with B3 it is 1 in 22, about 4.5%, one-sided 95% upper
+bound **19.8%**.
+
+> **Corrected 2026-09-19.** That last figure read *~13%* and was wrong. 13.6% is
+> `3/22`, the rule of three — which is an approximation for **zero** events and
+> does not apply to one. The exact binomial bound solving `P(X ≤ 1 | p) = 0.05`
+> is **19.81%** one-sided, and the upper end of the two-sided 95% interval is
+> **22.84%**. An external audit found it; the arithmetic was re-run here before
+> the correction was written. The error made the result look tighter than it is,
+> which is the direction that matters.
+>
+> The *first* figure is not affected: 0 events of 14 is exactly where the rule
+> of three applies. And pooling B3 with B4 still mixes two models over shared
+> tasks, so neither bound is an independent-trial estimate — the arithmetic is
+> corrected, the pooling assumption is not defended.
 
 That is a negative result about the headline claim, and it is recorded as one.
 The premise was that agents routinely finish on evidence that could not have

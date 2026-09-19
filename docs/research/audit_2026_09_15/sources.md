@@ -38,7 +38,7 @@ decimal place.
 - **PROBE** — arXiv [2604.01518](https://arxiv.org/abs/2604.01518) (snippet). 77% of SWE-bench Verified instances admit a wrong-but-passing patch.
 - **SpecBench** — arXiv [2605.21384](https://arxiv.org/html/2605.21384v1) (html). Every model saturates the visible test suite; visible-to-held-out gap grows ~27pp per 10x LOC. → PLAN §0, §5.10.
 - **SWE-Mutation** — arXiv [2605.22175](https://arxiv.org/html/2605.22175v1) (html). 10.2% verification, 36.15% mutant detection for generated suites.
-- **Are "Solved Issues" in SWE-bench Really Solved Correctly?** (PatchDiff) — arXiv [2503.15223](https://arxiv.org/abs/2503.15223), ICSE 2026 (snippet). 29.6% behavioural divergence; 7.8% pass while failing the developer suite; **6.2pp inflation**. → PLAN §6, §10.
+- **Are "Solved Issues" in SWE-bench Really Solved Correctly?** (PatchDiff) — arXiv [2503.15223v2](https://arxiv.org/html/2503.15223v2), ICSE 2026. **Upgraded from snippet to HTML-verified 2026-09-19, and one of its three figures was wrong.** 29.6% behavioural divergence ✓ and 7.8% counted correct while failing the developer suite ✓ both appear verbatim; the inflation is **6.4pp**, not the 6.2pp recorded here from the snippet. This is the exact failure this file was created to prevent, found only by reading the HTML. → PLAN §6, §10.
 - **UTBoost** — arXiv [2506.09289](https://arxiv.org/abs/2506.09289) (snippet). 345 erroneous patches wrongly marked passing; leaderboard rank changes.
 - **SWE-bench+** — arXiv [2410.06992](https://arxiv.org/html/2410.06992v2) (snippet). 32.67% solution leakage; 31.08% passed only on weak tests.
 - **SWE-ABS** — arXiv [2603.00520](https://arxiv.org/pdf/2603.00520) (snippet). Adversarial benchmark strengthening.

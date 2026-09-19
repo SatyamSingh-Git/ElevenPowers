@@ -139,6 +139,19 @@ as well as the back.
 
 ## 8. Our instrument is 6.2 points optimistic
 
+> **Corrected 2026-09-19: it is 6.4, and the heading is left as written because
+> this file is a record of what was concluded on 2026-09-15.** The source was
+> graded *(snippet)* here, and reading
+> [the HTML](https://arxiv.org/html/2503.15223v2) shows two of its three figures
+> verbatim and the third wrong: *"inflates the resolution rates of the studied
+> tools by 6.4 absolute percent points, on average."* This is precisely the
+> failure `sources.md` exists to prevent, and it survived four days in the plan.
+>
+> The reading of it was also too strong, and that is the larger correction. An
+> *absolute* inflation of reported scores is not a noise floor on a *paired*
+> comparison: equal bias partly cancels between arms, and differential bias
+> could reverse a large apparent effect. See PLAN §10.
+
 Differential testing of plausible SWE-bench Verified patches: **29.6% diverge
 behaviourally from ground truth**, **7.8% count as correct while failing the
 developer test suite**, and resolution rates are **inflated by 6.2 absolute

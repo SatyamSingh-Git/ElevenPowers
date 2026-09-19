@@ -9,13 +9,24 @@ where the chosen one is correct, and the difference is **selection regret**.
 before building anything at all, because it is free: every attempt in `results/`
 was already paid for and already graded.
 
-**The threshold this exists to test.** A fixed-pool diagnostic that swapped the
-selector and measured gain *and harm* found execution-based selection worth
-+8.14pp at 0% harm, a same-model LLM judge +3.50pp at 4.69% harm — and on a
-benchmark offering only 3.03 points of oracle gap, **every selector it tried
-underperformed the baseline**, destroying more correct answers than it rescued.
-So a gap under about four points is not a small opportunity; it is a reason not
-to build. This module exists to find out which side of that line we are on.
+**The reference point this exists to locate us against.** A fixed-pool
+diagnostic that swapped the selector and measured gain *and harm* found
+execution-based selection worth +8.14pp at 0% harm, a same-model LLM judge
++3.50pp at 4.69% harm — and on a benchmark offering only 3.03 points of oracle
+gap, **every selector it tried underperformed the baseline**, destroying more
+correct answers than it rescued.
+
+**That is a result about those selectors on that benchmark, and it was being
+used here as a universal constant.** An audit was right to object: a selector's
+expected value is the probability mass it rescues minus the mass it damages, so
+a two-point opportunity with negligible harm can still be worth having, and a
+large opportunity can still be squandered by a poor selector. The number below
+is a **prior worth taking seriously**, not a law — it says where to look first
+and what to expect, and it cannot by itself cancel a mechanism.
+
+So this module reports which side of that line a pool sits on, and the decision
+needs the other half: estimated rescue, estimated harm to the incumbent, and the
+same compute spent on ordinary extra attempts for comparison.
 
 **What "selected success" means when there is no selector.** Nothing here chose
 anything: the attempts are independent runs of the same task. So the honest
@@ -176,10 +187,11 @@ def verdict(m: dict) -> None:
     if m["dropped_setup"]:
         print(f"  {m['dropped_setup']} attempt(s) excluded as `setup`: the machine, not the candidate.")
     if m["gap"] < HARM_LINE:
-        print(f"  Under the {HARM_LINE:.0f}-point line. On this evidence a selector is not worth "
-              f"building: below this gap, measured selectors destroy more correct answers than "
-              f"they rescue. The investment belongs upstream, in generation and in reproduction "
-              f"synthesis (PLAN §5.13).")
+        print(f"  Under the {HARM_LINE:.0f}-point reference line, where one published fixed-pool "
+              f"study found every selector it tried destroying more correct answers than it "
+              f"rescued. That is a reason to look upstream first - generation and reproduction "
+              f"synthesis, PLAN §5.13 - and not, on its own, a reason to cancel selection: what "
+              f"decides it is rescued mass minus damaged mass, measured here (PLAN §10).")
     else:
         print(f"  Above the {HARM_LINE:.0f}-point line: {m['gap']:.1f} points a selector could in "
               f"principle recover. Measure correct-candidate survival through every filter before "

@@ -14,10 +14,29 @@ separated from agent noise - which is the exact error PLAN 10 already
 withdrew a figure for. A smaller honest experiment here is fewer *tasks* at
 two replicates, never fewer replicates across all tasks.
 
+> **Qualified 2026-09-19, by an external audit, and the objection is fair.**
+> Two claims above are stronger than the statistics support. One randomised
+> attempt per arm per task *can* estimate an average treatment effect —
+> stochasticity widens the interval, it does not make the design meaningless.
+> Replication buys within-task variance and candidate pools, and it **competes
+> with covering more independent tasks**; which to spend on depends on the
+> estimand, which should be stated first. And the "31 discordants" figure came
+> from power assumptions for one specific alternative, not from a universal
+> significance requirement: at a fixed analysis, six independent discordant
+> pairs all favouring one arm give a two-sided exact p = 0.03125. That is not a
+> licence to collect until a p-value appears — the analysis has to be fixed in
+> advance — but it does mean 16 tasks are not automatically useless.
+>
+> What to do instead of resuming as written: state the estimand, simulate power
+> across plausible exposure, harm, rescue and task-correlation values, choose
+> replication for the question being asked, and analyse repeated observations at
+> the task level rather than as independent tasks.
+
 ## What it is not for
 
-It is **not** for answering "does the gate improve outcomes". That needs **31
-pairs on which the arms disagree** (PLAN §10), and 16 tasks cannot produce them.
+It is **not** for answering "does the gate improve outcomes" *at the power
+originally assumed*. The **31 pairs on which the arms disagree** (PLAN §10) is
+the number for one specific alternative, and 16 tasks cannot produce them.
 Any resolve-rate difference this run reports will have an interval spanning zero
 and must be read as such.
 
