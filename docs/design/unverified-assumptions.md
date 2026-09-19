@@ -220,10 +220,23 @@ pattern the task wrote still matches nothing, say so then.
 **The evidence says do not.** *Accurate Failure Prediction in Agents Does Not
 Imply Effective Failure Prevention*
 ([arXiv:2602.03338](https://arxiv.org/abs/2602.03338)) measures precisely this
-move. A critic with **AUROC 0.94** - detection good enough that nobody would
-question shipping it - caused a **26 percentage point collapse** when allowed to
-intervene. It helped only where runs were already failing (+2.8pp on ALFWorld,
-p=0.014) and harmed ones that were succeeding (0 to -26pp). The authors' own
+move. A critic with **AUROC 0.936** - detection good enough that nobody would
+question shipping it - caused a **26 percentage point collapse** on HotPotQA and
+about **30 points** on GAIA when allowed to intervene, while helping only where
+runs were already failing (**+2.8pp on ALFWorld**, the low-success environment).
+
+> **Read from the HTML on 2026-09-19, and two things here were wrong.** The
+> AUROC is 0.936, written as 0.94 above; and the 26-point collapse is
+> **HotPotQA**, not ALFWorld - ALFWorld is the environment where the critic
+> *helped*. Those were attributed the wrong way round.
+>
+> **And the limit that matters most: all three primary environments are
+> non-coding.** HotPotQA, GAIA and ALFWorld. SWE-bench Lite appears only in an
+> appendix as a boundary condition. So the paper used here to *refuse to build*
+> an in-loop check has almost no coding evaluation in it. The refusal still
+> stands on this project's own numbers - 80% of first proposals already right,
+> and a gate that once blocked 75% of runs - but it should stand on those, with
+> the paper as support rather than as proof. The authors' own
 conclusion is that the value of such a framework is *"identifying when **not**
 to intervene"*, and that a **50-task pilot** is needed before trusting one in
 deployment.

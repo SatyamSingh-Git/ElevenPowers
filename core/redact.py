@@ -67,7 +67,12 @@ NAMED = re.compile(
     r"(?P<value>[^\s\"',;]{6,})"
 )
 
-BEARER = re.compile(r"(?i)\b(authorization\s*[:=]\s*(?:bearer|basic|token)\s+)(\S{6,})")
+# The value class matches NAMED's rather than `\S`, which was greedy enough to
+# swallow the quote and comma after a token inside a JSON string - found by
+# scrubbing a real serialized ledger and watching it stop parsing. In plain
+# output it had the same bug more quietly, eating the closing quote of
+# `Authorization: Bearer xyz"`.
+BEARER = re.compile(r"(?i)\b(authorization\s*[:=]\s*(?:bearer|basic|token)\s+)([^\s\"',;]{6,})")
 
 JWT = re.compile(r"\beyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{6,}")
 
@@ -92,6 +97,28 @@ def _named(match: re.Match) -> str:
     if not _looks_issued(value) or value.upper() == MARK:
         return match.group(0)
     return match.group("name") + match.group("gap") + MARK
+
+
+def scrub_values(value):
+    """Scrub every string inside a nested structure, leaving the shape alone.
+
+    The alternative was scrubbing the serialized JSON, which is the same idea
+    with one extra assumption: that no pattern here can run past a string
+    boundary. That assumption was written down confidently and was false —
+    `BEARER` matched `\\S` and ate the closing quote, and the ledger stopped
+    parsing. Walking the structure needs no such assumption, so it cannot be
+    wrong in that way at all.
+
+    Keys are left alone: they are field names chosen in this repository, not
+    text arriving from a command.
+    """
+    if isinstance(value, str):
+        return scrub(value)
+    if isinstance(value, dict):
+        return {k: scrub_values(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [scrub_values(v) for v in value]
+    return value
 
 
 def scrub(text: str) -> str:

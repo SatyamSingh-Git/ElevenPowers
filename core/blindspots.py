@@ -26,7 +26,14 @@ def record(root: Path, kind: str, detail: str) -> None:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         lines = path.read_text(encoding="utf-8").splitlines() if path.exists() else []
-        lines.append(json.dumps({"kind": kind, "detail": detail[:300], "at": time.time()}))
+        # A blindspot's detail is a command line, and command lines carry
+        # tokens: `npm test --token=...` was landing here in full. The ledger
+        # scrubs at its own write boundary; this is the other file in the
+        # directory and it needs the same treatment for the same reason.
+        from .redact import scrub
+
+        lines.append(json.dumps({"kind": kind, "detail": scrub(detail)[:300],
+                                 "at": time.time()}))
         path.write_text("\n".join(lines[-LIMIT:]) + "\n", encoding="utf-8")
     except OSError:
         pass

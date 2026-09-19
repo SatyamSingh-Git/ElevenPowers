@@ -19,7 +19,7 @@ from .config import Config, load as load_config
 from .evidence import Evidence, Freshness, Kind, Result
 from .intent import is_abstention, is_question
 from .obligations import Claim, Obligation, Risk, _demonstrated_fix, obligations_for, risk_of
-from .redact import scrub
+from .redact import scrub, scrub_values
 from .repeat import MAX_RUNS, MIN_RUNS, rules_out, runs_needed
 from .scope import is_manifest, is_prose, normalise
 from .surface import TEST_NAME, Surface, declares_a_test, detect
@@ -314,7 +314,23 @@ class Ledger:
         # writers interleave into one buffer and the winner replaces with a
         # mixture of both.
         tmp = self.path.with_suffix(f".{os.getpid()}.tmp")
-        tmp.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        # Scrubbed here, over the serialized text, rather than field by field.
+        #
+        # Field by field is what was tried and it failed twice in two days:
+        # `saw_output` was covered and `Evidence.detail` was missed; then
+        # `Evidence.detail` was covered and `request`, `decisions` and the
+        # blindspots file were missed. Choosing which fields hold text is a
+        # judgement, and the judgement keeps being wrong - while "everything
+        # about to be written to disk" needs no judgement at all and covers a
+        # field added next year by someone who never read this comment.
+        #
+        # Over the structure, not over the serialized text. Scrubbing the JSON
+        # string was tried first and it corrupted the file: `BEARER` matched
+        # `\S`, ate the closing quote and comma after a token, and the ledger
+        # stopped parsing. The comment justifying it said no pattern could run
+        # past a string boundary, which was reasoning rather than a measurement
+        # and was wrong. Walking values cannot be wrong that way.
+        tmp.write_text(json.dumps(scrub_values(payload), indent=2), encoding="utf-8")
         tmp.replace(self.path)
 
     def _keep_concurrent_appends(self) -> None:
