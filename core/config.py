@@ -49,6 +49,19 @@ class Config:
     def speaks(self) -> bool:
         return self.profile != "off"
 
+    @property
+    def verifies(self) -> bool:
+        """May the runtime run checks of its own, and keep checkpoints?
+
+        Separate from `speaks`, because they are separate capabilities that were
+        being decided by one flag. `off` is documented as *record evidence, say
+        nothing, never block* - and it was building a git worktree, running the
+        declared suite inside it and writing snapshot refs, then returning
+        silently. An audit counted the dispatch under `off` and it is real work:
+        passive observation should not be running test suites.
+        """
+        return self.profile != "off"
+
     def command_for(self, need: str) -> str:
         """The command this project uses for `need`, or an empty string."""
         return self.commands.get(need, "")

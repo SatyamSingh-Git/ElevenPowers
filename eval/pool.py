@@ -103,8 +103,15 @@ def pools(rows) -> dict[tuple[str, str, str], list[str]]:
 
 def measure(grouped, sweep: str | None, arm: str) -> dict | None:
     """Coverage, a random pick, the last attempt, and the gap between them."""
-    picked = {t: outs for (s, t, a), outs in grouped.items()
-              if a == arm and (sweep is None or s == sweep)}
+    # Concatenated, not overwritten. Keyed by task alone, a second sweep's
+    # attempt at the same task replaced the first instead of joining it - so
+    # ALL POOLED reported one attempt and zero coverage where the union has two
+    # attempts, full coverage and a 50% random pick. The same dict-comprehension
+    # shape that laundered a failing monorepo package into a passing record.
+    picked: dict[str, list[str]] = defaultdict(list)
+    for (s, t, a), outs in grouped.items():
+        if a == arm and (sweep is None or s == sweep):
+            picked[t].extend(outs)
     before = sum(len(v) for v in picked.values())
     pool = {t: [o for o in outs if o not in NOT_THE_AGENT] for t, outs in picked.items()}
     pool = {t: outs for t, outs in pool.items() if outs}

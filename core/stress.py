@@ -167,13 +167,20 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
     already_red = set(ledger.failed_before)
     already_green = set(ledger.passed_before)
     for need, command in sorted(config.commands.items()):
-        if need in verdicts:
+        carried = _tests_the_task_touched(ledger)
+        stamp = _inputs_stamp(ledger.root, ledger.base, command, carried)
+        # Cached only while the inputs it was computed from are unchanged. The
+        # base commit does not move, which is what the cache was justified by -
+        # but the tests carried onto it do, and they are the other half of the
+        # question being asked.
+        if need in verdicts and ledger.discrimination_inputs.get(need) == stamp:
             continue
         if not _passing(ledger):
             # Nothing claims this check passed, so there is nothing to question.
             continue
         found = on_the_old_tree(ledger.root, ledger.base, _with_outcomes(command),
-                                carry=_tests_the_task_touched(ledger))
+                                carry=carried)
+        ledger.discrimination_inputs[need] = stamp
         if found is None:
             verdicts[need] = UNCHECKABLE
             continue
@@ -200,6 +207,20 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
     # green half is a cache like the other two rather than a third answer.
     ledger.passed_before = sorted(already_green)
     return verdicts, sorted(already_red)
+
+
+def _inputs_stamp(root: Path, base: str, command: str, carried: tuple[str, ...]) -> str:
+    """Everything the old-tree answer depended on, as one string.
+
+    The base commit and the command are fixed text; the carried test files are
+    not, so they go in by *content*. `tree_hash` is the same fingerprint
+    evidence freshness uses, for the same reason - identical bytes hash
+    identically, so reformatting a test does not invalidate an answer that still
+    holds.
+    """
+    from .evidence import tree_hash
+
+    return f"{base}|{command}|{tree_hash(root, carried) if carried else '-'}"
 
 
 def _with_outcomes(command: str) -> str:
@@ -390,13 +411,18 @@ def confirm(ledger) -> list:
     except (OSError, subprocess.SubprocessError):
         return []
 
-    ledger.note(CONFIRMED, f"ran {len(chosen)} test(s) that were red on {ledger.base[:8]}")
     output = (done.stdout or "") + (done.stderr or "")
     # 0 is everything passed, 1 is some test failed. Anything else - a usage
     # error, nothing collected, an internal error - means the question was not
     # answered, and an unanswered question must not read as a pass.
+    #
+    # The note comes *after* this, not before. Recording it first meant a usage
+    # error spent the one attempt: the decision suppresses any later try, so a
+    # command that never ran a test permanently prevented one that would have.
+    # A failed invocation is not an observation and must not be filed as one.
     if done.returncode not in (0, 1):
         return []
+    ledger.note(CONFIRMED, f"ran {len(chosen)} test(s) that were red on {ledger.base[:8]}")
 
     # Read the passes; never infer them.
     #

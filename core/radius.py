@@ -118,11 +118,38 @@ def changed_lines(root: Path, base: str, path: str) -> set[int]:
         start = int(match.group("start"))
         count = int(match.group("count") or 1)
         lines.update(range(start, start + count))
-    if not diff and (root / path).is_file():
-        # Untracked: the whole file is new, so all of it changed.
+    if not diff and (root / path).is_file() and _absent_from(root, base, path):
+        # Genuinely new: the whole file is what this task added.
+        #
+        # `not diff` alone was the test, and an unchanged *tracked* file has an
+        # empty diff too - so a file the task opened and reverted came back as
+        # wholly changed. An audit measured it: empty `git diff`, and every line
+        # reported as altered. That makes a reverted edit look active and feeds
+        # the blast radius noise nobody asked for.
         lines.update(range(1, len((root / path).read_text(
             encoding="utf-8", errors="replace").splitlines()) + 1))
     return lines
+
+
+def _absent_from(root: Path, base: str, path: str) -> bool:
+    """Is this path missing from the base commit?
+
+    Three answers collapse into two elsewhere, so they are kept apart here: the
+    path is in the commit, it is not, or git could not be asked. Only the middle
+    one means new; a git failure returns False, because inventing a whole file's
+    worth of changed lines out of an error is the noisiest possible guess.
+    """
+    try:
+        done = subprocess.run(["git", "ls-tree", "--name-only", base, "--", path],
+                              cwd=root, capture_output=True, text=True,
+                              encoding="utf-8", errors="replace", timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    # `ls-tree` rather than `cat-file -e`, because cat-file answers 128 for both
+    # "not in that tree" and "git could not do that" - the two states this
+    # function exists to keep apart. The forward control caught it: every
+    # genuinely new file came back with no changed lines at all.
+    return done.returncode == 0 and not done.stdout.strip()
 
 
 def _base_name(node: ast.expr) -> str:

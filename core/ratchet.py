@@ -115,6 +115,30 @@ def differs(root: Path, commit: str) -> bool:
     return bool(tree) and tree != _git(root, "rev-parse", f"{commit}^{{tree}}")
 
 
+def added_since(root: Path, commit: str) -> list[str]:
+    """Files that exist now and are not in the checkpoint at all.
+
+    These are what `git restore` silently leaves behind: it rewrites tracked
+    paths and has nothing to say about a file the checkpoint never had. An audit
+    followed the printed instruction in a real repository and a newly added
+    failing test survived it, with the tree still differing afterwards.
+
+    Computed against a scratch index so untracked files count, which is the
+    whole point - the ones `git status` calls `??` are exactly the ones a
+    tracked-path restore cannot touch.
+    """
+    with tempfile.TemporaryDirectory(prefix="ep-added-") as hold:
+        env = {"GIT_INDEX_FILE": str(Path(hold) / "index")}
+        if _git(root, "add", "-A", env=env) is None:
+            return []
+        tree = _git(root, "write-tree", env=env)
+    if not tree:
+        return []
+    out = _git(root, "diff", "--name-only", "--diff-filter=A",
+               f"{commit}^{{tree}}", tree)
+    return [line for line in (out or "").splitlines() if line.strip()]
+
+
 def offer(root: Path, task: str) -> str:
     """What to tell the user about the best state this task reached, if anything.
 
@@ -127,8 +151,25 @@ def offer(root: Path, task: str) -> str:
     if not eligible(root, commit):
         return (f"a proven state exists ({commit[:10]}) but HEAD has moved since it was "
                 f"taken, so restoring it would undo the commit that moved it")
-    return (f"this task reached a state where the declared checks passed, and the tree "
+    # A worktree is offered before an in-place restore, because it is the only
+    # one of the two that is faithful and the only one that cannot damage work.
+    # `git restore` rewrites tracked paths and leaves every file added since,
+    # so the tree it produces is the checkpoint plus whatever was added - an
+    # audit followed the old instruction and the failing test it had just
+    # written survived intact, with the tree still differing afterwards.
+    extra = added_since(root, commit)
+    said = (f"this task reached a state where the declared checks passed, and the tree "
             f"has changed since. To see what moved:\n"
             f"    git diff {commit[:10]}\n"
-            f"  To restore it:\n"
-            f"    git restore --source={commit[:10]} --worktree -- .")
+            f"  To open that state beside your work, changing nothing:\n"
+            f"    git worktree add ../proven-{commit[:10]} {commit[:10]}")
+    if extra:
+        shown = ", ".join(extra[:3]) + (f" (+{len(extra) - 3} more)" if len(extra) > 3 else "")
+        said += (f"\n  An in-place `git restore` would NOT reproduce it: "
+                 f"{len(extra)} file(s) added since are not in the checkpoint and "
+                 f"would remain - {shown}")
+    else:
+        said += (f"\n  Or restore it in place, which is faithful here because nothing "
+                 f"has been added since:\n"
+                 f"    git restore --source={commit[:10]} --worktree -- .")
+    return said

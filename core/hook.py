@@ -145,9 +145,17 @@ def on_pre_tool(payload: dict, root: Path) -> int:
         if not target:
             return 0
         here = normalise(target, root)
-        # The architecture, at the one moment it can change the edit. First
-        # touch only: a neighbourhood note on every edit is one nobody reads.
-        brief = neighbourhood(root, here) if here not in ledger.seen else ""
+        # The architecture, at the one moment it can change the edit. Once per
+        # file: a neighbourhood note on every edit is one nobody reads.
+        #
+        # Gated on `briefed`, not on `seen`. `seen` records reads too, and an
+        # agent reads a file before editing it practically always - so the note
+        # meant for the first edit was suppressed by the read that preceded it,
+        # every time, and only a direct blind edit ever saw one.
+        brief = neighbourhood(root, here) if here not in ledger.briefed else ""
+        if brief:
+            ledger.briefed.append(here)
+            ledger.save()
         if not ledger.claims:
             if brief:
                 _emit("PreToolUse", additionalContext=brief)
@@ -304,6 +312,13 @@ def on_stop(payload: dict, root: Path) -> int:
     # task and cached, and it never alters the verdict - 5.12 says detection and
     # intervention are separately justified, and this project blocked 75 percent
     # of runs once already on a signal it had not measured.
+    if not ledger.config.verifies:
+        # `off` records what it is handed and does nothing of its own. This
+        # return used to sit below the block, so the passive profile built a
+        # worktree and ran the declared suite in it before going quiet.
+        ledger.save()
+        return 0
+
     ledger.discrimination, ledger.failed_before = stress(ledger)
     # And the other half of 5.13, asked rather than waited for. The tests just
     # found red on the base tree are run against the tree as it is now, so a
@@ -319,7 +334,14 @@ def on_stop(payload: dict, root: Path) -> int:
     # edit cannot lose it. 5.6: a long attempt ends at its latest patch, not its
     # best, and 60-69% of agent failures reach the right code and then damage
     # it. Cheap because it is a `commit-tree`, not a test run.
-    if status is Status.VERIFIED:
+    # `ledger.status()`, not `status`. They differ on purpose: `settle` returns
+    # VERIFIED for a *question* so the turn may end without a claim being
+    # discharged, and that permission was being read here as proof of a tree. An
+    # audit ended a turn with "Which behavior do you want?" on an UNVERIFIED
+    # claim with zero evidence and got a checkpoint noted "the declared checks
+    # passed here". Permission to stop and a proven candidate are two decisions;
+    # only the second may write a checkpoint.
+    if ledger.status() is Status.VERIFIED:
         snapshot(root, ledger.task, "the declared checks passed here")
     ledger.save()
 

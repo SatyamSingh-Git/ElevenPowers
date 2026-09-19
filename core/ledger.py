@@ -162,6 +162,15 @@ class Ledger:
     agent ran the test before it wrote the fix. Writing the test afterwards is
     ordinary practice and was previously an obligation nobody could discharge.
     """
+    briefed: list[str] = field(default_factory=list)
+    """Files whose architecture brief has actually been emitted.
+
+    Delivery, not observation. The brief was gated on `seen`, which records
+    reads as well as edits - so the ordinary Read-then-Edit workflow marked the
+    file seen first and the note intended for the edit never appeared. An audit
+    measured it: emitted on a direct edit, silent after a read. The feature was
+    suppressed by the most common way anyone works.
+    """
     passed_before: list = field(default_factory=list)
     """Test identities observed **passing** on the tree this task started from.
 
@@ -178,6 +187,18 @@ class Ledger:
 
     Cached because the base does not move while a task runs, so a declared
     command is run against the old tree once rather than at every stop.
+    """
+    discrimination_inputs: dict = field(default_factory=dict)
+    """Per declared need: a fingerprint of everything that answer depended on.
+
+    The base commit does not move, which is what the cache above was justified
+    by - but the *tests carried onto* that base do, and they are the other half
+    of the question. An audit cached a non-discriminating verdict, then changed
+    the implementation and the test, and a fresh control run on the old tree
+    failed while the cached answer still said the check could not fail.
+
+    So the key is the base, the command and the content of the carried test
+    files. Unchanged inputs reuse the answer; an edited test asks again.
     """
     _surface: Surface | None = None
     _config: Config | None = None
@@ -238,6 +259,8 @@ class Ledger:
             opened_dirty=raw.get("opened_dirty", []) or [],
             failed_before=raw.get("failed_before", []) or [],
             passed_before=raw.get("passed_before", []) or [],
+            briefed=raw.get("briefed", []) or [],
+            discrimination_inputs=raw.get("discrimination_inputs", {}) or {},
             discrimination=raw.get("discrimination", {}) or {},
         )
 
@@ -273,6 +296,8 @@ class Ledger:
             "opened_dirty": self.opened_dirty,
             "failed_before": self.failed_before,
             "passed_before": self.passed_before,
+            "briefed": self.briefed,
+            "discrimination_inputs": self.discrimination_inputs,
             "discrimination": self.discrimination,
             # Written for diagnosis, never read back. `stress` declines when a
             # project declares no command, and on the B3 sweep that gate could
