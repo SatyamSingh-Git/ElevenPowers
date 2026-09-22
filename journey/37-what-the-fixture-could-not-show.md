@@ -235,6 +235,27 @@ name instead of inferred from the run that already decided discrimination.
 On the same 16 rehearsed tasks: **targeted reproductions went from 0 of 16 to
 6 of 16**, with the other 10 falling back to suite grain.
 
+> **Corrected 2026-09-22. That 6 was wrong, and so was the 10.** Re-running the
+> same rehearsal found two defects underneath it, neither in the mechanism.
+>
+> A pytest node id is full of shell metacharacters and this command goes
+> through a shell: `test_converter_decorator[<lambda>0]` made cmd.exe try to
+> read from a file called `lambda`, and the run died with *"The system cannot
+> find the file specified"*, **exit 1, zero tests executed**. Exit 1 means "some
+> test failed" and was allowed through, so the code found no named failures and
+> credited **every selected id as a passing reproduction**. Part of the 6 was
+> that.
+>
+> And `eval/rehearse.py` never applied the task's declared `PYTHONPATH=src`, so
+> every check it ran imported the **installed release** of the package instead
+> of the patched source. That inflated `red_before` — `click-d340b0c1` reported
+> **48** tests red on the base tree and the real number is **1** — and made the
+> targeted tests fail against code that did not contain the fix.
+>
+> With the ids quoted and the environment applied: **16 of 16**, and
+> `red_before` counts fall by up to 47. See journey 43. The honest reading of
+> the old figure is that it measured the harness, in both directions at once.
+
 Three things had to be right and two were wrong first, both caught by running it
 rather than by reasoning about it.
 

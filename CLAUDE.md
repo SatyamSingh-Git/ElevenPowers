@@ -98,11 +98,24 @@ in the papers they were attributed to. See
 ## Running things
 
 ```bash
-python -m pytest -q                      # 725 tests, ~9 minutes
+python -m pytest -q                      # 794 tests, ~6 minutes
 python -m pytest tests/test_audit_probes.py -q   # every reproduced defect, no xfails
 python plugin/bin/ep_doctor.py --host    # is the runtime seeing what the host sends?
 python architecture/check.py --render    # is the graph still true, and does it draw?
+python -m eval.rehearse --corpus E:/ep-corpus/prevalence.json --tasks 16
 ```
+
+**Run the rehearsal before spending anything.** It seeds all sixteen corpus
+tasks at their real base commits, applies the gold patch and asks the runtime
+the question a sweep would ask — **253 seconds, no agent, no money**. On
+2026-09-22 it corrected two published figures in one sitting: a pytest node id
+carrying shell metacharacters killed the confirmation command before pytest
+started, and exit 1 is allowed through, so every selected test was credited as a
+passing reproduction. And the harness never applied the task's declared
+`PYTHONPATH`, so its checks imported the installed release instead of the
+patched source, reporting 48 tests red on a base tree where the truth was 1.
+Neither was caught by reading, by the suite, or by an external audit that
+reproduced fourteen other probes. See `journey/43`.
 
 Paid evaluation runs cost real money and are never started without asking.
 **`claude-sonnet-5` at effort high** is the default model for them unless the

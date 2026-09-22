@@ -358,7 +358,18 @@ def _targeted(command: str, root: Path, ids: tuple[str, ...]) -> str:
     # Both exist because this run's outcome used to be inferred rather than
     # read: see `confirm`.
     outcomes = [] if "-rA" in flags else ["-rA"]
-    return " ".join(tokens[:cut + 1] + flags + outcomes + list(ids))
+    # Quoted, because this command is run through a shell and a pytest node id
+    # is full of shell metacharacters. `test_converter_decorator[<lambda>0]` is
+    # an ordinary parametrised id, and `<` is cmd.exe's input redirect: the
+    # whole run died with "The system cannot find the file specified", exit 1,
+    # zero tests executed.
+    #
+    # Exit 1 means "some test failed" and is allowed through, so the old code
+    # then found no named failures and credited **every** selected id as a
+    # passing reproduction. Measured on the real corpus: that is where 6 of 16
+    # targeted reproductions came from, and the honest figure is 3.
+    quoted = [f'"{i}"' if not (i.startswith('"') or '"' in i) else i for i in ids]
+    return " ".join(tokens[:cut + 1] + flags + outcomes + quoted)
 
 
 def _worth_confirming(ledger, red: list[str]) -> list[str]:

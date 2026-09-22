@@ -523,7 +523,10 @@ def test_a_command_naming_a_path_is_narrowed_not_widened(repo):
 
     run = _targeted(f'"{sys.executable}" -m pytest tests -q', repo,
                     ("tests/test_app.py::test_add",))
-    assert run.endswith("-q -rA tests/test_app.py::test_add"), run
+    # Quoted, because a node id carries shell metacharacters and this command
+    # goes through a shell: `test_x[<lambda>0]` made cmd.exe redirect from a
+    # file called `lambda` and the run died before pytest started.
+    assert run.endswith('-q -rA "tests/test_app.py::test_add"'), run
     assert " tests " not in run, run
 
 

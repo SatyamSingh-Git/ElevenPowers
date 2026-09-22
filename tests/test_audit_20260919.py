@@ -273,3 +273,43 @@ def test_no_open_task_means_no_state_is_created(repo, monkeypatch):
                        "tool_input": {"command": "echo hello"},
                        "tool_response": {"stdout": "hello\n", "stderr": ""}}, repo)
     assert not (repo / STATE_DIR / "ledger.json").exists()
+
+
+# --- found by the free rehearsal, not by reading -----------------------------
+
+PARAMETRISED = [
+    "tests/test_make.py::TestCountingAttr::test_converter_decorator[<lambda>0]",
+    "tests/test_annotations.py::test_is_class_var[annot4]",
+    "tests/test_cli.py::test_quotes[a b]",
+    "tests/test_x.py::test_pipe[a|b]",
+    "tests/test_y.py::test_amp[a&b]",
+]
+
+
+@pytest.mark.parametrize("node", PARAMETRISED)
+def test_a_node_id_full_of_shell_characters_survives_the_shell(node, repo):
+    """`confirm` runs its command through a shell, and a pytest node id is full
+    of shell metacharacters.
+
+    `test_converter_decorator[<lambda>0]` is an ordinary parametrised id, and
+    `<` is cmd.exe's input redirect: the whole run died with "The system cannot
+    find the file specified", exit 1, zero tests executed. Exit 1 means "some
+    test failed" and is allowed through, so the old code found no named
+    failures and credited **every** selected id as a passing reproduction.
+
+    Found by running the rehearsal over the real corpus, where it accounted for
+    most of the published targeted-reproduction rate.
+    """
+    run = stress._targeted(f"{sys.executable} -m pytest tests", repo, (node,))
+    assert run, "the command was declined"
+    assert f'"{node}"' in run, run
+
+
+def test_quoting_does_not_disturb_an_ordinary_id(repo):
+    """Forward: the common case must still be a plain, runnable command."""
+    plain = "tests/test_a.py::test_a"
+    run = stress._targeted(f"{sys.executable} -m pytest tests", repo, (plain,))
+    assert run.endswith(f'"{plain}"')
+    done = subprocess.run(run, shell=True, cwd=repo, capture_output=True, text=True)
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert "PASSED" in done.stdout

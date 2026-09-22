@@ -174,6 +174,12 @@ Your working tree is never touched, and the answer is computed once per task.
 
 So this is offered as a thing that is *correct* when it fires, not as a thing that fires often. It caught the case it exists for — an agent calling a task done in 9 turns on evidence that would have passed anyway — and it has not been shown to catch much else. Numbers, caveats and the raw bundles: [`results/b4-discriminate/findings.md`](../results/b4-discriminate/findings.md).
 
+**And the other half of the same run: a reproduction by name.** The tests found red on your base tree get re-run against the tree as it is, so "this test was red before and is green now" can be established by name rather than inferred from the run that already decided the question above. It is asked directly rather than waited for, because `pytest -q` prints failures by name and passes as dots — so waiting for a passing record carrying a node id starves the check by construction.
+
+**Measured 2026-09-22, and the previous figure was wrong in both directions.** A rehearsal over 16 real tasks — the gold patch applied, no agent, no cost — now reaches a **named** reproduction on **16 of 16**. The figure published before that was 6 of 16, and it was neither 6 nor a measurement of this feature: part of it came from a shell bug that credited tests from a command which never started, and the rest was suppressed by the rehearsal harness failing to apply the task's own environment. Both are fixed and both are recorded in PLAN §10.
+
+**Read that number for what it is.** A rehearsal applies the *correct* fix by construction, so of course the targeted tests pass. It shows the path is no longer starved. It says nothing about what a real agent produces, and this page will not pretend otherwise.
+
 **What it will not do.** Refuse. Naming a weak check costs nothing; blocking on one has to earn its cost, and this gate blocked 75% of runs once on a signal nobody had measured.
 
 **A gap that measurement found, and that is now closed.** The same sweep showed **12.5% of runs bypassed the gate entirely** — the runtime never observed the agent's edits, so no claim opened and nothing was asked. The cause was not a missing tool name: agents write files through the shell, and chasing that syntax is a race nobody wins. The working tree already knows, so the gate now asks it before concluding there is nothing to check. Rates measured *before* that fix are still conditioned on the gate having seen the work, and are labelled as such.

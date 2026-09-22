@@ -58,7 +58,41 @@ def _drive(root: Path, event: str, **fields) -> None:
 
 
 def rehearse(task, fix: str, hold: Path) -> dict:
-    """One task, seeded and patched, put through the real check."""
+    """One task, seeded and patched, put through the real check.
+
+    The task's declared environment is applied for the duration, and that is
+    not housekeeping. Every corpus task carries `PYTHONPATH=src`, this file
+    never set it, and so the checks it ran imported the **installed release**
+    of the package instead of the patched source in the workspace. Measured
+    2026-09-22: every targeted test came back FAILED against code that did not
+    contain the fix, and the rehearsal reported that as the mechanism's
+    behaviour rather than its own.
+
+    A rehearsal whose environment differs from the run it rehearses is
+    measuring itself. The point of this file is to be genuine in everything but
+    the agent.
+    """
+    import contextlib
+    import os as _os
+
+    @contextlib.contextmanager
+    def declared_env(env: dict):
+        before = {k: _os.environ.get(k) for k in env}
+        _os.environ.update({k: str(v) for k, v in env.items()})
+        try:
+            yield
+        finally:
+            for k, was in before.items():
+                if was is None:
+                    _os.environ.pop(k, None)
+                else:
+                    _os.environ[k] = was
+
+    with declared_env((task.source or {}).get("env") or {}):
+        return _rehearse(task, fix, hold)
+
+
+def _rehearse(task, fix: str, hold: Path) -> dict:
     from core import stress
     from core.config import Config, save as save_config
     from core.evidence import Evidence, Kind, Result, source_files, tree_hash
