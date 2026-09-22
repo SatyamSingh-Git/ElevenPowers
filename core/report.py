@@ -205,6 +205,6 @@ def end_report(ledger: Ledger) -> str:
     # A pattern nothing produced, and a test that could not have failed.
     # Both are claims the ledger can check, and both were shipped here
     # repeatedly before anything checked them.
-    for said in assumption_wording(unverified(ledger), vacuous_tests(ledger)):
+    for said in assumption_wording(unverified(ledger), vacuous_tests(ledger), ledger):
         lines.append(f"  {said}")
     return "\n".join(lines)

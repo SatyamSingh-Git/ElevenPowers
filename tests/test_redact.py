@@ -165,3 +165,31 @@ def test_an_existing_marker_is_not_overwritten(tmp_path):
     (state / ".gitignore").write_text("*\n!keep.json\n", encoding="utf-8")
     Ledger(root=tmp_path, task="t", claims=[Claim.BUG_FIXED]).save()
     assert (state / ".gitignore").read_text(encoding="utf-8") == "*\n!keep.json\n"
+
+
+URL_CASES = [
+    ("https://user:pa55word@example.invalid/x", False, "pa55word"),
+    ("https://token123456@github.invalid/o/r.git", True, None),
+    ("git@github.invalid:user/repo.git", True, None),
+    ("https://example.invalid/x", True, None),
+    ("PATH=/usr/bin:/bin", True, None),
+    ("http://localhost:8080/api", True, None),
+]
+
+
+@pytest.mark.parametrize("line,unchanged,secret", URL_CASES)
+def test_url_credential_handling(line, unchanged, secret):
+    """`https://user:token@host` is how a credential reaches a git remote.
+
+    Both ways in one table: the password half goes, and the five shapes that
+    only *look* like it - an ssh remote, a bare URL, a PATH, a port number -
+    must come through untouched, or every log line with a colon in it is
+    damaged.
+    """
+    after = scrub(line)
+    if unchanged:
+        assert after == line
+    else:
+        assert secret not in after
+        assert MARK in after
+        assert after.startswith("https://user:"), "the username is not a secret"

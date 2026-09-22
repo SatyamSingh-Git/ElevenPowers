@@ -16,13 +16,24 @@ execution-based selection worth +8.14pp at 0% harm, a same-model LLM judge
 gap, **every selector it tried underperformed the baseline**, destroying more
 correct answers than it rescued.
 
-**That is a result about those selectors on that benchmark, and it was being
-used here as a universal constant.** An audit was right to object: a selector's
-expected value is the probability mass it rescues minus the mass it damages, so
-a two-point opportunity with negligible harm can still be worth having, and a
-large opportunity can still be squandered by a poor selector. The number below
-is a **prior worth taking seriously**, not a law — it says where to look first
-and what to expect, and it cannot by itself cancel a mechanism.
+**Read from the HTML on 2026-09-22, and the three numbers are exactly right —
+which makes where they come from the interesting part.** All three are verbatim
+(arXiv 2607.17531): `+8.14pp` at `0/2089 = 0%` harm for public-test execution,
+`+3.50pp` while harming `98/2089 = 4.69%` of first-sample-correct cases for the
+same-family LLM judge, and *"the oracle gap is only 18/594 = 3.03pp"* where
+every selector went net-negative.
+
+**But the first two are LiveCodeBench, and the third is GPQA-Diamond.** The
+benchmark that produced the "do not build a selector" line is multiple-choice
+science; the paper's own *coding* benchmark is where execution-based selection
+scored its best result, at **zero** harm. So the threshold was imported here
+from the one benchmark in that paper least like this work, and the one most like
+it points the other way.
+
+That does not make selection a good idea on this corpus - a selector's expected
+value is the mass it rescues minus the mass it damages, and that is still
+unmeasured here. It does mean the number below is a **reference point**, not a
+law: it says what to check, not what to conclude.
 
 So this module reports which side of that line a pool sits on, and the decision
 needs the other half: estimated rescue, estimated harm to the incumbent, and the
@@ -72,8 +83,10 @@ from pathlib import Path
 # machine, not about the candidate.
 NOT_THE_AGENT = {"setup"}
 
-# Under about this many points of oracle gap, measured selectors do more harm
-# than good. Not a rule of thumb — a reported threshold, cited in the docstring.
+# The oracle gap below which one published study's selectors went net-negative.
+# Not a rule of thumb, and not a law either: that study's low-gap case is
+# GPQA-Diamond, a multiple-choice science benchmark, while its coding benchmark
+# showed execution-based selection at +8.14pp and 0% harm. Cited in full above.
 HARM_LINE = 4.0
 
 # Bundle directories end in the run's start time, which is the only ordering
@@ -100,16 +113,60 @@ def attempts(root: Path) -> list[tuple[str, str, str, str, int]]:
         if not (task and arm and outcome):
             continue
         stamp = STAMP.search(bundle.name)
-        out.append((root.name, task, arm, outcome, int(stamp.group(1)) if stamp else 0))
+        out.append((root.name, task, arm, outcome, int(stamp.group(1)) if stamp else 0,
+                    condition(man)))
     return out
 
 
+def condition(manifest: dict) -> str:
+    """The experimental condition an attempt actually ran under.
+
+    A directory name is a label somebody typed. The manifest records what the
+    run *was* - which model was asked for, what environment it was handed, what
+    limits it was given - and two attempts are interchangeable candidates only
+    if those agree. `results/closedbook` is the standing example: it is a
+    different condition by construction, and nothing but its folder name said
+    so.
+
+    Fields absent from an older manifest degrade to "unknown" rather than to a
+    false match, which is the safe direction: an attempt whose conditions cannot
+    be established does not silently join a pool.
+
+    **The dimension that mattered was missing, and finding that out is the
+    point.** This was first written using model, limits and task environment,
+    and `results/closedbook` - the standing example of a different condition -
+    came back byte-identical to the open-book sweeps on all three. What made it
+    different was what it could *reach*, and no manifest recorded that. So
+    `access` joins the key, bundles written before it exists read as
+    `access=unrecorded`, and **unrecorded is a distinct value from `open`** -
+    because "nobody wrote it down" is not a measurement.
+    """
+    limits = manifest.get("limits") or {}
+    env = manifest.get("env") or {}
+    access = manifest.get("access") or {}
+    return "|".join([
+        str(manifest.get("model_asked") or manifest.get("model") or "unknown-model"),
+        f"agent={limits.get('agent_seconds', '?')}",
+        f"suite={limits.get('suite_seconds', '?')}",
+        ("env=" + ",".join(f"{k}={v}" for k, v in sorted(env.items()))) if env else "env=-",
+        "access=" + (str(access.get("registry", "?")) if access.get("recorded")
+                     else "unrecorded"),
+    ])
+
+
 def pools(rows) -> dict[tuple[str, str, str], list[str]]:
-    """Attempts grouped into the pool a selector would have chosen from."""
-    grouped: dict[tuple[str, str, str], list[tuple[int, str]]] = defaultdict(list)
-    for sweep, task, arm, outcome, when in rows:
-        grouped[(sweep, task, arm)].append((when, outcome))
-    return {k: [o for _, o in sorted(v)] for k, v in grouped.items()}
+    """Attempts grouped into the pool a selector would have chosen from.
+
+    Rows may carry a sixth element, the effective condition. It is optional so
+    a hand-built row still works, and when it is there it is kept beside the
+    outcome so `measure` can refuse to pool across conditions.
+    """
+    grouped: dict[tuple[str, str, str], list[tuple[int, str, str]]] = defaultdict(list)
+    for row in rows:
+        sweep, task, arm, outcome, when = row[:5]
+        here = row[5] if len(row) > 5 else ""
+        grouped[(sweep, task, arm)].append((when, outcome, here))
+    return {k: [(o, c) for _, o, c in sorted(v)] for k, v in grouped.items()}
 
 
 def measure(grouped, sweep: str | None, arm: str) -> dict | None:
@@ -120,9 +177,16 @@ def measure(grouped, sweep: str | None, arm: str) -> dict | None:
     # attempts, full coverage and a 50% random pick. The same dict-comprehension
     # shape that laundered a failing monorepo package into a passing record.
     picked: dict[str, list[str]] = defaultdict(list)
+    conditions: set[str] = set()
+    sweeps_seen: set[str] = set()
     for (s, t, a), outs in grouped.items():
         if a == arm and (sweep is None or s == sweep):
-            picked[t].extend(outs)
+            sweeps_seen.add(s)
+            for entry in outs:
+                outcome, here = entry if isinstance(entry, tuple) else (entry, "")
+                picked[t].append(outcome)
+                if here:
+                    conditions.add(here)
     before = sum(len(v) for v in picked.values())
     pool = {t: [o for o in outs if o not in NOT_THE_AGENT] for t, outs in picked.items()}
     pool = {t: outs for t, outs in pool.items() if outs}
@@ -157,6 +221,17 @@ def measure(grouped, sweep: str | None, arm: str) -> dict | None:
         "random_pick": random_pick,
         "last": last,
         "gap": (covered / len(pool) - random_pick) * 100,
+        # How many distinct experimental conditions these attempts actually ran
+        # under, read from each manifest rather than from a folder name. More
+        # than one means these are not interchangeable candidates and the pool
+        # is a mixture, whatever the row is labelled.
+        "conditions": len(conditions),
+        # True when the bundles cannot say what the run could reach.
+        # Distinct from the count above: every sweep here may agree on
+        # model and limits and still be incomparable, which is exactly
+        # what `results/closedbook` is.
+        "access_unrecorded": any("access=unrecorded" in c for c in conditions),
+        "sweeps": len(sweeps_seen),
     }
 
 
@@ -186,6 +261,8 @@ def verdict(m: dict) -> None:
         print("  No task's attempts disagree, so there is nothing for any selector to pick between.")
     if m["dropped_setup"]:
         print(f"  {m['dropped_setup']} attempt(s) excluded as `setup`: the machine, not the candidate.")
+    if m.get("conditions", 0) > 1:
+        verdict_conditions(m)
     if m["gap"] < HARM_LINE:
         print(f"  Under the {HARM_LINE:.0f}-point reference line, where one published fixed-pool "
               f"study found every selector it tried destroying more correct answers than it "
@@ -196,6 +273,22 @@ def verdict(m: dict) -> None:
         print(f"  Above the {HARM_LINE:.0f}-point line: {m['gap']:.1f} points a selector could in "
               f"principle recover. Measure correct-candidate survival through every filter before "
               f"believing it (PLAN §6).")
+
+
+def verdict_conditions(m: dict) -> None:
+    """Say when a row is a mixture rather than a pool.
+
+    Read from each manifest - the model asked for, the time limits, the
+    environment handed over - and not from a directory name. A directory name
+    is a label somebody typed; the standing example is `results/closedbook`,
+    which is a different condition by construction and was flagged only by a
+    hand-written paragraph naming that one folder. A sweep added next year
+    under a different model would have been pooled in silently.
+    """
+    print(f"  MIXED CONDITIONS: {m['sweep']} / {m['arm']} pools attempts from "
+          f"{m['conditions']} different effective configurations. They are not "
+          f"interchangeable candidates, so coverage and the gap on this row describe a "
+          f"mixture and not a pool. Compare per condition instead.")
 
 
 def report(roots: list[Path]) -> int:
@@ -228,6 +321,20 @@ def report(roots: list[Path]) -> int:
     print("=" * 72)
     pooled = [m for a in arms if (m := measure(grouped, None, a))]
     table(pooled)
+    # The warning belongs here most of all: this is the row somebody quotes.
+    # Previously the only thing saying these runs were incomparable was the
+    # paragraph above, which names one directory by hand - so a sweep added
+    # next year under a different model would be pooled in silently. Now it is
+    # read from the manifests.
+    for m in pooled:
+        if m.get("conditions", 0) > 1:
+            verdict_conditions(m)
+        elif m.get("access_unrecorded") and m.get("sweeps", 1) > 1:
+            print(f"  UNVERIFIABLE POOL: {m['sweep']} / {m['arm']} joins {m['sweeps']} sweeps "
+                  f"whose bundles do not record what each run could reach. They agree on "
+                  f"model, limits and task environment, and that is not enough - "
+                  f"`results/closedbook` agrees on all three and is a different experiment. "
+                  f"Runs written from now on record it; these cannot be checked.")
 
     print("\nCoverage is measured with answer access on most of this corpus (PLAN §4.1);")
     print("it is an upper bound. `python -m eval.exposure` reports the floor.")

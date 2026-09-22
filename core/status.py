@@ -87,6 +87,13 @@ def _assumption_lines(ledger: Ledger) -> list[str]:
         lines.append(f"          ...and {len(patterns) - 3} more")
     for path in vacuous[:3]:
         lines.append(f"          {path} passed on the tree as it was")
+    # Said here too: this surface is the one an agent pulls mid-task, which is
+    # exactly where a partial record would be read as a complete one.
+    from .assumptions import incompleteness
+
+    partial = incompleteness(ledger)
+    if patterns and partial:
+        lines.append(f"         {partial.lstrip(' -')}")
     return lines
 
 

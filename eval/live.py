@@ -313,6 +313,31 @@ def _plugin_dir(arm: str) -> str:
     return where
 
 
+def access_policy() -> dict:
+    """What this run could reach, recorded so a later reader need not guess.
+
+    This is the dimension that made `results/closedbook` a different experiment,
+    and it was written down **nowhere**. Its manifest records the same model,
+    the same limits and the same task environment as the open-book sweeps; the
+    only thing distinguishing it was the folder somebody chose to put it in, and
+    an audit was right that a directory name is not provenance.
+
+    It cannot be added to bundles already written. What it can do is stop the
+    next sweep having the same hole, and let `eval/pool.py` tell "this ran with
+    the index shut" apart from "nobody recorded whether it did".
+    """
+    return {
+        "recorded": True,
+        # `wheelhouse.ready()` is what decides the boundary in `workspace()`,
+        # so it is what gets written down - the condition, not a wish.
+        "registry": "closed" if wheelhouse.ready() else "open",
+        "shelf": str(wheelhouse.SHELF) if wheelhouse.ready() else "",
+        # Stated rather than implied: nothing here is a network boundary. A
+        # shell can still reach the internet, and PLAN §4.1 and §6 say so.
+        "network": "not isolated",
+    }
+
+
 def environment() -> dict:
     """What the run actually happened in, recorded rather than assumed.
 
@@ -928,6 +953,7 @@ def once(task: Task, arm: str, model: str, bundles: Path | None = None,
                 patch=patch, answer=answer,
                 limits={"agent_seconds": TIMEOUT, "suite_seconds": SUITE_TIMEOUT},
                 environment=environment(),
+                access=access_policy(),
                 ledger=root / ".elevenpowers" / "ledger.json",
                 blindspots=root / ".elevenpowers" / "blindspots.jsonl",
                 source=task.source,

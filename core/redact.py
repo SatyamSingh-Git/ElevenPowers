@@ -74,6 +74,13 @@ NAMED = re.compile(
 # `Authorization: Bearer xyz"`.
 BEARER = re.compile(r"(?i)\b(authorization\s*[:=]\s*(?:bearer|basic|token)\s+)([^\s\"',;]{6,})")
 
+# `https://user:token@host/...` - how a credential reaches a git remote, a
+# `pip install` line and half the CI logs in existence. The password half only:
+# the username is not a secret and removing it makes the line unreadable.
+# Requires `://` so `git@github.com:user/repo` is untouched, and a non-empty
+# password so `http://host/` and `PATH=/usr/bin:/bin` cannot match.
+URL_CREDENTIAL = re.compile(r"(?<=://)([^/\s:@]{1,64}):([^/\s@]{3,})@")
+
 JWT = re.compile(r"\beyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{6,}")
 
 PEM = re.compile(
@@ -116,7 +123,12 @@ def scrub_values(value):
         return scrub(value)
     if isinstance(value, dict):
         return {k: scrub_values(v) for k, v in value.items()}
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
+        # Tuples too. `json.dumps` writes a tuple out as an array, so a tuple
+        # left unscrubbed reaches the file exactly like a list would - the same
+        # "which things hold text" judgement that has now been wrong three
+        # times, in type form. Returned as a list because that is what it is
+        # about to become anyway.
         return [scrub_values(v) for v in value]
     return value
 
@@ -125,6 +137,7 @@ def scrub(text: str) -> str:
     """Replace credentials, keeping enough shape to say what was removed."""
     text = PEM.sub(f"-----BEGIN PRIVATE KEY-----{MARK}-----END PRIVATE KEY-----", text)
     text = JWT.sub(f"eyJ{MARK}", text)
+    text = URL_CREDENTIAL.sub(lambda m: m.group(1) + ":" + MARK + "@", text)
     text = PREFIXED.sub(lambda m: m.group(1) + MARK, text)
     text = BEARER.sub(lambda m: m.group(1) + MARK, text)
     return NAMED.sub(_named, text)

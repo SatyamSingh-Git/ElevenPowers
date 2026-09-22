@@ -114,7 +114,7 @@ def apply_patch(root: Path, patch: str) -> str:
 def write(into: Path, *, task: str, arm: str, model: str, asked: str, patch: str,
           answer: dict, limits: dict, ledger: Path | None,
           source: dict | None, environment: dict | None = None,
-          blindspots: Path | None = None) -> Path:
+          blindspots: Path | None = None, access: dict | None = None) -> Path:
     """One directory per run, named so a person can find it.
 
     Both models are recorded: `model` is what the host resolved and `asked` is
@@ -138,6 +138,12 @@ def write(into: Path, *, task: str, arm: str, model: str, asked: str, patch: str
         "env": (source or {}).get("env", {}),
         "limits": limits,
         "environment": environment or {},
+        # What the run could REACH, which is the dimension that made
+        # `results/closedbook` a different experiment and was recorded
+        # nowhere but in its directory name. `eval/pool.py` keys pools on
+        # this; a bundle written before it existed reads as "unrecorded",
+        # which is deliberately not the same as "open".
+        "access": access or {"recorded": False},
     }, indent=1), encoding="utf-8")
     (into / "patch.diff").write_bytes(patch.encode("utf-8"))
     (into / "answer.json").write_text(json.dumps(answer, indent=1), encoding="utf-8")
@@ -161,7 +167,38 @@ def record_grade(into: Path, graded) -> None:
         "outcome": graded.outcome,
         "detail": graded.detail,
         "passed": list(graded.observed),
+        # Which grader said so. Regrades are kept side by side here
+        # (`b4-passA.json` beside `b4-passA-regraded.json`), which is half the
+        # answer - the other half is being able to tell a changed verdict caused
+        # by a changed grader from one caused by a real difference, and nothing
+        # recorded that. A content hash of the grading code is cheap, exact, and
+        # needs nobody to remember to bump a number.
+        "grader": grader_version(),
     }, indent=1), encoding="utf-8")
+
+
+def grader_version() -> str:
+    """A fingerprint of the code that decides `resolved`.
+
+    Content, not a version string: a hand-maintained number is a claim about
+    the code and this is a measurement of it. Same reasoning as evidence
+    freshness, one layer up.
+    """
+    import hashlib
+
+    here = Path(__file__).parent
+    digest = hashlib.sha256()
+    # `grade_patch` lives in live.py and the task definition it grades against
+    # lives in tasks.py. Named after checking rather than from memory: a first
+    # version listed `grade.py`, which does not exist, so the fingerprint would
+    # have silently covered less than it claimed - the same defect as every
+    # other filename written without looking.
+    for name in ("live.py", "tasks.py", "bundle.py"):
+        path = here / name
+        if not path.is_file():
+            return "unknown"
+        digest.update(path.read_bytes())
+    return digest.hexdigest()[:16]
 
 
 def read(directory: Path) -> dict:

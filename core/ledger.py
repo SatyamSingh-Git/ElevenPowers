@@ -144,6 +144,14 @@ class Ledger:
     between the start and the end because a runner's summary is at the bottom
     and its header at the top. It never leaves the machine.
     """
+    outputs_dropped: int = 0
+    """How many captured outputs were evicted by the bound on `outputs`.
+
+    Non-zero means the record cannot speak for everything the task ran, which
+    is exactly what `assumptions.unverified` claims when it reports a pattern.
+    The bound stays - an unbounded store is a different and worse problem - so
+    the honest move is to say the record is partial rather than to pretend.
+    """
     opened_dirty: list[str] = field(default_factory=list)
     """Paths already modified when this task opened, so they are not its work.
 
@@ -257,6 +265,7 @@ class Ledger:
             base=raw.get("base", ""),
             outputs=raw.get("outputs", []) or [],
             opened_dirty=raw.get("opened_dirty", []) or [],
+            outputs_dropped=raw.get("outputs_dropped", 0) or 0,
             failed_before=raw.get("failed_before", []) or [],
             passed_before=raw.get("passed_before", []) or [],
             briefed=raw.get("briefed", []) or [],
@@ -294,6 +303,7 @@ class Ledger:
             "base": self.base,
             "outputs": self.outputs,
             "opened_dirty": self.opened_dirty,
+            "outputs_dropped": self.outputs_dropped,
             "failed_before": self.failed_before,
             "passed_before": self.passed_before,
             "briefed": self.briefed,
@@ -396,12 +406,26 @@ class Ledger:
         file, so it is the only place that has to do it.
         """
         keep = 4000
-        if len(text) <= keep * 2:
-            body = text
-        else:
+        truncated = len(text) > keep * 2
+        if truncated:
             body = text[:keep] + "\n[...]\n" + text[-keep:]
+        else:
+            body = text
         body = scrub(body)
-        self.outputs = (self.outputs + [{"command": scrub(command[:200]), "text": body}])[-12:]
+        # What was dropped, recorded rather than silently absent.
+        #
+        # `assumptions.unverified` says "matched nothing this task ran", and
+        # that sentence is only true if everything the task ran is here. It is
+        # a bounded store: the middle of a long output is cut, and the
+        # thirteenth command evicts the first. A pattern that would have
+        # matched the discarded middle is then reported as unverified, which is
+        # an accusation built on a gap. The check cannot close the gap - the
+        # bound is deliberate - but it can stop claiming completeness it does
+        # not have.
+        kept = self.outputs + [{"command": scrub(command[:200]), "text": body,
+                                "bytes": len(text), "truncated": truncated}]
+        self.outputs_dropped += max(0, len(kept) - 12)
+        self.outputs = kept[-12:]
 
     def note(self, what: str, why: str) -> None:
         self.decisions.append({"what": what, "why": why, "at": time.time()})

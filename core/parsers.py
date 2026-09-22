@@ -217,6 +217,12 @@ def runs_tap(command: str) -> bool:
     if re.search(r"\bnode\s+--test\b", bare.lower()):
         return True
     first = bare.split()
+    # `npx prove` and `pnpm exec bats` are the same runner one word later.
+    # Stripped here rather than in `_bare`, deliberately: `_bare` decides
+    # WRAPPER and BUILD_WRAPPER dispatch for every command in this file, and
+    # widening it to buy one TAP case is a blast radius nobody asked for.
+    while len(first) > 1 and first[0].lower() in ("npx", "pnpm", "yarn", "bunx", "exec"):
+        first = first[1:]
     return bool(first) and bool(TAP_RUNNER.match(first[0].rsplit("/", 1)[-1]))
 
 

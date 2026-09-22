@@ -296,14 +296,39 @@ def vacuous_tests(ledger) -> list[str]:
             if p.replace("\\", "/") in green and p not in files_red]
 
 
-def wording(patterns: list[str], tests: list[str]) -> list[str]:
+def incompleteness(ledger) -> str:
+    """How much of what the task ran this record cannot speak for.
+
+    Empty when the record is whole. `unverified` says a pattern "matched
+    nothing this task ran", and that is only true if everything the task ran is
+    still here - but the store is bounded twice over, by a character budget per
+    output and by a count of outputs. A pattern that would have matched a
+    discarded middle is then named on the strength of a gap.
+
+    The bound is deliberate and stays. What changes is the sentence: a partial
+    record says so, so the reader can weigh it.
+    """
+    dropped = int(getattr(ledger, "outputs_dropped", 0) or 0)
+    cut = sum(1 for item in ledger.outputs if item.get("truncated"))
+    parts = []
+    if dropped:
+        parts.append(f"{dropped} earlier output(s) evicted")
+    if cut:
+        parts.append(f"{cut} truncated")
+    if not parts:
+        return ""
+    return f" - though this record is partial ({', '.join(parts)}), so it cannot rule out a match"
+
+
+def wording(patterns: list[str], tests: list[str], ledger=None) -> list[str]:
     """The report lines, or none at all."""
     said = []
     if patterns:
         shown = ", ".join(repr(p[:48]) for p in patterns[:2])
         more = f" (+{len(patterns) - 2} more)" if len(patterns) > 2 else ""
+        caveat = incompleteness(ledger) if ledger is not None else ""
         said.append(f"unverified: {shown}{more} matched nothing this task ran. "
-                    f"A pattern is a claim about output; run the thing and look")
+                    f"A pattern is a claim about output; run the thing and look{caveat}")
     if tests:
         shown = ", ".join(tests[:2])
         more = f" (+{len(tests) - 2} more)" if len(tests) > 2 else ""

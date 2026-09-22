@@ -136,9 +136,19 @@ def test_reading_a_tap_file_is_not_a_test_run(tmp_path):
     "npm test",
     "turbo test",
     "deno test",
+    # Named harnesses, which `claims_to_run_tests` does not match at all - they
+    # rely entirely on the runner allow-list.
+    "prove -r t/",
+    "bats tests/",
+    # ...and the same harnesses one word later. `npx prove` is how a project
+    # without a global install runs it, and stripping the launcher is done
+    # inside `runs_tap` rather than in `_bare`, which decides dispatch for every
+    # command in the file.
+    "npx prove t/",
+    "pnpm exec bats tests/",
 ])
 def test_a_real_tap_runner_is_still_read(command, tmp_path):
-    """Forward, four ways. The fix must not silence the runners it was for."""
+    """Forward, eight ways. The fix must not silence the runners it was for."""
     out = "TAP version 13\nok 1 - sample\n1..1\n"
     records = parsers.parse(command, out, 0, tmp_path)
     assert records and records[0].result is Result.PASS, command

@@ -357,7 +357,8 @@ def _targeted(command: str, root: Path, ids: tuple[str, ...]) -> str:
     # dropped because the question here is what happened to *each* chosen id.
     # Both exist because this run's outcome used to be inferred rather than
     # read: see `confirm`.
-    return " ".join(tokens[:cut + 1] + flags + ["-rA"] + list(ids))
+    outcomes = [] if "-rA" in flags else ["-rA"]
+    return " ".join(tokens[:cut + 1] + flags + outcomes + list(ids))
 
 
 def _worth_confirming(ledger, red: list[str]) -> list[str]:

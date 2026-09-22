@@ -139,6 +139,13 @@ done rather than after a user asks.
 - **A pattern matched by output the agent never actually inspected.** Running
   the command is necessary, not sufficient - though it is the step that was
   skipped every time here.
+- **A pattern that matched something the store had already thrown away.** The
+  record is bounded twice: twelve commands, and head-and-tail within each. A
+  pattern matching a discarded middle is reported as unverified on the strength
+  of a gap. The bound is deliberate and stays; what changed on 2026-09-22 is
+  that the report *says* when the record is partial - `N evicted, M truncated` -
+  instead of claiming completeness it does not have. It still cannot tell you
+  whether the missing text would have matched.
 - **A pattern whose producer the code never names.** The §7c narrowing trades
   this away deliberately: a regex for `ruff`'s output in a file that never
   writes the word `ruff` is not reported. Silence is the safe direction, and the

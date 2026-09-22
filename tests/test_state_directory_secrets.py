@@ -99,3 +99,23 @@ def test_a_quote_after_a_bearer_token_is_not_eaten(repo):
     assert FAKE not in got
     assert got.count('"') == 2, got
     assert got.endswith("https://example.invalid"), got
+
+
+def test_every_copy_shapes_are_scrubbed_including_tuples():
+    """`scrub_values` walks the structure, so it has to know every shape.
+
+    A tuple was skipped, and `json.dumps` writes a tuple out as an array - so it
+    reached the file exactly as a list would have. The same "which things hold
+    text" judgement that was wrong twice already, in type form this time.
+    """
+    from core.redact import MARK, scrub_values
+
+    nested = {"a": None, "b": 3,
+              "c": [1, FAKE, {"d": (FAKE, "clean")}],
+              "e": {"deep": {"deeper": FAKE}}}
+    out = scrub_values(nested)
+    assert FAKE not in json.dumps(out)
+    assert MARK in json.dumps(out)
+    assert out["a"] is None and out["b"] == 3, "non-strings must pass through"
+    assert out["c"][2]["d"][1] == "clean", "the surrounding values survive"
+    assert scrub_values(out) == out, "scrubbing twice must not change it again"
