@@ -25,3 +25,24 @@ Two things are deliberately still not built, and both now have sharper triggers:
 |---|---|
 | Reconstructing repository state from a transcript's file-history rows | Replay needs to measure freshness and staleness, which it currently cannot. Only worth it once P4 is the question being asked |
 | Replaying subagent transcripts | Subagent sessions are stored separately, 1,290 of them alongside 241 main sessions. Worth adding when subagent work is gated |
+
+---
+
+## Added 2026-09-23, from the question "what about the edge cases?"
+
+`PLAN.md` §5.16 proposes diff-scoped mutation as the answer to *is this changed
+logic actually tested*. These three were considered alongside it and deferred,
+each with the measurement that would revive it. Deferring them is a decision
+about **order**, not about value: §5.16 is cheaper to falsify, and if it is
+falsified the reason will most likely apply to these too.
+
+| Not built | Trigger |
+|---|---|
+| **Property-based testing** (`hypothesis`) on changed functions | §5.16 ships, and its surviving mutants cluster on *input values* rather than on branches — that is the signature of a gap properties close and mutants do not. Deferred because inferring properties without a specification produces noise, and this project has paid for unmeasured noise before |
+| **Differential testing, old tree against new** | A measured rate of changes whose behavioural difference no test covers. Directly answers *did you change something you did not mean to*, which mutation does not. Needs input generation, so it inherits the property-inference problem above and is ordered behind it |
+| **Mutating code the change *depends on*, not only the change itself** | `core/radius.py` already computes the siblings and callers of a changed symbol. If §5.16's survivors are concentrated at the boundary between changed and unchanged code, the scope is wrong and this is the correction. Deferred because it breaks the diff bound that makes §5.16 affordable |
+
+**What has no trigger, because nothing would satisfy it.** Deciding whether the
+logic is *correct*. That needs a specification the repository does not have, and
+no mechanism in this file or in `PLAN.md` produces one. It is written here so
+that the absence is a recorded decision rather than an oversight — see §1.6.

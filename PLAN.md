@@ -129,6 +129,29 @@ implementation already written by somebody else.
 **Residual-gap ranking is retired as an investment filter.** It stays useful as
 what it actually is — a map of where the borrowing runs out.
 
+**1.6 What this does not touch today: the logic.** *(2026-09-23)*
+
+The sentence at the top of this section promises *the strongest patch the system
+can find, with the evidence for it*. Read the two halves separately, because
+only one of them is built.
+
+Everything shipped operates on the **evidence**: whether it exists, whether it
+is current, whether it could have failed, whether a pattern was ever seen to
+match, whether a credential reached disk. Nothing shipped operates on the
+**logic**. There is no test generation, no property inference, no edge-case
+search, and no semantic oracle — `docs/research/build-on.md` records that a
+mutation engine is deliberately not written, and §10 records that "the gate
+improves the patch" has no support after $195.
+
+So the honest statement of what a user gets today is narrower than §1's opening
+line: **the claim an agent makes is made visible, current and hard to forge. The
+code is not made better.** Three mechanisms for the first; none for the second.
+
+§5.16 is the first mechanism in this plan that speaks to the logic rather than
+to the evidence, and it is **unbuilt**, with a free measurement standing between
+it and any claim about it. Until that measurement exists, this paragraph is the
+accurate description and §1's opening line is the intent.
+
 ---
 
 ## 2. The thesis, confirmed and re-aimed
@@ -530,6 +553,128 @@ test; beating a stack of best-of-breed pieces is.** That comparison has still
 never been run, and it is cheaper than it was, because the boundary (§4.1) and
 the free measurements (Phase B2) come first anyway.
 
+**5.16 One mutant is a floor, not a coverage measure.** *(2026-09-23)*
+
+The question that produced this section, asked plainly: *the agent runs pytest,
+and this system watches pytest. If the agent can always make pytest green, what
+is the system for? Was it not meant to improve the logic, the edge cases, the
+bugs?*
+
+**Half of that is already answered, and the half that is not is the important
+half.**
+
+§5.10's reversion check does not ask whether pytest passed. It asks whether the
+test would have passed **before the change**, by running it against a worktree
+at the base commit. A test green on both trees is `VACUOUS`. So an agent cannot
+satisfy this by writing a test that passes — it has to write one that was **red
+on the old code**, which is a real property and the only thing separating this
+from a pytest-watcher.
+
+**But one such test clears the bar.** The check asks *did anything here
+discriminate*, not *is this change pinned*. A fix touching thirty lines is
+satisfied by a single test exercising one of them; the other twenty-nine, and
+every branch inside them, are invisible to it. This is not a defect in
+`core/stress.py` — it is the question that module asks, asked correctly. It is
+simply a smaller question than the one a reviewer has.
+
+And the measurement says so: **1 `VACUOUS` in 22 runs** (§10). That rate was
+read as "agents here write discriminating tests". The more likely reading is
+that the bar is one they clear by doing the minimum.
+
+### What closes it
+
+Reversion is the **coarsest mutant in the lattice** — change everything, see if
+anything notices. The rest of the lattice is the answer to *is this logic
+tested*:
+
+> **Mutants confined to the lines this task changed.** Flip a comparison, move a
+> boundary, negate a condition, replace a constant. Re-run the task's own tests.
+> A mutant that **survives** names a line that could be broken without the tests
+> noticing.
+
+That is the literal form of the question. Not *did a test run*, not *did a test
+discriminate*, but *which parts of what you just wrote are unpinned*.
+
+**The borrow is already written down.** `docs/research/build-on.md` names
+`mutmut`, `cosmic-ray` and PIT, and says of them: *"the engine, if we ever need
+mutants beyond reversion."* We need them. **What we add** is the same scoping
+dividend §5.10 claims and no more: every record names the files it observed and
+the command that observed them, so the mutant set is bounded by the diff and the
+re-run is the targeted command rather than the suite. A general mutation run is
+expensive because it does not know what to re-run. This one does.
+
+### Bounds, fixed before anything is built
+
+- **Diff-scoped only.** Mutants are generated on lines this task changed. Never
+  repository-wide; that is the expensive tool this project is not writing.
+- **A hard cap on mutants and on seconds, reported when hit.** Audit F7's lesson
+  applies directly: a bounded store that does not say it is bounded makes a
+  claim it cannot support. A truncated mutant run says so in the report.
+- **Report-only, per §5.12.** A surviving mutant is *named*. Nothing is required
+  of it, no verdict moves, and it cannot refuse a stop. This project has blocked
+  75% of runs once on an unmeasured signal.
+- **Silence when it cannot run.** No mutation engine, unparseable diff,
+  non-Python change: a blindspot, not a guess.
+
+### What it will never do, stated now
+
+A killed mutant says the tests **noticed a change in behaviour**. It never says
+the behaviour is **correct**. Without a specification nothing can, and §10
+withdrew that ambition once already — this does not quietly restore it. The
+honest summary is: *this tells you which of your changed lines are unprotected,
+not whether they are right.*
+
+**And the known false positive is named in advance.** *Equivalent mutants* —
+syntactically different, semantically identical — are undecidable in general and
+are the standard false-alarm source in the mutation-testing literature. A
+surviving mutant is therefore a **question**, not a defect, and the rate at
+which those questions are worthless has to be measured on this corpus before the
+mechanism is worth more than a line in a report.
+
+### Measured before believed — and this is the gate, not a formality
+
+The rehearsal costs **nothing** and answers the whole question before a line of
+the engine is wired:
+
+```bash
+python -m eval.rehearse --corpus E:/ep-corpus/prevalence.json --tasks 16
+```
+
+On each task, with the gold patch applied, generate diff-scoped mutants and run
+the task's own tests. **What fraction of tasks have at least one surviving
+mutant?**
+
+- **Near zero** → the tests do pin the changed logic on this corpus, the concern
+  is empirically unfounded here, and **§5.16 is withdrawn rather than shipped**.
+- **High, but the survivors are equivalent mutants** → the mechanism is a noise
+  generator and belongs in `docs/postponed.md` with the trigger that would
+  revive it.
+- **High, with survivors a reviewer agrees are real gaps** → this is the first
+  mechanism in the system that speaks to the logic rather than to the evidence,
+  and it earns its place.
+
+Note what this gate costs: a rehearsal applies the **gold patch**, so a
+surviving mutant there is one the *maintainer's own fix* left unpinned. That is
+the conservative direction — an agent's patch will not be better tested than the
+maintainer's. §12 carries the falsifier.
+
+---
+
+**5.17 The bar a reviewer actually has.** *(2026-09-23)*
+
+§1.3 chose the report over the refusal. §5.16 is what makes a report worth
+opening: *these three lines of your change could be altered and nothing you ran
+would notice.* That sentence is actionable without reading the diff, which is
+the only test a reviewer-facing artifact has to pass.
+
+This is `P4` in the v0.8 lane — the one step still marked **not built** — and it
+has been unbuilt because there was nothing specific enough to put in it. A list
+of obligations met is a receipt. A list of unpinned lines is a finding.
+
+**Ordering is deliberate: §5.16 before §5.17.** Building the report first
+produces a page that says *everything checks out*, which is the reliability
+theatre §12 already names as a falsifier of this whole direction.
+
 ---
 
 ## 6. Measurement discipline
@@ -780,6 +925,7 @@ Reordered by measured effect size, with the free ones first.
 
 | Experiment | Comparison | Decision it answers | Cost |
 |---|---|---|---|
+| **Mutant survival** *(new, 2026-09-23)* | diff-scoped mutants vs the task's own tests, gold patch applied | **does §5.16 exist?** near-zero survival withdraws it; survivors that are equivalent mutants postpone it; real survivors make it the first mechanism aimed at the logic | **$0** — one rehearsal |
 | **Discrimination rate** | recorded pass vs the same command on the reverted tree | does our own evidence measure anything? | **$0** |
 | **Oracle gap** | pool coverage vs selected success on saved attempts | is a selector worth building, or under the 4pp harm line? | **$0** |
 | **Checkpoint density** | best intermediate candidate vs submitted | is there a better state to ratchet back to? | **$0** |
@@ -825,6 +971,9 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 ---
 
 ## 10. Claims withdrawn or qualified
+
+- **"The discrimination check tells you the change is well tested."** Never asserted in these words, and a reader would reasonably infer it - so it is stated here as **false**, 2026-09-23. `core/stress.py` asks whether *anything* in the evidence could have failed. One test that was red on the base tree and is green now satisfies it, however much of the change goes unexercised. The measured rate - **1 VACUOUS in 22 runs** - was read as "agents here write discriminating tests"; the likelier reading is that the bar is one they clear by doing the minimum. §5.16 is the proposed answer and is **unbuilt**, with a free measurement standing between it and any claim about it.
+- **"This system improves the logic, the edge cases, or the bugs."** Never true, stated plainly 2026-09-23 because it is the natural thing to assume from the framing. Nothing shipped generates a test, infers a property, searches for an edge case, or evaluates whether code is correct. `docs/research/build-on.md` records that a mutation engine is deliberately not written. What is shipped operates on the *evidence for* a claim, not on the claim's subject matter. §1.6.
 
 - **"Targeted reproductions went from 0 of 16 to 6 of 16."** Withdrawn 2026-09-22, and it was wrong in **both** directions at once. Part of the 6 was fabricated: a pytest node id carries shell metacharacters, `test_converter_decorator[<lambda>0]` made cmd.exe attempt an input redirect from a file named `lambda`, the command died before pytest started with **exit 1 and zero tests executed** - and exit 1 is allowed through as "some test failed", so the old code found no named failures and credited every selected id as a passing reproduction. Separately, `eval/rehearse.py` never applied the task's declared `PYTHONPATH=src`, so every check it ran imported the **installed release** instead of the patched source; that inflated `red_before` badly (`click-d340b0c1` reported **48** tests red on the base tree against a true **1**) and made honest targeted tests fail against code without the fix. With ids quoted and the environment applied, the figure is **16 of 16**. **None of this was caught by reading, by the test suite, or by an external audit that reproduced fourteen other probes** - it was caught by a four-minute run that cost nothing. `journey/43`.
 - **Every `red_before` count produced by a rehearsal before 2026-09-22.** Withdrawn. They counted import failures as tests red on the base tree. The live sweeps are not affected - a real run applies the task environment - but no rehearsal figure quoting `red_before` should be reused.
@@ -915,6 +1064,12 @@ Added by v0.8, and each is answerable cheaply:
   to contribute the discrimination check upstream rather than ship a fourth
   framework. `eval/stack.py` exists; it has never been run.
 - **Surfacing changes nothing either.** If a report that names which claims rest on nothing is ignored as reliably as the block was, then the evidence layer is not a product on its own, and the honest outcome is a library the search system in §5 consumes internally.
+
+Added by §5.16, and the first one is answerable this week for nothing:
+
+- **Diff-scoped mutants almost never survive.** If, on the rehearsed corpus with the gold patch applied, few tasks carry a surviving mutant, then the tests already pin the changed logic here and the concern §5.16 exists to answer is empirically unfounded on this population. **§5.16 is withdrawn, not deferred** — deferring it would leave a plan promising something its own measurement refused. Cost to find out: one rehearsal, $0.
+- **The survivors are equivalent mutants.** If survivors are common but a reviewer judges most of them semantically identical to the original, the mechanism is a noise generator. It moves to `docs/postponed.md` with the trigger that would revive it, and the honest report is that mutation at this granularity does not survive contact with this corpus.
+- **A reviewer does not act on a list of unpinned lines.** §5.17's whole claim is that *"these three lines could be altered and nothing you ran would notice"* is actionable without reading the diff. If it is read and ignored, that is the same falsifier as "surfacing changes nothing", now with the strongest content the report is ever likely to carry — and it would settle the question for the reporting direction, not just for one feature.
 
 ---
 
