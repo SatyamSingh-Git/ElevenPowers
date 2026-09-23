@@ -1,0 +1,1426 @@
+[
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/attr/_make.py": 23
+  },
+  "tests_in_patch": [
+   "tests/test_annotations.py",
+   "tests/test_converters.py"
+  ],
+  "sites": 20,
+  "mutants": [
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2936,
+     4,
+     2936,
+     69
+    ],
+    "verdict": "killed",
+    "diff": "any_converter = any((isinstance(c, Converter) for c in converters))  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     2938,
+     4,
+     2954,
+     22
+    ],
+    "verdict": "killed",
+    "diff": "if any_converter:  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     2975,
+     4,
+     2976,
+     75
+    ],
+    "verdict": "killed",
+    "diff": "if any_converter:  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     2978,
+     4,
+     2978,
+     25
+    ],
+    "verdict": "killed",
+    "diff": "return pipe_converter  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     2976,
+     8,
+     2976,
+     75
+    ],
+    "verdict": "killed",
+    "diff": "return Converter(pipe_converter, takes_self=True, takes_field=True)  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "return None",
+    "key": [
+     "Return",
+     2946,
+     12,
+     2946,
+     22
+    ],
+    "verdict": "killed",
+    "diff": "return val  ->  return None"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "For",
+     2951,
+     12,
+     2952,
+     28
+    ],
+    "verdict": "killed",
+    "diff": "for c in converters:  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     2954,
+     12,
+     2954,
+     22
+    ],
+    "verdict": "killed",
+    "diff": "return val  ->  pass"
+   }
+  ],
+  "task": "attrs-1e07f468",
+  "bundle": "b4-discriminate/bundles/attrs-1e07f468--gate--1789586897513",
+  "model": "claude-opus-5",
+  "seconds": 103
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/attr/_version_info.py": 3
+  },
+  "tests_in_patch": [
+   "tests/test_version_info.py"
+  ],
+  "sites": 2,
+  "mutants": [
+   {
+    "file": "src/attr/_version_info.py",
+    "op": "return None",
+    "key": [
+     "Return",
+     89,
+     8,
+     89,
+     75
+    ],
+    "verdict": "killed",
+    "diff": "return hash((self.year, self.minor, self.micro, self.releaselevel))  ->  return None"
+   },
+   {
+    "file": "src/attr/_version_info.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     89,
+     8,
+     89,
+     75
+    ],
+    "verdict": "killed",
+    "diff": "return hash((self.year, self.minor, self.micro, self.releaselevel))  ->  pass"
+   }
+  ],
+  "task": "attrs-577c782c",
+  "bundle": "chunks/bundles-chunk1/attrs-577c782c--gate--1789336932024",
+  "model": "claude-sonnet-5",
+  "seconds": 115
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/attr/_compat.py": 1,
+   "src/attr/_make.py": 25
+  },
+  "tests_in_patch": [
+   "tests/test_annotations.py"
+  ],
+  "sites": 33,
+  "mutants": [
+   {
+    "file": "src/attr/_compat.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     16,
+     0,
+     16,
+     46
+    ],
+    "verdict": "killed",
+    "diff": "PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)  ->  pass"
+   },
+   {
+    "file": "src/attr/_compat.py",
+    "op": "const 2->3",
+    "key": [
+     "Constant",
+     16,
+     33,
+     16,
+     34
+    ],
+    "verdict": "SURVIVED",
+    "diff": "PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)  ->  PY_3_11_PLUS = sys.version_info[:3] >= (3, 11)"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     2712,
+     8,
+     2725,
+     13
+    ],
+    "verdict": "killed",
+    "diff": "if not (self.takes_self or self.takes_field):  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2951,
+     8,
+     2951,
+     29
+    ],
+    "verdict": "killed",
+    "diff": "last = converters[-1]  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2713,
+     12,
+     2713,
+     70
+    ],
+    "verdict": "killed",
+    "diff": "self.__call__ = lambda value, _, __: self.converter(value)  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2729,
+     12,
+     2729,
+     56
+    ],
+    "verdict": "killed",
+    "diff": "self.__call__.__annotations__['return'] = rt  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "bool And->Or",
+    "key": [
+     "BoolOp",
+     2714,
+     13,
+     2714,
+     53
+    ],
+    "verdict": "killed",
+    "diff": "elif self.takes_self and (not self.takes_field):  ->  elif self.takes_self or not self.takes_field:"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "bool And->Or",
+    "key": [
+     "BoolOp",
+     2718,
+     13,
+     2718,
+     53
+    ],
+    "verdict": "killed",
+    "diff": "elif not self.takes_self and self.takes_field:  ->  elif not self.takes_self or self.takes_field:"
+   }
+  ],
+  "task": "attrs-5d6d21aa",
+  "bundle": "b4-discriminate/bundles/attrs-5d6d21aa--gate--1789587595816",
+  "model": "claude-opus-5",
+  "seconds": 114
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/attr/_compat.py": 1,
+   "src/attr/_make.py": 28,
+   "src/attr/setters.py": 8
+  },
+  "tests_in_patch": [
+   "tests/test_converters.py",
+   "tests/test_setattr.py"
+  ],
+  "sites": 41,
+  "mutants": [
+   {
+    "file": "src/attr/_compat.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     16,
+     0,
+     16,
+     46
+    ],
+    "verdict": "killed",
+    "diff": "PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2709,
+     8,
+     2709,
+     44
+    ],
+    "verdict": "killed",
+    "diff": "ex = _AnnotationExtractor(converter)  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     2728,
+     8,
+     2729,
+     56
+    ],
+    "verdict": "killed",
+    "diff": "if rt is not None:  ->  if not rt is not None:"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2956,
+     8,
+     2956,
+     57
+    ],
+    "verdict": "killed",
+    "diff": "rt = _AnnotationExtractor(last).get_return_type()  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     2729,
+     12,
+     2729,
+     56
+    ],
+    "verdict": "killed",
+    "diff": "self.__call__.__annotations__['return'] = rt  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "bool And->Or",
+    "key": [
+     "BoolOp",
+     2714,
+     13,
+     2714,
+     53
+    ],
+    "verdict": "killed",
+    "diff": "elif self.takes_self and (not self.takes_field):  ->  elif self.takes_self or not self.takes_field:"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "bool And->Or",
+    "key": [
+     "BoolOp",
+     2718,
+     13,
+     2718,
+     53
+    ],
+    "verdict": "killed",
+    "diff": "elif not self.takes_self and self.takes_field:  ->  elif not self.takes_self or self.takes_field:"
+   },
+   {
+    "file": "src/attr/setters.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     68,
+     8,
+     69,
+     31
+    ],
+    "verdict": "killed",
+    "diff": "if not isinstance(c, Converter):  ->  if not not isinstance(c, Converter):"
+   }
+  ],
+  "task": "attrs-6fda0a4e",
+  "bundle": "prevalence/bundles/attrs-6fda0a4e--gate--1789472340446",
+  "model": "claude-sonnet-5",
+  "seconds": 113
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/attr/_make.py": 4
+  },
+  "tests_in_patch": [
+   "tests/test_annotations.py",
+   "tests/test_forward_references.py"
+  ],
+  "sites": 2,
+  "mutants": [
+   {
+    "file": "src/attr/_make.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     303,
+     4,
+     303,
+     57
+    ],
+    "verdict": "killed",
+    "diff": "annot = str(getattr(annot, '__forward_arg__', annot))  ->  pass"
+   },
+   {
+    "file": "src/attr/_make.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     303,
+     31,
+     303,
+     48
+    ],
+    "verdict": "killed",
+    "diff": "annot = str(getattr(annot, '__forward_arg__', annot))  ->  annot = str(getattr(annot, 'XX__forward_arg__XX', annot))"
+   }
+  ],
+  "task": "attrs-97f8d175",
+  "bundle": "b4-discriminate/bundles/attrs-97f8d175--gate--1789587196889",
+  "model": "claude-opus-5",
+  "seconds": 69
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/click/_termui_impl.py": 10
+  },
+  "tests_in_patch": [
+   "tests/test_termui.py"
+  ],
+  "sites": 2,
+  "mutants": [
+   {
+    "file": "src/click/_termui_impl.py",
+    "op": "delete statement",
+    "key": [
+     "Try",
+     398,
+     8,
+     401,
+     16
+    ],
+    "verdict": "SURVIVED",
+    "diff": "try:  ->  pass"
+   },
+   {
+    "file": "src/click/_termui_impl.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     399,
+     12,
+     399,
+     25
+    ],
+    "verdict": "SURVIVED",
+    "diff": "self.detach()  ->  pass"
+   }
+  ],
+  "task": "click-051bb0f3",
+  "bundle": "b4-discriminate/bundles/click-051bb0f3--gate--1789587897426",
+  "model": "claude-opus-5",
+  "seconds": 61
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/click/core.py": 22
+  },
+  "tests_in_patch": [
+   "tests/test_basic.py"
+  ],
+  "sites": 18,
+  "mutants": [
+   {
+    "file": "src/click/core.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     2426,
+     8,
+     2432,
+     52
+    ],
+    "verdict": "killed",
+    "diff": "if value is UNSET:  ->  if not value is UNSET:"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     3275,
+     8,
+     3276,
+     25
+    ],
+    "verdict": "killed",
+    "diff": "if value is UNSET and self.is_bool_flag and (not self.required):  ->  if not (value is UNSET and self.is_bool_flag and (not self.required)):"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "return None",
+    "key": [
+     "Return",
+     3278,
+     8,
+     3278,
+     48
+    ],
+    "verdict": "killed",
+    "diff": "return super().process_value(ctx, value)  ->  return None"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "cmp Is->IsNot",
+    "key": [
+     "Compare",
+     2426,
+     11,
+     2426,
+     25
+    ],
+    "verdict": "killed",
+    "diff": "if value is UNSET:  ->  if value is not UNSET:"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     2429,
+     12,
+     2430,
+     26
+    ],
+    "verdict": "killed",
+    "diff": "if self.multiple or self.nargs == -1:  ->  pass"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "bool And->Or",
+    "key": [
+     "BoolOp",
+     3275,
+     11,
+     3275,
+     69
+    ],
+    "verdict": "killed",
+    "diff": "if value is UNSET and self.is_bool_flag and (not self.required):  ->  if value is UNSET or self.is_bool_flag or (not self.required):"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "bool Or->And",
+    "key": [
+     "BoolOp",
+     2429,
+     15,
+     2429,
+     48
+    ],
+    "verdict": "killed",
+    "diff": "if self.multiple or self.nargs == -1:  ->  if self.multiple and self.nargs == -1:"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "cmp Is->IsNot",
+    "key": [
+     "Compare",
+     3275,
+     11,
+     3275,
+     25
+    ],
+    "verdict": "killed",
+    "diff": "if value is UNSET and self.is_bool_flag and (not self.required):  ->  if value is not UNSET and self.is_bool_flag and (not self.required):"
+   }
+  ],
+  "task": "click-18d29196",
+  "bundle": "b4-discriminate/bundles/click-18d29196--gate--1789588490948",
+  "model": "claude-opus-5",
+  "seconds": 44
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "docs/conf.py": 1,
+   "src/click/__init__.py": 1,
+   "src/click/decorators.py": 52
+  },
+  "tests_in_patch": [
+   "tests/test_basic.py",
+   "tests/typing/typing_version_option.py"
+  ],
+  "sites": 29,
+  "mutants": [
+   {
+    "file": "docs/conf.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     30,
+     4,
+     30,
+     16
+    ],
+    "verdict": "SURVIVED",
+    "diff": "extlinks = {'issue': ('https://github.com/pallets/click/issues/%s', '#  ->  extlinks = {'issue': ('https://github.com/pallets/click/issues/%s', '#"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     592,
+     4,
+     593,
+     36
+    ],
+    "verdict": "killed",
+    "diff": "if not param_decls:  ->  if not not param_decls:"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     596,
+     4,
+     596,
+     44
+    ],
+    "verdict": "killed",
+    "diff": "kwargs.setdefault('expose_value', False)  ->  pass"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     599,
+     4,
+     599,
+     37
+    ],
+    "verdict": "killed",
+    "diff": "kwargs['callback'] = show_version  ->  pass"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     586,
+     8,
+     587,
+     18
+    ],
+    "verdict": "killed",
+    "diff": "if not value or ctx.resilient_parsing:  ->  if not (not value or ctx.resilient_parsing):"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     590,
+     8,
+     590,
+     18
+    ],
+    "verdict": "SURVIVED",
+    "diff": "ctx.exit()  ->  pass"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     587,
+     12,
+     587,
+     18
+    ],
+    "verdict": "killed",
+    "diff": "return  ->  pass"
+   },
+   {
+    "file": "src/click/decorators.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     596,
+     22,
+     596,
+     36
+    ],
+    "verdict": "killed",
+    "diff": "kwargs.setdefault('expose_value', False)  ->  kwargs.setdefault('XXexpose_valueXX', False)"
+   }
+  ],
+  "task": "click-9f9b149e",
+  "bundle": "b4-discriminate/bundles/click-9f9b149e--gate--1789587319297",
+  "model": "claude-opus-5",
+  "seconds": 95
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/click/testing.py": 117
+  },
+  "tests_in_patch": [
+   "tests/test_testing.py"
+  ],
+  "sites": 89,
+  "mutants": [
+   {
+    "file": "src/click/testing.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     25,
+     0,
+     28,
+     53
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if sys.platform == 'win32':  ->  if not sys.platform == 'win32':"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     94,
+     8,
+     94,
+     55
+    ],
+    "verdict": "SURVIVED",
+    "diff": "os.dup2(self._tmpfile.fileno(), self._targetfd)  ->  pass"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     170,
+     8,
+     170,
+     30
+    ],
+    "verdict": "killed",
+    "diff": "self._original_fd = -1  ->  pass"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "cmp IsNot->Is",
+    "key": [
+     "Compare",
+     97,
+     15,
+     97,
+     40
+    ],
+    "verdict": "SURVIVED",
+    "diff": "assert self._tmpfile is not None, '_FDCapture.start() was not called'  ->  assert self._tmpfile is None, '_FDCapture.start() was not called'"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     653,
+     12,
+     655,
+     58
+    ],
+    "verdict": "killed",
+    "diff": "if cap_out is not None and cap_err is not None:  ->  if not (cap_out is not None and cap_err is not None):"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     644,
+     16,
+     644,
+     31
+    ],
+    "verdict": "SURVIVED",
+    "diff": "cap_out.start()  ->  pass"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     349,
+     47,
+     349,
+     54
+    ],
+    "verdict": "killed",
+    "diff": "if capture == 'fd' and sys.platform == 'win32':  ->  if capture == 'fd' and sys.platform == 'XXwin32XX':"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     706,
+     20,
+     707,
+     51
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if fd_err:  ->  if not fd_err:"
+   }
+  ],
+  "task": "click-ad39d749",
+  "bundle": "b4-discriminate/bundles/click-ad39d749--gate--1789588090497",
+  "model": "claude-opus-5",
+  "seconds": 103
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/click/testing.py": 24
+  },
+  "tests_in_patch": [
+   "tests/test_arguments.py",
+   "tests/test_basic.py",
+   "tests/test_shell_completion.py",
+   "tests/test_testing.py",
+   "tests/test_utils/test_open_file.py"
+  ],
+  "sites": 3,
+  "mutants": [
+   {
+    "file": "src/click/testing.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     774,
+     8,
+     780,
+     9
+    ],
+    "verdict": "killed",
+    "diff": "warnings.warn(\"'isolated_filesystem' is deprecated and will be removed  ->  pass"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     775,
+     12,
+     777,
+     77
+    ],
+    "verdict": "SURVIVED",
+    "diff": "warnings.warn(\"'isolated_filesystem' is deprecated and will be removed  ->  warnings.warn(\"XX'isolated_filesystem' is deprecated and will be remov"
+   },
+   {
+    "file": "src/click/testing.py",
+    "op": "const 3->4",
+    "key": [
+     "Constant",
+     779,
+     23,
+     779,
+     24
+    ],
+    "verdict": "SURVIVED",
+    "diff": "warnings.warn(\"'isolated_filesystem' is deprecated and will be removed  ->  warnings.warn(\"'isolated_filesystem' is deprecated and will be removed"
+   }
+  ],
+  "task": "click-c2ed4149",
+  "bundle": "b4-discriminate/bundles/click-c2ed4149--gate--1789587848867",
+  "model": "claude-opus-5",
+  "seconds": 90
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "conftest.py": 8,
+   "src/click/core.py": 1
+  },
+  "tests_in_patch": [
+   "tests/test_options.py"
+  ],
+  "sites": 16,
+  "mutants": [
+   {
+    "file": "conftest.py",
+    "op": "delete statement",
+    "key": [
+     "For",
+     13,
+     0,
+     16,
+     34
+    ],
+    "verdict": "SURVIVED",
+    "diff": "for _name, _module in list(sys.modules.items()):  ->  pass"
+   },
+   {
+    "file": "conftest.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     14,
+     4,
+     16,
+     34
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if _name == 'click' or _name.startswith('click.'):  ->  pass"
+   },
+   {
+    "file": "conftest.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     15,
+     8,
+     16,
+     34
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if not (getattr(_module, '__file__', None) or '').startswith(_root):  ->  if not not (getattr(_module, '__file__', None) or '').startswith(_root"
+   },
+   {
+    "file": "conftest.py",
+    "op": "cmp Eq->NotEq",
+    "key": [
+     "Compare",
+     14,
+     7,
+     14,
+     23
+    ],
+    "verdict": "killed",
+    "diff": "if _name == 'click' or _name.startswith('click.'):  ->  if _name != 'click' or _name.startswith('click.'):"
+   },
+   {
+    "file": "conftest.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     14,
+     16,
+     14,
+     23
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if _name == 'click' or _name.startswith('click.'):  ->  if _name == 'XXclickXX' or _name.startswith('click.'):"
+   },
+   {
+    "file": "conftest.py",
+    "op": "bool Or->And",
+    "key": [
+     "BoolOp",
+     15,
+     16,
+     15,
+     56
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if not (getattr(_module, '__file__', None) or '').startswith(_root):  ->  if not (getattr(_module, '__file__', None) and '').startswith(_root):"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     3113,
+     12,
+     3116,
+     51
+    ],
+    "verdict": "killed",
+    "diff": "elif isinstance(default_value, str) and default_value == '':  ->  elif not (isinstance(default_value, str) and default_value == ''):"
+   },
+   {
+    "file": "src/click/core.py",
+    "op": "bool And->Or",
+    "key": [
+     "BoolOp",
+     3113,
+     17,
+     3113,
+     71
+    ],
+    "verdict": "killed",
+    "diff": "elif isinstance(default_value, str) and default_value == '':  ->  elif isinstance(default_value, str) or default_value == '':"
+   }
+  ],
+  "task": "click-d340b0c1",
+  "bundle": "b4-discriminate/bundles/click-d340b0c1--gate--1789588256777",
+  "model": "claude-opus-5",
+  "seconds": 90
+ },
+ {
+  "revert_killed": false,
+  "baseline_red": 0,
+  "changed": {
+   "src/click/_textwrap.py": 139
+  },
+  "tests_in_patch": [],
+  "sites": 155,
+  "mutants": [
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     18,
+     4,
+     19,
+     17
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if n <= 0:  ->  if not n <= 0:"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     27,
+     8,
+     29,
+     20
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if m is not None:  ->  pass"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "delete statement",
+    "key": [
+     "Continue",
+     29,
+     12,
+     29,
+     20
+    ],
+    "verdict": "SURVIVED",
+    "diff": "continue  ->  pass"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     105,
+     12,
+     106,
+     30
+    ],
+    "verdict": "killed",
+    "diff": "if self.drop_whitespace and chunks[-1].strip() == '' and lines:  ->  if not (self.drop_whitespace and chunks[-1].strip() == '' and lines):"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "arith Sub->Add",
+    "key": [
+     "BinOp",
+     103,
+     20,
+     103,
+     49
+    ],
+    "verdict": "killed",
+    "diff": "width = self.width - term_len(indent)  ->  width = self.width + term_len(indent)"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "delete statement",
+    "key": [
+     "AugAssign",
+     113,
+     20,
+     113,
+     32
+    ],
+    "verdict": "killed",
+    "diff": "cur_len += n  ->  pass"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "delete statement",
+    "key": [
+     "Delete",
+     149,
+     24,
+     149,
+     40
+    ],
+    "verdict": "SURVIVED",
+    "diff": "del cur_line[-1]  ->  pass"
+   },
+   {
+    "file": "src/click/_textwrap.py",
+    "op": "const 1->2",
+    "key": [
+     "Constant",
+     129,
+     36,
+     129,
+     37
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if self.max_lines is None or len(lines) + 1 < self.max_lines or ((not   ->  if self.max_lines is None or len(lines) + 2 < self.max_lines or ((not "
+   }
+  ],
+  "task": "click-d946074a",
+  "bundle": "prevalence/bundles/click-d946074a--gate--1789474258922",
+  "model": "claude-sonnet-5",
+  "seconds": 108
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/itsdangerous/timed.py": 19
+  },
+  "tests_in_patch": [
+   "tests/test_itsdangerous/test_timed.py"
+  ],
+  "sites": 16,
+  "mutants": [
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     126,
+     8,
+     126,
+     25
+    ],
+    "verdict": "SURVIVED",
+    "diff": "s = want_bytes(s)  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "For",
+     129,
+     8,
+     142,
+     36
+    ],
+    "verdict": "killed",
+    "diff": "for signer in self.iter_unsigners(salt):  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "Try",
+     130,
+     12,
+     142,
+     36
+    ],
+    "verdict": "killed",
+    "diff": "try:  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     132,
+     16,
+     132,
+     52
+    ],
+    "verdict": "killed",
+    "diff": "payload = self.load_payload(base64d)  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     133,
+     16,
+     134,
+     45
+    ],
+    "verdict": "killed",
+    "diff": "if return_timestamp:  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     135,
+     16,
+     135,
+     30
+    ],
+    "verdict": "killed",
+    "diff": "return payload  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     134,
+     20,
+     134,
+     45
+    ],
+    "verdict": "killed",
+    "diff": "return (payload, timestamp)  ->  pass"
+   },
+   {
+    "file": "src/itsdangerous/timed.py",
+    "op": "delete statement",
+    "key": [
+     "Assign",
+     142,
+     16,
+     142,
+     36
+    ],
+    "verdict": "killed",
+    "diff": "last_exception = err  ->  pass"
+   }
+  ],
+  "task": "itsdangerous-6c58e969",
+  "bundle": "b4-discriminate/bundles/itsdangerous-6c58e969--gate--1789588273681",
+  "model": "claude-opus-5",
+  "seconds": 38
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/jinja2/filters.py": 16
+  },
+  "tests_in_patch": [
+   "tests/test_security.py"
+  ],
+  "sites": 7,
+  "mutants": [
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "return None",
+    "key": [
+     "Return",
+     1433,
+     4,
+     1433,
+     41
+    ],
+    "verdict": "killed",
+    "diff": "return environment.getattr(obj, name)  ->  return None"
+   },
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     1433,
+     4,
+     1433,
+     41
+    ],
+    "verdict": "killed",
+    "diff": "return environment.getattr(obj, name)  ->  pass"
+   },
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "delete statement",
+    "key": [
+     "Expr",
+     1427,
+     8,
+     1427,
+     33
+    ],
+    "verdict": "SURVIVED",
+    "diff": "getattr_static(obj, name)  ->  pass"
+   },
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "negate condition",
+    "key": [
+     "If",
+     1430,
+     8,
+     1431,
+     60
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if not hasattr(obj, name):  ->  if not not hasattr(obj, name):"
+   },
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "delete statement",
+    "key": [
+     "If",
+     1430,
+     8,
+     1431,
+     60
+    ],
+    "verdict": "SURVIVED",
+    "diff": "if not hasattr(obj, name):  ->  pass"
+   },
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "return None",
+    "key": [
+     "Return",
+     1431,
+     12,
+     1431,
+     60
+    ],
+    "verdict": "SURVIVED",
+    "diff": "return environment.undefined(obj=obj, name=name)  ->  return None"
+   },
+   {
+    "file": "src/jinja2/filters.py",
+    "op": "delete statement",
+    "key": [
+     "Return",
+     1431,
+     12,
+     1431,
+     60
+    ],
+    "verdict": "SURVIVED",
+    "diff": "return environment.undefined(obj=obj, name=name)  ->  pass"
+   }
+  ],
+  "task": "jinja2-065334d1",
+  "bundle": "b4-discriminate/bundles/jinja2-065334d1--gate--1789588413704",
+  "model": "claude-opus-5",
+  "seconds": 67
+ },
+ {
+  "revert_killed": true,
+  "baseline_red": 0,
+  "changed": {
+   "src/jinja2/utils.py": 2
+  },
+  "tests_in_patch": [
+   "tests/test_filters.py"
+  ],
+  "sites": 1,
+  "mutants": [
+   {
+    "file": "src/jinja2/utils.py",
+    "op": "string XX",
+    "key": [
+     "Constant",
+     337,
+     38,
+     337,
+     41
+    ],
+    "verdict": "killed",
+    "diff": "elif '@' in middle and (not middle.startswith('www.')) and (not middle  ->  elif '@' in middle and (not middle.startswith('www.')) and (not middle"
+   }
+  ],
+  "task": "jinja2-0cd69481",
+  "bundle": "b4-discriminate/bundles/jinja2-0cd69481--gate--1789588334757",
+  "model": "claude-opus-5",
+  "seconds": 28
+ }
+]

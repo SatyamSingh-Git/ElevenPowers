@@ -1,0 +1,29 @@
+02:44:52 rerunning 9 jobs that died on the shared zip: [('attrs-5d6d21aa', 'mutants'), ('click-051bb0f3', 'generic'), ('click-18d29196', 'mutants'), ('click-9f9b149e', 'mutants'), ('click-ad39d749', 'mutants'), ('click-c2ed4149', 'mutants'), ('click-d946074a', 'generic'), ('itsdangerous-6c58e969', 'generic'), ('jinja2-065334d1', 'generic')]
+02:44:53 start itsdangerous-6c58e969 generic
+02:44:56 start attrs-5d6d21aa mutants
+02:44:56 start jinja2-065334d1 generic
+02:44:56 start click-18d29196 mutants
+02:44:56 start click-ad39d749 mutants
+02:44:56 start click-9f9b149e mutants
+02:44:56 start click-051bb0f3 generic
+02:44:56 start click-d946074a generic
+02:44:56 start click-c2ed4149 mutants
+02:47:23 agent done itsdangerous-6c58e969 generic: $0.43 turns=8 error=False 150s
+02:47:37 agent done click-c2ed4149 mutants: $0.35 turns=7 error=False 161s
+02:49:11 agent done attrs-5d6d21aa mutants: $0.44 turns=8 error=False 255s
+02:53:12 agent done jinja2-065334d1 generic: $0.51 turns=14 error=False 496s
+02:53:20 DONE click-c2ed4149 mutants: 1/1 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $0.35
+02:53:24 agent done click-9f9b149e mutants: $0.46 turns=9 error=False 508s
+02:53:55 DONE itsdangerous-6c58e969 generic: 0/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.43
+02:54:23 agent done click-ad39d749 mutants: $0.76 turns=20 error=False 567s
+02:54:37 agent done click-051bb0f3 generic: $0.79 turns=14 error=False 581s
+02:56:11 agent done click-18d29196 mutants: $0.76 turns=25 error=False 675s
+02:58:00 DONE attrs-5d6d21aa mutants: 1/1 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $0.44
+02:59:57 DONE jinja2-065334d1 generic: 5/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.51
+03:01:20 DONE click-9f9b149e mutants: 4/4 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.46
+03:02:37 DONE click-18d29196 mutants: 2/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.76
+03:02:58 DONE click-ad39d749 mutants: 5/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.76
+03:03:31 DONE click-051bb0f3 generic: 4/4 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.79
+03:06:59 agent done click-d946074a generic: $0.91 turns=20 error=False 1323s
+03:14:00 DONE click-d946074a generic: 3/3 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.91
+03:14:00 rerun done

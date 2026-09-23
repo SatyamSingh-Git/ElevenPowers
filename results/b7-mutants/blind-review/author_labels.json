@@ -1,0 +1,33 @@
+{
+ "registered_at": "2026-09-24T02:42:20",
+ "basis": "the one-line diff only, before any rater returned",
+ "labels": {
+  "M27": "EQUIVALENT",
+  "M19": "TRIVIAL",
+  "M05": "MEANINGFUL",
+  "M08": "MEANINGFUL",
+  "M22": "MEANINGFUL",
+  "M11": "MEANINGFUL",
+  "M02": "MEANINGFUL",
+  "M13": "MEANINGFUL",
+  "M17": "MEANINGFUL",
+  "M07": "MEANINGFUL",
+  "M14": "EQUIVALENT",
+  "M16": "UNSURE",
+  "M15": "TRIVIAL",
+  "M18": "MEANINGFUL",
+  "M09": "MEANINGFUL",
+  "M03": "UNSURE",
+  "M12": "MEANINGFUL",
+  "M25": "MEANINGFUL",
+  "M20": "MEANINGFUL",
+  "M04": "MEANINGFUL",
+  "M24": "MEANINGFUL",
+  "M26": "UNSURE",
+  "M23": "MEANINGFUL",
+  "M10": "MEANINGFUL",
+  "M21": "MEANINGFUL",
+  "M01": "MEANINGFUL",
+  "M06": "MEANINGFUL"
+ }
+}

@@ -117,6 +117,27 @@ patched source, reporting 48 tests red on a base tree where the truth was 1.
 Neither was caught by reading, by the suite, or by an external audit that
 reproduced fourteen other probes. See `journey/43`.
 
+**Before any paid sweep, spend one cent checking the harness can run it.** On
+2026-09-24 three things would each have wasted a whole sweep and were caught
+only by a single test call (`journey/45`):
+
+- The `claude` on PATH is what the harness shells out to, and it is **not** the
+  binary this editor session runs. It was 2.1.228 and refused Opus 5.5
+  (*"version 2.1.280"* required). Check `claude --version` against the model.
+- `--bare` would keep this machine's globally installed plugins out of the
+  agents, but it **requires `ANTHROPIC_API_KEY`**, and this machine authenticates
+  by OAuth — every run dies with *"Not logged in"*. So agent runs carry the user's
+  plugins (superpowers included). Both arms get them equally; record it as a
+  condition.
+- The harness caches one repository zip per task in the **parent** directory.
+  Two arms of the same task under one parent race for it and die at $0. Give
+  each arm its own parent.
+
+Calibration from that run: focused Opus 5.5 runs at effort high averaged
+**$0.62**; the first call of a session pays a one-time cache write (a two-word
+reply cost $0.47). A 25-minute agent timeout returns **no** cost record, so a
+sweep's total is a floor when any run times out.
+
 Paid evaluation runs cost real money and are never started without asking.
 **`claude-sonnet-5` at effort high** is the default model for them unless the
 user says otherwise for that run, and the per-run `--budget` must match the

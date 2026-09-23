@@ -136,15 +136,74 @@ and without a false kill on any task.
   changing. Whether the line is *right* is a separate question nothing here
   answers.
 
-## Next, not run
+## Update, same day: both follow-ups were run
 
-1. **An independent, blind classification of the 27** — someone who did not
-   design the probe, shown each diff without the verdict of the others.
-2. **The same probe on an agent's patch** rather than the gold one, which is the
-   case §5.16 actually exists for.
-3. **Survival by operator.** Statement deletion produced 19 of the 27 survivors
-   from 54 attempts; comparison and boolean swaps produced none from 8. Too few
-   of the latter to read anything into yet.
+### The blind classification — `blind-review/`
+
+Two reviewers who did not design the probe — Opus 5.5 and Sonnet 5, as separate
+agents told not to open anything in this repository — each classified the 27
+from a self-contained packet: the real enclosing function with the mutated line
+marked, items shuffled under neutral ids, no verdicts shown. Before either
+returned, the author's labels were registered in `author_labels.json`, made from
+the one-line diffs only.
+
+Before building the packet, every mutant was re-derived from scratch and
+**asserted identical** to what this probe ran, so the reviewers judged the
+mutants that were counted rather than lookalikes.
+
+| | MEANINGFUL | TRIVIAL | EQUIVALENT | UNSURE |
+|---|---|---|---|---|
+| Opus 5.5, blind | 21 | 5 | 1 | 0 |
+| Sonnet 5, blind | 22 | 4 | 1 | 0 |
+| author, unblinded | 20 | 2 | 2 | 3 |
+
+**Both blind reviewers call 20 of the 27 MEANINGFUL.** They agree with each
+other on 24 of 27 (Cohen's κ 0.67), and with the author on MEANINGFUL-or-not at
+κ 0.70 and 0.79. The bias this step existed to catch — the author inflating his
+own mechanism — does not show: both blind reviewers found *slightly more*
+meaningful gaps than he did.
+
+**Exactly one mutant is unanimously EQUIVALENT:** `sys.version_info[:2]` →
+`[:3]`. That matters for B8, where it is the mutant agents "killed" by pinning
+the implementation.
+
+One correction to the table above. The author's first classification counted
+the changed assertion message as *clearly equivalent*. Under the formal rubric
+it is TRIVIAL — the message is observable when the assertion fires — and it is
+registered that way. The totals move by one; the conclusion does not.
+
+**So the gate PLAN §5.16 set for itself is passed on detection:** survival is
+not near zero, and the survivors are real gaps by the judgement of two
+reviewers who never saw the author's.
+
+### The same probe on agents' patches — `agent-patches/`
+
+The expectation written above — *"an agent's own tests pin less"* — was tested
+on one resolved agent patch per task from earlier paid sweeps (15 tasks; 12 from
+Opus 5, 3 from Sonnet 5). **It is wrong.**
+
+| | survived | tasks with a survivor |
+|---|---|---|
+| gold patches, same 15 tasks | 27 / 91 (30%) | 9 |
+| agents' patches | 28 / 89 (31%) | 9 |
+
+Per task, the agent's tests pin worse on 4, better on 3, equally on 8. Tests
+written alongside a change leave about the same fraction of it unpinned whoever
+writes them, and the repository still matters more than the author.
+
+One qualification the numbers depend on: every one of those 15 agent patches
+came from a **gate-arm** run, so these are agents working under this project's
+own obligation to write a test. B9 (`results/b9-gate-tests/`) measures what
+happens without it.
+
+One of the 15 was **VACUOUS** — reverting the agent's whole fix went unnoticed:
+`click-d946074a`, Sonnet 5, **no test file in the patch**.
+
+### Still not run
+
+**Survival by operator.** Statement deletion produced 19 of the 27 survivors
+from 54 attempts; comparison and boolean swaps produced none from 8. Too few of
+the latter to read anything into yet.
 
 Reproduce: `python results/b7-mutants/probe.py` (~22 minutes, $0). Raw
 per-mutant results with diffs: `mutants.json`.

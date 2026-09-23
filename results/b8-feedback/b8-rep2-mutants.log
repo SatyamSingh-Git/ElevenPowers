@@ -1,0 +1,29 @@
+02:48:00 replicate 2, arm=mutants, 9 tasks
+02:48:08 start itsdangerous-6c58e969 mutants
+02:48:10 start click-18d29196 mutants
+02:48:10 start click-051bb0f3 mutants
+02:48:11 start attrs-5d6d21aa mutants
+02:48:11 start click-ad39d749 mutants
+02:48:11 start click-c2ed4149 mutants
+02:48:12 start jinja2-065334d1 mutants
+02:48:12 start click-9f9b149e mutants
+02:48:12 start click-d946074a mutants
+02:53:06 agent done itsdangerous-6c58e969 mutants: $0.35 turns=7 error=False 298s
+02:54:11 agent done jinja2-065334d1 mutants: $0.46 turns=9 error=False 360s
+02:58:00 agent done attrs-5d6d21aa mutants: $0.50 turns=11 error=False 590s
+02:59:37 agent done click-c2ed4149 mutants: $0.50 turns=10 error=False 686s
+02:59:56 DONE itsdangerous-6c58e969 mutants: 2/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.35
+03:00:44 DONE jinja2-065334d1 mutants: 5/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.46
+03:01:36 agent done click-d946074a mutants: $0.63 turns=15 error=False 804s
+03:01:46 agent done click-9f9b149e mutants: $0.48 turns=14 error=False 814s
+03:02:12 agent done click-051bb0f3 mutants: $0.54 turns=13 error=False 842s
+03:02:45 agent done click-18d29196 mutants: $0.73 turns=17 error=False 875s
+03:03:50 agent done click-ad39d749 mutants: $0.90 turns=21 error=False 939s
+03:04:01 DONE click-c2ed4149 mutants: 1/1 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $0.50
+03:05:07 DONE attrs-5d6d21aa mutants: 1/1 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $0.50
+03:06:56 DONE click-18d29196 mutants: 2/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.73
+03:07:26 DONE click-9f9b149e mutants: 4/4 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.48
+03:08:10 DONE click-051bb0f3 mutants: 4/4 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.54
+03:08:52 DONE click-ad39d749 mutants: 5/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.90
+03:09:55 DONE click-d946074a mutants: 3/3 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.63
+03:09:55 replicate 2 done

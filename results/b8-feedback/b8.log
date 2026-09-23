@@ -1,0 +1,38 @@
+02:44:17 18 runs: 9 tasks x 2 arms, claude-opus-5-5 effort=high cap=$15.0
+02:44:17 DONE itsdangerous-6c58e969 generic: BadZipFile: File is not a zip file
+02:44:17 DONE click-9f9b149e mutants: BadZipFile: Truncated file header
+02:44:17 DONE click-d946074a generic: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\click-d946074a.zip'
+02:44:17 DONE click-051bb0f3 generic: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\click-051bb0f3.zip'
+02:44:17 DONE click-c2ed4149 mutants: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\click-c2ed4149.zip'
+02:44:17 DONE click-18d29196 mutants: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\click-18d29196.zip'
+02:44:17 DONE jinja2-065334d1 generic: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\jinja2-065334d1.zip'
+02:44:17 DONE click-ad39d749 mutants: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\click-ad39d749.zip'
+02:44:17 DONE attrs-5d6d21aa mutants: PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\e--ElevenPowers\\cf4ea1a0-0d66-483c-af19-d5e4658f485a\\scratchpad\\b8-work\\attrs-5d6d21aa.zip'
+02:44:18 start itsdangerous-6c58e969 mutants
+02:44:20 start attrs-5d6d21aa generic
+02:44:21 start jinja2-065334d1 mutants
+02:44:21 start click-c2ed4149 generic
+02:44:21 start click-d946074a mutants
+02:44:21 start click-051bb0f3 mutants
+02:44:21 start click-9f9b149e generic
+02:44:21 start click-18d29196 generic
+02:44:21 start click-ad39d749 generic
+02:46:02 agent done jinja2-065334d1 mutants: $0.35 turns=6 error=False 102s
+02:46:05 agent done itsdangerous-6c58e969 mutants: $0.56 turns=7 error=False 107s
+02:48:06 DONE itsdangerous-6c58e969 mutants: 2/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.56
+02:48:43 DONE jinja2-065334d1 mutants: 5/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.35
+02:50:14 agent done click-051bb0f3 mutants: $0.62 turns=15 error=False 352s
+02:50:45 agent done click-c2ed4149 generic: $0.54 turns=9 error=False 384s
+02:55:59 DONE click-c2ed4149 generic: 1/1 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $0.54
+02:56:28 agent done click-d946074a mutants: $0.83 turns=22 error=False 727s
+02:58:56 agent done click-ad39d749 generic: $0.75 turns=13 error=False 875s
+02:59:38 DONE click-051bb0f3 mutants: 4/4 survivors now killed, 0 un-killed, src_restored=1, tautology=[], $0.62
+03:05:11 agent done click-9f9b149e generic: $1.09 turns=6 error=False 1250s
+03:06:13 DONE click-d946074a mutants: 3/3 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.83
+03:06:13 DONE click-ad39d749 generic: 1/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.75
+03:09:17 agent done attrs-5d6d21aa generic: $0.83 turns=18 error=False 1497s
+03:09:22 agent done click-18d29196 generic: $0.00 turns=None error=True 1500s
+03:09:23 DONE click-9f9b149e generic: 4/4 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $1.09
+03:11:26 DONE click-18d29196 generic: 2/2 survivors now killed, 0 un-killed, src_restored=1, tautology=[], $0.00
+03:12:40 DONE attrs-5d6d21aa generic: 0/1 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.83
+03:12:40 all done

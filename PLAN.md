@@ -155,6 +155,18 @@ the gap this section describes is measured rather than argued - and until
 §5.16 is built and has passed a blind review of what it reports, this paragraph
 is the accurate description and §1's opening line is the intent.
 
+**Updated the same day, and it narrows what "better code" can mean here.** Two
+blind reviewers confirm the gap is real (20 of 27 survivors MEANINGFUL). But
+handing the list of gaps to an agent made its tests *target the list* — white-box
+tests of private internals, and, twice, a test of how the source spells a slice
+(B8). And the gate, measured on the tests agents leave behind, changes **whether
+a test exists** (fewer vacuous patches, p = 0.06) but **not how much of the
+change it pins** (p = 1.0; B9). So the nearest this system has come to improving
+the code is getting a test written at all. Making the test *thorough* is
+measured here to be hard to do by instruction, and the evidence points at a
+reviewer reading the unpinned lines rather than an agent being told to kill
+them.
+
 ---
 
 ## 2. The thesis, confirmed and re-aimed
@@ -691,6 +703,60 @@ What it does not say: anything about an agent's patch, which is the case §5.16
 exists for; a rate (eight sampled mutants per task); or anything about
 `mutmut` — the probe's operators are its own. `results/b7-mutants/findings.md`.
 
+### And the rest of the gate, the same day — detection earns its place
+
+**Outcome three is now earned, not provisional.** Two reviewers who did not
+design the probe — Opus 5.5 and Sonnet 5, as separate agents barred from this
+repository — classified the 27 blind, from a packet re-derived and asserted
+identical to what B7 ran. **Both call 20 of 27 MEANINGFUL** (κ 0.67 between
+them; 0.70 and 0.79 against the author, who registered his labels first). Both
+found slightly *more* real gaps than the author did. Exactly **one** mutant is
+unanimously equivalent. `results/b7-mutants/blind-review/`.
+
+**And the expectation about agents was wrong.** On 15 tasks, one resolved agent
+patch each: **28 of 89** mutants survive against the gold patches' **27 of 91**
+on the same tasks. Agents' tests leave the same fraction of their change
+unpinned as maintainers' do. `results/b7-mutants/agent-patches/`.
+
+### But the obvious intervention games the detector — B8, 36 paid runs
+
+The natural next step is to hand an agent the list. So that was measured, before
+anything was built: nine tasks, two replicates, Opus 5.5 at effort high, a
+*generic* arm told only that the tests are too weak against a *mutants* arm given
+the exact list.
+
+| | original survivors killed |
+|---|---|
+| generic | 38 / 54 (70%) |
+| mutants | **54 / 54 (100%)** |
+
+Per task, better on 4, worse on 0, tied on 5 — p = 0.125. At least $22.14.
+
+**Then the tests were read, and the 100% does not mean what it seems to.** On
+every task where the list beat the generic prompt, the extra kills came largely
+from white-box tests aimed at the exact mutation: a private class, a private
+attribute, an assertion message's text, the type of an internal call's argument,
+incidental behaviour (`raise None` → `TypeError`). And the **one unanimously
+equivalent mutant** was "killed" in **both** replicates by a test that records
+how `sys.version_info` is sliced and asserts the slice — a test of the source
+code's spelling, not of what it computes. The generic arm left that mutant alone
+twice, correctly, and wrote about **3.5× more test code** overall.
+
+The measure became the target. This is §5.12 arriving from the other side:
+**the survivor list is a good detector and, handed raw to an agent, a poor
+intervention.** It fixes three requirements before §5.16 is built:
+
+1. **Raw mutants are never handed to an agent as targets.** A mutation score
+   earned by tests written against named mutants measures compliance with the
+   list, not test quality.
+2. **Likely-equivalent mutants are filtered or flagged first.** The one
+   equivalent mutant produced the worst test in the experiment, twice.
+3. **The primary consumer is a reviewer (§5.17).** If feedback goes to an agent
+   at all, it is phrased as untested *behaviour* — which input, which branch —
+   and the resulting kills are checked for being behavioural.
+
+`results/b8-feedback/findings.md`.
+
 ---
 
 **5.17 The bar a reviewer actually has.** *(2026-09-23)*
@@ -959,8 +1025,11 @@ Reordered by measured effect size, with the free ones first.
 | Experiment | Comparison | Decision it answers | Cost |
 |---|---|---|---|
 | **Mutant survival** *(RUN 2026-09-24)* | diff-scoped mutants vs the task's own tests, gold patch applied | **does §5.16 exist?** — **27 of 98 survived on 9 of 16 tasks**; not withdrawn, not postponed, provisionally passes pending a blind classification. `results/b7-mutants/` | **$0**, 22 min |
-| **Blind survivor classification** *(new)* | the 27 survivors, judged by someone who did not design the probe | **does §5.16 earn its place, or only look like it does to its author?** | ~$0 |
-| **Mutants on an agent's patch** *(new)* | the same probe, an agent's candidate instead of the gold patch | the case §5.16 actually exists for | one paid sweep's worth of candidates, already bundled |
+| **Blind survivor classification** *(RUN 2026-09-24)* | the 27 survivors, two blind reviewers | **both call 20/27 MEANINGFUL**; detection earns its place. `results/b7-mutants/blind-review/` | ~$0 |
+| **Mutants on an agent's patch** *(RUN 2026-09-24)* | the same probe, 15 resolved agent patches | **28/89 survive vs gold's 27/91** — agents pin as well as maintainers. `results/b7-mutants/agent-patches/` | $0 |
+| **Mutant feedback to an agent (B8)** *(RUN 2026-09-24)* | generic "tests are weak" vs the exact mutant list, 9 tasks x 2 reps, Opus 5.5 | **list kills 54/54 vs 38/54, but largely through white-box tests aimed at the mutation** — never hand raw mutants to an agent. `results/b8-feedback/` | $22.14+ |
+| **Gate vs vanilla test quality (B9)** *(RUN 2026-09-24)* | every resolved patch of the paired chunks sweep through the probe | **no difference in how well tests pin the change (p = 1.0); fewer VACUOUS patches under the gate, 4/49 vs 10/46 (p = 0.06)** — all 14 vacuous patches had no test at all. `results/b9-gate-tests/` | $0 |
+| **Vacuity by arm, one method** *(new)* | the same sweep, both arms, `stress.py`'s own check | **settles whether B3/B4's 1-in-22 was the gate's effect** rather than the phenomenon's absence | a paired sweep |
 | **Discrimination rate** | recorded pass vs the same command on the reverted tree | does our own evidence measure anything? | **$0** |
 | **Oracle gap** | pool coverage vs selected success on saved attempts | is a selector worth building, or under the 4pp harm line? | **$0** |
 | **Checkpoint density** | best intermediate candidate vs submitted | is there a better state to ratchet back to? | **$0** |
@@ -1006,6 +1075,10 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 ---
 
 ## 10. Claims withdrawn or qualified
+
+- **"The low vacuity rate shows agents here rarely finish on evidence that could not have failed."** Reopened 2026-09-24. The qualification below (*1 vacuous in 22*) was measured on **B3 and B4, which were both gate-arm runs only** - 16 and 16, no vanilla arm, as B4's own findings say. The rate was only ever observed *with the mechanism that prevents it switched on*: the gate's first obligation is *a test covering the change passes*. The paired chunks sweep, put through the B7 probe (B9), finds **10 of 46 resolved vanilla patches VACUOUS (22%) against 4 of 49 under the gate (8%)**; per task, fewer under the gate on 5, more on 0, tied on 19, p = 0.062. All 14 vacuous patches contain **no test file**. The vanilla figure sits beside the literature's 23.8% of rollouts closing on a wholly non-discriminating evidence base. Corpus, model and method all differ from B3/B4 - this reverts the patch and runs the whole suite, where `stress.py` ran the declared command inside the run - so the frequency claim is **not restored**; what is removed is the reason it was withdrawn. What would settle it is vacuity by arm, in one sweep, by one method, and that is queued. `results/b9-gate-tests/`.
+- **"An agent's own tests pin its change less than a maintainer's tests pin theirs."** Withdrawn 2026-09-24, the same day it was written as an expectation in `results/b7-mutants/findings.md`. On 15 tasks, one resolved agent patch each through the same probe: **28 of 89** mutants survive, against the gold patches' **27 of 91** on the same tasks; per task worse on 4, better on 3, equal on 8. The qualification that bounds it: all 15 were gate-arm patches, 12 of them Opus 5.
+- **"Killing a mutant means the test pins behaviour."** False, measured 2026-09-24 (B8). Told exactly which mutants survived, Opus 5.5 killed all 54, in part by writing tests against private internals, message text and the type of an internal call's argument - and, in both replicates, "killed" the one unanimously equivalent mutant by asserting which slice expression the source uses. A mutation score earned by tests written against named mutants measures compliance with the list.
 
 - **"The discrimination check tells you the change is well tested."** Never asserted in these words, and a reader would reasonably infer it - so it is stated here as **false**, 2026-09-23. `core/stress.py` asks whether *anything* in the evidence could have failed. One test that was red on the base tree and is green now satisfies it, however much of the change goes unexercised. The measured rate - **1 VACUOUS in 22 runs** - was read as "agents here write discriminating tests"; the likelier reading is that the bar is one they clear by doing the minimum. §5.16 is the proposed answer and is **unbuilt**. **Measured 2026-09-24, and the gap is real:** reverting the gold patch - which is exactly the mutant `stress.py` runs - was killed on **16 of 16** tasks, so the discrimination check would report `DISCRIMINATES` on every one of them; yet **9 of those 16** carry at least one surviving diff-scoped mutant under the maintainers' own tests. The check passing and the change being pinned are different facts, and on this corpus they disagree more often than not. `results/b7-mutants/`.
 - **"This system improves the logic, the edge cases, or the bugs."** Never true, stated plainly 2026-09-23 because it is the natural thing to assume from the framing. Nothing shipped generates a test, infers a property, searches for an edge case, or evaluates whether code is correct. `docs/research/build-on.md` records that a mutation engine is deliberately not written. What is shipped operates on the *evidence for* a claim, not on the claim's subject matter. §1.6.
@@ -1103,7 +1176,8 @@ Added by v0.8, and each is answerable cheaply:
 Added by §5.16, and the first one is answerable this week for nothing:
 
 - **Diff-scoped mutants almost never survive.** *Tested 2026-09-24 and it did not fire: 27 of 98 survived, on 9 of 16 tasks.* If, on the rehearsed corpus with the gold patch applied, few tasks carry a surviving mutant, then the tests already pin the changed logic here and the concern §5.16 exists to answer is empirically unfounded on this population. **§5.16 is withdrawn, not deferred** — deferring it would leave a plan promising something its own measurement refused. Cost to find out: one rehearsal, $0.
-- **The survivors are equivalent mutants.** *Did not fire on one reviewer's reading (3 of 27 clearly equivalent), and one reviewer is not enough - it is the probe's own author.* If survivors are common but a reviewer judges most of them semantically identical to the original, the mechanism is a noise generator. It moves to `docs/postponed.md` with the trigger that would revive it, and the honest report is that mutation at this granularity does not survive contact with this corpus.
+- **The survivors are equivalent mutants.** *Did not fire: two blind reviewers call 20 of 27 MEANINGFUL, and exactly 1 is unanimously equivalent (2026-09-24).* If survivors are common but a reviewer judges most of them semantically identical to the original, the mechanism is a noise generator. It moves to `docs/postponed.md` with the trigger that would revive it, and the honest report is that mutation at this granularity does not survive contact with this corpus.
+- **Mutant feedback to an agent produces tests that pin the implementation.** *Fired, 2026-09-24 (B8).* Given the exact list, the agent killed every mutant — including, in both replicates, the one unanimously equivalent mutant, by asserting which slice expression the source uses. The consequence is not that §5.16 is withdrawn but that its output is not an agent instruction: raw mutants are never handed to an agent as targets, and the report's consumer is a reviewer.
 - **A reviewer does not act on a list of unpinned lines.** §5.17's whole claim is that *"these three lines could be altered and nothing you ran would notice"* is actionable without reading the diff. If it is read and ignored, that is the same falsifier as "surfacing changes nothing", now with the strongest content the report is ever likely to carry — and it would settle the question for the reporting direction, not just for one feature.
 
 ---

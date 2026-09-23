@@ -1,0 +1,272 @@
+[
+ {
+  "task": "jinja2-065334d1",
+  "file": "src/jinja2/filters.py",
+  "op": "return None",
+  "line": 1431,
+  "mutation": "return environment.undefined(obj=obj, name=name)  ->  return None",
+  "context": "   1412 | def do_attr(\n   1413 |     environment: \"Environment\", obj: t.Any, name: str\n   1414 | ) -> t.Union[Undefined, t.Any]:\n   1415 |     \"\"\"Get an attribute of an object. ``foo|attr(\"bar\")`` works like\n   1416 |     ``foo.bar``, but returns undefined instead of falling back to ``foo[\"bar\"]``\n   1417 |     if the attribute doesn't exist.\n   1418 | \n   1419 |     See :ref:`Notes on subscriptions <notes-on-subscriptions>` for more details.\n   1420 |     \"\"\"\n   1421 |     # Environment.getattr will fall back to obj[name] if obj.name doesn't exist.\n   1422 |     # But we want to call env.getattr to get behavior such as sandboxing.\n   1423 |     # Determine if the attr exists first, so we know the fallback won't trigger.\n   1424 |     try:\n   1425 |         # This avoids executing properties/descriptors, but misses __getattr__\n   1426 |         # and __getattribute__ dynamic attrs.\n   1427 |         getattr_static(obj, name)\n   1428 |     except AttributeError:\n   1429 |         # This finds dynamic attrs, and we know it's not a descriptor at this point.\n   1430 |         if not hasattr(obj, name):\n>> 1431 |             return environment.undefined(obj=obj, name=name)\n   1432 | \n   1433 |     return environment.getattr(obj, name)",
+  "b7_index": 5,
+  "id": "M01"
+ },
+ {
+  "task": "click-051bb0f3",
+  "file": "src/click/_termui_impl.py",
+  "op": "delete statement",
+  "line": 489,
+  "mutation": "with _nullpager(stdout, color) as rv:  ->  pass",
+  "context": "    470 | def _pipepager(\n    471 |     cmd_parts: list[str], color: bool | None = None\n    472 | ) -> t.Iterator[tuple[t.BinaryIO | t.TextIO, str, bool]]:\n    473 |     \"\"\"Page through text by feeding it to another program.\n    474 | \n    475 |     Invokes the pager via :class:`subprocess.Popen` with an ``argv`` list\n    476 |     produced by :func:`shlex.split`. The command is resolved to an absolute\n    477 |     path with :func:`shutil.which` as recommended by the\n    478 |     :mod:`subprocess` docs for Windows compatibility.\n    479 | \n    480 |     Invoking a pager through this might support colors: if piping to\n    481 |     ``less`` and the user hasn't decided on colors, ``LESS=-R`` is set\n    482 |     automatically.\n    483 |     \"\"\"\n    484 |     # Split the command into the invoked CLI and its parameters.\n    485 |     if not cmd_parts:\n    486 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    487 |         # same borrowed-stream handling and the caller's stream is not closed.\n    488 |         stdout = _default_text_stdout() or StringIO()\n>>  489 |         with _nullpager(stdout, color) as rv:\n    490 |             yield rv\n    491 |         return\n    492 | \n    493 |     import shutil\n    494 | \n    495 |     cmd = cmd_parts[0]\n    496 |     cmd_params = cmd_parts[1:]\n    497 | \n    498 |     cmd_filepath = shutil.which(cmd)\n    499 |     if not cmd_filepath:\n    500 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    501 |         # same borrowed-stream handling and the caller's stream is not closed.\n    502 |         stdout = _default_text_stdout() or StringIO()\n    503 |         with _nullpager(stdout, color) as rv:\n    504 |             yield rv\n    505 |         return\n    506 | \n    507 |     # Produces a normalized absolute path string.\n    508 |     # multi-call binaries such as busybox derive their identity from the symlink\n    509 |     # less -> busybox. resolve() causes them to misbehave. (eg. less becomes busybox)\n    510 |     cmd_path = Path(cmd_filepath).absolute()\n    511 |     cmd_name = cmd_path.name\n    512 | \n    513 |     import subprocess\n    514 | \n    515 |     # Make a local copy of the environment to not affect the global one.\n    516 |     env = dict(os.environ)\n    517 | \n    518 |     # If we're piping to less and the user hasn't decided on colors, we enable\n    519 |     # them by default we find the -R flag in the command line arguments.",
+  "b7_index": 1,
+  "id": "M02"
+ },
+ {
+  "task": "click-d946074a",
+  "file": "src/click/_textwrap.py",
+  "op": "delete statement",
+  "line": 29,
+  "mutation": "continue  ->  pass",
+  "context": "     11 | def _truncate_visible(text: str, n: int) -> str:\n     12 |     \"\"\"Return the longest prefix of ``text`` containing at most ``n`` visible\n     13 |     characters.\n     14 | \n     15 |     ANSI escape sequences inside the prefix are kept intact and do not count\n     16 |     toward the visible width. A cut is never placed inside an escape sequence.\n     17 |     \"\"\"\n     18 |     if n <= 0:\n     19 |         return \"\"\n     20 | \n     21 |     visible = 0\n     22 |     i = 0\n     23 |     cut = 0\n     24 |     end = len(text)\n     25 |     while i < end:\n     26 |         m = _ansi_re.match(text, i)\n     27 |         if m is not None:\n     28 |             i = m.end()\n>>   29 |             continue\n     30 |         visible += 1\n     31 |         i += 1\n     32 |         cut = i\n     33 |         if visible >= n:\n     34 |             break\n     35 |     return text[:cut]",
+  "b7_index": 2,
+  "id": "M03"
+ },
+ {
+  "task": "click-18d29196",
+  "file": "src/click/core.py",
+  "op": "delete statement",
+  "line": 3280,
+  "mutation": "return value  ->  pass",
+  "context": "   3268 |     def process_value(self, ctx: Context, value: t.Any) -> t.Any:\n   3269 |         # process_value has to be overridden on Options in order to capture\n   3270 |         # `value == UNSET` cases before `type_cast_value()` gets called.\n   3271 |         #\n   3272 |         # Refs:\n   3273 |         # https://github.com/pallets/click/issues/3069\n   3274 |         if self.is_flag and not self.required and self.is_bool_flag and value is UNSET:\n   3275 |             value = False\n   3276 | \n   3277 |             if self.callback is not None:\n   3278 |                 value = self.callback(ctx, self, value)\n   3279 | \n>> 3280 |             return value\n   3281 | \n   3282 |         # in the normal case, rely on Parameter.process_value\n   3283 |         return super().process_value(ctx, value)",
+  "b7_index": 6,
+  "id": "M04"
+ },
+ {
+  "task": "click-9f9b149e",
+  "file": "src/click/decorators.py",
+  "op": "delete statement",
+  "line": 596,
+  "mutation": "kwargs.setdefault('expose_value', False)  ->  pass",
+  "context": "    561 | def custom_version_option(\n    562 |     callback: t.Callable[[Context], str],\n    563 |     *param_decls: str,\n    564 |     **kwargs: t.Any,\n    565 | ) -> t.Callable[[FC], FC]:\n    566 |     \"\"\"Add a ``--version`` option whose output is produced by ``callback``.\n    567 | \n    568 |     This is the customizable companion to :func:`version_option`. Where\n    569 |     :func:`version_option` is intentionally limited to a fixed message and\n    570 |     a small set of values, this option calls ``callback`` to build the\n    571 |     whole string to print. Use it when you need values that\n    572 |     :func:`version_option` does not expose, such as a file path, the\n    573 |     Python version, or git metadata.\n    574 | \n    575 |     :param callback: Called with the current :class:`Context` when the\n    576 |         option is invoked. Its return value is printed, then the program\n    577 |         exits.\n    578 |     :param param_decls: One or more option names. Defaults to the single\n    579 |         value ``--version``.\n    580 |     :param kwargs: Extra arguments are passed to :func:`option`.\n    581 | \n    582 |     .. versionadded:: 8.5.0\n    583 |     \"\"\"\n    584 | \n    585 |     def show_version(ctx: Context, param: Parameter, value: bool) -> None:\n    586 |         if not value or ctx.resilient_parsing:\n    587 |             return\n    588 | \n    589 |         echo(callback(ctx), color=ctx.color)\n    590 |         ctx.exit()\n    591 | \n    592 |     if not param_decls:\n    593 |         param_decls = (\"--version\",)\n    594 | \n    595 |     kwargs.setdefault(\"is_flag\", True)\n>>  596 |     kwargs.setdefault(\"expose_value\", False)\n    597 |     kwargs.setdefault(\"is_eager\", True)\n    598 |     kwargs.setdefault(\"help\", _(\"Show the version and exit.\"))\n    599 |     kwargs[\"callback\"] = show_version\n    600 |     return option(*param_decls, **kwargs)",
+  "b7_index": 1,
+  "id": "M05"
+ },
+ {
+  "task": "jinja2-065334d1",
+  "file": "src/jinja2/filters.py",
+  "op": "delete statement",
+  "line": 1431,
+  "mutation": "return environment.undefined(obj=obj, name=name)  ->  pass",
+  "context": "   1412 | def do_attr(\n   1413 |     environment: \"Environment\", obj: t.Any, name: str\n   1414 | ) -> t.Union[Undefined, t.Any]:\n   1415 |     \"\"\"Get an attribute of an object. ``foo|attr(\"bar\")`` works like\n   1416 |     ``foo.bar``, but returns undefined instead of falling back to ``foo[\"bar\"]``\n   1417 |     if the attribute doesn't exist.\n   1418 | \n   1419 |     See :ref:`Notes on subscriptions <notes-on-subscriptions>` for more details.\n   1420 |     \"\"\"\n   1421 |     # Environment.getattr will fall back to obj[name] if obj.name doesn't exist.\n   1422 |     # But we want to call env.getattr to get behavior such as sandboxing.\n   1423 |     # Determine if the attr exists first, so we know the fallback won't trigger.\n   1424 |     try:\n   1425 |         # This avoids executing properties/descriptors, but misses __getattr__\n   1426 |         # and __getattribute__ dynamic attrs.\n   1427 |         getattr_static(obj, name)\n   1428 |     except AttributeError:\n   1429 |         # This finds dynamic attrs, and we know it's not a descriptor at this point.\n   1430 |         if not hasattr(obj, name):\n>> 1431 |             return environment.undefined(obj=obj, name=name)\n   1432 | \n   1433 |     return environment.getattr(obj, name)",
+  "b7_index": 6,
+  "id": "M06"
+ },
+ {
+  "task": "click-051bb0f3",
+  "file": "src/click/_termui_impl.py",
+  "op": "delete statement",
+  "line": 596,
+  "mutation": "yield rv  ->  pass",
+  "context": "    580 | def _tempfilepager(\n    581 |     cmd_parts: list[str], color: bool | None = None\n    582 | ) -> t.Iterator[tuple[t.BinaryIO | t.TextIO, str, bool]]:\n    583 |     \"\"\"Page through text by invoking a program on a temporary file.\n    584 | \n    585 |     Used as the primary pager strategy on Windows (where piping to\n    586 |     ``more`` adds spurious ``\\\\r\\\\n``), and as a fallback on other\n    587 |     platforms. The command is resolved to an absolute path with\n    588 |     :func:`shutil.which`.\n    589 |     \"\"\"\n    590 |     # Split the command into the invoked CLI and its parameters.\n    591 |     if not cmd_parts:\n    592 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    593 |         # same borrowed-stream handling and the caller's stream is not closed.\n    594 |         stdout = _default_text_stdout() or StringIO()\n    595 |         with _nullpager(stdout, color) as rv:\n>>  596 |             yield rv\n    597 |         return\n    598 | \n    599 |     import shutil\n    600 |     import subprocess\n    601 | \n    602 |     cmd = cmd_parts[0]\n    603 | \n    604 |     cmd_filepath = shutil.which(cmd)\n    605 |     if not cmd_filepath:\n    606 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    607 |         # same borrowed-stream handling and the caller's stream is not closed.\n    608 |         stdout = _default_text_stdout() or StringIO()\n    609 |         with _nullpager(stdout, color) as rv:\n    610 |             yield rv\n    611 |         return\n    612 | \n    613 |     # Produces a normalized absolute path string.\n    614 |     # multi-call binaries such as busybox derive their identity from the symlink\n    615 |     # less -> busybox. resolve() causes them to misbehave. (eg. less becomes busybox)\n    616 |     cmd_path = Path(cmd_filepath).absolute()\n    617 | \n    618 |     import tempfile\n    619 | \n    620 |     encoding = get_best_encoding(sys.stdout)\n    621 |     if color is None:\n    622 |         color = False\n    623 |     # On Windows, NamedTemporaryFile cannot be opened by another process\n    624 |     # while Python still has it open, so we use delete=False and clean up manually\n    625 |     # rather than using a contextmanager here.\n    626 |     f = tempfile.NamedTemporaryFile(mode=\"wb\", delete=False)\n    627 |     try:\n    628 |         yield t.cast(t.BinaryIO, f), encoding, color\n    629 |         f.flush()\n    630 |         f.close()\n    631 |         subprocess.call([str(cmd_path), f.name])\n    632 |     finally:\n    633 |         os.unlink(f.name)",
+  "b7_index": 6,
+  "id": "M07"
+ },
+ {
+  "task": "click-9f9b149e",
+  "file": "src/click/decorators.py",
+  "op": "delete statement",
+  "line": 590,
+  "mutation": "ctx.exit()  ->  pass",
+  "context": "    585 |     def show_version(ctx: Context, param: Parameter, value: bool) -> None:\n    586 |         if not value or ctx.resilient_parsing:\n    587 |             return\n    588 | \n    589 |         echo(callback(ctx), color=ctx.color)\n>>  590 |         ctx.exit()",
+  "b7_index": 4,
+  "id": "M08"
+ },
+ {
+  "task": "click-ad39d749",
+  "file": "src/click/testing.py",
+  "op": "delete statement",
+  "line": 685,
+  "mutation": "if fd_out:  ->  pass",
+  "context": "    655 | \n    656 |                 if e_code is None:\n    657 |                     e_code = 0\n    658 | \n    659 |                 if e_code != 0:\n    660 |                     exception = e\n    661 | \n    662 |                 if not isinstance(e_code, int):\n    663 |                     sys.stdout.write(str(e_code))\n    664 |                     sys.stdout.write(\"\\n\")\n    665 |                     e_code = 1\n    666 | \n    667 |                 exit_code = e_code\n    668 | \n    669 |             except Exception as e:\n    670 |                 if not catch_exceptions:\n    671 |                     raise\n    672 |                 exception = e\n    673 |                 exit_code = 1\n    674 |                 exc_info = sys.exc_info()\n    675 |             finally:\n    676 |                 sys.stdout.flush()\n    677 |                 sys.stderr.flush()\n    678 | \n    679 |                 # Stop fd capture and merge the captured bytes into\n    680 |                 # the stdout/stderr BytesIO streams. BytesIOCopy mirrors\n    681 |                 # those writes into outstreams[2] automatically.\n    682 |                 if cap_out is not None and cap_err is not None:\n    683 |                     fd_out = cap_out.stop()\n    684 |                     fd_err = cap_err.stop()\n>>  685 |                     if fd_out:\n    686 |                         outstreams[0].write(fd_out)\n    687 |                     if fd_err:\n    688 |                         outstreams[1].write(fd_err)\n    689 | \n    690 |                 stdout = outstreams[0].getvalue()\n    691 |                 stderr = outstreams[1].getvalue()\n    692 |                 output = outstreams[2].getvalue()\n    693 | \n    694 |         return Result(\n    695 |             runner=self,\n    696 |             stdout_bytes=stdout,\n    697 |             stderr_bytes=stderr,\n    698 |             output_bytes=output,\n    699 |             return_value=return_value,\n    700 |             exit_code=exit_code,\n    701 |             exception=exception,\n    702 |             exc_info=exc_info,  # type: ignore\n    703 |         )",
+  "b7_index": 7,
+  "id": "M09"
+ },
+ {
+  "task": "jinja2-065334d1",
+  "file": "src/jinja2/filters.py",
+  "op": "negate condition",
+  "line": 1430,
+  "mutation": "if not hasattr(obj, name):  ->  if not not hasattr(obj, name):",
+  "context": "   1412 | def do_attr(\n   1413 |     environment: \"Environment\", obj: t.Any, name: str\n   1414 | ) -> t.Union[Undefined, t.Any]:\n   1415 |     \"\"\"Get an attribute of an object. ``foo|attr(\"bar\")`` works like\n   1416 |     ``foo.bar``, but returns undefined instead of falling back to ``foo[\"bar\"]``\n   1417 |     if the attribute doesn't exist.\n   1418 | \n   1419 |     See :ref:`Notes on subscriptions <notes-on-subscriptions>` for more details.\n   1420 |     \"\"\"\n   1421 |     # Environment.getattr will fall back to obj[name] if obj.name doesn't exist.\n   1422 |     # But we want to call env.getattr to get behavior such as sandboxing.\n   1423 |     # Determine if the attr exists first, so we know the fallback won't trigger.\n   1424 |     try:\n   1425 |         # This avoids executing properties/descriptors, but misses __getattr__\n   1426 |         # and __getattribute__ dynamic attrs.\n   1427 |         getattr_static(obj, name)\n   1428 |     except AttributeError:\n   1429 |         # This finds dynamic attrs, and we know it's not a descriptor at this point.\n>> 1430 |         if not hasattr(obj, name):\n   1431 |             return environment.undefined(obj=obj, name=name)\n   1432 | \n   1433 |     return environment.getattr(obj, name)",
+  "b7_index": 3,
+  "id": "M10"
+ },
+ {
+  "task": "click-9f9b149e",
+  "file": "src/click/decorators.py",
+  "op": "const True->False",
+  "line": 597,
+  "mutation": "kwargs.setdefault('is_eager', True)  ->  kwargs.setdefault('is_eager', False)",
+  "context": "    561 | def custom_version_option(\n    562 |     callback: t.Callable[[Context], str],\n    563 |     *param_decls: str,\n    564 |     **kwargs: t.Any,\n    565 | ) -> t.Callable[[FC], FC]:\n    566 |     \"\"\"Add a ``--version`` option whose output is produced by ``callback``.\n    567 | \n    568 |     This is the customizable companion to :func:`version_option`. Where\n    569 |     :func:`version_option` is intentionally limited to a fixed message and\n    570 |     a small set of values, this option calls ``callback`` to build the\n    571 |     whole string to print. Use it when you need values that\n    572 |     :func:`version_option` does not expose, such as a file path, the\n    573 |     Python version, or git metadata.\n    574 | \n    575 |     :param callback: Called with the current :class:`Context` when the\n    576 |         option is invoked. Its return value is printed, then the program\n    577 |         exits.\n    578 |     :param param_decls: One or more option names. Defaults to the single\n    579 |         value ``--version``.\n    580 |     :param kwargs: Extra arguments are passed to :func:`option`.\n    581 | \n    582 |     .. versionadded:: 8.5.0\n    583 |     \"\"\"\n    584 | \n    585 |     def show_version(ctx: Context, param: Parameter, value: bool) -> None:\n    586 |         if not value or ctx.resilient_parsing:\n    587 |             return\n    588 | \n    589 |         echo(callback(ctx), color=ctx.color)\n    590 |         ctx.exit()\n    591 | \n    592 |     if not param_decls:\n    593 |         param_decls = (\"--version\",)\n    594 | \n    595 |     kwargs.setdefault(\"is_flag\", True)\n    596 |     kwargs.setdefault(\"expose_value\", False)\n>>  597 |     kwargs.setdefault(\"is_eager\", True)\n    598 |     kwargs.setdefault(\"help\", _(\"Show the version and exit.\"))\n    599 |     kwargs[\"callback\"] = show_version\n    600 |     return option(*param_decls, **kwargs)",
+  "b7_index": 7,
+  "id": "M11"
+ },
+ {
+  "task": "click-d946074a",
+  "file": "src/click/_textwrap.py",
+  "op": "delete statement",
+  "line": 149,
+  "mutation": "del cur_line[-1]  ->  pass",
+  "context": "    119 |                 self._handle_long_word(chunks, cur_line, cur_len, width)\n    120 |                 cur_len = sum(map(term_len, cur_line))\n    121 | \n    122 |             if self.drop_whitespace and cur_line and cur_line[-1].strip() == \"\":\n    123 |                 cur_len -= term_len(cur_line[-1])\n    124 |                 del cur_line[-1]\n    125 | \n    126 |             if cur_line:\n    127 |                 if (\n    128 |                     self.max_lines is None\n    129 |                     or len(lines) + 1 < self.max_lines\n    130 |                     or (\n    131 |                         not chunks\n    132 |                         or self.drop_whitespace\n    133 |                         and len(chunks) == 1\n    134 |                         and not chunks[0].strip()\n    135 |                     )\n    136 |                     and cur_len <= width\n    137 |                 ):\n    138 |                     lines.append(indent + \"\".join(cur_line))\n    139 |                 else:\n    140 |                     while cur_line:\n    141 |                         if (\n    142 |                             cur_line[-1].strip()\n    143 |                             and cur_len + term_len(self.placeholder) <= width\n    144 |                         ):\n    145 |                             cur_line.append(self.placeholder)\n    146 |                             lines.append(indent + \"\".join(cur_line))\n    147 |                             break\n    148 |                         cur_len -= term_len(cur_line[-1])\n>>  149 |                         del cur_line[-1]\n    150 |                     else:\n    151 |                         if lines:\n    152 |                             prev_line = lines[-1].rstrip()\n    153 |                             if (\n    154 |                                 term_len(prev_line) + term_len(self.placeholder)\n    155 |                                 <= self.width\n    156 |                             ):\n    157 |                                 lines[-1] = prev_line + self.placeholder\n    158 |                                 break\n    159 |                         lines.append(indent + self.placeholder.lstrip())\n    160 |                     break\n    161 | \n    162 |         return lines",
+  "b7_index": 6,
+  "id": "M12"
+ },
+ {
+  "task": "click-051bb0f3",
+  "file": "src/click/_termui_impl.py",
+  "op": "delete statement",
+  "line": 595,
+  "mutation": "with _nullpager(stdout, color) as rv:  ->  pass",
+  "context": "    580 | def _tempfilepager(\n    581 |     cmd_parts: list[str], color: bool | None = None\n    582 | ) -> t.Iterator[tuple[t.BinaryIO | t.TextIO, str, bool]]:\n    583 |     \"\"\"Page through text by invoking a program on a temporary file.\n    584 | \n    585 |     Used as the primary pager strategy on Windows (where piping to\n    586 |     ``more`` adds spurious ``\\\\r\\\\n``), and as a fallback on other\n    587 |     platforms. The command is resolved to an absolute path with\n    588 |     :func:`shutil.which`.\n    589 |     \"\"\"\n    590 |     # Split the command into the invoked CLI and its parameters.\n    591 |     if not cmd_parts:\n    592 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    593 |         # same borrowed-stream handling and the caller's stream is not closed.\n    594 |         stdout = _default_text_stdout() or StringIO()\n>>  595 |         with _nullpager(stdout, color) as rv:\n    596 |             yield rv\n    597 |         return\n    598 | \n    599 |     import shutil\n    600 |     import subprocess\n    601 | \n    602 |     cmd = cmd_parts[0]\n    603 | \n    604 |     cmd_filepath = shutil.which(cmd)\n    605 |     if not cmd_filepath:\n    606 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    607 |         # same borrowed-stream handling and the caller's stream is not closed.\n    608 |         stdout = _default_text_stdout() or StringIO()\n    609 |         with _nullpager(stdout, color) as rv:\n    610 |             yield rv\n    611 |         return\n    612 | \n    613 |     # Produces a normalized absolute path string.\n    614 |     # multi-call binaries such as busybox derive their identity from the symlink\n    615 |     # less -> busybox. resolve() causes them to misbehave. (eg. less becomes busybox)\n    616 |     cmd_path = Path(cmd_filepath).absolute()\n    617 | \n    618 |     import tempfile\n    619 | \n    620 |     encoding = get_best_encoding(sys.stdout)\n    621 |     if color is None:\n    622 |         color = False\n    623 |     # On Windows, NamedTemporaryFile cannot be opened by another process\n    624 |     # while Python still has it open, so we use delete=False and clean up manually\n    625 |     # rather than using a contextmanager here.\n    626 |     f = tempfile.NamedTemporaryFile(mode=\"wb\", delete=False)\n    627 |     try:\n    628 |         yield t.cast(t.BinaryIO, f), encoding, color\n    629 |         f.flush()\n    630 |         f.close()\n    631 |         subprocess.call([str(cmd_path), f.name])\n    632 |     finally:\n    633 |         os.unlink(f.name)",
+  "b7_index": 2,
+  "id": "M13"
+ },
+ {
+  "task": "click-ad39d749",
+  "file": "src/click/testing.py",
+  "op": "delete statement",
+  "line": 25,
+  "mutation": "CaptureMode = t.Literal['sys', 'fd']  ->  pass",
+  "context": "     10 | import tempfile\n     11 | import typing as t\n     12 | from types import TracebackType\n     13 | \n     14 | from . import _compat\n     15 | from . import formatting\n     16 | from . import termui\n     17 | from . import utils\n     18 | from ._compat import _find_binary_reader\n     19 | \n     20 | if t.TYPE_CHECKING:\n     21 |     from _typeshed import ReadableBuffer\n     22 | \n     23 |     from .core import Command\n     24 | \n>>   25 | CaptureMode = t.Literal[\"sys\", \"fd\"]\n     26 | \n     27 | \n     28 | class EchoingStdin:\n     29 |     def __init__(self, input: t.BinaryIO, output: t.BinaryIO) -> None:\n     30 |         self._input = input\n     31 |         self._output = output\n     32 |         self._paused = False\n     33 | \n     34 |     def __getattr__(self, x: str) -> t.Any:\n     35 |         return getattr(self._input, x)\n     36 | \n     37 |     def _echo(self, rv: bytes) -> bytes:\n     38 |         if not self._paused:\n     39 |             self._output.write(rv)\n     40 | ",
+  "b7_index": 0,
+  "id": "M14"
+ },
+ {
+  "task": "click-ad39d749",
+  "file": "src/click/testing.py",
+  "op": "string XX",
+  "line": 94,
+  "mutation": "assert self._tmpfile is not None, '_FDCapture.start() was not called'  ->  assert self._tmpfile is not None, 'XX_FDCapture.start() was not called",
+  "context": "     93 |     def stop(self) -> bytes:\n>>   94 |         assert self._tmpfile is not None, \"_FDCapture.start() was not called\"\n     95 |         os.dup2(self.saved_fd, self._targetfd)\n     96 |         os.close(self.saved_fd)\n     97 |         self.saved_fd = -1\n     98 |         self._tmpfile.seek(0)\n     99 |         data = self._tmpfile.read()\n    100 |         self._tmpfile.close()\n    101 |         self._tmpfile = None\n    102 |         return data",
+  "b7_index": 3,
+  "id": "M15"
+ },
+ {
+  "task": "click-ad39d749",
+  "file": "src/click/testing.py",
+  "op": "delete statement",
+  "line": 97,
+  "mutation": "self.saved_fd = -1  ->  pass",
+  "context": "     93 |     def stop(self) -> bytes:\n     94 |         assert self._tmpfile is not None, \"_FDCapture.start() was not called\"\n     95 |         os.dup2(self.saved_fd, self._targetfd)\n     96 |         os.close(self.saved_fd)\n>>   97 |         self.saved_fd = -1\n     98 |         self._tmpfile.seek(0)\n     99 |         data = self._tmpfile.read()\n    100 |         self._tmpfile.close()\n    101 |         self._tmpfile = None\n    102 |         return data",
+  "b7_index": 1,
+  "id": "M16"
+ },
+ {
+  "task": "click-051bb0f3",
+  "file": "src/click/_termui_impl.py",
+  "op": "delete statement",
+  "line": 490,
+  "mutation": "yield rv  ->  pass",
+  "context": "    470 | def _pipepager(\n    471 |     cmd_parts: list[str], color: bool | None = None\n    472 | ) -> t.Iterator[tuple[t.BinaryIO | t.TextIO, str, bool]]:\n    473 |     \"\"\"Page through text by feeding it to another program.\n    474 | \n    475 |     Invokes the pager via :class:`subprocess.Popen` with an ``argv`` list\n    476 |     produced by :func:`shlex.split`. The command is resolved to an absolute\n    477 |     path with :func:`shutil.which` as recommended by the\n    478 |     :mod:`subprocess` docs for Windows compatibility.\n    479 | \n    480 |     Invoking a pager through this might support colors: if piping to\n    481 |     ``less`` and the user hasn't decided on colors, ``LESS=-R`` is set\n    482 |     automatically.\n    483 |     \"\"\"\n    484 |     # Split the command into the invoked CLI and its parameters.\n    485 |     if not cmd_parts:\n    486 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    487 |         # same borrowed-stream handling and the caller's stream is not closed.\n    488 |         stdout = _default_text_stdout() or StringIO()\n    489 |         with _nullpager(stdout, color) as rv:\n>>  490 |             yield rv\n    491 |         return\n    492 | \n    493 |     import shutil\n    494 | \n    495 |     cmd = cmd_parts[0]\n    496 |     cmd_params = cmd_parts[1:]\n    497 | \n    498 |     cmd_filepath = shutil.which(cmd)\n    499 |     if not cmd_filepath:\n    500 |         # No usable pager: fall back to stdout through _nullpager so it gets the\n    501 |         # same borrowed-stream handling and the caller's stream is not closed.\n    502 |         stdout = _default_text_stdout() or StringIO()\n    503 |         with _nullpager(stdout, color) as rv:\n    504 |             yield rv\n    505 |         return\n    506 | \n    507 |     # Produces a normalized absolute path string.\n    508 |     # multi-call binaries such as busybox derive their identity from the symlink\n    509 |     # less -> busybox. resolve() causes them to misbehave. (eg. less becomes busybox)\n    510 |     cmd_path = Path(cmd_filepath).absolute()\n    511 |     cmd_name = cmd_path.name\n    512 | \n    513 |     import subprocess\n    514 | \n    515 |     # Make a local copy of the environment to not affect the global one.\n    516 |     env = dict(os.environ)\n    517 | \n    518 |     # If we're piping to less and the user hasn't decided on colors, we enable\n    519 |     # them by default we find the -R flag in the command line arguments.\n    520 |     if color is None and cmd_name == \"less\":",
+  "b7_index": 5,
+  "id": "M17"
+ },
+ {
+  "task": "click-ad39d749",
+  "file": "src/click/testing.py",
+  "op": "delete statement",
+  "line": 626,
+  "mutation": "cap_err.start()  ->  pass",
+  "context": "    596 |         .. versionchanged:: 8.2\n    597 |             The result object always returns the ``stderr_bytes`` stream.\n    598 | \n    599 |         .. versionchanged:: 8.0\n    600 |             The result object has the ``return_value`` attribute with\n    601 |             the value returned from the invoked command.\n    602 | \n    603 |         .. versionchanged:: 4.0\n    604 |             Added the ``color`` parameter.\n    605 | \n    606 |         .. versionchanged:: 3.0\n    607 |             Added the ``catch_exceptions`` parameter.\n    608 | \n    609 |         .. versionchanged:: 3.0\n    610 |             The result object has the ``exc_info`` attribute with the\n    611 |             traceback if available.\n    612 |         \"\"\"\n    613 |         exc_info = None\n    614 |         if catch_exceptions is None:\n    615 |             catch_exceptions = self.catch_exceptions\n    616 | \n    617 |         # Set up fd capture before isolation replaces sys.stdout and sys.stderr.\n    618 |         cap_out: _FDCapture | None = None\n    619 |         cap_err: _FDCapture | None = None\n    620 | \n    621 |         if self.capture == \"fd\":\n    622 |             cap_out = _FDCapture(1)\n    623 |             cap_err = _FDCapture(2)\n    624 |             try:\n    625 |                 cap_out.start()\n>>  626 |                 cap_err.start()\n    627 |             except OSError:\n    628 |                 cap_out = cap_err = None\n    629 | \n    630 |         with self.isolation(input=input, env=env, color=color) as outstreams:\n    631 |             # Point the captured streams' fileno() at the saved (original)\n    632 |             # fd so that C-level consumers like faulthandler keep working\n    633 |             # while fd 1/2 are redirected to the capture tmpfile.\n    634 |             if cap_out is not None and cap_err is not None:\n    635 |                 sys.stdout._original_fd = cap_out.saved_fd  # type: ignore[union-attr]\n    636 |                 sys.stderr._original_fd = cap_err.saved_fd  # type: ignore[union-attr]\n    637 | \n    638 |             return_value = None\n    639 |             exception: BaseException | None = None\n    640 |             exit_code = 0\n    641 | \n    642 |             if isinstance(args, str):\n    643 |                 args = shlex.split(args)\n    644 | \n    645 |             try:\n    646 |                 prog_name = extra.pop(\"prog_name\")\n    647 |             except KeyError:\n    648 |                 prog_name = self.get_default_prog_name(cli)\n    649 | \n    650 |             try:\n    651 |                 return_value = cli.main(args=args or (), prog_name=prog_name, **extra)\n    652 |             except SystemExit as e:\n    653 |                 exc_info = sys.exc_info()\n    654 |                 e_code = t.cast(\"int | t.Any | None\", e.code)\n    655 | \n    656 |                 if e_code is None:",
+  "b7_index": 5,
+  "id": "M18"
+ },
+ {
+  "task": "click-c2ed4149",
+  "file": "src/click/testing.py",
+  "op": "const 3->4",
+  "line": 780,
+  "mutation": "warnings.warn(\"'isolated_filesystem' is deprecated and will be removed  ->  warnings.warn(\"'isolated_filesystem' is deprecated and will be removed",
+  "context": "    742 |     def isolated_filesystem(\n    743 |         self, temp_dir: str | os.PathLike[str] | None = None\n    744 |     ) -> cabc.Generator[str]:\n    745 |         \"\"\"A context manager that creates a temporary directory and\n    746 |         changes the current working directory to it. This isolates tests\n    747 |         that affect the contents of the CWD to prevent them from\n    748 |         interfering with each other.\n    749 | \n    750 |         .. warning::\n    751 |             This helper predates Python 3 and modern pytest, and is not\n    752 |             thread-safe: it relies on :func:`os.chdir`, which mutates\n    753 |             process-global state, and :meth:`invoke` swaps the\n    754 |             process-global standard streams too. Parallelize tests with\n    755 |             processes (``pytest-xdist``), not threads. Locking the\n    756 |             runner (:pr:`3511`, :pr:`3520`, :pr:`3530`) and a\n    757 |             ``set_filesystem()`` API (:issue:`3123`) were declined:\n    758 |             neither removes the global-state mutation. See :issue:`3700`\n    759 |             and :issue:`3501`.\n    760 | \n    761 |         :param temp_dir: Create the temporary directory under this\n    762 |             directory. If given, the created directory is not removed\n    763 |             when exiting.\n    764 | \n    765 |         .. deprecated:: 8.5.0\n    766 |             Will be removed in Click 9.0. Use\n    767 |             :class:`tempfile.TemporaryDirectory` or pytest's\n    768 |             ``tmp_path`` fixture with absolute paths instead.\n    769 | \n    770 |         .. versionchanged:: 8.0\n    771 |             Added the ``temp_dir`` parameter.\n    772 |         \"\"\"\n    773 |         import warnings\n    774 | \n    775 |         warnings.warn(\n    776 |             \"'isolated_filesystem' is deprecated and will be removed in Click\"\n    777 |             \" 9.0. Use 'tempfile.TemporaryDirectory' or pytest's 'tmp_path'\"\n    778 |             \" fixture with absolute paths instead.\",\n    779 |             DeprecationWarning,\n>>  780 |             stacklevel=3,\n    781 |         )\n    782 | \n    783 |         cwd = os.getcwd()\n    784 |         dt = tempfile.mkdtemp(dir=temp_dir)\n    785 |         os.chdir(dt)\n    786 | \n    787 |         try:\n    788 |             yield dt\n    789 |         finally:\n    790 |             os.chdir(cwd)\n    791 | \n    792 |             if temp_dir is None:\n    793 |                 import shutil\n    794 | \n    795 |                 try:\n    796 |                     shutil.rmtree(dt)\n    797 |                 except OSError:\n    798 |                     pass",
+  "b7_index": 2,
+  "id": "M19"
+ },
+ {
+  "task": "click-18d29196",
+  "file": "src/click/core.py",
+  "op": "negate condition",
+  "line": 3277,
+  "mutation": "if self.callback is not None:  ->  if not self.callback is not None:",
+  "context": "   3268 |     def process_value(self, ctx: Context, value: t.Any) -> t.Any:\n   3269 |         # process_value has to be overridden on Options in order to capture\n   3270 |         # `value == UNSET` cases before `type_cast_value()` gets called.\n   3271 |         #\n   3272 |         # Refs:\n   3273 |         # https://github.com/pallets/click/issues/3069\n   3274 |         if self.is_flag and not self.required and self.is_bool_flag and value is UNSET:\n   3275 |             value = False\n   3276 | \n>> 3277 |             if self.callback is not None:\n   3278 |                 value = self.callback(ctx, self, value)\n   3279 | \n   3280 |             return value\n   3281 | \n   3282 |         # in the normal case, rely on Parameter.process_value\n   3283 |         return super().process_value(ctx, value)",
+  "b7_index": 5,
+  "id": "M20"
+ },
+ {
+  "task": "jinja2-065334d1",
+  "file": "src/jinja2/filters.py",
+  "op": "delete statement",
+  "line": 1430,
+  "mutation": "if not hasattr(obj, name):  ->  pass",
+  "context": "   1412 | def do_attr(\n   1413 |     environment: \"Environment\", obj: t.Any, name: str\n   1414 | ) -> t.Union[Undefined, t.Any]:\n   1415 |     \"\"\"Get an attribute of an object. ``foo|attr(\"bar\")`` works like\n   1416 |     ``foo.bar``, but returns undefined instead of falling back to ``foo[\"bar\"]``\n   1417 |     if the attribute doesn't exist.\n   1418 | \n   1419 |     See :ref:`Notes on subscriptions <notes-on-subscriptions>` for more details.\n   1420 |     \"\"\"\n   1421 |     # Environment.getattr will fall back to obj[name] if obj.name doesn't exist.\n   1422 |     # But we want to call env.getattr to get behavior such as sandboxing.\n   1423 |     # Determine if the attr exists first, so we know the fallback won't trigger.\n   1424 |     try:\n   1425 |         # This avoids executing properties/descriptors, but misses __getattr__\n   1426 |         # and __getattribute__ dynamic attrs.\n   1427 |         getattr_static(obj, name)\n   1428 |     except AttributeError:\n   1429 |         # This finds dynamic attrs, and we know it's not a descriptor at this point.\n>> 1430 |         if not hasattr(obj, name):\n   1431 |             return environment.undefined(obj=obj, name=name)\n   1432 | \n   1433 |     return environment.getattr(obj, name)",
+  "b7_index": 4,
+  "id": "M21"
+ },
+ {
+  "task": "click-9f9b149e",
+  "file": "src/click/decorators.py",
+  "op": "delete statement",
+  "line": 587,
+  "mutation": "return  ->  pass",
+  "context": "    585 |     def show_version(ctx: Context, param: Parameter, value: bool) -> None:\n    586 |         if not value or ctx.resilient_parsing:\n>>  587 |             return\n    588 | \n    589 |         echo(callback(ctx), color=ctx.color)\n    590 |         ctx.exit()",
+  "b7_index": 5,
+  "id": "M22"
+ },
+ {
+  "task": "jinja2-065334d1",
+  "file": "src/jinja2/filters.py",
+  "op": "delete statement",
+  "line": 1427,
+  "mutation": "getattr_static(obj, name)  ->  pass",
+  "context": "   1412 | def do_attr(\n   1413 |     environment: \"Environment\", obj: t.Any, name: str\n   1414 | ) -> t.Union[Undefined, t.Any]:\n   1415 |     \"\"\"Get an attribute of an object. ``foo|attr(\"bar\")`` works like\n   1416 |     ``foo.bar``, but returns undefined instead of falling back to ``foo[\"bar\"]``\n   1417 |     if the attribute doesn't exist.\n   1418 | \n   1419 |     See :ref:`Notes on subscriptions <notes-on-subscriptions>` for more details.\n   1420 |     \"\"\"\n   1421 |     # Environment.getattr will fall back to obj[name] if obj.name doesn't exist.\n   1422 |     # But we want to call env.getattr to get behavior such as sandboxing.\n   1423 |     # Determine if the attr exists first, so we know the fallback won't trigger.\n   1424 |     try:\n   1425 |         # This avoids executing properties/descriptors, but misses __getattr__\n   1426 |         # and __getattribute__ dynamic attrs.\n>> 1427 |         getattr_static(obj, name)\n   1428 |     except AttributeError:\n   1429 |         # This finds dynamic attrs, and we know it's not a descriptor at this point.\n   1430 |         if not hasattr(obj, name):\n   1431 |             return environment.undefined(obj=obj, name=name)\n   1432 | \n   1433 |     return environment.getattr(obj, name)",
+  "b7_index": 2,
+  "id": "M23"
+ },
+ {
+  "task": "itsdangerous-6c58e969",
+  "file": "src/itsdangerous/timed.py",
+  "op": "delete statement",
+  "line": 126,
+  "mutation": "s = want_bytes(s)  ->  pass",
+  "context": "    118 |     def loads(self, s, max_age=None, return_timestamp=False, salt=None):\n    119 |         \"\"\"Reverse of :meth:`dumps`, raises :exc:`.BadSignature` if the\n    120 |         signature validation fails. If a ``max_age`` is provided it will\n    121 |         ensure the signature is not older than that time in seconds. In\n    122 |         case the signature is outdated, :exc:`.SignatureExpired` is\n    123 |         raised. All arguments are forwarded to the signer's\n    124 |         :meth:`~TimestampSigner.unsign` method.\n    125 |         \"\"\"\n>>  126 |         s = want_bytes(s)\n    127 |         last_exception = None\n    128 |         for signer in self.iter_unsigners(salt):\n    129 |             try:\n    130 |                 base64d, timestamp = signer.unsign(\n    131 |                     s, max_age, return_timestamp=True\n    132 |                 )\n    133 |                 payload = self.load_payload(base64d)\n    134 |                 if return_timestamp:\n    135 |                     return payload, timestamp\n    136 |                 return payload\n    137 |             except BadSignature as err:\n    138 |                 last_exception = err\n    139 |         raise last_exception",
+  "b7_index": 0,
+  "id": "M24"
+ },
+ {
+  "task": "click-d946074a",
+  "file": "src/click/_textwrap.py",
+  "op": "const 1->2",
+  "line": 129,
+  "mutation": "if self.max_lines is None or len(lines) + 1 < self.max_lines or ((not   ->  if self.max_lines is None or len(lines) + 2 < self.max_lines or ((not ",
+  "context": "     99 |                 indent = self.subsequent_indent\n    100 |             else:\n    101 |                 indent = self.initial_indent\n    102 | \n    103 |             width = self.width - term_len(indent)\n    104 | \n    105 |             if self.drop_whitespace and chunks[-1].strip() == \"\" and lines:\n    106 |                 del chunks[-1]\n    107 | \n    108 |             while chunks:\n    109 |                 n = term_len(chunks[-1])\n    110 | \n    111 |                 if cur_len + n <= width:\n    112 |                     cur_line.append(chunks.pop())\n    113 |                     cur_len += n\n    114 | \n    115 |                 else:\n    116 |                     break\n    117 | \n    118 |             if chunks and term_len(chunks[-1]) > width:\n    119 |                 self._handle_long_word(chunks, cur_line, cur_len, width)\n    120 |                 cur_len = sum(map(term_len, cur_line))\n    121 | \n    122 |             if self.drop_whitespace and cur_line and cur_line[-1].strip() == \"\":\n    123 |                 cur_len -= term_len(cur_line[-1])\n    124 |                 del cur_line[-1]\n    125 | \n    126 |             if cur_line:\n    127 |                 if (\n    128 |                     self.max_lines is None\n>>  129 |                     or len(lines) + 1 < self.max_lines\n    130 |                     or (\n    131 |                         not chunks\n    132 |                         or self.drop_whitespace\n    133 |                         and len(chunks) == 1\n    134 |                         and not chunks[0].strip()\n    135 |                     )\n    136 |                     and cur_len <= width\n    137 |                 ):\n    138 |                     lines.append(indent + \"\".join(cur_line))\n    139 |                 else:\n    140 |                     while cur_line:\n    141 |                         if (\n    142 |                             cur_line[-1].strip()\n    143 |                             and cur_len + term_len(self.placeholder) <= width\n    144 |                         ):\n    145 |                             cur_line.append(self.placeholder)\n    146 |                             lines.append(indent + \"\".join(cur_line))\n    147 |                             break\n    148 |                         cur_len -= term_len(cur_line[-1])\n    149 |                         del cur_line[-1]\n    150 |                     else:\n    151 |                         if lines:\n    152 |                             prev_line = lines[-1].rstrip()\n    153 |                             if (\n    154 |                                 term_len(prev_line) + term_len(self.placeholder)\n    155 |                                 <= self.width\n    156 |                             ):\n    157 |                                 lines[-1] = prev_line + self.placeholder\n    158 |                                 break\n    159 |                         lines.append(indent + self.placeholder.lstrip())",
+  "b7_index": 7,
+  "id": "M25"
+ },
+ {
+  "task": "itsdangerous-6c58e969",
+  "file": "src/itsdangerous/timed.py",
+  "op": "delete statement",
+  "line": 127,
+  "mutation": "last_exception = None  ->  pass",
+  "context": "    118 |     def loads(self, s, max_age=None, return_timestamp=False, salt=None):\n    119 |         \"\"\"Reverse of :meth:`dumps`, raises :exc:`.BadSignature` if the\n    120 |         signature validation fails. If a ``max_age`` is provided it will\n    121 |         ensure the signature is not older than that time in seconds. In\n    122 |         case the signature is outdated, :exc:`.SignatureExpired` is\n    123 |         raised. All arguments are forwarded to the signer's\n    124 |         :meth:`~TimestampSigner.unsign` method.\n    125 |         \"\"\"\n    126 |         s = want_bytes(s)\n>>  127 |         last_exception = None\n    128 |         for signer in self.iter_unsigners(salt):\n    129 |             try:\n    130 |                 base64d, timestamp = signer.unsign(\n    131 |                     s, max_age, return_timestamp=True\n    132 |                 )\n    133 |                 payload = self.load_payload(base64d)\n    134 |                 if return_timestamp:\n    135 |                     return payload, timestamp\n    136 |                 return payload\n    137 |             except BadSignature as err:\n    138 |                 last_exception = err\n    139 |         raise last_exception",
+  "b7_index": 1,
+  "id": "M26"
+ },
+ {
+  "task": "attrs-5d6d21aa",
+  "file": "src/attr/_compat.py",
+  "op": "const 2->3",
+  "line": 16,
+  "mutation": "PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)  ->  PY_3_11_PLUS = sys.version_info[:3] >= (3, 11)",
+  "context": "      1 | # SPDX-License-Identifier: MIT\n      2 | \n      3 | import inspect\n      4 | import platform\n      5 | import sys\n      6 | import threading\n      7 | \n      8 | from collections.abc import Mapping, Sequence  # noqa: F401\n      9 | from typing import _GenericAlias\n     10 | \n     11 | \n     12 | PYPY = platform.python_implementation() == \"PyPy\"\n     13 | PY_3_8_PLUS = sys.version_info[:2] >= (3, 8)\n     14 | PY_3_9_PLUS = sys.version_info[:2] >= (3, 9)\n     15 | PY_3_10_PLUS = sys.version_info[:2] >= (3, 10)\n>>   16 | PY_3_11_PLUS = sys.version_info[:2] >= (3, 11)\n     17 | PY_3_12_PLUS = sys.version_info[:2] >= (3, 12)\n     18 | PY_3_13_PLUS = sys.version_info[:2] >= (3, 13)\n     19 | PY_3_14_PLUS = sys.version_info[:2] >= (3, 14)\n     20 | \n     21 | \n     22 | if sys.version_info < (3, 8):\n     23 |     try:\n     24 |         from typing_extensions import Protocol\n     25 |     except ImportError:  # pragma: no cover\n     26 |         Protocol = object\n     27 | else:\n     28 |     from typing import Protocol  # noqa: F401\n     29 | \n     30 | if PY_3_14_PLUS:  # pragma: no cover\n     31 |     import annotationlib",
+  "b7_index": 1,
+  "id": "M27"
+ }
+]

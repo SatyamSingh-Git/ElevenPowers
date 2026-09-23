@@ -1,0 +1,29 @@
+02:48:00 replicate 2, arm=generic, 9 tasks
+02:48:07 start attrs-5d6d21aa generic
+02:48:07 start itsdangerous-6c58e969 generic
+02:48:09 start click-c2ed4149 generic
+02:48:10 start jinja2-065334d1 generic
+02:48:10 start click-051bb0f3 generic
+02:48:10 start click-18d29196 generic
+02:48:11 start click-9f9b149e generic
+02:48:11 start click-d946074a generic
+02:48:12 start click-ad39d749 generic
+02:53:12 agent done click-9f9b149e generic: $0.36 turns=7 error=False 301s
+02:57:18 agent done jinja2-065334d1 generic: $0.56 turns=13 error=False 548s
+02:57:22 agent done itsdangerous-6c58e969 generic: $0.57 turns=13 error=False 555s
+03:00:20 agent done click-c2ed4149 generic: $0.76 turns=3 error=False 731s
+03:00:24 agent done attrs-5d6d21aa generic: $0.66 turns=17 error=False 737s
+03:02:08 DONE click-9f9b149e generic: 0/4 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.36
+03:03:16 DONE jinja2-065334d1 generic: 5/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.56
+03:03:33 DONE itsdangerous-6c58e969 generic: 0/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.57
+03:04:41 DONE click-c2ed4149 generic: 1/1 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $0.76
+03:06:49 DONE attrs-5d6d21aa generic: 0/1 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.66
+03:10:01 agent done click-051bb0f3 generic: $1.29 turns=26 error=False 1311s
+03:10:52 agent done click-ad39d749 generic: $0.79 turns=14 error=False 1360s
+03:11:40 agent done click-18d29196 generic: $1.07 turns=25 error=False 1410s
+03:13:12 agent done click-d946074a generic: $0.00 turns=None error=True 1500s
+03:13:24 DONE click-18d29196 generic: 2/2 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $1.07
+03:13:33 DONE click-051bb0f3 generic: 4/4 survivors now killed, 0 un-killed, src_restored=0, tautology=['__file__'], $1.29
+03:14:03 DONE click-ad39d749 generic: 3/5 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.79
+03:19:34 DONE click-d946074a generic: 3/3 survivors now killed, 0 un-killed, src_restored=0, tautology=[], $0.00
+03:19:34 replicate 2 done
