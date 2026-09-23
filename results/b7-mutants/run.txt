@@ -1,0 +1,18 @@
+attrs-97f8d175           0/2 survived  sites=2  (58s)
+attrs-6e3786c5           0/7 survived  sites=7  (88s)
+attrs-577c782c           0/2 survived  sites=2  (87s)
+attrs-1e07f468           0/8 survived  sites=20  (82s)
+attrs-5d6d21aa           1/8 survived  sites=33  (89s)
+attrs-6fda0a4e           0/8 survived  sites=25  (86s)
+click-c2ed4149           1/3 survived  sites=3  (63s)
+click-9f9b149e           4/8 survived  sites=26  (83s)
+click-051bb0f3           4/8 survived  sites=19  (94s)
+click-ad39d749           5/8 survived  sites=83  (81s)
+click-d946074a           3/8 survived  sites=155  (308s)
+click-d340b0c1           0/4 survived  sites=4  (46s)
+click-18d29196           2/8 survived  sites=27  (36s)
+itsdangerous-6c58e969    2/8 survived  sites=15  (31s)
+jinja2-065334d1          5/7 survived  sites=7  (41s)
+jinja2-0cd69481          0/1 survived  sites=1  (21s)
+
+total 1296s

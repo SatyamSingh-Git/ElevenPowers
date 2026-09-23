@@ -148,9 +148,12 @@ line: **the claim an agent makes is made visible, current and hard to forge. The
 code is not made better.** Three mechanisms for the first; none for the second.
 
 §5.16 is the first mechanism in this plan that speaks to the logic rather than
-to the evidence, and it is **unbuilt**, with a free measurement standing between
-it and any claim about it. Until that measurement exists, this paragraph is the
-accurate description and §1's opening line is the intent.
+to the evidence. It is still **unbuilt**. The free measurement that gated it has
+now run (2026-09-24): the discrimination check would pass on **16 of 16** corpus
+tasks while **9 of 16** leave changed lines their own tests do not notice. So
+the gap this section describes is measured rather than argued - and until
+§5.16 is built and has passed a blind review of what it reports, this paragraph
+is the accurate description and §1's opening line is the intent.
 
 ---
 
@@ -658,6 +661,36 @@ surviving mutant there is one the *maintainer's own fix* left unpinned. That is
 the conservative direction — an agent's patch will not be better tested than the
 maintainer's. §12 carries the falsifier.
 
+### The gate was run — 2026-09-24, $0, 1,296 seconds
+
+**27 of 98 mutants survived, on 9 of 16 tasks**, under the maintainers' own
+tests with the gold patch applied. Both per-task controls passed on all sixteen
+— reverting the gold patch was killed every time, and a harmless no-op survived
+every time — so the harness was reading the mutated source and was not
+over-reporting kills.
+
+- **Outcome one does not apply.** Survival is not near zero, so §5.16 is **not
+  withdrawn**.
+- **Outcome two does not apply, on one reviewer's reading.** Of the 27, **3** are
+  clearly equivalent, **3** uncertain, **1** real but trivial, and **20** real,
+  unpinned behaviour: `ctx.exit()` deleted after printing `--version`; a
+  `max_lines` boundary moved by one; in `jinja2-065334d1`, **five of seven**
+  mutants survive because the maintainer's test never enters the branch the fix
+  adds.
+- **Outcome three is provisional, not earned.** The gate said *survivors a
+  reviewer agrees are real gaps*, and the reviewer here is the one who designed
+  the probe — the bias runs toward the mechanism looking useful. **§5.16
+  provisionally passes, pending an independent blind classification of the 27.**
+
+**The strongest single finding is not the rate, it is the split.** attrs: **1 of
+35**. click: **19 of 47**. What this measures is at least as much a project's
+testing culture as any one change, and a reviewer-facing report would have to
+say which kind of repository it is looking at.
+
+What it does not say: anything about an agent's patch, which is the case §5.16
+exists for; a rate (eight sampled mutants per task); or anything about
+`mutmut` — the probe's operators are its own. `results/b7-mutants/findings.md`.
+
 ---
 
 **5.17 The bar a reviewer actually has.** *(2026-09-23)*
@@ -925,7 +958,9 @@ Reordered by measured effect size, with the free ones first.
 
 | Experiment | Comparison | Decision it answers | Cost |
 |---|---|---|---|
-| **Mutant survival** *(new, 2026-09-23)* | diff-scoped mutants vs the task's own tests, gold patch applied | **does §5.16 exist?** near-zero survival withdraws it; survivors that are equivalent mutants postpone it; real survivors make it the first mechanism aimed at the logic | **$0** — one rehearsal |
+| **Mutant survival** *(RUN 2026-09-24)* | diff-scoped mutants vs the task's own tests, gold patch applied | **does §5.16 exist?** — **27 of 98 survived on 9 of 16 tasks**; not withdrawn, not postponed, provisionally passes pending a blind classification. `results/b7-mutants/` | **$0**, 22 min |
+| **Blind survivor classification** *(new)* | the 27 survivors, judged by someone who did not design the probe | **does §5.16 earn its place, or only look like it does to its author?** | ~$0 |
+| **Mutants on an agent's patch** *(new)* | the same probe, an agent's candidate instead of the gold patch | the case §5.16 actually exists for | one paid sweep's worth of candidates, already bundled |
 | **Discrimination rate** | recorded pass vs the same command on the reverted tree | does our own evidence measure anything? | **$0** |
 | **Oracle gap** | pool coverage vs selected success on saved attempts | is a selector worth building, or under the 4pp harm line? | **$0** |
 | **Checkpoint density** | best intermediate candidate vs submitted | is there a better state to ratchet back to? | **$0** |
@@ -972,7 +1007,7 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 
 ## 10. Claims withdrawn or qualified
 
-- **"The discrimination check tells you the change is well tested."** Never asserted in these words, and a reader would reasonably infer it - so it is stated here as **false**, 2026-09-23. `core/stress.py` asks whether *anything* in the evidence could have failed. One test that was red on the base tree and is green now satisfies it, however much of the change goes unexercised. The measured rate - **1 VACUOUS in 22 runs** - was read as "agents here write discriminating tests"; the likelier reading is that the bar is one they clear by doing the minimum. §5.16 is the proposed answer and is **unbuilt**, with a free measurement standing between it and any claim about it.
+- **"The discrimination check tells you the change is well tested."** Never asserted in these words, and a reader would reasonably infer it - so it is stated here as **false**, 2026-09-23. `core/stress.py` asks whether *anything* in the evidence could have failed. One test that was red on the base tree and is green now satisfies it, however much of the change goes unexercised. The measured rate - **1 VACUOUS in 22 runs** - was read as "agents here write discriminating tests"; the likelier reading is that the bar is one they clear by doing the minimum. §5.16 is the proposed answer and is **unbuilt**. **Measured 2026-09-24, and the gap is real:** reverting the gold patch - which is exactly the mutant `stress.py` runs - was killed on **16 of 16** tasks, so the discrimination check would report `DISCRIMINATES` on every one of them; yet **9 of those 16** carry at least one surviving diff-scoped mutant under the maintainers' own tests. The check passing and the change being pinned are different facts, and on this corpus they disagree more often than not. `results/b7-mutants/`.
 - **"This system improves the logic, the edge cases, or the bugs."** Never true, stated plainly 2026-09-23 because it is the natural thing to assume from the framing. Nothing shipped generates a test, infers a property, searches for an edge case, or evaluates whether code is correct. `docs/research/build-on.md` records that a mutation engine is deliberately not written. What is shipped operates on the *evidence for* a claim, not on the claim's subject matter. §1.6.
 
 - **"Targeted reproductions went from 0 of 16 to 6 of 16."** Withdrawn 2026-09-22, and it was wrong in **both** directions at once. Part of the 6 was fabricated: a pytest node id carries shell metacharacters, `test_converter_decorator[<lambda>0]` made cmd.exe attempt an input redirect from a file named `lambda`, the command died before pytest started with **exit 1 and zero tests executed** - and exit 1 is allowed through as "some test failed", so the old code found no named failures and credited every selected id as a passing reproduction. Separately, `eval/rehearse.py` never applied the task's declared `PYTHONPATH=src`, so every check it ran imported the **installed release** instead of the patched source; that inflated `red_before` badly (`click-d340b0c1` reported **48** tests red on the base tree against a true **1**) and made honest targeted tests fail against code without the fix. With ids quoted and the environment applied, the figure is **16 of 16**. **None of this was caught by reading, by the test suite, or by an external audit that reproduced fourteen other probes** - it was caught by a four-minute run that cost nothing. `journey/43`.
@@ -1067,8 +1102,8 @@ Added by v0.8, and each is answerable cheaply:
 
 Added by §5.16, and the first one is answerable this week for nothing:
 
-- **Diff-scoped mutants almost never survive.** If, on the rehearsed corpus with the gold patch applied, few tasks carry a surviving mutant, then the tests already pin the changed logic here and the concern §5.16 exists to answer is empirically unfounded on this population. **§5.16 is withdrawn, not deferred** — deferring it would leave a plan promising something its own measurement refused. Cost to find out: one rehearsal, $0.
-- **The survivors are equivalent mutants.** If survivors are common but a reviewer judges most of them semantically identical to the original, the mechanism is a noise generator. It moves to `docs/postponed.md` with the trigger that would revive it, and the honest report is that mutation at this granularity does not survive contact with this corpus.
+- **Diff-scoped mutants almost never survive.** *Tested 2026-09-24 and it did not fire: 27 of 98 survived, on 9 of 16 tasks.* If, on the rehearsed corpus with the gold patch applied, few tasks carry a surviving mutant, then the tests already pin the changed logic here and the concern §5.16 exists to answer is empirically unfounded on this population. **§5.16 is withdrawn, not deferred** — deferring it would leave a plan promising something its own measurement refused. Cost to find out: one rehearsal, $0.
+- **The survivors are equivalent mutants.** *Did not fire on one reviewer's reading (3 of 27 clearly equivalent), and one reviewer is not enough - it is the probe's own author.* If survivors are common but a reviewer judges most of them semantically identical to the original, the mechanism is a noise generator. It moves to `docs/postponed.md` with the trigger that would revive it, and the honest report is that mutation at this granularity does not survive contact with this corpus.
 - **A reviewer does not act on a list of unpinned lines.** §5.17's whole claim is that *"these three lines could be altered and nothing you ran would notice"* is actionable without reading the diff. If it is read and ignored, that is the same falsifier as "surfacing changes nothing", now with the strongest content the report is ever likely to carry — and it would settle the question for the reporting direction, not just for one feature.
 
 ---
