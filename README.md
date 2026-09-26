@@ -7,8 +7,8 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](tests/)
-[![Status](https://img.shields.io/badge/status-week--one%20slice-orange.svg)](#where-this-actually-is)
+[![Tests](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml)
+[![Status](https://img.shields.io/badge/status-research%20prototype-orange.svg)](#where-this-actually-is)
 [![Architecture graph](https://img.shields.io/badge/architecture-live%20graph-a78bfa.svg)](https://satyamsingh-git.github.io/ElevenPowers/architecture/)
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
@@ -334,14 +334,25 @@ Most requests state no claim, because one real prompt in five is four words or f
 
 ## Where this actually is
 
-Week one. Here is the unflattering version, because the alternative is becoming the thing this project was built to catch.
+Research prototype; status reviewed 2026-09-27. The evidence collection and host integration work in local checks. Improved patch outcomes have not been demonstrated.
+
+The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
+lists to agents encouraged tests of implementation details. In 95 resolved patches,
+the gate arm had 4/49 vacuous patches versus 10/46 for vanilla; the task-level
+comparison was suggestive (p = 0.062), and the primary test-quality comparison
+showed no detectable difference. See [B8](results/b8-feedback/findings.md) and
+[B9](results/b9-gate-tests/findings.md) for methods and limits.
+
+The known false block is a pre-existing unrelated suite failure: the relevant test
+is fixed, but the gate still requires the suite to be green. The table records this
+limitation; it has not been fixed by updating the documentation.
 
 Every figure below was produced by the command printed next to it.
 
 | What was measured | Result | Reproduce with |
 |---|---|---|
 | Reading real tool results | **174/174** failures, **5,916/5,916** successes, over 36,034 commands | `python -m eval.replay --all` |
-| The gate as a classifier | 0% false blocks, 0% misses on 46 scenarios | `python -m eval.run --all` |
+| The gate as a classifier | **1/28 complete cases falsely blocked (3.6%)**, 0/18 incomplete cases missed; 46 scenarios, rerun 2026-09-27 | `python -m eval.run --all` |
 | The scope guard | 0 false questions, 0 misses on 25 cases | `python -m eval.scope_run` |
 | Claim inference, real turns | 21% over-claim, 25% missed work, across 3,557 turns | `python -m eval.claims_run` |
 | Live blocking | **75% → 12% of runs** after self-discharge landed (16 runs). On the later pinned sweep it was **8% of runs** — six block *events* across four of fifty, which is the figure that matters for sizing an experiment | `python -m eval.live --arm gate --model haiku` |
