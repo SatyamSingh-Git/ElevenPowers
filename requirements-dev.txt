@@ -1,0 +1,2 @@
+# Shared local/CI test runner. Runtime itself uses the standard library.
+pytest==9.1.1

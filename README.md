@@ -332,6 +332,8 @@ Most requests state no claim, because one real prompt in five is four words or f
 
 ---
 
+For a repeatable local test environment, see [Development and verification](docs/development.md).
+
 ## Where this actually is
 
 Research prototype; status reviewed 2026-09-27. The evidence collection and host integration work in local checks. Improved patch outcomes have not been demonstrated.

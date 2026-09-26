@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Install
-        run: python -m pip install --upgrade pip pytest
+        run: python -m pip install -r requirements-dev.txt
       - name: Identify the environment
         run: python -c "import platform, sys; print(sys.version); print(platform.platform())"
       # git needs an identity before the fixtures that commit will work, and the
