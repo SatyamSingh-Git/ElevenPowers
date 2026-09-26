@@ -86,6 +86,9 @@ arm, in one sweep, by one method.
 - **Nothing about why.** The gate could reduce vacuity through its obligation
   text, its reports or its blocks; the data cannot tell them apart.
 
-Reproduce: `chunks_probe.py` and `analyse.py`, the exact code that ran. Their
-paths point at the session's scratch directory and need adjusting; the data is in
-`patches.json`.
+Recompute the saved metrics from a fresh checkout with
+`python results/b9-gate-tests/analyse.py b9`. It reads the committed `patches.json`
+relative to the script, without the original session's scratch directory.
+Use `--results-root /path/to/results` to analyse another copy of the records.
+This does not rerun the mutation experiment: historical `chunks_probe.py` still
+requires the original corpus/repository setup and path adjustments.

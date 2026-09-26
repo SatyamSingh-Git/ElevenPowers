@@ -942,16 +942,16 @@ def test_the_agents_package_manager_cannot_touch_the_shared_site(tmp_path):
     before = set(glob.glob(shared + "/*"))
     environment = _sandboxed(project)
 
+    # Exercise the outside-venv guard even when pytest itself runs in a venv.
     for command in (["install", "-e", "."], ["uninstall", "-y", "attrs"]):
-        done = subprocess.run([sys.executable, "-m", "pip", *command],
+        done = subprocess.run([getattr(sys, "_base_executable", sys.executable), "-m", "pip", *command],
                               cwd=project, env=environment, capture_output=True,
                               text=True, encoding="utf-8", errors="replace",
                               timeout=300)
         assert done.returncode != 0, f"pip {command[0]} was allowed to run"
+        assert "Could not find an activated virtualenv" in done.stderr, done.stderr
 
     assert set(glob.glob(shared + "/*")) == before
-    import importlib.util
-    assert importlib.util.find_spec("attrs"), "attrs was removed from the machine"
 
 
 def test_a_run_whose_environment_changed_is_not_the_agents_fault(upstream, tmp_path,
@@ -1266,9 +1266,24 @@ def test_an_install_stays_in_the_workspace_even_when_the_guard_is_off(tmp_path):
     assert glob.glob(str(project / ".venv") + "/**/*ep_probe_pkg*", recursive=True), \
         "it installed somewhere that is not the workspace"
 
-    seen = subprocess.run('python -c "import pytest, attrs"', shell=True, cwd=project,
-                          env=defeated, capture_output=True, timeout=120)
-    assert seen.returncode == 0, "the workspace interpreter cannot see the machine"
+    # A nested venv inherits the BASE interpreter's sites, not its parent
+    # venv's packages. Prove those directories remain visible without assuming
+    # this machine has pytest or attrs installed globally.
+    check = (
+        "import json, site, sys, ep_probe_pkg; "
+        "assert ep_probe_pkg.V == 1; "
+        "print(json.dumps({'paths': sys.path, "
+        "'base_sites': site.getsitepackages([sys.base_prefix])}))"
+    )
+    seen = subprocess.run([str(project / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")),
+                           "-c", check], cwd=project, env=defeated,
+                          capture_output=True, text=True, timeout=120)
+    assert seen.returncode == 0, seen.stderr
+    visible = json.loads(seen.stdout)
+    paths = {os.path.normcase(os.path.abspath(p)) for p in visible["paths"]}
+    for path in visible["base_sites"]:
+        assert os.path.normcase(os.path.abspath(path)) in paths, path
+
 
 
 # --- R10: a pipeline reports the exit code of its last command ---------------

@@ -14,13 +14,14 @@ Metrics fixed in advance, so the result cannot choose them:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from collections import Counter, defaultdict
 from math import comb
 from pathlib import Path
 
-S = Path("C:/Users/Satyam/AppData/Local/Temp/claude/e--ElevenPowers/cf4ea1a0-0d66-483c-af19-d5e4658f485a/scratchpad")
+S = Path(__file__).resolve().parents[1]
 
 
 def sign_test(pos: int, neg: int) -> float:
@@ -42,11 +43,11 @@ def kappa(a: list, b: list) -> float:
 
 def b8():
     runs = []
-    for rep, d in ((1, "b8"), (2, "b8-rep2")):
-        for p in sorted((S / d).glob("*.json")):
-            r = json.loads(p.read_text(encoding="utf-8"))
-            r["rep"] = rep
-            runs.append(r)
+    paths = sorted((S / "b8-feedback/runs").glob("*.json"))
+    if not paths:
+        raise ValueError(f"missing B8 run records under {S / 'b8-feedback/runs'}")
+    for p in paths:
+        runs.append(json.loads(p.read_text(encoding="utf-8")))
     ok = [r for r in runs if not r.get("why")]
     bad = [r for r in runs if r.get("why")]
     print(f"\n=== B8 feedback: {len(ok)} usable runs, {len(bad)} failed ===")
@@ -99,9 +100,9 @@ def b8():
 
 
 def b9():
-    rows = []
-    for p in sorted(S.glob("chunks_*.json")):
-        rows += json.loads(p.read_text(encoding="utf-8"))
+    rows = json.loads((S / "b9-gate-tests/patches.json").read_text(encoding="utf-8"))
+    if not rows:
+        raise ValueError("missing B9 patch records: input is empty")
     ok = [r for r in rows if not r.get("why")]
     print(f"\n=== B9 gate vs vanilla (paired chunks sweep): {len(ok)} usable patches, "
           f"{len(rows) - len(ok)} failed ===")
@@ -142,13 +143,14 @@ def b9():
 
 
 def raters():
-    key = {k["id"]: k for k in json.loads((S / "blind_key.json").read_text(encoding="utf-8"))}
-    author = json.loads((S / "author_labels.json").read_text(encoding="utf-8"))["labels"]
+    key = {k["id"]: k for k in json.loads((S / "b7-mutants/blind-review/blind_key.json").read_text(encoding="utf-8"))}
+    author = json.loads((S / "b7-mutants/blind-review/author_labels.json").read_text(encoding="utf-8"))["labels"]
     got = {}
     for name in ("opus", "sonnet"):
-        p = S / f"rater_{name}.json"
-        if p.exists():
-            got[name] = {k: v["label"] for k, v in json.loads(p.read_text(encoding="utf-8")).items()}
+        p = S / "b7-mutants/blind-review" / f"rater_{name}.json"
+        if not p.is_file():
+            raise ValueError(f"missing rater input: {p}")
+        got[name] = {k: v["label"] for k, v in json.loads(p.read_text(encoding="utf-8")).items()}
     print(f"\n=== Blind review: raters present {sorted(got)} ===")
     ids = sorted(key)
     for name, lab in got.items():
@@ -175,6 +177,26 @@ def raters():
                   f"sonnet={got['sonnet'][i]:<10} author={author[i]}")
 
 
+def main(argv=None):
+    global S
+    parser = argparse.ArgumentParser(description="Recompute metrics from committed experiment records; no agent calls.")
+    parser.add_argument("parts", nargs="*", help="raters, b8, b9 (default: all)")
+    parser.add_argument("--results-root", type=Path, default=S,
+                        help="results directory (default: beside this checkout's scripts)")
+    args = parser.parse_args(argv)
+    S = args.results_root
+    actions = {"raters": raters, "b8": b8, "b9": b9}
+    parts = args.parts or list(actions)
+    if any(part not in actions for part in parts):
+        parser.error("parts must be raters, b8, or b9")
+    try:
+        for part in parts:
+            actions[part]()
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        print(f"analysis failed: missing or invalid input: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
 if __name__ == "__main__":
-    for part in (sys.argv[1:] or ["raters", "b8", "b9"]):
-        {"raters": raters, "b8": b8, "b9": b9}[part]()
+    sys.exit(main())

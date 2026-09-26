@@ -44,3 +44,20 @@ Use `--basetemp` only for disposable test files: pytest clears that directory on
 each run. Missing pytest or tests that cannot collect indicate an environment
 failure, not a successful validation. Fix setup before interpreting grader results.
 
+## Recompute saved experiment metrics
+
+These commands read committed JSON records, need no corpus checkout or model
+credentials, and make no paid agent calls:
+
+```sh
+python results/b8-feedback/analyse.py b8
+python results/b9-gate-tests/analyse.py b9
+python results/b9-gate-tests/analyse.py raters
+```
+
+The default input directory is resolved relative to the script, independently of
+the current working directory. Use `--results-root /path/to/results` for another
+copy of the saved records. Missing or invalid inputs return a nonzero exit status.
+These commands recompute metrics, not the original experiments: the historical
+probe/driver scripts still require their corpus, repositories and execution setup.
+

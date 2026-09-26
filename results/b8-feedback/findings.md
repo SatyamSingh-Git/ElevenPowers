@@ -145,5 +145,9 @@ requirements for §5.16 before anything is built:
 - **Not a verdict on mutation feedback in general**, only on the raw list, given
   as targets, to this model.
 
-Reproduce: `driver.py` (the run) and `analyse.py` (the metrics, written before
-the results). Per-run records with before/after verdicts are in `runs/`.
+Recompute metrics with `python results/b8-feedback/analyse.py b8`. It reads the
+committed before/after records in `runs/`, independently of the working directory.
+Use `--results-root /path/to/results` for another copy of the saved records.
+The metrics were specified before the results; only input discovery changed.
+Historical `driver.py` reruns the paid experiment and still requires the original
+corpus, agent configuration and path adjustments; it is not needed for analysis.

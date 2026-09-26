@@ -708,7 +708,7 @@ exists for; a rate (eight sampled mutants per task); or anything about
 **Outcome three is now earned, not provisional.** Two reviewers who did not
 design the probe — Opus 5.5 and Sonnet 5, as separate agents barred from this
 repository — classified the 27 blind, from a packet re-derived and asserted
-identical to what B7 ran. **Both call 20 of 27 MEANINGFUL** (κ 0.67 between
+identical to what B7 ran. **20 of 27 are MEANINGFUL to both reviewers (21 for Opus, 22 for Sonnet)** (κ 0.67 between
 them; 0.70 and 0.79 against the author, who registered his labels first). Both
 found slightly *more* real gaps than the author did. Exactly **one** mutant is
 unanimously equivalent. `results/b7-mutants/blind-review/`.
@@ -1025,7 +1025,7 @@ Reordered by measured effect size, with the free ones first.
 | Experiment | Comparison | Decision it answers | Cost |
 |---|---|---|---|
 | **Mutant survival** *(RUN 2026-09-24)* | diff-scoped mutants vs the task's own tests, gold patch applied | **does §5.16 exist?** — **27 of 98 survived on 9 of 16 tasks**; not withdrawn, not postponed, provisionally passes pending a blind classification. `results/b7-mutants/` | **$0**, 22 min |
-| **Blind survivor classification** *(RUN 2026-09-24)* | the 27 survivors, two blind reviewers | **both call 20/27 MEANINGFUL**; detection earns its place. `results/b7-mutants/blind-review/` | ~$0 |
+| **Blind survivor classification** *(RUN 2026-09-24)* | the 27 survivors, two blind reviewers | **20/27 are MEANINGFUL to both reviewers (21 for Opus, 22 for Sonnet)**; detection earns its place. `results/b7-mutants/blind-review/` | ~$0 |
 | **Mutants on an agent's patch** *(RUN 2026-09-24)* | the same probe, 15 resolved agent patches | **28/89 survive vs gold's 27/91** — agents pin as well as maintainers. `results/b7-mutants/agent-patches/` | $0 |
 | **Mutant feedback to an agent (B8)** *(RUN 2026-09-24)* | generic "tests are weak" vs the exact mutant list, 9 tasks x 2 reps, Opus 5.5 | **list kills 54/54 vs 38/54, but largely through white-box tests aimed at the mutation** — never hand raw mutants to an agent. `results/b8-feedback/` | $22.14+ |
 | **Gate vs vanilla test quality (B9)** *(RUN 2026-09-24)* | every resolved patch of the paired chunks sweep through the probe | **no difference in how well tests pin the change (p = 1.0); fewer VACUOUS patches under the gate, 4/49 vs 10/46 (p = 0.06)** — all 14 vacuous patches had no test at all. `results/b9-gate-tests/` | $0 |

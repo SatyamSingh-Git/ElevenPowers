@@ -57,7 +57,7 @@ shown. Before building it, every mutant was re-derived from scratch and
 **asserted identical** to what B7 ran, so they judged what was counted. Before
 either returned, the author's labels were registered.
 
-**Both call 20 of 27 MEANINGFUL.** They agree with each other on 24 of 27 (κ
+**20 of 27 are MEANINGFUL to both reviewers (21 for Opus, 22 for Sonnet).** They agree with each other on 24 of 27 (κ
 0.67), and with the author at κ 0.70 and 0.79. Both found slightly *more* real
 gaps than the author — the bias the step existed to catch did not show.
 
