@@ -75,6 +75,7 @@ class Evidence:
     nobody can count is indistinguishable from `echo pytest`, and refusing both
     would block agents whose projects run tests through `make`.
     """
+    execution: str = "complete"
     coverage_issues: list[str] = field(default_factory=list)
     scope: str = ""
     """Where `observed` came from, when it was a scan rather than a fixed list.

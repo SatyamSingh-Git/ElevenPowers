@@ -255,7 +255,48 @@ def claims_to_run_tests(command: str) -> bool:
                 or re.search(r"\b(tests?|specs?)\b", command.lower()))
 
 
-def parse(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
+DECLARED_KINDS = {"tests": Kind.SUITE, "typecheck": Kind.TYPECHECK,
+                  "build": Kind.BUILD, "lint": Kind.LINT, "benchmark": Kind.BENCHMARK}
+
+
+def declared_needs(command: str, root: Path) -> list[str]:
+    from .config import load
+    return [need for need, configured in load(root).commands.items()
+            if need in DECLARED_KINDS and command.strip() == configured.strip()]
+
+
+def parse(command: str, output: str, exit_code: int | None, root: Path) -> list[Evidence]:
+    """A declaration authorizes its exact command, never a prefix or output file."""
+    needs = declared_needs(command, root)
+    if not needs:
+        return _parse_known(command, output, exit_code if exit_code is not None else 1, root)
+    code = exit_code if exit_code is not None else 1
+    known = _parse_known(command, output, code, root)
+    records = [r for r in known if r.kind is Kind.TEST and "tests" in needs]
+    for need in needs:
+        kind = DECLARED_KINDS[need]
+        record = next((r for r in known if r.kind is kind), None)
+        if record is None:
+            if kind is Kind.SUITE:
+                if looks_like_tap(output):
+                    record = _tap(command, output, code, root)
+                elif VITEST_TESTS.search(output):
+                    record = _counted(kind, command, output, code, root, VITEST_TESTS)
+                else:
+                    record = _wrapped(command, output, code, root)
+            else:
+                record = _record(kind, _scope(command), code, command, root, output)
+        record.identity = f"declared:{need}:{command.strip()}"
+        records.append(record)
+    if exit_code is None:
+        for record in records:
+            record.result = Result.ERROR
+            record.execution = "incomplete"
+            record.detail = "execution incomplete; no completed exit status. " + record.detail
+    return records
+
+
+def _parse_known(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
     """Evidence implied by one command and its output, or an empty list."""
     cmd = command.strip()
     bare = _bare(cmd)
