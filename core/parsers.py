@@ -338,7 +338,9 @@ def _declared_counts(record: Evidence, output: str) -> None:
             passed += int(groups.get("passed") or 0) if "passed" in groups else max(int(groups.get("total") or 0) - bad, 0)
             failed += bad
             found = True
-    for status, _ in GO_RESULT.findall(clean):
+    for status, package in GO_RESULT.findall(clean):
+        if package.isdecimal():  # TAP's numbered `ok` lines are not Go packages.
+            continue
         passed += int(status == "ok")
         failed += int(status != "ok")
         found = True

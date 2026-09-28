@@ -118,6 +118,7 @@ def test_editing_a_carried_test_invalidates_the_cached_verdict(repo, monkeypatch
                         lambda *a, **k: (runs.append(a), (True, "1 passed"))[1])
     led = Ledger(root=repo, task="t", base=git(repo, "rev-parse", "HEAD"),
                  touched=["tests/test_a.py"], evidence=[passing_suite(repo)],
+                     claims=[Claim.BUG_FIXED],
                  _config=Config(commands={"tests": "pytest tests"}))
 
     led.discrimination, led.failed_before = stress.stress(led)

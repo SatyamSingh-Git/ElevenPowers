@@ -12,9 +12,9 @@ Blocking to make an agent run a command costs another agent turn, which is
 the runtime can compute the evidence itself, demanding it is the wrong move, and
 "completion is computed" is the whole thesis anyway.
 
-Only commands the project declared are ever run. Guessing one would mean this
-module executing something nobody asked for, which is not a trade worth making
-for a shorter obligation list.
+Commands come from explicit project overrides or supported root manifest
+conventions. Missing obligations decide what runs; discovery itself executes
+nothing, and the passive profile does not invoke this path.
 """
 
 from __future__ import annotations
@@ -57,8 +57,12 @@ def discharge(ledger) -> list[Evidence]:
     and what nobody would have learned by blocking.
     """
     records: list[Evidence] = []
+    attempted: set[str] = set()
     for need in dischargeable(ledger):
         command = ledger.config.command_for(need)
+        if command in attempted:
+            continue
+        attempted.add(command)
         try:
             done = subprocess.run(
                 command, shell=True, cwd=ledger.root, capture_output=True,

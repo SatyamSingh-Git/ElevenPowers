@@ -166,7 +166,12 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
     verdicts = dict(ledger.discrimination)
     already_red = set(ledger.failed_before)
     already_green = set(ledger.passed_before)
+    from .obligations import obligations_for
+    relevant = {o.needs for claim in ledger.claims
+                for o in obligations_for(claim, ledger.risk, ledger.surface, ledger.request)}
     for need, command in sorted(config.commands.items()):
+        if need not in relevant:
+            continue
         carried = _tests_the_task_touched(ledger)
         stamp = _inputs_stamp(ledger.root, ledger.base, command, carried)
         # Cached only while the inputs it was computed from are unchanged. The
@@ -175,7 +180,7 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # question being asked.
         if need in verdicts and ledger.discrimination_inputs.get(need) == stamp:
             continue
-        if not _passing(ledger):
+        if not _passing(ledger, need):
             # Nothing claims this check passed, so there is nothing to question.
             continue
         found = on_the_old_tree(ledger.root, ledger.base, _with_outcomes(command),
@@ -250,7 +255,7 @@ def _tests_the_task_touched(ledger) -> tuple[str, ...]:
     return tuple(p for p in ledger.touched if TEST_NAME.search(p))
 
 
-def _passing(ledger) -> bool:
+def _passing(ledger, need: str = "tests") -> bool:
     """Does anything here claim the tests currently pass?
 
     **Not an exact match on the declared command.** That was the first version
@@ -282,7 +287,10 @@ def _passing(ledger) -> bool:
     """
     from .evidence import Freshness, Kind, Result
 
-    return any(e.kind in (Kind.TEST, Kind.SUITE) and e.result is Result.PASS
+    from .parsers import DECLARED_KINDS
+    kinds = (Kind.TEST, Kind.SUITE) if need == "tests" else (DECLARED_KINDS.get(need),)
+    return any(e.kind in kinds and e.result is Result.PASS
+               and e.execution == "complete" and not e.coverage_issues
                and e.freshness(ledger.root) in (Freshness.FRESH, Freshness.STALE)
                for e in ledger.evidence)
 
