@@ -64,7 +64,16 @@ def discharge(ledger) -> list[Evidence]:
                 command, shell=True, cwd=ledger.root, capture_output=True,
                 text=True, encoding="utf-8", errors="replace", timeout=TIMEOUT,
             )
-        except (OSError, subprocess.SubprocessError):
+        except subprocess.TimeoutExpired as error:
+            def text(value):
+                return value.decode("utf-8", errors="replace") if isinstance(value, bytes) else (value or "")
+            output = text(error.stdout) + text(error.stderr) + "\ntimeout: command did not complete"
+            records.extend(parse(command, output, None, ledger.root))
+            ledger.note("declared command incomplete", f"timeout: {command}")
+            continue
+        except (OSError, subprocess.SubprocessError) as error:
+            records.extend(parse(command, f"launch error: {error}", None, ledger.root))
+            ledger.note("declared command incomplete", f"launch error: {command}")
             continue
         found = parse(command, (done.stdout or "") + (done.stderr or ""),
                       done.returncode, ledger.root)

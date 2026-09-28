@@ -71,3 +71,22 @@ def test_hook_still_ignores_interrupted_undeclared_commands(tmp_path):
     on_post_tool({"tool_name": "Bash", "tool_input": {"command": "npm run anything"},
                   "tool_response": {"interrupted": True}}, tmp_path)
     assert not Ledger.load(tmp_path).evidence
+
+
+@pytest.mark.parametrize("error", ["timeout", "launch"])
+def test_automatic_verification_retains_incomplete_attempt(tmp_path, monkeypatch, error):
+    import subprocess
+    from core import verify
+    from core.ledger import Ledger
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    monkeypatch.setattr(verify, "dischargeable", lambda ledger: ["tests"])
+    def interrupted(*args, **kwargs):
+        if error == "timeout":
+            raise subprocess.TimeoutExpired("npm run ci", 1, output=b"partial")
+        raise OSError("cannot launch")
+    monkeypatch.setattr(verify.subprocess, "run", interrupted)
+    receipts = verify.discharge(Ledger(root=tmp_path))
+    assert len(receipts) == 1
+    assert receipts[0].result is Result.ERROR
+    assert receipts[0].execution == "incomplete"
+    assert error in receipts[0].detail
