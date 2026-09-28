@@ -764,3 +764,17 @@ opening a transcript. **Preserving evidence is not the same as reading it.** The
 screen that found this is thirty lines and runs in seconds — it is now
 `eval.exposure`, and it runs beside the taxonomy rather than after an auditor
 asks.
+
+## 2026-09-28 to 2026-09-29: setup that still needed the user
+
+**Partial scans looked like complete evidence.** A filesystem walk encountered generated data and a selection cap without carrying its omissions into freshness. Git-aware selection and explicit coverage diagnostics now define what a receipt covers. A diagnostic is not an invitation to certify the smaller set.
+
+**Identity was treated as a label.** Prefixing declared-command identities lost single-file scope and prevented older failures from being superseded. Existing identities were retained, and incomplete attempts were removed from completed-failure proofs. Review also caught inherited ignore rules being lost in selected subprojects and failures disappearing across mixed runner summaries.
+
+**Automatic discovery expanded execution unintentionally.** An existing baseline loop consumed every configured command after any tests passed. Adding discovered scripts made a regular bug-fix task eligible to run unrelated benchmarks and builds. Baseline checks now require a relevant obligation and matching evidence; discovery alone does not schedule them.
+
+**A unit fixture missed the format overlap.** The real no-config launcher probe reported two passes for one Node test. Its TAP result line also matched the Go package pattern. Numbered TAP results are now excluded from that aggregation. The real probe then recorded exactly one pass.
+
+**Documentation lagged behind the fixes.** A feature page still described stat-based fingerprints, troubleshooting claimed guide mode did not run tests, and old timeouts remained in the manual. The 2026-09-29 documentation pass corrected current guidance and added a status/validation index. Historical records keep their dated measurements and link to superseding behavior.
+
+Sources: [journey 46](46-the-project-outside-the-fixture.md), [journey 47](47-installed-should-mean-active.md), and the [validation records](../docs/validation/README.md).

@@ -315,3 +315,12 @@ Block rate is observed on every run, which is why M1 could measure a fall from
 75 percent to 12 on sixteen runs. Resolution only learns from tasks where arms
 disagree. Knowing which kind of metric is in hand is now a rule in the plan.
 
+## 2026-09-28 to 2026-09-29: Snag selection and automatic activation
+
+**Read-only compatibility check.** Snag exposed generated-data scanning and an opaque `npm run ci` entry point. The first Git-aware delivery still exceeded its 64 MiB default, but explicitly reported the gap. A larger in-memory budget covered 4,418 files. A 19-test Node sample passed; replay verified declared-wrapper recognition. Full Snag CI and plugin installation were not performed.
+
+**Setup friction.** The user expected installation to activate the essential behavior. Manifest discovery, a startup health/coverage summary and a 256 MiB default removed the measured need for manual declaration and a scan override. The default read-only Snag check selected 4,418 files / 81,841,401 bytes in about 1.11 seconds; this measures selection, not hashing or CI.
+
+**Real launcher probe.** A disposable Node project with a package.json ci script ran through SessionStart and Stop without a config file. The first output revealed a TAP/Go double count. After correction, automatic execution saved one passing test receipt and Stop exited successfully. This was a launcher process test, not a live Claude Code session.
+
+**Next observation.** Measure the installed plugin in Snag during full CI and ordinary edits, including event delivery and latency. See [current status](status.md) and [automatic setup validation](validation/2026-09-29-automatic-setup.md).
