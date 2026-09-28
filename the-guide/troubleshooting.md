@@ -8,7 +8,7 @@ Start every investigation the same way:
 python plugin/bin/ep_doctor.py --host
 ```
 
-Six green lines means the runtime is hearing the host correctly and your problem is elsewhere in this page. Anything else, fix that first — nothing downstream works if this layer is broken, and **its failure mode is silence, not an error**.
+Six green lines mean the local diagnostic checks passed. They do not by themselves prove the plugin is enabled in the active host session; use `--host` for the deeper launcher check and confirm real tool events create receipts. Anything else, fix that first — nothing downstream works if this layer is broken, and **its failure mode is silence, not an error**.
 
 ---
 
@@ -110,7 +110,7 @@ With that, the runtime runs the suite itself and computes the evidence instead o
 
 ## Everything keeps going `STALE`
 
-Known limitation, honestly documented. Invalidation is **coarse** today: any source edit stales every piece of evidence, rather than only the evidence whose files actually changed.
+Known limitation, honestly documented. Invalidation is **coarse** today: a change within selected source inputs stales source-scoped evidence, rather than only the evidence whose files actually changed.
 
 On a small project this is barely noticeable. On a large one it can be tiresome, and the fix — narrowing the observed set to the import closure of each test — is written down with a trigger in [`docs/postponed.md`](../docs/postponed.md). The trigger is exactly this complaint being measured in real use.
 
@@ -120,7 +120,7 @@ On a small project this is barely noticeable. On a large one it can be tiresome,
 
 ## The hint names a command that does not exist
 
-The runtime guessed, and guessed wrong. Tell it the truth:
+Check the startup summary or `ep_status` for the effective command. Root manifests provide conventional defaults; an unsupported wrapper, conflicting package-manager declarations or a project-specific choice may need an override:
 
 ```json
 {"commands": {"tests": "pnpm vitest run", "typecheck": "pnpm tsc --noEmit"}}
@@ -159,7 +159,7 @@ If you are comparing results across machines, pin the setting on both.
 
 ## The Stop hook feels slow
 
-The `Stop` hook has a 600-second timeout because it may run your declared test suite. Every other hook is capped at 20 seconds. If stopping is slow, the runtime is almost certainly running your suite — which is the behaviour that replaced interrupting you to ask for it.
+The `Stop` hook has a 600-second timeout because it may run your declared test suite. Startup and source-observation hooks allow 120 seconds for cold scans. Prompt and pre-tool guards retain 20 seconds. If stopping is slow, the runtime is almost certainly running your suite — which is the behaviour that replaced interrupting you to ask for it.
 
 If your suite is too slow to sit inside a turn, either declare a faster subset:
 
@@ -167,7 +167,7 @@ If your suite is too slow to sit inside a turn, either declare a faster subset:
 {"commands": {"tests": "python -m pytest tests/unit -q"}}
 ```
 
-or switch to `profile: "guide"`, where the suite is not run and you are told what would prove the work instead.
+To disable automatic verification entirely, use `profile: "off"`. `guide` still executes checks; it only removes blocking. To suppress one discovered command while retaining the other checks, use an empty override such as `{"commands": {"tests": ""}}`. A deliberately narrowed suite proves only the checks it actually runs.
 
 ---
 
@@ -185,3 +185,17 @@ python --version                            # and this
 ```
 
 plus your OS, your Claude Code version, and what you expected to happen versus what did. If `.elevenpowers/blindspots.jsonl` exists, attach it — that file exists precisely so this conversation can be short.
+
+## Startup reports incomplete source coverage
+
+Read the specific diagnostic before rerunning. Git failures, unreadable files, unsafe symlinks, invalid settings and file/byte budgets are distinct causes. Default selection permits 20,000 eligible files and 256 MiB. Raise a budget only when the selected inputs belong in coverage; exclude generated data only when it should not invalidate verification. See [scan configuration](configuration.md#repository-scan-configuration).
+
+After resolving the problem, rerun the verification command. Old incomplete receipts do not become complete retroactively. A startup selection check also does not prove every file can later be hashed.
+
+## Startup finds no verification command
+
+Discovery reads supported manifests at the selected root. Check the working directory, packageManager and lockfiles, and whether the intended script uses a conventional name. Explicit overrides win; an empty command disables that need and auto_detect false disables discovery. Unknown wrappers need an exact command in config.json. The runtime still observes known test runners.
+
+## A verification attempt is incomplete
+
+An interruption, timeout, missing runtime or unreadable result is not a passing run or a reproduced test failure. Repair the environment or rerun to completion. Incomplete attempts replace earlier success for that target. The plugin reports missing executables; it does not install the project's dependencies.

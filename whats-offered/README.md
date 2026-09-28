@@ -17,10 +17,12 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 | | Today | Where it is going |
 |---|---|---|
 | **Evidence capture** | shipped — reads the commands your agent already runs, no protocol, no cooperation required | unchanged; this is the foundation everything else sits on |
-| **Staleness** | shipped, but coarse — any source edit stales everything | narrowed to each test's import closure, once measurement shows the coarse version is too pessimistic |
+| **Automatic setup** | shipped — startup health, manifest command discovery and coverage reporting | installed Snag session and full CI validation |
+| **Repository selection** | shipped — Git ignores, project boundaries, budgets and explicit scan gaps | measure real-project latency and coverage |
+| **Staleness** | shipped, but coarse — changes within selected source inputs stale evidence | narrowed to each test's import closure, once measurement shows the coarse version is too pessimistic |
 | **The completion gate** | shipped — four states, risk-scaled obligations, `cannot_complete` as a real outcome | demoted from the point of the project to one component of a larger system |
 | **Flaky-bug tooling** | shipped — a repeat runner with a derived run count. Nothing else in the field has one | instrumentation helpers and a hypothesis ledger |
-| **Self-diagnosis** | shipped — `ep-doctor` tests the seam against the real host contract | continuous, as the host changes |
+| **Self-diagnosis** | startup health is automatic; `ep-doctor --host` provides a deeper launcher check | continuous, as the host changes |
 | **Reproducible measurement** | shipped — pinned corpus, pinned model, a score with an interval, run bundles that can be re-graded | the instrument is built; now it has to be pointed at the actual hypothesis |
 | **Candidate generation** | not built | Phase C–D: pools of candidate patches, selection without peeking at hidden outcomes |
 | **Does any of this make agents better?** | **unanswered** | Phase C–D. This is the question, and it is still open |

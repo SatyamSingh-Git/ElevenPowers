@@ -1,5 +1,7 @@
 # Roadmap
 
+**Product delivery update, 2026-09-29.** Repository-aware evidence and automatic setup are shipped. The next integration milestone is a real installed session in Snag with full CI, reliable receipts and acceptable latency. It remains open; the completed read-only and disposable-project checks are listed in [current status](../docs/status.md). The research phases below are separate from this product milestone.
+
 [← What's Offered](README.md)
 
 Five phases, each with an exit criterion written as a **command** rather than a feeling, and a spending envelope written before anything is measured.

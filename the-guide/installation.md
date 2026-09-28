@@ -37,7 +37,7 @@ Passing `--plugin-dir` every time gets old. To load it for every session, add th
 
 ## Optional: other languages
 
-Everything works on any repository out of the box. One feature is **Python-only until you opt in**: the blast radius, which names the other implementations and callers of whatever you just changed. It needs to understand inheritance, and Python's standard library can only parse Python.
+Core evidence collection works across supported repository types; unusual verification commands may need an override. One feature is **Python-only until you opt in**: the blast radius, which names the other implementations and callers of whatever you just changed. It needs to understand inheritance, and Python's standard library can only parse Python.
 
 ```bash
 pip install tree-sitter-language-pack

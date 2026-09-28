@@ -12,7 +12,7 @@ Three commands you will actually use, and a set of evaluation commands you only 
 python plugin/bin/ep_status.py [--cwd DIR]
 ```
 
-Ask at any point rather than waiting to be told at the end. Prints the current claim, its state, and every obligation with whether it is met, missing or stale.
+Ask at any point rather than waiting until completion. Prints the profile, effective commands (explicit or discovered), current claim and obligations with whether they are met, missing or stale. SessionStart separately reports scan coverage and basic health.
 
 ```
 UNVERIFIED  bug_fixed
@@ -35,7 +35,7 @@ UNVERIFIED  bug_fixed
 python plugin/bin/ep_doctor.py [--cwd DIR] [--host]
 ```
 
-The self-check on the layer between this runtime and Claude Code. Run it after install, after upgrading Claude Code, and any time the runtime seems to have gone quiet.
+The deeper self-check on the layer between this runtime and Claude Code. Basic health is reported automatically at SessionStart; use this diagnostic after a host upgrade or when expected receipts do not arrive. Even `--host` exercises the launcher locally, so a live host session remains a separate integration check.
 
 | Flag | |
 |---|---|

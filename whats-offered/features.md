@@ -1,5 +1,7 @@
 # Features
 
+Current behavior reviewed 2026-09-29. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+
 [← What's Offered](README.md)
 
 Everything that exists and runs today. Each entry says what it does, what it is worth, and where it stops — because a feature list without limits is marketing.
@@ -24,7 +26,7 @@ Everything that exists and runs today. Each entry says what it does, what it is 
 
 **Why it matters.** This is the idea at the centre of the project. A green test result is not a fact about your repository, it is a fact about a *version* of your repository, and every other system treats it as the former. The closest analogue is not another agent framework — it is `make`, invalidating an object file whose source changed. The mechanism is borrowed from Test Impact Analysis, which has done this in industry for years, pointed at agent completion instead of test selection.
 
-**Where it stops.** Invalidation is **coarse**: any source edit stales everything, not only the evidence whose files actually changed. Narrowing it to each test's import closure is written down with a trigger. Also worth knowing: the fingerprint is size, mtime and a version-control tie-breaker — not a content hash. A same-length edit defeated it in 220 of 300 attempts before that was found and fixed; [journey/18-evidence.md](../journey/18-evidence.md) has the full account.
+**Where it stops.** Invalidation is **coarse** across the selected source inputs. Fingerprints are derived from file contents; size and modification time support an in-process digest cache, and Git state is provenance rather than a freshness tie-breaker. Git ignores, supported extensions, dependency filenames, boundaries and explicit exclusions define coverage. New inputs invalidate earlier snapshots, and incomplete scans cannot establish fresh evidence. Per-test import closure remains postponed. [Journey 18](../journey/18-evidence.md) records the earlier fingerprint defects; [journey 46](../journey/46-the-project-outside-the-fixture.md) records repository selection and coverage.
 
 ---
 
@@ -41,7 +43,7 @@ Everything that exists and runs today. Each entry says what it does, what it is 
 
 **Why it matters.** "Done" stops being a sentence the model emits. In all fourteen systems read from source, done means the model said so or the model stopped.
 
-**Evidence.** 0% false blocks and 0% misses on 46 labelled scenarios, twelve of which were written afterwards specifically to break it. Reproduce with `python -m eval.run --all`.
+**Evidence.** The 2026-09-27 rerun recorded **1/28 complete cases falsely blocked (3.6%)** and **0/18 incomplete cases missed**, across 46 scenarios. The false block is an unrelated pre-existing suite failure. This supersedes the earlier zero-false-block claim on this page. Reproduce with `python -m eval.run --all`; changing the documentation does not fix that limitation.
 
 **Where it stops.** That is the gate measured *as a classifier*, which is narrow. Measured for whether it makes the work better, twelve real bugs produced identical outcomes with the gate on and off, at 1.4× the cost. The gate is not currently known to improve anything on its own.
 
@@ -111,7 +113,7 @@ node --test "src/**/*.test.mjs"
 
 All four are recognised, because the dispatch looks at the output before it falls back to guessing from the command.
 
-**It needs both halves, and that is deliberate.** The output has to *be* TAP, and the command has to be one that runs tests — a named harness (`node --test`, `prove`, `bats`, `tap`) or a command that says `test`. The header alone used to be enough, on the reasoning that `TAP version 13` is a self-declaration; an audit pointed `cat fixture.tap` at that and got a counted passing suite out of reading a file. The declaration is in the file, not in the run. A TAP-emitting command that names neither — `bash ci.sh` — now records a **blindspot** telling you to name the runner in your config, rather than either inventing a record or going quiet.
+**It needs both halves, and that is deliberate.** The output has to *be* TAP, and the command must be recognized as a test runner or match an explicit or manifest-discovered tests command. The header alone used to be enough, on the reasoning that `TAP version 13` is a self-declaration; an audit pointed `cat fixture.tap` at that and got a counted passing suite out of reading a file. The declaration is in the file, not in the run. An otherwise unrecognized TAP-emitting command such as `bash ci.sh` needs an exact project declaration; without one it records a **blindspot**. A discovered `npm run ci` needs no extra configuration.
 
 **Why it matters.** A command name is not a runner. Wrappers are how most projects actually invoke tests, and a tool that only knows `pytest` and `jest` sees nothing in a monorepo running `turbo test`. Found the hard way: pointed at a real repository outside this project, three of its four packages ran `node --test` and produced **zero** records — a passing run left no evidence, and under `strict` that means refusing a stop on work that was genuinely tested.
 
@@ -282,3 +284,19 @@ Four of those probes turned out to be unable to detect the repair of the defect 
 No workflow engine. No repository index. No memory across sessions. No model routing. No subagents. No second host.
 
 None of these are oversights — each is postponed with a written trigger in [`docs/postponed.md`](../docs/postponed.md), and the trigger is a measurement rather than an opinion. See [roadmap.md](roadmap.md).
+
+## Automatic project setup
+
+**What it does.** SessionStart reports health, effective commands and selected-source coverage. Supported root manifests provide conventional Node, pytest, Cargo and Go verification commands without generating a config file. Explicit overrides, per-need disables and auto_detect false keep the project in control.
+
+**When work runs.** Startup selects inputs and diagnoses setup. Missing or stale verification runs at completion in guide/strict. The off profile remains passive. Baseline execution requires a relevant obligation and matching passing evidence; discovering a benchmark script does not schedule it merely because tests passed.
+
+**Evidence and limit.** A real launcher process discovered and ran a disposable Node project's ci script, recorded one passing test and created no configuration file. Snag's default read-only selection was complete. A live installed Snag session and full CI remain unverified. [Automatic setup validation](../docs/validation/2026-09-29-automatic-setup.md).
+
+## Repository coverage and incomplete receipts
+
+**What it does.** Git selects tracked and non-ignored eligible inputs, including inherited subproject rules. Nested repositories remain separate. Non-Git projects use the filesystem fallback. Budgets, unreadable inputs and unsafe paths produce diagnostics that prevent incomplete evidence from being fresh.
+
+**Command outcomes.** Exact configured or discovered commands retain completed success, completed failure and incomplete execution. Known runner failures override a zero exit; interruptions cannot count as reproduced failures. Historical identities and single-file scope remain intact.
+
+**Defaults and limits.** 20,000 files and 256 MiB; exclusions and budgets are project-owned. Selection covers supported source extensions and dependency filenames, not every file on disk. Source-observation hooks allow 120 seconds, which is a host allowance rather than a latency guarantee. [Configuration](../the-guide/configuration.md) documents the boundaries.

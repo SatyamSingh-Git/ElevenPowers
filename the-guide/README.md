@@ -12,7 +12,7 @@ If something here is wrong, out of date, or simply does not work — **[satyambc
 |---|---|
 | **[installation.md](installation.md)** | requirements, install, and how to prove it actually loaded |
 | **[commands.md](commands.md)** | every command, every flag, and what the output means |
-| **[configuration.md](configuration.md)** | profiles, declaring your test commands, turning it down or off |
+| **[configuration.md](configuration.md)** | automatic setup, command overrides, scan budgets and profiles |
 | **[troubleshooting.md](troubleshooting.md)** | what goes wrong, why, and the fix |
 
 ---
@@ -80,7 +80,7 @@ On the default `strict` profile, an `UNVERIFIED` claim stops the turn and the ag
 
 ## An honest note on maturity
 
-This is early software. The plugin installs, captures evidence, discharges declared commands and reports, and the suite covering it is green — `python -m pytest tests -q` is the authority, not a number written on a page. What has **not** been established is whether work produced with the gate on is actually better than work produced without it — that measurement is still open, and the project says so in its own [README](../README.md) and [PLAN.md](../PLAN.md).
+This is early software. The plugin discovers supported project commands, reports startup health, captures evidence and runs missing checks at completion. Dated [validation records](../docs/validation/README.md) distinguish full runs from targeted reruns; `python -m pytest tests -q` is the authority for the current checkout. What has **not** been established is whether work produced with the gate on is actually better than work produced without it — that measurement is still open, and the project says so in its own [README](../README.md) and [PLAN.md](../PLAN.md).
 
 So: use it, and tell me when it is wrong. Bug reports are the most valuable thing anyone can send right now.
 

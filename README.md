@@ -194,9 +194,10 @@ claimed. On this one the effect is rare, and that is written down rather than
 left for a reader to discover:
 [`results/b4-discriminate/findings.md`](results/b4-discriminate/findings.md).
 
-So the runtime runs its own checks the other way round: each declared check
-again, in a throwaway worktree built from the commit the task started at. If it
-already passed there, the report says so.
+The runtime can also run relevant configured or discovered checks in a temporary
+worktree built from the task's starting commit, after matching passing evidence
+exists. If a check already passed there, the report says so. Discovery alone
+does not schedule unrelated baseline commands.
 
 ```
   ok      the related test suite passes  <- python pytest 1 passed, 0 failed
@@ -295,7 +296,7 @@ python plugin/bin/ep_status.py    # what do I still owe on this task?
 > [!TIP]
 > Full instructions, every command and flag, and what to do when something breaks: **[The Guide](the-guide/)**. Run `ep_doctor.py --host` once after installing — the shallower check passed for weeks while silently discarding the flag.
 
-Optionally, in `.elevenpowers/config.json` — a project with no config behaves exactly as it did before:
+Optional overrides in `.elevenpowers/config.json`; supported root manifests already supply commands automatically:
 
 ```json
 {
@@ -311,7 +312,7 @@ Optionally, in `.elevenpowers/config.json` — a project with no config behaves 
 | `strict` | all of the above, and refuse to stop while obligations are unmet |
 
 > [!TIP]
-> Declaring your commands is the single highest-value line of config. It tells the runtime this project *has* a suite even when the suite hides behind a Makefile, it replaces a guessed hint with the command you actually use, and it lets the runtime discharge obligations **by running them itself** instead of interrupting to demand them. That one change took live blocking from 75% of runs to 12%.
+> Supported manifests now supply verification commands without configuration. Use explicit commands for custom wrappers or to override discovery. Missing checks run at completion in `guide` and `strict`; `off` stays passive. See [automatic setup and overrides](the-guide/configuration.md#automatic-setup-after-loading-the-plugin).
 
 ---
 
@@ -338,7 +339,7 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-Research prototype; status reviewed 2026-09-27. The evidence collection and host integration work in local checks. Improved patch outcomes have not been demonstrated.
+Research prototype; status reviewed 2026-09-29. Repository-aware scanning, exact command receipts and automatic setup are shipped. A real launcher check ran a discovered CI script without configuration, and a read-only Snag scan covered 4,418 selected files using defaults. Full Snag CI and a live installed-plugin session remain unverified. Improved patch outcomes have not been demonstrated. See [current delivery status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
 lists to agents encouraged tests of implementation details. In 95 resolved patches,
@@ -452,8 +453,9 @@ And yes — this was built with coding agents, mostly Claude and Codex. A projec
 | [`PLAN.md`](PLAN.md) | the thesis, the architecture, the hypotheses under test, and honest bounds on what is new |
 | [`docs/research/`](docs/research/) | fourteen systems read from source, every claim cited to a file at a recorded commit |
 | [`competitor-map.md`](docs/research/competitor-map.md) | ten systems × thirteen architectural axes, on one screen |
+| [`docs/status.md`](docs/status.md) | current delivery state, evidence limits and next integration milestone |
 | [`docs/postponed.md`](docs/postponed.md) | what is not built, and the trigger that would start it |
-| [`architecture/`](architecture/) | the living graph — 60 nodes, 99 edges, four views; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
+| [`architecture/`](architecture/) | the living graph — 72 nodes, 154 edges, four views; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
 | [`the-guide/`](the-guide/) | install, commands, configuration, troubleshooting — the practical manual |
 | [`whats-offered/`](whats-offered/) | features as they stand, the five-phase roadmap, and an honest comparison |
 
@@ -465,7 +467,7 @@ Everything above is a snapshot. The thesis has already been demoted once, the ob
 
 **So if you want the real story, don't read this file — read [`journey/`](journey/).**
 
-It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. Twenty-four chapters, in order:
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md) and [automatic setup](journey/47-installed-should-mean-active.md). Earlier chapters cover:
 
 - **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
 - **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.

@@ -98,3 +98,7 @@ Phases C and D exist to close that gap or to kill the idea. [What would falsify 
 The card on your system is pinned to a commit and every claim cites a file. If I have misread your code, please open an issue — I would much rather be corrected than cited wrongly, and a correction from you is worth more than anything I could re-derive myself.
 
 **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)** · [issues](https://github.com/SatyamSingh-Git/ElevenPowers/issues)
+
+## Delivery update, 2026-09-29
+
+The comparisons above describe the source audit and its stated limits; they are not a fresh survey of competitors. ElevenPowers now also ships repository-aware coverage reporting, exact opaque-command receipts and automatic manifest-based setup. These are usability and evidence-integrity changes. They do not establish superiority in patch outcomes. See [current status](../docs/status.md) for the remaining installed-project validation.
