@@ -112,4 +112,62 @@ def test_same_declared_command_can_supply_distinct_needs(tmp_path):
     save(tmp_path, Config(commands={"tests": "check-all", "typecheck": "check-all"}))
     receipts = parse("check-all", "checks complete", 0, tmp_path)
     assert {r.kind for r in receipts} == {Kind.SUITE, Kind.TYPECHECK}
-    assert len({r.identity for r in receipts}) == 2
+    assert len({(r.kind, r.identity) for r in receipts}) == 2
+
+
+@pytest.mark.parametrize("summary", [
+    "test result: FAILED. 0 passed; 1 failed; 0 ignored",
+    "=== 1 passed, 1 error in 0.01s ===",
+    "3 examples, 1 failure",
+    "3 tests, 1 failure",
+    "Tests: 3, Assertions: 3, Failures: 1",
+    "Failed: 1, Passed: 2",
+    "FAIL example/package 0.01s",
+    "worker:test: FAIL example/package 0.01s",
+    "worker:test: === 1 passed, 1 error in 0.01s ===",
+    "worker:test: 1 passed, 1 error in 0.01s",
+])
+def test_mixed_runner_failure_is_not_hidden_by_tap(tmp_path, summary):
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    receipt = parse("npm run ci", summary + "\n# pass 2\n# fail 0\n", 0, tmp_path)[0]
+    assert receipt.result is Result.FAIL
+    assert receipt.failed >= 1
+
+
+def test_declared_target_preserves_scope_and_historical_identity(tmp_path):
+    from core.obligations import SUITE_GREEN, TEST_ADDED
+    command = "pytest tests/test_api.py -q"
+    save(tmp_path, Config(commands={"tests": command}))
+    receipt = parse(command, "1 passed in 0.01s", 0, tmp_path)[0]
+    assert not SUITE_GREEN.matches(receipt)
+    assert TEST_ADDED.matches(receipt)
+    save(tmp_path, Config())
+    old = parse("npm test", "", 1, tmp_path)[0]
+    save(tmp_path, Config(commands={"tests": "npm test"}))
+    new = parse("npm test", "", 0, tmp_path)[0]
+    assert SUITE_GREEN.satisfied_by([old, new]) is new
+
+
+def test_incomplete_is_not_reproduced_failure(tmp_path):
+    from core.obligations import _demonstrated_fix
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    before = parse("npm run ci", "", None, tmp_path)[0]
+    after = parse("npm run ci", "", 0, tmp_path)[0]
+    assert _demonstrated_fix([before, after]) is None
+
+
+def test_incomplete_is_not_preexisting_breakage(tmp_path):
+    from core.ledger import Ledger
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    ledger = Ledger(root=tmp_path)
+    ledger.evidence = parse("npm run ci", "", None, tmp_path)
+    assert ledger.pre_existing() == []
+
+
+def test_completed_failure_after_interruption_can_prove_fix(tmp_path):
+    from core.obligations import _demonstrated_fix
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    records = [parse("npm run ci", "", code, tmp_path)[0] for code in (None, 1, 0)]
+    assert _demonstrated_fix(records) is records[-1]
+    records += parse("npm run ci", "", None, tmp_path)
+    assert _demonstrated_fix(records) is None

@@ -288,7 +288,6 @@ def parse(command: str, output: str, exit_code: int | None, root: Path) -> list[
                 record = _record(kind, _scope(command), code, command, root, output)
         if kind is Kind.SUITE:
             _declared_counts(record, output)
-        record.identity = f"declared:{need}:{command.strip()}"
         records.append(record)
     if exit_code is None:
         for record in records:
@@ -301,6 +300,7 @@ def parse(command: str, output: str, exit_code: int | None, root: Path) -> list[
 def _declared_counts(record: Evidence, output: str) -> None:
     """Aggregate known summaries across packages and runner families."""
     clean = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", output)
+    clean = re.sub(r"^(?:[^\s:]+:){1,2}[ \t]+(?=(?:=|\d+ |ok |FAIL |---))", "", clean, flags=re.MULTILINE)
     passed = failed = 0
     found = False
     for match in TAP_COUNT.finditer(clean):
@@ -327,9 +327,21 @@ def _declared_counts(record: Evidence, output: str) -> None:
                 failed += bad + sum(int(n) for n in re.findall(r"(\d+) errors?", quiet.group("body")))
                 found = True
             elif decorated:
-                passed += int(decorated.group("passed") or 0)
-                failed += int(decorated.group("failed") or 0) + int(decorated.group("errors") or 0)
+                good, bad = _counts(line)
+                passed += good
+                failed += bad + sum(int(n) for n in re.findall(r"(\d+) errors?", line))
                 found = True
+    for pattern in (CARGO_RESULT, RSPEC, MIX, PHPUNIT, DOTNET):
+        for match in pattern.finditer(clean):
+            groups = match.groupdict()
+            bad = int(groups.get("failed") or 0)
+            passed += int(groups.get("passed") or 0) if "passed" in groups else max(int(groups.get("total") or 0) - bad, 0)
+            failed += bad
+            found = True
+    for status, _ in GO_RESULT.findall(clean):
+        passed += int(status == "ok")
+        failed += int(status != "ok")
+        found = True
     if found:
         record.passed, record.failed, record.counted = passed, failed, True
         _counts_decide(record)

@@ -513,7 +513,7 @@ class Ledger:
             key = (e.kind, e.identity)
             if key not in first or e.at < first[key].at:
                 first[key] = e
-        return [e for e in first.values() if e.result is not Result.PASS]
+        return [e for e in first.values() if e.result is Result.FAIL and e.execution == "complete"]
 
     def _check(self, obligation: Obligation) -> Check:
         if obligation.require_prior_failure:
@@ -670,7 +670,8 @@ class Ledger:
         # flaky test: nothing asked what had been repeated. The match is by name
         # because the record carries the command it repeated and not the target
         # it was aimed at, which is the sharper fix and a larger one.
-        failed_here = {e.identity for e in self.evidence if e.result is not Result.PASS}
+        failed_here = {e.identity for e in self.evidence
+                       if e.result is Result.FAIL and e.execution == "complete"}
         records = [e for e in records
                    if any(t and (t in e.identity or t in e.command) for t in failed_here)]
         if not records:
@@ -771,4 +772,5 @@ class Ledger:
         which is what ties them to one invocation rather than to the task.
         """
         return {e.identity for e in self.evidence
-                if e.kind is Kind.TEST and e.result is not Result.PASS and e.at == when}
+                if e.kind is Kind.TEST and e.result is Result.FAIL
+                and e.execution == "complete" and e.at == when}

@@ -134,7 +134,9 @@ def _demonstrated_fix(records: list[Evidence]) -> Evidence | None:
             by_identity.setdefault(e.identity, []).append(e)
     for runs in by_identity.values():
         runs.sort(key=lambda e: e.at)
-        if runs[0].result is not Result.PASS and runs[-1].result is Result.PASS:
+        completed = [e for e in runs if e.execution == "complete" and e.result is not Result.ERROR]
+        if (completed and completed[0].result is Result.FAIL
+                and runs[-1].result is Result.PASS and runs[-1].execution == "complete"):
             return runs[-1]
     return None
 

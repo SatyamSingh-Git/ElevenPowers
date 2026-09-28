@@ -273,20 +273,26 @@ DEPENDENCY_FILES = {
 
 def _git_sources(root: Path) -> list[str] | None:
     """Let Git interpret ignore rules, including negation and nested rules."""
+    repository = next((p for p in (root, *root.parents) if (p / ".git").exists()), None)
+    if repository is None:
+        return None
     def git(*args):
         return subprocess.run(
-            ["git", "-c", f"safe.directory={root.as_posix()}", *args], cwd=root,
+            ["git", "-c", f"safe.directory={repository.as_posix()}", *args], cwd=root,
             capture_output=True, timeout=10,
         )
     try:
         top = git("rev-parse", "--show-toplevel")
-        if top.returncode or Path(os.fsdecode(top.stdout).strip()).resolve() != root.resolve():
+        if top.returncode:
+            raise OSError("Git repository discovery failed")
+        # Ignored scratch projects are independent filesystem scopes.
+        if repository != root and git("check-ignore", "-q", ".").returncode == 0:
             return None
         found = git("ls-files", "--cached", "--others", "--exclude-standard", "-z")
         if found.returncode:
-            return None
-    except (OSError, subprocess.SubprocessError):
-        return None
+            raise OSError("Git file enumeration failed")
+    except (OSError, subprocess.SubprocessError) as error:
+        raise OSError("Git enumeration unavailable") from error
     return sorted(set(os.fsdecode(p) for p in found.stdout.split(b"\0") if p))
 
 
@@ -324,7 +330,11 @@ def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = N
         return any(fnmatch.fnmatchcase(rel, p.rstrip("/") + "/*" if p.endswith("/") else p)
                    for p in excludes)
     root = root.resolve()
-    candidates = _git_sources(root)
+    try:
+        candidates = _git_sources(root)
+    except OSError:
+        scan.issues.append("Git enumeration unavailable; filesystem fallback cannot verify ignore rules")
+        candidates = None
     if candidates is None:
         if (root / ".git").exists():
             scan.issues.append("Git enumeration unavailable; filesystem fallback cannot verify ignore rules")

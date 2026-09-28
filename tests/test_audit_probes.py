@@ -1458,7 +1458,8 @@ BOTH_WAYS = {
 
 
 @pytest.mark.parametrize("runner", sorted(BOTH_WAYS))
-def test_every_runner_is_read_both_ways(project, runner):
+@pytest.mark.parametrize("declared", [False, True])
+def test_every_runner_is_read_both_ways(project, runner, declared):
     """Forward and adversarial for each runner, in one test so neither can ship alone.
 
     A parser that never reports failure passes every adversarial probe by
@@ -1467,6 +1468,10 @@ def test_every_runner_is_read_both_ways(project, runner):
     deleted, which is why §5.0 requires the pair.
     """
     command, failing, green = BOTH_WAYS[runner]
+    if declared:
+        from core.config import save
+        need = "typecheck" if runner == "tsc" else "tests"
+        save(project, Config(commands={need: command}))
     # adversarial: the runner said things failed, and the exit code says nothing
     # because a pipe swallowed it
     bad = parsers.parse(command, failing, 0, project)
@@ -1476,6 +1481,7 @@ def test_every_runner_is_read_both_ways(project, runner):
     good = parsers.parse(command, green, 0, project)
     assert good, f"{runner}: green output produced no evidence"
     assert good[-1].result is Result.PASS, f"{runner}: a green run was recorded as failing"
+    assert good[-1].ran_tests, f"{runner}: declared recognition lost the passing count"
 
 
 def test_the_both_ways_table_covers_every_runner_parse_dispatches_to():
@@ -1487,7 +1493,8 @@ def test_the_both_ways_table_covers_every_runner_parse_dispatches_to():
     """
     import inspect
 
-    source = inspect.getsource(parsers.parse)
+    # parse adds project declarations; runner dispatch now lives in this helper.
+    source = inspect.getsource(parsers._parse_known)
     dispatches = len(re.findall(_DISPATCH_PATTERN, source))
     assert dispatches == len(BOTH_WAYS), (
         f"`parse` dispatches to {dispatches} counting parsers but BOTH_WAYS covers "
