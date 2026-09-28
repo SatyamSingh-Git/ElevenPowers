@@ -436,3 +436,7 @@ Stopping after (2) is an acceptable outcome. A line that says *you wrote a
 pattern nothing you ran produced* is worth having even if it never refuses
 anything — because on the day it was needed, seven separate times, nobody said
 it.
+
+## Implementation boundary update - 2026-09-29
+
+Verification commands may now come from supported root manifests as well as explicit configuration. Baseline execution is constrained to current task obligations with matching passing evidence; discovery alone cannot trigger unrelated checks. Incomplete executions cannot establish reproduced failures. The earlier experiments in this design keep their dated meaning; current deployment evidence is indexed in [validation](../validation/README.md).

@@ -1,7 +1,8 @@
 # Working on ElevenPowers
 
 `PLAN.md` governs. `journey/` is the record of what was tried and what was
-wrong. `docs/research/` is a source-read of fourteen agent systems at pinned
+wrong. `docs/status.md` records current delivery and integration limits;
+`docs/validation/` holds dated checks. `docs/research/` is a source-read of fourteen agent systems at pinned
 commits, plus the literature audits. Read those rather than re-deriving them.
 
 ## The architecture graph — standing instruction
@@ -98,7 +99,7 @@ in the papers they were attributed to. See
 ## Running things
 
 ```bash
-python -m pytest -q                      # 794 tests, ~6 minutes
+python -m pytest -q                      # full regression suite; use its output for counts
 python -m pytest tests/test_audit_probes.py -q   # every reproduced defect, no xfails
 python plugin/bin/ep_doctor.py --host    # is the runtime seeing what the host sends?
 python architecture/check.py --render    # is the graph still true, and does it draw?

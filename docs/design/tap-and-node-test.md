@@ -1,5 +1,7 @@
 # Reading TAP, and every wrapper that hides it
 
+**Implementation update, 2026-09-29.** This dated design records the original TAP work. Exact explicit and manifest-discovered test commands now authorize opaque wrappers; mixed runner failures are aggregated and incomplete execution is retained. Numbered TAP result lines are excluded from Go package counts. See [automatic setup validation](../validation/2026-09-29-automatic-setup.md) for current behavior and limits.
+
 **Status:** design, 2026-09-17. Written before the code.
 
 Found by pointing the runtime at a real repository outside this project. Three

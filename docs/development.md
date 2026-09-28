@@ -61,3 +61,22 @@ copy of the saved records. Missing or invalid inputs return a nonzero exit statu
 These commands recompute metrics, not the original experiments: the historical
 probe/driver scripts still require their corpus, repositories and execution setup.
 
+## Focused delivery checks
+
+For repository selection and automatic setup, run the tests covering the changed behavior before the broader integration check:
+
+```sh
+python -m pytest tests/test_repository_scan.py tests/test_declared_commands.py tests/test_automatic_commands.py tests/test_automatic_startup.py tests/test_wiring.py -q
+```
+
+Use the full regression suite at the integration boundary or when a change affects shared behavior. Repeat broader checks when a failure or additional change warrants it. Documentation-only updates need link, content and relevant architecture checks; they do not require an unrelated full runtime sweep.
+
+Architecture rendering needs development-only Playwright and its browser:
+
+```sh
+python -m pip install playwright
+python -m playwright install chromium --only-shell
+python architecture/check.py --render
+```
+
+Confirm the output says all four tabs draw; a skipped render is not a rendered check. These tools are not runtime dependencies. Use [the validation index](validation/README.md) for dated outcomes and [current status](status.md) for remaining integration work.

@@ -1,5 +1,7 @@
 # Postponed, with the trigger that would build it
 
+**Scope clarification, 2026-09-29.** Repository-aware selection and automatic command discovery are shipped. The repository model postponed here means per-test dependency/impact analysis; it does not mean Git ignores, boundaries or coverage diagnostics are missing. The second host adapter remains unbuilt. See [current status](status.md).
+
 Postponement is a decision with a condition, not a quiet drop. Nothing here is
 built until its trigger fires, and the trigger is a measurement rather than an
 opinion.
