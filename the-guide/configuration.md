@@ -22,7 +22,7 @@ Everything here is optional. **A project with no config file behaves exactly as 
 }
 ```
 
-Two settings. Both matter, and the second one matters more than it looks.
+Three optional settings: `profile`, `commands`, and `scan`.
 
 ---
 
@@ -167,3 +167,34 @@ Deleting that file instead of editing it does not work; the next save writes it 
 ---
 
 Questions, or a configuration case this does not cover? **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)**
+
+
+## Exact command receipts
+
+Declared `tests`, `typecheck`, `build`, `lint`, and `benchmark` commands are recognized by exact match after trimming outer whitespace. `"tests": "npm run ci"` recognizes that project command even though its name does not contain `test`. This applies to any project or wrapper; no Snag-specific rule exists. Added arguments, aliases, prefixes and pipelines are not normalized into the declaration. Known-runner recognition still applies independently.
+
+A completed zero exit produces a passing command receipt. Recognized failures override zero exits, including mixed runner output. A recognized zero-test summary does not establish that tests ran. An opaque successful wrapper remains an uncounted command receipt. Single-file commands retain their scope. Declarations express the project's claim about a command's purpose; they do not inspect shell-script behavior.
+
+Timeouts, interruptions, unreadable hook results and automatic-verification launch failures produce incomplete receipts for declared commands. These supersede earlier success, do not count as reproduced failures, and require a completed rerun.
+
+## Repository scan configuration
+
+```json
+{
+  "profile": "guide",
+  "commands": { "tests": "npm run ci" },
+  "scan": {
+    "max_files": 20000,
+    "max_bytes": 134217728,
+    "exclude": ["local-generated/", "fixtures/disposable-*.json"]
+  }
+}
+```
+
+Defaults are **20,000 selected files and 64 MiB**. The example raises the byte budget to 128 MiB. Limits must be positive integers and do not guarantee elapsed time. Exclusions use case-sensitive Python `fnmatch` patterns against relative paths with `/` separators; `*` may span separators, and a trailing `/` excludes directory contents. Exclude only inputs that should not invalidate verification.
+
+Git selects tracked and non-ignored untracked source/dependency files, respecting nested ignores and negation. Tracked files remain eligible even when an ignore rule matches. Subprojects inherit repository ignores without scanning siblings. A directory itself ignored by its enclosing repository is an independent filesystem scope, supporting scratch projects.
+
+Non-Git projects use standard generated-directory exclusions. Nested repositories are separate boundaries and symlinks are not followed. Selection uses the runtime's source extensions and named dependency files, not every arbitrary file on disk. Git ignores and explicit exclusions define the intended coverage boundary.
+
+File/byte limits, unreadable inputs, unsafe symlinks, invalid settings and unavailable Git enumeration produce coverage diagnostics. Incomplete coverage cannot be fresh or silently establish verified completion. Correct the limitation and rerun the command. New source files also invalidate earlier empty snapshots.
