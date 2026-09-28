@@ -16,7 +16,7 @@ import re
 import time
 from pathlib import Path
 
-from .evidence import Evidence, Kind, Result, source_files, tree_hash, vcs_state
+from .evidence import Evidence, Kind, Result, source_files, tree_hash, vcs_state, source_snapshot
 
 PYTEST_TAIL = re.compile(
     r"^=+ (?:(?P<failed>\d+) failed)?,? ?(?:(?P<passed>\d+) passed)?"
@@ -353,14 +353,15 @@ def _scope(command: str) -> str:
 
 def _record(kind: Kind, identity: str, exit_code: int, command: str, root: Path,
             output: str) -> Evidence:
-    observed = source_files(root)
+    scan, digest = source_snapshot(root)
+    observed = scan.files
     return Evidence(
         vcs=vcs_state(root),
         kind=kind,
         identity=identity,
         result=Result.PASS if exit_code == 0 else Result.FAIL,
         observed=observed,
-        tree=tree_hash(root, observed),
+        tree=digest, coverage_issues=scan.issues,
         scope="source",
         command=command,
         detail=_tail(output),
@@ -477,8 +478,8 @@ def _wrapped(command: str, output: str, exit_code: int, root: Path) -> Evidence:
 
 
 def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
-    observed = source_files(root)
-    tree = tree_hash(root, observed)
+    scan, tree = source_snapshot(root)
+    observed = scan.files
     now = time.time()
     records: list[Evidence] = []
     vcs = vcs_state(root)
@@ -494,7 +495,7 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
                 kind=Kind.TEST, identity=node,
                 result=Result.PASS if status == "PASSED" else Result.FAIL,
                 observed=observed, tree=tree, scope="source", command=command,
-                at=now, vcs=vcs,
+                at=now, vcs=vcs, coverage_issues=scan.issues,
             )
         )
 
@@ -514,7 +515,7 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
             result=Result.PASS if exit_code == 0 else Result.FAIL,
             observed=observed, tree=tree, scope="source", command=command,
             detail=_tail(output), passed=passed, failed=failed, counted=True,
-            at=now, vcs=vcs,
+            at=now, vcs=vcs, coverage_issues=scan.issues,
         )
     )
     _counts_decide(records[-1])

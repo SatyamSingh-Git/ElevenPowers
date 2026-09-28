@@ -55,6 +55,32 @@ def test_budget_reports_truncation_and_exact_boundary_is_complete(tmp_path):
     assert "byte limit" in " ".join(result.issues)
 
 
+def test_partial_scan_cannot_be_fresh_and_is_reported(tmp_path, monkeypatch):
+    from core import evidence
+    from core.parsers import parse
+    from core.ledger import Ledger
+    from core.obligations import Claim
+    from core.report import gate_message
+    (tmp_path / "app.py").write_text("x=1")
+    monkeypatch.setattr(evidence, "scan_sources", lambda *a, **kw:
+                        evidence.SourceScan(["app.py"], ["file limit exceeded"], 3))
+    receipt = parse("npm test", "", 0, tmp_path)[0]
+    assert receipt.freshness(tmp_path) is evidence.Freshness.STALE
+    assert receipt.coverage_issues == ["file limit exceeded"]
+    assert evidence.Evidence.from_dict(receipt.to_dict()).coverage_issues
+    ledger = Ledger(root=tmp_path, claims=[Claim.FEATURE_ADDED], evidence=[receipt])
+    assert "coverage" in gate_message(ledger).lower()
+
+
+def test_empty_scan_is_invalidated_by_new_source(tmp_path):
+    from core.evidence import Freshness
+    from core.parsers import parse
+    receipt = parse("npm test", "", 0, tmp_path)[0]
+    assert receipt.freshness(tmp_path) is Freshness.FRESH
+    (tmp_path / "new.py").write_text("x=1")
+    assert receipt.freshness(tmp_path) is Freshness.STALE
+
+
 def test_git_failure_is_visible_even_when_fallback_finds_source(tmp_path, monkeypatch):
     from core import evidence
     (tmp_path / ".git").mkdir()

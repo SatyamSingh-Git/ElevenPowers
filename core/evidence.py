@@ -74,6 +74,7 @@ class Evidence:
     nobody can count is indistinguishable from `echo pytest`, and refusing both
     would block agents whose projects run tests through `make`.
     """
+    coverage_issues: list[str] = field(default_factory=list)
     scope: str = ""
     """Where `observed` came from, when it was a scan rather than a fixed list.
 
@@ -85,12 +86,21 @@ class Evidence:
     """
 
     def freshness(self, root: Path) -> Freshness:
+        if self.coverage_issues:
+            return Freshness.STALE
+        if self.scope == "source":
+            scan, digest = source_snapshot(root)
+            if not scan.complete:
+                self.coverage_issues = scan.issues
+                return Freshness.STALE
+            if digest == self.tree:
+                return Freshness.FRESH
+            if any(not (root / p).exists() for p in self.observed):
+                return Freshness.GONE
+            return Freshness.STALE
         if not self.observed:
-            # Depends on no files, so no edit can invalidate it. A stated
-            # blocker is the case that matters: it is about the world, not
-            # about the code.
             return Freshness.FRESH
-        current = source_files(root) if self.scope == "source" else self.observed
+        current = self.observed
         if tree_hash(root, current) == self.tree:
             return Freshness.FRESH
         if any(not (root / p).exists() for p in self.observed):
@@ -345,3 +355,16 @@ def scan_sources(root: Path, limit: int = 20000, max_bytes: int = 64 * 1024 * 10
 def source_files(root: Path, limit: int = 20000) -> list[str]:
     """Compatibility view for advisory callers; evidence uses scan_sources."""
     return scan_sources(root, limit=limit).files
+
+
+def source_snapshot(root: Path) -> tuple[SourceScan, str]:
+    """Bind the selected inputs and any coverage failures to the same receipt."""
+    scan = scan_sources(root)
+    digest = hashlib.sha256()
+    for rel in scan.files:
+        value = _digest(root, rel)
+        if value == "missing":
+            scan.issues.append(f"unreadable or disappeared input: {rel}")
+        digest.update(rel.encode())
+        digest.update(f"\0{value}\0".encode())
+    return scan, digest.hexdigest()[:16]

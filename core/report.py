@@ -35,6 +35,7 @@ def gate_message(ledger: Ledger) -> str:
                 lines.append(f"           {_hint(ledger, check)}")
                 if check.caveat:
                     lines.append(f"           so far: {check.caveat}")
+    lines.extend(_coverage_warnings(ledger))
     if not lines:
         return ""
     lines.append("")
@@ -154,7 +155,7 @@ def _tokens(path: str) -> set[str]:
 
 def end_report(ledger: Ledger) -> str:
     status = ledger.status()
-    lines = [f"{status.value}"]
+    lines = [f"{status.value}", *_coverage_warnings(ledger)]
     for verdict in ledger.verdicts():
         lines.append(f"  {verdict.claim.value} ({verdict.status.value.lower()})")
         for check in verdict.checks:
@@ -208,3 +209,8 @@ def end_report(ledger: Ledger) -> str:
     for said in assumption_wording(unverified(ledger), vacuous_tests(ledger), ledger):
         lines.append(f"  {said}")
     return "\n".join(lines)
+
+
+def _coverage_warnings(ledger: Ledger) -> list[str]:
+    issues = sorted({issue for record in ledger.evidence for issue in record.coverage_issues})
+    return [f"  incomplete source coverage: {issue}" for issue in issues]
