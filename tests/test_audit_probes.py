@@ -549,17 +549,15 @@ def test_an_empty_error_is_not_read_as_a_passing_command(project):
     assert not result.readable or not result.ok
 
 
-def test_only_the_stop_hook_gets_the_long_timeout():
-    """H2 forward: a hook that hangs is worse than one that gives up.
-
-    Stop runs the project's suite. Nothing else does, and a long timeout on
-    every event would turn an unrelated failure into a stalled session.
-    """
-    from core.wiring import TIMEOUT, hooks_json
+def test_only_verification_and_scan_hooks_get_extended_timeouts():
+    """Cold fingerprints need time, while prompts and edit guards stay short."""
+    from core.wiring import TIMEOUT, SCAN_TIMEOUT, STOP_TIMEOUT, hooks_json
 
     for event, entries in hooks_json()["hooks"].items():
         given = entries[0]["hooks"][0]["timeout"]
-        assert given == TIMEOUT or event == "Stop", f"{event} got {given}"
+        expected = (STOP_TIMEOUT if event == "Stop" else SCAN_TIMEOUT
+                    if event in {"SessionStart", "PostToolUse", "PostToolUseFailure"} else TIMEOUT)
+        assert given == expected, f"{event} got {given}"
 
 
 def test_a_blocking_stop_still_speaks_through_the_channel_that_blocks(project, capsys):

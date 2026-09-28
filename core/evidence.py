@@ -321,7 +321,7 @@ def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = N
             return default
         return value
     limit = budget(limit if limit is not None else policy.get("max_files", 20000), 20000, "max_files")
-    max_bytes = budget(max_bytes if max_bytes is not None else policy.get("max_bytes", 67108864), 67108864, "max_bytes")
+    max_bytes = budget(max_bytes if max_bytes is not None else policy.get("max_bytes", 268435456), 268435456, "max_bytes")
     excludes = policy.get("exclude", [])
     if not isinstance(excludes, list) or any(not isinstance(p, str) or not p for p in excludes):
         scan.issues.append("invalid scan exclude: expected a list of nonempty relative patterns")

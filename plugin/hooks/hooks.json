@@ -7,7 +7,7 @@
           {
             "type": "command",
             "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" SessionStart",
-            "timeout": 20
+            "timeout": 120
           }
         ]
       }
@@ -42,7 +42,7 @@
           {
             "type": "command",
             "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" PostToolUse",
-            "timeout": 20
+            "timeout": 120
           }
         ]
       }
@@ -54,7 +54,7 @@
           {
             "type": "command",
             "command": "python \"${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py\" PostToolUseFailure",
-            "timeout": 20
+            "timeout": 120
           }
         ]
       }

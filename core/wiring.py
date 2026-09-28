@@ -39,13 +39,14 @@ EVENTS: dict[str, str] = {
     "Stop": "",
 }
 
-# Reading a payload and appending to the ledger is fast, and a hook that hangs
-# is worse than one that gives up. Stop is the exception: it may run the
+# Prompt and edit guards stay short. Observation hooks fingerprint repositories,
+# so their allowance accommodates cold disk reads. Stop may run the
 # project's whole test suite to compute the evidence rather than demand it, and
 # a callback killed at twenty seconds loses its output and makes no decision at
 # all. The host's documented default for a command hook is 600 seconds, and this
 # has to outlast `core.verify.TIMEOUT` or self-discharge cannot finish.
 TIMEOUT = 20
+SCAN_TIMEOUT = 120
 STOP_TIMEOUT = 600
 
 
@@ -59,7 +60,8 @@ def hooks_json(command: str = 'python "${CLAUDE_PLUGIN_ROOT}/bin/ep_hook.py"') -
         entry["hooks"] = [{
             "type": "command",
             "command": f"{command} {event}",
-            "timeout": STOP_TIMEOUT if event == "Stop" else TIMEOUT,
+            "timeout": (STOP_TIMEOUT if event == "Stop" else SCAN_TIMEOUT
+                        if event in {"SessionStart", "PostToolUse", "PostToolUseFailure"} else TIMEOUT),
         }]
         hooks[event] = [entry]
     return {"hooks": hooks}

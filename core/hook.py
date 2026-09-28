@@ -78,8 +78,43 @@ def _emit(event: str, **fields) -> None:
 
 def on_session_start(payload: dict, root: Path) -> int:
     ledger = Ledger.load(root)
+    if not ledger.config.speaks:
+        return 0
+    from .doctor import _subscription, _writable, _blindspots
+    from .doctor import Check
+    from .config import discover_commands
+    import shutil
+    from .evidence import scan_sources
+    health = [_subscription(None), _writable(root), _blindspots(root)]
+    executables = {command.split()[0] for need, command in discover_commands(root).items()
+                   if ledger.config.command_for(need) == command}
+    for executable in sorted(executables):
+        found = shutil.which(executable)
+        health.append(Check(f"verification runtime {executable}", bool(found),
+                            "" if found else f"{executable} not found on PATH; install or activate the project's environment"))
+    scan = scan_sources(root)
+    lines = [f"ElevenPowers active (profile: {ledger.config.profile}).",
+             "Startup health: " + ("ok" if all(c.ok for c in health) else "attention required")]
+    lines.extend(c.line() for c in health if not c.ok)
+    lines.append(f"Source coverage: {'complete' if scan.complete else 'incomplete'}; "
+                 f"{len(scan.files)} selected files, {scan.bytes} bytes.")
+    lines.extend(scan.issues)
+    if ledger.config.commands:
+        lines.append("Verification commands: " + "; ".join(
+            f"{need}: {command}" for need, command in sorted(ledger.config.commands.items())))
+        lines.append("Missing verification runs automatically at completion; observed commands are recorded as you work.")
+    else:
+        lines.append("No unambiguous verification command found. Known runners are still observed; "
+                     "set commands in .elevenpowers/config.json for automatic verification.")
+    if all(c.ok for c in health):
+        ledger.note("automatic startup", f"coverage {'complete' if scan.complete else 'incomplete'}")
+        try:
+            ledger.save()
+        except OSError as error:
+            lines.append(f"Cannot save project state: {error}")
     if ledger.claims:
-        _emit("SessionStart", additionalContext=start_banner(ledger))
+        lines.append(start_banner(ledger))
+    _emit("SessionStart", additionalContext="\n".join(lines))
     return 0
 
 
