@@ -39,3 +39,44 @@ def test_git_scan_does_not_enter_nested_repository(tmp_path):
     (nested / "private.py").write_text("x = 1")
     (tmp_path / "own.py").write_text("x = 2")
     assert source_files(tmp_path) == ["own.py"]
+
+
+def test_budget_reports_truncation_and_exact_boundary_is_complete(tmp_path):
+    from core.evidence import scan_sources
+    for name in ("a.py", "b.py", "c.py"):
+        (tmp_path / name).write_text("abc")
+    result = scan_sources(tmp_path, limit=2)
+    assert result.files == ["a.py", "b.py"]
+    assert not result.complete
+    assert "file limit" in " ".join(result.issues)
+    assert scan_sources(tmp_path, limit=3).complete
+    result = scan_sources(tmp_path, max_bytes=5)
+    assert not result.complete
+    assert "byte limit" in " ".join(result.issues)
+
+
+def test_git_failure_is_visible_even_when_fallback_finds_source(tmp_path, monkeypatch):
+    from core import evidence
+    (tmp_path / ".git").mkdir()
+    (tmp_path / "app.py").write_text("x=1")
+    monkeypatch.setattr(evidence, "_git_sources", lambda root: None)
+    result = evidence.scan_sources(tmp_path)
+    assert result.files == ["app.py"]
+    assert not result.complete
+
+
+def test_source_symlink_is_not_followed(tmp_path):
+    import pytest
+    from core.evidence import scan_sources
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "secret.py").write_text("secret")
+    root = tmp_path / "project"
+    root.mkdir()
+    try:
+        (root / "linked.py").symlink_to(outside / "secret.py")
+    except OSError:
+        pytest.skip("symlink creation not permitted")
+    result = scan_sources(root)
+    assert result.files == []
+    assert not result.complete

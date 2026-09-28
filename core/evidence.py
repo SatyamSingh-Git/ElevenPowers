@@ -278,19 +278,38 @@ def _git_sources(root: Path) -> list[str] | None:
     return sorted(set(os.fsdecode(p) for p in found.stdout.split(b"\0") if p))
 
 
-def source_files(root: Path, limit: int = 20000) -> list[str]:
-    """Source inputs within this root, using Git's ignore rules when available."""
+@dataclass
+class SourceScan:
+    files: list[str] = field(default_factory=list)
+    issues: list[str] = field(default_factory=list)
+    bytes: int = 0
+
+    @property
+    def complete(self) -> bool:
+        return not self.issues
+
+
+def scan_sources(root: Path, limit: int = 20000, max_bytes: int = 64 * 1024 * 1024) -> SourceScan:
+    """Bounded source selection; failures and omitted inputs remain explicit."""
+    scan = SourceScan()
     root = root.resolve()
     candidates = _git_sources(root)
     if candidates is None:
+        if (root / ".git").exists():
+            scan.issues.append("Git enumeration unavailable; filesystem fallback cannot verify ignore rules")
         candidates = []
-        for dirpath, dirnames, filenames in os.walk(root):
+        def walk_error(error):
+            scan.issues.append(f"unreadable directory: {error.filename}")
+        for dirpath, dirnames, filenames in os.walk(root, onerror=walk_error):
+            for d in dirnames:
+                if (Path(dirpath) / d).is_symlink():
+                    scan.issues.append(f"symlink directory excluded: {Path(dirpath, d).relative_to(root)}")
             dirnames[:] = sorted(d for d in dirnames if d not in IGNORED_DIRS
+                                 and not (Path(dirpath) / d).is_symlink()
                                  and not (Path(dirpath) / d / ".git").exists())
             candidates.extend(str(Path(dirpath, name).relative_to(root)).replace("\\", "/")
                               for name in sorted(filenames))
-    out = []
-    for rel in candidates:
+    for rel in sorted(candidates):
         path = Path(rel)
         if path.suffix not in SOURCE_SUFFIXES and path.name not in DEPENDENCY_FILES:
             continue
@@ -298,9 +317,31 @@ def source_files(root: Path, limit: int = 20000) -> list[str]:
             continue
         if any((root / parent / ".git").exists() for parent in path.parents if str(parent) != "."):
             continue
-        if not (root / path).is_file():
+        full = root / path
+        if path.is_absolute() or ".." in path.parts or full.is_symlink():
+            scan.issues.append(f"unsafe or symlink input excluded: {rel}")
             continue
-        out.append(rel)
-        if len(out) >= limit:
+        if any((root / parent).is_symlink() for parent in path.parents if str(parent) != "."):
+            scan.issues.append(f"symlink parent excluded: {rel}")
+            continue
+        try:
+            if not full.is_file():
+                continue
+            size = full.stat().st_size
+        except OSError:
+            scan.issues.append(f"unreadable input: {rel}")
+            continue
+        if len(scan.files) >= limit:
+            scan.issues.append(f"file limit {limit} exceeded; source coverage is incomplete")
             break
-    return sorted(out)
+        if scan.bytes + size > max_bytes:
+            scan.issues.append(f"byte limit {max_bytes} exceeded at {rel}; source coverage is incomplete")
+            break
+        scan.files.append(rel)
+        scan.bytes += size
+    return scan
+
+
+def source_files(root: Path, limit: int = 20000) -> list[str]:
+    """Compatibility view for advisory callers; evidence uses scan_sources."""
+    return scan_sources(root, limit=limit).files
