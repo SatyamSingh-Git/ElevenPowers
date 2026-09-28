@@ -259,23 +259,48 @@ DEPENDENCY_FILES = {
 }
 
 
+def _git_sources(root: Path) -> list[str] | None:
+    """Let Git interpret ignore rules, including negation and nested rules."""
+    def git(*args):
+        return subprocess.run(
+            ["git", "-c", f"safe.directory={root.as_posix()}", *args], cwd=root,
+            capture_output=True, timeout=10,
+        )
+    try:
+        top = git("rev-parse", "--show-toplevel")
+        if top.returncode or Path(os.fsdecode(top.stdout).strip()).resolve() != root.resolve():
+            return None
+        found = git("ls-files", "--cached", "--others", "--exclude-standard", "-z")
+        if found.returncode:
+            return None
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return sorted(set(os.fsdecode(p) for p in found.stdout.split(b"\0") if p))
+
+
 def source_files(root: Path, limit: int = 20000) -> list[str]:
-    """Every tracked-looking source file and dependency manifest, sorted.
-
-    Used as the observed set for coarse invalidation: any source edit stales
-    everything. Pessimistic on purpose. Static import-closure narrowing is the
-    documented next step, gated on measuring that this is too coarse to live
-    with (P4).
-
-    It still cannot see a package installed without touching a manifest. That
-    is the part of R2 left open, and it is stated rather than papered over.
-    """
+    """Source inputs within this root, using Git's ignore rules when available."""
+    root = root.resolve()
+    candidates = _git_sources(root)
+    if candidates is None:
+        candidates = []
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = sorted(d for d in dirnames if d not in IGNORED_DIRS
+                                 and not (Path(dirpath) / d / ".git").exists())
+            candidates.extend(str(Path(dirpath, name).relative_to(root)).replace("\\", "/")
+                              for name in sorted(filenames))
     out = []
-    for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in IGNORED_DIRS and not d.startswith(".")]
-        for name in filenames:
-            if Path(name).suffix in SOURCE_SUFFIXES or name in DEPENDENCY_FILES:
-                out.append(str(Path(dirpath, name).relative_to(root)).replace("\\", "/"))
-                if len(out) >= limit:
-                    return sorted(out)
+    for rel in candidates:
+        path = Path(rel)
+        if path.suffix not in SOURCE_SUFFIXES and path.name not in DEPENDENCY_FILES:
+            continue
+        if any(part in {".git", ".elevenpowers"} for part in path.parts):
+            continue
+        if any((root / parent / ".git").exists() for parent in path.parents if str(parent) != "."):
+            continue
+        if not (root / path).is_file():
+            continue
+        out.append(rel)
+        if len(out) >= limit:
+            break
     return sorted(out)
