@@ -90,3 +90,26 @@ def test_automatic_verification_retains_incomplete_attempt(tmp_path, monkeypatch
     assert receipts[0].result is Result.ERROR
     assert receipts[0].execution == "incomplete"
     assert error in receipts[0].detail
+
+
+def test_mixed_monorepo_summaries_keep_failure_from_any_runner(tmp_path):
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    output = ("web:test: \x1b[31m Tests  1 failed | 8 passed (9)\x1b[0m\n"
+              "worker:test: # pass 12\nworker:test: # fail 0\n")
+    receipt = parse("npm run ci", output, 0, tmp_path)[0]
+    assert receipt.result is Result.FAIL
+    assert (receipt.passed, receipt.failed) == (20, 1)
+
+
+def test_declared_zero_test_summary_is_not_suite_proof(tmp_path):
+    save(tmp_path, Config(commands={"tests": "bash quality.sh"}))
+    receipt = parse("bash quality.sh", "Tests  0 passed (0)", 0, tmp_path)[0]
+    assert receipt.counted
+    assert not receipt.ran_tests
+
+
+def test_same_declared_command_can_supply_distinct_needs(tmp_path):
+    save(tmp_path, Config(commands={"tests": "check-all", "typecheck": "check-all"}))
+    receipts = parse("check-all", "checks complete", 0, tmp_path)
+    assert {r.kind for r in receipts} == {Kind.SUITE, Kind.TYPECHECK}
+    assert len({r.identity for r in receipts}) == 2

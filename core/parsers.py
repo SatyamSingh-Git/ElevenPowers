@@ -286,6 +286,8 @@ def parse(command: str, output: str, exit_code: int | None, root: Path) -> list[
                     record = _wrapped(command, output, code, root)
             else:
                 record = _record(kind, _scope(command), code, command, root, output)
+        if kind is Kind.SUITE:
+            _declared_counts(record, output)
         record.identity = f"declared:{need}:{command.strip()}"
         records.append(record)
     if exit_code is None:
@@ -294,6 +296,43 @@ def parse(command: str, output: str, exit_code: int | None, root: Path) -> list[
             record.execution = "incomplete"
             record.detail = "execution incomplete; no completed exit status. " + record.detail
     return records
+
+
+def _declared_counts(record: Evidence, output: str) -> None:
+    """Aggregate known summaries across packages and runner families."""
+    clean = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", output)
+    passed = failed = 0
+    found = False
+    for match in TAP_COUNT.finditer(clean):
+        found = True
+        if match.group("word") == "pass":
+            passed += int(match.group("n"))
+        else:
+            failed += int(match.group("n"))
+    for line in clean.splitlines():
+        # Turbo prefixes output with workspace/task names. Do not count
+        # Test Files (a separate total) as individual tests.
+        match = re.search(r"(?:^|:\s*)\s*Tests:?\s+(?P<body>\d+\s+.*)$", line)
+        if match:
+            good, bad = _counts(match.group("body"))
+            passed += good
+            failed += bad
+            found = True
+        else:
+            quiet = PYTEST_QUIET.search(line)
+            decorated = PYTEST_TAIL.search(line)
+            if quiet:
+                good, bad = _counts(quiet.group("body"))
+                passed += good
+                failed += bad + sum(int(n) for n in re.findall(r"(\d+) errors?", quiet.group("body")))
+                found = True
+            elif decorated:
+                passed += int(decorated.group("passed") or 0)
+                failed += int(decorated.group("failed") or 0) + int(decorated.group("errors") or 0)
+                found = True
+    if found:
+        record.passed, record.failed, record.counted = passed, failed, True
+        _counts_decide(record)
 
 
 def _parse_known(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
