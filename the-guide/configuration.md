@@ -2,7 +2,7 @@
 
 [← The Guide](README.md)
 
-Everything here is optional. **A project with no config file behaves exactly as it did before** — configuration exists to correct the runtime, not to be a prerequisite for it.
+Configuration is optional. Supported root manifests supply verification commands automatically; this file overrides those defaults and controls interruption and scanning.
 
 ---
 
@@ -22,7 +22,7 @@ Everything here is optional. **A project with no config file behaves exactly as 
 }
 ```
 
-Three optional settings: `profile`, `commands`, and `scan`.
+Four optional settings: `profile`, `commands`, `scan`, and `auto_detect`.
 
 ---
 
@@ -71,7 +71,7 @@ EP_PROFILE=off claude
 
 This is the single highest-value line of configuration, and it is worth understanding why.
 
-Without it, the runtime has to infer that your project has a test suite by scanning for one. That fails in two directions: a suite hidden behind a `Makefile` or a task runner is invisible to a scan, and a guessed hint can name a command that does not exist.
+Supported project manifests now supply conventional commands without this file. Use explicit commands for custom wrappers, unsupported build systems, or to override the detected choice.
 
 With it, three things change:
 
@@ -92,7 +92,7 @@ Command keys match the obligation they satisfy:
 | `build` | "the build succeeds" |
 | `benchmark` | "a benchmark supports the improvement" |
 
-Declare only what you have. An undeclared key simply falls back to the previous behaviour for that obligation.
+Declare only the overrides you need. Missing keys use discovery; an empty string disables discovery for that key.
 
 ### Examples
 
@@ -191,10 +191,33 @@ Timeouts, interruptions, unreadable hook results and automatic-verification laun
 }
 ```
 
-Defaults are **20,000 selected files and 64 MiB**. The example raises the byte budget to 128 MiB. Limits must be positive integers and do not guarantee elapsed time. Exclusions use case-sensitive Python `fnmatch` patterns against relative paths with `/` separators; `*` may span separators, and a trailing `/` excludes directory contents. Exclude only inputs that should not invalidate verification.
+Defaults are **20,000 selected files and 256 MiB**. The example sets a smaller explicit budget of 128 MiB. Limits must be positive integers and do not guarantee elapsed time. Exclusions use case-sensitive Python `fnmatch` patterns against relative paths with `/` separators; `*` may span separators, and a trailing `/` excludes directory contents. Exclude only inputs that should not invalidate verification.
 
 Git selects tracked and non-ignored untracked source/dependency files, respecting nested ignores and negation. Tracked files remain eligible even when an ignore rule matches. Subprojects inherit repository ignores without scanning siblings. A directory itself ignored by its enclosing repository is an independent filesystem scope, supporting scratch projects.
 
 Non-Git projects use standard generated-directory exclusions. Nested repositories are separate boundaries and symlinks are not followed. Selection uses the runtime's source extensions and named dependency files, not every arbitrary file on disk. Git ignores and explicit exclusions define the intended coverage boundary.
 
 File/byte limits, unreadable inputs, unsafe symlinks, invalid settings and unavailable Git enumeration produce coverage diagnostics. Incomplete coverage cannot be fresh or silently establish verified completion. Correct the limitation and rerun the command. New source files also invalidate earlier empty snapshots.
+
+
+## Automatic setup after loading the plugin
+
+On Claude Code SessionStart, the plugin checks hook subscription consistency, project state writability, prior unreadable events, and availability on PATH of detected command runtimes. It reports the effective commands and source-selection coverage. This is a lightweight startup check, not a test-suite run or dependency installer. The full `ep_doctor --host` diagnostic remains available for deeper troubleshooting.
+
+Command discovery reads only the selected project root:
+
+| Project declaration | Automatic command |
+|---|---|
+| `package.json` script `ci`, otherwise `test` | `<manager> run ci` or `<manager> run test` |
+| Scripts `typecheck`, `build`, `lint`, `benchmark` or `bench` | Corresponding package-manager script |
+| `pytest.ini` or `[tool.pytest.ini_options]` | `python -m pytest` |
+| `Cargo.toml` | `cargo test`, `cargo check`, `cargo build` |
+| `go.mod` | `go test ./...`, `go build ./...` |
+
+Package-manager selection prefers `packageManager`, then a unique recognized lockfile, then npm. Supported managers are npm, pnpm, yarn and bun. Conflicting lockfiles without an explicit manager do not produce a guessed Node command. Root package scripts take priority; another supported manifest can fill missing needs, such as pytest alongside a frontend-only build script. Conflicting native test stacks require a project-selected aggregate command.
+
+Explicit `commands` values override discovery. Set `"commands": {"tests": ""}` to disable automatic selection for one need, or `"auto_detect": false` to use only explicit commands. Discovery does not create or rewrite `config.json`, and manifest changes are picked up on later hook invocations.
+
+In `guide` and `strict`, missing or stale verification runs at completion. Identical commands serving multiple needs run once per discharge attempt. Old-tree checks require a relevant task obligation and matching passing evidence: passing tests alone cannot launch an unrelated benchmark. No dependency installation, deployment or background test watcher is added. In `off`, startup remains silent and passive, and verification commands are not automatically executed.
+
+Source-observation and startup hooks allow up to 120 seconds, while prompt/edit guards retain 20 seconds. Stop retains its existing 600-second allowance. Extremely large or slow repositories may still need explicit limits or environment changes; incomplete coverage remains visible instead of being certified.

@@ -25,7 +25,7 @@ git clone https://github.com/SatyamSingh-Git/ElevenPowers.git
 claude --plugin-dir ElevenPowers/plugin
 ```
 
-That is all of it. No build step, no `pip install`, no configuration file required.
+No build step, runtime `pip install`, or configuration file is required. Once loaded in a supported Claude Code session, the plugin automatically reports startup health, discovers supported project commands, scans repository inputs, and records command outcomes. Missing verification runs at completion in `guide` and `strict`; `off` remains passive. See [automatic setup](configuration.md#automatic-setup-after-loading-the-plugin) for supported manifests and overrides.
 
 The `--plugin-dir` flag points Claude Code at [`plugin/`](../plugin/), which contains a manifest, a hook subscription file, and four small entry points. Everything else is imported from `core/` next to it.
 
@@ -53,7 +53,7 @@ This is the same approach Aider, Continue and OpenCode use, for the same reason:
 
 ## Prove it actually loaded
 
-This matters more than it sounds. The layer between this runtime and its host has failed three times in this project's history, and **every one of those failures looked like silence** — no error, no crash, unit tests all green, and the runtime simply recording nothing. So there is a command whose entire job is to catch that:
+Startup now provides an automatic health summary. For deeper troubleshooting, the diagnostic below exercises additional parser and host paths. The layer between this runtime and its host has failed three times in this project's history, and **every one of those failures looked like silence** — no error, no crash, unit tests all green, and the runtime simply recording nothing. So there is a command whose entire job is to catch that:
 
 ```bash
 python ElevenPowers/plugin/bin/ep_doctor.py
@@ -114,7 +114,7 @@ For reference when debugging — this is [`plugin/hooks/hooks.json`](../plugin/h
 
 | Event | Why |
 |---|---|
-| `SessionStart` | pick up an existing task on startup, resume, or after compaction |
+| `SessionStart` | check startup health and coverage, report discovered commands, and resume existing tasks |
 | `UserPromptSubmit` | decide whether the request opens a claim |
 | `PreToolUse` | the scope guard, before an edit lands |
 | `PostToolUse` | read the result of a command and file it as evidence |

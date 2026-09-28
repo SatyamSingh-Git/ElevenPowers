@@ -1,5 +1,8 @@
 # Portable repository evidence validation - 2026-09-28
 
+Follow-up: [automatic setup validation](2026-09-29-automatic-setup.md) records manifest discovery and the new 256 MiB default. The 64 MiB measurements below describe the original delivery.
+
+
 This delivery implements repository-aware scanning and declared-command receipts in the shared runtime. No Snag-specific path, project name or command rule is embedded in the implementation.
 
 ## Delivered behavior

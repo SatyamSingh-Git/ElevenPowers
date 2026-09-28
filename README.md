@@ -17,7 +17,7 @@
 
 </div>
 
-Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
+Loading the plugin automatically checks startup health and discovers verification commands from supported project manifests. Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
 
 ---
 
