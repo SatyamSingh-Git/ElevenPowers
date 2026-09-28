@@ -212,5 +212,10 @@ def end_report(ledger: Ledger) -> str:
 
 
 def _coverage_warnings(ledger: Ledger) -> list[str]:
-    issues = sorted({issue for record in ledger.evidence for issue in record.coverage_issues})
-    return [f"  incomplete source coverage: {issue}" for issue in issues]
+    latest = {}
+    for record in ledger.evidence:
+        latest[record.kind, record.identity] = record
+    issues = sorted({issue for record in latest.values() for issue in record.coverage_issues})
+    return ([f"  incomplete source coverage: {issue}" for issue in issues]
+            + [f"  incomplete command: {record.command}; rerun to obtain a completed result"
+               for record in latest.values() if record.execution == "incomplete"])

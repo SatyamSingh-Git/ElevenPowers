@@ -21,7 +21,7 @@ from .claims import infer, opens_new_task
 from .evidence import Result
 from .ledger import STATE_DIR, Ledger, Status
 from .obligations import risk_of
-from .parsers import claims_to_run_tests, looks_like_tap, parse, written_paths
+from .parsers import declared_needs, claims_to_run_tests, looks_like_tap, parse, written_paths
 from .payload import command_of, read_result, target_file
 from .scope import normalise, unrelated
 from .verify import discharge
@@ -194,6 +194,16 @@ def on_post_tool(payload: dict, root: Path) -> int:
 
     command = command_of(payload)
     result = read_result(payload)
+    raw = next((payload[k] for k in ("tool_result", "tool_response", "toolUseResult")
+                if isinstance(payload.get(k), dict)), {})
+    incomplete = bool(result.skip or not result.readable
+                      or raw.get("timed_out") is True or raw.get("timeout") is True)
+    if incomplete and declared_needs(command, root):
+        ledger = Ledger.load(root)
+        ledger.add(parse(command, result.output, None, root))
+        ledger.note("declared command incomplete", command)
+        ledger.save()
+        return 0
     if result.skip:
         return 0
     if not result.readable:

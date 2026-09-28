@@ -46,3 +46,28 @@ def test_incomplete_replaces_previous_success(tmp_path):
     incomplete = parse("npm run ci", "partial output", None, tmp_path)[0]
     assert passed.identity == incomplete.identity
     assert SUITE_GREEN.satisfied_by([passed, incomplete]) is None
+
+
+@pytest.mark.parametrize("response", [
+    {"interrupted": True, "stdout": "partial"},
+    {"timed_out": True, "stdout": "partial"},
+    {"unexpected": "shape"},
+])
+def test_hook_records_incomplete_declared_execution(tmp_path, response):
+    from core.hook import on_post_tool
+    from core.ledger import Ledger
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    on_post_tool({"tool_name": "Bash", "tool_input": {"command": "npm run ci"},
+                  "tool_response": response}, tmp_path)
+    records = Ledger.load(tmp_path).evidence
+    assert len(records) == 1
+    assert records[0].execution == "incomplete"
+    assert records[0].result is Result.ERROR
+
+
+def test_hook_still_ignores_interrupted_undeclared_commands(tmp_path):
+    from core.hook import on_post_tool
+    from core.ledger import Ledger
+    on_post_tool({"tool_name": "Bash", "tool_input": {"command": "npm run anything"},
+                  "tool_response": {"interrupted": True}}, tmp_path)
+    assert not Ledger.load(tmp_path).evidence
