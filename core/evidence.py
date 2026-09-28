@@ -8,6 +8,7 @@ relationship a build system tracks between an object file and its sources.
 
 from __future__ import annotations
 
+import fnmatch
 import hashlib
 import os
 import subprocess
@@ -299,9 +300,28 @@ class SourceScan:
         return not self.issues
 
 
-def scan_sources(root: Path, limit: int = 20000, max_bytes: int = 64 * 1024 * 1024) -> SourceScan:
+def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = None) -> SourceScan:
     """Bounded source selection; failures and omitted inputs remain explicit."""
+    from .config import load
     scan = SourceScan()
+    policy = load(root).scan
+    if not isinstance(policy, dict):
+        scan.issues.append("invalid scan configuration: expected an object")
+        policy = {}
+    def budget(value, default, name):
+        if type(value) is not int or value <= 0:
+            scan.issues.append(f"invalid scan {name}: expected a positive integer")
+            return default
+        return value
+    limit = budget(limit if limit is not None else policy.get("max_files", 20000), 20000, "max_files")
+    max_bytes = budget(max_bytes if max_bytes is not None else policy.get("max_bytes", 67108864), 67108864, "max_bytes")
+    excludes = policy.get("exclude", [])
+    if not isinstance(excludes, list) or any(not isinstance(p, str) or not p for p in excludes):
+        scan.issues.append("invalid scan exclude: expected a list of nonempty relative patterns")
+        excludes = []
+    def excluded(rel):
+        return any(fnmatch.fnmatchcase(rel, p.rstrip("/") + "/*" if p.endswith("/") else p)
+                   for p in excludes)
     root = root.resolve()
     candidates = _git_sources(root)
     if candidates is None:
@@ -316,10 +336,13 @@ def scan_sources(root: Path, limit: int = 20000, max_bytes: int = 64 * 1024 * 10
                     scan.issues.append(f"symlink directory excluded: {Path(dirpath, d).relative_to(root)}")
             dirnames[:] = sorted(d for d in dirnames if d not in IGNORED_DIRS
                                  and not (Path(dirpath) / d).is_symlink()
+                                 and not excluded(str(Path(dirpath, d).relative_to(root)).replace("\\", "/") + "/")
                                  and not (Path(dirpath) / d / ".git").exists())
             candidates.extend(str(Path(dirpath, name).relative_to(root)).replace("\\", "/")
                               for name in sorted(filenames))
     for rel in sorted(candidates):
+        if excluded(rel):
+            continue
         path = Path(rel)
         if path.suffix not in SOURCE_SUFFIXES and path.name not in DEPENDENCY_FILES:
             continue
@@ -352,7 +375,7 @@ def scan_sources(root: Path, limit: int = 20000, max_bytes: int = 64 * 1024 * 10
     return scan
 
 
-def source_files(root: Path, limit: int = 20000) -> list[str]:
+def source_files(root: Path, limit: int | None = None) -> list[str]:
     """Compatibility view for advisory callers; evidence uses scan_sources."""
     return scan_sources(root, limit=limit).files
 

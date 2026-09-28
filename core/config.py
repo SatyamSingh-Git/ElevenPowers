@@ -40,6 +40,7 @@ DEFAULT_PROFILE = "strict"
 class Config:
     profile: str = DEFAULT_PROFILE
     commands: dict[str, str] = field(default_factory=dict)
+    scan: dict = field(default_factory=dict)
 
     @property
     def blocks(self) -> bool:
@@ -90,6 +91,7 @@ def load(root: Path) -> Config:
         commands = {}
     return Config(
         profile=profile,
+        scan=raw.get("scan", {}),
         commands={k: str(v) for k, v in commands.items() if isinstance(v, str) and v},
     )
 
@@ -98,6 +100,6 @@ def save(root: Path, config: Config) -> None:
     path = root / ".elevenpowers" / FILE
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        json.dumps({"profile": config.profile, "commands": config.commands}, indent=2),
+        json.dumps({"profile": config.profile, "commands": config.commands, "scan": config.scan}, indent=2),
         encoding="utf-8",
     )

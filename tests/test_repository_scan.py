@@ -106,3 +106,26 @@ def test_source_symlink_is_not_followed(tmp_path):
     result = scan_sources(root)
     assert result.files == []
     assert not result.complete
+
+
+def test_project_scan_policy_roundtrips_and_applies(tmp_path):
+    from core.config import Config, load, save
+    from core.evidence import scan_sources
+    (tmp_path / "generated").mkdir()
+    (tmp_path / "generated/data.json").write_text("{}")
+    (tmp_path / "app.py").write_text("x=1")
+    save(tmp_path, Config(scan={"exclude": ["generated/"], "max_files": 1, "max_bytes": 8}))
+    assert load(tmp_path).scan["max_files"] == 1
+    scan = scan_sources(tmp_path)
+    assert scan.files == ["app.py"]
+    assert scan.complete
+    (tmp_path / "new.py").write_text("y=1")
+    assert not scan_sources(tmp_path).complete
+
+
+def test_invalid_budget_is_visible_not_a_crash(tmp_path):
+    import json
+    from core.evidence import scan_sources
+    (tmp_path / ".elevenpowers").mkdir()
+    (tmp_path / ".elevenpowers/config.json").write_text(json.dumps({"scan": {"max_files": -1}}))
+    assert not scan_sources(tmp_path).complete
