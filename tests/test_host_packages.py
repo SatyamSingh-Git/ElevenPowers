@@ -41,3 +41,19 @@ def test_gemini_timeouts_are_milliseconds_and_bundle_has_extension_manifest(tmp_
     assert json.loads((bundle / "gemini-extension.json").read_text())["name"] == "elevenpowers"
     assert not (bundle / ".codex-plugin").exists()
     assert "${extensionPath}" in (bundle / "hooks/hooks.json").read_text()
+
+
+def test_cursor_flat_native_wiring_and_package(tmp_path):
+    from core.hosts.wiring import configuration
+    from core.hosts.package import build
+    from core.hosts.cursor import EVENTS
+    config = configuration("cursor", "python launcher.py")
+    assert config["version"] == 1
+    assert set(config["hooks"]) == set(EVENTS)
+    assert config["hooks"]["stop"][0]["loop_limit"] == 2
+    assert config["hooks"]["stop"][0]["timeout"] == 600
+    assert "hooks" not in config["hooks"]["postToolUse"][0]
+    bundle = build("cursor", tmp_path / "elevenpowers")
+    manifest = json.loads((bundle / ".cursor-plugin/plugin.json").read_text())
+    assert manifest["hooks"] == "./hooks/hooks.json"
+    assert "CURSOR_PLUGIN_ROOT" in (bundle / "hooks/hooks.json").read_text()

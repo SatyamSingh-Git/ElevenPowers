@@ -10,6 +10,12 @@ def configuration(platform: str, command: str) -> dict:
             "SessionStart", "PostToolUse", "PostToolUseFailure"} else 20
         if platform == "gemini":
             timeout *= 1000
+        if platform == "cursor":
+            handler = {"command": f"{command} {platform} {native}", "timeout": timeout}
+            if phase == "Stop":
+                handler["loop_limit"] = 2
+            hooks[native] = [handler]
+            continue
         hooks[native] = [{"hooks": [{"type": "command", "command": f"{command} {platform} {native}",
                                     "timeout": timeout}]}]
-    return {"hooks": hooks}
+    return {"version": 1, "hooks": hooks} if platform == "cursor" else {"hooks": hooks}
