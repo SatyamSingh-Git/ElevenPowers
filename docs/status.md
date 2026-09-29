@@ -1,6 +1,6 @@
 # Current delivery status
 
-Reviewed **2026-09-29**, against runtime commit `37acdc0`. ElevenPowers remains a research prototype for **Claude Code**. This page tracks product delivery; it does not replace the historical research results or claim an improvement in patch quality.
+Reviewed **2026-09-29**, through Codex runtime part `98295a9`. ElevenPowers remains a research prototype, with Claude Code integration and a new Codex adapter. This page tracks product delivery; it does not replace the historical research results or claim an improvement in patch quality.
 
 ## Shipped and exercised
 
@@ -40,8 +40,12 @@ See the [validation index](validation/README.md) for the detailed records and qu
 4. Startup, evidence capture and completion latency are measured during ordinary work.
 5. Remaining environment or coverage limits are visible and actionable.
 
-A full Snag CI run and live installed-plugin session have **not** been performed. The Codex host adapter, per-test dependency invalidation, mutation-based runtime coverage and improved patch-outcome claims remain outside this delivery.
+A full Snag CI run and live installed-plugin session have **not** been performed. Per-test dependency invalidation, mutation-based runtime coverage and improved patch-outcome claims remain outside this delivery. Codex adapter implementation is recorded below; live installation remains unverified.
 
 ## Delivery cadence
 
 Use a concrete project milestone, focused regression checks for changed behavior, and an integration check at the delivery boundary. Broaden or repeat tests when new changes or failures warrant it. Keep historical experiments separate from readiness evidence, and update the guide, status, journey and architecture when their claims change.
+
+## Native platform expansion
+
+Codex adapter, native response transport, generated wiring, portable packaging, project setup and configuration doctor are implemented. Sixty focused native/Claude checks passed. Live installed Codex and Snag sessions remain unverified. Gemini CLI, Cursor and Copilot CLI deliveries follow. See [platforms](../the-guide/platforms.md) and [validation](validation/2026-09-29-platforms.md).

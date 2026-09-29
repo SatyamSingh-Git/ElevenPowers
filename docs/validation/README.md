@@ -10,3 +10,5 @@ Dated records distinguish implementation checks from real-project integration. [
 The first record's 64 MiB default is historical. The current default is 256 MiB. A successful disposable launcher test is not a live installed Claude Code session, and a Snag sample or selection scan is not the full Snag CI pipeline. Neither record establishes improved patch outcomes.
 
 The [durable verification record](2026-09-29-durable-runner.md) covers per-check persistence, shared deadlines, process cleanup, declaration/input invalidation, read-only Snag fingerprinting and a real launcher kill/recovery check. It does not establish full Snag CI or live installed-host readiness.
+
+- [2026-09-29 native platforms](2026-09-29-platforms.md): eight pushes per additional host, exact checks and installed-session limits.

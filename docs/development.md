@@ -92,3 +92,7 @@ python -m pytest tests/test_jobs.py tests/test_process.py tests/test_verificatio
 These include real command descendants and a shipped-launcher process killed between checks, followed by recovery that reuses the first completed result. Windows containment is exercised locally; the existing CI matrix also targets Ubuntu and Python 3.11/3.13. A configured CI matrix is not evidence that a particular remote run passed—check the run result separately.
 
 The runtime remains standard-library-only. The process runner adapts the repository's existing `eval/live.py` Windows Job approach and uses POSIX process groups elsewhere. It adds bounded disk-spooled diagnostics and cleanup on normal completion as well as interruption. See [durable-runner validation](validation/2026-09-29-durable-runner.md) for executed checks and platform limits.
+
+## Native host adapters
+
+`core/hosts/` normalizes native events, collects shared-engine responses, generates wiring and provides setup/package/doctor helpers. Native payload examples in tests are schema fixtures, not live captures. Run the `tests/test_host_*.py` tests with Claude hook regressions after changing shared transport.

@@ -326,3 +326,5 @@ one gated run carries four scope questions and zero blocks. Sizing an experiment
 needs a declared intervention boundary before it needs a task count.
 Replay still cannot measure staleness at all, because the working tree at each
 moment is not recoverable from a transcript.
+
+- [49 — One engine, several hosts](49-one-engine-several-hosts.md): native adapters and evidence boundaries.

@@ -490,3 +490,5 @@ Every number quoted anywhere in that folder was produced by a command in this re
 *If you maintain one of them and I have misread your code — open an issue.<br/>The card is pinned to a commit, and I would much rather be corrected than cited wrongly.*
 
 </div>
+
+Native platform delivery: Claude Code remains supported; the Codex adapter, project setup and portable bundle are implemented. See [platform installation and validation limits](the-guide/platforms.md). Gemini CLI, Cursor and Copilot CLI are next.

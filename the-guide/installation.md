@@ -138,3 +138,7 @@ Stop passing `--plugin-dir` (or remove it from your settings), and delete `.elev
 ## After updating the plugin
 
 The durable runner is included in the plugin source and activates through the existing completion hook in `guide` and `strict`; no separate runner service or per-project setup is required. Load the updated plugin in a new host session, then use `ep_doctor --host` to check the local launcher seam. This diagnostic does not replace a real installed-session check in your project. See [completion behavior](configuration.md#durable-completion-checks) and [current integration status](../docs/status.md).
+
+## Additional hosts
+
+Codex project setup and self-contained packaging are described in [Native platforms](platforms.md). Existing Claude installation is unchanged. Live installed Codex validation remains open.
