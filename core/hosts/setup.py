@@ -11,7 +11,8 @@ import tempfile
 from .bridge import adapter
 from .wiring import configuration
 
-PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json", "cursor": ".cursor/hooks.json"}
+PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json", "cursor": ".cursor/hooks.json",
+         "copilot": ".github/hooks/elevenpowers.json"}
 MARKER = "elevenpowers-host"
 
 
@@ -40,6 +41,10 @@ def read_config(path: Path) -> dict:
 def owned(entry: object) -> bool:
     if not isinstance(entry, dict):
         return False
+    args = entry.get("args")
+    if isinstance(entry.get("exec"), str) and isinstance(args, list) and len(args) == 3 and all(isinstance(a, str) for a in args):
+        if Path(args[0]).name == "ep_host.py" and args[1] == "copilot" and args[2] in adapter("copilot").EVENTS:
+            return True
     command = entry.get("command", "")
     if isinstance(command, str) and "ep_host.py" in command and any(
             command.endswith(f" {platform} {event}") for platform in ("cursor",)
@@ -94,17 +99,17 @@ def _write(path: Path, value: dict) -> None:
 def install(platform: str, project: Path, python: str, source: Path) -> Path:
     path = config_path(platform, project)
     current = read_config(path)
-    if platform == "cursor" and current.get("version", 1) != 1:
-        raise ValueError("unsupported Cursor hooks configuration version")
+    if platform in {"cursor", "copilot"} and current.get("version", 1) != 1:
+        raise ValueError(f"unsupported {platform} hooks configuration version")
     launcher = Path(source).resolve() / "plugin/bin/ep_host.py"
     executable = Path(python).resolve(strict=True)
     if not launcher.is_file() or not executable.is_file():
         raise ValueError("Python executable and ElevenPowers launcher must exist")
     args = [str(executable), str(launcher)]
     command = subprocess.list2cmdline(args) if os.name == "nt" else shlex.join(args)
-    generated = configuration(platform, command)
+    generated = configuration(platform, args if platform == "copilot" else command)
     merged = _without_owned(current)
-    if platform == "cursor":
+    if platform in {"cursor", "copilot"}:
         merged["version"] = 1
     hooks = merged.setdefault("hooks", {})
     for event, entries in generated["hooks"].items():

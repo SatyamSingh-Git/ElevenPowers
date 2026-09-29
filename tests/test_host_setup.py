@@ -94,3 +94,22 @@ def test_cursor_setup_preserves_flat_hooks_and_refuses_unknown_version(tmp_path)
     with pytest.raises(ValueError, match="version"):
         install("cursor", tmp_path, sys.executable, SOURCE)
     assert path.read_bytes() == before
+
+
+def test_copilot_setup_merges_and_executes_direct_args(tmp_path):
+    import subprocess
+    from core.hosts.setup import install, remove
+    path = tmp_path / ".github/hooks/elevenpowers.json"
+    path.parent.mkdir(parents=True)
+    original = {"version": 1, "hooks": {"agentStop": [{"type": "command", "exec": "user-hook", "args": []}]}}
+    path.write_text(json.dumps(original))
+    install("copilot", tmp_path, sys.executable, SOURCE)
+    first = path.read_bytes()
+    handler = json.loads(first)["hooks"]["agentStop"][-1]
+    done = subprocess.run([handler["exec"], *handler["args"]], input=json.dumps({"cwd": str(tmp_path)}), text=True, capture_output=True, timeout=20)
+    assert done.returncode == 0, done.stderr
+    assert json.loads(done.stdout)["decision"] == "allow"
+    install("copilot", tmp_path, sys.executable, SOURCE)
+    assert path.read_bytes() == first
+    remove("copilot", tmp_path)
+    assert json.loads(path.read_text()) == original
