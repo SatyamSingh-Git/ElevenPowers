@@ -70,9 +70,9 @@ def test_automatic_verification_runs_shared_command_once(tmp_path, monkeypatch):
     def run(command, **kwargs):
         calls.append(command)
         return subprocess.CompletedProcess(command, 0, "checks complete", "")
-    monkeypatch.setattr(verify.subprocess, "run", run)
+    monkeypatch.setattr(verify, "run_command", run)
     # Avoid replacing Git's subprocess calls used for evidence snapshots.
-    monkeypatch.setattr(verify, "parse", lambda *args: [])
+    monkeypatch.setattr(verify, "parse", lambda *args, **kwargs: [])
     verify.discharge(Ledger(root=tmp_path))
     assert calls == ["all-checks"]
 

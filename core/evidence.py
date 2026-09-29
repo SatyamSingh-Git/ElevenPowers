@@ -307,10 +307,18 @@ class SourceScan:
         return not self.issues
 
 
-def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = None) -> SourceScan:
+def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = None,
+                 *, deadline: float | None = None) -> SourceScan:
     """Bounded source selection; failures and omitted inputs remain explicit."""
     from .config import load
     scan = SourceScan()
+    def expired():
+        if deadline is not None and time.monotonic() >= deadline:
+            scan.issues.append("verification deadline reached; source coverage is incomplete")
+            return True
+        return False
+    if expired():
+        return scan
     policy = load(root).scan
     if not isinstance(policy, dict):
         scan.issues.append("invalid scan configuration: expected an object")
@@ -342,6 +350,8 @@ def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = N
         def walk_error(error):
             scan.issues.append(f"unreadable directory: {error.filename}")
         for dirpath, dirnames, filenames in os.walk(root, onerror=walk_error):
+            if expired():
+                break
             for d in dirnames:
                 if (Path(dirpath) / d).is_symlink():
                     scan.issues.append(f"symlink directory excluded: {Path(dirpath, d).relative_to(root)}")
@@ -352,6 +362,8 @@ def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = N
             candidates.extend(str(Path(dirpath, name).relative_to(root)).replace("\\", "/")
                               for name in sorted(filenames))
     for rel in sorted(candidates):
+        if expired():
+            break
         if excluded(rel):
             continue
         path = Path(rel)
@@ -391,11 +403,17 @@ def source_files(root: Path, limit: int | None = None) -> list[str]:
     return scan_sources(root, limit=limit).files
 
 
-def source_snapshot(root: Path) -> tuple[SourceScan, str]:
+def source_snapshot(root: Path, *, fresh: bool = False,
+                    deadline: float | None = None) -> tuple[SourceScan, str]:
     """Bind the selected inputs and any coverage failures to the same receipt."""
-    scan = scan_sources(root)
+    scan = scan_sources(root, deadline=deadline) if deadline is not None else scan_sources(root)
     digest = hashlib.sha256()
     for rel in scan.files:
+        if deadline is not None and time.monotonic() >= deadline:
+            scan.issues.append("verification deadline reached while hashing inputs")
+            break
+        if fresh:
+            _DIGESTS.pop((str(root), rel), None)
         value = _digest(root, rel)
         if value == "missing":
             scan.issues.append(f"unreadable or disappeared input: {rel}")

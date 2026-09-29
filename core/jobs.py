@@ -46,6 +46,30 @@ def current():
     return _CURRENT.get()
 
 
+def execute(command, *, cwd, phase, timeout=300, shell=True):
+    """Run an auxiliary check under the same deadline and ownership as Stop."""
+    from .process import run
+    session = current()
+    if session is None:
+        from .ledger import Ledger
+        with Session(cwd, Ledger.load(cwd).task):
+            return execute(command, cwd=cwd, phase=phase, timeout=timeout, shell=shell)
+    item = session.queue(phase, command)
+    try:
+        allowance = session.budget.timeout(timeout)
+    except BudgetExhausted as error:
+        session.finish(item, 'deferred', str(error))
+        raise
+    session.begin(item)
+    try:
+        done = run(command, cwd=cwd, timeout=allowance, shell=shell)
+    except BaseException as error:
+        session.finish(item, 'incomplete', str(error) or type(error).__name__)
+        raise
+    session.finish(item, 'passed' if done.returncode == 0 else 'failed', exit_code=done.returncode)
+    return done
+
+
 def read(root: Path) -> dict:
     try:
         data = json.loads((root / '.elevenpowers/verification.json').read_text(encoding='utf-8'))

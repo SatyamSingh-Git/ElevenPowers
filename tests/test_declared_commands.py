@@ -84,7 +84,7 @@ def test_automatic_verification_retains_incomplete_attempt(tmp_path, monkeypatch
         if error == "timeout":
             raise subprocess.TimeoutExpired("npm run ci", 1, output=b"partial")
         raise OSError("cannot launch")
-    monkeypatch.setattr(verify.subprocess, "run", interrupted)
+    monkeypatch.setattr(verify, "run_command", interrupted)
     receipts = verify.discharge(Ledger(root=tmp_path))
     assert len(receipts) == 1
     assert receipts[0].result is Result.ERROR

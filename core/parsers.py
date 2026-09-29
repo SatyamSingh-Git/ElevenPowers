@@ -13,6 +13,7 @@ code can be recovered.
 from __future__ import annotations
 
 import re
+import contextvars
 import time
 from pathlib import Path
 
@@ -265,7 +266,25 @@ def declared_needs(command: str, root: Path) -> list[str]:
             if need in DECLARED_KINDS and command.strip() == configured.strip()]
 
 
-def parse(command: str, output: str, exit_code: int | None, root: Path) -> list[Evidence]:
+_SNAPSHOT = contextvars.ContextVar("receipt_snapshot", default=None)
+
+
+def _snapshot(root):
+    bound = _SNAPSHOT.get()
+    return bound[1] if bound is not None and bound[0] == root else source_snapshot(root)
+
+
+def parse(command: str, output: str, exit_code: int | None, root: Path,
+          *, snapshot=None) -> list[Evidence]:
+    """Parse one output against one captured input state, shared by every record."""
+    token = _SNAPSHOT.set((root, snapshot) if snapshot is not None else None)
+    try:
+        return _parse_receipts(command, output, exit_code, root)
+    finally:
+        _SNAPSHOT.reset(token)
+
+
+def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path) -> list[Evidence]:
     """A declaration authorizes its exact command, never a prefix or output file."""
     needs = declared_needs(command, root)
     if not needs:
@@ -447,7 +466,7 @@ def _scope(command: str) -> str:
 
 def _record(kind: Kind, identity: str, exit_code: int, command: str, root: Path,
             output: str) -> Evidence:
-    scan, digest = source_snapshot(root)
+    scan, digest = _snapshot(root)
     observed = scan.files
     return Evidence(
         vcs=vcs_state(root),
@@ -572,7 +591,7 @@ def _wrapped(command: str, output: str, exit_code: int, root: Path) -> Evidence:
 
 
 def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evidence]:
-    scan, tree = source_snapshot(root)
+    scan, tree = _snapshot(root)
     observed = scan.files
     now = time.time()
     records: list[Evidence] = []

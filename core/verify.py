@@ -21,8 +21,10 @@ from __future__ import annotations
 
 import subprocess
 
-from .evidence import Evidence
-from .parsers import parse
+from .evidence import Evidence, Freshness, Result, source_snapshot
+from .jobs import Session, current, BudgetExhausted
+from .process import run as run_command
+from .parsers import parse, DECLARED_KINDS
 
 TIMEOUT = 300
 
@@ -45,43 +47,82 @@ def dischargeable(ledger) -> list[str]:
         for check in verdict.missing + verdict.stale
         if check.obligation.needs
     }
-    return sorted(need for need in unmet if config.declares(need))
+    def reusable(need):
+        from .redact import scrub
+        kind = DECLARED_KINDS.get(need)
+        candidates = [e for e in ledger.evidence if e.kind is kind]
+        if not candidates:
+            return False
+        latest = max(enumerate(candidates), key=lambda pair: (pair[1].at, pair[0]))[1]
+        return (latest.command == scrub(config.command_for(need))
+                and latest.result is Result.PASS and latest.execution == 'complete'
+                and latest.ran_tests and latest.freshness(ledger.root) is Freshness.FRESH)
+    # An unresolved reproduction or scoped-test obligation cannot be fixed by
+    # rerunning the same successful broad command on identical inputs.
+    return sorted(need for need in unmet if config.declares(need) and not reusable(need))
 
 
 def discharge(ledger) -> list[Evidence]:
-    """Run what the project declared, and record what happened.
+    """Persist each completed check before starting another one.
 
-    A failing command is recorded as faithfully as a passing one. The point is
-    not to manufacture a green result, it is to find out: a suite that fails
-    here turns the verdict to CONTRADICTED, which is exactly what should happen
-    and what nobody would have learned by blocking.
+    An incomplete receipt is written before execution: abrupt host death must
+    not leave an older success looking like the outcome of the new attempt.
     """
+    if not ledger.config.verifies:
+        return []
+    if current() is None:
+        with Session(ledger.root, ledger.task):
+            return discharge(ledger)
+    session = current()
     records: list[Evidence] = []
     attempted: set[str] = set()
+    planned = []
     for need in dischargeable(ledger):
         command = ledger.config.command_for(need)
-        if command in attempted:
-            continue
-        attempted.add(command)
+        if command not in attempted:
+            attempted.add(command)
+            planned.append((need, command, session.queue('verification', command)))
+    for need, command, item in planned:
         try:
-            done = subprocess.run(
-                command, shell=True, cwd=ledger.root, capture_output=True,
-                text=True, encoding="utf-8", errors="replace", timeout=TIMEOUT,
-            )
-        except subprocess.TimeoutExpired as error:
-            def text(value):
-                return value.decode("utf-8", errors="replace") if isinstance(value, bytes) else (value or "")
-            output = text(error.stdout) + text(error.stderr) + "\ntimeout: command did not complete"
-            records.extend(parse(command, output, None, ledger.root))
-            ledger.note("declared command incomplete", f"timeout: {command}")
+            session.budget.timeout(TIMEOUT)
+        except BudgetExhausted as error:
+            session.finish(item, 'deferred', str(error))
             continue
-        except (OSError, subprocess.SubprocessError) as error:
-            records.extend(parse(command, f"launch error: {error}", None, ledger.root))
-            ledger.note("declared command incomplete", f"launch error: {command}")
-            continue
-        found = parse(command, (done.stdout or "") + (done.stderr or ""),
-                      done.returncode, ledger.root)
-        if found:
-            ledger.note("ran a declared command", f"{need}: {command}")
-            records.extend(found)
+        before = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
+        provisional = parse(command, 'verification started; completion not yet recorded',
+                            None, ledger.root, snapshot=before)
+        ledger.add(provisional)
+        ledger.save()
+        session.begin(item)
+        code, output = None, ''
+        if not before[0].complete:
+            output = 'input coverage incomplete; command was not launched'
+        else:
+            try:
+                done = run_command(command, shell=True, cwd=ledger.root,
+                                   timeout=session.budget.timeout(TIMEOUT))
+                code = done.returncode
+                output = (done.stdout or '') + (done.stderr or '')
+            except subprocess.TimeoutExpired as error:
+                output = _text(error.stdout) + _text(error.stderr) + '\ntimeout: command did not complete'
+            except (OSError, subprocess.SubprocessError) as error:
+                output = (_text(getattr(error, 'stdout', '')) + _text(getattr(error, 'stderr', ''))
+                          + f'\nincomplete command: {error}')
+        after = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
+        if before[1] != after[1] or before[0].files != after[0].files:
+            before[0].issues.append('source inputs changed during verification')
+        before[0].issues.extend(i for i in after[0].issues if i not in before[0].issues)
+        found = parse(command, output, code, ledger.root, snapshot=before)
+        ledger.add(found)
+        ledger.note('ran a declared command' if code is not None else 'declared command incomplete',
+                    f'{need}: {command}')
+        ledger.save()
+        records.extend(found)
+        status = ('incomplete' if code is None else 'stale' if before[0].issues else
+                  'failed' if code or any(e.result is not Result.PASS for e in found) else 'passed')
+        session.finish(item, status, '; '.join(before[0].issues), exit_code=code)
     return records
+
+
+def _text(value):
+    return value.decode('utf-8', errors='replace') if isinstance(value, bytes) else (value or '')

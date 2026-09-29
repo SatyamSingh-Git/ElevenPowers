@@ -361,7 +361,10 @@ class Ledger:
         self.blocks = max(disk.blocks, self.blocks)
 
     def add(self, records: list[Evidence]) -> None:
-        self.evidence.extend(records)
+        # Runtime checks persist immediately. Older callers may still add the
+        # returned records; identical receipts must remain a single observation.
+        self.evidence = _appended(self.evidence, records,
+                                 lambda e: json.dumps(e.to_dict(), sort_keys=True))
         self._surface = None
 
     def saw(self, path: str) -> None:
