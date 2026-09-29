@@ -1,5 +1,12 @@
 # Configuration
 
+Repository configuration under `.elevenpowers/` is shared by all five host
+integrations. The four additional hosts use separate native subscription files;
+manage those with `ep_setup.py` as described in [platforms](platforms.md).
+Host-specific configuration does not change scan boundaries, receipt semantics,
+profiles or completion budgets. The project's declared/discovered commands remain
+the authority for automatic checks.
+
 [← The Guide](README.md)
 
 Configuration is optional. Supported root manifests supply verification commands automatically; this file overrides those defaults and controls interruption and scanning.

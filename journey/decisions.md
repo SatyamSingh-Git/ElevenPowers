@@ -153,3 +153,12 @@ more useful record.
 | D112 | Installation activates supported conventions without writing a setup file | A manual command declaration and budget adjustment prevented the prior delivery from feeling automatic | Shipped; startup health, discovery, explicit overrides and opt-out controls |
 | D113 | Automatic execution is constrained by current obligations and matching evidence | Discovering a benchmark script must not cause ordinary test success to launch it against the baseline | Shipped; shared commands deduplicated per verification attempt, off remains passive |
 | D114 | Separate local compatibility from installed-project readiness | Selection and parser replay cannot prove a host delivers events or that full CI completes | Installed Snag session and full CI remain open; [current status](../docs/status.md) owns the milestone |
+
+## Native platform delivery — 2026-09-29
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D115 | One evidence engine, explicit native adapters | Lifecycle names, timeout units and response fields differ; auto-detection can attach the wrong meaning to a payload | Four adapters implemented; installed sessions still need acceptance |
+| D116 | Tool transport success is not process success | Some hosts return display text with no reliable exit status | Incomplete observations remain incomplete; the shared runner can execute declared checks |
+| D117 | Commit delivery identity with its receipt | Marking a callback consumed before saving evidence permanently lost retries on write failure | Atomic ledger persistence and concurrent-delivery regression shipped |
+| D118 | Unknown patch attribution stays visible | Git cannot attribute every native patch in a non-Git or already-dirty project | Conservative claim and UNVERIFIED coverage warning; complete attribution remains open |

@@ -6,7 +6,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
-[![Host](https://img.shields.io/badge/host-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
+[![Hosts](https://img.shields.io/badge/hosts-5%20integrations-D97757.svg)](the-guide/platforms.md)
 [![Tests](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml)
 [![Status](https://img.shields.io/badge/status-research%20prototype-orange.svg)](#where-this-actually-is)
 [![Architecture graph](https://img.shields.io/badge/architecture-live%20graph-a78bfa.svg)](https://satyamsingh-git.github.io/ElevenPowers/architecture/)
@@ -491,4 +491,4 @@ Every number quoted anywhere in that folder was produced by a command in this re
 
 </div>
 
-Native platform delivery: Claude Code remains supported; the Codex adapter, project setup and portable bundle are implemented. See [platform installation and validation limits](the-guide/platforms.md). Gemini CLI is also implemented; Cursor is also implemented; Copilot CLI is next.
+Native platform delivery: Claude Code remains supported; Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI now have adapters, project setup, diagnostics and portable bundles. See [platform installation and validation limits](the-guide/platforms.md) and [journey 49](journey/49-one-engine-several-hosts.md). The four additions have contract and launcher checks; live installed sessions remain unverified.

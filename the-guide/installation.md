@@ -141,4 +141,11 @@ The durable runner is included in the plugin source and activates through the ex
 
 ## Additional hosts
 
-Codex project setup and self-contained packaging are described in [Native platforms](platforms.md). Existing Claude installation is unchanged. Live installed Codex validation remains open.
+Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI project setup and portable
+packaging are described in [Native platforms](platforms.md). Each supports
+`ep_setup.py PLATFORM --project PATH` and a read-only
+`ep_doctor.py --platform PLATFORM --cwd PATH` check. Trust and enable the hooks in
+the chosen host; supported startup, observation and completion work then happens
+automatically. Use either the bundle or project hooks, to avoid duplicate delivery.
+Uninstall project hooks with the same setup command plus `--remove`. Live
+installed-session validation remains open for the four new integrations.

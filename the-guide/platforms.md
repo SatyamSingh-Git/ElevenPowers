@@ -1,10 +1,11 @@
 # Native platforms
 
 ElevenPowers uses one repository/evidence engine with native host adapters.
-Claude Code retains its existing installation. Codex has a native adapter,
-project setup and portable bundle. Gemini CLI also has its native adapter and
-extension package. Cursor Agent has a native adapter and plugin bundle.
-GitHub Copilot CLI is the remaining approved delivery target.
+Claude Code retains its existing installation. Codex, Gemini CLI, Cursor Agent
+and GitHub Copilot CLI have native adapters, reversible project setup,
+configuration diagnostics and self-contained bundles. The four new integrations
+have documented-contract and launcher checks; live installed sessions remain an
+acceptance step. This distinction applies to every platform below.
 
 ## Codex
 
@@ -26,7 +27,11 @@ events record evidence and completion runs missing checks in guide/strict mode.
 Off stays passive. Unknown/unfinished command results stay incomplete; the
 automatic runner can still execute the declared check to obtain a known status.
 An explicit execution directory different from the event's project root cannot
-certify that root. Patch file paths are reconciled through Git at completion.
+certify that root. Native patch events without authoritative edited paths open a
+conservative claim and persist a coverage warning. Declared checks can still run,
+but the task remains UNVERIFIED because complete edit attribution is unknown.
+Git reconciliation adds visible paths; it cannot prove what an already-dirty or
+non-Git file changed through the native patch tool.
 
 For a portable plugin with its own runtime:
 
@@ -40,6 +45,10 @@ workflow and trust its hooks. Choose either native bundle installation or
 project hooks for a project to avoid duplicate delivery. The bundle uses
 `python` from the host PATH; it must resolve Python 3.11+. The generated project
 configuration uses the interpreter that ran setup.
+On Windows, project command hooks use PowerShell's encoded invocation to preserve
+literal paths; Copilot uses direct executable arguments. The doctor checks that
+the configured interpreter and launcher still exist. Rerun setup after moving
+the checkout or changing interpreters.
 
 Remove only the project integration:
 
@@ -126,3 +135,45 @@ This delivery targets Cursor Agent's documented desktop interface. Cursor CLI,
 cloud agents and a live installed desktop session are not certified by these
 launcher fixtures. See [Cursor hooks](https://prod.cursor.com/docs/hooks) and
 [plugin reference](https://prod.cursor.com/docs/reference/plugins).
+
+## GitHub Copilot CLI
+
+```sh
+python plugin/bin/ep_setup.py copilot --project /absolute/path/to/project
+python plugin/bin/ep_doctor.py --platform copilot --cwd /absolute/path/to/project
+python -m core.hosts.package copilot /absolute/output/elevenpowers
+```
+
+Project setup merges `.github/hooks/elevenpowers.json`. Native camelCase events
+map to the shared lifecycle, and direct `exec`/`args` subscriptions preserve paths
+with spaces without a shell. The alternate portable plugin uses legacy root
+`plugin.json` and `hooks/hooks.json`, with the runtime included. Install through
+Copilot's plugin flow, review trust/enablement and begin a new session. Use one
+installation route per project. Remove project hooks with
+`ep_setup.py copilot --project PATH --remove`.
+
+`resultType: success` describes tool transport, not the child process exit code.
+Without an explicit numeric process status, the observation stays incomplete;
+guide/strict can run missing declared checks independently. Cancelled agent
+completion does not start verification. `agentStop` can request a bounded retry,
+but has no ordinary final-report field; use `ep_status.py --cwd PATH`. Copilot
+ignores extra context from command-based prompt hooks, so context is delivered
+only on supported session/tool surfaces. Native patches have the attribution
+limitation described under Codex.
+
+This adapter targets local Copilot CLI. It does not certify VS Code, the cloud
+agent, or every installed CLI version. See the [official hook reference](https://docs.github.com/en/copilot/reference/hooks-reference)
+and [plugin reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference).
+
+## Automatic behavior and remaining acceptance
+
+Once hooks are installed, enabled and trusted, supported lifecycle events invoke
+startup health, manifest command discovery, observation and completion checks
+automatically. Setup cannot bypass host trust or administrator policy. A doctor
+pass establishes project configuration and local path availability, not live
+delivery. Bundles require `python` 3.11+ on the host PATH and native plugin-root
+resolution. These environment assumptions still need an installed-session check.
+
+The next acceptance work is a small versioned session on each native host,
+capturing startup, a file edit, command pass/fail/interruption, completion and
+uninstall behavior. Full Snag CI remains separate from these portable fixtures.

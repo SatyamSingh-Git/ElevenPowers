@@ -1,5 +1,22 @@
 # Commands
 
+Native-host installation helpers are Python entry points from the ElevenPowers
+checkout (or a bundle containing them). `PLATFORM` is `codex`, `gemini`, `cursor`
+or `copilot`:
+
+```sh
+python plugin/bin/ep_setup.py PLATFORM --project PATH
+python plugin/bin/ep_doctor.py --platform PLATFORM --cwd PATH
+python plugin/bin/ep_setup.py PLATFORM --project PATH --remove
+python -m core.hosts.package PLATFORM NEW_OUTPUT_DIRECTORY
+```
+
+The doctor checks project subscriptions and interpreter/launcher paths. It does
+not attest live event delivery; `--host` remains the separate Claude replay
+diagnostic. Use `python plugin/bin/ep_status.py --cwd PATH` for a persisted report,
+especially on Cursor and Copilot, whose completion callbacks lack ordinary report
+fields. See [platforms](platforms.md) for native capabilities and limitations.
+
 [← The Guide](README.md)
 
 Three commands you will actually use, and a set of evaluation commands you only need if you are measuring the project itself.

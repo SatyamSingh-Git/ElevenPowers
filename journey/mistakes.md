@@ -778,3 +778,27 @@ asks.
 **Documentation lagged behind the fixes.** A feature page still described stat-based fingerprints, troubleshooting claimed guide mode did not run tests, and old timeouts remained in the manual. The 2026-09-29 documentation pass corrected current guidance and added a status/validation index. Historical records keep their dated measurements and link to superseding behavior.
 
 Sources: [journey 46](46-the-project-outside-the-fixture.md), [journey 47](47-installed-should-mean-active.md), and the [validation records](../docs/validation/README.md).
+
+## 2026-09-29: adapters exposed assumptions in the shared code
+
+**Startup was assumed synchronous.** Cursor can finish startup after a new task
+opens. Saving the earlier ledger overwrote it. Startup now appends diagnostics
+under the ledger lock against current state.
+
+**Deduplication happened before persistence.** A failed save consumed the native
+tool identity permanently. The marker and receipt now share an atomic ledger
+write, including concurrent delivery protection.
+
+**Argument quoting was mistaken for shell quoting.** A source directory named
+`R&D` broke Windows setup. Tests now invoke actual launcher paths containing
+shell characters, spaces and Unicode, and setup uses an encoded PowerShell
+invocation or Copilot's direct arguments.
+
+**Subscription health was mistaken for launch readiness.** The doctor reported
+healthy after the runtime directory was removed. It now checks interpreter and
+launcher availability while keeping live host trust/delivery explicitly separate.
+
+**Git reconciliation was mistaken for complete native edit coverage.** A patch
+event could vanish in a non-Git project. Unknown attribution now opens a claim
+and keeps an explicit coverage warning instead of silently skipping checks.
+See [journey 49](49-one-engine-several-hosts.md).

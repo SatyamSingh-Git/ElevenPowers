@@ -96,3 +96,14 @@ The runtime remains standard-library-only. The process runner adapts the reposit
 ## Native host adapters
 
 `core/hosts/` normalizes native events, collects shared-engine responses, generates wiring and provides setup/package/doctor helpers. Native payload examples in tests are schema fixtures, not live captures. Run the `tests/test_host_*.py` tests with Claude hook regressions after changing shared transport.
+
+All four new platforms use the same scan, command discovery, ledger and runner.
+Completed tool identities are committed atomically with ledger observations;
+failed persistence remains retryable. Continuation hashes live separately in
+`.elevenpowers/hosts.json`. Both histories are bounded. Windows project commands
+encode the full PowerShell invocation; Copilot uses direct argument arrays.
+Exercise actual launcher paths with shell characters, not only project cwd.
+
+For release readiness, retain the host version and a real native event capture.
+Contract fixtures cannot replace it. See [the delivery record](validation/2026-09-29-platforms.md)
+for the independent review, corrections and remaining Linux diagnostic question.

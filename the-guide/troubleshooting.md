@@ -1,5 +1,21 @@
 # Troubleshooting
 
+For Codex, Gemini CLI, Cursor Agent or Copilot CLI, begin with
+`python plugin/bin/ep_doctor.py --platform PLATFORM --cwd PATH`. Missing launcher
+or interpreter means setup must be rerun from the current checkout/environment.
+Healthy configuration still requires the host to load and trust the hooks. Use
+one installation route per project, and begin a new session after changes.
+
+An incomplete native command result often means the host supplied text or a
+tool-transport outcome without a process exit code. It is not evidence of a
+failing command. Guide/strict can run a declared check to obtain its own receipt.
+A native patch coverage warning means the edited paths were not authoritative;
+the task stays UNVERIFIED rather than silently accepting incomplete attribution.
+See [native platforms](platforms.md) for per-host limits.
+
+Cursor and Copilot do not expose a normal final-report field. Read the stored
+verdict with `python plugin/bin/ep_status.py --cwd PATH`.
+
 [← The Guide](README.md)
 
 Start every investigation the same way:

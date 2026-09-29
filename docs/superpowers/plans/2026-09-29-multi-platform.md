@@ -85,8 +85,8 @@ assert read_config() == before
 ## Tasks / pushes
 
 Each row is an independent testable publication boundary. Tests live in
-`tests/test_host_<platform>.py`, shared contract/setup/bundle/bridge tests in
-`tests/test_hosts.py`, `tests/test_host_setup.py`, `tests/test_host_packages.py`.
+`tests/test_host_<platform>.py`, shared setup/bundle/launcher tests in
+`tests/test_host_setup.py`, `tests/test_host_packages.py`, `tests/test_host_doctor.py`.
 
 | Part | Deliverable | Required behavioral check |
 |---|---|---|
@@ -140,3 +140,10 @@ Record actual host versions/captures separately from documented schema fixtures.
   shared and add host details only in adapter modules.
 - Ruling: eight pushes means eight per new platform, replacing four per platform;
   thirty-two total. Cost if misunderstood: finer publication granularity only.
+
+- Runtime delivery completed through `518411d` (part 31); part 32 is the containing final documentation publication. Full push mapping and validation are in [the delivery record](../../validation/2026-09-29-platforms.md).
+- Final independent review found receipt-before-dedup ordering, Windows shell quoting, missing-launcher diagnosis and unobserved patch attribution. The first three are corrected with failing-then-passing probes; patch attribution now remains explicitly UNVERIFIED rather than silently bypassing checks. Full path attribution needs real native producer captures.
+- Final local integration: 1,024 passed / 28 skipped; subsequent final native/task group: 210 passed. All four architecture views rendered at 80 nodes / 170 edges. No paid agent runs or project mutations in Snag were performed.
+- Declined review boundaries accepted explicitly: live installed sessions and paid/outcome/Snag experiments were not performed; deliberately escaped POSIX groups remain outside documented containment; final publication accounting is verified by Git rather than inferred from the review. Copilot setup/doctor excluded as in-progress by the reviewer were completed and tested separately.
+
+- Final runtime CI `36530709458` on `518411d`: all four jobs succeeded (Ubuntu/Windows, Python 3.11/3.13), including full tests, audit probes, grader controls and Claude launcher checks. The containing part 32 changes only documentation/architecture.

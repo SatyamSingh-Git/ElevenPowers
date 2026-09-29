@@ -1,6 +1,6 @@
 # Current delivery status
 
-Reviewed **2026-09-29**, through Codex runtime part `98295a9`. ElevenPowers remains a research prototype, with Claude Code integration and a new Codex adapter. This page tracks product delivery; it does not replace the historical research results or claim an improvement in patch quality.
+Reviewed **2026-09-29**, through runtime commit `518411d`. ElevenPowers remains a research prototype. Claude Code retains its existing integration; Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI now have native adapters, project setup, diagnostics and portable bundles. The four additions have contract and launcher validation, with live installed sessions still open. This page tracks delivery without claiming improved patch outcomes.
 
 ## Shipped and exercised
 
@@ -40,7 +40,7 @@ See the [validation index](validation/README.md) for the detailed records and qu
 4. Startup, evidence capture and completion latency are measured during ordinary work.
 5. Remaining environment or coverage limits are visible and actionable.
 
-A full Snag CI run and live installed-plugin session have **not** been performed. Per-test dependency invalidation, mutation-based runtime coverage and improved patch-outcome claims remain outside this delivery. Codex adapter implementation is recorded below; live installation remains unverified.
+A full Snag CI run and live installed-plugin session have **not** been performed. Per-test dependency invalidation, mutation-based runtime coverage and improved patch-outcome claims remain outside this delivery. The four native adapters are recorded below; live installation remains unverified.
 
 ## Delivery cadence
 
@@ -48,4 +48,31 @@ Use a concrete project milestone, focused regression checks for changed behavior
 
 ## Native platform expansion
 
-Codex adapter, native response transport, generated wiring, portable packaging, project setup and configuration doctor are implemented. Sixty focused native/Claude checks passed. Live installed Codex and Snag sessions remain unverified. Gemini CLI is implemented with native extension packaging, reversible settings setup and explicit outcome limits; 87 combined checks passed. Cursor is implemented, with 212 combined native/Claude/task checks passing and explicit completion-display limits. Copilot CLI follows. See [platforms](../the-guide/platforms.md) and [validation](validation/2026-09-29-platforms.md).
+All four additional platforms share the repository scanner, command discovery,
+ledger and durable runner. Each was delivered in eight separately pushed parts.
+Project configuration merges preserve other hooks and have reversible removal.
+Windows project shell commands encode literal arguments; Copilot uses direct
+executable arguments. Doctor checks subscriptions and interpreter/launcher paths.
+
+The full local run passed **1,024 tests with 28 skips**; the final focused native
+and task integration passed **210 tests**. The Claude launcher diagnostic and all
+four grader controls passed. Architecture: **80 nodes, 170 edges; all four views
+rendered**. See [dated validation](validation/2026-09-29-platforms.md) for exact
+commits, remote matrix results and review corrections. All four jobs passed on
+`518411d`: Ubuntu 3.11/3.13 each passed 1,024 tests with 31 skips; Windows
+3.11/3.13 each passed 1,025 with 30 skips. Separate audit probes, grader controls
+and the Claude launcher doctor also passed in each job.
+
+Readiness limits remain explicit:
+
+- Four native installed-session captures and full Snag CI are still open.
+- Prose-only or transport-only results cannot prove a process exit status.
+- Native patches without authoritative paths keep the task UNVERIFIED for
+  incomplete edit attribution, including non-Git and already-dirty projects.
+- Cursor/Copilot normal completion has no ordinary report field; inspect stored
+  status. Host trust and enablement are required before automatic events run.
+- The Linux proc-read probe race was fixed; the separate historical intermittent
+  five-second descendant-survival assertion has no established runtime cause.
+
+The next delivery milestone is versioned live-host acceptance, followed by the
+full Snag project session. See [installation and capabilities](../the-guide/platforms.md).
