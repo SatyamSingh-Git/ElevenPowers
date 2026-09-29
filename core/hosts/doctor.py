@@ -31,5 +31,6 @@ def report(platform: str, root: Path) -> tuple[str, bool]:
     except (ValueError, OSError) as exc:
         lines.append(f"failed: {exc}")
         ok = False
+    lines.extend(getattr(host, "LIMITS", ()))
     lines += ["Host enablement/trust: review in the host", "Live host session: not verified"]
     return "\n".join(lines), ok

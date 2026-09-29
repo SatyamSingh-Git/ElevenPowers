@@ -5,6 +5,11 @@ from .transport import fields_of
 EVENTS = {"SessionStart": "SessionStart", "BeforeAgent": "UserPromptSubmit",
           "BeforeTool": "PreToolUse", "AfterTool": "PostToolUse", "AfterAgent": "Stop"}
 TOOLS = {"run_shell_command": "Bash", "read_file": "Read", "write_file": "Write", "replace": "Edit"}
+LIMITS = (
+    "Native approval requests unavailable; questioned operations receive a review denial.",
+    "Structured command status is supported; prose-only outcomes remain incomplete.",
+    "AfterAgent continuation uses the shared bounded retry policy.",
+)
 
 
 def normalize(event: str, payload: dict) -> Event:
