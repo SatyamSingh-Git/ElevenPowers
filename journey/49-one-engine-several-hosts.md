@@ -33,3 +33,13 @@ the root. A configuration removal probe also caught a shared bug: another hook
 inside the same group was removed with ours. Removal now works per handler and
 the regression preserves the neighboring hook. The combined native/Claude group
 passed 87 tests. Installed Gemini behavior remains an open acceptance check.
+
+Cursor exposed a race that a synchronous-host mindset missed. Startup can finish
+after another event has opened a new task, and saving the old startup ledger
+overwrote that new task. A controlled interleaving reproduced it. Startup now
+appends its note to the current ledger under the short write lock, a fix shared
+by every host. Cursor abort/error events also bypass verification and ambiguous
+workspace roots never select the first folder. The focused integration group
+passed 212 tests. CI additionally exposed intermittent POSIX cleanup-probe
+failures; later green runs are not enough to explain those and final integration
+will investigate them.

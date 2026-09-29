@@ -39,9 +39,28 @@ carry explicit nonzero status and that ordinary display content can omit it.
 Fixtures remain labeled schema/source examples. No real Gemini CLI session or
 paid model call was executed. Prose-only success is deliberately incomplete.
 
+## Cursor Agent, parts 17–24
+
+Event/root mapping, structured output, response translation, native packaging,
+project setup and doctor were published as `c4c1f96`, `8d53ba4`, `40990c5`,
+`da913eb`, `54d297a`, `6f78cca`. Part 7 (`aa7010c`) fixes cancelled completion,
+out-of-workspace cwd and an actual asynchronous startup/task overwrite race.
+Four regression cases failed before correction; the final focused integration
+group passed **212 tests**, including existing task handling. Part 8 is the
+containing documentation/architecture publication.
+
+No live Cursor application was run. Ordinary Stop has no report response field,
+so documentation points to persisted status. CLI/cloud compatibility is not
+inferred from the desktop contract.
+
+Earlier CI runs intermittently failed POSIX process-tree probes, including a
+process disappearing while `/proc` was read. Later runs passed; those passes
+do not by themselves explain the earlier failures. Final integration work must
+investigate and record the failure rather than silently discarding it.
+
 ## Remaining platforms
 
-Cursor Agent and GitHub Copilot CLI await their eight-part deliveries.
+GitHub Copilot CLI awaits its eight-part delivery.
 Their live applications were not found on PATH during read-only discovery; this
 does not establish whether the applications are installed elsewhere.
 

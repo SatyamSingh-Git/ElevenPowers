@@ -3,8 +3,8 @@
 ElevenPowers uses one repository/evidence engine with native host adapters.
 Claude Code retains its existing installation. Codex has a native adapter,
 project setup and portable bundle. Gemini CLI also has its native adapter and
-extension package. Cursor Agent and GitHub Copilot CLI are the remaining
-approved delivery targets; their integrations are not yet published.
+extension package. Cursor Agent has a native adapter and plugin bundle.
+GitHub Copilot CLI is the remaining approved delivery target.
 
 ## Codex
 
@@ -94,3 +94,35 @@ automatic runner can execute missing declared commands to collect explicit
 status. The doctor reports this limitation separately from configuration health.
 See [Gemini hooks](https://geminicli.com/docs/hooks/reference/) and
 [extension packaging](https://geminicli.com/docs/extensions/reference/).
+
+## Cursor Agent
+
+```sh
+python plugin/bin/ep_setup.py cursor --project /absolute/path/to/project
+python plugin/bin/ep_doctor.py --platform cursor --cwd /absolute/path/to/project
+python -m core.hosts.package cursor /absolute/output/elevenpowers
+```
+
+Project setup merges version 1 `.cursor/hooks.json`. The alternative bundle uses
+`.cursor-plugin/plugin.json` and includes its runtime. Enable it through Cursor's
+normal trusted-project/plugin flow. Use one route per project. Remove project
+hooks with `ep_setup.py cursor --project PATH --remove`.
+
+Generic tool hooks capture Shell/read/write activity. Explicit structured exit
+codes, including JSON-encoded tool output, determine command outcomes. Unknown
+output and permission denial remain incomplete. Multiple workspace roots need
+an explicit `cwd`; a `cwd` outside the declared workspaces is rejected.
+
+Startup is asynchronous in Cursor, so the shared startup diagnostic append now
+loads the current task under its write lock. An old startup cannot overwrite a
+new prompt. Aborted/error completion skips automatic verification. Normal Stop
+uses at most two follow-ups in strict mode. Cursor does not provide an ordinary
+Stop report field: use `python plugin/bin/ep_status.py --cwd PATH` to inspect the
+persisted verdict. Prompt/pre-tool informational context also has narrower
+support than Claude; unsupported fields are omitted. An unenforced native ask
+becomes an explained denial, never an automatic approval.
+
+This delivery targets Cursor Agent's documented desktop interface. Cursor CLI,
+cloud agents and a live installed desktop session are not certified by these
+launcher fixtures. See [Cursor hooks](https://prod.cursor.com/docs/hooks) and
+[plugin reference](https://prod.cursor.com/docs/reference/plugins).
