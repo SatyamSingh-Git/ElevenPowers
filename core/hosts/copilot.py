@@ -1,6 +1,7 @@
 """GitHub Copilot CLI native camelCase hooks, independent of VS Code/cloud."""
 import json
 from .contract import Event, Outcome, event_of, explicit_outcome
+from .transport import fields_of
 
 EVENTS = {"sessionStart": "SessionStart", "userPromptSubmitted": "UserPromptSubmit",
           "preToolUse": "PreToolUse", "postToolUse": "PostToolUse",
@@ -32,3 +33,14 @@ def outcome(payload: dict) -> Outcome:
     if isinstance(raw, dict):
         raw = {**raw, "output": raw.get("textResultForLlm", "")}
     return explicit_outcome(raw, interrupted=payload.get("is_interrupt") is True)
+
+
+def render(event: str, messages: list[dict], code: int, error: str) -> dict:
+    fields = fields_of(messages)
+    if event == "agentStop":
+        return {"decision": "block", "reason": error} if code == 2 else {"decision": "allow"}
+    if event == "preToolUse":
+        return {k: fields[k] for k in ("permissionDecision", "permissionDecisionReason") if k in fields}
+    if event in {"sessionStart", "postToolUse"} and fields.get("additionalContext"):
+        return {"additionalContext": fields["additionalContext"]}
+    return {}

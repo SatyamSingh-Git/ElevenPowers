@@ -45,3 +45,21 @@ def test_copilot_failed_transport_without_status_is_incomplete(tmp_path):
     event = adapter().normalize("postToolUseFailure", {"cwd": str(tmp_path), "toolName": "bash",
         "toolArgs": {"command": "npm run ci"}, "error": "cancelled"})
     assert event.payload["tool_response"].get("interrupted") is True
+
+
+def test_copilot_native_responses():
+    host = adapter()
+    assert host.render("agentStop", [], 2, "retry") == {"decision": "block", "reason": "retry"}
+    assert host.render("agentStop", [{"systemMessage": "verified"}], 0, "") == {"decision": "allow"}
+    assert host.render("sessionStart", [{"additionalContext": "active"}], 0, "") == {"additionalContext": "active"}
+    assert host.render("postToolUse", [{"additionalContext": "observed"}], 0, "") == {"additionalContext": "observed"}
+    assert host.render("userPromptSubmitted", [{"additionalContext": "claims"}], 0, "") == {}
+    result = host.render("preToolUse", [{"permissionDecision": "ask", "permissionDecisionReason": "review"}], 0, "")
+    assert result == {"permissionDecision": "ask", "permissionDecisionReason": "review"}
+
+
+def test_copilot_native_dispatch(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("retry"))
+    assert run("copilot", "agentStop", {"cwd": str(tmp_path), "stopReason": "end_turn"}) == ({"decision": "block", "reason": "retry"}, 0)
