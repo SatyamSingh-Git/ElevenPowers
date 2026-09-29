@@ -44,3 +44,11 @@ def render(event: str, messages: list[dict], code: int, error: str) -> dict:
     if event in {"sessionStart", "postToolUse"} and fields.get("additionalContext"):
         return {"additionalContext": fields["additionalContext"]}
     return {}
+
+
+LIMITS = (
+    "Evidence: tool transport success alone is incomplete; a process exit code or runner receipt is required.",
+    "Reports: normal agentStop has no report field; use the status command for the final report.",
+    "Prompt hook: Copilot CLI ignores additional prompt context; session/tool context remains available.",
+    "Retries: shared completion budget bounds continuation requests.",
+)

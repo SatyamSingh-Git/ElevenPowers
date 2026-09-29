@@ -55,6 +55,31 @@ def test_gemini_launcher_receipt_states(tmp_path):
         assert Ledger.load(tmp_path).evidence[-1].result.value == expected
 
 
+def test_copilot_doctor_checks_direct_args_and_capability_limits(tmp_path):
+    from core.hosts.setup import install
+    from core.hosts.doctor import report
+    path = install("copilot", tmp_path, sys.executable, Path(__file__).resolve().parents[1])
+    text, ok = report("copilot", tmp_path)
+    assert ok, text
+    assert "tool transport" in text and "Live host session: not verified" in text
+    config = json.loads(path.read_text())
+    config["hooks"]["agentStop"][0]["timeoutSec"] = 1
+    path.write_text(json.dumps(config))
+    assert not report("copilot", tmp_path)[1]
+
+
+def test_copilot_launcher_keeps_transport_success_incomplete(tmp_path):
+    from core.config import Config, save
+    from core.ledger import Ledger
+    save(tmp_path, Config(profile="off", commands={"tests": "npm run ci"}))
+    launcher = Path(__file__).resolve().parents[1] / "plugin/bin/ep_host.py"
+    for raw, expected in [({"exitCode": 0}, "pass"), ({"exitCode": 1}, "fail"), ({"resultType": "success", "textResultForLlm": "ok"}, "error")]:
+        payload = {"cwd": str(tmp_path), "toolName": "bash", "toolArgs": {"command": "npm run ci"}, "toolResult": raw}
+        result = subprocess.run([sys.executable, str(launcher), "copilot", "postToolUse"], input=json.dumps(payload), text=True, capture_output=True, timeout=20)
+        assert result.returncode == 0, result.stderr
+        assert Ledger.load(tmp_path).evidence[-1].result.value == expected
+
+
 def test_cursor_doctor_checks_flat_hooks_and_explains_report_limit(tmp_path):
     from core.hosts.setup import install
     from core.hosts.doctor import report
