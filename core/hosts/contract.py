@@ -61,7 +61,7 @@ def explicit_outcome(raw: object, *, interrupted: bool = False) -> Outcome:
         return Outcome(raw if isinstance(raw, str) else "", state="interrupted" if interrupted else "unknown")
     output = "\n".join(raw[k] for k in ("stdout", "stderr", "output")
                        if isinstance(raw.get(k), str))
-    if interrupted or any(raw.get(k) is True for k in ("interrupted", "timed_out", "timeout", "cancelled")):
+    if interrupted or any(raw.get(k) is True for k in ("interrupted", "timed_out", "timeout", "cancelled", "aborted")):
         return Outcome(output, state="interrupted")
     code = next((raw[k] for k in ("exit_code", "exitCode", "returncode") if k in raw), None)
     if type(code) is int:

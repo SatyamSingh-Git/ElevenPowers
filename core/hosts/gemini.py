@@ -22,6 +22,12 @@ def normalize(event: str, payload: dict) -> Event:
         clean["last_assistant_message"] = payload.get("prompt_response") or ""
     if event == "AfterTool" and clean.get("tool_name") == "Bash":
         clean["tool_response"] = outcome(payload).result()
+        inputs = dict(clean.get("tool_input") or {})
+        if "dir_path" in inputs:
+            inputs["workdir"] = inputs["dir_path"]
+        if inputs.get("is_background") is True:
+            clean["tool_response"] = Outcome(state="running").result()
+        clean["tool_input"] = inputs
     return event_of(EVENTS[event], clean)
 
 
@@ -37,7 +43,7 @@ def outcome(payload: dict) -> Outcome:
     result = explicit_outcome({**raw, **data, "output": content if isinstance(content, str) else ""},
                               interrupted=payload.get("is_interrupt") is True)
     # Execution/permission errors without a command status are not test failures.
-    if raw.get("error") and result.state == "passed":
+    if raw.get("error") and result.state != "interrupted":
         return Outcome(result.output)
     return result
 

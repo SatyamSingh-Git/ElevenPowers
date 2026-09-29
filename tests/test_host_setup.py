@@ -62,3 +62,14 @@ def test_gemini_setup_preserves_settings_and_uses_native_names(tmp_path):
     assert path.read_bytes() == first
     remove("gemini", tmp_path)
     assert json.loads(path.read_text()) == original
+
+
+def test_removal_preserves_foreign_handlers_in_a_shared_group(tmp_path):
+    from core.hosts.setup import remove
+    path = tmp_path / ".gemini/settings.json"
+    path.parent.mkdir()
+    foreign = {"type": "command", "command": "user command", "name": "user"}
+    path.write_text(json.dumps({"hooks": {"BeforeTool": [{"matcher": "read_file", "hooks": [
+        foreign, {"type": "command", "command": "ep", "name": "elevenpowers-host"}]}]}}))
+    remove("gemini", tmp_path)
+    assert json.loads(path.read_text())["hooks"]["BeforeTool"] == [{"matcher": "read_file", "hooks": [foreign]}]

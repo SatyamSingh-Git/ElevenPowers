@@ -49,7 +49,15 @@ def _without_owned(value: dict) -> dict:
     result = dict(value)
     hooks = {}
     for name, entries in result.get("hooks", {}).items():
-        remaining = [entry for entry in entries if not owned(entry)]
+        remaining = []
+        for entry in entries:
+            if not owned(entry):
+                remaining.append(entry)
+                continue
+            kept = [h for h in entry["hooks"] if not (isinstance(h, dict) and
+                    (h.get("statusMessage") == MARKER or h.get("name") == MARKER))]
+            if kept:
+                remaining.append({**entry, "hooks": kept})
         if remaining or not entries:
             hooks[name] = remaining
     if hooks:

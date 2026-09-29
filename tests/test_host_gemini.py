@@ -63,3 +63,24 @@ def test_gemini_bridge_is_registered(tmp_path, monkeypatch):
     from core import hook
     monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("retry"))
     assert run("gemini", "AfterAgent", {"cwd": str(tmp_path)}) == ({"decision": "deny", "reason": "retry"}, 0)
+
+
+def test_gemini_execution_error_and_signal_are_not_reproduced_failures():
+    assert adapter().outcome({"tool_response": {"data": {"exitCode": 1}, "error": {"type": "SHELL_EXECUTE_ERROR"}}}).state == "unknown"
+    assert adapter().outcome({"tool_response": {"data": {"exitCode": 1, "aborted": True}}}).state == "interrupted"
+
+
+def test_gemini_native_retry_preserves_task(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("fix the test"))
+    run("gemini", "AfterAgent", {"cwd": str(tmp_path), "session_id": "g"})
+    monkeypatch.setattr(hook, "on_prompt", lambda *a: pytest.fail("retry opened task"))
+    assert run("gemini", "BeforeAgent", {"cwd": str(tmp_path), "session_id": "g", "prompt": "fix the test"}) == ({}, 0)
+
+
+def test_gemini_background_or_other_directory_cannot_certify_root(tmp_path):
+    for inputs in [{"dir_path": "child"}, {"is_background": True}]:
+        event = adapter().normalize("AfterTool", {"cwd": str(tmp_path), "tool_name": "run_shell_command",
+            "tool_input": {"command": "npm run ci", **inputs}, "tool_response": {"data": {"exitCode": 0}}})
+        assert event.payload["tool_response"].get("interrupted") is True
