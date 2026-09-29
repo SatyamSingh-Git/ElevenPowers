@@ -339,7 +339,7 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-Research prototype; status reviewed 2026-09-29. Repository-aware scanning, exact command receipts and automatic setup are shipped. A real launcher check ran a discovered CI script without configuration, and a read-only Snag scan covered 4,418 selected files using defaults. Full Snag CI and a live installed-plugin session remain unverified. Improved patch outcomes have not been demonstrated. See [current delivery status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-09-29. Repository-aware scanning, exact command receipts, automatic setup and durable completion execution are shipped. Completed checks persist immediately, successful evidence is reused while inputs and declarations match, and one deadline spans verification, baseline and confirmation. A real launcher check ran a discovered CI script without configuration, and a read-only Snag scan covered 4,418 selected files using defaults. Full Snag CI and a live installed-plugin session remain unverified. Improved patch outcomes have not been demonstrated. See [current delivery status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
 lists to agents encouraged tests of implementation details. In 95 resolved patches,
@@ -467,7 +467,7 @@ Everything above is a snapshot. The thesis has already been demoted once, the ob
 
 **So if you want the real story, don't read this file — read [`journey/`](journey/).**
 
-It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md) and [automatic setup](journey/47-installed-should-mean-active.md). Earlier chapters cover:
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md) and [automatic setup](journey/47-installed-should-mean-active.md), followed by [durable verification](journey/48-completed-work-should-survive.md). Earlier chapters cover:
 
 - **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
 - **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.

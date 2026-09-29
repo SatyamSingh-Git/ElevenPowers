@@ -134,3 +134,7 @@ Stop passing `--plugin-dir` (or remove it from your settings), and delete `.elev
 ## Trouble?
 
 [troubleshooting.md](troubleshooting.md) first. If that does not cover it: **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)** or [an issue](https://github.com/SatyamSingh-Git/ElevenPowers/issues). Include the output of `ep_doctor.py --host`, your Python version, and your OS — that triple resolves most of it immediately.
+
+## After updating the plugin
+
+The durable runner is included in the plugin source and activates through the existing completion hook in `guide` and `strict`; no separate runner service or per-project setup is required. Load the updated plugin in a new host session, then use `ep_doctor --host` to check the local launcher seam. This diagnostic does not replace a real installed-session check in your project. See [completion behavior](configuration.md#durable-completion-checks) and [current integration status](../docs/status.md).

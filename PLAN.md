@@ -1,6 +1,6 @@
 # Master Plan v0.8
 
-**Delivery update, 2026-09-29.** The research direction below remains in force. Repository-aware scans, explicit coverage diagnostics, exact command receipts and automatic manifest-based setup have shipped. The next product milestone is an installed Claude Code session in Snag with its full CI observed; read-only selection and a disposable launcher test have passed. See [current status](docs/status.md), [journey 46](journey/46-the-project-outside-the-fixture.md) and [journey 47](journey/47-installed-should-mean-active.md). These deliveries do not establish improved patch outcomes.
+**Delivery update, 2026-09-29.** The research direction below remains in force. Repository-aware scans, explicit coverage diagnostics, exact command receipts, automatic manifest-based setup and durable verification have shipped. The synchronous runner saves each check, shares a 480-second work deadline, contains command descendants and reuses evidence only while its input state and declaration remain valid. The next product milestone is an installed Claude Code session in Snag with its full CI observed; read-only selection and a disposable launcher test have passed. See [current status](docs/status.md), [journey 46](journey/46-the-project-outside-the-fixture.md) and [journey 47](journey/47-installed-should-mean-active.md). These deliveries do not establish improved patch outcomes.
 
 2026-09-15. Supersedes v0.7. Written after a literature sweep rather than a
 paid sweep: five parallel research passes over the 2026 work on coding-agent
@@ -309,7 +309,7 @@ While any remained, the marker was `xfail(strict=True)`. The marker comes off wh
 | | Defect | Consequence | Status |
 |---|---|---|---|
 | H1 | `read_result` looks only under nested keys; documented failure hooks use top-level `error` | A documented failure shape yields `readable=False` and no evidence. **This narrows the 174/174 claim**: replay fidelity is not delivery fidelity | fixed |
-| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. **Long verification must run outside the short-lived callback**, with snapshot-bound job state and a controlled resume path | fixed |
+| H2 | 20-second hook timeout against 300-second verification | A timed-out hook loses its output and makes no decision. Use snapshot-bound durable job state and controlled retry; the shipped synchronous solution extends Stop to 600 seconds and budgets completion work to 480 seconds | fixed |
 | H3 | `additionalContext` on Stop continues the conversation | Report-only branches emit it | fixed |
 | H4 | Bash-only subscription | PowerShell commands are invisible | fixed |
 
@@ -323,7 +323,7 @@ The flip-rate bound is withdrawn. Converting discordant pairs into paired runs b
 
 **H1–H4, closed 2026-09-12.** Checked against the live documentation rather than against what the code assumed, which changed two of the four answers. The documented failure hook carries no result object at all — a top-level `error`, and `is_interrupt` alongside it — so a shape the host is documented to send produced no evidence and a blind-spot entry. The exit-code pattern now accepts a bare `Exit code 1`, since only the transcript form writes `Error:` first.
 
-The 20-second hook timeout was **this project's own choice**, not a host limit: the documented default for a command hook is 600 seconds. Stop now gets 600, because it may run the project's whole suite to compute evidence rather than demand it, and every other event keeps 20 — a hook that hangs is worse than one that gives up.
+The 20-second hook timeout was **this project's own choice**, not a host limit: the documented default for a command hook is 600 seconds. Stop now gets 600, because it may run the project's whole suite to compute evidence rather than demand it, and the later automatic-setup delivery gives startup/source-observation hooks 120 seconds while prompt/pre-tool guards retain 20. The durable runner now shares 480 seconds across completion work, reserves the rest for cleanup/reporting and persists each result; it remains synchronous. See [journey 48](journey/48-completed-work-should-survive.md).
 
 `additionalContext` is not honoured on Stop, so three report-only branches were writing their reports into a field the contract discards; they use `systemMessage`. And `PowerShell` is a distinct tool name used on Windows where Git Bash is absent, so on those machines the runtime was subscribed to a shell that never ran — including the machine this is developed on.
 

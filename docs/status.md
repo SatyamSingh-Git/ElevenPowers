@@ -1,6 +1,6 @@
 # Current delivery status
 
-Reviewed **2026-09-29**, against runtime commit `a548d03`. ElevenPowers remains a research prototype for **Claude Code**. This page tracks product delivery; it does not replace the historical research results or claim an improvement in patch quality.
+Reviewed **2026-09-29**, against runtime commit `37acdc0`. ElevenPowers remains a research prototype for **Claude Code**. This page tracks product delivery; it does not replace the historical research results or claim an improvement in patch quality.
 
 ## Shipped and exercised
 
@@ -11,9 +11,12 @@ Reviewed **2026-09-29**, against runtime commit `a548d03`. ElevenPowers remains 
 | Command receipts | Exact configured/discovered commands; completed pass, completed fail and incomplete execution | Known summary failures override exit zero; opaque wrappers retain uncounted command-level evidence |
 | Automatic setup | Root manifest discovery, startup health and coverage summary, no generated configuration file | Supported conventions: Node scripts/managers, pytest configuration, Cargo and Go; ambiguous/custom setups need overrides |
 | Completion checks | Missing or stale verification in guide/strict; identical commands deduplicated per attempt | Baseline execution requires a relevant obligation and matching passing evidence; off remains passive |
+| Durable runner | Project lock and journal; immediate per-check receipts; 480-second shared work deadline; 300-second command cap; fresh before/after input binding | Synchronous; next completion retries unfinished work; filesystem/cleanup/reporting prevent a hard real-time guarantee |
+| Process lifecycle | Windows Job containment and POSIX process-group cleanup; 8 MiB combined capture limit | Deliberate POSIX group escape and abrupt SIGKILL are outside cleanup guarantees |
+| Progress and ownership | Status/report surfaces show running, deferred and interrupted work; serialized ledger writes protect newer tasks | The journal is diagnostic state, never proof; a live installed session remains a separate acceptance check |
 | Compatibility | Historical receipt identities and single-file scope preserved | An interruption cannot stand in for a reproduced failure |
 
-The initial portable-evidence delivery used ten pushes ending at `f432658`. Automatic setup used three more: `2636ded`, `fc527d9`, and `a548d03`. Each commit carries its implementation and validation details.
+The initial portable-evidence delivery used ten pushes ending at `f432658`. Automatic setup used three more: `2636ded`, `fc527d9`, and `a548d03`. Each commit carries its implementation and validation details. The durable-runner delivery uses six further parts; see [its validation record](validation/2026-09-29-durable-runner.md).
 
 ## What the checks established
 
@@ -21,7 +24,9 @@ The portable-evidence full run passed **831 tests with 26 skips**; final follow-
 
 A disposable Node project was exercised through the shipped launcher: SessionStart reported activation; Stop discovered and executed `npm run ci`, recorded exactly one passing test, and created no config file. Architecture validation rendered all four views.
 
-Read-only Snag selection discovered its verification scripts automatically and covered **4,418 files / 81,841,401 bytes** using defaults in about **1.11 seconds**. That timing is source selection, not a complete fingerprint or full CI. Earlier evidence included a real 19-test Node sample and parser replay. Snag was not edited or configured by these checks.
+The durable-runner integration run passed 914 local tests with 26 skips and exposed one legacy per-test receipt compatibility failure. That regression was fixed and the final focused runner/stress/launcher checks passed 69 tests. Remote CI also exposed ignored B8 input data and a Python 3.11-only test-helper incompatibility, both corrected in the final code part. The final code-head [CI matrix](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/36523624912) passed on Ubuntu and Windows with Python 3.11 and 3.13: 916 passed / 31 skipped on each Ubuntu job and 919 passed / 28 skipped on each Windows job. Separate audit checks passed 102 / 2 skipped on Ubuntu and 104 on Windows.
+
+Read-only Snag selection discovered its verification scripts automatically and covered **4,418 files / 81,841,401 bytes** using defaults in about **1.11 seconds**. That timing is source selection, not a complete fingerprint or full CI. Earlier evidence included a real 19-test Node sample and parser replay. Snag was not edited or configured by these checks. A later fresh, complete content fingerprint covered the same 4,418 files / 81,841,401 bytes with no coverage issues in **55.66 seconds**. Selection time and full fingerprint time are different measurements.
 
 See the [validation index](validation/README.md) for the detailed records and qualifications.
 

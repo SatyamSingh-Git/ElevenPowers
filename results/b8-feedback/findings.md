@@ -146,8 +146,13 @@ requirements for §5.16 before anything is built:
   as targets, to this model.
 
 Recompute metrics with `python results/b8-feedback/analyse.py b8`. It reads the
-committed before/after records in `runs/`, independently of the working directory.
+committed `analysis-records.json` inputs, or local raw records in `runs/` when present, independently of the working directory.
 Use `--results-root /path/to/results` for another copy of the saved records.
 The metrics were specified before the results; only input discovery changed.
 Historical `driver.py` reruns the paid experiment and still requires the original
 corpus, agent configuration and path adjustments; it is not needed for analysis.
+
+
+## Reproduction from a clean checkout (2026-09-29)
+
+The committed `analysis-records.json` supplies the minimal 36-run inputs used by `analyse.py` when ignored raw runs are absent. It keeps numeric metrics, boolean controls, task/arm identifiers and derived timeout counts; raw patches, model responses and output are omitted. Complete stdout from this projection was checked against the original raw runs and matched exactly for both analysis entry points (1,165 characters). This publishes the inputs needed to recompute the reported metrics; it does not rerun or newly validate the historical experiment.

@@ -159,7 +159,7 @@ If you are comparing results across machines, pin the setting on both.
 
 ## The Stop hook feels slow
 
-The `Stop` hook has a 600-second timeout because it may run your declared test suite. Startup and source-observation hooks allow 120 seconds for cold scans. Prompt and pre-tool guards retain 20 seconds. If stopping is slow, the runtime is almost certainly running your suite — which is the behaviour that replaced interrupting you to ask for it.
+The `Stop` hook has a 600-second timeout because it may run your declared test suite. Startup and source-observation hooks allow 120 seconds for cold scans. Prompt and pre-tool guards retain 20 seconds. Stopping can include input fingerprinting, declared commands, baseline work and targeted confirmation. Inspect `ep_status` for the current phase; these checks share a 480-second work deadline.
 
 If your suite is too slow to sit inside a turn, either declare a faster subset:
 
@@ -199,3 +199,13 @@ Discovery reads supported manifests at the selected root. Check the working dire
 ## A verification attempt is incomplete
 
 An interruption, timeout, missing runtime or unreadable result is not a passing run or a reproduced test failure. Repair the environment or rerun to completion. Incomplete attempts replace earlier success for that target. The plugin reports missing executables; it does not install the project's dependencies.
+
+## Progress is deferred, interrupted, or still running
+
+Run `python plugin/bin/ep_status.py --cwd YOUR_PROJECT`. The progress journal distinguishes work that never started (`deferred`) from work whose result is unavailable (`incomplete`). A source change during execution is `stale`, even when the process exited zero. Completed check results are already saved; they do not depend on later checks finishing.
+
+An active owner prevents duplicate completion checks. If the owner died, the next normal completion recovers the journal and retries work that is still needed. Status inspection itself does not launch or resume commands. The journal describes process progress; only the evidence ledger determines verification.
+
+The 480-second completion work deadline is shared with baseline and confirmation checks, and each command is limited to 300 seconds. Fingerprinting can also be significant: a fresh Snag fingerprint of 4,418 files / 81,841,401 bytes took 55.66 seconds in the dated local check. That observation is not a general performance promise. Use a suitable declared command or run a longer check yourself; raising the host allowance alone does not change the runner limits. `guide` still runs checks, while `off` stays passive.
+
+An output-cap error means combined output exceeded 8 MiB. Reduce unnecessary verbosity and rerun; partial output is never accepted as a completed result. The plugin does not install missing project dependencies.

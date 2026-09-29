@@ -58,6 +58,8 @@ python results/b9-gate-tests/analyse.py raters
 The default input directory is resolved relative to the script, independently of
 the current working directory. Use `--results-root /path/to/results` for another
 copy of the saved records. Missing or invalid inputs return a nonzero exit status.
+For B8, a clean checkout uses `results/b8-feedback/analysis-records.json`, a 36-record projection containing only the metrics and controls used by analysis. Raw local run records take precedence when present. Clean-input tests exclude those ignored runs, and both paths were checked to produce identical output.
+
 These commands recompute metrics, not the original experiments: the historical
 probe/driver scripts still require their corpus, repositories and execution setup.
 
@@ -80,3 +82,13 @@ python architecture/check.py --render
 ```
 
 Confirm the output says all four tabs draw; a skipped render is not a rendered check. These tools are not runtime dependencies. Use [the validation index](validation/README.md) for dated outcomes and [current status](status.md) for remaining integration work.
+
+## Durable runner checks
+
+```sh
+python -m pytest tests/test_jobs.py tests/test_process.py tests/test_verification_runner.py tests/test_shared_budget.py tests/test_verification_progress.py tests/test_runner_launcher.py -q
+```
+
+These include real command descendants and a shipped-launcher process killed between checks, followed by recovery that reuses the first completed result. Windows containment is exercised locally; the existing CI matrix also targets Ubuntu and Python 3.11/3.13. A configured CI matrix is not evidence that a particular remote run passed—check the run result separately.
+
+The runtime remains standard-library-only. The process runner adapts the repository's existing `eval/live.py` Windows Job approach and uses POSIX process groups elsewhere. It adds bounded disk-spooled diagnostics and cleanup on normal completion as well as interruption. See [durable-runner validation](validation/2026-09-29-durable-runner.md) for executed checks and platform limits.

@@ -12,7 +12,7 @@ Three commands you will actually use, and a set of evaluation commands you only 
 python plugin/bin/ep_status.py [--cwd DIR]
 ```
 
-Ask at any point rather than waiting until completion. Prints the profile, effective commands (explicit or discovered), current claim and obligations with whether they are met, missing or stale. SessionStart separately reports scan coverage and basic health.
+Ask at any point rather than waiting until completion. Prints the profile, effective commands (explicit or discovered), current claim and obligations with whether they are met, missing or stale. SessionStart separately reports scan coverage and basic health. Status also shows the current verification journal, including active, deferred and interrupted checks. It only reads progress; it does not start a background runner or rerun a command.
 
 ```
 UNVERIFIED  bug_fixed
