@@ -28,3 +28,21 @@ def test_gemini_tool_names(native, canonical, key, tmp_path):
 def test_gemini_missing_root_is_not_the_plugin_directory():
     with pytest.raises(ValueError, match="root"):
         adapter().normalize("SessionStart", {})
+
+
+@pytest.mark.parametrize("raw,state", [
+    ({"llmContent": "Output: ok", "data": {"exitCode": 0}}, "passed"),
+    ({"llmContent": "Output: failed", "data": {"exitCode": 1, "isError": True}}, "failed"),
+    ({"llmContent": "all checks passed", "returnDisplay": "ok"}, "unknown"),
+    ({"error": {"type": "PATH_NOT_IN_WORKSPACE"}}, "unknown"),
+    ({"data": {"exitCode": 0}, "interrupted": True}, "interrupted"),
+    ({"llmContent": [{"text": "first"}, {"text": "second"}]}, "unknown"),
+])
+def test_gemini_status_requires_structured_exit(raw, state):
+    assert adapter().outcome({"tool_response": raw}).state == state
+
+
+def test_gemini_result_content_is_retained(tmp_path):
+    event = adapter().normalize("AfterTool", {"cwd": str(tmp_path), "tool_name": "run_shell_command",
+        "tool_input": {"command": "npm run ci"}, "tool_response": {"llmContent": "output", "data": {"exitCode": 1}}})
+    assert event.payload["tool_response"] == {"stdout": "output", "exit_code": 1}
