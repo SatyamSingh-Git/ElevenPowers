@@ -491,4 +491,4 @@ Every number quoted anywhere in that folder was produced by a command in this re
 
 </div>
 
-Native platform delivery: Claude Code remains supported; the Codex adapter, project setup and portable bundle are implemented. See [platform installation and validation limits](the-guide/platforms.md). Gemini CLI, Cursor and Copilot CLI are next.
+Native platform delivery: Claude Code remains supported; the Codex adapter, project setup and portable bundle are implemented. See [platform installation and validation limits](the-guide/platforms.md). Gemini CLI is also implemented; Cursor and Copilot CLI are next.

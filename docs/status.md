@@ -48,4 +48,4 @@ Use a concrete project milestone, focused regression checks for changed behavior
 
 ## Native platform expansion
 
-Codex adapter, native response transport, generated wiring, portable packaging, project setup and configuration doctor are implemented. Sixty focused native/Claude checks passed. Live installed Codex and Snag sessions remain unverified. Gemini CLI, Cursor and Copilot CLI deliveries follow. See [platforms](../the-guide/platforms.md) and [validation](validation/2026-09-29-platforms.md).
+Codex adapter, native response transport, generated wiring, portable packaging, project setup and configuration doctor are implemented. Sixty focused native/Claude checks passed. Live installed Codex and Snag sessions remain unverified. Gemini CLI is implemented with native extension packaging, reversible settings setup and explicit outcome limits; 87 combined checks passed. Cursor and Copilot CLI deliveries follow. See [platforms](../the-guide/platforms.md) and [validation](validation/2026-09-29-platforms.md).

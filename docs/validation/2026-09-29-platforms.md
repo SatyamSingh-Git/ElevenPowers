@@ -24,9 +24,24 @@ fixtures are explicitly documented-contract examples, not live host captures.
 No installed-session compatibility or minimum-version guarantee is claimed.
 Unknown prose outcomes remain incomplete rather than guessed success.
 
+## Gemini CLI, parts 9–16
+
+Native lifecycle, structured outcomes, response translation, extension
+packaging, settings merging and diagnostics were delivered in six parts:
+`378abd3`, `05763f2`, `9a2d70a`, `5612ffd`, `8f4d5d4`, `7ce0a42`.
+The seventh part hardens background/directory/error handling and mixed hook
+groups. Its final integration group passed **87 tests**, including Claude,
+Codex, Gemini, setup, packaging, doctor and startup checks. The eighth part is
+this documentation and architecture update.
+
+Source review of Google's shell implementation established that native data can
+carry explicit nonzero status and that ordinary display content can omit it.
+Fixtures remain labeled schema/source examples. No real Gemini CLI session or
+paid model call was executed. Prose-only success is deliberately incomplete.
+
 ## Remaining platforms
 
-Gemini CLI, Cursor Agent and GitHub Copilot CLI await their eight-part deliveries.
+Cursor Agent and GitHub Copilot CLI await their eight-part deliveries.
 Their live applications were not found on PATH during read-only discovery; this
 does not establish whether the applications are installed elsewhere.
 

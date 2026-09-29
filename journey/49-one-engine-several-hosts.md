@@ -24,3 +24,12 @@ are useful checks, but neither is a real installed-session observation.
 See [platform installation](../the-guide/platforms.md) and
 [the delivery record](../docs/validation/2026-09-29-platforms.md). Subsequent
 platform sections will record their own contracts and measured limits.
+
+Gemini's delivery made two host differences concrete: timeouts are milliseconds,
+and a successful transport does not imply a process exit status is present.
+Its adapter preserves structured status but leaves display-only results
+incomplete. Background work and alternate execution directories cannot certify
+the root. A configuration removal probe also caught a shared bug: another hook
+inside the same group was removed with ours. Removal now works per handler and
+the regression preserves the neighboring hook. The combined native/Claude group
+passed 87 tests. Installed Gemini behavior remains an open acceptance check.
