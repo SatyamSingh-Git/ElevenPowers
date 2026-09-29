@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.doctor import report  # noqa: E402
 
 
-KNOWN = {"--cwd", "--host"}
+KNOWN = {"--cwd", "--host", "--platform"}
 
 
 def main(argv: list[str]) -> int:
@@ -29,7 +29,18 @@ def main(argv: list[str]) -> int:
         print(f"unknown option(s): {', '.join(unknown)}\n{__doc__}")
         return 2
     where = Path(argv[argv.index("--cwd") + 1] if "--cwd" in argv else ".").resolve()
-    body, ok = report(where, host="--host" in argv)
+    if "--platform" in argv:
+        from core.hosts.doctor import report as native_report
+        if "--host" in argv:
+            print("Native --platform checks configuration; --host is the Claude launcher replay check.")
+            return 2
+        try:
+            body, ok = native_report(argv[argv.index("--platform") + 1], where)
+        except (ValueError, IndexError) as exc:
+            print(f"Invalid platform: {exc}")
+            return 2
+    else:
+        body, ok = report(where, host="--host" in argv)
     print(body)
     return 0 if ok else 1
 
