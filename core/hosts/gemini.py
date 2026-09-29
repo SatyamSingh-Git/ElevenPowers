@@ -1,5 +1,6 @@
 """Gemini CLI lifecycle adapter; hook reference at geminicli.com/docs/hooks/."""
 from .contract import Event, Outcome, event_of, explicit_outcome
+from .transport import fields_of
 
 EVENTS = {"SessionStart": "SessionStart", "BeforeAgent": "UserPromptSubmit",
           "BeforeTool": "PreToolUse", "AfterTool": "PostToolUse", "AfterAgent": "Stop"}
@@ -33,4 +34,19 @@ def outcome(payload: dict) -> Outcome:
     # Execution/permission errors without a command status are not test failures.
     if raw.get("error") and result.state == "passed":
         return Outcome(result.output)
+    return result
+
+
+def render(event: str, messages: list[dict], code: int, error: str) -> dict:
+    fields = fields_of(messages)
+    result = {}
+    if fields.get("systemMessage"):
+        result["systemMessage"] = fields["systemMessage"]
+    if fields.get("additionalContext"):
+        result["hookSpecificOutput"] = {"hookEventName": event, "additionalContext": fields["additionalContext"]}
+    if event == "AfterAgent" and code == 2:
+        result.update(decision="deny", reason=error)
+    if event == "BeforeTool" and fields.get("permissionDecision") in {"ask", "deny"}:
+        result.update(decision="deny", reason=fields.get("permissionDecisionReason", "Review this operation") +
+                      ". Gemini hooks cannot request approval; review and perform this operation explicitly if intended.")
     return result

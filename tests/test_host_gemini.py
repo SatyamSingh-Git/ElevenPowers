@@ -46,3 +46,20 @@ def test_gemini_result_content_is_retained(tmp_path):
     event = adapter().normalize("AfterTool", {"cwd": str(tmp_path), "tool_name": "run_shell_command",
         "tool_input": {"command": "npm run ci"}, "tool_response": {"llmContent": "output", "data": {"exitCode": 1}}})
     assert event.payload["tool_response"] == {"stdout": "output", "exit_code": 1}
+
+
+def test_gemini_native_response_decisions():
+    host = adapter()
+    assert host.render("AfterAgent", [], 2, "missing") == {"decision": "deny", "reason": "missing"}
+    result = host.render("BeforeTool", [{"permissionDecision": "ask", "permissionDecisionReason": "review"}], 0, "")
+    assert result["decision"] == "deny"
+    assert "review" in result["reason"] and "permissionDecision" not in result
+    result = host.render("AfterTool", [{"additionalContext": "observed"}], 0, "")
+    assert result == {"hookSpecificOutput": {"hookEventName": "AfterTool", "additionalContext": "observed"}}
+
+
+def test_gemini_bridge_is_registered(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("retry"))
+    assert run("gemini", "AfterAgent", {"cwd": str(tmp_path)}) == ({"decision": "deny", "reason": "retry"}, 0)
