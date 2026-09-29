@@ -91,7 +91,9 @@ def on_session_start(payload: dict, root: Path) -> int:
     from .config import discover_commands
     import shutil
     from .evidence import scan_sources
-    health = [_subscription(None), _writable(root), _blindspots(root)]
+    subscription = (Check(f"native {payload['_ep_platform']} event received", True)
+                    if payload.get("_ep_platform") else _subscription(None))
+    health = [subscription, _writable(root), _blindspots(root)]
     executables = {command.split()[0] for need, command in discover_commands(root).items()
                    if ledger.config.command_for(need) == command}
     for executable in sorted(executables):

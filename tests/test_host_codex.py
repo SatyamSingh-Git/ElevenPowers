@@ -89,3 +89,37 @@ def test_codex_bridge_collects_engine_response_without_claude_stdout(tmp_path, m
     response, code = run("codex", "Stop", {"cwd": str(tmp_path)})
     assert (response, code) == ({"systemMessage": "UNVERIFIED"}, 0)
     assert capsys.readouterr().out == ""
+
+
+def test_codex_continuation_does_not_open_a_new_task(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("fix the failing test"))
+    run("codex", "Stop", {"cwd": str(tmp_path), "session_id": "s"})
+    monkeypatch.setattr(hook, "on_prompt", lambda *a: pytest.fail("continuation reset task"))
+    assert run("codex", "UserPromptSubmit", {"cwd": str(tmp_path), "session_id": "s", "prompt": "fix the failing test"}) == ({}, 0)
+
+
+def test_codex_duplicate_result_cannot_be_rebound_after_source_change(tmp_path):
+    from core.hosts.bridge import run
+    from core.config import Config, save
+    from core.ledger import Ledger
+    save(tmp_path, Config(profile="off", commands={"tests": "npm run ci"}))
+    source = tmp_path / "app.py"
+    source.write_text("x = 1\n")
+    payload = {"cwd": str(tmp_path), "session_id": "s", "tool_use_id": "tool1", "tool_name": "Bash",
+               "tool_input": {"command": "npm run ci"}, "tool_response": {"exit_code": 0}}
+    run("codex", "PostToolUse", payload)
+    before = Ledger.load(tmp_path).evidence[-1].to_dict()
+    source.write_text("x = 2\n")
+    run("codex", "PostToolUse", payload)
+    assert len(Ledger.load(tmp_path).evidence) == 1
+    assert Ledger.load(tmp_path).evidence[-1].to_dict() == before
+
+
+def test_codex_different_execution_directory_remains_incomplete(tmp_path):
+    child = tmp_path / "child"
+    child.mkdir()
+    event = adapter().normalize("PostToolUse", {"cwd": str(tmp_path), "tool_name": "Bash",
+        "tool_input": {"command": "npm run ci", "workdir": str(child)}, "tool_response": {"exit_code": 0}})
+    assert event.payload["tool_response"].get("interrupted") is True

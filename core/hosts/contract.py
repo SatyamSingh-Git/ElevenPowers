@@ -40,6 +40,18 @@ def event_of(phase: str, payload: dict) -> Event:
     clean = dict(payload)
     clean["cwd"] = str(root)
     clean["hook_event_name"] = phase
+    inputs = clean.get("tool_input") or {}
+    if not isinstance(inputs, dict):
+        raise ValueError("tool input must be an object")
+    if phase in {"PostToolUse", "PostToolUseFailure"}:
+        where = next((inputs[k] for k in ("workdir", "cwd", "working_directory") if inputs.get(k)), None)
+        if where:
+            if not isinstance(where, str):
+                raise ValueError("tool working directory must be a string")
+            directory = Path(where)
+            directory = directory if directory.is_absolute() else root / directory
+            if directory.resolve() != root:
+                clean["tool_response"] = Outcome(state="unknown").result()
     return Event(phase, clean, root)
 
 

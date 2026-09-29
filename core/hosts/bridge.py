@@ -16,7 +16,12 @@ def run(platform: str, event: str, payload: dict) -> tuple[dict, int]:
     from .. import hook
     host = adapter(platform)
     normalized = host.normalize(event, payload)
+    normalized.payload["_ep_platform"] = platform
+    from . import lifecycle
+    if not lifecycle.before(platform, normalized):
+        return {}, 0
     with collect() as messages:
         code = hook.dispatch(normalized.phase, normalized.payload)
     error = "\n".join(m["error"] for m in messages if "error" in m)
+    lifecycle.after(platform, normalized, code, error)
     return host.render(event, messages, code, error), 0
