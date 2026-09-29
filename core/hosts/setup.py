@@ -11,7 +11,7 @@ import tempfile
 from .bridge import adapter
 from .wiring import configuration
 
-PATHS = {"codex": ".codex/hooks.json"}
+PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json"}
 MARKER = "elevenpowers-host"
 
 
@@ -40,8 +40,9 @@ def read_config(path: Path) -> dict:
 def owned(entry: object) -> bool:
     if not isinstance(entry, dict):
         return False
-    return any(isinstance(h, dict) and h.get("statusMessage") == MARKER
-               for h in entry.get("hooks", []) if isinstance(entry.get("hooks"), list))
+    handlers = entry.get("hooks", [])
+    return isinstance(handlers, list) and any(isinstance(h, dict) and
+        (h.get("statusMessage") == MARKER or h.get("name") == MARKER) for h in handlers)
 
 
 def _without_owned(value: dict) -> dict:
@@ -90,7 +91,7 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
     for event, entries in generated["hooks"].items():
         for entry in entries:
             for handler in entry["hooks"]:
-                handler["statusMessage"] = MARKER
+                handler["name" if platform == "gemini" else "statusMessage"] = MARKER
         hooks.setdefault(event, []).extend(entries)
     _write(path, merged)
     return path
