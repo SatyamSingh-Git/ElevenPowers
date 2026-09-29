@@ -57,3 +57,19 @@ def test_cursor_flat_native_wiring_and_package(tmp_path):
     manifest = json.loads((bundle / ".cursor-plugin/plugin.json").read_text())
     assert manifest["hooks"] == "./hooks/hooks.json"
     assert "CURSOR_PLUGIN_ROOT" in (bundle / "hooks/hooks.json").read_text()
+
+
+def test_copilot_direct_exec_wiring_and_package(tmp_path):
+    from core.hosts.wiring import configuration
+    from core.hosts.package import build
+    from core.hosts.copilot import EVENTS
+    config = configuration("copilot", ["python", "path with spaces/ep_host.py"])
+    assert config["version"] == 1
+    assert set(config["hooks"]) == set(EVENTS)
+    stop = config["hooks"]["agentStop"][0]
+    assert stop["exec"] == "python"
+    assert stop["args"] == ["path with spaces/ep_host.py", "copilot", "agentStop"]
+    assert stop["timeoutSec"] == 600 and "command" not in stop
+    bundle = build("copilot", tmp_path / "elevenpowers")
+    assert json.loads((bundle / "plugin.json").read_text())["name"] == "elevenpowers"
+    assert (bundle / "core/hosts/copilot.py").exists()

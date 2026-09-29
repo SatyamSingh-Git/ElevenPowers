@@ -38,6 +38,10 @@ def build(platform: str, target: Path) -> Path:
         manifest_path = target / ".cursor-plugin/plugin.json"
         manifest = {k: manifest[k] for k in ("name", "version", "description", "author")}
         manifest["hooks"] = "./hooks/hooks.json"
+    if platform == "copilot":
+        manifest_path = target / "plugin.json"
+        manifest = {k: manifest[k] for k in ("name", "version", "description", "author")}
+        manifest["hooks"] = "./hooks/hooks.json"
     manifest_path.parent.mkdir(exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     # Python resolves the host-provided root; no shell-specific variable syntax.
@@ -46,6 +50,8 @@ def build(platform: str, target: Path) -> Path:
         command = 'python "${extensionPath}/plugin/bin/ep_host.py"'
     if platform == "cursor":
         command = 'python "${CURSOR_PLUGIN_ROOT}/plugin/bin/ep_host.py"'
+    if platform == "copilot":
+        command = ["python", "-c", "import os,runpy;runpy.run_path(os.path.join(os.environ['PLUGIN_ROOT'],'plugin','bin','ep_host.py'),run_name='__main__')"]
     hooks_path = target / "hooks/hooks.json"
     hooks_path.parent.mkdir()
     hooks_path.write_text(json.dumps(configuration(platform, command), indent=2) + "\n", encoding="utf-8")
