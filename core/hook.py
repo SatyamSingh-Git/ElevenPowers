@@ -220,6 +220,15 @@ def on_pre_tool(payload: dict, root: Path) -> int:
 
 def on_post_tool(payload: dict, root: Path) -> int:
     tool = payload.get("tool_name", "")
+    if tool == "Patch" and payload.get("_ep_platform") and payload.get("hook_event_name") == "PostToolUse":
+        from .obligations import Claim
+        ledger = Ledger.load(root)
+        if not ledger.claims:
+            ledger.claims = [Claim.FEATURE_ADDED]
+        ledger.note("unattributed native edit", "Native patch event did not supply authoritative edited paths; source attribution is incomplete for this task.")
+        ledger.save()
+        _emit("PostToolUse", additionalContext="UNVERIFIED: native patch changed-path attribution is incomplete. Declared checks can run, but cannot certify complete edit coverage.")
+        return 0
     if tool in FILE_TOOLS:
         target = target_file(payload)
         if target:

@@ -217,6 +217,7 @@ def _coverage_warnings(ledger: Ledger) -> list[str]:
     for record in ledger.evidence:
         latest[record.kind, record.identity] = record
     issues = sorted({issue for record in latest.values() for issue in record.coverage_issues})
-    return ([f"  incomplete source coverage: {issue}" for issue in issues]
+    return ([f"  incomplete source coverage: {d['why']}" for d in ledger.decisions if d.get("what") == "unattributed native edit"]
+            + [f"  incomplete source coverage: {issue}" for issue in issues]
             + [f"  incomplete command: {record.command}; rerun to obtain a completed result"
                for record in latest.values() if record.execution == "incomplete"])

@@ -38,18 +38,31 @@ def before(platform, event) -> bool:
             expected = value.setdefault("continuations", {}).pop(key, None)
             if expected and expected == digest(payload.get("prompt", "")):
                 return False
+    identity = receipt_identity(platform, event)
+    if identity:
+        from ..ledger import Ledger
+        if identity in Ledger.load(event.root).completed_tools:
+            return False
+    return True
+
+
+def receipt_identity(platform, event):
+    payload = event.payload
     if event.phase in {"PostToolUse", "PostToolUseFailure"} and payload.get("tool_use_id"):
         raw = payload.get("tool_response", {})
-        # A later final event must still be processed after an intermediate poll.
         if isinstance(raw, dict) and type(raw.get("exit_code")) is int:
-            identity = digest([key, payload["tool_use_id"]])
-            with state(event.root) as value:
-                seen = value.setdefault("completed_tools", [])
-                if identity in seen:
-                    return False
-                seen.append(identity)
-                value["completed_tools"] = seen[-2048:]
-    return True
+            return digest([scope(platform, payload), payload["tool_use_id"]])
+    return None
+
+
+@contextmanager
+def delivery(platform, event):
+    from ..ledger import DELIVERY
+    token = DELIVERY.set(receipt_identity(platform, event))
+    try:
+        yield
+    finally:
+        DELIVERY.reset(token)
 
 
 def after(platform, event, code, error):

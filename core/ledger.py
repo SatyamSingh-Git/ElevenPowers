@@ -8,6 +8,7 @@ it survives compaction, resumption and a change of host.
 from __future__ import annotations
 
 import json
+from contextvars import ContextVar
 import os
 import time
 from dataclasses import dataclass, field
@@ -25,6 +26,7 @@ from .scope import is_manifest, is_prose, normalise
 from .surface import TEST_NAME, Surface, declares_a_test, detect
 
 STATE_DIR = ".elevenpowers"
+DELIVERY = ContextVar("host_receipt_delivery", default=None)
 
 # Said on a reproduction established only at suite grain. Measured on the B3
 # sweep: 7 of 7 reproductions came this way and 0 from a named test, because the
@@ -210,6 +212,7 @@ class Ledger:
     """
     _surface: Surface | None = None
     _config: Config | None = None
+    completed_tools: list[str] = field(default_factory=list)
 
     @property
     def config(self) -> Config:
@@ -250,6 +253,7 @@ class Ledger:
         raw = json.loads(path.read_text(encoding="utf-8"))
         return cls(
             root=root,
+            completed_tools=raw.get("completed_tools", []),
             task=raw.get("task", ""),
             request=raw.get("request", ""),
             claims=[Claim(c) for c in raw.get("claims", [])],
@@ -302,6 +306,17 @@ class Ledger:
 
     def _save_locked(self) -> None:
         from .jobs import current, Superseded, replace
+        try:
+            disk = Ledger.load(self.root)
+        except (json.JSONDecodeError, OSError, ValueError):
+            if DELIVERY.get():
+                raise  # Cannot safely deduplicate against unreadable state.
+            disk = Ledger(root=self.root)
+        identity = DELIVERY.get()
+        if identity and identity in disk.completed_tools:
+            return  # Receipt and delivery marker were already committed together.
+        self.completed_tools = list(dict.fromkeys([*disk.completed_tools, *self.completed_tools,
+                                                  *([identity] if identity else [])]))[-2048:]
         owner = current()
         if (owner is not None and owner.root.resolve() == self.root.resolve()
                 and self.task == owner.task and self.path.exists()
@@ -309,6 +324,7 @@ class Ledger:
             raise Superseded('a newer task replaced this verification attempt')
         self._keep_concurrent_appends()
         payload = {
+            "completed_tools": self.completed_tools,
             "task": self.task,
             "request": self.request,
             "claims": [c.value for c in self.claims],
@@ -497,6 +513,8 @@ class Ledger:
 
         if self._contradictions():
             status = Status.CONTRADICTED
+        elif any(d.get("what") == "unattributed native edit" for d in self.decisions):
+            status = Status.UNVERIFIED
         elif any(not c.met for c in checks):
             status = Status.UNVERIFIED
         elif any(c.freshness in (Freshness.STALE, Freshness.GONE) for c in checks):

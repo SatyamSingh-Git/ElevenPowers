@@ -15,6 +15,17 @@ def test_codex_doctor_reports_missing_then_configured_without_claiming_live(tmp_
     assert "Live host session: not verified" in text
 
 
+def test_doctor_rejects_missing_launcher(tmp_path):
+    from core.hosts.package import build
+    from core.hosts.setup import install
+    from core.hosts.doctor import report
+    source = build("codex", tmp_path / "runtime")
+    install("codex", tmp_path, sys.executable, source)
+    (source / "plugin/bin/ep_host.py").unlink()
+    text, ok = report("codex", tmp_path)
+    assert not ok and "launcher" in text
+
+
 def test_codex_launcher_records_pass_fail_and_incomplete(tmp_path):
     from core.config import Config, save
     from core.ledger import Ledger

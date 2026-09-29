@@ -2,10 +2,11 @@
 from __future__ import annotations
 
 import json
+import base64
 import os
 from pathlib import Path
 import shlex
-import subprocess
+import re
 import tempfile
 
 from .bridge import adapter
@@ -14,6 +15,32 @@ from .wiring import configuration
 PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json", "cursor": ".cursor/hooks.json",
          "copilot": ".github/hooks/elevenpowers.json"}
 MARKER = "elevenpowers-host"
+WINDOWS_PREFIX = "powershell.exe -NoProfile -NonInteractive -EncodedCommand "
+
+
+def invocation(args: list[str]) -> str:
+    if os.name != "nt":
+        return shlex.join(args)
+    # Encode the entire invocation, including event args. This works when the
+    # parent host uses either cmd or PowerShell, without expanding path text.
+    script = "& " + " ".join("'" + a.replace("'", "''") + "'" for a in args) + "; exit $LASTEXITCODE"
+    return WINDOWS_PREFIX + base64.b64encode(script.encode("utf-16-le")).decode("ascii")
+
+
+def invocation_args(command: str) -> list[str]:
+    try:
+        if command.startswith(WINDOWS_PREFIX):
+            script = base64.b64decode(command[len(WINDOWS_PREFIX):], validate=True).decode("utf-16-le")
+            words = re.findall(r"'((?:[^']|'')*)'", script)
+            args = [w.replace("''", "'") for w in words]
+            expected = "& " + " ".join("'" + a.replace("'", "''") + "'" for a in args) + "; exit $LASTEXITCODE"
+            return args if script == expected else []
+        if os.name == "nt":
+            return [a[1:-1] if a.startswith('"') and a.endswith('"') else a
+                    for a in shlex.split(command, posix=False)]
+        return shlex.split(command)
+    except (ValueError, UnicodeError):
+        return []
 
 
 def config_path(platform: str, project: Path) -> Path:
@@ -46,10 +73,10 @@ def owned(entry: object) -> bool:
         if Path(args[0]).name == "ep_host.py" and args[1] == "copilot" and args[2] in adapter("copilot").EVENTS:
             return True
     command = entry.get("command", "")
-    if isinstance(command, str) and "ep_host.py" in command and any(
-            command.endswith(f" {platform} {event}") for platform in ("cursor",)
-            for event in adapter(platform).EVENTS):
-        return True
+    if isinstance(command, str):
+        words = invocation_args(command)
+        if len(words) == 4 and Path(words[1]).name == "ep_host.py" and words[2] == "cursor" and words[3] in adapter("cursor").EVENTS:
+            return True
     handlers = entry.get("hooks", [])
     return isinstance(handlers, list) and any(isinstance(h, dict) and
         (h.get("statusMessage") == MARKER or h.get("name") == MARKER) for h in handlers)
@@ -106,14 +133,16 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
     if not launcher.is_file() or not executable.is_file():
         raise ValueError("Python executable and ElevenPowers launcher must exist")
     args = [str(executable), str(launcher)]
-    command = subprocess.list2cmdline(args) if os.name == "nt" else shlex.join(args)
-    generated = configuration(platform, args if platform == "copilot" else command)
+    generated = configuration(platform, args if platform == "copilot" else "COMMAND")
     merged = _without_owned(current)
     if platform in {"cursor", "copilot"}:
         merged["version"] = 1
     hooks = merged.setdefault("hooks", {})
     for event, entries in generated["hooks"].items():
         for entry in entries:
+            if platform != "copilot":
+                for handler in entry.get("hooks", [entry]):
+                    handler["command"] = invocation([*args, platform, event])
             for handler in entry.get("hooks", []):
                 handler["name" if platform == "gemini" else "statusMessage"] = MARKER
         hooks.setdefault(event, []).extend(entries)

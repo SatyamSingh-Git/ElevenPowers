@@ -20,7 +20,7 @@ def run(platform: str, event: str, payload: dict) -> tuple[dict, int]:
     from . import lifecycle
     if not lifecycle.before(platform, normalized):
         return {}, 0
-    with collect() as messages:
+    with collect() as messages, lifecycle.delivery(platform, normalized):
         code = hook.dispatch(normalized.phase, normalized.payload)
     error = "\n".join(m["error"] for m in messages if "error" in m)
     lifecycle.after(platform, normalized, code, error)

@@ -63,3 +63,10 @@ def test_copilot_native_dispatch(tmp_path, monkeypatch):
     from core import hook
     monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("retry"))
     assert run("copilot", "agentStop", {"cwd": str(tmp_path), "stopReason": "end_turn"}) == ({"decision": "block", "reason": "retry"}, 0)
+
+
+def test_copilot_cancelled_stop_does_not_start_verification(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda *a: pytest.fail("cancelled stop ran checks"))
+    assert run("copilot", "agentStop", {"cwd": str(tmp_path), "stopReason": "cancelled"}) == ({"decision": "allow"}, 0)

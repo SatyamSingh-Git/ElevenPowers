@@ -113,3 +113,16 @@ def test_copilot_setup_merges_and_executes_direct_args(tmp_path):
     assert path.read_bytes() == first
     remove("copilot", tmp_path)
     assert json.loads(path.read_text()) == original
+
+
+@pytest.mark.parametrize("name", ["R&D", "runtime space %EP_TEST% 'literal'", "runtime Ω"])
+def test_setup_launches_source_with_shell_metacharacters(tmp_path, name):
+    import subprocess
+    from core.hosts.setup import install
+    from core.hosts.package import build
+    source = build("codex", tmp_path / name)
+    path = install("codex", tmp_path, sys.executable, source)
+    command = json.loads(path.read_text())["hooks"]["Stop"][0]["hooks"][0]["command"]
+    done = subprocess.run(command, shell=True, input=json.dumps({"cwd": str(tmp_path)}), text=True, capture_output=True, timeout=20)
+    assert done.returncode == 0, done.stderr
+    assert isinstance(json.loads(done.stdout), dict)

@@ -25,7 +25,10 @@ def normalize(event: str, payload: dict) -> Event:
     clean["tool_input"] = inputs
     if event in {"postToolUse", "postToolUseFailure"} and clean["tool_name"] in {"Bash", "PowerShell"}:
         clean["tool_response"] = outcome(payload).result()
-    return event_of(EVENTS[event], clean)
+    phase = EVENTS[event]
+    if event == "agentStop" and payload.get("stopReason", "end_turn") != "end_turn":
+        phase = "Cancelled"
+    return event_of(phase, clean)
 
 
 def outcome(payload: dict) -> Outcome:

@@ -117,9 +117,64 @@ def test_codex_duplicate_result_cannot_be_rebound_after_source_change(tmp_path):
     assert Ledger.load(tmp_path).evidence[-1].to_dict() == before
 
 
+def test_native_patch_without_paths_is_explicitly_unverified(tmp_path):
+    from core.hosts.bridge import run
+    from core.config import Config, save
+    from core.ledger import Ledger, Status
+    from core.report import end_report
+    save(tmp_path, Config(profile="off"))
+    run("codex", "UserPromptSubmit", {"cwd": str(tmp_path), "prompt": "do it"})
+    run("codex", "PostToolUse", {"cwd": str(tmp_path), "tool_name": "apply_patch", "tool_input": {"command": "patch"}})
+    ledger = Ledger.load(tmp_path)
+    assert ledger.claims
+    assert ledger.status() is Status.UNVERIFIED
+    assert "native patch" in end_report(ledger).lower()
+
+
 def test_codex_different_execution_directory_remains_incomplete(tmp_path):
     child = tmp_path / "child"
     child.mkdir()
     event = adapter().normalize("PostToolUse", {"cwd": str(tmp_path), "tool_name": "Bash",
         "tool_input": {"command": "npm run ci", "workdir": str(child)}, "tool_response": {"exit_code": 0}})
     assert event.payload["tool_response"].get("interrupted") is True
+
+
+def test_codex_failed_receipt_save_can_be_retried(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core.config import Config, save
+    from core.ledger import Ledger
+    from core import jobs
+    save(tmp_path, Config(profile="off", commands={"tests": "npm run ci"}))
+    payload = {"cwd": str(tmp_path), "session_id": "s", "tool_use_id": "retry", "tool_name": "Bash",
+               "tool_input": {"command": "npm run ci"}, "tool_response": {"exit_code": 0}}
+    original = jobs.replace
+    def broken(*args):
+        raise OSError("temporary write failure")
+    monkeypatch.setattr(jobs, "replace", broken)
+    with pytest.raises(OSError):
+        run("codex", "PostToolUse", payload)
+    monkeypatch.setattr(jobs, "replace", original)
+    run("codex", "PostToolUse", payload)
+    assert len(Ledger.load(tmp_path).evidence) == 1
+
+
+def test_concurrent_native_deliveries_commit_one_receipt(tmp_path, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    from core.hosts.bridge import run
+    from core.config import Config, save
+    from core.ledger import Ledger
+    save(tmp_path, Config(profile="off", commands={"tests": "npm run ci"}))
+    barrier = Barrier(2)
+    original = Ledger.save
+    def together(self):
+        barrier.wait(timeout=10)
+        original(self)
+    monkeypatch.setattr(Ledger, "save", together)
+    payload = {"cwd": str(tmp_path), "session_id": "s", "tool_use_id": "concurrent", "tool_name": "Bash",
+               "tool_input": {"command": "npm run ci"}, "tool_response": {"exit_code": 0}}
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(lambda _: run("codex", "PostToolUse", payload), range(2)))
+    assert results == [({}, 0), ({}, 0)]
+    assert len(Ledger.load(tmp_path).evidence) == 1
+    assert len(Ledger.load(tmp_path).completed_tools) == 1

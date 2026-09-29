@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 
 from .bridge import adapter
-from .setup import config_path, read_config, owned
+from .setup import config_path, read_config, owned, invocation_args
 from .wiring import configuration
 
 
@@ -31,10 +31,14 @@ def report(platform: str, root: Path) -> tuple[str, bool]:
                 handler = handlers[0]
                 if (handler.get("args", [])[-2:] != [platform, event] or
                         not Path(handler.get("exec", "")).is_file() or
+                        not Path(handler.get("args", [""])[0]).is_file() or
                         any(handler.get(k) != v for k, v in wanted.items() if k not in {"exec", "args"})):
                     errors.append(f"{event}: executable, arguments or timeout differs from generated wiring")
                 continue
-            if len(handlers) != 1 or not handlers[0].get("command", "").endswith(f" {platform} {event}") or any(
+            args = invocation_args(handlers[0].get("command", ""))
+            if len(args) != 4 or args[-2:] != [platform, event] or not all(Path(p).is_file() for p in args[:2]):
+                errors.append(f"{event}: interpreter or launcher is missing or invocation is invalid")
+            if len(handlers) != 1 or any(
                     handlers[0].get(k) != v for k, v in wanted.items() if k != "command"):
                 errors.append(f"{event}: command or timeout differs from generated wiring")
         lines.extend(errors or [f"ok: {len(host.EVENTS)} native event subscriptions"])

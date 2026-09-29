@@ -91,7 +91,10 @@ def alive(pid):
     except ProcessLookupError:
         return False
     status = Path(f"/proc/{pid}/stat")
-    return not (status.exists() and status.read_text().split(")", 1)[1].split()[0] == "Z")
+    try:
+        return not (status.exists() and status.read_text().rsplit(")", 1)[1].split()[0] in {"Z", "X"})
+    except (FileNotFoundError, ProcessLookupError):
+        return False  # It exited between the existence probe and the read.
 
 
 def assert_tree_stopped(tmp_path):
@@ -101,6 +104,17 @@ def assert_tree_stopped(tmp_path):
     while any(alive(pid) for pid in pids) and time.monotonic() < deadline:
         time.sleep(.02)
     assert not any(alive(pid) for pid in pids), f"processes survived: {pids}"
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX proc disappearance")
+@pytest.mark.parametrize("error", [FileNotFoundError, ProcessLookupError])
+def test_alive_handles_process_disappearing_during_proc_read(monkeypatch, error):
+    monkeypatch.setattr(os, "kill", lambda *a: None)
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    def vanished(self, *a, **kw):
+        raise error()
+    monkeypatch.setattr(Path, "read_text", vanished)
+    assert not alive(1234)
 
 
 @pytest.mark.parametrize("linger", [False, True])
