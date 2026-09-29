@@ -273,6 +273,19 @@ class Ledger:
             discrimination=raw.get("discrimination", {}) or {},
         )
 
+    @classmethod
+    def append_note(cls, root: Path, what: str, why: str):
+        """Append startup diagnostics to the current task under the write lock."""
+        state = root / STATE_DIR
+        state.mkdir(parents=True, exist_ok=True)
+        _keep_out_of_git(state)
+        from .jobs import ledger_write
+        with ledger_write(root):
+            ledger = cls.load(root)
+            ledger.note(what, why)
+            ledger._save_locked()
+        return ledger
+
     def save(self) -> None:
         """Write the ledger, keeping anything another writer appended meanwhile.
 

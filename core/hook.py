@@ -115,9 +115,8 @@ def on_session_start(payload: dict, root: Path) -> int:
         lines.append("No unambiguous verification command found. Known runners are still observed; "
                      "set commands in .elevenpowers/config.json for automatic verification.")
     if all(c.ok for c in health):
-        ledger.note("automatic startup", f"coverage {'complete' if scan.complete else 'incomplete'}")
         try:
-            ledger.save()
+            ledger = Ledger.append_note(root, "automatic startup", f"coverage {'complete' if scan.complete else 'incomplete'}")
         except OSError as error:
             lines.append(f"Cannot save project state: {error}")
     if ledger.claims:

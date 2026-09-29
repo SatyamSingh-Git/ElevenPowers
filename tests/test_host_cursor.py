@@ -68,3 +68,33 @@ def test_cursor_bridge_dispatches_native_completion(tmp_path, monkeypatch):
     from core import hook
     monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("retry"))
     assert run("cursor", "stop", {"cwd": str(tmp_path), "status": "completed"}) == ({"followup_message": "retry"}, 0)
+
+
+@pytest.mark.parametrize("status", ["aborted", "error"])
+def test_cursor_cancelled_stop_does_not_run_verification(tmp_path, monkeypatch, status):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda *a: pytest.fail("cancelled session verified"))
+    assert run("cursor", "stop", {"cwd": str(tmp_path), "status": status}) == ({}, 0)
+
+
+def test_cursor_rejects_cwd_outside_declared_workspaces(tmp_path):
+    child = tmp_path / "project"
+    child.mkdir()
+    with pytest.raises(ValueError, match="workspace"):
+        adapter().normalize("sessionStart", {"workspace_roots": [str(child)], "cwd": str(tmp_path)})
+
+
+def test_late_cursor_startup_cannot_overwrite_new_task(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core.ledger import Ledger
+    from core import evidence
+    old = Ledger(root=tmp_path, task="old", request="old")
+    old.save()
+    scan = evidence.scan_sources
+    def racing_scan(root):
+        Ledger(root=root, task="new", request="new").save()
+        return scan(root)
+    monkeypatch.setattr(evidence, "scan_sources", racing_scan)
+    run("cursor", "sessionStart", {"cwd": str(tmp_path), "conversation_id": "s"})
+    assert Ledger.load(tmp_path).task == "new"

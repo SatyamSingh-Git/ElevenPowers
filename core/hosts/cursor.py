@@ -1,5 +1,6 @@
 """Cursor Agent hooks; desktop contract, not an implicit CLI compatibility claim."""
 import json
+from pathlib import Path
 from .contract import Event, Outcome, event_of, explicit_outcome
 from .transport import fields_of
 
@@ -28,7 +29,17 @@ def normalize(event: str, payload: dict) -> Event:
         clean["tool_name"] = "Bash"
     if event in {"postToolUse", "postToolUseFailure"} and clean.get("tool_name") == "Bash":
         clean["tool_response"] = outcome(payload).result()
-    return event_of(EVENTS[event], clean)
+    phase = EVENTS[event]
+    if event == "stop" and payload.get("status") != "completed":
+        phase = "Cancelled"
+    normalized = event_of(phase, clean)
+    roots = payload.get("workspace_roots")
+    if roots is not None:
+        if not isinstance(roots, list) or not roots or any(not isinstance(r, str) or not Path(r).is_absolute() for r in roots):
+            raise ValueError("invalid Cursor workspace roots")
+        if not any(normalized.root.is_relative_to(Path(r).resolve()) for r in roots):
+            raise ValueError("Cursor cwd is outside declared workspaces")
+    return normalized
 
 
 def outcome(payload: dict) -> Outcome:
