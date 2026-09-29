@@ -51,3 +51,20 @@ def test_cursor_post_tool_normalizes_json_result(tmp_path):
     event = adapter().normalize("postToolUse", {"cwd": str(tmp_path), "tool_name": "Shell",
         "tool_input": {"command": "npm run ci"}, "tool_output": '{"exitCode":0,"stdout":"ok"}'})
     assert event.payload["tool_response"] == {"stdout": "ok", "exit_code": 0}
+
+
+def test_cursor_responses_use_native_fields():
+    host = adapter()
+    assert host.render("stop", [], 2, "retry") == {"followup_message": "retry"}
+    assert host.render("postToolUse", [{"additionalContext": "seen"}], 0, "") == {"additional_context": "seen"}
+    assert host.render("sessionStart", [{"additionalContext": "active"}], 0, "") == {"additional_context": "active"}
+    result = host.render("preToolUse", [{"permissionDecision": "ask", "permissionDecisionReason": "review"}], 0, "")
+    assert result["permission"] == "deny" and "review" in result["user_message"]
+    assert host.render("stop", [{"systemMessage": "VERIFIED"}], 0, "") == {}
+
+
+def test_cursor_bridge_dispatches_native_completion(tmp_path, monkeypatch):
+    from core.hosts.bridge import run
+    from core import hook
+    monkeypatch.setattr(hook, "on_stop", lambda p, r: hook.transport.block("retry"))
+    assert run("cursor", "stop", {"cwd": str(tmp_path), "status": "completed"}) == ({"followup_message": "retry"}, 0)

@@ -1,6 +1,7 @@
 """Cursor Agent hooks; desktop contract, not an implicit CLI compatibility claim."""
 import json
 from .contract import Event, Outcome, event_of, explicit_outcome
+from .transport import fields_of
 
 EVENTS = {"sessionStart": "SessionStart", "beforeSubmitPrompt": "UserPromptSubmit",
           "preToolUse": "PreToolUse", "postToolUse": "PostToolUse",
@@ -36,3 +37,17 @@ def outcome(payload: dict) -> Outcome:
     if payload.get("failure_type") == "permission_denied":
         return Outcome(str(payload.get("error_message") or ""))
     return explicit_outcome(raw, interrupted=interrupted)
+
+
+def render(event: str, messages: list[dict], code: int, error: str) -> dict:
+    fields = fields_of(messages)
+    result = {}
+    if event == "stop":
+        return {"followup_message": error} if code == 2 else {}
+    if event in {"sessionStart", "postToolUse"} and fields.get("additionalContext"):
+        result["additional_context"] = fields["additionalContext"]
+    if event == "preToolUse" and fields.get("permissionDecision") in {"ask", "deny"}:
+        reason = fields.get("permissionDecisionReason", "Review this operation")
+        result.update(permission="deny", user_message=reason,
+                      agent_message=reason + ". Review this operation with the user before retrying.")
+    return result

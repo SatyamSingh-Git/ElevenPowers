@@ -3,7 +3,7 @@ from importlib import import_module
 
 from .transport import collect
 
-PLATFORMS = ("codex", "gemini")
+PLATFORMS = ("codex", "gemini", "cursor")
 
 
 def adapter(platform: str):
