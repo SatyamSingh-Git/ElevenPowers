@@ -6,6 +6,11 @@ from .transport import fields_of
 EVENTS = {"sessionStart": "SessionStart", "beforeSubmitPrompt": "UserPromptSubmit",
           "preToolUse": "PreToolUse", "postToolUse": "PostToolUse",
           "postToolUseFailure": "PostToolUseFailure", "stop": "Stop"}
+LIMITS = (
+    "Ambiguous multi-root events require explicit cwd; no first-root fallback.",
+    "Stop has no ordinary report field; inspect the persisted verdict with the status command.",
+    "Native preToolUse approval asks are not enforced; questioned operations receive a denial.",
+)
 
 
 def normalize(event: str, payload: dict) -> Event:

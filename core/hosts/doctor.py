@@ -15,16 +15,20 @@ def report(platform: str, root: Path) -> tuple[str, bool]:
         if not path.is_file():
             raise ValueError(f"missing native configuration: {path}")
         value = read_config(path)
-        expected = configuration(platform, "COMMAND")["hooks"]
+        generated = configuration(platform, "COMMAND")
+        expected = generated["hooks"]
         errors = []
+        if "version" in generated and value.get("version") != generated["version"]:
+            errors.append("native configuration version differs from generated wiring")
         for event in host.EVENTS:
             found = [entry for entry in value.get("hooks", {}).get(event, []) if owned(entry)]
             if len(found) != 1:
                 errors.append(f"{event}: expected one ElevenPowers subscription, found {len(found)}")
                 continue
-            handlers = found[0].get("hooks", [])
-            wanted = expected[event][0]["hooks"][0]
-            if len(handlers) != 1 or not handlers[0].get("command", "").endswith(f" {platform} {event}") or handlers[0].get("timeout") != wanted["timeout"]:
+            handlers = found[0].get("hooks", [found[0]])
+            wanted = expected[event][0].get("hooks", [expected[event][0]])[0]
+            if len(handlers) != 1 or not handlers[0].get("command", "").endswith(f" {platform} {event}") or any(
+                    handlers[0].get(k) != v for k, v in wanted.items() if k != "command"):
                 errors.append(f"{event}: command or timeout differs from generated wiring")
         lines.extend(errors or [f"ok: {len(host.EVENTS)} native event subscriptions"])
         ok = not errors

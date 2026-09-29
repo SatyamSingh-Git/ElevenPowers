@@ -53,3 +53,28 @@ def test_gemini_launcher_receipt_states(tmp_path):
         result = subprocess.run([sys.executable, str(launcher), "gemini", "AfterTool"], input=json.dumps(payload), text=True, capture_output=True, timeout=20)
         assert result.returncode == 0, result.stderr
         assert Ledger.load(tmp_path).evidence[-1].result.value == expected
+
+
+def test_cursor_doctor_checks_flat_hooks_and_explains_report_limit(tmp_path):
+    from core.hosts.setup import install
+    from core.hosts.doctor import report
+    path = install("cursor", tmp_path, sys.executable, Path(__file__).resolve().parents[1])
+    text, ok = report("cursor", tmp_path)
+    assert ok, text
+    assert "status command" in text and "multi-root" in text
+    config = json.loads(path.read_text())
+    config["hooks"]["stop"][0]["loop_limit"] = 99
+    path.write_text(json.dumps(config))
+    assert not report("cursor", tmp_path)[1]
+
+
+def test_cursor_launcher_records_native_json_output(tmp_path):
+    from core.config import Config, save
+    from core.ledger import Ledger
+    save(tmp_path, Config(profile="off", commands={"tests": "npm run ci"}))
+    launcher = Path(__file__).resolve().parents[1] / "plugin/bin/ep_host.py"
+    for native, raw, expected in [("postToolUse", {"exitCode": 0}, "pass"), ("postToolUseFailure", {"exitCode": 1}, "fail"), ("postToolUse", {"stdout": "unknown"}, "error")]:
+        payload = {"workspace_roots": [str(tmp_path)], "tool_name": "Shell", "tool_input": {"command": "npm run ci"}, "tool_output": json.dumps(raw)}
+        result = subprocess.run([sys.executable, str(launcher), "cursor", native], input=json.dumps(payload), text=True, capture_output=True, timeout=20)
+        assert result.returncode == 0, result.stderr
+        assert Ledger.load(tmp_path).evidence[-1].result.value == expected
