@@ -29,6 +29,7 @@ from .report import end_report, gate_message, guidance, start_banner
 from .ratchet import snapshot
 from .stress import base_commit, confirm, stress, wording
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
+from .hosts import transport
 
 MAX_BLOCKS = 2
 DESTRUCTIVE = (
@@ -50,6 +51,11 @@ HANDLERS = {
 def main(argv: list[str]) -> int:
     event = argv[1] if len(argv) > 1 else ""
     payload = _read_payload()
+    return dispatch(event, payload)
+
+
+def dispatch(event: str, payload: dict) -> int:
+    """Run a canonical lifecycle event; transports own wire serialization."""
     root = Path(payload.get("cwd") or Path.cwd())
     if not root.exists():
         return 0
@@ -73,7 +79,7 @@ def _read_payload() -> dict:
 
 
 def _emit(event: str, **fields) -> None:
-    print(json.dumps({"hookSpecificOutput": {"hookEventName": event, **fields}}))
+    transport.emit(event, fields)
 
 
 def on_session_start(payload: dict, root: Path) -> int:
@@ -446,8 +452,7 @@ def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
     ledger.blocks += 1
     ledger.note("gate blocked", detail)
     ledger.save()
-    print(gate_message(ledger), file=sys.stderr)
-    return 2
+    return transport.block(gate_message(ledger))
 
 
 def _since_task_opened(ledger: Ledger, root: Path) -> list[str]:

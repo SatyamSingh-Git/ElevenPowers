@@ -65,3 +65,27 @@ def test_codex_normalized_receipt_carries_only_explicit_status(tmp_path):
         "cwd": str(tmp_path), "tool_name": "Bash", "tool_input": {"command": "npm run ci"},
         "tool_response": {"exit_code": 1, "stdout": "failed"}})
     assert event.payload["tool_response"] == {"exit_code": 1, "stdout": "failed"}
+
+
+def test_codex_responses_follow_native_contract():
+    host = adapter()
+    message = {"event": "PreToolUse", "permissionDecision": "ask", "permissionDecisionReason": "review"}
+    assert host.render("PreToolUse", [message], 0, "")["hookSpecificOutput"]["permissionDecision"] == "ask"
+    assert host.render("Stop", [], 2, "checks missing") == {"decision": "block", "reason": "checks missing"}
+    assert host.render("Stop", [{"systemMessage": "VERIFIED"}], 0, "") == {"systemMessage": "VERIFIED"}
+    result = host.render("PostToolUse", [{"additionalContext": "observed"}], 0, "")
+    assert result["hookSpecificOutput"]["additionalContext"] == "observed"
+    assert "decision" not in result
+
+
+def test_codex_bridge_collects_engine_response_without_claude_stdout(tmp_path, monkeypatch, capsys):
+    from core.hosts.bridge import run
+    from core import hook
+    def handler(payload, root):
+        assert root == tmp_path.resolve()
+        hook._emit("Stop", systemMessage="UNVERIFIED")
+        return 0
+    monkeypatch.setattr(hook, "on_stop", handler)
+    response, code = run("codex", "Stop", {"cwd": str(tmp_path)})
+    assert (response, code) == ({"systemMessage": "UNVERIFIED"}, 0)
+    assert capsys.readouterr().out == ""
