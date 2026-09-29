@@ -31,11 +31,15 @@ def build(platform: str, target: Path) -> Path:
         "developerName": "ElevenPowers contributors", "category": "Productivity",
         "capabilities": [], "defaultPrompt": "Check the verification status of this project.",
     })
-    manifest_path = target / ".codex-plugin/plugin.json"
-    manifest_path.parent.mkdir()
+    manifest_path = target / ("gemini-extension.json" if platform == "gemini" else ".codex-plugin/plugin.json")
+    if platform == "gemini":
+        manifest = {k: manifest[k] for k in ("name", "version", "description")}
+    manifest_path.parent.mkdir(exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     # Python resolves the host-provided root; no shell-specific variable syntax.
     command = 'python -c "import os,runpy;runpy.run_path(os.path.join(os.environ[\'PLUGIN_ROOT\'],\'plugin\',\'bin\',\'ep_host.py\'),run_name=\'__main__\')"'
+    if platform == "gemini":
+        command = 'python "${extensionPath}/plugin/bin/ep_host.py"'
     hooks_path = target / "hooks/hooks.json"
     hooks_path.parent.mkdir()
     hooks_path.write_text(json.dumps(configuration(platform, command), indent=2) + "\n", encoding="utf-8")
