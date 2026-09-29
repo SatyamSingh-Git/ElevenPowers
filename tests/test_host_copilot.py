@@ -27,3 +27,21 @@ def test_copilot_native_tool_names(tool, canonical, tmp_path):
 def test_copilot_malformed_tool_args_rejected(tmp_path):
     with pytest.raises(ValueError):
         adapter().normalize("preToolUse", {"cwd": str(tmp_path), "toolArgs": "invalid"})
+
+
+@pytest.mark.parametrize("payload,state", [
+    ({"toolResult": {"resultType": "success", "textResultForLlm": "all passed"}}, "unknown"),
+    ({"toolResult": {"resultType": "success", "exitCode": 0, "textResultForLlm": "ok"}}, "passed"),
+    ({"toolResult": {"exitCode": 1, "textResultForLlm": "failed"}}, "failed"),
+    ({"error": "permission denied"}, "unknown"),
+    ({"is_interrupt": True, "toolResult": {"exitCode": 0}}, "interrupted"),
+    ({"toolResult": {"exitCode": False}}, "unknown"),
+])
+def test_copilot_transport_success_is_not_process_success(payload, state):
+    assert adapter().outcome(payload).state == state
+
+
+def test_copilot_failed_transport_without_status_is_incomplete(tmp_path):
+    event = adapter().normalize("postToolUseFailure", {"cwd": str(tmp_path), "toolName": "bash",
+        "toolArgs": {"command": "npm run ci"}, "error": "cancelled"})
+    assert event.payload["tool_response"].get("interrupted") is True

@@ -1,6 +1,6 @@
 """GitHub Copilot CLI native camelCase hooks, independent of VS Code/cloud."""
 import json
-from .contract import Event, event_of
+from .contract import Event, Outcome, event_of, explicit_outcome
 
 EVENTS = {"sessionStart": "SessionStart", "userPromptSubmitted": "UserPromptSubmit",
           "preToolUse": "PreToolUse", "postToolUse": "PostToolUse",
@@ -22,4 +22,13 @@ def normalize(event: str, payload: dict) -> Event:
     if not isinstance(inputs, dict):
         raise ValueError("Copilot toolArgs must be an object or JSON object string")
     clean["tool_input"] = inputs
+    if event in {"postToolUse", "postToolUseFailure"} and clean["tool_name"] in {"Bash", "PowerShell"}:
+        clean["tool_response"] = outcome(payload).result()
     return event_of(EVENTS[event], clean)
+
+
+def outcome(payload: dict) -> Outcome:
+    raw = payload.get("toolResult")
+    if isinstance(raw, dict):
+        raw = {**raw, "output": raw.get("textResultForLlm", "")}
+    return explicit_outcome(raw, interrupted=payload.get("is_interrupt") is True)
