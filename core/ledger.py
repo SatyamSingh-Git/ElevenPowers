@@ -643,9 +643,16 @@ class Ledger:
                 here = identity.replace("\\", "/")
                 return identity in red or any(here.startswith(f) for f in files)
 
-            passing = [e for e in _current([r for r in self.evidence
-                                            if r.kind is Kind.TEST and was_red(r.identity)])
-                       if e.execution == 'complete'
+            latest = {}
+            for record in self.evidence:
+                if record.kind is Kind.TEST and was_red(record.identity):
+                    previous = latest.get(record.identity)
+                    if previous is None or record.at >= previous.at:
+                        latest[record.identity] = record
+            # A named PASS is its own observation; historical per-test receipts
+            # need not contain the aggregate counters required of a suite.
+            passing = [e for e in latest.values()
+                       if e.result is Result.PASS and e.execution == 'complete'
                        and e.freshness(self.root) is Freshness.FRESH]
             if passing:
                 return passing[-1], ""

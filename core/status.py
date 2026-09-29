@@ -13,12 +13,13 @@ from . import blindspots
 from .evidence import Freshness
 from .ledger import Ledger, Status
 from .report import _hint
+from .jobs import progress
 
 
 def render(root: Path) -> str:
     ledger = Ledger.load(root)
     config = ledger.config
-    lines = [f"profile   {config.profile}"]
+    lines = [f"profile   {config.profile}", *progress(root, ledger.task)]
     if config.commands:
         for need, command in sorted(config.commands.items()):
             lines.append(f"          {need}: {command}")

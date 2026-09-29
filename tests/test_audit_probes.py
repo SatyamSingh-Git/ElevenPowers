@@ -293,7 +293,23 @@ def _erase(root: Path) -> None:
         os.chmod(path, stat.S_IWRITE)
         func(path)
 
-    shutil.rmtree(root, onexc=unlock)
+    shutil.rmtree(root, onerror=unlock)
+
+
+def test_erase_uses_python311_compatible_cleanup(tmp_path, monkeypatch):
+    root = tmp_path / "workspace"
+    root.mkdir()
+    locked = root / "readonly-object"
+    locked.write_text("git object", encoding="utf-8")
+    os.chmod(locked, stat.S_IREAD)
+    actual = shutil.rmtree
+
+    def python311_rmtree(path, ignore_errors=False, onerror=None, *, dir_fd=None):
+        return actual(path, ignore_errors=ignore_errors, onerror=onerror, dir_fd=dir_fd)
+
+    monkeypatch.setattr(shutil, "rmtree", python311_rmtree)
+    _erase(root)
+    assert not root.exists()
 
 
 def _commit(repo: Path, message: str) -> str:

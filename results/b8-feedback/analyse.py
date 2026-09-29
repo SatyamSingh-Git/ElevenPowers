@@ -44,10 +44,19 @@ def kappa(a: list, b: list) -> float:
 def b8():
     runs = []
     paths = sorted((S / "b8-feedback/runs").glob("*.json"))
-    if not paths:
-        raise ValueError(f"missing B8 run records under {S / 'b8-feedback/runs'}")
-    for p in paths:
-        runs.append(json.loads(p.read_text(encoding="utf-8")))
+    if paths:
+        for p in paths:
+            runs.append(json.loads(p.read_text(encoding="utf-8")))
+    else:
+        # Raw runs are intentionally ignored. The published projection keeps
+        # only fields needed by this analysis, including the timeout sensitivity.
+        curated = S / "b8-feedback/analysis-records.json"
+        data = json.loads(curated.read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or data.get("schema") != 1:
+            raise ValueError("invalid B8 analysis-records schema")
+        runs = data.get("records")
+        if not isinstance(runs, list) or not runs:
+            raise ValueError("missing B8 run records: analysis projection is empty")
     ok = [r for r in runs if not r.get("why")]
     bad = [r for r in runs if r.get("why")]
     print(f"\n=== B8 feedback: {len(ok)} usable runs, {len(bad)} failed ===")
@@ -90,8 +99,10 @@ def b8():
     # exactly the number above - so the timeout kills are counted and removed
     # in a sensitivity line rather than trusted.
     for a in ("generic", "mutants"):
-        tk = sum(1 for r in valid if r["arm"] == a
-                 for b, x in zip(r["before"], r["after"]) if b == "SURVIVED" and x == "killed (timeout)")
+        tk = sum(r["timeout_kills"] if "timeout_kills" in r else
+                 sum(b == "SURVIVED" and x == "killed (timeout)"
+                     for b, x in zip(r["before"], r["after"]))
+                 for r in valid if r["arm"] == a)
         k, n = tot[a]
         print(f"  {a:<8}: of those kills, {tk} were TIMEOUTS; excluding them: "
               f"{k - tk}/{n} ({(k - tk) / max(1, n):.0%})")

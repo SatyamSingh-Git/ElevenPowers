@@ -154,8 +154,9 @@ def _tokens(path: str) -> set[str]:
 
 
 def end_report(ledger: Ledger) -> str:
+    from .jobs import progress
     status = ledger.status()
-    lines = [f"{status.value}", *_coverage_warnings(ledger)]
+    lines = [f"{status.value}", *_coverage_warnings(ledger), *progress(ledger.root, ledger.task)]
     for verdict in ledger.verdicts():
         lines.append(f"  {verdict.claim.value} ({verdict.status.value.lower()})")
         for check in verdict.checks:

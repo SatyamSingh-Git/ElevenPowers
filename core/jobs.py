@@ -154,6 +154,8 @@ def progress(root: Path, task: str) -> list[str]:
     if interrupted:
         status = 'interrupted; unfinished checks are reconsidered at the next completion'
     checks = [c for c in data.get('checks', []) if isinstance(c, dict)]
+    if status == 'running' and not any(c.get('status') in {'queued', 'running'} for c in checks):
+        status = 'checks recorded; completion finishing'
     lines = [f'verification {status}']
     for check in checks[-6:]:
         state = check.get('status', 'unknown')
