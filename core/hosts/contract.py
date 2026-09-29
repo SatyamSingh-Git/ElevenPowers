@@ -41,3 +41,19 @@ def event_of(phase: str, payload: dict) -> Event:
     clean["cwd"] = str(root)
     clean["hook_event_name"] = phase
     return Event(phase, clean, root)
+
+
+def explicit_outcome(raw: object, *, interrupted: bool = False) -> Outcome:
+    """Read structured exit status, never prose that could come from the command."""
+    if not isinstance(raw, dict):
+        return Outcome(raw if isinstance(raw, str) else "", state="interrupted" if interrupted else "unknown")
+    output = "\n".join(raw[k] for k in ("stdout", "stderr", "output")
+                       if isinstance(raw.get(k), str))
+    if interrupted or any(raw.get(k) is True for k in ("interrupted", "timed_out", "timeout", "cancelled")):
+        return Outcome(output, state="interrupted")
+    code = next((raw[k] for k in ("exit_code", "exitCode", "returncode") if k in raw), None)
+    if type(code) is int:
+        return Outcome(output, code, "passed" if code == 0 else "failed")
+    if raw.get("session_id") is not None:
+        return Outcome(output, state="running")
+    return Outcome(output)
