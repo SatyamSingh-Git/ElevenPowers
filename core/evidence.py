@@ -76,6 +76,8 @@ class Evidence:
     would block agents whose projects run tests through `make`.
     """
     execution: str = "complete"
+    declaration: str = ""
+    declared_command: str = ""
     coverage_issues: list[str] = field(default_factory=list)
     scope: str = ""
     """Where `observed` came from, when it was a scan rather than a fixed list.
@@ -88,6 +90,11 @@ class Evidence:
     """
 
     def freshness(self, root: Path) -> Freshness:
+        if self.declaration:
+            from .config import load
+            from .redact import scrub
+            if scrub(load(root).command_for(self.declaration)) != (self.declared_command or self.command):
+                return Freshness.STALE
         if self.coverage_issues:
             return Freshness.STALE
         if self.scope == "source":
@@ -137,6 +144,8 @@ class Evidence:
             self.detail = scrub(self.detail)
         if self.command:
             self.command = scrub(self.command)
+        if self.declared_command:
+            self.declared_command = scrub(self.declared_command)
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -186,7 +195,7 @@ def _digest(root: Path, rel: str) -> str:
     return digest
 
 
-def tree_hash(root: Path, paths: Iterable[str]) -> str:
+def tree_hash(root: Path, paths: Iterable[str], *, fresh: bool = False) -> str:
     """A signature over the contents of a set of repository-relative paths.
 
     Measured on this repository: 6ms to hash 59 files against 1ms to stat them.
@@ -197,6 +206,8 @@ def tree_hash(root: Path, paths: Iterable[str]) -> str:
     """
     h = hashlib.sha256()
     for rel in sorted(paths):
+        if fresh:
+            _DIGESTS.pop((str(root), rel), None)
         h.update(rel.encode())
         h.update(f"\0{_digest(root, rel)}\0".encode())
     return h.hexdigest()[:16]

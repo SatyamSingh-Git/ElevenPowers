@@ -15,7 +15,7 @@ import sys
 import time
 from pathlib import Path
 
-from . import blindspots
+from . import blindspots, jobs
 from .atlas import neighbourhood
 from .claims import infer, opens_new_task
 from .evidence import Result
@@ -327,6 +327,35 @@ def _guide(ledger: Ledger) -> None:
 
 def on_stop(payload: dict, root: Path) -> int:
     ledger = Ledger.load(root)
+    if not ledger.config.verifies:
+        # Passive observation does not inspect Git, acquire a verification lock,
+        # start a deadline, or run commands at completion.
+        return 0
+    try:
+        with jobs.Session(root, ledger.task) as session:
+            # A previous owner may have saved between the initial profile read
+            # and acquisition. Execute against the ledger read under ownership.
+            ledger = Ledger.load(root)
+            if ledger.task != session.task:
+                session.task = ledger.task
+                session.data.update(task=ledger.task, checks=[])
+                session.save()
+            if not ledger.config.verifies:
+                return 0
+            return _complete_stop(payload, root, ledger)
+    except jobs.Busy:
+        # Another owner can still be changing the ledger; do not overwrite its
+        # progress or turn old evidence into a fresh certification here.
+        _emit("Stop", systemMessage="UNVERIFIED: verification is already running for this project; "
+              "this completion attempt did not run checks.")
+        return 0
+    except jobs.Superseded:
+        _emit("Stop", systemMessage="UNVERIFIED: the task changed during verification; "
+              "this completion attempt did not certify the new task.")
+        return 0
+
+
+def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
     # Ask the working tree BEFORE concluding there is nothing to gate. Tool
     # events are a proxy for what changed, and agents write through the shell:
     # measured on B4, `jinja2-0cd69481` shipped a 5,396-line patch graded
@@ -457,9 +486,13 @@ def _changed_paths(root: Path) -> list[str]:
 
     def git(*args: str) -> str | None:
         try:
-            done = subprocess.run(
-                ["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=5
-            )
+            if jobs.current() is not None:
+                done = jobs.execute(["git", *args], cwd=root, phase="working tree inspection",
+                                    timeout=5, shell=False)
+            else:
+                done = subprocess.run(
+                    ["git", *args], cwd=root, capture_output=True, text=True,
+                    encoding="utf-8", errors="replace", timeout=5)
         except (OSError, subprocess.SubprocessError):
             return None
         return done.stdout if done.returncode == 0 else None

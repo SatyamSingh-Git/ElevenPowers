@@ -11,6 +11,7 @@ import os
 import subprocess
 import time
 import uuid
+from contextlib import contextmanager
 from pathlib import Path
 
 from .redact import scrub_values
@@ -21,6 +22,47 @@ _CURRENT = contextvars.ContextVar('verification_session', default=None)
 
 class Busy(RuntimeError):
     pass
+
+
+class Superseded(RuntimeError):
+    pass
+
+
+def replace(temporary, target):
+    """Windows readers briefly deny replacement; retry without a partial write."""
+    deadline = time.monotonic() + 1
+    while True:
+        try:
+            temporary.replace(target)
+            return
+        except PermissionError:
+            if os.name != 'nt' or time.monotonic() >= deadline:
+                raise
+            time.sleep(.01)
+
+
+@contextmanager
+def ledger_write(root):
+    """Serialize the short read/merge/replace transaction across hook writers."""
+    stream = (root / '.elevenpowers/ledger.lock').open('a+b')
+    with stream:
+        stream.seek(0, 2)
+        if not stream.tell():
+            stream.write(b'0')
+            stream.flush()
+        deadline = time.monotonic() + 5
+        while True:
+            try:
+                _lock(stream)
+                break
+            except OSError:
+                if time.monotonic() >= deadline:
+                    raise Busy('ledger is busy; could not safely persist verification')
+                time.sleep(.01)
+        try:
+            yield
+        finally:
+            _unlock(stream)
 
 
 class BudgetExhausted(subprocess.SubprocessError):
@@ -80,6 +122,54 @@ def read(root: Path) -> dict:
         return {}
     except (OSError, ValueError) as error:
         return {'status': 'unreadable', 'reason': str(error), 'checks': []}
+
+
+def active(root: Path):
+    """Probe ownership without creating files or rewriting an abandoned journal."""
+    owner = current()
+    if owner is not None and owner.root.resolve() == root.resolve():
+        return True
+    try:
+        stream = (root / '.elevenpowers/verification.lock').open('r+b')
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return None
+    with stream:
+        try:
+            _lock(stream)
+        except OSError:
+            return True
+        _unlock(stream)
+        return False
+
+
+def progress(root: Path, task: str) -> list[str]:
+    """A small, read-only view; a journal is progress, never verification proof."""
+    data = read(root)
+    if not data or (data.get('task') != task and data.get('status') != 'unreadable'):
+        return []
+    status = data.get('status', 'unknown')
+    interrupted = status == 'running' and active(root) is False
+    if interrupted:
+        status = 'interrupted; unfinished checks are reconsidered at the next completion'
+    checks = [c for c in data.get('checks', []) if isinstance(c, dict)]
+    lines = [f'verification {status}']
+    for check in checks[-6:]:
+        state = check.get('status', 'unknown')
+        if interrupted and state in {'running', 'queued'}:
+            state = 'incomplete'
+        history = ' (previous attempt)' if check.get('run') != data.get('id') else ''
+        command = str(check.get('command', ''))[:180].replace('\n', ' ')
+        reason = str(check.get('reason', ''))[:180].replace('\n', ' ')
+        lines.append(f"  {check.get('phase', 'check')}: {state}{history} — {command}"
+                     + (f'; {reason}' if reason else ''))
+    if len(checks) > 6:
+        lines.append(f'  {len(checks) - 6} earlier entries in .elevenpowers/verification.json')
+    if data.get('status') == 'unreadable':
+        lines.append('  progress could not be read; the next completion will rebuild it')
+    from .redact import scrub
+    return [scrub(line) for line in lines]
 
 
 def _lock(stream):
@@ -152,7 +242,7 @@ class Session:
                 json.dump(scrub_values(self.data), stream, indent=2)
                 stream.flush()
                 os.fsync(stream.fileno())
-            temporary.replace(self.path)
+            replace(temporary, self.path)
         finally:
             temporary.unlink(missing_ok=True)
 

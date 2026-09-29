@@ -55,9 +55,14 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
+from dataclasses import replace
 from pathlib import Path
 
+from . import jobs, process
+
 TIMEOUT = 300
+CLEANUP_TIMEOUT = 10
 
 # `ERROR tests/test_new.py` — a whole file that would not collect on the old
 # tree. Kept alongside node ids in the same set because it is the same fact,
@@ -70,11 +75,16 @@ COLLECT_ERROR = re.compile(r"^ERROR\s+(\S+\.py)\b", re.MULTILINE)
 UNKNOWN, DISCRIMINATES, VACUOUS, UNCHECKABLE = "", "yes", "no", "n/a"
 
 
-def _git(root: Path, *args: str, timeout: int = 30) -> str | None:
+def _git(root: Path, *args: str, timeout: float = 30, cleanup: bool = False) -> str | None:
     try:
-        done = subprocess.run(["git", *args], cwd=root, capture_output=True,
-                              text=True, encoding="utf-8", errors="replace",
-                              timeout=timeout)
+        if jobs.current() is not None and not cleanup:
+            done = jobs.execute(["git", *args], cwd=root, phase="baseline preparation",
+                                timeout=timeout, shell=False)
+        else:
+            # Cleanup has a small separate allowance after work is exhausted.
+            # Base capture at task opening does not start a completion session.
+            done = process.run(["git", *args], cwd=root, shell=False,
+                               timeout=min(timeout, CLEANUP_TIMEOUT) if cleanup else timeout)
     except (OSError, subprocess.SubprocessError):
         return None
     return done.stdout.strip() if done.returncode == 0 else None
@@ -88,6 +98,12 @@ def base_commit(root: Path) -> str:
     being compared against, and the check would compare the change to itself.
     """
     return _git(root, "rev-parse", "HEAD") or ""
+
+
+def _defer_baseline(command: str) -> None:
+    session = jobs.current()
+    item = session.queue("baseline", command)
+    session.finish(item, "deferred", "completion budget exhausted before baseline execution")
 
 
 def on_the_old_tree(root: Path, commit: str, command: str,
@@ -109,6 +125,13 @@ def on_the_old_tree(root: Path, commit: str, command: str,
     """
     if not commit:
         return None
+    if jobs.current() is None:
+        from .ledger import Ledger
+        with jobs.Session(root, Ledger.load(root).task):
+            return on_the_old_tree(root, commit, command, timeout, carry)
+    if jobs.current().budget.remaining <= 0:
+        _defer_baseline(command)
+        return None
     hold = Path(tempfile.mkdtemp(prefix="ep-before-"))
     tree = hold / "tree"
     try:
@@ -121,6 +144,9 @@ def on_the_old_tree(root: Path, commit: str, command: str,
         # the tests across is exactly what a reviewer does by hand — keep the
         # fix out, keep the test in, and see what happens.
         for rel in carry:
+            if jobs.current().budget.remaining <= 0:
+                _defer_baseline(command)
+                return None
             source = root / rel
             if not source.is_file():
                 continue
@@ -128,14 +154,13 @@ def on_the_old_tree(root: Path, commit: str, command: str,
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
         try:
-            done = subprocess.run(command, shell=True, cwd=tree, capture_output=True,
-                                  text=True, encoding="utf-8", errors="replace",
-                                  timeout=timeout)
+            done = jobs.execute(command, cwd=tree, phase="baseline", timeout=timeout)
         except (OSError, subprocess.SubprocessError):
             return None
         return done.returncode == 0, (done.stdout or "") + (done.stderr or "")
     finally:
-        _git(root, "worktree", "remove", "--force", str(tree), timeout=60)
+        _git(root, "worktree", "remove", "--force", str(tree),
+             timeout=CLEANUP_TIMEOUT, cleanup=True)
         # `ignore_errors` because a test run can leave a file the OS still holds
         # open, and failing to tidy a temporary directory must never be the
         # reason a task cannot finish. eval/mine.py learned this first; the
@@ -156,12 +181,15 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
     Both are cached on the ledger. The base commit does not move while a task
     runs, so neither answer can change.
     """
-    from .evidence import Kind, Result
+    from .evidence import Kind, Result, SourceScan
     from .parsers import parse
 
     config = ledger.config
-    if not config.commands or not ledger.base:
+    if not config.verifies or not config.commands or not ledger.base:
         return dict(ledger.discrimination), list(ledger.failed_before)
+    if jobs.current() is None:
+        with jobs.Session(ledger.root, ledger.task):
+            return stress(ledger)
 
     verdicts = dict(ledger.discrimination)
     already_red = set(ledger.failed_before)
@@ -178,17 +206,38 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # base commit does not move, which is what the cache was justified by -
         # but the tests carried onto it do, and they are the other half of the
         # question being asked.
-        if need in verdicts and ledger.discrimination_inputs.get(need) == stamp:
+        if (verdicts.get(need) in (DISCRIMINATES, VACUOUS)
+                and ledger.discrimination_inputs.get(need) == stamp):
             continue
+        if need == "tests" and ledger.discrimination_inputs.get(need) != stamp:
+            # Old identities belong to the old carried tests. Retaining their
+            # union after a rewrite can invent a red-before/green-after result.
+            already_red.clear()
+            already_green.clear()
+            ledger.failed_before = []
+            ledger.passed_before = []
+            ledger.discrimination_inputs.pop(need, None)
+            verdicts.pop(need, None)
+            ledger.discrimination = dict(verdicts)
+            ledger.save()
         if not _passing(ledger, need):
             # Nothing claims this check passed, so there is nothing to question.
             continue
         found = on_the_old_tree(ledger.root, ledger.base, _with_outcomes(command),
                                 carry=carried)
-        ledger.discrimination_inputs[need] = stamp
         if found is None:
             verdicts[need] = UNCHECKABLE
+            ledger.discrimination_inputs.pop(need, None)
+            ledger.discrimination = dict(verdicts)
+            ledger.save()
             continue
+        if _inputs_stamp(ledger.root, ledger.base, command, carried) != stamp:
+            verdicts[need] = UNCHECKABLE
+            ledger.discrimination_inputs.pop(need, None)
+            ledger.discrimination = dict(verdicts)
+            ledger.save()
+            continue
+        ledger.discrimination_inputs[need] = stamp
         passed_before, output = found
         verdicts[need] = VACUOUS if passed_before else DISCRIMINATES
         # Which tests were seen *passing* back there, by name. `already_red`
@@ -199,7 +248,8 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # The runtime's own parsers, on the old tree's output. Whatever it can
         # read as a failing test there is a test the change made pass.
         already_red |= {r.identity for r in parse(command, output, 0 if passed_before else 1,
-                                                  ledger.root)
+                                                  ledger.root,
+                                                  snapshot=(SourceScan(files=list(carried)), ""))
                         if r.kind is Kind.TEST and r.result is not Result.PASS}
         # And the files that could not even be collected. This is the *common*
         # case, not an edge one: a test for behaviour the fix introduces cannot
@@ -208,6 +258,12 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # file is what makes the obligation dischargeable for the shape of
         # change it exists to describe.
         already_red |= set(COLLECT_ERROR.findall(output))
+        # Persist each completed command before another expensive phase starts.
+        # An interruption must not discard the baselines already paid for.
+        ledger.discrimination = dict(verdicts)
+        ledger.failed_before = sorted(already_red)
+        ledger.passed_before = sorted(already_green)
+        ledger.save()
     # Assigned rather than returned: every caller unpacks a pair, and the
     # green half is a cache like the other two rather than a third answer.
     ledger.passed_before = sorted(already_green)
@@ -225,7 +281,7 @@ def _inputs_stamp(root: Path, base: str, command: str, carried: tuple[str, ...])
     """
     from .evidence import tree_hash
 
-    return f"{base}|{command}|{tree_hash(root, carried) if carried else '-'}"
+    return f"{base}|{command}|{tree_hash(root, carried, fresh=True) if carried else '-'}"
 
 
 def _with_outcomes(command: str) -> str:
@@ -413,7 +469,7 @@ def confirm(ledger) -> list:
     flow into `Ledger._reproduction`'s existing targeted path rather than adding
     a third way to satisfy the same obligation.
     """
-    if any(d.get("what") == CONFIRMED for d in ledger.decisions):
+    if not ledger.config.verifies:
         return []
     red = [r for r in ledger.failed_before if "::" in r]
     command = ledger.config.commands.get("tests", "")
@@ -424,10 +480,54 @@ def confirm(ledger) -> list:
     if not run:
         return []
 
+    if jobs.current() is None:
+        with jobs.Session(ledger.root, ledger.task):
+            return confirm(ledger)
+    from .evidence import Evidence, Kind, Result, source_snapshot
+    from .redact import scrub
+    session = jobs.current()
+    before, tree = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
+    # A historical decision is advisory; only receipts for these inputs can
+    # suppress another confirmation after the source changes.
+    latest = {}
+    for receipt in ledger.evidence:
+        if receipt.kind is Kind.TEST:
+            previous = latest.get(receipt.identity)
+            if previous is None or receipt.at >= previous.at:
+                latest[receipt.identity] = receipt
+    current = {e.identity for e in latest.values()
+               if e.result is Result.PASS and e.command == run
+               and e.declared_command == scrub(command)
+               and e.execution == "complete" and not e.coverage_issues
+               and e.tree == tree and e.observed == before.files}
+    if before.complete and set(chosen) <= current:
+        return []
+
+    provisional = [Evidence(kind=Kind.TEST, identity=i, result=Result.ERROR,
+                            observed=before.files, tree=tree, scope="source", command=run,
+                            declaration="tests", declared_command=command,
+                            execution="incomplete", coverage_issues=list(before.issues),
+                            at=time.time(),
+                            detail="targeted confirmation started; completion not yet recorded")
+                   for i in chosen]
+    ledger.add(provisional)
+    ledger.save()
+    if not before.complete:
+        item = session.queue("confirmation", run)
+        session.finish(item, "deferred" if session.budget.remaining <= 0 else "incomplete",
+                       "; ".join(before.issues))
+        return []
+
+    prior_checks = len(session.data["checks"])
+
+    def finish(status, reason=""):
+        for item in reversed(session.data["checks"][prior_checks:]):
+            if item.get("phase") == "confirmation" and item.get("command") == run:
+                session.finish(item, status, reason)
+                break
+
     try:
-        done = subprocess.run(run, shell=True, cwd=ledger.root, capture_output=True,
-                              text=True, encoding="utf-8", errors="replace",
-                              timeout=TIMEOUT)
+        done = jobs.execute(run, cwd=ledger.root, phase="confirmation", timeout=TIMEOUT)
     except (OSError, subprocess.SubprocessError):
         return []
 
@@ -441,8 +541,12 @@ def confirm(ledger) -> list:
     # command that never ran a test permanently prevented one that would have.
     # A failed invocation is not an observation and must not be filed as one.
     if done.returncode not in (0, 1):
+        finish("incomplete", f"confirmation returned exit {done.returncode} without usable test outcomes")
         return []
-    ledger.note(CONFIRMED, f"ran {len(chosen)} test(s) that were red on {ledger.base[:8]}")
+    after, after_tree = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
+    issues = list(dict.fromkeys(before.issues + after.issues))
+    if tree != after_tree or before.files != after.files:
+        issues.append("source changed during targeted confirmation")
 
     # Read the passes; never infer them.
     #
@@ -460,15 +564,29 @@ def confirm(ledger) -> list:
     # no node id at all - `SKIPPED [1] tests\test_a.py:9: reason` - so a rule
     # that subtracted non-passes could not have seen them even in principle,
     # while a rule that requires a positive PASSED line is unaffected.
-    from .evidence import Evidence, Kind, Result, source_files, tree_hash
-
     passed = {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)}
     green = [i for i in chosen if i.replace("\\", "/") in passed]
-    if not green:
-        return []
-    observed = source_files(ledger.root)
-    tree = tree_hash(ledger.root, observed)
-    return [Evidence(kind=Kind.TEST, identity=i, result=Result.PASS, observed=observed,
+    if green and not issues:
+        ledger.note(CONFIRMED, f"ran {len(chosen)} test(s) that were red on {ledger.base[:8]}")
+    found = [Evidence(kind=Kind.TEST, identity=i, result=Result.PASS, observed=before.files,
                      tree=tree, scope="source", command=run, counted=True,
+                     declaration="tests", declared_command=command,
+                     coverage_issues=issues, passed=1,
+                     at=time.time(),
                      detail=f"red on {ledger.base[:8]}, passes on the tree as it is")
             for i in green]
+    # Named failures supersede prior successes too; unobserved/skipped nodes
+    # retain their provisional incomplete receipt instead of being inferred green.
+    from .parsers import parse
+    before.issues = issues
+    failed = [replace(e, declaration="tests", declared_command=command)
+              for e in parse(run, output, done.returncode, ledger.root, snapshot=(before, tree))
+              if e.kind is Kind.TEST and e.result is not Result.PASS and e.identity in chosen]
+    ledger.add(failed + found)
+    ledger.save()
+    known = {e.identity for e in failed + found}
+    incomplete = set(chosen) - known or any(e.result is Result.ERROR for e in failed)
+    finish("stale" if issues else "incomplete" if incomplete else
+           "failed" if failed or done.returncode else "passed",
+           "; ".join(issues) if issues else "not every chosen test produced an outcome" if incomplete else "")
+    return found

@@ -126,3 +126,43 @@ def test_expired_snapshot_is_explicitly_incomplete(tmp_path):
     scan, digest = source_snapshot(tmp_path, deadline=0)
     assert not scan.complete
     assert 'deadline' in scan.issues[0]
+
+
+def test_changed_declaration_invalidates_completed_receipt(tmp_path, monkeypatch):
+    from core.obligations import Claim
+    ledger = configured(tmp_path)
+    ledger.claims = [Claim.FEATURE_ADDED]
+    monkeypatch.setattr(verify, 'run_command', lambda command, **kw:
+                        subprocess.CompletedProcess(command, 0, '# pass 1\n# fail 0', ''))
+    first = verify.discharge(ledger)[0]
+    assert first.freshness(tmp_path) is Freshness.FRESH
+    save(tmp_path, Config(commands={'tests':'different-check'}, auto_detect=False))
+    assert first.freshness(tmp_path) is Freshness.STALE
+    assert 'tests' in verify.dischargeable(Ledger.load(tmp_path))
+
+
+def test_new_task_cannot_be_overwritten_by_finishing_old_command(tmp_path, monkeypatch):
+    ledger = configured(tmp_path)
+    monkeypatch.setattr(verify, 'dischargeable', lambda _: ['tests'])
+    def run(command, **kwargs):
+        Ledger(root=tmp_path, task='new-task', request='new user request').save()
+        return subprocess.CompletedProcess(command, 0, '# pass 1\n# fail 0', '')
+    monkeypatch.setattr(verify, 'run_command', run)
+    try:
+        verify.discharge(ledger)
+    except RuntimeError:
+        pass
+    assert Ledger.load(tmp_path).task == 'new-task'
+    assert Ledger.load(tmp_path).request == 'new user request'
+
+
+def test_interrupted_confirmation_cannot_reuse_older_reproduction(tmp_path):
+    from core.evidence import Evidence, Kind
+    ledger = configured(tmp_path)
+    node = 'test_source.py::test_case'
+    ledger.failed_before = [node]
+    ledger.add([Evidence(kind=Kind.TEST, identity=node, result=Result.PASS,
+                         observed=[], tree='', at=1),
+                Evidence(kind=Kind.TEST, identity=node, result=Result.ERROR,
+                         execution='incomplete', observed=[], tree='', at=2)])
+    assert ledger._reproduction()[0] is None

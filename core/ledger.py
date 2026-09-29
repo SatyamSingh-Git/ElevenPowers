@@ -276,16 +276,24 @@ class Ledger:
     def save(self) -> None:
         """Write the ledger, keeping anything another writer appended meanwhile.
 
-        Atomic replacement stops a half-written file. It does not make
-        read-modify-write transactional, and two handlers for the same session
-        do exactly that: both load, both append, and the second write drops the
-        first one's work silently. The append-only fields are merged against
-        whatever is on disk at the moment of writing, which is the cheap half of
-        what a real transaction would buy and covers the case that actually
-        happens here.
+        A short OS lock serializes read/merge/replace across hook writers.
+        Append-only fields are merged with the latest disk state, and an old
+        verification owner cannot replace a newer task. Flushing before atomic
+        replacement preserves complete receipts across ordinary process death.
         """
         self.path.parent.mkdir(parents=True, exist_ok=True)
         _keep_out_of_git(self.path.parent)
+        from .jobs import ledger_write
+        with ledger_write(self.root):
+            self._save_locked()
+
+    def _save_locked(self) -> None:
+        from .jobs import current, Superseded, replace
+        owner = current()
+        if (owner is not None and owner.root.resolve() == self.root.resolve()
+                and self.task == owner.task and self.path.exists()
+                and Ledger.load(self.root).task != self.task):
+            raise Superseded('a newer task replaced this verification attempt')
         self._keep_concurrent_appends()
         payload = {
             "task": self.task,
@@ -340,8 +348,14 @@ class Ledger:
         # stopped parsing. The comment justifying it said no pattern could run
         # past a string boundary, which was reasoning rather than a measurement
         # and was wrong. Walking values cannot be wrong that way.
-        tmp.write_text(json.dumps(scrub_values(payload), indent=2), encoding="utf-8")
-        tmp.replace(self.path)
+        try:
+            with tmp.open('w', encoding='utf-8') as stream:
+                json.dump(scrub_values(payload), stream, indent=2)
+                stream.flush()
+                os.fsync(stream.fileno())
+            replace(tmp, self.path)
+        finally:
+            tmp.unlink(missing_ok=True)
 
     def _keep_concurrent_appends(self) -> None:
         if not self.path.exists():
@@ -609,6 +623,7 @@ class Ledger:
         is the same proof at coarser grain.
         """
         from .stress import DISCRIMINATES
+        from .obligations import _current
 
         # Targeted FIRST. A named test that was red on the base tree and passes
         # here is strictly better evidence than "the suite did not pass back
@@ -628,9 +643,9 @@ class Ledger:
                 here = identity.replace("\\", "/")
                 return identity in red or any(here.startswith(f) for f in files)
 
-            passing = [e for e in self.evidence
-                       if e.kind is Kind.TEST and e.result is Result.PASS
-                       and was_red(e.identity)
+            passing = [e for e in _current([r for r in self.evidence
+                                            if r.kind is Kind.TEST and was_red(r.identity)])
+                       if e.execution == 'complete'
                        and e.freshness(self.root) is Freshness.FRESH]
             if passing:
                 return passing[-1], ""
@@ -650,8 +665,8 @@ class Ledger:
         # different things, joined because both were true. A reproduction is a
         # claim about one check, so both halves have to be about that check.
         if self.discrimination.get("tests") == DISCRIMINATES:
-            suites = [e for e in self.evidence
-                      if e.kind is Kind.SUITE and e.result is Result.PASS
+            suites = [e for e in _current([r for r in self.evidence if r.kind is Kind.SUITE])
+                      if e.execution == 'complete'
                       and e.freshness(self.root) is Freshness.FRESH]
             if suites:
                 return suites[-1], SUITE_GRAIN

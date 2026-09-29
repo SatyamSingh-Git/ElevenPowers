@@ -292,6 +292,8 @@ def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path
     code = exit_code if exit_code is not None else 1
     known = _parse_known(command, output, code, root)
     records = [r for r in known if r.kind is Kind.TEST and "tests" in needs]
+    for record in records:
+        record.declaration = "tests"
     for need in needs:
         kind = DECLARED_KINDS[need]
         record = next((r for r in known if r.kind is kind), None)
@@ -307,6 +309,7 @@ def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path
                 record = _record(kind, _scope(command), code, command, root, output)
         if kind is Kind.SUITE:
             _declared_counts(record, output)
+        record.declaration = need
         records.append(record)
     if exit_code is None:
         for record in records:
