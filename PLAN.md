@@ -1149,7 +1149,9 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 
 **Promote to the centre:** discrimination (§5.10), the ratchet (§1.2), reproduction-test derivation (§5.13), and the report as the deliverable (§1.3).
 
-**Defer, now with evidence rather than on judgement:** a second host adapter; a large always-on framework stack; a custom tree-search framework; elaborate risk routing. **Cross-session memory** — the best-controlled study shows no contrast surviving correction, and every positive result carries a leakage or context-budget confound. **Role-decomposed multi-agent pipelines** — matched by a single agent running the same workflow at roughly a tenth the cost. **Always-on context files** — two independent populations, null on correctness, over 20% additional cost; keep only short imperative rules, never repository overviews.
+**Host delivery update, 2026-09-29:** the earlier second-adapter deferral was superseded by the requested Codex, Gemini CLI, Cursor Agent and Copilot CLI implementation. Live-session acceptance remains open; see [platforms](the-guide/platforms.md).
+
+**Defer, now with evidence rather than on judgement:** a large always-on framework stack; a custom tree-search framework; elaborate risk routing. **Cross-session memory** — the best-controlled study shows no contrast surviving correction, and every positive result carries a leakage or context-budget confound. **Role-decomposed multi-agent pipelines** — matched by a single agent running the same workflow at roughly a tenth the cost. **Always-on context files** — two independent populations, null on correctness, over 20% additional cost; keep only short imperative rules, never repository overviews.
 
 Correct invalidation is *not* deferred — it is P0, and §1.2 makes it the enabling mechanism rather than a correctness detail.
 

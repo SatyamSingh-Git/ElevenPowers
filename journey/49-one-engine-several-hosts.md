@@ -75,3 +75,5 @@ integration passed 210 tests. These are code/launcher results, not measurements
 of improved patch quality or real installed-host sessions.
 
 Final runtime CI `36530709458` passed all four Ubuntu/Windows and Python 3.11/3.13 jobs on `518411d`, including full suites, audit probes, grader controls and the Claude launcher seam. Exact counts and timings are in the validation record.
+
+A follow-up documentation consistency check found older claims still saying only Claude Code was supported or that another adapter was postponed. The installation requirements, guide index, feature/roadmap/comparison pages, postponed list, master-plan deferral and architecture footer were corrected. The top-level README now surfaces platform availability near the beginning, and this chapter appears in the chronological index. Historical research records retain their dated findings.

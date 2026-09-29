@@ -18,6 +18,7 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 |---|---|---|
 | **Evidence capture** | shipped — reads the commands your agent already runs, no protocol, no cooperation required | unchanged; this is the foundation everything else sits on |
 | **Automatic setup** | shipped — startup health, manifest command discovery and coverage reporting | installed Snag session and full CI validation |
+| **Host integrations** | Claude Code plus native Codex, Gemini CLI, Cursor Agent and Copilot CLI adapters, setup, diagnostics and bundles | versioned live-session acceptance for the four additions; [capabilities and limits](../the-guide/platforms.md) |
 | **Repository selection** | shipped — Git ignores, project boundaries, budgets and explicit scan gaps | measure real-project latency and coverage |
 | **Staleness** | shipped, but coarse — changes within selected source inputs stale evidence | narrowed to each test's import closure, once measurement shows the coarse version is too pessimistic |
 | **The completion gate** | shipped — four states, risk-scaled obligations, `cannot_complete` as a real outcome | demoted from the point of the project to one component of a larger system |
@@ -39,4 +40,4 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 
 **What was withdrawn.** Several published claims, including a 252-run figure that came from dividing required pairs by the wrong rate, and three claims from a ninety-run sweep after an unrelated agent contaminated the machine mid-measurement. Withdrawals are listed in [`PLAN.md`](../PLAN.md) §10 rather than quietly deleted.
 
-If you want the version with every wrong turn included, that is [`journey/`](../journey/) — twenty-four chapters, plus a file of every mistake made.
+If you want the version with every wrong turn included, see the [journey index](../journey/README.md), including [the native platform delivery](../journey/49-one-engine-several-hosts.md), and the record of mistakes and corrections.

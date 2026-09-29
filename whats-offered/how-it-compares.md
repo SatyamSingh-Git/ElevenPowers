@@ -62,7 +62,7 @@ Being fair costs nothing and lying costs everything, so:
 | **Repository understanding** | Aider and Continue. This has none — no index, no symbol graph, no blast radius. Aider's map is Apache-2.0 and portable, and borrowing it is on the roadmap rather than reinventing it |
 | **Checkpointing and recovery** | Cline and OpenCode. Three-parent stashes, side-gitdir snapshots, revert — this has nothing comparable |
 | **Long-horizon state** | OpenHands' event log, OpenCode's message-list state machine. This does not resume the way they do |
-| **Maturity and breadth** | all of them. Weeks against years, one host against many, one author against communities |
+| **Maturity and breadth** | established projects have longer operating histories and larger communities. ElevenPowers now has five host integrations, but live installed-session acceptance remains open for the four additions; adapter count does not establish maturity |
 | **Candidate generation** | Agentless generates 40 and selects by execution. This generates none — Phase C |
 | **Security engineering** | gstack, by a wide margin: nonce-bound instruction blocks, egress receipts, redaction, untrusted envelopes |
 

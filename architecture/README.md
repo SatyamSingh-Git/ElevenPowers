@@ -137,6 +137,6 @@ is worse than a missing one.
 
 ## Current product flow
 
-The 2026-09-29 graph includes automatic startup health and coverage, root-manifest command discovery with project overrides, bounded Git-aware source selection, and pass/fail/incomplete receipts. Completion runs missing checks; baseline execution requires relevant matching evidence. Per-test dependency invalidation and a second host adapter remain separate work.
+The 2026-09-29 graph includes automatic startup health and coverage, root-manifest command discovery with project overrides, bounded Git-aware source selection, and pass/fail/incomplete receipts. Completion runs missing checks; baseline execution requires relevant matching evidence. Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI adapters join Claude Code through the shared runtime. Per-test dependency invalidation and live installed-session acceptance remain separate work.
 
-The graph has 72 nodes and 154 edges at this revision. [Current status](../docs/status.md) and [validation records](../docs/validation/README.md) describe which paths were exercised. Local rendering was verified; this documentation update does not claim a fresh HTTPS deployment check.
+The graph has 80 nodes and 170 edges at this revision. [Current status](../docs/status.md) and [validation records](../docs/validation/README.md) describe which paths were exercised. All four views were rendered locally; this documentation update does not claim a fresh HTTPS deployment check.

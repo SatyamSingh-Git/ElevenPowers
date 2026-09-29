@@ -1,6 +1,6 @@
 # Postponed, with the trigger that would build it
 
-**Scope clarification, 2026-09-29.** Repository-aware selection and automatic command discovery are shipped. The repository model postponed here means per-test dependency/impact analysis; it does not mean Git ignores, boundaries or coverage diagnostics are missing. The second host adapter remains unbuilt. See [current status](status.md).
+**Scope clarification, 2026-09-29.** Repository-aware selection and automatic command discovery are shipped. The repository model postponed here means per-test dependency/impact analysis; it does not mean Git ignores, boundaries or coverage diagnostics are missing. Four additional native adapters are implemented: Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI. Their live installed-session acceptance remains open. See [current status](status.md).
 
 Postponement is a decision with a condition, not a quiet drop. Nothing here is
 built until its trigger fires, and the trigger is a measurement rather than an
@@ -15,7 +15,6 @@ opinion.
 | Memory across sessions | Multi-session dogfooding shows the same fact re-derived three times. Note that the two systems in the field with real memory code both report automatic capture failing to produce useful records |
 | Model routing | Cost becomes a real complaint. The host already selects models per subagent |
 | Critics and subagents | Regression rate on risky changes stays high with the gate on |
-| Second host adapter | Someone asks, or Phase 1 numbers justify porting. Codex first: its hook engine is the closest match to Claude Code's |
 | Full 48-task harness | A decision needs a number the micro and smoke tiers cannot produce |
 | Browser evidence | A UI claim type is needed. gstack's Playwright daemon is MIT and liftable |
 

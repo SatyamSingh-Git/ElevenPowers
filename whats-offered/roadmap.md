@@ -1,6 +1,6 @@
 # Roadmap
 
-**Product delivery update, 2026-09-29.** Repository-aware evidence and automatic setup are shipped. The next integration milestone is a real installed session in Snag with full CI, reliable receipts and acceptable latency. It remains open; the completed read-only and disposable-project checks are listed in [current status](../docs/status.md). The research phases below are separate from this product milestone.
+**Product delivery update, 2026-09-29.** Repository-aware evidence, automatic setup, durable verification and four additional native host adapters are shipped. Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI join Claude Code. The next acceptance work is versioned live sessions on the new hosts and a full Snag CI session, including reliable receipts and latency measurements. See [current status](../docs/status.md) and [platform installation](../the-guide/platforms.md). The research phases below are separate from this product milestone.
 
 [← What's Offered](README.md)
 
@@ -131,7 +131,6 @@ Postponement here is a decision with a condition, not a quiet drop. Nothing belo
 | **Memory across sessions** | multi-session use shows the same fact re-derived three times. Note that both field systems with real memory code report automatic capture failing to produce useful records |
 | **Model routing** | cost becomes a real complaint. The host already selects models per subagent |
 | **Critics and subagents** | regression rate on risky changes stays high with the gate on |
-| **Second host adapter** | someone asks, or the numbers justify porting. Codex first — its hook engine is the closest match to Claude Code's |
 | **Browser evidence** | a UI claim type is needed. gstack's Playwright daemon is MIT and liftable |
 
 Full list with the reasoning: [`docs/postponed.md`](../docs/postponed.md).
@@ -140,6 +139,6 @@ Full list with the reasoning: [`docs/postponed.md`](../docs/postponed.md).
 
 ## How you can move this
 
-The triggers above are measurements, and most of them are measurements **of use**. "This stales everything constantly on my 4,000-file repository" is not a complaint, it is the data that starts the repository-model work. "I want this on Codex" is the trigger for the second host adapter, verbatim.
+The triggers above are measurements, and most of them are measurements **of use**. "This stales everything constantly on my 4,000-file repository" is not a complaint, it is the data that starts the repository-model work. The request for additional hosts triggered the completed four-adapter delivery; live installed-session acceptance is its next boundary.
 
 So if something here is annoying you, that is useful: **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)**.

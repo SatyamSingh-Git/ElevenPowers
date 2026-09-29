@@ -11,20 +11,21 @@ If something here is wrong, out of date, or simply does not work — **[satyambc
 | | |
 |---|---|
 | **[installation.md](installation.md)** | requirements, install, and how to prove it actually loaded |
+| **[platforms.md](platforms.md)** | all five hosts, native setup/removal, bundles and per-platform validation limits |
 | **[commands.md](commands.md)** | every command, every flag, and what the output means |
 | **[configuration.md](configuration.md)** | automatic setup, command overrides, scan budgets and profiles |
 | **[troubleshooting.md](troubleshooting.md)** | what goes wrong, why, and the fix |
 
 ---
 
-## Sixty seconds to running
+## Claude Code quick start
 
 ```bash
 git clone https://github.com/SatyamSingh-Git/ElevenPowers.git
 claude --plugin-dir ElevenPowers/plugin
 ```
 
-That is the whole install. There is nothing to configure, no account, no key, and no network call. Ask your agent for a change the way you normally would.
+That loads the Claude Code integration. For Codex, Gemini CLI, Cursor Agent or GitHub Copilot CLI, follow [native platform setup](platforms.md). Once the chosen host loads and trusts the hooks, supported startup, observation and completion work runs automatically.
 
 Then, from inside a project:
 
@@ -33,7 +34,7 @@ python ElevenPowers/plugin/bin/ep_doctor.py    # is the runtime actually hearing
 python ElevenPowers/plugin/bin/ep_status.py    # what does this task still owe?
 ```
 
-`ep_doctor` should print six green lines. If it does not, go straight to [troubleshooting.md](troubleshooting.md) — everything else depends on that layer working, and its failure mode is silence rather than an error.
+Check the doctor's reported results rather than a fixed line count. For the four additional hosts, use `ep_doctor.py --platform PLATFORM --cwd PATH`; this checks configuration and launcher availability, not live delivery. See [troubleshooting.md](troubleshooting.md) for failures.
 
 ---
 

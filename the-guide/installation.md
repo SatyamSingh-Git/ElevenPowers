@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | **Python** | 3.11 or later. `ep_doctor` checks this first and fails loudly if not |
-| **Host** | [Claude Code](https://claude.com/claude-code). It is the only host wired today — a second adapter is postponed with a trigger, see [roadmap](../whats-offered/roadmap.md) |
+| **Host** | Claude Code, Codex, Gemini CLI, Cursor Agent or GitHub Copilot CLI. See [native platform setup and validation limits](platforms.md); live installed sessions remain unverified for the four additions |
 | **Git** | used to identify the state of the working tree when evidence is recorded |
 | **Network** | none. Nothing here calls out, no key, no account, no telemetry |
 | **Dependencies** | none beyond the Python standard library. One *optional* extra is described below |
@@ -18,7 +18,7 @@ Works on Windows, macOS and Linux. It is developed on Windows, so the Windows pa
 
 ---
 
-## Install
+## Install in Claude Code
 
 ```bash
 git clone https://github.com/SatyamSingh-Git/ElevenPowers.git

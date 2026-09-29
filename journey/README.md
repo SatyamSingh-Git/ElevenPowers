@@ -61,6 +61,7 @@ command in this repository and can be reproduced.
 | [46-the-project-outside-the-fixture.md](46-the-project-outside-the-fixture.md) | Snag exposes generated-data scans, partial coverage and opaque CI commands; generalized fixes, review findings and the limits of the compatibility check |
 | [47-installed-should-mean-active.md](47-installed-should-mean-active.md) | Automatic manifest discovery and startup checks; preventing unrelated execution; the real launcher probe; three pushes and the remaining installed-session milestone |
 | [48-completed-work-should-survive.md](48-completed-work-should-survive.md) | Durable verification, shared deadlines, process cleanup, review regressions and launcher recovery; six-part delivery with installed Snag integration still open |
+| [49-one-engine-several-hosts.md](49-one-engine-several-hosts.md) | Four native host adapters, 32 publication parts, shared review fixes, final CI results and installed-session limits |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
@@ -326,5 +327,3 @@ one gated run carries four scope questions and zero blocks. Sizing an experiment
 needs a declared intervention boundary before it needs a task count.
 Replay still cannot measure staleness at all, because the working tree at each
 moment is not recoverable from a transcript.
-
-- [49 — One engine, several hosts](49-one-engine-several-hosts.md): native adapters and evidence boundaries.

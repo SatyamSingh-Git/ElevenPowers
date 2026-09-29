@@ -281,9 +281,19 @@ Four of those probes turned out to be unable to detect the repair of the defect 
 
 ## What is deliberately not here
 
-No workflow engine. No repository index. No memory across sessions. No model routing. No subagents. No second host.
+No workflow engine, per-test dependency index, memory across sessions, model routing or runtime-managed subagents.
 
 None of these are oversights — each is postponed with a written trigger in [`docs/postponed.md`](../docs/postponed.md), and the trigger is a measurement rather than an opinion. See [roadmap.md](roadmap.md).
+
+## Five host integrations
+
+Claude Code retains its existing integration. Codex, Gemini CLI, Cursor Agent and
+GitHub Copilot CLI have native adapters, reversible project setup, diagnostics and
+self-contained bundles. They share the scanner, command discovery, ledger and
+verification runner. The additions have contract tests and real launcher checks;
+live installed sessions remain unverified. Unknown process outcomes and native
+patch attribution gaps stay explicit. See [platforms](../the-guide/platforms.md)
+and [delivery validation](../docs/validation/2026-09-29-platforms.md).
 
 ## Automatic project setup
 

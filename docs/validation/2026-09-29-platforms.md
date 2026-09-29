@@ -191,3 +191,11 @@ Full Snag CI and live installed-host sessions remain unverified. Host trust is
 not bypassed. No change in paid research outcomes is implied by adapter tests.
 
 Gemini CLI, Cursor and Copilot applications were not found on PATH during discovery; this does not establish whether they are installed elsewhere. Native plugin-root resolution and host trust still require an installed-session acceptance check.
+
+## Documentation consistency follow-up
+
+After the 32-part delivery, a repository-wide check of current product documentation found stale single-host/adapter-deferral statements outside the new platform sections. A separate documentation-only correction updates those statements, the guide and journey indexes, and the architecture footer counts. It does not add another feature-delivery part or change the runtime validated above. Historical research snapshots remain dated records. Validation for this correction consists of relative-link resolution, stale-claim searches and whitespace checks; runtime tests are not repeated for these prose changes.
+
+The follow-up resolved **200 relative links with no missing targets**. The current
+product pages have no remaining matches for the obsolete single-host/adapter
+deferral claims or the old 72-node/154-edge count. `git diff --check` passed.

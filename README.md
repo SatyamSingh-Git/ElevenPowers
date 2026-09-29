@@ -17,6 +17,8 @@
 
 </div>
 
+Native platform delivery: Claude Code remains supported; Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI now have adapters, project setup, diagnostics and portable bundles. See [platform installation and validation limits](the-guide/platforms.md) and [journey 49](journey/49-one-engine-several-hosts.md). The four additions have contract and launcher checks; live installed sessions remain unverified.
+
 Loading the plugin automatically checks startup health and discovers verification commands from supported project manifests. Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
 
 ---
@@ -455,7 +457,7 @@ And yes — this was built with coding agents, mostly Claude and Codex. A projec
 | [`competitor-map.md`](docs/research/competitor-map.md) | ten systems × thirteen architectural axes, on one screen |
 | [`docs/status.md`](docs/status.md) | current delivery state, evidence limits and next integration milestone |
 | [`docs/postponed.md`](docs/postponed.md) | what is not built, and the trigger that would start it |
-| [`architecture/`](architecture/) | the living graph — 72 nodes, 154 edges, four views; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
+| [`architecture/`](architecture/) | the living graph — 80 nodes, 170 edges, four views; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
 | [`the-guide/`](the-guide/) | install, commands, configuration, troubleshooting — the practical manual |
 | [`whats-offered/`](whats-offered/) | features as they stand, the five-phase roadmap, and an honest comparison |
 
@@ -490,5 +492,3 @@ Every number quoted anywhere in that folder was produced by a command in this re
 *If you maintain one of them and I have misread your code — open an issue.<br/>The card is pinned to a commit, and I would much rather be corrected than cited wrongly.*
 
 </div>
-
-Native platform delivery: Claude Code remains supported; Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI now have adapters, project setup, diagnostics and portable bundles. See [platform installation and validation limits](the-guide/platforms.md) and [journey 49](journey/49-one-engine-several-hosts.md). The four additions have contract and launcher checks; live installed sessions remain unverified.
