@@ -73,3 +73,24 @@ def test_removal_preserves_foreign_handlers_in_a_shared_group(tmp_path):
         foreign, {"type": "command", "command": "ep", "name": "elevenpowers-host"}]}]}}))
     remove("gemini", tmp_path)
     assert json.loads(path.read_text())["hooks"]["BeforeTool"] == [{"matcher": "read_file", "hooks": [foreign]}]
+
+
+def test_cursor_setup_preserves_flat_hooks_and_refuses_unknown_version(tmp_path):
+    from core.hosts.setup import install, remove
+    path = tmp_path / ".cursor/hooks.json"
+    path.parent.mkdir()
+    original = {"version": 1, "hooks": {"stop": [{"command": "user-hook"}]}}
+    path.write_text(json.dumps(original))
+    install("cursor", tmp_path, sys.executable, SOURCE)
+    first = path.read_bytes()
+    assert json.loads(first)["hooks"]["stop"][-1]["loop_limit"] == 2
+    install("cursor", tmp_path, sys.executable, SOURCE)
+    assert path.read_bytes() == first
+    remove("cursor", tmp_path)
+    assert json.loads(path.read_text()) == original
+    original["version"] = 99
+    path.write_text(json.dumps(original))
+    before = path.read_bytes()
+    with pytest.raises(ValueError, match="version"):
+        install("cursor", tmp_path, sys.executable, SOURCE)
+    assert path.read_bytes() == before

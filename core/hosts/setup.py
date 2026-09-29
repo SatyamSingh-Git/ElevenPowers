@@ -11,7 +11,7 @@ import tempfile
 from .bridge import adapter
 from .wiring import configuration
 
-PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json"}
+PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json", "cursor": ".cursor/hooks.json"}
 MARKER = "elevenpowers-host"
 
 
@@ -40,6 +40,11 @@ def read_config(path: Path) -> dict:
 def owned(entry: object) -> bool:
     if not isinstance(entry, dict):
         return False
+    command = entry.get("command", "")
+    if isinstance(command, str) and "ep_host.py" in command and any(
+            command.endswith(f" {platform} {event}") for platform in ("cursor",)
+            for event in adapter(platform).EVENTS):
+        return True
     handlers = entry.get("hooks", [])
     return isinstance(handlers, list) and any(isinstance(h, dict) and
         (h.get("statusMessage") == MARKER or h.get("name") == MARKER) for h in handlers)
@@ -53,6 +58,8 @@ def _without_owned(value: dict) -> dict:
         for entry in entries:
             if not owned(entry):
                 remaining.append(entry)
+                continue
+            if "hooks" not in entry:
                 continue
             kept = [h for h in entry["hooks"] if not (isinstance(h, dict) and
                     (h.get("statusMessage") == MARKER or h.get("name") == MARKER))]
@@ -87,6 +94,8 @@ def _write(path: Path, value: dict) -> None:
 def install(platform: str, project: Path, python: str, source: Path) -> Path:
     path = config_path(platform, project)
     current = read_config(path)
+    if platform == "cursor" and current.get("version", 1) != 1:
+        raise ValueError("unsupported Cursor hooks configuration version")
     launcher = Path(source).resolve() / "plugin/bin/ep_host.py"
     executable = Path(python).resolve(strict=True)
     if not launcher.is_file() or not executable.is_file():
@@ -95,10 +104,12 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
     command = subprocess.list2cmdline(args) if os.name == "nt" else shlex.join(args)
     generated = configuration(platform, command)
     merged = _without_owned(current)
+    if platform == "cursor":
+        merged["version"] = 1
     hooks = merged.setdefault("hooks", {})
     for event, entries in generated["hooks"].items():
         for entry in entries:
-            for handler in entry["hooks"]:
+            for handler in entry.get("hooks", []):
                 handler["name" if platform == "gemini" else "statusMessage"] = MARKER
         hooks.setdefault(event, []).extend(entries)
     _write(path, merged)
