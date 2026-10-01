@@ -26,7 +26,8 @@ fields. See [platforms](platforms.md) for native capabilities and limitations.
 
 [← The Guide](README.md)
 
-Three commands you will actually use, and a set of evaluation commands you only need if you are measuring the project itself.
+Commands for status, shareable evidence, health and repeat runs, plus evaluation
+commands for measuring the project itself.
 
 Pending native patch callbacks, exhausted observation history and unreadable
 patch state produce an explicit incomplete-coverage warning in status. At
@@ -54,6 +55,48 @@ UNVERIFIED  bug_fixed
 | Flag | |
 |---|---|
 | `--cwd DIR` | report on a different project directory (default: `.`) |
+
+---
+
+## `ep_report` — evidence to share with a reviewer
+
+Run this entry point from the checkout or from a portable bundle, for any project
+and any supported host:
+
+```sh
+python plugin/bin/ep_report.py --project PATH
+python plugin/bin/ep_report.py --project PATH --output report.md
+python plugin/bin/ep_report.py --project PATH --format json --output report.json
+```
+
+It exports computed claims, obligations and their evidence qualifications,
+timestamp-selected command receipts, execution status, current input freshness,
+changed targets, revision, coverage gaps and next actions. Source and explicit
+receipt inputs are freshly read within the project scan budgets. An absent claim
+is UNVERIFIED, even when command receipts pass. Git revision is metadata, not a
+fingerprint of uncommitted changes; receipt fingerprints bind the observed bytes.
+
+| Flag | Default | Effect |
+|---|---|---|
+| `--project PATH` | current directory | select the project independently of the tool's location |
+| `--format markdown\|json` | `markdown` | human report or schema-version-1 JSON |
+| `--output PATH` | stdout | atomically publish a local file |
+| `--force` | off | allow atomic replacement of an existing output |
+| `--timeout SECONDS` | `120` | finite cooperative budget from 0 through 600 seconds |
+| `--require-verified` | off | exit 1 when the exported state is not VERIFIED |
+
+Normal exit 0 means the report was generated, including when its state is
+UNVERIFIED, STALE or CONTRADICTED. Export errors exit 1; invalid flags exit 2.
+No project check or model call runs, and report creation does not save ledger or
+verification-journal changes. Output creation is the explicitly requested write.
+The deadline bounds observation loops and Git calls; an in-flight filesystem call
+may return after it, in which case coverage is incomplete.
+
+Prompts, transcripts, captured outputs and receipt details are excluded. Known
+credential patterns are scrubbed and project-root text is replaced with
+`<project>`. Supplied Markdown remains literal. This is an unsigned local
+observation for review; it does not authenticate the ledger or establish that
+passing tests exercised every changed behaviour.
 
 ---
 

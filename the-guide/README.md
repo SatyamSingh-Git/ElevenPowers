@@ -42,6 +42,12 @@ activation, effective commands, environment/coverage issues and next actions.
 Each project supplies its own manifests and overrides. See [installation](installation.md)
 for auto selection and removal.
 
+For a report another person can read, use
+`ep_report.py --project PATH --output report.md`, or add `--format json`.
+It shares the same ledger across all five hosts and reads current input content
+without rerunning checks. See [commands](commands.md#ep_report--evidence-to-share-with-a-reviewer)
+for coverage, privacy, deadline and exit-status details.
+
 ---
 
 ## What you should expect to see
