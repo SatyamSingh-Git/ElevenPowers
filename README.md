@@ -21,6 +21,16 @@ Generalized onboarding now covers Claude Code, Codex, Gemini CLI, Cursor Agent a
 
 Loading the plugin automatically checks startup health and discovers verification commands from supported project manifests. Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
 
+Export a local verification report for any project with
+`python plugin/bin/ep_report.py --project PATH --format markdown --output report.md`.
+Markdown and versioned JSON show claims, obligation qualifications, latest
+execution receipts, freshly read input fingerprints, coverage gaps and next
+actions. They exclude prompts, transcripts, captured outputs and receipt details,
+scrub known credentials, and refuse overwrite unless `--force` is supplied.
+See [report commands](the-guide/commands.md#ep_report--evidence-to-share-with-a-reviewer),
+[journey 51](journey/51-receipts-another-person-can-read.md) and
+[report validation](docs/validation/2026-10-01-portable-report.md).
+
 ---
 
 > **What this is.** A completion gate for coding agents.
@@ -341,7 +351,7 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-Research prototype; status reviewed 2026-10-01. Repository evidence, exact receipts, five-host onboarding, callback activation and durable completion execution are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. The final local onboarding suite passed 1,062 tests with 28 skips. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-01. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The final local onboarding suite passed 1,062 tests with 28 skips; later report checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
 lists to agents encouraged tests of implementation details. In 95 resolved patches,
@@ -470,7 +480,7 @@ Everything above is a snapshot. The thesis has already been demoted once, the ob
 
 **So if you want the real story, don't read this file — read [`journey/`](journey/).**
 
-It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md), [automatic setup](journey/47-installed-should-mean-active.md), [durable verification](journey/48-completed-work-should-survive.md), [five hosts](journey/49-one-engine-several-hosts.md), and [project readiness](journey/50-project-readiness.md). Earlier chapters cover:
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md), [automatic setup](journey/47-installed-should-mean-active.md), [durable verification](journey/48-completed-work-should-survive.md), [five hosts](journey/49-one-engine-several-hosts.md), [project readiness](journey/50-project-readiness.md), and [portable reports](journey/51-receipts-another-person-can-read.md). Earlier chapters cover:
 
 - **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
 - **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.
