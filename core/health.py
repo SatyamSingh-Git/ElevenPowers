@@ -54,6 +54,22 @@ def _summary(samples):
             'p95_ms': round(values[math.ceil(n * .95) - 1], 3)}
 
 
+def _configuration(root):
+    """Do not let the tolerant runtime loader hide damaged saved settings."""
+    from .config import PROFILES
+    from .hosts.diagnostics import read_json
+    value = read_json(root / '.elevenpowers/config.json', 1024 * 1024)
+    if (not isinstance(value, dict) or
+            ('profile' in value and value['profile'] not in PROFILES) or
+            not isinstance(value.get('commands', {}), dict) or
+            any(not isinstance(v, str) for v in value.get('commands', {}).values()) or
+            not isinstance(value.get('scan', {}), dict) or
+            not isinstance(value.get('strength', {}), dict) or
+            type(value.get('auto_detect', True)) is not bool):
+        raise ValueError('invalid saved project configuration')
+    return load(root)
+
+
 def _engines(root, config):
     from .strength.settings import settings
     try:
@@ -100,12 +116,12 @@ def inspect(host, root, timeout=10):
     host = select_host(host, root)
     issues, actions = [], []
     live = {'state': 'unobserved'}
-    text, configured, body, config = '', False, None, None
+    text, configured, body, config, before = '', False, None, None, None
     try:
         before = _stamp(root, host)
         text, configured = configuration_report(host, root)
         live = activation(host, root)
-        config = load(root)
+        config = _configuration(root)
         body = export.build(root, timeout=max(0, deadline - time.monotonic()))
         if _stamp(root, host) != before:
             issues.append('Project diagnostic/evidence state changed during this read; read again.')
@@ -121,16 +137,28 @@ def inspect(host, root, timeout=10):
         issues.append('Health read deadline reached; coverage is incomplete.')
     commands = body['commands']
     runtimes = {name: bool(shutil.which(name)) for command in commands.values() if (name := runtime_name(command))}
-    records = [r for r in body['receipts'] if r.get('declaration') in commands]
+    from .parsers import DECLARED_KINDS
+    records = [r for r in body['receipts'] if r.get('declaration') in commands and
+               (kind := DECLARED_KINDS.get(r['declaration'])) is not None and r['kind'] == kind.value]
     by_need = {}
+    def order(r):
+        # Equal-time aggregate receipts must never be decided by a passing
+        # individual test or by an optimistic incidental output ordering.
+        return (r['recorded_at'], r['execution'] != 'complete', r['result'] != 'pass', r['failed'])
     for r in records:
-        if r['declaration'] not in by_need or r['recorded_at'] >= by_need[r['declaration']]['recorded_at']:
+        if r['declaration'] not in by_need or order(r) >= order(by_need[r['declaration']]):
             by_need[r['declaration']] = r
-    latest = max(records, key=lambda r: r['recorded_at'], default=None)
+    latest = max(records, key=order, default=None)
     current_task = identity(body['task']['id'])
     phases = live.get('phases', {})
     startup = phases.get('SessionStart', {})
     session = startup.get('session', '')
+    unresolved = [name for name, phase in phases.items() if phase.get('last_error') and
+                  session and phase.get('session', '') in ('', session) and
+                  phase.get('task', '') in ('', current_task) and
+                  phase.get('last_at', 0) >= startup.get('last_at', 0)]
+    issues.extend(f'Native callback diagnostic {name} failed; retry that phase in the current task/session.'
+                  for name in unresolved)
     usable = configured and live.get('state') not in {'configuration-changed', 'removed', 'error'}
     links = [link for link in live.get('receipt_links', []) if usable and
              link.get('task') == current_task and current_task and
@@ -226,15 +254,19 @@ def inspect(host, root, timeout=10):
     from .hosts.edits import coverage as edit_coverage
     try:
         value['pending_patches'], value['patch_gaps'] = edit_coverage(root, body['task']['id'])
-    except (OSError, ValueError, TypeError):
+        if any(type(value[k]) is not int or not 0 <= value[k] <= 1_000_000_000 for k in ('pending_patches', 'patch_gaps')):
+            raise ValueError('invalid native edit diagnostic counts')
+    except (OSError, ValueError, TypeError, AttributeError, KeyError):
         value['coverage']['complete'] = False
         value['coverage']['issues'].append('Native edit diagnostic state unavailable')
         value['health']['state'] = 'incomplete'
+        value['health']['stages']['report'] = stage('incomplete', 'Native edit diagnostic state unavailable')
+        value['next_actions'].insert(0, 'Repair unreadable native edit diagnostic state before relying on coverage.')
     final_issue = ''
     try:
         if _stamp(root, host) != before:
             final_issue = 'Project diagnostic/evidence state changed during this read; read again.'
-    except (OSError, ValueError, UnboundLocalError):
+    except (OSError, ValueError):
         final_issue = 'Project diagnostic/evidence state unavailable at end of read.'
     if time.monotonic() >= deadline:
         final_issue = 'Health read deadline reached; coverage is incomplete.'

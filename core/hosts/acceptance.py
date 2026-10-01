@@ -182,6 +182,7 @@ def inspect(host, root, timeout=10):
         test = _fingerprint(root, files[1])
         project = _fingerprint(root, '.elevenpowers/config.json')
         native = _fingerprint(root, str(config_path(host, root).relative_to(root)))
+        contract_before = (initial, test, project, native)
         checks = value['checks']
         checks.update(test_unchanged=test == manifest.get('test_fingerprint'),
                       project_configuration=project == manifest.get('project_configuration'),
@@ -212,6 +213,12 @@ def inspect(host, root, timeout=10):
         checks['fresh_pipeline'] = snapshot['health']['state'] == 'observed'
         value['health'] = snapshot['health']
         value['task_state'] = snapshot['task_state']
+        contract_after = tuple(_fingerprint(root, name) for name in
+                               (files[0], files[1], '.elevenpowers/config.json',
+                                str(config_path(host, root).relative_to(root))))
+        if contract_after != contract_before or activation(host, root) != live:
+            value['next_actions'].append('Exercise contract or native observations changed during inspection; read again.')
+            raise ValueError('exercise changed during read')
         if read_json(path) != manifest or time.monotonic() - started >= timeout:
             raise ValueError('exercise changed or acceptance read deadline reached')
         immutable = ('test_unchanged', 'project_configuration', 'native_configuration', 'generation', 'command')
