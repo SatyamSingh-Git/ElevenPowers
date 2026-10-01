@@ -1,0 +1,2 @@
+# Optional Python mutation producer; base runtime has no third-party imports.
+cosmic-ray==8.7.0

@@ -28,6 +28,9 @@ def copy_plan(root, settings, deadline):
     paths = set(git(root, ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], deadline).split('\0')) - {''}
     paths = {p for p in paths if not any(part in ('.git', '.elevenpowers', '__pycache__')
                                        for part in Path(p).parts)}
+    # The index still names files deleted in the current working tree. A copy
+    # represents current inputs, so carry their absence rather than restoring base.
+    paths = {p for p in paths if (root / p).exists() or (root / p).is_symlink()}
     dependencies = list(settings.dependencies)
     # A conventional installed JS dependency tree is needed by ordinary tests.
     # Copy it under the same limits; linking would let tests mutate the original.

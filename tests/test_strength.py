@@ -483,3 +483,47 @@ def test_shared_completion_never_emits_mutant_feedback(tmp_path, monkeypatch):
     monkeypatch.setattr(runner,'analyze',analysis)
     assert hook._complete_stop({},tmp_path,ledger) == 0
     assert considered == ['t'] and 'secret mutant' not in str(emitted)
+
+
+@pytest.mark.parametrize('language', ['python', 'javascript', 'typescript'])
+def test_real_engine_project_acceptance_weak_then_strong(tmp_path, language):
+    import sys, importlib.util
+    from core.strength.runner import analyze
+    from core.ledger import Ledger
+    from core.config import Config
+    base = repository(tmp_path)
+    strength = {'max_mutants':8, 'seconds':45, 'test_seconds':10}
+    if language == 'python':
+        if importlib.util.find_spec('cosmic_ray') is None:
+            pytest.skip('optional Cosmic Ray missing')
+        source = 'def positive(value):\n    return value > 0\n'
+        target = tmp_path/'a.py'
+        test = tmp_path/'test_a.py'
+        weak = 'from a import positive\ndef test_value():\n    assert positive(2)\n'
+        strong = weak + '\ndef test_boundaries():\n    assert not positive(-1)\n    assert not positive(0)\n    assert positive(1)\n'
+        command = f'"{sys.executable}" -m pytest -q -p no:cacheprovider'
+    else:
+        strength['stryker'] = stryker_path()
+        (tmp_path/'a.py').unlink()
+        name = 'a.ts' if language == 'typescript' else 'a.mjs'
+        target = tmp_path/name
+        source = ('export function positive(value: number): boolean { return value > 0; }\n'
+                  if language == 'typescript' else 'export function positive(value) { return value > 0; }\n')
+        test = tmp_path/'a.test.mjs'
+        weak = "import {test} from 'node:test'; import assert from 'node:assert/strict'; import {positive} from './"+name+"'; test('positive', () => assert.equal(positive(2),true));\n"
+        strong = weak + "test('boundaries', () => { assert.equal(positive(-1),false); assert.equal(positive(0),false); assert.equal(positive(1),true); });\n"
+        command = 'node ' + ('--experimental-strip-types ' if language == 'typescript' else '') + '--test a.test.mjs'
+    target.write_text(source)
+    test.write_text(weak)
+    before = target.read_bytes()
+    ledger = Ledger(root=tmp_path, task='acceptance-'+language, base=base)
+    ledger._config = Config(commands={'tests':command}, strength=strength)
+    observed_weak = analyze(ledger)
+    assert observed_weak['state'] == 'complete', observed_weak['issues']
+    assert observed_weak['summary']['undetected'] > 0
+    test.write_text(strong)
+    observed_strong = analyze(ledger)
+    assert observed_strong['state'] == 'complete', observed_strong['issues']
+    assert observed_strong['summary']['undetected'] == 0
+    assert observed_strong['summary']['detected'] > 0
+    assert target.read_bytes() == before
