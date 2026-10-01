@@ -236,3 +236,33 @@ def test_invalid_mutation_and_empty_test_execution_are_not_detected(tmp_path):
     assert run_candidate(candidate, tmp_path, 'echo ok', Budget(time.monotonic()+5, 1), 1).status == 'invalid'
     valid = Candidate('2', 'a.py', 1, 'operator', 'value = 2\n')
     assert run_candidate(valid, tmp_path, 'echo ok', Budget(time.monotonic()+5, 1), 1).status == 'error'
+
+
+def stryker_path():
+    import os
+    path = Path(os.environ.get('EP_TEST_STRYKER', '.venv/strength-js/node_modules/@stryker-mutator/instrumenter'))
+    if not path.exists():
+        pytest.skip('optional Stryker instrumenter not installed')
+    return str(path.resolve())
+
+
+def test_stryker_real_generation_js_and_typescript(tmp_path):
+    import time
+    from core.strength.engines import stryker
+    from core.strength.execution import Budget
+    engine = stryker_path()
+    for name, source in [('a.js', 'export function positive(value) { return value > 0; }'),
+                         ('a.ts', 'export function positive(value: number): boolean { return value > 0; }')]:
+        (tmp_path / name).write_text(source)
+        candidates, version = stryker(tmp_path, [name], engine, Budget(time.monotonic()+20, 8))
+        assert version == '9.5.1' and len(candidates) <= 8
+        assert any('>= 0' in c.content for c in candidates)
+        assert all(c.line == 1 and c.path == name for c in candidates)
+
+
+def test_stryker_missing_engine_is_unavailable(tmp_path):
+    import time
+    from core.strength.engines import stryker
+    from core.strength.execution import Budget
+    with pytest.raises(ValueError, match='unavailable'):
+        stryker(tmp_path, ['a.js'], str(tmp_path / 'missing'), Budget(time.monotonic()+10, 1))

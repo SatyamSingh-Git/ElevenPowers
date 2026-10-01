@@ -30,3 +30,18 @@ SOFTWARE.
 Native Windows producer probe: Python 3.13.2 / Cosmic Ray 8.7.0 generated seven
 mutations for a comparison function, including `> 0` → `>= 0`. This establishes
 producer compatibility, not universal language syntax or project setup support.
+
+StrykerJS instrumenter 9.5.1 (Apache-2.0),
+https://github.com/stryker-mutator/stryker-js/tree/master/packages/instrumenter,
+supplies JavaScript/TypeScript mutations and replacement ranges. The optional
+worker calls its installed public instrumenter and applies one generated
+replacement to original source at a time. No engine code is vendored. ElevenPowers
+adds the same isolation, selection, budgets and reports as the Python adapter;
+Stryker's coverage optimization, dashboard, runner plugins and incremental cache
+are not used. The project's command must execute or rebuild changed source.
+
+Native Windows producer: Node 22.17.1 / instrumenter 9.5.1 emitted zero-based line
+and column ranges, operator names and replacement strings, including `> 0` →
+`>= 0`. The adapter converts human report lines to one-based numbering. Runtime
+never invokes npm to install missing packages. Pin the instrumenter package to
+9.5.1; its Node requirement is >=20.

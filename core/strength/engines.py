@@ -50,3 +50,12 @@ def generate(root, paths, command, budget):
 
 def cosmic(root, paths, python, budget):
     return generate(root, paths, [python, str(Path(__file__).with_name('cosmic_worker.py'))], budget)
+
+
+def stryker(root, paths, engine, budget):
+    import shutil
+    node = shutil.which('node')
+    if not node or not Path(engine).is_dir():
+        raise ValueError('optional Stryker engine unavailable')
+    return generate(root, paths, [node, str(Path(__file__).with_name('stryker_worker.mjs')),
+                                 str(Path(engine).resolve())], budget)
