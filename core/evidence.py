@@ -8,6 +8,9 @@ relationship a build system tracks between an object file and its sources.
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from contextvars import ContextVar
+
 import fnmatch
 import hashlib
 import os
@@ -43,6 +46,84 @@ class Freshness(str, Enum):
     FRESH = "fresh"
     STALE = "stale"
     GONE = "gone"
+
+
+_FRESHNESS_VIEW = ContextVar('freshness_report_view', default=None)
+
+
+@contextmanager
+def freshness_view(root: Path, *, deadline=None):
+    """Fresh source and explicit inputs, scoped to one bounded operation."""
+    resolved = root.resolve()
+    digests = {}
+    parent = _FRESHNESS_VIEW.set(None)
+    try:
+        snapshot = source_snapshot(resolved, fresh=True, deadline=deadline, digests=digests)
+    finally:
+        _FRESHNESS_VIEW.reset(parent)
+    view = _FreshView(resolved, snapshot, digests, deadline)
+    token = _FRESHNESS_VIEW.set(view)
+    try:
+        yield snapshot
+    finally:
+        _FRESHNESS_VIEW.reset(token)
+
+
+class _FreshView:
+    def __init__(self, root, snapshot, digests, deadline):
+        from .config import load
+        self.root, self.snapshot, self.digests, self.deadline = root, snapshot, digests, deadline
+        policy = load(root).scan
+        policy = policy if isinstance(policy, dict) else {}
+        self.max_files = policy.get('max_files', 20000)
+        self.max_bytes = policy.get('max_bytes', 268435456)
+        if type(self.max_files) is not int or self.max_files <= 0:
+            self.max_files = 20000
+        if type(self.max_bytes) is not int or self.max_bytes <= 0:
+            self.max_bytes = 268435456
+        self.bytes = snapshot[0].bytes
+
+    def digest(self, rel):
+        if rel in self.digests:
+            return self.digests[rel]
+        scan = self.snapshot[0]
+        path = Path(rel)
+        full = self.root / path
+        try:
+            if (path.is_absolute() or '..' in path.parts
+                    or any(p in {'.git', '.elevenpowers'} for p in path.parts)
+                    or any((self.root / p).is_symlink() for p in (path, *path.parents))
+                    or any((self.root / p / '.git').exists() for p in path.parents if str(p) != '.')
+                    or not full.resolve().is_relative_to(self.root)):
+                raise ValueError('unsafe explicit input')
+            if len(self.digests) >= self.max_files:
+                raise ValueError('explicit input file limit exceeded')
+            size = full.stat().st_size
+            if not full.is_file() or self.bytes + size > self.max_bytes:
+                raise ValueError('explicit input byte limit exceeded or input is not a file')
+            digest = hashlib.sha256()
+            with full.open('rb') as stream:
+                while True:
+                    if self.deadline is not None and time.monotonic() >= self.deadline:
+                        raise TimeoutError('report deadline reached reading explicit input')
+                    chunk = stream.read(min(1024 * 1024, self.max_bytes - self.bytes + 1))
+                    self.bytes += len(chunk)
+                    if self.bytes > self.max_bytes:
+                        raise ValueError('explicit input byte limit exceeded')
+                    if not chunk:
+                        break
+                    digest.update(chunk)
+            value = digest.hexdigest()[:16]
+        except (OSError, ValueError) as error:
+            scan.issues.append(f'{error.__class__.__name__}: explicit input coverage incomplete at {rel}')
+            value = 'missing'
+        self.digests[rel] = value
+        return value
+
+
+def freshness_deadline(root):
+    view = _FRESHNESS_VIEW.get()
+    return view.deadline if view is not None and view.root == root.resolve() else None
 
 
 @dataclass
@@ -98,7 +179,8 @@ class Evidence:
         if self.coverage_issues:
             return Freshness.STALE
         if self.scope == "source":
-            scan, digest = source_snapshot(root)
+            view = _FRESHNESS_VIEW.get()
+            scan, digest = view.snapshot if view is not None and view.root == root.resolve() else source_snapshot(root)
             if not scan.complete:
                 self.coverage_issues = scan.issues
                 return Freshness.STALE
@@ -178,6 +260,9 @@ def _digest(root: Path, rel: str) -> str:
     300 attempts on the machine this was measured on, so evidence surviving a
     real edit was the common case rather than a race.
     """
+    view = _FRESHNESS_VIEW.get()
+    if view is not None and view.root == root.resolve():
+        return view.digest(rel)
     path = root / rel
     try:
         stat = path.stat()
@@ -282,15 +367,18 @@ DEPENDENCY_FILES = {
 }
 
 
-def _git_sources(root: Path) -> list[str] | None:
+def _git_sources(root: Path, *, deadline=None) -> list[str] | None:
     """Let Git interpret ignore rules, including negation and nested rules."""
     repository = next((p for p in (root, *root.parents) if (p / ".git").exists()), None)
     if repository is None:
         return None
     def git(*args):
+        allowance = 10 if deadline is None else min(10, deadline - time.monotonic())
+        if allowance <= 0:
+            raise TimeoutError('source enumeration deadline reached')
         return subprocess.run(
             ["git", "-c", f"safe.directory={repository.as_posix()}", *args], cwd=root,
-            capture_output=True, timeout=10,
+            capture_output=True, timeout=allowance,
         )
     try:
         top = git("rev-parse", "--show-toplevel")
@@ -350,7 +438,7 @@ def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = N
                    for p in excludes)
     root = root.resolve()
     try:
-        candidates = _git_sources(root)
+        candidates = _git_sources(root, deadline=deadline) if deadline is not None else _git_sources(root)
     except OSError:
         scan.issues.append("Git enumeration unavailable; filesystem fallback cannot verify ignore rules")
         candidates = None
@@ -415,7 +503,7 @@ def source_files(root: Path, limit: int | None = None) -> list[str]:
 
 
 def source_snapshot(root: Path, *, fresh: bool = False,
-                    deadline: float | None = None) -> tuple[SourceScan, str]:
+                    deadline: float | None = None, digests=None) -> tuple[SourceScan, str]:
     """Bind the selected inputs and any coverage failures to the same receipt."""
     scan = scan_sources(root, deadline=deadline) if deadline is not None else scan_sources(root)
     digest = hashlib.sha256()
@@ -426,6 +514,8 @@ def source_snapshot(root: Path, *, fresh: bool = False,
         if fresh:
             _DIGESTS.pop((str(root), rel), None)
         value = _digest(root, rel)
+        if digests is not None:
+            digests[rel] = value
         if value == "missing":
             scan.issues.append(f"unreadable or disappeared input: {rel}")
         digest.update(rel.encode())
