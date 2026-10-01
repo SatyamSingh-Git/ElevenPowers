@@ -49,10 +49,13 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **80 nodes / 170 edges** across 7 planes (as of 2026-09-29).
+Current size: **86 nodes / 186 edges** across 7 planes (as of 2026-10-01),
+including generalized onboarding, native edit observations and portable reports.
 
 One thing the graph says out loud: the **Workflow** tab's third lane is
 **planned and not built**. Everything in the Overview tab is real code today.
+The basic receipt export is in the task lane; PLAN §5.17's mutation findings
+remain planned and are not implied by the shipped Markdown/JSON report.
 
 ---
 
