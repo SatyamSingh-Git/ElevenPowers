@@ -39,3 +39,39 @@ def test_strength_settings_reject_invalid_limits(raw):
     from core.strength.settings import settings
     with pytest.raises(ValueError):
         settings(raw)
+
+
+def repository(root):
+    import subprocess
+    def git(*args):
+        return subprocess.run(['git', '-c', f'safe.directory={root.as_posix()}', *args],
+                              cwd=root, capture_output=True, text=True, check=True).stdout.strip()
+    git('init')
+    git('config', 'user.email', 'tests@example.invalid')
+    git('config', 'user.name', 'Tests')
+    (root / 'a.py').write_text('value = 1\n')
+    (root / '.gitignore').write_text('generated/\n')
+    git('add', '.')
+    git('commit', '-m', 'base')
+    return git('rev-parse', 'HEAD')
+
+
+def test_scope_respects_repository_ignores_and_tests(tmp_path):
+    import time
+    from core.strength.scope import select
+    base = repository(tmp_path)
+    (tmp_path / 'a.py').write_text('value = 2\n')
+    (tmp_path / 'test_a.py').write_text('assert True\n')
+    (tmp_path / 'generated').mkdir()
+    (tmp_path / 'generated/x.py').write_text('value = 3\n')
+    value = select(tmp_path, base, time.monotonic() + 10)
+    assert value.paths == ['a.py'] and not value.issues
+
+
+def test_scope_missing_base_and_dirty_attribution_are_incomplete(tmp_path):
+    import time
+    from core.strength.scope import select
+    base = repository(tmp_path)
+    (tmp_path / 'a.py').write_text('value = 2\n')
+    assert select(tmp_path, '', time.monotonic()+10).issues
+    assert select(tmp_path, base, time.monotonic()+10, opened_dirty=['a.py']).issues
