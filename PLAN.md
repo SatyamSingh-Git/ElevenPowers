@@ -9,6 +9,14 @@ Earlier plans are in git history; `docs/research/` and `journey/` are unchanged
 and still govern. [journey/29-outside.md](journey/29-outside.md) is the record
 of what was read and what it cost to learn.
 
+**Portable report delivery, 2026-10-01.** A local Markdown/JSON export now carries
+computed claims and qualified obligations, timestamp-selected execution receipts,
+fresh source and explicit-input observations, revision, coverage and next actions
+for any project. It reuses the ledger and makes missing coverage or absent claims
+unverified. See [journey 51](journey/51-receipts-another-person-can-read.md) and
+[validation](docs/validation/2026-10-01-portable-report.md). This receipt export is
+the basic review surface; the unpinned-behaviour findings in §5.17 remain unbuilt.
+
 **v0.7 changed what the system is for. v0.8 changes where it acts.** The thesis
 survives intact and better supported than it has ever been. What does not
 survive is the *placement*: a gate that fires at Stop, asking whether evidence
@@ -768,8 +776,9 @@ opening: *these three lines of your change could be altered and nothing you ran
 would notice.* That sentence is actionable without reading the diff, which is
 the only test a reviewer-facing artifact has to pass.
 
-This is `P4` in the v0.8 lane — the one step still marked **not built** — and it
-has been unbuilt because there was nothing specific enough to put in it. A list
+This is the findings part of `P4` in the v0.8 lane, still **not built**. The
+2026-10-01 portable receipt report ships the basic evidence surface and retains
+that boundary; it does not produce mutation findings. A list
 of obligations met is a receipt. A list of unpinned lines is a finding.
 
 **Ordering is deliberate: §5.16 before §5.17.** Building the report first
