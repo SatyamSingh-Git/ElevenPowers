@@ -69,7 +69,7 @@ def dispatch(event: str, payload: dict) -> int:
     # that it failed.
     payload.setdefault("hook_event_name", event)
     from .hosts.readiness import callback
-    with callback(payload.get('_ep_platform', 'claude'), root, event):
+    with callback(payload.get('_ep_platform', 'claude'), root, event, payload):
         return globals()[name](payload, root)
 
 
@@ -242,6 +242,8 @@ def on_post_tool(payload: dict, root: Path) -> int:
         if changed:
             _guide(ledger)
         ledger.save()
+        from .hosts.readiness import record_edit
+        record_edit(ledger.task, len(changed), bool(issues))
         if issues:
             _emit("PostToolUse", additionalContext="UNVERIFIED: native patch changed-path attribution is incomplete. " + '; '.join(issues))
         return 0
@@ -255,6 +257,9 @@ def on_post_tool(payload: dict, root: Path) -> int:
             else:
                 ledger.saw(target)
             ledger.save()
+            if tool in EDIT_TOOLS:
+                from .hosts.readiness import record_edit
+                record_edit(ledger.task, 1)
         return 0
     if tool not in COMMAND_TOOLS:
         return 0
@@ -267,9 +272,12 @@ def on_post_tool(payload: dict, root: Path) -> int:
                       or raw.get("timed_out") is True or raw.get("timeout") is True)
     if incomplete and declared_needs(command, root):
         ledger = Ledger.load(root)
-        ledger.add(parse(command, result.output, None, root))
+        records = parse(command, result.output, None, root)
+        ledger.add(records)
         ledger.note("declared command incomplete", command)
         ledger.save()
+        from .hosts.readiness import record_receipts
+        record_receipts(records, ledger.task)
         return 0
     if result.skip:
         return 0
@@ -329,6 +337,8 @@ def on_post_tool(payload: dict, root: Path) -> int:
         ledger.observe_edit(path)
     ledger.add(records)
     ledger.save()
+    from .hosts.readiness import record_receipts
+    record_receipts(records, ledger.task)
 
     failures = [r for r in records if r.result is Result.FAIL]
     if failures and ledger.claims:
@@ -359,6 +369,8 @@ def _guide(ledger: Ledger) -> None:
 
 def on_stop(payload: dict, root: Path) -> int:
     ledger = Ledger.load(root)
+    from .hosts.readiness import record_task
+    record_task(ledger.task)
     if not ledger.config.verifies:
         # Passive observation does not inspect Git, acquire a verification lock,
         # start a deadline, or run commands at completion.

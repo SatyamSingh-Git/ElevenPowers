@@ -11,6 +11,39 @@ from ..jobs import ledger_write
 from ..ledger import _keep_out_of_git
 
 SOURCE = ContextVar('callback_ingress', default=None)
+_OBSERVATION = ContextVar('native_health_observation', default=None)
+PHASES = ('SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'PostToolUseFailure', 'Stop')
+
+
+def identity(value):
+    return hashlib.sha256(value.encode('utf-8')).hexdigest() if isinstance(value, str) and value else ''
+
+
+def receipt_key(record):
+    data = record if isinstance(record, dict) else record.to_dict()
+    return identity(json.dumps([data['kind'], data['identity'], data['command'],
+                               data.get('recorded_at', data.get('at', 0))], sort_keys=True))
+
+
+def record_task(task):
+    observation = _OBSERVATION.get()
+    if observation is not None:
+        observation['task'] = identity(task)
+
+
+def record_receipts(records, task):
+    observation = _OBSERVATION.get()
+    if observation is not None:
+        record_task(task)
+        observation['links'].extend({'key': receipt_key(r), 'result': r.result.value,
+                                     'execution': r.execution} for r in records if r.declaration)
+
+
+def record_edit(task, changed, incomplete=False):
+    observation = _OBSERVATION.get()
+    if observation is not None:
+        record_task(task)
+        observation['edit'] = {'changed': changed, 'incomplete': incomplete}
 
 
 @contextmanager
@@ -74,18 +107,26 @@ def activation(platform, root):
 
 
 @contextmanager
-def callback(platform, root, event):
+def callback(platform, root, event, payload=None):
     if SOURCE.get() != 'host':
         yield
         return
     from .setup import PATHS
     if platform not in PATHS:
         raise ValueError('unsupported callback platform')
+    if event not in PHASES:
+        raise ValueError('unsupported callback phase')
+    session = identity((payload or {}).get('session_id'))
     with state(root) as value:
         item = value.setdefault(platform, {'state': 'received', 'generation': uuid.uuid4().hex})
         generation = item['generation']
         item.update(last_event=event, received_at=time.time(),
                     received=min(item.get('received', 0) + 1, 1_000_000_000))
+        phase = item.setdefault('phases', {}).setdefault(event, {})
+        phase.update(received=min(phase.get('received', 0) + 1, 1_000_000_000))
+    observation = {'links': [], 'task': '', 'session': session}
+    token = _OBSERVATION.set(observation)
+    started = time.monotonic()
     error = None
     try:
         yield
@@ -93,13 +134,28 @@ def callback(platform, root, event):
         error = type(exc).__name__
         raise
     finally:
+        elapsed = max(0, (time.monotonic() - started) * 1000)
+        _OBSERVATION.reset(token)
         with state(root) as value:
             item = value.get(platform, {})
             if item.get('generation') == generation:
+                phase = item.setdefault('phases', {}).setdefault(event, {})
+                phase.update(task=observation['task'], session=session, last_at=time.time())
+                if 'edit' in observation:
+                    phase['edit'] = observation['edit']
+                phase['samples_ms'] = [*phase.get('samples_ms', [])[-31:], round(elapsed, 3)]
                 if error:
+                    phase.update(errors=min(phase.get('errors', 0) + 1, 1_000_000_000), last_error=error)
                     item.update(state='error', error=error, last_error=error, error_at=time.time(),
                                 errors=min(item.get('errors', 0) + 1, 1_000_000_000))
                 else:
+                    phase.pop('last_error', None)
+                    phase['processed'] = min(phase.get('processed', 0) + 1, 1_000_000_000)
+                    links = item.get('receipt_links', []) + [
+                        {**link, 'task': observation['task'], 'session': session, 'at': time.time()}
+                        for link in observation['links']]
+                    item['links_evicted'] = item.get('links_evicted', 0) + max(0, len(links) - 64)
+                    item['receipt_links'] = links[-64:]
                     item.pop('error', None)
                     item.update(processed_at=time.time(), processed=min(item.get('processed', 0) + 1, 1_000_000_000))
                     if event == 'SessionStart':
