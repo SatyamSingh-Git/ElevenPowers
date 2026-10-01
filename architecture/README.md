@@ -49,9 +49,10 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **92 nodes / 200 edges** across 7 planes (as of 2026-10-01),
-including onboarding, native edits, portable reports and optional changed-file
-test strength. All four tabs draw after the structural update.
+Current size: **95 nodes / 216 edges** across 7 planes (as of 2026-10-01),
+including fresh staged health, bounded native diagnostics, disposable acceptance,
+onboarding, native edits, portable reports and optional changed-file test strength.
+All four tabs draw after the structural update.
 
 The **Workflow** tab's third lane now identifies built v0.8 mechanisms and their
 limits. Mutation findings are optional human review observations; missing engines,
@@ -143,4 +144,11 @@ is worse than a missing one.
 
 The 2026-09-29 graph includes automatic startup health and coverage, root-manifest command discovery with project overrides, bounded Git-aware source selection, and pass/fail/incomplete receipts. Completion runs missing checks; baseline execution requires relevant matching evidence. Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI adapters join Claude Code through the shared runtime. Per-test dependency invalidation and live installed-session acceptance remain separate work.
 
-The graph has 80 nodes and 170 edges at this revision. [Current status](../docs/status.md) and [validation records](../docs/validation/README.md) describe which paths were exercised. All four views were rendered locally; this documentation update does not claim a fresh HTTPS deployment check.
+Readiness now delegates to `core/health.py` and one fresh exporter view, showing
+native stages, every declared command's current aggregate outcome and retained
+timing samples. The automatic callback registry stores hashed correlation and
+bounded receipt/phase history. Explicit `core/hosts/acceptance.py` preparation
+creates a new Python/Node exercise; inspection rechecks its immutable contract
+and requires native pass/fail/incomplete history plus fresh completion.
+
+The graph has 95 nodes and 216 edges at this revision. [Current status](../docs/status.md) and [validation records](../docs/validation/README.md) describe which paths were exercised. All four views were rendered locally; this documentation update does not claim a fresh HTTPS deployment check.
