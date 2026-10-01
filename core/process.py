@@ -34,7 +34,7 @@ class OutputLimitExceeded(subprocess.SubprocessError):
 
 
 def run(command: str | list[str], *, cwd: Path, timeout: float,
-        shell: bool = True) -> subprocess.CompletedProcess[str]:
+        shell: bool = True, env: dict | None = None) -> subprocess.CompletedProcess[str]:
     """Return status and UTF-8 replacement-decoded stdout/stderr, or raise.
 
     A timeout raises TimeoutExpired with captured strings. Output above 8 MiB
@@ -59,7 +59,7 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
                        if job else {"start_new_session": True})
             child = subprocess.Popen(command, cwd=cwd, shell=shell,
                                      stdin=subprocess.DEVNULL, stdout=out,
-                                     stderr=err, **options)
+                                     stderr=err, env=env, **options)
             if job:
                 job.bind(child)
                 job.resume(child.pid)

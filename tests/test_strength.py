@@ -127,3 +127,23 @@ def test_snapshot_rejects_symlink_input(tmp_path):
     with pytest.raises(ValueError, match='linked'):
         with snapshot(tmp_path, Settings(), time.monotonic()+10):
             pass
+
+
+def test_strength_budget_caps_attempts_and_elapsed_time():
+    import time
+    from core.strength.execution import Budget
+    value = Budget(time.monotonic()+1, 1)
+    value.attempt()
+    with pytest.raises(TimeoutError, match='attempt'):
+        value.attempt()
+    expired = Budget(time.monotonic()-1, 1)
+    with pytest.raises(TimeoutError, match='deadline'):
+        expired.timeout(10)
+
+
+def test_contained_strength_command_reports_timeout(tmp_path):
+    import sys, time
+    from core.strength.execution import Budget, execute
+    value = execute([sys.executable, '-c', 'import time; time.sleep(5)'], tmp_path,
+                    Budget(time.monotonic()+.2, 1), 1, shell=False)
+    assert value.status == 'timed_out' and value.returncode is None
