@@ -42,6 +42,12 @@ activation, effective commands, environment/coverage issues and next actions.
 Each project supplies its own manifests and overrides. See [installation](installation.md)
 for auto selection and removal.
 
+Readiness now checks the complete staged pipeline with fresh input evidence,
+retained timing samples and optional-engine metadata. Use `--check` when you want
+an exit-code gate; ordinary reads remain diagnostic. To validate a host version,
+use the explicit disposable Python/JavaScript exercise in [commands](commands.md#ep_doctor--repeatable-native-acceptance).
+Preparation never launches an agent, and replay never counts as native acceptance.
+
 For a report another person can read, use
 `ep_report.py --project PATH --output report.md`, or add `--format json`.
 It shares the same ledger across all five hosts and reads current input content

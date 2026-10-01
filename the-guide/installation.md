@@ -184,6 +184,20 @@ Stop passing `--plugin-dir` (or remove it from your settings), and delete `.elev
 
 The durable runner is included in the plugin source and activates through the existing completion hook in `guide` and `strict`; no separate runner service or per-project setup is required. Load the updated plugin in a new host session, then use `ep_doctor --host` to check the local launcher seam. This diagnostic does not replace a real installed-session check in your project. See [completion behavior](configuration.md#durable-completion-checks) and [current integration status](../docs/status.md).
 
+Supported native callbacks automatically retain bounded phase timing and hashed
+task/session/receipt links. No extra service, package or project-specific rule is
+needed. Inspect fresh staged health with
+`ep_ready.py HOST --project PATH --seconds 30`. Missing native events remain
+waiting; stale, corrupt or incomplete evidence cannot produce an observed pipeline.
+
+For a repeatable installed-version check, explicitly prepare a new disposable
+directory using `ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST
+--language python --host-version INSTALLED_VERSION`, then follow its
+`EXERCISE.md`. JavaScript is also supported when Node is available. Trust and
+enable owned wiring in that host, keep one task/session and inspect it afterward
+with `--acceptance DIR --platform HOST`. This is an opt-in diagnostic exercise;
+installation does not run intentional failures in your production repository.
+
 ## Additional hosts
 
 Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI project setup and portable

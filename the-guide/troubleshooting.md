@@ -263,3 +263,29 @@ An active owner prevents duplicate completion checks. If the owner died, the nex
 The 480-second completion work deadline is shared with baseline and confirmation checks, and each command is limited to 300 seconds. Fingerprinting can also be significant: a fresh Snag fingerprint of 4,418 files / 81,841,401 bytes took 55.66 seconds in the dated local check. That observation is not a general performance promise. Use a suitable declared command or run a longer check yourself; raising the host allowance alone does not change the runner limits. `guide` still runs checks, while `off` stays passive.
 
 An output-cap error means combined output exceeded 8 MiB. Reduce unnecessary verbosity and rerun; partial output is never accepted as a completed result. The plugin does not install missing project dependencies.
+
+## Configuration passes but the integration is not working
+
+Run `ep_ready.py HOST --project YOUR_PROJECT --seconds 30 --json`. Configuration
+is one stage; the report separately checks startup, edits, native command capture,
+fresh declared verification and completion. A waiting startup needs a new trusted
+host session. A waiting capture needs the exact declared command's native result
+in the current task/session. A failed or interrupted captured run requires a
+completed passing rerun. A later command needs another normal completion.
+
+Corrupt diagnostic/configuration state, pending edits, exhausted source coverage,
+moving state or expired read budgets qualify the result. Read the stage-specific
+actions before deleting anything. Repair owned wiring with setup; changing it
+starts a new observation generation. Optional engine metadata cannot substitute
+for a project test run, and an observed pipeline cannot substitute for a task
+whose claims remain UNVERIFIED.
+
+## The native acceptance exercise is still waiting
+
+Preparation has only created the repository and instructions. Start its installed
+host with owned hooks enabled and trusted, then follow `EXERCISE.md` in one task/
+session. Inspection needs a recorded operator version, real pass/fail/incomplete
+history, a source correction and current fresh completion. Keep tests/configuration/
+wiring unchanged. Replay and synthetic launcher controls do not establish native
+installed acceptance. If receipt history was evicted or the contract changed,
+prepare a new destination; existing destinations are deliberately refused.

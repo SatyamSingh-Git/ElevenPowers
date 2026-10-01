@@ -298,3 +298,26 @@ Fresh content snapshots before and after execution prevent a command from certif
 Use `ep_status` to inspect queued/running/passed/failed/stale/incomplete/deferred work. `.elevenpowers/verification.json` stores diagnostic progress; `ledger.json` stores evidence. Both remain project-local and ignored by Git. A concurrent completion reports that verification is already running. After owner death the OS releases the lock; status identifies interruption and the next completion reconsiders unfinished checks. A newer user task cannot be overwritten by the old verification owner.
 
 The process runner cleans ordinary descendants after success, timeout and interruption. Windows uses a kill-on-close Job assigned before the command resumes. POSIX uses a process group; a deliberately escaping process or abrupt host SIGKILL is outside that cleanup guarantee. Combined stdout/stderr above **8 MiB** produces an explicit incomplete result. Capture is disk-spooled and may exceed the threshold between polls; this is not a disk quota or a security sandbox.
+
+## Fresh staged health and local diagnostic history
+
+`ep_ready.py HOST --project PATH` shares the portable exporter's fresh input view.
+All effective declared commands need complete, passing, fresh receipts for the
+verification stage. Native capture additionally requires receipt links to the
+current wiring generation, task and startup session. Completion must follow the
+latest relevant native work. Missing events and source-scan gaps stay explicit;
+pipeline health and the four task verification states are separate.
+
+Collection is automatic through trusted hooks and independent of the profile's
+permission to execute checks. `off` remains passive. `integrations.json` retains
+at most 32 timing samples per canonical phase and 64 receipt links; eviction is
+reported. Session/task identities are hashed; no prompts, tool inputs, outputs
+or source are added to this diagnostic history. It is local unsigned observation.
+Rewiring/removal changes the generation and invalidates the old observations.
+
+Readiness defaults to a cooperative 10-second read budget, adjustable with
+`--seconds` up to 120. It executes no checks and writes no state. Raising this
+read budget changes neither the completion runner's limits nor source scan
+selection. Optional engine metadata distinguishes disabled, unavailable,
+unsupported, unchecked custom interpreters and missing Node; package metadata
+alone does not establish a working engine. No new configuration is required.

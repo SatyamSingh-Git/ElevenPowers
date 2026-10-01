@@ -220,6 +220,19 @@ pass establishes project configuration and local path availability, not live
 delivery. Bundles require `python` 3.11+ on the host PATH and native plugin-root
 resolution. These environment assumptions still need an installed-session check.
 
-The next acceptance work is a small versioned session on each native host,
-capturing startup, a file edit, command pass/fail/interruption, completion and
-uninstall behavior. Full Snag CI remains separate from these portable fixtures.
+All five hosts share staged fresh health, bounded callback timing/receipt history
+and one disposable acceptance workflow. Prepare a new directory with
+`ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python
+--host-version INSTALLED_VERSION`, or choose `javascript` with Node on PATH.
+Follow `EXERCISE.md` in one trusted native session, then inspect with
+`ep_doctor.py --acceptance DIR --platform HOST --json`. Preparation and replay
+do not establish activation or acceptance. Missing/evicted history, changed
+contracts and stale inputs remain waiting or incomplete.
+
+Ten actual Python/Node producer cases pass through the five launcher contracts,
+including real process interruption and stale/rerun controls. These are contract
+checks, not installed agent sessions. Local version probes on 2026-10-01 found
+Claude Code 2.1.286 and Codex CLI 0.159.2; Gemini, Cursor and Copilot executables
+were unavailable. Full versioned native exercises remain acceptance work.
+Host trust/policy and each platform's capability limits still apply.
+See [project-health validation](../docs/validation/2026-10-01-project-health.md).

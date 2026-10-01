@@ -1,5 +1,61 @@
 # Commands
 
+## ep_ready — fresh health for the whole integration
+
+```sh
+python plugin/bin/ep_ready.py HOST --project PATH --json
+python plugin/bin/ep_ready.py HOST --project PATH --seconds 30 --check
+```
+
+`HOST` is `claude`, `codex`, `gemini`, `cursor` or `copilot`. Readiness shows
+configuration, runtime lookup, native startup, edit delivery, command capture,
+current declared verification, completion, report coverage and optional strength.
+It freshly reads source and explicit receipt inputs once. A failing captured run
+can establish capture while verification remains failed. An observed pipeline
+does not change the task verdict; no active claim still means UNVERIFIED.
+
+`--seconds` defaults to 10 and accepts finite values from 0 through 120. This
+cooperative budget qualifies slow filesystem reads as incomplete. Normal exit 0
+means the diagnostic report was produced; explicit `--check` exits 1 unless all
+required stages are observed and every declared command is fresh and passing.
+Invalid flags exit 2. Readiness runs no project command, mutation engine, package
+installer or host, and writes no project state.
+
+Timings include fresh source/report/read duration and median/p95 of retained
+callback and automatic-command samples. They are observations of at most 32
+samples, not a speed improvement or future latency guarantee. Optional engine
+availability checks package metadata and runtime lookup; they do not execute
+the engine or block ordinary pipeline health.
+
+## ep_doctor — repeatable native acceptance
+
+```sh
+python plugin/bin/ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python --host-version INSTALLED_VERSION --json
+python plugin/bin/ep_doctor.py --prepare-acceptance ANOTHER_NEW_DIR --platform HOST --language javascript --host-version INSTALLED_VERSION
+python plugin/bin/ep_doctor.py --acceptance DIR --platform HOST --seconds 30 --json
+```
+
+Preparation explicitly creates a new disposable Git repository with owned host
+wiring, an intentionally failing unittest/Node test and `EXERCISE.md`. Existing
+or linked destinations are refused. Python is the default exercise language;
+JavaScript needs Node on PATH. No host/model session or package download runs.
+Preparation exits 0; invalid setup exits 2.
+
+Follow the exercise in one installed host task/session: startup, real failure,
+source fix, passing run, interruption, later source edit, stale view, rerun and
+normal completion. Inspection is read-only. It requires unchanged tests/project
+configuration/wiring, the current generation, native pass/fail/incomplete history
+and a fresh completed pipeline. It exits 0 for `passed`, 1 for waiting/failed/
+incomplete observations and 2 for invalid invocation. `--seconds` has the same
+10-second default and 120-second maximum as readiness. Language/version flags
+apply only to preparation; `--cwd`/`--host` cannot be combined with exercise modes.
+
+The operator version is required to qualify versioned acceptance. It is metadata,
+not host authentication. Prepared projects, replay and launcher contract fixtures
+do not establish an installed-session result. Current freshness is checked; the
+earlier manual stale-view step is not independently attested. Local acceptance
+does not certify a production patch or other host versions.
+
 ## ep_strength — inspect changed-file test strength
 
 ```bash
@@ -39,8 +95,8 @@ python -m core.hosts.package PLATFORM NEW_OUTPUT_DIRECTORY
 
 The doctor checks subscriptions, matchers and interpreter/launcher paths and
 reports callback activation. `ep_ready` adds project commands, runtimes, coverage,
-latest declared execution and next actions. Stored receipt freshness is unchecked
-here; status evaluates source freshness. Omitting the setup platform uses
+latest declared execution, current input freshness, staged health and next actions.
+Omitting the setup platform uses
 unambiguous PATH detection. Readiness is a report command; configuration health
 and activation are available through `--json`. Callback observations do not
 authenticate their sender; `--host` remains the separate Claude replay
@@ -135,7 +191,9 @@ The deeper self-check on the layer between this runtime and Claude Code. Basic h
 | Flag | |
 |---|---|
 | `--cwd DIR` | check a different project directory (default: `.`) |
-| `--host` | additionally drive the launcher as a real process with a payload on stdin — success, failure and stop paths — rather than calling the reader in-process |
+| `--host` | additionally drive the Claude launcher as a real process with payloads on stdin; this remains replay |
+| `--platform HOST` | check a selected host's configuration and launcher availability |
+| `--json` | print structured diagnostics |
 
 Exits `0` when everything passes, `1` when a check fails, `2` on an unrecognised flag.
 
