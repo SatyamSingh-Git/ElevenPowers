@@ -266,3 +266,24 @@ def test_stryker_missing_engine_is_unavailable(tmp_path):
     from core.strength.execution import Budget
     with pytest.raises(ValueError, match='unavailable'):
         stryker(tmp_path, ['a.js'], str(tmp_path / 'missing'), Budget(time.monotonic()+10, 1))
+
+
+def test_stryker_mutations_detected_and_undetected_on_real_node_tests(tmp_path):
+    import time
+    from core.strength.engines import stryker
+    from core.strength.execution import Budget
+    from core.strength.mutations import run_candidate
+    from core.strength.baseline import baseline
+    engine = stryker_path()
+    source = 'export function positive(value) { return value > 0; }\n'
+    (tmp_path / 'a.mjs').write_text(source)
+    weak = "import {test} from 'node:test'; import assert from 'node:assert/strict'; import {positive} from './a.mjs'; test('positive', () => assert.equal(positive(2),true));\n"
+    (tmp_path / 'a.test.mjs').write_text(weak)
+    command = 'node --test a.test.mjs'
+    assert baseline(command, tmp_path, tmp_path/'original', Budget(time.monotonic()+10,1),5).status == 'passed'
+    items, _ = stryker(tmp_path, ['a.mjs'], engine, Budget(time.monotonic()+20,8))
+    boundary = next(c for c in items if '>= 0' in c.content)
+    assert run_candidate(boundary,tmp_path,command,Budget(time.monotonic()+10,1),5).status == 'undetected'
+    (tmp_path / 'a.test.mjs').write_text(weak + "test('zero', () => assert.equal(positive(0),false));\n")
+    assert run_candidate(boundary,tmp_path,command,Budget(time.monotonic()+10,1),5).status == 'detected'
+    assert (tmp_path / 'a.mjs').read_text() == source
