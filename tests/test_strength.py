@@ -319,3 +319,34 @@ def test_analysis_disabled_and_unavailable_do_not_certify(tmp_path):
     assert analyze(ledger)['state'] == 'disabled'
     ledger._config = Config()
     assert analyze(ledger)['state'] == 'incomplete'
+
+
+def test_strength_reuse_needs_identical_tests_commands_and_settings(tmp_path, monkeypatch):
+    import sys
+    from core.strength.runner import analyze
+    from core.ledger import Ledger
+    from core.config import Config
+    from core.strength import engines
+    base = repository(tmp_path)
+    (tmp_path/'a.py').write_text('value = 2\n')
+    (tmp_path/'test_a.py').write_text('def test_value():\n    assert True\n')
+    ledger = Ledger(root=tmp_path, task='t', base=base)
+    ledger._config = Config(commands={'tests': f'"{sys.executable}" -m pytest -q -p no:cacheprovider'},
+                            strength={'python': sys.executable})
+    calls = []
+    def generated(*args):
+        calls.append(1)
+        return engines.Candidates([engines.Candidate('1','a.py',1,'operator','value = 3\n')]), '8.7.0'
+    monkeypatch.setattr(engines, 'cosmic', generated)
+    first = analyze(ledger)
+    second = analyze(ledger)
+    assert first['recorded_at'] == second['recorded_at'] and len(calls) == 1
+    (tmp_path/'test_a.py').write_text('def test_value():\n    assert 1 == 1\n')
+    third = analyze(ledger)
+    assert third['recorded_at'] != first['recorded_at'] and len(calls) == 2
+
+
+def test_interrupted_strength_record_is_not_reusable(tmp_path):
+    from core.strength.reuse import reusable
+    assert not reusable({'state':'running'}, task='t', base='b', command='c',
+                        settings={}, fingerprint='f', paths=[], versions={})

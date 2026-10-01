@@ -13,6 +13,7 @@ from .model import LIMITATION, summary
 from .mutations import run_candidate
 from .scope import select
 from .settings import settings
+from .reuse import reusable, execution_stamp
 
 
 def analyze(ledger, *, base=None, command=None):
@@ -32,6 +33,7 @@ def analyze(ledger, *, base=None, command=None):
                             'Passing test counts cannot prove that every selected file was imported or executed.']}
     item = session.queue('test strength', 'optional changed-code analysis')
     session.begin(item)
+    previous = store.load(ledger.root, ledger.task)
     try:
         options = settings(ledger.config.strength)
         value['settings'] = asdict(options)
@@ -70,7 +72,26 @@ def analyze(ledger, *, base=None, command=None):
             value['state'] = 'unavailable'
             return value
         with snapshot(ledger.root, options, deadline) as copied:
-            value['fingerprint'] = copied.stamp
+            value['fingerprint'] = execution_stamp(copied.stamp)
+            versions = {}
+            for name, paths, generate, executable in adapters:
+                if name == 'cosmic-ray':
+                    from .execution import execute
+                    import json
+                    probe = execute([executable, '-c', 'import importlib.metadata; print(importlib.metadata.version("cosmic-ray"))'],
+                                    copied.root, budget, 5, shell=False)
+                    versions[name] = probe.stdout.strip() if probe.status == 'complete' and not probe.returncode else ''
+                else:
+                    import json
+                    try:
+                        versions[name] = json.loads((Path(executable)/'package.json').read_text(encoding='utf-8'))['version']
+                    except (OSError, ValueError, KeyError):
+                        versions[name] = ''
+            if not value['issues'] and reusable(previous, task=ledger.task, base=value['base'],
+                    command=value['command'], settings=value['settings'], fingerprint=value['fingerprint'],
+                    paths=value['paths'], versions=versions):
+                value = previous
+                return value
             tested = baseline(value['command'], copied.root, ledger.root, budget, options.test_seconds)
             value['baseline'] = tested.status
             if tested.status != 'passed':
@@ -96,7 +117,7 @@ def analyze(ledger, *, base=None, command=None):
                 except ValueError as exc:
                     value['issues'].append(str(exc))
             current_paths = copy_plan(ledger.root, options, deadline)
-            if current_paths != copied.paths or fingerprint(ledger.root, current_paths, options, deadline) != copied.stamp:
+            if current_paths != copied.paths or execution_stamp(fingerprint(ledger.root, current_paths, options, deadline)) != value['fingerprint']:
                 value['issues'].append('project inputs changed during test-strength analysis')
         if value['summary']['incomplete']:
             value['issues'].append('some mutation attempts did not complete')
