@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -51,8 +52,12 @@ class Surface:
 
 
 def _walk(root: Path, limit: int = 6000) -> list[str]:
+    from .evidence import freshness_deadline
+    deadline = freshness_deadline(root)
     found: list[str] = []
     for dirpath, dirnames, filenames in __import__("os").walk(root):
+        if deadline is not None and time.monotonic() >= deadline:
+            raise TimeoutError('report deadline reached discovering project capabilities')
         dirnames[:] = [d for d in dirnames if d not in IGNORED_DIRS and not d.startswith(".")]
         for name in filenames:
             found.append(str(Path(dirpath, name).relative_to(root)).replace("\\", "/"))
