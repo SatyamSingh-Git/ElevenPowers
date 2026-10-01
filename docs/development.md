@@ -36,6 +36,14 @@ These cover four unrelated manifest types, no-Git/dirty files, interrupted and
 missing events, bounded state and concurrent launcher isolation. Doctor replay
 is explicitly marked and cannot establish project activation.
 
+Portable report controls run with
+`python -m pytest tests/test_portable_report.py tests/test_repository_scan.py -q`.
+They cover explicit-path and source freshness, same-size timestamp-preserving
+edits, nested snapshot isolation, literal Markdown, evidence caveats, timestamp
+ordering, shared budgets and unchanged ambient verification journals. Export a
+real local acceptance report with `plugin/bin/ep_report.py --project PATH`;
+report generation does not rerun that project's commands.
+
 Tests create temporary Git repositories. Git must have a user name and email
 configured, as it does in CI. No paid agent runs are part of these commands.
 

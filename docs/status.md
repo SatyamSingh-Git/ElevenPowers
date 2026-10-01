@@ -20,6 +20,7 @@ This delivery does not establish improved patch outcomes.
 | Completion checks | Missing/stale checks in guide/strict; same commands deduplicated; receipts persist immediately | Off remains passive; one shared 480-second work budget and 300-second command cap |
 | Process lifecycle | Windows Job containment, POSIX process-group cleanup and 8 MiB combined capture limit | Deliberate group escape and abrupt SIGKILL are outside cleanup guarantees |
 | Durable progress | Project ownership, atomic short ledger writes, running/deferred/interrupted journal | Journal and activation are diagnostics, never proof of command success |
+| Portable verification report | Local Markdown/versioned JSON, computed claims, obligation caveats, latest receipts, fresh input observations and next actions | Read-only, unsigned; no active claim or incomplete coverage stays UNVERIFIED; no mutation findings or stronger patch-outcome claim |
 
 See [onboarding validation](validation/2026-10-01-live-onboarding.md),
 [platform guide](../the-guide/platforms.md), and [journey 50](../journey/50-project-readiness.md).
@@ -55,12 +56,29 @@ capturing CI through an installed host's native command events.
 - Per-test dependency invalidation, mutation-based runtime coverage and improved outcome claims remain outside this delivery.
 - The prior Linux proc-read probe race was fixed; the historical intermittent five-second descendant-survival assertion has no established runtime cause.
 
-## Next delivery
+## Portable report acceptance
 
-A portable verification report should accompany a change in any project and make
-its claims, receipts, source freshness, coverage gaps and remaining actions easy
-for another person to review. It must remain local, scrub sensitive values and
-distinguish execution success from complete change verification.
+`ep_report.py --project PATH` exports Markdown by default, or JSON with
+`--format json`. It reads fresh source and explicit-path inputs in one scoped
+view, preserves evidence qualifications, and shares a cooperative deadline and
+project scan budgets. Known credentials are scrubbed and project-root text is
+substituted. Prompts, transcripts, outputs and receipt details are excluded.
+Saving requires `--output`; replacing a file requires `--force`.
+
+The actual Snag export records revision
+`1906da4576f29b02131ff50a29204529b8bcbb5e`, complete selection of 4,417 files /
+81,841,184 bytes, and a fresh **complete/fail** `npm run ci` receipt under the
+same account/ignore policy as the original relay. Overall task state is
+**UNVERIFIED** because no active claim is recorded. No project command was run
+to generate it. See [report validation](validation/2026-10-01-portable-report.md)
+and [journey 51](../journey/51-receipts-another-person-can-read.md).
+
+## Next readiness milestone
+
+Exercise versioned native sessions on the four added hosts and capture an actual
+declared-command result through their installed hooks. This closes the largest
+remaining usability uncertainty across projects. Mutation findings and measured
+outcome improvements remain separate research work.
 
 Use focused behavioral checks and a broad integration check at the delivery
 boundary; repeat when new corrections or failures warrant it. Documentation,
