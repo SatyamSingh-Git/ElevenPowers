@@ -59,6 +59,10 @@ def _engines(root, config):
         options = settings(config.strength)
         if not options.enabled:
             return {'state': 'disabled'}
+    except (ValueError, TypeError):
+        return {'state': 'incomplete', 'reason': 'Invalid optional engine settings'}
+    from .hosts.diagnostics import read_json
+    try:
         cosmic = {'state': 'unchecked', 'reason': 'selected interpreter was not executed'}
         if not options.python:
             try:
@@ -69,9 +73,14 @@ def _engines(root, config):
         engine = Path(options.stryker) if options.stryker else root / 'node_modules/@stryker-mutator/instrumenter'
         stryker = {'state': 'unavailable'}
         manifest = engine / 'package.json'
-        if manifest.is_file() and manifest.stat().st_size <= 65536:
-            version = json.loads(manifest.read_text(encoding='utf-8')).get('version')
-            stryker = {'state': 'metadata_present' if version == '9.5.1' else 'unsupported_version', 'version': str(version)[:32]}
+        if manifest.exists():
+            try:
+                version = read_json(manifest, 65536).get('version')
+                stryker = {'state': ('runtime_missing' if not shutil.which('node') else
+                                    'metadata_present' if version == '9.5.1' else 'unsupported_version'),
+                           'version': str(version)[:32]}
+            except (ValueError, OSError, TypeError, AttributeError):
+                stryker = {'state': 'incomplete', 'reason': 'Stryker package metadata unavailable'}
         return {'state': 'optional', 'cosmic_ray': cosmic, 'stryker': stryker,
                 'limit': 'Package metadata is availability information, not an executed engine check.'}
     except (ValueError, OSError, TypeError, AttributeError) as exc:
