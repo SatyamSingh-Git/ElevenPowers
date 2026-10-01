@@ -75,3 +75,25 @@ def test_scope_missing_base_and_dirty_attribution_are_incomplete(tmp_path):
     (tmp_path / 'a.py').write_text('value = 2\n')
     assert select(tmp_path, '', time.monotonic()+10).issues
     assert select(tmp_path, base, time.monotonic()+10, opened_dirty=['a.py']).issues
+
+
+def test_copy_plan_includes_assets_but_excludes_ignored_data(tmp_path):
+    import time
+    from core.strength.isolation import copy_plan
+    from core.strength.settings import Settings
+    repository(tmp_path)
+    (tmp_path / 'fixture.json').write_text('{}')
+    (tmp_path / 'generated').mkdir()
+    (tmp_path / 'generated/secret.txt').write_text('secret')
+    paths = copy_plan(tmp_path, Settings(), time.monotonic()+10)
+    assert 'fixture.json' in paths and 'generated/secret.txt' not in paths
+    assert not any(p.startswith('.git/') for p in paths)
+
+
+def test_copy_plan_limits_are_explicit(tmp_path):
+    import time
+    from core.strength.isolation import copy_plan
+    from core.strength.settings import Settings
+    repository(tmp_path)
+    with pytest.raises(ValueError, match='file limit'):
+        copy_plan(tmp_path, Settings(max_files=1), time.monotonic()+10)
