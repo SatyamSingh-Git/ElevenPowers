@@ -7,6 +7,30 @@ configuration diagnostics and self-contained bundles. The four new integrations
 have documented-contract and launcher checks; live installed sessions remain an
 acceptance step. This distinction applies to every platform below.
 
+## Unified project readiness
+
+All five hosts use `ep_setup.py HOST --project PATH` and the read-only
+`ep_ready.py HOST --project PATH [--json]`. Claude project setup merges
+`.claude/settings.local.json`; its plugin installation remains an alternative.
+Omitting the setup host selects only a single available executable and refuses
+ambiguity. Settings, commands and scan budgets belong to each project; no runtime
+rule depends on an acceptance repository or its command names.
+
+Setup validates native wiring, including delivery matchers, interpreter and
+launcher. Activation records waiting, received, active startup, error, changed
+configuration and removal separately. Only launcher ingress updates observations;
+doctor replay does not. These records diagnose delivery rather than authenticate
+the caller. The readiness report includes discovered commands, missing runtimes,
+selection coverage, latest execution (freshness unchecked) and next actions.
+
+On 2026-10-01, an installed Claude Code 2.1.281 startup in Snag delivered a real
+SessionStart callback with no prompt/model call. Codex wiring there is configured
+and waiting. Snag's actual external `npm run ci` failed its dependency audit,
+passing 14 of 15 checks; explicit replay recorded that result as complete/fail.
+That relay is separate from an installed-host command capture. The four added
+hosts still require versioned live-session acceptance. See
+[onboarding validation](../docs/validation/2026-10-01-live-onboarding.md).
+
 ## Codex
 
 Use Python 3.11 or newer. From your ElevenPowers checkout, install project hooks:
@@ -27,11 +51,21 @@ events record evidence and completion runs missing checks in guide/strict mode.
 Off stays passive. Unknown/unfinished command results stay incomplete; the
 automatic runner can still execute the declared check to obtain a known status.
 An explicit execution directory different from the event's project root cannot
-certify that root. Native patch events without authoritative edited paths open a
-conservative claim and persist a coverage warning. Declared checks can still run,
-but the task remains UNVERIFIED because complete edit attribution is unknown.
-Git reconciliation adds visible paths; it cannot prove what an already-dirty or
-non-Git file changed through the native patch tool.
+certify that root. Native apply_patch input uses the documented
+`tool_input.command` envelope. Supported headers identify targets; bounded content
+comparisons before and after the same session/call/input attribute changes,
+including already-dirty and non-Git files, additions, deletions and moves.
+Result prose is not parsed for edited paths. This covers declared targets, not
+unrelated tool side effects or which concurrent actor wrote those bytes.
+
+Missing session/call identity, missing or expired baselines, unsafe paths,
+different execution directories, interruption and budget exhaustion remain
+UNVERIFIED. Pending calls are visible in status/readiness; completion reconciles
+missing post-events and preserves evicted uncertainty. Bounds are 128 targets,
+32 MiB per content snapshot, 128 pending calls, 256 completed observations and
+30-minute baseline expiry. Pre/post snapshots have a two-second cooperative
+deadline; reconciliation shares three seconds. Filesystem operations are not a
+hard wall-clock guarantee. Unsupported host input envelopes remain gaps.
 
 For a portable plugin with its own runtime:
 

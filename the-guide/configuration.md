@@ -7,6 +7,23 @@ Host-specific configuration does not change scan boundaries, receipt semantics,
 profiles or completion budgets. The project's declared/discovered commands remain
 the authority for automatic checks.
 
+Project wiring now supports Claude as well as the four additions. Setup discovers
+manifest commands without executing them and does not generate or replace
+`.elevenpowers/config.json`. Readiness uses the same effective configuration.
+Explicit quoted interpreter paths are checked without shell expansion.
+
+`.elevenpowers/integrations.json` stores bounded callback diagnostics: counters,
+event names, timestamps, wiring generations and exception class names. It stores
+no raw session identifiers, prompts, command outputs or exception messages.
+`.elevenpowers/patches.json` stores target paths and content digests, not patch
+text or source bytes. These files use the existing short project write lock and
+atomic replacement. Project-local state ignores itself in Git.
+
+Startup health/discovery, supported event recording and profile-dependent
+completion checks run automatically after the host loads/trusts the integration.
+Setup cannot override host or administrator policies. The read-only readiness
+command adds activation, coverage and environment actions without starting tests.
+
 [← The Guide](README.md)
 
 Configuration is optional. Supported root manifests supply verification commands automatically; this file overrides those defaults and controls interruption and scanning.
