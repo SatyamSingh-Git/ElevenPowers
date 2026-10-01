@@ -17,7 +17,7 @@
 
 </div>
 
-Native platform delivery: Claude Code remains supported; Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI now have adapters, project setup, diagnostics and portable bundles. See [platform installation and validation limits](the-guide/platforms.md) and [journey 49](journey/49-one-engine-several-hosts.md). The four additions have contract and launcher checks; live installed sessions remain unverified.
+Generalized onboarding now covers Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI. Project setup preserves other hooks, readiness tracks callback activation and explains environment/coverage issues, and native patch observations cover dirty and non-Git targets while preserving incomplete histories. See [platform installation and limits](the-guide/platforms.md), [journey 50](journey/50-project-readiness.md), and [dated validation](docs/validation/2026-10-01-live-onboarding.md). The four added hosts still require live installed-session acceptance.
 
 Loading the plugin automatically checks startup health and discovers verification commands from supported project manifests. Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
 
@@ -341,7 +341,7 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-Research prototype; status reviewed 2026-09-29. Repository-aware scanning, exact command receipts, automatic setup and durable completion execution are shipped. Completed checks persist immediately, successful evidence is reused while inputs and declarations match, and one deadline spans verification, baseline and confirmation. A real launcher check ran a discovered CI script without configuration, and a read-only Snag scan covered 4,418 selected files using defaults. Full Snag CI and a live installed-plugin session remain unverified. Improved patch outcomes have not been demonstrated. See [current delivery status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-01. Repository evidence, exact receipts, five-host onboarding, callback activation and durable completion execution are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. The final local onboarding suite passed 1,062 tests with 28 skips. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
 lists to agents encouraged tests of implementation details. In 95 resolved patches,
@@ -363,7 +363,8 @@ Every figure below was produced by the command printed next to it.
 | The scope guard | 0 false questions, 0 misses on 25 cases | `python -m eval.scope_run` |
 | Claim inference, real turns | 21% over-claim, 25% missed work, across 3,557 turns | `python -m eval.claims_run` |
 | Live blocking | **75% → 12% of runs** after self-discharge landed (16 runs). On the later pinned sweep it was **8% of runs** — six block *events* across four of fifty, which is the figure that matters for sizing an experiment | `python -m eval.live --arm gate --model haiku` |
-| Host integration | six checks | `python plugin/bin/ep_doctor.py` |
+| Host integration | configuration and callback diagnostics | `python plugin/bin/ep_doctor.py --platform HOST --cwd PATH` |
+| Project readiness | activation, commands, environment and coverage actions | `python plugin/bin/ep_ready.py HOST --project PATH` |
 | Audit probes | **every reproduced defect fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
 | A pinned baseline | 68.9 and 73.3 across two passes of ninety paid runs, $67.42 | `python -m eval.baseline --pinned` |
 | Suite records that were wrong | **123 of 295 (42%)** said PASS while holding a failure count — `pytest \| tail` exits with `tail`'s status | `python -m eval.discriminate --bundles results --verbose` |
@@ -469,7 +470,7 @@ Everything above is a snapshot. The thesis has already been demoted once, the ob
 
 **So if you want the real story, don't read this file — read [`journey/`](journey/).**
 
-It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md) and [automatic setup](journey/47-installed-should-mean-active.md), followed by [durable verification](journey/48-completed-work-should-survive.md). Earlier chapters cover:
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md), [automatic setup](journey/47-installed-should-mean-active.md), [durable verification](journey/48-completed-work-should-survive.md), [five hosts](journey/49-one-engine-several-hosts.md), and [project readiness](journey/50-project-readiness.md). Earlier chapters cover:
 
 - **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
 - **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.

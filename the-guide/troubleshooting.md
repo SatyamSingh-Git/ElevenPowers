@@ -109,7 +109,7 @@ This is the designed behaviour for a host that changes a field — it becomes a 
 
 ### `unknown option(s): --whatever` (exit 2)
 
-`ep_doctor` refuses flags it does not know rather than ignoring them. Known flags are `--cwd` and `--host`. This strictness exists because the script once accepted `--host` silently and printed six green lines about something else entirely.
+`ep_doctor` refuses flags it does not know rather than ignoring them. Known flags are `--cwd`, `--host` and `--platform`. This strictness exists because the script once accepted `--host` silently and printed six green lines about something else entirely.
 
 ---
 
