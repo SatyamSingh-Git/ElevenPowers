@@ -12,6 +12,8 @@ Exits non-zero when something is wrong, so it works in continuous integration
 as well as by hand.
 """
 
+import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -20,29 +22,53 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.doctor import report  # noqa: E402
 
 
-KNOWN = {"--cwd", "--host", "--platform"}
-
-
 def main(argv: list[str]) -> int:
-    unknown = [a for a in argv[1:] if a.startswith("-") and a not in KNOWN]
-    if unknown:
-        print(f"unknown option(s): {', '.join(unknown)}\n{__doc__}")
-        return 2
-    where = Path(argv[argv.index("--cwd") + 1] if "--cwd" in argv else ".").resolve()
-    if "--platform" in argv:
-        from core.hosts.doctor import report as native_report
-        if "--host" in argv:
-            print("Native --platform checks configuration; --host is the Claude launcher replay check.")
-            return 2
-        try:
-            body, ok = native_report(argv[argv.index("--platform") + 1], where)
-        except (ValueError, IndexError) as exc:
-            print(f"Invalid platform: {exc}")
-            return 2
-    else:
-        body, ok = report(where, host="--host" in argv)
-    print(body)
-    return 0 if ok else 1
+    from core.hosts.setup import PATHS
+    parser = argparse.ArgumentParser(description='Check runtime configuration or explicitly prepare/inspect native acceptance.')
+    parser.add_argument('--cwd')
+    parser.add_argument('--host', action='store_true', help='Run the Claude launcher replay diagnostics')
+    parser.add_argument('--platform', choices=PATHS)
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--prepare-acceptance', metavar='NEW_DIR')
+    modes.add_argument('--acceptance', metavar='DIR')
+    parser.add_argument('--language', choices=('python', 'javascript'))
+    parser.add_argument('--host-version', help='Explicit operator version metadata; does not authenticate the host')
+    parser.add_argument('--seconds', type=float, help='Cooperative acceptance read budget, default 10 seconds')
+    parser.add_argument('--json', action='store_true')
+    args = parser.parse_args(argv[1:])
+    exercise = args.prepare_acceptance or args.acceptance
+    if args.host and (args.platform or exercise):
+        parser.error('--host is the Claude launcher replay; choose it independently of --platform/acceptance')
+    if exercise and (not args.platform or args.cwd):
+        parser.error('acceptance requires --platform and its explicit directory; omit --cwd')
+    if (args.language is not None or args.host_version is not None) and not args.prepare_acceptance:
+        parser.error('--language and --host-version apply only to --prepare-acceptance')
+    if args.seconds is not None and not args.acceptance:
+        parser.error('--seconds applies only to --acceptance')
+    try:
+        if args.prepare_acceptance:
+            from core.hosts.acceptance import prepare
+            value = prepare(args.platform, args.prepare_acceptance, args.language or 'python',
+                            Path(__file__).resolve().parents[2], version=args.host_version or '')
+            print(json.dumps(value, indent=2) if args.json else
+                  f"Prepared {value['host']} / {value['language']} exercise: {value['project']}\n"
+                  f"Instructions: {value['instructions']}\nNative acceptance: waiting; no host was launched.")
+            return 0
+        if args.acceptance:
+            from core.hosts.acceptance import inspect, render
+            value = inspect(args.platform, args.acceptance, timeout=10 if args.seconds is None else args.seconds)
+            print(json.dumps(value, indent=2) if args.json else render(value))
+            return 0 if value['state'] == 'passed' else 1
+        where = Path(args.cwd or '.').resolve()
+        if args.platform:
+            from core.hosts.doctor import report as native_report
+            body, ok = native_report(args.platform, where)
+        else:
+            body, ok = report(where, host=args.host)
+        print(json.dumps({'ok': ok, 'report': body}, indent=2) if args.json else body)
+        return 0 if ok else 1
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
 
 
 if __name__ == "__main__":
