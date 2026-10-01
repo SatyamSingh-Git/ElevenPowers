@@ -1,6 +1,7 @@
 """Explicit disposable native exercises; preparation is never live acceptance."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import sys
@@ -10,6 +11,7 @@ import uuid
 from ..config import Config, save
 from ..process import run
 from .readiness import activation, signature
+from .diagnostics import read_json
 from .setup import PATHS, config_path, install
 
 PYTHON_SOURCE = 'def accepts(value):\n    return value > 10\n'
@@ -133,3 +135,112 @@ sender, certify a production patch or establish compatibility with other version
 '''
     (root / 'EXERCISE.md').write_text(instructions, encoding='utf-8')
     return {**value, 'project': str(root), 'instructions': str(root / 'EXERCISE.md')}
+
+
+def _fingerprint(root, name):
+    path = root / name
+    if path.is_symlink() or path.parent.is_symlink() or not path.resolve().is_relative_to(root):
+        raise ValueError('linked or escaped exercise file')
+    with path.open('rb') as stream:
+        data = stream.read(1024 * 1024 + 1)
+    if len(data) > 1024 * 1024:
+        raise ValueError('exercise file exceeds read limit')
+    return hashlib.sha256(data).hexdigest()
+
+
+def inspect(host, root, timeout=10):
+    """Qualify retained local observations; never launch a host or write state."""
+    from .. import health
+    from .readiness import identity
+    if host not in PATHS:
+        raise ValueError('unsupported host')
+    if type(timeout) not in (int, float) or not math.isfinite(timeout) or not 0 <= timeout <= 120:
+        raise ValueError('acceptance seconds must be between 0 and 120')
+    started = time.monotonic()
+    root = Path(root).resolve(strict=True)
+    value = {'schema_version': 1, 'state': 'incomplete', 'host': host, 'project': str(root),
+             'host_version': 'unavailable', 'version_source': 'unavailable', 'checks': {},
+             'outcomes': {'pass': False, 'fail': False, 'incomplete': False}, 'next_actions': [],
+             'limits': ['Local native observations are unsigned; they do not authenticate a host or certify a production patch.',
+                        'Acceptance is limited to this exercise, retained history and the recorded operator version.',
+                        'Current freshness is checked; the earlier manual stale-view step is not independently attested.']}
+    try:
+        path = root / '.elevenpowers/acceptance.json'
+        manifest = read_json(path)
+        if (not isinstance(manifest, dict) or manifest.get('schema_version') != 1 or
+                manifest.get('host') != host or manifest.get('state') != 'prepared' or
+                manifest.get('language') not in ('python', 'javascript') or
+                type(manifest.get('prepared_at')) not in (int, float) or
+                not math.isfinite(manifest['prepared_at']) or manifest['prepared_at'] <= 0 or
+                manifest.get('version_source') not in ('operator', 'unavailable') or
+                not isinstance(manifest.get('host_version'), str) or len(manifest['host_version']) > 128):
+            raise ValueError('missing or invalid acceptance manifest')
+        files = ('app.py', 'check.py') if manifest['language'] == 'python' else ('app.mjs', 'check.test.mjs')
+        if (manifest.get('source_file'), manifest.get('test_file')) != files:
+            raise ValueError('exercise paths do not match the language contract')
+        initial = _fingerprint(root, files[0])
+        test = _fingerprint(root, files[1])
+        project = _fingerprint(root, '.elevenpowers/config.json')
+        native = _fingerprint(root, str(config_path(host, root).relative_to(root)))
+        checks = value['checks']
+        checks.update(test_unchanged=test == manifest.get('test_fingerprint'),
+                      project_configuration=project == manifest.get('project_configuration'),
+                      native_configuration=native == manifest.get('configuration'),
+                      source_changed=initial != manifest.get('initial_source'),
+                      host_version=manifest['version_source'] == 'operator' and bool(manifest['host_version']) and
+                                   manifest['host_version'] != 'unavailable')
+        value.update(language=manifest['language'], host_version=manifest['host_version'],
+                     version_source=manifest['version_source'])
+        snapshot = health.inspect(host, root, timeout=max(0, timeout - (time.monotonic() - started)))
+        live = snapshot['activation']
+        checks['generation'] = bool(manifest.get('generation')) and live.get('generation') == manifest['generation']
+        # The immutable preparation config declares one test command. Exporter
+        # commands are portable, so use the project-owned declaration for identity.
+        from ..config import load
+        checks['command'] = load(root).commands == {'tests': manifest.get('command')}
+        startup = live.get('phases', {}).get('SessionStart', {})
+        session, task = startup.get('session', ''), identity(snapshot['task'])
+        checks['startup_after_preparation'] = bool(session and startup.get('last_at', 0) >= manifest['prepared_at'])
+        links = [link for link in live.get('receipt_links', []) if task and session and
+                 link['task'] == task and link['session'] == session and link['at'] >= manifest['prepared_at']]
+        for link in links:
+            outcome = 'incomplete' if link['execution'] == 'incomplete' else link['result']
+            if outcome in value['outcomes']:
+                value['outcomes'][outcome] = True
+        stop = live.get('phases', {}).get('Stop', {})
+        checks['completion_after_commands'] = bool(links and stop.get('last_at', 0) >= max(x['at'] for x in links))
+        checks['fresh_pipeline'] = snapshot['health']['state'] == 'observed'
+        value['health'] = snapshot['health']
+        value['task_state'] = snapshot['task_state']
+        if read_json(path) != manifest or time.monotonic() - started >= timeout:
+            raise ValueError('exercise changed or acceptance read deadline reached')
+        immutable = ('test_unchanged', 'project_configuration', 'native_configuration', 'generation', 'command')
+        if not all(checks[k] for k in immutable):
+            value['next_actions'].append('Exercise contract or wiring changed; prepare a new exercise.')
+        elif snapshot['health']['stages']['verification']['state'] == 'failed':
+            value['state'] = 'failed'
+        elif snapshot['health']['state'] in ('incomplete', 'attention'):
+            value['next_actions'].extend(snapshot['next_actions'])
+        elif all(checks.values()) and all(value['outcomes'].values()):
+            value['state'] = 'passed'
+        else:
+            value['state'] = 'incomplete' if live.get('links_evicted') else 'waiting'
+            value['next_actions'].extend('Required acceptance observation: ' + k for k, present in
+                                         {**checks, **value['outcomes']}.items() if not present)
+    except (ValueError, OSError, TypeError, KeyError, AttributeError) as exc:
+        value['state'] = 'incomplete'
+        value['next_actions'].append('Acceptance diagnostics unavailable: ' + type(exc).__name__)
+    value['read_ms'] = round((time.monotonic() - started) * 1000, 3)
+    from ..redact import scrub_values
+    return scrub_values(value)
+
+
+def render(value):
+    lines = [f"ElevenPowers native acceptance: {value['state']} ({value['host']})",
+             f"Project: {value['project']}",
+             f"Host version: {value['host_version']} ({value['version_source']})"]
+    lines.extend(f"Check {k}: {'observed' if v else 'missing'}" for k, v in value['checks'].items())
+    lines.extend(f"Outcome {k}: {'observed' if v else 'missing'}" for k, v in value['outcomes'].items())
+    lines.extend('Next action: ' + action for action in value['next_actions'])
+    lines.extend('Limit: ' + limit for limit in value['limits'])
+    return '\n'.join(lines)
