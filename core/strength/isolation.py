@@ -1,5 +1,9 @@
 """Bounded working-copy isolation; dependencies are copied, never aliased."""
 from pathlib import Path
+from contextlib import contextmanager
+from dataclasses import dataclass
+import hashlib
+import tempfile
 import time
 from .model import relative
 from .scope import git
@@ -61,3 +65,57 @@ def copy_plan(root, settings, deadline):
         if size > settings.max_bytes:
             raise ValueError('isolation byte limit exceeded')
     return sorted(paths)
+
+
+def fingerprint(root, paths, settings, deadline, *, destination=None):
+    digest = hashlib.sha256()
+    total = 0
+    for path in paths:
+        if time.monotonic() >= deadline:
+            raise TimeoutError('strength deadline reached reading inputs')
+        source = safe_file(root, path)
+        file_hash = hashlib.sha256()
+        target = None
+        try:
+            if destination is not None:
+                output = destination / path
+                output.parent.mkdir(parents=True, exist_ok=True)
+                target = output.open('xb')
+            with source.open('rb') as stream:
+                while chunk := stream.read(1024 * 1024):
+                    total += len(chunk)
+                    if total > settings.max_bytes:
+                        raise ValueError('isolation byte limit exceeded during copy')
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError('strength deadline reached copying inputs')
+                    file_hash.update(chunk)
+                    if target:
+                        target.write(chunk)
+            if target:
+                target.close()
+                target = None
+                output.chmod(source.stat().st_mode & 0o777)
+            safe_file(root, path)
+        finally:
+            if target:
+                target.close()
+        digest.update(path.encode('utf-8') + b'\0' + file_hash.digest())
+    return digest.hexdigest()
+
+
+@dataclass(frozen=True)
+class Snapshot:
+    root: Path
+    paths: list[str]
+    stamp: str
+
+
+@contextmanager
+def snapshot(root, settings, deadline):
+    paths = copy_plan(root, settings, deadline)
+    with tempfile.TemporaryDirectory(prefix='ep-strength-') as directory:
+        copied = Path(directory)
+        stamp = fingerprint(root, paths, settings, deadline, destination=copied)
+        if stamp != fingerprint(root, paths, settings, deadline):
+            raise ValueError('inputs changed while creating isolated snapshot')
+        yield Snapshot(copied, paths, stamp)

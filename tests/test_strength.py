@@ -97,3 +97,33 @@ def test_copy_plan_limits_are_explicit(tmp_path):
     repository(tmp_path)
     with pytest.raises(ValueError, match='file limit'):
         copy_plan(tmp_path, Settings(max_files=1), time.monotonic()+10)
+
+
+def test_snapshot_is_private_and_cleaned_on_failure(tmp_path):
+    import time
+    from core.strength.isolation import snapshot
+    from core.strength.settings import Settings
+    repository(tmp_path)
+    original = (tmp_path / 'a.py').read_bytes()
+    with pytest.raises(RuntimeError):
+        with snapshot(tmp_path, Settings(), time.monotonic()+10) as copied:
+            isolated = copied.root
+            (isolated / 'a.py').write_text('value = 99\n')
+            assert copied.stamp
+            raise RuntimeError('interrupt')
+    assert not isolated.exists()
+    assert (tmp_path / 'a.py').read_bytes() == original
+
+
+def test_snapshot_rejects_symlink_input(tmp_path):
+    import time
+    from core.strength.isolation import snapshot
+    from core.strength.settings import Settings
+    repository(tmp_path)
+    try:
+        (tmp_path / 'alias.py').symlink_to(tmp_path / 'a.py')
+    except OSError:
+        pytest.skip('symlink privilege unavailable')
+    with pytest.raises(ValueError, match='linked'):
+        with snapshot(tmp_path, Settings(), time.monotonic()+10):
+            pass
