@@ -5,6 +5,12 @@ wrong. `docs/status.md` records current delivery and integration limits;
 `docs/validation/` holds dated checks. `docs/research/` is a source-read of fourteen agent systems at pinned
 commits, plus the literature audits. Read those rather than re-deriving them.
 
+**Project independence is a standing user requirement.** Build runtime behavior
+for any project using this tool. A named repository such as Snag is an acceptance
+case, never a special branch, hardcoded path or command in runtime logic. Discover
+project conventions and honor explicit overrides; report ambiguity and coverage
+limits. Use unrelated project controls when validating portable behavior.
+
 ## The architecture graph — standing instruction
 
 > **After any work session that changes the architecture, data flow, or

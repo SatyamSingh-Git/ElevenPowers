@@ -2,6 +2,10 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-01 generalized onboarding](2026-10-01-live-onboarding.md): five-host
+  setup/readiness, bounded activation, targeted edit observations, review
+  regressions, real Claude startup and the actual failed external Snag CI relay.
+
 | Date | Record | What it establishes |
 |---|---|---|
 | 2026-09-28 | [Portable repository evidence](2026-09-28-portable-evidence.md) | Git-aware selection, coverage limits, declared receipts, review fixes, and read-only Snag/sample-output checks |

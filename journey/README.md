@@ -10,6 +10,10 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
+Latest: [50 — project readiness](50-project-readiness.md) records generalized
+onboarding, callback activation, native patch observations, fresh-review
+corrections, real Claude startup and the actual failed Snag CI acceptance run.
+
 | File | Covers |
 |---|---|
 | [00-brief.md](00-brief.md) | The original brief, verbatim and unedited — the document everything here is answering, and the one later plans are judged against |

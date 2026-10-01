@@ -30,6 +30,12 @@ python -m eval.validate
 python plugin/bin/ep_doctor.py --host
 ```
 
+Generalized onboarding/activation/edit acceptance can be checked with
+`python -m pytest tests/test_onboarding.py tests/test_native_edits.py tests/test_project_readiness.py -q`.
+These cover four unrelated manifest types, no-Git/dirty files, interrupted and
+missing events, bounded state and concurrent launcher isolation. Doctor replay
+is explicitly marked and cannot establish project activation.
+
 Tests create temporary Git repositories. Git must have a user name and email
 configured, as it does in CI. No paid agent runs are part of these commands.
 
