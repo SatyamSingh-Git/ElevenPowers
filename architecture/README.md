@@ -49,13 +49,14 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **86 nodes / 186 edges** across 7 planes (as of 2026-10-01),
-including generalized onboarding, native edit observations and portable reports.
+Current size: **92 nodes / 200 edges** across 7 planes (as of 2026-10-01),
+including onboarding, native edits, portable reports and optional changed-file
+test strength. All four tabs draw after the structural update.
 
-One thing the graph says out loud: the **Workflow** tab's third lane is
-**planned and not built**. Everything in the Overview tab is real code today.
-The basic receipt export is in the task lane; PLAN §5.17's mutation findings
-remain planned and are not implied by the shipped Markdown/JSON report.
+The **Workflow** tab's third lane now identifies built v0.8 mechanisms and their
+limits. Mutation findings are optional human review observations; missing engines,
+failed baselines, import redirection and sampling are explicit. There is no new
+verdict and no raw mutant target in automatic agent feedback.
 
 ---
 
