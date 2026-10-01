@@ -147,3 +147,25 @@ def test_contained_strength_command_reports_timeout(tmp_path):
     value = execute([sys.executable, '-c', 'import time; time.sleep(5)'], tmp_path,
                     Budget(time.monotonic()+.2, 1), 1, shell=False)
     assert value.status == 'timed_out' and value.returncode is None
+
+
+def test_baseline_requires_observed_tests_and_rejects_absolute_workspace(tmp_path):
+    import sys, time
+    from core.strength.baseline import baseline
+    from core.strength.execution import Budget
+    (tmp_path / 'test_a.py').write_text('def test_value():\n    assert True\n')
+    command = f'"{sys.executable}" -m pytest -q -p no:cacheprovider'
+    assert baseline(command, tmp_path, tmp_path / 'original', Budget(time.monotonic()+10, 1), 5).status == 'passed'
+    assert baseline('echo no tests', tmp_path, tmp_path / 'original', Budget(time.monotonic()+10, 1), 5).status == 'incomplete'
+    tied = command + ' "' + str(tmp_path / 'original' / 'tests') + '"'
+    assert baseline(tied, tmp_path, tmp_path / 'original', Budget(time.monotonic()+10, 1), 5).status == 'incomplete'
+
+
+def test_red_baseline_is_not_mutation_detection(tmp_path):
+    import sys, time
+    from core.strength.baseline import baseline
+    from core.strength.execution import Budget
+    (tmp_path / 'test_a.py').write_text('def test_value():\n    assert False\n')
+    value = baseline(f'"{sys.executable}" -m pytest -q -p no:cacheprovider', tmp_path,
+                     tmp_path / 'original', Budget(time.monotonic()+10, 1), 5)
+    assert value.status == 'failed'
