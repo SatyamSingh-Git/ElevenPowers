@@ -31,6 +31,27 @@ See [report commands](the-guide/commands.md#ep_report--evidence-to-share-with-a-
 [journey 51](journey/51-receipts-another-person-can-read.md) and
 [report validation](docs/validation/2026-10-01-portable-report.md).
 
+Optional **changed-file test strength** now asks whether passing tests notice small
+changes to the production files edited by a task. Cosmic Ray supplies Python
+mutations; Stryker supplies JavaScript/TypeScript mutations. Every baseline and
+attempt starts from clean private inputs, with explicit time, attempt and copy
+limits. Detected changes, possible test gaps, invalid mutations and incomplete
+execution appear in the human report with independently checked input freshness.
+There is no new completion blocker and no individual mutant target sent to the
+coding agent. After explicit optional engine setup, guide/strict completion
+considers the shared runner automatically across all five hosts.
+
+Run `python plugin/bin/ep_strength.py --root PATH` explicitly, or export saved
+findings through `ep_report.py`. The defaults are 60 seconds, eight attempts and
+15 seconds per test command; use a focused command for slower projects. Missing
+engines, dirty attribution, editable Python paths into original source, unsafe
+dependencies and exhausted budgets stay explicit. Whole changed-file samples do
+not prove correctness or improved patch outcomes. See
+[setup and configuration](the-guide/configuration.md),
+[engine provenance](docs/research/mutation-engines.md),
+[journey 52](journey/52-tests-that-notice-a-change.md) and
+[delivery validation](docs/validation/2026-10-01-test-strength.md).
+
 ---
 
 > **What this is.** A completion gate for coding agents.
@@ -352,6 +373,12 @@ For a repeatable local test environment, see [Development and verification](docs
 ## Where this actually is
 
 Research prototype; status reviewed 2026-10-01. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The final local onboarding suite passed 1,062 tests with 28 skips; later report checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+
+The optional test-strength delivery passed **1,127 local tests with 28 skips**
+after three independent-review fixes. Real Python/JavaScript/TypeScript fixture
+acceptance and all four rendered architecture views passed. The implementation
+was published in 25 incremental parts; see the [dated record](docs/validation/2026-10-01-test-strength.md)
+for exact checks, boundaries and publication subjects.
 
 The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
 lists to agents encouraged tests of implementation details. In 95 resolved patches,

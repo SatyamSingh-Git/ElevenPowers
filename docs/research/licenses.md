@@ -1,5 +1,12 @@
 # License and attribution register
 
+The optional 2026-10-01 mutation adapters use installed Cosmic Ray 8.7.0 (MIT)
+and StrykerJS instrumenter 9.5.1 (Apache-2.0), rather than vendoring an engine.
+The enumeration attribution, MIT notice, pinned versions, upstream links,
+producer observations and shared-executor limits are in
+[mutation engine provenance](mutation-engines.md). This adds delivery provenance;
+it does not revise the historical survey or assert a new upstream legal audit.
+
 Read from each clone's LICENSE file on 2026-09-09 at the commits recorded in `cards/`. Obligations listed are those that apply if code, prompts, templates, or documentation are reused; ideas and abstractions carry no obligation.
 
 | System | Commit | License (SPDX) | Copyright holder | Reuse obligations | Caveats found in source |

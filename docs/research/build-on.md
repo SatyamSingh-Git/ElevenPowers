@@ -1,5 +1,13 @@
 # What we build on: prior art for each v0.8 component
 
+**Delivery update, 2026-10-01.** Beyond the scoped reversion described historically
+below, optional changed-file test strength now borrows installed Cosmic Ray 8.7.0
+and Stryker instrumenter 9.5.1 operators. Shared execution adds clean private
+trials, positive baselines, import diagnostics, budgets and qualified human
+reports. No mutation engine or model-based test generator was invented. See
+[provenance](mutation-engines.md) for licenses and limits and
+[validation](../validation/2026-10-01-test-strength.md) for actual producer controls.
+
 2026-09-15. Companion to [complementarity-matrix.md](complementarity-matrix.md),
 which did this for v0.7's architecture. PLAN v0.8 named three builds and did not
 say what they stand on. This does.
