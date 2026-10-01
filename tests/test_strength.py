@@ -287,3 +287,35 @@ def test_stryker_mutations_detected_and_undetected_on_real_node_tests(tmp_path):
     (tmp_path / 'a.test.mjs').write_text(weak + "test('zero', () => assert.equal(positive(0),false));\n")
     assert run_candidate(boundary,tmp_path,command,Budget(time.monotonic()+10,1),5).status == 'detected'
     assert (tmp_path / 'a.mjs').read_text() == source
+
+
+def test_analysis_orchestrates_general_project_and_preserves_tree(tmp_path):
+    import sys, importlib.util
+    from core.strength.runner import analyze
+    from core.ledger import Ledger
+    from core.config import Config
+    if importlib.util.find_spec('cosmic_ray') is None:
+        pytest.skip('optional cosmic-ray not installed')
+    base = repository(tmp_path)
+    (tmp_path/'a.py').write_text('def positive(value):\n    return value > 0\n')
+    (tmp_path/'test_a.py').write_text('from a import positive\ndef test_value():\n    assert positive(2)\n')
+    before = (tmp_path/'a.py').read_bytes()
+    ledger = Ledger(root=tmp_path, task='t', base=base)
+    ledger._config = Config(commands={'tests': f'"{sys.executable}" -m pytest -q -p no:cacheprovider'},
+                           strength={'max_mutants': 4})
+    value = analyze(ledger)
+    assert value['baseline'] == 'passed' and value['attempts'] == 4
+    assert value['summary']['undetected'] > 0
+    assert value['state'] == 'incomplete' and any('attempt' in issue for issue in value['issues'])
+    assert (tmp_path/'a.py').read_bytes() == before
+
+
+def test_analysis_disabled_and_unavailable_do_not_certify(tmp_path):
+    from core.strength.runner import analyze
+    from core.ledger import Ledger
+    from core.config import Config
+    ledger = Ledger(root=tmp_path, task='t')
+    ledger._config = Config(strength={'enabled': False})
+    assert analyze(ledger)['state'] == 'disabled'
+    ledger._config = Config()
+    assert analyze(ledger)['state'] == 'incomplete'
