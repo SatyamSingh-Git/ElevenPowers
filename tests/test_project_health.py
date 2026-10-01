@@ -181,6 +181,15 @@ def test_health_rejects_invalid_budget(tmp_path, seconds):
         inspect('codex', tmp_path, timeout=seconds)
 
 
+def test_ready_check_flag_is_explicit_and_uses_health(tmp_path):
+    prepared(tmp_path)
+    args = [sys.executable, str(SOURCE / 'plugin/bin/ep_ready.py'), 'codex', '--project', str(tmp_path), '--json']
+    done = subprocess.run(args, capture_output=True, text=True, timeout=30)
+    assert done.returncode == 0 and 'health' in json.loads(done.stdout)
+    done = subprocess.run([*args, '--check'], capture_output=True, text=True, timeout=30)
+    assert done.returncode == 1 and json.loads(done.stdout)['health']['state'] == 'waiting'
+
+
 def test_later_task_command_does_not_inherit_earlier_edit(tmp_path):
     from core.health import inspect
     from core.hook import dispatch
