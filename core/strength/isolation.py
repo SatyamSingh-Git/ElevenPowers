@@ -122,3 +122,14 @@ def snapshot(root, settings, deadline):
         if stamp != fingerprint(root, paths, settings, deadline):
             raise ValueError('inputs changed while creating isolated snapshot')
         yield Snapshot(copied, paths, stamp)
+
+
+@contextmanager
+def trial(pristine, settings, deadline):
+    """Each test invocation starts from identical inputs, including secondary files."""
+    with tempfile.TemporaryDirectory(prefix='ep-strength-trial-') as directory:
+        copied = Path(directory)
+        stamp = fingerprint(pristine.root, pristine.paths, settings, deadline, destination=copied)
+        if stamp != pristine.stamp:
+            raise ValueError('pristine analysis inputs changed')
+        yield copied

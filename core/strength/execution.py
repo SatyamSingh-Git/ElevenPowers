@@ -1,7 +1,9 @@
 """One shared deadline and explicit mutation-attempt cap."""
 from dataclasses import dataclass
 import os
+from pathlib import Path
 import subprocess
+import tempfile
 import time
 from .. import process
 
@@ -31,12 +33,24 @@ class Execution:
     returncode: int | None = None
     stdout: str = ''
     stderr: str = ''
+    reason: str = ''
 
 
-def execute(command, root, budget, seconds, *, shell=True):
+def execute(command, root, budget, seconds, *, shell=True, original=None):
     try:
-        done = process.run(command, cwd=root, timeout=budget.timeout(seconds), shell=shell,
-                           env={**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'})
+        with tempfile.TemporaryDirectory(prefix='ep-strength-guard-') as folder:
+            environment = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'}
+            marker = Path(folder) / 'violation'
+            if original is not None:
+                startup = Path(folder) / 'sitecustomize.py'
+                startup.write_bytes(Path(__file__).with_name('python_guard.py').read_bytes())
+                environment.update(EP_STRENGTH_GUARD_ORIGINAL=str(original),
+                                   EP_STRENGTH_GUARD_MARKER=str(marker),
+                                   PYTHONPATH=folder + os.pathsep + os.environ.get('PYTHONPATH', ''))
+            done = process.run(command, cwd=root, timeout=budget.timeout(seconds), shell=shell,
+                               env=environment)
+            if marker.exists():
+                return Execution('isolation_error', reason=marker.read_text(encoding='utf-8')[:512])
         return Execution('complete', done.returncode, done.stdout, done.stderr)
     except (TimeoutError, subprocess.TimeoutExpired):
         return Execution('timed_out')

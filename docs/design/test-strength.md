@@ -31,6 +31,14 @@ Copy limits, source changes during execution and incomplete engine output invali
 the observation. Reports contain bounded metadata, never source/replacements or raw
 captured test output. Strength remains informational and independently qualified.
 
+Independent review tightened isolation: baseline and every mutation execute in a
+fresh trial copied from immutable inputs. Local markers, caches and secondary edits
+cannot contaminate later attempts. Python startup diagnostics reject known `.pth`
+and editable finder paths into original source and audit original-project reads.
+Path/startup overrides that disable the diagnostic are incomplete. This remains
+a trusted-command diagnostic, not an OS sandbox. The first release selects whole
+changed production files, rather than claiming exhaustive diff-hunk coverage.
+
 Acceptance: weak tests leave undetected changes; stronger tests detect them on
 unrelated Python and JS/TS fixtures; baseline failures and timeouts are incomplete;
 original files remain byte-identical. Native Windows and Linux execution are tested

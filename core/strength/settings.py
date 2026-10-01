@@ -21,6 +21,8 @@ class Settings:
 def settings(raw):
     if not isinstance(raw, dict) or set(raw) - set(Settings.__dataclass_fields__):
         raise ValueError('strength must contain recognized settings')
+    if not isinstance(raw.get('dependencies', []), (list, tuple)):
+        raise ValueError('dependencies must be relative paths')
     value = Settings(**{**raw, 'dependencies': tuple(raw.get('dependencies', []))})
     if type(value.enabled) is not bool:
         raise ValueError('strength.enabled must be boolean')

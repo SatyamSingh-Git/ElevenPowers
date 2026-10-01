@@ -8,7 +8,7 @@ from .. import jobs
 from . import engines, store
 from .baseline import baseline
 from .execution import Budget
-from .isolation import snapshot, copy_plan, fingerprint
+from .isolation import snapshot, trial, copy_plan, fingerprint
 from .model import LIMITATION, summary
 from .mutations import run_candidate
 from .scope import select
@@ -92,7 +92,8 @@ def analyze(ledger, *, base=None, command=None):
                     paths=value['paths'], versions=versions):
                 value = previous
                 return value
-            tested = baseline(value['command'], copied.root, ledger.root, budget, options.test_seconds)
+            with trial(copied, options, deadline) as test_root:
+                tested = baseline(value['command'], test_root, ledger.root, budget, options.test_seconds)
             value['baseline'] = tested.status
             if tested.status != 'passed':
                 value['issues'].append(tested.reason)
@@ -107,7 +108,9 @@ def analyze(ledger, *, base=None, command=None):
                     candidates, version = generate(copied.root, paths, executable, budget)
                     value['engine_versions'][name] = version
                     for candidate in candidates:
-                        observed = run_candidate(candidate, copied.root, value['command'], budget, options.test_seconds)
+                        with trial(copied, options, deadline) as test_root:
+                            observed = run_candidate(candidate, test_root, value['command'], budget,
+                                                     options.test_seconds, original=ledger.root)
                         value['observations'].append(observed.json())
                         value['attempts'] = budget.attempts
                         value['summary'] = summary_from(value)

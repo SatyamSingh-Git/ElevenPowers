@@ -1,6 +1,7 @@
 """Positive test execution on unmutated isolated source comes first."""
 from dataclasses import dataclass
 import os
+import re
 import sys
 from ..evidence import Kind, Result, SourceScan
 from ..parsers import parse, PYTEST_NODE, PYTEST_SHORT
@@ -38,6 +39,8 @@ def guard(command, original):
     for name in ('PYTHONPATH', 'NODE_PATH'):
         if original.as_posix().casefold() in os.environ.get(name, '').replace('\\', '/').casefold():
             return name + ' points to the original workspace'
+    if 'PYTHONPATH' in command.upper() or re.search(r'(?<!\S)-(?:I|E|S)(?!\S)', command):
+        return 'Python path/startup overrides cannot establish isolated import provenance'
     return ''
 
 
@@ -45,9 +48,9 @@ def baseline(command, copied, original, budget, seconds):
     issue = guard(command, original)
     if not command or issue:
         return Baseline('incomplete', issue or 'no declared test command')
-    execution = execute(command, copied, budget, seconds)
+    execution = execute(command, copied, budget, seconds, original=original)
     if execution.status != 'complete':
-        return Baseline('incomplete', 'baseline ' + execution.status)
+        return Baseline('incomplete', execution.reason or 'baseline ' + execution.status)
     passed, failed, errors = outcomes(command, execution, copied)
     if execution.returncode:
         return Baseline('failed', 'unmutated test command failed')

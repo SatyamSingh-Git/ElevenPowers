@@ -527,3 +527,55 @@ def test_real_engine_project_acceptance_weak_then_strong(tmp_path, language):
     assert observed_strong['summary']['undetected'] == 0
     assert observed_strong['summary']['detected'] > 0
     assert target.read_bytes() == before
+
+
+@pytest.mark.parametrize('dependencies', [None, 4])
+def test_bad_optional_dependencies_never_interrupt_completion(tmp_path, dependencies):
+    from core.strength.runner import consider
+    from core.config import Config
+    from core.ledger import Ledger
+    ledger = Ledger(root=tmp_path, task='t')
+    ledger._config = Config(strength={'dependencies':dependencies})
+    assert consider(ledger) is None
+    assert any(d['what'] == 'test strength incomplete' for d in ledger.decisions)
+
+
+def test_each_mutation_starts_with_clean_test_inputs(tmp_path, monkeypatch):
+    import sys
+    from core.strength.runner import analyze
+    from core.strength import engines
+    from core.ledger import Ledger
+    from core.config import Config
+    base = repository(tmp_path)
+    (tmp_path/'a.py').write_text('value=2\n')
+    (tmp_path/'secondary.txt').write_text('clean')
+    (tmp_path/'test_a.py').write_text("from pathlib import Path\nfrom a import value\ndef test_value():\n    assert not Path('marker').exists()\n    assert Path('secondary.txt').read_text() == 'clean'\n    Path('marker').write_text('created')\n    Path('secondary.txt').write_text('changed')\n    assert value > 0\n")
+    ledger = Ledger(root=tmp_path, task='t', base=base)
+    ledger._config = Config(commands={'tests':f'"{sys.executable}" -m pytest -q -p no:cacheprovider'},
+                           strength={'python':sys.executable})
+    monkeypatch.setattr(engines,'cosmic',lambda *args:(engines.Candidates([
+        engines.Candidate('1','a.py',1,'op','value=3\n'), engines.Candidate('2','a.py',1,'op','value=4\n')]), '8.7.0'))
+    value = analyze(ledger)
+    assert value['baseline'] == 'passed' and value['summary']['undetected'] == 2
+    assert value['summary']['detected'] == 0 and value['state'] == 'complete'
+    assert (tmp_path/'secondary.txt').read_text() == 'clean' and not (tmp_path/'marker').exists()
+
+
+def test_editable_python_paths_make_isolation_explicitly_incomplete(tmp_path):
+    import subprocess, sys, sysconfig, time
+    from core.strength.baseline import baseline
+    from core.strength.execution import Budget
+    original, copied, environment = (tmp_path/name for name in ('original','copied','environment'))
+    for folder in (original,copied):
+        (folder/'src/pkg').mkdir(parents=True)
+        (folder/'src/pkg/__init__.py').write_text('value=2\n')
+    (copied/'test_a.py').write_text('import pkg\ndef test_value():\n    assert pkg.value == 2\n')
+    subprocess.run([sys.executable,'-m','venv','--without-pip',str(environment)],check=True,capture_output=True)
+    python = environment/('Scripts/python.exe' if sys.platform=='win32' else 'bin/python')
+    info = subprocess.run([str(python),'-c','import sysconfig; print(sysconfig.get_paths()["purelib"])'],
+                          check=True,capture_output=True,text=True)
+    site = Path(info.stdout.strip())
+    (site/'source.pth').write_text(str(original/'src')+'\n'+sysconfig.get_paths()['purelib']+'\n')
+    value = baseline(f'"{python}" -m pytest -q -p no:cacheprovider', copied, original,
+                     Budget(time.monotonic()+20,1),10)
+    assert value.status == 'incomplete' and 'original' in value.reason

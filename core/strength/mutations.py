@@ -7,7 +7,7 @@ from .isolation import safe_file
 from .model import Observation
 
 
-def run_candidate(candidate, copied, command, budget, seconds):
+def run_candidate(candidate, copied, command, budget, seconds, *, original=None):
     status = 'not_run'
     try:
         budget.attempt()
@@ -24,9 +24,9 @@ def run_candidate(candidate, copied, command, budget, seconds):
             except (SyntaxError, ValueError):
                 return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, 'invalid')
         target.write_bytes(candidate.content.encode(encoding))
-        execution = execute(command, copied, budget, seconds)
+        execution = execute(command, copied, budget, seconds, original=original)
         if execution.status != 'complete':
-            status = execution.status
+            status = 'error' if execution.status == 'isolation_error' else execution.status
         else:
             passed, failed, errors = outcomes(command, execution, copied)
             if errors:

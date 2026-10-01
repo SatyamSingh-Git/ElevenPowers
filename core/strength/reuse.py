@@ -4,6 +4,7 @@ import json
 import os
 import platform
 import sys
+from pathlib import Path
 
 
 def execution_stamp(files):
@@ -11,7 +12,11 @@ def execution_stamp(files):
     context = json.dumps({'environment': sorted(os.environ.items()),
                           'python': sys.version, 'executable': sys.executable,
                           'platform': platform.platform()}, ensure_ascii=True)
-    return hashlib.sha256((files + context).encode('utf-8')).hexdigest()
+    digest = hashlib.sha256((files + context).encode('utf-8'))
+    for path in sorted(Path(__file__).parent.iterdir()):
+        if path.suffix in ('.py', '.mjs'):
+            digest.update(path.name.encode('utf-8') + path.read_bytes())
+    return digest.hexdigest()
 
 
 def reusable(value, *, task, base, command, settings, fingerprint, paths, versions):
