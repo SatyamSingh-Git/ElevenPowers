@@ -350,3 +350,13 @@ def test_interrupted_strength_record_is_not_reusable(tmp_path):
     from core.strength.reuse import reusable
     assert not reusable({'state':'running'}, task='t', base='b', command='c',
                         settings={}, fingerprint='f', paths=[], versions={})
+
+
+def test_strength_cli_incomplete_is_explicit_and_invalid_option_fails(tmp_path):
+    import subprocess, sys, json
+    script = Path('plugin/bin/ep_strength.py').resolve()
+    done = subprocess.run([sys.executable, str(script), '--root', str(tmp_path), '--json'], capture_output=True, text=True)
+    assert done.returncode == 2
+    assert json.loads(done.stdout)['state'] == 'incomplete'
+    invalid = subprocess.run([sys.executable, str(script), '--root', str(tmp_path), '--max-mutants', '-2'], capture_output=True, text=True)
+    assert invalid.returncode == 2 and 'max_mutants' in invalid.stderr
