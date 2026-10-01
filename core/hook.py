@@ -438,6 +438,8 @@ def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
     if proved:
         ledger.add(proved)
         status = ledger.status()
+    from .strength.runner import consider
+    consider(ledger)
     # The best state this task ever proved, kept in a private ref so a later
     # edit cannot lose it. 5.6: a long attempt ends at its latest patch, not its
     # best, and 60-69% of agent failures reach the right code and then damage

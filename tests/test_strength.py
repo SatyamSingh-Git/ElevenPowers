@@ -360,3 +360,28 @@ def test_strength_cli_incomplete_is_explicit_and_invalid_option_fails(tmp_path):
     assert json.loads(done.stdout)['state'] == 'incomplete'
     invalid = subprocess.run([sys.executable, str(script), '--root', str(tmp_path), '--max-mutants', '-2'], capture_output=True, text=True)
     assert invalid.returncode == 2 and 'max_mutants' in invalid.stderr
+
+
+def test_automatic_strength_is_shared_silent_and_passive_when_off(tmp_path, monkeypatch):
+    from core.strength import runner
+    from core.ledger import Ledger
+    from core.config import Config
+    ledger = Ledger(root=tmp_path, task='t')
+    ledger._config = Config(profile='guide')
+    calls = []
+    monkeypatch.setattr(runner, 'analyze', lambda current: calls.append(current.task))
+    assert runner.consider(ledger) is None and calls == ['t']
+    ledger._config = Config(profile='off')
+    runner.consider(ledger)
+    assert calls == ['t']
+    ledger._config = Config(strength={'enabled':False})
+    runner.consider(ledger)
+    assert calls == ['t']
+
+
+def test_completion_wires_strength_without_mutant_feedback():
+    import inspect
+    from core.hook import _complete_stop
+    source = inspect.getsource(_complete_stop)
+    assert 'consider(ledger)' in source
+    assert 'strength.observations' not in source

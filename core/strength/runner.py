@@ -136,3 +136,16 @@ def analyze(ledger, *, base=None, command=None):
 def summary_from(value):
     from .model import Observation
     return summary([Observation(**item) for item in value['observations']])
+
+
+def consider(ledger):
+    """Automatic completion work. Individual mutations never enter agent feedback."""
+    if not ledger.config.verifies:
+        return
+    try:
+        if settings(ledger.config.strength).enabled:
+            analyze(ledger)
+    except (OSError, ValueError, jobs.Busy, jobs.Superseded):
+        # Advisory execution/persistence must not change the completion verdict.
+        # A bounded fixed note lets a human distinguish absence from success.
+        ledger.note('test strength incomplete', 'optional analysis could not finish or save its observation')
