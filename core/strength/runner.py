@@ -121,6 +121,8 @@ def analyze(ledger, *, base=None, command=None):
                 value['issues'].append('project inputs changed during test-strength analysis')
         if value['summary']['incomplete']:
             value['issues'].append('some mutation attempts did not complete')
+        if not value['observations']:
+            value['issues'].append('no applicable mutations were produced for the selected source')
         value['state'] = 'incomplete' if value['issues'] else 'complete'
         return value
     except (OSError, ValueError, TimeoutError) as exc:

@@ -379,14 +379,6 @@ def test_automatic_strength_is_shared_silent_and_passive_when_off(tmp_path, monk
     assert calls == ['t']
 
 
-def test_completion_wires_strength_without_mutant_feedback():
-    import inspect
-    from core.hook import _complete_stop
-    source = inspect.getsource(_complete_stop)
-    assert 'consider(ledger)' in source
-    assert 'strength.observations' not in source
-
-
 def test_strength_report_is_read_only_and_test_edits_make_it_stale(tmp_path, monkeypatch):
     import sys, time
     from core.strength.runner import analyze
@@ -413,3 +405,81 @@ def test_strength_report_is_read_only_and_test_edits_make_it_stale(tmp_path, mon
     assert (tmp_path/'.elevenpowers/strength.json').read_bytes() == state
     (tmp_path/'test_a.py').write_text('def test_value():\n    assert 2 == 2\n')
     assert build(tmp_path)['test_strength']['freshness'] == 'stale'
+
+
+def test_saved_strength_rejects_nested_private_fields_and_invalid_state(tmp_path):
+    import json
+    from core.strength.store import load
+    folder = tmp_path/'.elevenpowers'
+    folder.mkdir()
+    template = {'schema_version':1, 'task':'t', 'state':'complete', 'issues':[],
+        'observations':[], 'fingerprint':'f', 'source_fingerprint':'s', 'baseline':'failed',
+        'engine_versions':{}, 'base':'b', 'command':'pytest', 'settings':{}, 'paths':[],
+        'recorded_at':1, 'summary':{}, 'attempts':0, 'limitations':[]}
+    for update in [{'baseline':'failed'}, {'settings':{'raw_output':'secret'}}, {'issues':'not a list'}, {'attempts':-1}]:
+        value = {**template, 'baseline':'passed', **update}
+        (folder/'strength.json').write_text(json.dumps(value))
+        assert load(tmp_path,'t')['state'] == 'incomplete'
+
+
+def test_stale_task_cannot_overwrite_new_strength(tmp_path):
+    from core.strength import store
+    from core.ledger import Ledger
+    from core import jobs
+    Ledger(root=tmp_path, task='new').save()
+    value = {'schema_version':1, 'task':'old', 'state':'running', 'issues':[],
+        'observations':[], 'fingerprint':'', 'source_fingerprint':'', 'baseline':'not_run',
+        'engine_versions':{}, 'base':'', 'command':'', 'settings':{}, 'paths':[],
+        'recorded_at':1, 'summary':{}, 'attempts':0, 'limitations':[]}
+    with pytest.raises(jobs.Superseded):
+        store.save(tmp_path,value)
+
+
+def test_strength_deadline_and_changed_inputs_are_explicit(tmp_path, monkeypatch):
+    import sys
+    from core.strength.runner import analyze
+    from core.strength import engines
+    from core.config import Config
+    from core.ledger import Ledger
+    base = repository(tmp_path)
+    (tmp_path/'a.py').write_text('value=2\n')
+    (tmp_path/'test_a.py').write_text('def test_value():\n    assert True\n')
+    ledger = Ledger(root=tmp_path, task='t', base=base)
+    ledger._config = Config(commands={'tests':f'"{sys.executable}" -m pytest -q -p no:cacheprovider'},
+                           strength={'python':sys.executable})
+    def mutate_original(*args):
+        (tmp_path/'test_a.py').write_text('def test_changed():\n    assert True\n')
+        return engines.Candidates([engines.Candidate('1','a.py',1,'operator','value=3\n')]), '8.7.0'
+    monkeypatch.setattr(engines,'cosmic',mutate_original)
+    value = analyze(ledger)
+    assert value['state'] == 'incomplete' and any('inputs changed' in issue for issue in value['issues'])
+    ledger._config = Config(strength={'seconds':.001})
+    value = analyze(ledger)
+    assert value['state'] in ('incomplete','deferred') and value['baseline'] != 'passed'
+
+
+def test_shared_completion_never_emits_mutant_feedback(tmp_path, monkeypatch):
+    from core import hook
+    from core.strength import runner
+    from core.ledger import Ledger, Status
+    from core.config import Config
+    from core.obligations import Claim
+    from core.hosts import edits
+    ledger = Ledger(root=tmp_path, task='t', claims=[Claim.DOCS_CHANGED])
+    ledger._config = Config(profile='guide')
+    monkeypatch.setattr(edits,'reconcile',lambda *args: None)
+    monkeypatch.setattr(hook,'_since_task_opened',lambda *args: [])
+    monkeypatch.setattr(Ledger,'settle',lambda *args: Status.VERIFIED)
+    monkeypatch.setattr(Ledger,'status',lambda *args: Status.VERIFIED)
+    monkeypatch.setattr(hook,'stress',lambda *args: ({},[]))
+    monkeypatch.setattr(hook,'confirm',lambda *args: [])
+    monkeypatch.setattr(hook,'snapshot',lambda *args: None)
+    monkeypatch.setattr(hook,'end_report',lambda *args: 'completion')
+    emitted, considered = [], []
+    monkeypatch.setattr(hook,'_emit',lambda *args,**kwargs: emitted.append(kwargs))
+    def analysis(current):
+        considered.append(current.task)
+        return {'observations':[{'operator':'secret mutant target'}]}
+    monkeypatch.setattr(runner,'analyze',analysis)
+    assert hook._complete_stop({},tmp_path,ledger) == 0
+    assert considered == ['t'] and 'secret mutant' not in str(emitted)

@@ -3,6 +3,7 @@ from . import store
 from .isolation import copy_plan, fingerprint
 from .reuse import execution_stamp
 from .settings import settings
+import subprocess
 
 
 def view(root, task, config, source_fingerprint, deadline):
@@ -25,10 +26,10 @@ def view(root, task, config, source_fingerprint, deadline):
         current = execution_stamp(fingerprint(root, paths, options, deadline))
         value['freshness'] = 'fresh' if (current == saved['fingerprint'] and
             source_fingerprint == saved['source_fingerprint']) else 'stale'
-        current_command = config.strength.get('command') or config.command_for('tests')
+        current_command = settings(config.strength).command or config.command_for('tests')
         if current_command != saved['command']:
             value['freshness'] = 'stale'
             value['issues'].append('current declared/focused command differs from this saved observation')
-    except (OSError, ValueError, TimeoutError):
+    except (OSError, ValueError, TimeoutError, subprocess.SubprocessError):
         value['issues'].append('saved test-strength input freshness could not be checked within the report limits')
     return value
