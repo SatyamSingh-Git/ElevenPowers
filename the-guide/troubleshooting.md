@@ -1,6 +1,6 @@
 # Troubleshooting
 
-For Codex, Gemini CLI, Cursor Agent or Copilot CLI, begin with
+For any supported host, begin with `ep_ready.py PLATFORM --project PATH` and
 `python plugin/bin/ep_doctor.py --platform PLATFORM --cwd PATH`. Missing launcher
 or interpreter means setup must be rerun from the current checkout/environment.
 Healthy configuration still requires the host to load and trust the hooks. Use
@@ -9,9 +9,22 @@ one installation route per project, and begin a new session after changes.
 An incomplete native command result often means the host supplied text or a
 tool-transport outcome without a process exit code. It is not evidence of a
 failing command. Guide/strict can run a declared check to obtain its own receipt.
-A native patch coverage warning means the edited paths were not authoritative;
-the task stays UNVERIFIED rather than silently accepting incomplete attribution.
+A native patch coverage warning means target observation was incomplete: missing
+session/call identity, a missing pre/post callback, unsupported patch input,
+unsafe paths, changed execution directory, interruption or exhausted budgets.
+Supported patch headers with complete pre/post content observations attribute
+dirty and non-Git files. Pending callbacks are visible before completion;
+unpaired or evicted calls remain UNVERIFIED. Check host stderr and callback
+delivery. A passing suite does not resolve an unknown edit history.
 See [native platforms](platforms.md) for per-host limits.
+
+If readiness says **waiting**, review trust/enablement and restart the project
+session. **Received** means callbacks arrived but startup has not been processed.
+**Active** means startup was processed, not that the project tests pass.
+**Error** includes the exception class; inspect host stderr for its details.
+Historical callback failure counts remain visible after later successful events.
+**Configuration-changed** means recorded activation predates current wiring;
+rerun setup. Doctor replay cannot activate a project.
 
 Cursor and Copilot do not expose a normal final-report field. Read the stored
 verdict with `python plugin/bin/ep_status.py --cwd PATH`.

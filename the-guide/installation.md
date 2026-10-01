@@ -18,7 +18,30 @@ Works on Windows, macOS and Linux. It is developed on Windows, so the Windows pa
 
 ---
 
-## Install in Claude Code
+## Project setup for any supported host
+
+From an ElevenPowers checkout, choose one project installation route:
+
+```sh
+python plugin/bin/ep_setup.py HOST --project /absolute/path/to/project
+python plugin/bin/ep_ready.py HOST --project /absolute/path/to/project
+```
+
+`HOST` is `claude`, `codex`, `gemini`, `cursor`, or `copilot`. Omitting it selects
+automatically only when exactly one host executable is available. Multiple hosts
+require an explicit choice. Desktop/custom installations can choose their host
+even when its executable is absent from PATH. Setup preserves foreign hooks and
+settings, discovers the project's own commands, and prints environment/coverage
+issues plus next actions. It does not install dependencies or change host trust.
+
+Review hook enablement in the host, then start a new project session. Readiness
+distinguishes waiting, received callbacks, processed startup, processing errors,
+changed configuration and removed wiring. It is read-only and never runs tests.
+Use `--json` for structured diagnostics. Repeat setup after moving the checkout
+or interpreter. Remove only owned hooks with `--remove`; diagnostic state remains.
+Choose project setup or a plugin/bundle for a project to avoid duplicate callbacks.
+
+## Claude plugin alternative
 
 ```bash
 git clone https://github.com/SatyamSingh-Git/ElevenPowers.git
@@ -27,7 +50,7 @@ claude --plugin-dir ElevenPowers/plugin
 
 No build step, runtime `pip install`, or configuration file is required. Once loaded in a supported Claude Code session, the plugin automatically reports startup health, discovers supported project commands, scans repository inputs, and records command outcomes. Missing verification runs at completion in `guide` and `strict`; `off` remains passive. See [automatic setup](configuration.md#automatic-setup-after-loading-the-plugin) for supported manifests and overrides.
 
-The `--plugin-dir` flag points Claude Code at [`plugin/`](../plugin/), which contains a manifest, a hook subscription file, and four small entry points. Everything else is imported from `core/` next to it.
+The `--plugin-dir` flag points Claude Code at [`plugin/`](../plugin/), which contains a manifest, a hook subscription file, and Python entry points. Everything else is imported from `core/` next to it.
 
 ### Making it permanent
 

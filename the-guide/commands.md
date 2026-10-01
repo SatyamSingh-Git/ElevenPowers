@@ -1,18 +1,25 @@
 # Commands
 
 Native-host installation helpers are Python entry points from the ElevenPowers
-checkout (or a bundle containing them). `PLATFORM` is `codex`, `gemini`, `cursor`
-or `copilot`:
+checkout (or a bundle containing them). Setup/doctor `PLATFORM` includes `claude`,
+`codex`, `gemini`, `cursor` and `copilot`; portable bundle generation supports the
+four additions:
 
 ```sh
 python plugin/bin/ep_setup.py PLATFORM --project PATH
 python plugin/bin/ep_doctor.py --platform PLATFORM --cwd PATH
+python plugin/bin/ep_ready.py PLATFORM --project PATH [--json]
 python plugin/bin/ep_setup.py PLATFORM --project PATH --remove
 python -m core.hosts.package PLATFORM NEW_OUTPUT_DIRECTORY
 ```
 
-The doctor checks project subscriptions and interpreter/launcher paths. It does
-not attest live event delivery; `--host` remains the separate Claude replay
+The doctor checks subscriptions, matchers and interpreter/launcher paths and
+reports callback activation. `ep_ready` adds project commands, runtimes, coverage,
+latest declared execution and next actions. Stored receipt freshness is unchecked
+here; status evaluates source freshness. Omitting the setup platform uses
+unambiguous PATH detection. Readiness is a report command; configuration health
+and activation are available through `--json`. Callback observations do not
+authenticate their sender; `--host` remains the separate Claude replay
 diagnostic. Use `python plugin/bin/ep_status.py --cwd PATH` for a persisted report,
 especially on Cursor and Copilot, whose completion callbacks lack ordinary report
 fields. See [platforms](platforms.md) for native capabilities and limitations.
@@ -20,6 +27,10 @@ fields. See [platforms](platforms.md) for native capabilities and limitations.
 [← The Guide](README.md)
 
 Three commands you will actually use, and a set of evaluation commands you only need if you are measuring the project itself.
+
+Pending native patch callbacks, exhausted observation history and unreadable
+patch state produce an explicit incomplete-coverage warning in status. At
+completion, unpaired pre-events remain UNVERIFIED even if tests pass.
 
 ---
 
