@@ -29,6 +29,15 @@ rerun setup. Doctor replay cannot activate a project.
 Cursor and Copilot do not expose a normal final-report field. Read the stored
 verdict with `python plugin/bin/ep_status.py --cwd PATH`.
 
+For a shareable diagnosis, use `ep_report.py --project PATH --output report.md`.
+Exit 0 means export succeeded, even if the report is UNVERIFIED; add
+`--require-verified` when a caller needs verification to determine the exit code.
+Existing output is preserved unless `--force` is supplied. Incomplete source or
+explicit-input coverage requires resolving the reported boundary or budget.
+A receipt can become stale when edits, declarations or account-specific Git
+ignore rules change the observed inputs. Rerun the relevant check in the intended
+project/account rather than treating an old receipt as current.
+
 [← The Guide](README.md)
 
 Start every investigation the same way:

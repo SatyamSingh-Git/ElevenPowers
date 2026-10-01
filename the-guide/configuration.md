@@ -24,6 +24,13 @@ completion checks run automatically after the host loads/trusts the integration.
 Setup cannot override host or administrator policies. The read-only readiness
 command adds activation, coverage and environment actions without starting tests.
 
+Portable reports use the same project configuration. Their fresh source view and
+explicit receipt inputs share `scan.max_files` / `scan.max_bytes`; an explicit
+input is still observed even if its extension or an exclusion removes it from
+source selection. Unsafe paths or budget exhaustion make report coverage
+incomplete. The report's separate cooperative time budget is the `--timeout`
+CLI flag, documented in [commands](commands.md#ep_report--evidence-to-share-with-a-reviewer).
+
 [← The Guide](README.md)
 
 Configuration is optional. Supported root manifests supply verification commands automatically; this file overrides those defaults and controls interruption and scanning.
