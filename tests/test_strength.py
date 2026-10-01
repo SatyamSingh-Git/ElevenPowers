@@ -169,3 +169,27 @@ def test_red_baseline_is_not_mutation_detection(tmp_path):
     value = baseline(f'"{sys.executable}" -m pytest -q -p no:cacheprovider', tmp_path,
                      tmp_path / 'original', Budget(time.monotonic()+10, 1), 5)
     assert value.status == 'failed'
+
+
+def test_saved_strength_is_atomic_metadata_only(tmp_path):
+    from core.strength.store import save, load
+    value = {'schema_version': 1, 'task': 't', 'state': 'complete', 'issues': [],
+             'observations': [], 'fingerprint': 'abc', 'source_fingerprint': 'def',
+             'baseline': 'passed', 'engine_versions': {}, 'base': '123',
+             'command': 'pytest', 'settings': {}, 'paths': ['a.py'], 'recorded_at': 1,
+             'summary': {}, 'attempts': 0, 'limitations': []}
+    save(tmp_path, value)
+    assert load(tmp_path, 't')['state'] == 'complete'
+    assert load(tmp_path, 'different') is None
+    value['raw_output'] = 'private'
+    with pytest.raises(ValueError):
+        save(tmp_path, value)
+    assert load(tmp_path, 't')['state'] == 'complete'
+
+
+def test_corrupt_strength_is_an_explicit_incomplete_record(tmp_path):
+    from core.strength.store import load
+    folder = tmp_path / '.elevenpowers'
+    folder.mkdir()
+    (folder / 'strength.json').write_text('{broken')
+    assert load(tmp_path, 't')['state'] == 'incomplete'
