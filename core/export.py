@@ -58,6 +58,7 @@ def _portable(value, root):
 
 
 def build(root: Path, *, timeout=120):
+    started = time.monotonic()
     deadline = time.monotonic() + timeout
     root = Path(root).resolve(strict=True)
     if not root.is_dir():
@@ -75,14 +76,18 @@ def build(root: Path, *, timeout=120):
     omitted = max(0, len(records) - MAX_RECEIPTS)
     records = records[-MAX_RECEIPTS:]
     actions, receipts, claims = [], [], []
+    scan_started = time.monotonic()
     with freshness_view(root, deadline=deadline) as (scan, fingerprint):
+        scan_ms = (time.monotonic() - scan_started) * 1000
         for record in records:
             if time.monotonic() >= deadline:
                 scan.issues.append('report deadline reached processing receipts')
                 omitted += len(records) - len(receipts)
                 break
             fresh = record.freshness(root)
+            from .hosts.readiness import receipt_key
             receipts.append({'kind': record.kind.value, 'identity': record.identity,
+                             'receipt_key': receipt_key(record), 'declaration': record.declaration,
                              'command': record.command, 'result': record.result.value,
                              'execution': record.execution, 'freshness': fresh.value,
                              'recorded_at': record.at, 'scope': record.scope or 'explicit paths',
@@ -139,10 +144,13 @@ def build(root: Path, *, timeout=120):
              'state': status, 'task': {'id': ledger.task, 'risk': ledger.risk.value,
                                      'touched': list(ledger.touched), 'claims': claims},
              'coverage': {'complete': complete, 'issues': issues, 'selected_files': len(scan.files),
+                          'source_complete': scan.complete, 'source_issues': list(scan.issues),
                           'selected_bytes': scan.bytes, 'source_fingerprint': fingerprint,
                           'latest_receipts_total': len(latest), 'omitted_receipts': omitted},
              'commands': dict(ledger.config.commands), 'receipts': receipts,
              'test_strength': strength,
+             'timings': {'source_snapshot_ms': round(scan_ms, 3),
+                         'report_ms': round((time.monotonic() - started) * 1000, 3)},
              'next_actions': list(dict.fromkeys(actions)),
              'limits': ['Unsigned local observation, not independent attestation or an improved patch-outcome claim.',
                         'Input freshness is evaluated at report creation; later edits require a new report.',

@@ -15,6 +15,26 @@ Spec: `docs/design/project-health.md`. Base: `5b245f9`.
 Branch: `codex/project-health`. The user approved implementation; retain inline
 execution and incremental publication from the current working arrangement.
 
+## Seventeen incremental pushes
+
+1. Design/plan (already published).
+2. Bounded native diagnostics and receipt links.
+3. Shared report freshness/receipt metadata and timings.
+4. Staged project-health composition.
+5. Diagnostic safety, task/session correlation and incomplete-state controls.
+6. Readiness CLI health/budget/check options.
+7. Non-executing optional-engine/environment diagnostics.
+8. Disposable Python/JavaScript exercise preparation.
+9. Strict read-only acceptance evaluation.
+10. Doctor CLI acceptance workflow.
+11. Actual producer and five-adapter contract acceptance.
+12. Measured timing/history and larger-project controls.
+13. Independent review corrections and integration evidence.
+14. Rendered architecture.
+15. All six guides.
+16. Status, roadmap, development, validation and journey.
+17. README/provenance and complete main publication.
+
 ## Global constraints
 
 - No project-specific runtime branches, hardcoded acceptance paths or commands.
