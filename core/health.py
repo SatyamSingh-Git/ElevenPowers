@@ -25,7 +25,8 @@ LIMITS = [
 
 def _stamp(root, host):
     paths = [root / '.elevenpowers' / name for name in
-             ('ledger.json', 'integrations.json', 'verification.json', 'config.json', 'strength.json')]
+             ('ledger.json', 'integrations.json', 'verification.json', 'config.json', 'strength.json',
+              'hosts.json', 'patches.json')]
     paths.append(config_path(host, root))
     result = []
     for path in paths:
@@ -153,7 +154,9 @@ def inspect(host, root, timeout=10):
         'command_capture': stage('observed' if commands and set(by_need) == set(commands) and
                                  all(r.get('receipt_key') in linked for r in by_need.values()) else 'waiting',
                                  'Current receipt must link to this configuration, task and startup session'),
-        'completion': stage('observed' if observed(phases.get('Stop', {})) else 'waiting',
+        'completion': stage('observed' if observed(phases.get('Stop', {})) and
+                            phases['Stop'].get('last_at', 0) >= max([x['at'] for x in links] +
+                            [p.get('last_at', 0) for p in phases.values() if p.get('edit') in edits] + [0]) else 'waiting',
                             'Processed completion in the current task/session required'),
         'report': stage('observed' if coverage['complete'] and not issues else 'incomplete',
                         'Current shared report and input freshness view'),
@@ -206,7 +209,7 @@ def inspect(host, root, timeout=10):
                     durations.append(ms)
     timings = {**body.get('timings', {}), 'health_read_ms': round((time.monotonic() - started) * 1000, 3),
                'callbacks': {name: _summary(phase.get('samples_ms', [])) for name, phase in phases.items()},
-               'automatic_commands': _summary(durations), 'sample_limit': 32}
+               'automatic_commands': _summary(durations[-32:]), 'sample_limit': 32}
     receipt = ({**latest, 'freshness': latest['freshness']} if latest else None)
     value = {'schema_version': 1, 'host': host, 'project': str(root), 'python': sys.version.split()[0],
              'configuration_ok': configured, 'configuration_report': text, 'activation': live,
@@ -227,6 +230,22 @@ def inspect(host, root, timeout=10):
         value['coverage']['complete'] = False
         value['coverage']['issues'].append('Native edit diagnostic state unavailable')
         value['health']['state'] = 'incomplete'
+    final_issue = ''
+    try:
+        if _stamp(root, host) != before:
+            final_issue = 'Project diagnostic/evidence state changed during this read; read again.'
+    except (OSError, ValueError, UnboundLocalError):
+        final_issue = 'Project diagnostic/evidence state unavailable at end of read.'
+    if time.monotonic() >= deadline:
+        final_issue = 'Health read deadline reached; coverage is incomplete.'
+    if final_issue:
+        value['health']['state'] = 'incomplete'
+        value['health']['stages']['report'] = stage('incomplete', final_issue)
+        value['coverage']['complete'] = False
+        if final_issue not in value['coverage']['issues']:
+            value['coverage']['issues'].append(final_issue)
+        value['next_actions'].insert(0, final_issue)
+    value['timings']['health_read_ms'] = round((time.monotonic() - started) * 1000, 3)
     return scrub_values(value)
 
 
