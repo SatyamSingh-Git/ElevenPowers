@@ -502,9 +502,16 @@ class Ledger:
     def status(self) -> Status:
         verdicts = self.verdicts()
         if not verdicts:
-            return Status.VERIFIED
+            return Status.UNVERIFIED if self.native_coverage_pending() else Status.VERIFIED
         order = [Status.CONTRADICTED, Status.UNVERIFIED, Status.STALE, Status.VERIFIED]
         return min((v.status for v in verdicts), key=order.index)
+
+    def native_coverage_pending(self) -> bool:
+        from .hosts.edits import coverage
+        try:
+            return any(coverage(self.root, self.task))
+        except (ValueError, OSError):
+            return True  # Unreadable observation state cannot certify coverage.
 
     def _verdict(self, claim: Claim) -> Verdict:
         checks: list[Check] = []
@@ -513,7 +520,7 @@ class Ledger:
 
         if self._contradictions():
             status = Status.CONTRADICTED
-        elif any(d.get("what") == "unattributed native edit" for d in self.decisions):
+        elif self.native_coverage_pending() or any(d.get("what") == "unattributed native edit" for d in self.decisions):
             status = Status.UNVERIFIED
         elif any(not c.met for c in checks):
             status = Status.UNVERIFIED

@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path, PureWindowsPath
 import time
+import uuid
 
 from ..jobs import ledger_write
 from ..ledger import Ledger, _keep_out_of_git
@@ -38,6 +39,11 @@ def state(root):
 
 def targets(payload, root):
     inputs = payload.get('tool_input', {})
+    where = next((inputs[k] for k in ('workdir', 'cwd', 'working_directory') if inputs.get(k)), None)
+    if where:
+        directory = Path(where) if isinstance(where, str) else None
+        if directory is None or (directory if directory.is_absolute() else root / directory).resolve() != root.resolve():
+            return [], ['patch execution directory differs from the project root']
     patch = next((inputs[k] for k in ('command', 'patch', 'input') if isinstance(inputs.get(k), str)), '')
     if len(patch.encode('utf-8')) > 4 * 1024 * 1024:
         return [], ['patch input exceeds observation budget']
@@ -76,9 +82,9 @@ def targets(payload, root):
     return selected, list(dict.fromkeys(issues))
 
 
-def snapshot(root, paths):
+def snapshot(root, paths, deadline=None):
     values, issues, consumed = {}, [], 0
-    deadline = time.monotonic() + 2
+    deadline = deadline if deadline is not None else time.monotonic() + 2
     for relative in paths:
         path = root / relative
         try:
@@ -115,7 +121,8 @@ def snapshot(root, paths):
 
 def identity(payload):
     call = payload.get('tool_use_id')
-    if not isinstance(call, str) or not call:
+    session = payload.get('session_id')
+    if not isinstance(call, str) or not call or not isinstance(session, str) or not session:
         return None
     return digest([payload.get('_ep_platform'), payload.get('session_id', ''), call])
 
@@ -125,7 +132,8 @@ def before(payload, root):
     values, more = snapshot(root, paths)
     key = identity(payload)
     if not key:
-        return
+        key = 'unidentified-' + uuid.uuid4().hex
+        issues.append('native patch has no stable session/call identity')
     record = {'task': Ledger.load(root).task, 'input': digest(payload.get('tool_input', {})),
               'at': time.time(), 'values': values, 'paths': paths, 'issues': issues + more}
     with state(root) as value:
@@ -133,7 +141,12 @@ def before(payload, root):
         # Retries must not replace the original pre-edit baseline.
         pending.setdefault(key, record)
         while len(pending) > MAX_PENDING:
-            pending.pop(next(iter(pending)))
+            evicted = pending.pop(next(iter(pending)))
+            gaps = value.setdefault('gaps', {})
+            count = gaps.pop(evicted['task'], 0)
+            gaps[evicted['task']] = min(count + 1, 1_000_000_000)
+            while len(gaps) > 64:
+                gaps.pop(next(iter(gaps)))
 
 
 def after(payload, root):
@@ -164,3 +177,44 @@ def after(payload, root):
         while len(completed) > MAX_COMPLETED:
             completed.pop(next(iter(completed)))
     return changed, issues
+
+
+def unfinished(root, task):
+    path = root / '.elevenpowers/patches.json'
+    if not path.exists():
+        return {}
+    value = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(value, dict) or not isinstance(value.get('pending', {}), dict):
+        raise ValueError('invalid patch observation state')
+    return {key: record for key, record in value.get('pending', {}).items() if record.get('task') == task}
+
+
+def coverage(root, task):
+    pending = len(unfinished(root, task))
+    path = root / '.elevenpowers/patches.json'
+    value = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+    return pending, value.get('gaps', {}).get(task, 0)
+
+
+def reconcile(root, ledger):
+    """At completion, an unpaired pre-event is an explicit gap, even in Git."""
+    records = unfinished(root, ledger.task)
+    _, evicted = coverage(root, ledger.task)
+    if not records and not evicted:
+        return
+    from ..obligations import Claim
+    deadline = time.monotonic() + 3
+    for record in records.values():
+        current, _ = snapshot(root, record['paths'], deadline)
+        for path, value in current.items():
+            if path in record['values'] and value != record['values'][path]:
+                ledger.observe_edit(str(root / path))
+    if not ledger.claims:
+        ledger.claims = [Claim.FEATURE_ADDED]
+    ledger.note('unattributed native edit', f'{len(records)} patch call(s) did not deliver a matching post-event; {evicted} pending observation(s) exceeded the history budget. Edit coverage is incomplete.')
+    # Persist the warning before retiring observations, so a failed save is
+    # retryable rather than silently losing the only record of the gap.
+    ledger.save()
+    with state(root) as value:
+        for key in records:
+            value.setdefault('pending', {}).pop(key, None)

@@ -33,6 +33,9 @@ def report(platform: str, root: Path) -> tuple[str, bool]:
             if len(found) != 1:
                 errors.append(f"{event}: expected one ElevenPowers subscription, found {len(found)}")
                 continue
+            wanted_entry = expected[event][0]
+            if any(found[0].get(k) != v for k, v in wanted_entry.items() if k not in {'hooks', 'command', 'exec', 'args'}):
+                errors.append(f'{event}: subscription matcher or event options differ from generated wiring')
             handlers = found[0].get("hooks", [found[0]])
             wanted = expected[event][0].get("hooks", [expected[event][0]])[0]
             if platform == "copilot":

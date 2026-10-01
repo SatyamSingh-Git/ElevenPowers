@@ -78,6 +78,9 @@ def callback(platform, root, event):
     if SOURCE.get() != 'host':
         yield
         return
+    from .setup import PATHS
+    if platform not in PATHS:
+        raise ValueError('unsupported callback platform')
     with state(root) as value:
         item = value.setdefault(platform, {'state': 'received', 'generation': uuid.uuid4().hex})
         generation = item['generation']
@@ -94,7 +97,8 @@ def callback(platform, root, event):
             item = value.get(platform, {})
             if item.get('generation') == generation:
                 if error:
-                    item.update(state='error', error=error)
+                    item.update(state='error', error=error, last_error=error, error_at=time.time(),
+                                errors=min(item.get('errors', 0) + 1, 1_000_000_000))
                 else:
                     item.pop('error', None)
                     item.update(processed_at=time.time(), processed=min(item.get('processed', 0) + 1, 1_000_000_000))

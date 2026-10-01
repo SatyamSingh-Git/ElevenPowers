@@ -20,6 +20,8 @@ def render(root: Path) -> str:
     ledger = Ledger.load(root)
     config = ledger.config
     lines = [f"profile   {config.profile}", *progress(root, ledger.task)]
+    if ledger.native_coverage_pending():
+        lines.append('UNVERIFIED native edit coverage: pending, evicted, or unreadable patch observations; check readiness and completion diagnostics')
     if config.commands:
         for need, command in sorted(config.commands.items()):
             lines.append(f"          {need}: {command}")

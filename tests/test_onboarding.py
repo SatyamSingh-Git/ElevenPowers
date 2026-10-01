@@ -125,3 +125,30 @@ def test_removed_hooks_do_not_still_report_active(tmp_path):
         run('codex', 'SessionStart', {'cwd': str(tmp_path)})
     remove('codex', tmp_path)
     assert activation('codex', tmp_path)['state'] == 'removed'
+
+
+def test_doctor_rejects_matcher_that_prevents_claude_callbacks(tmp_path):
+    from core.hosts.setup import install
+    from core.hosts.doctor import report
+    path = install('claude', tmp_path, sys.executable, SOURCE)
+    value = json.loads(path.read_text())
+    value['hooks']['PostToolUse'][0]['matcher'] = 'NeverCalled'
+    path.write_text(json.dumps(value))
+    assert not report('claude', tmp_path)[1]
+
+
+def test_quoted_interpreter_is_reported_available(tmp_path):
+    from core.config import Config, save
+    from core.hosts.onboarding import inspect
+    save(tmp_path, Config(commands={'tests': f'"{sys.executable}" -m pytest'}))
+    result = inspect('codex', tmp_path)
+    assert result['runtimes'] == {sys.executable: True}
+    assert not any('Install or activate' in action for action in result['next_actions'])
+
+
+def test_callback_registry_refuses_unbounded_host_names(tmp_path):
+    from core.hosts.readiness import callback, ingress
+    with ingress('host'), pytest.raises(ValueError, match='unsupported'):
+        with callback('arbitrary-user-supplied-platform', tmp_path, 'SessionStart'):
+            pass
+    assert not (tmp_path / '.elevenpowers/integrations.json').exists()

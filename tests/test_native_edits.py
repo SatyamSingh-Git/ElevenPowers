@@ -139,3 +139,65 @@ def test_budget_exhaustion_does_not_hash_partial_file_as_complete(tmp_path, monk
     run('codex', 'PostToolUse', payload)
     assert not Ledger.load(tmp_path).touched
     assert any(d['what'] == 'unattributed native edit' for d in Ledger.load(tmp_path).decisions)
+
+
+def test_missing_session_identity_cannot_certify_edit_attribution(tmp_path):
+    payload = event(tmp_path, '*** Begin Patch\n*** Add File: added.py\n+added\n*** End Patch')
+    payload.pop('session_id')
+    run('codex', 'PreToolUse', payload)
+    (tmp_path / 'added.py').write_text('added\n')
+    run('codex', 'PostToolUse', payload)
+    assert not Ledger.load(tmp_path).touched
+    assert any(d['what'] == 'unattributed native edit' for d in Ledger.load(tmp_path).decisions)
+
+
+def test_patch_missing_post_event_is_reported_at_completion(tmp_path):
+    from core.config import Config, save
+    save(tmp_path, Config(profile='guide'))
+    payload = event(tmp_path, '*** Begin Patch\n*** Add File: added.py\n+added\n*** End Patch')
+    run('codex', 'PreToolUse', payload)
+    (tmp_path / 'added.py').write_text('added\n')
+    run('codex', 'Stop', {'cwd': str(tmp_path), 'session_id': 's'})
+    ledger = Ledger.load(tmp_path)
+    assert ledger.touched == ['added.py']
+    assert any(d['what'] == 'unattributed native edit' for d in ledger.decisions)
+
+
+def test_patch_explicit_other_workdir_does_not_attribute_root_paths(tmp_path):
+    nested = tmp_path / 'other'
+    nested.mkdir()
+    payload = event(tmp_path, '*** Begin Patch\n*** Add File: added.py\n+added\n*** End Patch')
+    payload['tool_input']['workdir'] = str(nested)
+    run('codex', 'PreToolUse', payload)
+    (tmp_path / 'added.py').write_text('unrelated root edit\n')
+    run('codex', 'PostToolUse', payload)
+    assert not Ledger.load(tmp_path).touched
+    assert any(d['what'] == 'unattributed native edit' for d in Ledger.load(tmp_path).decisions)
+
+
+def test_evicted_pending_call_keeps_a_durable_coverage_gap(tmp_path, monkeypatch):
+    from core.hosts import edits
+    from core.obligations import Claim
+    from core.ledger import Status
+    monkeypatch.setattr(edits, 'MAX_PENDING', 1)
+    ledger = Ledger(root=tmp_path, task='docs', request='Update project docs', claims=[Claim.DOCS_CHANGED])
+    ledger.save()
+    patch = '*** Begin Patch\n*** Add File: added.py\n+added\n*** End Patch'
+    run('codex', 'PreToolUse', event(tmp_path, patch, 'abandoned'))
+    run('codex', 'PreToolUse', event(tmp_path, patch, 'new-call'))
+    # Complete the retained call with no edit; the evicted uncertainty remains.
+    run('codex', 'PostToolUse', event(tmp_path, patch, 'new-call'))
+    assert Ledger.load(tmp_path).status() == Status.UNVERIFIED
+    run('codex', 'Stop', {'cwd': str(tmp_path), 'session_id': 's'})
+    assert any(d['what'] == 'unattributed native edit' for d in Ledger.load(tmp_path).decisions)
+
+
+def test_pending_call_is_visible_before_completion(tmp_path):
+    from core.obligations import Claim
+    from core.ledger import Status
+    from core.status import render
+    ledger = Ledger(root=tmp_path, task='docs', request='Update project docs', claims=[Claim.DOCS_CHANGED])
+    ledger.save()
+    run('codex', 'PreToolUse', event(tmp_path, '*** Begin Patch\n*** Add File: added.py\n+added\n*** End Patch'))
+    assert Ledger.load(tmp_path).status() == Status.UNVERIFIED
+    assert 'native edit coverage' in render(tmp_path).lower()

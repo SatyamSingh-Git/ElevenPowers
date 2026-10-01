@@ -51,6 +51,7 @@ HANDLERS = {
 def main(argv: list[str]) -> int:
     event = argv[1] if len(argv) > 1 else ""
     payload = _read_payload()
+    payload.pop('_ep_platform', None)  # This entry point is explicitly Claude.
     return dispatch(event, payload)
 
 
@@ -91,12 +92,13 @@ def on_session_start(payload: dict, root: Path) -> int:
     from .doctor import _subscription, _writable, _blindspots
     from .doctor import Check
     from .config import discover_commands
+    from .hosts.onboarding import runtime_name
     import shutil
     from .evidence import scan_sources
     subscription = (Check(f"native {payload['_ep_platform']} event received", True)
                     if payload.get("_ep_platform") else _subscription(None))
     health = [subscription, _writable(root), _blindspots(root)]
-    executables = {command.split()[0] for need, command in discover_commands(root).items()
+    executables = {runtime_name(command) for need, command in discover_commands(root).items()
                    if ledger.config.command_for(need) == command}
     for executable in sorted(executables):
         found = shutil.which(executable)
@@ -386,6 +388,8 @@ def on_stop(payload: dict, root: Path) -> int:
 
 
 def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
+    from .hosts.edits import reconcile
+    reconcile(root, ledger)
     # Ask the working tree BEFORE concluding there is nothing to gate. Tool
     # events are a proxy for what changed, and agents write through the shell:
     # measured on B4, `jinja2-0cd69481` shipped a 5,396-line patch graded
