@@ -18,3 +18,24 @@ def test_observation_rejects_unknown_or_unsafe_metadata():
     for path, status in [('../a.py', 'detected'), ('/a.py', 'detected'), ('a.py', 'pass')]:
         with pytest.raises(ValueError):
             Observation('1', path, 1, 'operator', status)
+
+
+def test_strength_config_preserved_and_validated(tmp_path):
+    import json
+    from core.config import load, save
+    from core.strength.settings import settings
+    folder = tmp_path / '.elevenpowers'
+    folder.mkdir()
+    (folder / 'config.json').write_text(json.dumps({'strength': {'enabled': False, 'max_mutants': 3}}))
+    config = load(tmp_path)
+    assert not settings(config.strength).enabled
+    save(tmp_path, config)
+    assert json.loads((folder / 'config.json').read_text())['strength']['max_mutants'] == 3
+
+
+@pytest.mark.parametrize('raw', [{'seconds': float('nan')}, {'max_mutants': -1},
+                                 {'enabled': 'yes'}, {'dependencies': ['../elsewhere']}])
+def test_strength_settings_reject_invalid_limits(raw):
+    from core.strength.settings import settings
+    with pytest.raises(ValueError):
+        settings(raw)

@@ -29,6 +29,7 @@ class Config:
     commands: dict[str, str] = field(default_factory=dict)
     scan: dict = field(default_factory=dict)
     auto_detect: bool = True
+    strength: dict = field(default_factory=dict)
 
     @property
     def blocks(self) -> bool:
@@ -88,6 +89,7 @@ def load(root: Path) -> Config:
         scan=raw.get("scan", {}),
         auto_detect=auto_detect,
         commands={k: v for k, v in effective.items() if v},
+        strength=raw.get('strength', {}),
     )
 
 
@@ -158,6 +160,7 @@ def save(root: Path, config: Config) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps({"profile": config.profile, "commands": config.commands,
-                    "scan": config.scan, "auto_detect": config.auto_detect}, indent=2),
+                    "scan": config.scan, "auto_detect": config.auto_detect,
+                    "strength": config.strength}, indent=2),
         encoding="utf-8",
     )
