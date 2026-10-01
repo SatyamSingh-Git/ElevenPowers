@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import os
 import sys
 from ..evidence import Kind, Result, SourceScan
-from ..parsers import parse
+from ..parsers import parse, PYTEST_NODE, PYTEST_SHORT
 from .execution import execute
 
 
@@ -20,7 +20,12 @@ def outcomes(command, execution, root):
     tests = [r for r in records if r.kind in (Kind.SUITE, Kind.TEST)]
     passed = max([r.passed or 0 for r in tests if r.counted] + [0])
     failed = max([r.failed or 0 for r in tests if r.counted] + [0])
+    # Named failures are positive observations even when a runner's count summary
+    # is unavailable; never turn a nonzero exit alone into a detected mutation.
+    failed = max(failed, sum(r.kind is Kind.TEST and r.result is Result.FAIL for r in tests))
     errors = any(r.result is Result.ERROR for r in tests)
+    errors |= any(m.group('status') == 'ERROR' for pattern in (PYTEST_NODE, PYTEST_SHORT)
+                  for m in pattern.finditer(execution.stdout + '\n' + execution.stderr))
     return passed, failed, errors
 
 

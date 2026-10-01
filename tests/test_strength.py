@@ -208,3 +208,31 @@ def test_cosmic_ray_real_generation_and_optional_absence(tmp_path):
     assert any('>= 0' in c.content for c in candidates)
     with pytest.raises(ValueError, match='unavailable'):
         cosmic(tmp_path, ['a.py'], str(tmp_path / 'missing-python'), Budget(time.monotonic()+10, 1))
+
+
+def test_mutation_execution_weak_and_strong_tests(tmp_path):
+    import sys, time
+    from core.strength.engines import Candidate
+    from core.strength.execution import Budget
+    from core.strength.mutations import run_candidate
+    source = 'def positive(value):\n    return value > 0\n'
+    (tmp_path / 'a.py').write_text(source)
+    candidate = Candidate('1', 'a.py', 2, 'comparison', source.replace('> 0', '>= 0'))
+    command = f'"{sys.executable}" -m pytest -q -p no:cacheprovider'
+    (tmp_path / 'test_a.py').write_text('from a import positive\ndef test_value():\n    assert positive(2)\n')
+    assert run_candidate(candidate, tmp_path, command, Budget(time.monotonic()+10, 1), 5).status == 'undetected'
+    (tmp_path / 'test_a.py').write_text('from a import positive\ndef test_value():\n    assert not positive(0)\n')
+    assert run_candidate(candidate, tmp_path, command, Budget(time.monotonic()+10, 1), 5).status == 'detected'
+    assert (tmp_path / 'a.py').read_text() == source
+
+
+def test_invalid_mutation_and_empty_test_execution_are_not_detected(tmp_path):
+    import time
+    from core.strength.engines import Candidate
+    from core.strength.execution import Budget
+    from core.strength.mutations import run_candidate
+    (tmp_path / 'a.py').write_text('value = 1\n')
+    candidate = Candidate('1', 'a.py', 1, 'operator', 'invalid +\n')
+    assert run_candidate(candidate, tmp_path, 'echo ok', Budget(time.monotonic()+5, 1), 1).status == 'invalid'
+    valid = Candidate('2', 'a.py', 1, 'operator', 'value = 2\n')
+    assert run_candidate(valid, tmp_path, 'echo ok', Budget(time.monotonic()+5, 1), 1).status == 'error'
