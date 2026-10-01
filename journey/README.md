@@ -10,7 +10,10 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [51 — receipts another person can read](51-receipts-another-person-can-read.md)
+Latest: [52 — tests that notice a change](52-tests-that-notice-a-change.md)
+records generalized optional test strength, actual language producers, clean
+attempt isolation and three reproduced independent-review corrections.
+[51 — receipts another person can read](51-receipts-another-person-can-read.md)
 records portable Markdown/JSON reports, six fresh-review corrections and the
 actual Snag receipt exported for review. [50 — project readiness](50-project-readiness.md)
 records onboarding, callback activation, native patch observations, real Claude

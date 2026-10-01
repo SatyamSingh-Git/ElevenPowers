@@ -20,7 +20,8 @@ This delivery does not establish improved patch outcomes.
 | Completion checks | Missing/stale checks in guide/strict; same commands deduplicated; receipts persist immediately | Off remains passive; one shared 480-second work budget and 300-second command cap |
 | Process lifecycle | Windows Job containment, POSIX process-group cleanup and 8 MiB combined capture limit | Deliberate group escape and abrupt SIGKILL are outside cleanup guarantees |
 | Durable progress | Project ownership, atomic short ledger writes, running/deferred/interrupted journal | Journal and activation are diagnostics, never proof of command success |
-| Portable verification report | Local Markdown/versioned JSON, computed claims, obligation caveats, latest receipts, fresh input observations and next actions | Read-only, unsigned; no active claim or incomplete coverage stays UNVERIFIED; no mutation findings or stronger patch-outcome claim |
+| Portable verification report | Local Markdown/versioned JSON, qualified claims, latest receipts, freshness, coverage and saved strength findings | Read-only, unsigned; no active claim or incomplete coverage stays UNVERIFIED; findings never alter verdicts |
+| Changed-file test strength | Optional Cosmic Ray/Stryker producers, clean baseline/attempt copies, contained execution, atomic metadata and exact-input reuse | Informational; default 60 seconds/8 attempts/15 seconds per test command; whole changed files and sampled operators, not correctness or outcome improvement |
 
 See [onboarding validation](validation/2026-10-01-live-onboarding.md),
 [platform guide](../the-guide/platforms.md), and [journey 50](../journey/50-project-readiness.md).
@@ -77,8 +78,15 @@ and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 Exercise versioned native sessions on the four added hosts and capture an actual
 declared-command result through their installed hooks. This closes the largest
-remaining usability uncertainty across projects. Mutation findings and measured
-outcome improvements remain separate research work.
+remaining usability uncertainty across projects. Optional mutation findings now
+ship; measured outcome improvements remain separate research work. The first
+strength release needs installed pinned engines and an isolated, sufficiently
+fast test command. Dirty attribution, editable Python paths into original source,
+linked dependencies and exhausted budgets stay explicitly incomplete.
+
+See [test-strength validation](validation/2026-10-01-test-strength.md) and
+[journey 52](../journey/52-tests-that-notice-a-change.md) for actual language controls,
+independent-review fixes and the 25 incremental publication parts.
 
 Use focused behavioral checks and a broad integration check at the delivery
 boundary; repeat when new corrections or failures warrant it. Documentation,

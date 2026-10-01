@@ -8,6 +8,9 @@ Dated records distinguish implementation checks from real-project integration. [
 - [2026-10-01 portable report](2026-10-01-portable-report.md): Markdown/JSON
   exports, six reproduced review corrections, fresh explicit inputs, read-only
   journals, and the actual Snag receipt exported without rerunning CI.
+- [2026-10-01 test strength](2026-10-01-test-strength.md): optional real-engine
+  Python/JavaScript/TypeScript acceptance, three reproduced review corrections,
+  clean trials, import provenance, advisory completion and 25 incremental pushes.
 
 | Date | Record | What it establishes |
 |---|---|---|

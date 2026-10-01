@@ -15,7 +15,19 @@ fresh source and explicit-input observations, revision, coverage and next action
 for any project. It reuses the ledger and makes missing coverage or absent claims
 unverified. See [journey 51](journey/51-receipts-another-person-can-read.md) and
 [validation](docs/validation/2026-10-01-portable-report.md). This receipt export is
-the basic review surface; the unpinned-behaviour findings in §5.17 remain unbuilt.
+the basic review surface. The subsequent test-strength delivery below adds optional
+qualified findings rather than changing that earlier receipt-only measurement.
+
+**Test-strength delivery, 2026-10-01.** Shared `core/strength/` now supplies optional
+Cosmic Ray 8.7.0 and Stryker instrumenter 9.5.1 observations for changed production
+files. Baseline and every mutation execute from clean private inputs; Python import
+redirection to original source remains incomplete. Budgets, missing engines,
+uncertain attribution and sampling are explicit. The human report reads saved
+metadata with independent freshness; no mutant target goes to an agent and no
+verdict changes. This is a first changed-file sample, not exhaustive diff-hunk
+analysis, semantic equivalence filtering or proof of stronger patch outcomes.
+See [journey 52](journey/52-tests-that-notice-a-change.md) and
+[validation](docs/validation/2026-10-01-test-strength.md).
 
 **v0.7 changed what the system is for. v0.8 changes where it acts.** The thesis
 survives intact and better supported than it has ever been. What does not
@@ -158,12 +170,12 @@ line: **the claim an agent makes is made visible, current and hard to forge. The
 code is not made better.** Three mechanisms for the first; none for the second.
 
 §5.16 is the first mechanism in this plan that speaks to the logic rather than
-to the evidence. It is still **unbuilt**. The free measurement that gated it has
+to the evidence. Its first optional changed-file implementation is now shipped. The free measurement that gated it has
 now run (2026-09-24): the discrimination check would pass on **16 of 16** corpus
 tasks while **9 of 16** leave changed lines their own tests do not notice. So
-the gap this section describes is measured rather than argued - and until
-§5.16 is built and has passed a blind review of what it reports, this paragraph
-is the accurate description and §1's opening line is the intent.
+the gap is measured rather than argued. The optional product now implements
+that detection, but its findings still need independent semantic review and
+there is no evidence that shipping it improves patch outcomes.
 
 **Updated the same day, and it narrows what "better code" can mean here.** Two
 blind reviewers confirm the gap is real (20 of 27 survivors MEANINGFUL). But
@@ -776,10 +788,11 @@ opening: *these three lines of your change could be altered and nothing you ran
 would notice.* That sentence is actionable without reading the diff, which is
 the only test a reviewer-facing artifact has to pass.
 
-This is the findings part of `P4` in the v0.8 lane, still **not built**. The
-2026-10-01 portable receipt report ships the basic evidence surface and retains
-that boundary; it does not produce mutation findings. A list
-of obligations met is a receipt. A list of unpinned lines is a finding.
+The first optional findings part of `P4` now ships in the 2026-10-01 test-strength
+delivery. It follows the earlier basic receipt surface and adds metadata for
+engine mutations detected or missed by passing tests. Whole changed production
+files and bounded samples are the current scope. Equivalent behavior is explicitly
+possible; no semantic filter or improved patch-outcome claim is established.
 
 **Ordering is deliberate: §5.16 before §5.17.** Building the report first
 produces a page that says *everything checks out*, which is the reliability
@@ -1091,7 +1104,7 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 - **"An agent's own tests pin its change less than a maintainer's tests pin theirs."** Withdrawn 2026-09-24, the same day it was written as an expectation in `results/b7-mutants/findings.md`. On 15 tasks, one resolved agent patch each through the same probe: **28 of 89** mutants survive, against the gold patches' **27 of 91** on the same tasks; per task worse on 4, better on 3, equal on 8. The qualification that bounds it: all 15 were gate-arm patches, 12 of them Opus 5.
 - **"Killing a mutant means the test pins behaviour."** False, measured 2026-09-24 (B8). Told exactly which mutants survived, Opus 5.5 killed all 54, in part by writing tests against private internals, message text and the type of an internal call's argument - and, in both replicates, "killed" the one unanimously equivalent mutant by asserting which slice expression the source uses. A mutation score earned by tests written against named mutants measures compliance with the list.
 
-- **"The discrimination check tells you the change is well tested."** Never asserted in these words, and a reader would reasonably infer it - so it is stated here as **false**, 2026-09-23. `core/stress.py` asks whether *anything* in the evidence could have failed. One test that was red on the base tree and is green now satisfies it, however much of the change goes unexercised. The measured rate - **1 VACUOUS in 22 runs** - was read as "agents here write discriminating tests"; the likelier reading is that the bar is one they clear by doing the minimum. §5.16 is the proposed answer and is **unbuilt**. **Measured 2026-09-24, and the gap is real:** reverting the gold patch - which is exactly the mutant `stress.py` runs - was killed on **16 of 16** tasks, so the discrimination check would report `DISCRIMINATES` on every one of them; yet **9 of those 16** carry at least one surviving diff-scoped mutant under the maintainers' own tests. The check passing and the change being pinned are different facts, and on this corpus they disagree more often than not. `results/b7-mutants/`.
+- **"The discrimination check tells you the change is well tested."** Never asserted in these words, and a reader would reasonably infer it - so it is stated here as **false**, 2026-09-23. `core/stress.py` asks whether *anything* in the evidence could have failed. One test that was red on the base tree and is green now satisfies it, however much of the change goes unexercised. The measured rate - **1 VACUOUS in 22 runs** - was read as "agents here write discriminating tests"; the likelier reading is that the bar is one they clear by doing the minimum. §5.16 now has an optional bounded changed-file implementation; patch-outcome improvement remains unproved. **Measured 2026-09-24, and the gap is real:** reverting the gold patch - which is exactly the mutant `stress.py` runs - was killed on **16 of 16** tasks, so the discrimination check would report `DISCRIMINATES` on every one of them; yet **9 of those 16** carry at least one surviving diff-scoped mutant under the maintainers' own tests. The check passing and the change being pinned are different facts, and on this corpus they disagree more often than not. `results/b7-mutants/`.
 - **"This system improves the logic, the edge cases, or the bugs."** Never true, stated plainly 2026-09-23 because it is the natural thing to assume from the framing. Nothing shipped generates a test, infers a property, searches for an edge case, or evaluates whether code is correct. `docs/research/build-on.md` records that a mutation engine is deliberately not written. What is shipped operates on the *evidence for* a claim, not on the claim's subject matter. §1.6.
 
 - **"Targeted reproductions went from 0 of 16 to 6 of 16."** Withdrawn 2026-09-22, and it was wrong in **both** directions at once. Part of the 6 was fabricated: a pytest node id carries shell metacharacters, `test_converter_decorator[<lambda>0]` made cmd.exe attempt an input redirect from a file named `lambda`, the command died before pytest started with **exit 1 and zero tests executed** - and exit 1 is allowed through as "some test failed", so the old code found no named failures and credited every selected id as a passing reproduction. Separately, `eval/rehearse.py` never applied the task's declared `PYTHONPATH=src`, so every check it ran imported the **installed release** instead of the patched source; that inflated `red_before` badly (`click-d340b0c1` reported **48** tests red on the base tree against a true **1**) and made honest targeted tests fail against code without the fix. With ids quoted and the environment applied, the figure is **16 of 16**. **None of this was caught by reading, by the test suite, or by an external audit that reproduced fourteen other probes** - it was caught by a four-minute run that cost nothing. `journey/43`.

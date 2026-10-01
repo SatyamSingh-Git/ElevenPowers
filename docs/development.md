@@ -4,6 +4,23 @@ Use Python 3.11 or newer and Git. Run these commands from the repository root.
 The runtime uses the standard library; pytest is a development dependency.
 Local checks and CI install the same pinned pytest version.
 
+Optional mutation acceptance also needs `requirements-strength.txt`, Node 22 and
+`@stryker-mutator/instrumenter@9.5.1` under `.venv/strength-js`. CI installs them
+in all four Windows/Linux, Python 3.11/3.13 cells. Local equivalents:
+
+```sh
+python -m pip install -r requirements-strength.txt
+npm install --prefix .venv/strength-js --ignore-scripts --no-audit --no-fund @stryker-mutator/instrumenter@9.5.1
+python -m pytest tests/test_strength.py -q
+python -S -c "import core.strength.runner; import core.export"
+```
+
+The optional producer controls use actual Python/Node/TypeScript tests, weak and
+strong boundary assertions, fresh trials, editable-path redirection, malformed
+settings, source changes, deadlines, state validation and superseded writers.
+Without engines, real-engine cases skip; base imports remain stdlib-only.
+Runtime does not install dependencies or run paid model evaluations.
+
 ## Windows PowerShell
 
 ```powershell

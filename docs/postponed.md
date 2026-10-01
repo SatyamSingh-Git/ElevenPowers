@@ -7,9 +7,11 @@ readiness actions and targeted native edit attribution are shipped. Pending,
 missing and evicted patch observations remain explicit coverage gaps. A real
 Claude startup was observed; the four added hosts still need live acceptance.
 Snag's actual external CI failed its dependency audit (14/15 checks passed).
-Portable Markdown/JSON verification reports are shipped, separate from per-test
-impact analysis and the unbuilt mutation findings in PLAN §5.17. Live acceptance
-on the four added hosts and native command capture are the next readiness work.
+Portable reports and optional changed-file test-strength findings are shipped,
+separate from per-test dependency/impact analysis. Missing engines, sampling,
+uncertain attribution and setup are explicit. Exact diff-hunk prioritization,
+semantic-equivalence filtering and outcome improvement remain future work. Live
+acceptance on the four added hosts and native command capture remain readiness work.
 
 Postponement is a decision with a condition, not a quiet drop. Nothing here is
 built until its trigger fires, and the trigger is a measurement rather than an
