@@ -50,6 +50,12 @@ claude --plugin-dir ElevenPowers/plugin
 
 No build step, runtime `pip install`, or configuration file is required. Once loaded in a supported Claude Code session, the plugin automatically reports startup health, discovers supported project commands, scans repository inputs, and records command outcomes. Missing verification runs at completion in `guide` and `strict`; `off` remains passive. See [automatic setup](configuration.md#automatic-setup-after-loading-the-plugin) for supported manifests and overrides.
 
+The checkout and portable native bundles include `ep_report.py`. After the host
+has recorded work, export a local Markdown/JSON artifact with
+`python plugin/bin/ep_report.py --project PATH --output report.md`.
+The report reads the selected project's ledger and current inputs; it neither
+installs dependencies nor executes project checks. See [report commands](commands.md#ep_report--evidence-to-share-with-a-reviewer).
+
 The `--plugin-dir` flag points Claude Code at [`plugin/`](../plugin/), which contains a manifest, a hook subscription file, and Python entry points. Everything else is imported from `core/` next to it.
 
 ### Making it permanent

@@ -31,6 +31,12 @@ That relay is separate from an installed-host command capture. The four added
 hosts still require versioned live-session acceptance. See
 [onboarding validation](../docs/validation/2026-10-01-live-onboarding.md).
 
+Every integration shares the same portable report entry point:
+`python plugin/bin/ep_report.py --project PATH --output report.md`.
+The checkout and generated bundles contain it. Exporting receipts works without
+an active host session; that does not establish native callback delivery. See
+[report commands](commands.md#ep_report--evidence-to-share-with-a-reviewer).
+
 ## Codex
 
 Use Python 3.11 or newer. From your ElevenPowers checkout, install project hooks:
