@@ -179,3 +179,59 @@ def test_health_rejects_invalid_budget(tmp_path, seconds):
     prepared(tmp_path)
     with pytest.raises(ValueError, match='seconds'):
         inspect('codex', tmp_path, timeout=seconds)
+
+
+def test_later_task_command_does_not_inherit_earlier_edit(tmp_path):
+    from core.health import inspect
+    from core.hook import dispatch
+    prepared(tmp_path)
+    captured(tmp_path)
+    ledger = Ledger.load(tmp_path)
+    ledger.task, ledger.evidence = 'new-task', []
+    ledger.save()
+    with ingress('host'):
+        dispatch('PostToolUse', {'cwd': str(tmp_path), '_ep_platform': 'codex', 'session_id': 's',
+                 'tool_name': 'Bash', 'tool_input': {'command': 'python -m pytest'},
+                 'tool_response': {'stdout': '1 passed in 0.1s', 'exit_code': 0}})
+        dispatch('Stop', {'cwd': str(tmp_path), '_ep_platform': 'codex', 'session_id': 's'})
+    assert inspect('codex', tmp_path)['health']['stages']['edits']['state'] == 'waiting'
+
+
+def test_all_declared_checks_required_even_if_latest_command_passed(tmp_path):
+    from core.health import inspect
+    from core.hook import dispatch
+    prepared(tmp_path)
+    save(tmp_path, Config(profile='off', commands={'tests': 'python -m pytest', 'build': 'python build.py'}, strength={'enabled': False}))
+    captured(tmp_path)
+    assert inspect('codex', tmp_path)['health']['stages']['verification']['state'] == 'waiting'
+    with ingress('host'):
+        dispatch('PostToolUse', {'cwd': str(tmp_path), '_ep_platform': 'codex', 'session_id': 's',
+                 'tool_name': 'Bash', 'tool_input': {'command': 'python build.py'},
+                 'tool_response': {'stdout': 'build failed', 'exit_code': 1}})
+    captured(tmp_path)
+    assert inspect('codex', tmp_path)['health']['stages']['verification']['state'] == 'failed'
+
+
+@pytest.mark.parametrize('bad', [{'phases': {'Stop': []}}, {'phases': {'Stop': {'samples_ms': [float('inf')]}}},
+                                  {'receipt_links': 'wrong-container'}])
+def test_malformed_phase_metadata_is_actionable(tmp_path, bad):
+    from core.health import inspect
+    prepared(tmp_path)
+    value = activation('codex', tmp_path)
+    value.update(bad)
+    (tmp_path / '.elevenpowers/integrations.json').write_text(json.dumps({'codex': value}))
+    assert inspect('codex', tmp_path)['health']['state'] == 'incomplete'
+
+
+def test_linked_saved_state_is_refused_without_following_it(tmp_path):
+    from core.health import inspect
+    prepared(tmp_path)
+    path = tmp_path / '.elevenpowers/integrations.json'
+    target = tmp_path / 'other.json'
+    path.rename(target)
+    try:
+        path.symlink_to(target)
+    except OSError:
+        target.rename(path)
+        pytest.skip('symlink privilege unavailable')
+    assert inspect('codex', tmp_path)['health']['state'] == 'incomplete'

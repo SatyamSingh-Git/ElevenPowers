@@ -6,13 +6,13 @@ import json
 from pathlib import Path
 import time
 import uuid
+from .diagnostics import PHASES, read_json, validate
 
 from ..jobs import ledger_write
 from ..ledger import _keep_out_of_git
 
 SOURCE = ContextVar('callback_ingress', default=None)
 _OBSERVATION = ContextVar('native_health_observation', default=None)
-PHASES = ('SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'PostToolUseFailure', 'Stop')
 
 
 def identity(value):
@@ -35,8 +35,12 @@ def record_receipts(records, task):
     observation = _OBSERVATION.get()
     if observation is not None:
         record_task(task)
-        observation['links'].extend({'key': receipt_key(r), 'result': r.result.value,
-                                     'execution': r.execution} for r in records if r.declaration)
+        for r in records:
+            if r.declaration:
+                observation['links'].append({'key': receipt_key(r), 'result': r.result.value, 'execution': r.execution})
+                if len(observation['links']) > 64:
+                    observation['links'].pop(0)
+                    observation['evicted'] += 1
 
 
 def record_edit(task, changed, incomplete=False):
@@ -73,10 +77,7 @@ def state(root):
 
 def read(root):
     path = Path(root) / '.elevenpowers/integrations.json'
-    value = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
-    if not isinstance(value, dict) or any(not isinstance(v, dict) for v in value.values()):
-        raise ValueError('invalid integration state')
-    return value
+    return validate(read_json(path))
 
 
 def signature(path):
@@ -117,6 +118,7 @@ def callback(platform, root, event, payload=None):
     if event not in PHASES:
         raise ValueError('unsupported callback phase')
     session = identity((payload or {}).get('session_id'))
+    started = time.monotonic()
     with state(root) as value:
         item = value.setdefault(platform, {'state': 'received', 'generation': uuid.uuid4().hex})
         generation = item['generation']
@@ -124,9 +126,8 @@ def callback(platform, root, event, payload=None):
                     received=min(item.get('received', 0) + 1, 1_000_000_000))
         phase = item.setdefault('phases', {}).setdefault(event, {})
         phase.update(received=min(phase.get('received', 0) + 1, 1_000_000_000))
-    observation = {'links': [], 'task': '', 'session': session}
+    observation = {'links': [], 'task': '', 'session': session, 'evicted': 0}
     token = _OBSERVATION.set(observation)
-    started = time.monotonic()
     error = None
     try:
         yield
@@ -142,7 +143,7 @@ def callback(platform, root, event, payload=None):
                 phase = item.setdefault('phases', {}).setdefault(event, {})
                 phase.update(task=observation['task'], session=session, last_at=time.time())
                 if 'edit' in observation:
-                    phase['edit'] = observation['edit']
+                    phase['edit'] = {**observation['edit'], 'task': observation['task'], 'session': session}
                 phase['samples_ms'] = [*phase.get('samples_ms', [])[-31:], round(elapsed, 3)]
                 if error:
                     phase.update(errors=min(phase.get('errors', 0) + 1, 1_000_000_000), last_error=error)
@@ -154,7 +155,7 @@ def callback(platform, root, event, payload=None):
                     links = item.get('receipt_links', []) + [
                         {**link, 'task': observation['task'], 'session': session, 'at': time.time()}
                         for link in observation['links']]
-                    item['links_evicted'] = item.get('links_evicted', 0) + max(0, len(links) - 64)
+                    item['links_evicted'] = min(1_000_000_000, item.get('links_evicted', 0) + max(0, len(links) - 64) + observation['evicted'])
                     item['receipt_links'] = links[-64:]
                     item.pop('error', None)
                     item.update(processed_at=time.time(), processed=min(item.get('processed', 0) + 1, 1_000_000_000))

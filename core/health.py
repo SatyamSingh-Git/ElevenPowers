@@ -35,6 +35,8 @@ def _stamp(root, host):
             raise ValueError('project state escapes root')
         try:
             stat = path.stat()
+            if stat.st_size > 8 * 1024 * 1024:
+                raise ValueError('saved project state exceeds health read limit')
             result.append((stat.st_mtime_ns, stat.st_size))
         except FileNotFoundError:
             result.append(None)
@@ -109,7 +111,11 @@ def inspect(host, root, timeout=10):
         issues.append('Health read deadline reached; coverage is incomplete.')
     commands = body['commands']
     runtimes = {name: bool(shutil.which(name)) for command in commands.values() if (name := runtime_name(command))}
-    records = [r for r in body['receipts'] if r.get('declaration')]
+    records = [r for r in body['receipts'] if r.get('declaration') in commands]
+    by_need = {}
+    for r in records:
+        if r['declaration'] not in by_need or r['recorded_at'] >= by_need[r['declaration']]['recorded_at']:
+            by_need[r['declaration']] = r
     latest = max(records, key=lambda r: r['recorded_at'], default=None)
     current_task = identity(body['task']['id'])
     phases = live.get('phases', {})
@@ -125,7 +131,9 @@ def inspect(host, root, timeout=10):
     def observed(phase):
         return bool(usable and session and phase.get('processed') and not phase.get('last_error') and
                     phase.get('session') == session and phase.get('task') == current_task and current_task)
-    edits = [p for p in phases.values() if observed(p) and p.get('edit', {}).get('changed')]
+    edits = [p['edit'] for p in phases.values() if p.get('edit', {}).get('changed') and
+             usable and session and p['edit'].get('task') == current_task and
+             p['edit'].get('session') == session and not p['edit'].get('incomplete')]
     stages = {
         'configuration': stage('observed' if configured else 'attention', text or 'Native configuration unavailable'),
         'environment': stage('observed' if commands and all(runtimes.values()) else 'attention',
@@ -133,26 +141,28 @@ def inspect(host, root, timeout=10):
         'startup': stage('observed' if usable and startup.get('processed') and session and not startup.get('last_error') else 'waiting',
                          'Processed native startup with session correlation required'),
         'edits': stage('observed' if edits else 'waiting', 'Current-task native edit delivery; target observations do not prove all side effects'),
-        'command_capture': stage('observed' if latest and latest.get('receipt_key') in linked else 'waiting',
+        'command_capture': stage('observed' if commands and set(by_need) == set(commands) and
+                                 all(r.get('receipt_key') in linked for r in by_need.values()) else 'waiting',
                                  'Current receipt must link to this configuration, task and startup session'),
         'completion': stage('observed' if observed(phases.get('Stop', {})) else 'waiting',
                             'Processed completion in the current task/session required'),
         'report': stage('observed' if coverage['complete'] and not issues else 'incomplete',
                         'Current shared report and input freshness view'),
     }
-    if latest is None:
+    needed = list(by_need.values())
+    if set(by_need) != set(commands) or not needed:
         verification = 'waiting'
-    elif latest['execution'] != 'complete' or latest['coverage_issues']:
+    elif any(r['execution'] != 'complete' or r['coverage_issues'] for r in needed):
         verification = 'incomplete'
-    elif latest['result'] != 'pass' or latest['failed'] > 0:
+    elif any(r['result'] != 'pass' or r['failed'] > 0 for r in needed):
         verification = 'failed'
-    elif latest['freshness'] != 'fresh':
-        verification = latest['freshness']
-    elif latest['counted'] and latest['passed'] <= 0:
+    elif any(r['freshness'] != 'fresh' for r in needed):
+        verification = 'stale'
+    elif any(r['counted'] and r['passed'] <= 0 for r in needed):
         verification = 'incomplete'
     else:
         verification = 'observed'
-    stages['verification'] = stage(verification, 'Latest declared receipt: complete, passing and fresh; not task certification')
+    stages['verification'] = stage(verification, 'Every declared command needs a complete, passing, fresh receipt; not task certification')
     engines = _engines(root, config) if config else {'state': 'incomplete'}
     stages['strength'] = stage(body['test_strength']['state'], 'Optional saved mutation observations; excluded from required pipeline health')
     required = [v['state'] for k, v in stages.items() if k != 'strength']
@@ -166,7 +176,18 @@ def inspect(host, root, timeout=10):
         actions.insert(0, 'Resolve diagnostic/coverage issues before relying on the pipeline: ' + '; '.join(issues))
     if live.get('links_evicted'):
         actions.append('Earlier native receipt links were evicted; repeat an acceptance exercise if its history is missing.')
-    journal = jobs.read(root) if not issues else {}
+    from .hosts.diagnostics import read_json
+    try:
+        journal = read_json(root / '.elevenpowers/verification.json', 1024*1024) if not issues else {}
+        if not isinstance(journal, dict) or not isinstance(journal.get('checks', []), list):
+            raise ValueError('invalid verification journal')
+    except (OSError, ValueError):
+        journal = {}
+        issues.append('Verification progress diagnostics unavailable')
+        status = 'incomplete'
+    if journal.get('task') == body['task']['id'] and journal.get('status') in ('running', 'incomplete', 'deferred'):
+        stages['completion'] = stage('incomplete', 'Verification attempt is running, deferred or interrupted; journal is diagnostic only')
+        status = 'incomplete'
     durations = []
     if journal.get('task') == body['task']['id']:
         for check in journal.get('checks', [])[-100:]:
