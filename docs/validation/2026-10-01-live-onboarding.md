@@ -71,8 +71,9 @@ project and was not part of this runtime delivery.
 7. Rendered architecture (`7e6f741`).
 8. Status, PLAN, roadmap and postponed scope (`9a686d7`).
 9. Journey, development workflow and standing project-independence instruction (`be245da`).
-10. README consistency and this final validation record.
+10. README consistency and final validation record (`02d1286`).
 
-The first nine parts publish incrementally on the delivery branch; the tenth
-publishes the final branch and main together. This keeps one completed main
-revision for the remote matrix while preserving ten separately reviewable pushes.
+All ten actual pushes succeeded. The first nine published incrementally on
+`codex/live-onboarding`; the tenth atomically published that branch and main at
+`02d12869724ae2925cf5dfb7cc9d90a70899b81f`. The [remote test matrix](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/36863821822)
+completed successfully on Ubuntu and Windows with Python 3.11 and 3.13.

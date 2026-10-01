@@ -5,6 +5,9 @@ Dated records distinguish implementation checks from real-project integration. [
 - [2026-10-01 generalized onboarding](2026-10-01-live-onboarding.md): five-host
   setup/readiness, bounded activation, targeted edit observations, review
   regressions, real Claude startup and the actual failed external Snag CI relay.
+- [2026-10-01 portable report](2026-10-01-portable-report.md): Markdown/JSON
+  exports, six reproduced review corrections, fresh explicit inputs, read-only
+  journals, and the actual Snag receipt exported without rerunning CI.
 
 | Date | Record | What it establishes |
 |---|---|---|
