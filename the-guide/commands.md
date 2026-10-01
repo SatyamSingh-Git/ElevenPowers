@@ -1,5 +1,29 @@
 # Commands
 
+## ep_strength — inspect changed-file test strength
+
+```bash
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_strength.py --root .
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_strength.py --root . --base FULL_COMMIT --command "python -m pytest tests -q" --seconds 60 --max-mutants 8 --json
+```
+
+`--root` chooses the repository (default current directory). `--base` chooses an
+explicit full Git commit instead of the task base, deliberately including existing
+edits in that comparison. `--command` selects a focused command. `--seconds` and
+`--max-mutants` override limits without editing configuration. `--json` prints saved
+metadata. Exit 0 means complete, disabled or not applicable; exit 2 means incomplete,
+unavailable, deferred or invalid setup. Undetected mutations alone do not fail it.
+Caps can leave valid observations with incomplete coverage, so read the issues.
+
+The command writes diagnostic state and never edits original source or installs
+packages. It requires positive passing test counts in the private baseline, then
+runs every mutation from clean inputs. Automatic completion considers this same
+runner. Human `ep_report.py --project PATH` reads saved results without executing
+engines or tests. Its additive schema-v1 `test_strength` section contains counts,
+operator/path/line metadata, independent freshness, sampling limits and incomplete
+execution. Undetected changes are possible test gaps, including equivalent behavior,
+not correctness verdicts. Individual targets never enter automatic agent feedback.
+
 Native-host installation helpers are Python entry points from the ElevenPowers
 checkout (or a bundle containing them). Setup/doctor `PLATFORM` includes `claude`,
 `codex`, `gemini`, `cursor` and `copilot`; portable bundle generation supports the

@@ -1,5 +1,11 @@
 # Native platforms
 
+Optional changed-file test strength uses one backend across all five platforms.
+The shared completion handler considers it after ordinary verification and
+confirmation; host choice does not change operators, isolation, limits or report
+format. Native live acceptance remains a separate readiness requirement. Passing
+mutation fixtures does not establish native delivery in an installed host.
+
 ElevenPowers uses one repository/evidence engine with native host adapters.
 Claude Code retains its existing installation. Codex, Gemini CLI, Cursor Agent
 and GitHub Copilot CLI have native adapters, reversible project setup,

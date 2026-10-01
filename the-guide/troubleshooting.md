@@ -1,5 +1,21 @@
 # Troubleshooting
 
+Read test-strength state and issues before counts. `unavailable` means a missing
+or incompatible optional engine. `incomplete` can mean red/empty baseline, dirty
+attribution, unsafe inputs, import redirection, source changes or exhausted attempts.
+`deferred` means the shared deadline prevented completion. None changes the verdict.
+
+Use an explicit full base for a deliberate comparison of existing edits and a
+focused command that executes tests in the copy. Do not bypass a failed baseline
+or count a timeout as detection. Install dependencies explicitly; declare required
+ignored inputs with `strength.dependencies`. Symlinked dependencies are refused.
+Python `.pth`/editable paths into original source produce incomplete isolation:
+use an isolated dependency environment or supported command. Path/startup overrides
+that disable the import diagnostic are unsupported. Local test files are reset
+between attempts; external services and deliberate escape are outside a filesystem
+copy's guarantee. Old findings can become stale after test, asset, command or
+environment changes. Export reads saved metadata and never reruns analysis.
+
 For any supported host, begin with `ep_ready.py PLATFORM --project PATH` and
 `python plugin/bin/ep_doctor.py --platform PLATFORM --cwd PATH`. Missing launcher
 or interpreter means setup must be rerun from the current checkout/environment.

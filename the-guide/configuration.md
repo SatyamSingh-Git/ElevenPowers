@@ -1,5 +1,43 @@
 # Configuration
 
+Optional changed-file test strength is shared by every host and considered at
+completion in guide/strict mode. Off stays passive; runtime never installs engines.
+Project-owned `.elevenpowers/config.json` can include:
+
+```json
+{
+  "strength": {
+    "enabled": true,
+    "seconds": 60,
+    "max_mutants": 8,
+    "test_seconds": 15,
+    "max_files": 20000,
+    "max_bytes": 268435456,
+    "dependencies": [],
+    "command": ""
+  }
+}
+```
+
+An empty command uses the project's declared/discovered `tests` command. Set a
+focused command if full CI is too slow for the baseline budget. Limits must be
+positive and finite: seconds <=480, test_seconds <=300, mutants <=256,
+files <=100000, bytes <=1 GiB. Invalid settings stay advisory and incomplete.
+
+`python` optionally chooses an interpreter containing Cosmic Ray 8.7.0; otherwise
+the runtime interpreter is used. `stryker` optionally chooses the directory of
+`@stryker-mutator/instrumenter` 9.5.1; otherwise the root's installed package is used.
+Explicit paths can be machine-specific. `dependencies` lists additional required
+ignored inputs as relative paths. Conventional `node_modules` is copied when
+present, under the same limits. Linked/nested trees and missing inputs are explicit.
+
+`.elevenpowers/strength.json` saves bounded schema-v1 task metadata, never mutant
+replacements or test output. Every test starts from fresh inputs. Known editable
+Python paths into original source are refused; path/startup overrides that disable
+the diagnostic are unsupported. Completed samples can be reused only for matching
+tests, assets, environment, command, settings, engine versions and runtime code.
+Interrupted and timed-out execution is not reused as a completed sample.
+
 Repository configuration under `.elevenpowers/` is shared by all five host
 integrations. The four additional hosts use separate native subscription files;
 manage those with `ep_setup.py` as described in [platforms](platforms.md).

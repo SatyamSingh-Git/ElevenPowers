@@ -1,5 +1,21 @@
 # Installation
 
+Changed-code test strength is optional; the base runtime remains Python 3.11+
+standard library. Install Cosmic Ray in the interpreter selected by `strength.python`
+(or the runtime interpreter), and Stryker in the project using Node >=20:
+
+```bash
+python -m pip install cosmic-ray==8.7.0
+npm install --save-dev @stryker-mutator/instrumenter@9.5.1
+```
+
+These are explicit setup steps. Runtime never downloads packages or alters a
+manifest. After setup, guide/strict completion automatically considers bounded
+analysis against that project's commands. Missing engines remain unavailable while
+ordinary verification continues. See [configuration](configuration.md) for focused
+commands, interpreter paths and copy limits; [commands](commands.md) covers manual
+execution. JavaScript/TypeScript commands must execute or rebuild copied source.
+
 [← The Guide](README.md)
 
 ---
