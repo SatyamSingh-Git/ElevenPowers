@@ -12,7 +12,7 @@ import tempfile
 from .bridge import adapter
 from .wiring import configuration
 
-PATHS = {"codex": ".codex/hooks.json", "gemini": ".gemini/settings.json", "cursor": ".cursor/hooks.json",
+PATHS = {"claude": ".claude/settings.local.json", "codex": ".codex/hooks.json", "gemini": ".gemini/settings.json", "cursor": ".cursor/hooks.json",
          "copilot": ".github/hooks/elevenpowers.json"}
 MARKER = "elevenpowers-host"
 WINDOWS_PREFIX = "powershell.exe -NoProfile -NonInteractive -EncodedCommand "
@@ -44,7 +44,8 @@ def invocation_args(command: str) -> list[str]:
 
 
 def config_path(platform: str, project: Path) -> Path:
-    adapter(platform)
+    if platform != 'claude':
+        adapter(platform)
     project = Path(project).resolve(strict=True)
     if not project.is_dir():
         raise ValueError("project must be a directory")
@@ -128,12 +129,16 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
     current = read_config(path)
     if platform in {"cursor", "copilot"} and current.get("version", 1) != 1:
         raise ValueError(f"unsupported {platform} hooks configuration version")
-    launcher = Path(source).resolve() / "plugin/bin/ep_host.py"
+    launcher = Path(source).resolve() / ('plugin/bin/ep_hook.py' if platform == 'claude' else 'plugin/bin/ep_host.py')
     executable = Path(python).resolve(strict=True)
     if not launcher.is_file() or not executable.is_file():
         raise ValueError("Python executable and ElevenPowers launcher must exist")
     args = [str(executable), str(launcher)]
-    generated = configuration(platform, args if platform == "copilot" else "COMMAND")
+    if platform == 'claude':
+        from ..wiring import hooks_json
+        generated = hooks_json('COMMAND')
+    else:
+        generated = configuration(platform, args if platform == "copilot" else "COMMAND")
     merged = _without_owned(current)
     if platform in {"cursor", "copilot"}:
         merged["version"] = 1
@@ -142,11 +147,14 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
         for entry in entries:
             if platform != "copilot":
                 for handler in entry.get("hooks", [entry]):
-                    handler["command"] = invocation([*args, platform, event])
+                    handler["command"] = invocation([*args, event] if platform == 'claude' else [*args, platform, event])
             for handler in entry.get("hooks", []):
                 handler["name" if platform == "gemini" else "statusMessage"] = MARKER
         hooks.setdefault(event, []).extend(entries)
+    changed = merged != current
     _write(path, merged)
+    from .readiness import configured
+    configured(platform, project, path, changed)
     return path
 
 
@@ -156,4 +164,6 @@ def remove(platform: str, project: Path) -> Path:
     cleaned = _without_owned(current)
     if cleaned != current:
         _write(path, cleaned)
+    from .readiness import removed
+    removed(platform, project)
     return path

@@ -67,7 +67,9 @@ def dispatch(event: str, payload: dict) -> int:
     # call arrives under a different event, and that is often the only signal
     # that it failed.
     payload.setdefault("hook_event_name", event)
-    return globals()[name](payload, root)
+    from .hosts.readiness import callback
+    with callback(payload.get('_ep_platform', 'claude'), root, event):
+        return globals()[name](payload, root)
 
 
 def _read_payload() -> dict:

@@ -5,16 +5,18 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.hosts.bridge import run
+from core.hosts.readiness import ingress
 
 
 def main() -> int:
     try:
-        if len(sys.argv) != 3:
+        if len(sys.argv) not in {3, 4} or (len(sys.argv) == 4 and sys.argv[3] != '--replay'):
             raise ValueError("usage: ep_host.py PLATFORM EVENT")
         payload = json.load(sys.stdin)
         if not isinstance(payload, dict):
             raise ValueError("hook input must be a JSON object")
-        response, code = run(sys.argv[1], sys.argv[2], payload)
+        with ingress('replay' if len(sys.argv) == 4 else 'host'):
+            response, code = run(sys.argv[1], sys.argv[2], payload)
         print(json.dumps(response))
         return code
     except (ValueError, OSError) as exc:

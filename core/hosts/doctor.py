@@ -8,14 +8,22 @@ from .wiring import configuration
 
 
 def report(platform: str, root: Path) -> tuple[str, bool]:
-    host = adapter(platform)
+    if platform == 'claude':
+        from types import SimpleNamespace
+        from ..wiring import EVENTS, hooks_json
+        host = SimpleNamespace(EVENTS=EVENTS)
+        generated = hooks_json('COMMAND')
+        for entries in generated['hooks'].values():
+            entries[0]['hooks'][0]['statusMessage'] = 'elevenpowers-host'
+    else:
+        host = adapter(platform)
+        generated = configuration(platform, ["PYTHON", "LAUNCHER"] if platform == "copilot" else "COMMAND")
     lines = [f"ElevenPowers {platform}: configuration checks", f"Python {sys.version.split()[0]}"]
     try:
         path = config_path(platform, root)
         if not path.is_file():
             raise ValueError(f"missing native configuration: {path}")
         value = read_config(path)
-        generated = configuration(platform, ["PYTHON", "LAUNCHER"] if platform == "copilot" else "COMMAND")
         expected = generated["hooks"]
         errors = []
         if "version" in generated and value.get("version") != generated["version"]:
@@ -36,7 +44,9 @@ def report(platform: str, root: Path) -> tuple[str, bool]:
                     errors.append(f"{event}: executable, arguments or timeout differs from generated wiring")
                 continue
             args = invocation_args(handlers[0].get("command", ""))
-            if len(args) != 4 or args[-2:] != [platform, event] or not all(Path(p).is_file() for p in args[:2]):
+            valid_args = (len(args) == 3 and args[-1:] == [event] if platform == 'claude'
+                          else len(args) == 4 and args[-2:] == [platform, event])
+            if not valid_args or not all(Path(p).is_file() for p in args[:2]):
                 errors.append(f"{event}: interpreter or launcher is missing or invocation is invalid")
             if len(handlers) != 1 or any(
                     handlers[0].get(k) != v for k, v in wanted.items() if k != "command"):
@@ -47,5 +57,12 @@ def report(platform: str, root: Path) -> tuple[str, bool]:
         lines.append(f"failed: {exc}")
         ok = False
     lines.extend(getattr(host, "LIMITS", ()))
-    lines += ["Host enablement/trust: review in the host", "Live host session: not verified"]
+    from .readiness import activation
+    try:
+        live = activation(platform, root)
+        lines.append(f"Callback activation: {live['state']} ({live.get('received', 0)} received, {live.get('processed', 0)} processed)")
+    except (ValueError, OSError) as exc:
+        lines.append(f'Callback diagnostics unavailable: {exc}')
+        ok = False
+    lines += ["Host enablement/trust: review in the host", "Live host session: not verified; callback observations are not host authentication"]
     return "\n".join(lines), ok
