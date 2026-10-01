@@ -115,6 +115,9 @@ def build(root: Path, *, timeout=120):
         order = [Status.CONTRADICTED, Status.UNVERIFIED, Status.STALE, Status.VERIFIED]
         status = min((v.status for v in verdicts), key=order.index).value if verdicts else Status.UNVERIFIED.value
     issues = list(scan.issues)
+    from .strength.view import view as strength_view
+    strength = strength_view(root, ledger.task, ledger.config, fingerprint, deadline)
+    strength['issues'] += [d['why'] for d in ledger.decisions if d.get('what') == 'test strength incomplete']
     revision, revision_state, revision_issues = _revision(root, deadline)
     issues += revision_issues
     if time.monotonic() >= deadline:
@@ -139,6 +142,7 @@ def build(root: Path, *, timeout=120):
                           'selected_bytes': scan.bytes, 'source_fingerprint': fingerprint,
                           'latest_receipts_total': len(latest), 'omitted_receipts': omitted},
              'commands': dict(ledger.config.commands), 'receipts': receipts,
+             'test_strength': strength,
              'next_actions': list(dict.fromkeys(actions)),
              'limits': ['Unsigned local observation, not independent attestation or an improved patch-outcome claim.',
                         'Input freshness is evaluated at report creation; later edits require a new report.',
@@ -176,6 +180,22 @@ def markdown(value):
         lines.append('| ' + ' | '.join(_text(cell) for cell in cells) + ' |')
     if not value['receipts']:
         lines.append('| No receipts recorded | — | — | — | — |')
+    strength = value.get('test_strength', {})
+    lines += ['', '## Changed-code test strength (informational)', '',
+              f"Saved analysis: {_text(strength.get('state', 'not_recorded'))}; input freshness: {_text(strength.get('freshness', 'unknown'))}.",
+              'Undetected changes are possible test gaps, including equivalent behavior; they do not change the task verdict.']
+    if strength.get('baseline'):
+        lines.append(f"Baseline: {_text(strength['baseline'])}; attempts: {_text(strength.get('attempts', 0))}.")
+    if strength.get('command'):
+        lines.append('Analyzed command: ' + _text(strength['command']))
+    if strength.get('summary'):
+        lines.append(', '.join(f'{_text(key)}: {_text(count)}' for key, count in strength['summary'].items()))
+    lines += ['- ' + _text(issue) for issue in strength.get('issues', [])]
+    if strength.get('observations'):
+        lines += ['', '| Changed source | Line | Mutation operator | Observation |', '|---|---|---|---|']
+        for observation in strength['observations']:
+            lines.append('| ' + ' | '.join(_text(observation[key]) for key in ('path', 'line', 'operator', 'status')) + ' |')
+    lines += ['- ' + _text(limit) for limit in strength.get('limitations', [])]
     lines += ['', '## Changed targets', '']
     lines += ['- ' + _text(path) for path in task['touched']] or ['No edited targets recorded.']
     lines += ['', '## Coverage and next actions', '']

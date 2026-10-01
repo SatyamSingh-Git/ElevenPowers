@@ -385,3 +385,31 @@ def test_completion_wires_strength_without_mutant_feedback():
     source = inspect.getsource(_complete_stop)
     assert 'consider(ledger)' in source
     assert 'strength.observations' not in source
+
+
+def test_strength_report_is_read_only_and_test_edits_make_it_stale(tmp_path, monkeypatch):
+    import sys, time
+    from core.strength.runner import analyze
+    from core.strength import engines
+    from core.ledger import Ledger
+    from core.config import Config, save
+    from core.export import build, markdown
+    base = repository(tmp_path)
+    (tmp_path/'a.py').write_text('value = 2\n')
+    (tmp_path/'test_a.py').write_text('def test_value():\n    assert True\n')
+    config = Config(commands={'tests': f'"{sys.executable}" -m pytest -q -p no:cacheprovider'},
+                    strength={'python':sys.executable})
+    save(tmp_path, config)
+    ledger = Ledger(root=tmp_path, task='t', base=base)
+    ledger.save()
+    monkeypatch.setattr(engines, 'cosmic', lambda *args: (engines.Candidates([
+        engines.Candidate('1','a.py',1,'operator','value = 3\n')]), '8.7.0'))
+    analyze(ledger)
+    state = (tmp_path/'.elevenpowers/strength.json').read_bytes()
+    report = build(tmp_path)
+    assert report['test_strength']['freshness'] == 'fresh'
+    assert report['test_strength']['summary']['undetected'] == 1
+    assert 'possible test gaps' in markdown(report)
+    assert (tmp_path/'.elevenpowers/strength.json').read_bytes() == state
+    (tmp_path/'test_a.py').write_text('def test_value():\n    assert 2 == 2\n')
+    assert build(tmp_path)['test_strength']['freshness'] == 'stale'
