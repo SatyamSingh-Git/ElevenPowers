@@ -1,5 +1,12 @@
 # What we build on: prior art for each v0.8 component
 
+**Project-health delivery, 2026-10-01.** Fresh staged health reuses the exporter,
+evidence engine, owned native wiring/doctor, activation registry and progress
+journal. Explicit disposable exercises use real unittest/Node APIs rather than
+inventing a test framework or host protocol. No new third-party runtime code is
+vendored. See [provenance and limits](project-health.md) and
+[validation](../validation/2026-10-01-project-health.md).
+
 **Delivery update, 2026-10-01.** Beyond the scoped reversion described historically
 below, optional changed-file test strength now borrows installed Cosmic Ray 8.7.0
 and Stryker instrumenter 9.5.1 operators. Shared execution adds clean private

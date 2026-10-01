@@ -33,7 +33,7 @@ execution and incremental publication from the current working arrangement.
 14. Rendered architecture.
 15. All six guides.
 16. Status, roadmap, development, validation and journey.
-17. README/provenance and complete main publication.
+17. README/provenance and complete feature publication; main promotion requires explicit approval.
 
 ## Global constraints
 
@@ -112,10 +112,25 @@ Interfaces: `prepare(host, destination, language, source, version='') -> dict`,
 
 ## Task 5 — Documentation and publication
 
-- [ ] Update all six guides, README, PLAN/status/postponed/development, provenance,
+- [x] Update all six guides, README, PLAN/status/postponed/development, provenance,
   dated validation and journey.
-- [ ] Update architecture graph and structured views; run `check.py --render`.
-- [ ] Check links and diff whitespace, publish completed main without rewriting
-  history; check exact-head hosted CI and final remote/local cleanliness.
-- [ ] Preserve decisions in validation/final handoff; safely remove only this
-  plan's scratch directory.
+- [x] Update architecture graph and structured views; run `check.py --render`.
+- [x] Check links and diff whitespace; prepare feature publication without
+  rewriting history. Main promotion needs explicit approval after automatic
+  review rejected the default-branch update. Final exact-head hosted CI and local/remote checks
+  are recorded in the delivery handoff and matching GitHub Actions run.
+- [x] Preserve decisions in validation for the final handoff. Remove only this
+  plan's scratch directory after publication/CI checks; retain the native exercise.
+
+## Execution record
+
+Runtime and local verification are complete: 1,194 passed/28 skipped after all
+five independent-review corrections, 104 audit probes, four grader controls,
+launcher doctor, stdlib imports and all four architecture tabs rendered.
+Ten actual producer/launcher combinations pass. Installed Claude 2.1.286 delivered
+startup without a model prompt; full versioned exercises remain explicitly open.
+Publication comprises seventeen feature parts; the last contains final README/
+provenance. Default-branch promotion is a separate approval step, not inferred
+from the user's request for seventeen pushes.
+The final handoff records the remote commit and its CI result; an older badge is
+not used as proof. See `docs/validation/2026-10-01-project-health.md`.

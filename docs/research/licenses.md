@@ -1,5 +1,10 @@
 # License and attribution register
 
+The 2026-10-01 project-health delivery adds no third-party runtime dependency or
+vendored implementation. It composes the existing shared engine and uses standard
+unittest/Node APIs in original disposable exercises. See [health provenance](project-health.md)
+for the distinction between API use, internal reuse and installed-session proof.
+
 The optional 2026-10-01 mutation adapters use installed Cosmic Ray 8.7.0 (MIT)
 and StrykerJS instrumenter 9.5.1 (Apache-2.0), rather than vendoring an engine.
 The enumeration attribution, MIT notice, pinned versions, upstream links,

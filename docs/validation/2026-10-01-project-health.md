@@ -95,9 +95,12 @@ Seventeen actual publication parts: plan; bounded observations; report identity/
 timings; shared health; diagnostic safety; readiness CLI; engine metadata;
 preparation; acceptance inspection; doctor CLI; real five-launcher producers;
 boundary corrections; independent-review fixes; rendered architecture; six
-guides; status/roadmap/journey/validation; README/provenance/final results and main.
+guides; status/roadmap/journey/validation; README/provenance/final results.
 Each part has a descriptive commit; no empty count-padding commits are used.
-Final local checks are recorded above. The main workflow publishes Windows/Linux
-and Python 3.11/3.13 checks for the final commit; its exact-head result is reported
+Final local checks are recorded above. Automatic approval review rejected direct
+promotion to main because default-branch authorization was not explicit. All
+seventeen parts publish to `codex/project-health`; main remains the prior release
+until approval. The workflow can be dispatched on the feature head for Windows/
+Linux and Python 3.11/3.13 checks; its exact-head result is reported
 in the delivery handoff and available in GitHub Actions. An older green badge
 does not establish the result for a newer publication.

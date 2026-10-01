@@ -19,6 +19,24 @@
 
 Generalized onboarding now covers Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI. Project setup preserves other hooks, readiness tracks callback activation and explains environment/coverage issues, and native patch observations cover dirty and non-Git targets while preserving incomplete histories. See [platform installation and limits](the-guide/platforms.md), [journey 50](journey/50-project-readiness.md), and [dated validation](docs/validation/2026-10-01-live-onboarding.md). The four added hosts still require live installed-session acceptance.
 
+**Fresh project health** now checks whether that whole integration is working.
+`python plugin/bin/ep_ready.py HOST --project PATH --seconds 30` joins native
+configuration/startup/edit/capture/completion with every declared command's
+current aggregate outcome and fresh source evidence. It reports bounded timing
+samples, optional engine metadata and specific next actions. Add `--check` for
+an exit-code gate. The ordinary read runs no tests, engine or host and writes no
+project state. Pipeline health remains separate from task verification.
+
+For repeatable native acceptance, explicitly create a new disposable directory
+with `ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python
+--host-version INSTALLED_VERSION`, or choose JavaScript with Node available.
+Follow its `EXERCISE.md`, then inspect with `--acceptance DIR --platform HOST`.
+The same workflow applies to all five hosts and any repository. Preparation
+launches no model; replay and launcher fixtures do not establish installed
+acceptance. See [commands](the-guide/commands.md),
+[provenance](docs/research/project-health.md), [journey 53](journey/53-a-working-pipeline-needs-evidence.md)
+and [health validation](docs/validation/2026-10-01-project-health.md).
+
 Loading the plugin automatically checks startup health and discovers verification commands from supported project manifests. Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
 
 Export a local verification report for any project with
@@ -372,6 +390,13 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
+The project-health delivery passed **1,194 local tests with 28 skips**, 104 audit
+probes, all four grader controls and the launcher doctor. Five independent-review
+findings were reproduced and corrected. Ten real Python/Node producer cases pass
+through the five launchers; full installed sessions remain a separate milestone.
+Architecture's four tabs render with 95 nodes and 216 edges. The delivery uses
+17 incremental pushes. See [the current validation record](docs/validation/2026-10-01-project-health.md).
+
 Research prototype; status reviewed 2026-10-01. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The final local onboarding suite passed 1,062 tests with 28 skips; later report checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
@@ -401,7 +426,8 @@ Every figure below was produced by the command printed next to it.
 | Claim inference, real turns | 21% over-claim, 25% missed work, across 3,557 turns | `python -m eval.claims_run` |
 | Live blocking | **75% → 12% of runs** after self-discharge landed (16 runs). On the later pinned sweep it was **8% of runs** — six block *events* across four of fifty, which is the figure that matters for sizing an experiment | `python -m eval.live --arm gate --model haiku` |
 | Host integration | configuration and callback diagnostics | `python plugin/bin/ep_doctor.py --platform HOST --cwd PATH` |
-| Project readiness | activation, commands, environment and coverage actions | `python plugin/bin/ep_ready.py HOST --project PATH` |
+| Project readiness | fresh native stages, aggregate outcomes, environment, coverage and retained timings | `python plugin/bin/ep_ready.py HOST --project PATH` |
+| Native acceptance | explicit new Python/Node exercise and immutable current-observation qualification | `python plugin/bin/ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST` |
 | Audit probes | **every reproduced defect fixed**, zero xfails; R2 narrowed rather than closed | `python -m pytest tests/test_audit_probes.py -q` |
 | A pinned baseline | 68.9 and 73.3 across two passes of ninety paid runs, $67.42 | `python -m eval.baseline --pinned` |
 | Suite records that were wrong | **123 of 295 (42%)** said PASS while holding a failure count — `pytest \| tail` exits with `tail`'s status | `python -m eval.discriminate --bundles results --verbose` |
@@ -507,7 +533,7 @@ Everything above is a snapshot. The thesis has already been demoted once, the ob
 
 **So if you want the real story, don't read this file — read [`journey/`](journey/).**
 
-It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md), [automatic setup](journey/47-installed-should-mean-active.md), [durable verification](journey/48-completed-work-should-survive.md), [five hosts](journey/49-one-engine-several-hosts.md), [project readiness](journey/50-project-readiness.md), and [portable reports](journey/51-receipts-another-person-can-read.md). Earlier chapters cover:
+It is the complete record, written so that someone who was not here can reconstruct the reasoning, including the parts that were mistaken. The chronological index is in [journey/README.md](journey/README.md). Recent delivery chapters cover [repository evidence](journey/46-the-project-outside-the-fixture.md), [automatic setup](journey/47-installed-should-mean-active.md), [durable verification](journey/48-completed-work-should-survive.md), [five hosts](journey/49-one-engine-several-hosts.md), [project readiness](journey/50-project-readiness.md), [portable reports](journey/51-receipts-another-person-can-read.md), [test strength](journey/52-tests-that-notice-a-change.md) and [fresh pipeline health](journey/53-a-working-pipeline-needs-evidence.md). Earlier chapters cover:
 
 - **Where it started** — [the original brief](journey/01-origins.md), the first plan written from memory, and why that was exactly the wrong way to begin.
 - **What was read** — [fourteen systems from source](journey/02-research.md): the method, what each one actually turned out to be, and the findings that overturned the assumptions I walked in with.
