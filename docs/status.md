@@ -1,78 +1,67 @@
 # Current delivery status
 
-Reviewed **2026-09-29**, through runtime commit `518411d`. ElevenPowers remains a research prototype. Claude Code retains its existing integration; Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI now have native adapters, project setup, diagnostics and portable bundles. The four additions have contract and launcher validation, with live installed sessions still open. This page tracks delivery without claiming improved patch outcomes.
+Reviewed **2026-10-01**. ElevenPowers remains a research prototype. All five hosts
+share project-independent onboarding, command discovery, repository evidence and
+verification. Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI
+have reversible project wiring; the four additions also have portable bundles.
+This delivery does not establish improved patch outcomes.
 
 ## Shipped and exercised
 
 | Capability | Delivered behavior | Evidence boundary |
 |---|---|---|
-| Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested repository boundaries, configurable exclusions | Uses supported source extensions and named dependency files; excluded inputs are outside the fingerprint |
-| Scan coverage | Explicit diagnostics for budgets, unsafe inputs and unreadable files; incomplete coverage prevents freshness | Defaults: 20,000 selected files and 256 MiB; these are not wall-clock guarantees |
-| Command receipts | Exact configured/discovered commands; completed pass, completed fail and incomplete execution | Known summary failures override exit zero; opaque wrappers retain uncounted command-level evidence |
-| Automatic setup | Root manifest discovery, startup health and coverage summary, no generated configuration file | Supported conventions: Node scripts/managers, pytest configuration, Cargo and Go; ambiguous/custom setups need overrides |
-| Completion checks | Missing or stale verification in guide/strict; identical commands deduplicated per attempt | Baseline execution requires a relevant obligation and matching passing evidence; off remains passive |
-| Durable runner | Project lock and journal; immediate per-check receipts; 480-second shared work deadline; 300-second command cap; fresh before/after input binding | Synchronous; next completion retries unfinished work; filesystem/cleanup/reporting prevent a hard real-time guarantee |
-| Process lifecycle | Windows Job containment and POSIX process-group cleanup; 8 MiB combined capture limit | Deliberate POSIX group escape and abrupt SIGKILL are outside cleanup guarantees |
-| Progress and ownership | Status/report surfaces show running, deferred and interrupted work; serialized ledger writes protect newer tasks | The journal is diagnostic state, never proof; a live installed session remains a separate acceptance check |
-| Compatibility | Historical receipt identities and single-file scope preserved | An interruption cannot stand in for a reproduced failure |
+| Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested boundaries and project exclusions | Supported source extensions and named dependency files; excluded inputs are outside the fingerprint |
+| Scan coverage | Explicit file/byte/deadline/unreadable-input diagnostics | Default 20,000 files and 256 MiB; filesystem operations are not a hard wall-clock guarantee |
+| Command receipts | Exact configured/discovered commands; complete pass, complete fail and incomplete execution | Opaque wrappers retain command-level evidence; transport success/prose alone cannot prove process success |
+| Five-host onboarding | Ownership-preserving setup, explicit or unambiguous auto host selection, command/environment discovery and readiness actions | Host trust/policy remains under the host; custom/ambiguous manifests need overrides |
+| Callback activation | Waiting, received, processed startup, errors/history, changed wiring and removal | Launcher observations only; replay excluded; callbacks are not sender authentication |
+| Native patch attribution | Bounded pre/post target content comparisons; dirty/non-Git files, add/delete/move | Stable task/session/call/input required; target coverage cannot prove absence of unrelated side effects |
+| Missing callbacks | Pending coverage visible in status/readiness; completion reconciles missing post-events; eviction uncertainty persists | Interrupted/missing/unsafe/budget-limited observations stay UNVERIFIED even with passing tests |
+| Completion checks | Missing/stale checks in guide/strict; same commands deduplicated; receipts persist immediately | Off remains passive; one shared 480-second work budget and 300-second command cap |
+| Process lifecycle | Windows Job containment, POSIX process-group cleanup and 8 MiB combined capture limit | Deliberate group escape and abrupt SIGKILL are outside cleanup guarantees |
+| Durable progress | Project ownership, atomic short ledger writes, running/deferred/interrupted journal | Journal and activation are diagnostics, never proof of command success |
 
-The initial portable-evidence delivery used ten pushes ending at `f432658`. Automatic setup used three more: `2636ded`, `fc527d9`, and `a548d03`. Each commit carries its implementation and validation details. The durable-runner delivery uses six further parts; see [its validation record](validation/2026-09-29-durable-runner.md).
+See [onboarding validation](validation/2026-10-01-live-onboarding.md),
+[platform guide](../the-guide/platforms.md), and [journey 50](../journey/50-project-readiness.md).
+Historical delivery counts remain in the [validation index](validation/README.md).
 
-## What the checks established
+## Real-project acceptance
 
-The portable-evidence full run passed **831 tests with 26 skips**; final follow-up checks passed 137 relevant tests. The automatic-setup broad run passed **857 tests with 26 skips and one outdated baseline-cache fixture failure**. The fixture was updated to supply an active task claim and passed in focused checks. Final publication checks passed **103 command/execution tests** and **63 startup/scanning/hook tests**. No full run was repeated after that fixture-only correction. These counts describe specific runs, not a promise about today's collection size.
+Snag is an acceptance repository, not a runtime special case. Its own manifest
+discovered `npm run ci`, `npm run typecheck`, `npm run build` and `npm run lint`.
+Read-only selection covered **4,418 files / 81,841,401 bytes** before setup and
+**4,417 files / 81,841,184 bytes** afterward, with complete selection coverage.
+These are selection measurements, not complete content-fingerprint timings.
 
-A disposable Node project was exercised through the shipped launcher: SessionStart reported activation; Stop discovered and executed `npm run ci`, recorded exactly one passing test, and created no config file. Architecture validation rendered all four views.
+Ownership-preserving project setup installed Claude and Codex hooks. An installed
+**Claude Code 2.1.281** session delivered and processed SessionStart without a
+prompt/model call. Claude activation is active; Codex is configured and waiting.
+No business source or Snag branch was changed.
 
-The durable-runner integration run passed 914 local tests with 26 skips and exposed one legacy per-test receipt compatibility failure. That regression was fixed and the final focused runner/stress/launcher checks passed 69 tests. Remote CI also exposed ignored B8 input data and a Python 3.11-only test-helper incompatibility, both corrected in the final code part. The final code-head [CI matrix](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/36523624912) passed on Ubuntu and Windows with Python 3.11 and 3.13: 916 passed / 31 skipped on each Ubuntu job and 919 passed / 28 skipped on each Windows job. Separate audit checks passed 102 / 2 skipped on Ubuntu and 104 on Windows.
+The actual external **`npm run ci` exited 1: 14/15 checks passed**. Its production
+dependency audit reported five unexcused high-or-critical package findings:
+electron, mailparser, next, nodemailer and undici. The check was not bypassed.
+An explicit diagnostic relay recorded the real result as **complete/fail**, with
+complete source coverage; it did not mark Codex active. This is separate from
+capturing CI through an installed host's native command events.
 
-Read-only Snag selection discovered its verification scripts automatically and covered **4,418 files / 81,841,401 bytes** using defaults in about **1.11 seconds**. That timing is source selection, not a complete fingerprint or full CI. Earlier evidence included a real 19-test Node sample and parser replay. Snag was not edited or configured by these checks. A later fresh, complete content fingerprint covered the same 4,418 files / 81,841,401 bytes with no coverage issues in **55.66 seconds**. Selection time and full fingerprint time are different measurements.
+## Remaining readiness limits
 
-See the [validation index](validation/README.md) for the detailed records and qualifications.
+- Versioned live sessions on Codex, Gemini CLI, Cursor Agent and Copilot CLI remain open.
+- A full native-host Snag command receipt and normal-session latency measurements remain open.
+- Snag's dependency audit must be resolved in that project before its full CI is green.
+- Unknown tool input/result envelopes, missing identities/events, unsafe paths and budgets remain explicit gaps.
+- Cursor/Copilot normal completion has no ordinary report field; use the stored status.
+- Per-test dependency invalidation, mutation-based runtime coverage and improved outcome claims remain outside this delivery.
+- The prior Linux proc-read probe race was fixed; the historical intermittent five-second descendant-survival assertion has no established runtime cause.
 
-## Next product milestone
+## Next delivery
 
-**ElevenPowers works comfortably in an installed Snag session.** Generalized implementation is shipped; the installed integration remains open. Acceptance requires:
+A portable verification report should accompany a change in any project and make
+its claims, receipts, source freshness, coverage gaps and remaining actions easy
+for another person to review. It must remain local, scrub sensitive values and
+distinguish execution success from complete change verification.
 
-1. The current plugin loads in Claude Code with the intended project root and usable project environment.
-2. The full `npm run ci` completes and produces a receipt through real host events; failures and interruption remain distinguishable.
-3. Editing a selected input invalidates prior evidence, while excluded generated noise does not.
-4. Startup, evidence capture and completion latency are measured during ordinary work.
-5. Remaining environment or coverage limits are visible and actionable.
-
-A full Snag CI run and live installed-plugin session have **not** been performed. Per-test dependency invalidation, mutation-based runtime coverage and improved patch-outcome claims remain outside this delivery. The four native adapters are recorded below; live installation remains unverified.
-
-## Delivery cadence
-
-Use a concrete project milestone, focused regression checks for changed behavior, and an integration check at the delivery boundary. Broaden or repeat tests when new changes or failures warrant it. Keep historical experiments separate from readiness evidence, and update the guide, status, journey and architecture when their claims change.
-
-## Native platform expansion
-
-All four additional platforms share the repository scanner, command discovery,
-ledger and durable runner. Each was delivered in eight separately pushed parts.
-Project configuration merges preserve other hooks and have reversible removal.
-Windows project shell commands encode literal arguments; Copilot uses direct
-executable arguments. Doctor checks subscriptions and interpreter/launcher paths.
-
-The full local run passed **1,024 tests with 28 skips**; the final focused native
-and task integration passed **210 tests**. The Claude launcher diagnostic and all
-four grader controls passed. Architecture: **80 nodes, 170 edges; all four views
-rendered**. See [dated validation](validation/2026-09-29-platforms.md) for exact
-commits, remote matrix results and review corrections. All four jobs passed on
-`518411d`: Ubuntu 3.11/3.13 each passed 1,024 tests with 31 skips; Windows
-3.11/3.13 each passed 1,025 with 30 skips. Separate audit probes, grader controls
-and the Claude launcher doctor also passed in each job.
-
-Readiness limits remain explicit:
-
-- Four native installed-session captures and full Snag CI are still open.
-- Prose-only or transport-only results cannot prove a process exit status.
-- Native patches without authoritative paths keep the task UNVERIFIED for
-  incomplete edit attribution, including non-Git and already-dirty projects.
-- Cursor/Copilot normal completion has no ordinary report field; inspect stored
-  status. Host trust and enablement are required before automatic events run.
-- The Linux proc-read probe race was fixed; the separate historical intermittent
-  five-second descendant-survival assertion has no established runtime cause.
-
-The next delivery milestone is versioned live-host acceptance, followed by the
-full Snag project session. See [installation and capabilities](../the-guide/platforms.md).
+Use focused behavioral checks and a broad integration check at the delivery
+boundary; repeat when new corrections or failures warrant it. Documentation,
+journey and rendered architecture are part of delivery.

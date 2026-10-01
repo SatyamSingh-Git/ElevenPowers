@@ -1,6 +1,6 @@
 # Roadmap
 
-**Product delivery update, 2026-09-29.** Repository-aware evidence, automatic setup, durable verification and four additional native host adapters are shipped. Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI join Claude Code. The next acceptance work is versioned live sessions on the new hosts and a full Snag CI session, including reliable receipts and latency measurements. See [current status](../docs/status.md) and [platform installation](../the-guide/platforms.md). The research phases below are separate from this product milestone.
+**Product delivery update, 2026-10-01.** Generalized five-host onboarding, callback activation, readiness actions and bounded native edit attribution are shipped alongside repository evidence and durable verification. A real Claude startup was observed in Snag; actual external CI passed 14/15 checks and failed its dependency audit. Native-host command capture, live sessions on the four additions and ordinary-session latency remain acceptance work. The next product feature is a portable verification report for reviewing a change in any project. See [current status](../docs/status.md) and [platform installation](../the-guide/platforms.md). The research phases below remain separate from product delivery.
 
 [← What's Offered](README.md)
 

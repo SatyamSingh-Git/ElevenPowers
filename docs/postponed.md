@@ -2,6 +2,14 @@
 
 **Scope clarification, 2026-09-29.** Repository-aware selection and automatic command discovery are shipped. The repository model postponed here means per-test dependency/impact analysis; it does not mean Git ignores, boundaries or coverage diagnostics are missing. Four additional native adapters are implemented: Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI. Their live installed-session acceptance remains open. See [current status](status.md).
 
+**2026-10-01 update.** Generalized five-host onboarding, callback activation,
+readiness actions and targeted native edit attribution are shipped. Pending,
+missing and evicted patch observations remain explicit coverage gaps. A real
+Claude startup was observed; the four added hosts still need live acceptance.
+Snag's actual external CI failed its dependency audit (14/15 checks passed).
+Portable verification reports are the next product delivery, separate from
+per-test impact analysis and the research triggers below.
+
 Postponement is a decision with a condition, not a quiet drop. Nothing here is
 built until its trigger fires, and the trigger is a measurement rather than an
 opinion.
