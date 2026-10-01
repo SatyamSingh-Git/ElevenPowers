@@ -2,6 +2,11 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-01 project health](2026-10-01-project-health.md): fresh staged health,
+  bounded phase/receipt timings, real Python/Node producers through all five
+  launchers, strict disposable acceptance, five reproduced review corrections
+  and 17 incremental publication parts. Installed sessions remain separate.
+
 - [2026-10-01 generalized onboarding](2026-10-01-live-onboarding.md): five-host
   setup/readiness, bounded activation, targeted edit observations, review
   regressions, real Claude startup and the actual failed external Snag CI relay.

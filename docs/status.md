@@ -15,6 +15,8 @@ This delivery does not establish improved patch outcomes.
 | Command receipts | Exact configured/discovered commands; complete pass, complete fail and incomplete execution | Opaque wrappers retain command-level evidence; transport success/prose alone cannot prove process success |
 | Five-host onboarding | Ownership-preserving setup, explicit or unambiguous auto host selection, command/environment discovery and readiness actions | Host trust/policy remains under the host; custom/ambiguous manifests need overrides |
 | Callback activation | Waiting, received, processed startup, errors/history, changed wiring and removal | Launcher observations only; replay excluded; callbacks are not sender authentication |
+| Fresh staged project health | One fresh report view; native startup/edit/capture/completion, every declared command's aggregate outcome, progress and read-only optional metadata | Ten-second cooperative default, 120-second maximum; unresolved current callback errors, corrupt/moving state and incomplete coverage cannot pass `--check` |
+| Native acceptance workflow | Explicit new disposable Python/Node repository, owned wiring, immutable contract and current pass/fail/incomplete history qualification | Preparation launches no host; local unsigned observations and operator versions do not establish authenticated or cross-version compatibility |
 | Native patch attribution | Bounded pre/post target content comparisons; dirty/non-Git files, add/delete/move | Stable task/session/call/input required; target coverage cannot prove absence of unrelated side effects |
 | Missing callbacks | Pending coverage visible in status/readiness; completion reconciles missing post-events; eviction uncertainty persists | Interrupted/missing/unsafe/budget-limited observations stay UNVERIFIED even with passing tests |
 | Completion checks | Missing/stale checks in guide/strict; same commands deduplicated; receipts persist immediately | Off remains passive; one shared 480-second work budget and 300-second command cap |
@@ -50,6 +52,7 @@ capturing CI through an installed host's native command events.
 ## Remaining readiness limits
 
 - Versioned live sessions on Codex, Gemini CLI, Cursor Agent and Copilot CLI remain open.
+- A full staged native exercise remains unverified on all five hosts; the historical Claude startup proves only startup.
 - A full native-host Snag command receipt and normal-session latency measurements remain open.
 - Snag's dependency audit must be resolved in that project before its full CI is green.
 - Unknown tool input/result envelopes, missing identities/events, unsafe paths and budgets remain explicit gaps.
@@ -76,13 +79,14 @@ and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 ## Next readiness milestone
 
-Exercise versioned native sessions on the four added hosts and capture an actual
-declared-command result through their installed hooks. This closes the largest
-remaining usability uncertainty across projects. Optional mutation findings now
-ship; measured outcome improvements remain separate research work. The first
-strength release needs installed pinned engines and an isolated, sufficiently
-fast test command. Dirty attribution, editable Python paths into original source,
-linked dependencies and exhausted budgets stay explicitly incomplete.
+Use the new disposable workflow to exercise versioned installed hosts, then
+measure normal-session callback/read/command costs on unrelated projects.
+This closes the largest remaining usability uncertainty. Shared health and
+acceptance tooling are delivered; launcher contracts alone do not close installed
+acceptance. Full exercises on unavailable hosts remain open. Optional mutation
+findings ship; measured outcome improvements remain separate research work.
+Strength needs installed pinned engines and a sufficiently fast isolated test
+command; uncertain attribution, linked inputs and budgets stay incomplete.
 
 See [test-strength validation](validation/2026-10-01-test-strength.md) and
 [journey 52](../journey/52-tests-that-notice-a-change.md) for actual language controls,
@@ -91,3 +95,26 @@ independent-review fixes and the 25 incremental publication parts.
 Use focused behavioral checks and a broad integration check at the delivery
 boundary; repeat when new corrections or failures warrant it. Documentation,
 journey and rendered architecture are part of delivery.
+
+## Project-health delivery
+
+`ep_ready.py HOST --project PATH [--seconds 10] [--check]` now shares one fresh
+source/explicit-input report with task interpretation. Every declared command
+needs its latest applicable aggregate receipt; individual passing tests cannot
+hide a failing suite. Capture, verification and task certification remain separate.
+Automatic native diagnostics retain 32 timing samples per phase and 64 hashed
+receipt links, with explicit eviction. Health reads execute no project command,
+engine or host, and write no project state. Metadata is availability information.
+
+`ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python|javascript
+--host-version VERSION` creates an opt-in exercise; `--acceptance DIR --platform
+HOST` inspects it read-only. Ten actual language/launcher contract cases passed,
+including real process interruption, stale input and rerun. Local version probes
+found Claude Code 2.1.286 and Codex CLI 0.159.2; the other executables were absent.
+Installed Claude 2.1.286 processed a real startup in the disposable exercise with
+no model prompt. Startup is observed; full pipeline and acceptance correctly
+remain waiting. One 117.32 ms callback sample is not ordinary-session latency.
+Five independent-review defects were reproduced RED, fixed and verified GREEN.
+The corrected full suite passed **1,194 tests with 28 skips** in 691.95 seconds.
+Exact checks and qualifications are in [health validation](validation/2026-10-01-project-health.md).
+See [journey 53](../journey/53-a-working-pipeline-needs-evidence.md).

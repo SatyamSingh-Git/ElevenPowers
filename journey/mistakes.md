@@ -802,3 +802,21 @@ launcher availability while keeping live host trust/delivery explicitly separate
 event could vanish in a non-Git project. Unknown attribution now opens a claim
 and keeps an explicit coverage warning instead of silently skipping checks.
 See [journey 49](49-one-engine-several-hosts.md).
+
+## 2026-10-01: health needed the same evidence discipline
+
+A mixed verbose pytest result put passing individual tests after its failing
+suite at one timestamp. Selecting the last declaration record turned failure
+into healthy integration. Command aggregates now determine declared verification.
+
+Tolerant config loading hid damaged saved JSON, malformed pending patch records
+escaped a later read, and an unrelated successful Stop hid an unresolved phase
+error. Explicit bounded configuration validation, actionable error handling and
+same-phase recovery now preserve those limits. Acceptance also trusted immutable
+fingerprints taken before a nested health read; a changed test at return could
+still pass. A bounded final contract/observation recheck closes that race.
+
+The fresh reviewer reproduced all five cases, and each regression was observed
+RED before correction and GREEN afterward. See [journey 53](53-a-working-pipeline-needs-evidence.md)
+and [validation](../docs/validation/2026-10-01-project-health.md). Installed-session
+delivery remains separate from the actual producer/launcher contract controls.

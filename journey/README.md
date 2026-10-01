@@ -73,6 +73,8 @@ startup and the failed external Snag CI acceptance run.
 | [49-one-engine-several-hosts.md](49-one-engine-several-hosts.md) | Four native host adapters, 32 publication parts, shared review fixes, final CI results and installed-session limits |
 | [50-project-readiness.md](50-project-readiness.md) | Generalized onboarding, activation, native content observations, ten pushes, real Claude startup and failed external Snag CI |
 | [51-receipts-another-person-can-read.md](51-receipts-another-person-can-read.md) | Portable reports, six reproduced review corrections, fresh explicit inputs, literal Markdown, unchanged journals and actual Snag export |
+| [52-tests-that-notice-a-change.md](52-tests-that-notice-a-change.md) | Optional real-engine test strength, private trials, reproduced review fixes and human-only findings |
+| [53-a-working-pipeline-needs-evidence.md](53-a-working-pipeline-needs-evidence.md) | Fresh staged health, disposable native acceptance, ten real producer/launcher cases and five review defects reproduced before correction |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 

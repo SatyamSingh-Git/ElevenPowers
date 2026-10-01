@@ -18,6 +18,8 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 |---|---|---|
 | **Evidence capture** | shipped — reads the commands your agent already runs, no protocol, no cooperation required | unchanged; this is the foundation everything else sits on |
 | **Automatic setup** | shipped — startup health, manifest command discovery and coverage reporting | installed Snag session and full CI validation |
+| **Project health** | shipped — one fresh staged view, aggregate command outcomes, native delivery and bounded timings | representative ordinary-session measurements; no speed claim yet |
+| **Native acceptance** | shipped — explicit disposable Python/Node exercises and read-only contract qualification for five hosts | versioned installed sessions, separate from the ten passing producer/launcher controls |
 | **Host integrations** | Claude Code plus native Codex, Gemini CLI, Cursor Agent and Copilot CLI adapters, setup, diagnostics and bundles | versioned live-session acceptance for the four additions; [capabilities and limits](../the-guide/platforms.md) |
 | **Repository selection** | shipped — Git ignores, project boundaries, budgets and explicit scan gaps | measure real-project latency and coverage |
 | **Staleness** | shipped, but coarse — changes within selected source inputs stale evidence | narrowed to each test's import closure, once measurement shows the coarse version is too pessimistic |

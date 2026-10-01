@@ -162,3 +162,14 @@ more useful record.
 | D116 | Tool transport success is not process success | Some hosts return display text with no reliable exit status | Incomplete observations remain incomplete; the shared runner can execute declared checks |
 | D117 | Commit delivery identity with its receipt | Marking a callback consumed before saving evidence permanently lost retries on write failure | Atomic ledger persistence and concurrent-delivery regression shipped |
 | D118 | Unknown patch attribution stays visible | Git cannot attribute every native patch in a non-Git or already-dirty project | Conservative claim and UNVERIFIED coverage warning; complete attribution remains open |
+
+## Generalized project health — 2026-10-01
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D119 | One fresh report powers health and task interpretation | Separate scans drift and duplicate expensive content work | Shipped; pipeline observations remain separate from task certification |
+| D120 | Command aggregates determine declared verification | A passing individual test sharing a failed suite's timestamp cannot substitute for the command result | Independent review reproduction RED→GREEN |
+| D121 | Same-phase success establishes callback recovery | A successful Stop does not repair a failed current-session pre-tool callback | Shipped; historical errors remain diagnostic, unknown current attribution is conservative |
+| D122 | Native acceptance is an explicit disposable exercise | Automatic intentional failures in a production project would violate ordinary installation expectations | Shared Python/Node preparation; no host or model launched |
+| D123 | Recheck immutable exercise inputs at acceptance return | A nested fresh health read cannot prove a test contract that changes afterward | Independent review reproduction RED→GREEN; bounded recheck, no second repository scan |
+| D124 | Launcher contracts and installed sessions are reported separately | Structured fixtures cannot establish actual installed hook delivery or cross-version compatibility | Ten producer/launcher cases pass; full native exercises remain open |

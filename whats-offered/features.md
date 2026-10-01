@@ -1,6 +1,16 @@
 # Features
 
-Current behavior reviewed 2026-09-29. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+Current behavior reviewed 2026-10-01. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+
+Fresh staged project health now connects native configuration, startup, edits,
+command capture, aggregate declared verification and completion to one fresh
+report view. Bounded private callback history and retained median/p95 samples
+help explain missing delivery and overhead; they do not authenticate a host or
+claim an improvement. Explicit disposable Python/Node exercises support all five
+hosts without project-specific branches. Preparation never launches a model,
+and read-only inspection requires unchanged contracts and current native
+pass/fail/incomplete history. See [health and acceptance commands](../the-guide/commands.md)
+and [dated validation](../docs/validation/2026-10-01-project-health.md).
 
 [← What's Offered](README.md)
 

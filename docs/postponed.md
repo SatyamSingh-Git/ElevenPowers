@@ -13,6 +13,14 @@ uncertain attribution and setup are explicit. Exact diff-hunk prioritization,
 semantic-equivalence filtering and outcome improvement remain future work. Live
 acceptance on the four added hosts and native command capture remain readiness work.
 
+**Project-health delivery, 2026-10-01.** Fresh staged health and retained timing
+diagnostics are built; they are no longer proposed work. Explicit disposable
+Python/Node acceptance can prepare and qualify the same exercise for any of the
+five hosts. Actual producer/launcher contracts pass, while versioned installed
+sessions and representative ordinary-session latency remain open. The tooling
+does not establish a performance improvement, fine-grained test dependency model
+or production correctness. See [health validation](validation/2026-10-01-project-health.md).
+
 Postponement is a decision with a condition, not a quiet drop. Nothing here is
 built until its trigger fires, and the trigger is a measurement rather than an
 opinion.

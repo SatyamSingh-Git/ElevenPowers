@@ -1,6 +1,19 @@
 # Roadmap
 
-**Product delivery update, 2026-10-01.** Generalized five-host onboarding, callback activation, readiness actions and bounded native edit attribution are shipped alongside repository evidence and durable verification. A real Claude startup was observed in Snag; actual external CI passed 14/15 checks and failed its dependency audit. Native-host command capture, live sessions on the four additions and ordinary-session latency remain acceptance work. The next product feature is a portable verification report for reviewing a change in any project. See [current status](../docs/status.md) and [platform installation](../the-guide/platforms.md). The research phases below remain separate from product delivery.
+**Product delivery update, 2026-10-01.** Generalized five-host onboarding,
+repository evidence, durable verification, portable reports and optional
+changed-file test strength ship together. Fresh staged project health now
+requires current native delivery, complete passing aggregate receipts and
+completion, with bounded timing history and read-only optional metadata.
+Disposable Python/Node native acceptance preparation and inspection also ship.
+Ten real producer/launcher contract cases pass; installed sessions remain a
+separate check. The next delivery milestone is versioned installed-host
+acceptance and ordinary-session latency on unrelated projects. A historical
+Claude startup was observed in Snag; its external CI failed its dependency audit
+(14/15 checks passed). See [current status](../docs/status.md),
+[health validation](../docs/validation/2026-10-01-project-health.md) and
+[platform installation](../the-guide/platforms.md). The research phases below
+remain separate from product delivery.
 
 [← What's Offered](README.md)
 

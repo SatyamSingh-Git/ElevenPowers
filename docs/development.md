@@ -21,6 +21,30 @@ settings, source changes, deadlines, state validation and superseded writers.
 Without engines, real-engine cases skip; base imports remain stdlib-only.
 Runtime does not install dependencies or run paid model evaluations.
 
+## Generalized project-health acceptance
+
+```sh
+python -m pytest -q tests/test_project_health.py tests/test_health_boundaries.py tests/test_health_environment.py tests/test_health_report.py tests/test_health_review.py tests/test_health_cli.py tests/test_native_acceptance.py tests/test_health_host_contracts.py
+python -S -c "import core.health; import core.hosts.acceptance; import core.strength.runner; import core.export"
+python architecture/check.py --render
+```
+
+The focused group covers fresh/stale/gone or incomplete inputs, all declared
+aggregate outcomes, malformed/moving state, current task/session/generation,
+unresolved callback errors, retention/privacy and read-only behavior. Python
+unittest and Node TAP producers genuinely fail, pass and time out through all
+five launchers. Node 22 is used by CI. These are launcher contract controls, not
+installed agent-session captures. No model call is included.
+
+Prepare a new disposable installed-host exercise with
+`ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python
+--host-version INSTALLED_VERSION`, follow `EXERCISE.md`, then inspect with
+`--acceptance DIR --platform HOST --json`. Keep the generated contract unchanged
+and use one task/session. Explicit operator versions are not attestation.
+Normal `ep_ready` is read-only; `--check` opts into a nonzero result for an
+unobserved/incomplete pipeline. Paid evaluation still requires cost approval.
+See [dated results and qualifications](validation/2026-10-01-project-health.md).
+
 ## Windows PowerShell
 
 ```powershell

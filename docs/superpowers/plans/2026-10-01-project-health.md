@@ -60,13 +60,13 @@ Files: `core/hosts/readiness.py`, `core/hook.py`, `tests/test_project_health.py`
 Interfaces: `callback(platform, root, event, payload=None)`,
 `record_receipts(records, task)`; existing callers remain valid.
 
-- [ ] Write controls: real ingress stores per-phase timing/receipt hashes;
+- [x] Write controls: real ingress stores per-phase timing/receipt hashes;
   replay stores none; startup does not imply Stop; settings reset history;
   history/sample caps disclose eviction; processing errors preserve counts.
-- [ ] Run tests and watch missing fields/helper fail.
-- [ ] Add bounded diagnostics within existing callback transaction and call receipt
+- [x] Run tests and watch missing fields/helper fail.
+- [x] Add bounded diagnostics within existing callback transaction and call receipt
   capture only after the ledger successfully records parsed command receipts.
-- [ ] Run these controls plus onboarding tests; commit and push the working part.
+- [x] Run these controls plus onboarding tests; commit and push the working part.
 
 ## Task 2 — Shared fresh health and readiness CLI
 
@@ -75,14 +75,14 @@ Files: new `core/health.py`, `core/export.py`, `core/hosts/onboarding.py`,
 Interfaces: `health.inspect(host, root, timeout=10) -> dict`,
 `health.render(value) -> str`; existing readiness report/keys preserved.
 
-- [ ] Write forward/adversarial controls around real stored receipts: fresh/stale,
+- [x] Write forward/adversarial controls around real stored receipts: fresh/stale,
   fail/incomplete, old task, missing events, unreadable state, scan budget and
   read-only behavior. Sample assertion: `inspect('codex', root)['latest_receipt']
   ['freshness'] == 'stale'` after editing a source file.
-- [ ] Watch RED, then compose one bounded exporter view, stage interpretation,
+- [x] Watch RED, then compose one bounded exporter view, stage interpretation,
   retained timing summaries and optional engine metadata without importing engines.
-- [ ] Add `--seconds` and opt-in `--check`; render stage-specific next actions.
-- [ ] Run health/onboarding/export tests; commit and push the working part.
+- [x] Add `--seconds` and opt-in `--check`; render stage-specific next actions.
+- [x] Run health/onboarding/export tests; commit and push the working part.
 
 ## Task 3 — Disposable native acceptance
 
@@ -91,24 +91,24 @@ new `tests/test_native_acceptance.py`.
 Interfaces: `prepare(host, destination, language, source, version='') -> dict`,
 `inspect(host, root, timeout=10) -> dict`.
 
-- [ ] Write controls for actual unittest/Node fail-to-pass producers, isolated
+- [x] Write controls for actual unittest/Node fail-to-pass producers, isolated
   setup, existing/linked path refusal and untouched original project.
-- [ ] Write acceptance controls: prepared/replayed exercise is waiting; real
+- [x] Write acceptance controls: prepared/replayed exercise is waiting; real
   receipt diagnostics require pass/fail/incomplete plus fresh native completion;
   changed configuration/task/missing history is not accepted.
-- [ ] Watch RED, implement preparation and bounded read-only inspection, add strict
+- [x] Watch RED, implement preparation and bounded read-only inspection, add strict
   doctor CLI preparation/inspection modes while preserving old diagnostic flags.
-- [ ] Run actual producers and all five normalized launcher contract controls;
+- [x] Run actual producers and all five normalized launcher contract controls;
   commit and push the working part.
 
 ## Task 4 — Integration and independent review
 
-- [ ] Run full suite, audit probes, grader, stdlib imports and doctor replay.
-- [ ] Dispatch one fresh reviewer with base/head, spec, plan, ledger and focus.
-- [ ] Reproduce important findings RED, fix, then run relevant and broad checks.
-- [ ] Probe installed host versions without model calls; exercise free native
+- [x] Run full suite, audit probes, grader, stdlib imports and doctor replay.
+- [x] Dispatch one fresh reviewer with base/head, spec, plan, ledger and focus.
+- [x] Reproduce important findings RED, fix, then run relevant and broad checks.
+- [x] Probe installed host versions without model calls; exercise free native
   startup where available and qualify unavailable/live model-dependent steps.
-- [ ] Record exact checks, limits and decisions; push corrections as ready.
+- [x] Record exact checks, limits and decisions; push corrections as ready.
 
 ## Task 5 — Documentation and publication
 

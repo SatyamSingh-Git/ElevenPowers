@@ -1,5 +1,17 @@
 # Master Plan v0.8
 
+**Project-health delivery, 2026-10-01.** One fresh staged health view now joins
+configuration, native delivery, aggregate command outcomes, completion and
+report freshness for any project across all five hosts. Private bounded native
+phase/receipt history and timing samples collect automatically. Readiness runs
+no checks; explicit disposable Python/Node acceptance preparation and inspection
+provide a reproducible installed-version workflow. Ten actual language/launcher
+contract cases pass, with five independent-review regressions corrected. Full
+installed exercises and normal-session latency remain the next milestone;
+no product outcome or speed improvement is claimed. See
+[health validation](docs/validation/2026-10-01-project-health.md) and
+[journey 53](journey/53-a-working-pipeline-needs-evidence.md).
+
 **Delivery update, 2026-10-01.** The research direction below remains in force. Repository evidence, exact receipts, automatic discovery, durable verification and five-host integration are shipped. Generalized onboarding now tracks callback activation and provides readiness actions; native patches use bounded target content observations with explicit missing/evicted-event gaps. A real Claude startup in Snag was observed. Snag's actual external CI passed 14/15 checks and failed its dependency audit; an explicit relay recorded complete/fail without claiming native-host capture. Live sessions on the four additions and native Snag command capture remain open. See [current status](docs/status.md), [platforms](the-guide/platforms.md), [journey 50](journey/50-project-readiness.md), and [validation](docs/validation/2026-10-01-live-onboarding.md). These deliveries do not establish improved patch outcomes.
 
 2026-09-15. Supersedes v0.7. Written after a literature sweep rather than a
