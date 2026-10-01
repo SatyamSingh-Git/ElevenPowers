@@ -10,9 +10,11 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [50 — project readiness](50-project-readiness.md) records generalized
-onboarding, callback activation, native patch observations, fresh-review
-corrections, real Claude startup and the actual failed Snag CI acceptance run.
+Latest: [51 — receipts another person can read](51-receipts-another-person-can-read.md)
+records portable Markdown/JSON reports, six fresh-review corrections and the
+actual Snag receipt exported for review. [50 — project readiness](50-project-readiness.md)
+records onboarding, callback activation, native patch observations, real Claude
+startup and the failed external Snag CI acceptance run.
 
 | File | Covers |
 |---|---|
@@ -66,12 +68,17 @@ corrections, real Claude startup and the actual failed Snag CI acceptance run.
 | [47-installed-should-mean-active.md](47-installed-should-mean-active.md) | Automatic manifest discovery and startup checks; preventing unrelated execution; the real launcher probe; three pushes and the remaining installed-session milestone |
 | [48-completed-work-should-survive.md](48-completed-work-should-survive.md) | Durable verification, shared deadlines, process cleanup, review regressions and launcher recovery; six-part delivery with installed Snag integration still open |
 | [49-one-engine-several-hosts.md](49-one-engine-several-hosts.md) | Four native host adapters, 32 publication parts, shared review fixes, final CI results and installed-session limits |
+| [50-project-readiness.md](50-project-readiness.md) | Generalized onboarding, activation, native content observations, ten pushes, real Claude startup and failed external Snag CI |
+| [51-receipts-another-person-can-read.md](51-receipts-another-person-can-read.md) | Portable reports, six reproduced review corrections, fresh explicit inputs, literal Markdown, unchanged journals and actual Snag export |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
-## Current delivery, 2026-09-29
+## Current delivery, 2026-10-01
 
-The recent product work is in chapters 46 and 47. [Current status](../docs/status.md) separates shipped behavior from the installed Snag validation still to do. The research history below retains its original measurements; the latest usability changes do not establish a patch-quality benefit.
+The recent product work is in chapters 46 through 51. [Current status](../docs/status.md)
+separates shipped behavior and real Claude startup from added-host native
+acceptance still to do. The research history below retains its original
+measurements; the latest usability changes do not establish a patch-quality benefit.
 
 ## The shape of it, in one page
 
