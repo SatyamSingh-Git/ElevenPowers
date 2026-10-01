@@ -11,64 +11,11 @@
 [![Status](https://img.shields.io/badge/status-research%20prototype-orange.svg)](#where-this-actually-is)
 [![Architecture graph](https://img.shields.io/badge/architecture-live%20graph-a78bfa.svg)](https://satyamsingh-git.github.io/ElevenPowers/architecture/)
 
-**[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
+**[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[In your project](#using-elevenpowers-in-your-project)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
 
 **[🗺️ Open the live architecture graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)** — four interactive views of the whole system
 
 </div>
-
-Generalized onboarding now covers Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI. Project setup preserves other hooks, readiness tracks callback activation and explains environment/coverage issues, and native patch observations cover dirty and non-Git targets while preserving incomplete histories. See [platform installation and limits](the-guide/platforms.md), [journey 50](journey/50-project-readiness.md), and [dated validation](docs/validation/2026-10-01-live-onboarding.md). The four added hosts still require live installed-session acceptance.
-
-**Fresh project health** now checks whether that whole integration is working.
-`python plugin/bin/ep_ready.py HOST --project PATH --seconds 30` joins native
-configuration/startup/edit/capture/completion with every declared command's
-current aggregate outcome and fresh source evidence. It reports bounded timing
-samples, optional engine metadata and specific next actions. Add `--check` for
-an exit-code gate. The ordinary read runs no tests, engine or host and writes no
-project state. Pipeline health remains separate from task verification.
-
-For repeatable native acceptance, explicitly create a new disposable directory
-with `ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python
---host-version INSTALLED_VERSION`, or choose JavaScript with Node available.
-Follow its `EXERCISE.md`, then inspect with `--acceptance DIR --platform HOST`.
-The same workflow applies to all five hosts and any repository. Preparation
-launches no model; replay and launcher fixtures do not establish installed
-acceptance. See [commands](the-guide/commands.md),
-[provenance](docs/research/project-health.md), [journey 53](journey/53-a-working-pipeline-needs-evidence.md)
-and [health validation](docs/validation/2026-10-01-project-health.md).
-
-Loading the plugin automatically checks startup health and discovers verification commands from supported project manifests. Repository scans respect Git ignores and project boundaries, report incomplete coverage, and support project-owned budgets. Exact declared commands retain success, failure and incomplete receipts. See [configuration](the-guide/configuration.md) and [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
-
-Export a local verification report for any project with
-`python plugin/bin/ep_report.py --project PATH --format markdown --output report.md`.
-Markdown and versioned JSON show claims, obligation qualifications, latest
-execution receipts, freshly read input fingerprints, coverage gaps and next
-actions. They exclude prompts, transcripts, captured outputs and receipt details,
-scrub known credentials, and refuse overwrite unless `--force` is supplied.
-See [report commands](the-guide/commands.md#ep_report--evidence-to-share-with-a-reviewer),
-[journey 51](journey/51-receipts-another-person-can-read.md) and
-[report validation](docs/validation/2026-10-01-portable-report.md).
-
-Optional **changed-file test strength** now asks whether passing tests notice small
-changes to the production files edited by a task. Cosmic Ray supplies Python
-mutations; Stryker supplies JavaScript/TypeScript mutations. Every baseline and
-attempt starts from clean private inputs, with explicit time, attempt and copy
-limits. Detected changes, possible test gaps, invalid mutations and incomplete
-execution appear in the human report with independently checked input freshness.
-There is no new completion blocker and no individual mutant target sent to the
-coding agent. After explicit optional engine setup, guide/strict completion
-considers the shared runner automatically across all five hosts.
-
-Run `python plugin/bin/ep_strength.py --root PATH` explicitly, or export saved
-findings through `ep_report.py`. The defaults are 60 seconds, eight attempts and
-15 seconds per test command; use a focused command for slower projects. Missing
-engines, dirty attribution, editable Python paths into original source, unsafe
-dependencies and exhausted budgets stay explicit. Whole changed-file samples do
-not prove correctness or improved patch outcomes. See
-[setup and configuration](the-guide/configuration.md),
-[engine provenance](docs/research/mutation-engines.md),
-[journey 52](journey/52-tests-that-notice-a-change.md) and
-[delivery validation](docs/validation/2026-10-01-test-strength.md).
 
 ---
 
@@ -327,6 +274,128 @@ and the request does not mention it. Edit it anyway, or read it first.
 ```
 
 Scope is never declared up front, because nobody knows which files a change will touch before making it. It is derived from what the task established: files read, files edited, and the areas the request named.
+
+---
+
+## Using ElevenPowers in your project
+
+The same runtime works across projects and coding hosts. It discovers supported
+project conventions, preserves existing host configuration, and keeps missing
+evidence and incomplete coverage visible. These features build on the completion
+gate described above.
+
+### Five host integrations
+
+Project onboarding covers **Claude Code, Codex, Gemini CLI, Cursor Agent and
+GitHub Copilot CLI**. Setup preserves other hooks, checks the environment, and
+tracks whether native callbacks actually arrive. Native patch observations cover
+dirty and non-Git targets while preserving gaps in incomplete histories.
+
+Installation and event delivery differ by host. The four added hosts still
+require live installed-session acceptance; launcher checks alone do not establish
+it. See [platform installation and limits](the-guide/platforms.md),
+[journey 50](journey/50-project-readiness.md), and
+[onboarding validation](docs/validation/2026-10-01-live-onboarding.md).
+
+### Repository-aware verification
+
+Loading the plugin automatically checks startup health and discovers verification
+commands from supported project manifests. Explicit project configuration can
+override discovery for custom commands. Repository scans respect Git ignores
+and project boundaries, report incomplete coverage, and support project-owned
+file and byte budgets.
+
+Exact declared commands retain **success, failure and incomplete execution** as
+distinct receipts. Input fingerprints let later reads distinguish current
+evidence from results recorded before the source changed. See
+[configuration](the-guide/configuration.md) and
+[portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
+
+### Fresh project health
+
+Check whether the integration is working in a particular project:
+
+```bash
+python plugin/bin/ep_ready.py HOST --project PATH --seconds 30
+```
+
+The fresh view joins native configuration, startup, edits, command capture and
+completion with every declared command's current aggregate outcome and fresh
+source evidence. It reports bounded timing samples, optional engine metadata,
+coverage gaps and specific next actions. Add `--json` for structured output or
+`--check` for an exit-code gate.
+
+The ordinary health read runs no tests, engine or host and writes no project
+state. Pipeline health remains separate from task verification. See
+[health commands](the-guide/commands.md),
+[journey 53](journey/53-a-working-pipeline-needs-evidence.md), and
+[health validation](docs/validation/2026-10-01-project-health.md).
+
+### Repeatable native acceptance
+
+Prepare a new disposable project to check an installed host with real failing,
+passing and interrupted commands:
+
+```bash
+python plugin/bin/ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python --host-version INSTALLED_VERSION
+python plugin/bin/ep_doctor.py --acceptance NEW_DIR --platform HOST
+```
+
+Run the first command, follow the generated `EXERCISE.md`, then use the second
+command to inspect the result. Choose `--language javascript` with Node available
+for the JavaScript exercise. The workflow applies to all five hosts and is not
+tied to a named project.
+
+Preparation launches no model. Inspection qualifies the retained observations;
+replay and launcher fixtures do not establish installed acceptance. See
+[acceptance commands](the-guide/commands.md),
+[provenance](docs/research/project-health.md), and
+[health validation](docs/validation/2026-10-01-project-health.md).
+
+### Portable verification reports
+
+Export a local report a reviewer can read without your coding session:
+
+```bash
+python plugin/bin/ep_report.py --project PATH --format markdown --output report.md
+```
+
+Markdown and versioned JSON show claims, obligation qualifications, latest
+execution receipts, freshly read input fingerprints, coverage gaps and next
+actions. Use `--format json` for structured output. Reports exclude prompts,
+transcripts, captured outputs and receipt details, scrub known credentials, and
+refuse overwrite unless `--force` is supplied. See
+[report commands](the-guide/commands.md#ep_report--evidence-to-share-with-a-reviewer),
+[journey 51](journey/51-receipts-another-person-can-read.md), and
+[report validation](docs/validation/2026-10-01-portable-report.md).
+
+### Optional test strength
+
+**Changed-file test strength** asks whether passing tests notice small changes to
+the production files edited by a task. Cosmic Ray supplies Python mutations;
+Stryker supplies JavaScript/TypeScript mutations. Every baseline and attempt
+starts from clean private inputs, with explicit time, attempt and copy limits.
+Detected changes, possible test gaps, invalid mutations and incomplete execution
+appear in the human report with independently checked input freshness.
+
+After explicit optional engine setup, `guide` and `strict` completion consider
+the shared runner automatically across all five hosts. There is no new completion
+blocker and no individual mutant target sent to the coding agent. You can also
+run it explicitly:
+
+```bash
+python plugin/bin/ep_strength.py --root PATH
+```
+
+Export saved findings through `ep_report.py`. Defaults are 60 seconds, eight
+attempts and 15 seconds per test command; use a focused command for slower
+projects. Missing engines, dirty attribution, editable Python paths into original
+source, unsafe dependencies and exhausted budgets stay explicit. Whole changed-file
+samples do not prove correctness or improved patch outcomes. See
+[setup and configuration](the-guide/configuration.md),
+[engine provenance](docs/research/mutation-engines.md),
+[journey 52](journey/52-tests-that-notice-a-change.md), and
+[test-strength validation](docs/validation/2026-10-01-test-strength.md).
 
 ---
 
