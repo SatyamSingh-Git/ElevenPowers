@@ -193,3 +193,18 @@ def test_corrupt_strength_is_an_explicit_incomplete_record(tmp_path):
     folder.mkdir()
     (folder / 'strength.json').write_text('{broken')
     assert load(tmp_path, 't')['state'] == 'incomplete'
+
+
+def test_cosmic_ray_real_generation_and_optional_absence(tmp_path):
+    import time, sys, importlib.util
+    from core.strength.engines import cosmic
+    from core.strength.execution import Budget
+    if importlib.util.find_spec('cosmic_ray') is None:
+        pytest.skip('optional cosmic-ray not installed')
+    (tmp_path / 'a.py').write_text('def positive(value):\n    return value > 0\n')
+    candidates, version = cosmic(tmp_path, ['a.py'], sys.executable, Budget(time.monotonic()+30, 4))
+    assert version == '8.7.0'
+    assert len(candidates) == 4 and all(c.path == 'a.py' and c.line == 2 for c in candidates)
+    assert any('>= 0' in c.content for c in candidates)
+    with pytest.raises(ValueError, match='unavailable'):
+        cosmic(tmp_path, ['a.py'], str(tmp_path / 'missing-python'), Budget(time.monotonic()+10, 1))
