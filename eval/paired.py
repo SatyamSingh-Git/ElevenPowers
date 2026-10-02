@@ -27,17 +27,19 @@ def _seal(root, host, arm):
     return [hashlib.sha256(p.read_bytes()).hexdigest() for p in paths]
 
 
-def run_case(host, arm, root, executable, source=None, timeout=240):
+def run_case(host, arm, root, executable, source=None, timeout=240, replicate=0):
     if host not in subscription.MODELS or arm not in ('baseline', 'tool'):
         raise ValueError('unknown host or arm')
     if type(timeout) not in (int, float) or not math.isfinite(timeout) or not 0 < timeout <= 240:
         raise ValueError('pilot run budget must be within 0–240 seconds')
+    if type(replicate) is not int or replicate not in (0, 1):
+        raise ValueError('pilot supports two replicates')
     root = Path(root).absolute()
     if root.exists() or root.is_symlink() or any(p.is_symlink() for p in root.parents):
         raise ValueError('pilot requires a new unlinked candidate directory')
     source = Path(source or Path(__file__).resolve().parents[1]).resolve()
     record_path = root.with_name(root.name + '-result.json')
-    record = {'schema_version': 1, 'host': host, 'arm': arm, 'state': 'running',
+    record = {'schema_version': 1, 'host': host, 'arm': arm, 'replicate': replicate, 'state': 'running',
               'model': subscription.MODELS[host], 'effort': 'medium', 'budget_seconds': timeout,
               'generated_at': datetime.now(timezone.utc).isoformat(), 'identity': challenge.identity(),
               'runtime_fingerprint': fingerprint(source), 'elapsed_ms': None, 'exit_code': None,
@@ -100,6 +102,16 @@ def run_case(host, arm, root, executable, source=None, timeout=240):
 
 
 def summarize(records):
+    if not isinstance(records, list) or len(records) > 8:
+        raise ValueError('pilot accepts at most eight records')
+    states = ('resolved', 'unresolved', 'regressed', 'invalid', 'setup', 'timeout', 'host_failed', 'running')
+    for record in records:
+        if (not isinstance(record, dict) or record.get('host') not in subscription.MODELS or
+                record.get('arm') not in ('baseline', 'tool') or record.get('state') not in states or
+                type(record.get('replicate')) is not int or record['replicate'] not in (0, 1) or
+                record.get('model') != subscription.MODELS[record['host']] or record.get('effort') != 'medium' or
+                record.get('identity') != challenge.identity()):
+            raise ValueError('invalid or conflicting pilot record')
     unique = [(r['host'], r['arm'], r.get('replicate')) for r in records]
     complete = len(records) == 8 and len(set(unique)) == 8 and all(r['state'] != 'running' for r in records)
     arms = []
@@ -110,7 +122,7 @@ def summarize(records):
                          'resolved': sum(r['state'] == 'resolved' for r in selected),
                          'states': {state: sum(r['state'] == state for r in selected) for state in
                                     ('resolved', 'unresolved', 'regressed', 'invalid', 'setup', 'timeout', 'host_failed', 'running')},
-                         'completion_language_with_failed_grade': sum(bool(r.get('observation', {}).get('completion_language')) and
+                         'completion_language_with_failed_grade': sum(bool((r.get('observation') or {}).get('completion_language')) and
                             bool(r.get('grade')) and r['grade']['passed'] < r['grade']['total'] for r in selected)})
     return {'schema_version': 1, 'kind': 'subscription_pilot', 'state': 'complete' if complete else 'incomplete',
             'identity': challenge.identity(), 'arms': arms, 'runs': records,
@@ -118,3 +130,47 @@ def summarize(records):
                        'Workspace separation is not a closed-book OS boundary; candidate code runs in a contained process.',
                        'Completion wording is a heuristic, not an independently validated intent classifier.',
                        'A ceiling baseline supplies no increased solve-rate evidence; process and patch outcomes are separate.']}
+
+
+def pilot(directory, executables, seconds=240):
+    directory = Path(directory).absolute()
+    if directory.exists() or directory.is_symlink() or any(p.is_symlink() for p in directory.parents):
+        raise ValueError('pilot requires a new unlinked directory')
+    if set(executables) != set(subscription.MODELS):
+        raise ValueError('both exact subscription hosts required')
+    if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 0 < seconds <= 240:
+        raise ValueError('pilot seconds must be within 0–240')
+    directory.mkdir(parents=True)
+    protocol = {'schema_version': 1, 'identity': challenge.identity(), 'models': subscription.MODELS,
+                'effort': 'medium', 'seconds_per_run': seconds, 'schedule': schedule(),
+                'runtime_fingerprint': fingerprint()}
+    write(directory / 'protocol.json', json.dumps(protocol, indent=2))
+    records = []
+    for host, replicate, arm in schedule():
+        if protocol['identity'] != challenge.identity() or protocol['runtime_fingerprint'] != fingerprint():
+            raise ValueError('frozen software or evaluator changed; stop instead of redesigning the pilot')
+        record = run_case(host, arm, directory / f'{host}-{replicate}-{arm}', executables[host],
+                          timeout=seconds, replicate=replicate)
+        records.append(record)
+        write(directory / 'summary.json', json.dumps(summarize(records), indent=2, allow_nan=False), force=True)
+        print(f"{host} {arm}: {record['state']}; grade {record.get('grade') and record['grade']['passed']}", flush=True)
+    return summarize(records)
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--directory', type=Path, required=True)
+    parser.add_argument('--codex', required=True)
+    parser.add_argument('--claude', required=True)
+    parser.add_argument('--seconds', type=float, default=240)
+    args = parser.parse_args()
+    try:
+        value = pilot(args.directory, {'codex': args.codex, 'claude': args.claude}, args.seconds)
+        return 0 if value['state'] == 'complete' else 1
+    except (OSError, ValueError) as exc:
+        parser.error(str(exc))
+
+
+if __name__ == '__main__':
+    sys.exit(main())

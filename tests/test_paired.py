@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 from types import SimpleNamespace
 
 from eval import challenge, paired
@@ -30,3 +31,19 @@ def test_balanced_schedule_and_partial_summaries():
     order = paired.schedule()
     assert len(order) == 8 and len(set(order)) == 8
     assert paired.summarize([])['state'] == 'incomplete'
+
+
+def test_setup_timeout_and_duplicate_records_cannot_complete(monkeypatch, tmp_path):
+    monkeypatch.setattr(paired.subscription, 'auth', lambda *a: False)
+    record = paired.run_case('codex', 'baseline', tmp_path / 'setup', 'fake-host')
+    assert record['state'] == 'setup'
+    assert paired.summarize([record])['state'] == 'incomplete'
+    assert paired.summarize([record] * 8)['state'] == 'incomplete'
+    stub(monkeypatch)
+    real = paired.run
+    def timeout(args, **kw):
+        if args[0] == 'fake-host':
+            raise subprocess.TimeoutExpired(args, .1)
+        return real(args, **kw)
+    monkeypatch.setattr(paired, 'run', timeout)
+    assert paired.run_case('codex', 'baseline', tmp_path / 'timeout', 'fake-host')['state'] == 'timeout'
