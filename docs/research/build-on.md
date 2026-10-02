@@ -308,3 +308,9 @@ a grade. The corrected controller reuses `core.process` for a separate behaviora
 worker and keeps assertions outside it. Archived protocols retain their earlier
 identity and can be read without executing or regrading candidates. This is
 structural qualification, not cryptographic authenticity or OS isolation.
+
+The behavior channel carries bounded type tags because ordinary JSON changes
+tuples into lists and would accept a different Python contract. The controller
+uses the same representation for its expected values, while keeping assertions
+outside candidate code. Review controls reject tuple statuses and list journal
+values; archived failure records receive the same private-field checks as success.

@@ -342,7 +342,8 @@ output requires `--force`. Archive mode cannot accept model-launch options.
 installed one; reading an earlier protocol does not silently upgrade or validate
 its results. A complete protocol counts eight records, including failures.
 
-The current grader uses a contained behavior worker with normal package imports.
+The current grader uses a contained behavior worker with normal package imports
+and bounded type-tagged outputs, preserving list/tuple and scalar distinctions.
 Its controller never imports candidate code and owns all sixteen assertions.
 A passing result means those frozen checks passed; invalid account identifiers
 already present as balance keys are outside this grader's checked cases. Local

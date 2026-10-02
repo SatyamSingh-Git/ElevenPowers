@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "kind": "native_matrix",
+  "runtime_fingerprint": "174ef07a3a3de59cea098beecb8165a8af357b60703ffeee4632587288649fa3",
+  "generated_at": "2026-10-02T08:09:47.157398+00:00",
+  "cells": [
+    {
+      "host": "claude",
+      "language": "python",
+      "state": "waiting",
+      "version": "2.1.286",
+      "observed_at": "2026-10-02T08:09:41.908055+00:00",
+      "reason": "Dated saved observation; not a fresh installed-host certification."
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "state": "waiting",
+      "version": "2.1.286",
+      "observed_at": "2026-10-02T08:09:42.849250+00:00",
+      "reason": "Dated saved observation; not a fresh installed-host certification."
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "state": "waiting",
+      "version": "0.159.2",
+      "observed_at": "2026-10-02T08:09:41.033575+00:00",
+      "reason": "Dated saved observation; not a fresh installed-host certification."
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "state": "waiting",
+      "version": "0.159.2",
+      "observed_at": "2026-10-02T08:09:40.282690+00:00",
+      "reason": "Dated saved observation; not a fresh installed-host certification."
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "state": "waiting",
+      "version": "",
+      "observed_at": "",
+      "reason": "No saved native capture supplied."
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "state": "waiting",
+      "version": "",
+      "observed_at": "",
+      "reason": "No saved native capture supplied."
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "state": "waiting",
+      "version": "",
+      "observed_at": "",
+      "reason": "No saved native capture supplied."
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "state": "waiting",
+      "version": "",
+      "observed_at": "",
+      "reason": "No saved native capture supplied."
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "state": "waiting",
+      "version": "",
+      "observed_at": "",
+      "reason": "No saved native capture supplied."
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "state": "waiting",
+      "version": "",
+      "observed_at": "",
+      "reason": "No saved native capture supplied."
+    }
+  ],
+  "passed": 0,
+  "total": 10,
+  "limits": [
+    "Unsigned local exercise observations, not host authentication or production patch certification.",
+    "Saved captures describe their creation time; rerun after runtime or installed-version changes."
+  ]
+}

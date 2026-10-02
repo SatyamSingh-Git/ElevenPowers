@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "kind": "native_acceptance",
+  "host": "claude",
+  "language": "javascript",
+  "state": "waiting",
+  "generated_at": "2026-10-02T08:09:42.849250+00:00",
+  "runtime_fingerprint": "174ef07a3a3de59cea098beecb8165a8af357b60703ffeee4632587288649fa3",
+  "version": {
+    "state": "observed",
+    "version": "2.1.286",
+    "source": "installed_probe"
+  },
+  "checks": {
+    "test_unchanged": true,
+    "runtime_identity": true,
+    "project_configuration": true,
+    "native_configuration": true,
+    "source_changed": false,
+    "host_version": true,
+    "generation": true,
+    "command": true,
+    "startup_runtime": false,
+    "startup_after_preparation": false,
+    "completion_after_commands": false,
+    "fresh_pipeline": false
+  },
+  "outcomes": {
+    "pass": false,
+    "fail": false,
+    "incomplete": false
+  },
+  "limits": [
+    "Unsigned local exercise observations, not host authentication or production patch certification.",
+    "Saved captures describe their creation time; rerun after runtime or installed-version changes."
+  ]
+}

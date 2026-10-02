@@ -94,7 +94,8 @@ comparison with `python -m eval.paired --directory NEW_DIR --codex CODEX_EXE
 budgets are recorded before execution. A new protocol must preserve these eight
 inconclusive results and report neutral or worse outcomes as well as improvements.
 
-Final whole-branch verification and review are recorded in the delivery check.
+Final whole-branch verification and review are recorded separately at the
+delivery boundary; the observations here remain dated independently.
 
 
 ## Recorded-protocol reproduction
@@ -114,13 +115,48 @@ budget conflicts, unsupported resolved states and private/unknown fields are
 rejected. Optional output is explicit and atomically refuses overwrite unless
 `--force` is supplied. Archive and model-launch modes cannot be combined.
 
-Independent review identified three Important grader/summary defects. All three
+Independent review identified three Important grader/summary defects, followed
+by two Important transport/export defects in the added archive scope. All five
 were reproduced failing before correction. The current grader's controller
 never imports candidate code: a contained worker preserves normal package
-imports and returns behavior, while final assertions stay in the controller.
+imports and returns bounded type-tagged behavior, while final assertions stay
+in the controller. Lists, tuples and scalar types remain distinct; dictionary
+insertion order is immaterial. Archive exit codes and nested grade metadata are
+validated even on failed runs, preventing private strings from being exported.
 Grader and worker content now define a new protocol identity. The sixteen
 behavioral checks remain the same; the original eight records are preserved.
 Two Minor findings remain qualified: deleted sealed metadata is classified as
 setup instead of invalidation, and the sixteen checks do not exercise invalid
 source/target identifiers already present as balance keys. Passing all checks
 is not complete coverage or correctness. Expanded cases require a new protocol.
+
+## Normal Codex trust did not establish callback delivery
+
+The installed Codex 0.159.2 UI listed five owned hooks awaiting review. The
+configuration and launcher code were inspected, then the host's normal trust
+action enabled those subscriptions. No bypass was used. A separate bounded
+subscription session exited 0, changed only `app.py` from `value > 10` to
+`value >= 10`, and observed the declared command fail before and pass after.
+The contract tests, project configuration and native wiring remained unchanged.
+The interruption and stale/rerun exercise steps were not completed in that run.
+
+No callback was received or processed. A subsequent ordinary startup also
+provided no native startup observation. The [Codex Python capture](2026-10-02-native-validation/native-codex-python.json)
+at 08:09 UTC records `source_changed: true`, unchanged contracts/configuration
+and the current runtime, while startup, completion, fresh pipeline and all
+native command outcomes remain false. Its state correctly stays **waiting**.
+This shows a corrected fixture, not ElevenPowers improving coding.
+
+The [Codex JavaScript](2026-10-02-native-validation/native-codex-javascript.json),
+[Claude Python](2026-10-02-native-validation/native-claude-python.json) and
+[Claude JavaScript](2026-10-02-native-validation/native-claude-javascript.json)
+captures preserve uncompleted exercises. The [later matrix](2026-10-02-native-validation/trusted-native-matrix.json)
+is still **0/10**, with all six unsupplied host/language cells retained. Both
+matrices are dated; the earlier one is preserved instead of overwritten.
+
+These capture and matrix commands launch no model and run no project checks.
+The next native session should use a fresh disposable preparation and follow
+all six instructions in its `EXERCISE.md`. Review the host's own diagnostics
+when active subscriptions still deliver no callbacks. After complete delivery
+and renewed subscription capacity, start a new identified comparison with the
+corrected evaluator, retaining the original eight records alongside it.
