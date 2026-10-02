@@ -22,7 +22,7 @@ and atomic report writing.
 - Reports: schema version 1, at most 128 KiB input; explicit atomic output.
 - Performance: 3 reads by default, 1–20 allowed; 60 seconds default, 120 maximum.
 - Pilot: at most 8 runs, 240 seconds each, 2 replicates per host/arm; frozen inputs.
-- Exact models: `gpt-6.1-sol` medium; `claude-sonnet-5.5` medium. No model fallback.
+- Exact models: `gpt-6.1-sol` medium; `claude-sonnet-5-5` medium. No model fallback.
 - Task size is not a pass criterion; assess coding outcomes and engaged mechanisms.
 - Complete histories are not authentication, production correctness or effect proof.
 

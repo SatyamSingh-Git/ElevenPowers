@@ -43,7 +43,7 @@ existing process containment, Git and evaluator patterns. New runner supports
 explicit subscription CLIs only, refuses API-key environment overrides, has no
 API fallback, and never runs from plugin installation or completion hooks.
 
-Use exactly `gpt-6.1-sol` at medium for Codex and `claude-sonnet-5.5` at medium
+Use exactly `gpt-6.1-sol` at medium for Codex and `claude-sonnet-5-5` at medium
 for Claude. Do not silently substitute an unavailable model or use API billing.
 Limit the first pilot to Codex and Claude Code, baseline/tool arms and two
 replicates per arm, at most eight model runs and four minutes per run. Both arms
