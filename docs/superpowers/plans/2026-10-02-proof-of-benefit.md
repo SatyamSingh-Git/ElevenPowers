@@ -30,42 +30,48 @@
 Interfaces: existing setup invocation, installed CLI stdin/stdout and callback registry.
 Files: affected `core/hosts/` or launcher only if cause demonstrated; regression tests and dated validation.
 
-- [ ] Observe native startup in the owned disposable fixture; inspect producer errors.
-- [ ] Reproduce any runtime cause with a real launcher control; watch RED.
-- [ ] Fix the smallest generalized boundary and watch GREEN; preserve ordinary trust.
-- [ ] Run affected host/launcher tests. Expected: legitimate callbacks accepted, malformed events remain incomplete.
-- [ ] Commit and push descriptive diagnosis/fix. Record external limits separately.
+- [x] Observe native startup in the owned disposable fixture; inspect producer errors.
+- [x] Reproduce any runtime cause with a real launcher control; watch RED.
+- [x] Fix the smallest generalized boundary and watch GREEN; preserve ordinary trust.
+- [x] Run affected host/launcher tests. Expected: legitimate callbacks accepted, malformed events remain incomplete.
+- [x] Commit and push descriptive diagnosis/fix. Record external limits separately.
 
 ## Task 2 — Neutral bounded proposed-completion capture
 
 Interfaces: explicit task file allowlist -> bounded snapshot -> append-only proposal history.
 Files: `eval/proposals.py`, `tests/test_proposals.py`.
 
-- [ ] Write forward/adversarial controls for index neutrality, deletion, bounded bytes, links and unavailable history; observe RED.
-- [ ] Implement recorder using ordinary host Stop input, always advisory, no Git writes.
-- [ ] Seal contract and source identity; snapshot only frozen task files before intervention.
-- [ ] Run `python -m pytest tests/test_proposals.py -q`. Expected: complete/control and incomplete/error cases distinguishable.
-- [ ] Commit and push recorder.
+- [x] Write forward/adversarial controls for index neutrality, deletion, bounded bytes, links and unavailable history; observe RED.
+- [x] Implement recorder using ordinary host Stop input, always advisory, no Git writes.
+- [x] Seal contract and source identity; snapshot only frozen task files before intervention.
+- [x] Run `python -m pytest tests/test_proposals.py -q`. Expected: complete/control and incomplete/error cases distinguishable.
+- [x] Commit and push recorder.
 
 ## Task 3 — Frozen comparison and native evidence
 
 Interfaces: two frozen cases + proposals + exact CLI observations -> complete per-run journal and qualified summary.
 Files: `eval/benefit.py`, frozen task/evaluator module, tests.
 
-- [ ] Write free gold/wrong candidates and scheduling/failure controls; observe RED.
-- [ ] Reuse subscription auth/command and contained processes; record setup before launch.
-- [ ] Run free controls and native acceptance. Expected: startup/edit/command/Stop processed before batch.
-- [ ] Freeze protocol; run eight counterbalanced calls only on the working host.
-- [ ] Independently grade initial/proposed/final snapshots; retain all attempts and exact limits.
-- [ ] Commit and push harness and whitelisted artifacts as they become reviewable.
+- [x] Write free gold/wrong candidates and scheduling/failure controls; observe RED.
+- [x] Reuse subscription auth/command and contained processes; record setup before launch.
+- [x] Run free controls and native acceptance. Expected: startup/edit/command/Stop processed before batch.
+- [x] Freeze protocol; run eight counterbalanced calls only on the working host.
+- [x] Independently grade initial/proposed/final snapshots; retain all attempts and exact limits.
+- [x] Commit and push harness and whitelisted artifacts as they become reviewable.
 
 ## Task 4 — Publish the evidence boundary
 
 Interfaces: reproducible artifacts -> docs/status/PLAN/guide/README/journey and all architecture views.
 
-- [ ] Update plan, status, guide, clean README feature area, journey and validation index.
-- [ ] Update architecture GRAPH/DF/ARCH/WF and regenerate mirror.
-- [ ] Run full regression, audit, doctor and `python architecture/check.py --render`.
-  Expected: green controls, actual outcome counts, graph renders all tabs.
-- [ ] Obtain one fresh whole-branch review, resolve important findings RED→GREEN.
-- [ ] Push descriptive delivery commits; after exact-head CI passes update main.
+- [x] Update plan, status, guide, clean README feature area, journey and validation index.
+- [x] Update architecture GRAPH/DF/ARCH/WF and regenerate mirror.
+- [x] Run the audit, doctor and rendered architecture checks; run corrective controls and start the complete regression delivery gate.
+  Expected at publication: green full regression, actual outcome counts, graph renders all tabs.
+- [x] Obtain one fresh whole-branch review, resolve important findings RED→GREEN.
+- [x] Push descriptive implementation commits and stage the exact-head CI/main delivery gate.
+
+Publication exit: the corrected complete regression and all four exact-head
+hosted CI jobs must pass before main is fast-forwarded. Git refs and the linked
+[tests workflow](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml)
+carry the final publication state. The eight-run measurement is complete;
+demonstrating a patch-correctness improvement remains a separate evidence exit.

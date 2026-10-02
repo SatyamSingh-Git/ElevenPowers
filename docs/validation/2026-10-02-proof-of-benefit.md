@@ -113,6 +113,42 @@ to retain a different recorded evaluator byte identity. Task/prompt changes
 remain rejected. The reader intentionally handles the original eight successful
 records; future failed batch journals remain available in their batch directory.
 
+The first delivery suite also exposed two old fixture assumptions: ratchet and
+old-tree stress non-Git controls used temporary paths that inherited the checkout
+when `--basetemp` was inside the writable workspace. Both failed independently
+before correction. The fixtures now use Git's discovery ceiling and assert a
+real `git rev-parse` failure before checking unknown/no-snapshot behavior. All
+7 ratchet and 32 stress controls passed. Production Git behavior was unchanged.
+
+Delivery controls observed before publication:
+
+- Recorder/comparison/review boundaries: **28 passed**; archive controls:
+  **5 passed**, including the observed evaluator-identity regression.
+- Named audit probes: **104 passed in 127.24 seconds**.
+- Independent grader validation: all **4/4** fix/regression/unfixed/setup cases
+  classified correctly. All **24** saved candidate grades matched again, with
+  canonical archive checksums verified.
+- Standard-library imports passed with `python -S`; host doctor passed; the
+  owned exact-command native fixture still passed `ep_ready.py --check` with
+  fresh source/receipt observations and no new model call.
+- Architecture: **104 nodes, 237 edges, 7 planes**; all four tabs rendered.
+- Two non-Git fixture corrections: **7** ratchet and **32** stress controls
+  passed independently after each reproduced failure.
+
+The first complete suite recorded **2 failed, 1,268 passed, 28 skipped** in
+1,164.09 seconds. The two failures were the corrected fixture assumptions above.
+The skips were 26 optional language-grammar cases and two POSIX-only process
+cases on Windows. A fresh corrected complete suite and the four hosted
+Windows/Linux × Python 3.11/3.13 jobs are required before publishing to main.
+The [tests workflow](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml)
+retains the exact commit and final hosted results; final delivery reports use
+that result rather than treating targeted controls as the full gate.
+
+The fresh whole-branch reviewer reported no Critical or Minor findings. All four
+Important findings were corrected in one RED→GREEN pass. Broader effectiveness,
+full installed-host acceptance, authentication/security isolation and arbitrary
+future failure-archive qualification remain outside these measured results.
+
 Next proof exit: freeze held-out tasks where ordinary first proposals actually
 contain an independently checked defect or stale source evidence. Observe the
 existing intervention and whether it corrects that state. Preserve all ordinary
