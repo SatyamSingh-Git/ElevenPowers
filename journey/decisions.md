@@ -173,3 +173,14 @@ more useful record.
 | D122 | Native acceptance is an explicit disposable exercise | Automatic intentional failures in a production project would violate ordinary installation expectations | Shared Python/Node preparation; no host or model launched |
 | D123 | Recheck immutable exercise inputs at acceptance return | A nested fresh health read cannot prove a test contract that changes afterward | Independent review reproduction RED→GREEN; bounded recheck, no second repository scan |
 | D124 | Launcher contracts and installed sessions are reported separately | Structured fixtures cannot establish actual installed hook delivery or cross-version compatibility | Ten producer/launcher cases pass; full native exercises remain open |
+
+## Versioned native evidence and subscription comparison — 2026-10-02
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D125 | Software identity binds preparation and native startup | Old installation evidence cannot qualify new shipped behavior | Bounded runtime content identity; changed or unbound evidence stays incomplete |
+| D126 | Retain every attempted performance read | Omitting failures or slow samples biases the cost description | Shipped; three-read dated samples, separate callback and command costs |
+| D127 | Use only the requested subscription models and equal budgets | API fallback or a different model changes the approved comparison | Eight original records preserved; policy and weekly quota made them inconclusive |
+| D128 | Coding or verification improvement is the criterion, regardless of task size | An integration pass alone does not show the plugin contributing to coding | No benefit established; next comparison requires actual native delivery |
+| D129 | Preserve earlier evaluator results under explicit recorded protocols | Review corrections must not silently rewrite observed outcomes | Read-only archive inspection labels earlier evaluator identity and validates all metadata |
+| D130 | Controller assertions consume bounded typed behavior | Candidate output cannot own grading authority; JSON alone erases Python contract types | Five Important findings reproduced RED→GREEN; normal imports, tagged values and strict summaries |

@@ -1,19 +1,17 @@
 # Roadmap
 
-**Product delivery update, 2026-10-01.** Generalized five-host onboarding,
-repository evidence, durable verification, portable reports and optional
-changed-file test strength ship together. Fresh staged project health now
-requires current native delivery, complete passing aggregate receipts and
-completion, with bounded timing history and read-only optional metadata.
-Disposable Python/Node native acceptance preparation and inspection also ship.
-Ten real producer/launcher contract cases pass; installed sessions remain a
-separate check. The next delivery milestone is versioned installed-host
-acceptance and ordinary-session latency on unrelated projects. A historical
-Claude startup was observed in Snag; its external CI failed its dependency audit
-(14/15 checks passed). See [current status](../docs/status.md),
-[health validation](../docs/validation/2026-10-01-project-health.md) and
-[platform installation](../the-guide/platforms.md). The research phases below
-remain separate from product delivery.
+**Product delivery update, 2026-10-02.** Generalized five-host integration,
+repository evidence, durable verification, portable reports, changed-file test
+strength and fresh health are built. Runtime/version qualification, dated native
+matrices, bounded latency sampling and the frozen subscription comparison now
+ship. Their acceptance remains partial: the matrix is 0/10 and the original
+eight-run comparison is inconclusive. Close native activation/trust and rerun
+a newly identified comparison after subscription capacity is available. This
+is the next important delivery work; new feature breadth would not resolve
+these evidence gaps. See [status](../docs/status.md),
+[observations](../docs/validation/2026-10-02-native-validation.md) and
+[journey 54](../journey/54-a-comparison-needs-a-working-host.md).
+The research phases below remain separate from product delivery.
 
 [← What's Offered](README.md)
 
@@ -37,9 +35,9 @@ flowchart LR
     classDef done fill:#d4f4dd,stroke:#22a06b,color:#0b3d2c
     classDef now fill:#ffeaa7,stroke:#d98e04,color:#5c3c00
     classDef next fill:#dfe6ee,stroke:#7b8a9b,color:#1f2d3a
-    class A done
-    class B now
-    class C,D,E next
+    class A,B done
+    class C now
+    class D,E next
 ```
 
 ---

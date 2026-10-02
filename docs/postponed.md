@@ -66,3 +66,13 @@ falsified the reason will most likely apply to these too.
 logic is *correct*. That needs a specification the repository does not have, and
 no mechanism in this file or in `PLAN.md` produces one. It is written here so
 that the absence is a recorded decision rather than an oversight — see §1.6.
+
+## Native-validation boundary, 2026-10-02
+
+Runtime-bound native captures, explicit version probes, conservative matrices,
+read-only latency samples and a subscription-only pilot are now built. Deferred:
+complete installed-host histories and a valid coding comparison after native
+trust/activation and subscription capacity are available. Missing three hosts
+stay gaps rather than simulated acceptance. Broad benefit claims, automatic
+model runs and API fallback remain outside this delivery. Preserve the original
+eight inconclusive records before starting a new protocol.

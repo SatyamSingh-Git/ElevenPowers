@@ -820,3 +820,25 @@ The fresh reviewer reproduced all five cases, and each regression was observed
 RED before correction and GREEN afterward. See [journey 53](53-a-working-pipeline-needs-evidence.md)
 and [validation](../docs/validation/2026-10-01-project-health.md). Installed-session
 delivery remains separate from the actual producer/launcher contract controls.
+
+## 2026-10-02: successful setup did not make a coding comparison valid
+
+Subscription sign-in and exact-model smoke calls succeeded, but actual coding
+commands hit Codex policy denial and Claude's weekly limit. Native callbacks
+never arrived. The eight original results remain inconclusive. Supported launch
+flags and local settings were corrected only after reading the installed producers.
+Normal Codex hook trust later allowed a source correction and real failing/passing
+tests, yet still produced no plugin callbacks. A trust table is not event delivery.
+
+The read sampler expected a 64-character project fingerprint; the actual producer
+returns 16 characters. An actual positive project read exposed the mismatch.
+Software identity and source identity now use their respective contracts.
+
+Review found that candidate code could emit final grades, ordinary package imports
+were rejected, and malformed resolved summaries lacked qualifying grades. The
+controller now owns assertions, the worker handles legitimate imports and
+summary success requires complete qualified evidence. Review of the added archive
+scope also found failure-state private strings and list/tuple type loss. All five
+Important findings were observed RED before fixes and GREEN afterward. Original
+pilot identities and outcomes remain preserved; corrected evaluator bytes define
+a new protocol. See [journey 54](54-a-comparison-needs-a-working-host.md).

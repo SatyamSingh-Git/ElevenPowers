@@ -10,9 +10,12 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [52 — tests that notice a change](52-tests-that-notice-a-change.md)
-records generalized optional test strength, actual language producers, clean
-attempt isolation and three reproduced independent-review corrections.
+Latest: [54 — a comparison needs a working host](54-a-comparison-needs-a-working-host.md)
+records versioned native reports, retained latency samples, subscription pilot
+outcomes and the execution, callback and quota gaps still open. [53 — a working
+pipeline needs evidence](53-a-working-pipeline-needs-evidence.md) records fresh
+health and disposable acceptance. [52 — tests that notice a change](52-tests-that-notice-a-change.md)
+records generalized optional test strength and clean attempt isolation.
 [51 — receipts another person can read](51-receipts-another-person-can-read.md)
 records portable Markdown/JSON reports, six fresh-review corrections and the
 actual Snag receipt exported for review. [50 — project readiness](50-project-readiness.md)
@@ -75,12 +78,13 @@ startup and the failed external Snag CI acceptance run.
 | [51-receipts-another-person-can-read.md](51-receipts-another-person-can-read.md) | Portable reports, six reproduced review corrections, fresh explicit inputs, literal Markdown, unchanged journals and actual Snag export |
 | [52-tests-that-notice-a-change.md](52-tests-that-notice-a-change.md) | Optional real-engine test strength, private trials, reproduced review fixes and human-only findings |
 | [53-a-working-pipeline-needs-evidence.md](53-a-working-pipeline-needs-evidence.md) | Fresh staged health, disposable native acceptance, ten real producer/launcher cases and five review defects reproduced before correction |
+| [54-a-comparison-needs-a-working-host.md](54-a-comparison-needs-a-working-host.md) | Runtime/version qualification, latency samples, a frozen eight-run subscription pilot and the native policy/trust/quota gaps that prevented a coding comparison |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
-## Current delivery, 2026-10-01
+## Current delivery, 2026-10-02
 
-The recent product work is in chapters 46 through 51. [Current status](../docs/status.md)
+The recent product work is in chapters 46 through 54. [Current status](../docs/status.md)
 separates shipped behavior and real Claude startup from added-host native
 acceptance still to do. The research history below retains its original
 measurements; the latest usability changes do not establish a patch-quality benefit.
@@ -292,7 +296,7 @@ Every figure below comes from a command in this repository.
 | A check that could not have failed | The runtime says so, in the report, without refusing the stop | `python -m pytest tests/test_stress.py -q` |
 | A suite that failed, recorded as passing | **123 of 295 (42%)** preserved passing suite records carry `failed > 0`; 61% of gated runs carry one. Fixed, probed, controlled | `python -m eval.discriminate --bundles results --verbose` |
 | The oracle gap does not settle | +2.0 to +20.0 across comparable pools, from 1-5 disagreeing tasks each | `python -m eval.pool --from-bundles results/chunks results/bundles-A results/bundles-B` |
-| Evidence that cannot fail | **46% of agent validation evidence carries no bug-discriminating information**, measured elsewhere on 3,730 validation events. Ours has never been measured — Phase B2.1, $0 | `python -m eval.discriminate --bundles results/` *(not built)* |
+| Evidence that cannot fail | **46% of agent validation evidence carries no bug-discriminating information**, measured elsewhere on 3,730 validation events. Historical measurement is recorded in journey 31/35 and PLAN §7; original vacuity claims remain qualified | `python -m eval.discriminate --bundles results/` |
 | The gate's blocks, graded at the block | **4 blocks across 19 runs, none changed an outcome.** One blocked a correct patch, one a broken one, one a regression it then failed to catch | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
 | First proposals already correct | 12 of 15 (80%), so the case the gate exists for barely occurs on this corpus | `python -m eval.checkpoint --grade results/prevalence/bundles --corpus results/prevalence/tasks.json` |
 | A false block, graded at the block | the gate refused a candidate that was already `resolved`, twice, and the run took 43 more turns and 6.6x the cost to reach another correct patch | `python -m eval.checkpoint --grade results/checkpoint/bundles --corpus results/checkpoint/tasks.json` |
@@ -343,3 +347,10 @@ one gated run carries four scope questions and zero blocks. Sizing an experiment
 needs a declared intervention boundary before it needs a task count.
 Replay still cannot measure staleness at all, because the working tree at each
 moment is not recoverable from a transcript.
+
+
+The October 2 native-validation delivery builds dated matrix/performance reports
+and a subscription pilot. The original eight comparison records are inconclusive,
+with no callbacks and no repaired candidates. Task size was not a criterion.
+See [journey 54](54-a-comparison-needs-a-working-host.md) and
+[validation](../docs/validation/2026-10-02-native-validation.md).

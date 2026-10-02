@@ -1,12 +1,15 @@
 # Master Plan v0.8
 
-**Native validation milestone, 2026-10-02.** The generalized project-health
-implementation is complete. Next: version-bound installed-host acceptance,
-representative read/callback/command costs, and a frozen challenging-task pilot
-using subscription-authenticated Codex and Claude Code. Equal model/effort and
-evaluation outside agent workspaces are required; neutral outcomes are retained.
-No API-key spending is authorized. See the [design](docs/design/native-validation.md)
-and [implementation plan](docs/superpowers/plans/2026-10-02-native-validation.md).
+**Native validation delivery, 2026-10-02.** Runtime-bound preparation/startup,
+explicit installed-version probes, whitelisted native captures, conservative
+ten-cell aggregation and every-attempt read-only latency samples are built. The
+frozen subscription-only coding pilot retains all eight original records; native
+execution/activation and quota gaps make it inconclusive. Task size was not the
+criterion and no benefit is claimed. Next: close native trust/acceptance and run
+a newly identified comparison after subscription capacity permits it. Do not
+replace the failed pilot or enable API spending. See the [design](docs/design/native-validation.md),
+[implementation plan](docs/superpowers/plans/2026-10-02-native-validation.md) and
+[dated observations](docs/validation/2026-10-02-native-validation.md).
 
 **Project-health delivery, 2026-10-01.** One fresh staged health view now joins
 configuration, native delivery, aggregate command outcomes, completion and

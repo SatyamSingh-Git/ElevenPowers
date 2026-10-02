@@ -145,9 +145,9 @@ Publish each as its checks finish; messages describe the actual change:
 21. Explicit read-only archived-pilot inspection and private-field rejection.
 22. Original protocol artifact and reproduced outcome summary.
 23. Corrected evaluator, archive inspection and native trust guides.
-24. Master plan and research/product roadmap reconciliation.
-25. Current status and outstanding acceptance boundaries.
-26. Journey record of native execution and evaluation failures.
+24. Failure-record metadata validation before archived exports.
+25. Bounded type-preserving candidate behavior transport.
+26. Plan, roadmap, status and journey reconciliation.
 27. Dated trusted native-session observations and conservative capture.
 28. Delivery validation, review evidence and final repository checks.
 29. Clean README feature update and verified main publication.

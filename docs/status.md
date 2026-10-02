@@ -1,6 +1,6 @@
 # Current delivery status
 
-Reviewed **2026-10-01**. ElevenPowers remains a research prototype. All five hosts
+Reviewed **2026-10-02**. ElevenPowers remains a research prototype. All five hosts
 share project-independent onboarding, command discovery, repository evidence and
 verification. Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI
 have reversible project wiring; the four additions also have portable bundles.
@@ -16,6 +16,9 @@ This delivery does not establish improved patch outcomes.
 | Five-host onboarding | Ownership-preserving setup, explicit or unambiguous auto host selection, command/environment discovery and readiness actions | Host trust/policy remains under the host; custom/ambiguous manifests need overrides |
 | Callback activation | Waiting, received, processed startup, errors/history, changed wiring and removal | Launcher observations only; replay excluded; callbacks are not sender authentication |
 | Fresh staged project health | One fresh report view; native startup/edit/capture/completion, every declared command's aggregate outcome, progress and read-only optional metadata | Ten-second cooperative default, 120-second maximum; unresolved current callback errors, corrupt/moving state and incomplete coverage cannot pass `--check` |
+| Versioned native reports | Bounded runtime identity, explicit installed-version probes, whitelisted captures and ten-cell matrix | Dated unsigned observations; duplicate, changed and incomplete histories cannot pass; full installed acceptance remains 0/10 |
+| Read-only performance | Every attempted repeated health read retained; finite source/timing checks and separate callback/command history | Descriptive local samples, cooperative deadline; no universal speedup or task certification |
+| Subscription coding pilot | Frozen original task, independent 16-check grader, exact requested models/medium effort and eight equal-budget journals | Initial pilot inconclusive due policy/activation/quota; no product benefit established; local separation is not an OS boundary |
 | Native acceptance workflow | Explicit new disposable Python/Node repository, owned wiring, immutable contract and current pass/fail/incomplete history qualification | Preparation launches no host; local unsigned observations and operator versions do not establish authenticated or cross-version compatibility |
 | Native patch attribution | Bounded pre/post target content comparisons; dirty/non-Git files, add/delete/move | Stable task/session/call/input required; target coverage cannot prove absence of unrelated side effects |
 | Missing callbacks | Pending coverage visible in status/readiness; completion reconciles missing post-events; eviction uncertainty persists | Interrupted/missing/unsafe/budget-limited observations stay UNVERIFIED even with passing tests |
@@ -118,3 +121,22 @@ Five independent-review defects were reproduced RED, fixed and verified GREEN.
 The corrected full suite passed **1,194 tests with 28 skips** in 691.95 seconds.
 Exact checks and qualifications are in [health validation](validation/2026-10-01-project-health.md).
 See [journey 53](../journey/53-a-working-pipeline-needs-evidence.md).
+
+## Native-validation delivery
+
+The shipped compatibility/performance APIs are generalized. October 2 installed
+probes found Codex 0.159.2 and Claude Code 2.1.286; fresh Python/JavaScript
+preparations remain waiting and the missing three hosts remain explicit gaps.
+Three-read complete samples measured 139.088 ms median on an unrelated small
+fixture and 2,511.143 ms on the large external repository. Selected coverage was
+3 files/4,008 bytes and 5,209 files/78,409,173 bytes. These samples establish
+read costs for those inputs, not ordinary-session overhead or speedup.
+
+All eight frozen subscription pilot records are preserved: Codex candidates
+remained unchanged under policy denial, and Claude calls encountered its weekly
+limit. Native callbacks were absent. Supported automatic review/local settings
+corrections are implemented; native trust was inspected separately through
+Codex's normal UI. No coding-outcome improvement is established. Finish native
+acceptance and a newly identified, quota-available comparison before claiming
+product benefit. [Dated evidence](validation/2026-10-02-native-validation.md) and
+[journey 54](../journey/54-a-comparison-needs-a-working-host.md) record the limits.
