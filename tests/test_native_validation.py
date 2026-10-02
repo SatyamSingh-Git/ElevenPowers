@@ -53,3 +53,24 @@ def test_runtime_identity_rejects_linked_code(tmp_path):
         pytest.skip('symlinks unavailable')
     with pytest.raises(ValueError, match='linked'):
         fingerprint(root)
+
+
+def test_only_native_startup_binds_runtime_identity(tmp_path, monkeypatch):
+    from core.hosts import provenance
+    from core.hosts.readiness import callback, ingress, read
+    monkeypatch.setattr(provenance, 'fingerprint', lambda: 'a' * 64)
+    with ingress('replay'), callback('codex', tmp_path, 'SessionStart', {'session_id': 's'}):
+        pass
+    assert read(tmp_path) == {}
+    with ingress('host'), callback('codex', tmp_path, 'SessionStart', {'session_id': 's'}):
+        pass
+    startup = read(tmp_path)['codex']['phases']['SessionStart']
+    assert startup['runtime_fingerprint'] == 'a' * 64
+    assert startup['processed'] == 1
+    assert 's' != startup['session']
+
+
+def test_malformed_runtime_diagnostic_is_rejected():
+    from core.hosts.diagnostics import validate
+    with pytest.raises(ValueError, match='hash'):
+        validate({'codex': {'phases': {'SessionStart': {'runtime_fingerprint': 'raw-secret'}}}})

@@ -119,6 +119,14 @@ def callback(platform, root, event, payload=None):
         raise ValueError('unsupported callback phase')
     session = identity((payload or {}).get('session_id'))
     started = time.monotonic()
+    runtime = ''
+    if event == 'SessionStart':
+        from .provenance import fingerprint
+        try:
+            runtime = fingerprint()
+        except (OSError, ValueError):
+            # Missing identity cannot qualify a runtime-bound acceptance read.
+            runtime = ''
     with state(root) as value:
         item = value.setdefault(platform, {'state': 'received', 'generation': uuid.uuid4().hex})
         generation = item['generation']
@@ -142,6 +150,8 @@ def callback(platform, root, event, payload=None):
             if item.get('generation') == generation:
                 phase = item.setdefault('phases', {}).setdefault(event, {})
                 phase.update(task=observation['task'], session=session, last_at=time.time())
+                if event == 'SessionStart':
+                    phase['runtime_fingerprint'] = runtime
                 if 'edit' in observation:
                     phase['edit'] = {**observation['edit'], 'task': observation['task'], 'session': session}
                 phase['samples_ms'] = [*phase.get('samples_ms', [])[-31:], round(elapsed, 3)]

@@ -65,7 +65,7 @@ def validate(value):
             if not isinstance(phase, dict):
                 raise ValueError('invalid callback phase')
             part = {k: _count(phase[k]) for k in ('received', 'processed', 'errors') if k in phase}
-            part.update({k: _hash(phase[k]) for k in ('task', 'session') if k in phase})
+            part.update({k: _hash(phase[k]) for k in ('task', 'session', 'runtime_fingerprint') if k in phase})
             if 'last_at' in phase:
                 part['last_at'] = _time(phase['last_at'])
             if 'last_error' in phase:
