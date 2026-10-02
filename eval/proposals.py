@@ -10,6 +10,7 @@ from pathlib import Path, PurePosixPath
 import subprocess
 import sys
 import time
+import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -171,6 +172,28 @@ def verification(config):
     return 'fresh_pass' if value['state']=='pass' else 'fail'
 
 
+def observed(config):
+    """Every attempted Stop must have one completed observation, in both arms."""
+    history=read(config['history'])
+    directory=Path(config.get('attempts',config['history']+'.attempts'))
+    if not directory.is_dir() or any(p.is_symlink() for p in (directory,*directory.parents)):
+        raise ValueError('proposal observation attempts unavailable')
+    paths=list(directory.glob('*.json'))
+    if len(paths)!=len(history) or not 1<=len(paths)<=MAX_RECORDS:
+        raise ValueError('proposal observation gap or limit')
+    hashes=set()
+    for path in paths:
+        if path.is_symlink() or path.stat().st_size>1024:
+            raise ValueError('unsafe observation attempt')
+        status=json.loads(path.read_text())
+        if set(status)!={'state','hash'} or status['state']!='complete':
+            raise ValueError('proposal observation incomplete')
+        hashes.add(status['hash'])
+    if len(hashes)!=len(history) or hashes!={p['hash'] for p in history}:
+        raise ValueError('conflicting observation history')
+    return history
+
+
 def hook(manifest, phase):
     """Wrap a native command, preserving its stdout, stderr and exit status.
 
@@ -180,8 +203,16 @@ def hook(manifest, phase):
     is qualified here; other hosts need their own response-decision observation.
     """
     raw = sys.stdin.buffer.read(1024 * 1024 + 1)
+    attempt=None
     try:
         config = json.loads(Path(manifest).read_text(encoding='utf-8'))
+        if phase=='Stop':
+            from core.hosts.setup import _write
+            directory=Path(config.get('attempts',config['history']+'.attempts'))
+            if any(p.is_symlink() for p in (directory,*directory.parents)):
+                raise ValueError('linked observation sink')
+            attempt=directory/(uuid.uuid4().hex+'.json')
+            _write(attempt,{'state':'incomplete','hash':None})
         payload = json.loads(raw)
         root = Path(config['root']).resolve(strict=True)
         if len(raw) > 1024 * 1024 or Path(payload['cwd']).resolve() != root:
@@ -205,6 +236,8 @@ def hook(manifest, phase):
                    'verification_before':verification_before,'verification_after':verification(config),
                    'decision': ('allow' if code in (None, 0) else
                                 'block' if code == 2 and config['host'] == 'claude' else 'unavailable')})
+            if attempt:
+                _write(attempt,{'state':'complete','hash':read(config['history'])[-1]['hash']})
         except (OSError, ValueError, TypeError):
             pass
     return code or 0
