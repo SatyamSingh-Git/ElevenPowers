@@ -127,6 +127,9 @@ def _private_fields(record, required):
     if 'error' in record and record['error'] not in ('OSError', 'ValueError', 'FileNotFoundError',
             'PermissionError', 'SubprocessError', 'OutputLimitExceeded'):
         raise ValueError('unsupported pilot error metadata')
+    if record['exit_code'] is not None and (type(record['exit_code']) is not int or
+                                          not -(2**31) <= record['exit_code'] < 2**32):
+        raise ValueError('invalid pilot exit code')
     try:
         date = datetime.fromisoformat(record['generated_at'])
         if date.tzinfo is None:
@@ -148,6 +151,23 @@ def _private_fields(record, required):
         grade = record['grade']
         if grade is not None and (not isinstance(grade, dict) or set(grade) != {'state', 'passed', 'total', 'regressions', 'checks'}):
             raise ValueError('unknown grade fields')
+        if grade is not None:
+            from .challenge_grader import CHECK_NAMES
+            if grade['state'] == 'setup':
+                if (type(grade['passed']) is not int or grade['passed'] != 0 or
+                        type(grade['total']) is not int or grade['total'] != 0 or
+                        grade['regressions'] is not None or grade['checks'] != {}):
+                    raise ValueError('invalid setup grade metadata')
+            elif grade['state'] == 'graded':
+                if (type(grade['total']) is not int or grade['total'] != 16 or
+                        not isinstance(grade['checks'], dict) or set(grade['checks']) != set(CHECK_NAMES) or
+                        any(type(v) is not bool for v in grade['checks'].values()) or
+                        type(grade['passed']) is not int or grade['passed'] != sum(grade['checks'].values()) or
+                        type(grade['regressions']) is not int or grade['regressions'] !=
+                        sum(not grade['checks'][k] for k in ('view_total', 'view_statement', 'basic_transfer', 'empty'))):
+                    raise ValueError('invalid graded metadata')
+            else:
+                raise ValueError('unsupported grade state')
         mechanisms = record['mechanisms']
         if not isinstance(mechanisms, dict) or set(mechanisms) - {'pipeline_health', 'task_verification', 'callbacks', 'receipt_outcomes', 'coverage_complete'}:
             raise ValueError('unknown mechanism fields')

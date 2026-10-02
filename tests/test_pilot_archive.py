@@ -46,3 +46,13 @@ def test_archive_private_fields_and_conflicting_modes_rejected(tmp_path):
     args = [sys.executable, '-m', 'eval.paired', '--inspect', str(report_path), '--protocol', str(protocol_path),
             '--directory', str(tmp_path/'new')]
     assert subprocess.run(args, capture_output=True, timeout=20).returncode == 2
+
+
+@pytest.mark.parametrize('field,value', [('exit_code', 'private prompt /private/project'),
+    ('grade', {'state': 'secret prompt', 'passed': 0, 'total': 0,
+               'regressions': 'secret', 'checks': {'private path': 'secret'}})])
+def test_failure_records_cannot_export_private_nested_values(tmp_path, field, value):
+    record, protocol, *_ = fixture(tmp_path)
+    record[field] = value
+    with pytest.raises(ValueError):
+        paired.summarize([record], protocol=protocol)
