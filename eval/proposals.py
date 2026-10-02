@@ -11,9 +11,16 @@ import subprocess
 import sys
 import time
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 MAX_BYTES = 512 * 1024
 MAX_RECORDS = 16
 MAX_HISTORY = 24 * 1024 * 1024
+
+
+def _stamp(path):
+    s=path.stat()
+    return s.st_size,s.st_mtime_ns,s.st_ctime_ns,s.st_ino
 
 
 def _names(names):
@@ -21,7 +28,7 @@ def _names(names):
         raise ValueError('invalid snapshot allowlist')
     for name in names:
         if (not isinstance(name, str) or '\\' in name or ':' in name or
-                not name or name.startswith('.') or
+                not name or (name.startswith('.') and name != '.gitignore') or
                 any(p in ('..', '.') for p in name.split('/')) or
                 PurePosixPath(name).is_absolute()):
             raise ValueError('unsafe snapshot path')
@@ -43,19 +50,19 @@ def snapshot(root, names):
             if not path.exists():
                 data[name] = None; stamps[name] = None
                 continue
-            before = path.stat()
+            before = _stamp(path)
             if not path.is_file():
                 return result
             with path.open('rb') as stream:
                 raw = stream.read(MAX_BYTES - total + 1)
             total += len(raw)
-            if total > MAX_BYTES or path.stat() != before:
+            if total > MAX_BYTES or _stamp(path) != before:
                 return result
             stamps[name] = before
             data[name] = base64.b64encode(raw).decode('ascii')
         for name, stamp in stamps.items():
             path = root / name
-            if (stamp is None and path.exists()) or (stamp is not None and path.stat() != stamp):
+            if path.is_symlink() or (stamp is None and path.exists()) or (stamp is not None and _stamp(path) != stamp):
                 return result
     except OSError:
         return result
@@ -108,6 +115,62 @@ def append(path, value):
         stream.write(encoded)
 
 
+def _receipt_path(config):
+    return Path(config['history']).with_suffix('.receipt.json')
+
+
+def command_receipt(config, phase, payload):
+    """Same exact-command input observation in both arms, without model output."""
+    from core.hosts.setup import _write
+    from core.payload import read_result
+    from core.parsers import parse
+    from core.evidence import Result, Kind
+    if (payload.get('tool_input') or {}).get('command') != config.get('command'):
+        return
+    call=payload.get('tool_use_id')
+    if not isinstance(call,str) or not call:
+        return
+    root=Path(config['root']); path=_receipt_path(config)
+    if phase=='PreToolUse':
+        _write(path, {'state':'running','call':call,'inputs':snapshot(root,config['files'])})
+    elif phase in ('PostToolUse','PostToolUseFailure'):
+        before=json.loads(path.read_text()) if path.exists() else {}
+        after=snapshot(root,config['files'])
+        result=read_result(payload,phase)
+        raw=payload.get('tool_response',{})
+        moving=before.get('call')!=call or before.get('inputs')!=after or after['state']!='complete'
+        incomplete=moving or result.skip or not result.readable or (isinstance(raw,dict) and (raw.get('timed_out') is True or raw.get('timeout') is True))
+        rows=parse(config['command'],result.output,None if incomplete else result.exit_code,root)
+        suite=next((e for e in rows if e.kind is Kind.SUITE),None)
+        state='incomplete' if incomplete or suite is None or suite.execution!='complete' else 'pass' if suite.result is Result.PASS and suite.ran_tests else 'fail'
+        _write(path, {'state':state,'inputs':after})
+
+
+def verification(config):
+    if config['plugin']:
+        from core.ledger import Ledger
+        from core.evidence import Kind, Result, Freshness
+        rows=[e for e in Ledger.load(Path(config['root'])).evidence
+              if e.kind is Kind.SUITE and e.command==config.get('command')]
+        if not rows:
+            return 'missing'
+        e=max(rows,key=lambda e:e.at)
+        if e.execution!='complete':
+            return 'incomplete'
+        if e.freshness(Path(config['root'])) is not Freshness.FRESH:
+            return 'stale'
+        return 'fresh_pass' if e.result is Result.PASS and e.ran_tests else 'fail'
+    path=_receipt_path(config)
+    if not path.exists():
+        return 'missing'
+    value=json.loads(path.read_text())
+    if value['state'] not in ('pass','fail'):
+        return 'incomplete'
+    if value['inputs']!=snapshot(Path(config['root']),config['files']):
+        return 'stale'
+    return 'fresh_pass' if value['state']=='pass' else 'fail'
+
+
 def hook(manifest, phase):
     """Wrap a native command, preserving its stdout, stderr and exit status.
 
@@ -126,6 +189,11 @@ def hook(manifest, phase):
         before = snapshot(root, config['files']) if phase == 'Stop' else None
     except (OSError, ValueError, KeyError, TypeError):
         return 0
+    try:
+        verification_before=verification(config) if phase=='Stop' else None
+        command_receipt(config,phase,payload)
+    except (OSError,ValueError,KeyError,TypeError):
+        verification_before='unavailable'
     code = None
     if config['plugin']:
         # Inherit output: an observer must not truncate or reinterpret the action.
@@ -134,6 +202,7 @@ def hook(manifest, phase):
         try:
             append(config['history'], {'phase': phase, 'at': time.time(), 'before': before,
                    'after': snapshot(root, config['files']), 'plugin_exit': code,
+                   'verification_before':verification_before,'verification_after':verification(config),
                    'decision': ('allow' if code in (None, 0) else
                                 'block' if code == 2 and config['host'] == 'claude' else 'unavailable')})
         except (OSError, ValueError, TypeError):

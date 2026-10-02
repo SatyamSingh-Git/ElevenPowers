@@ -1,0 +1,49 @@
+"""Frozen cases discriminate defects without instructing an agent to skip checks."""
+from pathlib import Path
+
+from eval import benefit, benefit_cases, challenge, proposals
+
+
+def test_two_cases_grade_bug_gold_and_bad_replay(tmp_path):
+    for case in ('atomic-repair', 'correct-control'):
+        root = tmp_path / case
+        benefit_cases.prepare(case, root)
+        assert benefit_cases.contract(case, root)
+        result = challenge.grade(root)
+        assert result['passed'] == (7 if case == 'atomic-repair' else 16)
+        (root / 'bank/engine.py').write_text(challenge.GOLD)
+        assert challenge.grade(root)['passed'] == 16
+        (root / 'bank/engine.py').write_text(challenge.GOLD.replace('history[e[\'id\']] != signature', 'False'))
+        assert challenge.grade(root)['passed'] < 16
+        (root / 'visible.py').write_text('print("ok")')
+        assert not benefit_cases.contract(case, root)
+
+
+def test_schedule_is_eight_complete_counterbalanced_calls():
+    rows = benefit.schedule()
+    assert len(rows) == 8 and len(set(rows)) == 8
+    for case in ('atomic-repair', 'correct-control'):
+        assert (case, 0, 'baseline') in rows and (case, 0, 'tool') in rows
+        assert (case, 1, 'tool') in rows and (case, 1, 'baseline') in rows
+        first = [x[2] for x in rows if x[0] == case and x[1] == 0]
+        second = [x[2] for x in rows if x[0] == case and x[1] == 1]
+        assert first == list(reversed(second))
+
+
+def test_saved_snapshot_grades_independently_and_is_readonly(tmp_path):
+    root = tmp_path / 'candidate'; benefit_cases.prepare('atomic-repair', root)
+    snap = proposals.snapshot(root, benefit_cases.names('atomic-repair'))
+    grade = benefit.grade_snapshot('atomic-repair', snap)
+    assert grade['passed'] == 7
+    assert (root / 'bank/engine.py').read_text() == challenge.BUGGY
+    snap['fingerprint'] = '0' * 64
+    assert benefit.grade_snapshot('atomic-repair', snap)['state'] == 'unavailable'
+
+
+def test_summary_does_not_credit_callbacks_alone_or_missing_runs():
+    value = benefit.summarize([])
+    assert value['state'] == 'incomplete' and value['benefit_observed'] is False
+    rows = [{'case': c, 'replicate': n, 'arm': arm, 'state': 'host_failed',
+             'proposals': [], 'final_grade': None} for c, n, arm in benefit.schedule()]
+    value = benefit.summarize(rows)
+    assert value['state'] == 'inconclusive' and value['benefit_observed'] is False

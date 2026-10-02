@@ -1,6 +1,7 @@
 """A recorder must not change candidate/index or hide an unavailable proposal."""
 import base64
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -40,6 +41,12 @@ def test_byte_limit_is_incomplete_not_an_empty_success(tmp_path):
     value = proposals.snapshot(tmp_path, ['big.py'])
     assert value['state'] == 'incomplete' and value['files'] == {}
     assert value['fingerprint'] is None
+
+
+def test_read_access_timestamp_is_not_a_source_edit(tmp_path):
+    path=tmp_path/'app.py'; path.write_bytes(b'content\n')
+    os.utime(path,ns=(0,path.stat().st_mtime_ns))
+    assert proposals.snapshot(tmp_path,['app.py'])['state']=='complete'
 
 
 def test_link_is_not_followed(tmp_path):
@@ -103,3 +110,34 @@ def test_passive_stop_and_broken_sink_never_block(tmp_path):
     result = subprocess.run([sys.executable, str(Path(proposals.__file__)), str(manifest), 'Stop'],
                             input=json.dumps({'cwd': str(root)}), capture_output=True, text=True)
     assert result.returncode == 0 and result.stdout == '' and result.stderr == ''
+
+
+def test_neutral_receipt_becomes_stale_after_edit(tmp_path):
+    from core.config import Config, save
+    root=tmp_path/'candidate'; root.mkdir()
+    save(root,Config(profile='off',commands={'tests':'python visible.py'}))
+    (root/'app.py').write_bytes(b'first\n')
+    config={'root':str(root),'files':['app.py'],'history':str(tmp_path/'history.jsonl'),
+            'command':'python visible.py','plugin':[],'host':'claude'}
+    payload={'cwd':str(root),'tool_use_id':'call-1','tool_input':{'command':'python visible.py'},
+             'tool_response':{'stdout':'TAP version 13\n1..1\nok 1 - done\n# pass 1\n# fail 0','exit_code':0}}
+    proposals.command_receipt(config,'PreToolUse',payload)
+    proposals.command_receipt(config,'PostToolUse',payload)
+    assert proposals.verification(config)=='fresh_pass'
+    (root/'app.py').write_bytes(b'second\n')
+    assert proposals.verification(config)=='stale'
+
+
+def test_neutral_command_changed_during_execution_cannot_pass(tmp_path):
+    from core.config import Config, save
+    root=tmp_path/'candidate'; root.mkdir()
+    save(root,Config(profile='off',commands={'tests':'python visible.py'}))
+    (root/'app.py').write_text('first')
+    config={'root':str(root),'files':['app.py'],'history':str(tmp_path/'history.jsonl'),
+            'command':'python visible.py','plugin':[],'host':'claude'}
+    payload={'tool_use_id':'call','tool_input':{'command':'python visible.py'},
+             'tool_response':{'stdout':'done','exit_code':0}}
+    proposals.command_receipt(config,'PreToolUse',payload)
+    (root/'app.py').write_text('moving')
+    proposals.command_receipt(config,'PostToolUse',payload)
+    assert proposals.verification(config)=='incomplete'
