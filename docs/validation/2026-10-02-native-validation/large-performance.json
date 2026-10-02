@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "kind": "health_performance",
+  "host": "codex",
+  "generated_at": "2026-10-02T07:11:03.460115+00:00",
+  "runtime_fingerprint": "174ef07a3a3de59cea098beecb8165a8af357b60703ffeee4632587288649fa3",
+  "python": "3.13.2",
+  "os": "Windows",
+  "os_release": "11",
+  "warmup": "none; every attempted read retained",
+  "requested": 3,
+  "attempted": 3,
+  "budget_seconds": 90,
+  "elapsed_ms": 7859.366,
+  "state": "complete",
+  "inputs_changed": false,
+  "samples": [
+    {
+      "state": "complete",
+      "elapsed_ms": 2410.483,
+      "health_state": "waiting",
+      "task_state": "UNVERIFIED",
+      "coverage": {
+        "complete": true,
+        "files": 5209,
+        "bytes": 78409173
+      },
+      "source_fingerprint": "4009e472cf575fe6",
+      "timings": {
+        "health_read_ms": 2409.609,
+        "source_snapshot_ms": 2063.626,
+        "report_ms": 2348.838
+      }
+    },
+    {
+      "state": "complete",
+      "elapsed_ms": 2736.005,
+      "health_state": "waiting",
+      "task_state": "UNVERIFIED",
+      "coverage": {
+        "complete": true,
+        "files": 5209,
+        "bytes": 78409173
+      },
+      "source_fingerprint": "4009e472cf575fe6",
+      "timings": {
+        "health_read_ms": 2735.182,
+        "source_snapshot_ms": 2195.811,
+        "report_ms": 2686.246
+      }
+    },
+    {
+      "state": "complete",
+      "elapsed_ms": 2511.143,
+      "health_state": "waiting",
+      "task_state": "UNVERIFIED",
+      "coverage": {
+        "complete": true,
+        "files": 5209,
+        "bytes": 78409173
+      },
+      "source_fingerprint": "4009e472cf575fe6",
+      "timings": {
+        "health_read_ms": 2510.665,
+        "source_snapshot_ms": 2164.118,
+        "report_ms": 2476.405
+      }
+    }
+  ],
+  "retained_callbacks": {},
+  "retained_command_distribution": {
+    "samples": 0,
+    "median_ms": null,
+    "p95_ms": null
+  },
+  "read_distribution": {
+    "samples": 3,
+    "median_ms": 2511.143,
+    "p95_ms": 2736.005
+  },
+  "limits": [
+    "Descriptive local sample, not universal latency, model speedup or improved coding evidence.",
+    "No checks, host or engine are launched; an in-flight read may exceed the cooperative deadline.",
+    "Callback samples exclude host launch and final registry write; Stop can include verification time.",
+    "Retained callback and command samples describe prior execution, separately from current reads."
+  ]
+}

@@ -32,21 +32,22 @@ def auth(host, executable, root):
 def command(host, executable, root, prompt):
     if host == 'codex':
         return [executable, 'exec', '--ignore-user-config', '--model', MODELS[host],
-                '-c', 'model_reasoning_effort="medium"', '--sandbox', 'workspace-write',
-                '--ephemeral', '--json', '-C', str(root), prompt]
+                '-c', 'model_reasoning_effort="medium"',
+                '--approve-for-me', '--ephemeral', '--json', '-C', str(root), prompt]
     if host == 'claude':
         # Prompt precedes variadic tool flags; --bare skips subscription OAuth.
         return [executable, '-p', prompt, '--model', MODELS[host], '--effort', 'medium',
                 '--output-format', 'json', '--no-session-persistence', '--no-chrome',
-                '--setting-sources', 'project', '--permission-mode', 'acceptEdits',
+                '--setting-sources', 'project,local', '--permission-mode', 'acceptEdits',
                 '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}',
                 '--tools', 'Bash,Read,Edit,Write,Glob,Grep',
                 '--allowedTools', 'Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep']
     raise ValueError('unsupported pilot host')
 
 
-def observation(host, output):
-    value = {'completed': False, 'usage': None, 'models': [], 'completion_language': False}
+def observation(host, output, diagnostic=''):
+    value = {'completed': False, 'usage': None, 'models': [], 'completion_language': False,
+             'failure': 'blocked_by_policy' if 'blocked by policy' in diagnostic.lower() else 'unavailable'}
     try:
         events = [json.loads(line) for line in output.splitlines() if line.strip()] if host == 'codex' else [json.loads(output)]
         text = ''
@@ -66,6 +67,8 @@ def observation(host, output):
             else:
                 value['completed'] = event.get('is_error') is False
                 usage = event.get('usage'); text = event.get('result', '')
+                if event.get('api_error_status') == 429:
+                    value['failure'] = 'quota_exhausted'
                 value['models'] = [key for key in event.get('modelUsage', {})
                                    if re.fullmatch(r'[a-z0-9.-]{1,80}', key)]
             if isinstance(usage, dict):
@@ -74,6 +77,8 @@ def observation(host, output):
                                              'cache_read_input_tokens', 'cache_creation_input_tokens', 'reasoning_output_tokens')
                                   and type(n) is int and 0 <= n <= 1_000_000_000}
         value['completion_language'] = bool(re.search(r'\b(done|fixed|completed|implemented)\b', text, re.I))
+        if 'blocked by policy' in text.lower():
+            value['failure'] = 'blocked_by_policy'
     except (ValueError, TypeError, AttributeError):
         value['completed'] = False
     return value

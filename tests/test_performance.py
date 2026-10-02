@@ -7,7 +7,7 @@ def health_value(state='waiting'):
     return {'health': {'state': state}, 'coverage': {'complete': True, 'files': 2, 'bytes': 20},
             'timings': {'health_read_ms': 10., 'source_snapshot_ms': 2., 'report_ms': 5.},
             'activation': {'phases': {}}, 'task_state': 'UNVERIFIED',
-            'report_coverage': {'source_fingerprint': 'b' * 64}}
+            'report_coverage': {'source_fingerprint': 'b' * 16}}
 
 
 def test_every_attempt_retained_including_failure(monkeypatch, tmp_path):
@@ -44,6 +44,7 @@ def test_retained_callbacks_are_not_multiplied_and_stop_is_qualified(monkeypatch
     value['activation']['phases'] = {'Stop': {'samples_ms': [1., 9.]}, 'Secret': {'samples_ms': [2.]}}
     monkeypatch.setattr(performance.health, 'inspect', lambda *a, **kw: value)
     result = performance.measure('claude', tmp_path)
+    assert result['state'] == 'complete'
     assert result['retained_callbacks']['Stop']['samples'] == 2
     assert 'Secret' not in str(result)
     assert any('verification' in limit and 'Stop' in limit for limit in result['limits'])

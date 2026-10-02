@@ -66,14 +66,14 @@ def run_case(host, arm, root, executable, source=None, timeout=240, replicate=0)
                      timeout=timeout, shell=False, env=env)
         record['elapsed_ms'] = round((time.monotonic() - begin) * 1000, 3)
         record['exit_code'] = result.returncode
-        record['observation'] = subscription.observation(host, result.stdout)
+        record['observation'] = subscription.observation(host, result.stdout, result.stderr)
         record['contract_unchanged'] = (challenge.contract(root) and sealed == _seal(root, host, arm) and
                                         challenge.identity() == record['identity'] and
                                         fingerprint(source) == record['runtime_fingerprint'] and
                                         record_path.read_bytes() == initial)
         if not record['contract_unchanged']:
             record['state'] = 'invalid'
-        elif result.returncode or not record['observation']['completed'] or (
+        elif result.returncode or not record['observation']['completed'] or record['observation']['failure'] == 'blocked_by_policy' or (
                 host == 'claude' and record['observation']['models'] != [subscription.MODELS[host]]):
             record['state'] = 'host_failed'
         else:

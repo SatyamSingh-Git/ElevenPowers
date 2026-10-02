@@ -37,5 +37,6 @@ def test_performance_cli_is_read_only_on_real_project(tmp_path):
     assert result.returncode == 0, result.stderr
     value = json.loads(result.stdout)
     assert value['attempted'] == 2 and len(value['samples']) == 2
+    assert value['state'] == 'complete'
     assert value['samples'][0]['source_fingerprint']
     assert snapshot() == before

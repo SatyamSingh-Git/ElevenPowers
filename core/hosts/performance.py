@@ -42,7 +42,7 @@ def measure(host, root, repeats=3, timeout=60):
                           coverage={k: value['coverage'][k] for k in ('complete', 'files', 'bytes')},
                           source_fingerprint=value.get('report_coverage', {}).get('source_fingerprint', ''),
                           timings={k: value['timings'].get(k) for k in ('health_read_ms', 'source_snapshot_ms', 'report_ms')})
-            if (not re.fullmatch('[a-f0-9]{64}', sample['source_fingerprint']) or
+            if (not re.fullmatch('[a-f0-9]{16}', sample['source_fingerprint']) or
                     any(not _finite(v) for v in sample['timings'].values()) or
                     any(type(sample['coverage'][k]) is not int or sample['coverage'][k] < 0 for k in ('files', 'bytes'))):
                 sample['state'] = 'incomplete'

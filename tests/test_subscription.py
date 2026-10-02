@@ -12,6 +12,9 @@ def test_exact_models_and_equal_effort_no_bypass(tmp_path):
         assert model in args and 'medium' in str(args)
         assert not any('bypass' in arg or arg == '--bare' for arg in args)
         assert 'PROMPT' in args
+    assert '--approve-for-me' in subscription.command('codex', 'host.exe', tmp_path, 'PROMPT')
+    assert '--sandbox' not in subscription.command('codex', 'host.exe', tmp_path, 'PROMPT')
+    assert 'project,local' in subscription.command('claude', 'host.exe', tmp_path, 'PROMPT')
 
 
 def test_subscription_auth_and_api_refusal(monkeypatch, tmp_path):
@@ -37,3 +40,9 @@ def test_usage_unavailable_and_error_not_completion():
     assert value['completed'] and value['usage']['input_tokens'] == 3
     assert 'private' not in str(value)
     assert not subscription.observation('claude', '{"is_error": true, "result": "private"}')['completed']
+
+
+def test_observed_quota_and_policy_failures_remain_explicit():
+    quota = '{"is_error":true,"api_error_status":429,"result":"weekly limit","modelUsage":{}}'
+    assert subscription.observation('claude', quota)['failure'] == 'quota_exhausted'
+    assert subscription.observation('codex', '', 'rejected: blocked by policy')['failure'] == 'blocked_by_policy'

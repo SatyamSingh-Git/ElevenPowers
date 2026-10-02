@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "kind": "health_performance",
+  "host": "codex",
+  "generated_at": "2026-10-02T07:10:55.503252+00:00",
+  "runtime_fingerprint": "174ef07a3a3de59cea098beecb8165a8af357b60703ffeee4632587288649fa3",
+  "python": "3.13.2",
+  "os": "Windows",
+  "os_release": "11",
+  "warmup": "none; every attempted read retained",
+  "requested": 3,
+  "attempted": 3,
+  "budget_seconds": 90,
+  "elapsed_ms": 702.708,
+  "state": "complete",
+  "inputs_changed": false,
+  "samples": [
+    {
+      "state": "complete",
+      "elapsed_ms": 139.088,
+      "health_state": "waiting",
+      "task_state": "UNVERIFIED",
+      "coverage": {
+        "complete": true,
+        "files": 3,
+        "bytes": 4008
+      },
+      "source_fingerprint": "cb31905728b3a517",
+      "timings": {
+        "health_read_ms": 138.508,
+        "source_snapshot_ms": 84.745,
+        "report_ms": 124.466
+      }
+    },
+    {
+      "state": "complete",
+      "elapsed_ms": 139.099,
+      "health_state": "waiting",
+      "task_state": "UNVERIFIED",
+      "coverage": {
+        "complete": true,
+        "files": 3,
+        "bytes": 4008
+      },
+      "source_fingerprint": "cb31905728b3a517",
+      "timings": {
+        "health_read_ms": 138.491,
+        "source_snapshot_ms": 82.822,
+        "report_ms": 125.116
+      }
+    },
+    {
+      "state": "complete",
+      "elapsed_ms": 134.323,
+      "health_state": "waiting",
+      "task_state": "UNVERIFIED",
+      "coverage": {
+        "complete": true,
+        "files": 3,
+        "bytes": 4008
+      },
+      "source_fingerprint": "cb31905728b3a517",
+      "timings": {
+        "health_read_ms": 133.846,
+        "source_snapshot_ms": 83.81,
+        "report_ms": 122.233
+      }
+    }
+  ],
+  "retained_callbacks": {},
+  "retained_command_distribution": {
+    "samples": 0,
+    "median_ms": null,
+    "p95_ms": null
+  },
+  "read_distribution": {
+    "samples": 3,
+    "median_ms": 139.088,
+    "p95_ms": 139.099
+  },
+  "limits": [
+    "Descriptive local sample, not universal latency, model speedup or improved coding evidence.",
+    "No checks, host or engine are launched; an in-flight read may exceed the cooperative deadline.",
+    "Callback samples exclude host launch and final registry write; Stop can include verification time.",
+    "Retained callback and command samples describe prior execution, separately from current reads."
+  ]
+}
