@@ -121,6 +121,51 @@ def _protocol(protocol):
         raise ValueError('malformed recorded pilot protocol') from exc
 
 
+def _private_fields(record, required):
+    if set(record) - required - {'error'}:
+        raise ValueError('unknown pilot record fields')
+    if 'error' in record and record['error'] not in ('OSError', 'ValueError', 'FileNotFoundError',
+            'PermissionError', 'SubprocessError', 'OutputLimitExceeded'):
+        raise ValueError('unsupported pilot error metadata')
+    try:
+        date = datetime.fromisoformat(record['generated_at'])
+        if date.tzinfo is None:
+            raise ValueError('pilot time must include timezone')
+        observation = record['observation']
+        if observation is not None:
+            if (not isinstance(observation, dict) or set(observation) - {'completed', 'usage', 'models', 'completion_language', 'failure'} or
+                    type(observation.get('completed')) is not bool or type(observation.get('completion_language')) is not bool or
+                    not isinstance(observation.get('models'), list) or len(observation['models']) > 4 or
+                    any(model not in subscription.MODELS.values() for model in observation['models']) or
+                    observation.get('failure', 'unavailable') not in ('unavailable', 'quota_exhausted', 'blocked_by_policy')):
+                raise ValueError('unsupported pilot observation')
+            usage = observation.get('usage')
+            if usage is not None and (not isinstance(usage, dict) or set(usage) - {
+                    'input_tokens', 'output_tokens', 'cached_input_tokens', 'cache_read_input_tokens',
+                    'cache_creation_input_tokens', 'reasoning_output_tokens'} or
+                    any(type(n) is not int or not 0 <= n <= 1_000_000_000 for n in usage.values())):
+                raise ValueError('unsupported pilot usage metadata')
+        grade = record['grade']
+        if grade is not None and (not isinstance(grade, dict) or set(grade) != {'state', 'passed', 'total', 'regressions', 'checks'}):
+            raise ValueError('unknown grade fields')
+        mechanisms = record['mechanisms']
+        if not isinstance(mechanisms, dict) or set(mechanisms) - {'pipeline_health', 'task_verification', 'callbacks', 'receipt_outcomes', 'coverage_complete'}:
+            raise ValueError('unknown mechanism fields')
+        if mechanisms:
+            if (mechanisms.get('pipeline_health') not in ('waiting', 'attention', 'incomplete', 'observed') or
+                    mechanisms.get('task_verification') not in ('VERIFIED', 'UNVERIFIED', 'STALE', 'CONTRADICTED') or
+                    type(mechanisms.get('coverage_complete')) is not bool):
+                raise ValueError('invalid mechanism state')
+            for key, names in [('callbacks', ('SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'Stop')),
+                               ('receipt_outcomes', ('pass', 'fail'))]:
+                counts = mechanisms.get(key)
+                if (not isinstance(counts, dict) or set(counts) != set(names) or
+                        any(type(n) is not int or not 0 <= n <= 1_000_000_000 for n in counts.values())):
+                    raise ValueError('invalid mechanism counts')
+    except (TypeError, AttributeError, KeyError) as exc:
+        raise ValueError('malformed pilot metadata') from exc
+
+
 def summarize(records, protocol=None):
     if not isinstance(records, list) or len(records) > 8:
         raise ValueError('pilot accepts at most eight records')
@@ -142,6 +187,7 @@ def summarize(records, protocol=None):
                 type(record.get('budget_seconds')) not in (int, float) or not math.isfinite(record['budget_seconds']) or
                 not 0 < record['budget_seconds'] <= 240 or type(record.get('contract_unchanged')) is not bool):
             raise ValueError('invalid or conflicting pilot record')
+        _private_fields(record, required)
         if protocol and (record['runtime_fingerprint'] != protocol['runtime_fingerprint'] or
                          record['budget_seconds'] != protocol['seconds_per_run']):
             raise ValueError('record conflicts with recorded pilot protocol')
@@ -160,7 +206,7 @@ def summarize(records, protocol=None):
                     sum(not grade['checks'][k] for k in ('view_total', 'view_statement', 'basic_transfer', 'empty')) or
                     record['contract_unchanged'] is not True or type(record['exit_code']) is not int or record['exit_code'] != 0 or
                     not isinstance(observation, dict) or observation.get('completed') is not True or
-                    observation.get('failure') == 'blocked_by_policy' or record['elapsed_ms'] is None or
+                    observation.get('failure') in ('blocked_by_policy', 'quota_exhausted') or record['elapsed_ms'] is None or
                     (record['host'] == 'claude' and observation.get('models') != [subscription.MODELS['claude']])):
                 raise ValueError('unsupported graded pilot result')
             expected = 'resolved' if grade['passed'] == 16 else 'regressed' if grade['regressions'] else 'unresolved'
@@ -218,13 +264,36 @@ def pilot(directory, executables, seconds=240):
 def main():
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--directory', type=Path, required=True)
-    parser.add_argument('--codex', required=True)
-    parser.add_argument('--claude', required=True)
-    parser.add_argument('--seconds', type=float, default=240)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--directory', type=Path)
+    mode.add_argument('--inspect', type=Path, help='read a saved pilot report without executing candidates or models')
+    parser.add_argument('--protocol', type=Path)
+    parser.add_argument('--codex')
+    parser.add_argument('--claude')
+    parser.add_argument('--seconds', type=float)
+    parser.add_argument('--output', type=Path)
+    parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
     try:
-        value = pilot(args.directory, {'codex': args.codex, 'claude': args.claude}, args.seconds)
+        if args.inspect:
+            from core.hosts.diagnostics import read_json
+            if not args.protocol or args.codex or args.claude or args.seconds is not None:
+                raise ValueError('--inspect requires --protocol and accepts no model launch options')
+            if args.force and not args.output:
+                raise ValueError('--force requires --output')
+            saved = read_json(args.inspect)
+            if not isinstance(saved, dict) or not isinstance(saved.get('runs'), list):
+                raise ValueError('missing saved pilot runs')
+            value = summarize(saved['runs'], protocol=read_json(args.protocol))
+            rendered = json.dumps(value, indent=2, allow_nan=False) + '\n'
+            if args.output:
+                write(args.output, rendered, force=args.force)
+            else:
+                print(rendered, end='')
+            return 0
+        if not args.codex or not args.claude or args.protocol or args.output or args.force:
+            raise ValueError('--directory requires --codex/--claude and accepts no archive options')
+        value = pilot(args.directory, {'codex': args.codex, 'claude': args.claude}, args.seconds if args.seconds is not None else 240)
         return 0 if value['state'] == 'complete' else 1
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
