@@ -163,6 +163,8 @@ def _configuration_seal(root,candidate):
     # Production edits are expected after launch, but host config remains frozen.
     paths=[root/f'{candidate.name}-contract.json',candidate/'.claude/settings.local.json',candidate/'.claude/settings.json',
            candidate/'.elevenpowers/config.json',candidate/'CLAUDE.md',candidate/'CLAUDE.local.md',candidate/'AGENTS.md',candidate/'AGENTS.override.md']
+    for folder in (candidate/'.claude',candidate/'.elevenpowers'):
+        paths += [folder/name for name in ('settings.json','CLAUDE.md','CLAUDE.local.md','config.json') if folder/name not in paths]
     values={}
     for path in paths:
         if any(p.is_symlink() for p in (path,*path.parents)):
@@ -171,18 +173,49 @@ def _configuration_seal(root,candidate):
     return hashlib.sha256(json.dumps(values,sort_keys=True).encode()).hexdigest()
 
 
-def run_batch(root, executable, native_project):
+def _controller_running(pid):
+    if type(pid) is not int or pid<=0:return False
+    if os.name=='nt':
+        import ctypes
+        from ctypes import wintypes
+        lib=ctypes.WinDLL('kernel32',use_last_error=True)
+        lib.OpenProcess.argtypes=[wintypes.DWORD,wintypes.BOOL,wintypes.DWORD];lib.OpenProcess.restype=wintypes.HANDLE
+        lib.GetExitCodeProcess.argtypes=[wintypes.HANDLE,ctypes.POINTER(wintypes.DWORD)];lib.GetExitCodeProcess.restype=wintypes.BOOL
+        lib.CloseHandle.argtypes=[wintypes.HANDLE];lib.CloseHandle.restype=wintypes.BOOL
+        handle=lib.OpenProcess(0x1000,False,pid)
+        if not handle:return ctypes.get_last_error()!=87
+        try:
+            code=wintypes.DWORD()
+            return not lib.GetExitCodeProcess(handle,ctypes.byref(code)) or code.value==259
+        finally:lib.CloseHandle(handle)
+    try:os.kill(pid,0);return True
+    except ProcessLookupError:return False
+    except PermissionError:return True
+
+
+def run_batch(root, executable, native_project, *,finish_unstarted=False):
     from core import health
     root=Path(root).resolve(strict=True)
-    if (root/'attempt.json').exists() or list(root.glob('*-result.json')):
+    attempted=(root/'attempt.json').exists() or bool(list(root.glob('*-result.json')))
+    if attempted and not finish_unstarted:
         raise ValueError('batch already attempted; preserve all attempts')
+    if finish_unstarted:
+        if not attempted or (root/'continuation.json').exists():raise ValueError('one interrupted hard batch required')
+        prior=json.loads((root/'attempt.json').read_text())
+        if prior.get('state')!='running':raise ValueError('only interrupted unfinished batches may continue')
+        if _controller_running(prior.get('controller_pid')):raise ValueError('prior controller is still active')
     attempt={'schema_version':1,'state':'running','phase':'protocol','started_at':datetime.now(timezone.utc).isoformat()}
-    write(root/'attempt.json',json.dumps(attempt,indent=2))
+    journal=root/('continuation.json' if finish_unstarted else 'attempt.json')
+    write(journal,json.dumps(attempt,indent=2))
     try:
         protocol=json.loads((root/'protocol.json').read_text())
         from . import hard_cases
         suite=hard_cases if protocol.get('suite')==hard_cases.SUITE else cases
+        if finish_unstarted and suite is cases:raise ValueError('original comparison cannot resume')
         repeats=2 if suite is cases else 1
+        execution_harness=_harness(suite)
+        if finish_unstarted:
+            attempt.update(prior_attempt_preserved=True,recorded_harness=protocol.get('harness_fingerprint'),execution_harness=execution_harness,controller_pid=os.getpid())
         fields={'schema_version','host','model','effort','seconds_per_run','schedule','cases','runtime_fingerprint','harness_fingerprint','prepared_at','candidate_seals'}
         if suite is not cases:fields|={'suite','repeats'}
         if (set(protocol)!=fields or
@@ -190,13 +223,14 @@ def run_batch(root, executable, native_project):
             protocol.get('host')!='claude' or protocol.get('model') not in (subscription.SUPPORTED_MODELS['claude'] if suite is not cases else (subscription.MODELS['claude'],)) or protocol.get('effort')!='medium' or
             (suite is not cases and protocol.get('repeats')!=1) or
             type(protocol.get('seconds_per_run')) is not int or not 1<=protocol['seconds_per_run']<=(240 if suite is cases else 480) or
-            protocol.get('schedule')!=[list(x) for x in schedule(suite=suite,repeats=repeats)] or protocol.get('harness_fingerprint')!=_harness(suite) or protocol.get('cases')!=[suite.identity(c) for c in suite.CASES] or protocol.get('runtime_fingerprint')!=fingerprint()):
+            protocol.get('schedule')!=[list(x) for x in schedule(suite=suite,repeats=repeats)] or (not finish_unstarted and protocol.get('harness_fingerprint')!=execution_harness) or protocol.get('cases')!=[suite.identity(c) for c in suite.CASES] or protocol.get('runtime_fingerprint')!=fingerprint()):
             raise ValueError('frozen protocol changed')
         attempt['phase']='prepared_inputs'
         expected={f'{c}-{n}-{a}' for c,n,a in schedule(suite=suite,repeats=repeats)}
         if not isinstance(protocol['candidate_seals'],dict) or set(protocol['candidate_seals'])!=expected:
             raise ValueError('prepared candidate seals unavailable')
         for name in expected:
+            if finish_unstarted and (root/f'{name}-result.json').exists():continue
             if _seal(root,root/name,suite=suite)!=protocol['candidate_seals'][name]:
                 raise ValueError('prepared candidate changed')
         attempt['phase']='native_health'
@@ -207,12 +241,24 @@ def run_batch(root, executable, native_project):
             raise ValueError('subscription authentication unavailable')
     except (ValueError,OSError,KeyError,TypeError,subprocess.SubprocessError) as error:
         attempt.update(state='setup_failed',error=type(error).__name__)
-        write(root/'attempt.json',json.dumps(attempt,indent=2),force=True)
+        write(journal,json.dumps(attempt,indent=2),force=True)
         raise ValueError('batch setup failed: '+attempt['phase']+'; '+str(error)) from error
+    if suite is not cases:
+        attempt.update(controller_pid=os.getpid());write(journal,json.dumps(attempt,indent=2),force=True)
     records=[]
     env={**os.environ,'PATH':str(Path(sys.executable).parent)+os.pathsep+os.environ.get('PATH','')}
     for case,n,arm in schedule(suite=suite,repeats=repeats):
         candidate=root/f'{case}-{n}-{arm}'; result_path=root/f'{candidate.name}-result.json'
+        if finish_unstarted and result_path.exists():
+            previous=json.loads(result_path.read_text())
+            if previous.get('state')=='running':
+                snap=proposals.snapshot(candidate,suite.names(case))
+                previous.update(state='interrupted',error='ControllerInterrupted',final_snapshot=snap,
+                                final_grade=grade_snapshot(case,snap,suite=suite))
+                write(result_path,json.dumps(previous,indent=2,allow_nan=False),force=True)
+            records.append(previous)
+            if (previous.get('observation') or {}).get('failure')=='quota_exhausted':break
+            continue
         record={'schema_version':1,'case':case,'replicate':n,'arm':arm,'state':'running',
                 'initial_grade':_grade(case,candidate,suite),'final_grade':None,'proposals':[],
                 'model':protocol['model'],'effort':'medium','elapsed_ms':None,'exit_code':None,'observation':None,'callbacks':{}}
@@ -227,7 +273,7 @@ def run_batch(root, executable, native_project):
             obs=record['observation']
             if done.returncode or not obs['completed'] or obs['models']!=[protocol['model']]:
                 record['state']='host_failed'
-            elif not suite.contract(case,candidate) or sealed!=_configuration_seal(root,candidate) or _harness(suite)!=protocol['harness_fingerprint'] or fingerprint()!=protocol['runtime_fingerprint'] or json.loads((root/'protocol.json').read_text())!=protocol:
+            elif not suite.contract(case,candidate) or sealed!=_configuration_seal(root,candidate) or _harness(suite)!=execution_harness or fingerprint()!=protocol['runtime_fingerprint'] or json.loads((root/'protocol.json').read_text())!=protocol:
                 record['state']='invalid'
             else:
                 config=json.loads((root/f'{candidate.name}-contract.json').read_text())
@@ -261,7 +307,7 @@ def run_batch(root, executable, native_project):
             break
     value=summarize(records,suite=suite,repeats=repeats); write(root/'summary.json',json.dumps(value,indent=2))
     attempt.update(state='finished',phase='coding_calls',runs=len(records))
-    write(root/'attempt.json',json.dumps(attempt,indent=2),force=True)
+    write(journal,json.dumps(attempt,indent=2),force=True)
     return value
 
 
@@ -271,10 +317,11 @@ def main():
     prep=commands.add_parser('prepare'); prep.add_argument('directory'); prep.add_argument('--seconds',type=int,default=240)
     prep.add_argument('--suite',choices=('original','hard'),default='original');prep.add_argument('--model',choices=subscription.SUPPORTED_MODELS['claude'])
     execute=commands.add_parser('run'); execute.add_argument('directory'); execute.add_argument('--executable',required=True); execute.add_argument('--native-project',required=True)
+    execute.add_argument('--finish-unstarted',action='store_true',help='retain interrupted hard slots; launch only never-started slots after controller exit')
     args=parser.parse_args()
     try:
         from . import hard_cases
-        value=prepare_batch(args.directory,seconds=args.seconds,suite=hard_cases if args.suite=='hard' else cases,repeats=1 if args.suite=='hard' else 2,model=args.model) if args.operation=='prepare' else run_batch(args.directory,args.executable,args.native_project)
+        value=prepare_batch(args.directory,seconds=args.seconds,suite=hard_cases if args.suite=='hard' else cases,repeats=1 if args.suite=='hard' else 2,model=args.model) if args.operation=='prepare' else run_batch(args.directory,args.executable,args.native_project,finish_unstarted=args.finish_unstarted)
         print(json.dumps(value,indent=2))
         return 0
     except (ValueError,OSError) as error:
