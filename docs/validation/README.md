@@ -2,6 +2,9 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-02 native validation](2026-10-02-native-validation.md): runtime/version qualification, ten explicit cells, actual readonly latency samples and all eight inconclusive subscription coding runs.
+- [2026-10-02 native delivery checks](2026-10-02-native-validation-delivery.md): final local suite, audit, grader and rendered architecture; five reproduced review corrections, exact-head CI gate and remaining acceptance limits.
+
 - [2026-10-01 project health](2026-10-01-project-health.md): fresh staged health,
   bounded phase/receipt timings, real Python/Node producers through all five
   launchers, strict disposable acceptance, five reproduced review corrections

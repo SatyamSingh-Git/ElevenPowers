@@ -94,8 +94,9 @@ comparison with `python -m eval.paired --directory NEW_DIR --codex CODEX_EXE
 budgets are recorded before execution. A new protocol must preserve these eight
 inconclusive results and report neutral or worse outcomes as well as improvements.
 
-Final whole-branch verification and review are recorded separately at the
-delivery boundary; the observations here remain dated independently.
+Final whole-branch verification and review are recorded in the
+[delivery checks](2026-10-02-native-validation-delivery.md); the observations
+here remain dated independently.
 
 
 ## Recorded-protocol reproduction

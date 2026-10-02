@@ -45,6 +45,26 @@ Normal `ep_ready` is read-only; `--check` opts into a nonzero result for an
 unobserved/incomplete pipeline. Paid evaluation still requires cost approval.
 See [dated results and qualifications](validation/2026-10-01-project-health.md).
 
+## Versioned native validation and subscription controls
+
+```sh
+python -m pytest tests/test_native_validation.py tests/test_acceptance_provenance.py tests/test_host_probes.py tests/test_validation_capture.py tests/test_validation_matrix.py tests/test_validation_cli.py tests/test_performance.py tests/test_challenge.py tests/test_paired.py tests/test_pilot_archive.py tests/test_subscription.py -q
+python -S -c "import core.hosts.validation; import core.hosts.performance; import eval.paired"
+```
+
+These controls use real version-producing children, bounded source identities,
+read-only project samples, normal candidate package imports, forged grade attempts,
+typed behavior and private archive metadata. They launch no model. The existing
+four-cell CI also checks these new imports with site packages disabled.
+
+Installed acceptance and the explicit subscription pilot consume host capacity
+only when the operator runs them. Keep preparation, callback delivery and coding
+outcomes separate. The original October 2 pilot remains inconclusive, with its
+original protocol preserved. Use `eval.paired --inspect ... --protocol ...` for
+read-only aggregate reproduction; start a new directory for a new comparison.
+See [observations](validation/2026-10-02-native-validation.md) and
+[commands](../the-guide/commands.md).
+
 ## Windows PowerShell
 
 ```powershell
