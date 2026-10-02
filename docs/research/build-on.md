@@ -1,5 +1,20 @@
 # What we build on: prior art for each v0.8 component
 
+**Hard interacting tasks, 2026-10-02.** Reuse the MIT-licensed sealed completion
+runner, passive observer and independent worker pattern. Python standard-library
+SQLite, asyncio, JSON and base64 provide the task primitives; this delivery adds
+four authored contracts, literal external correctness traces and every-attempt
+archives. SQLite documents its [transaction boundaries](https://www.sqlite.org/lang_transaction.html),
+and Python documents [cancellation and shielding](https://docs.python.org/3/library/asyncio-task.html)
+and [incremental decoding](https://docs.python.org/3/library/codecs.html). The task
+references are original fixture code, not vendored queue/cache products. These
+synthetic scenarios do not substitute for real-project issue sampling. A free
+separate audit covers visible tests and outstanding invalidated fetches after
+review reproduced two frozen-grader blind spots; historical scores stay intact.
+Interrupted controllers retain their journals; explicit continuation may launch
+only never-started hard slots, with a new execution identity and no favorable retry.
+See the [frozen comparison design](../design/hard-task-comparison.md).
+
 **Controlled completion measurement, 2026-10-02.** Reuse this repository's
 MIT-licensed subscription command builder, contained evaluator and guide hooks,
 plus the earlier checkpoint concept. Add a bounded frozen-file observer that

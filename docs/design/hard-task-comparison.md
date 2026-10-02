@@ -42,3 +42,27 @@ cannot establish a population effect, throughput gain or statistical significanc
 Freeze task, evaluator, runtime, configuration and prepared-source identities
 before execution. Persist setup attempts, quota errors, incomplete runs and
 neutral/worse outcomes. Retain snapshots for independent regrading without models.
+
+## Review and interrupted execution
+
+The fresh review reproduced three Important issues. Final configuration sealing
+now covers nested instruction files already frozen at preparation. Two hidden
+grader blind spots are handled by an explicitly separate post-run audit: execute
+the preserved/added visible tests, and close a cache while invalidated old and
+current generations are still pending. The original 94-group evaluator remains
+unchanged; its `regressions` field means only the first two basic hidden guards,
+not preservation of every visible or added test. Audit findings never relabel the
+historical grade or qualify an incomplete native call.
+
+The initial controller and simultaneous full-suite process exited abruptly after
+two queue results and during the async tool slot. No destructive candidate command
+or continuing comparison-owned model process was established. The cause is unknown.
+Retain the original running journal and interrupted code; do not rerun that slot.
+An explicit `--finish-unstarted` continuation may launch only the five unstarted
+slots under unchanged tasks, scenarios, runtime, model, effort, schedule and time
+limits. It preserves the original producer identity and records the continuation
+executor separately. A live recorded controller blocks recovery. Legacy journals
+without a PID require the operator to establish controller exit first. The original
+two-case protocol cannot resume. Continuation is one-shot and never retries an
+attempted slot. The overall comparison remains inconclusive with an interrupted
+slot even when remaining paired outcomes are observable.

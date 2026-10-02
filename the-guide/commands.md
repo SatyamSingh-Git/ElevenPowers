@@ -356,6 +356,56 @@ process separation does not create an OS closed-book boundary.
 
 ## Controlled completion comparison
 
+The harder suite is explicit and uses four authored interacting tasks: SQLite
+lease ownership, async cache lifecycle races, incremental build impact, and
+resumable transactional UTF-8 processing. It runs one baseline/tool pair per
+task, alternating arm order. The 94 controller-owned groups are independent of
+visible project tests; the grader is checked against correct references and 16
+plausibly faulty controls before any model call. Hidden checks never supply agent
+feedback. This is an exploratory comparison, not a population benchmark.
+
+```bash
+python -m eval.benefit prepare NEW_DIR --suite hard --model claude-sonnet-5 --seconds 480
+python -m eval.benefit run NEW_DIR --executable CLAUDE_PATH --native-project OBSERVED_NATIVE_DIR
+python -m eval.hard_archive ARCHIVE.json --regrade --checksums CHECKSUMS.json
+```
+
+Preparation creates eight new candidates and launches no model. Execution requires
+subscription authentication and an already observed native Claude pipeline under
+the same account. Sonnet 5 medium is selected explicitly; ordinary defaults remain
+Sonnet 5.5 medium for the original protocol. Budgets stop at eight minutes per
+hard-task call. Attempted slots cannot be retried in place. Failed calls,
+quota errors and incomplete observations stay visible. Regrading executes saved
+candidate source in disposable directories but makes no model call; ordinary
+archive inspection executes no candidate. Source archives are local diagnostic
+evidence, not ordinary product exports or an OS security boundary.
+
+Seeded tests, task text and configuration are frozen. Agents may edit only the two
+named production files and one named regression-test file. Unexpected source files
+invalidate the admitted task contract. A paired check advantage is separate from a
+repair linked to a real plugin action, and receipt refresh remains evidence quality.
+Elapsed times include the contained coding run, hook work and controller grading;
+they are not pure model latency. See the [frozen design](../docs/design/hard-task-comparison.md).
+
+After independently establishing that a hard comparison controller has exited,
+`run ... --finish-unstarted` preserves its original journal, retains any started
+but unfinished slot as interrupted, and launches only slots with no prior result
+journal. A continuation journal records its executor identity. It refuses a live
+recorded controller and a second continuation; original protocols cannot resume.
+Legacy journals without a recorded PID require operator confirmation of exit.
+Never use this to repeat an unfavorable or interrupted model call.
+
+```bash
+python -m eval.hard_audit ARCHIVE.json --output NEW_AUDIT.json
+```
+
+This explicit free audit runs saved candidates' visible tests and supplementary
+async closure checks. It is separately versioned because review found these gaps
+after the original scenario grader was frozen. Original scores stay unchanged;
+the frozen `regressions` field counts only two basic hidden guards per task, not
+all seeded or added tests. A passing saved-code audit cannot qualify an interrupted
+native session. Neither regrading nor this audit calls a model.
+
 This explicit evaluation workflow is separate from plugin installation. It
 currently qualifies Claude's exit-2 completion decision, using subscription
 `claude-sonnet-5-5` medium. It requires an observed native pipeline before calls,
