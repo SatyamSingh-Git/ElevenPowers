@@ -6,6 +6,7 @@ import re
 from core.process import run
 
 MODELS = {'codex': 'gpt-6.1-sol', 'claude': 'claude-sonnet-5-5'}
+SUPPORTED_MODELS = {'codex': ('gpt-6.1-sol',), 'claude': ('claude-sonnet-5-5','claude-sonnet-5')}
 API_ENV = ('OPENAI_API_KEY', 'CODEX_API_KEY', 'ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN',
            'OPENAI_BASE_URL', 'ANTHROPIC_BASE_URL', 'CLAUDE_CODE_USE_BEDROCK',
            'CLAUDE_CODE_USE_VERTEX', 'CLAUDE_CODE_USE_FOUNDRY')
@@ -29,14 +30,17 @@ def auth(host, executable, root):
         return False
 
 
-def command(host, executable, root, prompt):
+def command(host, executable, root, prompt, *, model=None):
+    selected=model or MODELS.get(host)
+    if selected not in SUPPORTED_MODELS.get(host,()):
+        raise ValueError('unsupported subscription model')
     if host == 'codex':
-        return [executable, 'exec', '--ignore-user-config', '--model', MODELS[host],
+        return [executable, 'exec', '--ignore-user-config', '--model', selected,
                 '-c', 'model_reasoning_effort="medium"',
                 '--approve-for-me', '--ephemeral', '--json', '-C', str(root), prompt]
     if host == 'claude':
         # Prompt precedes variadic tool flags; --bare skips subscription OAuth.
-        return [executable, '-p', prompt, '--model', MODELS[host], '--effort', 'medium',
+        return [executable, '-p', prompt, '--model', selected, '--effort', 'medium',
                 '--output-format', 'json', '--no-session-persistence', '--no-chrome',
                 '--setting-sources', 'project,local', '--permission-mode', 'acceptEdits',
                 '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}',
