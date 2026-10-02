@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "kind": "native_acceptance",
+  "host": "claude",
+  "language": "python",
+  "state": "waiting",
+  "generated_at": "2026-10-02T09:39:17.501275+00:00",
+  "runtime_fingerprint": "05e194272b55bd041edd17ad0fd41f4d2e45b7546b34d1dc8d28e15442c0af2b",
+  "version": {
+    "state": "observed",
+    "version": "2.1.287",
+    "source": "installed_probe"
+  },
+  "checks": {
+    "test_unchanged": true,
+    "runtime_identity": true,
+    "project_configuration": true,
+    "native_configuration": true,
+    "source_changed": true,
+    "host_version": true,
+    "generation": true,
+    "command": true,
+    "startup_runtime": true,
+    "startup_after_preparation": true,
+    "completion_after_commands": true,
+    "fresh_pipeline": true
+  },
+  "outcomes": {
+    "pass": true,
+    "fail": true,
+    "incomplete": false
+  },
+  "limits": [
+    "Unsigned local exercise observations, not host authentication or production patch certification.",
+    "Saved captures describe their creation time; rerun after runtime or installed-version changes."
+  ]
+}

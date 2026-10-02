@@ -1,0 +1,17 @@
+{
+  "exit_code": 0,
+  "observation": {
+    "completed": true,
+    "usage": {
+      "input_tokens": 26,
+      "cache_creation_input_tokens": 12077,
+      "cache_read_input_tokens": 171888,
+      "output_tokens": 2608
+    },
+    "models": [
+      "claude-sonnet-5-5"
+    ],
+    "completion_language": false,
+    "failure": "unavailable"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "acceptance-exact-observation.json": "5c602f639aeba80bef368ec967779ccac7ffcd5b0ca2adc2d735179469116720",
+  "acceptance-observation.json": "8059dca1d5937d7f3c956f1c13e8d64247aa66e0a5a4b28d0e79d8d9fcd7c62b",
+  "completion-archive.json": "4f47bf243fb034b841840d206ffb2a7b9555b93c2480a3e02dd24615556805c7",
+  "native-claude-exact.json": "eb4dabc083e0b6cfa83062f5f0a685c5ac9c82c57d7498b115eebfdcb6a11a2f",
+  "native-claude.json": "f5c6ee372e2ead26810d2342561a295905c4a36647744b2a596bb98be93b774a",
+  "qualified-summary.json": "7884cdb0e2bc74ffe925c61b57bd466f36954ca5ffe16ebad8ed0be01ccfaff8",
+  "recorded-summary.json": "2d072f39c6e39b4334014ce2e05542734f7551ecaebbc29ebf09e5ebb354b706"
+}

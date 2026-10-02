@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "state": "qualified",
+  "runs": 8,
+  "valid_runs": 8,
+  "repairs_after_block": [],
+  "verification_refreshes": [
+    [
+      "correct-control",
+      0
+    ],
+    [
+      "atomic-repair",
+      1
+    ],
+    [
+      "correct-control",
+      1
+    ]
+  ],
+  "benefit_observed": false,
+  "coding_improvement_observed": false,
+  "receipt_refresh_observed": true,
+  "limits": [
+    "Eight original local runs cannot establish a population effect or speedup.",
+    "Native observations and local hash chains are not authentication or an OS security boundary.",
+    "A refreshed receipt is additional verification evidence, not necessarily a better patch.",
+    "Missing means no exact-command receipt; wrapped baseline tests may still have run."
+  ]
+}

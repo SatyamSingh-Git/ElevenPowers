@@ -64,10 +64,13 @@ def summarize(records):
                 refreshes.append([r['case'],r['replicate']])
     return {'schema_version':1,'state':'incomplete' if not complete else 'qualified' if len(valid)==8 else 'inconclusive',
             'runs':len(records),'valid_runs':len(valid),'repairs_after_block':repairs,
-            'verification_refreshes':refreshes,'benefit_observed':bool(repairs or refreshes),
+            'verification_refreshes':refreshes,'benefit_observed':bool(complete and repairs),
+            'coding_improvement_observed':bool(complete and repairs),
+            'receipt_refresh_observed':bool(complete and refreshes),
             'limits':['Eight original local runs cannot establish a population effect or speedup.',
                       'Native observations and local hash chains are not authentication or an OS security boundary.',
-                      'A refreshed check is verification benefit, not necessarily a better patch.']}
+                      'A refreshed receipt is additional verification evidence, not necessarily a better patch.',
+                      'Missing means no exact-command receipt; wrapped baseline tests may still have run.']}
 
 
 def prepare_batch(destination, host='claude', seconds=240):
@@ -96,7 +99,6 @@ def prepare_batch(destination, host='claude', seconds=240):
                   'plugin':[sys.executable,str(source/'plugin/bin/ep_hook.py')] if arm=='tool' else [],
                   'history':str(root/f'{candidate.name}-proposals.jsonl'),'command':'python visible.py'}
         _write(root/f'{candidate.name}-contract.json',manifest)
-        command=invocation([sys.executable,str(source/'eval/proposals.py'),str(root/f'{candidate.name}-contract.json')])
         events=('SessionStart','UserPromptSubmit','PreToolUse','PostToolUse','PostToolUseFailure','Stop')
         hooks={event:[{'hooks':[{'type':'command','command':invocation([sys.executable,str(source/'eval/proposals.py'),str(root/f'{candidate.name}-contract.json'),event]),'timeout':600 if event=='Stop' else 120}]}] for event in events}
         _write(candidate/'.claude/settings.local.json',{'hooks':hooks})
@@ -118,7 +120,11 @@ def run_batch(root, executable, native_project):
     from core import health
     root=Path(root).resolve(strict=True)
     protocol=json.loads((root/'protocol.json').read_text())
-    if protocol.get('schedule')!=[list(x) for x in schedule()] or protocol.get('harness_fingerprint')!=_harness() or protocol.get('cases')!=[cases.identity(c) for c in cases.CASES] or protocol.get('runtime_fingerprint')!=fingerprint():
+    if (set(protocol)!={'schema_version','host','model','effort','seconds_per_run','schedule','cases','runtime_fingerprint','harness_fingerprint','prepared_at'} or
+            type(protocol.get('schema_version')) is not int or protocol['schema_version']!=1 or
+            protocol.get('host')!='claude' or protocol.get('model')!=subscription.MODELS['claude'] or protocol.get('effort')!='medium' or
+            type(protocol.get('seconds_per_run')) is not int or not 1<=protocol['seconds_per_run']<=240 or
+            protocol.get('schedule')!=[list(x) for x in schedule()] or protocol.get('harness_fingerprint')!=_harness() or protocol.get('cases')!=[cases.identity(c) for c in cases.CASES] or protocol.get('runtime_fingerprint')!=fingerprint()):
         raise ValueError('frozen protocol changed')
     if list(root.glob('*-result.json')):
         raise ValueError('batch already attempted; preserve all attempts')
@@ -166,7 +172,7 @@ def run_batch(root, executable, native_project):
         record['elapsed_ms']=round((time.monotonic()-started)*1000,3)
         write(result_path,json.dumps(record,indent=2,allow_nan=False),force=True); records.append(record)
         print(json.dumps({'case':case,'replicate':n,'arm':arm,'state':record['state'],'final':record['final_grade']['passed'] if record['final_grade'] else None}),flush=True)
-        if record.get('observation',{}).get('failure')=='quota_exhausted':
+        if (record.get('observation') or {}).get('failure')=='quota_exhausted':
             break
     value=summarize(records); write(root/'summary.json',json.dumps(value,indent=2)); return value
 

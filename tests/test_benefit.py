@@ -47,3 +47,26 @@ def test_summary_does_not_credit_callbacks_alone_or_missing_runs():
              'proposals': [], 'final_grade': None} for c, n, arm in benefit.schedule()]
     value = benefit.summarize(rows)
     assert value['state'] == 'inconclusive' and value['benefit_observed'] is False
+
+
+def test_receipt_refresh_alone_does_not_claim_better_code():
+    grade={'state':'graded','passed':16,'total':16,'regressions':0,'checks':{}}
+    rows=[{'case':c,'replicate':n,'arm':arm,'state':'graded','final_grade':grade,
+           'proposals':[{'decision':'allow','before_grade':grade,'after_grade':grade,
+                         'verification_before':'missing','verification_after':'fresh_pass'}]}
+          for c,n,arm in benefit.schedule()]
+    value=benefit.summarize(rows)
+    assert value['receipt_refresh_observed'] is True
+    assert value['coding_improvement_observed'] is False
+    assert 'Missing means no exact-command receipt' in ' '.join(value['limits'])
+
+
+def test_malformed_recorded_budget_is_rejected_before_auth(tmp_path):
+    import json,pytest
+    root=tmp_path/'batch'; root.mkdir()
+    protocol={'schedule':[list(x) for x in benefit.schedule()],
+              'harness_fingerprint':benefit._harness(),'cases':[benefit_cases.identity(c) for c in benefit_cases.CASES],
+              'runtime_fingerprint':benefit.fingerprint(),'seconds_per_run':99999}
+    (root/'protocol.json').write_text(json.dumps(protocol))
+    with pytest.raises(ValueError,match='protocol'):
+        benefit.run_batch(root,'not-a-host',root)
