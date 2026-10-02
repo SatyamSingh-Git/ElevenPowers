@@ -40,3 +40,19 @@ def test_public_checksums_survive_checkout_newline_conversion(tmp_path):
     for source in path.parent.glob('*.json'):
         (tmp_path/source.name).write_bytes(source.read_bytes().replace(b'\r\n',b'\n'))
     assert benefit_archive.verify_checksums(tmp_path/path.name) is True
+
+
+def test_recorded_grader_identity_is_retained_across_checkout_changes(tmp_path):
+    from pathlib import Path
+    source=Path(__file__).resolve().parents[1]/'docs/validation/2026-10-02-proof-of-benefit/completion-archive.json'
+    value=json.loads(source.read_text())
+    for case in value['protocol']['cases']:
+        case['grader']='0'*64
+    path=tmp_path/'recorded.json';path.write_text(json.dumps(value))
+    result=benefit_archive.inspect(path)
+    assert result['current_evaluator'] is False
+    assert result['summary']['valid_runs']==8
+    value['protocol']['cases'][0]['task']='0'*64
+    path.write_text(json.dumps(value))
+    with pytest.raises(ValueError,match='protocol'):
+        benefit_archive.inspect(path)

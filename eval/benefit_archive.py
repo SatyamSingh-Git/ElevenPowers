@@ -58,11 +58,20 @@ def inspect(path, regrade=False):
     if not isinstance(value,dict) or set(value)!={'schema_version','protocol','runs'} or value['schema_version']!=1 or type(value['schema_version']) is not int:
         raise ValueError('invalid archive fields')
     protocol=value['protocol']
+    current_cases=[cases.identity(c) for c in cases.CASES]
+    recorded_cases=protocol.get('cases') if isinstance(protocol,dict) else None
+    # Preserve the producer's byte identity: Git may change evaluator newlines.
+    # Regrading explicitly runs the current evaluator, never relabels the old one.
+    case_identities_valid=(isinstance(recorded_cases,list) and len(recorded_cases)==len(current_cases) and
+        all(isinstance(old,dict) and set(old)==set(now) and
+            all(old[k]==now[k] for k in ('case','task','prompt')) and
+            isinstance(old['grader'],str) and re.fullmatch('[a-f0-9]{64}',old['grader'])
+            for old,now in zip(recorded_cases,current_cases)))
     fields={'schema_version','host','model','effort','seconds_per_run','schedule','cases','runtime_fingerprint','harness_fingerprint','prepared_at'}
     if (not isinstance(protocol,dict) or set(protocol)!=fields or type(protocol['schema_version']) is not int or protocol['schema_version']!=1 or
             protocol['host']!='claude' or protocol['model']!=subscription.MODELS['claude'] or protocol['effort']!='medium' or
             type(protocol['seconds_per_run']) is not int or not 1<=protocol['seconds_per_run']<=240 or
-            protocol['schedule']!=[list(x) for x in benefit.schedule()] or protocol['cases']!=[cases.identity(c) for c in cases.CASES] or
+            protocol['schedule']!=[list(x) for x in benefit.schedule()] or not case_identities_valid or
             any(not isinstance(protocol[k],str) or not re.fullmatch('[a-f0-9]{64}',protocol[k]) for k in ('runtime_fingerprint','harness_fingerprint'))):
         raise ValueError('unsupported recorded protocol')
     runs=value['runs']
@@ -117,6 +126,7 @@ def inspect(path, regrade=False):
     if len(set(keys))!=8 or set(keys)!=set(benefit.schedule()):
         raise ValueError('duplicate or missing run identity')
     return {'archive_schema_version':1,'current_harness':protocol['harness_fingerprint']==benefit._harness(),
+            'current_evaluator':recorded_cases==current_cases,
             'regraded':bool(regrade),'grades_match':grades_match if regrade else None,
             'summary':benefit.summarize(records)}
 
