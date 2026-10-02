@@ -1,5 +1,13 @@
 # Master Plan v0.8
 
+**Native validation milestone, 2026-10-02.** The generalized project-health
+implementation is complete. Next: version-bound installed-host acceptance,
+representative read/callback/command costs, and a frozen challenging-task pilot
+using subscription-authenticated Codex and Claude Code. Equal model/effort and
+evaluation outside agent workspaces are required; neutral outcomes are retained.
+No API-key spending is authorized. See the [design](docs/design/native-validation.md)
+and [implementation plan](docs/superpowers/plans/2026-10-02-native-validation.md).
+
 **Project-health delivery, 2026-10-01.** One fresh staged health view now joins
 configuration, native delivery, aggregate command outcomes, completion and
 report freshness for any project across all five hosts. Private bounded native
@@ -884,9 +892,11 @@ decisions rather than work. The live order is:
 | 4 | **C1** — derive the reproduction test | build | — |
 | 5 | Composition baseline (`eval/stack.py`, never run) | paid | any claim that this system is worth installing |
 
-B2 needs two modules that **do not exist yet** — `eval/discriminate.py` and a
-`--from-bundles` mode for `eval/pool.py`. Writing them is the work; running them
-is free. That is the whole reason B2 is first.
+B2's modules now exist: `eval/discriminate.py` and the `--from-bundles` mode for
+`eval/pool.py`. The dated B2 results below qualify what they measured; the
+reverted-tree discrimination rate remains open. Original A/B are closed, C0–C3
+components shipped, and broader C/D/E exits remain unmet. The delivery milestone
+above does not claim closure of those research questions.
 
 ### Phase A — Make conclusions reconstructible *(blocking)*
 

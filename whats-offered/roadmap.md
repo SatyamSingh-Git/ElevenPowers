@@ -56,7 +56,12 @@ The first live sweep after the repairs failed all four runs, and failed *usefull
 
 ---
 
-## Phase B — Establish the strongest useful baseline · **in progress**
+## Phase B — Establish the strongest useful baseline · **closed 2026-09-14**
+
+The original baseline exits are recorded as met in [the master plan](../PLAN.md#phase-b--establish-the-strongest-useful-baseline).
+The historical B4 findings below remain qualified; closing a baseline phase does
+not establish product benefit. B2's reverted-tree discrimination measurement,
+bounded contribution experiments and broader candidate selection remain open.
 
 You cannot claim an improvement without knowing what you are improving on. This phase builds a real baseline: pinned models, pinned environments, several repositories, difficulty as a label rather than a filter.
 
@@ -88,7 +93,12 @@ Three claims from the write-up were withdrawn afterwards when the contamination 
 
 ---
 
-## Phase C — Separate generation from selection · **next**
+## Phase C — Separate generation from selection · **development started; exit open**
+
+C0–C3 components (ratchet, computed reproduction, blast radius and atlas) shipped.
+The broader candidate-pool and selection exit remains open. See
+[current delivery status](../docs/status.md) for the separate installed-host and
+performance milestone.
 
 The first phase that tests the actual idea. Generate pools of candidate patches at several budgets, grade them offline, and evaluate *selectors* without letting them peek at hidden outcomes — patch text, structured summaries plus evidence, and the existing gate, compared against each other.
 
