@@ -842,3 +842,26 @@ scope also found failure-state private strings and list/tuple type loss. All fiv
 Important findings were observed RED before fixes and GREEN afterward. Original
 pilot identities and outcomes remain preserved; corrected evaluator bytes define
 a new protocol. See [journey 54](54-a-comparison-needs-a-working-host.md).
+
+## 2026-10-02: harder contracts still had blind spots
+
+The new hidden grader's `regressions` field meant two basic hidden guards, not
+every preserved or added visible test. Review produced a candidate that scored
+perfectly while its added test failed. A separately versioned audit now executes
+the saved visible suite; frozen historical scores remain unchanged. Cache close
+also lacked the old-invalidated-plus-new-pending schedule. Review reproduced the
+leak, and the supplemental audit retains it as a coverage qualification.
+
+Nested instruction files were sealed before model launch but omitted from final
+configuration inspection. The observed RED→GREEN regression closes that future
+qualification gap. No added nested instruction file was observed in the actual
+eight candidates.
+
+The comparison controller and concurrent local full suite exited abruptly with
+no established cause. The interrupted slot had no completion proposal and was
+not retried. Explicit recovery retains its code and original journal, records a
+new executor and launches only never-started slots. Three complete pairs tied;
+the unfinished cache code timed out in visible tests and failed a supplemental
+closure probe. Bigger synthetic tasks still did not demonstrate a coding gain.
+See [journey 56](56-harder-problems-still-need-evidence.md) and
+[dated evidence](../docs/validation/2026-10-02-hard-task-comparison.md).

@@ -1,5 +1,20 @@
 # Master Plan v0.8
 
+**Hard-task comparison delivery, 2026-10-02.** Four authored interacting repairs
+now have 94 frozen independent groups, known-good controls and 16 rejected
+single-fault variants. Eight Sonnet 5 medium subscription slots were attempted:
+seven completed and one cache tool slot was interrupted. Every complete first
+and final proposal passed; the three complete pairs tied. Three tool completions
+added fresh exact-command receipts, with no observed coding gain or established
+speedup. A separate post-run audit retains a real defect and visible-suite timeout
+in interrupted code rather than relabeling it as a completed proposal. All 22
+saved grades reproduce. The next proof exit remains representative held-out
+issues with independently checked ordinary proposals and actual correction;
+preserve neutral, adverse and incomplete outcomes. See
+[design](docs/design/hard-task-comparison.md),
+[evidence](docs/validation/2026-10-02-hard-task-comparison.md) and
+[journey 56](journey/56-harder-problems-still-need-evidence.md).
+
 **Controlled completion delivery, 2026-10-02.** One installed Claude pipeline
 now delivers startup/edit/exact fail/pass/completion with fresh evidence. A new
 eight-call Sonnet 5.5 medium comparison records initial/proposed/final behavior

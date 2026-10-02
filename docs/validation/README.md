@@ -2,6 +2,8 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-02 hard interacting comparison](2026-10-02-hard-task-comparison.md): four authored repairs, 94 independent hidden groups, seven completed and one interrupted Sonnet 5 medium slots, three tied pairs, three receipt refreshes, a separate saved-code audit and 22 reproduced grades.
+
 - [2026-10-02 controlled completion comparison](2026-10-02-proof-of-benefit.md): eight actual subscription runs, native pipeline delivery, three receipt refreshes, tied first/final 16/16 behavior and 24 reproducible snapshot grades.
 
 - [2026-10-02 native validation](2026-10-02-native-validation.md): runtime/version qualification, ten explicit cells, actual readonly latency samples and all eight inconclusive subscription coding runs.

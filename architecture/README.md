@@ -50,7 +50,8 @@ node graph, so each view stays readable.
   stops the simulation.
 
 Current size: **105 nodes / 240 edges** across 7 planes (as of 2026-10-02),
-including four hard interacting task graders and every-attempt regrading,
+including four hard interacting task graders, every-attempt regrading,
+unstarted-only recovery and separately versioned visible/shutdown audits,
 the controlled completion comparison and neutral proposal recorder,
 including runtime-bound validation, readonly performance and a frozen subscription pilot,
 fresh staged health, bounded native diagnostics, disposable acceptance,

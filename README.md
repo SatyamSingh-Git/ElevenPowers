@@ -382,6 +382,18 @@ reconstructs all 24 proposed/final snapshots without model calls. See
 [commands](the-guide/commands.md#controlled-completion-comparison) and
 [journey 55](journey/55-at-the-moment-of-done.md).
 
+Four subsequent interacting repairs cover durable leases, async cache races,
+dependency invalidation and resumable byte streams with 94 frozen hidden groups.
+Seven of eight Sonnet 5 medium subscription slots completed; all complete first
+and final candidates passed, and the three complete pairs tied. Three tool
+completions added fresh declared receipts. Interrupted cache code retains a
+visible-suite timeout and a defect found by a separate shutdown audit. All 22
+saved grades reproduce. The comparison remains inconclusive, with no demonstrated
+coding improvement or speedup. See
+[hard-task results](docs/validation/2026-10-02-hard-task-comparison.md),
+[reproduction commands](the-guide/commands.md#controlled-completion-comparison)
+and [journey 56](journey/56-harder-problems-still-need-evidence.md).
+
 ```bash
 python plugin/bin/ep_validate.py capture HOST --project EXERCISE --observe-version --json
 python plugin/bin/ep_validate.py performance HOST --project PATH --repeats 3 --seconds 60 --json

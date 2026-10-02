@@ -10,9 +10,13 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [54 — a comparison needs a working host](54-a-comparison-needs-a-working-host.md)
+Latest: [56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)
+records four interacting repairs, three tied complete pairs, an interrupted cache
+attempt and separately audited saved code. [55 — at the moment of done](55-at-the-moment-of-done.md)
+records native completion observations and additional receipts with no coding
+gain. [54 — a comparison needs a working host](54-a-comparison-needs-a-working-host.md)
 records versioned native reports, retained latency samples, subscription pilot
-outcomes and the execution, callback and quota gaps still open. [53 — a working
+outcomes and execution, callback and quota gaps. [53 — a working
 pipeline needs evidence](53-a-working-pipeline-needs-evidence.md) records fresh
 health and disposable acceptance. [52 — tests that notice a change](52-tests-that-notice-a-change.md)
 records generalized optional test strength and clean attempt isolation.
@@ -79,18 +83,24 @@ startup and the failed external Snag CI acceptance run.
 | [52-tests-that-notice-a-change.md](52-tests-that-notice-a-change.md) | Optional real-engine test strength, private trials, reproduced review fixes and human-only findings |
 | [53-a-working-pipeline-needs-evidence.md](53-a-working-pipeline-needs-evidence.md) | Fresh staged health, disposable native acceptance, ten real producer/launcher cases and five review defects reproduced before correction |
 | [54-a-comparison-needs-a-working-host.md](54-a-comparison-needs-a-working-host.md) | Runtime/version qualification, latency samples, a frozen eight-run subscription pilot and the native policy/trust/quota gaps that prevented a coding comparison |
+| [55-at-the-moment-of-done.md](55-at-the-moment-of-done.md) | Eight complete proposal comparisons, additional declared receipts, tied 16/16 correctness and reproducible saved candidates |
+| [56-harder-problems-still-need-evidence.md](56-harder-problems-still-need-evidence.md) | Four interacting repairs, seven completed and one interrupted attempt, three tied pairs, separate visible/shutdown audits and every-attempt reproduction |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
 ## Current delivery, 2026-10-02
 
-[55 — at the moment of done](55-at-the-moment-of-done.md) records a working
+[56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)
+records 94 frozen groups across four synthetic repairs. Three complete pairs tied;
+three tool completions added receipts; the interrupted tool cache retains a
+visible timeout and supplementary shutdown defect. No coding gain or speedup is
+established. [55 — at the moment of done](55-at-the-moment-of-done.md) records a working
 Claude completion pipeline and eight real comparison runs. Three treatment
 completions added fresh declared receipts; every first/final candidate was
 already 16/16 correct. The public archive separates receipt gains from coding
 gains and preserves the original failed pilot.
 
-The recent product work is in chapters 46 through 54. [Current status](../docs/status.md)
+The recent product and evaluation work is in chapters 46 through 56. [Current status](../docs/status.md)
 separates shipped behavior and real Claude startup from added-host native
 acceptance still to do. The research history below retains its original
 measurements; the latest usability changes do not establish a patch-quality benefit.

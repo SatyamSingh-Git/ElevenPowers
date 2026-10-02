@@ -20,6 +20,7 @@ This delivery does not establish improved patch outcomes.
 | Read-only performance | Every attempted repeated health read retained; finite source/timing checks and separate callback/command history | Descriptive local samples, cooperative deadline; no universal speedup or task certification |
 | Subscription coding pilot | Frozen original task, independent 16-check grader, exact requested models/medium effort and eight equal-budget journals | Initial pilot inconclusive due policy/activation/quota; no product benefit established; local separation is not an OS boundary |
 | Controlled completion comparison | Two original cases, eight actual Claude subscription runs, neutral before/after Stop snapshots and independent grades | All first/final candidates 16/16; three treatment receipt refreshes; no patch-correctness gain; wrapped baseline verification may be unobserved |
+| Hard interacting comparison | Four synthetic repairs, 94 frozen groups, all 16 single-fault controls rejected, every-attempt archive and separate visible/shutdown audit | Seven of eight Sonnet 5 medium slots completed; three complete pairs tied; three fresh receipts; interrupted cache code fails a supplementary probe; no coding gain or established speedup |
 | Native acceptance workflow | Explicit new disposable Python/Node repository, owned wiring, immutable contract and current pass/fail/incomplete history qualification | Preparation launches no host; local unsigned observations and operator versions do not establish authenticated or cross-version compatibility |
 | Native patch attribution | Bounded pre/post target content comparisons; dirty/non-Git files, add/delete/move | Stable task/session/call/input required; target coverage cannot prove absence of unrelated side effects |
 | Missing callbacks | Pending coverage visible in status/readiness; completion reconciles missing post-events; eviction uncertainty persists | Interrupted/missing/unsafe/budget-limited observations stay UNVERIFIED even with passing tests |
@@ -83,11 +84,16 @@ and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 ## Next readiness milestone
 
-The completion comparison now has a working installed Claude pipeline and a
-public proposal archive. Its next evidence exit is correction of ordinary
-defective or stale first proposals on held-out tasks; this comparison's first
-proposals were already correct. Additional native host/language cells and the
-intentional interruption receipt remain open. See [completion evidence](validation/2026-10-02-proof-of-benefit.md).
+The completion comparisons now have a working installed Claude pipeline and
+public proposal archives. The harder four-task comparison completed seven of
+eight slots: every complete first proposal passed its hidden groups, three pairs
+tied, and three tool completions added fresh declared receipts. Interrupted cache
+code retains a visible timeout and a separate shutdown defect. Its next proof
+exit is correction of independently checked ordinary defective or stale proposals
+on representative held-out real issues. Added native host/language cells and the
+intentional interruption receipt remain open. See
+[hard-task evidence](validation/2026-10-02-hard-task-comparison.md) and
+[earlier completion evidence](validation/2026-10-02-proof-of-benefit.md).
 
 Use the new disposable workflow to exercise versioned installed hosts, then
 measure normal-session callback/read/command costs on unrelated projects.

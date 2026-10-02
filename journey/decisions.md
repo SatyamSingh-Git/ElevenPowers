@@ -184,3 +184,12 @@ more useful record.
 | D128 | Coding or verification improvement is the criterion, regardless of task size | An integration pass alone does not show the plugin contributing to coding | No benefit established; next comparison requires actual native delivery |
 | D129 | Preserve earlier evaluator results under explicit recorded protocols | Review corrections must not silently rewrite observed outcomes | Read-only archive inspection labels earlier evaluator identity and validates all metadata |
 | D130 | Controller assertions consume bounded typed behavior | Candidate output cannot own grading authority; JSON alone erases Python contract types | Five Important findings reproduced RED→GREEN; normal imports, tagged values and strict summaries |
+
+## Hard interacting comparison — 2026-10-02
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D131 | Freeze interacting contracts and control faults before coding calls | More assertions alone do not establish difficulty, and hidden feedback changes the comparison | Four synthetic repairs, 94 groups, 16 rejected faults; completed proposals still saturated the score |
+| D132 | Preserve interrupted slots and continue only never-started work | Replacing an adverse attempt biases the outcome and exceeds the eight-slot approval | One-shot explicit recovery, original journal and producer retained; eight total attempts, one interrupted |
+| D133 | Audit discovered grader gaps separately from frozen scores | Post-run visible-test and shutdown probes cannot silently become the original oracle | Versioned audit; interrupted cache timeout/leak retained, all seven completed finals pass visible tests |
+| D134 | Compare timing only within complete matched pairs | Missing a long treatment slot would bias an unmatched arm median | Three paired samples, mixed direction; no established speedup or population effect |
