@@ -106,3 +106,16 @@ def matrix(records):
     return {'schema_version': 1, 'kind': 'native_matrix', 'runtime_fingerprint': runtime,
             'generated_at': datetime.now(timezone.utc).isoformat(), 'cells': cells,
             'passed': sum(c['state'] == 'passed' for c in cells), 'total': len(cells), 'limits': LIMITS.copy()}
+
+
+def render(value):
+    lines = ['# ElevenPowers native validation', '', f"Runtime: `{value['runtime_fingerprint']}`", '']
+    if value['kind'] == 'native_matrix':
+        lines += [f"Dated native exercise cells passed: {value['passed']}/{value['total']}", '',
+                  '| Host | Language | State | Version | Observed at |', '|---|---|---|---|---|']
+        lines += [f"| {c['host']} | {c['language']} | {c['state']} | {c['version']} | {c['observed_at']} |" for c in value['cells']]
+    else:
+        lines += [f"{value['host']} / {value['language']}: **{value['state']}**", '',
+                  f"Version: {value['version']['version'] or value['version']['state']}", '',
+                  *[f'- {key}: {present}' for key, present in {**value['checks'], **value['outcomes']}.items()]]
+    return '\n'.join([*lines, '', *['Limit: ' + limit for limit in value['limits']], ''])
