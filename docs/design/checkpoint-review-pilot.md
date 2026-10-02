@@ -22,7 +22,13 @@ tests, configuration and documentation are sealed and checked independently.
 Scope violations remain unqualified rather than being silently repaired.
 
 Before review, the shipping Cosmic Ray adapter samples changed production
-files with 180 seconds, 32 attempts and 30 seconds per test command. Its
+files with 180 seconds, 32 attempts and 30 seconds per test command. The first
+free whole-suite audit is retained: it supplied a lead on one case, no lead on
+one and timed-out baselines on two. Before any review call, a second free
+analysis uses the relevant existing public test module for each case (timed
+serialization, CLI testing, template security, annotations). This supported
+focused-command setting is the frozen treatment; final grading retains the
+full ordinary suite. No case is replaced based on analysis results. Its
 observations are summarized as function-level leads, with explicit incomplete
 coverage and possible equivalence. Mutation identities, operators, replacements
 and final fault fixtures are withheld. This is an explicit experimental consumer
@@ -44,10 +50,12 @@ Review workspaces omit upstream Git history and evaluator fixtures. Prompts
 forbid external answer retrieval. Ordinary native CLI tools can access beyond
 the workspace, so this is not an operating-system exposure boundary; that
 limitation qualifies every causal interpretation. Subscription host settings
-and globally loaded plugins may also affect both arms.
+and host-managed settings may also affect both arms. The installed CLI's safe
+mode disables ordinary customizations and plugins equally in both review arms;
+it is compatible with subscription authentication, unlike `--bare`.
 
 Built on: upstream MIT-licensed source patches and their test suites; the prior
-B7 research fault sample and blinded labels; Cosmic Ray 8.7.0 (BSD-3-Clause)
+B7 research fault sample and blinded labels; Cosmic Ray 8.7.0 (MIT)
 through `core.strength`; and this repository's subscription authentication and
 contained process helpers. The added piece is a bounded review comparison with
 immutable starting inputs, withheld grading fixtures and explicit failure

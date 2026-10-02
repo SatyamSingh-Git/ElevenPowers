@@ -80,3 +80,24 @@ def test_execution_unavailable_is_explicit(tmp_path):
     from eval.review_checkpoint import execute_tests
     result=execute_tests(tmp_path, ['ep-no-such-executable'])
     assert result['state']=='unavailable' and result['passed']==0
+
+
+def test_grade_uses_clean_copies_and_distinguishes_invalid_faults(tmp_path):
+    import sys
+    from eval.review_checkpoint import grade
+    case=_case(tmp_path)
+    faults=[{'id':'changed','path':'logic.py','content':'def value(): return 2\n'},
+            {'id':'equivalent','path':'logic.py','content':'def value():\n    return 1\n'},
+            {'id':'broken','path':'logic.py','content':'invalid syntax !'}]
+    value=grade(case,{},faults,tmp_path/'grade', [sys.executable,'-m','pytest','tests','-q'],seconds=20)
+    assert value['baseline']['state']=='passed'
+    assert [r['state'] for r in value['faults']]==['detected','undetected','invalid']
+
+
+def test_grade_rejects_escape_and_unapproved_test_paths(tmp_path):
+    import sys
+    from eval.review_checkpoint import grade
+    case=_case(tmp_path)
+    with pytest.raises(ValueError):
+        grade(case,{'conftest.py':'pass'},[],tmp_path/'grade', [sys.executable,'-m','pytest'])
+    assert not (tmp_path/'grade').exists()

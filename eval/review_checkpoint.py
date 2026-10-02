@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import stat
 import subprocess
 import tempfile
@@ -134,6 +135,64 @@ def capture_additions(root, expected):
             raise ValueError('added test limit exceeded')
         added[name] = path.read_text(encoding='utf-8')
     return added
+
+
+def grade(case, additions, faults, destination, command, *, seconds=90):
+    """Withheld checks from fresh inputs; test errors are not fault detection."""
+    if len(additions)>32 or sum(len(v.encode('utf-8')) for v in additions.values())>1024*1024:
+        raise ValueError('added test limit exceeded')
+    for name,content in additions.items():
+        _path(name)
+        if not (name.startswith('tests/') and Path(name).name.startswith('test_') and name.endswith('.py')):
+            raise ValueError('unapproved addition')
+        if not isinstance(content,str):
+            raise ValueError('invalid addition')
+    if len(faults)>32 or sum(len(v['content'].encode('utf-8')) for v in faults)>8*1024*1024:
+        raise ValueError('fault fixture limit exceeded')
+    for fault in faults:
+        _path(fault['path'])
+        if fault['path'] not in case['source_paths']:
+            raise ValueError('fault is outside declared source')
+    destination=Path(destination).absolute()
+    expected=prepare(case,destination/'seed')
+    seed=destination/'seed'
+    for name,content in additions.items():
+        path=seed/name
+        if path.exists():
+            raise ValueError('addition overwrites a checkpoint input')
+        path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_bytes(content.encode('utf-8'))
+    capture_additions(seed,expected)
+    files=_files(seed)
+
+    def check(fault=None):
+        if fault:
+            try:
+                compile(fault['content'],fault['path'],'exec')
+            except (SyntaxError,ValueError):
+                return {'state':'invalid'}
+        with tempfile.TemporaryDirectory(prefix='check-',dir=destination) as folder:
+            trial=Path(folder)
+            for name in files:
+                target=trial/name
+                target.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copyfile(seed/name,target)
+            if fault:
+                (trial/fault['path']).write_bytes(fault['content'].encode('utf-8'))
+            before=_files(trial)
+            value=execute_tests(trial,command,seconds=seconds)
+            if _files(trial)!=before:
+                value['state']='modified_inputs'
+            return value
+
+    baseline=check()
+    results=[]
+    for fault in faults:
+        value=check(fault) if baseline['state']=='passed' else {'state':'not_run'}
+        state=('detected' if value['state']=='failed' else
+               'undetected' if value['state']=='passed' else value['state'])
+        results.append({'id':fault['id'],'state':state,'execution':value})
+    return {'baseline':baseline,'faults':results}
 
 
 def execute_tests(root, command, *, seconds=60, environment=None):
