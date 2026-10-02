@@ -49,13 +49,15 @@ def publish(root,destination):
             history=proposals.read(contract['history']);history_state='incomplete'
         runs.append({'record':record,'history':history,'history_state':history_state,'final_snapshot':snapshot})
     value={'schema_version':1,'protocol':protocol,'attempt':benefit_archive._read(root/'attempt.json'),'runs':runs}
+    if (root/'continuation.json').exists():
+        value.update(schema_version=2,prior_attempt=value['attempt'],attempt=benefit_archive._read(root/'continuation.json'))
     write(Path(destination),json.dumps(value,indent=2,allow_nan=False))
     return inspect(destination)
 
 
 def inspect(path,regrade=False):
     value=benefit_archive._read(path)
-    if type(value) is not dict or set(value)!={'schema_version','protocol','attempt','runs'} or type(value['schema_version']) is not int or value['schema_version']!=1:raise ValueError('invalid hard archive')
+    if type(value) is not dict or type(value.get('schema_version')) is not int or value['schema_version'] not in (1,2) or set(value)!=({'schema_version','protocol','attempt','runs'}|({'prior_attempt'} if value['schema_version']==2 else set())):raise ValueError('invalid hard archive')
     protocol=value['protocol'];expected=benefit.schedule(suite=cases,repeats=1)
     fields={'schema_version','host','model','effort','seconds_per_run','schedule','cases','runtime_fingerprint','harness_fingerprint','prepared_at','candidate_seals','suite','repeats'}
     now=[cases.identity(c) for c in cases.CASES]
@@ -71,16 +73,21 @@ def inspect(path,regrade=False):
     seals=protocol['candidate_seals']
     if type(seals) is not dict or set(seals)!={f'{c}-{n}-{a}' for c,n,a in expected} or any(type(h) is not str or not re.fullmatch('[a-f0-9]{64}',h) for h in seals.values()):raise ValueError('invalid prepared identities')
     attempt=value['attempt']
-    if type(attempt) is not dict or set(attempt)-{'schema_version','state','phase','started_at','runs','error'} or attempt.get('schema_version')!=1 or attempt.get('state') not in ('finished','setup_failed'):raise ValueError('unfinished archive attempt')
+    attempt_fields={'schema_version','state','phase','started_at','runs','error','controller_pid','prior_attempt_preserved','recorded_harness','execution_harness'}
+    if type(attempt) is not dict or set(attempt)-attempt_fields or type(attempt.get('schema_version')) is not int or attempt.get('schema_version')!=1 or attempt.get('state') not in ('finished','setup_failed'):raise ValueError('unfinished archive attempt')
+    if value['schema_version']==2:
+        prior=value['prior_attempt']
+        if type(prior) is not dict or set(prior)-attempt_fields or prior.get('state')!='running' or prior.get('schema_version')!=1 or attempt.get('prior_attempt_preserved') is not True or attempt.get('recorded_harness')!=protocol['harness_fingerprint'] or type(attempt.get('execution_harness')) is not str or not re.fullmatch('[a-f0-9]{64}',attempt['execution_harness']):raise ValueError('invalid continuation identity')
     if type(value['runs']) is not list or len(value['runs'])>8:raise ValueError('hard run bound exceeded')
     records=[];matched=True;regraded=0
     rf={'schema_version','case','replicate','arm','state','initial_grade','final_grade','proposals','model','effort','elapsed_ms','exit_code','observation','callbacks'}
     for entry in value['runs']:
         if type(entry) is not dict or set(entry)!={'record','history','history_state','final_snapshot'}:raise ValueError('invalid hard run fields')
         r=entry['record'];history=entry['history']
-        if type(r) is not dict or set(r)-{'error'}!=rf or r['schema_version']!=1 or type(r['schema_version']) is not int or r['case'] not in cases.CASES or type(r['replicate']) is not int or r['replicate']!=0 or r['arm'] not in ('tool','baseline') or r['state'] not in ('graded','host_failed','invalid','incomplete','timeout','setup'):raise ValueError('invalid hard result')
+        if type(r) is not dict or set(r)-{'error'}!=rf or r['schema_version']!=1 or type(r['schema_version']) is not int or r['case'] not in cases.CASES or type(r['replicate']) is not int or r['replicate']!=0 or r['arm'] not in ('tool','baseline') or r['state'] not in ('graded','host_failed','invalid','incomplete','timeout','setup','interrupted'):raise ValueError('invalid hard result')
         c=r['case']
-        if r['model']!=protocol['model'] or r['effort']!='medium' or type(r['elapsed_ms']) not in (int,float) or not math.isfinite(r['elapsed_ms']) or r['elapsed_ms']<0 or (r['exit_code'] is not None and type(r['exit_code']) is not int) or not valid_grade(c,r['initial_grade']) or not valid_grade(c,r['final_grade']):raise ValueError('invalid measured result')
+        timing_ok=(r['state']=='interrupted' and r['elapsed_ms'] is None) or (type(r['elapsed_ms']) in (int,float) and math.isfinite(r['elapsed_ms']) and r['elapsed_ms']>=0)
+        if r['model']!=protocol['model'] or r['effort']!='medium' or not timing_ok or (r['exit_code'] is not None and type(r['exit_code']) is not int) or not valid_grade(c,r['initial_grade']) or not valid_grade(c,r['final_grade']):raise ValueError('invalid measured result')
         if 'error' in r and (type(r['error']) is not str or not re.fullmatch('[A-Za-z]{1,80}',r['error'])):raise ValueError('unsafe error metadata')
         obs=r['observation']
         if obs is not None:
@@ -108,7 +115,8 @@ def inspect(path,regrade=False):
         records.append(r)
     keys=[(r['case'],r['replicate'],r['arm']) for r in records]
     if len(keys)!=len(set(keys)) or not set(keys)<=set(expected) or (attempt['state']=='finished' and attempt.get('runs')!=len(keys)):raise ValueError('duplicate or missing attempted run')
-    return {'archive_schema_version':1,'current_harness':protocol['harness_fingerprint']==benefit._harness(cases),
+    return {'archive_schema_version':value['schema_version'],'current_harness':protocol['harness_fingerprint']==benefit._harness(cases),
+            'continuation_harness_current':attempt.get('execution_harness')==benefit._harness(cases) if value['schema_version']==2 else None,
             'current_evaluator':protocol['cases']==now,'regraded':bool(regrade),'snapshots_regraded':regraded,
             'grades_match':matched if regrade else None,'summary':benefit.summarize(records,suite=cases,repeats=1)}
 

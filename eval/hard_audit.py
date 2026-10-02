@@ -70,8 +70,34 @@ def audit_snapshot(case,snapshot):
     return value
 
 
+def audit_archive(path):
+    hard_archive.inspect(path)
+    value=hard_archive.benefit_archive._read(path);runs=[]
+    for entry in value['runs']:
+        r=entry['record'];c=r['case'];proposals=[]
+        for h in entry['history']:
+            if h.get('phase')!='Stop':continue
+            proposals.append({k:audit_snapshot(c,h[k]) for k in ('before','after')})
+        runs.append({'case':c,'arm':r['arm'],'state':r['state'],'proposals':proposals,
+                     'final':audit_snapshot(c,entry['final_snapshot'])})
+    import hashlib
+    return {'schema_version':1,'kind':'separate-post-run-audit','auditor_fingerprint':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            'limits':['Authored after frozen-run grading; original 94-group scores and identities remain unchanged.',
+                      'Visible suite preservation and detached-fetch closure are supplementary checks, not a population effect.',
+                      'Interrupted/unqualified native calls remain unqualified even if their saved code passes.'], 'runs':runs}
+
+
 if __name__=='__main__':
-    if len(sys.argv)!=4 or sys.argv[1]!='worker':raise SystemExit('explicit internal worker invocation required')
-    with contextlib.redirect_stdout(OutputSink()):
-        value=asyncio.run(asyncio.wait_for(_close_probe(Path(sys.argv[2]).resolve(),bool(int(sys.argv[3]))),3))
-    print(json.dumps(value,allow_nan=False))
+    if len(sys.argv)==4 and sys.argv[1]=='worker':
+        with contextlib.redirect_stdout(OutputSink()):
+            value=asyncio.run(asyncio.wait_for(_close_probe(Path(sys.argv[2]).resolve(),bool(int(sys.argv[3]))),3))
+        print(json.dumps(value,allow_nan=False))
+    else:
+        import argparse
+        from core.export import write
+        parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('archive');parser.add_argument('--output',required=True)
+        args=parser.parse_args()
+        try:
+            value=audit_archive(args.archive);write(Path(args.output),json.dumps(value,indent=2,allow_nan=False))
+            print(json.dumps({'audited_runs':len(value['runs']),'qualified_final_snapshots':sum(r['final']['qualified'] for r in value['runs'])}))
+        except (ValueError,OSError) as error:parser.exit(1,str(error)+'\n')

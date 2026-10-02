@@ -26,6 +26,13 @@ def test_failed_attempts_survive_archive_and_cannot_be_qualified(tmp_path):
     result=hard_archive.inspect(destination)
     assert result['summary']['state']=='inconclusive' and result['summary']['valid_runs']==0
     assert not result['summary']['coding_improvement_observed']
+    value=json.loads(destination.read_text())
+    value['schema_version']=2;value['prior_attempt']={**value['attempt'],'state':'running'}
+    value['attempt'].update(prior_attempt_preserved=True,recorded_harness=protocol['harness_fingerprint'],execution_harness=protocol['harness_fingerprint'],controller_pid=1)
+    value['runs'][0]['record'].update(state='interrupted',elapsed_ms=None,exit_code=None)
+    destination.write_text(json.dumps(value))
+    result=hard_archive.inspect(destination)
+    assert result['summary']['state']=='inconclusive' and result['summary']['runs']==8
     value=json.loads(destination.read_text());value['runs'].append(value['runs'][0]);destination.write_text(json.dumps(value))
     with pytest.raises(ValueError):hard_archive.inspect(destination)
 
