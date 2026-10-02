@@ -21,7 +21,12 @@ def main(argv=None):
     capture.add_argument('--seconds', type=float, default=10)
     matrix = sub.add_parser('matrix')
     matrix.add_argument('inputs', type=Path, nargs='*')
-    for command in (capture, matrix):
+    performance = sub.add_parser('performance')
+    performance.add_argument('host', choices=PATHS)
+    performance.add_argument('--project', type=Path, required=True)
+    performance.add_argument('--repeats', type=int, default=3)
+    performance.add_argument('--seconds', type=float, default=60)
+    for command in (capture, matrix, performance):
         command.add_argument('--json', action='store_true')
         command.add_argument('--output', type=Path)
         command.add_argument('--force', action='store_true')
@@ -33,12 +38,22 @@ def main(argv=None):
         if args.operation == 'capture':
             value = validation.capture(args.host, args.project, args.seconds, args.observe_version)
             passed = value['state'] == 'passed'
-        else:
+        elif args.operation == 'matrix':
             if len(args.inputs) > 100:
                 raise ValueError('at most 100 capture files')
             value = validation.matrix([read_json(p) for p in args.inputs])
             passed = value['passed'] == value['total']
-        rendered = json.dumps(value, indent=2, allow_nan=False) + '\n' if args.json else validation.render(value)
+        else:
+            from core.hosts.performance import measure
+            value = measure(args.host, args.project, args.repeats, args.seconds)
+            passed = value['state'] == 'complete'
+        if args.json:
+            rendered = json.dumps(value, indent=2, allow_nan=False) + '\n'
+        elif args.operation == 'performance':
+            from core.hosts.performance import render
+            rendered = render(value)
+        else:
+            rendered = validation.render(value)
         if args.output:
             write(args.output, rendered, force=args.force)
         else:
