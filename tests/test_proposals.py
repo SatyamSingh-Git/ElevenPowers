@@ -1,6 +1,9 @@
 """A recorder must not change candidate/index or hide an unavailable proposal."""
 import base64
+import json
 import subprocess
+import sys
+from pathlib import Path
 
 import pytest
 
@@ -71,3 +74,32 @@ def test_capacity_preserves_first_proposals_and_marks_overflow(tmp_path):
     value = proposals.read(path)
     assert len(value) == 17
     assert value[-1]['state'] == 'overflow'
+
+
+def test_stop_wrapper_preserves_real_child_decision(tmp_path):
+    root = tmp_path / 'candidate'; root.mkdir()
+    (root / 'app.py').write_bytes(b'before\n')
+    child = tmp_path / 'producer.py'
+    child.write_text("import sys\nfrom pathlib import Path\nPath('app.py').write_bytes(b'after\\n')\nprint('block reason', file=sys.stderr)\nraise SystemExit(2)\n")
+    manifest = tmp_path / 'contract.json'
+    manifest.write_text(json.dumps({'root': str(root), 'files': ['app.py'], 'host': 'claude',
+                                   'plugin': [sys.executable, str(child)], 'history': str(tmp_path / 'history.jsonl')}))
+    result = subprocess.run([sys.executable, str(Path(proposals.__file__)), str(manifest), 'Stop'],
+                            cwd=root, input=json.dumps({'cwd': str(root)}), capture_output=True, text=True)
+    assert result.returncode == 2 and result.stderr == 'block reason\n'
+    record = proposals.read(tmp_path / 'history.jsonl')[0]
+    assert record['decision'] == 'block'
+    assert base64.b64decode(record['before']['files']['app.py']) == b'before\n'
+    assert base64.b64decode(record['after']['files']['app.py']) == b'after\n'
+
+
+def test_passive_stop_and_broken_sink_never_block(tmp_path):
+    root = tmp_path / 'candidate'; root.mkdir()
+    (root / 'app.py').write_text('candidate')
+    manifest = tmp_path / 'contract.json'
+    history = tmp_path / 'history.jsonl'; history.write_text('broken')
+    manifest.write_text(json.dumps({'root': str(root), 'files': ['app.py'], 'host': 'claude',
+                                   'plugin': [], 'history': str(history)}))
+    result = subprocess.run([sys.executable, str(Path(proposals.__file__)), str(manifest), 'Stop'],
+                            input=json.dumps({'cwd': str(root)}), capture_output=True, text=True)
+    assert result.returncode == 0 and result.stdout == '' and result.stderr == ''

@@ -117,6 +117,13 @@ Use one task/session for this exercise. Ask the host to:
 5. Edit a source comment, then inspect readiness to see stale evidence.
 6. Rerun the declared command and finish normally, delivering completion.
 
+Run the declared command as its own tool call, exactly as written, from this
+directory. Run helper commands separately. Prefixes such as `cd ... &&`, suffixes
+such as `; echo $?`, pipelines and timeout wrappers change the declared command
+and may hide its exit status. For the interrupted step use the host tool's timeout
+or interrupt control on the same standalone command. Do not rewrite declarations
+to make this exercise pass. End with the factual result of the exercise.
+
 ```text
 {command}
 ```
