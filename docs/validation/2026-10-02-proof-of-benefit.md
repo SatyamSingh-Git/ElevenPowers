@@ -163,6 +163,17 @@ archive controls passed in 29.89 seconds. All four architecture tabs rendered
 again after the path-boundary documentation update. This changes no frozen task, evaluator assertion or
 recorded candidate; hosted full gates are repeated on the corrected head.
 
+All four hosted jobs then passed on `7ae40de`, which was fast-forwarded to main.
+A final adversarial handoff check exposed one evaluation-wrapper failure path:
+an unusable observation directory could skip the native child and return success
+in place of its exit-2 block. A real child process reproduced that RED. Recorder
+sink failures are now isolated from delegation; the native child's output/status
+survive while capture qualification remains incomplete. This is an explicit
+evaluation wrapper correction, and introduces no automatic product model call.
+All **36** affected controls passed in 126.05 seconds after the observed failure,
+and all four architecture tabs rendered. The complete hosted matrix is the
+publication gate for this final correction as well.
+
 Next proof exit: freeze held-out tasks where ordinary first proposals actually
 contain an independently checked defect or stale source evidence. Observe the
 existing intervention and whether it corrects that state. Preserve all ordinary

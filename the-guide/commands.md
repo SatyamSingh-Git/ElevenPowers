@@ -379,6 +379,8 @@ preflight is retained and cannot be retried in that directory. Each Stop also
 gets an independent attempt marker. A missing, failed or conflicting capture,
 or a treatment native Stop count that differs from captured proposals, cannot
 qualify an earlier successful history as complete.
+An unavailable observation sink does not suppress the native child's decision;
+the comparison remains incomplete if its capture markers cannot be saved.
 Run consumes subscription allowance and preserves each attempt immediately;
 quota exhaustion stops scheduling. The archive read launches no candidate or
 model. Explicit `--regrade` executes contained independent checks on disposable

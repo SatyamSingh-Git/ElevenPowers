@@ -100,6 +100,21 @@ def test_stop_wrapper_preserves_real_child_decision(tmp_path):
     assert base64.b64decode(record['after']['files']['app.py']) == b'after\n'
 
 
+def test_unwritable_attempt_sink_still_delegates_the_native_decision(tmp_path):
+    root=tmp_path/'candidate';root.mkdir();(root/'app.py').write_bytes(b'candidate')
+    child=tmp_path/'native.py'
+    child.write_text("import sys\nprint('native block',file=sys.stderr)\nraise SystemExit(2)\n")
+    sink=tmp_path/'blocked';sink.write_text('an observation directory cannot be created here')
+    config={'root':str(root),'files':['app.py'],'host':'claude',
+            'plugin':[sys.executable,str(child)],'history':str(tmp_path/'history.jsonl'),'attempts':str(sink)}
+    manifest=tmp_path/'contract.json';manifest.write_text(json.dumps(config))
+    result=subprocess.run([sys.executable,str(Path(proposals.__file__)),str(manifest),'Stop'],
+                          cwd=root,input=json.dumps({'cwd':str(root)}),capture_output=True,text=True)
+    assert result.returncode==2 and result.stderr=='native block\n'
+    with pytest.raises(ValueError,match='observation'):
+        proposals.observed(config)
+
+
 def test_passive_stop_and_broken_sink_never_block(tmp_path):
     root = tmp_path / 'candidate'; root.mkdir()
     (root / 'app.py').write_text('candidate')

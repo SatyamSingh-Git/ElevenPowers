@@ -208,11 +208,15 @@ def hook(manifest, phase):
         config = json.loads(Path(manifest).read_text(encoding='utf-8'))
         if phase=='Stop':
             from core.hosts.setup import _write
-            directory=Path(config.get('attempts',config['history']+'.attempts'))
-            if any(p.is_symlink() for p in (directory,*directory.parents)):
-                raise ValueError('linked observation sink')
-            attempt=directory/(uuid.uuid4().hex+'.json')
-            _write(attempt,{'state':'incomplete','hash':None})
+            try:
+                directory=Path(config.get('attempts',config['history']+'.attempts'))
+                if any(p.is_symlink() for p in (directory,*directory.parents)):
+                    raise ValueError('linked observation sink')
+                attempt=directory/(uuid.uuid4().hex+'.json')
+                _write(attempt,{'state':'incomplete','hash':None})
+            except (OSError,ValueError):
+                # Recording is advisory; its failure cannot suppress the child.
+                attempt=None
         payload = json.loads(raw)
         root = Path(config['root']).resolve(strict=True)
         if len(raw) > 1024 * 1024 or Path(payload['cwd']).resolve() != root:

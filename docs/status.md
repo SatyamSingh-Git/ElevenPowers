@@ -163,5 +163,7 @@ and [journey 55](../journey/55-at-the-moment-of-done.md) preserve the protocol a
 Subsequent comparisons use preparation-time source/configuration seals, durable
 preflight journals, independent Stop capture markers and treatment native count
 reconciliation. Recorder gaps cannot qualify an earlier history as complete.
+Recorder sink failures preserve the native child's output and completion decision;
+absent capture markers leave the comparison incomplete.
 The original eight-run publication keeps its recorded producer identity;
 regrading explicitly compares current evaluator results with saved grades.

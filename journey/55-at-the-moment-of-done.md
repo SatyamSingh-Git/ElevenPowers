@@ -55,3 +55,9 @@ probe produced a complete snapshot and an unavailable grade. A second control
 used an equivalent `child/..` root. Both failed first; resolving the root before
 containment checks fixes the same boundary on every platform. The original 24
 saved grades still reproduce, and the hosted gates run again on that correction.
+
+A final adverse sink check found that recording setup could return before the
+native child ran. A real exit-2 child became exit 0 when the observation directory
+could not be created. Recording is advisory, so that result was wrong. The
+correction keeps delegation separate from recording setup: native output/status
+survive, and missing capture markers leave the comparison incomplete.
