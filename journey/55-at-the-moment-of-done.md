@@ -36,4 +36,14 @@ The public archive can reconstruct every proposed/final synthetic candidate;
 24 independent grades matched without another model call. The next useful
 comparison needs ordinary defective or stale first proposals on held-out work.
 We now have the instrument to see them and retain what happens, including
-another neutral result. See [dated evidence](../docs/validation/2026-10-02-proof-of-benefit.md).
+another neutral result.
+
+The fresh review found four gaps in future comparisons, even though the saved
+eight runs were valid: a later recording failure could leave an earlier history
+looking complete, project settings and prepared files could drift, the evaluator
+entry point was not fingerprinted, and preflight could fail before leaving an
+attempt. Each was reproduced before correction. New batches freeze inputs at
+preparation and retain attempts before authentication and every Stop. Independent
+capture markers and native treatment counts must agree with the history.
+Reproduction also preserves an old evaluator identity when checkout line endings
+change its bytes. See [dated evidence](../docs/validation/2026-10-02-proof-of-benefit.md).

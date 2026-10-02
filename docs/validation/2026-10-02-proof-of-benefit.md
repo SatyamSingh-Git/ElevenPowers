@@ -77,8 +77,12 @@ The first command only inspects bounded whitelisted records. The second
 explicitly executes the independent evaluator against disposable reconstructions
 of every saved proposed/final candidate. All **24 snapshot grades matched**.
 `current_harness: false` preserves the earlier frozen producer identity; later
-changes clarified benefit fields and hardened budget validation. Task/evaluator
-identities remain the same. Local checksums/hash chains are not authentication.
+changes clarified benefit fields and hardened budget validation, preparation
+seals, capture completeness and failure journals. Task/evaluator sources were
+unchanged for the original runs. `current_evaluator` reports whether recorded
+grader bytes match this checkout; line-ending conversion can change that flag.
+Explicit regrading uses this checkout's evaluator and compares saved grades;
+it never replaces the recorded identity. Local checksums/hash chains are not authentication.
 The checksum manifest hashes canonical JSON, so Git checkout newline conversion
 does not break consistency checks; pass `--checksums CHECKSUMS.json` explicitly.
 Candidate separation and process containment are not an OS security boundary.
@@ -91,6 +95,23 @@ RED and fixed by checking content metadata. Forward/adversarial cases cover
 index neutrality, deletions, linked/oversized/moving inputs, command freshness,
 unchanged native child decisions, conservative claims and bounded archive reads.
 Final suite/review/CI evidence is recorded at the delivery boundary below.
+
+The fresh whole-branch review identified four important future-run gaps:
+an earlier valid history could hide a failed later capture; active project
+settings and prepared inputs were not fully sealed before later launches;
+the grading entry point was absent from the harness identity; and setup/auth
+failures could occur before a durable batch journal. Eight regression cases
+failed first and passed after one correction pass. New protocol version 2
+seals candidates during preparation, records a batch attempt before preflight,
+reconciles independent Stop attempt markers and treatment native Stop counts,
+and includes the grading entry point in its fingerprint. The original eight-run
+archive remains unchanged and valid under its recorded producer; these controls
+strengthen subsequent comparisons rather than retroactively relabeling it.
+
+A separate archive portability regression failed before the reader was changed
+to retain a different recorded evaluator byte identity. Task/prompt changes
+remain rejected. The reader intentionally handles the original eight successful
+records; future failed batch journals remain available in their batch directory.
 
 Next proof exit: freeze held-out tasks where ordinary first proposals actually
 contain an independently checked defect or stale source evidence. Observe the

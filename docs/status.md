@@ -159,3 +159,9 @@ a missing exact-command receipt; final fresh receipt coverage was 4/4 versus
 baseline tests, better patches or faster work. All 24 saved snapshot grades
 reproduced without model calls. [Validation](validation/2026-10-02-proof-of-benefit.md)
 and [journey 55](../journey/55-at-the-moment-of-done.md) preserve the protocol and limits.
+
+Subsequent comparisons use preparation-time source/configuration seals, durable
+preflight journals, independent Stop capture markers and treatment native count
+reconciliation. Recorder gaps cannot qualify an earlier history as complete.
+The original eight-run publication keeps its recorded producer identity;
+regrading explicitly compares current evaluator results with saved grades.

@@ -371,11 +371,23 @@ python -m eval.benefit_archive docs/validation/2026-10-02-proof-of-benefit/compl
 ```
 
 Preparation creates only disposable evaluation inputs and launches no model.
+New batches use protocol version 2 and seal each candidate's source, tests,
+instructions, observer contract and project/local settings at preparation.
+Expected absence of project settings is part of that seal. A batch-level
+`attempt.json` precedes native health and subscription authentication; failed
+preflight is retained and cannot be retried in that directory. Each Stop also
+gets an independent attempt marker. A missing, failed or conflicting capture,
+or a treatment native Stop count that differs from captured proposals, cannot
+qualify an earlier successful history as complete.
 Run consumes subscription allowance and preserves each attempt immediately;
 quota exhaustion stops scheduling. The archive read launches no candidate or
 model. Explicit `--regrade` executes contained independent checks on disposable
-saved synthetic source. An older harness identity remains visible; inspection
-never silently upgrades it. Candidate files, prompts and history here are
+saved synthetic source. This archive reader qualifies the original successful
+eight-run publication, rather than arbitrary later failed batch journals.
+An older harness/evaluator identity remains visible through `current_harness`
+and `current_evaluator`; inspection never silently upgrades it. Regrading uses
+the current evaluator and compares its grades with the recorded grades.
+Candidate files, prompts and history here are
 explicit benchmark artifacts and remain absent from ordinary product reports.
 
 `missing` verification means no exact-command receipt was observed. Wrapped
