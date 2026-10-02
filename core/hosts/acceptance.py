@@ -75,6 +75,8 @@ def prepare(host, destination, language, source, version=''):
     if not runtime:
         raise ValueError('Node runtime unavailable; install it before preparing JavaScript acceptance')
     source = Path(source).resolve(strict=True)
+    from .provenance import fingerprint
+    runtime_fingerprint = fingerprint(source)
     root.mkdir()
     app, test = ('app.py', 'check.py') if language == 'python' else ('app.mjs', 'check.test.mjs')
     (root / app).write_text(PYTHON_SOURCE if language == 'python' else JS_SOURCE, encoding='utf-8')
@@ -92,6 +94,7 @@ def prepare(host, destination, language, source, version=''):
     value = {'schema_version': 1, 'state': 'prepared', 'exercise': uuid.uuid4().hex, 'host': host,
              'language': language, 'source_file': app, 'test_file': test, 'command': command,
              'prepared_at': time.time(), 'host_version': version or 'unavailable',
+             'runtime_fingerprint': runtime_fingerprint,
              'version_source': 'operator' if version else 'unavailable',
              'generation': activation(host, root)['generation'],
              'configuration': signature(config_path(host, root)),
@@ -165,6 +168,8 @@ def inspect(host, root, timeout=10):
                         'Acceptance is limited to this exercise, retained history and the recorded operator version.',
                         'Current freshness is checked; the earlier manual stale-view step is not independently attested.']}
     try:
+        from .provenance import fingerprint
+        runtime_before = fingerprint()
         path = root / '.elevenpowers/acceptance.json'
         manifest = read_json(path)
         if (not isinstance(manifest, dict) or manifest.get('schema_version') != 1 or
@@ -185,6 +190,7 @@ def inspect(host, root, timeout=10):
         contract_before = (initial, test, project, native)
         checks = value['checks']
         checks.update(test_unchanged=test == manifest.get('test_fingerprint'),
+                      runtime_identity=manifest.get('runtime_fingerprint') == runtime_before,
                       project_configuration=project == manifest.get('project_configuration'),
                       native_configuration=native == manifest.get('configuration'),
                       source_changed=initial != manifest.get('initial_source'),
@@ -200,6 +206,8 @@ def inspect(host, root, timeout=10):
         from ..config import load
         checks['command'] = load(root).commands == {'tests': manifest.get('command')}
         startup = live.get('phases', {}).get('SessionStart', {})
+        checks['startup_runtime'] = startup.get('runtime_fingerprint') == runtime_before
+        value['runtime_fingerprint'] = manifest.get('runtime_fingerprint', '')
         session, task = startup.get('session', ''), identity(snapshot['task'])
         checks['startup_after_preparation'] = bool(session and startup.get('last_at', 0) >= manifest['prepared_at'])
         links = [link for link in live.get('receipt_links', []) if task and session and
@@ -219,11 +227,13 @@ def inspect(host, root, timeout=10):
         if contract_after != contract_before or activation(host, root) != live:
             value['next_actions'].append('Exercise contract or native observations changed during inspection; read again.')
             raise ValueError('exercise changed during read')
-        if read_json(path) != manifest or time.monotonic() - started >= timeout:
+        if fingerprint() != runtime_before or read_json(path) != manifest or time.monotonic() - started >= timeout:
             raise ValueError('exercise changed or acceptance read deadline reached')
-        immutable = ('test_unchanged', 'project_configuration', 'native_configuration', 'generation', 'command')
+        immutable = ('test_unchanged', 'project_configuration', 'native_configuration', 'generation', 'command', 'runtime_identity')
         if not all(checks[k] for k in immutable):
-            value['next_actions'].append('Exercise contract or wiring changed; prepare a new exercise.')
+            value['next_actions'].append('Exercise contract, runtime or wiring changed; prepare a new exercise.')
+        elif session and not checks['startup_runtime']:
+            value['next_actions'].append('Native startup belongs to another or an unbound runtime; start a new exercise/session.')
         elif snapshot['health']['stages']['verification']['state'] == 'failed':
             value['state'] = 'failed'
         elif snapshot['health']['state'] in ('incomplete', 'attention'):
