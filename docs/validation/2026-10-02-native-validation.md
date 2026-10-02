@@ -95,3 +95,32 @@ budgets are recorded before execution. A new protocol must preserve these eight
 inconclusive results and report neutral or worse outcomes as well as improvements.
 
 Final whole-branch verification and review are recorded in the delivery check.
+
+
+## Recorded-protocol reproduction
+
+The [original protocol](2026-10-02-native-validation/protocol.json) remains pinned
+to the original grader identity. [Reproduced aggregates](2026-10-02-native-validation/reproduced-pilot.json)
+match all four original arms and label `current_evaluator: false`. This performs
+no candidate execution, regrading, project checks or model calls. It does not
+repair the original evaluator, authenticate its records or establish a coding effect.
+
+```bash
+python -m eval.paired --inspect docs/validation/2026-10-02-native-validation/subscription-pilot.json --protocol docs/validation/2026-10-02-native-validation/protocol.json
+```
+
+Only structurally qualified recorded observations are counted. Protocol/runtime/
+budget conflicts, unsupported resolved states and private/unknown fields are
+rejected. Optional output is explicit and atomically refuses overwrite unless
+`--force` is supplied. Archive and model-launch modes cannot be combined.
+
+Independent review identified three Important grader/summary defects. All three
+were reproduced failing before correction. The current grader's controller
+never imports candidate code: a contained worker preserves normal package
+imports and returns behavior, while final assertions stay in the controller.
+Grader and worker content now define a new protocol identity. The sixteen
+behavioral checks remain the same; the original eight records are preserved.
+Two Minor findings remain qualified: deleted sealed metadata is classified as
+setup instead of invalidation, and the sixteen checks do not exercise invalid
+source/target identifiers already present as balance keys. Passing all checks
+is not complete coverage or correctness. Expanded cases require a new protocol.

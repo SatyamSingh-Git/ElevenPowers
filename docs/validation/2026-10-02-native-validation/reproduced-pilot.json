@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "kind": "subscription_pilot",
+  "state": "complete",
+  "identity": {
+    "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+    "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+    "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+  },
+  "current_evaluator": false,
+  "arms": [
+    {
+      "host": "codex",
+      "arm": "baseline",
+      "runs": 2,
+      "resolved": 0,
+      "states": {
+        "resolved": 0,
+        "unresolved": 2,
+        "regressed": 0,
+        "invalid": 0,
+        "setup": 0,
+        "timeout": 0,
+        "host_failed": 0,
+        "running": 0
+      },
+      "completion_language_with_failed_grade": 0
+    },
+    {
+      "host": "codex",
+      "arm": "tool",
+      "runs": 2,
+      "resolved": 0,
+      "states": {
+        "resolved": 0,
+        "unresolved": 2,
+        "regressed": 0,
+        "invalid": 0,
+        "setup": 0,
+        "timeout": 0,
+        "host_failed": 0,
+        "running": 0
+      },
+      "completion_language_with_failed_grade": 0
+    },
+    {
+      "host": "claude",
+      "arm": "baseline",
+      "runs": 2,
+      "resolved": 0,
+      "states": {
+        "resolved": 0,
+        "unresolved": 0,
+        "regressed": 0,
+        "invalid": 0,
+        "setup": 0,
+        "timeout": 0,
+        "host_failed": 2,
+        "running": 0
+      },
+      "completion_language_with_failed_grade": 0
+    },
+    {
+      "host": "claude",
+      "arm": "tool",
+      "runs": 2,
+      "resolved": 0,
+      "states": {
+        "resolved": 0,
+        "unresolved": 0,
+        "regressed": 0,
+        "invalid": 0,
+        "setup": 0,
+        "timeout": 0,
+        "host_failed": 2,
+        "running": 0
+      },
+      "completion_language_with_failed_grade": 0
+    }
+  ],
+  "runs": [
+    {
+      "schema_version": 1,
+      "host": "codex",
+      "arm": "baseline",
+      "replicate": 0,
+      "state": "unresolved",
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:54:53.523473+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 22539.98,
+      "exit_code": 0,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 81767,
+          "cached_input_tokens": 68224,
+          "output_tokens": 251,
+          "reasoning_output_tokens": 12
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": {
+        "state": "graded",
+        "passed": 7,
+        "total": 16,
+        "regressions": 0,
+        "checks": {
+          "basic_transfer": true,
+          "empty": true,
+          "repeat": true,
+          "replay_without_funds": true,
+          "conflicting_id": false,
+          "insufficient": false,
+          "batch_atomicity": false,
+          "unknown_account": false,
+          "self_transfer": true,
+          "self_requires_funds": false,
+          "invalid_amounts": false,
+          "invalid_ids": false,
+          "malformed_entries": false,
+          "invalid_balances": false,
+          "view_total": true,
+          "view_statement": true
+        }
+      },
+      "mechanisms": {},
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "codex",
+      "arm": "tool",
+      "replicate": 0,
+      "state": "unresolved",
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:55:17.094070+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 28510.533,
+      "exit_code": 0,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 78848,
+          "cached_input_tokens": 66048,
+          "output_tokens": 280,
+          "reasoning_output_tokens": 29
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": {
+        "state": "graded",
+        "passed": 7,
+        "total": 16,
+        "regressions": 0,
+        "checks": {
+          "basic_transfer": true,
+          "empty": true,
+          "repeat": true,
+          "replay_without_funds": true,
+          "conflicting_id": false,
+          "insufficient": false,
+          "batch_atomicity": false,
+          "unknown_account": false,
+          "self_transfer": true,
+          "self_requires_funds": false,
+          "invalid_amounts": false,
+          "invalid_ids": false,
+          "malformed_entries": false,
+          "invalid_balances": false,
+          "view_total": true,
+          "view_statement": true
+        }
+      },
+      "mechanisms": {
+        "pipeline_health": "waiting",
+        "task_verification": "UNVERIFIED",
+        "callbacks": {
+          "SessionStart": 0,
+          "UserPromptSubmit": 0,
+          "PreToolUse": 0,
+          "PostToolUse": 0,
+          "Stop": 0
+        },
+        "receipt_outcomes": {
+          "pass": 0,
+          "fail": 0
+        },
+        "coverage_complete": true
+      },
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "claude",
+      "arm": "baseline",
+      "replicate": 0,
+      "state": "host_failed",
+      "model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:55:46.886905+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 3221.367,
+      "exit_code": 1,
+      "observation": {
+        "completed": false,
+        "usage": {
+          "input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": null,
+      "mechanisms": {},
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "claude",
+      "arm": "tool",
+      "replicate": 0,
+      "state": "host_failed",
+      "model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:55:51.943074+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 2574.857,
+      "exit_code": 1,
+      "observation": {
+        "completed": false,
+        "usage": {
+          "input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": null,
+      "mechanisms": {
+        "pipeline_health": "waiting",
+        "task_verification": "UNVERIFIED",
+        "callbacks": {
+          "SessionStart": 0,
+          "UserPromptSubmit": 0,
+          "PreToolUse": 0,
+          "PostToolUse": 0,
+          "Stop": 0
+        },
+        "receipt_outcomes": {
+          "pass": 0,
+          "fail": 0
+        },
+        "coverage_complete": true
+      },
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "codex",
+      "arm": "tool",
+      "replicate": 1,
+      "state": "unresolved",
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:55:55.961156+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 24976.983,
+      "exit_code": 0,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 77508,
+          "cached_input_tokens": 65408,
+          "output_tokens": 282,
+          "reasoning_output_tokens": 36
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": {
+        "state": "graded",
+        "passed": 7,
+        "total": 16,
+        "regressions": 0,
+        "checks": {
+          "basic_transfer": true,
+          "empty": true,
+          "repeat": true,
+          "replay_without_funds": true,
+          "conflicting_id": false,
+          "insufficient": false,
+          "batch_atomicity": false,
+          "unknown_account": false,
+          "self_transfer": true,
+          "self_requires_funds": false,
+          "invalid_amounts": false,
+          "invalid_ids": false,
+          "malformed_entries": false,
+          "invalid_balances": false,
+          "view_total": true,
+          "view_statement": true
+        }
+      },
+      "mechanisms": {
+        "pipeline_health": "waiting",
+        "task_verification": "UNVERIFIED",
+        "callbacks": {
+          "SessionStart": 0,
+          "UserPromptSubmit": 0,
+          "PreToolUse": 0,
+          "PostToolUse": 0,
+          "Stop": 0
+        },
+        "receipt_outcomes": {
+          "pass": 0,
+          "fail": 0
+        },
+        "coverage_complete": true
+      },
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "codex",
+      "arm": "baseline",
+      "replicate": 1,
+      "state": "unresolved",
+      "model": "gpt-6.1-sol",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:56:22.108434+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 28110.161,
+      "exit_code": 0,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 78948,
+          "cached_input_tokens": 61952,
+          "output_tokens": 297,
+          "reasoning_output_tokens": 23
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": {
+        "state": "graded",
+        "passed": 7,
+        "total": 16,
+        "regressions": 0,
+        "checks": {
+          "basic_transfer": true,
+          "empty": true,
+          "repeat": true,
+          "replay_without_funds": true,
+          "conflicting_id": false,
+          "insufficient": false,
+          "batch_atomicity": false,
+          "unknown_account": false,
+          "self_transfer": true,
+          "self_requires_funds": false,
+          "invalid_amounts": false,
+          "invalid_ids": false,
+          "malformed_entries": false,
+          "invalid_balances": false,
+          "view_total": true,
+          "view_statement": true
+        }
+      },
+      "mechanisms": {},
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "claude",
+      "arm": "tool",
+      "replicate": 1,
+      "state": "host_failed",
+      "model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:56:51.194587+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 2755.64,
+      "exit_code": 1,
+      "observation": {
+        "completed": false,
+        "usage": {
+          "input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": null,
+      "mechanisms": {
+        "pipeline_health": "waiting",
+        "task_verification": "UNVERIFIED",
+        "callbacks": {
+          "SessionStart": 0,
+          "UserPromptSubmit": 0,
+          "PreToolUse": 0,
+          "PostToolUse": 0,
+          "Stop": 0
+        },
+        "receipt_outcomes": {
+          "pass": 0,
+          "fail": 0
+        },
+        "coverage_complete": true
+      },
+      "contract_unchanged": true
+    },
+    {
+      "schema_version": 1,
+      "host": "claude",
+      "arm": "baseline",
+      "replicate": 1,
+      "state": "host_failed",
+      "model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "budget_seconds": 240.0,
+      "generated_at": "2026-10-02T06:56:55.149576+00:00",
+      "identity": {
+        "task": "d7fe45db70a59b08d886149d7da02a51cd44fe48a3ae7c66d8ee7b491e6fee00",
+        "prompt": "b7cd370f595996e61c840659239049dc1bbac29424d1b88c2610b0f7f6dd60f1",
+        "grader": "5c825809750626e5237fbf40fe6f35de3ed0c651f089cb7ab6aaf07883a9264c"
+      },
+      "runtime_fingerprint": "697fdd180f3e768c2d8aeb673ac182d48b5fa48a75702af87689f9ea2df4f5cb",
+      "elapsed_ms": 2676.957,
+      "exit_code": 1,
+      "observation": {
+        "completed": false,
+        "usage": {
+          "input_tokens": 0,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "output_tokens": 0
+        },
+        "models": [],
+        "completion_language": false
+      },
+      "grade": null,
+      "mechanisms": {},
+      "contract_unchanged": true
+    }
+  ],
+  "limits": [
+    "Eight-run descriptive pilot; no general or statistically powered causal improvement claim.",
+    "Workspace separation is not a closed-book OS boundary; candidate code runs in a contained process.",
+    "Completion wording is a heuristic, not an independently validated intent classifier.",
+    "A ceiling baseline supplies no increased solve-rate evidence; process and patch outcomes are separate.",
+    "Recorded protocols reproduce saved unsigned results; this neither reruns nor validates an earlier evaluator."
+  ]
+}
