@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "host": "claude",
+  "installed_version": "2.1.287",
+  "model": "claude-sonnet-5",
+  "effort": "medium",
+  "authentication": "claude.ai subscription verified; no API fallback",
+  "python": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "initial_producer_commit": "db67dc9",
+  "continuation_producer_commit": "be17b5b",
+  "original_evaluator_preserved": true,
+  "coding_call_limit": 8,
+  "seconds_per_call": 480,
+  "interruption": "controller and concurrent suite exited abruptly; cause unknown; no interrupted call retried",
+  "native_pipeline": "prior owned fixture observed; full interruption acceptance remains open",
+  "supplemental_audit": "post-run review qualification, separate from frozen 94-group scores",
+  "task_kind": "authored synthetic repairs with four planted faults per task, not sampled real repository issues",
+  "engine_condition": "ordinary guide hooks; optional mutation engines disabled in both arms"
+}

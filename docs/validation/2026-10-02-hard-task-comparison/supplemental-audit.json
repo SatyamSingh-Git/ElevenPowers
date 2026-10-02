@@ -1,0 +1,335 @@
+{
+  "schema_version": 1,
+  "kind": "separate-post-run-audit",
+  "auditor_fingerprint": "1d45d1cabdbe58dddc157b7f2f91d9cb574dc0fcbd2f4de52baec3a5bb606d7b",
+  "limits": [
+    "Authored after frozen-run grading; original 94-group scores and identities remain unchanged.",
+    "Visible suite preservation and detached-fetch closure are supplementary checks, not a population effect.",
+    "Interrupted/unqualified native calls remain unqualified even if their saved code passes."
+  ],
+  "runs": [
+    {
+      "case": "lease-queue",
+      "arm": "baseline",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "lease-queue",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "lease-queue",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "lease-queue",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {},
+        "qualified": true
+      }
+    },
+    {
+      "case": "lease-queue",
+      "arm": "tool",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "lease-queue",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "lease-queue",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "lease-queue",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {},
+        "qualified": true
+      }
+    },
+    {
+      "case": "async-cache",
+      "arm": "tool",
+      "state": "interrupted",
+      "proposals": [],
+      "final": {
+        "schema_version": 1,
+        "case": "async-cache",
+        "state": "audited",
+        "visible": {
+          "state": "timeout",
+          "exit_code": null
+        },
+        "additional": {
+          "close_detached_fetch": true,
+          "close_old_and_new_fetches": false
+        },
+        "qualified": false
+      }
+    },
+    {
+      "case": "async-cache",
+      "arm": "baseline",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "async-cache",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {
+              "close_detached_fetch": true,
+              "close_old_and_new_fetches": true
+            },
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "async-cache",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {
+              "close_detached_fetch": true,
+              "close_old_and_new_fetches": true
+            },
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "async-cache",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {
+          "close_detached_fetch": true,
+          "close_old_and_new_fetches": true
+        },
+        "qualified": true
+      }
+    },
+    {
+      "case": "build-planner",
+      "arm": "baseline",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "build-planner",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "build-planner",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "build-planner",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {},
+        "qualified": true
+      }
+    },
+    {
+      "case": "build-planner",
+      "arm": "tool",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "build-planner",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "build-planner",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "build-planner",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {},
+        "qualified": true
+      }
+    },
+    {
+      "case": "resumable-stream",
+      "arm": "tool",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "resumable-stream",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "resumable-stream",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "resumable-stream",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {},
+        "qualified": true
+      }
+    },
+    {
+      "case": "resumable-stream",
+      "arm": "baseline",
+      "state": "graded",
+      "proposals": [
+        {
+          "before": {
+            "schema_version": 1,
+            "case": "resumable-stream",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          },
+          "after": {
+            "schema_version": 1,
+            "case": "resumable-stream",
+            "state": "audited",
+            "visible": {
+              "state": "complete",
+              "exit_code": 0
+            },
+            "additional": {},
+            "qualified": true
+          }
+        }
+      ],
+      "final": {
+        "schema_version": 1,
+        "case": "resumable-stream",
+        "state": "audited",
+        "visible": {
+          "state": "complete",
+          "exit_code": 0
+        },
+        "additional": {},
+        "qualified": true
+      }
+    }
+  ]
+}

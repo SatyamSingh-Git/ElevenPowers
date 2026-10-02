@@ -1,0 +1,95 @@
+{
+  "archive_schema_version": 2,
+  "current_harness": false,
+  "continuation_harness_current": true,
+  "current_evaluator": true,
+  "regraded": false,
+  "snapshots_regraded": 0,
+  "grades_match": null,
+  "summary": {
+    "schema_version": 1,
+    "state": "inconclusive",
+    "runs": 8,
+    "valid_runs": 7,
+    "repairs_after_block": [],
+    "verification_refreshes": [
+      [
+        "lease-queue",
+        0
+      ],
+      [
+        "build-planner",
+        0
+      ],
+      [
+        "resumable-stream",
+        0
+      ]
+    ],
+    "benefit_observed": false,
+    "coding_improvement_observed": false,
+    "receipt_refresh_observed": true,
+    "limits": [
+      "Eight authored scenario runs cannot establish a population effect, statistical significance or speedup.",
+      "Native observations and local hash chains are not authentication or an OS security boundary.",
+      "A refreshed receipt is additional verification evidence, not necessarily a better patch.",
+      "Missing means no exact-command receipt; wrapped baseline tests may still have run.",
+      "A paired correctness advantage without a linked intervention does not establish a causal repair."
+    ],
+    "paired_outcomes": [
+      {
+        "case": "lease-queue",
+        "baseline": {
+          "passed": 23,
+          "total": 23,
+          "elapsed_ms": 167962.716
+        },
+        "tool": {
+          "passed": 23,
+          "total": 23,
+          "elapsed_ms": 158211.685
+        },
+        "difference": 0
+      },
+      {
+        "case": "async-cache",
+        "baseline": {
+          "passed": 22,
+          "total": 22,
+          "elapsed_ms": 399356.565
+        },
+        "tool": null,
+        "difference": null
+      },
+      {
+        "case": "build-planner",
+        "baseline": {
+          "passed": 24,
+          "total": 24,
+          "elapsed_ms": 120848.564
+        },
+        "tool": {
+          "passed": 24,
+          "total": 24,
+          "elapsed_ms": 102294.911
+        },
+        "difference": 0
+      },
+      {
+        "case": "resumable-stream",
+        "baseline": {
+          "passed": 25,
+          "total": 25,
+          "elapsed_ms": 156339.468
+        },
+        "tool": {
+          "passed": 25,
+          "total": 25,
+          "elapsed_ms": 165096.373
+        },
+        "difference": 0
+      }
+    ],
+    "paired_correctness_advantage_observed": false
+  }
+}
