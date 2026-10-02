@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "case": "click-ad39d749",
+  "feedback": "ElevenPowers test-strength review observations\nAnalysis state: deferred.\nThis bounded sample can be incomplete. Undetected changes may have equivalent behavior.\nUse the public contracts to investigate; a location is a review lead, not a confirmed defect.\n- Passing tests left sampled changes undetected in src/click/testing.py: __repr__. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/click/testing.py: invoke. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/click/testing.py: isolation. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/click/testing.py: stop. Review its observable behavior and boundary/error cases.",
+  "feedback_sha256": "5a8599138da4e01ef05afdd4f7da52dbadfa7175b0ecd0ab1a60cb781f6503f7",
+  "cost_boundary": "Engine audits add local analysis work outside equal native review caps.",
+  "whole_suite": {
+    "schema_version": 1,
+    "state": "deferred",
+    "issues": [
+      "strength deadline reached reading inputs"
+    ],
+    "observations": [
+      {
+        "id": "61edc262757467860247f93c",
+        "path": "src/click/testing.py",
+        "line": 20,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "b4cd23e7d37abee3195d6a72",
+        "path": "src/click/testing.py",
+        "line": 38,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "555ee8583db322d4b2e6717d",
+        "path": "src/click/testing.py",
+        "line": 64,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "10d3235b4d18b39209e2fba1",
+        "path": "src/click/testing.py",
+        "line": 94,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "07b9ae8997447b93c7e2963a",
+        "path": "src/click/testing.py",
+        "line": 176,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      },
+      {
+        "id": "b6f7224a3c6a76f55a4ae082",
+        "path": "src/click/testing.py",
+        "line": 193,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      },
+      {
+        "id": "0ceda05a812b64b8f1e82da7",
+        "path": "src/click/testing.py",
+        "line": 196,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "04d4cee3bc9258ea453437d1",
+        "path": "src/click/testing.py",
+        "line": 201,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "67c0db6aed22665713cdcc79",
+        "path": "src/click/testing.py",
+        "line": 283,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      }
+    ],
+    "fingerprint": "06e6539a2624141f4a0f9ebe5a7e990f5de6fb769175107ecbb3c876d1674f7c",
+    "source_fingerprint": "e7fa6a531021a8dc",
+    "baseline": "passed",
+    "engine_versions": {
+      "cosmic-ray": "8.7.0"
+    },
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/click/testing.py"
+    ],
+    "recorded_at": 1790957231.9737928,
+    "summary": {
+      "detected": 4,
+      "undetected": 1,
+      "invalid": 0,
+      "timed_out": 3,
+      "error": 1,
+      "not_run": 0,
+      "incomplete": 4
+    },
+    "attempts": 9,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests -q -p no:cacheprovider",
+    "record_sha256": "470358b5ca15500829a76efc713331f0a922d4a9d2da99573dd5929322fe0a0d"
+  },
+  "focused": {
+    "schema_version": 1,
+    "state": "deferred",
+    "issues": [
+      "strength deadline reached reading inputs"
+    ],
+    "observations": [
+      {
+        "id": "61edc262757467860247f93c",
+        "path": "src/click/testing.py",
+        "line": 20,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "b4cd23e7d37abee3195d6a72",
+        "path": "src/click/testing.py",
+        "line": 38,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "555ee8583db322d4b2e6717d",
+        "path": "src/click/testing.py",
+        "line": 64,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "10d3235b4d18b39209e2fba1",
+        "path": "src/click/testing.py",
+        "line": 94,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "07b9ae8997447b93c7e2963a",
+        "path": "src/click/testing.py",
+        "line": 176,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "b6f7224a3c6a76f55a4ae082",
+        "path": "src/click/testing.py",
+        "line": 193,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "0ceda05a812b64b8f1e82da7",
+        "path": "src/click/testing.py",
+        "line": 196,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "04d4cee3bc9258ea453437d1",
+        "path": "src/click/testing.py",
+        "line": 201,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "67c0db6aed22665713cdcc79",
+        "path": "src/click/testing.py",
+        "line": 283,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "a8c0dcd63bd9b56f8cf4fc10",
+        "path": "src/click/testing.py",
+        "line": 332,
+        "operator": "core/AddNot",
+        "status": "invalid"
+      },
+      {
+        "id": "f73b17c49cf1001407525a1d",
+        "path": "src/click/testing.py",
+        "line": 336,
+        "operator": "core/AddNot",
+        "status": "invalid"
+      },
+      {
+        "id": "ce8d5bccc07a1c31869c2576",
+        "path": "src/click/testing.py",
+        "line": 358,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "fa12984a7e47cc19c29ea786",
+        "path": "src/click/testing.py",
+        "line": 409,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "305a0e10fb9a4fd66fd04f11",
+        "path": "src/click/testing.py",
+        "line": 418,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "c8256fcb793da3f1b9267dcd",
+        "path": "src/click/testing.py",
+        "line": 462,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "667bae821951ed5aafeb4c15",
+        "path": "src/click/testing.py",
+        "line": 473,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "bf1350a0c8da939101c76a1c",
+        "path": "src/click/testing.py",
+        "line": 518,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "e26b90cf3c7e8d94a4d68340",
+        "path": "src/click/testing.py",
+        "line": 520,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "ec10c2533ffb7209a23931a2",
+        "path": "src/click/testing.py",
+        "line": 532,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "3fe3d7239d2b77221143c6a8",
+        "path": "src/click/testing.py",
+        "line": 542,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "00559365419ba2953fa7059d",
+        "path": "src/click/testing.py",
+        "line": 614,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "7b818dada889f4afb235063a",
+        "path": "src/click/testing.py",
+        "line": 621,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "d8cc079ea7b04aebe43aa6be",
+        "path": "src/click/testing.py",
+        "line": 634,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "ac8a7f39cc7b1e4c7f600ca1",
+        "path": "src/click/testing.py",
+        "line": 642,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      }
+    ],
+    "fingerprint": "03913361a3d95d16a7e3c150473b474ad6a2f052b12f85e6475bfb1968214f7b",
+    "source_fingerprint": "e7fa6a531021a8dc",
+    "baseline": "passed",
+    "engine_versions": {
+      "cosmic-ray": "8.7.0"
+    },
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/click/testing.py"
+    ],
+    "recorded_at": 1790957892.73688,
+    "summary": {
+      "detected": 16,
+      "undetected": 4,
+      "invalid": 2,
+      "timed_out": 1,
+      "error": 1,
+      "not_run": 0,
+      "incomplete": 2
+    },
+    "attempts": 24,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests/test_testing.py -q -p no:cacheprovider",
+    "record_sha256": "6ae5b986c13148e226bec82e4b00d8b9c270b21a01aee0745d3299907d9a1218"
+  }
+}

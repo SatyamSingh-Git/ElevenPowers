@@ -1,0 +1,332 @@
+[
+  {
+    "schema_version": 1,
+    "case": "itsdangerous-6c58e969",
+    "arm": "ordinary",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 58983.559,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 12,
+        "cache_creation_input_tokens": 27614,
+        "cache_read_input_tokens": 105237,
+        "output_tokens": 3722
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_itsdangerous/test_timed_fallback.py": "import hashlib\nfrom datetime import datetime\nfrom datetime import timedelta\n\nimport pytest\nfrom freezegun import freeze_time\n\nfrom itsdangerous.exc import BadSignature\nfrom itsdangerous.exc import SignatureExpired\nfrom itsdangerous.timed import TimedSerializer\n\n\nclass TestTimedSerializerFallback(object):\n    @pytest.fixture()\n    def ts(self):\n        return datetime(2011, 6, 24, 0, 9, 5)\n\n    @pytest.fixture(autouse=True)\n    def freeze(self, ts):\n        with freeze_time(ts) as ft:\n            yield ft\n\n    def test_fallback_signers_return_timestamp(self, ts):\n        old = TimedSerializer(\n            secret_key=\"foo\", signer_kwargs={\"digest_method\": hashlib.sha512}\n        )\n        signed = old.dumps([1, 2, 3])\n\n        new = TimedSerializer(\n            secret_key=\"foo\",\n            signer_kwargs={\"digest_method\": hashlib.sha1},\n            fallback_signers=[{\"digest_method\": hashlib.sha512}],\n        )\n        payload, timestamp = new.loads(signed, return_timestamp=True)\n        assert payload == [1, 2, 3]\n        assert timestamp == ts\n\n    def test_fallback_signers_expired_still_raises(self, ts, freeze):\n        old = TimedSerializer(\n            secret_key=\"foo\", signer_kwargs={\"digest_method\": hashlib.sha512}\n        )\n        signed = old.dumps([1, 2, 3])\n        freeze.tick(timedelta(seconds=11))\n\n        new = TimedSerializer(\n            secret_key=\"foo\",\n            signer_kwargs={\"digest_method\": hashlib.sha1},\n            fallback_signers=[{\"digest_method\": hashlib.sha512}],\n        )\n\n        with pytest.raises(SignatureExpired) as exc_info:\n            new.loads(signed, max_age=10)\n\n        assert exc_info.value.date_signed == ts\n        assert new.load_payload(exc_info.value.payload) == [1, 2, 3]\n\n    def test_fallback_signers_none_match(self):\n        unrelated = TimedSerializer(\n            secret_key=\"bar\", signer_kwargs={\"digest_method\": hashlib.sha512}\n        )\n        signed = unrelated.dumps([1, 2, 3])\n\n        serializer = TimedSerializer(\n            secret_key=\"foo\",\n            signer_kwargs={\"digest_method\": hashlib.sha1},\n            fallback_signers=[{\"digest_method\": hashlib.sha512}],\n        )\n\n        with pytest.raises(BadSignature):\n            serializer.loads(signed)\n\n    def test_fallback_signers_with_salt(self):\n        old = TimedSerializer(\n            secret_key=\"foo\", signer_kwargs={\"digest_method\": hashlib.sha512}\n        )\n        signed = old.dumps([1, 2, 3], salt=\"other-salt\")\n\n        new = TimedSerializer(\n            secret_key=\"foo\",\n            signer_kwargs={\"digest_method\": hashlib.sha1},\n            fallback_signers=[{\"digest_method\": hashlib.sha512}],\n        )\n\n        with pytest.raises(BadSignature):\n            new.loads(signed)\n\n        assert new.loads(signed, salt=\"other-salt\") == [1, 2, 3]\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "7b23dbd04989ec67b736004da4ace897f17a4b7fe8508d5112231818b92c7506",
+    "feedback_sha256": "",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "4f563dd0a37dd615facdc076bb97c7c87e7716c7bcef58ff7f109a4ee64a8186",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 403,
+        "failed": 0,
+        "skipped": 0,
+        "error": 0,
+        "elapsed_ms": 5981.314
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 403,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 8095.699
+          }
+        },
+        {
+          "id": "F02",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 403,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6294.674
+          }
+        },
+        {
+          "id": "F03",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 301,
+            "failed": 102,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 8519.146
+          }
+        },
+        {
+          "id": "F04",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 360,
+            "failed": 43,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 27277.952
+          }
+        },
+        {
+          "id": "F05",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 301,
+            "failed": 102,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 8662.914
+          }
+        },
+        {
+          "id": "F06",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 301,
+            "failed": 102,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7088.11
+          }
+        },
+        {
+          "id": "F07",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 308,
+            "failed": 95,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6278.256
+          }
+        },
+        {
+          "id": "F08",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 313,
+            "failed": 90,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6922.903
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 403,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 5566.177
+          }
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": 1,
+    "case": "itsdangerous-6c58e969",
+    "arm": "assisted",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 84900.141,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 22,
+        "cache_creation_input_tokens": 19774,
+        "cache_read_input_tokens": 250591,
+        "output_tokens": 5001
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_itsdangerous/test_timed_fallback.py": "import hashlib\nfrom datetime import datetime\nfrom datetime import timedelta\n\nimport pytest\nfrom freezegun import freeze_time\n\nfrom itsdangerous.exc import BadSignature\nfrom itsdangerous.exc import SignatureExpired\nfrom itsdangerous.timed import TimedSerializer\n\n\n@pytest.fixture()\ndef ts():\n    return datetime(2011, 6, 24, 0, 9, 5)\n\n\n@pytest.fixture(autouse=True)\ndef freeze(ts):\n    with freeze_time(ts) as ft:\n        yield ft\n\n\ndef make_pair():\n    signed_with = TimedSerializer(\n        secret_key=\"foo\", signer_kwargs={\"digest_method\": hashlib.sha512}\n    )\n    verifier = TimedSerializer(\n        secret_key=\"foo\",\n        signer_kwargs={\"digest_method\": hashlib.sha1},\n        fallback_signers=[{\"digest_method\": hashlib.sha512}],\n    )\n    return signed_with, verifier\n\n\ndef test_fallback_signers_return_timestamp(ts):\n    signed_with, verifier = make_pair()\n    value = signed_with.dumps([1, 2, 3])\n    payload, timestamp = verifier.loads(value, return_timestamp=True)\n    assert payload == [1, 2, 3]\n    assert timestamp == ts\n\n\ndef test_fallback_signers_respects_max_age(freeze):\n    signed_with, verifier = make_pair()\n    value = signed_with.dumps([1, 2, 3])\n    freeze.tick(timedelta(seconds=20))\n\n    with pytest.raises(SignatureExpired) as exc_info:\n        verifier.loads(value, max_age=10)\n\n    assert exc_info.value.payload is not None\n    assert verifier.load_payload(exc_info.value.payload) == [1, 2, 3]\n\n\ndef test_fallback_signers_within_max_age(freeze):\n    signed_with, verifier = make_pair()\n    value = signed_with.dumps([1, 2, 3])\n    freeze.tick(timedelta(seconds=5))\n    assert verifier.loads(value, max_age=10) == [1, 2, 3]\n\n\ndef test_fallback_signers_all_fail_raises_bad_signature():\n    _, verifier = make_pair()\n    other = TimedSerializer(secret_key=\"totally-different-key\")\n    value = other.dumps([1, 2, 3])\n\n    with pytest.raises(BadSignature):\n        verifier.loads(value)\n\n\ndef test_no_fallback_signers_still_raises_bad_signature():\n    serializer = TimedSerializer(secret_key=\"foo\")\n    tampered = serializer.dumps([1, 2, 3])[:-1]\n\n    with pytest.raises(BadSignature):\n        serializer.loads(tampered)\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "1fe09d9bf9d97b4433b10b26de1c672b991457bfb17b11ab079192e8416aec8e",
+    "feedback_sha256": "2f96e67b0b0442d45b58931cdaa5eacc2200ad609c239bdc0f967a53045d6c0d",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "4f563dd0a37dd615facdc076bb97c7c87e7716c7bcef58ff7f109a4ee64a8186",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 404,
+        "failed": 0,
+        "skipped": 0,
+        "error": 0,
+        "elapsed_ms": 5494.925
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 404,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6036.598
+          }
+        },
+        {
+          "id": "F02",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 404,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 5398.792
+          }
+        },
+        {
+          "id": "F03",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 301,
+            "failed": 103,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6927.328
+          }
+        },
+        {
+          "id": "F04",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 361,
+            "failed": 43,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 9579.638
+          }
+        },
+        {
+          "id": "F05",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 301,
+            "failed": 103,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 8668.756
+          }
+        },
+        {
+          "id": "F06",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 301,
+            "failed": 103,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6829.487
+          }
+        },
+        {
+          "id": "F07",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 309,
+            "failed": 95,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 9593.03
+          }
+        },
+        {
+          "id": "F08",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 314,
+            "failed": 90,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6673.337
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 404,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 5730.708
+          }
+        }
+      ]
+    }
+  }
+]

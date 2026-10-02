@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "cases": [
+    "itsdangerous-6c58e969",
+    "click-ad39d749",
+    "jinja2-065334d1",
+    "attrs-97f8d175"
+  ],
+  "schedule": [
+    [
+      "itsdangerous-6c58e969",
+      "ordinary"
+    ],
+    [
+      "itsdangerous-6c58e969",
+      "assisted"
+    ],
+    [
+      "click-ad39d749",
+      "assisted"
+    ],
+    [
+      "click-ad39d749",
+      "ordinary"
+    ],
+    [
+      "jinja2-065334d1",
+      "ordinary"
+    ],
+    [
+      "jinja2-065334d1",
+      "assisted"
+    ],
+    [
+      "attrs-97f8d175",
+      "assisted"
+    ],
+    [
+      "attrs-97f8d175",
+      "ordinary"
+    ]
+  ],
+  "model": "claude-sonnet-5",
+  "effort": "medium",
+  "seconds_per_review": 480,
+  "seconds_per_grade": 120,
+  "claude_version": "2.1.287",
+  "subscription_only": true,
+  "harness_files": {
+    "eval/review_checkpoint.py": "fc0fd80e20bca419f0b9c4aae38af5d774ec8f515cd32e0682d19e8b674226b0",
+    "eval/review_pilot.py": "c13d2e3c854f71fd2c053264064fab7e372934233fa7cae10e53116b9c9e1c7d",
+    "eval/review_archive.py": "e22ffe355906fd45b34c2a71a61896aaa6b5075188da06f58d094b78b3e1a70e",
+    "core/process.py": "57b0c761cfb38e33d5ad4c224d17cbb6c281529bdc26e674c88533844563ab89",
+    "core/parsers.py": "6b875534f670743fc15735e7be878c8cafbc892f3d159a017d30ff71407f9745"
+  },
+  "case_files": {
+    "itsdangerous-6c58e969": {
+      "case.json": "a883057bec8e596fa2ec546f5addd82e9f9ba4e859b00511737c09a171dcd7ef",
+      "faults.json": "7809fc65dc98735e5418cf54b90a18104fa7327f5126c3b93e2bfb97f98f239d",
+      "brief.txt": "5ff68e850cf0ce346e366218cd7935ddbae05a45ac8820020d35795377efb140",
+      "strength-focused.json": "fe0ad17d40398fefd52f954cba5b5c9b91895fef5eb0263e1654efd441f012fe"
+    },
+    "click-ad39d749": {
+      "case.json": "3e88e558cd8d047ca42da82d2270dd339e1109ca9d9eb24b947a90ed4a439f2c",
+      "faults.json": "11c6e79d2fcbac4f260d4f69d7dae16ea0ea0148f0cf75340a642dcabc60be06",
+      "brief.txt": "5a8599138da4e01ef05afdd4f7da52dbadfa7175b0ecd0ab1a60cb781f6503f7",
+      "strength-focused.json": "6ae5b986c13148e226bec82e4b00d8b9c270b21a01aee0745d3299907d9a1218"
+    },
+    "jinja2-065334d1": {
+      "case.json": "63c0a5ca5c2fd2eda1e61ee27b1a4adebe46cb500325097e9034da93cbf5c3c4",
+      "faults.json": "1862eb1dbd3090f8a50f75ad0dbd2a3facced335674982a226d02b01376e0634",
+      "brief.txt": "aa12e33ade93b0d89e1435acf39ee2caf96c7be6380fa53c723b5d72efa4647d",
+      "strength-focused.json": "8d7017e7e64e2b486837a01ce8dff5d7b8c5d6553982ff39957b70a1fed91e72"
+    },
+    "attrs-97f8d175": {
+      "case.json": "5f5c5d4325acfd9fdf39751c5f7471ca0e6c0477bd431f9aea2ccefbe27575aa",
+      "faults.json": "6fe9bd414a70d3928a18bf5d3ecba363ded09ccdc5df1e9444caf26837a82a3c",
+      "brief.txt": "1a7b4457b21734a4e4ee89a9eb9aae1f7b97beec0b43e6bce9b17e7293da57f6",
+      "strength-focused.json": "652fe9d6831f01af2f071ae83075e7a3661fcd4b44f1be03387d9d8c552517b8"
+    }
+  },
+  "created_at": 1790958578.5344584,
+  "scope": "new behavioral tests only; production and existing inputs fixed",
+  "analysis": "shipping engine; focused public module; 180s/32attempts/30s test cap; full-suite audit retained",
+  "exposure": "native tools; external answer retrieval forbidden; no OS boundary",
+  "primary_endpoint": "prior dual-rater meaningful historical survivors; other detections exploratory",
+  "runtime_files": {
+    "core/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core/assumptions.py": "15a43d8e15875680a2d1e4fb48bc209f7eab79ddc978dc0088298a2a68379419",
+    "core/atlas.py": "5fb336954f3d333baceee32a9fa9a5dd6453bfb2faf028d268212fec74cac631",
+    "core/blindspots.py": "6a776a219002fe7a82e1eb3784f6d5ec43c3942c0d648c17b2d1577f47430037",
+    "core/claims.py": "a7e654ba10708d5d362de1f3b290c601e367a00048c9ceb256127b67fda9dbf8",
+    "core/config.py": "1af47413030283bbf554a8553861c3304202e01fa779b887d678171cca37a630",
+    "core/doctor.py": "30be32bf035fdc7462bc6f2ba767d4986e4de85258502db52070d6ad6f856a7f",
+    "core/evidence.py": "c75c5920b45ea25dfe22c4e7a6b8a6cdf457dd8e54d7e7b8b2052ba2b0f8ff81",
+    "core/export.py": "ac56493813566e9d9e0ebc92cda29419caeba0478a7c898727279760a1eb5dd8",
+    "core/health.py": "c80cb4d189f57aa313631a9bdeb110e7627efba83e6904a1d097cc113837a9ff",
+    "core/hook.py": "07409bd48f5bef2a16631ea8d1cab007e89b30fd1291d35b949a95b1c79adbf0",
+    "core/hosts/__init__.py": "f2c28ab63e1935fdf0f965cfb8f35b755e75150ad9a170bb48bb40f3ddb0737d",
+    "core/hosts/acceptance.py": "e213d840221b5bf985c52d3d08b4da6449b8fe27f806c6d268d21f6176d8d93a",
+    "core/hosts/bridge.py": "b673fa3bce82c89100d327246f739e27b1d3bcb027bba2b078a9582f9e00fa31",
+    "core/hosts/codex.py": "78c0aac2bb09ec4700595ca334ee19709778132559c8caf605e0b6e778580e40",
+    "core/hosts/contract.py": "a44e91b47c4f03755c5ffd106d72e5dcf6bd9c5345bcb59c74d5a5b373fea1c8",
+    "core/hosts/copilot.py": "09f70ee767864187ecba2a3b072f31e88f7979e207ba7d7f2d206876d8c89c3b",
+    "core/hosts/cursor.py": "cc7d2e7714adb7ac0ed6f292f0c377880308a4d9ffe8e18e101c78c092213638",
+    "core/hosts/diagnostics.py": "aeccef86a0bb359a3f93ad6c0276af572c770a5050dc52049f16f93c8348c864",
+    "core/hosts/doctor.py": "5e9baa71b8e986dbd97e5ea3639e413c326077983c6d4b7d2ac25aca1faeb217",
+    "core/hosts/edits.py": "ca15e36d5d985b301b17b3cddd296856f8a616b35acf843aeade73c6eda4930f",
+    "core/hosts/gemini.py": "cf3508bc6c432308418e81d675ec0cee68ad7af430f965716bc44b58f2fc8023",
+    "core/hosts/lifecycle.py": "f713e23509e4c2f507d98d99e1d1ea69fcc318045a15f1a1e2f601f9a51c1e47",
+    "core/hosts/onboarding.py": "9ef68c0d3b1253fab41c4b6430f8ea66f51d6ef89e0b0e5837c46616670fd2f1",
+    "core/hosts/package.py": "72cacf9be30c70e65c414cadd0b1461f82658de2b4ce5f35bd1bfc85cf5410a8",
+    "core/hosts/performance.py": "5e65c3f058e795057876fa0ab222393c9f0b3537c92c7fff2ec39f4d7393986d",
+    "core/hosts/probes.py": "c785011ce5a4e0a7a9b0baa5c1689c61a34ddadd2658e977c67e22258bf80d1a",
+    "core/hosts/provenance.py": "52704df56d315eab55397df4a8fdc40294439a81213a4f8200d15b8c064e2a00",
+    "core/hosts/readiness.py": "20fbed6f954b355b98d0a67ef3b10cd696aae0c975720f1b0c1c0c8959d33301",
+    "core/hosts/setup.py": "95b7bf3e285cd9f8dde3699146436cf6147bd80dea22ae5a36f0a81a232ffb2c",
+    "core/hosts/transport.py": "b98c25631ca42ecadbfe2f0878f52eea6b7a724ee445800923201408db0aace5",
+    "core/hosts/validation.py": "ccda391902d1231fcd5b8eeae81e5cb4e7b25853a4e16e178027f2f3486c5eb4",
+    "core/hosts/wiring.py": "3ca6787914818e27c007cec97fdc57c11d78289ed68af51922bca1212604fd6c",
+    "core/intent.py": "f94edd480caa811d6268362ee1058c3778395b6ef2cf33c88fb4f57c6d0d2f29",
+    "core/jobs.py": "9be1b5351e0a90708ee6ce3897be57808e299ce5c059afb6bd358ccace3a8430",
+    "core/ledger.py": "d5367d05e3292e1b615fb759dd89053263c6978299e271d84bfccf7f127f177b",
+    "core/obligations.py": "3befdc0b3887c454abd21ff064c8427b6b21517126eee0cd7a57616eaa994d3e",
+    "core/parsers.py": "6b875534f670743fc15735e7be878c8cafbc892f3d159a017d30ff71407f9745",
+    "core/payload.py": "7d43b48fbaa6f9011e0e972a1d5ed2b5f2ab0e18ca5778d892542ed33d11253c",
+    "core/polyglot.py": "f90ff284a1af03ac2feceea28d3f66233ef1fc12d85a6f0e69e51a1fe8e1f77c",
+    "core/process.py": "57b0c761cfb38e33d5ad4c224d17cbb6c281529bdc26e674c88533844563ab89",
+    "core/radius.py": "add4252f7352e68cf39b22cdfa4e93568d206113963ebe7a296344d217d2788b",
+    "core/ratchet.py": "63c8cb049b208284cfac82052e822edc0e2b0af020315c1dd57957449764240f",
+    "core/redact.py": "fdfb3decc78b89719aae2396d39be6bc80955a9f6c8510951e6fe2f5b2d7ca1e",
+    "core/repeat.py": "498635e3afeb408fa8be20715457358d33f21e43c2158ae7a6ff9f0880cb8e4a",
+    "core/report.py": "f26cea285d784c78fd2749e8cbf7f4cd01fd3f319ad983c183b7864e960512ec",
+    "core/scope.py": "a8b092ee9f86098b0eaa210c00cf8da9007299e15acf32809ec199fc10a74068",
+    "core/status.py": "eaaff93e96f565377a516da74fe7995c1da5f923d7182b2d6fbb34184b6a6d17",
+    "core/strength/__init__.py": "4c8f0131d97813b9edb9d8df2991fd63437dbc6484ed9b55b067dfaffdc9b051",
+    "core/strength/baseline.py": "fd4e2de126c5016e7d5ef088cfb10e1a57295971d2487e30d830296ac24a4c9a",
+    "core/strength/cosmic_worker.py": "2e58a0b10cb44be4fd84db6e16cf2eeba1577c83557d41168b9aa87ebe783827",
+    "core/strength/engines.py": "8b6673c9a1955c3386eed65e151043ce8e128829d31e7354090354c09c60eb77",
+    "core/strength/execution.py": "b0fc4cc31f27992501692be1412b795691de92eeee9dcacd923c2a33f63167d8",
+    "core/strength/isolation.py": "2b8ec2dfdc0a4527259f1136eda940c0a6a823aa5dcdd92ac6d2377f27e7202e",
+    "core/strength/model.py": "8b26882d2b65be5b7eca47ba9b084b9917cf00254784a72f9af2e1f6ff4d6be0",
+    "core/strength/mutations.py": "dca93454a9ae68bd2b6729883f8686d278cef87e5c7f1c28bb943dc269e0b92b",
+    "core/strength/python_guard.py": "fdf238eff2e35eeae4df688b82e2f9330e52313e220f08b1a413c61a110837a9",
+    "core/strength/reuse.py": "1d4b5f000579580690375b5e293caae58fbe5d8955087b7f79059294fc537970",
+    "core/strength/runner.py": "80adb70a4e2d91aa9a667633e81aafc318b6169f6dc56bbf81d24dcea2e3c86d",
+    "core/strength/scope.py": "0ef2c01b44dbf83f4204838f8f0979f332e29d6b90ba0ea0f24d63fda5b758fe",
+    "core/strength/settings.py": "363fc37bf07ea9e2a4578aeb172bacc969a8444d18a71a5bcdbce2004a5d4235",
+    "core/strength/store.py": "c09b9258669ac63849c72e6bc0e0e6e106339a024b13df8e76ed6bf1e0ff14a8",
+    "core/strength/view.py": "97f4f6b2bbf8dc120abb837f8485c9a1ce27d7901e028838e3a3670ea9e42325",
+    "core/stress.py": "3a2ca95cc35b5f3cbf0e868b4fc3d194a0c311dc4d296322e12e7cf089e7f578",
+    "core/surface.py": "396a3a91df0102ac66bf12c8ff51c835f9ec4aa7dd759e7ec69364bc34335324",
+    "core/verify.py": "1d1a13d6c5da467de3b6fb0eb76ea291f5b4393b780a7697c31c942617fc0ea4",
+    "core/wiring.py": "b92bae3f07fa9a41f6ce93f9673f1b623ad4d59979304757d85c43d3768cafaf"
+  },
+  "producer_revision": "87c882dcac0265f6f2b17f3116e5e905c70a8b96",
+  "portable_view": "Local paths removed; original byte hashes retained as producer identity, not hashes of this portable view.",
+  "frozen_protocol_sha256": "29506303f99fcfeb2ad69cced995fd5f8ff715eefdb22d9d4340154cbc404c4d"
+}

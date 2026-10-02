@@ -354,6 +354,41 @@ A passing result means those frozen checks passed; invalid account identifiers
 already present as balance keys are outside this grader's checked cases. Local
 process separation does not create an OS closed-book boundary.
 
+## Fixed-patch review and reproduction
+
+These commands are explicit evaluation tools. Plugin installation does not
+start reviews or consume model capacity. The first pilot measures new behavioral
+tests on fixed production code, using the shipping optional analysis through a
+function-level brief. Existing source, tests and configuration stay protected.
+The workflow is project-independent; a case supplies its own local cache, full
+base commit, saved patch, source paths and environment.
+
+```bash
+python -m eval.review_pilot --case REVIEW_CASE.json --repository LOCAL_CACHE --arm ordinary --destination NEW_PRIVATE_DIR --executable INSTALLED_CLAUDE --python TEST_PYTHON
+python -m eval.review_pilot --case REVIEW_CASE.json --repository LOCAL_CACHE --arm assisted --feedback FROZEN_BRIEF.txt --destination ANOTHER_NEW_DIR --executable INSTALLED_CLAUDE --python TEST_PYTHON
+python -m eval.review_archive --archive SAVED_ARCHIVE_DIRECTORY
+python -m eval.review_archive --archive SAVED_ARCHIVE_DIRECTORY --repositories LOCAL_CACHES.json --regrade NEW_REPRODUCTION_DIR --python TEST_PYTHON
+```
+
+`REVIEW_CASE.json` contains clean case metadata and its source/test patch, without
+grading fixtures. The selected model is subscription Claude Sonnet 5 at medium;
+the maximum review cap is 480 seconds. API environment overrides are refused,
+and an attempted slot cannot be reused. Native outputs stay private. Only
+bounded new `tests/**/test_*.py` files are eligible; existing-file changes remain
+scope violations. The supported input environment currently provides one
+relative Python source directory through `PYTHONPATH`.
+
+Archive inspection is read-only and runs no commands. `--regrade` explicitly
+runs trusted saved project tests in fresh copies, using the supplied interpreter
+and cache mapping, never a model. The JSON cache mapping associates each
+archive `repository_key` with a local Git checkout containing the pinned base.
+Dependencies must match the saved environment. Fault errors, empty execution,
+timeouts and changed grading inputs remain separate from test detections. The
+result reports whether state and count outcomes reproduce, with timing excluded.
+Hashes establish unsigned consistency, and local copies are not a security
+sandbox for executable project tests. See the [pilot design](../docs/design/checkpoint-review-pilot.md)
+and [provenance](../docs/research/checkpoint-review.md).
+
 ## Controlled completion comparison
 
 The harder suite is explicit and uses four authored interacting tasks: SQLite
@@ -453,3 +488,11 @@ speedup. See [dated evidence](../docs/validation/2026-10-02-proof-of-benefit.md)
 Optional `--checksums CHECKSUMS.json` checks the explicit canonical-JSON manifest;
 its hashes survive checkout newline conversion. This is a local consistency
 check, not signature verification or authentication.
+
+The first saved review archive is at
+`docs/validation/2026-10-02-checkpoint-review`. Its original producer identity
+differs from the corrected current evaluator. All eight recorded reviews qualify,
+while full corrected-harness regrading remains unfinished at the user-requested
+stop. Follow its [reproduction guide](../docs/validation/2026-10-02-checkpoint-review/README.md)
+for pinned environment/cache preparation. The inspect command makes no model or
+test call; explicit regrading uses only local trusted test execution.

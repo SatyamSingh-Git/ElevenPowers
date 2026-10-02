@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "case": "attrs-97f8d175",
+  "feedback": "ElevenPowers test-strength review observations\nAnalysis state: deferred.\nThis bounded sample can be incomplete. Undetected changes may have equivalent behavior.\nUse the public contracts to investigate; a location is a review lead, not a confirmed defect.\n- Passing tests left sampled changes undetected in src/attr/_make.py: attrib. Review its observable behavior and boundary/error cases.",
+  "feedback_sha256": "1a7b4457b21734a4e4ee89a9eb9aae1f7b97beec0b43e6bce9b17e7293da57f6",
+  "cost_boundary": "Engine audits add local analysis work outside equal native review caps.",
+  "whole_suite": {
+    "schema_version": 1,
+    "state": "incomplete",
+    "issues": [
+      "baseline timed_out"
+    ],
+    "observations": [],
+    "fingerprint": "a5b54be9a7e527c59935b2bb875277a10a9c47bb9487b753d9bd0f7c6ac32ad4",
+    "source_fingerprint": "06b340dbae654dd2",
+    "baseline": "incomplete",
+    "engine_versions": {},
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/attr/_make.py"
+    ],
+    "recorded_at": 1790957587.8432922,
+    "summary": {
+      "detected": 0,
+      "undetected": 0,
+      "invalid": 0,
+      "timed_out": 0,
+      "error": 0,
+      "not_run": 0,
+      "incomplete": 0
+    },
+    "attempts": 0,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests -q -p no:cacheprovider",
+    "record_sha256": "119ae9ed1bc35d4538eb8c13c40e4cded828cb0d71aa4dfc699a4137a6759397"
+  },
+  "focused": {
+    "schema_version": 1,
+    "state": "deferred",
+    "issues": [
+      "strength deadline reached copying inputs"
+    ],
+    "observations": [
+      {
+        "id": "e02865ea1eaa2e5d7595b901",
+        "path": "src/attr/_make.py",
+        "line": 166,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "1c31c5e061d4ce211a6337e7",
+        "path": "src/attr/_make.py",
+        "line": 170,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "17a20aded79e471a21be8db2",
+        "path": "src/attr/_make.py",
+        "line": 171,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "177f6fab82d3e22d033c2cd1",
+        "path": "src/attr/_make.py",
+        "line": 176,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "1e3a36d054df130a7e4811fa",
+        "path": "src/attr/_make.py",
+        "line": 181,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "864ff47142d1d5cac57bfdd7",
+        "path": "src/attr/_make.py",
+        "line": 185,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "6295a51ae0e6b2cef344fc97",
+        "path": "src/attr/_make.py",
+        "line": 188,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      },
+      {
+        "id": "9a51c0aaeff0028dbd15a0fd",
+        "path": "src/attr/_make.py",
+        "line": 191,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      },
+      {
+        "id": "328fa0ff80a1b53afc9abff3",
+        "path": "src/attr/_make.py",
+        "line": 238,
+        "operator": "core/AddNot",
+        "status": "timed_out"
+      }
+    ],
+    "fingerprint": "b7ac00a16f14ac664b6ca23a467a579da5a79bed787627a9af026e769291d444",
+    "source_fingerprint": "06b340dbae654dd2",
+    "baseline": "passed",
+    "engine_versions": {
+      "cosmic-ray": "8.7.0"
+    },
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/attr/_make.py"
+    ],
+    "recorded_at": 1790958254.5320454,
+    "summary": {
+      "detected": 0,
+      "undetected": 1,
+      "invalid": 0,
+      "timed_out": 3,
+      "error": 5,
+      "not_run": 0,
+      "incomplete": 8
+    },
+    "attempts": 9,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests/test_annotations.py -q -p no:cacheprovider",
+    "record_sha256": "652fe9d6831f01af2f071ae83075e7a3661fcd4b44f1be03387d9d8c552517b8"
+  }
+}

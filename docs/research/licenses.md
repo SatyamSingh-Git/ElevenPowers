@@ -1,5 +1,12 @@
 # License and attribution register
 
+The 2026-10-02 fixed-patch review archive includes modified source fixtures from
+ItsDangerous, Click and Jinja2 under BSD-3-Clause, and attrs under MIT. Their
+pinned identities and full notices are retained in
+[the archive's license register](../validation/2026-10-02-checkpoint-review/licenses.json).
+AST-mutated faults are labeled research modifications. Cosmic Ray 8.7.0 remains
+an installed MIT engine. See [review provenance](checkpoint-review.md).
+
 The 2026-10-01 project-health delivery adds no third-party runtime dependency or
 vendored implementation. It composes the existing shared engine and uses standard
 unittest/Node APIs in original disposable exercises. See [health provenance](project-health.md)

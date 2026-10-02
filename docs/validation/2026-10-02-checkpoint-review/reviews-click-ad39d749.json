@@ -1,0 +1,332 @@
+[
+  {
+    "schema_version": 1,
+    "case": "click-ad39d749",
+    "arm": "ordinary",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 73446.063,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 14,
+        "cache_creation_input_tokens": 16766,
+        "cache_read_input_tokens": 157138,
+        "output_tokens": 4508
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_testing_fd_capture_extra.py": "import os\nimport sys\n\nimport pytest\n\nimport click\nfrom click.testing import CliRunner\n\nneeds_fd_capture = pytest.mark.skipif(\n    sys.platform == \"win32\",\n    reason=\"fd capture not supported on Windows\",\n)\n\n\ndef test_capture_default_is_sys():\n    \"\"\"The default ``capture`` mode is ``sys`` when not specified.\"\"\"\n    runner = CliRunner()\n    assert runner.capture == \"sys\"\n\n\n@needs_fd_capture\ndef test_capture_fd_system_exit_nonzero():\n    \"\"\"fd-captured output is preserved even when the command exits with a\n    non-zero status via ``SystemExit``.\"\"\"\n\n    @click.command()\n    def cli():\n        os.write(1, b\"before exit\\n\")\n        click.echo(\"before echo exit\")\n        raise SystemExit(3)\n\n    runner = CliRunner(capture=\"fd\")\n    result = runner.invoke(cli)\n    assert result.exit_code == 3\n    assert \"before exit\" in result.stdout\n    assert \"before echo exit\" in result.stdout\n\n\n@needs_fd_capture\ndef test_capture_fd_uncaught_exception_restores_fds():\n    \"\"\"When ``catch_exceptions=False`` lets an exception propagate, fd\n    capture must still be torn down so later invocations work normally.\"\"\"\n\n    @click.command()\n    def failing_cli():\n        os.write(1, b\"partial output\\n\")\n        raise RuntimeError(\"boom\")\n\n    runner = CliRunner(capture=\"fd\")\n    with pytest.raises(RuntimeError, match=\"boom\"):\n        runner.invoke(failing_cli, catch_exceptions=False)\n\n    # The fd redirection must have been torn down; a subsequent invocation\n    # using fd capture should work normally and not fail or hang.\n    @click.command()\n    def ok_cli():\n        os.write(1, b\"fd ok\\n\")\n        click.echo(\"py ok\")\n\n    result = runner.invoke(ok_cli)\n    assert result.exit_code == 0\n    assert \"fd ok\" in result.stdout\n    assert \"py ok\" in result.stdout\n\n\n@needs_fd_capture\ndef test_capture_fd_caught_exception_still_captures_output():\n    \"\"\"With ``catch_exceptions=True`` (the default), output written before\n    the exception is still captured and the exception is reported on the\n    result object rather than raised.\"\"\"\n\n    @click.command()\n    def failing_cli():\n        os.write(1, b\"fd before failure\\n\")\n        click.echo(\"py before failure\")\n        raise RuntimeError(\"kaboom\")\n\n    runner = CliRunner(capture=\"fd\")\n    result = runner.invoke(failing_cli)\n    assert result.exit_code == 1\n    assert isinstance(result.exception, RuntimeError)\n    assert \"fd before failure\" in result.stdout\n    assert \"py before failure\" in result.stdout\n\n\n@needs_fd_capture\ndef test_capture_fd_empty_output():\n    \"\"\"A command that writes nothing produces empty streams without error.\"\"\"\n\n    @click.command()\n    def cli():\n        pass\n\n    runner = CliRunner(capture=\"fd\")\n    result = runner.invoke(cli)\n    assert result.exit_code == 0\n    assert result.stdout == \"\"\n    assert result.stderr == \"\"\n\n\ndef test_capture_invalid_mode_message_lists_choices():\n    with pytest.raises(ValueError, match=\"sys' or 'fd\"):\n        CliRunner(capture=\"bogus\")  # type: ignore[arg-type]\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "960bb9e4edf299dcc9fd5d57f91319b328321f8849dedec15c9def3aa4871e9e",
+    "feedback_sha256": "",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "c7c1838d0b80f71dd6d45b02f12840f54ac98e798a00b95d99848f4366a31053",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 1461,
+        "failed": 0,
+        "skipped": 90,
+        "error": 0,
+        "elapsed_ms": 9273.386
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1461,
+            "failed": 0,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 9682.667
+          }
+        },
+        {
+          "id": "F02",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1461,
+            "failed": 0,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 10106.575
+          }
+        },
+        {
+          "id": "F03",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 360,
+            "failed": 52,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 39893.403
+          }
+        },
+        {
+          "id": "F04",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1461,
+            "failed": 0,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 9197.718
+          }
+        },
+        {
+          "id": "F05",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 453,
+            "failed": 1008,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 48822.635
+          }
+        },
+        {
+          "id": "F06",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1461,
+            "failed": 0,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 9100.454
+          }
+        },
+        {
+          "id": "F07",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 1460,
+            "failed": 1,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 8797.288
+          }
+        },
+        {
+          "id": "F08",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1461,
+            "failed": 0,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 8725.032
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1461,
+            "failed": 0,
+            "skipped": 90,
+            "error": 0,
+            "elapsed_ms": 8972.553
+          }
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": 1,
+    "case": "click-ad39d749",
+    "arm": "assisted",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 204932.679,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 34,
+        "cache_creation_input_tokens": 31646,
+        "cache_read_input_tokens": 588825,
+        "output_tokens": 7323
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_testing_capture_extra.py": "import os\nimport sys\n\nimport pytest\n\nimport click\nfrom click.testing import CliRunner\n\n\ndef test_result_repr_success():\n    @click.command()\n    def cli():\n        click.echo(\"ok\")\n\n    result = CliRunner().invoke(cli)\n    assert repr(result) == \"<Result okay>\"\n\n\ndef test_result_repr_with_exception():\n    @click.command()\n    def cli():\n        raise ValueError(\"boom\")\n\n    result = CliRunner().invoke(cli)\n    assert repr(result) == f\"<Result {result.exception!r}>\"\n    assert \"ValueError\" in repr(result)\n    assert \"boom\" in repr(result)\n\n\ndef test_invoke_restores_original_stdout_stderr():\n    @click.command()\n    def cli():\n        click.echo(\"hi\")\n\n    old_stdout = sys.stdout\n    old_stderr = sys.stderr\n\n    result = CliRunner().invoke(cli)\n\n    assert result.exit_code == 0\n    assert sys.stdout is old_stdout\n    assert sys.stderr is old_stderr\n\n\ndef test_isolation_unsets_env_var_and_restores_it():\n    @click.command()\n    def cli():\n        click.echo(str(\"TEST_CLICK_UNSET_ENV\" in os.environ))\n\n    os.environ[\"TEST_CLICK_UNSET_ENV\"] = \"present\"\n    try:\n        runner = CliRunner()\n        result = runner.invoke(cli, env={\"TEST_CLICK_UNSET_ENV\": None})\n        assert result.output == \"False\\n\"\n        assert os.environ[\"TEST_CLICK_UNSET_ENV\"] == \"present\"\n    finally:\n        del os.environ[\"TEST_CLICK_UNSET_ENV\"]\n\n\n@pytest.mark.skipif(\n    sys.platform == \"win32\", reason=\"fd capture not supported on Windows\"\n)\ndef test_capture_fd_fileno_points_to_distinct_valid_fd():\n    \"\"\"In ``fd`` mode, ``sys.stdout.fileno()`` returns the saved original\n    fd (not fd 1, which is redirected to the capture tmpfile), and that fd\n    is a valid, open descriptor.\n    \"\"\"\n    seen = {}\n\n    @click.command()\n    def cli():\n        fd = sys.stdout.fileno()\n        seen[\"fd\"] = fd\n        seen[\"fd_is_distinct_from_target\"] = fd != 1\n        os.fstat(fd)  # raises OSError if not a valid open fd\n\n    runner = CliRunner(capture=\"fd\")\n    result = runner.invoke(cli)\n    assert result.exit_code == 0, result.output\n    assert seen[\"fd_is_distinct_from_target\"]\n\n\ndef test_catch_exceptions_false_still_restores_streams_on_raise():\n    @click.command()\n    def cli():\n        raise ValueError(\"boom\")\n\n    old_stdout = sys.stdout\n    old_stderr = sys.stderr\n\n    runner = CliRunner()\n    with pytest.raises(ValueError):\n        runner.invoke(cli, catch_exceptions=False)\n\n    assert sys.stdout is old_stdout\n    assert sys.stderr is old_stderr\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "8f4d1a22b8b39b53217ca3c71c7dc3f7cbf2c741a088629bbbe820a50a55f5e5",
+    "feedback_sha256": "1eaa991e5f91fc431a509a9ebd2660553a192cc11ba789d9b212642715974102",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "c7c1838d0b80f71dd6d45b02f12840f54ac98e798a00b95d99848f4366a31053",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 1464,
+        "failed": 0,
+        "skipped": 87,
+        "error": 0,
+        "elapsed_ms": 13047.149
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1464,
+            "failed": 0,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 10788.629
+          }
+        },
+        {
+          "id": "F02",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1464,
+            "failed": 0,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 10400.088
+          }
+        },
+        {
+          "id": "F03",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 359,
+            "failed": 56,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 45083.563
+          }
+        },
+        {
+          "id": "F04",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1464,
+            "failed": 0,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 10147.313
+          }
+        },
+        {
+          "id": "F05",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 451,
+            "failed": 1013,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 62592.029
+          }
+        },
+        {
+          "id": "F06",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1464,
+            "failed": 0,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 12408.234
+          }
+        },
+        {
+          "id": "F07",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 1463,
+            "failed": 1,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 12431.548
+          }
+        },
+        {
+          "id": "F08",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1464,
+            "failed": 0,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 12356.578
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1464,
+            "failed": 0,
+            "skipped": 87,
+            "error": 0,
+            "elapsed_ms": 12776.93
+          }
+        }
+      ]
+    }
+  }
+]

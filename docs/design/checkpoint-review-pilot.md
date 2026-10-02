@@ -54,7 +54,7 @@ and host-managed settings may also affect both arms. The installed CLI's safe
 mode disables ordinary customizations and plugins equally in both review arms;
 it is compatible with subscription authentication, unlike `--bare`.
 
-Built on: upstream MIT-licensed source patches and their test suites; the prior
+Built on: upstream BSD-3-Clause Pallets and MIT attrs source patches and test suites; the prior
 B7 research fault sample and blinded labels; Cosmic Ray 8.7.0 (MIT)
 through `core.strength`; and this repository's subscription authentication and
 contained process helpers. The added piece is a bounded review comparison with

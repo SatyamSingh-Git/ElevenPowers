@@ -1,0 +1,176 @@
+[
+  {
+    "schema_version": 1,
+    "case": "attrs-97f8d175",
+    "arm": "ordinary",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 61858.725,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 16,
+        "cache_creation_input_tokens": 6546,
+        "cache_read_input_tokens": 127305,
+        "output_tokens": 2618
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_classvar_forward_ref.py": "import typing\n\nimport pytest\n\nimport attr\n\nfrom attr._make import _is_class_var\n\n\n@pytest.mark.parametrize(\n    \"annot\",\n    [\n        typing.ForwardRef(\"int\"),\n        typing.ForwardRef(\"str\"),\n        typing.ForwardRef(\"Optional[int]\"),\n        typing.ForwardRef(\"NotClassVarAtAll\"),\n    ],\n)\ndef test_is_class_var_forward_ref_negative(annot):\n    \"\"\"\n    A ForwardRef whose wrapped string is not a ClassVar annotation is not\n    mistaken for one.\n    \"\"\"\n    assert not _is_class_var(annot)\n\n\ndef test_is_class_var_forward_ref_quoted():\n    \"\"\"\n    A ForwardRef wrapping a quoted ClassVar string is still detected,\n    mirroring the existing behavior for plain quoted strings.\n    \"\"\"\n    assert _is_class_var(typing.ForwardRef(\"'ClassVar[int]'\"))\n\n\ndef test_forward_ref_non_classvar_attribute_is_preserved():\n    \"\"\"\n    Attributes annotated with a plain (non-ClassVar) ForwardRef are still\n    collected as regular attrs attributes, not dropped as class variables.\n    \"\"\"\n\n    @attr.s(auto_attribs=True)\n    class C:\n        value: typing.ForwardRef(\"int\") = 1\n\n    assert \"value\" in attr.fields_dict(C)\n    assert 1 == C().value\n    assert 2 == C(2).value\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "9270caa7b2c92067ddbff9aa5a3111f4b57e121fd134af33b20b5acfb8de0f83",
+    "feedback_sha256": "",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "af3308009b51584adcbba7df59534f20faa78371e37675f0127fe0b324a8cd55",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 1394,
+        "failed": 0,
+        "skipped": 7,
+        "error": 0,
+        "elapsed_ms": 18136.174
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 1392,
+            "failed": 2,
+            "skipped": 7,
+            "error": 0,
+            "elapsed_ms": 18632.296
+          }
+        },
+        {
+          "id": "F02",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 1392,
+            "failed": 2,
+            "skipped": 7,
+            "error": 0,
+            "elapsed_ms": 20264.998
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1394,
+            "failed": 0,
+            "skipped": 7,
+            "error": 0,
+            "elapsed_ms": 21078.573
+          }
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": 1,
+    "case": "attrs-97f8d175",
+    "arm": "assisted",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 115438.056,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 30,
+        "cache_creation_input_tokens": 11977,
+        "cache_read_input_tokens": 288413,
+        "output_tokens": 4421
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_classvar_forward_ref.py": "# SPDX-License-Identifier: MIT\n\n\"\"\"\nAdditional behavioral tests for ClassVar forward-reference detection.\n\"\"\"\n\nimport sys\nimport typing\n\nimport pytest\n\nimport attr\n\nfrom attr._make import _is_class_var\n\n\n@pytest.mark.parametrize(\n    \"annot\",\n    [\n        typing.ForwardRef(\"int\"),\n        typing.ForwardRef(\"str\"),\n        typing.ForwardRef(\"MyNonClassVarType\"),\n    ],\n)\ndef test_is_class_var_forward_ref_negative(annot):\n    \"\"\"\n    A ForwardRef that does not refer to ClassVar is not mistaken for one.\n    \"\"\"\n    assert not _is_class_var(annot)\n\n\ndef test_is_class_var_forward_ref_quoted():\n    \"\"\"\n    A ForwardRef whose forward_arg is itself quoted is still recognized\n    as a ClassVar, matching the behavior for plain quoted strings.\n    \"\"\"\n    assert _is_class_var(typing.ForwardRef(\"'ClassVar[int]'\"))\n\n\n@pytest.mark.skipif(\n    sys.version_info[:2] < (3, 14),\n    reason=\"Python 3.14 changed annotation evaluation behavior.\",\n)\ndef test_missing_classvar_import_with_other_unresolvable_forward_ref(slots):\n    \"\"\"\n    A ClassVar forward ref is still filtered out as a class variable even\n    when the class has another, unrelated forward-referenced annotation\n    that *is* a real attribute.\n    \"\"\"\n\n    @attr.s(auto_attribs=True, slots=slots)\n    class C:\n        cls_var: typing.ClassVar[str] = \"class value\"\n        value: \"int\" = 1\n\n    fields = attr.fields_dict(C)\n    assert \"cls_var\" not in fields\n    assert \"value\" in fields\n\n    c = C()\n    assert 1 == c.value\n    assert \"class value\" == C.cls_var\n\n\ndef test_regular_classvar_import_still_detected(slots):\n    \"\"\"\n    Preservation check: a normally imported (non-forward-ref) ClassVar\n    annotation continues to be excluded from attrs attributes.\n    \"\"\"\n\n    @attr.s(auto_attribs=True, slots=slots)\n    class C:\n        cls_var: typing.ClassVar[int] = 42\n        value: int = 1\n\n    assert \"cls_var\" not in attr.fields_dict(C)\n    assert 42 == C.cls_var\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "bf9a769851a76726c5cd889acc15569192e0c018ef0bad2d5aa26094a8ce0e37",
+    "feedback_sha256": "e2ca0df1af89547c2b31ef43907c01ab8eebe7418ad029a2d6679afe969baf5d",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "af3308009b51584adcbba7df59534f20faa78371e37675f0127fe0b324a8cd55",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 1394,
+        "failed": 0,
+        "skipped": 9,
+        "error": 0,
+        "elapsed_ms": 22179.292
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 1392,
+            "failed": 2,
+            "skipped": 9,
+            "error": 0,
+            "elapsed_ms": 21759.802
+          }
+        },
+        {
+          "id": "F02",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 1392,
+            "failed": 2,
+            "skipped": 9,
+            "error": 0,
+            "elapsed_ms": 19901.026
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 1394,
+            "failed": 0,
+            "skipped": 9,
+            "error": 0,
+            "elapsed_ms": 23511.586
+          }
+        }
+      ]
+    }
+  }
+]

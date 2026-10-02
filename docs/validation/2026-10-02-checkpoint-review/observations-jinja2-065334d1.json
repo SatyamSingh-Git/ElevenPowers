@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "case": "jinja2-065334d1",
+  "feedback": "ElevenPowers test-strength review observations\nAnalysis state: incomplete.\nThis bounded sample can be incomplete. Undetected changes may have equivalent behavior.\nUse the public contracts to investigate; a location is a review lead, not a confirmed defect.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: _min_or_max. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: _prepare_attribute_parts. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: attrgetter. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_default. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_dictsort. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_forceescape. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_items. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_replace. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_sort. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_urlencode. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: do_xmlattr. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: ignore_case. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: make_multi_attrgetter. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: sort_func. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: sync_do_join. Review its observable behavior and boundary/error cases.\n- Passing tests left sampled changes undetected in src/jinja2/filters.py: sync_do_unique. Review its observable behavior and boundary/error cases.",
+  "feedback_sha256": "aa12e33ade93b0d89e1435acf39ee2caf96c7be6380fa53c723b5d72efa4647d",
+  "cost_boundary": "Engine audits add local analysis work outside equal native review caps.",
+  "whole_suite": {
+    "schema_version": 1,
+    "state": "incomplete",
+    "issues": [
+      "baseline timed_out"
+    ],
+    "observations": [],
+    "fingerprint": "934a3c2d3b2a1071b6a215eb78fbd6af9671d2434b4ea1055fe790a7d692499f",
+    "source_fingerprint": "5e0f2925ab91d7cc",
+    "baseline": "incomplete",
+    "engine_versions": {},
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/jinja2/filters.py"
+    ],
+    "recorded_at": 1790957446.216788,
+    "summary": {
+      "detected": 0,
+      "undetected": 0,
+      "invalid": 0,
+      "timed_out": 0,
+      "error": 0,
+      "not_run": 0,
+      "incomplete": 0
+    },
+    "attempts": 0,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests -q -p no:cacheprovider",
+    "record_sha256": "cc921c165ad2d5dfee2f37a87be88cc33114be426754097ae7f12385bc8c9a3c"
+  },
+  "focused": {
+    "schema_version": 1,
+    "state": "incomplete",
+    "issues": [
+      "mutation attempt limit: additional candidates were not examined",
+      "some mutation attempts did not complete"
+    ],
+    "observations": [
+      {
+        "id": "19116a57402bf90e89b76dc4",
+        "path": "src/jinja2/filters.py",
+        "line": 31,
+        "operator": "core/AddNot",
+        "status": "error"
+      },
+      {
+        "id": "9738cc4d5c3b65c73f4cffff",
+        "path": "src/jinja2/filters.py",
+        "line": 52,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "e2c6fce5d77bfd3c2a2c2dfe",
+        "path": "src/jinja2/filters.py",
+        "line": 75,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "16e32ff15b11f7dd8898dcdd",
+        "path": "src/jinja2/filters.py",
+        "line": 78,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "5566a4e531b6c44bf8bf6f66",
+        "path": "src/jinja2/filters.py",
+        "line": 101,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "c93750e8678a16519b36185c",
+        "path": "src/jinja2/filters.py",
+        "line": 117,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "b26278e36a950398efff065e",
+        "path": "src/jinja2/filters.py",
+        "line": 130,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "8fa31e6414f55c58866adc0e",
+        "path": "src/jinja2/filters.py",
+        "line": 133,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "35016b94933d5e1b649c4381",
+        "path": "src/jinja2/filters.py",
+        "line": 134,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "3b7bd485e68127c24810e979",
+        "path": "src/jinja2/filters.py",
+        "line": 141,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "52ba1b911877265eeff08b77",
+        "path": "src/jinja2/filters.py",
+        "line": 165,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "0c56f5801760399d53edbf46",
+        "path": "src/jinja2/filters.py",
+        "line": 168,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "f133249eb8594d6f7f93ea5f",
+        "path": "src/jinja2/filters.py",
+        "line": 196,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "8a2a77b5b2781b96c5164b53",
+        "path": "src/jinja2/filters.py",
+        "line": 199,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "d342d987537c32cf95a57695",
+        "path": "src/jinja2/filters.py",
+        "line": 202,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "a0e93a26efbb3c7f85b8530e",
+        "path": "src/jinja2/filters.py",
+        "line": 245,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "43035de08bb58cf80c98e5b7",
+        "path": "src/jinja2/filters.py",
+        "line": 248,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "833d94278031642cd4c13107",
+        "path": "src/jinja2/filters.py",
+        "line": 302,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "a98ab84922831a9f4152982c",
+        "path": "src/jinja2/filters.py",
+        "line": 305,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "b95de9952c74ed9af0113ed7",
+        "path": "src/jinja2/filters.py",
+        "line": 312,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "31554365717a66abb50a7c27",
+        "path": "src/jinja2/filters.py",
+        "line": 315,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "7ef3b6f542a5d8990acabdcb",
+        "path": "src/jinja2/filters.py",
+        "line": 367,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "5b0994f4a64b6892073bd1ec",
+        "path": "src/jinja2/filters.py",
+        "line": 377,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "b8f8cb8dd53e161f07f0f204",
+        "path": "src/jinja2/filters.py",
+        "line": 436,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "4470159571b504dd599b27c1",
+        "path": "src/jinja2/filters.py",
+        "line": 462,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "eebc6a3e2df31af163c8fd5a",
+        "path": "src/jinja2/filters.py",
+        "line": 469,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "07e41c57af80ed3aee3d1bbe",
+        "path": "src/jinja2/filters.py",
+        "line": 501,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "c904301239e090b14d9a076b",
+        "path": "src/jinja2/filters.py",
+        "line": 573,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "f2307f0cc744fb92e7914007",
+        "path": "src/jinja2/filters.py",
+        "line": 607,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "6c8efb897acf29e3f81bff0a",
+        "path": "src/jinja2/filters.py",
+        "line": 611,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "83be2ea3e62ee69466667360",
+        "path": "src/jinja2/filters.py",
+        "line": 616,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      },
+      {
+        "id": "9fdbc4395ff7a135ac4843c5",
+        "path": "src/jinja2/filters.py",
+        "line": 621,
+        "operator": "core/AddNot",
+        "status": "undetected"
+      }
+    ],
+    "fingerprint": "57f516a4222a15b89ef9469afca090a4079480c6d0c0ef64b998cf11b40be764",
+    "source_fingerprint": "5e0f2925ab91d7cc",
+    "baseline": "passed",
+    "engine_versions": {
+      "cosmic-ray": "8.7.0"
+    },
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/jinja2/filters.py"
+    ],
+    "recorded_at": 1790958074.1611288,
+    "summary": {
+      "detected": 0,
+      "undetected": 31,
+      "invalid": 0,
+      "timed_out": 0,
+      "error": 1,
+      "not_run": 0,
+      "incomplete": 1
+    },
+    "attempts": 32,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests/test_security.py -q -p no:cacheprovider",
+    "record_sha256": "8d7017e7e64e2b486837a01ce8dff5d7b8c5d6553982ff39957b70a1fed91e72"
+  }
+}

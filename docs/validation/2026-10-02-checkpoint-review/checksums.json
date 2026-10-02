@@ -1,0 +1,21 @@
+{
+  "format": "json-canonical-v1",
+  "files": {
+    "case-attrs-97f8d175.json": "883dcef4758f9a6aff42390a14beafeb0f57ea6a53924e27b49b06a7763ae325",
+    "case-click-ad39d749.json": "1d183c4081aa84907a10b6d0001c0ddda8143dadc1cfd84e1d23970b616dd938",
+    "case-itsdangerous-6c58e969.json": "4ebf062e008906a430eabd94906c2b344f7434b365ceff4e851e9205181348a2",
+    "case-jinja2-065334d1.json": "6c9f772d92551c5dcfc9f4cea1084ed68b4018d390137ee07771a59eb9ef2dc0",
+    "environment.json": "b52e22388af2c7d30d08dbd1727ee56ef184c9e4a2642ec0ebddd887007e77d2",
+    "licenses.json": "688b8b23bfc2200f20b1f8f8ca0a601366a6f8945b9e0fb6581b2149aa8e5442",
+    "observations-attrs-97f8d175.json": "a2fd2e6d655131091c8912782497b65f95bcf243d43a469c76f31c9a0268e6ce",
+    "observations-click-ad39d749.json": "e8753aad25fa788197d0468f759ae6ec550edf82e4938b33e264b86f98897ceb",
+    "observations-itsdangerous-6c58e969.json": "3e609ed4f3746ceb3a44e40a0312f8583c63e37a07aa717d1718621c57d947d2",
+    "observations-jinja2-065334d1.json": "fbd621371d465a6e9a1cb0480ad20facd7108f659b2fa7461dd74871d8c6fd89",
+    "producer-harness.json": "00d2fdd0c783fdad365e0e67c98c6a32a95727671da6d0b9ce560f873c66a48e",
+    "protocol.json": "9474c780bf4e843d8aab3316c4d7bb89b0b76ec295884bba478a25ddf4d68f6e",
+    "reviews-attrs-97f8d175.json": "18d1277435c277056db44d680459c9d544f2e060facabd99c5db38be99b32583",
+    "reviews-click-ad39d749.json": "6693b55b8fa56ffe562f5027a852fe919e663e99955662e849eab6f74621fedf",
+    "reviews-itsdangerous-6c58e969.json": "b1bf80d97e17736d64e83572926a49b3cc16f1aab229c0a6e984cb06627afad9",
+    "reviews-jinja2-065334d1.json": "73e47c33b3f63a63e8691880411068bade37aedd1c923663751a711f5830bf12"
+  }
+}

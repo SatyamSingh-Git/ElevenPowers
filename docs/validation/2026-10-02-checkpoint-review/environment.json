@@ -1,0 +1,36 @@
+{
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.13.2",
+  "claude": "2.1.287",
+  "packages": {
+    "pytest": "9.0.2",
+    "cosmic-ray": "8.7.0",
+    "freezegun": "1.5.5",
+    "hypothesis": "6.168.0",
+    "cloudpickle": "3.1.1",
+    "markupsafe": "3.0.2"
+  },
+  "environment_limit": "Research venv inherits system site packages; not a hermetic package lock.",
+  "native_tools": [
+    "Bash",
+    "Edit",
+    "Glob",
+    "Grep",
+    "Read",
+    "Write"
+  ],
+  "external_mcp": [],
+  "built_in_plugins": [
+    "agents-md",
+    "telemetry",
+    "plugin-authoring"
+  ],
+  "exposure_limit": "No OS boundary. Visible traces inspected; no observed forbidden retrieval does not prove absence of indirect access.",
+  "initial_free_audits": [
+    "Missing freezegun/setup failure before dependency qualification",
+    "Installed Click pre-imported before source path: fixed launcher ordering",
+    "Generated Hypothesis cache incorrectly sealed: fixed runtime-cache qualification",
+    "Whole-suite mutation command timeouts retained before frozen focused-command refinement"
+  ],
+  "submission_review": "All eight native model lists exact; candidate seals and recaptured additions match saved records. Click FD tests skip on Windows; attrs assisted Python 3.14-gated case is narrower than its name and skips here."
+}

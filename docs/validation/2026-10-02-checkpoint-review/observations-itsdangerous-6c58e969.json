@@ -1,0 +1,399 @@
+{
+  "schema_version": 1,
+  "case": "itsdangerous-6c58e969",
+  "feedback": "ElevenPowers test-strength review observations\nAnalysis state: deferred.\nThis bounded sample can be incomplete. Undetected changes may have equivalent behavior.\nUse the public contracts to investigate; a location is a review lead, not a confirmed defect.\nNo completed undetected observation supplies a function-level lead in this sample.",
+  "feedback_sha256": "5ff68e850cf0ce346e366218cd7935ddbae05a45ac8820020d35795377efb140",
+  "cost_boundary": "Engine audits add local analysis work outside equal native review caps.",
+  "whole_suite": {
+    "schema_version": 1,
+    "state": "deferred",
+    "issues": [
+      "strength deadline reached reading inputs"
+    ],
+    "observations": [
+      {
+        "id": "ec1a4640ca12ebb15db311ae",
+        "path": "src/itsdangerous/timed.py",
+        "line": 64,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "4227f7f02d4bb2b582d93710",
+        "path": "src/itsdangerous/timed.py",
+        "line": 65,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "b08936a944a064f9335e1060",
+        "path": "src/itsdangerous/timed.py",
+        "line": 77,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "b6f8c44ac8539da92eaf099f",
+        "path": "src/itsdangerous/timed.py",
+        "line": 84,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "d8b21397b289d21483f072e8",
+        "path": "src/itsdangerous/timed.py",
+        "line": 88,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "5230e2335606a2e8804d4138",
+        "path": "src/itsdangerous/timed.py",
+        "line": 90,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "4867e1c82a2275315a523689",
+        "path": "src/itsdangerous/timed.py",
+        "line": 97,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "56a8bd44caf6658d6da154ca",
+        "path": "src/itsdangerous/timed.py",
+        "line": 134,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "48a650d9c028f88213ef36fd",
+        "path": "src/itsdangerous/timed.py",
+        "line": 54,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "461ae42e6e3afc7ab754c059",
+        "path": "src/itsdangerous/timed.py",
+        "line": 72,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "332f44dff407667690891c72",
+        "path": "src/itsdangerous/timed.py",
+        "line": 107,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "4a3392b1e040985658aec42f",
+        "path": "src/itsdangerous/timed.py",
+        "line": 137,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "293bc08e466b98be50c29204",
+        "path": "src/itsdangerous/timed.py",
+        "line": 69,
+        "operator": "core/NumberReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "6581ae7cb84cb42ba193fb87",
+        "path": "src/itsdangerous/timed.py",
+        "line": 69,
+        "operator": "core/NumberReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "b81306329c2579fa1de917da",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "0d0bbf1d15300956b2536724",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "4776ccc00df2fca59e3b8929",
+        "path": "src/itsdangerous/timed.py",
+        "line": 42,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "a0015e8266ce853f4a17855a",
+        "path": "src/itsdangerous/timed.py",
+        "line": 42,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "f306e07ae2ed225058cf2a33",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitOr",
+        "status": "detected"
+      },
+      {
+        "id": "2e09b8544cda8415192ed4ac",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitOr",
+        "status": "detected"
+      },
+      {
+        "id": "dd99deb0b02182b1a8f4a8ab",
+        "path": "src/itsdangerous/timed.py",
+        "line": 42,
+        "operator": "core/ReplaceBinaryOperator_Add_BitOr",
+        "status": "timed_out"
+      }
+    ],
+    "fingerprint": "48a04ea0b6dc98fd43f2ba77f15d620fe0a0761df09aef7c9478b81347987bdb",
+    "source_fingerprint": "3a0e2a5488cc0feb",
+    "baseline": "passed",
+    "engine_versions": {
+      "cosmic-ray": "8.7.0"
+    },
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/itsdangerous/timed.py"
+    ],
+    "recorded_at": 1790957037.6220613,
+    "summary": {
+      "detected": 20,
+      "undetected": 0,
+      "invalid": 0,
+      "timed_out": 1,
+      "error": 0,
+      "not_run": 0,
+      "incomplete": 1
+    },
+    "attempts": 21,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests -q -p no:cacheprovider",
+    "record_sha256": "98ac23f56ed235d5c759bdf2bc984863bbd6512c85420d5ee6f4dfc2efec6fbd"
+  },
+  "focused": {
+    "schema_version": 1,
+    "state": "deferred",
+    "issues": [
+      "strength deadline reached reading inputs"
+    ],
+    "observations": [
+      {
+        "id": "ec1a4640ca12ebb15db311ae",
+        "path": "src/itsdangerous/timed.py",
+        "line": 64,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "4227f7f02d4bb2b582d93710",
+        "path": "src/itsdangerous/timed.py",
+        "line": 65,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "b08936a944a064f9335e1060",
+        "path": "src/itsdangerous/timed.py",
+        "line": 77,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "b6f8c44ac8539da92eaf099f",
+        "path": "src/itsdangerous/timed.py",
+        "line": 84,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "d8b21397b289d21483f072e8",
+        "path": "src/itsdangerous/timed.py",
+        "line": 88,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "5230e2335606a2e8804d4138",
+        "path": "src/itsdangerous/timed.py",
+        "line": 90,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "4867e1c82a2275315a523689",
+        "path": "src/itsdangerous/timed.py",
+        "line": 97,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "56a8bd44caf6658d6da154ca",
+        "path": "src/itsdangerous/timed.py",
+        "line": 134,
+        "operator": "core/AddNot",
+        "status": "detected"
+      },
+      {
+        "id": "48a650d9c028f88213ef36fd",
+        "path": "src/itsdangerous/timed.py",
+        "line": 54,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "461ae42e6e3afc7ab754c059",
+        "path": "src/itsdangerous/timed.py",
+        "line": 72,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "332f44dff407667690891c72",
+        "path": "src/itsdangerous/timed.py",
+        "line": 107,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "4a3392b1e040985658aec42f",
+        "path": "src/itsdangerous/timed.py",
+        "line": 137,
+        "operator": "core/ExceptionReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "293bc08e466b98be50c29204",
+        "path": "src/itsdangerous/timed.py",
+        "line": 69,
+        "operator": "core/NumberReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "6581ae7cb84cb42ba193fb87",
+        "path": "src/itsdangerous/timed.py",
+        "line": 69,
+        "operator": "core/NumberReplacer",
+        "status": "detected"
+      },
+      {
+        "id": "b81306329c2579fa1de917da",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "0d0bbf1d15300956b2536724",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "4776ccc00df2fca59e3b8929",
+        "path": "src/itsdangerous/timed.py",
+        "line": 42,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "a0015e8266ce853f4a17855a",
+        "path": "src/itsdangerous/timed.py",
+        "line": 42,
+        "operator": "core/ReplaceBinaryOperator_Add_BitAnd",
+        "status": "detected"
+      },
+      {
+        "id": "f306e07ae2ed225058cf2a33",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitOr",
+        "status": "detected"
+      },
+      {
+        "id": "2e09b8544cda8415192ed4ac",
+        "path": "src/itsdangerous/timed.py",
+        "line": 41,
+        "operator": "core/ReplaceBinaryOperator_Add_BitOr",
+        "status": "detected"
+      },
+      {
+        "id": "dd99deb0b02182b1a8f4a8ab",
+        "path": "src/itsdangerous/timed.py",
+        "line": 42,
+        "operator": "core/ReplaceBinaryOperator_Add_BitOr",
+        "status": "timed_out"
+      }
+    ],
+    "fingerprint": "2c06eea286b35c12f3c6afd7e06146cf7fd2586f49a50456a4fb583db5fab124",
+    "source_fingerprint": "3a0e2a5488cc0feb",
+    "baseline": "passed",
+    "engine_versions": {
+      "cosmic-ray": "8.7.0"
+    },
+    "settings": {
+      "enabled": true,
+      "seconds": 180,
+      "max_mutants": 32,
+      "test_seconds": 30,
+      "max_files": 20000,
+      "max_bytes": 268435456,
+      "dependencies": [],
+      "command": "",
+      "python": "",
+      "stryker": ""
+    },
+    "paths": [
+      "src/itsdangerous/timed.py"
+    ],
+    "recorded_at": 1790957710.7292063,
+    "summary": {
+      "detected": 20,
+      "undetected": 0,
+      "invalid": 0,
+      "timed_out": 1,
+      "error": 0,
+      "not_run": 0,
+      "incomplete": 1
+    },
+    "attempts": 21,
+    "limitations": [
+      "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+      "Only selected changed files and sampled engine operators are examined.",
+      "A filesystem copy is not a security sandbox for trusted project test commands.",
+      "Passing test counts cannot prove that every selected file was imported or executed."
+    ],
+    "command": "PYTHON ep_review_pytest.py tests/test_itsdangerous/test_timed.py -q -p no:cacheprovider",
+    "record_sha256": "fe0ad17d40398fefd52f954cba5b5c9b91895fef5eb0263e1654efd441f012fe"
+  }
+}

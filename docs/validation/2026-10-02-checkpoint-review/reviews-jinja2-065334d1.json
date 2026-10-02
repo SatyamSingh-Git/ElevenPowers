@@ -1,0 +1,306 @@
+[
+  {
+    "schema_version": 1,
+    "case": "jinja2-065334d1",
+    "arm": "ordinary",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 93369.881,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 28,
+        "cache_creation_input_tokens": 15059,
+        "cache_read_input_tokens": 272917,
+        "output_tokens": 7727
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_attr_filter_behavior.py": "import pytest\n\nfrom jinja2 import Environment\nfrom jinja2.exceptions import SecurityError\nfrom jinja2.sandbox import SandboxedEnvironment\nfrom jinja2.sandbox import unsafe\n\n\nclass WithGetattr:\n    def __getattr__(self, name):\n        if name == \"dynamic\":\n            return \"dynamic-value\"\n        raise AttributeError(name)\n\n\nclass WithProperty:\n    @property\n    def value(self):\n        return \"prop-value\"\n\n\nclass Unsafe:\n    def bar(self):\n        return \"bar\"\n\n    @unsafe\n    def secret(self):\n        return \"secret\"\n\n\n@pytest.fixture\ndef env():\n    return Environment()\n\n\ndef test_attr_does_not_fall_back_to_item(env):\n    # Unlike `foo[name]`, `foo|attr(name)` must never read dict items even\n    # though Environment.getattr() would normally fall back to __getitem__.\n    tmpl = env.from_string('{{ data|attr(\"spam\") }}')\n    assert tmpl.render(data={\"spam\": \"eggs\"}) == \"\"\n\n\ndef test_attr_finds_real_attribute_that_shadows_item_key(env):\n    tmpl = env.from_string('{{ data|attr(\"items\")()|list }}')\n    assert tmpl.render(data={\"items\": 42}) == \"[('items', 42)]\"\n\n\ndef test_attr_missing_attribute_is_undefined(env):\n    class Plain:\n        pass\n\n    tmpl = env.from_string('{{ obj|attr(\"missing\") }}')\n    assert tmpl.render(obj=Plain()) == \"\"\n\n\ndef test_attr_dynamic_getattr_found(env):\n    tmpl = env.from_string('{{ obj|attr(\"dynamic\") }}')\n    assert tmpl.render(obj=WithGetattr()) == \"dynamic-value\"\n\n\ndef test_attr_dynamic_getattr_not_found(env):\n    tmpl = env.from_string('{{ obj|attr(\"other\") }}')\n    assert tmpl.render(obj=WithGetattr()) == \"\"\n\n\ndef test_attr_property_value(env):\n    tmpl = env.from_string('{{ obj|attr(\"value\") }}')\n    assert tmpl.render(obj=WithProperty()) == \"prop-value\"\n\n\ndef test_attr_filter_sandboxed_safe_attribute():\n    sandbox_env = SandboxedEnvironment()\n    tmpl = sandbox_env.from_string('{{ obj|attr(\"bar\")() }}')\n    assert tmpl.render(obj=Unsafe()) == \"bar\"\n\n\ndef test_attr_filter_sandboxed_unsafe_attribute():\n    sandbox_env = SandboxedEnvironment()\n    tmpl = sandbox_env.from_string('{{ obj|attr(\"secret\")() }}')\n\n    with pytest.raises(SecurityError):\n        tmpl.render(obj=Unsafe())\n\n\ndef test_attr_filter_sandboxed_no_item_fallback():\n    sandbox_env = SandboxedEnvironment()\n    tmpl = sandbox_env.from_string('{{ data|attr(\"spam\") }}')\n    assert tmpl.render(data={\"spam\": \"eggs\"}) == \"\"\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "c44c9ec599e3b41abd345a2e48bf960374cfa5e159008bfa3753c90a5e6a7613",
+    "feedback_sha256": "",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "26e85a2dd213eb5d60444a1515a611915e12dbf32ba63a8a9c70a4db9c752bc9",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 918,
+        "failed": 0,
+        "skipped": 0,
+        "error": 0,
+        "elapsed_ms": 7018.51
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 910,
+            "failed": 8,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7846.548
+          }
+        },
+        {
+          "id": "F02",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 910,
+            "failed": 8,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7122.008
+          }
+        },
+        {
+          "id": "F03",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 916,
+            "failed": 2,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6553.875
+          }
+        },
+        {
+          "id": "F04",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 915,
+            "failed": 3,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7064.238
+          }
+        },
+        {
+          "id": "F05",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 916,
+            "failed": 2,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6427.314
+          }
+        },
+        {
+          "id": "F06",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 914,
+            "failed": 4,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 9066.652
+          }
+        },
+        {
+          "id": "F07",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 916,
+            "failed": 2,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 11118.15
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 918,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7334.696
+          }
+        }
+      ]
+    }
+  },
+  {
+    "schema_version": 1,
+    "case": "jinja2-065334d1",
+    "arm": "assisted",
+    "state": "completed",
+    "requested_model": "claude-sonnet-5",
+    "effort": "medium",
+    "seconds_cap": 480,
+    "elapsed_ms": 127088.569,
+    "host_observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 38,
+        "cache_creation_input_tokens": 18659,
+        "cache_read_input_tokens": 446628,
+        "output_tokens": 10013
+      },
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "additions": {
+      "tests/test_attr_filter.py": "import pytest\n\nfrom jinja2 import Undefined\nfrom jinja2.sandbox import SandboxedEnvironment\n\n\nclass Named:\n    def __init__(self, name):\n        self.name = name\n\n\nclass DynamicAttrs:\n    \"\"\"Only exposes attributes through __getattr__, not via the\n    instance/class dict, so plain getattr_static can't see them.\"\"\"\n\n    def __getattr__(self, name):\n        if name == \"foo\":\n            return \"bar\"\n        raise AttributeError(name)\n\n\nclass ItemFallback:\n    \"\"\"Supports item lookup but has no matching attribute.\"\"\"\n\n    def __getitem__(self, key):\n        if key == \"name\":\n            return \"item-value\"\n        raise KeyError(key)\n\n\nclass TestAttrFilter:\n    def test_existing_attribute(self, env):\n        tmpl = env.from_string('{{ obj|attr(\"name\") }}')\n        assert tmpl.render(obj=Named(\"john\")) == \"john\"\n\n    def test_missing_attribute_is_undefined(self, env):\n        tmpl = env.from_string('{{ obj|attr(\"missing\") is undefined }}')\n        assert tmpl.render(obj=Named(\"john\")) == \"True\"\n\n    def test_does_not_fall_back_to_item_lookup(self, env):\n        # Unlike plain attribute/item resolution (``foo.bar``), the attr\n        # filter must never resolve via __getitem__.\n        obj = ItemFallback()\n        assert obj[\"name\"] == \"item-value\"\n\n        tmpl = env.from_string('{{ obj|attr(\"name\") is undefined }}')\n        assert tmpl.render(obj=obj) == \"True\"\n\n    def test_dynamic_attribute_via_getattr(self, env):\n        # Attributes only reachable through __getattr__ (not discoverable by\n        # inspect.getattr_static) must still be returned.\n        tmpl = env.from_string('{{ obj|attr(\"foo\") }}')\n        assert tmpl.render(obj=DynamicAttrs()) == \"bar\"\n\n    def test_dynamic_attribute_missing_is_undefined(self, env):\n        tmpl = env.from_string('{{ obj|attr(\"missing\") is undefined }}')\n        assert tmpl.render(obj=DynamicAttrs()) == \"True\"\n\n    def test_default_filter_chain(self, env):\n        tmpl = env.from_string('{{ obj|attr(\"missing\")|default(\"fallback\", true) }}')\n        assert tmpl.render(obj=Named(\"john\")) == \"fallback\"\n\n    def test_direct_call_returns_undefined_instance(self, env):\n        from jinja2.filters import do_attr\n\n        result = do_attr(env, Named(\"john\"), \"missing\")\n        assert isinstance(result, Undefined)\n\n    def test_direct_call_returns_value(self, env):\n        from jinja2.filters import do_attr\n\n        assert do_attr(env, Named(\"john\"), \"name\") == \"john\"\n\n    def test_sandboxed_blocks_unsafe_attribute(self):\n        senv = SandboxedEnvironment()\n        tmpl = senv.from_string('{{ obj|attr(\"__class__\") is undefined }}')\n        assert tmpl.render(obj=object()) == \"True\"\n\n    def test_sandboxed_allows_safe_attribute(self):\n        senv = SandboxedEnvironment()\n        tmpl = senv.from_string('{{ obj|attr(\"name\") }}')\n        assert tmpl.render(obj=Named(\"jane\")) == \"jane\"\n\n    def test_nonstring_name_raises_type_error(self, env):\n        from jinja2.filters import do_attr\n\n        with pytest.raises(TypeError):\n            do_attr(env, Named(\"john\"), 123)\n"
+    },
+    "scope": "preserved",
+    "launch_attempted": true,
+    "prompt_sha256": "06bc92a3184da83a880920785f682e7d11a480e639dbb712b9cf9bf8c5eb7e4a",
+    "feedback_sha256": "5a85d35e6fe4d161dbfd9a5d6a176156981b09149339decec2136637a3265713",
+    "exposure_boundary": "native tools; no OS sandbox or closed-book claim",
+    "customization": "Claude safe mode; no external MCP; file and Bash tools only",
+    "exit_code": 0,
+    "protected_tree_sha256": "26e85a2dd213eb5d60444a1515a611915e12dbf32ba63a8a9c70a4db9c752bc9",
+    "grade": {
+      "baseline": {
+        "state": "passed",
+        "exit_code": 0,
+        "passed": 920,
+        "failed": 0,
+        "skipped": 0,
+        "error": 0,
+        "elapsed_ms": 7095.933
+      },
+      "faults": [
+        {
+          "id": "F01",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 912,
+            "failed": 8,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7568.621
+          }
+        },
+        {
+          "id": "F02",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 912,
+            "failed": 8,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7828.694
+          }
+        },
+        {
+          "id": "F03",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 919,
+            "failed": 1,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7224.828
+          }
+        },
+        {
+          "id": "F04",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 918,
+            "failed": 2,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7658.677
+          }
+        },
+        {
+          "id": "F05",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 919,
+            "failed": 1,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7396.932
+          }
+        },
+        {
+          "id": "F06",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 916,
+            "failed": 4,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6931.38
+          }
+        },
+        {
+          "id": "F07",
+          "state": "detected",
+          "execution": {
+            "state": "failed",
+            "exit_code": 1,
+            "passed": 919,
+            "failed": 1,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 7115.749
+          }
+        },
+        {
+          "id": "equivalent-format-control",
+          "state": "undetected",
+          "execution": {
+            "state": "passed",
+            "exit_code": 0,
+            "passed": 920,
+            "failed": 0,
+            "skipped": 0,
+            "error": 0,
+            "elapsed_ms": 6712.445
+          }
+        }
+      ]
+    }
+  }
+]
