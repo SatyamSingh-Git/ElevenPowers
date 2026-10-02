@@ -116,6 +116,12 @@ def test_the_working_tree_index_and_branches_are_untouched(repo):
     assert git(repo, "stash", "list") == "", "it used the user's stash"
 
 
-def test_outside_a_repository_it_simply_does_nothing(tmp_path):
+def test_outside_a_repository_it_simply_does_nothing(tmp_path, monkeypatch):
+    # A workspace-owned pytest basetemp may itself be inside the checkout.
+    # Use Git's real discovery ceiling, so this fixture is actually non-Git.
+    monkeypatch.setenv('GIT_CEILING_DIRECTORIES', str(tmp_path.parent.resolve()))
+    found = subprocess.run(['git', 'rev-parse', '--show-toplevel'], cwd=tmp_path,
+                           capture_output=True, text=True)
+    assert found.returncode != 0, 'the non-Git control discovered a parent repository'
     assert ratchet.snapshot(tmp_path, "t1", "green") is None
     assert ratchet.offer(tmp_path, "t1") == ""

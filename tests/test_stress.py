@@ -133,8 +133,12 @@ def test_the_working_tree_is_never_touched(repo):
     assert "worktree" not in git(repo, "worktree", "list").replace(str(repo), "")
 
 
-def test_no_repository_is_unknown_rather_than_a_guess(tmp_path):
+def test_no_repository_is_unknown_rather_than_a_guess(tmp_path, monkeypatch):
     """Absence of an answer is its own answer, and must not read as either one."""
+    monkeypatch.setenv('GIT_CEILING_DIRECTORIES', str(tmp_path.parent.resolve()))
+    found = subprocess.run(['git', 'rev-parse', '--show-toplevel'], cwd=tmp_path,
+                           capture_output=True, text=True)
+    assert found.returncode != 0, 'the non-Git control discovered a parent repository'
     assert stress.base_commit(tmp_path) == ""
     assert stress.on_the_old_tree(tmp_path, "", SUITE) is None
 
