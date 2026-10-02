@@ -37,3 +37,27 @@ if __name__ == 'candidate_engine':
     (root / 'bank/engine.py').write_text(payload + challenge.BUGGY)
     assert challenge.contract(root)
     assert challenge.grade(root)['passed'] < 16
+
+
+def test_worker_preserves_status_and_journal_python_types(tmp_path):
+    root = tmp_path / 'candidate'; challenge.prepare(root)
+    (root / 'bank/engine.py').write_text(challenge.GOLD.replace('return statuses', 'return tuple(statuses)'))
+    assert challenge.grade(root)['passed'] < 16
+    altered = challenge.GOLD.replace('history[e[\'id\']] = signature', 'history[e[\'id\']] = list(signature)')
+    altered = altered.replace('history[e[\'id\']] != signature', 'tuple(history[e[\'id\']]) != signature')
+    (root / 'bank/engine.py').write_text(altered)
+    assert challenge.grade(root)['passed'] < 16
+
+
+def test_behavior_transport_is_bounded_and_preserves_container_types():
+    import pytest
+    from eval.challenge_worker import encode
+    assert encode({'b': ('x', 2), 'a': []}) == encode({'a': [], 'b': ('x', 2)})
+    assert encode(['x', 2]) != encode(('x', 2))
+    assert encode(True) != encode(1)
+    recursive = []
+    recursive.append(recursive)
+    with pytest.raises(ValueError):
+        encode(recursive)
+    with pytest.raises(ValueError):
+        encode([None] * 10001)

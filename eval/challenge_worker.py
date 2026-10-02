@@ -1,9 +1,33 @@
 """Candidate behavior only. The parent controller owns every assertion."""
 import contextlib
-import io
 import json
 from pathlib import Path
 import sys
+
+
+def encode(value):
+    """Bounded, type-preserving behavior; dictionary order is immaterial."""
+    remaining = 10000
+    def visit(item, depth):
+        nonlocal remaining
+        remaining -= 1
+        if remaining < 0 or depth > 16:
+            raise ValueError('candidate behavior exceeds structural limit')
+        kind = type(item)
+        if item is None:
+            return ['none']
+        if kind in (bool, int, float, str):
+            if kind is str and len(item.encode('utf-8')) > 512*1024:
+                raise ValueError('candidate behavior exceeds string limit')
+            return [kind.__name__, item]
+        if kind in (list, tuple):
+            return [kind.__name__, [visit(child, depth + 1) for child in item]]
+        if kind is dict:
+            pairs = [[visit(key, depth + 1), visit(child, depth + 1)] for key, child in item.items()]
+            pairs.sort(key=lambda pair: json.dumps(pair[0], allow_nan=False))
+            return ['dict', pairs]
+        return ['unsupported']
+    return visit(value, 0)
 
 
 class OutputSink:
@@ -50,7 +74,7 @@ def main(root, requests):
                 response['result'] = (total if request['operation'] == 'total' else statement)(b)
             except Exception as exc:
                 response['exception'] = type(exc).__name__
-        responses.append(response)
+        responses.append(encode(response))
     return {'responses': responses}
 
 
