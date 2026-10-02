@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+import pytest
 from types import SimpleNamespace
 
 from eval import challenge, paired
@@ -47,3 +48,11 @@ def test_setup_timeout_and_duplicate_records_cannot_complete(monkeypatch, tmp_pa
         return real(args, **kw)
     monkeypatch.setattr(paired, 'run', timeout)
     assert paired.run_case('codex', 'baseline', tmp_path / 'timeout', 'fake-host')['state'] == 'timeout'
+
+
+def test_unsupported_resolved_records_are_rejected():
+    records = [{'host': host, 'arm': arm, 'replicate': rep, 'model': paired.subscription.MODELS[host],
+                'effort': 'medium', 'identity': challenge.identity(), 'state': 'resolved'}
+               for host, rep, arm in paired.schedule()]
+    with pytest.raises(ValueError):
+        paired.summarize(records)

@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -106,12 +107,42 @@ def summarize(records):
         raise ValueError('pilot accepts at most eight records')
     states = ('resolved', 'unresolved', 'regressed', 'invalid', 'setup', 'timeout', 'host_failed', 'running')
     for record in records:
+        required = {'schema_version', 'host', 'arm', 'replicate', 'state', 'model', 'effort', 'budget_seconds',
+                    'generated_at', 'identity', 'runtime_fingerprint', 'elapsed_ms', 'exit_code',
+                    'observation', 'grade', 'mechanisms', 'contract_unchanged'}
         if (not isinstance(record, dict) or record.get('host') not in subscription.MODELS or
+                not required.issubset(record) or type(record.get('schema_version')) is not int or record['schema_version'] != 1 or
                 record.get('arm') not in ('baseline', 'tool') or record.get('state') not in states or
                 type(record.get('replicate')) is not int or record['replicate'] not in (0, 1) or
                 record.get('model') != subscription.MODELS[record['host']] or record.get('effort') != 'medium' or
-                record.get('identity') != challenge.identity()):
+                record.get('identity') != challenge.identity() or
+                not isinstance(record.get('runtime_fingerprint'), str) or not re.fullmatch('[a-f0-9]{64}', record['runtime_fingerprint']) or
+                type(record.get('budget_seconds')) not in (int, float) or not math.isfinite(record['budget_seconds']) or
+                not 0 < record['budget_seconds'] <= 240 or type(record.get('contract_unchanged')) is not bool):
             raise ValueError('invalid or conflicting pilot record')
+        if record['elapsed_ms'] is not None and (type(record['elapsed_ms']) not in (int, float) or
+                                                not math.isfinite(record['elapsed_ms']) or record['elapsed_ms'] < 0):
+            raise ValueError('invalid pilot timing')
+        if record['state'] in ('resolved', 'unresolved', 'regressed'):
+            from .challenge_grader import CHECK_NAMES
+            grade, observation = record['grade'], record['observation']
+            if (not isinstance(grade, dict) or grade.get('state') != 'graded' or
+                    type(grade.get('total')) is not int or grade['total'] != 16 or
+                    not isinstance(grade.get('checks'), dict) or set(grade['checks']) != set(CHECK_NAMES) or
+                    any(type(v) is not bool for v in grade['checks'].values()) or
+                    type(grade.get('passed')) is not int or grade['passed'] != sum(grade['checks'].values()) or
+                    type(grade.get('regressions')) is not int or grade['regressions'] !=
+                    sum(not grade['checks'][k] for k in ('view_total', 'view_statement', 'basic_transfer', 'empty')) or
+                    record['contract_unchanged'] is not True or type(record['exit_code']) is not int or record['exit_code'] != 0 or
+                    not isinstance(observation, dict) or observation.get('completed') is not True or
+                    observation.get('failure') == 'blocked_by_policy' or record['elapsed_ms'] is None or
+                    (record['host'] == 'claude' and observation.get('models') != [subscription.MODELS['claude']])):
+                raise ValueError('unsupported graded pilot result')
+            expected = 'resolved' if grade['passed'] == 16 else 'regressed' if grade['regressions'] else 'unresolved'
+            if record['state'] != expected:
+                raise ValueError('pilot state conflicts with its grade')
+    if len({(r['budget_seconds'], r['runtime_fingerprint']) for r in records}) > 1:
+        raise ValueError('pilot budgets or runtime identities differ')
     unique = [(r['host'], r['arm'], r.get('replicate')) for r in records]
     complete = len(records) == 8 and len(set(unique)) == 8 and all(r['state'] != 'running' for r in records)
     arms = []
