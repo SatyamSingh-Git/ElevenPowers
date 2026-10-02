@@ -85,6 +85,7 @@ def _digest(values):
 
 def identity():
     grader = Path(__file__).with_name('challenge_grader.py').read_bytes()
+    grader += Path(__file__).with_name('challenge_worker.py').read_bytes()
     return {'task': _digest(FILES), 'prompt': hashlib.sha256(PROMPT.encode()).hexdigest(),
             'grader': hashlib.sha256(grader).hexdigest()}
 
@@ -115,10 +116,11 @@ def grade(root):
         value = json.loads(result.stdout)
         if result.returncode or set(value) != {'state', 'passed', 'total', 'regressions', 'checks'}:
             raise ValueError('invalid grader response')
+        from .challenge_grader import CHECK_NAMES
         if (value['state'] != 'graded' or type(value['total']) is not int or value['total'] != 16 or
                 type(value['passed']) is not int or not 0 <= value['passed'] <= 16 or
                 type(value['regressions']) is not int or not 0 <= value['regressions'] <= 4 or
-                not isinstance(value['checks'], dict) or len(value['checks']) != 16 or
+                not isinstance(value['checks'], dict) or set(value['checks']) != set(CHECK_NAMES) or
                 any(type(v) is not bool for v in value['checks'].values()) or
                 value['passed'] != sum(value['checks'].values())):
             raise ValueError('invalid behavioral grade')
