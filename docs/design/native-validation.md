@@ -63,9 +63,25 @@ Installation/trust/policy and unavailable host logins remain explicit gaps.
 
 ## Delivery
 
-Nineteen meaningful incremental pushes, descriptive messages without counters.
+Twenty-nine meaningful incremental pushes, descriptive messages without counters.
 Inline execution with one fresh final review; regression tests observed failing
 then passing for behavior changes. Focused checks during implementation and full
 suite/audit/grader/architecture at the delivery boundary. Update all six guides,
 README (feature section, not opening), plan/status/roadmap, journey and validation.
 Publish the verified result on main, preserving existing user work and history.
+
+
+## Recorded-protocol reproduction after review
+
+The reviewed evaluator separates a contained candidate behavior worker from a
+controller that never imports candidate code. Package imports remain normal;
+final assertions and grades belong to the controller. Changing grader/worker
+content creates a new identity. The original task and eight results remain intact.
+
+Explicit archive inspection accepts a bounded recorded protocol and structurally
+qualified run records. It reproduces saved aggregates without a model call,
+project checks, candidate execution or silent regrading. Records must agree on
+model, effort, runtime, budgets, grader identity and grade/state prerequisites.
+Private or unknown fields are rejected rather than exported. Earlier evaluator
+identity is labeled explicitly; saved local records are unsigned and reproduction
+does not repair an earlier evaluator or establish a treatment effect.

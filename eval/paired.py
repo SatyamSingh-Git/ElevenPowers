@@ -102,9 +102,31 @@ def run_case(host, arm, root, executable, source=None, timeout=240, replicate=0)
     return record
 
 
-def summarize(records):
+def _protocol(protocol):
+    try:
+        fields = {'schema_version', 'identity', 'models', 'effort', 'seconds_per_run', 'schedule', 'runtime_fingerprint'}
+        if (not isinstance(protocol, dict) or set(protocol) != fields or
+                type(protocol['schema_version']) is not int or protocol['schema_version'] != 1 or
+                protocol['models'] != subscription.MODELS or protocol['effort'] != 'medium' or
+                set(protocol['identity']) != {'task', 'prompt', 'grader'} or
+                any(not isinstance(v, str) or not re.fullmatch('[a-f0-9]{64}', v) for v in protocol['identity'].values()) or
+                not isinstance(protocol['runtime_fingerprint'], str) or not re.fullmatch('[a-f0-9]{64}', protocol['runtime_fingerprint']) or
+                type(protocol['seconds_per_run']) not in (int, float) or not math.isfinite(protocol['seconds_per_run']) or
+                not 0 < protocol['seconds_per_run'] <= 240 or
+                not isinstance(protocol['schedule'], list) or len(protocol['schedule']) != 8 or
+                any(not isinstance(v, (list, tuple)) or len(v) != 3 or type(v[1]) is not int for v in protocol['schedule']) or
+                [tuple(v) for v in protocol['schedule']] != schedule()):
+            raise ValueError('invalid recorded pilot protocol')
+    except (TypeError, AttributeError, KeyError) as exc:
+        raise ValueError('malformed recorded pilot protocol') from exc
+
+
+def summarize(records, protocol=None):
     if not isinstance(records, list) or len(records) > 8:
         raise ValueError('pilot accepts at most eight records')
+    if protocol is not None:
+        _protocol(protocol)
+    expected_identity = protocol['identity'] if protocol else challenge.identity()
     states = ('resolved', 'unresolved', 'regressed', 'invalid', 'setup', 'timeout', 'host_failed', 'running')
     for record in records:
         required = {'schema_version', 'host', 'arm', 'replicate', 'state', 'model', 'effort', 'budget_seconds',
@@ -115,11 +137,14 @@ def summarize(records):
                 record.get('arm') not in ('baseline', 'tool') or record.get('state') not in states or
                 type(record.get('replicate')) is not int or record['replicate'] not in (0, 1) or
                 record.get('model') != subscription.MODELS[record['host']] or record.get('effort') != 'medium' or
-                record.get('identity') != challenge.identity() or
+                record.get('identity') != expected_identity or
                 not isinstance(record.get('runtime_fingerprint'), str) or not re.fullmatch('[a-f0-9]{64}', record['runtime_fingerprint']) or
                 type(record.get('budget_seconds')) not in (int, float) or not math.isfinite(record['budget_seconds']) or
                 not 0 < record['budget_seconds'] <= 240 or type(record.get('contract_unchanged')) is not bool):
             raise ValueError('invalid or conflicting pilot record')
+        if protocol and (record['runtime_fingerprint'] != protocol['runtime_fingerprint'] or
+                         record['budget_seconds'] != protocol['seconds_per_run']):
+            raise ValueError('record conflicts with recorded pilot protocol')
         if record['elapsed_ms'] is not None and (type(record['elapsed_ms']) not in (int, float) or
                                                 not math.isfinite(record['elapsed_ms']) or record['elapsed_ms'] < 0):
             raise ValueError('invalid pilot timing')
@@ -156,11 +181,13 @@ def summarize(records):
                          'completion_language_with_failed_grade': sum(bool((r.get('observation') or {}).get('completion_language')) and
                             bool(r.get('grade')) and r['grade']['passed'] < r['grade']['total'] for r in selected)})
     return {'schema_version': 1, 'kind': 'subscription_pilot', 'state': 'complete' if complete else 'incomplete',
-            'identity': challenge.identity(), 'arms': arms, 'runs': records,
+            'identity': expected_identity, 'current_evaluator': expected_identity == challenge.identity(),
+            'arms': arms, 'runs': records,
             'limits': ['Eight-run descriptive pilot; no general or statistically powered causal improvement claim.',
                        'Workspace separation is not a closed-book OS boundary; candidate code runs in a contained process.',
                        'Completion wording is a heuristic, not an independently validated intent classifier.',
-                       'A ceiling baseline supplies no increased solve-rate evidence; process and patch outcomes are separate.']}
+                       'A ceiling baseline supplies no increased solve-rate evidence; process and patch outcomes are separate.',
+                       'Recorded protocols reproduce saved unsigned results; this neither reruns nor validates an earlier evaluator.']}
 
 
 def pilot(directory, executables, seconds=240):

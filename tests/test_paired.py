@@ -56,3 +56,22 @@ def test_unsupported_resolved_records_are_rejected():
                for host, rep, arm in paired.schedule()]
     with pytest.raises(ValueError):
         paired.summarize(records)
+
+
+def test_recorded_protocol_can_reproduce_saved_outcomes_without_regrading(monkeypatch, tmp_path):
+    stub(monkeypatch, lambda p: (p / 'bank/engine.py').write_text(challenge.GOLD))
+    record = paired.run_case('codex', 'baseline', tmp_path / 'saved', 'fake-host')
+    archived_identity = {**record['identity'], 'grader': 'd' * 64}
+    record['identity'] = archived_identity
+    protocol = {'schema_version': 1, 'identity': archived_identity, 'models': paired.subscription.MODELS,
+                'effort': 'medium', 'seconds_per_run': 240, 'schedule': paired.schedule(),
+                'runtime_fingerprint': record['runtime_fingerprint']}
+    with pytest.raises(ValueError):
+        paired.summarize([record])
+    monkeypatch.setattr(challenge, 'grade', lambda *a: pytest.fail('archive read must not regrade'))
+    value = paired.summarize([record], protocol=protocol)
+    assert value['identity'] == archived_identity and not value['current_evaluator']
+    assert value['arms'][0]['resolved'] == 1
+    record['budget_seconds'] = 10
+    with pytest.raises(ValueError):
+        paired.summarize([record], protocol=protocol)

@@ -115,7 +115,7 @@ Interfaces: `command(host, executable, root, prompt, model, effort) -> list[str]
   roadmap/PLAN and journey. Reconcile original A/B closure and existing modules.
 - [ ] Record native gaps, performance protocol/sample sizes and all pilot results;
   no broad improvement claim from a small sample or a ceiling baseline.
-- [ ] Check links/whitespace, complete nineteen incremental feature pushes,
+- [ ] Check links/whitespace, complete twenty-nine incremental feature pushes,
   then fast-forward verified main with preserved history and exact-head CI.
 
 ## Incremental publication boundaries
@@ -139,7 +139,17 @@ Publish each as its checks finish; messages describe the actual change:
 15. Outcome protocol/adversarial integration controls.
 16. Installed-session/performance/pilot observations and required corrections.
 17. Rendered architecture and all six guides.
-18. Independent-review corrections and delivery validation.
-19. Final README/status/roadmap/journey and verified main publication.
+18. Independent behavior controller/worker and legitimate package imports.
+19. Strict outcome summary prerequisites and state/grade consistency.
+20. Recorded-protocol summary reproduction after evaluator updates.
+21. Explicit read-only archived-pilot inspection and private-field rejection.
+22. Original protocol artifact and reproduced outcome summary.
+23. Corrected evaluator, archive inspection and native trust guides.
+24. Master plan and research/product roadmap reconciliation.
+25. Current status and outstanding acceptance boundaries.
+26. Journey record of native execution and evaluation failures.
+27. Dated trusted native-session observations and conservative capture.
+28. Delivery validation, review evidence and final repository checks.
+29. Clean README feature update and verified main publication.
 
 No empty commits, force pushes, counter suffixes or fabricated positive outcomes.
