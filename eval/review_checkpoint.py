@@ -14,7 +14,7 @@ import zipfile
 from core.process import run, OutputLimitExceeded
 
 MARKER = '.ep-review-checkpoint.json'
-IGNORED = {'.git', '.claude', '.elevenpowers', '.pytest_cache', '__pycache__'}
+IGNORED = {'.git', '.claude', '.elevenpowers', '.pytest_cache', '.hypothesis', '__pycache__'}
 GIT = ['git', '-c', 'core.autocrlf=false', '-c', 'core.eol=lf']
 
 
@@ -83,6 +83,13 @@ def prepare(case, root):
                 f'_ep_source = str(Path(__file__).resolve().parent / {where!r})\n'
                 'sys.path.insert(0, _ep_source)\n'
                 'os.environ["PYTHONPATH"] = _ep_source\n', encoding='utf-8')
+        if where:
+            (root/'ep_review_pytest.py').write_text(
+                'import os, sys\nfrom pathlib import Path\n'
+                f'_ep_source = str(Path(__file__).resolve().parent / {where!r})\n'
+                'sys.path.insert(0, _ep_source)\n'
+                'os.environ["PYTHONPATH"] = os.pathsep.join(p for p in (_ep_source, os.environ.get("PYTHONPATH", "")) if p)\n'
+                'import pytest\nraise SystemExit(pytest.main(sys.argv[1:]))\n', encoding='utf-8')
         git(root, 'init', '-q')
         git(root, 'add', '.')
         git(root, '-c', 'user.name=Checkpoint review', '-c', 'user.email=review@example.invalid', 'commit', '-qm', 'Original inputs')

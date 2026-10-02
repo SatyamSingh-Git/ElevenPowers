@@ -20,8 +20,7 @@ from pathlib import Path
 from .evidence import Evidence, Kind, Result, source_files, tree_hash, vcs_state, source_snapshot
 
 PYTEST_TAIL = re.compile(
-    r"^=+ (?:(?P<failed>\d+) failed)?,? ?(?:(?P<passed>\d+) passed)?"
-    r".*?(?:(?P<errors>\d+) errors?)?.*?=+$",
+    r"^=+\s+(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s\s+=+$",
     re.MULTILINE,
 )
 PYTEST_NODE = re.compile(r"^(?P<status>PASSED|FAILED|ERROR)\s+(?P<node>\S+::\S+)", re.MULTILINE)
@@ -616,14 +615,12 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
         )
 
     passed = failed = 0
-    tail = PYTEST_TAIL.search(output)
-    if tail:
-        passed = int(tail.group("passed") or 0)
-        failed = int(tail.group("failed") or 0) + int(tail.group("errors") or 0)
-    else:
-        quiet = PYTEST_QUIET.search(output)
-        if quiet:
-            passed, failed = _counts(quiet.group("body"))
+    summaries = sorted([*PYTEST_TAIL.finditer(output), *PYTEST_QUIET.finditer(output)],
+                       key=lambda match: match.start())
+    if summaries:
+        body = summaries[-1].group('body')
+        passed, failed = _counts(body)
+        failed += sum(int(n) for n in re.findall(r'\b(\d+) errors?\b', body))
 
     records.append(
         Evidence(
