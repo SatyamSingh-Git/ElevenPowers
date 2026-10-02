@@ -149,6 +149,20 @@ Important findings were corrected in one RED→GREEN pass. Broader effectiveness
 full installed-host acceptance, authentication/security isolation and arbitrary
 future failure-archive qualification remain outside these measured results.
 
+The corrected local Windows suite subsequently passed **1,270 tests with 28
+skips in 882.00 seconds**. Its longest existing check was the no-test completion
+gate at 304.15 seconds. Hosted CI on `0858e21` passed both Linux jobs but exposed
+one snapshot-grade failure on both Windows jobs. A real Windows short-name probe
+reproduced the cause: the snapshot was complete, while the frozen contract
+compared canonical file paths with an unresolved temporary-root alias and
+returned unavailable. Equivalent `child/..` roots reproduced it independently.
+Canonicalizing the root preserves the boundary and accepts these equivalent
+paths. Both new regressions failed before correction, and all 24 archived grades
+still matched afterward. All **35** affected recorder, comparison, boundary and
+archive controls passed in 29.89 seconds. All four architecture tabs rendered
+again after the path-boundary documentation update. This changes no frozen task, evaluator assertion or
+recorded candidate; hosted full gates are repeated on the corrected head.
+
 Next proof exit: freeze held-out tasks where ordinary first proposals actually
 contain an independently checked defect or stale source evidence. Observe the
 existing intervention and whether it corrects that state. Preserve all ordinary

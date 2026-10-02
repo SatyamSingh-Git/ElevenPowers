@@ -47,3 +47,11 @@ preparation and retain attempts before authentication and every Stop. Independen
 capture markers and native treatment counts must agree with the history.
 Reproduction also preserves an old evaluator identity when checkout line endings
 change its bytes. See [dated evidence](../docs/validation/2026-10-02-proof-of-benefit.md).
+
+Hosted checks caught a path difference the local drive had hidden. Both Linux
+jobs passed; Windows reconstruction used a short-name temporary path, and our
+contract compared canonical file paths with an unresolved root. A real short-name
+probe produced a complete snapshot and an unavailable grade. A second control
+used an equivalent `child/..` root. Both failed first; resolving the root before
+containment checks fixes the same boundary on every platform. The original 24
+saved grades still reproduce, and the hosted gates run again on that correction.

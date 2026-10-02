@@ -40,6 +40,31 @@ def test_saved_snapshot_grades_independently_and_is_readonly(tmp_path):
     assert benefit.grade_snapshot('atomic-repair', snap)['state'] == 'unavailable'
 
 
+def test_equivalent_root_path_preserves_the_frozen_contract(tmp_path):
+    root=tmp_path/'candidate';benefit_cases.prepare('atomic-repair',root)
+    (root/'child').mkdir()
+    assert benefit_cases.contract('atomic-repair',root/'child'/'..')
+
+
+def test_windows_short_temp_path_grades_the_same_source(monkeypatch):
+    import ctypes,os,tempfile,pytest
+    if os.name!='nt':
+        pytest.skip('Windows filesystem short paths')
+    with tempfile.TemporaryDirectory(prefix='ep-completion-alias-') as directory:
+        root=Path(directory)/'candidate long filesystem name'
+        benefit_cases.prepare('atomic-repair',root)
+        buffer=ctypes.create_unicode_buffer(32768)
+        size=ctypes.windll.kernel32.GetShortPathNameW(str(root),buffer,len(buffer))
+        if not size or Path(buffer.value)==root:
+            pytest.skip('filesystem does not expose a short alias')
+        alias=Path(buffer.value)
+        assert alias.resolve()==root.resolve()
+        monkeypatch.setattr(tempfile,'tempdir',str(alias))
+        snap=proposals.snapshot(root,benefit_cases.names('atomic-repair'))
+        assert snap['state']=='complete'
+        assert benefit.grade_snapshot('atomic-repair',snap)['passed']==7
+
+
 def test_summary_does_not_credit_callbacks_alone_or_missing_runs():
     value = benefit.summarize([])
     assert value['state'] == 'incomplete' and value['benefit_observed'] is False

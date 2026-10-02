@@ -79,7 +79,7 @@ def prepare(case, root):
 
 
 def contract(case, root):
-    root = Path(root).absolute()
+    root = Path(root).resolve()
     try:
         return all(not (root/name).is_symlink() and (root/name).resolve().is_relative_to(root) and
                    (root/name).read_bytes() == body.encode()

@@ -387,6 +387,8 @@ eight-run publication, rather than arbitrary later failed batch journals.
 An older harness/evaluator identity remains visible through `current_harness`
 and `current_evaluator`; inspection never silently upgrades it. Regrading uses
 the current evaluator and compares its grades with the recorded grades.
+Reconstruction uses canonical project roots, so Windows short-name temporary
+aliases and equivalent path spellings retain the same file boundary.
 Candidate files, prompts and history here are
 explicit benchmark artifacts and remain absent from ordinary product reports.
 
