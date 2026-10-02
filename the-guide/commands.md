@@ -29,6 +29,11 @@ the engine or block ordinary pipeline health.
 
 ## ep_doctor — repeatable native acceptance
 
+Run each declared command as its own tool call from the exercise directory.
+Directory prefixes, echo suffixes, pipelines and timeout wrappers change the
+command and may hide its exit status. Use native interruption controls for the
+incomplete step. Inspect with the same account/Git ignore policy as the host.
+
 ```sh
 python plugin/bin/ep_doctor.py --prepare-acceptance NEW_DIR --platform HOST --language python --host-version INSTALLED_VERSION --json
 python plugin/bin/ep_doctor.py --prepare-acceptance ANOTHER_NEW_DIR --platform HOST --language javascript --host-version INSTALLED_VERSION
@@ -348,3 +353,37 @@ Its controller never imports candidate code and owns all sixteen assertions.
 A passing result means those frozen checks passed; invalid account identifiers
 already present as balance keys are outside this grader's checked cases. Local
 process separation does not create an OS closed-book boundary.
+
+## Controlled completion comparison
+
+This explicit evaluation workflow is separate from plugin installation. It
+currently qualifies Claude's exit-2 completion decision, using subscription
+`claude-sonnet-5-5` medium. It requires an observed native pipeline before calls,
+refuses API environment overrides, freezes two cases/eight slots, reverses arm
+order and never resumes or overwrites an attempted batch. Both arms use the
+same passive observer; treatment delegates to ordinary guide hooks.
+
+```bash
+python -m eval.benefit prepare NEW_BATCH_DIRECTORY --seconds 240
+python -m eval.benefit run BATCH_DIRECTORY --executable CLAUDE_EXE --native-project QUALIFIED_EXERCISE
+python -m eval.benefit_archive docs/validation/2026-10-02-proof-of-benefit/completion-archive.json
+python -m eval.benefit_archive docs/validation/2026-10-02-proof-of-benefit/completion-archive.json --regrade
+```
+
+Preparation creates only disposable evaluation inputs and launches no model.
+Run consumes subscription allowance and preserves each attempt immediately;
+quota exhaustion stops scheduling. The archive read launches no candidate or
+model. Explicit `--regrade` executes contained independent checks on disposable
+saved synthetic source. An older harness identity remains visible; inspection
+never silently upgrades it. Candidate files, prompts and history here are
+explicit benchmark artifacts and remain absent from ordinary product reports.
+
+`missing` verification means no exact-command receipt was observed. Wrapped
+tests may have run. Receipt refresh, repaired behavior and coding benefit are
+separate fields. The first eight-run comparison observed extra fresh receipts
+and tied 16/16 behavior in both arms; it establishes no population effect or
+speedup. See [dated evidence](../docs/validation/2026-10-02-proof-of-benefit.md).
+
+Optional `--checksums CHECKSUMS.json` checks the explicit canonical-JSON manifest;
+its hashes survive checkout newline conversion. This is a local consistency
+check, not signature verification or authentication.

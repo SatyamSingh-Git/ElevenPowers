@@ -1,9 +1,12 @@
 {
-  "acceptance-exact-observation.json": "5c602f639aeba80bef368ec967779ccac7ffcd5b0ca2adc2d735179469116720",
-  "acceptance-observation.json": "8059dca1d5937d7f3c956f1c13e8d64247aa66e0a5a4b28d0e79d8d9fcd7c62b",
-  "completion-archive.json": "4f47bf243fb034b841840d206ffb2a7b9555b93c2480a3e02dd24615556805c7",
-  "native-claude-exact.json": "eb4dabc083e0b6cfa83062f5f0a685c5ac9c82c57d7498b115eebfdcb6a11a2f",
-  "native-claude.json": "f5c6ee372e2ead26810d2342561a295905c4a36647744b2a596bb98be93b774a",
-  "qualified-summary.json": "7884cdb0e2bc74ffe925c61b57bd466f36954ca5ffe16ebad8ed0be01ccfaff8",
-  "recorded-summary.json": "2d072f39c6e39b4334014ce2e05542734f7551ecaebbc29ebf09e5ebb354b706"
+  "format": "json-canonical-v1",
+  "files": {
+    "acceptance-exact-observation.json": "6496130e2c311848950910949a9596d5f78ed27d635ebfda43be88e6161c10d5",
+    "acceptance-observation.json": "0310825477e6c6d67c435042b4c007d7bf4f3044efd7249bfdee76bba8868d87",
+    "completion-archive.json": "cef890362189ec22ceadc8717ed1bc32de80603607173a4f79457be1b9719dff",
+    "native-claude-exact.json": "7bb9292c1d0e5e7a8e23d1f28ab8d9d122ea841cd950352fe411360bb54c9bcc",
+    "native-claude.json": "f2a71f90d3d5033f49e8c56b9dd99236c6bd43d9d10762b7172488114dc117a9",
+    "qualified-summary.json": "37e203907855a49abaf2fd2e20037dac1100357de8fa4c9290c31dfbdb5425ee",
+    "recorded-summary.json": "5ef8fc4b06547e65bfc8b7d77c5fc6f9a562222855591f82da4f0ef0d4980b58"
+  }
 }

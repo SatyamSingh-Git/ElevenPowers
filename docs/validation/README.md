@@ -2,6 +2,8 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-02 controlled completion comparison](2026-10-02-proof-of-benefit.md): eight actual subscription runs, native pipeline delivery, three receipt refreshes, tied first/final 16/16 behavior and 24 reproducible snapshot grades.
+
 - [2026-10-02 native validation](2026-10-02-native-validation.md): runtime/version qualification, ten explicit cells, actual readonly latency samples and all eight inconclusive subscription coding runs.
 - [2026-10-02 native delivery checks](2026-10-02-native-validation-delivery.md): final local suite, audit, grader and rendered architecture; five reproduced review corrections, exact-head CI gate and remaining acceptance limits.
 

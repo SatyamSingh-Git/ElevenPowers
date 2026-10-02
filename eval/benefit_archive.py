@@ -39,6 +39,20 @@ def _grade(g):
             g['regressions']==sum(not g['checks'][k] for k in ('view_total','view_statement','basic_transfer','empty')))
 
 
+def verify_checksums(path):
+    manifest=_read(path)
+    if not isinstance(manifest,dict) or set(manifest)!={'format','files'} or manifest['format']!='json-canonical-v1' or not isinstance(manifest['files'],dict) or not 1<=len(manifest['files'])<=32:
+        raise ValueError('invalid checksum manifest')
+    for name,digest in manifest['files'].items():
+        if not isinstance(name,str) or not re.fullmatch(r'[a-z0-9-]+\.json',name) or name=='checksums.json' or not isinstance(digest,str) or not re.fullmatch('[a-f0-9]{64}',digest):
+            raise ValueError('unsafe checksum entry')
+        value=_read(Path(path).parent/name)
+        actual=hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+        if actual!=digest:
+            raise ValueError('archive checksum mismatch')
+    return True
+
+
 def inspect(path, regrade=False):
     value=_read(path)
     if not isinstance(value,dict) or set(value)!={'schema_version','protocol','runs'} or value['schema_version']!=1 or type(value['schema_version']) is not int:
@@ -109,9 +123,11 @@ def inspect(path, regrade=False):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('archive');parser.add_argument('--regrade',action='store_true')
+    parser.add_argument('archive');parser.add_argument('--regrade',action='store_true');parser.add_argument('--checksums')
     args=parser.parse_args()
     try:
+        if args.checksums:
+            verify_checksums(args.checksums)
         result=inspect(args.archive,args.regrade);print(json.dumps(result,indent=2))
         raise SystemExit(0 if result['grades_match'] is not False else 1)
     except (ValueError,OSError) as error:

@@ -257,6 +257,14 @@ Claude project setup writes local settings, so a restricted launch must include
 
 ### Native trust and actual delivery are separate
 
+The later October 2 Claude Code 2.1.287 session processed startup/edit/exact
+failing and passing commands/completion with fresh pipeline health. Its full
+exercise remains waiting for an intentional incomplete receipt. A subsequent
+eight-run subscription comparison delivered native treatment callbacks and
+preserves proposed/final candidates; it found extra receipt coverage and tied
+behavioral correctness. This does not qualify other hosts or full acceptance.
+See [controlled completion validation](../docs/validation/2026-10-02-proof-of-benefit.md).
+
 The installed Codex 0.159.2 UI showed five owned exercise hooks awaiting review.
 Normal review and trust changed its table to active subscriptions. A bounded
 subsequent subscription session repaired the exercise's boundary and ran its

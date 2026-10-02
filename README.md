@@ -370,6 +370,18 @@ is also not a verified task. See [commands](the-guide/commands.md),
 [journey 54](journey/54-a-comparison-needs-a-working-host.md). Recorded-protocol
 inspection reproduces earlier saved outcomes without model calls or regrading.
 
+The next controlled comparison ran on a working Claude pipeline with a passive
+recorder in both arms. Eight Sonnet 5.5 medium calls produced first and final
+candidates passing 16/16 independent checks in every run. Ordinary plugin
+completion supplied fresh exact-command receipts in three treatment runs;
+final receipt coverage was 4/4 treatment and 1/4 baseline. Wrapped baseline
+tests may still have run. This demonstrates additional retained verification
+evidence, with no observed patch-correctness improvement. The public archive
+reconstructs all 24 proposed/final snapshots without model calls. See
+[controlled evidence](docs/validation/2026-10-02-proof-of-benefit.md),
+[commands](the-guide/commands.md#controlled-completion-comparison) and
+[journey 55](journey/55-at-the-moment-of-done.md).
+
 ```bash
 python plugin/bin/ep_validate.py capture HOST --project EXERCISE --observe-version --json
 python plugin/bin/ep_validate.py performance HOST --project PATH --repeats 3 --seconds 60 --json

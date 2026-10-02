@@ -1,5 +1,14 @@
 # What we build on: prior art for each v0.8 component
 
+**Controlled completion measurement, 2026-10-02.** Reuse this repository's
+MIT-licensed subscription command builder, contained evaluator and guide hooks,
+plus the earlier checkpoint concept. Add a bounded frozen-file observer that
+never stages Git and captures before/after actual completion in both arms.
+Python standard-library base64/JSON/SHA-256 provide explicit snapshot transport
+and local consistency checks. New protocol/case identities preserve the original
+pilot. Hash chains are not authentication; additional receipts are not proof of
+better coding. See [evidence](../validation/2026-10-02-proof-of-benefit.md).
+
 **Project-health delivery, 2026-10-01.** Fresh staged health reuses the exporter,
 evidence engine, owned native wiring/doctor, activation registry and progress
 journal. Explicit disposable exercises use real unittest/Node APIs rather than

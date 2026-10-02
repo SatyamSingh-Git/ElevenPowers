@@ -19,6 +19,7 @@ This delivery does not establish improved patch outcomes.
 | Versioned native reports | Bounded runtime identity, explicit installed-version probes, whitelisted captures and ten-cell matrix | Dated unsigned observations; duplicate, changed and incomplete histories cannot pass; full installed acceptance remains 0/10 |
 | Read-only performance | Every attempted repeated health read retained; finite source/timing checks and separate callback/command history | Descriptive local samples, cooperative deadline; no universal speedup or task certification |
 | Subscription coding pilot | Frozen original task, independent 16-check grader, exact requested models/medium effort and eight equal-budget journals | Initial pilot inconclusive due policy/activation/quota; no product benefit established; local separation is not an OS boundary |
+| Controlled completion comparison | Two original cases, eight actual Claude subscription runs, neutral before/after Stop snapshots and independent grades | All first/final candidates 16/16; three treatment receipt refreshes; no patch-correctness gain; wrapped baseline verification may be unobserved |
 | Native acceptance workflow | Explicit new disposable Python/Node repository, owned wiring, immutable contract and current pass/fail/incomplete history qualification | Preparation launches no host; local unsigned observations and operator versions do not establish authenticated or cross-version compatibility |
 | Native patch attribution | Bounded pre/post target content comparisons; dirty/non-Git files, add/delete/move | Stable task/session/call/input required; target coverage cannot prove absence of unrelated side effects |
 | Missing callbacks | Pending coverage visible in status/readiness; completion reconciles missing post-events; eviction uncertainty persists | Interrupted/missing/unsafe/budget-limited observations stay UNVERIFIED even with passing tests |
@@ -55,7 +56,7 @@ capturing CI through an installed host's native command events.
 ## Remaining readiness limits
 
 - Versioned live sessions on Codex, Gemini CLI, Cursor Agent and Copilot CLI remain open.
-- A full staged native exercise remains unverified on all five hosts; the historical Claude startup proves only startup.
+- Claude 2.1.287 now has observed startup/edit/exact fail/pass/completion and fresh pipeline health; intentional incomplete execution remains unqualified, so full native acceptance remains open on all hosts.
 - A full native-host Snag command receipt and normal-session latency measurements remain open.
 - Snag's dependency audit must be resolved in that project before its full CI is green.
 - Unknown tool input/result envelopes, missing identities/events, unsafe paths and budgets remain explicit gaps.
@@ -81,6 +82,12 @@ to generate it. See [report validation](validation/2026-10-01-portable-report.md
 and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 ## Next readiness milestone
+
+The completion comparison now has a working installed Claude pipeline and a
+public proposal archive. Its next evidence exit is correction of ordinary
+defective or stale first proposals on held-out tasks; this comparison's first
+proposals were already correct. Additional native host/language cells and the
+intentional interruption receipt remain open. See [completion evidence](validation/2026-10-02-proof-of-benefit.md).
 
 Use the new disposable workflow to exercise versioned installed hosts, then
 measure normal-session callback/read/command costs on unrelated projects.
@@ -140,3 +147,15 @@ Codex's normal UI. No coding-outcome improvement is established. Finish native
 acceptance and a newly identified, quota-available comparison before claiming
 product benefit. [Dated evidence](validation/2026-10-02-native-validation.md) and
 [journey 54](../journey/54-a-comparison-needs-a-working-host.md) record the limits.
+
+## Controlled completion delivery
+
+Eight new Claude Code 2.1.287 calls used subscription Sonnet 5.5 medium, equal
+240-second budgets and reversed arm order. Passive snapshots in both arms never
+stage Git and capture the candidate before/after actual Stop. All first/final
+candidates passed 16/16 independent checks. Three treatment completions supplied
+a missing exact-command receipt; final fresh receipt coverage was 4/4 versus
+1/4 baseline. This is an evidence-coverage improvement, not proof of skipped
+baseline tests, better patches or faster work. All 24 saved snapshot grades
+reproduced without model calls. [Validation](validation/2026-10-02-proof-of-benefit.md)
+and [journey 55](../journey/55-at-the-moment-of-done.md) preserve the protocol and limits.

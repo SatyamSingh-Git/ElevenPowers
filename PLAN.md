@@ -1,5 +1,19 @@
 # Master Plan v0.8
 
+**Controlled completion delivery, 2026-10-02.** One installed Claude pipeline
+now delivers startup/edit/exact fail/pass/completion with fresh evidence. A new
+eight-call Sonnet 5.5 medium comparison records initial/proposed/final behavior
+and ordinary intervention. All first and final candidates passed 16/16; no
+patch-correctness improvement was observed. Three treatment completions added
+fresh exact-command receipts; final coverage was 4/4 treatment and 1/4 baseline.
+Wrapped baseline tests may still have run. Keep this narrower evidence result
+separate from coding benefit and population claims. Full native interruption
+acceptance remains open. Next: held-out ordinary defective/stale proposals and
+their actual correction, preserving neutral outcomes. See [design](docs/design/proof-of-benefit.md),
+[plan](docs/superpowers/plans/2026-10-02-proof-of-benefit.md),
+[evidence](docs/validation/2026-10-02-proof-of-benefit.md) and
+[journey 55](journey/55-at-the-moment-of-done.md).
+
 **Native validation delivery, 2026-10-02.** Runtime-bound preparation/startup,
 explicit installed-version probes, whitelisted native captures, conservative
 ten-cell aggregation and every-attempt read-only latency samples are built. The

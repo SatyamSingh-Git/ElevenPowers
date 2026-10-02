@@ -31,3 +31,12 @@ def test_retained_actual_archive_is_qualified_without_claiming_coding_gain(tmp_p
     altered=tmp_path/'altered.json';altered.write_text(json.dumps(value))
     with pytest.raises(ValueError,match='result'):
         benefit_archive.inspect(altered)
+
+
+def test_public_checksums_survive_checkout_newline_conversion(tmp_path):
+    from pathlib import Path
+    path=Path(__file__).resolve().parents[1]/'docs/validation/2026-10-02-proof-of-benefit/checksums.json'
+    assert benefit_archive.verify_checksums(path) is True
+    for source in path.parent.glob('*.json'):
+        (tmp_path/source.name).write_bytes(source.read_bytes().replace(b'\r\n',b'\n'))
+    assert benefit_archive.verify_checksums(tmp_path/path.name) is True

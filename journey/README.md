@@ -84,6 +84,12 @@ startup and the failed external Snag CI acceptance run.
 
 ## Current delivery, 2026-10-02
 
+[55 — at the moment of done](55-at-the-moment-of-done.md) records a working
+Claude completion pipeline and eight real comparison runs. Three treatment
+completions added fresh declared receipts; every first/final candidate was
+already 16/16 correct. The public archive separates receipt gains from coding
+gains and preserves the original failed pilot.
+
 The recent product work is in chapters 46 through 54. [Current status](../docs/status.md)
 separates shipped behavior and real Claude startup from added-host native
 acceptance still to do. The research history below retains its original

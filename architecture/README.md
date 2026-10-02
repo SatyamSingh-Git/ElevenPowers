@@ -49,7 +49,8 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **102 nodes / 232 edges** across 7 planes (as of 2026-10-02),
+Current size: **104 nodes / 237 edges** across 7 planes (as of 2026-10-02),
+including the controlled completion comparison and neutral proposal recorder,
 including runtime-bound validation, readonly performance and a frozen subscription pilot,
 fresh staged health, bounded native diagnostics, disposable acceptance,
 onboarding, native edits, portable reports and optional changed-file test strength.

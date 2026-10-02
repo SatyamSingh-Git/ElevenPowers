@@ -79,6 +79,8 @@ of every saved proposed/final candidate. All **24 snapshot grades matched**.
 `current_harness: false` preserves the earlier frozen producer identity; later
 changes clarified benefit fields and hardened budget validation. Task/evaluator
 identities remain the same. Local checksums/hash chains are not authentication.
+The checksum manifest hashes canonical JSON, so Git checkout newline conversion
+does not break consistency checks; pass `--checksums CHECKSUMS.json` explicitly.
 Candidate separation and process containment are not an OS security boundary.
 
 ## Delivery checks and next exit
