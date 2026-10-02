@@ -38,7 +38,7 @@ jobs:
           python -m pip install -r requirements-strength.txt
           npm install --prefix .venv/strength-js --ignore-scripts --no-audit --no-fund @stryker-mutator/instrumenter@9.5.1
       - name: Standard-library runtime without site packages
-        run: python -S -c "import core.strength.runner; import core.export; import core.hosts.validation; import core.hosts.performance; import eval.paired"
+        run: python -S -c "import core.strength.runner; import core.export; import core.hosts.validation; import core.hosts.performance; import eval.paired; import eval.benefit; import eval.benefit_archive; import eval.proposals"
       - name: Identify the environment
         run: python -c "import platform, sys; print(sys.version); print(platform.platform())"
       # git needs an identity before the fixtures that commit will work, and the
