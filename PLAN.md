@@ -1,5 +1,20 @@
 # Master Plan v0.8
 
+**Fixed-patch review delivery, 2026-10-02.** All eight Sonnet 5 medium subscription
+reviews completed with source/existing tests fixed. Both ordinary and assisted
+review detect five previously missed meaningful Jinja2 faults; all four matched
+pairs tie. Assisted native review times are greater in each pair. No incremental
+product quality gain or speedup is established. Whole-file producer-order samples
+miss edited functions, and Windows skips qualify Click's FD cases. The archive
+retains every submission, original producer identity and full license notices.
+The corrected-harness full regrade was stopped at the user's request and remains
+unfinished. Further feature work and model calls wait for a later session.
+Next: finish that free regrade, then prioritize changed functions/hunks and qualify
+focused-command coverage for any project before another held-out comparison.
+See [findings](docs/validation/2026-10-02-checkpoint-review.md),
+[provenance](docs/research/checkpoint-review.md) and
+[journey 57](journey/57-a-review-needs-a-relevant-lead.md).
+
 **Hard-task comparison delivery, 2026-10-02.** Four authored interacting repairs
 now have 94 frozen independent groups, known-good controls and 16 rejected
 single-fault variants. Eight Sonnet 5 medium subscription slots were attempted:
@@ -966,6 +981,15 @@ The binding problem is **not** the ceiling, and the earlier reading of it here w
 Phase C does not wait on a definitive P1 result. Selection and repair development proceed against saved candidates while P1 becomes a bounded component experiment at a declared decision point.
 
 ### Phase B′ — P1 becomes a bounded component experiment *(2026-09-14, decided)*
+
+**Current exit status, 2026-10-02.** Controlled completion and hard repair pilots
+have no measured coding gain. The fixed-patch review component now has eight
+completed matched reviews: both arms improve one active meaningful fault set,
+with zero incremental assisted advantage across four selected pairs. This
+delivers the comparison tooling, not P1's benefit exit. Next prioritize relevant
+changed-code analysis and command coverage after finishing free regrading;
+require held-out behavioral improvement beyond equally funded ordinary review.
+Implementation/model experiments stopped at the user's request for now.
 
 P1 is no longer a prerequisite for anything else. It had become one by habit: every phase waited on a result the experiment could not produce, and the waiting cost two audits to notice.
 

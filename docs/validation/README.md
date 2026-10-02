@@ -2,6 +2,8 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-02 fixed-patch review](2026-10-02-checkpoint-review.md): eight completed Sonnet 5 medium reviews; both arms detect five previously missed meaningful Jinja2 faults, four matched ties, slower assisted native times, platform/relevance limits and an explicitly unfinished corrected-harness regrade.
+
 - [2026-10-02 hard interacting comparison](2026-10-02-hard-task-comparison.md): four authored repairs, 94 independent hidden groups, seven completed and one interrupted Sonnet 5 medium slots, three tied pairs, three receipt refreshes, a separate saved-code audit and 22 reproduced grades.
 
 - [2026-10-02 controlled completion comparison](2026-10-02-proof-of-benefit.md): eight actual subscription runs, native pipeline delivery, three receipt refreshes, tied first/final 16/16 behavior and 24 reproducible snapshot grades.

@@ -20,6 +20,7 @@ This delivery does not establish improved patch outcomes.
 | Read-only performance | Every attempted repeated health read retained; finite source/timing checks and separate callback/command history | Descriptive local samples, cooperative deadline; no universal speedup or task certification |
 | Subscription coding pilot | Frozen original task, independent 16-check grader, exact requested models/medium effort and eight equal-budget journals | Initial pilot inconclusive due policy/activation/quota; no product benefit established; local separation is not an OS boundary |
 | Controlled completion comparison | Two original cases, eight actual Claude subscription runs, neutral before/after Stop snapshots and independent grades | All first/final candidates 16/16; three treatment receipt refreshes; no patch-correctness gain; wrapped baseline verification may be unobserved |
+| Fixed-patch test review | Immutable source/existing tests, eight subscription reviews, function-level optional-analysis leads and a portable fault/test archive | Both arms detect five formerly missed meaningful Jinja2 faults; four ties; greater assisted native time; no incremental product benefit; corrected-harness full regrade unfinished at user stop |
 | Hard interacting comparison | Four synthetic repairs, 94 frozen groups, all 16 single-fault controls rejected, every-attempt archive and separate visible/shutdown audit | Seven of eight Sonnet 5 medium slots completed; three complete pairs tied; three fresh receipts; interrupted cache code fails a supplementary probe; no coding gain or established speedup |
 | Native acceptance workflow | Explicit new disposable Python/Node repository, owned wiring, immutable contract and current pass/fail/incomplete history qualification | Preparation launches no host; local unsigned observations and operator versions do not establish authenticated or cross-version compatibility |
 | Native patch attribution | Bounded pre/post target content comparisons; dirty/non-Git files, add/delete/move | Stable task/session/call/input required; target coverage cannot prove absence of unrelated side effects |
@@ -83,6 +84,15 @@ to generate it. See [report validation](validation/2026-10-01-portable-report.md
 and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 ## Next readiness milestone
+
+Work stopped at the user's request after the fixed-patch review pilot. All eight
+reviews completed and their original saved grades are published. Both reviews
+strengthen Jinja2's tests; all four comparisons tie. Complete the free corrected
+evaluator regrade next, then prioritize changed functions/hunks and qualify focused
+test-command coverage in generalized test-strength analysis. The current bounded
+whole-file sample missed edited functions. Use held-out active behavioral gaps
+and equal ordinary-review budgets before claiming a product outcome benefit.
+See [findings](validation/2026-10-02-checkpoint-review.md).
 
 The completion comparisons now have a working installed Claude pipeline and
 public proposal archives. The harder four-task comparison completed seven of

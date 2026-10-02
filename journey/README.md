@@ -10,7 +10,10 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)
+Latest: [57 — a review needs a relevant lead](57-a-review-needs-a-relevant-lead.md)
+records eight completed fixed-patch reviews, five newly detected Jinja2 faults in
+both arms, four ties, analysis relevance/platform limits and a user-stopped free
+regrade. [56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)
 records four interacting repairs, three tied complete pairs, an interrupted cache
 attempt and separately audited saved code. [55 — at the moment of done](55-at-the-moment-of-done.md)
 records native completion observations and additional receipts with no coding
@@ -85,10 +88,17 @@ startup and the failed external Snag CI acceptance run.
 | [54-a-comparison-needs-a-working-host.md](54-a-comparison-needs-a-working-host.md) | Runtime/version qualification, latency samples, a frozen eight-run subscription pilot and the native policy/trust/quota gaps that prevented a coding comparison |
 | [55-at-the-moment-of-done.md](55-at-the-moment-of-done.md) | Eight complete proposal comparisons, additional declared receipts, tied 16/16 correctness and reproducible saved candidates |
 | [56-harder-problems-still-need-evidence.md](56-harder-problems-still-need-evidence.md) | Four interacting repairs, seven completed and one interrupted attempt, three tied pairs, separate visible/shutdown audits and every-attempt reproduction |
+| [57-a-review-needs-a-relevant-lead.md](57-a-review-needs-a-relevant-lead.md) | Eight fixed-patch reviews; both arms strengthen Jinja2 tests, four ties, greater assisted native time, irrelevant whole-file leads and an unfinished regrade at user stop |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
 ## Current delivery, 2026-10-02
+
+[57 — a review needs a relevant lead](57-a-review-needs-a-relevant-lead.md)
+records five previously missed meaningful Jinja2 faults caught by both ordinary
+and assisted new tests. The four selected pairs tie; this is a review test-quality
+gain without incremental ElevenPowers benefit. All eight calls completed; the
+free full corrected-grader regrade remains unfinished at the user's stop.
 
 [56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)
 records 94 frozen groups across four synthetic repairs. Three complete pairs tied;
@@ -100,7 +110,7 @@ completions added fresh declared receipts; every first/final candidate was
 already 16/16 correct. The public archive separates receipt gains from coding
 gains and preserves the original failed pilot.
 
-The recent product and evaluation work is in chapters 46 through 56. [Current status](../docs/status.md)
+The recent product and evaluation work is in chapters 46 through 57. [Current status](../docs/status.md)
 separates shipped behavior and real Claude startup from added-host native
 acceptance still to do. The research history below retains its original
 measurements; the latest usability changes do not establish a patch-quality benefit.

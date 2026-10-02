@@ -394,6 +394,19 @@ coding improvement or speedup. See
 [reproduction commands](the-guide/commands.md#controlled-completion-comparison)
 and [journey 56](journey/56-harder-problems-still-need-evidence.md).
 
+A fixed-patch review pilot then completed eight Sonnet 5 medium subscription
+reviews on ItsDangerous, Click, Jinja2 and attrs, with production and existing
+tests fixed. Both ordinary and ElevenPowers-assisted review added tests that
+detect five previously missed meaningful Jinja2 faults. All four matched pairs
+tied, with greater assisted native review time; this establishes useful tests
+from review, **no incremental ElevenPowers quality advantage or speedup**.
+Whole-file sampling missed edited functions, and Windows skips qualify Click's
+descriptor cases. Every submission and original grade is archived; a separate
+corrected-harness full regrade remains unfinished after the user requested a stop.
+See [findings](docs/validation/2026-10-02-checkpoint-review.md),
+[saved tests and reproduction](docs/validation/2026-10-02-checkpoint-review/README.md)
+and [journey 57](journey/57-a-review-needs-a-relevant-lead.md).
+
 ```bash
 python plugin/bin/ep_validate.py capture HOST --project EXERCISE --observe-version --json
 python plugin/bin/ep_validate.py performance HOST --project PATH --repeats 3 --seconds 60 --json
@@ -519,10 +532,14 @@ incremental publication boundaries with descriptive commit messages. See the
 
 Installed-host acceptance remains **0/10**, and all eight original subscription
 comparison records remain **inconclusive**. A trusted Codex fixture had corrected
-source and real failing/passing checks but no plugin callbacks. The next priority
-is actual native delivery, then a newly identified comparison after subscription
-capacity is available. Task size is not a criterion; an observable coding or
-verification improvement through any engaged mechanism can count.
+source and real failing/passing checks but no plugin callbacks. Later controlled
+completion runs have working native Claude delivery and added receipts, and the
+fixed-patch review pilot improves Jinja2 test sensitivity equally in both arms.
+No incremental coding benefit has been measured. The next priority is relevant
+changed-code analysis and qualified command coverage after finishing the free
+regrade; further implementation and model calls wait for the next session.
+Task size is not a criterion; an observable coding or verification improvement
+through any engaged mechanism can count.
 
 Research prototype; status reviewed 2026-10-02. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
