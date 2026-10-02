@@ -26,8 +26,10 @@ def _archive(tmp_path):
     protocol={'schema_version':1,'cases':['one'],'schedule':[['one','ordinary'],['one','assisted']],
               'model':'claude-sonnet-5','effort':'medium','seconds_per_review':480,'seconds_per_grade':120,
               'harness_files':{name:'0'*64 for name in HARNESS_FILES}}
-    g={'baseline':{'state':'passed','exit_code':0,'passed':1,'failed':0,'skipped':0,'error':0,'elapsed_ms':1},'faults':[]}
-    case={'case':{'id':'one','base':'0'*40,'source_paths':['logic.py']},'faults':[],'no_review':g}
+    execution={'state':'passed','exit_code':0,'passed':1,'failed':0,'skipped':0,'error':0,'elapsed_ms':1}
+    g={'baseline':execution,'faults':[{'id':'equivalent-format-control','state':'undetected','execution':execution}]}
+    case={'case':{'id':'one','base':'0'*40,'source_paths':['logic.py']},
+          'faults':[{'id':'equivalent-format-control','path':'logic.py','content':'def value(): return 1\n'}],'no_review':g}
     records=[{'case':'one','arm':arm,'requested_model':'claude-sonnet-5','effort':'medium',
               'launch_attempted':True,'state':'completed','scope':'preserved','seconds_cap':480,'elapsed_ms':1,'exit_code':0,
               'host_observation':{'completed':True,'usage':None,'models':['claude-sonnet-5'],'completion_language':False,'failure':'unavailable'},
@@ -48,6 +50,16 @@ def test_archive_validates_caps_grades_and_actual_model(tmp_path):
     assert inspect(tmp_path)['slots'][0]['condition_qualified'] is False
     values['reviews-one.json'][0]['seconds_cap']=999;write()
     with pytest.raises(ValueError):inspect(tmp_path)
+
+
+def test_missing_equivalence_control_cannot_qualify(tmp_path):
+    from eval.review_archive import inspect
+    values,write=_archive(tmp_path)
+    values['case-one.json']['faults']=[]
+    values['case-one.json']['no_review']['faults']=[]
+    for record in values['reviews-one.json']:record['grade']['faults']=[]
+    write()
+    assert inspect(tmp_path)['slots'][0]['condition_qualified'] is False
     values['reviews-one.json'][0]['seconds_cap']=480
     values['case-one.json']['no_review']={};write()
     with pytest.raises(ValueError):inspect(tmp_path)

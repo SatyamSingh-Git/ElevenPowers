@@ -123,6 +123,7 @@ def inspect(directory, *, repositories=None, destination=None, python=None):
             if record['scope']=='preserved':
                 _grade(record.get('grade'),ids)
                 qualified &= record['grade']['baseline']['state']=='passed'
+                qualified &= 'equivalent-format-control' in ids
                 qualified &= all(f['state']=='undetected' for f in record['grade']['faults'] if f['id']=='equivalent-format-control')
             records.append({'case':name,'arm':record['arm'],'state':record['state'],'scope':record['scope'],
                             'added_files':len(record['additions']),'condition_qualified':bool(qualified)})
