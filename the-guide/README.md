@@ -110,3 +110,17 @@ This is early software. The plugin discovers supported project commands, reports
 So: use it, and tell me when it is wrong. Bug reports are the most valuable thing anyone can send right now.
 
 **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)**
+
+## Dated native validation and performance
+
+Use `ep_validate.py` explicitly to capture current disposable acceptance, build a
+ten-cell host/language matrix, or sample read-only health costs. Software content
+identity now binds preparation and real startup; a runtime update needs a new
+exercise. Installed versions are observed only with `--observe-version`. Saved
+reports describe their creation time. Missing hosts and native trust gaps remain
+visible. See [commands](commands.md) and [the dated delivery](../docs/validation/2026-10-02-native-validation.md).
+
+The explicit subscription pilot compares identical frozen coding tasks with
+independent grading. Installation never starts it. Its first eight records were
+inconclusive because native execution/activation and subscription quota blocked
+the comparison; they do not establish better coding.

@@ -208,3 +208,14 @@ the chosen host; supported startup, observation and completion work then happens
 automatically. Use either the bundle or project hooks, to avoid duplicate delivery.
 Uninstall project hooks with the same setup command plus `--remove`. Live
 installed-session validation remains open for the four new integrations.
+
+## Validate an installed release
+
+After updating the runtime, prepare a new native exercise using the existing
+`ep_doctor.py --prepare-acceptance NEW_DIR` workflow. Trust owned hooks through
+the host's normal UI, complete `EXERCISE.md`, then explicitly capture with
+`ep_validate.py capture HOST --project DIR --observe-version`. Native startup
+and preparation must match the current code identity; configuration and replay
+alone do not pass. The matrix includes five hosts and two languages, with
+missing sessions left waiting. [Commands](commands.md) also cover read-only
+performance reports and a separately requested subscription coding pilot.

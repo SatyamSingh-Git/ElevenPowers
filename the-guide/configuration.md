@@ -321,3 +321,16 @@ read budget changes neither the completion runner's limits nor source scan
 selection. Optional engine metadata distinguishes disabled, unavailable,
 unsupported, unchecked custom interpreters and missing Node; package metadata
 alone does not establish a working engine. No new configuration is required.
+
+## Runtime identity and explicit validation
+
+New disposable acceptance preparations and actual SessionStart observations
+include a bounded content identity of shipped runtime code. Old unbound exercises
+and observations from a different runtime cannot qualify the current release.
+Prepare a new directory after updating the plugin. This needs no project-specific
+policy or new configuration option. Native host trust/enablement still applies.
+
+`ep_validate.py` accepts explicit time/repeat budgets. Performance reads and native
+captures do not write project state or launch project tests. The optional installed
+version probe executes only `--version`. Reporting/pilot options are operator
+commands, not automatic startup or completion work.

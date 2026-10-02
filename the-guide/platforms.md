@@ -236,3 +236,20 @@ Claude Code 2.1.286 and Codex CLI 0.159.2; Gemini, Cursor and Copilot executable
 were unavailable. Full versioned native exercises remain acceptance work.
 Host trust/policy and each platform's capability limits still apply.
 See [project-health validation](../docs/validation/2026-10-01-project-health.md).
+
+## Versioned compatibility captures
+
+All five adapters share bounded shipped-code identity, explicit installed-version
+probes, whitelisted acceptance captures and a ten-cell host/language matrix.
+These are unsigned local dated observations; a saved passed cell does not
+authenticate a host or certify a later release. Duplicate and mismatched captures
+stay incomplete; absent sessions stay waiting. New runtime code needs a new
+exercise. See [native validation](../docs/validation/2026-10-02-native-validation.md).
+
+The October 2 installed probes observed Codex 0.159.2 and Claude Code 2.1.286.
+Complete acceptance is still 0/10: native trust/activation and Claude subscription
+capacity remain gaps, and three other hosts were unavailable. The subscription
+pilot preserves all eight inconclusive records. Codex automatic approval review
+permits ordinary workspace commands but does not bypass native hook trust.
+Claude project setup writes local settings, so a restricted launch must include
+`--setting-sources project,local` to load them.

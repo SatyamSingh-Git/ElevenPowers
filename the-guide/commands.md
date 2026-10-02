@@ -286,3 +286,42 @@ You do not need these to use the tool. They exist so that every number the proje
 ---
 
 Something behave differently from what is written here? That is a documentation bug and I want to hear about it — **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)**.
+
+## ep_validate — dated compatibility and read-only costs
+
+```bash
+python plugin/bin/ep_validate.py capture codex --project EXERCISE --observe-version --seconds 30 --json --output codex-python.json
+python plugin/bin/ep_validate.py matrix codex-python.json claude-python.json --json --output matrix.json
+python plugin/bin/ep_validate.py performance codex --project PATH --repeats 3 --seconds 60 --json --output performance.json
+```
+
+Omit `--json` for Markdown. Output is printed unless `--output` is explicit; an
+existing file requires `--force`. `--check` exits 1 unless capture passes, all ten
+matrix cells pass, or the requested performance sample completes. Invalid input
+or options exit 2. Supply one selected capture per host/language: duplicates,
+malformed fields, incomplete checks and changed runtime cannot inflate success.
+Captures read the existing acceptance inspector; `--observe-version` runs only a
+bounded contained `--version` probe. They omit paths, prompts and raw diagnostics.
+
+Performance defaults to three reads and 60 seconds; repeats are 1–20 and total
+seconds at most 120. Every attempted read remains visible, including failure or
+deadline exhaustion. No warmup is discarded. Current scan/report/read timings
+are separate from retained callbacks; Stop can include verification. A complete
+measurement can describe a waiting pipeline and does not certify a task.
+
+### Explicit subscription coding pilot
+
+```bash
+python -m eval.paired --directory NEW_DIR --codex CODEX_EXE --claude CLAUDE_EXE --seconds 240
+```
+
+A new unlinked directory is required. The protocol freezes task/prompt/grader
+identities and schedules eight runs: two replicates of baseline/tool per host,
+reversing arm order. Models are `gpt-6.1-sol` medium and `claude-sonnet-5-5` medium.
+Each model call is bounded at 240 seconds; setup, host failures, timeouts, invalid
+contracts and independent grades are distinct. API environment/provider overrides
+are refused. Authentication must report ChatGPT or Claude subscription mode.
+Codex uses supported automatic approval review (which selects workspace-write);
+Claude loads project/local hooks. Native hook trust remains a host requirement.
+The pilot consumes subscription capacity and is never run automatically. Eight
+records are descriptive, not proof of general improvement. See [observations](../docs/validation/2026-10-02-native-validation.md).

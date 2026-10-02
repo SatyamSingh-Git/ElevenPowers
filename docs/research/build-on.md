@@ -289,3 +289,14 @@ use it.
   only vanilla.
 - **Residual-gap framing is retired as an investment filter** (PLAN §1.5). It
   stays useful as what it is: a map of where the borrowing runs out.
+
+## Native validation and subscription pilot (2026-10-02)
+
+Reuse the repository's MIT-licensed native acceptance/health inspectors,
+`core.process` containment, atomic `core.export.write` and existing evaluator
+separation patterns; Python standard-library SHA-256 and argparse provide
+identity/CLI primitives. What this adds is runtime/version qualification,
+conservative dated aggregation, every-attempt latency sampling and a frozen
+subscription-only comparison. The original task is not copied from a benchmark.
+Local unsigned observations and workspace separation do not authenticate hosts
+or establish a closed-book execution boundary.

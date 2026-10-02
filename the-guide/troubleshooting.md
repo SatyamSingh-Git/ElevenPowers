@@ -289,3 +289,26 @@ history, a source correction and current fresh completion. Keep tests/configurat
 wiring unchanged. Replay and synthetic launcher controls do not establish native
 installed acceptance. If receipt history was evicted or the contract changed,
 prepare a new destination; existing destinations are deliberately refused.
+
+## Validation says waiting or incomplete
+
+A prepared exercise is waiting until a real installed session delivers the
+required correlated callbacks and complete pass/fail/incomplete command history.
+Check native enablement and accept only your owned hook configuration through the
+host's normal trust UI. Do not bypass trust. A changed runtime, legacy unbound
+preparation, modified tests/configuration or missing history requires a new
+exercise. Explicit `--observe-version` must agree with its declared host version.
+
+A matrix needs one chosen capture per cell; supplying multiple histories is
+incomplete. A saved report is dated rather than live readiness. A performance
+measurement may be complete while pipeline health waits: it measures reads, not
+activation. Budget exhaustion, source movement, unavailable input identity and
+failed reads remain visible instead of being dropped.
+
+For subscription pilots, verify `codex login status` and `claude auth status
+--json` in the same owner account. Do not print credentials. API/provider
+environment overrides are rejected. Claude's 429 weekly limit needs renewed
+subscription capacity, not an API fallback. Codex policy rejection requires its
+supported automatic approval review; `--approve-for-me` already selects the
+workspace sandbox and conflicts with `--sandbox`. Hook trust remains separate.
+Preserve failed comparison records before starting a new identified protocol.
