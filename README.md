@@ -352,6 +352,33 @@ replay and launcher fixtures do not establish installed acceptance. See
 [provenance](docs/research/project-health.md), and
 [health validation](docs/validation/2026-10-01-project-health.md).
 
+### Versioned native validation and measured costs
+
+`ep_validate.py` captures the existing native exercise, observes installed
+versions explicitly, builds a conservative five-host/two-language matrix and
+samples read-only project health. Runtime code identity binds preparation and
+real startup; changed software and missing histories cannot qualify. Saved
+reports are dated local observations. Every attempted latency read remains
+visible, with current reads separated from retained callbacks and command time.
+
+The explicit subscription coding pilot freezes equal task/prompt/grader inputs
+and compares baseline/tool arms with the requested models at medium. Its first
+eight records were inconclusive because execution, native activation and quota
+blocked the comparison; they establish no coding improvement. A complete sample
+is also not a verified task. See [commands](the-guide/commands.md),
+[native observations](docs/validation/2026-10-02-native-validation.md) and
+[journey 54](journey/54-a-comparison-needs-a-working-host.md). Recorded-protocol
+inspection reproduces earlier saved outcomes without model calls or regrading.
+
+```bash
+python plugin/bin/ep_validate.py capture HOST --project EXERCISE --observe-version --json
+python plugin/bin/ep_validate.py performance HOST --project PATH --repeats 3 --seconds 60 --json
+```
+
+Neither command runs project checks or launches a model. Captures qualify native
+histories; performance measures reads. Use `--output FILE` to save explicitly
+and `--check` to opt into an exit-code gate.
+
 ### Portable verification reports
 
 Export a local report a reviewer can read without your coding session:
@@ -459,14 +486,21 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-The project-health delivery passed **1,194 local tests with 28 skips**, 104 audit
-probes, all four grader controls and the launcher doctor. Five independent-review
-findings were reproduced and corrected. Ten real Python/Node producer cases pass
-through the five launchers; full installed sessions remain a separate milestone.
-Architecture's four tabs render with 95 nodes and 216 edges. The delivery uses
-17 incremental pushes. See [the current validation record](docs/validation/2026-10-01-project-health.md).
+The October 2 native-validation delivery passed **1,237 local tests with 28 skips**,
+104 audit probes, all four grader controls and the launcher doctor. Five
+Important evaluator/export findings were reproduced and corrected. Architecture's
+four tabs render with 102 nodes and 232 edges. This delivery has twenty-nine
+incremental publication boundaries with descriptive commit messages. See the
+[delivery checks](docs/validation/2026-10-02-native-validation-delivery.md).
 
-Research prototype; status reviewed 2026-10-01. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The final local onboarding suite passed 1,062 tests with 28 skips; later report checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Installed-host acceptance remains **0/10**, and all eight original subscription
+comparison records remain **inconclusive**. A trusted Codex fixture had corrected
+source and real failing/passing checks but no plugin callbacks. The next priority
+is actual native delivery, then a newly identified comparison after subscription
+capacity is available. Task size is not a criterion; an observable coding or
+verification improvement through any engaged mechanism can count.
+
+Research prototype; status reviewed 2026-10-02. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
 after three independent-review fixes. Real Python/JavaScript/TypeScript fixture
@@ -474,7 +508,7 @@ acceptance and all four rendered architecture views passed. The implementation
 was published in 25 incremental parts; see the [dated record](docs/validation/2026-10-01-test-strength.md)
 for exact checks, boundaries and publication subjects.
 
-The latest experiments (2026-09-24) found real test gaps, but handing raw mutation
+The September 24 research experiments found real test gaps, but handing raw mutation
 lists to agents encouraged tests of implementation details. In 95 resolved patches,
 the gate arm had 4/49 vacuous patches versus 10/46 for vanilla; the task-level
 comparison was suggestive (p = 0.062), and the primary test-quality comparison
@@ -508,7 +542,7 @@ Every figure below was produced by the command printed next to it.
 
 **On the first row.** Claude Code writes a transcript of every session including each tool result exactly as the host produced it, so replaying those costs no inference and needs no hand labelling — the host already recorded whether each command failed. The reader this replaced agreed on 0 of 174 failures. It is reported as two rates rather than one because the corpus is 97% successes: a reader that answers "passed" to everything scores 97% accuracy while being wrong about the only thing the gate needs to know.
 
-**On the last row.** It runs live — 89 free runs through the CLI where the gate fires, refuses the stop and the agent goes back to work, then ninety paid runs of one arm against a pinned corpus and model, and then a hundred more with **both** arms. Nineteen of those gated runs have since been graded **at the moment the gate refused**, which nothing here had ever done. The mechanism fired four times and changed no outcome: it blocked a patch that was already correct, one that stayed broken, and one regression that it then failed to catch. Measured cost is 1.3x vanilla; measured benefit is none so far. The fair qualifier is that the case it exists for barely occurs on this corpus, because 80 percent of first proposals are already right.
+**On the coding-outcome row.** It runs live — 89 free runs through the CLI where the gate fires, refuses the stop and the agent goes back to work, then ninety paid runs of one arm against a pinned corpus and model, and then a hundred more with **both** arms. Nineteen of those gated runs have since been graded **at the moment the gate refused**, which nothing here had ever done. The mechanism fired four times and changed no outcome: it blocked a patch that was already correct, one that stayed broken, and one regression that it then failed to catch. Measured cost is 1.3x vanilla; measured benefit is none so far. The fair qualifier is that the case it exists for barely occurs on this corpus, because 80 percent of first proposals are already right.
 
 A literature sweep on 2026-09-15 then explained that null, and re-aimed the plan to
 [v0.8](PLAN.md). Independently measured: **46% of agent validation evidence carries no
