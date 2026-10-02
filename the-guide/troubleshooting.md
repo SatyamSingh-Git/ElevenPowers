@@ -312,3 +312,16 @@ subscription capacity, not an API fallback. Codex policy rejection requires its
 supported automatic approval review; `--approve-for-me` already selects the
 workspace sandbox and conflicts with `--sandbox`. Hook trust remains separate.
 Preserve failed comparison records before starting a new identified protocol.
+
+
+If a native hook table shows active subscriptions but ElevenPowers still records
+zero callbacks, keep acceptance waiting and inspect the host's native diagnostics.
+A shell test passing does not prove callback capture. For Codex, open a new
+owned exercise in the installed CLI, review any changed hooks normally, and
+follow `EXERCISE.md`; do not use a trust bypass to force a green cell. The dated
+October 2 observations preserve this precise gap.
+
+After evaluator updates, use explicit `eval.paired --inspect ... --protocol ...`
+to reproduce saved aggregates. This does not call models or repair an older
+grader. Private/unknown record fields and unsupported resolved claims are
+rejected. Preserve the original protocol when starting a newly identified run.

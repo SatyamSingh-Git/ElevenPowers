@@ -124,3 +124,9 @@ The explicit subscription pilot compares identical frozen coding tasks with
 independent grading. Installation never starts it. Its first eight records were
 inconclusive because native execution/activation and subscription quota blocked
 the comparison; they do not establish better coding.
+
+
+Archived comparisons can be inspected against their recorded protocol after
+evaluator updates. The current evaluator separates behavioral execution from
+final assertions and supports normal package imports. Its sixteen checks remain
+a bounded sample; passing them does not mean every requirement is covered.

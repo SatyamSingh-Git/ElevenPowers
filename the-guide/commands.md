@@ -325,3 +325,25 @@ Codex uses supported automatic approval review (which selects workspace-write);
 Claude loads project/local hooks. Native hook trust remains a host requirement.
 The pilot consumes subscription capacity and is never run automatically. Eight
 records are descriptive, not proof of general improvement. See [observations](../docs/validation/2026-10-02-native-validation.md).
+
+
+### Reproduce an archived pilot without running it
+
+```bash
+python -m eval.paired --inspect SAVED_REPORT.json --protocol RECORDED_PROTOCOL.json
+python -m eval.paired --inspect SAVED_REPORT.json --protocol RECORDED_PROTOCOL.json --output reproduced.json
+```
+
+These reads launch no model, candidate, project checks or grader. Inputs are
+bounded and reject duplicate JSON keys, nonfinite values, unsupported result
+claims, conflicting protocol/budgets and private or unknown run fields. Existing
+output requires `--force`. Archive mode cannot accept model-launch options.
+`current_evaluator: false` means the saved grader identity differs from the
+installed one; reading an earlier protocol does not silently upgrade or validate
+its results. A complete protocol counts eight records, including failures.
+
+The current grader uses a contained behavior worker with normal package imports.
+Its controller never imports candidate code and owns all sixteen assertions.
+A passing result means those frozen checks passed; invalid account identifiers
+already present as balance keys are outside this grader's checked cases. Local
+process separation does not create an OS closed-book boundary.

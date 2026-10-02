@@ -300,3 +300,11 @@ conservative dated aggregation, every-attempt latency sampling and a frozen
 subscription-only comparison. The original task is not copied from a benchmark.
 Local unsigned observations and workspace separation do not authenticate hosts
 or establish a closed-book execution boundary.
+
+
+The reviewer exposed why a separate file is not necessarily a separate authority:
+importing candidate code into the final grading process let its stdout impersonate
+a grade. The corrected controller reuses `core.process` for a separate behavioral
+worker and keeps assertions outside it. Archived protocols retain their earlier
+identity and can be read without executing or regrading candidates. This is
+structural qualification, not cryptographic authenticity or OS isolation.

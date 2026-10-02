@@ -253,3 +253,15 @@ pilot preserves all eight inconclusive records. Codex automatic approval review
 permits ordinary workspace commands but does not bypass native hook trust.
 Claude project setup writes local settings, so a restricted launch must include
 `--setting-sources project,local` to load them.
+
+
+### Native trust and actual delivery are separate
+
+The installed Codex 0.159.2 UI showed five owned exercise hooks awaiting review.
+Normal review and trust changed its table to active subscriptions. A bounded
+subsequent subscription session repaired the exercise's boundary and ran its
+original failure/passing check, but no callback was recorded. The acceptance
+therefore remains waiting, including its intentionally incomplete interruption
+step. Trust-table metadata is not callback delivery or a passed acceptance cell.
+Keep configuration/startup/edit/command/completion stages separate when reporting
+a platform as usable. Ordinary native enablement still belongs to the host.
