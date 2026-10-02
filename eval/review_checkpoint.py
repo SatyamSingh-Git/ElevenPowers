@@ -35,11 +35,13 @@ def git(root, *args):
     return done.stdout.strip()
 
 
-def _files(root):
+def _files(root, *, include=(), include_ignored=False):
     values = {}
     for path in sorted(root.rglob('*')):
         rel = path.relative_to(root)
-        if any(part in IGNORED for part in rel.parts) or path.suffix == '.pyc':
+        if '.git' in rel.parts or path.suffix == '.pyc':
+            continue
+        if not include_ignored and rel.as_posix() not in include and any(part in IGNORED for part in rel.parts):
             continue
         if path.is_symlink():
             raise ValueError('linked checkpoint input')
@@ -99,7 +101,7 @@ def prepare(case, root):
             file = Path(directory)/'candidate.patch'
             file.write_bytes(patch.encode('utf-8'))
             git(root, 'apply', '--binary', '--whitespace=nowarn', str(file))
-        protected = _files(root)
+        protected = _files(root, include_ignored=True)
         (root/MARKER).write_text(json.dumps({'schema_version':1, 'case':case['id'], 'base':base,
             'protected':sorted(protected)}, sort_keys=True), encoding='utf-8')
     return seal(root)
@@ -112,7 +114,7 @@ def seal(root):
         raise ValueError('invalid checkpoint marker')
     value = json.loads(marker.read_text(encoding='utf-8'))
     protected = set(value['protected']) | {MARKER}
-    files = _files(root)
+    files = _files(root, include=protected)
     # Only new Python test files are editable. Existing tests/source stay fixed.
     return {name:digest for name,digest in files.items()
             if name in protected or not (name.startswith('tests/') and Path(name).name.startswith('test_') and name.endswith('.py'))}
@@ -126,7 +128,7 @@ def capture_additions(root, expected):
     protected = set(value['protected']) | {MARKER}
     added = {}
     size = 0
-    for name in _files(root):
+    for name in _files(root, include=protected):
         if name in protected:
             continue
         path = root/name
@@ -163,7 +165,7 @@ def grade(case, additions, faults, destination, command, *, seconds=90):
         path.parent.mkdir(parents=True,exist_ok=True)
         path.write_bytes(content.encode('utf-8'))
     capture_additions(seed,expected)
-    files=_files(seed)
+    files=_files(seed, include=expected)
 
     def check(fault=None):
         if fault:
@@ -179,9 +181,9 @@ def grade(case, additions, faults, destination, command, *, seconds=90):
                 shutil.copyfile(seed/name,target)
             if fault:
                 (trial/fault['path']).write_bytes(fault['content'].encode('utf-8'))
-            before=_files(trial)
+            before=_files(trial, include=files)
             value=execute_tests(trial,command,seconds=seconds)
-            if _files(trial)!=before:
+            if _files(trial, include=files)!=before:
                 value['state']='modified_inputs'
             return value
 
@@ -201,10 +203,11 @@ def execute_tests(root, command, *, seconds=60, environment=None):
         done = run(command, cwd=Path(root), timeout=seconds, shell=False,
                    env={**os.environ, **(environment or {})})
         output = done.stdout + '\n' + done.stderr
-        counts = {word:int(re.findall(r'\b(\d+) '+word+r'\b', output)[-1]) if re.search(r'\b\d+ '+word+r'\b', output) else 0
-                  for word in ('passed','failed','skipped','error')}
-        state = ('passed' if done.returncode==0 and counts['passed']>0 else
-                 'empty' if done.returncode==5 else 'failed' if counts['failed'] else 'setup')
+        from core.parsers import pytest_counts
+        counts = pytest_counts(output)
+        state = ('passed' if done.returncode==0 and counts['passed']>0 and not counts['failed'] and not counts['error'] else
+                 'empty' if done.returncode==5 else
+                 'failed' if done.returncode==1 and counts['failed']>0 and not counts['error'] else 'setup')
         return {'state':state, 'exit_code':done.returncode, **counts,
                 'elapsed_ms':round((time.monotonic()-started)*1000,3)}
     except (subprocess.TimeoutExpired, OSError, OutputLimitExceeded) as exc:

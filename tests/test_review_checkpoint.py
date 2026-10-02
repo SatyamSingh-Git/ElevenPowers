@@ -101,3 +101,26 @@ def test_grade_rejects_escape_and_unapproved_test_paths(tmp_path):
     with pytest.raises(ValueError):
         grade(case,{'conftest.py':'pass'},[],tmp_path/'grade', [sys.executable,'-m','pytest'])
     assert not (tmp_path/'grade').exists()
+
+
+def test_collection_traceback_is_not_a_failed_test(tmp_path):
+    import sys
+    from eval.review_checkpoint import execute_tests
+    (tmp_path/'test_probe.py').write_text("raise RuntimeError('1 failed')\n")
+    result=execute_tests(tmp_path,[sys.executable,'-m','pytest','-q'],seconds=20)
+    assert result['state']=='setup' and result['failed']==0 and result['error']==1
+
+
+def test_original_host_configuration_is_protected(tmp_path):
+    from eval.review_checkpoint import prepare,capture_additions
+    case=_case(tmp_path)
+    repo=tmp_path/'repo'
+    (repo/'.claude').mkdir()
+    (repo/'.claude/settings.json').write_text('{"value":1}')
+    subprocess.run(['git','-C',str(repo),'add','.claude'],check=True,capture_output=True)
+    subprocess.run(['git','-C',str(repo),'-c','user.name=Review','-c','user.email=r@example.invalid','commit','-qm','config'],check=True,capture_output=True)
+    case['base']=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD']).decode().strip()
+    root=tmp_path/'candidate';expected=prepare(case,root)
+    (root/'.claude/settings.json').write_text('{"value":2}')
+    with pytest.raises(ValueError,match='protected'):
+        capture_additions(root,expected)

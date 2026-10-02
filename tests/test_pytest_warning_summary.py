@@ -9,6 +9,8 @@ from core.parsers import parse
     ('1 failed, 2 passed, 1 warning in 0.14s',1,2,1),
     ('================ 2 passed, 1 warning in 0.14s ================',0,2,0),
     ('================ 2 errors in 0.14s ================',2,0,2),
+    ('================ 1 passed in 65.49s (0:01:05) ================',0,1,0),
+    ('1 error in 65.49s (0:01:05)',2,0,1),
 ])
 def test_warning_heading_cannot_mask_real_final_counts(tmp_path,summary,code,passed,failed):
     output='============================== warnings summary ===============================\nwarning detail\n'+summary+'\n'

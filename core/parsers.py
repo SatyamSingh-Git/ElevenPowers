@@ -20,7 +20,7 @@ from pathlib import Path
 from .evidence import Evidence, Kind, Result, source_files, tree_hash, vcs_state, source_snapshot
 
 PYTEST_TAIL = re.compile(
-    r"^=+\s+(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s\s+=+$",
+    r"^=+\s+(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s(?:\s+\(\d+:\d{2}(?::\d{2})?\))?\s+=+$",
     re.MULTILINE,
 )
 PYTEST_NODE = re.compile(r"^(?P<status>PASSED|FAILED|ERROR)\s+(?P<node>\S+::\S+)", re.MULTILINE)
@@ -29,6 +29,18 @@ PYTEST_SHORT = re.compile(r"^(?P<node>\S+::\S+)\s+(?P<status>PASSED|FAILED|ERROR
 # the decorated pattern above recovers no counts from the quiet mode that most
 # agents actually use.
 PYTEST_QUIET = re.compile(r"^(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s", re.MULTILINE)
+
+
+def pytest_counts(output: str) -> dict[str, int]:
+    """Read the final count summary, never a heading or traceback fragment."""
+    counts = {word:0 for word in ('passed','failed','skipped','error')}
+    matches = sorted([*PYTEST_TAIL.finditer(output), *PYTEST_QUIET.finditer(output)],
+                     key=lambda match:match.start())
+    if matches:
+        for number,word in re.findall(r'(\d+) ([a-z]+)',matches[-1].group('body')):
+            if word=='errors':word='error'
+            if word in counts:counts[word]=int(number)
+    return counts
 
 JEST_TESTS = re.compile(r"^\s*Tests:\s+(?P<body>.+)$", re.MULTILINE)
 VITEST_TESTS = re.compile(r"^\s*Tests\s+(?P<body>.+?)$", re.MULTILINE)
@@ -615,12 +627,8 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
         )
 
     passed = failed = 0
-    summaries = sorted([*PYTEST_TAIL.finditer(output), *PYTEST_QUIET.finditer(output)],
-                       key=lambda match: match.start())
-    if summaries:
-        body = summaries[-1].group('body')
-        passed, failed = _counts(body)
-        failed += sum(int(n) for n in re.findall(r'\b(\d+) errors?\b', body))
+    counts = pytest_counts(output)
+    passed, failed = counts['passed'], counts['failed'] + counts['error']
 
     records.append(
         Evidence(
