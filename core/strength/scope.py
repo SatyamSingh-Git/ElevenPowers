@@ -1,5 +1,6 @@
 """Changed production files, qualified by the repository's existing scanner."""
 from dataclasses import dataclass, field
+import fnmatch
 import hashlib
 from pathlib import Path
 import re
@@ -45,6 +46,23 @@ def select(root, base, deadline, *, opened_dirty=()):
         untracked = git(root, ['ls-files', '--others', '--exclude-standard', '-z'], deadline)
         scan, value.fingerprint = source_snapshot(root, fresh=True, deadline=deadline)
         value.issues.extend(scan.issues)
+        # Missing current files cannot supply mutations, but removed production
+        # behavior must not disappear behind a not-applicable result.
+        from ..config import load
+        policy = load(root).scan
+        excludes = policy.get('exclude', []) if isinstance(policy, dict) else []
+        excludes = excludes if isinstance(excludes, list) and all(isinstance(p,str) for p in excludes) else []
+        removed = git(root, ['diff', '--name-only', '-z', '--diff-filter=D', base, '--'], deadline)
+        deleted = []
+        for path in sorted(set(removed.split('\0')) - {''}):
+            relative(path)
+            if (Path(path).suffix in SUFFIXES and not TEST_NAME.search(path) and
+                    not any(fnmatch.fnmatchcase(path, p.rstrip('/')+'/*' if p.endswith('/') else p) for p in excludes) and
+                    not any((root/parent/'.git').exists() for parent in Path(path).parents if str(parent) != '.')):
+                deleted.append(path)
+        value.issues.extend('removed production source cannot be mutation-sampled: ' + p for p in deleted[:128])
+        if len(deleted) > 128:
+            value.issues.append(f'deleted-source diagnostic limit: {len(deleted)-128} additional removed paths unlisted')
         candidates = set((changed + untracked).split('\0')) - {''}
         untracked_paths = set(untracked.split('\0'))
         allowed = set(scan.files)

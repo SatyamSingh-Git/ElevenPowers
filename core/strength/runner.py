@@ -111,12 +111,17 @@ def analyze(ledger, *, base=None, command=None):
                 value['state'] = 'incomplete'
                 return value
             store.save(ledger.root, value)
-            for name, paths, generate, executable in adapters:
+            for index, (name, paths, generate, executable) in enumerate(adapters):
                 if budget.attempts >= budget.maximum:
                     value['issues'].append('mutation attempt limit left a language unexamined')
                     break
                 try:
-                    candidates, version = generate(copied.root, paths, executable, budget,
+                    # Reserve attempts for later language producers instead of
+                    # letting the first language exhaust the shared budget.
+                    remaining = budget.maximum - budget.attempts
+                    share = max(1, remaining // (len(adapters)-index))
+                    producer_budget = Budget(budget.deadline, share)
+                    candidates, version = generate(copied.root, paths, executable, producer_budget,
                                                    {p:scope.regions[p] for p in paths})
                     value['engine_versions'][name] = version
                     for candidate in candidates:
