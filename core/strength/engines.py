@@ -50,7 +50,7 @@ def generate(root, paths, command, budget, regions=None):
             raise ValueError('engine exceeded selected scope or attempt count')
         if regions is not None:
             from .regions import overlap
-            lengths = {p: len((root / p).read_text(encoding='utf-8').splitlines()) for p in paths}
+            lengths = {p: len((root / p).read_bytes().splitlines()) for p in paths}
             for item in items:
                 end = item.end_line if item.end_line is not None else item.line
                 on_hunk = any(overlap(item.line, end, r) for r in regions[item.path])

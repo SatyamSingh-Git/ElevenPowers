@@ -17,6 +17,8 @@ const request = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
 const candidates = [];
 let more = false;
 const groups = new Map();
+const sources = new Map();
+let eligible = 0;
 const parserOptions = {excludedMutations: [], ignorers: [], plugins: null};
 const {createParser} = await import(pathToFileURL(path.join(engine, 'dist/src/parsers/index.js')).href);
 const parse = createParser(parserOptions);
@@ -49,6 +51,7 @@ function targetsFrom(ast, changed) {
 for (const name of request.paths) {
   if (fs.statSync(name).size > 1024 * 1024) throw new Error('Mutation source exceeds producer limit');
   const source = fs.readFileSync(name, 'utf8');
+  sources.set(name, source);
   const changed = request.regions?.[name];
   if (changed && !changed.length) continue;
   if (changed?.some(range => range[1] > source.split(/\r?\n/).length)) throw new Error('Changed ranges exceed copied source');
@@ -66,33 +69,38 @@ for (const name of request.paths) {
     if (changed && !choices.length) continue;
     const start = offset(mutant.location.start), end = offset(mutant.location.end);
     if (start < 0 || end < start || end > source.length) throw new Error('Invalid mutation range');
-    const content = source.slice(0, start) + mutant.replacement + source.slice(end);
-    if (content === source) continue;
+    if (source.slice(start, end) === mutant.replacement) continue;
     const item = {id: crypto.createHash('sha256').update(name + '|' + mutant.id).digest('hex').slice(0,24),
-      path: name, line, operator: mutant.mutatorName, content};
+      path: name, line, operator: mutant.mutatorName};
     if (changed) {
       const target = choices[0];
       Object.assign(item,{end_line:endLine,context:target[2],
         relevance:changed.some(r => overlaps(line,endLine,r)) ? 'changed_lines' : 'changed_function'});
       const key = JSON.stringify([name,target]);
       if (!groups.has(key)) groups.set(key,[]);
-      groups.get(key).push(item);
-    } else candidates.push(item);
+      groups.get(key).push({item, start, end, replacement: mutant.replacement});
+      if (++eligible > 100000) throw new Error('Eligible mutation enumeration limit exceeded');
+    } else candidates.push({...item, content: source.slice(0, start) + mutant.replacement + source.slice(end)});
   }
   if (more) break;
 }
 if (request.regions !== null && request.regions !== undefined) {
-  let keys = [...groups.keys()].sort();
-  for (const values of groups.values()) values.sort((a,b) => (a.relevance !== 'changed_lines') - (b.relevance !== 'changed_lines'));
-  while (keys.length && candidates.length < request.maximum) {
-    const remaining = [];
-    for (const key of keys) {
-      if (candidates.length >= request.maximum) { remaining.push(key); continue; }
-      candidates.push(groups.get(key).shift());
-      if (groups.get(key).length) remaining.push(key);
-    }
-    keys = remaining;
+  const files = new Map();
+  for (const key of [...groups.keys()].sort()) {
+    const name = JSON.parse(key)[0];
+    if (!files.has(name)) files.set(name,[]);
+    files.get(name).push(key);
+    groups.get(key).sort((a,b) => (a.item.relevance !== 'changed_lines') - (b.item.relevance !== 'changed_lines'));
   }
-  more = keys.length > 0;
+  const turns = [...files.keys()];
+  while (turns.length && candidates.length < request.maximum) {
+    const name = turns.shift(), key = files.get(name).shift();
+    const {item, start, end, replacement} = groups.get(key).shift();
+    const source = sources.get(name);
+    candidates.push({...item, content: source.slice(0,start) + replacement + source.slice(end)});
+    if (groups.get(key).length) files.get(name).push(key);
+    if (files.get(name).length) turns.push(name);
+  }
+  more = turns.length > 0;
 }
 console.log(JSON.stringify({version: metadata.version, candidates, more}));

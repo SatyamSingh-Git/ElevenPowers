@@ -4,6 +4,7 @@ Operator enumeration follows Cosmic Ray's MIT-licensed commands/init.py.
 No imports from this module are needed by the standard-library runtime.
 """
 import hashlib
+from collections import deque
 from importlib.metadata import version
 import json
 from pathlib import Path
@@ -90,28 +91,27 @@ def targeted(request, engine_version):
                 eligible += 1
                 if eligible > 100000:
                     raise ValueError('eligible mutation enumeration limit exceeded')
-    # Fair turns across changed functions/files and operators; prioritize the
-    # actual hunk within each group before other lines in that same function.
-    for items in groups.values():
-        items.sort(key=lambda item: (item[4] != 'changed_lines', item[0], item[1]))
-    keys, items = sorted(groups), []
-    while keys and len(items) < request['maximum']:
-        remaining = []
-        for key in keys:
-            if len(items) >= request['maximum']:
-                remaining.append(key)
-                continue
-            name, occurrence, line, end_line, relevance, context = groups[key].pop(0)
-            path, _ = key
-            content = mutate_code(sources[path], get_operator(name)(), occurrence)
-            if content is not None and content != sources[path]:
-                identity = hashlib.sha256(f'{path}|{name}|{occurrence}'.encode()).hexdigest()[:24]
-                items.append({'id':identity, 'path':path, 'line':line, 'end_line':end_line,
-                              'operator':name, 'content':content, 'relevance':relevance, 'context':context})
-            if groups[key]:
-                remaining.append(key)
-        keys = remaining
-    return {'version':engine_version, 'candidates':items, 'more':bool(keys)}
+    # Give each file a turn, then rotate its changed functions. A file with
+    # many changed functions must not exhaust the sample before the next file.
+    files = {}
+    for key in sorted(groups):
+        groups[key] = deque(sorted(groups[key], key=lambda item: (item[4] != 'changed_lines', item[0], item[1])))
+        files.setdefault(key[0], deque()).append(key)
+    turns, items = deque(files), []
+    while turns and len(items) < request['maximum']:
+        path = turns.popleft()
+        key = files[path].popleft()
+        name, occurrence, line, end_line, relevance, context = groups[key].popleft()
+        content = mutate_code(sources[path], get_operator(name)(), occurrence)
+        if content is not None and content != sources[path]:
+            identity = hashlib.sha256(f'{path}|{name}|{occurrence}'.encode()).hexdigest()[:24]
+            items.append({'id':identity, 'path':path, 'line':line, 'end_line':end_line,
+                          'operator':name, 'content':content, 'relevance':relevance, 'context':context})
+        if groups[key]:
+            files[path].append(key)
+        if files[path]:
+            turns.append(path)
+    return {'version':engine_version, 'candidates':items, 'more':bool(turns)}
 
 
 if __name__ == '__main__':
