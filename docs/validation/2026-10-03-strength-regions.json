@@ -1,0 +1,981 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "python": "3.13.2",
+  "platform": "win32",
+  "model_calls": 0,
+  "limits": {
+    "seconds": 90,
+    "max_mutants": 8,
+    "test_seconds": 15
+  },
+  "cases": [
+    {
+      "case": "itsdangerous-6c58e969",
+      "base": "f966a62e4c0031b885566b529cc33fe9f6ae9f18",
+      "fix": "6c58e969a513646c8e37260417929770a4ab1b67",
+      "command_module": "tests/test_itsdangerous/test_timed.py",
+      "legacy_generation": {
+        "version": "8.7.0",
+        "more": true,
+        "candidates": [
+          {
+            "id": "ec1a4640ca12ebb15db311ae",
+            "path": "src/itsdangerous/timed.py",
+            "line": 64,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "4227f7f02d4bb2b582d93710",
+            "path": "src/itsdangerous/timed.py",
+            "line": 65,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "b08936a944a064f9335e1060",
+            "path": "src/itsdangerous/timed.py",
+            "line": 77,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "b6f8c44ac8539da92eaf099f",
+            "path": "src/itsdangerous/timed.py",
+            "line": 84,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "d8b21397b289d21483f072e8",
+            "path": "src/itsdangerous/timed.py",
+            "line": 88,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "5230e2335606a2e8804d4138",
+            "path": "src/itsdangerous/timed.py",
+            "line": 90,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "4867e1c82a2275315a523689",
+            "path": "src/itsdangerous/timed.py",
+            "line": 97,
+            "operator": "core/AddNot",
+            "context": "unsign"
+          },
+          {
+            "id": "56a8bd44caf6658d6da154ca",
+            "path": "src/itsdangerous/timed.py",
+            "line": 134,
+            "operator": "core/AddNot",
+            "context": "loads"
+          }
+        ]
+      },
+      "targeted_analysis": {
+        "schema_version": 2,
+        "state": "complete",
+        "issues": [],
+        "baseline": "passed",
+        "engine_versions": {
+          "cosmic-ray": "8.7.0"
+        },
+        "paths": [
+          "src/itsdangerous/timed.py"
+        ],
+        "attempts": 5,
+        "summary": {
+          "detected": 5,
+          "undetected": 0,
+          "invalid": 0,
+          "timed_out": 0,
+          "error": 0,
+          "not_run": 0,
+          "incomplete": 0
+        },
+        "selection": {
+          "strategy": "changed_functions_and_hunks",
+          "regions": {
+            "src/itsdangerous/timed.py": [
+              [
+                126,
+                139
+              ]
+            ]
+          },
+          "deletion_anchors": {}
+        },
+        "command_coverage": {
+          "scope": "recorded_command_only",
+          "origin": "configured"
+        },
+        "observations": [
+          {
+            "id": "56a8bd44caf6658d6da154ca",
+            "path": "src/itsdangerous/timed.py",
+            "line": 134,
+            "operator": "core/AddNot",
+            "status": "detected",
+            "end_line": 134,
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "4a3392b1e040985658aec42f",
+            "path": "src/itsdangerous/timed.py",
+            "line": 137,
+            "operator": "core/ExceptionReplacer",
+            "status": "detected",
+            "end_line": 137,
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "d2cd9d4c2c71467b29260175",
+            "path": "src/itsdangerous/timed.py",
+            "line": 131,
+            "operator": "core/ReplaceTrueWithFalse",
+            "status": "detected",
+            "end_line": 131,
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "29e3b80ba8c1498a867e77e9",
+            "path": "src/itsdangerous/timed.py",
+            "line": 128,
+            "operator": "core/ZeroIterationForLoop",
+            "status": "detected",
+            "end_line": 128,
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "d1762674e7fb0937a5bf1551",
+            "path": "src/itsdangerous/timed.py",
+            "line": 118,
+            "operator": "core/ReplaceFalseWithTrue",
+            "status": "detected",
+            "end_line": 118,
+            "relevance": "changed_function",
+            "context": "loads"
+          }
+        ],
+        "limitations": [
+          "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+          "Only selected changed files and sampled engine operators are examined.",
+          "A filesystem copy is not a security sandbox for trusted project test commands.",
+          "Passing test counts cannot prove that every selected file was imported or executed.",
+          "Other test commands may detect changes left undetected by the analyzed command."
+        ]
+      },
+      "protected_inputs_unchanged": true,
+      "targeted_generation": {
+        "version": "8.7.0",
+        "more": false,
+        "candidates": [
+          {
+            "id": "56a8bd44caf6658d6da154ca",
+            "path": "src/itsdangerous/timed.py",
+            "line": 134,
+            "end_line": 134,
+            "operator": "core/AddNot",
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "4a3392b1e040985658aec42f",
+            "path": "src/itsdangerous/timed.py",
+            "line": 137,
+            "end_line": 137,
+            "operator": "core/ExceptionReplacer",
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "d2cd9d4c2c71467b29260175",
+            "path": "src/itsdangerous/timed.py",
+            "line": 131,
+            "end_line": 131,
+            "operator": "core/ReplaceTrueWithFalse",
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "29e3b80ba8c1498a867e77e9",
+            "path": "src/itsdangerous/timed.py",
+            "line": 128,
+            "end_line": 128,
+            "operator": "core/ZeroIterationForLoop",
+            "relevance": "changed_lines",
+            "context": "loads"
+          },
+          {
+            "id": "d1762674e7fb0937a5bf1551",
+            "path": "src/itsdangerous/timed.py",
+            "line": 118,
+            "end_line": 118,
+            "operator": "core/ReplaceFalseWithTrue",
+            "relevance": "changed_function",
+            "context": "loads"
+          }
+        ]
+      }
+    },
+    {
+      "case": "click-ad39d749",
+      "base": "0039359443e73ab1034c63a1f6d58aba22c0ebc8",
+      "fix": "ad39d749be85af02bf191636062eef51323ad5ab",
+      "command_module": "tests/test_testing.py",
+      "legacy_generation": {
+        "version": "8.7.0",
+        "more": true,
+        "candidates": [
+          {
+            "id": "61edc262757467860247f93c",
+            "path": "src/click/testing.py",
+            "line": 20,
+            "operator": "core/AddNot",
+            "context": "module"
+          },
+          {
+            "id": "b4cd23e7d37abee3195d6a72",
+            "path": "src/click/testing.py",
+            "line": 38,
+            "operator": "core/AddNot",
+            "context": "_echo"
+          },
+          {
+            "id": "555ee8583db322d4b2e6717d",
+            "path": "src/click/testing.py",
+            "line": 64,
+            "operator": "core/AddNot",
+            "context": "_pause_echo"
+          },
+          {
+            "id": "10d3235b4d18b39209e2fba1",
+            "path": "src/click/testing.py",
+            "line": 94,
+            "operator": "core/AddNot",
+            "context": "stop"
+          },
+          {
+            "id": "07b9ae8997447b93c7e2963a",
+            "path": "src/click/testing.py",
+            "line": 176,
+            "operator": "core/AddNot",
+            "context": "fileno"
+          },
+          {
+            "id": "b6f7224a3c6a76f55a4ae082",
+            "path": "src/click/testing.py",
+            "line": 193,
+            "operator": "core/AddNot",
+            "context": "make_input_stream"
+          },
+          {
+            "id": "0ceda05a812b64b8f1e82da7",
+            "path": "src/click/testing.py",
+            "line": 196,
+            "operator": "core/AddNot",
+            "context": "make_input_stream"
+          },
+          {
+            "id": "04d4cee3bc9258ea453437d1",
+            "path": "src/click/testing.py",
+            "line": 201,
+            "operator": "core/AddNot",
+            "context": "make_input_stream"
+          }
+        ]
+      },
+      "targeted_analysis": {
+        "schema_version": 2,
+        "state": "incomplete",
+        "issues": [
+          "baseline timed_out"
+        ],
+        "baseline": "incomplete",
+        "engine_versions": {},
+        "paths": [
+          "src/click/testing.py"
+        ],
+        "attempts": 0,
+        "summary": {
+          "detected": 0,
+          "undetected": 0,
+          "invalid": 0,
+          "timed_out": 0,
+          "error": 0,
+          "not_run": 0,
+          "incomplete": 0
+        },
+        "selection": {
+          "strategy": "changed_functions_and_hunks",
+          "regions": {
+            "src/click/testing.py": [
+              [
+                25,
+                26
+              ],
+              [
+                72,
+                104
+              ],
+              [
+                142,
+                147
+              ],
+              [
+                160,
+                160
+              ],
+              [
+                171,
+                174
+              ],
+              [
+                301,
+                315
+              ],
+              [
+                330,
+                330
+              ],
+              [
+                332,
+                339
+              ],
+              [
+                344,
+                344
+              ],
+              [
+                617,
+                629
+              ],
+              [
+                631,
+                637
+              ],
+              [
+                678,
+                689
+              ]
+            ]
+          },
+          "deletion_anchors": {
+            "src/click/testing.py": [
+              154,
+              408,
+              427,
+              435
+            ]
+          }
+        },
+        "command_coverage": {
+          "scope": "recorded_command_only",
+          "origin": "configured"
+        },
+        "observations": [],
+        "limitations": [
+          "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+          "Only selected changed files and sampled engine operators are examined.",
+          "A filesystem copy is not a security sandbox for trusted project test commands.",
+          "Passing test counts cannot prove that every selected file was imported or executed.",
+          "Other test commands may detect changes left undetected by the analyzed command."
+        ]
+      },
+      "protected_inputs_unchanged": true,
+      "targeted_generation": {
+        "version": "8.7.0",
+        "more": true,
+        "candidates": [
+          {
+            "id": "5ef99d634c5bd845f2d8c2c8",
+            "path": "src/click/testing.py",
+            "line": 85,
+            "end_line": 85,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_lines",
+            "context": "__init__"
+          },
+          {
+            "id": "ff0dcbba11e008e94f060e29",
+            "path": "src/click/testing.py",
+            "line": 90,
+            "end_line": 90,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_lines",
+            "context": "start"
+          },
+          {
+            "id": "10d3235b4d18b39209e2fba1",
+            "path": "src/click/testing.py",
+            "line": 94,
+            "end_line": 94,
+            "operator": "core/AddNot",
+            "relevance": "changed_lines",
+            "context": "stop"
+          },
+          {
+            "id": "12e17f22aa829054e9d88efd",
+            "path": "src/click/testing.py",
+            "line": 160,
+            "end_line": 160,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_lines",
+            "context": "__init__"
+          },
+          {
+            "id": "07b9ae8997447b93c7e2963a",
+            "path": "src/click/testing.py",
+            "line": 176,
+            "end_line": 176,
+            "operator": "core/AddNot",
+            "relevance": "changed_function",
+            "context": "fileno"
+          },
+          {
+            "id": "a8c0dcd63bd9b56f8cf4fc10",
+            "path": "src/click/testing.py",
+            "line": 332,
+            "end_line": 332,
+            "operator": "core/AddNot",
+            "relevance": "changed_lines",
+            "context": "__init__"
+          },
+          {
+            "id": "7b818dada889f4afb235063a",
+            "path": "src/click/testing.py",
+            "line": 621,
+            "end_line": 621,
+            "operator": "core/AddNot",
+            "relevance": "changed_lines",
+            "context": "invoke"
+          },
+          {
+            "id": "53e0d79490a3529a0af989c2",
+            "path": "src/click/testing.py",
+            "line": 85,
+            "end_line": 85,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_lines",
+            "context": "__init__"
+          }
+        ]
+      }
+    },
+    {
+      "case": "jinja2-065334d1",
+      "base": "033c20015c7ca899ab52eb921bb0f08e6d3dd145",
+      "fix": "065334d1ee5b7210e1a0a93c37238c86858f2af7",
+      "command_module": "tests/test_security.py",
+      "legacy_generation": {
+        "version": "8.7.0",
+        "more": true,
+        "candidates": [
+          {
+            "id": "19116a57402bf90e89b76dc4",
+            "path": "src/jinja2/filters.py",
+            "line": 31,
+            "operator": "core/AddNot",
+            "context": "module"
+          },
+          {
+            "id": "9738cc4d5c3b65c73f4cffff",
+            "path": "src/jinja2/filters.py",
+            "line": 52,
+            "operator": "core/AddNot",
+            "context": "ignore_case"
+          },
+          {
+            "id": "e2c6fce5d77bfd3c2a2c2dfe",
+            "path": "src/jinja2/filters.py",
+            "line": 75,
+            "operator": "core/AddNot",
+            "context": "attrgetter"
+          },
+          {
+            "id": "16e32ff15b11f7dd8898dcdd",
+            "path": "src/jinja2/filters.py",
+            "line": 78,
+            "operator": "core/AddNot",
+            "context": "attrgetter"
+          },
+          {
+            "id": "5566a4e531b6c44bf8bf6f66",
+            "path": "src/jinja2/filters.py",
+            "line": 101,
+            "operator": "core/AddNot",
+            "context": "make_multi_attrgetter"
+          },
+          {
+            "id": "c93750e8678a16519b36185c",
+            "path": "src/jinja2/filters.py",
+            "line": 117,
+            "operator": "core/AddNot",
+            "context": "attrgetter"
+          },
+          {
+            "id": "b26278e36a950398efff065e",
+            "path": "src/jinja2/filters.py",
+            "line": 130,
+            "operator": "core/AddNot",
+            "context": "_prepare_attribute_parts"
+          },
+          {
+            "id": "8fa31e6414f55c58866adc0e",
+            "path": "src/jinja2/filters.py",
+            "line": 133,
+            "operator": "core/AddNot",
+            "context": "_prepare_attribute_parts"
+          }
+        ]
+      },
+      "targeted_analysis": {
+        "schema_version": 2,
+        "state": "complete",
+        "issues": [],
+        "baseline": "passed",
+        "engine_versions": {
+          "cosmic-ray": "8.7.0"
+        },
+        "paths": [
+          "src/jinja2/filters.py"
+        ],
+        "attempts": 4,
+        "summary": {
+          "detected": 1,
+          "undetected": 3,
+          "invalid": 0,
+          "timed_out": 0,
+          "error": 0,
+          "not_run": 0,
+          "incomplete": 0
+        },
+        "selection": {
+          "strategy": "changed_functions_and_hunks",
+          "regions": {
+            "src/jinja2/filters.py": [
+              [
+                9,
+                9
+              ],
+              [
+                1415,
+                1417
+              ],
+              [
+                1421,
+                1423
+              ],
+              [
+                1425,
+                1433
+              ]
+            ]
+          },
+          "deletion_anchors": {}
+        },
+        "command_coverage": {
+          "scope": "recorded_command_only",
+          "origin": "configured"
+        },
+        "observations": [
+          {
+            "id": "6dd9e2722212cee3c8433679",
+            "path": "src/jinja2/filters.py",
+            "line": 1430,
+            "operator": "core/AddNot",
+            "status": "undetected",
+            "end_line": 1430,
+            "relevance": "changed_lines",
+            "context": "do_attr"
+          },
+          {
+            "id": "834bc58eb357f67f17c06967",
+            "path": "src/jinja2/filters.py",
+            "line": 1428,
+            "operator": "core/ExceptionReplacer",
+            "status": "undetected",
+            "end_line": 1428,
+            "relevance": "changed_lines",
+            "context": "do_attr"
+          },
+          {
+            "id": "a02dbb02d4c07c9a20363aa4",
+            "path": "src/jinja2/filters.py",
+            "line": 1430,
+            "operator": "core/ReplaceUnaryOperator_Delete_Not",
+            "status": "undetected",
+            "end_line": 1430,
+            "relevance": "changed_lines",
+            "context": "do_attr"
+          },
+          {
+            "id": "1b6f1dd5c820175102620c2e",
+            "path": "src/jinja2/filters.py",
+            "line": 1411,
+            "operator": "core/RemoveDecorator",
+            "status": "detected",
+            "end_line": 1411,
+            "relevance": "changed_function",
+            "context": "do_attr"
+          }
+        ],
+        "limitations": [
+          "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+          "Only selected changed files and sampled engine operators are examined.",
+          "A filesystem copy is not a security sandbox for trusted project test commands.",
+          "Passing test counts cannot prove that every selected file was imported or executed.",
+          "Other test commands may detect changes left undetected by the analyzed command."
+        ]
+      },
+      "protected_inputs_unchanged": true,
+      "targeted_generation": {
+        "version": "8.7.0",
+        "more": false,
+        "candidates": [
+          {
+            "id": "6dd9e2722212cee3c8433679",
+            "path": "src/jinja2/filters.py",
+            "line": 1430,
+            "end_line": 1430,
+            "operator": "core/AddNot",
+            "relevance": "changed_lines",
+            "context": "do_attr"
+          },
+          {
+            "id": "834bc58eb357f67f17c06967",
+            "path": "src/jinja2/filters.py",
+            "line": 1428,
+            "end_line": 1428,
+            "operator": "core/ExceptionReplacer",
+            "relevance": "changed_lines",
+            "context": "do_attr"
+          },
+          {
+            "id": "a02dbb02d4c07c9a20363aa4",
+            "path": "src/jinja2/filters.py",
+            "line": 1430,
+            "end_line": 1430,
+            "operator": "core/ReplaceUnaryOperator_Delete_Not",
+            "relevance": "changed_lines",
+            "context": "do_attr"
+          },
+          {
+            "id": "1b6f1dd5c820175102620c2e",
+            "path": "src/jinja2/filters.py",
+            "line": 1411,
+            "end_line": 1411,
+            "operator": "core/RemoveDecorator",
+            "relevance": "changed_function",
+            "context": "do_attr"
+          }
+        ]
+      }
+    },
+    {
+      "case": "attrs-97f8d175",
+      "base": "6851ab593cd25f3c14393e9355d57d22bec2a074",
+      "fix": "97f8d175656bc03c373a1c9038048a4d312c307c",
+      "command_module": "tests/test_annotations.py",
+      "legacy_generation": {
+        "version": "8.7.0",
+        "more": true,
+        "candidates": [
+          {
+            "id": "e02865ea1eaa2e5d7595b901",
+            "path": "src/attr/_make.py",
+            "line": 166,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "1c31c5e061d4ce211a6337e7",
+            "path": "src/attr/_make.py",
+            "line": 170,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "17a20aded79e471a21be8db2",
+            "path": "src/attr/_make.py",
+            "line": 171,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "177f6fab82d3e22d033c2cd1",
+            "path": "src/attr/_make.py",
+            "line": 176,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "1e3a36d054df130a7e4811fa",
+            "path": "src/attr/_make.py",
+            "line": 181,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "864ff47142d1d5cac57bfdd7",
+            "path": "src/attr/_make.py",
+            "line": 185,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "6295a51ae0e6b2cef344fc97",
+            "path": "src/attr/_make.py",
+            "line": 188,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          },
+          {
+            "id": "9a51c0aaeff0028dbd15a0fd",
+            "path": "src/attr/_make.py",
+            "line": 191,
+            "operator": "core/AddNot",
+            "context": "attrib"
+          }
+        ]
+      },
+      "targeted_analysis": {
+        "schema_version": 2,
+        "state": "incomplete",
+        "issues": [
+          "mutation attempt limit: additional candidates were not examined"
+        ],
+        "baseline": "passed",
+        "engine_versions": {
+          "cosmic-ray": "8.7.0"
+        },
+        "paths": [
+          "src/attr/_make.py"
+        ],
+        "attempts": 8,
+        "summary": {
+          "detected": 5,
+          "undetected": 3,
+          "invalid": 0,
+          "timed_out": 0,
+          "error": 0,
+          "not_run": 0,
+          "incomplete": 0
+        },
+        "selection": {
+          "strategy": "changed_functions_and_hunks",
+          "regions": {
+            "src/attr/_make.py": [
+              [
+                300,
+                300
+              ]
+            ]
+          },
+          "deletion_anchors": {}
+        },
+        "command_coverage": {
+          "scope": "recorded_command_only",
+          "origin": "configured"
+        },
+        "observations": [
+          {
+            "id": "d3d3b36e6f88d0e1de6915bc",
+            "path": "src/attr/_make.py",
+            "line": 304,
+            "operator": "core/AddNot",
+            "status": "detected",
+            "end_line": 304,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "fe1a5e6d11298bc772b9c4a4",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "operator": "core/NumberReplacer",
+            "status": "detected",
+            "end_line": 305,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "564940cecd5f0b4de9c44a87",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "operator": "core/NumberReplacer",
+            "status": "detected",
+            "end_line": 305,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "a829a6ee008dbe14140bf99c",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "operator": "core/NumberReplacer",
+            "status": "undetected",
+            "end_line": 305,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "9aa9be1faefe1614064413fb",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "operator": "core/NumberReplacer",
+            "status": "detected",
+            "end_line": 305,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "a7d0c17891a328df6c09a393",
+            "path": "src/attr/_make.py",
+            "line": 304,
+            "operator": "core/ReplaceAndWithOr",
+            "status": "undetected",
+            "end_line": 304,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "31c3072df920679fa297e5a8",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "operator": "core/ReplaceUnaryOperator_Delete_USub",
+            "status": "detected",
+            "end_line": 305,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "387127eb0e1db8d7a3e2aa93",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "operator": "core/ReplaceUnaryOperator_USub_Invert",
+            "status": "undetected",
+            "end_line": 305,
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          }
+        ],
+        "limitations": [
+          "Undetected mutations are possible test gaps, including equivalent behavior; these observations do not prove correctness or change verification verdicts.",
+          "Only selected changed files and sampled engine operators are examined.",
+          "A filesystem copy is not a security sandbox for trusted project test commands.",
+          "Passing test counts cannot prove that every selected file was imported or executed.",
+          "Other test commands may detect changes left undetected by the analyzed command."
+        ]
+      },
+      "protected_inputs_unchanged": true,
+      "targeted_generation": {
+        "version": "8.7.0",
+        "more": true,
+        "candidates": [
+          {
+            "id": "d3d3b36e6f88d0e1de6915bc",
+            "path": "src/attr/_make.py",
+            "line": 304,
+            "end_line": 304,
+            "operator": "core/AddNot",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "fe1a5e6d11298bc772b9c4a4",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "end_line": 305,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "564940cecd5f0b4de9c44a87",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "end_line": 305,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "a829a6ee008dbe14140bf99c",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "end_line": 305,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "9aa9be1faefe1614064413fb",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "end_line": 305,
+            "operator": "core/NumberReplacer",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "a7d0c17891a328df6c09a393",
+            "path": "src/attr/_make.py",
+            "line": 304,
+            "end_line": 304,
+            "operator": "core/ReplaceAndWithOr",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "31c3072df920679fa297e5a8",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "end_line": 305,
+            "operator": "core/ReplaceUnaryOperator_Delete_USub",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          },
+          {
+            "id": "387127eb0e1db8d7a3e2aa93",
+            "path": "src/attr/_make.py",
+            "line": 305,
+            "end_line": 305,
+            "operator": "core/ReplaceUnaryOperator_USub_Invert",
+            "relevance": "changed_function",
+            "context": "_is_class_var"
+          }
+        ]
+      }
+    }
+  ],
+  "code_hashes": {
+    "core/strength/__init__.py": "4c8f0131d97813b9edb9d8df2991fd63437dbc6484ed9b55b067dfaffdc9b051",
+    "core/strength/baseline.py": "fd4e2de126c5016e7d5ef088cfb10e1a57295971d2487e30d830296ac24a4c9a",
+    "core/strength/cosmic_worker.py": "ca9c331f3d71998cf26ab8d2026448b4dfa0e51c6a98ae172df7f28602626822",
+    "core/strength/engines.py": "979465b37d9727c07dab621b6adb0d872c243808159091548769656534b3bb13",
+    "core/strength/execution.py": "b0fc4cc31f27992501692be1412b795691de92eeee9dcacd923c2a33f63167d8",
+    "core/strength/isolation.py": "2b8ec2dfdc0a4527259f1136eda940c0a6a823aa5dcdd92ac6d2377f27e7202e",
+    "core/strength/model.py": "cacd6c52f535aa44f8f726dd4cbe400e212a2e03cf1134790fa77b5524e9cb89",
+    "core/strength/mutations.py": "2bcc3f2cf2d336df60eb5a2783eaa8f9607e5ee1df5008307ae106bfcb2e3619",
+    "core/strength/python_guard.py": "fdf238eff2e35eeae4df688b82e2f9330e52313e220f08b1a413c61a110837a9",
+    "core/strength/regions.py": "70ccccd52467e2b3867485e45afc582ee9d6172b270f109814c766690745145a",
+    "core/strength/reuse.py": "1d4b5f000579580690375b5e293caae58fbe5d8955087b7f79059294fc537970",
+    "core/strength/runner.py": "48a0d302ee20b150eab3f3b41507f3df9943488db861c68a7823e82ddb90f743",
+    "core/strength/scope.py": "b03460b2e3cd636156404aa23e9cf3161eddfef4591837aa69a7a6cd9c40fb70",
+    "core/strength/settings.py": "363fc37bf07ea9e2a4578aeb172bacc969a8444d18a71a5bcdbce2004a5d4235",
+    "core/strength/store.py": "d0a4980a10deaa5fe84b0924e8523eb1139af52f97ef9291a979a0dedfc49810",
+    "core/strength/stryker_worker.mjs": "8d584ee001ede2608245bdfe6756965aaefdbb4fd312337e37a5e931e7ea5c13",
+    "core/strength/view.py": "fdc6c06c7d1d121a83ae7b28c9b531f3e592d271f16b8530683b870ab4016a85"
+  },
+  "qualification": "Legacy generation and targeted execution are different measurements. This establishes source relevance and bounded engine compatibility, not a coding-quality or speed advantage."
+}
