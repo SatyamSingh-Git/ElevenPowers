@@ -21,6 +21,7 @@ class Scope:
     regions: dict[str, list[list[int]]] = field(default_factory=dict)
     deletions: dict[str, list[int]] = field(default_factory=dict)
     source_hashes: dict[str, str] = field(default_factory=dict)
+    coverage_issues: list[str] = field(default_factory=list)
 
 
 def git(root, args, deadline):
@@ -60,9 +61,9 @@ def select(root, base, deadline, *, opened_dirty=()):
                     not any(fnmatch.fnmatchcase(path, p.rstrip('/')+'/*' if p.endswith('/') else p) for p in excludes) and
                     not any((root/parent/'.git').exists() for parent in Path(path).parents if str(parent) != '.')):
                 deleted.append(path)
-        value.issues.extend('removed production source cannot be mutation-sampled: ' + p for p in deleted[:128])
+        value.coverage_issues.extend('removed production source cannot be mutation-sampled: ' + p for p in deleted[:128])
         if len(deleted) > 128:
-            value.issues.append(f'deleted-source diagnostic limit: {len(deleted)-128} additional removed paths unlisted')
+            value.coverage_issues.append(f'deleted-source diagnostic limit: {len(deleted)-128} additional removed paths unlisted')
         candidates = set((changed + untracked).split('\0')) - {''}
         untracked_paths = set(untracked.split('\0'))
         allowed = set(scan.files)

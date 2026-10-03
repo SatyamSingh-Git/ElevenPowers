@@ -57,8 +57,9 @@ def analyze(ledger, *, base=None, command=None):
         if scope.issues:
             value['state'] = 'incomplete'
             return value
+        value['issues'].extend(scope.coverage_issues)
         if not scope.paths:
-            value['state'] = 'not_applicable'
+            value['state'] = 'incomplete' if value['issues'] else 'not_applicable'
             return value
         py = [p for p in scope.paths if Path(p).suffix == '.py']
         js = [p for p in scope.paths if Path(p).suffix != '.py']
@@ -119,7 +120,8 @@ def analyze(ledger, *, base=None, command=None):
                     # Reserve attempts for later language producers instead of
                     # letting the first language exhaust the shared budget.
                     remaining = budget.maximum - budget.attempts
-                    share = max(1, remaining // (len(adapters)-index))
+                    later_files = sum(len(a[1]) for a in adapters[index:])
+                    share = max(1, remaining * len(paths) // later_files)
                     producer_budget = Budget(budget.deadline, share)
                     candidates, version = generate(copied.root, paths, executable, producer_budget,
                                                    {p:scope.regions[p] for p in paths})
