@@ -41,7 +41,7 @@ def test_strength_settings_reject_invalid_limits(raw):
         settings(raw)
 
 
-def repository(root):
+def repository(root, source_file='a.py'):
     import subprocess
     def git(*args):
         return subprocess.run(['git', '-c', f'safe.directory={root.as_posix()}', *args],
@@ -49,7 +49,7 @@ def repository(root):
     git('init')
     git('config', 'user.email', 'tests@example.invalid')
     git('config', 'user.name', 'Tests')
-    (root / 'a.py').write_text('value = 1\n')
+    (root / source_file).write_text('value = 1\n')
     (root / '.gitignore').write_text('generated/\n')
     git('add', '.')
     git('commit', '-m', 'base')
@@ -491,7 +491,8 @@ def test_real_engine_project_acceptance_weak_then_strong(tmp_path, language):
     from core.strength.runner import analyze
     from core.ledger import Ledger
     from core.config import Config
-    base = repository(tmp_path)
+    source_file = 'a.py' if language == 'python' else 'a.ts' if language == 'typescript' else 'a.mjs'
+    base = repository(tmp_path, source_file)
     strength = {'max_mutants':8, 'seconds':45, 'test_seconds':10}
     if language == 'python':
         if importlib.util.find_spec('cosmic_ray') is None:
@@ -504,7 +505,6 @@ def test_real_engine_project_acceptance_weak_then_strong(tmp_path, language):
         command = f'"{sys.executable}" -m pytest -q -p no:cacheprovider'
     else:
         strength['stryker'] = stryker_path()
-        (tmp_path/'a.py').unlink()
         name = 'a.ts' if language == 'typescript' else 'a.mjs'
         target = tmp_path/name
         source = ('export function positive(value: number): boolean { return value > 0; }\n'
