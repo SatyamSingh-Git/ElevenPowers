@@ -1,5 +1,13 @@
 # Mutation engine provenance
 
+On 2026-10-03, a real baseline/attempt probe exposed that mutation restoration
+bytes overwrote the original-project path passed to the Python read/import guard.
+The baseline retained its proper guard; attempts did not. The path now remains
+separate from restoration bytes. Both the forbidden-original-read and legitimate
+private-input controls pass, with all 45 existing strength controls. Historical
+analysis does not prove that original-project reads were excluded; earlier
+observations remain recorded rather than being relabeled after this fix.
+
 Cosmic Ray 8.7.0 (MIT), https://github.com/sixty-north/cosmic-ray, supplies Python
 operators, AST traversal and source mutation. Enumeration follows its
 `commands/init.py`; the optional child imports its installed library. ElevenPowers

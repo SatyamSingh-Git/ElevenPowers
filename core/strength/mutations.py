@@ -14,11 +14,11 @@ def run_candidate(candidate, copied, command, budget, seconds, *, original=None)
     except TimeoutError:
         return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, status)
     target = safe_file(copied, candidate.path)
-    original = target.read_bytes()
+    source_bytes = target.read_bytes()
     try:
         encoding = 'utf-8'
         if target.suffix == '.py':
-            encoding, _ = tokenize.detect_encoding(io.BytesIO(original).readline)
+            encoding, _ = tokenize.detect_encoding(io.BytesIO(source_bytes).readline)
             try:
                 compile(candidate.content, candidate.path, 'exec')
             except (SyntaxError, ValueError):
@@ -42,5 +42,5 @@ def run_candidate(candidate, copied, command, budget, seconds, *, original=None)
     finally:
         # Source restoration is private. A failure propagates so no later mutation
         # can accidentally run on a prior mutation's source.
-        target.write_bytes(original)
+        target.write_bytes(source_bytes)
     return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, status)
