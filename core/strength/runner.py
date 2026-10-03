@@ -1,5 +1,6 @@
 """Generalized report-only orchestration shared by all host adapters."""
 from dataclasses import asdict
+import hashlib
 import importlib.util
 from pathlib import Path
 import sys
@@ -23,14 +24,17 @@ def analyze(ledger, *, base=None, command=None):
     session = jobs.current()
     if session.root != ledger.root or session.task != ledger.task:
         raise jobs.Superseded('strength session does not own this task')
-    value = {'schema_version': 1, 'task': ledger.task, 'state': 'running', 'issues': [],
+    value = {'schema_version': 2, 'task': ledger.task, 'state': 'running', 'issues': [],
              'observations': [], 'fingerprint': '', 'source_fingerprint': '',
              'baseline': 'not_run', 'engine_versions': {}, 'base': base or ledger.base,
              'command': '', 'settings': {}, 'paths': [], 'recorded_at': time.time(),
              'summary': summary([]), 'attempts': 0,
+             'selection': {'strategy':'changed_functions_and_hunks', 'regions':{}, 'deletion_anchors':{}},
+             'command_coverage': {'scope':'recorded_command_only', 'origin':'override' if command is not None else 'configured'},
              'limitations': [LIMITATION, 'Only selected changed files and sampled engine operators are examined.',
                             'A filesystem copy is not a security sandbox for trusted project test commands.',
-                            'Passing test counts cannot prove that every selected file was imported or executed.']}
+                            'Passing test counts cannot prove that every selected file was imported or executed.',
+                            'Other test commands may detect changes left undetected by the analyzed command.']}
     item = session.queue('test strength', 'optional changed-code analysis')
     session.begin(item)
     previous = store.load(ledger.root, ledger.task)
@@ -47,6 +51,8 @@ def analyze(ledger, *, base=None, command=None):
         scope = select(ledger.root, value['base'], deadline,
                        opened_dirty=ledger.opened_dirty if base is None else ())
         value.update(paths=scope.paths, source_fingerprint=scope.fingerprint)
+        value['selection'].update(regions={p:scope.regions.get(p,[]) for p in scope.paths},
+                                  deletion_anchors=scope.deletions)
         value['issues'].extend(scope.issues)
         if scope.issues:
             value['state'] = 'incomplete'
@@ -72,6 +78,11 @@ def analyze(ledger, *, base=None, command=None):
             value['state'] = 'unavailable'
             return value
         with snapshot(ledger.root, options, deadline) as copied:
+            if any(hashlib.sha256((copied.root/p).read_bytes()).hexdigest() != digest
+                   for p,digest in scope.source_hashes.items()):
+                value['issues'].append('selected source changed before its analysis snapshot')
+                value['state'] = 'incomplete'
+                return value
             value['fingerprint'] = execution_stamp(copied.stamp)
             versions = {}
             for name, paths, generate, executable in adapters:
@@ -105,7 +116,8 @@ def analyze(ledger, *, base=None, command=None):
                     value['issues'].append('mutation attempt limit left a language unexamined')
                     break
                 try:
-                    candidates, version = generate(copied.root, paths, executable, budget)
+                    candidates, version = generate(copied.root, paths, executable, budget,
+                                                   {p:scope.regions[p] for p in paths})
                     value['engine_versions'][name] = version
                     for candidate in candidates:
                         with trial(copied, options, deadline) as test_root:
@@ -124,6 +136,8 @@ def analyze(ledger, *, base=None, command=None):
                 value['issues'].append('project inputs changed during test-strength analysis')
         if value['summary']['incomplete']:
             value['issues'].append('some mutation attempts did not complete')
+        if scope.deletions:
+            value['issues'].append('deleted code is absent from the current source; deletion anchors are context, not examined removed behavior')
         if not value['observations']:
             value['issues'].append('no applicable mutations were produced for the selected source')
         value['state'] = 'incomplete' if value['issues'] else 'complete'
