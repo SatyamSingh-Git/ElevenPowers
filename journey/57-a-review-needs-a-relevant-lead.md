@@ -47,13 +47,20 @@ native model lists were exact. A separate corrected-grader regrade was started,
 then stopped when the user asked to conclude. Its full reproduction remains
 unfinished; the original frozen producer hashes and grades remain historical.
 
-The next build is relevant test-strength evidence for any repository: prioritize
+At the 2026-10-02 stop, the next build was relevant evidence for any repository: prioritize
 changed functions/hunks, report the relationship between a lead and the edit,
 and qualify focused-command coverage. Keep engine bounds and incomplete states,
 avoid raw mutant targets, and use free relevance controls before another model
 comparison. A new comparison should use held-out active behavioral gaps and
 retain every unchanged or adverse result. More features do not replace that
 exit criterion. Further implementation and model calls wait for the next session.
+
+Resumed on 2026-10-03: all twelve corrected grade sets completed, with three
+explicit Click F03 setup corrections and nine exact matches. The generalized
+relevance milestone is now delivered; no additional model sessions ran. The
+original stopped-session account above remains historical. See
+[journey 58](58-the-lead-must-belong-to-the-edit.md) for the implementation,
+actual relevance samples and the still-open benefit exit.
 
 See the [design](../docs/design/checkpoint-review-pilot.md),
 [measured record](../docs/validation/2026-10-02-checkpoint-review.md),

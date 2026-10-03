@@ -10,7 +10,11 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [57 — a review needs a relevant lead](57-a-review-needs-a-relevant-lead.md)
+Latest: [58 — the lead must belong to the edit](58-the-lead-must-belong-to-the-edit.md)
+records generalized changed-hunk/function sampling, independently reproduced
+boundary/coverage corrections, real upstream relevance gains, and all twelve
+completed corrected regrades. Coding benefit remains unproved.
+[57 — a review needs a relevant lead](57-a-review-needs-a-relevant-lead.md)
 records eight completed fixed-patch reviews, five newly detected Jinja2 faults in
 both arms, four ties, analysis relevance/platform limits and a user-stopped free
 regrade. [56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)

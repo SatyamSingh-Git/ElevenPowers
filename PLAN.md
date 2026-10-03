@@ -1,5 +1,20 @@
 # Master Plan v0.8
 
+**Changed-region relevance delivery, 2026-10-03.** The free corrected review
+regrade is complete. Generalized optional analysis now records changed hunks,
+partitions broad/new-file changes by function, contains full mutation spans and
+rotates file/function samples with file-weighted language shares. Deleted
+behavior remains incomplete while current source can still be analyzed. Reports
+qualify the actual command and preserve legacy samples without invented
+attribution. Real upstream controls now reach Jinja2 `do_attr` and attrs
+`_is_class_var`, both missed by the earlier whole-file sample. This closes the
+relevance implementation milestone, not P1's benefit exit. Next: a held-out
+active behavioral-gap comparison with equally funded ordinary review, frozen
+independent checks and equivalent controls. New model runs require a separately
+approved comparison; none were launched in this resumed delivery. Native
+installed acceptance remains open. See [validation](docs/validation/2026-10-03-strength-regions.md)
+and [journey 58](journey/58-the-lead-must-belong-to-the-edit.md).
+
 **Fixed-patch review delivery, 2026-10-02.** All eight Sonnet 5 medium subscription
 reviews completed with source/existing tests fixed. Both ordinary and assisted
 review detect five previously missed meaningful Jinja2 faults; all four matched
@@ -7,10 +22,11 @@ pairs tie. Assisted native review times are greater in each pair. No incremental
 product quality gain or speedup is established. Whole-file producer-order samples
 miss edited functions, and Windows skips qualify Click's FD cases. The archive
 retains every submission, original producer identity and full license notices.
-The corrected-harness full regrade was stopped at the user's request and remains
-unfinished. Further feature work and model calls wait for a later session.
-Next: finish that free regrade, then prioritize changed functions/hunks and qualify
-focused-command coverage for any project before another held-out comparison.
+After resumption on 2026-10-03, all twelve corrected-harness grade sets finished:
+nine match exactly; Click F03 retains mixed failures/setup errors in all three
+arms, yielding 2/8 + 1 setup instead of historical 3/8. Original JSON is preserved.
+Jinja2's equal improvement and the four ties are unchanged. The subsequent
+generalized relevance delivery above addresses the known sampling weakness.
 See [findings](docs/validation/2026-10-02-checkpoint-review.md),
 [provenance](docs/research/checkpoint-review.md) and
 [journey 57](journey/57-a-review-needs-a-relevant-lead.md).
@@ -982,14 +998,15 @@ Phase C does not wait on a definitive P1 result. Selection and repair developmen
 
 ### Phase B′ — P1 becomes a bounded component experiment *(2026-09-14, decided)*
 
-**Current exit status, 2026-10-02.** Controlled completion and hard repair pilots
+**Current exit status, 2026-10-03.** Controlled completion and hard repair pilots
 have no measured coding gain. The fixed-patch review component now has eight
 completed matched reviews: both arms improve one active meaningful fault set,
 with zero incremental assisted advantage across four selected pairs. This
-delivers the comparison tooling, not P1's benefit exit. Next prioritize relevant
-changed-code analysis and command coverage after finishing free regrading;
-require held-out behavioral improvement beyond equally funded ordinary review.
-Implementation/model experiments stopped at the user's request for now.
+delivers comparison tooling, not P1's benefit exit. The free regrade and
+generalized changed-region/command qualification milestone are now delivered.
+Require held-out behavioral improvement beyond equally funded ordinary review;
+retain errors, platform skips, ties and adverse outcomes. Task size is not an
+exit criterion. No additional model sessions ran during the resumed delivery.
 
 P1 is no longer a prerequisite for anything else. It had become one by habit: every phase waited on a result the experiment could not produce, and the waiting cost two audits to notice.
 

@@ -401,8 +401,10 @@ detect five previously missed meaningful Jinja2 faults. All four matched pairs
 tied, with greater assisted native review time; this establishes useful tests
 from review, **no incremental ElevenPowers quality advantage or speedup**.
 Whole-file sampling missed edited functions, and Windows skips qualify Click's
-descriptor cases. Every submission and original grade is archived; a separate
-corrected-harness full regrade remains unfinished after the user requested a stop.
+descriptor cases. Every submission and original grade is archived. The separate
+corrected-harness regrade completed all twelve sets on 2026-10-03: nine match,
+and Click F03 retains mixed failures/setup errors in all three arms. Original
+grades remain preserved; Jinja2's equal improvement and the four ties hold.
 See [findings](docs/validation/2026-10-02-checkpoint-review.md),
 [saved tests and reproduction](docs/validation/2026-10-02-checkpoint-review/README.md)
 and [journey 57](journey/57-a-review-needs-a-relevant-lead.md).
@@ -435,12 +437,19 @@ refuse overwrite unless `--force` is supplied. See
 
 ### Optional test strength
 
-**Changed-file test strength** asks whether passing tests notice small changes to
+**Changed-region test strength** asks whether passing tests notice small changes to
 the production files edited by a task. Cosmic Ray supplies Python mutations;
 Stryker supplies JavaScript/TypeScript mutations. Every baseline and attempt
 starts from clean private inputs, with explicit time, attempt and copy limits.
 Detected changes, possible test gaps, invalid mutations and incomplete execution
 appear in the human report with independently checked input freshness.
+Selection now uses Git hunks and enclosing functions, partitions broad/new-file
+changes, requires full mutation-span containment and rotates bounded samples
+across files/functions. Mixed-language shares follow file counts. Reports show
+line spans, context and relation to the edit, with explicit qualification that
+only the analyzed command was measured. Deleted behavior remains a coverage gap;
+available current source can still be examined. Legacy records remain readable
+as whole-file samples without invented attribution.
 
 After explicit optional engine setup, `guide` and `strict` completion consider
 the shared runner automatically across all five hosts. There is no new completion
@@ -454,12 +463,16 @@ python plugin/bin/ep_strength.py --root PATH
 Export saved findings through `ep_report.py`. Defaults are 60 seconds, eight
 attempts and 15 seconds per test command; use a focused command for slower
 projects. Missing engines, dirty attribution, editable Python paths into original
-source, unsafe dependencies and exhausted budgets stay explicit. Whole changed-file
-samples do not prove correctness or improved patch outcomes. See
+source, unsafe dependencies and exhausted budgets stay explicit. Free pinned
+upstream controls now reach Jinja2's edited `do_attr` and attrs' `_is_class_var`,
+missed by the earlier whole-file sample. This improves analysis relevance;
+sampled mutations do not prove correctness or improved patch outcomes. See
 [setup and configuration](the-guide/configuration.md),
 [engine provenance](docs/research/mutation-engines.md),
 [journey 52](journey/52-tests-that-notice-a-change.md), and
-[test-strength validation](docs/validation/2026-10-01-test-strength.md).
+[test-strength validation](docs/validation/2026-10-01-test-strength.md),
+[current relevance validation](docs/validation/2026-10-03-strength-regions.md)
+and [journey 58](journey/58-the-lead-must-belong-to-the-edit.md).
 
 ---
 
@@ -535,9 +548,11 @@ comparison records remain **inconclusive**. A trusted Codex fixture had correcte
 source and real failing/passing checks but no plugin callbacks. Later controlled
 completion runs have working native Claude delivery and added receipts, and the
 fixed-patch review pilot improves Jinja2 test sensitivity equally in both arms.
-No incremental coding benefit has been measured. The next priority is relevant
-changed-code analysis and qualified command coverage after finishing the free
-regrade; further implementation and model calls wait for the next session.
+No incremental coding benefit has been measured. The free regrade and generalized
+changed-region/command qualification milestone are now delivered. The next proof
+step is a held-out active behavioral-gap comparison against equally funded
+ordinary review, with independent checks and retained adverse outcomes. The
+resumed delivery launched no extra model sessions.
 Task size is not a criterion; an observable coding or verification improvement
 through any engaged mechanism can count.
 
