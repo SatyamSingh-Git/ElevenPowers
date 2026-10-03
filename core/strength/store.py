@@ -13,11 +13,14 @@ MAX_BYTES = 512 * 1024
 FIELDS = {'schema_version', 'task', 'state', 'issues', 'observations', 'fingerprint',
           'source_fingerprint', 'baseline', 'engine_versions', 'base', 'command',
           'settings', 'paths', 'recorded_at', 'summary', 'attempts', 'limitations'}
+TARGET_FIELDS = FIELDS | {'selection', 'command_coverage'}
 STATES = {'running', 'complete', 'incomplete', 'deferred', 'unavailable', 'not_applicable', 'disabled'}
 
 
 def validate(value):
-    if not isinstance(value, dict) or set(value) != FIELDS or value['schema_version'] != 1:
+    if (not isinstance(value, dict) or type(value.get('schema_version')) is not int or
+            value['schema_version'] not in (1, 2) or
+            set(value) != (FIELDS if value['schema_version'] == 1 else TARGET_FIELDS)):
         raise ValueError('unsupported strength record')
     if value['state'] not in STATES or not isinstance(value['observations'], list) or len(value['observations']) > 256:
         raise ValueError('invalid strength state or observation count')
@@ -36,6 +39,22 @@ def validate(value):
             raise ValueError('invalid strength metadata list: ' + key)
     for item in value['paths']:
         relative(item)
+    if value['schema_version'] == 2:
+        selection = value['selection']
+        if (not isinstance(selection, dict) or set(selection) != {'strategy', 'regions', 'deletion_anchors'} or
+                selection['strategy'] != 'changed_functions_and_hunks'):
+            raise ValueError('invalid strength selection metadata')
+        from .regions import validate as validate_regions
+        validate_regions(selection['regions'], value['paths'])
+        anchors = selection['deletion_anchors']
+        if (not isinstance(anchors, dict) or any(p not in value['paths'] or not isinstance(lines, list) or
+                any(type(n) is not int or not 1 <= n <= 1000000 for n in lines)
+                for p, lines in anchors.items()) or sum(map(len, anchors.values())) > 2048):
+            raise ValueError('invalid deletion context')
+        coverage = value['command_coverage']
+        if (not isinstance(coverage, dict) or set(coverage) != {'scope', 'origin'} or
+                coverage['scope'] != 'recorded_command_only' or coverage['origin'] not in ('override', 'configured')):
+            raise ValueError('invalid command coverage qualification')
     settings(value['settings'])
     if not isinstance(value['engine_versions'], dict) or any(
         key not in ('cosmic-ray', 'stryker') or not isinstance(version, str) or len(version) > 32
