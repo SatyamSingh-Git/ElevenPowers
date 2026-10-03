@@ -501,8 +501,10 @@ check, not signature verification or authentication.
 
 The first saved review archive is at
 `docs/validation/2026-10-02-checkpoint-review`. Its original producer identity
-differs from the corrected current evaluator. All eight recorded reviews qualify,
-while full corrected-harness regrading remains unfinished at the user-requested
-stop. Follow its [reproduction guide](../docs/validation/2026-10-02-checkpoint-review/README.md)
+differs from the corrected current evaluator. All eight recorded reviews qualify.
+All twelve corrected local grade sets completed on 2026-10-03; nine match exactly
+and Click F03 retains mixed failures/setup in all three arms. Historical originals
+and the separate current reproduction remain explicit. Follow its
+[reproduction guide](../docs/validation/2026-10-02-checkpoint-review/README.md)
 for pinned environment/cache preparation. The inspect command makes no model or
 test call; explicit regrading uses only local trusted test execution.

@@ -93,16 +93,22 @@ startup and the failed external Snag CI acceptance run.
 | [55-at-the-moment-of-done.md](55-at-the-moment-of-done.md) | Eight complete proposal comparisons, additional declared receipts, tied 16/16 correctness and reproducible saved candidates |
 | [56-harder-problems-still-need-evidence.md](56-harder-problems-still-need-evidence.md) | Four interacting repairs, seven completed and one interrupted attempt, three tied pairs, separate visible/shutdown audits and every-attempt reproduction |
 | [57-a-review-needs-a-relevant-lead.md](57-a-review-needs-a-relevant-lead.md) | Eight fixed-patch reviews; both arms strengthen Jinja2 tests, four ties, greater assisted native time, irrelevant whole-file leads and an unfinished regrade at user stop |
+| [58-the-lead-must-belong-to-the-edit.md](58-the-lead-must-belong-to-the-edit.md) | Generalized changed-region relevance, reviewed boundary/coverage fixes, real upstream controls and completed corrected reproduction |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |
 
-## Current delivery, 2026-10-02
+## Current delivery, 2026-10-03
+
+[58 — the lead must belong to the edit](58-the-lead-must-belong-to-the-edit.md)
+records delivered changed-hunk/function selection, command qualification and
+upstream relevance gains. All twelve corrected regrades completed; original
+producer records and the three Click setup corrections remain separate.
 
 [57 — a review needs a relevant lead](57-a-review-needs-a-relevant-lead.md)
 records five previously missed meaningful Jinja2 faults caught by both ordinary
 and assisted new tests. The four selected pairs tie; this is a review test-quality
 gain without incremental ElevenPowers benefit. All eight calls completed; the
-free full corrected-grader regrade remains unfinished at the user's stop.
+free full corrected-grader regrade stopped that day and finished on 2026-10-03.
 
 [56 — harder problems still need evidence](56-harder-problems-still-need-evidence.md)
 records 94 frozen groups across four synthetic repairs. Three complete pairs tied;

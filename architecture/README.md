@@ -49,8 +49,9 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **106 nodes / 243 edges** across 7 planes (as of 2026-10-02),
-including fixed-patch review, frozen producer identities and explicit regrading,
+Current size: **107 nodes / 246 edges** across 7 planes (as of 2026-10-03),
+including changed-region targets, schema-2 command qualifications and completed
+corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
 unstarted-only recovery and separately versioned visible/shutdown audits,
 the controlled completion comparison and neutral proposal recorder,
