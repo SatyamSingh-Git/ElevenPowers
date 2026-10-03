@@ -211,7 +211,11 @@ def markdown(value):
         for observation in strength['observations']:
             relation={'changed_lines':'changed lines','changed_function':'enclosing changed function',
                       'deletion_context':'deletion context','legacy_whole_file':'legacy whole-file sample'}.get(observation.get('relevance'),'unqualified')
-            cells=[observation[key] for key in ('path','line','operator','status')]+[relation,observation.get('context','') or '—']
+            line = str(observation['line'])
+            if observation.get('end_line', observation['line']) != observation['line']:
+                line += '–' + str(observation['end_line'])
+            cells=[observation['path'], line, observation['operator'], observation['status'],
+                   relation, observation.get('context','') or '—']
             lines.append('| ' + ' | '.join(_text(cell) for cell in cells) + ' |')
     lines += ['- ' + _text(limit) for limit in strength.get('limitations', [])]
     lines += ['', '## Changed targets', '']

@@ -7,7 +7,7 @@ def test_strength_report_explains_relation_and_command_coverage():
     strength = {'state':'incomplete','freshness':'fresh',
                  'selection':{'strategy':'changed_functions_and_hunks','regions':{'a.py':[[5,5]]},'deletion_anchors':{}},
                  'command_coverage':{'scope':'recorded_command_only','origin':'override'},
-                 'observations':[{'path':'a.py','line':5,'end_line':5,'operator':'change','status':'undetected',
+                 'observations':[{'path':'a.py','line':5,'end_line':7,'operator':'change','status':'undetected',
                                   'relevance':'changed_lines','context':'edited'}]}
     # Use an actual standard export as the base, so this exercises the renderer
     # without mirroring every field of its public envelope.
@@ -18,6 +18,7 @@ def test_strength_report_explains_relation_and_command_coverage():
     exported['test_strength']=strength
     text=markdown(exported)
     assert 'changed lines' in text and 'edited' in text
+    assert '5–7' in text
     assert 'other test commands may detect' in text.lower()
 
 
