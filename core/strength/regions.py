@@ -28,18 +28,32 @@ def python_targets(source, changed):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             start = min([node.lineno] + [d.lineno for d in node.decorator_list])
             functions.append((start, node.end_lineno, node.name))
+    return function_targets(functions, changed)
+
+
+def function_targets(functions, changed):
+    """Expand narrow hunks, partition broad hunks and retain module gaps."""
     targets = []
     for region in changed:
         enclosing = [f for f in functions if f[0] <= region[0] and f[1] >= region[1]]
         if enclosing:
-            targets.append(min(enclosing, key=lambda f: f[1]-f[0]))
+            chosen = [min(enclosing, key=lambda f: f[1]-f[0])]
+            chosen.extend(f for f in functions if region[0] <= f[0] <= f[1] <= region[1])
         else:
-            targets.append((*region, 'module'))
+            chosen = [f for f in functions if overlap(f[0], f[1], region)]
+        targets.extend(chosen)
+        cursor = region[0]
+        for start, end, _ in sorted(chosen):
+            if cursor < start:
+                targets.append((cursor, min(start-1, region[1]), 'module'))
+            cursor = max(cursor, end+1)
+        if cursor <= region[1]:
+            targets.append((cursor, region[1], 'module'))
     return sorted(set(targets))
 
 
 def location(start, end, changed, targets):
-    choices = [t for t in targets if overlap(start, end, t)]
+    choices = [t for t in targets if t[0] <= start <= end <= t[1]]
     if not choices:
         return None
     target = min(choices, key=lambda t: t[1]-t[0])

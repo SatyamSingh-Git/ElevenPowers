@@ -42,11 +42,22 @@ function targetsFrom(ast, changed) {
     }
   }
   walk(ast.root);
-  return changed.map(range => {
+  const targets = [];
+  for (const range of changed) {
     const enclosing = functions.filter(f => f[0] <= range[0] && f[1] >= range[1]);
     enclosing.sort((a,b) => (a[1]-a[0])-(b[1]-b[0]));
-    return enclosing[0] ?? [...range,'module'];
-  });
+    const chosen = enclosing.length
+      ? [enclosing[0], ...functions.filter(f => range[0] <= f[0] && f[1] <= range[1])]
+      : functions.filter(f => overlaps(f[0],f[1],range));
+    targets.push(...chosen);
+    let cursor = range[0];
+    for (const [start,end] of [...chosen].sort((a,b) => a[0]-b[0])) {
+      if (cursor < start) targets.push([cursor,Math.min(start-1,range[1]),'module']);
+      cursor = Math.max(cursor,end+1);
+    }
+    if (cursor <= range[1]) targets.push([cursor,range[1],'module']);
+  }
+  return [...new Map(targets.map(t => [JSON.stringify(t),t])).values()];
 }
 for (const name of request.paths) {
   if (fs.statSync(name).size > 1024 * 1024) throw new Error('Mutation source exceeds producer limit');
@@ -65,7 +76,7 @@ for (const name of request.paths) {
     if (!changed && candidates.length >= request.maximum) { more = true; break; }
     const line = mutant.location.start.line + 1;
     const endLine = Math.max(line, mutant.location.end.line + 1 - (mutant.location.end.column === 0 ? 1 : 0));
-    const choices = targets?.filter(t => overlaps(line,endLine,t)).sort((a,b) => (a[1]-a[0])-(b[1]-b[0]));
+    const choices = targets?.filter(t => t[0] <= line && endLine <= t[1]).sort((a,b) => (a[1]-a[0])-(b[1]-b[0]));
     if (changed && !choices.length) continue;
     const start = offset(mutant.location.start), end = offset(mutant.location.end);
     if (start < 0 || end < start || end > source.length) throw new Error('Invalid mutation range');
