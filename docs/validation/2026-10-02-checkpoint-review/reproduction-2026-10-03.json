@@ -1,0 +1,1519 @@
+{
+  "checksums_valid": true,
+  "current_harness": false,
+  "slots": [
+    {
+      "case": "itsdangerous-6c58e969",
+      "arm": "ordinary",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "itsdangerous-6c58e969",
+      "arm": "assisted",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "ordinary",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "assisted",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "jinja2-065334d1",
+      "arm": "ordinary",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "jinja2-065334d1",
+      "arm": "assisted",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "attrs-97f8d175",
+      "arm": "ordinary",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    },
+    {
+      "case": "attrs-97f8d175",
+      "arm": "assisted",
+      "state": "completed",
+      "scope": "preserved",
+      "added_files": 1,
+      "condition_qualified": true
+    }
+  ],
+  "regraded": true,
+  "grades_match": false,
+  "integrity": "unsigned internal consistency; no provenance authentication",
+  "elapsed_seconds": 1461.765,
+  "graded_sets": 12,
+  "current_grader_files": {
+    "eval/review_checkpoint.py": "1799f1ef7945ca2ea126316e1138b4a02d13dab45e7ce9e1769ee7d7db4037c0",
+    "eval/review_pilot.py": "c13d2e3c854f71fd2c053264064fab7e372934233fa7cae10e53116b9c9e1c7d",
+    "eval/review_archive.py": "54a24098f831a16bedacdcb7bf61a2e9215f363015f27632744cf341c01a75ef",
+    "core/process.py": "57b0c761cfb38e33d5ad4c224d17cbb6c281529bdc26e674c88533844563ab89",
+    "core/parsers.py": "691950d770a4e7deda1241b466e1895ab08ad089e0a7287308c05c532eecef19"
+  },
+  "records": [
+    {
+      "case": "itsdangerous-6c58e969",
+      "arm": "no-review",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 399,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0,
+          "elapsed_ms": 7509.638
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 399,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5133.265
+            }
+          },
+          {
+            "id": "F02",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 399,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4588.265
+            }
+          },
+          {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 98,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4835.69
+            }
+          },
+          {
+            "id": "F04",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 359,
+              "failed": 40,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4557.123
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 98,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4810.489
+            }
+          },
+          {
+            "id": "F06",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 98,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5585.259
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 306,
+              "failed": 93,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5728.848
+            }
+          },
+          {
+            "id": "F08",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 311,
+              "failed": 88,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5065.186
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 399,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4675.502
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "itsdangerous-6c58e969",
+      "arm": "ordinary",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 403,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0,
+          "elapsed_ms": 4746.169
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 403,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4432.72
+            }
+          },
+          {
+            "id": "F02",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 403,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 3960.761
+            }
+          },
+          {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 102,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5321.786
+            }
+          },
+          {
+            "id": "F04",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 360,
+              "failed": 43,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4613.077
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 102,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5203.072
+            }
+          },
+          {
+            "id": "F06",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 102,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 5432.075
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 308,
+              "failed": 95,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4822.932
+            }
+          },
+          {
+            "id": "F08",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 313,
+              "failed": 90,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4478.893
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 403,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 3899.38
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "itsdangerous-6c58e969",
+      "arm": "assisted",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 404,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0,
+          "elapsed_ms": 4101.627
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 404,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 3912.742
+            }
+          },
+          {
+            "id": "F02",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 404,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 3899.885
+            }
+          },
+          {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 103,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4679.083
+            }
+          },
+          {
+            "id": "F04",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 361,
+              "failed": 43,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4265.54
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 103,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4627.324
+            }
+          },
+          {
+            "id": "F06",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 301,
+              "failed": 103,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4646.802
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 309,
+              "failed": 95,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4593.846
+            }
+          },
+          {
+            "id": "F08",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 314,
+              "failed": 90,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 4524.299
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 404,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 3935.703
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "no-review",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 1459,
+          "failed": 0,
+          "skipped": 86,
+          "error": 0,
+          "elapsed_ms": 9177.37
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1459,
+              "failed": 0,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 8387.012
+            }
+          },
+          {
+            "id": "F02",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1459,
+              "failed": 0,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 8289.114
+            }
+          },
+          {
+            "id": "F03",
+            "state": "setup",
+            "execution": {
+              "state": "setup",
+              "exit_code": 1,
+              "passed": 359,
+              "failed": 51,
+              "skipped": 86,
+              "error": 1049,
+              "elapsed_ms": 32203.375
+            }
+          },
+          {
+            "id": "F04",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1459,
+              "failed": 0,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 8400.186
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 451,
+              "failed": 1008,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 39383.045
+            }
+          },
+          {
+            "id": "F06",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1459,
+              "failed": 0,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 8320.811
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1458,
+              "failed": 1,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 8350.254
+            }
+          },
+          {
+            "id": "F08",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1459,
+              "failed": 0,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 9965.813
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1459,
+              "failed": 0,
+              "skipped": 86,
+              "error": 0,
+              "elapsed_ms": 11291.633
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "ordinary",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 1461,
+          "failed": 0,
+          "skipped": 90,
+          "error": 0,
+          "elapsed_ms": 11857.203
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1461,
+              "failed": 0,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 11469.358
+            }
+          },
+          {
+            "id": "F02",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1461,
+              "failed": 0,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 10696.066
+            }
+          },
+          {
+            "id": "F03",
+            "state": "setup",
+            "execution": {
+              "state": "setup",
+              "exit_code": 1,
+              "passed": 360,
+              "failed": 52,
+              "skipped": 90,
+              "error": 1049,
+              "elapsed_ms": 45856.501
+            }
+          },
+          {
+            "id": "F04",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1461,
+              "failed": 0,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 11554.844
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 453,
+              "failed": 1008,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 58428.923
+            }
+          },
+          {
+            "id": "F06",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1461,
+              "failed": 0,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 11227.086
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1460,
+              "failed": 1,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 11856.311
+            }
+          },
+          {
+            "id": "F08",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1461,
+              "failed": 0,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 11769.591
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1461,
+              "failed": 0,
+              "skipped": 90,
+              "error": 0,
+              "elapsed_ms": 11799.501
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "assisted",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 1464,
+          "failed": 0,
+          "skipped": 87,
+          "error": 0,
+          "elapsed_ms": 11646.194
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1464,
+              "failed": 0,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 11709.003
+            }
+          },
+          {
+            "id": "F02",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1464,
+              "failed": 0,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 11512.393
+            }
+          },
+          {
+            "id": "F03",
+            "state": "setup",
+            "execution": {
+              "state": "setup",
+              "exit_code": 1,
+              "passed": 359,
+              "failed": 56,
+              "skipped": 87,
+              "error": 1049,
+              "elapsed_ms": 47216.952
+            }
+          },
+          {
+            "id": "F04",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1464,
+              "failed": 0,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 12035.864
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 451,
+              "failed": 1013,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 57628.146
+            }
+          },
+          {
+            "id": "F06",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1464,
+              "failed": 0,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 10740.783
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1463,
+              "failed": 1,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 11500.362
+            }
+          },
+          {
+            "id": "F08",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1464,
+              "failed": 0,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 11507.03
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1464,
+              "failed": 0,
+              "skipped": 87,
+              "error": 0,
+              "elapsed_ms": 12207.494
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "jinja2-065334d1",
+      "arm": "no-review",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 909,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0,
+          "elapsed_ms": 14876.319
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 906,
+              "failed": 3,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 15927.739
+            }
+          },
+          {
+            "id": "F02",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 906,
+              "failed": 3,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14907.991
+            }
+          },
+          {
+            "id": "F03",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 909,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14762.606
+            }
+          },
+          {
+            "id": "F04",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 909,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13486.709
+            }
+          },
+          {
+            "id": "F05",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 909,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 12481.626
+            }
+          },
+          {
+            "id": "F06",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 909,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 12772.404
+            }
+          },
+          {
+            "id": "F07",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 909,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 12866.152
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 909,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 12890.711
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "jinja2-065334d1",
+      "arm": "ordinary",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 918,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0,
+          "elapsed_ms": 13426.62
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 910,
+              "failed": 8,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14540.454
+            }
+          },
+          {
+            "id": "F02",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 910,
+              "failed": 8,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14171.191
+            }
+          },
+          {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 916,
+              "failed": 2,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13823.978
+            }
+          },
+          {
+            "id": "F04",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 915,
+              "failed": 3,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13604.639
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 916,
+              "failed": 2,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13580.91
+            }
+          },
+          {
+            "id": "F06",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 914,
+              "failed": 4,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13545.409
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 916,
+              "failed": 2,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13392.687
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 918,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14934.003
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "jinja2-065334d1",
+      "arm": "assisted",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 920,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0,
+          "elapsed_ms": 12840.515
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 912,
+              "failed": 8,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13705.122
+            }
+          },
+          {
+            "id": "F02",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 912,
+              "failed": 8,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14010.006
+            }
+          },
+          {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 919,
+              "failed": 1,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13553.03
+            }
+          },
+          {
+            "id": "F04",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 918,
+              "failed": 2,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13935.77
+            }
+          },
+          {
+            "id": "F05",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 919,
+              "failed": 1,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13706.064
+            }
+          },
+          {
+            "id": "F06",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 916,
+              "failed": 4,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13758.022
+            }
+          },
+          {
+            "id": "F07",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 919,
+              "failed": 1,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 13948.103
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 920,
+              "failed": 0,
+              "skipped": 0,
+              "error": 0,
+              "elapsed_ms": 14359.48
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "attrs-97f8d175",
+      "arm": "no-review",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 1388,
+          "failed": 0,
+          "skipped": 7,
+          "error": 0,
+          "elapsed_ms": 50336.586
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1387,
+              "failed": 1,
+              "skipped": 7,
+              "error": 0,
+              "elapsed_ms": 41966.035
+            }
+          },
+          {
+            "id": "F02",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1387,
+              "failed": 1,
+              "skipped": 7,
+              "error": 0,
+              "elapsed_ms": 26782.26
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1388,
+              "failed": 0,
+              "skipped": 7,
+              "error": 0,
+              "elapsed_ms": 17847.304
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "attrs-97f8d175",
+      "arm": "ordinary",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 1394,
+          "failed": 0,
+          "skipped": 7,
+          "error": 0,
+          "elapsed_ms": 19329.755
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1392,
+              "failed": 2,
+              "skipped": 7,
+              "error": 0,
+              "elapsed_ms": 19940.415
+            }
+          },
+          {
+            "id": "F02",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1392,
+              "failed": 2,
+              "skipped": 7,
+              "error": 0,
+              "elapsed_ms": 20189.258
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1394,
+              "failed": 0,
+              "skipped": 7,
+              "error": 0,
+              "elapsed_ms": 21051.035
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case": "attrs-97f8d175",
+      "arm": "assisted",
+      "grade": {
+        "baseline": {
+          "state": "passed",
+          "exit_code": 0,
+          "passed": 1394,
+          "failed": 0,
+          "skipped": 9,
+          "error": 0,
+          "elapsed_ms": 18985.021
+        },
+        "faults": [
+          {
+            "id": "F01",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1392,
+              "failed": 2,
+              "skipped": 9,
+              "error": 0,
+              "elapsed_ms": 20414.973
+            }
+          },
+          {
+            "id": "F02",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "exit_code": 1,
+              "passed": 1392,
+              "failed": 2,
+              "skipped": 9,
+              "error": 0,
+              "elapsed_ms": 18108.572
+            }
+          },
+          {
+            "id": "equivalent-format-control",
+            "state": "undetected",
+            "execution": {
+              "state": "passed",
+              "exit_code": 0,
+              "passed": 1394,
+              "failed": 0,
+              "skipped": 9,
+              "error": 0,
+              "elapsed_ms": 18449.036
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "date": "2026-10-03",
+  "schema_version": 1,
+  "corrections": [
+    {
+      "case": "click-ad39d749",
+      "arm": "no-review",
+      "faults": [
+        {
+          "id": "F03",
+          "historical": {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "passed": 359,
+              "failed": 51,
+              "skipped": 86,
+              "error": 0
+            }
+          },
+          "current": {
+            "id": "F03",
+            "state": "setup",
+            "execution": {
+              "state": "setup",
+              "passed": 359,
+              "failed": 51,
+              "skipped": 86,
+              "error": 1049
+            }
+          }
+        }
+      ]
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "ordinary",
+      "faults": [
+        {
+          "id": "F03",
+          "historical": {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "passed": 360,
+              "failed": 52,
+              "skipped": 90,
+              "error": 0
+            }
+          },
+          "current": {
+            "id": "F03",
+            "state": "setup",
+            "execution": {
+              "state": "setup",
+              "passed": 360,
+              "failed": 52,
+              "skipped": 90,
+              "error": 1049
+            }
+          }
+        }
+      ]
+    },
+    {
+      "case": "click-ad39d749",
+      "arm": "assisted",
+      "faults": [
+        {
+          "id": "F03",
+          "historical": {
+            "id": "F03",
+            "state": "detected",
+            "execution": {
+              "state": "failed",
+              "passed": 359,
+              "failed": 56,
+              "skipped": 87,
+              "error": 0
+            }
+          },
+          "current": {
+            "id": "F03",
+            "state": "setup",
+            "execution": {
+              "state": "setup",
+              "passed": 359,
+              "failed": 56,
+              "skipped": 87,
+              "error": 1049
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "matching_grade_sets": 9,
+  "reproduction_complete": true,
+  "qualification": "Mixed test failures and setup errors are not credited as complete detection. Original grades are preserved separately."
+}

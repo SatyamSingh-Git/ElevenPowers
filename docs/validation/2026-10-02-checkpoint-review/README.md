@@ -5,12 +5,12 @@ and one ElevenPowers-assisted review per case. Only new test files were allowed.
 Every starting source, existing test and configuration input stayed fixed.
 The [dated record](../2026-10-02-checkpoint-review.md) explains the outcome and limits.
 
-The raw detection counts are:
+The corrected 2026-10-03 reproduction detection counts are:
 
 | Checkpoint | Untouched | Ordinary review | Assisted review |
 |---|---:|---:|---:|
 | ItsDangerous | 6/8 | 6/8 | 6/8 |
-| Click | 3/8 | 3/8 | 3/8 |
+| Click | 2/8 + 1 setup | 2/8 + 1 setup | 2/8 + 1 setup |
 | Jinja2 | 2/7 | 7/7 | 7/7 |
 | attrs | 2/2 | 2/2 | 2/2 |
 
@@ -20,6 +20,16 @@ four selected pairs. Click's two dual-rater meaningful survivors involve FD
 capture that is unsupported on Windows; they are not an exercised Windows gain
 endpoint. Other unlabeled/disputed faults are exploratory. All twelve ordinary
 suites pass, and all twelve formatting controls remain accepted.
+
+All twelve grade sets were reproduced locally on 2026-10-03 in 1,461.765 seconds,
+without new model calls. Nine match the historical states/counts exactly.
+Click F03 produces actual failures together with 1,049 setup errors in all
+three arms. The corrected evaluator retains `setup`, rather than crediting a
+complete detection. The original 3/8 counts remain in the frozen case/review
+JSON; [reproduction-2026-10-03.json](reproduction-2026-10-03.json) contains all
+twelve current grades, grader hashes and the three explicit corrections.
+This changes neither Jinja2's five-fault improvement in both arms nor the four
+ties. `grades_match: false` is the expected comparison with historical grades.
 
 `case-*.json` contains pinned upstream changes, complete frozen fault content,
 prior labels where available and untouched grades. `reviews-*.json` contains
@@ -34,8 +44,8 @@ and captured outputs are omitted.
 at commit `87c882d`. Current grading fixes are deliberately separate, so ordinary
 inspection reports `current_harness: false`. That is an identity difference,
 not permission to relabel the original producer. Regrading uses the corrected
-current evaluator. `reproduction.json`, when present, records its hashes and
-actual reproduction outcome. Hashes are unsigned internal consistency checks,
+current evaluator. The separately versioned reproduction records its hashes and
+actual outcome. Hashes are unsigned internal consistency checks,
 not authentication of the native run or authorship.
 
 Inspect without tests or model calls:

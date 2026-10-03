@@ -13,7 +13,7 @@ added one file each.
 | Case | Untouched detections | Ordinary review | Assisted review | Incremental assisted gain |
 |---|---:|---:|---:|---:|
 | ItsDangerous `6c58e969` | 6/8 | 6/8 | 6/8 | 0 |
-| Click `ad39d749` | 3/8 | 3/8 | 3/8 | 0 |
+| Click `ad39d749` | 2/8 + 1 setup | 2/8 + 1 setup | 2/8 + 1 setup | 0 |
 | Jinja2 `065334d1` | 2/7 | 7/7 | 7/7 | 0 |
 | attrs `97f8d175` | 2/2 | 2/2 | 2/2 | 0 |
 
@@ -70,8 +70,9 @@ concerned earlier functions insufficiently tested by the focused security module
 attrs' survivor lead concerned `attrib`, outside the changed ClassVar helper.
 This demonstrates a relevance limitation in whole-file bounded sampling. A
 focused command's survivor may also be covered elsewhere by the ordinary suite.
-Next: prioritize changed functions/hunks and qualify command coverage for any
-project before buying another comparison.
+The generalized changed-function/hunk selection delivery now addresses this
+sampling limitation. Its new evidence must be read separately from this pilot;
+the original whole-file observations remain unchanged.
 
 ## Reproduction, inspection and corrections
 
@@ -100,11 +101,18 @@ rendered all four tabs with **106 nodes and 243 edges**. Full local regression
 was not rerun for this delivery; the preceding hosted full matrix and focused
 local regressions are the actual verification evidence.
 
-A separate full regrade under the corrected evaluator was started, then stopped
-at the user's request to conclude. **Fresh reproduction of all twelve saved
-grade sets remains unfinished.** Original grades are not relabeled as current
-reproduction. Inspection correctly reports `current_harness: false`; original
-producer files and explicit model-free regrading commands remain available.
+A separate full regrade under the corrected evaluator finished on 2026-10-03
+after resumption: **all twelve saved grade sets completed in 1,461.765 seconds**.
+Nine match historical states/counts exactly. Click F03 changes in all three
+arms from credited detection to `setup`: the runs have actual test failures
+together with 1,049 setup errors. The corrected table above retains that
+incomplete state. Original case/review grades still contain the historical
+3/8; the [separate reproduction](2026-10-02-checkpoint-review/reproduction-2026-10-03.json)
+contains all current grades, grader hashes and explicit differences. All twelve
+baselines and equivalent controls still pass. `grades_match: false` is expected
+against those historical grades; `current_harness: false` identifies the
+original producer difference. Jinja2's five-fault improvement for both arms,
+and the absence of incremental assisted benefit, remain unchanged.
 
 Independent inspection of all eight visible native traces found exact models,
 matching seals and recaptured additions, with no observed forbidden retrieval
@@ -118,6 +126,6 @@ metadata entries remained. No external MCP servers were present. Native Bash
 and the interpreter's inherited system packages do not provide an OS exposure
 boundary or hermetic environment. This explicit analysis consumer does not
 establish automatic installed feedback, production repair, execution performance
-or broad product efficacy. Further feature work and model experiments stopped
-at the user's request. See [journey 57](../../journey/57-a-review-needs-a-relevant-lead.md)
+or broad product efficacy. The resumed session completed free reproduction;
+it launched no additional model experiments. See [journey 57](../../journey/57-a-review-needs-a-relevant-lead.md)
 and [provenance](../research/checkpoint-review.md).
