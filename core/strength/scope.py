@@ -1,5 +1,6 @@
 """Changed production files, qualified by the repository's existing scanner."""
 from dataclasses import dataclass, field
+import hashlib
 from pathlib import Path
 import re
 import subprocess
@@ -16,6 +17,9 @@ class Scope:
     paths: list[str] = field(default_factory=list)
     issues: list[str] = field(default_factory=list)
     fingerprint: str = ''
+    regions: dict[str, list[list[int]]] = field(default_factory=dict)
+    deletions: dict[str, list[int]] = field(default_factory=dict)
+    source_hashes: dict[str, str] = field(default_factory=dict)
 
 
 def git(root, args, deadline):
@@ -42,6 +46,7 @@ def select(root, base, deadline, *, opened_dirty=()):
         scan, value.fingerprint = source_snapshot(root, fresh=True, deadline=deadline)
         value.issues.extend(scan.issues)
         candidates = set((changed + untracked).split('\0')) - {''}
+        untracked_paths = set(untracked.split('\0'))
         allowed = set(scan.files)
         for path in sorted(candidates):
             relative(path)
@@ -50,6 +55,31 @@ def select(root, base, deadline, *, opened_dirty=()):
             if path in opened_dirty:
                 value.issues.append('changed source was already dirty when the task opened: ' + path)
             value.paths.append(path)
+            source = (root / path).read_bytes()
+            if len(source) > 1024 * 1024:
+                raise ValueError('mutation source exceeds producer size limit: ' + path)
+            value.source_hashes[path] = hashlib.sha256(source).hexdigest()
+            count = len(source.splitlines())
+            hunks = []
+            anchors = []
+            if path in untracked_paths:
+                hunks = [[1, count]] if count else []
+            else:
+                diff = git(root, ['diff', '--no-ext-diff', '--no-textconv', '--no-renames',
+                                  '--color=never', '-U0', base, '--', path], deadline)
+                for match in re.finditer(r'^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@', diff, re.M):
+                    start, length = int(match[1]), int(match[2] or 1)
+                    if length:
+                        if start < 1 or start + length - 1 > count:
+                            raise ValueError('changed lines no longer match source: ' + path)
+                        hunks.append([start, start + length - 1])
+                    else:
+                        anchors.append(max(1, min(start, count)))
+            if sum(map(len, value.regions.values())) + sum(map(len, value.deletions.values())) + len(hunks) + len(anchors) > 2048:
+                raise ValueError('changed-region limit exceeded')
+            value.regions[path] = hunks
+            if anchors:
+                value.deletions[path] = sorted(set(anchors))
     except (OSError, ValueError, UnicodeError, subprocess.SubprocessError, TimeoutError) as exc:
         value.issues.append(str(exc))
     return value
