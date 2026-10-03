@@ -193,3 +193,13 @@ more useful record.
 | D132 | Preserve interrupted slots and continue only never-started work | Replacing an adverse attempt biases the outcome and exceeds the eight-slot approval | One-shot explicit recovery, original journal and producer retained; eight total attempts, one interrupted |
 | D133 | Audit discovered grader gaps separately from frozen scores | Post-run visible-test and shutdown probes cannot silently become the original oracle | Versioned audit; interrupted cache timeout/leak retained, all seven completed finals pass visible tests |
 | D134 | Compare timing only within complete matched pairs | Missing a long treatment slot would bias an unmatched arm median | Three paired samples, mixed direction; no established speedup or population effect |
+
+## Changed-region evidence — 2026-10-03
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D135 | A lead must have a measured relationship to the edit | Whole-file producer order missed the changed functions in Jinja2 and attrs | Generalized Git hunks/function partitions, complete-span containment and file/function turns shipped |
+| D136 | Allocate mixed-language budgets by selected file counts | Equal language shares starved a fourth file despite a sufficient four-attempt budget | Real uneven-project regression observed RED→GREEN |
+| D137 | Removal qualifies coverage without suppressing available analysis | Current source cannot contain removed behavior, but neighboring edited source can still be examined | Nonfatal removal limitations retain useful observations and an incomplete final state |
+| D138 | Preserve historical grades beside separately versioned reproduction | Mixed failures/setup errors cannot be credited as complete detection under the corrected evaluator | Twelve regrades completed; three Click F03 corrections explicit, nine exact matches |
+| D139 | Analysis relevance is separate from coding benefit | A sample reaching the correct function does not show improved submitted code or tests over ordinary review | Real relevance gains measured; held-out equal-budget behavioral benefit exit remains open |

@@ -54,9 +54,12 @@ It shares the same ledger across all five hosts and reads current input content
 without rerunning checks. See [commands](commands.md#ep_report--evidence-to-share-with-a-reviewer)
 for coverage, privacy, deadline and exit-status details.
 
-Reports also show optional changed-file test strength: engine-generated changes
+Reports also show optional changed-region test strength: engine-generated changes
 detected or missed by passing tests. After explicit engine setup, completion
-considers the bounded shared runner automatically. Use `ep_strength.py --root PATH`
+considers the bounded shared runner automatically. Git hunks/functions, complete
+source spans, file/function rotation and measured-command qualifications relate
+the sample to the edit. Deleted behavior and exhausted budgets stay incomplete;
+legacy whole-file records remain readable. Use `ep_strength.py --root PATH`
 for an explicit run and [configuration](configuration.md) for focused commands and
 limits. Findings are qualified human observations and do not change the verdict.
 

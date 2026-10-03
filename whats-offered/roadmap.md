@@ -1,16 +1,17 @@
 # Roadmap
 
-**Product delivery update, 2026-10-02.** Generalized five-host integration,
-repository evidence, durable verification, portable reports, changed-file test
-strength and fresh health are built. Runtime/version qualification, dated native
-matrices, bounded latency sampling and the frozen subscription comparison now
-ship. Their acceptance remains partial: the matrix is 0/10 and the original
-eight-run comparison is inconclusive. Close native activation/trust and rerun
-a newly identified comparison after subscription capacity is available. This
-is the next important delivery work; new feature breadth would not resolve
-these evidence gaps. See [status](../docs/status.md),
-[observations](../docs/validation/2026-10-02-native-validation.md) and
-[journey 54](../journey/54-a-comparison-needs-a-working-host.md).
+**Product delivery update, 2026-10-03.** Generalized five-host integration,
+repository evidence, durable verification, portable reports, changed-region test
+strength and fresh health are built. The relevance milestone now partitions Git
+hunks/functions, contains mutation spans, balances files/languages and qualifies
+the analyzed command. Free upstream controls reach edited Jinja2/attrs functions;
+all twelve corrected review regrades are complete. Both review arms still improve
+Jinja2 equally, with four ties and no added coding benefit. Next use held-out
+active behavioral gaps, equally funded ordinary review and independent controls.
+New model sessions require a separately approved comparison. Installed native
+acceptance remains 0/10 and separate from launcher controls. See
+[status](../docs/status.md), [current evidence](../docs/validation/2026-10-03-strength-regions.md)
+and [journey 58](../journey/58-the-lead-must-belong-to-the-edit.md).
 The research phases below remain separate from product delivery.
 
 [← What's Offered](README.md)

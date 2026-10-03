@@ -106,6 +106,21 @@ An independent reviewer reproduced four important boundary/coverage findings and
 the multiline report issue; all were corrected. Its final nine focused controls
 passed and it found no remaining critical or important issue.
 
-The stable-code full regression result, rendered architecture checks and hosted
-matrix are recorded at the final publication boundary below. Installed-host
+Final stable-code local verification at runtime/test head `380bbc2`:
+
+- Full regression: **1,360 passed, 28 skipped in 748.69 seconds**.
+- Audit probes: **104 passed in 106.15 seconds**.
+- `python -m eval.validate`: all four grader controls correct.
+- `ep_doctor.py --host`: launcher pass/fail capture, wiring, ledger and report/
+  blocking controls pass. This remains replay, not installed-session acceptance.
+- `python architecture/check.py --render`: **107 nodes, 246 edges, seven planes**;
+  mirror regenerated and all four tabs draw.
+- Changed Markdown's local links were checked; none are missing.
+
+The full hosted Ubuntu/Windows Python 3.11/3.13 matrix **passed all four jobs**
+against the same runtime/test head in
+[run 37126693799](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/37126693799).
+The closing publication changes documentation only; runtime, tests and rendered
+architecture retain that verified identity. Twenty descriptive incremental
+commits preserve separate review fixes and corrected evidence. Installed-host
 acceptance and measured coding benefit remain separate open exits.

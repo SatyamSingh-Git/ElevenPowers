@@ -27,6 +27,7 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 | **Flaky-bug tooling** | shipped — a repeat runner with a derived run count. Nothing else in the field has one | instrumentation helpers and a hypothesis ledger |
 | **Self-diagnosis** | startup health is automatic; `ep-doctor --host` provides a deeper launcher check | continuous, as the host changes |
 | **Reproducible measurement** | shipped — pinned corpus, pinned model, a score with an interval, run bundles that can be re-graded | the instrument is built; now it has to be pointed at the actual hypothesis |
+| **Changed-region test strength** | shipped — optional real engines, Git hunks/functions, contained spans, file-weighted samples and measured-command reports | held-out behavioral improvement beyond ordinary review; [actual relevance evidence](../docs/validation/2026-10-03-strength-regions.md) |
 | **Candidate generation** | not built | Phase C–D: pools of candidate patches, selection without peeking at hidden outcomes |
 | **Does any of this make agents better?** | **unanswered** | Phase C–D. This is the question, and it is still open |
 

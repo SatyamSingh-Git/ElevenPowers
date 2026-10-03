@@ -1,6 +1,16 @@
 # Features
 
-Current behavior reviewed 2026-10-01. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+Current behavior reviewed 2026-10-03. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+
+Optional changed-region test strength relates installed engine positions to Git
+hunks and enclosing functions. Broad/new-file changes are partitioned, complete
+mutation spans stay inside selected targets, and file/function turns share
+bounded budgets across languages. Removed behavior remains incomplete while
+current source can still be examined. Human reports retain full ranges/context
+and qualify the command that actually ran; legacy samples stay readable. Real
+upstream controls now reach edited Jinja2/attrs functions missed by whole-file
+sampling. This is improved analysis relevance, not a measured coding-quality
+advantage. See [validation](../docs/validation/2026-10-03-strength-regions.md).
 
 Fresh staged project health now connects native configuration, startup, edits,
 command capture, aggregate declared verification and completion to one fresh

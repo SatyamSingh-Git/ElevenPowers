@@ -865,3 +865,31 @@ the unfinished cache code timed out in visible tests and failed a supplemental
 closure probe. Bigger synthetic tasks still did not demonstrate a coding gain.
 See [journey 56](56-harder-problems-still-need-evidence.md) and
 [dated evidence](../docs/validation/2026-10-02-hard-task-comparison.md).
+
+## 2026-10-03: the sample and the edit were different things
+
+The bounded whole-file producer supplied Jinja2 leads from earlier functions and
+attrs leads from `attrib`, while the actual edits changed `do_attr` and
+`_is_class_var`. Focusing the test command did not fix source selection. The
+runtime now relates actual engine spans to Git hunks and enclosing functions.
+
+Review then reproduced four boundary/coverage mistakes: a new file's broad hunk
+hid its separate functions; overlap admitted an outer JavaScript mutation for
+an inner-only edit; language order/equal shares starved available files; and
+removed files disappeared or suppressed all available current-source analysis.
+Failing real-engine/project controls preceded the fixes. Full spans are now
+contained, broad hunks partitioned, shares weighted and removal qualifications
+nonfatal to available source. Markdown also retains the end of each source span.
+
+A real read-guard probe exposed restoration bytes shadowing the original-project
+path during mutation attempts. The baseline was properly guarded but attempts
+were not. Both legitimate private reads and forbidden original reads now have
+observed RED→GREEN controls. Historical observations retain that qualification.
+
+The completed corrected regrade found Click F03 had been credited despite actual
+failures accompanied by 1,049 setup errors. All three arms now retain setup,
+beside frozen originals. Jinja2's equal review improvement and the four ties hold.
+The first final full run also exposed two old language fixtures deleting an
+unrelated Python seed before expecting complete coverage. They now start with
+their own language; separate deletion controls keep the conservative behavior.
+See [journey 58](58-the-lead-must-belong-to-the-edit.md).
