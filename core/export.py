@@ -196,13 +196,23 @@ def markdown(value):
         lines.append(f"Baseline: {_text(strength['baseline'])}; attempts: {_text(strength.get('attempts', 0))}.")
     if strength.get('command'):
         lines.append('Analyzed command: ' + _text(strength['command']))
+    if strength.get('command_coverage',{}).get('scope')=='recorded_command_only':
+        lines.append('Only the analyzed command was observed; other test commands may detect these changes.')
+    selection=strength.get('selection',{})
+    if selection.get('strategy')=='changed_functions_and_hunks':
+        lines.append('Sampling targets changed lines and their enclosing functions; it is not exhaustive coverage.')
+    elif selection.get('strategy')=='legacy_whole_files':
+        lines.append('Legacy sampling covers whole changed files without attribution to edited functions.')
     if strength.get('summary'):
         lines.append(', '.join(f'{_text(key)}: {_text(count)}' for key, count in strength['summary'].items()))
     lines += ['- ' + _text(issue) for issue in strength.get('issues', [])]
     if strength.get('observations'):
-        lines += ['', '| Changed source | Line | Mutation operator | Observation |', '|---|---|---|---|']
+        lines += ['', '| Changed source | Line | Mutation operator | Observation | Relation to edit | Context |', '|---|---|---|---|---|---|']
         for observation in strength['observations']:
-            lines.append('| ' + ' | '.join(_text(observation[key]) for key in ('path', 'line', 'operator', 'status')) + ' |')
+            relation={'changed_lines':'changed lines','changed_function':'enclosing changed function',
+                      'deletion_context':'deletion context','legacy_whole_file':'legacy whole-file sample'}.get(observation.get('relevance'),'unqualified')
+            cells=[observation[key] for key in ('path','line','operator','status')]+[relation,observation.get('context','') or '—']
+            lines.append('| ' + ' | '.join(_text(cell) for cell in cells) + ' |')
     lines += ['- ' + _text(limit) for limit in strength.get('limitations', [])]
     lines += ['', '## Changed targets', '']
     lines += ['- ' + _text(path) for path in task['touched']] or ['No edited targets recorded.']

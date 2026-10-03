@@ -12,10 +12,13 @@ def view(root, task, config, source_fingerprint, deadline):
         return {'state': 'not_recorded', 'freshness': 'unknown', 'issues': [],
                 'observations': [], 'summary': {}, 'limitations': []}
     keys = ('state', 'baseline', 'attempts', 'recorded_at', 'paths', 'engine_versions',
-            'observations', 'summary', 'command', 'limitations')
+            'observations', 'summary', 'command', 'limitations', 'selection', 'command_coverage')
     value = {key: saved[key] for key in keys if key in saved}
     value['issues'] = list(saved.get('issues', []))
     value['freshness'] = 'unknown'
+    if saved.get('schema_version')==1:
+        value['selection']={'strategy':'legacy_whole_files'}
+        value['issues'].append('legacy whole-file sample has no changed-function attribution')
     if saved.get('state') == 'running':
         value['issues'].append('execution is running or was interrupted before a final observation')
     if not saved.get('fingerprint'):
