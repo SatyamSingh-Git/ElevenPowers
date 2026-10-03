@@ -61,7 +61,7 @@ do not establish an installed-session result. Current freshness is checked; the
 earlier manual stale-view step is not independently attested. Local acceptance
 does not certify a production patch or other host versions.
 
-## ep_strength — inspect changed-file test strength
+## ep_strength — inspect changed-code test strength
 
 ```bash
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_strength.py --root .
@@ -75,6 +75,11 @@ edits in that comparison. `--command` selects a focused command. `--seconds` and
 metadata. Exit 0 means complete, disabled or not applicable; exit 2 means incomplete,
 unavailable, deferred or invalid setup. Undetected mutations alone do not fail it.
 Caps can leave valid observations with incomplete coverage, so read the issues.
+Selection automatically records changed hunks and enclosing functions, partitions
+new/multi-function hunks and rotates bounded attempts across files/functions.
+Deleted behavior remains an explicit coverage gap. The selected root must be the
+Git repository root; unsupported attribution or a moving source snapshot stays
+incomplete. No extra relevance flag or project-specific setup is required.
 
 The command writes diagnostic state and never edits original source or installs
 packages. It requires positive passing test counts in the private baseline, then
@@ -82,7 +87,12 @@ runs every mutation from clean inputs. Automatic completion considers this same
 runner. Human `ep_report.py --project PATH` reads saved results without executing
 engines or tests. Its additive schema-v1 `test_strength` section contains counts,
 operator/path/line metadata, independent freshness, sampling limits and incomplete
-execution. Undetected changes are possible test gaps, including equivalent behavior,
+execution. New saved records are schema 2, with source spans, edit relationship,
+context, selection and recorded-command-only coverage; the portable report's
+outer schema remains version 1. Legacy strength records remain explicitly
+whole-file samples. Markdown shows complete line ranges. Only the command that
+ran is observed; another test command may detect an undetected mutation.
+Undetected changes are possible test gaps, including equivalent behavior,
 not correctness verdicts. Individual targets never enter automatic agent feedback.
 
 Native-host installation helpers are Python entry points from the ElevenPowers

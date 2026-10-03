@@ -19,9 +19,12 @@ The implementation borrows these existing pieces:
   licenses for frozen source fault fixtures.
 - `core.strength` supplies shipping Cosmic Ray 8.7.0 observations, clean private
   trials, budgets and incomplete states. Cosmic Ray is MIT-licensed. Its sample
-  covers whole changed files in producer order; a small sample may miss the
-  edited function. A focused command can also leave unrelated file behavior
-  untested. Neither situation supplies a confirmed defect automatically.
+  covered whole changed files in producer order for the frozen pilot; a small
+  sample missed edited functions. The generalized 2026-10-03 runtime now selects
+  changed hunks/functions and qualifies the measured command. Historical pilot
+  observations remain unchanged. A focused command can still leave behavior
+  tested by other commands unexamined. Neither situation supplies a confirmed
+  defect automatically.
 - B7's historical research fault sample supplies a separate fixed grading set.
   The prior blind Sonnet/Opus classifications qualify meaningfulness where they
   agree; they are model judgments, not infallible human ground truth. Unlabeled,

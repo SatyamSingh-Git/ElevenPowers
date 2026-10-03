@@ -1,6 +1,6 @@
 # Configuration
 
-Optional changed-file test strength is shared by every host and considered at
+Optional changed-region test strength is shared by every host and considered at
 completion in guide/strict mode. Off stays passive; runtime never installs engines.
 Project-owned `.elevenpowers/config.json` can include:
 
@@ -31,12 +31,36 @@ Explicit paths can be machine-specific. `dependencies` lists additional required
 ignored inputs as relative paths. Conventional `node_modules` is copied when
 present, under the same limits. Linked/nested trees and missing inputs are explicit.
 
-`.elevenpowers/strength.json` saves bounded schema-v1 task metadata, never mutant
+No new setting is needed for relevance selection. Strength requires a recorded
+full base commit and the selected Git repository root. It compares current source
+with that base, records new-line hunks, and targets enclosing Python or
+JavaScript/TypeScript functions. Broad/new-file hunks are partitioned by function;
+module changes stay within their own changed lines. Every selected mutation's
+complete line span must fit its target. Small budgets rotate across files and
+functions; mixed-language shares follow selected file counts. A budget too small
+to cover every eligible target remains explicitly incomplete.
+
+Deleted-line anchors describe current context, not tested removed behavior.
+Wholly removed production files also remain unexamined. Those qualifications make
+the result incomplete while available current source can still be analyzed.
+Selected source that changes before its private snapshot prevents testing with
+stale hunk attribution. The producer source limit is 1 MiB per file, changed
+ranges/context are bounded, and parse/producer failures do not fall back to
+unrelated whole-file mutation.
+
+Only the analyzed command is measured. Choosing a focused command does not
+establish a whole-suite gap: other commands may detect its survivors. Reports
+retain the command, relation to edited lines/functions, context and line range.
+Same-line functions cannot be distinguished by this line-based attribution.
+
+`.elevenpowers/strength.json` saves bounded schema-v2 task metadata, never mutant
 replacements or test output. Every test starts from fresh inputs. Known editable
 Python paths into original source are refused; path/startup overrides that disable
 the diagnostic are unsupported. Completed samples can be reused only for matching
 tests, assets, environment, command, settings, engine versions and runtime code.
 Interrupted and timed-out execution is not reused as a completed sample.
+Historical schema-v1 records remain readable as legacy whole-file samples;
+reading them invents no new attribution and rewrites no state.
 
 Repository configuration under `.elevenpowers/` is shared by all five host
 integrations. The four additional hosts use separate native subscription files;
