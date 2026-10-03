@@ -12,7 +12,8 @@ def run_candidate(candidate, copied, command, budget, seconds, *, original=None)
     try:
         budget.attempt()
     except TimeoutError:
-        return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, status)
+        return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, status,
+                           candidate.end_line, candidate.relevance, candidate.context)
     target = safe_file(copied, candidate.path)
     source_bytes = target.read_bytes()
     try:
@@ -22,7 +23,8 @@ def run_candidate(candidate, copied, command, budget, seconds, *, original=None)
             try:
                 compile(candidate.content, candidate.path, 'exec')
             except (SyntaxError, ValueError):
-                return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, 'invalid')
+                return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, 'invalid',
+                                   candidate.end_line, candidate.relevance, candidate.context)
         target.write_bytes(candidate.content.encode(encoding))
         execution = execute(command, copied, budget, seconds, original=original)
         if execution.status != 'complete':
@@ -43,4 +45,5 @@ def run_candidate(candidate, copied, command, budget, seconds, *, original=None)
         # Source restoration is private. A failure propagates so no later mutation
         # can accidentally run on a prior mutation's source.
         target.write_bytes(source_bytes)
-    return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, status)
+    return Observation(candidate.id, candidate.path, candidate.line, candidate.operator, status,
+                       candidate.end_line, candidate.relevance, candidate.context)
