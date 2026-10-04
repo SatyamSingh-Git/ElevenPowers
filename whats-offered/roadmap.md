@@ -7,6 +7,16 @@ plan, current status and postponed list. Open milestones, planned research,
 conditional work and proposed directions have separate labels. Each card
 includes acceptance criteria, a small first contribution and source links.
 
+**ImpactGraph delivery, 2026-10-04.** The shared local graph foundation is built
+inside ElevenPowers and works through an explicit CLI/API in any supported
+project. It preserves provenance, freshness and gaps and explains consumer/test
+paths. The contributor card now tracks its remaining acceptance: larger-project
+relevance, false leads and overhead, precise TS/framework adapters, actual
+coverage/OpenTelemetry conversion and qualified automatic integration. PatchProof,
+OpenCodeMap and TestMiner can reuse this foundation; their own proposals remain
+unimplemented. See [ImpactGraph](../the-guide/impactgraph.md) and
+[delivery evidence](../docs/validation/2026-10-04-impact-graph.md).
+
 **Product delivery update, 2026-10-03.** Generalized five-host integration,
 repository evidence, durable verification, portable reports, changed-region test
 strength and fresh health are built. The relevance milestone now partitions Git

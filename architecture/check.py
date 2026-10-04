@@ -47,8 +47,8 @@ def uncovered(g: dict) -> list[str]:
     covered = {f.replace("\\", "/").rstrip("/") for n in g["nodes"] for f in n["files"]}
     out = []
     for folder in ("core", "eval", "plugin/bin"):
-        for path in sorted((HERE.parent / folder).glob("*.py")):
-            rel = f"{folder}/{path.name}"
+        for path in sorted((HERE.parent / folder).rglob("*.py")):
+            rel = path.relative_to(HERE.parent).as_posix()
             if path.name == "__init__.py":
                 continue
             if not any(rel == c or rel in c for c in covered):

@@ -1,11 +1,23 @@
 # Master Plan v0.8
 
+**ImpactGraph foundation, 2026-10-04.** The user authorized the shared graph
+milestone. Its first delivery now provides fresh typed source/contract/observed
+relationships, explained reverse paths, candidate tests and a standalone CLI/API.
+The independent API/worker fixture distinguishes a seeded boundary regression
+from equivalent behavior. This closes the foundation implementation, not the
+larger-project relevance or coding-benefit exit. Next qualify consumer/test
+recall, false leads and overhead, then add precise framework/type/trace adapters
+with independent controls before automatic hook integration. See the
+[design](docs/design/impact-graph.md),
+[delivery plan](docs/superpowers/plans/2026-10-04-impact-graph.md), and
+[validation](docs/validation/2026-10-04-impact-graph.md).
+
 **Contributor roadmap, 2026-10-04.** The architecture page now has a
 [Planned view](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
 with forty-one expandable cards for remaining delivery exits, research, conditional
 extensions and proposals. Each supplies requirements, acceptance criteria,
-a small first contribution and source links. Seven proposals include the shared
-ImpactGraph/PatchProof/OpenCodeMap/TestMiner direction, milestone verification,
+a small first contribution and source links. Six remaining proposals include the shared
+PatchProof/OpenCodeMap/TestMiner direction, milestone verification,
 CI evidence import and contributor exercises. Recording a proposal does not
 approve its implementation or change the conditional triggers below. The
 existing benefit and installed-acceptance exits remain open.

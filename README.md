@@ -435,6 +435,28 @@ refuse overwrite unless `--force` is supplied. See
 [journey 51](journey/51-receipts-another-person-can-read.md), and
 [report validation](docs/validation/2026-10-01-portable-report.md).
 
+### Explained change impact
+
+ImpactGraph builds a fresh local graph and explains which consumers and tests
+may be affected by a file change. Python AST imports and conservative imported
+calls, optional JS/TS imports, project-declared contracts and current qualified
+observations each retain their provenance. Git co-change stays a separate hint.
+
+```bash
+python plugin/bin/ep_impact.py --project PATH src/session.py
+```
+
+Queries work without an AI agent, run no project tests and write no project
+state. Candidate tests include the path behind the recommendation; ambiguity,
+unsupported adapters, stale observations and exhausted budgets remain visible.
+The first independent API/worker fixture selected four passing checks, rejected
+a seeded boundary fault with two failures, and accepted equivalent behavior.
+Larger-project relevance, native trace converters and automatic hook integration
+remain open; this fixture does not establish a coding-quality gain. See the
+[ImpactGraph guide](the-guide/impactgraph.md),
+[journey 60](journey/60-an-impact-path-needs-a-reason.md), and
+[delivery validation](docs/validation/2026-10-04-impact-graph.md).
+
 ### Optional test strength
 
 **Changed-region test strength** asks whether passing tests notice small changes to
@@ -556,7 +578,7 @@ resumed delivery launched no extra model sessions.
 Task size is not a criterion; an observable coding or verification improvement
 through any engaged mechanism can count.
 
-Research prototype; status reviewed 2026-10-03. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-04. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
 after three independent-review fixes. Real Python/JavaScript/TypeScript fixture
@@ -680,7 +702,7 @@ And yes — this was built with coding agents, mostly Claude and Codex. A projec
 | [`competitor-map.md`](docs/research/competitor-map.md) | ten systems × thirteen architectural axes, on one screen |
 | [`docs/status.md`](docs/status.md) | current delivery state, evidence limits and next integration milestone |
 | [`docs/postponed.md`](docs/postponed.md) | what is not built, and the trigger that would start it |
-| [`architecture/`](architecture/) | the living graph — 107 nodes, 246 edges, five views and 41 expandable contributor cards; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
+| [`architecture/`](architecture/) | the living graph — 112 nodes, 258 edges, five views and 41 expandable contributor cards; [open it live](https://satyamsingh-git.github.io/ElevenPowers/architecture/) |
 | [`the-guide/`](the-guide/) | install, commands, configuration, troubleshooting — the practical manual |
 | [`whats-offered/`](whats-offered/) | features as they stand, the five-phase roadmap, and an honest comparison |
 

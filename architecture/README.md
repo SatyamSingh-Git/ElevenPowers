@@ -53,11 +53,11 @@ The statuses are substantive:
 - **Open milestone** finishes a delivered capability's unmet exit.
 - **Planned research** represents remaining master-plan experiments.
 - **Conditional** waits for the documented measurement trigger.
-- **Proposed** records a direction for design discussion, including ImpactGraph,
+- **Proposed** records a direction for design discussion, including
   PatchProof, OpenCodeMap, TestMiner and three additional contribution ideas.
 
-The current 41 cards comprise 3 open milestones, 17 planned research items,
-14 conditional extensions and 7 proposals. This view consolidates the remaining
+The current 41 cards comprise 4 open milestones, 17 planned research items,
+14 conditional extensions and 6 proposals. This view consolidates the remaining
 work in `PLAN.md`, `docs/status.md`, `docs/postponed.md` and the readable roadmap.
 Completed deliveries are context inside cards, not presented as future work.
 The view does not approve model runs or supersede research/defer conditions.
@@ -74,7 +74,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **107 nodes / 246 edges** across 7 planes (as of 2026-10-04),
+Current size: **112 nodes / 258 edges** across 7 planes (as of 2026-10-04),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -83,7 +83,12 @@ the controlled completion comparison and neutral proposal recorder,
 including runtime-bound validation, readonly performance and a frozen subscription pilot,
 fresh staged health, bounded native diagnostics, disposable acceptance,
 onboarding, native edits, portable reports and optional changed-file test strength.
-The fifth tab adds contributor content, not fictitious runtime graph nodes.
+The fifth tab adds contributor content. ImpactGraph now has real runtime source
+nodes, an explicit CLI query workflow and an open acceptance card. Static paths,
+declared contracts, current unsigned observations and historical associations
+retain separate qualifications. Larger-project precision, native trace converters
+and automatic hook integration remain open; see
+[ImpactGraph validation](../docs/validation/2026-10-04-impact-graph.md).
 
 The **Workflow** tab's third lane now identifies built v0.8 mechanisms and their
 limits. Mutation findings are optional human review observations; missing engines,

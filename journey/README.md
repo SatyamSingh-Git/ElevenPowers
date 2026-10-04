@@ -10,7 +10,10 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [59 — a roadmap contributors can open](59-a-roadmap-contributors-can-open.md)
+Latest: [60 — an impact path needs a reason](60-an-impact-path-needs-a-reason.md)
+records the generalized shared graph, explained consumer/test paths, independent
+boundary-regression control and reproduced review repairs. Broader coding benefit
+and automatic integration remain unproved. [59 — a roadmap contributors can open](59-a-roadmap-contributors-can-open.md)
 records the fifth architecture tab, forty-one expandable contributor cards,
 commitment distinctions, acceptance criteria, first contributions and actual
 browser interaction checks. [58 — the lead must belong to the edit](58-the-lead-must-belong-to-the-edit.md)
@@ -97,6 +100,7 @@ startup and the failed external Snag CI acceptance run.
 | [56-harder-problems-still-need-evidence.md](56-harder-problems-still-need-evidence.md) | Four interacting repairs, seven completed and one interrupted attempt, three tied pairs, separate visible/shutdown audits and every-attempt reproduction |
 | [57-a-review-needs-a-relevant-lead.md](57-a-review-needs-a-relevant-lead.md) | Eight fixed-patch reviews; both arms strengthen Jinja2 tests, four ties, greater assisted native time, irrelevant whole-file leads and an unfinished regrade at user stop |
 | [58-the-lead-must-belong-to-the-edit.md](58-the-lead-must-belong-to-the-edit.md) | Generalized changed-region relevance, reviewed boundary/coverage fixes, real upstream controls and completed corrected reproduction |
+| [60-an-impact-path-needs-a-reason.md](60-an-impact-path-needs-a-reason.md) | Fresh typed ImpactGraph, qualified observations, explained test candidates, independent boundary checks and review corrections |
 | [59-a-roadmap-contributors-can-open.md](59-a-roadmap-contributors-can-open.md) | Forty-one expandable planned-work cards, sourced contributor entry points, commitment boundaries and browser interaction checks |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |

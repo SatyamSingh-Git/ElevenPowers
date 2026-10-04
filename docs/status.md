@@ -1,6 +1,6 @@
 # Current delivery status
 
-Reviewed **2026-10-03**. ElevenPowers remains a research prototype. All five hosts
+Reviewed **2026-10-04**. ElevenPowers remains a research prototype. All five hosts
 share project-independent onboarding, command discovery, repository evidence and
 verification. Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI
 have reversible project wiring; the four additions also have portable bundles.
@@ -12,10 +12,18 @@ research, conditional extensions and proposals. Cards link to the current
 sources, identify acceptance criteria and suggest a small first contribution.
 This is contributor navigation; the product's unmet exits below remain open.
 
+ImpactGraph now supplies explicit fresh CLI/API queries with typed provenance,
+reverse witness paths and candidate tests. The independent API/worker fixture
+rejects a seeded boundary fault and accepts equivalent code. Larger-project
+precision/recall, native trace converters and automatic hook integration remain
+open; this does not establish improved agent outcomes. See
+[ImpactGraph validation](validation/2026-10-04-impact-graph.md).
+
 ## Shipped and exercised
 
 | Capability | Delivered behavior | Evidence boundary |
 |---|---|---|
+| ImpactGraph | Fresh Python call/import and optional JS/TS import paths; declared logical nodes, fingerprint-qualified observations, explained candidate tests and separate history associations | Conservative supported adapters; explicit coverage gaps; unsigned observations; no test execution, calibrated probability or automatic completion integration |
 | Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested boundaries and project exclusions | Supported source extensions and named dependency files; excluded inputs are outside the fingerprint |
 | Scan coverage | Explicit file/byte/deadline/unreadable-input diagnostics | Default 20,000 files and 256 MiB; filesystem operations are not a hard wall-clock guarantee |
 | Command receipts | Exact configured/discovered commands; complete pass, complete fail and incomplete execution | Opaque wrappers retain command-level evidence; transport success/prose alone cannot prove process success |

@@ -1,6 +1,6 @@
 # ImpactGraph Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build a generalized local graph and explained impact query with bounded, qualified evidence.
 
@@ -44,14 +44,14 @@ Interfaces: `build(...) -> Graph`; `Graph.nodes` maps IDs to `Node`;
 Node fields: id, kind, label, path, line. Edge fields: source, target, kind,
 origin, path, line, identity. Direction: dependent -> dependency.
 
-- [ ] Write controls for aliases, relative/package/src imports, top-level calls,
+- [x] Write controls for aliases, relative/package/src imports, top-level calls,
   same-name unrelated functions, shadows, ambiguity, parser failure, dirty bytes,
   budgets and boundaries; run them before implementation.
-- [ ] Implement bounded fresh reads around `scan_sources`; parse without importing
+- [x] Implement bounded fresh reads around `scan_sources`; parse without importing
   candidate code. Build deterministic node/edge IDs and content fingerprint.
-- [ ] Implement unique module resolution and conservative Python bindings;
+- [x] Implement unique module resolution and conservative Python bindings;
   suppress ambiguous/shadowed imported calls and retain location-qualified gaps.
-- [ ] Run `.venv/Scripts/python.exe -m pytest tests/test_impact_source.py -q`;
+- [x] Run `.venv/Scripts/python.exe -m pytest tests/test_impact_source.py -q`;
   expected all controls pass. Commit/push the working foundation.
 
 Representative behavioral contract:
@@ -71,12 +71,12 @@ Files: extend `source.py`; create `tests/test_impact_typescript.py` and
 `requirements-impact.txt`. Consumes safe selected source bytes from Task 1;
 produces location-qualified `imports` edges using the existing real grammar.
 
-- [ ] Write real-parser controls for relative imports, JS-extension substitution,
+- [x] Write real-parser controls for relative imports, JS-extension substitution,
   barrels, declared workspace main/module/types entry, ambiguity, unknown aliases,
   syntax errors and unavailable grammar. Run before implementation.
-- [ ] Resolve only selected, in-scope candidates. Read selected package.json;
+- [x] Resolve only selected, in-scope candidates. Read selected package.json;
   duplicate names and unsupported exports/path mappings remain gaps.
-- [ ] Pin optional acceptance dependencies; run source + TS controls with the
+- [x] Pin optional acceptance dependencies; run source + TS controls with the
   installed producer. Commit/push validated adapter support.
 
 ```python
@@ -90,13 +90,13 @@ Files: create `core/impact/ingest.py`, `tests/test_impact_ingest.py`.
 Consumes Graph and safe selected declaration bytes. Produces qualified `depends_on`,
 `uses`, `tests`, `observed_call`, `observed_test` edges or quarantined observations.
 
-- [ ] Write schema, safe-anchor, missing-endpoint, duplicate-ID, row cap and
+- [x] Write schema, safe-anchor, missing-endpoint, duplicate-ID, row cap and
   malformed controls plus current/stale/incomplete observation controls.
-- [ ] Validate declaration graph atomically before adding it; allow logical nodes
+- [x] Validate declaration graph atomically before adding it; allow logical nodes
   with optional selected file anchors, never executable commands.
-- [ ] Validate schema-1 observation identity/fingerprint/completion and existing
+- [x] Validate schema-1 observation identity/fingerprint/completion and existing
   endpoints. Keep invalid/stale/incomplete artifacts out of active graph edges.
-- [ ] Run ingestion/source/TS controls; commit/push qualified contract evidence.
+- [x] Run ingestion/source/TS controls; commit/push qualified contract evidence.
 
 ```python
 assert build(root, observations=artifact).quarantined  # wrong fingerprint
@@ -109,16 +109,16 @@ Files: create `query.py`, `history.py`, `plugin/bin/ep_impact.py`,
 `tests/test_impact_query.py`, `tests/test_impact_cli.py`.
 Consumes Graph; produces schema-1 query dict and `markdown(report) -> str`.
 
-- [ ] Write reverse/transitive/multiple-seed/cycle tests, declaration and test
+- [x] Write reverse/transitive/multiple-seed/cycle tests, declaration and test
   paths, missing/deleted paths, depth/result cap, stale exclusion and
   history-only association controls. Run before implementation.
-- [ ] Implement reverse traversal with stable explanations and no co-change
+- [x] Implement reverse traversal with stable explanations and no co-change
   propagation. Group candidate tests by the existing test-name policy.
-- [ ] Read opt-in Git file lists with strict subprocess/output/commit-size bounds;
+- [x] Read opt-in Git file lists with strict subprocess/output/commit-size bounds;
   store current selected file associations separately, not causal edges.
-- [ ] Add fresh CLI queries and explicit no-overwrite exports. Write/read JSON,
+- [x] Add fresh CLI queries and explicit no-overwrite exports. Write/read JSON,
   invalid argument, missing project and standard-library-only CLI tests.
-- [ ] Run all `tests/test_impact_*.py`; commit/push usable CLI/API.
+- [x] Run all `tests/test_impact_*.py`; commit/push usable CLI/API.
 
 ```python
 report = analyze(build(root), ['session.py'])
@@ -132,12 +132,12 @@ Files: create `tests/test_impact_acceptance.py`, dated validation, journey 60,
 `the-guide/impactgraph.md`; update README/commands/features/roadmap/status/PLAN,
 architecture source and its generated mirror.
 
-- [ ] Execute an independent cross-component fixture: legitimate behavior passes,
+- [x] Execute an independent cross-component fixture: legitimate behavior passes,
   a seeded expiration regression fails the suggested API/worker test, and a
   valid equivalent repair passes. Retain exact producer and timing qualifications.
 - [ ] Run the full regression suite and standard-library import; request one
   independent whole-branch review, fix substantive findings with controls.
-- [ ] Map every new runtime module in the architecture, reconcile the Planned
+- [x] Map every new runtime module in the architecture, reconcile the Planned
   card with remaining limitations, regenerate and run `architecture/check.py
   --render`. Validate local documentation links and report actual measurements.
 - [ ] Commit/push docs and validation; integrate to main under standing user

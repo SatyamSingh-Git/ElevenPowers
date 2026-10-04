@@ -1,6 +1,16 @@
 # Features
 
-Current behavior reviewed 2026-10-03. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+Current behavior reviewed 2026-10-04. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+
+ImpactGraph now explains affected consumers and candidate tests from a fresh
+typed graph. Conservative Python imported calls and optional JS/TS imports join
+project-declared routes, storage and components; explicit current observations
+require matching source fingerprints and complete capture. History associations
+remain separate. Queries run without an agent or project test execution and
+report missing coverage. TS call/type resolution, native trace converters and
+automatic hook integration remain planned. See the
+[guide](../the-guide/impactgraph.md) and
+[validation](../docs/validation/2026-10-04-impact-graph.md).
 
 Optional changed-region test strength relates installed engine positions to Git
 hunks and enclosing functions. Broad/new-file changes are partitioned, complete

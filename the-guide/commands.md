@@ -1,5 +1,24 @@
 # Commands
 
+## ep_impact — explained consumers and candidate tests
+
+```bash
+python plugin/bin/ep_impact.py --project PATH src/session.py
+python plugin/bin/ep_impact.py --project PATH src/session.py --json
+python plugin/bin/ep_impact.py --project PATH --graph --output impact.json
+```
+
+Each query reads fresh bounded project inputs. Python imported calls and optional
+JS/TS imports join declared contracts and explicit current observations. Candidate
+tests carry actual relationship paths; bounded history remains a separate hint.
+Reads launch no test or host and write no project state. Optional flags include
+`--observations`, `--history`, `--seconds`, `--max-files`, `--max-bytes`,
+`--max-depth`, `--max-results`, `--change`, `--output` and `--force`.
+`--check` exits 1 for incomplete coverage; ordinary reports exit 0 even when
+qualified; invalid arguments or failed exports exit 2. See the
+[ImpactGraph guide](impactgraph.md) for schemas, dependencies and supported limits.
+
+
 ## ep_ready — fresh health for the whole integration
 
 ```sh
