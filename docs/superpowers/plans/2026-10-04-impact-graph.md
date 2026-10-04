@@ -135,15 +135,22 @@ architecture source and its generated mirror.
 - [x] Execute an independent cross-component fixture: legitimate behavior passes,
   a seeded expiration regression fails the suggested API/worker test, and a
   valid equivalent repair passes. Retain exact producer and timing qualifications.
-- [ ] Run the full regression suite and standard-library import; request one
+- [x] Run the full regression suite and standard-library import; request one
   independent whole-branch review, fix substantive findings with controls.
 - [x] Map every new runtime module in the architecture, reconcile the Planned
   card with remaining limitations, regenerate and run `architecture/check.py
   --render`. Validate local documentation links and report actual measurements.
-- [ ] Commit/push docs and validation; integrate to main under standing user
+- [x] Commit/push docs and validation; integrate to main under standing user
   authorization once required checks pass. Keep later framework/live-trace/type
   adapters and held-out outcome measurements explicitly unfinished.
 
 Execution: inline, following the user's instruction to plan and start building.
 Baseline: 41 existing scanner/atlas/radius controls passed, 26 optional grammar
 controls skipped before installing the pinned optional acceptance dependencies.
+
+Delivery evidence: 131 focused controls pass; the final full suite passes 1,476
+tests with two skips. Independent runtime review is clear after reproduced
+repairs. All four hosted Ubuntu/Windows Python 3.11/3.13 cells pass at runtime
+head `4095c46`. All five architecture tabs render, every runtime module is mapped,
+and 320 local documentation links resolve. See the dated validation for exact
+commands, fixture outcomes, execution identities and remaining acceptance limits.

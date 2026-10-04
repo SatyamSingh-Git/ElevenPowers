@@ -90,7 +90,38 @@ before writing its contents, so its parent could observe an empty file and stop
 the child too early. Atomic pending-file publication fixes the producer race;
 the original containment assertion is preserved. The focused probe passed both
 locally and independently. Final full-suite and hosted results are recorded
-below after their executions finish.
+below.
+
+## Final regression gates
+
+```powershell
+.venv/Scripts/python.exe -m pytest -q --tb=short
+.venv/Scripts/python.exe -S -c "import core.impact"
+.venv/Scripts/python.exe -m eval.validate
+.venv/Scripts/python.exe plugin/bin/ep_doctor.py --host
+```
+
+The final local full suite on runtime head `4095c46` passed **1,476 tests with
+two skips in 829.99 seconds**. This includes the final CommonJS binding repair.
+The standard-library import passed, all four grader controls classified correctly,
+and every host diagnostic check passed. The preceding repaired run at `0e100a3`
+passed 1,466 tests with two skips; its ten fewer cases preceded the final binding
+controls. Timings describe these executions, not a performance comparison.
+
+The later documentation/architecture delivery `7d19734` changes no runtime,
+plugin, test, dependency or test-workflow files from `4095c46`. Its recursive
+architecture inventory check and generated views passed the separate render gate.
+
+Hosted [test matrix run 37189606163](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/37189606163)
+passed on runtime head `4095c46`: Ubuntu and Windows, Python 3.11 and 3.13,
+all four cells successful. Each cell installs the optional real grammar pins,
+runs the full suite, separately runs descendant audit probes, grades the grader
+and checks the host seam. This establishes those CI controls on these environments;
+it does not establish installed native sessions or compatibility with all projects.
+
+Integration uses a fast-forward of the published `codex/impact-graph` history to
+`main`; no runtime changes follow the reviewed and matrix-tested head. The final
+validation record and completed plan checklist are documentation changes.
 
 ## Documentation and architecture
 
