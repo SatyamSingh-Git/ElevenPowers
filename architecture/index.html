@@ -151,18 +151,18 @@
   /* Planned work is a contributor document, separate from the shipped graph. */
   .planned-wrap { max-width: 1180px; margin: 0 auto; }
   #view-planned .view-head { max-width: none; margin-bottom: 22px; }
-  #view-planned .view-head p { max-width: 85ch; }
-  .planned-kicker { font: 10px var(--mono); color: var(--accent-bright); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 9px; }
-  .planned-note { border-left: 2px solid var(--accent); padding: 10px 14px; margin: 18px 0; background: rgba(16,185,129,.05); color: var(--ink-soft); font-size: 12px; line-height: 1.6; }
+  #view-planned .view-head p { max-width: 85ch; font-size: 15px; }
+  .planned-kicker { font: 11px var(--mono); color: var(--accent-bright); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 9px; }
+  .planned-note { border-left: 2px solid var(--accent); padding: 10px 14px; margin: 18px 0; background: rgba(16,185,129,.05); color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
   .planned-note a, .planned-body a { color: var(--accent-bright); text-underline-offset: 3px; overflow-wrap: anywhere; }
   .planned-stats { display: flex; gap: 9px; flex-wrap: wrap; margin: 19px 0; }
-  .planned-stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; font: 11px var(--mono); color: var(--ink-soft); }
+  .planned-stat { border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; font: 12px var(--mono); color: var(--ink-soft); }
   .planned-stat b { color: var(--ink); margin-right: 6px; }
   .planned-controls { display: grid; grid-template-columns: minmax(240px,1fr) minmax(170px,.45fr) minmax(170px,.45fr); gap: 12px; margin-bottom: 12px; }
-  .planned-controls label { display: flex; flex-direction: column; gap: 6px; color: var(--ink-soft); font: 11px var(--mono); }
-  .planned-controls input, .planned-controls select { width: 100%; min-width: 0; border: 1px solid var(--line-strong); border-radius: 8px; padding: 10px 11px; background: var(--panel-solid); color: var(--ink); font: 12px var(--sans); }
+  .planned-controls label { display: flex; flex-direction: column; gap: 6px; color: var(--ink-soft); font: 12px var(--mono); }
+  .planned-controls input, .planned-controls select { width: 100%; min-width: 0; border: 1px solid var(--line-strong); border-radius: 8px; padding: 10px 11px; background: var(--panel-solid); color: var(--ink); font: 14px var(--sans); }
   .planned-controls input:focus-visible, .planned-controls select:focus-visible, .planned-card summary:focus-visible, .planned-body a:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 3px; }
-  #planned-count { font: 11px var(--mono); color: var(--ink-soft); margin: 14px 0 18px; }
+  #planned-count { font: 12px var(--mono); color: var(--ink-soft); margin: 14px 0 18px; }
   #planned-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; align-items: start; }
   .planned-card { border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel-solid); overflow: hidden; scroll-margin: 20px; }
   .planned-card:hover { border-color: var(--accent); }
@@ -171,22 +171,22 @@
   .planned-card summary::-webkit-details-marker { display: none; }
   .planned-card summary::after { content: '+'; position: absolute; top: 16px; right: 17px; font: 21px var(--mono); color: var(--ink-soft); }
   .planned-card[open] summary::after { content: '\2212'; color: var(--accent-bright); }
-  .planned-card h3 { margin: 12px 20px 7px 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; line-height: 1.35; }
-  .planned-card summary p { margin: 0; font-size: 12px; color: var(--ink-soft); line-height: 1.6; }
-  .planned-area { font: 9px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 7px; }
-  .planned-badge { display: inline-block; border-radius: 5px; border: 1px solid var(--line-strong); padding: 3px 6px; font: 9px var(--mono); color: var(--ink-soft); }
+  .planned-card h3 { margin: 12px 20px 7px 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 1.35; }
+  .planned-card summary p { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+  .planned-area { font: 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 7px; }
+  .planned-badge { display: inline-block; border-radius: 5px; border: 1px solid var(--line-strong); padding: 3px 6px; font: 11px var(--mono); color: var(--ink-soft); }
   .planned-card[data-status="Open milestone"] .planned-badge { color: var(--accent-bright); border-color: var(--accent); }
   .planned-card[data-status="Proposed"] .planned-badge { color: var(--p-host); }
   .planned-card[data-status="Conditional"] .planned-badge { color: var(--res); }
   :root[data-theme="light"] .planned-card[data-status="Proposed"] .planned-badge { color: #6d28d9; }
   :root[data-theme="light"] .planned-wrap { --accent-bright: #047857; --res: #92400e; }
-  .planned-body { border-top: 1px solid var(--line); padding: 0 18px 17px; color: var(--ink-soft); font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
-  .planned-body h4 { margin: 17px 0 5px; color: var(--ink); font-size: 11px; font-weight: 650; }
+  .planned-body { border-top: 1px solid var(--line); padding: 0 18px 17px; color: var(--ink-soft); font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+  .planned-body h4 { margin: 17px 0 5px; color: var(--ink); font-size: 13px; font-weight: 650; }
   .planned-body p { margin: 0; }
   .planned-body ul { margin: 0; padding-left: 17px; }
   .planned-body li + li { margin-top: 5px; }
-  .planned-body .planned-permalink { display: inline-block; margin-top: 17px; font: 10px var(--mono); }
-  #planned-empty { padding: 34px 18px; border: 1px dashed var(--line-strong); border-radius: 12px; color: var(--ink-soft); text-align: center; font-size: 13px; }
+  .planned-body .planned-permalink { display: inline-block; margin-top: 17px; font: 12px var(--mono); }
+  #planned-empty { padding: 34px 18px; border: 1px dashed var(--line-strong); border-radius: 12px; color: var(--ink-soft); text-align: center; font-size: 14px; }
   [hidden] { display: none !important; }
   @media (max-width: 1000px) { #topbar .meta-row { display: none; } #topbar { gap: 12px; } .tab { padding: 7px 9px; } #planned-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
   @media (max-width: 700px) {
