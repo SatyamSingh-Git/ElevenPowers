@@ -19,15 +19,15 @@ Interfaces: `load_cases(path) -> dict`, `evaluate(manifest, roots, *, split,
 runtime_root, output) -> dict`. Results include schema, corpus hash, runtime
 identity, project/source qualification and all attempted case outcomes.
 
-- [ ] Write schema/path/split/source-seal and precision-denominator controls;
+- [x] Write schema/path/split/source-seal and precision-denominator controls;
   expected RED before the evaluator exists.
-- [ ] Freeze three pinned repositories and 24 independently inspected cases;
+- [x] Freeze three pinned repositories and 24 independently inspected cases;
   eight held out by family. Run real passing baselines in disposable roots.
-- [ ] Build each graph once per attempt through the actual selected runtime;
+- [x] Build each graph once per attempt through the actual selected runtime;
   grade known positives/negatives separately from unlabelled leads and gaps.
-- [ ] Run development baseline on the frozen old runtime, retain its identity
+- [x] Run development baseline on the frozen old runtime, retain its identity
   and output. Expected: a qualified result, not necessarily a passing exit.
-- [ ] Run evaluator controls; commit/push the corpus, controller and baseline.
+- [x] Run evaluator controls; commit/push the corpus, controller and baseline.
 
 ## Task 2: Improve optional compiler-backed TypeScript relationships
 

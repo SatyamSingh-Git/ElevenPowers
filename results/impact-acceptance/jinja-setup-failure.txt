@@ -1,0 +1,27 @@
+
+=================================== ERRORS ====================================
+____________________ ERROR collecting tests/test_async.py _____________________
+ImportError while importing test module 'E:\ElevenPowers\.venv\impact-acceptance\repos\jinja\tests\test_async.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_async.py:4: in <module>
+    import trio
+E   ModuleNotFoundError: No module named 'trio'
+________________ ERROR collecting tests/test_async_filters.py _________________
+ImportError while importing test module 'E:\ElevenPowers\.venv\impact-acceptance\repos\jinja\tests\test_async_filters.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_async_filters.py:6: in <module>
+    import trio
+E   ModuleNotFoundError: No module named 'trio'
+=========================== short test summary info ===========================
+ERROR tests/test_async.py
+ERROR tests/test_async_filters.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!
+2 errors in 1.27s
