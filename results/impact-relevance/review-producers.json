@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "runtime_head": "61553e3",
+  "cases": [
+    {
+      "case": "class_direct",
+      "focused": false,
+      "coverage_complete": true,
+      "issues": [],
+      "producer_exit": 0,
+      "post_execution_sources_match_original_copy": true,
+      "source_sha256": {
+        "api.py": "68a87720e07186abc57a1aba3c869cc648a744605795276f63243a8a6148759f",
+        "conftest.py": "27b0edee1aa4928b4a018e8be4e27f494d7704a321b3686f46f765e239a6350a",
+        "test_api.py": "d9ab772b4f8a9f095f78c2f2f8693074fed869fc3fc5846ae096f58cb3174388"
+      },
+      "producer_report_sha256": "f6015f231232dcb64e1b951c51b61caec31e410531bb9bcec25d7bab29ee5b47",
+      "producer_output_file_sha256": "6cbf72c0b248046877c51c042e0185e937c237fd89f39f0fe22fc23f1d53bdfc",
+      "machine_result": {
+        "status": "pass",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "class_usefixtures",
+      "focused": true,
+      "coverage_complete": true,
+      "issues": [],
+      "producer_exit": 0,
+      "post_execution_sources_match_original_copy": true,
+      "source_sha256": {
+        "api.py": "68a87720e07186abc57a1aba3c869cc648a744605795276f63243a8a6148759f",
+        "conftest.py": "27b0edee1aa4928b4a018e8be4e27f494d7704a321b3686f46f765e239a6350a",
+        "test_api.py": "6d96f1a17c0755c4c0f2dd1a846df55b245a56d1c9d5d79c99de2641aa43269e"
+      },
+      "producer_report_sha256": "ec91267527b28ef7a48c4b10c743d969867628c3fbf8ca1b95a9acf7e0a7195c",
+      "producer_output_file_sha256": "5bda4f8fc0165420e8b84a348679234f7bc8cc5532843d7e34d3e0c30ff83f12",
+      "machine_result": {
+        "status": "pass",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "override_chain",
+      "focused": true,
+      "coverage_complete": true,
+      "issues": [],
+      "producer_exit": 0,
+      "post_execution_sources_match_original_copy": true,
+      "source_sha256": {
+        "api.py": "68a87720e07186abc57a1aba3c869cc648a744605795276f63243a8a6148759f",
+        "conftest.py": "27b0edee1aa4928b4a018e8be4e27f494d7704a321b3686f46f765e239a6350a",
+        "test_api.py": "fa282cc3fe2f1134fdc9c895b84926646f371d06470042f79b8e369b46319bf1"
+      },
+      "producer_report_sha256": "d86a8376355cfc66639b5d67f9d4f242e939a35c83de8d4105cc3bf7f3592f22",
+      "producer_output_file_sha256": "5bda4f8fc0165420e8b84a348679234f7bc8cc5532843d7e34d3e0c30ff83f12",
+      "machine_result": {
+        "status": "pass",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "star_import",
+      "focused": false,
+      "coverage_complete": false,
+      "issues": [
+        "unresolved pytest fixture registration context at test_api.py:2",
+        "unsupported imported pytest fixture registration at test_api.py:1"
+      ],
+      "producer_exit": 0,
+      "post_execution_sources_match_original_copy": true,
+      "source_sha256": {
+        "api.py": "68a87720e07186abc57a1aba3c869cc648a744605795276f63243a8a6148759f",
+        "conftest.py": "27b0edee1aa4928b4a018e8be4e27f494d7704a321b3686f46f765e239a6350a",
+        "fixtures.py": "69e4d84cd0e86d414226a8f673f2855a96e6b6bc93f179807d4a053f52f5dffe",
+        "test_api.py": "30c93bc78d1516928948acc7c08de930db684c8526bc65bd3975c42bdea5bd2d"
+      },
+      "producer_report_sha256": "036b35541b3c7e9d083ef256ccf73b6d59475d6e3b336e61a5ef65e463fadcbb",
+      "producer_output_file_sha256": "6cbf72c0b248046877c51c042e0185e937c237fd89f39f0fe22fc23f1d53bdfc",
+      "machine_result": {
+        "status": "pass",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "transitive_import",
+      "focused": false,
+      "coverage_complete": false,
+      "issues": [
+        "unresolved pytest fixture registration context at test_api.py:2",
+        "unsupported imported pytest fixture registration at helper.py:1",
+        "unsupported imported pytest fixture registration at test_api.py:1"
+      ],
+      "producer_exit": 0,
+      "post_execution_sources_match_original_copy": true,
+      "source_sha256": {
+        "api.py": "68a87720e07186abc57a1aba3c869cc648a744605795276f63243a8a6148759f",
+        "conftest.py": "27b0edee1aa4928b4a018e8be4e27f494d7704a321b3686f46f765e239a6350a",
+        "fixtures.py": "69e4d84cd0e86d414226a8f673f2855a96e6b6bc93f179807d4a053f52f5dffe",
+        "helper.py": "bed71a82edc656c5d99749b546cff6df8462997b5c8e2dade59d096a19504579",
+        "test_api.py": "8c96ba3fd8e9b2b9a4f01da7b792ee06d833769d40e412ead091f820d6c1a172"
+      },
+      "producer_report_sha256": "2f7df434c73b1a640e6a236979db451653cd79c219cd9b21286d5dc3552aa155",
+      "producer_output_file_sha256": "6cbf72c0b248046877c51c042e0185e937c237fd89f39f0fe22fc23f1d53bdfc",
+      "machine_result": {
+        "status": "pass",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "failures": []
+      }
+    },
+    {
+      "case": "default_rebinding",
+      "focused": false,
+      "coverage_complete": false,
+      "issues": [
+        "shadowed, rebound or local tool binding dynamic import at test_api.py:3"
+      ],
+      "producer_exit": 0,
+      "post_execution_sources_match_original_copy": true,
+      "source_sha256": {
+        "api.py": "8f1c4712eb1243805b78142201fe3123e7f2d39c8169fcd9606fd5ca56819d88",
+        "test_api.py": "216121c8c7726774fef67995004ecf7ff362c391ebae9a14af3633391debe9e5"
+      },
+      "producer_report_sha256": "7370e698a04b311082c0d28e63844e87f5309f2f9a9e1b9cc7f0396141c1c4e8",
+      "producer_output_file_sha256": "6cbf72c0b248046877c51c042e0185e937c237fd89f39f0fe22fc23f1d53bdfc",
+      "machine_result": {
+        "status": "pass",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "failures": []
+      }
+    }
+  ],
+  "limits": [
+    "Six disposable actual pytest counterparts, not population or coding-quality evidence.",
+    "Unresolved imported fixture registrations intentionally remain coverage gaps."
+  ],
+  "python": "3.13.2",
+  "pytest": "9.1.1",
+  "controller_sha256": "8c67e97676f5bd8282a3f5927e5f405430957ba3dd3dd117a3da1a1c414d8226"
+}
