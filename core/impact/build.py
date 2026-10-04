@@ -9,6 +9,7 @@ from ..config import load
 from ..evidence import scan_sources
 from .model import Graph, Node
 from .source import extract
+from .typescript import extract_typescript
 
 FILE_BYTES = 4 * 1024 * 1024
 
@@ -89,5 +90,6 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
     graph.coverage.update(selected_files=len(graph.nodes), read_files=len(sources),
                           read_bytes=read_bytes, selection_complete=scan.complete)
     extract(graph, sources, deadline)
+    extract_typescript(graph, sources, deadline)
     graph.coverage['complete'] = not graph.issues
     return graph
