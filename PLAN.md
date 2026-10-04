@@ -1,5 +1,13 @@
 # Master Plan v0.8
 
+**PatchProof contributor preparation, 2026-10-04.** A
+[contributor brief](docs/design/patchproof-contributor-brief.md) now maps the first
+read-only patch identity and evidence-bundle contributions onto the existing
+exporter, freshness model and ImpactGraph API. This scopes work for a contributor;
+PatchProof is still unimplemented. Contract adapters, explicit execution and
+GitHub presentation follow separately, with independent controls and visible
+gaps. Existing benefit, graph relevance and installed-acceptance exits remain open.
+
 **ImpactGraph relevance repair, 2026-10-04.** Literal Python dynamic imports,
 context-bound default pytest fixture relationships and focused/fallback/support
 recommendation tiers are implemented. Twelve new authored symbol scenarios

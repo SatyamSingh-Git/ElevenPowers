@@ -84,9 +84,11 @@ including runtime-bound validation, readonly performance and a frozen subscripti
 fresh staged health, bounded native diagnostics, disposable acceptance,
 onboarding, native edits, portable reports and optional changed-file test strength.
 The fifth tab adds contributor content. ImpactGraph now has real runtime source
-nodes, an explicit CLI query workflow and an open acceptance card. Static paths,
-declared contracts, current unsigned observations and historical associations
-retain separate qualifications. Optional virtual TypeScript compiler, offline
+nodes. PatchProof remains a proposal; its Planned card links a contributor brief
+for exact patch identity, current evidence bundles and subsequent adapters.
+ImpactGraph also has an explicit CLI query workflow and an open acceptance card.
+Static paths, declared contracts, current unsigned observations and historical
+associations retain separate qualifications. Optional virtual TypeScript compiler, offline
 actual Python/Node coverage and frozen independent fault/reference evaluation
 now have explicit source and workflow nodes. The process-fault miss and broad
 candidate sets kept that acceptance exit unqualified. The relevance repair now

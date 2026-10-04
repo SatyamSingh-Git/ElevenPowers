@@ -7,6 +7,14 @@ plan, current status and postponed list. Open milestones, planned research,
 conditional work and proposed directions have separate labels. Each card
 includes acceptance criteria, a small first contribution and source links.
 
+**PatchProof contributor preparation, 2026-10-04.** The shared receipt exporter
+and ImpactGraph foundation make a first contribution possible now. The
+[contributor brief](../docs/design/patchproof-contributor-brief.md) scopes an exact
+read-only Git patch identity PR, followed by current patch-bound reports, optional
+graph enrichment and one real contract-check adapter. PatchProof itself remains
+unimplemented; this preparation does not close the coding-benefit or installed
+acceptance exits.
+
 **ImpactGraph relevance repair, 2026-10-04.** Literal imports and default pytest
 fixture context paths now recover 11/12 valid frozen symbol-query test references
 versus 4/12 before repair. Focused recommendations retain broad fallbacks and
