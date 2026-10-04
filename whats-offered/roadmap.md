@@ -7,12 +7,22 @@ plan, current status and postponed list. Open milestones, planned research,
 conditional work and proposed directions have separate labels. Each card
 includes acceptance criteria, a small first contribution and source links.
 
-**ImpactGraph delivery, 2026-10-04.** The shared local graph foundation is built
+**ImpactGraph acceptance extension, 2026-10-04.** Optional compiler-backed
+TypeScript resolution and offline actual Python/Node coverage are delivered.
+The frozen three-project comparison preserves known consumers, still misses
+three known test references, and detects five of six qualified faults in both
+versions. Actual coverage recovers one fixture-dependent Jinja relationship.
+Next improve dynamic Python relationships and query specificity on new frozen
+cases, then qualify breadth and native-session cost. Automatic hooks remain
+unqualified. See [all outcomes](../results/impact-acceptance/README.md) and
+[validation](../docs/validation/2026-10-04-impact-acceptance.md).
+
+**ImpactGraph foundation, 2026-10-04.** The shared local graph foundation is built
 inside ElevenPowers and works through an explicit CLI/API in any supported
 project. It preserves provenance, freshness and gaps and explains consumer/test
 paths. The contributor card now tracks its remaining acceptance: larger-project
-relevance, false leads and overhead, precise TS/framework adapters, actual
-coverage/OpenTelemetry conversion and qualified automatic integration. PatchProof,
+relevance, false leads and overhead, framework adapters, source-mapped coverage,
+OpenTelemetry conversion and qualified automatic integration. PatchProof,
 OpenCodeMap and TestMiner can reuse this foundation; their own proposals remain
 unimplemented. See [ImpactGraph](../the-guide/impactgraph.md) and
 [delivery evidence](../docs/validation/2026-10-04-impact-graph.md).

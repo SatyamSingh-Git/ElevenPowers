@@ -101,6 +101,7 @@ startup and the failed external Snag CI acceptance run.
 | [57-a-review-needs-a-relevant-lead.md](57-a-review-needs-a-relevant-lead.md) | Eight fixed-patch reviews; both arms strengthen Jinja2 tests, four ties, greater assisted native time, irrelevant whole-file leads and an unfinished regrade at user stop |
 | [58-the-lead-must-belong-to-the-edit.md](58-the-lead-must-belong-to-the-edit.md) | Generalized changed-region relevance, reviewed boundary/coverage fixes, real upstream controls and completed corrected reproduction |
 | [60-an-impact-path-needs-a-reason.md](60-an-impact-path-needs-a-reason.md) | Fresh typed ImpactGraph, qualified observations, explained test candidates, independent boundary checks and review corrections |
+| [61-the-graph-must-face-a-missed-regression.md](61-the-graph-must-face-a-missed-regression.md) | Frozen real-project references, optional compiler, actual coverage recovery and a missed process fault that keeps automatic impact unqualified |
 | [59-a-roadmap-contributors-can-open.md](59-a-roadmap-contributors-can-open.md) | Forty-one expandable planned-work cards, sourced contributor entry points, commitment boundaries and browser interaction checks |
 | [decisions.md](decisions.md) | Every significant decision, its reasoning, and whether it still stands |
 | [mistakes.md](mistakes.md) | Every mistake made, what caused it, and what it changed |

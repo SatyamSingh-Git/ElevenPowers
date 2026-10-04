@@ -15,15 +15,20 @@ This is contributor navigation; the product's unmet exits below remain open.
 ImpactGraph now supplies explicit fresh CLI/API queries with typed provenance,
 reverse witness paths and candidate tests. The independent API/worker fixture
 rejects a seeded boundary fault and accepts equivalent code. Larger-project
-precision/recall, native trace converters and automatic hook integration remain
-open; this does not establish improved agent outcomes. See
-[ImpactGraph validation](validation/2026-10-04-impact-graph.md).
+acceptance now includes a frozen three-project corpus, an optional TypeScript
+compiler and actual offline Python/Node coverage conversion. It found 31/31 known
+consumer references and 23/26 known test references across 24 cases, with no
+declared negative hit; unlabelled leads remain unknown. Both old and final graph
+selections detect 5/6 qualified faults, below the proposed 90% exit. The missed
+process test and broad candidate sets keep automatic integration open. This does
+not establish improved agent outcomes. See
+[real-project validation](validation/2026-10-04-impact-acceptance.md).
 
 ## Shipped and exercised
 
 | Capability | Delivered behavior | Evidence boundary |
 |---|---|---|
-| ImpactGraph | Fresh Python call/import and optional JS/TS import paths; declared logical nodes, fingerprint-qualified observations, explained candidate tests and separate history associations | Conservative supported adapters; explicit coverage gaps; unsigned observations; no test execution, calibrated probability or automatic completion integration |
+| ImpactGraph | Fresh Python and optional grammar/compiler JS/TS paths; aliases/exports and qualified static calls; declared nodes; actual offline Python/Node coverage receipts; explained tests and separate history | Input/declaration completeness separate from semantic gaps; source maps/runtime dispatch remain gaps; explicit queries/conversion; both versions miss one of six qualified faults; automatic integration unqualified |
 | Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested boundaries and project exclusions | Supported source extensions and named dependency files; excluded inputs are outside the fingerprint |
 | Scan coverage | Explicit file/byte/deadline/unreadable-input diagnostics | Default 20,000 files and 256 MiB; filesystem operations are not a hard wall-clock guarantee |
 | Command receipts | Exact configured/discovered commands; complete pass, complete fail and incomplete execution | Opaque wrappers retain command-level evidence; transport success/prose alone cannot prove process success |

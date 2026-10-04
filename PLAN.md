@@ -1,5 +1,19 @@
 # Master Plan v0.8
 
+**ImpactGraph real-project acceptance, 2026-10-04.** The approved extension
+delivers optional TypeScript compiler resolution, actual offline coverage
+conversion and independent frozen evaluation. The 24 cases find 31/31 known
+consumers and 23/26 known tests; coverage separately recovers Jinja's fixture
+relationship. Eight authored fault attempts qualify six, and both original and
+final selections detect five. The process-cap miss, broad candidates and
+unmeasured installed-session cost leave automatic advisories unqualified. This
+is a failed acceptance exit, not a coding-quality gain. Next freeze new dynamic
+Python/fixture and symbol-specific scenarios, improve selective relationships,
+and qualify noise before hooks. Frameworks, live traces, source maps and further
+languages remain open. See [results](results/impact-acceptance/README.md),
+[journey 61](journey/61-the-graph-must-face-a-missed-regression.md) and
+[validation](docs/validation/2026-10-04-impact-acceptance.md).
+
 **ImpactGraph foundation, 2026-10-04.** The user authorized the shared graph
 milestone. Its first delivery now provides fresh typed source/contract/observed
 relationships, explained reverse paths, candidate tests and a standalone CLI/API.

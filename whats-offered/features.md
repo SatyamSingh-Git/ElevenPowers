@@ -7,10 +7,14 @@ typed graph. Conservative Python imported calls and optional JS/TS imports join
 project-declared routes, storage and components; explicit current observations
 require matching source fingerprints and complete capture. History associations
 remain separate. Queries run without an agent or project test execution and
-report missing coverage. TS call/type resolution, native trace converters and
-automatic hook integration remain planned. See the
+report missing coverage. Optional TypeScript 5.7.3 supplies virtual compiler
+resolution for aliases/exports and concrete imported calls; explicit offline
+coverage.py/Node V8 converters qualify current attributed execution. Instance
+dispatch, source maps, live traces and automatic hooks remain open. The frozen
+real-project comparison detects 5/6 qualified faults in both versions and keeps
+the process-cap miss visible. See the
 [guide](../the-guide/impactgraph.md) and
-[validation](../docs/validation/2026-10-04-impact-graph.md).
+[validation](../docs/validation/2026-10-04-impact-acceptance.md).
 
 Optional changed-region test strength relates installed engine positions to Git
 hunks and enclosing functions. Broad/new-file changes are partitioned, complete

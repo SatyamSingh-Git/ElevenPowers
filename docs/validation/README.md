@@ -2,6 +2,8 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-04 ImpactGraph real-project acceptance](2026-10-04-impact-acceptance.md): three pinned repositories, 24 references, actual coverage recovery, optional virtual compiler, eight independent fault attempts, both versions detecting 5/6 qualified faults, four reproduced review repairs and a failed automatic-integration exit.
+
 - [2026-10-04 ImpactGraph](2026-10-04-impact-graph.md): generalized fresh graph, conservative real AST/grammar relationships, current observations, explained candidate tests, independent API/worker fault and equivalent controls, and reproduced review repairs. Larger-project relevance and coding benefit remain open.
 
 - [2026-10-04 contributor roadmap](2026-10-04-contributor-roadmap.md): fifth architecture view, 41 sourced expandable cards, commitment and trigger boundaries, browser navigation/filter/theme/contrast checks and independently reproduced review corrections.

@@ -67,24 +67,33 @@ Files: evaluator fault/control definitions and result artifacts under
 Interfaces: producer journals distinguish pass/fail/incomplete/setup; selected
 and full relevant suites share the same immutable inputs and independent checks.
 
-- [ ] Validate faults and equivalent controls using actual independent tests;
+- [x] Validate faults and equivalent controls using actual independent tests;
   test controller rejection of setup failures, forged summaries and missing runs.
-- [ ] Freeze final adapter head, execute all held-out cases with both the old
+- [x] Freeze final adapter head, execute all held-out cases with both the old
   and final runtimes, and publish every outcome and exact denominators.
-- [ ] Record repeated graph/read timings and candidate breadth; explicitly
+- [x] Record repeated graph/read timings and candidate breadth; explicitly
   qualify any selected/full execution comparison and failed acceptance exit.
-- [ ] Commit/push reproducible results and producer identities.
+- [x] Commit/push reproducible results and producer identities.
 
 ## Task 5: Advisory qualification and delivery
 
 Files: automatic shared hook adapter only if its measured exit is met; guide,
 README, status/PLAN, journey 61, validation, architecture and generated mirror.
 
-- [ ] Assess detection, noise and ordinary-session cost. Record the integration
+- [x] Assess detection, noise and ordinary-session cost. Record the integration
   ruling; implement shared bounded advisories only if evidence qualifies them.
-- [ ] Run focused controls, stdlib import, full regression, host diagnostic and
+- [x] Run focused controls, stdlib import, full regression, host diagnostic and
   grader. Request one independent whole-branch review; repair reproduced defects.
-- [ ] Update all relevant docs and every new architecture module/workflow;
+- [x] Update all relevant docs and every new architecture module/workflow;
   `architecture/check.py --render` must pass. Validate local links.
-- [ ] Push each completed part, pass hosted checks, integrate verified code to
-  main and publish actual limits. Do not claim the entire ImpactGraph is finished.
+
+Final external delivery gate: push each completed part, require the exact-head
+Ubuntu/Windows Python 3.11/3.13 hosted checks, then fast-forward the authorized
+main branch. GitHub's checks/history, rather than a pre-checked local checkbox,
+record that state. Publish actual limits; do not claim the entire graph is built.
+
+Delivery ruling: the fault exit failed at 5/6 in both versions; automatic hooks
+remain unqualified. Six faults are qualified out of eight retained attempts.
+Review repairs and separately versioned current regrades preserve the original
+producer histories. Full local regression: 1,537 passed, two skipped. The used
+eight held-out cases are now regression data, not a new acceptance split.

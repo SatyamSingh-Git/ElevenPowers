@@ -1,5 +1,12 @@
 # ImpactGraph real-project acceptance
 
+Implementation delivered; measured automatic-integration exit failed. The
+frozen cases find 31/31 known consumers and 23/26 known test references. Both
+old and final selections detect five of six qualified faults. Current coverage
+separately recovers a real fixture-dependent Jinja relationship. More selective
+queries and dynamic paths require new frozen cases; this used held-out split
+cannot become a fresh acceptance set. See [results](../../results/impact-acceptance/README.md).
+
 Authorized 2026-10-04: implement the approved real-project benchmark, repair
 general relationships it exposes, add actual coverage producers, and qualify
 automatic advisory integration from measured results. Keep pushing completed

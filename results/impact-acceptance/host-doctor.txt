@@ -1,0 +1,11 @@
+ok    python 3.13.2
+ok    a failing command is recorded as failing
+ok    a passing command is recorded as passing
+ok    hooks.json subscribes to every event the runtime handles (7 tools recorded)
+ok    the ledger directory is writable (E:\ElevenPowers\.elevenpowers)
+ok    nothing unreadable has arrived from the host
+ok    the launcher accepts a prompt and opens a task
+ok    the documented failure shape reaches the ledger
+ok    a passing command reaches the ledger
+ok    the report path speaks through a field Stop honours
+ok    the blocking path refuses the stop and says why

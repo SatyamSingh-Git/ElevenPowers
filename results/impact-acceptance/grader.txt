@@ -1,0 +1,8 @@
+case                                    expected    got         
+the maintainer's own fix                resolved    resolved    
+the fix, and a break elsewhere          regressed   regressed   
+a patch that changes nothing relevant   unfixed     unfixed     
+a workspace that cannot be built        setup       setup       
+
+all 4 cases correct: the grader separates a fix from a
+regression, from a patch that did nothing, and from its own breakage.

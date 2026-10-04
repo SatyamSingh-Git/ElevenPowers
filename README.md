@@ -451,11 +451,17 @@ state. Candidate tests include the path behind the recommendation; ambiguity,
 unsupported adapters, stale observations and exhausted budgets remain visible.
 The first independent API/worker fixture selected four passing checks, rejected
 a seeded boundary fault with two failures, and accepted equivalent behavior.
-Larger-project relevance, native trace converters and automatic hook integration
-remain open; this fixture does not establish a coding-quality gain. See the
+The real-project extension adds an explicitly selected TypeScript 5.7.3 compiler
+for aliases, exports and qualified calls, plus offline coverage.py/Node V8
+conversion with source-bound execution receipts. Across 24 frozen cases it found
+31/31 known consumers and 23/26 known test references. Actual coverage recovered
+one fixture-dependent Jinja test outside that static comparison. Selected checks
+caught 5/6 qualified faults in both old and final versions; a process-limit
+regression was missed. Automatic advisories remain unqualified, and improved
+agent coding has not been shown. See the
 [ImpactGraph guide](the-guide/impactgraph.md),
-[journey 60](journey/60-an-impact-path-needs-a-reason.md), and
-[delivery validation](docs/validation/2026-10-04-impact-graph.md).
+[journey 61](journey/61-the-graph-must-face-a-missed-regression.md), and
+[real-project acceptance](docs/validation/2026-10-04-impact-acceptance.md).
 
 ### Optional test strength
 
