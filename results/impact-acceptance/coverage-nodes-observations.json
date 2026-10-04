@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "producer": "impact-coverage/1 coverage.py/7.10.7",
+  "run": "jinja-nodes-1",
+  "complete": true,
+  "source_fingerprint": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+  "edges": [
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/__init__.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/_identifier.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/async_utils.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/bccache.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/compiler.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/defaults.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/environment.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/exceptions.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/filters.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/idtracking.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/lexer.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/loaders.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/nodes.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/optimizer.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/parser.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/runtime.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/tests.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/utils.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:src/jinja2/visitor.py",
+      "kind": "observed_test"
+    },
+    {
+      "source": "file:tests/test_nodes.py",
+      "target": "file:tests/conftest.py",
+      "kind": "observed_test"
+    }
+  ],
+  "issues": [],
+  "limits": [
+    "Unsigned execution receipt; coverage is execution, not assertions.",
+    "Static context and isolated-run attribution are caller assertions.",
+    "V8 supports native JS source only; source maps remain unsupported."
+  ],
+  "receipt": {
+    "producer": "coverage.py/7.10.7",
+    "report_sha256": "4f25e2f176f9ff0ffc924768a2dd2db8a2f26c3b35f7a750d61114efc17ea75f",
+    "passed": 1,
+    "failed": 0
+  }
+}

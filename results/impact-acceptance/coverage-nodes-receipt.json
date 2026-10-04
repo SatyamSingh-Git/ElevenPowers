@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "producer": "coverage.py/7.10.7",
+  "run": "jinja-nodes-1",
+  "execution": "complete",
+  "exit_code": 0,
+  "passed": 1,
+  "failed": 0,
+  "before": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+  "after": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+  "report_sha256": "4f25e2f176f9ff0ffc924768a2dd2db8a2f26c3b35f7a750d61114efc17ea75f",
+  "contexts": {
+    "jinja-nodes": "tests/test_nodes.py"
+  },
+  "command": [
+    "E:\\ElevenPowers\\.venv\\Scripts\\python.exe",
+    "-m",
+    "coverage",
+    "run",
+    "--context",
+    "jinja-nodes",
+    "-m",
+    "pytest",
+    "tests/test_nodes.py",
+    "-q"
+  ]
+}

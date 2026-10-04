@@ -108,7 +108,8 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
         {'files': fingerprints, 'policy': policy, 'file_limit': max_files,
          'byte_limit': max_bytes}, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
     graph.coverage.update(selected_files=len(graph.nodes), read_files=len(sources),
-                          read_bytes=read_bytes, selection_complete=scan.complete)
+                          read_bytes=read_bytes, selection_complete=scan.complete,
+                          inputs_complete=scan.complete and not graph.issues)
     extract(graph, sources, deadline)
     if typescript is None:
         extract_typescript(graph, sources, deadline)

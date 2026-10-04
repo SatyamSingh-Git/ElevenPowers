@@ -53,6 +53,7 @@ def edges(value, nodes, kinds, origin, path, identity, deadline):
 
 
 def declarations(graph, sources, deadline):
+    graph.coverage['declarations_complete'] = True
     path = 'impactgraph.json'
     if path not in sources:
         return
@@ -78,6 +79,7 @@ def declarations(graph, sources, deadline):
             nodes[identity] = node
         relations = edges(value, nodes, DECLARED_KINDS, 'declared', path, '', deadline)
     except ValueError as exc:
+        graph.coverage['declarations_complete'] = False
         graph.issues.append(f'declaration rejected: {exc}')
         return
     graph.nodes.update({n.id: n for n in added})
@@ -95,7 +97,7 @@ def observations(graph, data, path, deadline):
         fingerprint = value.get('source_fingerprint')
         if not isinstance(fingerprint, str) or fingerprint != graph.fingerprint:
             raise ValueError('observation source fingerprint is stale or invalid')
-        if graph.issues:
+        if not graph.coverage.get('inputs_complete') or not graph.coverage.get('declarations_complete'):
             raise ValueError('current source/declaration coverage is incomplete')
         relations = edges(value, graph.nodes, OBSERVED_KINDS, 'observed', path,
                           producer + '/' + run, deadline)

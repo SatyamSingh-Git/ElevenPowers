@@ -1,0 +1,1580 @@
+{
+  "schema": 1,
+  "source_fingerprint": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+  "requested": [
+    "src/jinja2/nodes.py"
+  ],
+  "summary": "29 affected nodes; 24 candidate tests",
+  "affected": [
+    {
+      "id": "file:docs/examples/cache_extension.py",
+      "kind": "file",
+      "label": "docs/examples/cache_extension.py",
+      "path": "docs/examples/cache_extension.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:docs/examples/cache_extension.py",
+          "target": "symbol:src/jinja2/nodes.py#CallBlock",
+          "kind": "calls",
+          "origin": "static",
+          "path": "docs/examples/cache_extension.py",
+          "line": 38,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/compiler.py",
+      "kind": "file",
+      "label": "src/jinja2/compiler.py",
+      "path": "src/jinja2/compiler.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/compiler.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/compiler.py",
+          "line": 833,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/environment.py",
+      "kind": "file",
+      "label": "src/jinja2/environment.py",
+      "path": "src/jinja2/environment.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/ext.py",
+      "kind": "file",
+      "label": "src/jinja2/ext.py",
+      "path": "src/jinja2/ext.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/ext.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/ext.py",
+          "line": 403,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/filters.py",
+      "kind": "file",
+      "label": "src/jinja2/filters.py",
+      "path": "src/jinja2/filters.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/filters.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/filters.py",
+          "line": 35,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/idtracking.py",
+      "kind": "file",
+      "label": "src/jinja2/idtracking.py",
+      "path": "src/jinja2/idtracking.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/idtracking.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/idtracking.py",
+          "line": 3,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/meta.py",
+      "kind": "file",
+      "label": "src/jinja2/meta.py",
+      "path": "src/jinja2/meta.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/meta.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/meta.py",
+          "line": 7,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/nativetypes.py",
+      "kind": "file",
+      "label": "src/jinja2/nativetypes.py",
+      "path": "src/jinja2/nativetypes.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/nativetypes.py",
+          "target": "symbol:src/jinja2/nodes.py#Impossible",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/nativetypes.py",
+          "line": 68,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/optimizer.py",
+      "kind": "file",
+      "label": "src/jinja2/optimizer.py",
+      "path": "src/jinja2/optimizer.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/optimizer.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/optimizer.py",
+          "line": 13,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/parser.py",
+      "kind": "file",
+      "label": "src/jinja2/parser.py",
+      "path": "src/jinja2/parser.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/parser.py",
+          "target": "symbol:src/jinja2/nodes.py#And",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/parser.py",
+          "line": 550,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/runtime.py",
+      "kind": "file",
+      "label": "src/jinja2/runtime.py",
+      "path": "src/jinja2/runtime.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/visitor.py",
+      "kind": "file",
+      "label": "src/jinja2/visitor.py",
+      "path": "src/jinja2/visitor.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/visitor.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/visitor.py",
+          "line": 7,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:docs/examples/inline_gettext_extension.py",
+      "kind": "file",
+      "label": "docs/examples/inline_gettext_extension.py",
+      "path": "docs/examples/inline_gettext_extension.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:docs/examples/inline_gettext_extension.py",
+          "target": "file:src/jinja2/ext.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "docs/examples/inline_gettext_extension.py",
+          "line": 4,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/ext.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/ext.py",
+          "line": 403,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/__init__.py",
+      "kind": "file",
+      "label": "src/jinja2/__init__.py",
+      "path": "src/jinja2/__init__.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/bccache.py",
+      "kind": "file",
+      "label": "src/jinja2/bccache.py",
+      "path": "src/jinja2/bccache.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/bccache.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/bccache.py",
+          "line": 25,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/debug.py",
+      "kind": "file",
+      "label": "src/jinja2/debug.py",
+      "path": "src/jinja2/debug.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/debug.py",
+          "target": "file:src/jinja2/runtime.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/debug.py",
+          "line": 11,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/defaults.py",
+      "kind": "file",
+      "label": "src/jinja2/defaults.py",
+      "path": "src/jinja2/defaults.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/defaults.py",
+          "target": "file:src/jinja2/filters.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/defaults.py",
+          "line": 3,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/filters.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/filters.py",
+          "line": 35,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/exceptions.py",
+      "kind": "file",
+      "label": "src/jinja2/exceptions.py",
+      "path": "src/jinja2/exceptions.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/exceptions.py",
+          "target": "file:src/jinja2/runtime.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/exceptions.py",
+          "line": 4,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/lexer.py",
+      "kind": "file",
+      "label": "src/jinja2/lexer.py",
+      "path": "src/jinja2/lexer.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/lexer.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/lexer.py",
+          "line": 20,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/loaders.py",
+      "kind": "file",
+      "label": "src/jinja2/loaders.py",
+      "path": "src/jinja2/loaders.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/loaders.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/loaders.py",
+          "line": 21,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/sandbox.py",
+      "kind": "file",
+      "label": "src/jinja2/sandbox.py",
+      "path": "src/jinja2/sandbox.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/sandbox.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/sandbox.py",
+          "line": 17,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/tests.py",
+      "kind": "file",
+      "label": "src/jinja2/tests.py",
+      "path": "src/jinja2/tests.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/tests.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/tests.py",
+          "line": 12,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/utils.py",
+      "kind": "file",
+      "label": "src/jinja2/utils.py",
+      "path": "src/jinja2/utils.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/utils.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/utils.py",
+          "line": 133,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/cycle.py",
+      "kind": "file",
+      "label": "examples/basic/cycle.py",
+      "path": "examples/basic/cycle.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/cycle.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/cycle.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/debugger.py",
+      "kind": "file",
+      "label": "examples/basic/debugger.py",
+      "path": "examples/basic/debugger.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/debugger.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/debugger.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/inheritance.py",
+      "kind": "file",
+      "label": "examples/basic/inheritance.py",
+      "path": "examples/basic/inheritance.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/inheritance.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/inheritance.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/test.py",
+      "kind": "file",
+      "label": "examples/basic/test.py",
+      "path": "examples/basic/test.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/test.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/test.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/translate.py",
+      "kind": "file",
+      "label": "examples/basic/translate.py",
+      "path": "examples/basic/translate.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/translate.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/translate.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:src/jinja2/async_utils.py",
+      "kind": "file",
+      "label": "src/jinja2/async_utils.py",
+      "path": "src/jinja2/async_utils.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:src/jinja2/async_utils.py",
+          "target": "file:src/jinja2/utils.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/async_utils.py",
+          "line": 6,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/utils.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/utils.py",
+          "line": 133,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "id": "file:tests/test_ext.py",
+      "kind": "file",
+      "label": "tests/test_ext.py",
+      "path": "tests/test_ext.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:tests/test_ext.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "tests/test_ext.py",
+          "line": 501,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_idtracking.py",
+      "kind": "file",
+      "label": "tests/test_idtracking.py",
+      "path": "tests/test_idtracking.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:tests/test_idtracking.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "tests/test_idtracking.py",
+          "line": 15,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_lexnparse.py",
+      "kind": "file",
+      "label": "tests/test_lexnparse.py",
+      "path": "tests/test_lexnparse.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:tests/test_lexnparse.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_lexnparse.py",
+          "line": 4,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_nodes.py",
+      "kind": "file",
+      "label": "tests/test_nodes.py",
+      "path": "tests/test_nodes.py",
+      "line": 0,
+      "distance": 1,
+      "category": "observed",
+      "explanation": [
+        {
+          "source": "file:tests/test_nodes.py",
+          "target": "file:src/jinja2/nodes.py",
+          "kind": "observed_test",
+          "origin": "observed",
+          "path": ".elevenpowers/observed.json",
+          "line": 0,
+          "identity": "impact-coverage/1 coverage.py/7.10.7/jinja-nodes-1"
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_security.py",
+      "kind": "file",
+      "label": "tests/test_security.py",
+      "path": "tests/test_security.py",
+      "line": 0,
+      "distance": 1,
+      "category": "direct",
+      "explanation": [
+        {
+          "source": "file:tests/test_security.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "tests/test_security.py",
+          "line": 91,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/conftest.py",
+      "kind": "file",
+      "label": "tests/conftest.py",
+      "path": "tests/conftest.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/conftest.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/conftest.py",
+          "line": 6,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_api.py",
+      "kind": "file",
+      "label": "tests/test_api.py",
+      "path": "tests/test_api.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_api.py",
+          "target": "file:src/jinja2/compiler.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_api.py",
+          "line": 19,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/compiler.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/compiler.py",
+          "line": 833,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_async.py",
+      "kind": "file",
+      "label": "tests/test_async.py",
+      "path": "tests/test_async.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_async.py",
+          "target": "file:src/jinja2/nativetypes.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_async.py",
+          "line": 14,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/nativetypes.py",
+          "target": "symbol:src/jinja2/nodes.py#Impossible",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/nativetypes.py",
+          "line": 68,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_compile.py",
+      "kind": "file",
+      "label": "tests/test_compile.py",
+      "path": "tests/test_compile.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_compile.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_compile.py",
+          "line": 7,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_debug.py",
+      "kind": "file",
+      "label": "tests/test_debug.py",
+      "path": "tests/test_debug.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_debug.py",
+          "target": "file:src/jinja2/runtime.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_debug.py",
+          "line": 101,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_imports.py",
+      "kind": "file",
+      "label": "tests/test_imports.py",
+      "path": "tests/test_imports.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_imports.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_imports.py",
+          "line": 3,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_nativetypes.py",
+      "kind": "file",
+      "label": "tests/test_nativetypes.py",
+      "path": "tests/test_nativetypes.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_nativetypes.py",
+          "target": "file:src/jinja2/runtime.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_nativetypes.py",
+          "line": 8,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_regression.py",
+      "kind": "file",
+      "label": "tests/test_regression.py",
+      "path": "tests/test_regression.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_regression.py",
+          "target": "file:src/jinja2/runtime.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_regression.py",
+          "line": 582,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_runtime.py",
+      "kind": "file",
+      "label": "tests/test_runtime.py",
+      "path": "tests/test_runtime.py",
+      "line": 0,
+      "distance": 2,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_runtime.py",
+          "target": "file:src/jinja2/runtime.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_runtime.py",
+          "line": 13,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/runtime.py",
+          "target": "symbol:src/jinja2/nodes.py#EvalContext",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/runtime.py",
+          "line": 176,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/test_filter_and_linestatements.py",
+      "kind": "file",
+      "label": "examples/basic/test_filter_and_linestatements.py",
+      "path": "examples/basic/test_filter_and_linestatements.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/test_filter_and_linestatements.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/test_filter_and_linestatements.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:examples/basic/test_loop_filter.py",
+      "kind": "file",
+      "label": "examples/basic/test_loop_filter.py",
+      "path": "examples/basic/test_loop_filter.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:examples/basic/test_loop_filter.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "examples/basic/test_loop_filter.py",
+          "line": 1,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_async_filters.py",
+      "kind": "file",
+      "label": "tests/test_async_filters.py",
+      "path": "tests/test_async_filters.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_async_filters.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_async_filters.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_bytecode_cache.py",
+      "kind": "file",
+      "label": "tests/test_bytecode_cache.py",
+      "path": "tests/test_bytecode_cache.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_bytecode_cache.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_bytecode_cache.py",
+          "line": 3,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_core_tags.py",
+      "kind": "file",
+      "label": "tests/test_core_tags.py",
+      "path": "tests/test_core_tags.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_core_tags.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_core_tags.py",
+          "line": 3,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_filters.py",
+      "kind": "file",
+      "label": "tests/test_filters.py",
+      "path": "tests/test_filters.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_filters.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_filters.py",
+          "line": 7,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_inheritance.py",
+      "kind": "file",
+      "label": "tests/test_inheritance.py",
+      "path": "tests/test_inheritance.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_inheritance.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_inheritance.py",
+          "line": 3,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_loader.py",
+      "kind": "file",
+      "label": "tests/test_loader.py",
+      "path": "tests/test_loader.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_loader.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_loader.py",
+          "line": 14,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_tests.py",
+      "kind": "file",
+      "label": "tests/test_tests.py",
+      "path": "tests/test_tests.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_tests.py",
+          "target": "file:src/jinja2/__init__.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_tests.py",
+          "line": 4,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/__init__.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/__init__.py",
+          "line": 9,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    },
+    {
+      "id": "file:tests/test_utils.py",
+      "kind": "file",
+      "label": "tests/test_utils.py",
+      "path": "tests/test_utils.py",
+      "line": 0,
+      "distance": 3,
+      "category": "transitive",
+      "explanation": [
+        {
+          "source": "file:tests/test_utils.py",
+          "target": "file:src/jinja2/utils.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "tests/test_utils.py",
+          "line": 10,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/utils.py",
+          "target": "file:src/jinja2/environment.py",
+          "kind": "imports",
+          "origin": "static",
+          "path": "src/jinja2/utils.py",
+          "line": 133,
+          "identity": ""
+        },
+        {
+          "source": "file:src/jinja2/environment.py",
+          "target": "symbol:src/jinja2/nodes.py#Assign",
+          "kind": "calls",
+          "origin": "static",
+          "path": "src/jinja2/environment.py",
+          "line": 814,
+          "identity": ""
+        }
+      ]
+    }
+  ],
+  "associations": [],
+  "quarantined": [],
+  "coverage": {
+    "complete": false,
+    "unresolved_calls": 307,
+    "selected_files": 68,
+    "read_files": 68,
+    "read_bytes": 784547,
+    "selection_complete": true,
+    "inputs_complete": true,
+    "parsed_python": 60,
+    "parsed_typescript": 0,
+    "declarations_complete": true,
+    "issues": [
+      "ambiguous or rebound Python export: src/jinja2/environment.py:144",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1386",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1390",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1393",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1437",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1447",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1457",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1507",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1517",
+      "ambiguous or rebound Python export: src/jinja2/filters.py:1527",
+      "ambiguous or rebound Python export: src/jinja2/nativetypes.py:88",
+      "ambiguous or rebound Python export: src/jinja2/nodes.py:1201",
+      "ambiguous or rebound Python export: src/jinja2/nodes.py:54",
+      "ambiguous or rebound Python export: tests/test_async_filters.py:163",
+      "ambiguous or rebound Python export: tests/test_async_filters.py:198",
+      "shadowed Python call binding at src/jinja2/environment.py:1388"
+    ]
+  },
+  "limits": [
+    "Selection completeness is not exhaustive semantic coverage.",
+    "Static calls describe qualified imported bindings or compiler implementations, not runtime dispatch.",
+    "Declared relationships are project assertions; observed relationships are unsigned.",
+    "Test relationships suggest checks; they do not establish passing assertions.",
+    "Co-change is association, not causation or a breakage probability.",
+    "Fresh reads are a bounded filesystem snapshot, not an atomic transaction."
+  ]
+}

@@ -52,13 +52,13 @@ qualification in build/ingest, `tests/test_impact_coverage.py`.
 Interfaces: offline converters consume producer files and an execution receipt;
 emit schema-1 observed-test edges or a qualified incomplete artifact.
 
-- [ ] Execute actual coverage.py contexts and Node V8 output; write current,
+- [x] Execute actual coverage.py contexts and Node V8 output; write current,
   stale, incomplete, no-context, source-map and unsafe-path controls. Expected RED.
-- [ ] Distinguish incomplete input/declaration coverage from static omissions;
+- [x] Distinguish incomplete input/declaration coverage from static omissions;
   accept current complete observations only inside known readable endpoints.
-- [ ] Add offline conversion, bounded reads and explicit no-overwrite export.
+- [x] Add offline conversion, bounded reads and explicit no-overwrite export.
   Ordinary queries still execute no tests, compiler unless selected, or host.
-- [ ] Run producer and ingestion/CLI controls; commit/push useful observations.
+- [x] Run producer and ingestion/CLI controls; commit/push useful observations.
 
 ## Task 4: Independent behavior and held-out results
 

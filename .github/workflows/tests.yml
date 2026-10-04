@@ -35,7 +35,7 @@ jobs:
           node-version: "22"
       - name: Optional mutation engine acceptance dependencies
         run: |
-          python -m pip install -r requirements-strength.txt -r requirements-impact.txt
+          python -m pip install -r requirements-strength.txt -r requirements-impact.txt -r requirements-impact-eval.txt
           npm install --prefix .venv/strength-js --ignore-scripts --no-audit --no-fund @stryker-mutator/instrumenter@9.5.1 typescript@5.7.3
       - name: Standard-library runtime without site packages
         run: python -S -c "import core.impact; import core.strength.runner; import core.export; import core.hosts.validation; import core.hosts.performance; import eval.paired; import eval.benefit; import eval.benefit_archive; import eval.proposals; import eval.hard_archive; import eval.hard_audit"
