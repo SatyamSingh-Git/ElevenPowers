@@ -181,6 +181,7 @@ def experiment(definition, corpus, roots, predictions, tools, private):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--cases',type=Path,default=Path(__file__).with_name('impact_cases.json'))
     parser.add_argument('--roots',type=Path,required=True)
     parser.add_argument('--definitions',type=Path,required=True)
     parser.add_argument('--old',type=Path,required=True)
@@ -191,8 +192,9 @@ def main():
     args=parser.parse_args()
     # Freeze the controller/input identities before any experiment is launched.
     identity={'controller_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-              'version':'impact-behavior/3'}
-    corpus=load_cases(Path(__file__).with_name('impact_cases.json'))
+              'version':'impact-behavior/4'}
+    corpus=load_cases(args.cases)
+    corpus_hash=hashlib.sha256(args.cases.read_bytes()).hexdigest()
     def bounded(path,limit=8*1024*1024):
         with path.open('rb') as stream:data=stream.read(limit+1)
         if len(data)>limit:raise ValueError('evaluator JSON input limit exceeded')
@@ -207,7 +209,8 @@ def main():
         futures=[pool.submit(experiment,d,corpus,roots,predictions,args.tools.resolve(),private) for d in definitions]
         rows=[f.result() for f in futures]
     qualified=[r for r in rows if r['qualified']]
-    result={'schema':1,'controller':identity,'definitions_sha256':hashlib.sha256(definitions_data).hexdigest(),
+    result={'schema':1,'controller':identity,'corpus_sha256':corpus_hash,
+        'definitions_sha256':hashlib.sha256(definitions_data).hexdigest(),
         'predictions_sha256':{k:hashlib.sha256(data).hexdigest() for k,data in prediction_data.items()},
         'attempted':len(rows),'qualified':len(qualified),'detected':{k:sum(r['detected'].get(k,False) for r in qualified) for k in predictions},
         'experiments':rows,'limits':['Authored faults, not agent patches or population quality evidence.',

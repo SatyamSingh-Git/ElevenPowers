@@ -64,3 +64,23 @@ def test_actual_pytest_runtime_error_is_not_a_qualified_fault(tmp_path):
     result=execute(root,['test_runtime.py'],'pytest',None,reports,'actual',dict(os.environ))
     assert result['status']=='incomplete'
     assert result['exit_code']==1 and result['failed']==1
+
+
+def test_behavior_controller_records_explicit_frozen_corpus_identity(tmp_path, monkeypatch):
+    import hashlib
+    import sys
+    from eval.impact_behavior import main
+    corpus = tmp_path / 'cases.json'
+    corpus.write_text(json.dumps({'schema':1, 'projects':[{'id':'example','commit':'a'*40,
+        'files':{'api.py':'b'*64}}], 'cases':[{'id':'example-case','project':'example',
+        'split':'development','query':'api.py','consumers':[],'tests':[],'unrelated':[]}]}))
+    definitions = tmp_path / 'definitions.json'; definitions.write_text('[]')
+    roots = tmp_path / 'roots.json'; roots.write_text('{}')
+    predictions = tmp_path / 'predictions.json'; predictions.write_text('{"projects":[]}')
+    output = tmp_path / 'result.json'
+    monkeypatch.setattr(sys, 'argv', ['impact_behavior', '--cases', str(corpus),
+        '--definitions', str(definitions), '--roots', str(roots), '--old', str(predictions),
+        '--final', str(predictions), '--tools', str(tmp_path), '--private', str(tmp_path/'private'),
+        '--output', str(output)])
+    main()
+    assert json.loads(output.read_text())['corpus_sha256'] == hashlib.sha256(corpus.read_bytes()).hexdigest()

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "reused-process-output-limit",
+    "project": "elevenpowers",
+    "case": "ep-run-literal",
+    "query": "core/process.py",
+    "kind": "pytest",
+    "full_tests": ["tests/test_process.py", "tests/test_redact.py"],
+    "before": "MAX_OUTPUT_BYTES = 8 * 1024 * 1024",
+    "after": "MAX_OUTPUT_BYTES = 16 * 1024 * 1024"
+  },
+  {
+    "id": "environment-default-autoescape",
+    "project": "jinja",
+    "case": "jinja-environment-fixture",
+    "query": "src/jinja2/environment.py",
+    "kind": "pytest",
+    "pythonpath": "src",
+    "full_tests": ["tests/test_api.py", "tests/test_filters.py", "tests/test_nodes.py"],
+    "before": "self.autoescape = autoescape",
+    "after": "self.autoescape = True"
+  },
+  {
+    "id": "choice-fixture-wrong-template",
+    "project": "jinja",
+    "case": "jinja-fixture-change",
+    "query": "tests/conftest.py",
+    "kind": "pytest",
+    "pythonpath": "src",
+    "full_tests": ["tests/test_loader.py"],
+    "before": "return loaders.ChoiceLoader([dict_loader, package_loader])",
+    "after": "return loaders.ChoiceLoader([loaders.DictLoader({\"justdict.html\": \"BROKEN\"}), package_loader])"
+  }
+]
