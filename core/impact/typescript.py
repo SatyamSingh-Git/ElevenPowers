@@ -79,6 +79,33 @@ def resolve(spec, importer, sources, workspaces, external):
     return '', 'ambiguous' if hits else 'unresolved'
 
 
+def _binds_require(node, deadline):
+    """Inspect binding positions, excluding property keys and default values."""
+    pending = [node] if node is not None else []
+    while pending:
+        if time.monotonic() >= deadline:
+            raise TimeoutError()
+        item = pending.pop()
+        if item.type in ('identifier', 'shorthand_property_identifier_pattern'):
+            if item.text == b'require':
+                return True
+        elif item.type == 'pair_pattern':
+            child = item.child_by_field_name('value')
+            if child is not None:
+                pending.append(child)
+        elif item.type in ('assignment_pattern', 'object_assignment_pattern'):
+            child = item.child_by_field_name('left')
+            if child is not None:
+                pending.append(child)
+        elif item.type in ('required_parameter', 'optional_parameter'):
+            child = item.child_by_field_name('pattern') or item.child_by_field_name('name')
+            if child is not None:
+                pending.append(child)
+        elif item.type in ('object_pattern', 'array_pattern', 'rest_pattern', 'formal_parameters'):
+            pending.extend(item.named_children)
+    return False
+
+
 def extract_typescript(graph, sources, deadline):
     workspaces, external = packages(sources, graph)
     parsed = 0
@@ -108,13 +135,26 @@ def extract_typescript(graph, sources, deadline):
                 graph.issues.append('impact deadline reached resolving JS/TS bindings')
                 break
             binding = bindings.pop()
-            if binding.type in ('variable_declarator', 'function_declaration', 'required_parameter',
-                                'optional_parameter', 'assignment_expression', 'import_specifier'):
-                name = binding.child_by_field_name('name') or binding.child_by_field_name('pattern') or binding.child_by_field_name('left')
-                if name is not None and name.text == b'require':
+            names = []
+            if binding.type in ('variable_declarator', 'function_declaration', 'function_expression',
+                                'class_declaration', 'required_parameter', 'optional_parameter',
+                                'assignment_expression'):
+                names = [binding.child_by_field_name('name') or
+                         binding.child_by_field_name('pattern') or binding.child_by_field_name('left')]
+            elif binding.type == 'import_specifier':
+                names = [binding.child_by_field_name('alias') or binding.child_by_field_name('name')]
+            elif binding.type in ('import_clause', 'namespace_import'):
+                names = [n for n in binding.named_children if n.type == 'identifier']
+            elif binding.type in ('arrow_function', 'catch_clause'):
+                names = [binding.child_by_field_name('parameter')]
+            elif binding.type == 'formal_parameters':
+                names = [binding]
+            try:
+                if any(_binds_require(name, deadline) for name in names):
                     shadowed_require = True
-            if binding.type == 'formal_parameters' and any(n.text == b'require' for n in binding.named_children):
-                shadowed_require = True
+            except TimeoutError:
+                graph.issues.append('impact deadline reached resolving JS/TS bindings')
+                break
             bindings.extend(binding.children)
         stack = [tree.root_node]
         while stack:

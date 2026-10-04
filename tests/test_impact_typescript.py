@@ -92,6 +92,15 @@ def test_duplicate_workspace_and_unsafe_relative_import(tmp_path):
 @pytest.mark.parametrize('source', [
     'function invoke(require: (x: string) => number) { return require("./session"); }',
     'const require = (x: string) => 1; require("./session");',
+    'const {require} = custom; require("./session");',
+    'import require from "./custom"; require("./session");',
+    'import {other as require} from "./custom"; require("./session");',
+    'import * as require from "./custom"; require("./session");',
+    'const f = require => require("./session");',
+    'try { throw custom; } catch (require) { require("./session"); }',
+    'const f = function require() { return require("./session"); };',
+    'const {other: require} = custom; require("./session");',
+    'const [require] = custom; require("./session");',
 ])
 def test_shadowed_require_is_not_a_module_import(tmp_path, source):
     put(tmp_path, 'session.ts', 'export const x=1;')
@@ -99,6 +108,14 @@ def test_shadowed_require_is_not_a_module_import(tmp_path, source):
     value = build(tmp_path)
     assert not links(value)
     assert 'shadowed' in ' '.join(value.issues)
+
+
+@pytest.mark.skipif(not polyglot.available(), reason='optional grammar pack absent')
+def test_imported_property_named_require_is_not_a_local_require_binding(tmp_path):
+    put(tmp_path, 'custom.ts', 'export const require = () => 1;')
+    put(tmp_path, 'session.ts', 'export const x=1;')
+    put(tmp_path, 'api.ts', 'import {require as custom} from "./custom"; require("./session");')
+    assert ('file:api.ts', 'file:session.ts') in links(build(tmp_path))
 
 
 @pytest.mark.skipif(not polyglot.available(), reason='optional grammar pack absent')
