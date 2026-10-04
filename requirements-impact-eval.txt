@@ -1,0 +1,3 @@
+# Explicit benchmark/coverage producers; not required by ordinary queries.
+coverage==7.10.7
+MarkupSafe==3.0.3
