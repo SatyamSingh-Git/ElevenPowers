@@ -25,6 +25,16 @@ def _relative(value):
     return value
 
 
+def _query(value):
+    if isinstance(value, str) and value.startswith('symbol:'):
+        path, separator, symbol = value[7:].partition('#')
+        _relative(path)
+        if not separator or not re.fullmatch(r'[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*', symbol):
+            raise ValueError('invalid symbol query')
+        return value
+    return _relative(value)
+
+
 def load_cases(path):
     with Path(path).open('rb') as stream:
         data=stream.read(4*1024*1024+1)
@@ -64,7 +74,7 @@ def load_cases(path):
         if not isinstance(identity,str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,100}',identity) or identity in ids:
             raise ValueError('duplicate/invalid case')
         ids.add(identity)
-        _relative(case.get('query'))
+        _query(case.get('query'))
         for field in ('consumers','tests','unrelated'):
             rows=case.get(field)
             if (not isinstance(rows,list) or len(rows)>1000 or any(not isinstance(x,str) for x in rows)

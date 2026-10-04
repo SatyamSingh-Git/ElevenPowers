@@ -36,6 +36,26 @@ def test_missing_known_positive_and_explicit_negative_are_retained():
     assert result['negative_hits'] == ['other.py']
 
 
+def test_symbol_query_uses_the_same_safe_selected_path_contract(tmp_path):
+    path, value = manifest(tmp_path)
+    value['cases'][0]['query'] = 'symbol:pkg/api.py#Service.expire'
+    path.write_text(json.dumps(value))
+    assert load_cases(path)['cases'][0]['query'] == 'symbol:pkg/api.py#Service.expire'
+
+
+@pytest.mark.parametrize('query', [
+    'symbol:../outside.py#expire', 'symbol:pkg/api.py#../expire',
+    'symbol:C:/secret.py#expire', 'symbol:pkg/api.py#',
+    'symbol:pkg/api.py#expire#extra', 'symbol:pkg/api.py#expire()',
+])
+def test_unsafe_or_non_symbol_query_ids_are_rejected(tmp_path, query):
+    path, value = manifest(tmp_path)
+    value['cases'][0]['query'] = query
+    path.write_text(json.dumps(value))
+    with pytest.raises(ValueError):
+        load_cases(path)
+
+
 @pytest.mark.parametrize('mutate',[
     lambda v: v.update(schema=2),
     lambda v: v['cases'][0].update(query='../outside.py'),
