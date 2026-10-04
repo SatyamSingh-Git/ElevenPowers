@@ -1,41 +1,66 @@
 # ElevenPowers — living architecture graph
 
-Four views of the whole system — the runtime, the plugin seam it reaches the
-host through, the durable ledger, and the evaluation harness — in one
+Five views of the system and its unfinished work — the runtime, plugin seam,
+durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.
 
 ### ▶ **[Open the live graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)**
 
 Or open [`index.html`](index.html) from a local clone — double-click it. No
-server, no build, no network either way.
+server or build. The viewer works offline; choosing a source link opens its
+document on GitHub.
 
 > **Why clicking the file on github.com shows code.** github.com is a source
 > browser: it renders `.md` and shows every other file as text. That is its
 > viewer, not a problem with the page. The live link above is the same file
-> served by GitHub Pages, where it renders. Both are verified — all four tabs
-> were confirmed drawing over HTTPS, not just from `file://`.
+> served by GitHub Pages, where it renders. The original four views were checked
+> over HTTPS. The fifth view has local interaction checks; a deployment is checked
+> separately from the source file.
 
-## The four views (tabs across the top)
+## The five views (tabs across the top)
 
 | Tab | What it shows | How it's drawn |
 |---|---|---|
 | **Overview** | Every module, event and service as a coloured node; every import and data flow as an edge. Draggable, zoomable, click-to-inspect. | canvas force-directed graph |
 | **Data flow** | One task from request to verdict, as numbered **request → / response ←** pairs. | SVG swimlanes |
 | **Architecture** | The system in tiers: host surface → the plugin seam → `core/` → durable state → `eval/` → external. | SVG layered lanes |
-| **Workflow** | Three sequences left-to-right: a task as the runtime sees it, one paired evaluation run, and what v0.8 adds. | SVG numbered steps |
+| **Workflow** | Shipped runtime, evaluation, native validation and v0.8 mechanisms, with their limits. | SVG numbered steps |
+| **Planned** | Forty-one unfinished milestones, research questions, conditional extensions and proposals. Search and filter, then expand a card for requirements, acceptance criteria, a first contribution, prerequisites and sources. | responsive HTML cards using native `details` |
 
 ## Files
 
 | File | Role |
 |---|---|
-| `index.html` | **Live source and self-contained viewer.** Its inlined `GRAPH` and the three structured-view datasets drive all four tabs. |
+| `index.html` | **Live source and self-contained viewer.** Its inlined `GRAPH`, three structured-view datasets and `PLANNED` contributor dataset drive all five tabs. |
 | `graph-data.js` | **Generated mirror** of the Overview graph (`window.ELEVENPOWERS_GRAPH`). Regenerated from `index.html`; never hand-edited. |
-| `check.py` | Regenerates the mirror and validates the page. `--render` proves all four tabs actually draw. |
+| `check.py` | Regenerates the mirror, validates roadmap sources/dependencies and checks the page. `--render` exercises all five tabs and the contributor interactions. |
 
 The three structured views are driven by small hand-curated datasets inlined in
 `index.html` — `DF_ACTORS`/`DF_STEPS`, `ARCH_LAYERS`/`ARCH_LINKS`, and
 `WF_LANES`. They are deliberately summaries rather than auto-derived from the
 node graph, so each view stays readable.
+
+The contributor view is driven by the inlined JSON array `PLANNED`. A card has a
+stable `id`, title, topic, commitment status, summary, rationale, remaining work,
+acceptance criteria, a small first contribution and repository source paths.
+Optional `dependsOn` ids link to other cards; conditional cards require a
+`trigger`. Share `#planned` for the whole view or `#planned/impact-graph` for an
+expanded item. Search checks all card fields and combines with topic/status
+filters. Several cards can remain open; keyboard activation and both themes work.
+
+The statuses are substantive:
+
+- **Open milestone** finishes a delivered capability's unmet exit.
+- **Planned research** represents remaining master-plan experiments.
+- **Conditional** waits for the documented measurement trigger.
+- **Proposed** records a direction for design discussion, including ImpactGraph,
+  PatchProof, OpenCodeMap, TestMiner and three additional contribution ideas.
+
+The current 41 cards comprise 3 open milestones, 17 planned research items,
+14 conditional extensions and 7 proposals. This view consolidates the remaining
+work in `PLAN.md`, `docs/status.md`, `docs/postponed.md` and the readable roadmap.
+Completed deliveries are context inside cards, not presented as future work.
+The view does not approve model runs or supersede research/defer conditions.
 
 ## How to read it
 
@@ -49,7 +74,7 @@ node graph, so each view stays readable.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **107 nodes / 246 edges** across 7 planes (as of 2026-10-03),
+Current size: **107 nodes / 246 edges** across 7 planes (as of 2026-10-04),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -58,7 +83,7 @@ the controlled completion comparison and neutral proposal recorder,
 including runtime-bound validation, readonly performance and a frozen subscription pilot,
 fresh staged health, bounded native diagnostics, disposable acceptance,
 onboarding, native edits, portable reports and optional changed-file test strength.
-All four tabs draw after the structural update.
+The fifth tab adds contributor content, not fictitious runtime graph nodes.
 
 The **Workflow** tab's third lane now identifies built v0.8 mechanisms and their
 limits. Mutation findings are optional human review observations; missing engines,
@@ -83,9 +108,11 @@ edit `index.html`, then run the check — never hand-edit the two out of sync.
    - the task lifecycle changed → `DF_STEPS` and/or the `task` lane in `WF_LANES`;
    - a new module, hook event, state file or eval stage → `ARCH_LAYERS` +
      `ARCH_LINKS`;
-   - something in the v0.8 lane got **built** → move it out of the "planned, NOT
-     built" lane. That lane is a promise, and a stale promise is the worst node
-     on the page.
+   - a planned item got **built** → reconcile or remove its `PLANNED` card and
+     update the shipped graph/workflow as appropriate. Preserve any genuinely
+     unmet acceptance criterion as remaining work, with current sources;
+   - unfinished work or a proposal changed → update its `PLANNED` card, source
+     links, prerequisites and status. Conditional work keeps its actual trigger.
    Keep `sub:` text **at most ~42 characters** — the boxes are fixed width and
    longer text overlaps its neighbours. Long-form detail belongs in the node's
    `desc`, which the Overview inspector renders properly.
@@ -96,7 +123,8 @@ edit `index.html`, then run the check — never hand-edit the two out of sync.
 python architecture/check.py --render
 ```
 
-Expect `OK` and `render  all four tabs draw`.
+Expect `OK` and `render  all five tabs work; cards, filters, keyboard, shared
+links and narrow layout verified`.
 
 `check.py` also refuses to pass if any `.py` under `core/`, `eval/` or
 `plugin/bin` is missing from the graph — a new module nobody drew is exactly how
@@ -157,4 +185,8 @@ bounded receipt/phase history. Explicit `core/hosts/acceptance.py` preparation
 creates a new Python/Node exercise; inspection rechecks its immutable contract
 and requires native pass/fail/incomplete history plus fresh completion.
 
-The graph has 95 nodes and 216 edges at this revision. [Current status](../docs/status.md) and [validation records](../docs/validation/README.md) describe which paths were exercised. All four views were rendered locally; this documentation update does not claim a fresh HTTPS deployment check.
+The graph has 107 nodes and 246 edges. [Current status](../docs/status.md) and
+[validation records](../docs/validation/README.md) describe which product paths
+were exercised. The Planned tab exposes unfinished work separately from those
+delivered paths. See [journey 59](../journey/59-a-roadmap-contributors-can-open.md)
+for the contributor view and its verification boundary.

@@ -6,6 +6,12 @@ verification. Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CL
 have reversible project wiring; the four additions also have portable bundles.
 This delivery does not establish improved patch outcomes.
 
+The architecture page's [Planned view](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
+now gives contributors forty-one expandable entry points into unfinished delivery,
+research, conditional extensions and proposals. Cards link to the current
+sources, identify acceptance criteria and suggest a small first contribution.
+This is contributor navigation; the product's unmet exits below remain open.
+
 ## Shipped and exercised
 
 | Capability | Delivered behavior | Evidence boundary |

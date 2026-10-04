@@ -4,7 +4,7 @@
 `graph-data.js` is a generated, human-readable mirror — never hand-edited.
 
     python architecture/check.py            # regenerate + validate
-    python architecture/check.py --render   # also prove all four tabs draw
+    python architecture/check.py --render   # also prove all five tabs work
 
 The render check is the one that matters. Every structural check below passed
 on a page that rendered nothing at all, because a single apostrophe inside a
@@ -56,6 +56,42 @@ def uncovered(g: dict) -> list[str]:
     return out
 
 
+def planned(html: str) -> tuple[list[dict], list[str]]:
+    """Keep contributor links and dependency paths usable as the roadmap grows."""
+    match = re.search(r"const PLANNED = (\[.*?\n\]);\n", html, re.S)
+    if not match:
+        return [], ["missing contributor roadmap data"]
+    try:
+        items = json.loads(match.group(1))
+    except json.JSONDecodeError as error:
+        return [], [f"invalid contributor roadmap JSON: {error}"]
+    problems = []
+    ids = [item.get("id") for item in items]
+    if not items or len(set(ids)) != len(ids):
+        problems.append("contributor roadmap is empty or has duplicate ids")
+    for item in items:
+        name = item.get("id", "unnamed")
+        if not re.fullmatch(r"[a-z][a-z0-9-]*", name):
+            problems.append(f"invalid roadmap id: {name}")
+        for key in ("title", "area", "status", "summary", "why", "remaining", "first"):
+            if not isinstance(item.get(key), str) or not item[key].strip():
+                problems.append(f"{name}: missing {key}")
+        if item.get("status") not in {"Open milestone", "Planned research", "Conditional", "Proposed"}:
+            problems.append(f"{name}: unknown commitment status")
+        if not item.get("acceptance") or not item.get("sources"):
+            problems.append(f"{name}: missing acceptance criteria or source links")
+        if item.get("status") == "Conditional" and not item.get("trigger"):
+            problems.append(f"{name}: conditional work needs a trigger")
+        for dependency in item.get("dependsOn", []):
+            if dependency not in ids or dependency == name:
+                problems.append(f"{name}: unknown/self dependency {dependency}")
+        for source in item.get("sources", []):
+            path = source.split("#", 1)[0]
+            if path.startswith(("/", "\\")) or ".." in Path(path).parts or not (HERE.parent / path).is_file():
+                problems.append(f"{name}: missing or unsafe source {source}")
+    return items, problems
+
+
 def main() -> int:
     html = PAGE.read_text(encoding="utf-8")
     g = graph()
@@ -65,7 +101,7 @@ def main() -> int:
                 if e["source"] not in ids or e["target"] not in ids]
     unknown = sorted({n["plane"] for n in g["nodes"]} - set(g["planes"]))
 
-    problems = []
+    _, problems = planned(html)
     if dangling:
         problems.append(f"dangling edges: {', '.join(dangling)}")
     if len(ids) != len(g["nodes"]):
@@ -112,8 +148,7 @@ def render() -> list[str]:
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
-        print("render  SKIPPED (pip install playwright && playwright install chromium)")
-        return []
+        return ["render unavailable: install playwright and its Chromium browser before claiming visual verification"]
 
     bad: list[str] = []
     errors: list[str] = []
@@ -145,12 +180,80 @@ def render() -> list[str]:
             drawn = page.eval_on_selector(sel, "e => e.querySelectorAll('*').length")
             if not drawn:
                 bad.append(f"{view} tab drew nothing")
+
+        if not page.locator('.tab[data-view="planned"]').count():
+            bad.append("planned tab is missing")
+        else:
+            page.click('.tab[data-view="planned"]')
+            cards = page.locator("#planned-grid details")
+            items, _ = planned(PAGE.read_text(encoding="utf-8"))
+            if cards.count() != len(items) or not cards.count():
+                bad.append(f"planned tab drew {cards.count()} cards, expected {len(items)}")
+            else:
+                card = cards.first
+                card.locator("summary").click()
+                if not card.evaluate("e => e.open") or not card.locator(".planned-body").is_visible():
+                    bad.append("planned card does not expand on click")
+                card.locator("summary").focus()
+                page.keyboard.press("Enter")
+                if card.evaluate("e => e.open"):
+                    bad.append("planned card does not collapse with the keyboard")
+                page.fill("#planned-search", "ImpactGraph")
+                if page.locator("#planned-grid details:visible").count() != 1:
+                    bad.append("planned search did not isolate ImpactGraph")
+                page.fill("#planned-search", "a-query-with-no-roadmap-match")
+                if page.locator("#planned-grid details:visible").count() or not page.locator("#planned-empty").is_visible():
+                    bad.append("planned search does not explain an empty result")
+                page.fill("#planned-search", "")
+                page.select_option("#planned-status", "Conditional")
+                if not page.locator("#planned-grid details:visible").count() or page.locator('#planned-grid details:not([data-status="Conditional"]):visible').count():
+                    bad.append("planned commitment filter mixes conditional work with promises")
+                page.select_option("#planned-status", "")
+                page.select_option("#planned-area", "Project graph")
+                if not page.locator("#planned-grid details:visible").count() or page.locator('#planned-grid details:not([data-area="Project graph"]):visible').count():
+                    bad.append("planned topic filter is incorrect")
+                page.select_option("#planned-area", "")
+                page.goto(PAGE.as_uri() + "#planned/impact-graph")
+                if not page.locator("#view-planned").is_visible() or not page.locator("#planned-impact-graph").evaluate("e => e.open"):
+                    bad.append("planned item cannot be opened from its shared link")
+                page.fill("#planned-search", "OpenCodeMap")
+                page.locator("#planned-open-code-map summary").click()
+                page.locator('#planned-open-code-map a[href="#planned/impact-graph"]').click()
+                if page.locator("#planned-search").input_value() or not page.locator("#planned-impact-graph").is_visible():
+                    bad.append("a prerequisite link to the current hash leaves its target hidden by a filter")
+                if page.locator("#planned-impact-graph summary").evaluate("e => e !== document.activeElement"):
+                    bad.append("planned item navigation does not move keyboard focus to its target")
+                page.click("#theme")
+                if page.locator("html").get_attribute("data-theme") != "light":
+                    bad.append("theme toggle did not switch the initial dark page to light")
+                if not page.locator("#planned-impact-graph").evaluate("e => e.open"):
+                    bad.append("theme switching discarded the expanded planned card")
+                low_contrast = page.eval_on_selector_all(
+                    ".planned-badge, .planned-body a",
+                    """elements => {
+                      const luminance = color => {
+                        const rgb = color.match(/[\\d.]+/g).slice(0, 3).map(Number);
+                        const linear = rgb.map(n => {const s=n/255; return s<=0.04045?s/12.92:((s+0.055)/1.055)**2.4;});
+                        return linear[0]*0.2126+linear[1]*0.7152+linear[2]*0.0722;
+                      };
+                      return elements.filter(e => {
+                        const foreground=luminance(getComputedStyle(e).color);
+                        const background=luminance(getComputedStyle(e.closest('.planned-card')).backgroundColor);
+                        return (Math.max(foreground,background)+0.05)/(Math.min(foreground,background)+0.05)<4.5;
+                      }).map(e => e.textContent);
+                    }""")
+                if low_contrast:
+                    bad.append(f"small planned text lacks 4.5:1 light-theme contrast: {low_contrast[:5]}")
+                page.set_viewport_size({"width": 390, "height": 844})
+                overflow = page.locator("#view-planned .scroll").evaluate("e => e.scrollWidth > e.clientWidth + 1")
+                if overflow:
+                    bad.append("planned view overflows a narrow screen")
         b.close()
 
     for e in errors[:5]:
         bad.append(f"page error: {e}")
     if not bad:
-        print("render  all four tabs draw")
+        print("render  all five tabs work; cards, filters, keyboard, shared links and narrow layout verified")
     return bad
 
 

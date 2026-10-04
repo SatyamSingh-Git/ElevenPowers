@@ -2,6 +2,8 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-04 contributor roadmap](2026-10-04-contributor-roadmap.md): fifth architecture view, 41 sourced expandable cards, commitment and trigger boundaries, browser navigation/filter/theme/contrast checks and independently reproduced review corrections.
+
 - [2026-10-03 changed-region strength](2026-10-03-strength-regions.md): generalized hunk/function sampling, real upstream relevance gains, independently reproduced boundary/coverage fixes and all twelve completed corrected review regrades; coding benefit remains unproved.
 
 - [2026-10-02 fixed-patch review](2026-10-02-checkpoint-review.md): eight completed Sonnet 5 medium reviews; both arms detect five previously missed meaningful Jinja2 faults, four matched ties, slower assisted native times and platform/relevance limits. The resumed corrected regrade is separately versioned.

@@ -1,5 +1,12 @@
 # Postponed, with the trigger that would build it
 
+**Contributor view, 2026-10-04.** These triggers are now included in the
+[Planned tab](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
+as expandable conditional cards. Recording them there does not activate them.
+Changed-hunk/function targeting has since shipped; semantic-equivalence
+qualification, broader dependency scope and outcome benefit remain separate
+work. The dated notes below retain the order in which those decisions were made.
+
 **Scope clarification, 2026-09-29.** Repository-aware selection and automatic command discovery are shipped. The repository model postponed here means per-test dependency/impact analysis; it does not mean Git ignores, boundaries or coverage diagnostics are missing. Four additional native adapters are implemented: Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI. Their live installed-session acceptance remains open. See [current status](status.md).
 
 **2026-10-01 update.** Generalized five-host onboarding, callback activation,

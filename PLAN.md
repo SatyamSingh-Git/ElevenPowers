@@ -1,5 +1,15 @@
 # Master Plan v0.8
 
+**Contributor roadmap, 2026-10-04.** The architecture page now has a
+[Planned view](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
+with forty-one expandable cards for remaining delivery exits, research, conditional
+extensions and proposals. Each supplies requirements, acceptance criteria,
+a small first contribution and source links. Seven proposals include the shared
+ImpactGraph/PatchProof/OpenCodeMap/TestMiner direction, milestone verification,
+CI evidence import and contributor exercises. Recording a proposal does not
+approve its implementation or change the conditional triggers below. The
+existing benefit and installed-acceptance exits remain open.
+
 **Changed-region relevance delivery, 2026-10-03.** The free corrected review
 regrade is complete. Generalized optional analysis now records changed hunks,
 partitions broad/new-file changes by function, contains full mutation spans and

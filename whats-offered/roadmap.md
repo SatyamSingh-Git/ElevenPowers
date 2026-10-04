@@ -1,5 +1,12 @@
 # Roadmap
 
+For contributor-sized entry points, open the architecture page's
+[Planned tab](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned).
+Its expandable cards consolidate the remaining work below and in the master
+plan, current status and postponed list. Open milestones, planned research,
+conditional work and proposed directions have separate labels. Each card
+includes acceptance criteria, a small first contribution and source links.
+
 **Product delivery update, 2026-10-03.** Generalized five-host integration,
 repository evidence, durable verification, portable reports, changed-region test
 strength and fresh health are built. The relevance milestone now partitions Git
