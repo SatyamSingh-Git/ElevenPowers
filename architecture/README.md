@@ -74,7 +74,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **119 nodes / 272 edges** across 7 planes (as of 2026-10-04),
+Current size: **122 nodes / 278 edges** across 7 planes (as of 2026-10-04),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -89,7 +89,11 @@ declared contracts, current unsigned observations and historical associations
 retain separate qualifications. Optional virtual TypeScript compiler, offline
 actual Python/Node coverage and frozen independent fault/reference evaluation
 now have explicit source and workflow nodes. The process-fault miss and broad
-candidate sets keep automatic advisories unqualified. Source maps, live traces,
+candidate sets kept that acceptance exit unqualified. The relevance repair now
+adds source-only literal imports, context-bound pytest fixtures and independent
+focused/fallback/support tiers. Saved report reclassification preserves original
+producer identity; broader noise and native cost still keep hooks unqualified.
+Source maps, live traces,
 framework adapters and further relevance work remain open; see
 [ImpactGraph acceptance](../docs/validation/2026-10-04-impact-acceptance.md).
 
@@ -193,7 +197,7 @@ bounded receipt/phase history. Explicit `core/hosts/acceptance.py` preparation
 creates a new Python/Node exercise; inspection rechecks its immutable contract
 and requires native pass/fail/incomplete history plus fresh completion.
 
-The graph has 107 nodes and 246 edges. [Current status](../docs/status.md) and
+The graph has 122 nodes and 278 edges. [Current status](../docs/status.md) and
 [validation records](../docs/validation/README.md) describe which product paths
 were exercised. The Planned tab exposes unfinished work separately from those
 delivered paths. See [journey 59](../journey/59-a-roadmap-contributors-can-open.md)

@@ -8,6 +8,13 @@ supply them with `--observations`. Current input/declaration coverage is require
 static semantic gaps remain visible. Automatic impact advisories are not yet
 qualified. See [ImpactGraph](impactgraph.md) for supported producers and receipts.
 
+Literal Python dynamic imports, source-only pytest fixture relationships and
+focused/fallback/support recommendation tiers require no project-specific
+configuration or pytest runtime dependency. Default pytest collection names and
+selected ancestor fixture scopes are modeled; plugins, custom collection and
+dynamic registrations remain gaps. `test_selection.safe_to_exclude_fallback`
+stays false, and the existing scan/query budgets still apply.
+
 Optional changed-region test strength is shared by every host and considered at
 completion in guide/strict mode. Off stays passive; runtime never installs engines.
 Project-owned `.elevenpowers/config.json` can include:

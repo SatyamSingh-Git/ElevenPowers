@@ -47,7 +47,8 @@ into sibling test scopes. Unknown class registrations and imports stay gaps.
 ## Frozen evaluation and delivery
 
 Preserve runtime f31f6a2 as the old version. Freeze twelve new authored queries
-across the same pinned Python repositories, including file and symbol queries,
+across the same pinned Python repositories, using symbol queries here and
+file queries in the reused prior corpus,
 six development and six held out by relationship family. Source hashes and
 known references are evaluator-owned. The known process/nodes misses and prior
 24 cases are separately reused regression data. Extra candidates remain unknown

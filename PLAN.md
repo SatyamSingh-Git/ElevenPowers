@@ -1,5 +1,20 @@
 # Master Plan v0.8
 
+**ImpactGraph relevance repair, 2026-10-04.** Literal Python dynamic imports,
+context-bound default pytest fixture relationships and focused/fallback/support
+recommendation tiers are implemented. Twelve new authored symbol scenarios
+retain frozen inputs and disjoint development/held-out families. After one
+explicitly recorded mistaken test/consumer label is withdrawn equally for both
+versions, known-test recovery moves from 4/12 to 11/12 (development 2/6 to 6/6;
+held out 2/6 to 5/6). The prior corpus now recovers 24/26 tests and retains 31/31
+consumers. Six of twelve valid new test references have focused witnesses;
+fallbacks remain necessary. Subprocess CLI relationships, custom pytest setups,
+broader precision and native-session overhead remain open before automatic
+advisories. Historical results below preserve their original identities. See
+[relevance results](results/impact-relevance/README.md),
+[repair plan](docs/superpowers/plans/2026-10-04-impact-relevance.md) and
+[validation](docs/validation/2026-10-04-impact-relevance.md).
+
 **ImpactGraph real-project acceptance, 2026-10-04.** The approved extension
 delivers optional TypeScript compiler resolution, actual offline coverage
 conversion and independent frozen evaluation. The 24 cases find 31/31 known
@@ -1230,6 +1245,20 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 ---
 
 ## 10. Claims withdrawn or qualified
+
+- **The new scrub case's process consumer/test references.** Withdrawn
+  2026-10-04: pinned core/process.py and tests/test_process.py do not import or
+  test redaction. The corpus and raw outcomes remain frozen; a separate
+  corpus/source-hashed qualification excludes those two labels equally in both
+  versions. Twelve valid new test references remain, with no valid new consumer
+  denominator. See [the explicit withdrawal](eval/impact_relevance_qualifications.json).
+
+- **The Environment fault's initial incomplete grade.** Corrected 2026-10-04
+  after actual rewritten pytest assertions reproduced a classifier omission.
+  The original two-qualified result remains intact; separately hashed historical
+  reclassification qualifies three and identifies its new classifier. No
+  re-execution or coding-quality improvement is invented by the regrade. See
+  [both identities and outcomes](results/impact-relevance/README.md).
 
 - **"The low vacuity rate shows agents here rarely finish on evidence that could not have failed."** Reopened 2026-09-24. The qualification below (*1 vacuous in 22*) was measured on **B3 and B4, which were both gate-arm runs only** - 16 and 16, no vanilla arm, as B4's own findings say. The rate was only ever observed *with the mechanism that prevents it switched on*: the gate's first obligation is *a test covering the change passes*. The paired chunks sweep, put through the B7 probe (B9), finds **10 of 46 resolved vanilla patches VACUOUS (22%) against 4 of 49 under the gate (8%)**; per task, fewer under the gate on 5, more on 0, tied on 19, p = 0.062. All 14 vacuous patches contain **no test file**. The vanilla figure sits beside the literature's 23.8% of rollouts closing on a wholly non-discriminating evidence base. Corpus, model and method all differ from B3/B4 - this reverts the patch and runs the whole suite, where `stress.py` ran the declared command inside the run - so the frequency claim is **not restored**; what is removed is the reason it was withdrawn. What would settle it is vacuity by arm, in one sweep, by one method, and that is queued. `results/b9-gate-tests/`.
 - **"An agent's own tests pin its change less than a maintainer's tests pin theirs."** Withdrawn 2026-09-24, the same day it was written as an expectation in `results/b7-mutants/findings.md`. On 15 tasks, one resolved agent patch each through the same probe: **28 of 89** mutants survive, against the gold patches' **27 of 91** on the same tasks; per task worse on 4, better on 3, equal on 8. The qualification that bounds it: all 15 were gate-arm patches, 12 of them Opus 5.

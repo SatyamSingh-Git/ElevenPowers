@@ -35,21 +35,21 @@ incremental pushes and verified integration to main. Branch
 
 ## Task 4: Focused recommendations and independent qualification
 
-- [ ] Write RED controls for a stronger longer witness, retained broad
+- [x] Write RED controls for a stronger longer witness, retained broad
   fallbacks, duplicate files, provenance, cycles and query caps.
-- [ ] Add `test_selection` to JSON and both groups to Markdown; the existing
+- [x] Add `test_selection` to JSON and both groups to Markdown; the existing
   conservative `tests` list stays available and no tests execute on queries.
-- [ ] Freeze final runtime, run held-out and prior regression cases. Execute
+- [x] Freeze final runtime, run held-out and prior regression cases. Execute
   independent unchanged/equivalent/fault checks and repeated read samples,
   retaining every outcome. Publish actual denominators and breadth limits.
-- [ ] Push the report behavior and evaluation results as completed parts.
+- [x] Push the report behavior and evaluation results as completed parts.
 
 ## Task 5: Review and delivery
 
-- [ ] One independent whole-branch review; reproduce Important findings before
+- [x] One independent whole-branch review; reproduce Important findings before
   repair. Run focused controls, full regression, stdlib imports, host diagnostic
   and independent grader after the final code repairs.
-- [ ] Update all affected docs and architecture views; run rendered checks and
+- [x] Update all affected docs and architecture views; run rendered checks and
   local file-link validation. Push completed docs with descriptive messages.
 
 Final external gate: exact-head four-cell hosted matrix, then authorized main

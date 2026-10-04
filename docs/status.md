@@ -21,14 +21,28 @@ consumer references and 23/26 known test references across 24 cases, with no
 declared negative hit; unlabelled leads remain unknown. Both old and final graph
 selections detect 5/6 qualified faults, below the proposed 90% exit. The missed
 process test and broad candidate sets keep automatic integration open. This does
-not establish improved agent outcomes. See
+not establish improved agent outcomes. Those earlier outcomes remain at
 [real-project validation](validation/2026-10-04-impact-acceptance.md).
+
+The relevance repair now recognizes literal Python dynamic imports and
+test-context default pytest fixture relationships. Known test recovery improves
+from 4/12 to 11/12 valid new symbol-query references (held out 2/6 to 5/6);
+the reused prior corpus retains 31/31 consumers and finds 24/26 tests. One
+mistaken test/consumer reference is separately withdrawn, with original labels
+and raw grades preserved. The conservative set stays available beside focused,
+fallback and support groups; six valid references have focused witnesses.
+Three actual fault/control attempts qualify after a separately identified
+pytest assertion-format correction: repaired recommendations detect 3/3 versus
+0/3 old. One fault is reused, two newly authored; this is selection evidence,
+not a new coding comparison. Subprocess CLI links, framework/plugin behavior,
+unlabelled breadth and native cost keep automatic integration open. See
+[relevance validation](validation/2026-10-04-impact-relevance.md).
 
 ## Shipped and exercised
 
 | Capability | Delivered behavior | Evidence boundary |
 |---|---|---|
-| ImpactGraph | Fresh Python and optional grammar/compiler JS/TS paths; aliases/exports and qualified static calls; declared nodes; actual offline Python/Node coverage receipts; explained tests and separate history | Input/declaration completeness separate from semantic gaps; source maps/runtime dispatch remain gaps; explicit queries/conversion; both versions miss one of six qualified faults; automatic integration unqualified |
+| ImpactGraph | Fresh Python literal imports, calls and context-bound default pytest fixtures; optional grammar/compiler JS/TS; declared/observed paths; focused/fallback/support tests and separate history | 11/12 new valid test refs, 6/12 focused; corrected authored-fault detection 3/3 versus 0/3 old. Partial oracle, subprocess/custom collection/source maps/runtime dispatch/native cost remain gaps; no safe exclusion or automatic integration |
 | Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested boundaries and project exclusions | Supported source extensions and named dependency files; excluded inputs are outside the fingerprint |
 | Scan coverage | Explicit file/byte/deadline/unreadable-input diagnostics | Default 20,000 files and 256 MiB; filesystem operations are not a hard wall-clock guarantee |
 | Command receipts | Exact configured/discovered commands; complete pass, complete fail and incomplete execution | Opaque wrappers retain command-level evidence; transport success/prose alone cannot prove process success |

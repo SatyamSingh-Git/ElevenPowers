@@ -6,6 +6,11 @@ resolution, offline actual coverage conversion and independent evaluation.
 Framework extraction, OpenTelemetry, more languages and automatic integration
 remain open; this is not the entire ImpactGraph vision.
 
+The [relevance repair](impact-relevance.md) adds literal Python imports,
+context-bound default pytest fixture relationships and specific recommendation
+tiers without discarding conservative fallbacks. It is a separate frozen
+evaluation; earlier results retain their original identities.
+
 The user wants a useful graph for end-to-end development in any project, not a
 Snag-specific feature or a diagram of imports presented as a prediction of
 breakage. A person or coding agent must be able to ask what depends on a file,

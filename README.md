@@ -457,11 +457,18 @@ conversion with source-bound execution receipts. Across 24 frozen cases it found
 31/31 known consumers and 23/26 known test references. Actual coverage recovered
 one fixture-dependent Jinja test outside that static comparison. Selected checks
 caught 5/6 qualified faults in both old and final versions; a process-limit
-regression was missed. Automatic advisories remain unqualified, and improved
-agent coding has not been shown. See the
+regression was missed in that earlier comparison. The relevance repair adds
+literal Python dynamic imports, test-context pytest fixture paths and specific
+focused recommendations alongside retained fallbacks and support files. Across
+twelve valid new symbol-query test references, recovery improves from 4/12 to
+11/12; six have focused witnesses. A separate corrected machine grade finds
+all three authored faults with the repaired selection versus none with the old
+selection, including the reused process-limit fault. Original producer grades
+and one withdrawn reference remain visible. These are test-selection gains;
+automatic advisories and improved agent patch outcomes remain unqualified. See the
 [ImpactGraph guide](the-guide/impactgraph.md),
-[journey 61](journey/61-the-graph-must-face-a-missed-regression.md), and
-[real-project acceptance](docs/validation/2026-10-04-impact-acceptance.md).
+[journey 62](journey/62-a-focused-list-still-needs-its-fallback.md), and
+[relevance results](results/impact-relevance/README.md).
 
 ### Optional test strength
 

@@ -5,6 +5,7 @@
 ```bash
 python plugin/bin/ep_impact.py --project PATH src/session.py
 python plugin/bin/ep_impact.py --project PATH src/session.py --json
+python plugin/bin/ep_impact.py --project PATH 'symbol:src/session.py#SessionManager' --max-depth 20 --json
 python plugin/bin/ep_impact.py --project PATH --graph --output impact.json
 ```
 
@@ -20,6 +21,12 @@ unsupported engines stay explicit gaps. This is analysis, not type checking.
 `--check` exits 1 for incomplete coverage; ordinary reports exit 0 even when
 qualified; invalid arguments or failed exports exit 2. See the
 [ImpactGraph guide](impactgraph.md) for schemas, dependencies and supported limits.
+
+JSON keeps conservative `tests` and adds file-deduplicated focused, fallback and
+support groups in `test_selection`. Markdown shows every group and its witness.
+Literal Python dynamic imports and supported default pytest fixture chains are
+source-only relationships; missing plugins/collection or dynamic requests stay
+gaps. Focused recommendations do not authorize exclusion or run tests.
 
 ## ep_impact_capture — offline coverage observations
 

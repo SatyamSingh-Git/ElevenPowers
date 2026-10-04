@@ -7,6 +7,16 @@ plan, current status and postponed list. Open milestones, planned research,
 conditional work and proposed directions have separate labels. Each card
 includes acceptance criteria, a small first contribution and source links.
 
+**ImpactGraph relevance repair, 2026-10-04.** Literal imports and default pytest
+fixture context paths now recover 11/12 valid frozen symbol-query test references
+versus 4/12 before repair. Focused recommendations retain broad fallbacks and
+support; six known references have a specific focused witness. The prior corpus
+recovers the process test and preserves the remaining subprocess CLI misses.
+Next qualify subprocess/source boundaries, framework/plugin collection and
+recommendation noise with independent controls, then measure native-session
+cost before automatic queries. See
+[qualified results and reference withdrawal](../results/impact-relevance/README.md).
+
 **ImpactGraph acceptance extension, 2026-10-04.** Optional compiler-backed
 TypeScript resolution and offline actual Python/Node coverage are delivered.
 The frozen three-project comparison preserves known consumers, still misses

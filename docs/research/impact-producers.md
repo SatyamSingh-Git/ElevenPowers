@@ -3,6 +3,21 @@
 Sources and installed producer outputs checked on 2026-10-04. These optional
 tools do not run on installation or on an ordinary default impact query.
 
+Python 3.13.2 actually resolved `import_module('.model', 'core.impact')` to
+`core.impact.model` before the literal adapter was extended. The adapter reuses
+stdlib AST and `importlib.util.resolve_name`, without importing target code.
+See the [Python importlib reference](https://docs.python.org/3/library/importlib.html).
+
+Actual pytest 9.1.1 `--fixtures-per-test tests/test_nodes.py` on pinned Jinja
+resolved `env` at `tests/conftest.py:10`. A separate five-check disposable
+producer exercised ancestor and local overrides, an override requesting its
+outer fixture, test methods, autouse/usefixtures, direct values and indirect
+requests. All five passed. Source-only context bindings follow these observed
+semantics and [pytest's fixture documentation](https://docs.pytest.org/en/stable/how-to/fixtures.html)
+(pytest is MIT). They do not execute collection/plugins or certify fixture
+availability for arbitrary custom pytest setups. See
+[all relevance outcomes](../../results/impact-relevance/README.md).
+
 Microsoft TypeScript is Apache-2.0. The adapter borrows its Program, CompilerHost,
 module resolver and type checker APIs; it adds a selected virtual filesystem,
 contained execution and typed graph validation. Actual 5.7.3 output established

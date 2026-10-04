@@ -7,6 +7,11 @@ separately recovers a real fixture-dependent Jinja relationship. More selective
 queries and dynamic paths require new frozen cases; this used held-out split
 cannot become a fresh acceptance set. See [results](../../results/impact-acceptance/README.md).
 
+The later [relevance repair](impact-relevance.md) freezes a separate symbol
+corpus and repairs literal/fixture paths. Its reused prior-corpus check finds
+24/26 tests; its authored faults and original/corrected producer grades remain
+separate in [relevance results](../../results/impact-relevance/README.md).
+
 Authorized 2026-10-04: implement the approved real-project benchmark, repair
 general relationships it exposes, add actual coverage producers, and qualify
 automatic advisory integration from measured results. Keep pushing completed

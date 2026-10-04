@@ -10,7 +10,13 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [60 — an impact path needs a reason](60-an-impact-path-needs-a-reason.md)
+Latest: [62 — a focused list still needs its fallback](62-a-focused-list-still-needs-its-fallback.md)
+records literal imports, context-bound fixtures, specific recommendation tiers,
+the withdrawn reference and actual preserved/corrected fault grades.
+[61 — the graph must face a missed regression](61-the-graph-must-face-a-missed-regression.md)
+records the previous frozen acceptance and the miss that motivated this repair.
+
+Earlier: [60 — an impact path needs a reason](60-an-impact-path-needs-a-reason.md)
 records the generalized shared graph, explained consumer/test paths, independent
 boundary-regression control and reproduced review repairs. Broader coding benefit
 and automatic integration remain unproved. [59 — a roadmap contributors can open](59-a-roadmap-contributors-can-open.md)

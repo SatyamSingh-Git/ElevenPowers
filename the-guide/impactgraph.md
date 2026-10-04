@@ -184,6 +184,53 @@ candidate tests and coverage issues. These labels describe evidence; they are
 not calibrated HIGH/MEDIUM/LOW breakage probabilities. A test import suggests a
 check to run; it is not a passing test or proof that its assertions are sufficient.
 
+### Python dynamic imports, fixtures and recommendation tiers
+
+Literal `importlib.import_module("package.module")` calls are recognized through
+qualified import aliases. Literal relative names need a literal package anchor.
+Rebinding, shadowing, mutation, ambiguous selected module roots and computed
+names remain coverage gaps. Target modules are never imported or executed.
+Enclosing top-level functions retain call witnesses; class attribute setup does
+not remove an otherwise unique class export.
+
+The source-only pytest adapter recognizes default `test_*.py`/`*_test.py` files,
+top-level tests and supported `Test*` methods, local and ancestor `conftest.py`
+fixtures, fixture chains, nearest-scope overrides, autouse and literal
+`usefixtures` marks. Direct parametrized values are distinguished from indirect
+fixture requests. Fixture bindings belong to each requesting test context, so
+a local override or direct value cannot leak into another test's path.
+Plugins, custom collection, imported/assigned registrations, class fixtures,
+inheritance and dynamic requests remain explicit limits. The runtime does not
+depend on pytest; actual pytest introspection and tests qualify the adapter.
+
+JSON retains the existing conservative `tests` list and adds `test_selection`:
+
+| Group | Meaning |
+|---|---|
+| `focused` | One file recommendation with a continuous qualified call, literal-import, fixture, declared or observed witness |
+| `fallback` | Broader test candidates, including import and file-membership relationships |
+| `support` | Non-collectable supporting Python files such as `conftest.py` |
+
+An independent traversal preserves a stronger, longer witness even when a
+shorter import path also exists. A function body's aggregate file edge cannot
+stand in for an actual test/function call. Markdown displays all three groups.
+Each group is deduplicated by file; the legacy list can still contain multiple
+nodes in a file. Query depth/result/traversal caps remain visible. The explicit
+`safe_to_exclude_fallback: false` means a focused list is a prioritization aid,
+never permission to skip fallback, support or full verification. Source paths
+are possible dependencies; they do not prove execution or assertion coverage.
+
+Symbol queries can narrow the requested input:
+
+```bash
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_impact.py --project . 'symbol:src/session.py#SessionManager' --max-depth 20 --json
+```
+
+The [frozen relevance results](../results/impact-relevance/README.md) retain old,
+intermediate and final outcomes, a separately withdrawn reference, and actual
+fault/control execution. Automatic advisories and subprocess-to-source
+relationships remain unfinished.
+
 Queries rebuild automatically from current bytes, including dirty edits,
 additions, removals, renames and project policy/map changes. No index setup or
 cache invalidation command is needed. Scans respect Git ignores, generated and
