@@ -1060,8 +1060,13 @@ def test_nothing_the_agent_spawned_outlives_the_run(tmp_path):
     # a grandchild holding the parent's stdout keeps communicate() waiting on
     # its own account, which is a different defect with a different fix.
     inner = (
-        "import os, sys, time; "
-        "open(sys.argv[1], \"w\").write(str(os.getpid())); "
+        "import os, sys, time; from pathlib import Path; "
+        # Publish only after writing the PID. Mere existence previously let the
+        # parent exit while an empty file was still open, killing the producer
+        # before its PID write and making this probe fail on int('') instead of
+        # measuring whether a live descendant escaped containment.
+        "marker = Path(sys.argv[1]); pending = marker.with_suffix('.pending'); "
+        "pending.write_text(str(os.getpid())); pending.replace(marker); "
         "time.sleep(300)"
     )
     spawn = (
