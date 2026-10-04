@@ -139,6 +139,16 @@ conditional extensions and six proposals. Nested runtime packages are included
 in module coverage checks, and the previously omitted strength baseline is mapped.
 The new card and architecture view were also visually inspected.
 
+After integration, GitHub Pages
+[deployment 37190421048](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/37190421048)
+succeeded. The served architecture HTML matched the committed `a40d5f7` Git blob
+byte for byte (261,035 bytes; SHA-256
+`3ec2c503ce9e0068f021de0aac4339fa9eda0990ffc3691cb42cb2175a06952a`).
+An actual HTTPS browser check opened `#planned/impact-graph`, confirmed that its
+card expands and identifies the shipped foundation as an open acceptance
+milestone. Windows checkout CRLF conversion was accounted for by comparing
+against the Git blob rather than raw working-tree bytes.
+
 ## Remaining acceptance
 
 Large-project relevant-consumer/test recall, false-lead rate and hook overhead
