@@ -2,6 +2,7 @@
 import ast
 import time
 from collections import defaultdict, Counter
+from importlib.util import resolve_name
 
 from .model import Edge, Node
 
@@ -117,8 +118,61 @@ def callee(node):
     return ''
 
 
+def external_bindings(tree, module, names, deadline):
+    """Recognize imported tool names, while retaining unsafe names as gaps."""
+    tools = {}
+    for node in tree.body:
+        if time.monotonic() >= deadline:
+            raise TimeoutError()
+        rows = []
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == module or alias.name.startswith(module + '.'):
+                    rows.append((alias.asname or module,
+                                 alias.name if alias.asname else module))
+                else:
+                    rows.append((alias.asname or alias.name.split('.')[0], None))
+        elif isinstance(node, ast.ImportFrom):
+            for alias in node.names:
+                rows.append((alias.asname or alias.name,
+                             module + '.' + alias.name if node.module == module and not node.level else None))
+        for key, qualified in rows:
+            if key in tools and tools[key][0] != qualified:
+                tools[key] = (tools[key][0] or qualified, False)
+            elif qualified:
+                tools[key] = (qualified, key not in tools or tools[key][1])
+            else:
+                tools.setdefault(key, (None, False))
+    local = bool(names.get(module))
+    return {k: (q, valid and not local) for k, (q, valid) in tools.items() if q}
+
+
+def literal_module(call):
+    """Resolve only literal import_module arguments; never evaluate expressions."""
+    if len(call.args) > 2 or any(isinstance(a, ast.Starred) for a in call.args):
+        raise ValueError('unsupported arguments')
+    values = dict(zip(('name', 'package'), call.args))
+    for keyword in call.keywords:
+        if keyword.arg not in ('name', 'package') or keyword.arg in values:
+            raise ValueError('unknown, expanded or duplicate arguments')
+        values[keyword.arg] = keyword.value
+    name = values.get('name')
+    package = values.get('package')
+    if not isinstance(name, ast.Constant) or not isinstance(name.value, str) or len(name.value) > 500:
+        raise ValueError('non-literal module name')
+    if package is not None and (not isinstance(package, ast.Constant)
+                               or package.value is not None and not isinstance(package.value, str)):
+        raise ValueError('non-literal package anchor')
+    anchor = package.value if package is not None else None
+    result = resolve_name(name.value, anchor)
+    if not result or not all(p.isidentifier() for p in result.split('.')):
+        raise ValueError('unsupported module name')
+    return result
+
+
 def python_edges(graph, path, tree, names, exports, deadline):
     bindings = {}
+    tools = external_bindings(tree, 'importlib', names, deadline)
     for node in ast.walk(tree):
         if time.monotonic() >= deadline:
             raise TimeoutError()
@@ -161,7 +215,10 @@ def python_edges(graph, path, tree, names, exports, deadline):
     # Assignment/redefinition anywhere in the module invalidates a call binding.
     blocked = scope_bindings([n for n in tree.body if not isinstance(n, (ast.Import, ast.ImportFrom))], deadline)
 
-    def walk(node, shadows):
+    local_bindings = {name: 'symbol:' + path + '#' + name for name in exports.get(path, set())
+                      if 'symbol:' + path + '#' + name in graph.nodes}
+
+    def walk(node, shadows, owner='', local_shadows=frozenset()):
         if time.monotonic() >= deadline:
             raise TimeoutError()
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
@@ -171,18 +228,38 @@ def python_edges(graph, path, tree, names, exports, deadline):
             # Defaults and decorators execute in the enclosing scope.
             for part in [*node.args.defaults, *[v for v in node.args.kw_defaults if v],
                          *getattr(node, 'decorator_list', [])]:
-                walk(part, shadows)
+                walk(part, shadows, owner, local_shadows)
+            identity = 'symbol:' + path + '#' + getattr(node, 'name', '')
+            next_owner = identity if node in tree.body and identity in graph.nodes else ''
             for child in body:
-                walk(child, shadows | args | local)
+                walk(child, shadows | args | local, next_owner, local_shadows | args | local)
             return
         if isinstance(node, ast.ClassDef):
             # Class-bound names cannot be confidently treated as module aliases.
             for child in node.body:
-                walk(child, shadows | scope_bindings(node.body, deadline))
+                bound = scope_bindings(node.body, deadline)
+                walk(child, shadows | bound, local_shadows=local_shadows | bound)
             return
         if isinstance(node, ast.Call):
             text = callee(node.func)
             parts = text.split('.')
+            if text in local_bindings and text not in local_shadows:
+                for source in filter(None, ('file:' + path, owner)):
+                    graph.add(Edge(source, local_bindings[text], 'calls', 'static', path, node.lineno))
+            tool, valid = tools.get(parts[0], ('', False))
+            if tool + text[len(parts[0]):] == 'importlib.import_module':
+                try:
+                    if not valid or parts[0] in shadows:
+                        raise ValueError('shadowed, rebound or local tool binding')
+                    name = literal_module(node)
+                    target, problem = resolve_python(name, names)
+                    if not target:
+                        raise ValueError(problem)
+                    for source in filter(None, ('file:' + path, owner)):
+                        graph.add(Edge(source, 'file:' + target, 'dynamic_import',
+                                       'static', path, node.lineno, 'importlib.import_module'))
+                except (ValueError, ImportError) as exc:
+                    graph.issues.append(f'{exc} dynamic import at {path}:{node.lineno}')
             for length in range(len(parts), 0, -1):
                 key = '.'.join(parts[:length])
                 if key not in bindings:
@@ -196,11 +273,17 @@ def python_edges(graph, path, tree, names, exports, deadline):
                     'symbol:' + target + '#' + suffix if kind == 'module' and suffix else '')
                 if identity in graph.nodes:
                     graph.add(Edge('file:' + path, identity, 'calls', 'static', path, node.lineno))
+                    if owner:
+                        graph.add(Edge(owner, identity, 'calls', 'static', path, node.lineno))
+                        target_path = target.split('#', 1)[0]
+                        if target_path != path:
+                            graph.add(Edge(owner, 'file:' + target_path, 'uses',
+                                           'static', path, node.lineno, 'python:qualified-call-module'))
                 else:
                     graph.coverage['unresolved_calls'] += 1
                 break
         for child in ast.iter_child_nodes(node):
-            walk(child, shadows)
+            walk(child, shadows, owner, local_shadows)
     walk(tree, blocked)
 
 
@@ -233,6 +316,7 @@ def extract(graph, sources, deadline):
                     continue
                 identity = f'symbol:{path}#{node.name}'
                 graph.nodes[identity] = Node(identity, 'symbol', node.name, path, node.lineno)
+                graph.add(Edge('file:' + path, identity, 'defines', 'static', path, node.lineno))
     names = module_index(sources)
     for path, tree in trees.items():
         if time.monotonic() >= deadline:
@@ -244,3 +328,4 @@ def extract(graph, sources, deadline):
             graph.issues.append('impact deadline or AST traversal limit reached resolving source')
             break
     graph.coverage['parsed_python'] = len(trees)
+    return trees
