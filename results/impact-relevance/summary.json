@@ -1,0 +1,414 @@
+{
+  "schema": 1,
+  "runtime_head": "4df6f30",
+  "corpus_hash": "570f977b1453a8c386780a08aceda8408f16fd78c4b2f606204f6b205b167ca9",
+  "qualification_sha256": "c625a882ef7255363d60de2292196b03bf059fb91bc0cf42f6178f087c422c9f",
+  "cases": [
+    {
+      "id": "ep-run-literal",
+      "split": "development",
+      "known_tests": [
+        "tests/test_process.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 85,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 86,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 21,
+          "fallback": 65,
+          "support": 0
+        },
+        "focused_hits": 0
+      }
+    },
+    {
+      "id": "ep-read-literal",
+      "split": "development",
+      "known_tests": [
+        "tests/test_process.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 86,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 21,
+          "fallback": 65,
+          "support": 0
+        },
+        "focused_hits": 0
+      }
+    },
+    {
+      "id": "ep-scrub-call",
+      "split": "development",
+      "known_tests": [
+        "tests/test_redact.py"
+      ],
+      "all-baseline": {
+        "hits": 1,
+        "candidate_files": 73,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 82,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 5,
+          "fallback": 77,
+          "support": 0
+        },
+        "focused_hits": 1
+      }
+    },
+    {
+      "id": "ep-analyze-facade",
+      "split": "development",
+      "known_tests": [
+        "tests/test_impact_query.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 5,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 0,
+          "fallback": 5,
+          "support": 0
+        },
+        "focused_hits": 0
+      }
+    },
+    {
+      "id": "jinja-environment-fixture",
+      "split": "development",
+      "known_tests": [
+        "tests/test_nodes.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 25,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 12,
+          "fallback": 12,
+          "support": 1
+        },
+        "focused_hits": 1
+      }
+    },
+    {
+      "id": "jinja-dict-fixture",
+      "split": "development",
+      "known_tests": [
+        "tests/test_loader.py"
+      ],
+      "all-baseline": {
+        "hits": 1,
+        "candidate_files": 4,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 25,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 3,
+          "fallback": 21,
+          "support": 1
+        },
+        "focused_hits": 1
+      }
+    },
+    {
+      "id": "ep-module-local-call",
+      "split": "held-out",
+      "known_tests": [
+        "tests/test_impact_source.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 5,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 0,
+          "fallback": 5,
+          "support": 0
+        },
+        "focused_hits": 0
+      }
+    },
+    {
+      "id": "ep-safe-path-local-call",
+      "split": "held-out",
+      "known_tests": [
+        "tests/test_impact_source.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 5,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 0,
+          "fallback": 5,
+          "support": 0
+        },
+        "focused_hits": 0
+      }
+    },
+    {
+      "id": "ep-markdown-subprocess",
+      "split": "held-out",
+      "known_tests": [
+        "tests/test_impact_cli.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 0,
+        "candidate_files": 5,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 0,
+          "fallback": 5,
+          "support": 0
+        },
+        "focused_hits": 0
+      }
+    },
+    {
+      "id": "jinja-choice-chain",
+      "split": "held-out",
+      "known_tests": [
+        "tests/test_loader.py"
+      ],
+      "all-baseline": {
+        "hits": 1,
+        "candidate_files": 2,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 25,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 1,
+          "fallback": 23,
+          "support": 1
+        },
+        "focused_hits": 1
+      }
+    },
+    {
+      "id": "jinja-prefix-chain",
+      "split": "held-out",
+      "known_tests": [
+        "tests/test_loader.py"
+      ],
+      "all-baseline": {
+        "hits": 1,
+        "candidate_files": 2,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 25,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 1,
+          "fallback": 23,
+          "support": 1
+        },
+        "focused_hits": 1
+      }
+    },
+    {
+      "id": "jinja-fixture-change",
+      "split": "held-out",
+      "known_tests": [
+        "tests/test_loader.py"
+      ],
+      "all-baseline": {
+        "hits": 0,
+        "candidate_files": 0,
+        "negative_hits": []
+      },
+      "all-final": {
+        "hits": 1,
+        "candidate_files": 1,
+        "negative_hits": [],
+        "tiers": {
+          "focused": 1,
+          "fallback": 0,
+          "support": 0
+        },
+        "focused_hits": 1
+      }
+    }
+  ],
+  "known_test_references": 12,
+  "hits": {
+    "all-baseline": 4,
+    "all-final": 11
+  },
+  "focused_hits": 6,
+  "read_samples": [
+    {
+      "id": "sample-1",
+      "result_sha256": "9f63e8bb62302d10d2f51159d3e75a889ba507e57545abde51c1a5366551fc7c",
+      "projects": [
+        {
+          "id": "elevenpowers",
+          "fingerprint": "bff044419a8dbcbfa28dc1eaab973cef802771fb13cabdba28d031ee4a5af516",
+          "build_seconds": 3.762688699993305,
+          "worker_plus_after_seal_seconds": 23.740501699969172,
+          "nodes": 3329,
+          "edges": 12236,
+          "input_seal": {
+            "complete": true,
+            "issues": []
+          },
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        {
+          "id": "jinja",
+          "fingerprint": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+          "build_seconds": 0.8279130000155419,
+          "worker_plus_after_seal_seconds": 2.5419782999670133,
+          "nodes": 1664,
+          "edges": 3478,
+          "input_seal": {
+            "complete": true,
+            "issues": []
+          },
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "sample-2",
+      "result_sha256": "51bd241e39ad32581093e2b602dc9b770996c1c184c1d31a605f32502637bf30",
+      "projects": [
+        {
+          "id": "elevenpowers",
+          "fingerprint": "bff044419a8dbcbfa28dc1eaab973cef802771fb13cabdba28d031ee4a5af516",
+          "build_seconds": 5.6488035000511445,
+          "worker_plus_after_seal_seconds": 33.52737540000817,
+          "nodes": 3329,
+          "edges": 12236,
+          "input_seal": {
+            "complete": true,
+            "issues": []
+          },
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        {
+          "id": "jinja",
+          "fingerprint": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+          "build_seconds": 1.0713118000421673,
+          "worker_plus_after_seal_seconds": 2.978230100008659,
+          "nodes": 1664,
+          "edges": 3478,
+          "input_seal": {
+            "complete": true,
+            "issues": []
+          },
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "sample-3",
+      "result_sha256": "0a999012114b05a9df2f9a4ea050f8932e2bb6e10d8a109c0f9f66abbf06059c",
+      "projects": [
+        {
+          "id": "elevenpowers",
+          "fingerprint": "bff044419a8dbcbfa28dc1eaab973cef802771fb13cabdba28d031ee4a5af516",
+          "build_seconds": 4.723638599971309,
+          "worker_plus_after_seal_seconds": 36.92444109998178,
+          "nodes": 3329,
+          "edges": 12236,
+          "input_seal": {
+            "complete": true,
+            "issues": []
+          },
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        {
+          "id": "jinja",
+          "fingerprint": "fa5b37e7f4afacbee07228b2c7591e52f3b934ffd83f20dedb97dda646b76813",
+          "build_seconds": 2.1926975999958813,
+          "worker_plus_after_seal_seconds": 8.527212399989367,
+          "nodes": 1664,
+          "edges": 3478,
+          "input_seal": {
+            "complete": true,
+            "issues": []
+          },
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Authored partial references, not blinded representative precision or agent quality.",
+    "One mistaken test reference is withdrawn equally in both arms; original labels and raw outcomes remain unchanged.",
+    "Build timings include source graph extraction only; query, end-to-end CLI and native session costs are not separately sampled.",
+    "Worker-plus-after-seal time includes subprocess startup, queries and the after-source audit; the pre-source audit is excluded.",
+    "Concurrent fault execution and ordinary Windows load may affect samples; no comparative speedup claim.",
+    "Sample 1 raw report is published; samples 2 and 3 retained privately with hashes."
+  ]
+}

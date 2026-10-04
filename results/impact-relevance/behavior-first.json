@@ -1,0 +1,951 @@
+{
+  "schema": 1,
+  "controller": {
+    "controller_sha256": "7cb2fbff5f2a9b9dc1b1f82bc797e8dddf054409a72906a8c0c4f3a6c879e17d",
+    "version": "impact-behavior/4"
+  },
+  "corpus_sha256": "f4096c7158ba191031db4bae057f76ca70f5b27e279c8b26983c793463eeaca5",
+  "definitions_sha256": "a186dec7a9c623b8ce6a0da935b0e5daa5433fea1844f5c0520bc3167c75dc2f",
+  "predictions_sha256": {
+    "old": "06a9703a49d13da0a50a69582fc90cc554129d0d3414f45840049e49f327b3a9",
+    "final": "9f63e8bb62302d10d2f51159d3e75a889ba507e57545abde51c1a5366551fc7c"
+  },
+  "attempted": 3,
+  "qualified": 2,
+  "detected": {
+    "old": 0,
+    "final": 2
+  },
+  "experiments": [
+    {
+      "id": "reused-process-output-limit",
+      "project": "elevenpowers",
+      "query": "core/process.py",
+      "qualified": true,
+      "runs": {
+        "unchanged": {
+          "status": "pass",
+          "passed": 50,
+          "failed": 0,
+          "skipped": 2,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "382bdcae249601fe89b9d68784daa0dbd5ceb3d07f3987a331d1205a2f12f752",
+          "output_sha256": "1a00e1e0f5d999ed2e4c0faea5c4bd6f275b0b204d3939647bbb848322d0b01c",
+          "tests": [
+            "tests/test_process.py",
+            "tests/test_redact.py"
+          ],
+          "seconds": 6.381434099981561,
+          "producer": "pytest",
+          "report": "unchanged.xml"
+        },
+        "equivalent": {
+          "status": "pass",
+          "passed": 50,
+          "failed": 0,
+          "skipped": 2,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "464efc1a750e09e3826cb61051085e05691941138d124859faaeda6d434782e5",
+          "output_sha256": "112d81ad9f428601f0aa79a2d219ee1e8a69b0981394cde1fae86f5c9158f955",
+          "tests": [
+            "tests/test_process.py",
+            "tests/test_redact.py"
+          ],
+          "seconds": 6.965525800012983,
+          "producer": "pytest",
+          "report": "equivalent.xml"
+        },
+        "fault": {
+          "status": "assertion-fail",
+          "passed": 49,
+          "failed": 1,
+          "skipped": 2,
+          "failures": [
+            "tests.test_process::test_oversized_output_is_explicit_failure"
+          ],
+          "exit_code": 1,
+          "report_sha256": "6f90b4147e0a56f9f0ea5b2b94f68593f28603da91e4b0dc9d2dd49b0db4939f",
+          "output_sha256": "0cf5f1f1de7c46d2f6154084d8d6911145435a9bd752144dc7ff988bfb98bca4",
+          "tests": [
+            "tests/test_process.py",
+            "tests/test_redact.py"
+          ],
+          "seconds": 6.39640100003453,
+          "producer": "pytest",
+          "report": "fault.xml"
+        }
+      },
+      "seals": {
+        "unchanged": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "equivalent": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "fault": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      },
+      "definition": {
+        "id": "reused-process-output-limit",
+        "project": "elevenpowers",
+        "case": "ep-run-literal",
+        "query": "core/process.py",
+        "kind": "pytest",
+        "full_tests": [
+          "tests/test_process.py",
+          "tests/test_redact.py"
+        ],
+        "before": "MAX_OUTPUT_BYTES = 8 * 1024 * 1024",
+        "after": "MAX_OUTPUT_BYTES = 16 * 1024 * 1024"
+      },
+      "selection": {
+        "old": {
+          "candidates": [
+            "tests/test_acceptance_provenance.py",
+            "tests/test_assumptions.py",
+            "tests/test_atlas.py",
+            "tests/test_audit_20260919.py",
+            "tests/test_audit_20260919_recovery.py",
+            "tests/test_audit_probes.py",
+            "tests/test_automatic_commands.py",
+            "tests/test_automatic_startup.py",
+            "tests/test_benefit.py",
+            "tests/test_benefit_archive.py",
+            "tests/test_benefit_boundaries.py",
+            "tests/test_benefit_recovery.py",
+            "tests/test_challenge.py",
+            "tests/test_claims.py",
+            "tests/test_completeness_and_provenance.py",
+            "tests/test_config.py",
+            "tests/test_core.py",
+            "tests/test_declared_commands.py",
+            "tests/test_hard_archive.py",
+            "tests/test_hard_audit.py",
+            "tests/test_hard_benefit.py",
+            "tests/test_hard_cases.py",
+            "tests/test_health_boundaries.py",
+            "tests/test_health_cli.py",
+            "tests/test_health_environment.py",
+            "tests/test_health_host_contracts.py",
+            "tests/test_health_report.py",
+            "tests/test_health_review.py",
+            "tests/test_hook.py",
+            "tests/test_host_codex.py",
+            "tests/test_host_copilot.py",
+            "tests/test_host_cursor.py",
+            "tests/test_host_doctor.py",
+            "tests/test_host_gemini.py",
+            "tests/test_host_packages.py",
+            "tests/test_host_probes.py",
+            "tests/test_host_setup.py",
+            "tests/test_impact_acceptance.py",
+            "tests/test_impact_ingest.py",
+            "tests/test_impact_query.py",
+            "tests/test_impact_source.py",
+            "tests/test_impact_typescript.py",
+            "tests/test_jobs.py",
+            "tests/test_native_acceptance.py",
+            "tests/test_native_edits.py",
+            "tests/test_native_validation.py",
+            "tests/test_onboarding.py",
+            "tests/test_paired.py",
+            "tests/test_performance.py",
+            "tests/test_pilot_archive.py",
+            "tests/test_polyglot.py",
+            "tests/test_portable_report.py",
+            "tests/test_project_health.py",
+            "tests/test_project_readiness.py",
+            "tests/test_proposals.py",
+            "tests/test_radius.py",
+            "tests/test_redact.py",
+            "tests/test_repeat.py",
+            "tests/test_replay.py",
+            "tests/test_repository_scan.py",
+            "tests/test_review_archive.py",
+            "tests/test_review_checkpoint.py",
+            "tests/test_review_subscription.py",
+            "tests/test_runner_launcher.py",
+            "tests/test_shared_budget.py",
+            "tests/test_state_directory_secrets.py",
+            "tests/test_strength.py",
+            "tests/test_strength_cosmic_targets.py",
+            "tests/test_strength_locations.py",
+            "tests/test_strength_relevance.py",
+            "tests/test_strength_stryker_targets.py",
+            "tests/test_strength_target_balancing.py",
+            "tests/test_strength_target_boundaries.py",
+            "tests/test_strength_target_coverage.py",
+            "tests/test_strength_target_records.py",
+            "tests/test_strength_target_reports.py",
+            "tests/test_strength_target_store.py",
+            "tests/test_stress.py",
+            "tests/test_subscription.py",
+            "tests/test_validation_capture.py",
+            "tests/test_validation_matrix.py",
+            "tests/test_verification_progress.py",
+            "tests/test_verification_runner.py",
+            "tests/test_verify.py",
+            "tests/test_wiring.py"
+          ],
+          "executed_relevant": [
+            "tests/test_redact.py"
+          ],
+          "outside_relevant": [
+            "tests/test_acceptance_provenance.py",
+            "tests/test_assumptions.py",
+            "tests/test_atlas.py",
+            "tests/test_audit_20260919.py",
+            "tests/test_audit_20260919_recovery.py",
+            "tests/test_audit_probes.py",
+            "tests/test_automatic_commands.py",
+            "tests/test_automatic_startup.py",
+            "tests/test_benefit.py",
+            "tests/test_benefit_archive.py",
+            "tests/test_benefit_boundaries.py",
+            "tests/test_benefit_recovery.py",
+            "tests/test_challenge.py",
+            "tests/test_claims.py",
+            "tests/test_completeness_and_provenance.py",
+            "tests/test_config.py",
+            "tests/test_core.py",
+            "tests/test_declared_commands.py",
+            "tests/test_hard_archive.py",
+            "tests/test_hard_audit.py",
+            "tests/test_hard_benefit.py",
+            "tests/test_hard_cases.py",
+            "tests/test_health_boundaries.py",
+            "tests/test_health_cli.py",
+            "tests/test_health_environment.py",
+            "tests/test_health_host_contracts.py",
+            "tests/test_health_report.py",
+            "tests/test_health_review.py",
+            "tests/test_hook.py",
+            "tests/test_host_codex.py",
+            "tests/test_host_copilot.py",
+            "tests/test_host_cursor.py",
+            "tests/test_host_doctor.py",
+            "tests/test_host_gemini.py",
+            "tests/test_host_packages.py",
+            "tests/test_host_probes.py",
+            "tests/test_host_setup.py",
+            "tests/test_impact_acceptance.py",
+            "tests/test_impact_ingest.py",
+            "tests/test_impact_query.py",
+            "tests/test_impact_source.py",
+            "tests/test_impact_typescript.py",
+            "tests/test_jobs.py",
+            "tests/test_native_acceptance.py",
+            "tests/test_native_edits.py",
+            "tests/test_native_validation.py",
+            "tests/test_onboarding.py",
+            "tests/test_paired.py",
+            "tests/test_performance.py",
+            "tests/test_pilot_archive.py",
+            "tests/test_polyglot.py",
+            "tests/test_portable_report.py",
+            "tests/test_project_health.py",
+            "tests/test_project_readiness.py",
+            "tests/test_proposals.py",
+            "tests/test_radius.py",
+            "tests/test_repeat.py",
+            "tests/test_replay.py",
+            "tests/test_repository_scan.py",
+            "tests/test_review_archive.py",
+            "tests/test_review_checkpoint.py",
+            "tests/test_review_subscription.py",
+            "tests/test_runner_launcher.py",
+            "tests/test_shared_budget.py",
+            "tests/test_state_directory_secrets.py",
+            "tests/test_strength.py",
+            "tests/test_strength_cosmic_targets.py",
+            "tests/test_strength_locations.py",
+            "tests/test_strength_relevance.py",
+            "tests/test_strength_stryker_targets.py",
+            "tests/test_strength_target_balancing.py",
+            "tests/test_strength_target_boundaries.py",
+            "tests/test_strength_target_coverage.py",
+            "tests/test_strength_target_records.py",
+            "tests/test_strength_target_reports.py",
+            "tests/test_strength_target_store.py",
+            "tests/test_stress.py",
+            "tests/test_subscription.py",
+            "tests/test_validation_capture.py",
+            "tests/test_validation_matrix.py",
+            "tests/test_verification_progress.py",
+            "tests/test_verification_runner.py",
+            "tests/test_verify.py",
+            "tests/test_wiring.py"
+          ]
+        },
+        "final": {
+          "candidates": [
+            "tests/test_acceptance_provenance.py",
+            "tests/test_assumptions.py",
+            "tests/test_atlas.py",
+            "tests/test_audit_20260919.py",
+            "tests/test_audit_20260919_recovery.py",
+            "tests/test_audit_probes.py",
+            "tests/test_automatic_commands.py",
+            "tests/test_automatic_startup.py",
+            "tests/test_benefit.py",
+            "tests/test_benefit_archive.py",
+            "tests/test_benefit_boundaries.py",
+            "tests/test_benefit_recovery.py",
+            "tests/test_challenge.py",
+            "tests/test_claims.py",
+            "tests/test_completeness_and_provenance.py",
+            "tests/test_config.py",
+            "tests/test_core.py",
+            "tests/test_declared_commands.py",
+            "tests/test_hard_archive.py",
+            "tests/test_hard_audit.py",
+            "tests/test_hard_benefit.py",
+            "tests/test_hard_cases.py",
+            "tests/test_health_boundaries.py",
+            "tests/test_health_cli.py",
+            "tests/test_health_environment.py",
+            "tests/test_health_host_contracts.py",
+            "tests/test_health_report.py",
+            "tests/test_health_review.py",
+            "tests/test_hook.py",
+            "tests/test_host_codex.py",
+            "tests/test_host_copilot.py",
+            "tests/test_host_cursor.py",
+            "tests/test_host_doctor.py",
+            "tests/test_host_gemini.py",
+            "tests/test_host_packages.py",
+            "tests/test_host_probes.py",
+            "tests/test_host_setup.py",
+            "tests/test_impact_acceptance.py",
+            "tests/test_impact_ingest.py",
+            "tests/test_impact_query.py",
+            "tests/test_impact_source.py",
+            "tests/test_impact_typescript.py",
+            "tests/test_jobs.py",
+            "tests/test_native_acceptance.py",
+            "tests/test_native_edits.py",
+            "tests/test_native_validation.py",
+            "tests/test_onboarding.py",
+            "tests/test_paired.py",
+            "tests/test_performance.py",
+            "tests/test_pilot_archive.py",
+            "tests/test_polyglot.py",
+            "tests/test_portable_report.py",
+            "tests/test_process.py",
+            "tests/test_project_health.py",
+            "tests/test_project_readiness.py",
+            "tests/test_proposals.py",
+            "tests/test_radius.py",
+            "tests/test_redact.py",
+            "tests/test_repeat.py",
+            "tests/test_replay.py",
+            "tests/test_repository_scan.py",
+            "tests/test_review_archive.py",
+            "tests/test_review_checkpoint.py",
+            "tests/test_review_subscription.py",
+            "tests/test_runner_launcher.py",
+            "tests/test_shared_budget.py",
+            "tests/test_state_directory_secrets.py",
+            "tests/test_strength.py",
+            "tests/test_strength_cosmic_targets.py",
+            "tests/test_strength_locations.py",
+            "tests/test_strength_relevance.py",
+            "tests/test_strength_stryker_targets.py",
+            "tests/test_strength_target_balancing.py",
+            "tests/test_strength_target_boundaries.py",
+            "tests/test_strength_target_coverage.py",
+            "tests/test_strength_target_records.py",
+            "tests/test_strength_target_reports.py",
+            "tests/test_strength_target_store.py",
+            "tests/test_stress.py",
+            "tests/test_subscription.py",
+            "tests/test_validation_capture.py",
+            "tests/test_validation_matrix.py",
+            "tests/test_verification_progress.py",
+            "tests/test_verification_runner.py",
+            "tests/test_verify.py",
+            "tests/test_wiring.py"
+          ],
+          "executed_relevant": [
+            "tests/test_process.py",
+            "tests/test_redact.py"
+          ],
+          "outside_relevant": [
+            "tests/test_acceptance_provenance.py",
+            "tests/test_assumptions.py",
+            "tests/test_atlas.py",
+            "tests/test_audit_20260919.py",
+            "tests/test_audit_20260919_recovery.py",
+            "tests/test_audit_probes.py",
+            "tests/test_automatic_commands.py",
+            "tests/test_automatic_startup.py",
+            "tests/test_benefit.py",
+            "tests/test_benefit_archive.py",
+            "tests/test_benefit_boundaries.py",
+            "tests/test_benefit_recovery.py",
+            "tests/test_challenge.py",
+            "tests/test_claims.py",
+            "tests/test_completeness_and_provenance.py",
+            "tests/test_config.py",
+            "tests/test_core.py",
+            "tests/test_declared_commands.py",
+            "tests/test_hard_archive.py",
+            "tests/test_hard_audit.py",
+            "tests/test_hard_benefit.py",
+            "tests/test_hard_cases.py",
+            "tests/test_health_boundaries.py",
+            "tests/test_health_cli.py",
+            "tests/test_health_environment.py",
+            "tests/test_health_host_contracts.py",
+            "tests/test_health_report.py",
+            "tests/test_health_review.py",
+            "tests/test_hook.py",
+            "tests/test_host_codex.py",
+            "tests/test_host_copilot.py",
+            "tests/test_host_cursor.py",
+            "tests/test_host_doctor.py",
+            "tests/test_host_gemini.py",
+            "tests/test_host_packages.py",
+            "tests/test_host_probes.py",
+            "tests/test_host_setup.py",
+            "tests/test_impact_acceptance.py",
+            "tests/test_impact_ingest.py",
+            "tests/test_impact_query.py",
+            "tests/test_impact_source.py",
+            "tests/test_impact_typescript.py",
+            "tests/test_jobs.py",
+            "tests/test_native_acceptance.py",
+            "tests/test_native_edits.py",
+            "tests/test_native_validation.py",
+            "tests/test_onboarding.py",
+            "tests/test_paired.py",
+            "tests/test_performance.py",
+            "tests/test_pilot_archive.py",
+            "tests/test_polyglot.py",
+            "tests/test_portable_report.py",
+            "tests/test_project_health.py",
+            "tests/test_project_readiness.py",
+            "tests/test_proposals.py",
+            "tests/test_radius.py",
+            "tests/test_repeat.py",
+            "tests/test_replay.py",
+            "tests/test_repository_scan.py",
+            "tests/test_review_archive.py",
+            "tests/test_review_checkpoint.py",
+            "tests/test_review_subscription.py",
+            "tests/test_runner_launcher.py",
+            "tests/test_shared_budget.py",
+            "tests/test_state_directory_secrets.py",
+            "tests/test_strength.py",
+            "tests/test_strength_cosmic_targets.py",
+            "tests/test_strength_locations.py",
+            "tests/test_strength_relevance.py",
+            "tests/test_strength_stryker_targets.py",
+            "tests/test_strength_target_balancing.py",
+            "tests/test_strength_target_boundaries.py",
+            "tests/test_strength_target_coverage.py",
+            "tests/test_strength_target_records.py",
+            "tests/test_strength_target_reports.py",
+            "tests/test_strength_target_store.py",
+            "tests/test_stress.py",
+            "tests/test_subscription.py",
+            "tests/test_validation_capture.py",
+            "tests/test_validation_matrix.py",
+            "tests/test_verification_progress.py",
+            "tests/test_verification_runner.py",
+            "tests/test_verify.py",
+            "tests/test_wiring.py"
+          ]
+        }
+      },
+      "selected_fault": {
+        "old": {
+          "status": "pass",
+          "passed": 37,
+          "failed": 0,
+          "skipped": 0,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "9f1cfb166b58bf01aebaedfb3be717f57d616c5d1d389266cfaa8854e095bde4",
+          "output_sha256": "4d6ce749d0514d00a07f5e0b16f3e95b445f9af5c8971061201ca4587ddd4d84",
+          "tests": [
+            "tests/test_redact.py"
+          ],
+          "seconds": 1.4236646000063047,
+          "producer": "pytest",
+          "report": "selected-old.xml",
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "final": {
+          "status": "assertion-fail",
+          "passed": 49,
+          "failed": 1,
+          "skipped": 2,
+          "failures": [
+            "tests.test_process::test_oversized_output_is_explicit_failure"
+          ],
+          "exit_code": 1,
+          "report_sha256": "567b4aa95e204c4c5a14960dd72933fb9ee683c79e7032ad01e4b71aa83faf57",
+          "output_sha256": "6c724e0be0542a99717fff546d3fa0fab7f8bf30967e7a11b83d081c36d45f47",
+          "tests": [
+            "tests/test_process.py",
+            "tests/test_redact.py"
+          ],
+          "seconds": 6.370892199978698,
+          "producer": "pytest",
+          "report": "selected-final.xml",
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      },
+      "detected": {
+        "old": false,
+        "final": true
+      }
+    },
+    {
+      "id": "environment-default-autoescape",
+      "project": "jinja",
+      "query": "src/jinja2/environment.py",
+      "qualified": false,
+      "runs": {
+        "unchanged": {
+          "status": "pass",
+          "passed": 167,
+          "failed": 0,
+          "skipped": 0,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "9f4201ee75ccc7365c9b0443f4853a6f49538456920736f09c3460eb766592ca",
+          "output_sha256": "1f0fe664eb4665fce91ed1e54cca016e8d26bcb285830f68b57ebffe8eb42f3a",
+          "tests": [
+            "tests/test_api.py",
+            "tests/test_filters.py",
+            "tests/test_nodes.py"
+          ],
+          "seconds": 2.658245500002522,
+          "producer": "pytest",
+          "report": "unchanged.xml"
+        },
+        "equivalent": {
+          "status": "pass",
+          "passed": 167,
+          "failed": 0,
+          "skipped": 0,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "b34d095fe636f4f05b39769ceb1af40383bb8f2ce06723cda3522af9ec6a28ac",
+          "output_sha256": "aea9b2a1be40459317a8f8f8cb557268de82836aecdf343e7071d2f9864fac63",
+          "tests": [
+            "tests/test_api.py",
+            "tests/test_filters.py",
+            "tests/test_nodes.py"
+          ],
+          "seconds": 6.996831100026611,
+          "producer": "pytest",
+          "report": "equivalent.xml"
+        },
+        "fault": {
+          "status": "incomplete",
+          "passed": 147,
+          "failed": 20,
+          "skipped": 0,
+          "failures": [
+            "tests.test_api.TestExtendedAPI::test_item_and_attribute",
+            "tests.test_api.TestExtendedAPI::test_finalize_constant_expression",
+            "tests.test_api.TestExtendedAPI::test_env_autoescape",
+            "tests.test_api.TestExtendedAPI::test_autoescape_autoselect",
+            "tests.test_api.TestUndefined::test_debug_undefined",
+            "tests.test_filters.TestFilter::test_dictsort[-[('aa', 0), ('AB', 3), ('b', 1), ('c', 2)]]",
+            "tests.test_filters.TestFilter::test_dictsort[true-[('AB', 3), ('aa', 0), ('b', 1), ('c', 2)]]",
+            "tests.test_filters.TestFilter::test_dictsort[by=\"value\"-[('aa', 0), ('b', 1), ('c', 2), ('AB', 3)]]",
+            "tests.test_filters.TestFilter::test_dictsort[reverse=true-[('c', 2), ('b', 1), ('AB', 3), ('aa', 0)]]",
+            "tests.test_filters.TestFilter::test_batch",
+            "tests.test_filters.TestFilter::test_slice",
+            "tests.test_filters.TestFilter::test_indent",
+            "tests.test_filters.TestFilter::test_indent_width_string",
+            "tests.test_filters.TestFilter::test_items",
+            "tests.test_filters.TestFilter::test_title",
+            "tests.test_filters.TestFilter::test_truncate",
+            "tests.test_filters.TestFilter::test_block",
+            "tests.test_filters.TestFilter::test_sort3",
+            "tests.test_filters.TestFilter::test_replace",
+            "tests.test_filters.TestFilter::test_map_default"
+          ],
+          "issue": "setup/error/empty execution is not an assertion result",
+          "exit_code": 1,
+          "report_sha256": "ebf0b72c8b8098b58299a01aa3e20bc305894e682fa6fa05c4ea82195772b282",
+          "output_sha256": "2b7f3e30bf22c9a8daf10ca74d1ad9b755f08fcb104787c921c361a833563ce7",
+          "tests": [
+            "tests/test_api.py",
+            "tests/test_filters.py",
+            "tests/test_nodes.py"
+          ],
+          "seconds": 2.1132915999623947,
+          "producer": "pytest",
+          "report": "fault.xml"
+        }
+      },
+      "seals": {
+        "unchanged": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "equivalent": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "fault": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      },
+      "definition": {
+        "id": "environment-default-autoescape",
+        "project": "jinja",
+        "case": "jinja-environment-fixture",
+        "query": "src/jinja2/environment.py",
+        "kind": "pytest",
+        "pythonpath": "src",
+        "full_tests": [
+          "tests/test_api.py",
+          "tests/test_filters.py",
+          "tests/test_nodes.py"
+        ],
+        "before": "self.autoescape = autoescape",
+        "after": "self.autoescape = True"
+      },
+      "selection": {
+        "old": {
+          "candidates": [],
+          "executed_relevant": [],
+          "outside_relevant": []
+        },
+        "final": {
+          "candidates": [
+            "examples/basic/test_filter_and_linestatements.py",
+            "examples/basic/test_loop_filter.py",
+            "tests/conftest.py",
+            "tests/test_api.py",
+            "tests/test_async.py",
+            "tests/test_async_filters.py",
+            "tests/test_bytecode_cache.py",
+            "tests/test_compile.py",
+            "tests/test_core_tags.py",
+            "tests/test_debug.py",
+            "tests/test_ext.py",
+            "tests/test_filters.py",
+            "tests/test_idtracking.py",
+            "tests/test_imports.py",
+            "tests/test_inheritance.py",
+            "tests/test_lexnparse.py",
+            "tests/test_loader.py",
+            "tests/test_nativetypes.py",
+            "tests/test_nodes.py",
+            "tests/test_pickle.py",
+            "tests/test_regression.py",
+            "tests/test_runtime.py",
+            "tests/test_security.py",
+            "tests/test_tests.py",
+            "tests/test_utils.py"
+          ],
+          "executed_relevant": [
+            "tests/test_api.py",
+            "tests/test_filters.py",
+            "tests/test_nodes.py"
+          ],
+          "outside_relevant": [
+            "examples/basic/test_filter_and_linestatements.py",
+            "examples/basic/test_loop_filter.py",
+            "tests/conftest.py",
+            "tests/test_async.py",
+            "tests/test_async_filters.py",
+            "tests/test_bytecode_cache.py",
+            "tests/test_compile.py",
+            "tests/test_core_tags.py",
+            "tests/test_debug.py",
+            "tests/test_ext.py",
+            "tests/test_idtracking.py",
+            "tests/test_imports.py",
+            "tests/test_inheritance.py",
+            "tests/test_lexnparse.py",
+            "tests/test_loader.py",
+            "tests/test_nativetypes.py",
+            "tests/test_pickle.py",
+            "tests/test_regression.py",
+            "tests/test_runtime.py",
+            "tests/test_security.py",
+            "tests/test_tests.py",
+            "tests/test_utils.py"
+          ]
+        }
+      },
+      "selected_fault": {
+        "old": {
+          "status": "incomplete",
+          "issue": "no tests selected",
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "final": {
+          "status": "incomplete",
+          "passed": 147,
+          "failed": 20,
+          "skipped": 0,
+          "failures": [
+            "tests.test_api.TestExtendedAPI::test_item_and_attribute",
+            "tests.test_api.TestExtendedAPI::test_finalize_constant_expression",
+            "tests.test_api.TestExtendedAPI::test_env_autoescape",
+            "tests.test_api.TestExtendedAPI::test_autoescape_autoselect",
+            "tests.test_api.TestUndefined::test_debug_undefined",
+            "tests.test_filters.TestFilter::test_dictsort[-[('aa', 0), ('AB', 3), ('b', 1), ('c', 2)]]",
+            "tests.test_filters.TestFilter::test_dictsort[true-[('AB', 3), ('aa', 0), ('b', 1), ('c', 2)]]",
+            "tests.test_filters.TestFilter::test_dictsort[by=\"value\"-[('aa', 0), ('b', 1), ('c', 2), ('AB', 3)]]",
+            "tests.test_filters.TestFilter::test_dictsort[reverse=true-[('c', 2), ('b', 1), ('AB', 3), ('aa', 0)]]",
+            "tests.test_filters.TestFilter::test_batch",
+            "tests.test_filters.TestFilter::test_slice",
+            "tests.test_filters.TestFilter::test_indent",
+            "tests.test_filters.TestFilter::test_indent_width_string",
+            "tests.test_filters.TestFilter::test_items",
+            "tests.test_filters.TestFilter::test_title",
+            "tests.test_filters.TestFilter::test_truncate",
+            "tests.test_filters.TestFilter::test_block",
+            "tests.test_filters.TestFilter::test_sort3",
+            "tests.test_filters.TestFilter::test_replace",
+            "tests.test_filters.TestFilter::test_map_default"
+          ],
+          "issue": "setup/error/empty execution is not an assertion result",
+          "exit_code": 1,
+          "report_sha256": "08f90506d29adadb01be3040f6e3e19a1baf7418e9afdc612fafb689e28a7482",
+          "output_sha256": "4aab5b6fac41630c7ca7a5653d3272418f919d69eccfcecf4977ec72e80dfc83",
+          "tests": [
+            "tests/test_api.py",
+            "tests/test_filters.py",
+            "tests/test_nodes.py"
+          ],
+          "seconds": 1.817731500021182,
+          "producer": "pytest",
+          "report": "selected-final.xml",
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      },
+      "detected": {
+        "old": false,
+        "final": false
+      }
+    },
+    {
+      "id": "choice-fixture-wrong-template",
+      "project": "jinja",
+      "query": "tests/conftest.py",
+      "qualified": true,
+      "runs": {
+        "unchanged": {
+          "status": "pass",
+          "passed": 43,
+          "failed": 0,
+          "skipped": 0,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "b4dc6c1da2813a9e9b2dc800dcb4328ec31ccd60efb47bc54cb6bca59124dd2d",
+          "output_sha256": "9836b9a6318d84d9886de38de3785b17eddf73dd518accf47515b8dbbce684db",
+          "tests": [
+            "tests/test_loader.py"
+          ],
+          "seconds": 1.1404058000189252,
+          "producer": "pytest",
+          "report": "unchanged.xml"
+        },
+        "equivalent": {
+          "status": "pass",
+          "passed": 43,
+          "failed": 0,
+          "skipped": 0,
+          "failures": [],
+          "exit_code": 0,
+          "report_sha256": "015e92a6ccec6f29f854dddd9182c0166f1e57e98e81fd81316245f80d3b3cc0",
+          "output_sha256": "968bc6733b537e852dc4ac4646e9d6ef3e2d07c1ddea7642a9320f39f75712df",
+          "tests": [
+            "tests/test_loader.py"
+          ],
+          "seconds": 1.4828677999903448,
+          "producer": "pytest",
+          "report": "equivalent.xml"
+        },
+        "fault": {
+          "status": "assertion-fail",
+          "passed": 42,
+          "failed": 1,
+          "skipped": 0,
+          "failures": [
+            "tests.test_loader.TestLoaders::test_choice_loader"
+          ],
+          "exit_code": 1,
+          "report_sha256": "581aea11437b0c4d2a76bd992c5b4032005c64546964cc35adfa55170a2b8f4d",
+          "output_sha256": "ad0c6293851ce04f2c1e337ce0911170208b3e76a5bf8985d593e826be4743c0",
+          "tests": [
+            "tests/test_loader.py"
+          ],
+          "seconds": 1.3782541999826208,
+          "producer": "pytest",
+          "report": "fault.xml"
+        }
+      },
+      "seals": {
+        "unchanged": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "equivalent": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "fault": {
+          "before": {
+            "complete": true,
+            "issues": []
+          },
+          "after": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      },
+      "definition": {
+        "id": "choice-fixture-wrong-template",
+        "project": "jinja",
+        "case": "jinja-fixture-change",
+        "query": "tests/conftest.py",
+        "kind": "pytest",
+        "pythonpath": "src",
+        "full_tests": [
+          "tests/test_loader.py"
+        ],
+        "before": "return loaders.ChoiceLoader([dict_loader, package_loader])",
+        "after": "return loaders.ChoiceLoader([loaders.DictLoader({\"justdict.html\": \"BROKEN\"}), package_loader])"
+      },
+      "selection": {
+        "old": {
+          "candidates": [],
+          "executed_relevant": [],
+          "outside_relevant": []
+        },
+        "final": {
+          "candidates": [
+            "tests/test_loader.py"
+          ],
+          "executed_relevant": [
+            "tests/test_loader.py"
+          ],
+          "outside_relevant": []
+        }
+      },
+      "selected_fault": {
+        "old": {
+          "status": "incomplete",
+          "issue": "no tests selected",
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        },
+        "final": {
+          "status": "assertion-fail",
+          "passed": 42,
+          "failed": 1,
+          "skipped": 0,
+          "failures": [
+            "tests.test_loader.TestLoaders::test_choice_loader"
+          ],
+          "exit_code": 1,
+          "report_sha256": "47ff89d2c9249bb66474e7c289219bcc0fcee5bdb3691b4ff1daa663c0072852",
+          "output_sha256": "3c9091dabeafc42ca7865a589cfe69b61d4f3ec997aedcee45e488d775c2a2b4",
+          "tests": [
+            "tests/test_loader.py"
+          ],
+          "seconds": 1.1427551000379026,
+          "producer": "pytest",
+          "report": "selected-final.xml",
+          "after_seal": {
+            "complete": true,
+            "issues": []
+          }
+        }
+      },
+      "detected": {
+        "old": false,
+        "final": true
+      }
+    }
+  ],
+  "limits": [
+    "Authored faults, not agent patches or population quality evidence.",
+    "Selected commands intersect graph candidates with the named full relevant suite.",
+    "Raw producer outputs retained privately; hashes and all classifications published.",
+    "Equivalent controls are comments, not broad semantic equivalence proofs."
+  ]
+}

@@ -66,6 +66,19 @@ def test_actual_pytest_runtime_error_is_not_a_qualified_fault(tmp_path):
     assert result['exit_code']==1 and result['failed']==1
 
 
+def test_actual_rewritten_pytest_assertion_is_a_fault_and_runtime_mention_is_not(tmp_path):
+    import os
+    from eval.impact_behavior import execute
+    root=tmp_path/'project'; root.mkdir()
+    reports=tmp_path/'reports'; reports.mkdir()
+    (root/'test_assertion.py').write_text('def test_assertion():\n    assert 1 == 2\n')
+    result=execute(root,['test_assertion.py'],'pytest',None,reports,'actual',dict(os.environ))
+    assert result['status']=='assertion-fail'
+    assert result['failed']==1
+    error=junit('<testcase><failure message="ValueError: assert actual == expected"/></testcase>')
+    assert classify(1,error,'pytest')['status']=='incomplete'
+
+
 def test_behavior_controller_records_explicit_frozen_corpus_identity(tmp_path, monkeypatch):
     import hashlib
     import sys

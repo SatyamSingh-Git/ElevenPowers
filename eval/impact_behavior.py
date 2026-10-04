@@ -40,7 +40,10 @@ def classify(exit_code, data, kind):
                     errors+=1
                 elif failure is not None:
                     message=failure.get('message','')
-                    if not (message.startswith('AssertionError') or message.startswith('Failed: DID NOT RAISE ')):
+                    # Actual pytest assertion rewriting emits both spellings.
+                    # Runtime exceptions retain their type prefix and stay errors.
+                    if not (message.startswith('AssertionError') or message.startswith('assert ')
+                            or message.startswith('Failed: DID NOT RAISE ')):
                         errors+=1
                     result['failed']+=1;result['failures'].append(identity)
                 elif case.find('skipped') is not None:
@@ -192,7 +195,7 @@ def main():
     args=parser.parse_args()
     # Freeze the controller/input identities before any experiment is launched.
     identity={'controller_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-              'version':'impact-behavior/4'}
+              'version':'impact-behavior/5'}
     corpus=load_cases(args.cases)
     corpus_hash=hashlib.sha256(args.cases.read_bytes()).hexdigest()
     def bounded(path,limit=8*1024*1024):
