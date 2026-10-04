@@ -67,9 +67,21 @@ class Bindings(ast.NodeVisitor):
 
     def visit_FunctionDef(self, node):
         self.add(node.name)
+        # Definition-time expressions bind/mutate the enclosing scope.
+        for part in [*node.decorator_list, *node.args.defaults,
+                     *[v for v in node.args.kw_defaults if v]]:
+            self.visit(part)
 
     visit_AsyncFunctionDef = visit_FunctionDef
-    visit_ClassDef = visit_FunctionDef
+
+    def visit_ClassDef(self, node):
+        self.add(node.name)
+        for part in [*node.decorator_list, *node.bases, *[k.value for k in node.keywords]]:
+            self.visit(part)
+
+    def visit_Lambda(self, node):
+        for part in [*node.args.defaults, *[v for v in node.args.kw_defaults if v]]:
+            self.visit(part)
 
     def visit_Import(self, node):
         for alias in node.names:
@@ -97,6 +109,11 @@ class Bindings(ast.NodeVisitor):
     def visit_Attribute(self, node):
         if isinstance(node.ctx, (ast.Store, ast.Del)):
             self.add(callee(node).split('.')[0], mutation=True)
+        self.generic_visit(node)
+
+    def visit_Subscript(self, node):
+        if isinstance(node.ctx, (ast.Store, ast.Del)):
+            self.add(callee(node.value).split('.')[0], mutation=True)
         self.generic_visit(node)
 
     def visit_Call(self, node):

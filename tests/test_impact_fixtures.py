@@ -62,6 +62,50 @@ def test_override_can_request_outer_fixture_with_the_same_name(tmp_path):
     assert ('symbol:tests/test_api.py#env', 'symbol:tests/conftest.py#env') in edges
 
 
+@pytest.mark.parametrize('mark,focused', [
+    ('pytest.mark.parametrize("env", ["direct"])', False),
+    ('pytest.mark.usefixtures("env")', True),
+])
+def test_class_assigned_marks_match_direct_values_and_fixture_requests(tmp_path, mark, focused):
+    sample(tmp_path)
+    argument = ', env' if not focused else ''
+    put(tmp_path, 'tests/test_api.py', f'import pytest\nclass TestApi:\n    pytestmark={mark}\n'
+        f'    def test_api(self{argument}): assert True\n')
+    report = analyze(build(tmp_path), ['symbol:api.py#Api'], max_depth=20)
+    assert bool(report['test_selection']['focused']) is focused
+
+
+def test_rebound_class_marks_leave_the_context_unresolved(tmp_path):
+    sample(tmp_path)
+    put(tmp_path, 'tests/test_api.py', 'import pytest\nclass TestApi:\n'
+        '    pytestmark=pytest.mark.usefixtures("env")\n    pytestmark=[]\n'
+        '    def test_api(self, env): assert True\n')
+    report=analyze(build(tmp_path), ['symbol:api.py#Api'])
+    assert not report['test_selection']['focused']
+    assert not report['coverage']['complete']
+
+
+@pytest.mark.parametrize('imports', ['from fixtures import *', 'from helper import exported'])
+def test_wildcard_and_reexported_fixtures_cannot_fall_through_to_ancestor(tmp_path, imports):
+    sample(tmp_path)
+    put(tmp_path, 'fixtures.py', 'import pytest\n@pytest.fixture\ndef env(): return "other"\n')
+    put(tmp_path, 'helper.py', 'from fixtures import env as exported\n')
+    put(tmp_path, 'tests/test_api.py', imports+'\ndef test_api(env): assert env=="other"\n')
+    report=analyze(build(tmp_path), ['symbol:api.py#Api'])
+    assert not report['test_selection']['focused']
+    assert not report['coverage']['complete']
+
+
+def test_indirect_override_chain_requests_the_active_outer_definition(tmp_path):
+    sample(tmp_path)
+    put(tmp_path, 'tests/test_api.py', 'import pytest\n@pytest.fixture\ndef env(other): return other\n'
+        '@pytest.fixture\ndef other(env): return env\ndef test_api(env): assert env\n')
+    graph=build(tmp_path)
+    assert ('symbol:tests/test_api.py#other', 'symbol:tests/conftest.py#env') in dependencies(graph)
+    assert not any('cyclic pytest fixture' in issue for issue in graph.issues)
+    assert analyze(graph, ['symbol:api.py#Api'], max_depth=20)['test_selection']['focused']
+
+
 def test_sibling_conftest_fixture_is_not_visible(tmp_path):
     put(tmp_path, 'tests/unit/conftest.py', 'import pytest\n@pytest.fixture\ndef env(): return 1\n')
     put(tmp_path, 'tests/integration/test_api.py', 'def test_api(env): assert env\n')

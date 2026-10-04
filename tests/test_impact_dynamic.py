@@ -42,6 +42,30 @@ def test_shadowed_or_rebound_import_tools_cannot_invent_literal_edges(tmp_path, 
     assert any('dynamic import' in issue for issue in value.issues)
 
 
+@pytest.mark.parametrize('source', [
+    'from importlib import import_module as load\ndef configure(ignore=(load:=lambda _:None)): pass\n'
+    'def test_api(): assert load("pkg.api") is None\n',
+    'import importlib\ndef configure(ignore=setattr(importlib,"import_module",lambda _:None)): pass\n'
+    'def test_api(): assert importlib.import_module("pkg.api") is None\n',
+    'import importlib\nimportlib.__dict__["import_module"]=lambda _:None\n'
+    'def test_api(): assert importlib.import_module("pkg.api") is None\n',
+])
+def test_enclosing_defaults_and_attribute_containers_invalidate_literal_tools(tmp_path, source):
+    put(tmp_path, 'pkg/api.py', 'raise AssertionError("must not import")\n')
+    put(tmp_path, 'test_api.py', source)
+    graph=build(tmp_path)
+    assert not [e for e in graph.edges if e.kind=='dynamic_import']
+    assert not analyze(graph, ['pkg/api.py'])['test_selection']['focused']
+    assert any('dynamic import' in issue for issue in graph.issues)
+
+
+def test_ordinary_default_preserves_the_qualified_import(tmp_path):
+    put(tmp_path, 'pkg/api.py', 'x=1\n')
+    put(tmp_path, 'test_api.py', 'from importlib import import_module as load\n'
+        'def configure(ignore=1): pass\ndef test_api(): assert load("pkg.api")\n')
+    assert analyze(build(tmp_path), ['pkg/api.py'])['test_selection']['focused']
+
+
 @pytest.mark.parametrize('call', [
     'importlib.import_module(name)', 'importlib.import_module("pkg."+name)',
     'importlib.import_module(".api")', 'importlib.import_module("pkg.api", **options)',

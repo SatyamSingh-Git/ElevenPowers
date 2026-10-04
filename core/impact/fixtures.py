@@ -176,6 +176,7 @@ def extract_fixtures(graph, trees, deadline):
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     meta = fixture(node, record)
                     if meta:
+                        meta['binding'] = node.name
                         registry[path][meta['name']].append(meta)
 
         # Explicit registrations outside supported top-level definitions cannot
@@ -194,16 +195,33 @@ def extract_fixtures(graph, trees, deadline):
                             or isinstance(node.value, ast.Name) and node.value.id in fixture_names):
                         uncertain.add(path)
                         issue('unsupported assigned pytest fixture registration', path, node.lineno)
-            for node in record['tree'].body:
-                if not isinstance(node, ast.ImportFrom):
-                    continue
-                target, _ = resolve_python(import_base(node, path), names)
-                if not target:
-                    continue
-                definitions = [m for rows in registry[target].values() for m in rows if m.get('id')]
-                if any(m['id'] == 'symbol:' + target + '#' + a.name for a in node.names for m in definitions):
-                    uncertain.add(path)
-                    issue('unsupported imported pytest fixture registration', path, node.lineno)
+        # Imported registrations are unsupported, including wildcard and
+        # aliased re-exports. Propagate their potential visibility to callers;
+        # never prove an ancestor lookup while a nearer override is unknown.
+        exports = {path: {m['binding'] for rows in registry[path].values() for m in rows}
+                   for path in records}
+        changed = True
+        while changed:
+            changed = False
+            for path, record in records.items():
+                check()
+                for node in record['tree'].body:
+                    if not isinstance(node, ast.ImportFrom):
+                        continue
+                    target, _ = resolve_python(import_base(node, path), names)
+                    imported = set()
+                    for alias in node.names:
+                        if alias.name == '*' and exports.get(target):
+                            imported |= exports[target]
+                        elif alias.name in exports.get(target, set()):
+                            imported.add(alias.asname or alias.name)
+                    if imported:
+                        if path not in uncertain:
+                            uncertain.add(path)
+                            issue('unsupported imported pytest fixture registration', path, node.lineno)
+                        if not imported <= exports[path]:
+                            exports[path] |= imported
+                            changed = True
 
         def candidates(context, name):
             return [meta for scope in scopes(context) for meta in registry[scope].get(name, [])]
@@ -217,9 +235,9 @@ def extract_fixtures(graph, trees, deadline):
                 issue('unresolved pytest fixture registration context', path, line)
                 return
             rows = candidates(path, name)
-            current = stack[-1] if stack else None
-            # An override may request its own name from the next outer scope.
-            if current and current['name'] == name:
+            current = next((m for m in reversed(stack) if m['name'] == name), None)
+            # Advance beyond the active override even through another fixture.
+            if current:
                 position = next((i for i, m in enumerate(rows) if m is current), -1)
                 rows = rows[position + 1:] if position >= 0 else []
             if not rows or not rows[0]['valid']:
@@ -244,7 +262,8 @@ def extract_fixtures(graph, trees, deadline):
             for dependency in sorted(meta['required']):
                 request(context, identity, dependency, [*stack, meta], meta['path'], meta['line'])
 
-        def test(node, record, inherited=(), method=False, prefix='', blocked_class=False):
+        def test(node, record, inherited=(), method=False, prefix='', blocked_class=False,
+                 class_marks_rebound=False):
             check()
             path = record['path']
             identity = 'symbol:' + path + '#' + prefix + node.name
@@ -256,8 +275,8 @@ def extract_fixtures(graph, trees, deadline):
             graph.nodes[identity] = Node(identity, 'test', prefix + node.name, path, node.lineno)
             graph.add(Edge('file:' + path, identity, 'defines', 'static', path, node.lineno))
             try:
-                if record.get('marks_rebound'):
-                    raise ValueError('rebound module pytest marks')
+                if record.get('marks_rebound') or class_marks_rebound:
+                    raise ValueError('rebound module/class pytest marks')
                 required = _required(node, method)
                 requested, direct = marks([*inherited, *node.decorator_list], record)
                 requested |= required - direct
@@ -297,14 +316,21 @@ def extract_fixtures(graph, trees, deadline):
                         issue('unsupported class pytest fixture registration', path, node.lineno)
                     bound = Bindings(deadline)
                     for child in node.body: bound.visit(child)
+                    class_marks = []
+                    for child in node.body:
+                        if isinstance(child, (ast.Assign, ast.AnnAssign)):
+                            targets = child.targets if isinstance(child, ast.Assign) else [child.target]
+                            if any(isinstance(t, ast.Name) and t.id == 'pytestmark' for t in targets) and child.value:
+                                class_marks.append(child.value)
+                    class_marks_rebound = bound.counts.get('pytestmark', 0) > 1
                     for method in node.body:
                         if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef)) and method.name.startswith('test'):
                             if bound.counts[method.name] != 1:
                                 issue('rebound pytest class test definition', path, method.lineno)
                                 continue
                             static = any(isinstance(d, ast.Name) and d.id == 'staticmethod' for d in method.decorator_list)
-                            test(method, record, [*inherited, *node.decorator_list], not static,
-                                 node.name + '.', bool(class_fixtures))
+                            test(method, record, [*inherited, *node.decorator_list, *class_marks], not static,
+                                 node.name + '.', bool(class_fixtures), class_marks_rebound)
     except (TimeoutError, RecursionError):
         graph.issues.append('pytest fixture deadline or traversal limit reached')
     graph.coverage['pytest_fixtures'] = sum(m.get('valid', False) for by_name in registry.values()
