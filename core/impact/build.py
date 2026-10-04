@@ -5,7 +5,6 @@ import math
 import time
 from pathlib import Path, PurePosixPath
 
-from ..config import load
 from ..evidence import scan_sources
 from .model import Graph, Node
 from .source import extract
@@ -54,6 +53,9 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
         raise ValueError('seconds must be finite and between 0 and 300')
     if type(history) is not int or not 0 <= history <= 200:
         raise ValueError('history must be between 0 and 200 commits')
+    for name, value in (('max_files', max_files), ('max_bytes', max_bytes)):
+        if value is not None and (type(value) is not int or value <= 0):
+            raise ValueError(name + ' must be a positive integer')
     deadline = time.monotonic() + seconds
     graph = Graph(coverage={'complete': False, 'unresolved_calls': 0})
     artifact = None
@@ -61,11 +63,22 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
         artifact_path = Path(observations)
         artifact = artifact_path.as_posix() if not artifact_path.is_absolute() else artifact_path.relative_to(root).as_posix()
         safe_path(root, artifact)
-    scan = scan_sources(root, limit=max_files, max_bytes=max_bytes, deadline=deadline)
+    # Command discovery is irrelevant here and can eagerly read arbitrary large
+    # manifests. Read only the scan policy, under the same explicit-input rules.
+    policy = {}
+    try:
+        config = safe_path(root, '.elevenpowers/config.json')
+        if config.exists():
+            value = json.loads(read_input(root, '.elevenpowers/config.json', deadline))
+            if not isinstance(value, dict):
+                raise ValueError('scan configuration must be an object')
+            policy = value.get('scan', {})
+    except (OSError, ValueError, RecursionError):
+        graph.issues.append('scan configuration unreadable, invalid or over budget')
+    scan = scan_sources(root, limit=max_files, max_bytes=max_bytes, deadline=deadline, policy=policy)
     graph.issues.extend(scan.issues)
     sources, fingerprints = {}, {}
     read_bytes = 0
-    policy = load(root).scan
     allowance = max_bytes if max_bytes is not None else (
         policy.get('max_bytes', 268435456) if isinstance(policy, dict) else 268435456)
     if type(allowance) is not int or allowance <= 0:

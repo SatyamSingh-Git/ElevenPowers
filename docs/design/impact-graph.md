@@ -37,7 +37,8 @@ tree-sitter 0.26.0. The runtime still imports without site packages.
    does not imply that an unrelated symbol with the same name is called.
 2. Resolve Python absolute/relative imports using unique repository module
    candidates, including `src/` layouts and package initializers. Ambiguous
-   names remain gaps. Record conservative imported top-level Python callable
+   names remain gaps. Root and conventional `src/` module roots are supported;
+   other implicit PYTHONPATH roots are not guessed. Record conservative imported top-level Python callable
    links only where binding is unambiguous; shadowed bindings remain unresolved.
    For JS/TS, resolve relative imports, barrels and uniquely declared workspace
    package entries. Missing grammar, syntax errors, aliases/export maps that
@@ -74,7 +75,9 @@ accepts repository-relative file paths or graph node IDs. It never executes
 project code, tests, an AI host or an installer. Missing/deleted selected paths
 and query caps produce explicit gaps, rather than a claim of no impact.
 
-No implicit cache or project-state writes. Content fingerprints include selected
+No implicit cache or project-state writes. Scan configuration is read separately
+under the input cap, without command discovery; Git scans disable fsmonitor so
+project monitor scripts cannot run. Content fingerprints include selected
 source/configuration/dependency files and the declaration map, not mtimes or
 only HEAD. Rebuilding handles dirty edits, additions, removals and renames; an
 old observation goes stale when any selected input or selection policy changes.
@@ -84,7 +87,9 @@ Default cooperative build budget: 30 seconds, at most 20,000 selected files and
 256 MiB, using project scan overrides. Each file/explicit input is bounded by
 4 MiB; declaration/observation rows by 10,000; graph edges by 50,000. Native AST
 or filesystem calls can exceed a cooperative deadline. History is opt-in, at
-most 200 commits, 2 MiB of output and 40 selected files per commit. Queries cap
+most 200 commits, 2 MiB of accepted output and 40 selected files per commit.
+The shared process runner separately caps capture at 8 MiB, with disk spooling
+and cooperative polling; neither limit is an OS resource boundary. Queries cap
 depth at 20 and results at 1,000. Every cap is reported when it omits work.
 
 ## CLI and integration

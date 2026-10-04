@@ -48,6 +48,8 @@ def test_check_and_invalid_invocations(tmp_path):
     assert run(tmp_path, 'gone.py', '--check').returncode == 1
     assert run(tmp_path, 'session.py', '--seconds', 'nan').returncode == 2
     assert run(tmp_path, 'session.py', '--max-depth', '21').returncode == 2
+    assert run(tmp_path, 'session.py', '--max-files', '0').returncode == 2
+    assert run(tmp_path, 'session.py', '--max-bytes', '-1').returncode == 2
     assert run(tmp_path).returncode == 2
     assert run(tmp_path / 'missing', 'a.py').returncode == 2
 

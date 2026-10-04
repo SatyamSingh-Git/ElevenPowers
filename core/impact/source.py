@@ -1,7 +1,7 @@
 """Source extraction reuses Python AST and the existing optional grammar pack."""
 import ast
 import time
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from .model import Edge, Node
 
@@ -14,8 +14,9 @@ def module_index(paths):
         parts = path[:-3].split('/')
         if parts[-1] == '__init__':
             parts.pop()
-        for start in range(len(parts)):
-            names['.'.join(parts[start:])].add(path)
+        names['.'.join(parts)].add(path)
+        if parts and parts[0] == 'src':
+            names['.'.join(parts[1:])].add(path)
     return names
 
 
@@ -38,52 +39,107 @@ def import_base(node, path):
 
 class Bindings(ast.NodeVisitor):
     """Conservatively collect bindings in one scope, without entering children."""
-    def __init__(self):
+    def __init__(self, deadline=float('inf')):
         self.names = set()
+        self.counts = Counter()
+        self.deadline = deadline
+
+    def add(self, name):
+        if name:
+            self.names.add(name)
+            self.counts[name] += 1
+
+    def visit(self, node):
+        if time.monotonic() >= self.deadline:
+            raise TimeoutError()
+        return super().visit(node)
 
     def visit_Name(self, node):
         if isinstance(node.ctx, (ast.Store, ast.Del)):
-            self.names.add(node.id)
+            self.add(node.id)
 
     def visit_arg(self, node):
-        self.names.add(node.arg)
+        self.add(node.arg)
 
     def visit_FunctionDef(self, node):
-        self.names.add(node.name)
+        self.add(node.name)
 
     visit_AsyncFunctionDef = visit_FunctionDef
     visit_ClassDef = visit_FunctionDef
 
     def visit_Import(self, node):
-        self.names.update(a.asname or a.name.split('.')[0] for a in node.names)
+        for alias in node.names:
+            self.add(alias.asname or alias.name.split('.')[0])
 
     def visit_ImportFrom(self, node):
-        self.names.update(a.asname or a.name for a in node.names)
+        for alias in node.names:
+            self.add(alias.asname or alias.name)
 
     def visit_ExceptHandler(self, node):
         if node.name:
-            self.names.add(node.name)
+            self.add(node.name)
+        self.generic_visit(node)
+
+    def visit_MatchAs(self, node):
+        self.add(node.name)
+        self.generic_visit(node)
+
+    visit_MatchStar = visit_MatchAs
+
+    def visit_MatchMapping(self, node):
+        self.add(node.rest)
+        self.generic_visit(node)
+
+    def visit_Attribute(self, node):
+        if isinstance(node.ctx, (ast.Store, ast.Del)):
+            self.add(callee(node).split('.')[0])
+        self.generic_visit(node)
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id in ('setattr', 'delattr') and node.args:
+            self.add(callee(node.args[0]).split('.')[0])
         self.generic_visit(node)
 
 
-def scope_bindings(nodes):
-    found = Bindings()
+def scope_bindings(nodes, deadline=float('inf')):
+    found = Bindings(deadline)
     for node in nodes:
         found.visit(node)
     return found.names
 
 
-def python_edges(graph, path, tree, names):
+def callee(node):
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        base = callee(node.value)
+        return base + '.' + node.attr if base else ''
+    return ''
+
+
+def python_edges(graph, path, tree, names, exports, deadline):
     bindings = {}
     for node in ast.walk(tree):
+        if time.monotonic() >= deadline:
+            raise TimeoutError()
         if not isinstance(node, (ast.Import, ast.ImportFrom)):
             continue
         base = import_base(node, path) if isinstance(node, ast.ImportFrom) else ''
+        if isinstance(node, ast.ImportFrom) and node.level and not base:
+            graph.issues.append(f'unresolved beyond-root Python import at {path}:{node.lineno}')
+            continue
         for alias in node.names:
+            if time.monotonic() >= deadline:
+                raise TimeoutError()
             name = alias.name if isinstance(node, ast.Import) else '.'.join(
                 p for p in (base, alias.name) if p)
             target, problem = resolve_python(name, names)
             is_module = bool(target)
+            if isinstance(node, ast.ImportFrom) and base:
+                package, ambiguity = resolve_python(base, names)
+                if package and alias.name in exports.get(package, set()):
+                    # Existing package attributes win over same-name submodules.
+                    target, problem, is_module = package, '', False
             if not target and isinstance(node, ast.ImportFrom) and base:
                 target, problem = resolve_python(base, names)
             if target:
@@ -99,16 +155,19 @@ def python_edges(graph, path, tree, names):
                         bindings[alias.asname or alias.name] = ('module', target)
                     else:
                         bindings[alias.asname or alias.name] = ('symbol', target + '#' + alias.name)
-            elif problem == 'ambiguous' or (isinstance(node, ast.ImportFrom) and node.level):
+            elif (problem == 'ambiguous' or (isinstance(node, ast.ImportFrom) and node.level)
+                  or any(n.endswith('.' + name.split('.')[0]) for n in names)):
                 graph.issues.append(f'{problem} Python import at {path}:{node.lineno}')
     # Assignment/redefinition anywhere in the module invalidates a call binding.
-    blocked = scope_bindings([n for n in tree.body if not isinstance(n, (ast.Import, ast.ImportFrom))])
+    blocked = scope_bindings([n for n in tree.body if not isinstance(n, (ast.Import, ast.ImportFrom))], deadline)
 
     def walk(node, shadows):
+        if time.monotonic() >= deadline:
+            raise TimeoutError()
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
-            args = scope_bindings([node.args])
+            args = scope_bindings([node.args], deadline)
             body = node.body if isinstance(node.body, list) else [node.body]
-            local = scope_bindings(body)
+            local = scope_bindings(body, deadline)
             # Defaults and decorators execute in the enclosing scope.
             for part in [*node.args.defaults, *[v for v in node.args.kw_defaults if v],
                          *getattr(node, 'decorator_list', [])]:
@@ -119,13 +178,16 @@ def python_edges(graph, path, tree, names):
         if isinstance(node, ast.ClassDef):
             # Class-bound names cannot be confidently treated as module aliases.
             for child in node.body:
-                walk(child, shadows | scope_bindings(node.body))
+                walk(child, shadows | scope_bindings(node.body, deadline))
             return
         if isinstance(node, ast.Call):
-            text = ast.unparse(node.func)
-            for key, (kind, target) in bindings.items():
-                if text != key and not text.startswith(key + '.'):
+            text = callee(node.func)
+            parts = text.split('.')
+            for length in range(len(parts), 0, -1):
+                key = '.'.join(parts[:length])
+                if key not in bindings:
                     continue
+                kind, target = bindings[key]
                 if key.split('.')[0] in shadows:
                     graph.issues.append(f'shadowed Python call binding at {path}:{node.lineno}')
                     break
@@ -143,7 +205,7 @@ def python_edges(graph, path, tree, names):
 
 
 def extract(graph, sources, deadline):
-    trees = {}
+    trees, exports = {}, {}
     for path, data in sources.items():
         if time.monotonic() >= deadline:
             graph.issues.append('impact deadline reached parsing source')
@@ -155,9 +217,20 @@ def extract(graph, sources, deadline):
         except (SyntaxError, ValueError, RecursionError):
             graph.issues.append(f'Python parse failed: {path}')
             continue
+        try:
+            bound = Bindings(deadline)
+            for node in tree.body:
+                bound.visit(node)
+        except (TimeoutError, RecursionError):
+            graph.issues.append('impact deadline or AST traversal limit reached collecting exports')
+            break
         trees[path] = tree
+        exports[path] = bound.names
         for node in tree.body:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                if bound.counts[node.name] != 1:
+                    graph.issues.append(f'ambiguous or rebound Python export: {path}:{node.lineno}')
+                    continue
                 identity = f'symbol:{path}#{node.name}'
                 graph.nodes[identity] = Node(identity, 'symbol', node.name, path, node.lineno)
     names = module_index(sources)
@@ -165,5 +238,9 @@ def extract(graph, sources, deadline):
         if time.monotonic() >= deadline:
             graph.issues.append('impact deadline reached resolving source')
             break
-        python_edges(graph, path, tree, names)
+        try:
+            python_edges(graph, path, tree, names, exports, deadline)
+        except (TimeoutError, RecursionError):
+            graph.issues.append('impact deadline or AST traversal limit reached resolving source')
+            break
     graph.coverage['parsed_python'] = len(trees)

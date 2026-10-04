@@ -348,7 +348,7 @@ IGNORED_DIRS = {
 }
 
 SOURCE_SUFFIXES = {
-    ".py", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".rb",
+    ".py", ".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".rb",
     ".java", ".kt", ".swift", ".c", ".h", ".cc", ".cpp", ".hpp", ".cs", ".php",
     ".scala", ".ex", ".exs", ".css", ".scss", ".sql", ".json", ".yaml", ".yml",
     ".toml",
@@ -377,7 +377,8 @@ def _git_sources(root: Path, *, deadline=None) -> list[str] | None:
         if allowance <= 0:
             raise TimeoutError('source enumeration deadline reached')
         return subprocess.run(
-            ["git", "-c", f"safe.directory={repository.as_posix()}", *args], cwd=root,
+            ["git", "-c", f"safe.directory={repository.as_posix()}",
+             "-c", "core.fsmonitor=false", *args], cwd=root,
             capture_output=True, timeout=allowance,
         )
     try:
@@ -406,8 +407,11 @@ class SourceScan:
         return not self.issues
 
 
+_SCAN_POLICY_DEFAULT = object()
+
+
 def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = None,
-                 *, deadline: float | None = None) -> SourceScan:
+                 *, deadline: float | None = None, policy=_SCAN_POLICY_DEFAULT) -> SourceScan:
     """Bounded source selection; failures and omitted inputs remain explicit."""
     from .config import load
     scan = SourceScan()
@@ -418,7 +422,8 @@ def scan_sources(root: Path, limit: int | None = None, max_bytes: int | None = N
         return False
     if expired():
         return scan
-    policy = load(root).scan
+    if policy is _SCAN_POLICY_DEFAULT:
+        policy = load(root).scan
     if not isinstance(policy, dict):
         scan.issues.append("invalid scan configuration: expected an object")
         policy = {}

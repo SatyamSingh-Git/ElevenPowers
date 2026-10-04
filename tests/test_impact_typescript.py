@@ -86,3 +86,30 @@ def test_duplicate_workspace_and_unsafe_relative_import(tmp_path):
     assert not links(value)
     assert 'ambiguous' in ' '.join(value.issues)
     assert 'unresolved' in ' '.join(value.issues)
+
+
+@pytest.mark.skipif(not polyglot.available(), reason='optional grammar pack absent')
+@pytest.mark.parametrize('source', [
+    'function invoke(require: (x: string) => number) { return require("./session"); }',
+    'const require = (x: string) => 1; require("./session");',
+])
+def test_shadowed_require_is_not_a_module_import(tmp_path, source):
+    put(tmp_path, 'session.ts', 'export const x=1;')
+    put(tmp_path, 'api.ts', source)
+    value = build(tmp_path)
+    assert not links(value)
+    assert 'shadowed' in ' '.join(value.issues)
+
+
+@pytest.mark.skipif(not polyglot.available(), reason='optional grammar pack absent')
+@pytest.mark.parametrize('extension', ['mts', 'cts'])
+def test_module_dialects_are_selected_and_resolved(tmp_path, extension):
+    put(tmp_path, 'session.' + extension, 'export const x=1;')
+    put(tmp_path, 'api.' + extension, 'import {x} from "./session";')
+    value = build(tmp_path)
+    assert ('file:api.' + extension, 'file:session.' + extension) in links(value)
+
+
+def test_deeply_nested_manifest_is_a_parse_gap(tmp_path):
+    put(tmp_path, 'packages/a/package.json', '[' * 10000 + '0' + ']' * 10000)
+    assert 'parse' in ' '.join(build(tmp_path).issues)

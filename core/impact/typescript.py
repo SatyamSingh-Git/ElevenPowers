@@ -38,7 +38,7 @@ def packages(sources, graph):
             value = json.loads(data)
             if not isinstance(value, dict):
                 raise ValueError()
-        except (ValueError, UnicodeError):
+        except (ValueError, UnicodeError, RecursionError):
             graph.issues.append('package.json parse failed: ' + path)
             continue
         for section in ('dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'):
@@ -99,8 +99,28 @@ def extract_typescript(graph, sources, deadline):
             graph.issues.append('JS/TS parse failed: ' + path)
             continue
         parsed += 1
+        # A local binding can replace CommonJS require. Conservatively suppress
+        # its calls anywhere in this file instead of pretending full TS scoping.
+        shadowed_require = False
+        bindings = [tree.root_node]
+        while bindings:
+            if time.monotonic() >= deadline:
+                graph.issues.append('impact deadline reached resolving JS/TS bindings')
+                break
+            binding = bindings.pop()
+            if binding.type in ('variable_declarator', 'function_declaration', 'required_parameter',
+                                'optional_parameter', 'assignment_expression', 'import_specifier'):
+                name = binding.child_by_field_name('name') or binding.child_by_field_name('pattern') or binding.child_by_field_name('left')
+                if name is not None and name.text == b'require':
+                    shadowed_require = True
+            if binding.type == 'formal_parameters' and any(n.text == b'require' for n in binding.named_children):
+                shadowed_require = True
+            bindings.extend(binding.children)
         stack = [tree.root_node]
         while stack:
+            if time.monotonic() >= deadline:
+                graph.issues.append('impact deadline reached resolving JS/TS imports')
+                break
             node = stack.pop()
             specifiers = []
             if node.type in ('import_statement', 'export_statement'):
@@ -110,6 +130,9 @@ def extract_typescript(graph, sources, deadline):
             elif node.type == 'call_expression':
                 function = node.child_by_field_name('function')
                 if function is not None and function.text == b'require':
+                    if shadowed_require:
+                        graph.issues.append(f'shadowed CommonJS require at {path}:{node.start_point[0] + 1}')
+                        continue
                     args = node.child_by_field_name('arguments')
                     if args is not None and args.named_children and args.named_children[0].type == 'string':
                         specifiers = [args.named_children[0]]

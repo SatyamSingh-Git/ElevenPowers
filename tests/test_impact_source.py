@@ -1,6 +1,7 @@
 """Graph controls distinguish actual relationships from name resemblance."""
 import os
 import subprocess
+import time
 
 import pytest
 
@@ -63,8 +64,8 @@ def test_shadows_do_not_become_imported_calls(tmp_path, source):
 
 
 def test_ambiguous_short_module_is_a_gap(tmp_path):
-    put(tmp_path, 'a/session.py', 'def expire(): pass\n')
-    put(tmp_path, 'b/session.py', 'def expire(): pass\n')
+    put(tmp_path, 'session.py', 'def expire(): pass\n')
+    put(tmp_path, 'src/session.py', 'def expire(): pass\n')
     put(tmp_path, 'api.py', 'from session import expire\nexpire()\n')
     value = graph(tmp_path)
     assert not links(value)
@@ -148,3 +149,78 @@ def test_symlink_input_is_never_parsed(tmp_path):
     value = graph(project)
     assert not value.nodes
     assert value.issues
+
+
+@pytest.mark.parametrize('source', [
+    'from session import expire\ndef use(v):\n    match v:\n        case {"handler": expire}:\n            return expire()\n',
+    'import session\nsession.expire = lambda: 2\nsession.expire()\n',
+    'import session\nsetattr(session, "expire", lambda: 2)\nsession.expire()\n',
+])
+def test_match_and_module_mutation_do_not_invent_imported_calls(tmp_path, source):
+    put(tmp_path, 'session.py', 'def expire(): return 1\n')
+    put(tmp_path, 'api.py', source)
+    value = graph(tmp_path)
+    assert ('file:api.py', 'symbol:session.py#expire') not in links(value, 'calls')
+    assert value.issues
+
+
+def test_large_binding_resolution_obeys_cooperative_deadline(tmp_path):
+    put(tmp_path, 'session.py', 'def expire(): return 1\n')
+    names = [f'expire as n{i}' for i in range(6000)]
+    put(tmp_path, 'api.py', 'from session import ' + ','.join(names) + '\n' +
+        '\n'.join('n5999()' for i in range(6000)))
+    started = time.monotonic()
+    value = graph(tmp_path, seconds=.4)
+    assert time.monotonic() - started < 2.5
+    assert value.coverage['complete'] or 'deadline' in ' '.join(value.issues)
+
+
+@pytest.mark.parametrize('files,source,target', [
+    ({'pkg/__init__.py': 'def session(): return 1\n', 'pkg/session.py': 'x=1\n'},
+     'from pkg import session\nsession()\n', 'symbol:pkg/__init__.py#session'),
+    ({'pkg/__init__.py': '', 'pkg/session.py': 'def expire(): return 1\n'},
+     'import pkg\nimport pkg.session\npkg.session.expire()\n', 'symbol:pkg/session.py#expire'),
+])
+def test_initializer_exports_and_longest_module_binding(tmp_path, files, source, target):
+    for path, code in files.items():
+        put(tmp_path, path, code)
+    put(tmp_path, 'api.py', source)
+    assert ('file:api.py', target) in links(graph(tmp_path), 'calls')
+
+
+@pytest.mark.parametrize('files,source', [
+    ({'examples/session.py': 'def expire(): pass\n'}, 'from session import expire\nexpire()\n'),
+    ({'pkg/api.py': 'from ...session import expire\nexpire()\n', 'expire.py': 'x=1\n'}, None),
+    ({'session.py': 'def expire(): pass\nexpire = lambda: 2\n'}, 'from session import expire\nexpire()\n'),
+])
+def test_unavailable_module_roots_and_rebound_exports_are_not_resolved(tmp_path, files, source):
+    for path, code in files.items():
+        put(tmp_path, path, code)
+    if source:
+        put(tmp_path, 'api.py', source)
+    value = graph(tmp_path)
+    assert not links(value, 'calls')
+    assert value.issues
+
+
+def test_bounded_scan_does_not_discover_commands_from_large_manifest(tmp_path, monkeypatch):
+    path = put(tmp_path, 'package.json', ' ' * (5 * 1024 * 1024))
+    original = type(path).read_text
+    def read_text(file, *args, **kwargs):
+        if file == path:
+            pytest.fail('manifest read bypassed ImpactGraph byte cap')
+        return original(file, *args, **kwargs)
+    monkeypatch.setattr(type(path), 'read_text', read_text)
+    assert 'per-file' in ' '.join(graph(tmp_path).issues)
+
+
+def test_scanning_disables_project_filesystem_monitor(tmp_path):
+    git = ['git', '-c', f'safe.directory={tmp_path.as_posix()}']
+    subprocess.run([*git, 'init', '-q'], cwd=tmp_path, check=True, capture_output=True)
+    put(tmp_path, 'app.py', 'x=1\n')
+    subprocess.run([*git, 'add', '.'], cwd=tmp_path, check=True, capture_output=True)
+    script = put(tmp_path, 'monitor.sh', '#!/bin/sh\ntouch monitor-ran.txt\nprintf "token\\0"\n')
+    script.chmod(0o755)
+    subprocess.run([*git, 'config', 'core.fsmonitor', script.as_posix()], cwd=tmp_path, check=True)
+    graph(tmp_path)
+    assert not (tmp_path / 'monitor-ran.txt').exists()
