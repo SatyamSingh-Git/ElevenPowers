@@ -56,7 +56,8 @@ def load_cases(path):
                 raise ValueError('invalid input hash')
     ids=set()
     for case in cases:
-        if not isinstance(case,dict) or case.get('project') not in names or case.get('split') not in ('development','held-out'):
+        if (not isinstance(case,dict) or not isinstance(case.get('project'),str)
+                or case['project'] not in names or case.get('split') not in ('development','held-out')):
             raise ValueError('invalid case project/split')
         identity=case.get('id')
         if not isinstance(identity,str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,100}',identity) or identity in ids:
@@ -80,6 +81,8 @@ def seal(root, hashes):
     issues=[]
     if any(p.is_symlink() for p in (root,*root.parents)):
         return {'complete':False,'issues':['linked root']}
+    if (root/'.elevenpowers/config.json').exists() and '.elevenpowers/config.json' not in hashes:
+        issues.append('unfrozen scan policy: .elevenpowers/config.json')
     for name,digest in hashes.items():
         try:
             path=safe_path(root.resolve(),name)

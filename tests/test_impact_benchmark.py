@@ -46,6 +46,7 @@ def test_missing_known_positive_and_explicit_negative_are_retained():
     lambda v: v['projects'][0].update(files={'../unsafe.py':'b'*64}),
     lambda v: v['cases'][0].update(unrelated=['worker.py']),
     lambda v: v['cases'][0].update(consumers=[{}]),
+    lambda v: v['cases'][0].update(project={}),
 ])
 def test_invalid_frozen_protocol_is_rejected(tmp_path, mutate):
     path, value = manifest(tmp_path)
@@ -87,3 +88,12 @@ def test_failed_source_qualification_retains_requested_cases(tmp_path):
     assert not result['complete']
     assert result['projects'][0]['cases'][0]['id']=='case-one'
     assert result['projects'][0]['cases'][0]['status']=='incomplete'
+
+
+def test_unfrozen_scan_policy_cannot_change_selection_silently(tmp_path):
+    import hashlib
+    (tmp_path/'api.py').write_text('x=1\n')
+    hashes={'api.py':hashlib.sha256((tmp_path/'api.py').read_bytes()).hexdigest()}
+    state=tmp_path/'.elevenpowers';state.mkdir()
+    (state/'config.json').write_text('{"scan":{"exclude":["api.py"]}}')
+    assert not seal(tmp_path,hashes)['complete']
