@@ -61,6 +61,15 @@ def test_contextless_output_does_not_invent_attribution(tmp_path):
     assert not value['complete'] and not value['edges']
 
 
+def test_missing_executed_line_context_is_incomplete(tmp_path):
+    graph,data,receipt=sample(tmp_path)
+    report=json.loads(data)
+    del report['files']['api.py']['contexts']['2']
+    data=json.dumps(report).encode();receipt['report_sha256']=hashlib.sha256(data).hexdigest()
+    value=convert(tmp_path,'python',data,receipt)
+    assert not value['complete'] and not value['edges']
+
+
 def test_invalid_declaration_still_quarantines_observations(tmp_path):
     (tmp_path/'impactgraph.json').write_text('{broken',encoding='utf-8')
     graph,data,receipt=sample(tmp_path)

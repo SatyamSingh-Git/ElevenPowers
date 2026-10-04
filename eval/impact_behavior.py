@@ -39,8 +39,8 @@ def classify(exit_code, data, kind):
                 if case.find('error') is not None:
                     errors+=1
                 elif failure is not None:
-                    message=' '.join([failure.get('message',''),failure.text or ''])
-                    if 'AssertionError' not in message and 'DID NOT RAISE' not in message:
+                    message=failure.get('message','')
+                    if not (message.startswith('AssertionError') or message.startswith('Failed: DID NOT RAISE ')):
                         errors+=1
                     result['failed']+=1;result['failures'].append(identity)
                 elif case.find('skipped') is not None:
@@ -69,8 +69,11 @@ def classify(exit_code, data, kind):
                     elif status in ('pending','todo','skipped'):result['skipped']+=1
                     elif status=='failed':
                         result['failed']+=1;result['failures'].append(case.get('fullName',''))
-                        messages=case.get('failureMessages',[])
-                        if not isinstance(messages,list) or not any(isinstance(m,str) and 'expect(' in m for m in messages):
+                        details=case.get('failureDetails',[])
+                        if not isinstance(details,list) or not any(isinstance(d,dict)
+                            and isinstance(d.get('matcherResult'),dict)
+                            and isinstance(d['matcherResult'].get('name'),str)
+                            and d['matcherResult']['name'] and d['matcherResult'].get('pass') is False for d in details):
                             errors+=1
                     else:errors+=1
             for field,key in [('numPassedTests','passed'),('numFailedTests','failed'),('numPendingTests','skipped')]:
@@ -111,7 +114,9 @@ def execute(root, tests, kind, tools, directory, label, env):
         done=run(command,cwd=root,shell=False,env=env,timeout=120)
         output=done.stdout+done.stderr
         (directory/(label+'.txt')).write_text(output,encoding='utf-8')
-        data=report.read_bytes() if report.exists() else b''
+        if report.exists():
+            with report.open('rb') as stream:data=stream.read(8*1024*1024+1)
+        else:data=b''
         result=classify(done.returncode,data,kind)
         result.update(exit_code=done.returncode,report_sha256=hashlib.sha256(data).hexdigest(),
                       output_sha256=hashlib.sha256(output.encode()).hexdigest())

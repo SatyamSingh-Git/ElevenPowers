@@ -81,6 +81,8 @@ def _python(root, graph, report, receipt, deadline):
             labels = contexts.get(str(line), [])
             if not isinstance(labels, list) or len(labels) > 10000 or any(not isinstance(s, str) for s in labels):
                 raise ValueError('invalid line contexts')
+            if not labels:
+                issues.add('coverage executed line has no attributed context')
             for label in labels:
                 if label not in mapping:
                     issues.add('coverage includes unattributed contexts')

@@ -104,6 +104,8 @@ def test_instance_dispatch_is_qualified_not_an_implementation_prediction(tmp_pat
 
 
 def test_config_extends_cannot_read_physical_outside_snapshot(tmp_path):
+    import subprocess
+    subprocess.run(['git','init',str(tmp_path)],check=True,capture_output=True)
     put(tmp_path,'secret.json',{'compilerOptions':{'baseUrl':'.','paths':{'hidden':['src/session']}}})
     put(tmp_path,'.gitignore','secret.json\n')
     put(tmp_path,'tsconfig.json',{'extends':'./secret.json'})
@@ -134,3 +136,17 @@ def test_external_and_duplicate_workspace_packages_are_explicit(tmp_path):
 def test_compiler_result_is_validated_before_graph_mutation(payload):
     with pytest.raises(ValueError):
         validate(payload,{'a.ts':b'export const a=1;'})
+
+
+@pytest.mark.parametrize('caller',[
+    'import {expire} from "./session"; function run(cb:typeof expire) {return cb();}',
+    'import {expire,other} from "./session"; let f=expire; f=other; f();',
+    'import {Session} from "./session"; function run(S:typeof Session) {return S.expire();}',
+    'import {expire} from "./session"; function run(obj:{callback:typeof expire}) {return obj.callback();}',
+])
+def test_a_reused_signature_does_not_establish_runtime_callee(caller,tmp_path):
+    put(tmp_path,'session.ts','export function expire() {return 1;} export function other() {return 2;} export class Session {static expire() {return 1;}}')
+    put(tmp_path,'api.ts',caller)
+    value=build(tmp_path,typescript=ENGINE)
+    assert not any(e.kind=='calls' and e.source=='file:api.ts' for e in value.edges)
+    assert not value.coverage['typescript_compiler']['complete']

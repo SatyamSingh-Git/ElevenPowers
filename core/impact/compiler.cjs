@@ -123,7 +123,7 @@ for (const sf of files) walk(sf, n => {
   const update = (ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) && [ts.SyntaxKind.PlusPlusToken, ts.SyntaxKind.MinusMinusToken].includes(n.operator);
   if (assignment || update) {
     const s = symbolAt(assignment ? n.left : n.operand);
-    if (s && symbols.has(s)) { rebound.add(s); issue('rebound compiler callable: ' + symbols.get(s)); }
+    if (s) { rebound.add(s); if (symbols.has(s)) issue('rebound compiler callable: ' + symbols.get(s)); }
   }
 });
 function add(source, target, kind, p, n, sf) {
@@ -149,12 +149,27 @@ for (const sf of files) walk(sf, n => {
     if (decl && ts.isMethodDeclaration(decl) && !decl.modifiers?.some(m => m.kind === ts.SyntaxKind.StaticKeyword)) {
       issue('compiler instance dispatch is not a concrete call: ' + p + ':' + line(n, sf)); return;
     }
-    let id = declarations.get(decl);
-    if (!id && s) id = symbols.get(s);
+    // Signature declarations are reusable types. Only the callee's established
+    // binding may identify a selected implementation; callback parameters and
+    // copied/reassigned aliases cannot inherit it from their signature.
+    const id = s && symbols.get(s);
+    const implementation = id && nodes.get(id)?._decl;
+    if (ts.isPropertyAccessExpression(n.expression)) {
+      let receiver = n.expression.expression;
+      while (ts.isPropertyAccessExpression(receiver)) receiver = receiver.expression;
+      const receiverSymbol = symbolAt(receiver);
+      const namespaceImport = ts.isIdentifier(receiver) && checker.getSymbolAtLocation(receiver)?.declarations?.some(d => ts.isNamespaceImport(d));
+      const classOrNamespace = receiverSymbol?.declarations?.some(d => (ts.isClassDeclaration(d) || ts.isModuleDeclaration(d)) && sources.has(d.getSourceFile().fileName));
+      if (!receiverSymbol || rebound.has(receiverSymbol) || !namespaceImport && !classOrNamespace) {
+        unresolved++; return;
+      }
+    }
     // An interface, parameter, overload without known implementation, or union
     // signature does not establish a concrete implementation call.
-    if (s && rebound.has(s)) return;
-    if (id && nodes.has(id) && nodes.get(id).path !== p && decl && (decl.body || ts.isArrowFunction(decl) || ts.isFunctionExpression(decl))) add('file:' + p, id, 'calls', p, n, sf);
+    if (s && rebound.has(s)) {
+      issue('rebound or unsupported compiler call binding: ' + p + ':' + line(n, sf)); return;
+    }
+    if (id && implementation && nodes.get(id).path !== p && (implementation.body || ts.isVariableDeclaration(implementation))) add('file:' + p, id, 'calls', p, n, sf);
     else if (!id) unresolved++;
   }
 });

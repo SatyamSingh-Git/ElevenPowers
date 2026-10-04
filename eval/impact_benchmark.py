@@ -26,7 +26,8 @@ def _relative(value):
 
 
 def load_cases(path):
-    data=Path(path).read_bytes()
+    with Path(path).open('rb') as stream:
+        data=stream.read(4*1024*1024+1)
     if len(data)>4*1024*1024:
         raise ValueError('corpus exceeds 4 MiB')
     try:
