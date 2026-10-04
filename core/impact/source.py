@@ -221,7 +221,14 @@ def python_edges(graph, path, tree, names, exports, deadline):
     local_bindings = {name: 'symbol:' + path + '#' + name for name in exports.get(path, set())
                       if 'symbol:' + path + '#' + name in graph.nodes}
 
-    def walk(node, shadows, owner='', local_shadows=frozenset()):
+    def module_call(node, target, kind, module_scope):
+        if module_scope:
+            row = [path, node.lineno, target, kind]
+            rows = graph.coverage.setdefault('python_module_calls', [])
+            if row not in rows:
+                rows.append(row)
+
+    def walk(node, shadows, owner='', local_shadows=frozenset(), module_scope=True):
         if time.monotonic() >= deadline:
             raise TimeoutError()
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
@@ -231,22 +238,23 @@ def python_edges(graph, path, tree, names, exports, deadline):
             # Defaults and decorators execute in the enclosing scope.
             for part in [*node.args.defaults, *[v for v in node.args.kw_defaults if v],
                          *getattr(node, 'decorator_list', [])]:
-                walk(part, shadows, owner, local_shadows)
+                walk(part, shadows, owner, local_shadows, module_scope)
             identity = 'symbol:' + path + '#' + getattr(node, 'name', '')
             next_owner = identity if node in tree.body and identity in graph.nodes else ''
             for child in body:
-                walk(child, shadows | args | local, next_owner, local_shadows | args | local)
+                walk(child, shadows | args | local, next_owner, local_shadows | args | local, False)
             return
         if isinstance(node, ast.ClassDef):
             # Class-bound names cannot be confidently treated as module aliases.
             for child in node.body:
                 bound = scope_bindings(node.body, deadline)
-                walk(child, shadows | bound, local_shadows=local_shadows | bound)
+                walk(child, shadows | bound, local_shadows=local_shadows | bound, module_scope=module_scope)
             return
         if isinstance(node, ast.Call):
             text = callee(node.func)
             parts = text.split('.')
             if text in local_bindings and text not in local_shadows:
+                module_call(node, local_bindings[text], 'calls', module_scope)
                 for source in filter(None, ('file:' + path, owner)):
                     graph.add(Edge(source, local_bindings[text], 'calls', 'static', path, node.lineno))
             tool, valid = tools.get(parts[0], ('', False))
@@ -258,6 +266,7 @@ def python_edges(graph, path, tree, names, exports, deadline):
                     target, problem = resolve_python(name, names)
                     if not target:
                         raise ValueError(problem)
+                    module_call(node, 'file:' + target, 'dynamic_import', module_scope)
                     for source in filter(None, ('file:' + path, owner)):
                         graph.add(Edge(source, 'file:' + target, 'dynamic_import',
                                        'static', path, node.lineno, 'importlib.import_module'))
@@ -275,6 +284,7 @@ def python_edges(graph, path, tree, names, exports, deadline):
                 identity = 'symbol:' + target if kind == 'symbol' and not suffix else (
                     'symbol:' + target + '#' + suffix if kind == 'module' and suffix else '')
                 if identity in graph.nodes:
+                    module_call(node, identity, 'calls', module_scope)
                     graph.add(Edge('file:' + path, identity, 'calls', 'static', path, node.lineno))
                     if owner:
                         graph.add(Edge(owner, identity, 'calls', 'static', path, node.lineno))
@@ -286,7 +296,7 @@ def python_edges(graph, path, tree, names, exports, deadline):
                     graph.coverage['unresolved_calls'] += 1
                 break
         for child in ast.iter_child_nodes(node):
-            walk(child, shadows, owner, local_shadows)
+            walk(child, shadows, owner, local_shadows, module_scope)
     walk(tree, blocked)
 
 

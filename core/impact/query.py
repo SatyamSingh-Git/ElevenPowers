@@ -4,6 +4,7 @@ from dataclasses import asdict
 
 from ..redact import scrub
 from ..surface import TEST_NAME
+from .selection import partition
 
 
 def analyze(graph, files, *, max_depth=6, max_results=100):
@@ -28,7 +29,8 @@ def analyze(graph, files, *, max_depth=6, max_results=100):
             seeds.update(matches)
             seed_paths.add(value)
     reverse = defaultdict(list)
-    priority = {'calls': 0, 'observed_call': 1, 'observed_test': 1, 'tests': 2,
+    priority = {'calls': 0, 'fixture': 0, 'fixture_definition': 0, 'dynamic_import': 1,
+                'observed_call': 1, 'observed_test': 1, 'tests': 2,
                 'uses': 2, 'depends_on': 2, 'imports': 3}
     for edge in graph.edges:
         reverse[edge.target].append(edge)
@@ -66,6 +68,8 @@ def analyze(graph, files, *, max_depth=6, max_results=100):
     found.sort(key=lambda n: (n['distance'], n['id']))
     tests = [n for n in found if n['kind'] == 'test' or TEST_NAME.search(n['path'])]
     affected = [n for n in found if n not in tests]
+    selection, selection_issues = partition(graph, seeds, tests, max_depth=max_depth, max_results=max_results)
+    issues.extend(selection_issues)
     associations = {}
     for item in graph.associations:
         for source, target in ((item['source'], item['target']), (item['target'], item['source'])):
@@ -81,7 +85,7 @@ def analyze(graph, files, *, max_depth=6, max_results=100):
     return {'schema': 1, 'source_fingerprint': graph.fingerprint, 'requested': list(files),
             'summary': f'{len(affected)} affected nodes; {len(tests)} candidate tests' if found else
                        'No current dependency path found within the selected scope.',
-            'affected': affected, 'tests': tests, 'associations': association_values,
+            'affected': affected, 'tests': tests, 'test_selection': selection, 'associations': association_values,
             'quarantined': graph.quarantined,
             'coverage': {**snapshot['coverage'], 'complete': not issues, 'issues': sorted(set(issues))},
             'limits': snapshot['limits']}
@@ -95,11 +99,20 @@ def markdown(report):
              'Input fingerprint: `' + report['source_fingerprint'] + '`', '']
     if report.get('change'):
         lines += ['Requested change: ' + escape(report['change']), '']
-    for title, key in (('Affected components and files', 'affected'), ('Candidate tests', 'tests')):
+    selection = report.get('test_selection')
+    sections = [('Affected components and files', report['affected'])]
+    if selection:
+        lines += [selection['policy'], '', 'It is not safe to exclude broader fallback candidates.', '']
+        sections += [('Focused test candidates', selection['focused']),
+                     ('Broader fallback candidates', selection['fallback']),
+                     ('Supporting files', selection['support'])]
+    else:
+        sections += [('Candidate tests', report['tests'])]
+    for title, nodes in sections:
         lines += ['## ' + title, '']
-        if not report[key]:
+        if not nodes:
             lines += ['No current path found.', '']
-        for node in report[key]:
+        for node in nodes:
             lines += [f"- **{escape(node['label'])}** — {node['category']}, {node['distance']} hop(s)"]
             for edge in node['explanation']:
                 location = f" ({escape(edge['path'])}:{edge['line']})" if edge['path'] else ''

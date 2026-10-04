@@ -36,6 +36,23 @@ def test_missing_known_positive_and_explicit_negative_are_retained():
     assert result['negative_hits'] == ['other.py']
 
 
+def test_recommendation_tiers_keep_partial_oracle_and_old_runtime_explicit():
+    case = {'consumers':[], 'tests':['test_api.py'], 'unrelated':['test_bad.py']}
+    report = {'affected':[], 'tests':[{'path':'test_api.py'}, {'path':'test_import.py'}]}
+    assert grade(case, report)['test_selection'] is None
+    report['test_selection'] = {
+        'focused':[{'path':'test_api.py'}, {'path':'test_bad.py'}],
+        'fallback':[{'path':'test_import.py'}], 'support':[{'path':'conftest.py'}],
+        'safe_to_exclude_fallback':False}
+    result = grade(case, report)['test_selection']
+    assert result['focused']['known_test_hits'] == ['test_api.py']
+    assert result['focused']['negative_hits'] == ['test_bad.py']
+    assert result['fallback']['unlabelled'] == ['test_import.py']
+    assert result['support']['candidate_files'] == ['conftest.py']
+    assert result['safe_to_exclude_fallback'] is False
+    assert 'precision' not in result['focused']
+
+
 def test_symbol_query_uses_the_same_safe_selected_path_contract(tmp_path):
     path, value = manifest(tmp_path)
     value['cases'][0]['query'] = 'symbol:pkg/api.py#Service.expire'

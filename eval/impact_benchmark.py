@@ -128,11 +128,21 @@ def grade(case, report):
     consumers=set(case['consumers'])
     expected_tests=set(case['tests'])
     known=consumers|expected_tests|set(case['unrelated'])
+    selection = None
+    if isinstance(report.get('test_selection'), dict):
+        selection = {'safe_to_exclude_fallback': report['test_selection']['safe_to_exclude_fallback']}
+        for group in ('focused', 'fallback', 'support'):
+            paths = {n['path'] for n in report['test_selection'][group] if n['path']}
+            selection[group] = {'candidate_files': sorted(paths),
+                'known_test_hits': sorted(paths & expected_tests),
+                'negative_hits': sorted(paths & set(case['unrelated'])),
+                'unlabelled': sorted(paths - known)}
     return {'consumer_recall':len(consumers&affected)/len(consumers) if consumers else None,
             'test_recall':len(expected_tests&tests)/len(expected_tests) if expected_tests else None,
             'missed_consumers':sorted(consumers-affected),'missed_tests':sorted(expected_tests-tests),
             'negative_hits':sorted(set(case['unrelated'])&predicted),
-            'unlabelled':sorted(predicted-known),'candidate_test_files':sorted(tests)}
+            'unlabelled':sorted(predicted-known),'candidate_test_files':sorted(tests),
+            'test_selection':selection}
 
 
 WORKER = '''import json,sys,time
