@@ -13,9 +13,9 @@ document on GitHub.
 > **Why clicking the file on github.com shows code.** github.com is a source
 > browser: it renders `.md` and shows every other file as text. That is its
 > viewer, not a problem with the page. The live link above is the same file
-> served by GitHub Pages, where it renders. The original four views were checked
-> over HTTPS. The fifth view has local interaction checks; a deployment is checked
-> separately from the source file.
+> served by GitHub Pages, where it renders. All five views and the contributor
+> interactions were checked locally and over HTTPS. The served HTML matched the
+> published source; see the [dated validation](../docs/validation/2026-10-04-contributor-roadmap.md).
 
 ## The five views (tabs across the top)
 

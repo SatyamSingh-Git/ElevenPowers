@@ -48,8 +48,16 @@ browser controls and found no remaining actionable issue.
 
 ## Boundaries
 
-Local interaction checks are separate from publishing and inspecting the HTTPS
-site. Model experiments, installed-host acceptance and representative runtime
+The source was published to `main` at
+[`7ed9cac`](https://github.com/SatyamSingh-Git/ElevenPowers/commit/7ed9cac9d4eab14bc8a2b0b5763672d814c26edd).
+The [GitHub Pages deployment](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/37185489468)
+completed successfully. A fresh HTTPS read matched the committed HTML, and the
+same real Chromium interaction check passed against the public URL for all five
+tabs. The served HTML SHA-256 was
+`6a2515c5c0657b2efeb0ef23bbd331efb9da89f44a43d6b8bc45acc795b03949`.
+This deployment result is separate from the local checks above.
+
+Model experiments, installed-host acceptance and representative runtime
 overhead were not rerun for this page change. The current held-out coding-benefit
 exit remains open; proposals in the view are contribution directions, not
 implemented capabilities or approval to spend model capacity.
