@@ -74,7 +74,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **112 nodes / 258 edges** across 7 planes (as of 2026-10-04),
+Current size: **119 nodes / 272 edges** across 7 planes (as of 2026-10-04),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -86,9 +86,12 @@ onboarding, native edits, portable reports and optional changed-file test streng
 The fifth tab adds contributor content. ImpactGraph now has real runtime source
 nodes, an explicit CLI query workflow and an open acceptance card. Static paths,
 declared contracts, current unsigned observations and historical associations
-retain separate qualifications. Larger-project precision, native trace converters
-and automatic hook integration remain open; see
-[ImpactGraph validation](../docs/validation/2026-10-04-impact-graph.md).
+retain separate qualifications. Optional virtual TypeScript compiler, offline
+actual Python/Node coverage and frozen independent fault/reference evaluation
+now have explicit source and workflow nodes. The process-fault miss and broad
+candidate sets keep automatic advisories unqualified. Source maps, live traces,
+framework adapters and further relevance work remain open; see
+[ImpactGraph acceptance](../docs/validation/2026-10-04-impact-acceptance.md).
 
 The **Workflow** tab's third lane now identifies built v0.8 mechanisms and their
 limits. Mutation findings are optional human review observations; missing engines,
