@@ -1,6 +1,10 @@
 # ImpactGraph: explained impact across project boundaries
 
-Status: first delivery authorized on 2026-10-04; implementation in progress.
+Status: foundation delivered on 2026-10-04. The separately approved
+[real-project acceptance milestone](impact-acceptance.md) adds optional compiler
+resolution, offline actual coverage conversion and independent evaluation.
+Framework extraction, OpenTelemetry, more languages and automatic integration
+remain open; this is not the entire ImpactGraph vision.
 
 The user wants a useful graph for end-to-end development in any project, not a
 Snag-specific feature or a diagram of imports presented as a prediction of

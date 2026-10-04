@@ -14,6 +14,7 @@ If something here is wrong, out of date, or simply does not work — **[satyambc
 | **[platforms.md](platforms.md)** | all five hosts, native setup/removal, bundles and per-platform validation limits |
 | **[commands.md](commands.md)** | every command, every flag, and what the output means |
 | **[configuration.md](configuration.md)** | automatic setup, command overrides, scan budgets and profiles |
+| **[impactgraph.md](impactgraph.md)** | explicit impact queries, optional compiler, offline coverage receipts and measured limits |
 | **[troubleshooting.md](troubleshooting.md)** | what goes wrong, why, and the fix |
 
 ---

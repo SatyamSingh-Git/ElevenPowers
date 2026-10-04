@@ -14,9 +14,27 @@ tests carry actual relationship paths; bounded history remains a separate hint.
 Reads launch no test or host and write no project state. Optional flags include
 `--observations`, `--history`, `--seconds`, `--max-files`, `--max-bytes`,
 `--max-depth`, `--max-results`, `--change`, `--output` and `--force`.
+`--typescript TRUSTED_ENGINE_JS` opts into the contained TypeScript 5.7.3
+compiler; `--tsconfig RELATIVE.json` changes its resolution config. Missing or
+unsupported engines stay explicit gaps. This is analysis, not type checking.
 `--check` exits 1 for incomplete coverage; ordinary reports exit 0 even when
 qualified; invalid arguments or failed exports exit 2. See the
 [ImpactGraph guide](impactgraph.md) for schemas, dependencies and supported limits.
+
+## ep_impact_capture — offline coverage observations
+
+```bash
+python plugin/bin/ep_impact_capture.py --project PATH --kind python --report COVERAGE.json --receipt RECEIPT.json --output PATH/.elevenpowers/observed.json
+```
+
+`--kind v8` accepts native Node coverage instead. Actual capture is a separate
+explicit test run. The converter requires source fingerprints before/after,
+passing counted execution, a raw report hash and explicit test attribution.
+It runs no tests or model. Inputs, invalid declarations, staleness and unsupported
+source maps remain incomplete; static omissions remain visible independently.
+`--seconds` bounds conversion, `--force` allows explicit overwrite. Exit codes
+are 0 complete, 1 exported incomplete, 2 invalid invocation/export failure.
+See [the receipt contract](impactgraph.md#convert-actual-coverage).
 
 
 ## ep_ready — fresh health for the whole integration

@@ -1,5 +1,13 @@
 # Configuration
 
+ImpactGraph explicit queries use the same project-owned scan budgets/exclusions
+as repository evidence. Compiler selection is explicit through `--typescript`
+and optional relative `--tsconfig`; installation never runs the compiler or
+coverage collection. Store imported observations under `.elevenpowers/` and
+supply them with `--observations`. Current input/declaration coverage is required;
+static semantic gaps remain visible. Automatic impact advisories are not yet
+qualified. See [ImpactGraph](impactgraph.md) for supported producers and receipts.
+
 Optional changed-region test strength is shared by every host and considered at
 completion in guide/strict mode. Off stays passive; runtime never installs engines.
 Project-owned `.elevenpowers/config.json` can include:
