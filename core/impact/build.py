@@ -10,6 +10,7 @@ from ..evidence import scan_sources
 from .model import Graph, Node
 from .source import extract
 from .typescript import extract_typescript
+from . import ingest
 
 FILE_BYTES = 4 * 1024 * 1024
 
@@ -91,5 +92,14 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
                           read_bytes=read_bytes, selection_complete=scan.complete)
     extract(graph, sources, deadline)
     extract_typescript(graph, sources, deadline)
+    ingest.declarations(graph, sources, deadline)
+    if artifact:
+        try:
+            data = read_input(root, artifact, deadline)
+        except (OSError, ValueError) as exc:
+            graph.quarantined.append({'artifact': artifact, 'reason': str(exc)})
+            graph.issues.append('observation artifact unreadable or over budget')
+        else:
+            ingest.observations(graph, data, artifact, deadline)
     graph.coverage['complete'] = not graph.issues
     return graph
