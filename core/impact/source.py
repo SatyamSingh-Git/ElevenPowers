@@ -43,12 +43,15 @@ class Bindings(ast.NodeVisitor):
     def __init__(self, deadline=float('inf')):
         self.names = set()
         self.counts = Counter()
+        self.binding_counts = Counter()
         self.deadline = deadline
 
-    def add(self, name):
+    def add(self, name, *, mutation=False):
         if name:
             self.names.add(name)
             self.counts[name] += 1
+            if not mutation:
+                self.binding_counts[name] += 1
 
     def visit(self, node):
         if time.monotonic() >= self.deadline:
@@ -93,12 +96,12 @@ class Bindings(ast.NodeVisitor):
 
     def visit_Attribute(self, node):
         if isinstance(node.ctx, (ast.Store, ast.Del)):
-            self.add(callee(node).split('.')[0])
+            self.add(callee(node).split('.')[0], mutation=True)
         self.generic_visit(node)
 
     def visit_Call(self, node):
         if isinstance(node.func, ast.Name) and node.func.id in ('setattr', 'delattr') and node.args:
-            self.add(callee(node.args[0]).split('.')[0])
+            self.add(callee(node.args[0]).split('.')[0], mutation=True)
         self.generic_visit(node)
 
 
@@ -311,7 +314,8 @@ def extract(graph, sources, deadline):
         exports[path] = bound.names
         for node in tree.body:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                if bound.counts[node.name] != 1:
+                count = bound.binding_counts[node.name] if isinstance(node, ast.ClassDef) else bound.counts[node.name]
+                if count != 1:
                     graph.issues.append(f'ambiguous or rebound Python export: {path}:{node.lineno}')
                     continue
                 identity = f'symbol:{path}#{node.name}'

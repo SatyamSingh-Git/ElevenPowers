@@ -8,6 +8,7 @@ from pathlib import Path, PurePosixPath
 from ..evidence import scan_sources
 from .model import Graph, Node
 from .source import extract
+from .fixtures import extract_fixtures
 from .typescript import extract_typescript
 from . import ingest
 from .history import collect
@@ -110,7 +111,8 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
     graph.coverage.update(selected_files=len(graph.nodes), read_files=len(sources),
                           read_bytes=read_bytes, selection_complete=scan.complete,
                           inputs_complete=scan.complete and not graph.issues)
-    extract(graph, sources, deadline)
+    trees = extract(graph, sources, deadline)
+    extract_fixtures(graph, trees, deadline)
     if typescript is None:
         extract_typescript(graph, sources, deadline)
     else:

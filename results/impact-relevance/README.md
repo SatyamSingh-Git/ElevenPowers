@@ -13,6 +13,21 @@ recommendations remain unlabelled under the partial oracle. The prior 24 cases
 and process-output fault are separately reused regression evidence, not new
 held-out acceptance. Final/behavioral results will be appended after execution.
 
+`development-fixtures.json` retains the first fixture adapter outcomes.
+`development-export-repair.json` separately records the class-export repair.
+Jinja assigns `Environment.template_class`; that attribute mutation had been
+mistaken for a rebinding of `Environment`. The class name now retains its
+qualified symbol while rebinding and function-implementation mutations still
+reject qualification. Context-bound fixture relationships do not execute pytest.
+
+One frozen reference was wrong: `ep-scrub-call` labelled core/process.py as a
+redaction consumer and tests/test_process.py as a redaction test. Inspection of
+the pinned source shows neither relationship. The original corpus and every raw
+result remain unchanged. `eval/impact_relevance_qualifications.json` binds an
+explicit withdrawal to the corpus and inspected source hashes. Qualified
+analysis excludes those two mistaken labels equally for both versions; it does
+not call their absence a graph failure or silently rewrite the expectations.
+
 Reproduction uses the existing pinned disposable roots documented in
 [the earlier acceptance record](../impact-acceptance/README.md):
 

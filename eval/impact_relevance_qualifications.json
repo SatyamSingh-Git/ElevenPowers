@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "corpus_hash": "570f977b1453a8c386780a08aceda8408f16fd78c4b2f606204f6b205b167ca9",
+  "corrections": [
+    {
+      "case": "ep-scrub-call",
+      "withdrawn_consumers": [
+        "core/process.py"
+      ],
+      "withdrawn_tests": [
+        "tests/test_process.py"
+      ],
+      "reason": "The pinned process module and its tests do not import or test redaction. These labels were an author error, not a graph miss.",
+      "inspected_inputs": {
+        "core/process.py": "57b0c761cfb38e33d5ad4c224d17cbb6c281529bdc26e674c88533844563ab89",
+        "tests/test_process.py": "c4866de32f068a94141d23423d175ae3fae2c5165951f7bdf0d2f6ba39478d97",
+        "tests/test_redact.py": "e9184a218485d31d6ed0bb60b93927bec6010e6669e024acd36d8dc64c56d210"
+      }
+    }
+  ],
+  "policy": "Original frozen labels and every raw result remain unchanged. Qualified analysis separately excludes only the explicitly withdrawn references; both arms use the same qualification."
+}

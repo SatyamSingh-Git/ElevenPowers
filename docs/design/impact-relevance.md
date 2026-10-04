@@ -39,6 +39,11 @@ so a shorter broad path cannot hide a longer specific witness. Deduplicate
 recommendations by file, retain both groups and explain that focused candidates
 are not assertion coverage or safe test exclusion. CLI Markdown shows both.
 
+Fixture dependencies are bound to requesting contexts. Context instances point
+to the canonical definition and to context-resolved dependencies; a shared
+fixture depending on a locally overridden fixture cannot leak that override
+into sibling test scopes. Unknown class registrations and imports stay gaps.
+
 ## Frozen evaluation and delivery
 
 Preserve runtime f31f6a2 as the old version. Freeze twelve new authored queries

@@ -56,7 +56,7 @@ def analyze(graph, files, *, max_depth=6, max_results=100):
             path = [edge, *suffix]
             candidate = graph.nodes[edge.source]
             queue.append((edge.source, path))
-            if candidate.path in seed_paths:
+            if candidate.path in seed_paths or candidate.kind == 'fixture_binding':
                 continue
             origins = {e.origin for e in path}
             category = 'declared' if 'declared' in origins else 'observed' if 'observed' in origins else (

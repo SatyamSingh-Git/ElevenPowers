@@ -224,3 +224,20 @@ def test_scanning_disables_project_filesystem_monitor(tmp_path):
     subprocess.run([*git, 'config', 'core.fsmonitor', script.as_posix()], cwd=tmp_path, check=True)
     graph(tmp_path)
     assert not (tmp_path / 'monitor-ran.txt').exists()
+
+
+def test_class_attribute_initialization_does_not_rebind_the_class_export(tmp_path):
+    put(tmp_path, 'api.py', 'class Api: pass\nApi.template_type = object\n')
+    put(tmp_path, 'client.py', 'from api import Api\ndef client(): return Api()\n')
+    value = graph(tmp_path)
+    assert 'symbol:api.py#Api' in value.nodes
+    assert ('file:client.py', 'symbol:api.py#Api') in links(value, 'calls')
+
+
+def test_function_implementation_mutation_still_cannot_supply_a_qualified_export(tmp_path):
+    put(tmp_path, 'api.py', 'def expire(): return 1\ndef replacement(): return 2\n'
+        'expire.__code__ = replacement.__code__\n')
+    put(tmp_path, 'client.py', 'from api import expire\nexpire()\n')
+    value = graph(tmp_path)
+    assert 'symbol:api.py#expire' not in value.nodes
+    assert ('file:client.py', 'symbol:api.py#expire') not in links(value, 'calls')
