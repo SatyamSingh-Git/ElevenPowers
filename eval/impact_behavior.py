@@ -189,17 +189,26 @@ def main():
     parser.add_argument('--private',type=Path,required=True,help='new disposable directory; raw outcomes retained here')
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
+    # Freeze the controller/input identities before any experiment is launched.
+    identity={'controller_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+              'version':'impact-behavior/3'}
     corpus=load_cases(Path(__file__).with_name('impact_cases.json'))
-    definitions=json.loads(args.definitions.read_bytes())
-    roots=json.loads(args.roots.read_bytes())
-    predictions={name:json.loads(path.read_bytes()) for name,path in [('old',args.old),('final',args.final)]}
+    def bounded(path,limit=8*1024*1024):
+        with path.open('rb') as stream:data=stream.read(limit+1)
+        if len(data)>limit:raise ValueError('evaluator JSON input limit exceeded')
+        return data
+    definitions_data=bounded(args.definitions)
+    definitions=json.loads(definitions_data)
+    roots=json.loads(bounded(args.roots,1024*1024))
+    prediction_data={name:bounded(path) for name,path in [('old',args.old),('final',args.final)]}
+    predictions={name:json.loads(data) for name,data in prediction_data.items()}
     private=args.private.resolve();private.mkdir(parents=True,exist_ok=False)
     with ThreadPoolExecutor(max_workers=2) as pool:
         futures=[pool.submit(experiment,d,corpus,roots,predictions,args.tools.resolve(),private) for d in definitions]
         rows=[f.result() for f in futures]
     qualified=[r for r in rows if r['qualified']]
-    result={'schema':1,'definitions_sha256':hashlib.sha256(args.definitions.read_bytes()).hexdigest(),
-        'predictions_sha256':{k:hashlib.sha256(p.read_bytes()).hexdigest() for k,p in [('old',args.old),('final',args.final)]},
+    result={'schema':1,'controller':identity,'definitions_sha256':hashlib.sha256(definitions_data).hexdigest(),
+        'predictions_sha256':{k:hashlib.sha256(data).hexdigest() for k,data in prediction_data.items()},
         'attempted':len(rows),'qualified':len(qualified),'detected':{k:sum(r['detected'].get(k,False) for r in qualified) for k in predictions},
         'experiments':rows,'limits':['Authored faults, not agent patches or population quality evidence.',
             'Selected commands intersect graph candidates with the named full relevant suite.',
