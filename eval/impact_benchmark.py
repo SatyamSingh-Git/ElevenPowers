@@ -126,7 +126,8 @@ from pathlib import Path
 sys.path.insert(0,sys.argv[1])
 from core.impact import build,analyze
 started=time.monotonic()
-graph=build(Path(sys.argv[2]))
+options=json.loads(sys.argv[4])
+graph=build(Path(sys.argv[2]),**options)
 built=time.monotonic()-started
 queries=json.loads(sys.argv[3])
 reports={identity:analyze(graph,[query],max_results=1000,max_depth=20) for identity,query in queries}
@@ -135,7 +136,7 @@ edges=len(graph.edges),coverage=graph.to_dict()['coverage'],reports=reports)))
 '''
 
 
-def evaluate(manifest, roots, *, split, runtime_root, output=None):
+def evaluate(manifest, roots, *, split, runtime_root, output=None, typescript=None):
     if split not in ('development','held-out','all'):
         raise ValueError('invalid requested split')
     runtime_root=Path(runtime_root).resolve()
@@ -145,6 +146,12 @@ def evaluate(manifest, roots, *, split, runtime_root, output=None):
         raise ValueError('runtime root has no impact implementation')
     corpus_hash=hashlib.sha256(json.dumps(manifest,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     result={'schema':1,'corpus_hash':corpus_hash,'split':split,'runtime_files':runtime_files,'projects':[]}
+    options={}
+    if typescript is not None:
+        engine=Path(typescript).resolve(strict=True)
+        options['typescript']=str(engine)
+        result['compiler']={'sha256':hashlib.sha256(engine.read_bytes()).hexdigest(),
+                            'qualified_version':'5.7.3','trust':'explicit compiler path'}
     for project in manifest['projects']:
         cases=[c for c in manifest['cases'] if c['project']==project['id'] and (split=='all' or c['split']==split)]
         if not cases:
@@ -165,7 +172,7 @@ def evaluate(manifest, roots, *, split, runtime_root, output=None):
         queries=[(c['id'],c['query']) for c in cases]
         started=time.monotonic()
         try:
-            done=run([sys.executable,'-c',WORKER,str(runtime_root),str(root),json.dumps(queries)],
+            done=run([sys.executable,'-c',WORKER,str(runtime_root),str(root),json.dumps(queries),json.dumps(options)],
                      cwd=root,timeout=60,shell=False,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'})
             row['worker_exit']=done.returncode
             if done.returncode:
@@ -193,10 +200,11 @@ def main():
     parser.add_argument('--runtime-root',type=Path,required=True)
     parser.add_argument('--split',choices=('development','held-out','all'),default='development')
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--typescript',type=Path,help='explicit trusted compiler, only for a supporting runtime')
     args=parser.parse_args()
     try:
         value=evaluate(load_cases(args.cases),json.loads(args.roots.read_text()),split=args.split,
-                       runtime_root=args.runtime_root,output=args.output)
+                       runtime_root=args.runtime_root,output=args.output,typescript=args.typescript)
     except (ValueError,OSError) as exc:
         parser.exit(2,str(exc)+'\n')
     print(json.dumps({'complete':value['complete'],'projects':[{'id':p['project'],

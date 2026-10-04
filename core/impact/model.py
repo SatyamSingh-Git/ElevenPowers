@@ -52,7 +52,7 @@ class Graph:
                              'issues': sorted(set(self.issues))},
                 'associations': self.associations, 'quarantined': self.quarantined,
                 'limits': ['Selection completeness is not exhaustive semantic coverage.',
-                           'Static calls describe unambiguous imported Python bindings, not runtime dispatch.',
+                           'Static calls describe qualified imported bindings or compiler implementations, not runtime dispatch.',
                            'Declared relationships are project assertions; observed relationships are unsigned.',
                            'Test relationships suggest checks; they do not establish passing assertions.',
                            'Co-change is association, not causation or a breakage probability.',

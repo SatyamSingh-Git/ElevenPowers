@@ -45,10 +45,15 @@ def read_input(root, rel, deadline):
     return data
 
 
-def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None, history=0):
+def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None, history=0,
+          typescript=None, tsconfig=None):
     root = Path(root).resolve()
     if not root.is_dir():
         raise ValueError('project root must be an existing directory')
+    if tsconfig is not None:
+        safe_path(root, tsconfig)
+        if not tsconfig.endswith('.json') or typescript is None:
+            raise ValueError('tsconfig must be a relative JSON path with an explicit compiler')
     if not isinstance(seconds, (float, int)) or not math.isfinite(seconds) or not 0 <= seconds <= 300:
         raise ValueError('seconds must be finite and between 0 and 300')
     if type(history) is not int or not 0 <= history <= 200:
@@ -105,7 +110,11 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
     graph.coverage.update(selected_files=len(graph.nodes), read_files=len(sources),
                           read_bytes=read_bytes, selection_complete=scan.complete)
     extract(graph, sources, deadline)
-    extract_typescript(graph, sources, deadline)
+    if typescript is None:
+        extract_typescript(graph, sources, deadline)
+    else:
+        from .compiler import extract_compiler
+        extract_compiler(graph, sources, typescript, tsconfig, deadline)
     ingest.declarations(graph, sources, deadline)
     if artifact:
         try:

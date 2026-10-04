@@ -36,14 +36,14 @@ Files: `core/impact/compiler.py`, `core/impact/compiler.cjs`, builder/CLI flags,
 worker consumes only selected virtual source/config bytes, produces schema-1
 nodes/edges and qualifications; parent validates endpoints, paths and limits.
 
-- [ ] Observe TypeScript 5.7.3 producer output; write real aliases/exports,
+- [x] Observe TypeScript 5.7.3 producer output; write real aliases/exports,
   symbols/calls, shadows/external/ambiguous/deadline/malformed engine controls.
   Expected RED for the new optional interface.
-- [ ] Add version-qualified contained producer with no project config/source
+- [x] Add version-qualified contained producer with no project config/source
   execution or implicit engine installation. Unsupported dispatch remains gaps.
-- [ ] Re-run development cases, retain both old and new outcomes. Use generic
+- [x] Re-run development cases, retain both old and new outcomes. Use generic
   resolution rules only; current tree-sitter and stdlib controls still pass.
-- [ ] Commit/push the supported compiler adapter and its negative controls.
+- [x] Commit/push the supported compiler adapter and its negative controls.
 
 ## Task 3: Convert actual coverage with explicit provenance
 

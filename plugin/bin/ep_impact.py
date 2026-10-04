@@ -23,6 +23,8 @@ def main():
     parser.add_argument('--graph', action='store_true', help='export the graph instead of querying')
     parser.add_argument('--observations', type=Path)
     parser.add_argument('--history', type=int, default=0)
+    parser.add_argument('--typescript', type=Path, help='explicit trusted TypeScript 5.7.3 compiler JS path (requires Node)')
+    parser.add_argument('--tsconfig', help='relative JSON config used for compiler resolution')
     parser.add_argument('--seconds', type=float, default=30)
     parser.add_argument('--max-files', type=int)
     parser.add_argument('--max-bytes', type=int)
@@ -41,7 +43,8 @@ def main():
         parser.error('--force requires --output')
     try:
         value = build(args.project, seconds=args.seconds, max_files=args.max_files,
-                      max_bytes=args.max_bytes, observations=args.observations, history=args.history)
+                      max_bytes=args.max_bytes, observations=args.observations, history=args.history,
+                      typescript=args.typescript, tsconfig=args.tsconfig)
         if args.graph:
             report = value.to_dict()
             output = json.dumps(report, indent=2, ensure_ascii=False) + '\n'
