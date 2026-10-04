@@ -11,6 +11,7 @@ from .model import Graph, Node
 from .source import extract
 from .typescript import extract_typescript
 from . import ingest
+from .history import collect
 
 FILE_BYTES = 4 * 1024 * 1024
 
@@ -101,5 +102,7 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
             graph.issues.append('observation artifact unreadable or over budget')
         else:
             ingest.observations(graph, data, artifact, deadline)
+    if history:
+        collect(graph, root, history, deadline)
     graph.coverage['complete'] = not graph.issues
     return graph
