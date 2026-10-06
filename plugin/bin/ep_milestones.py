@@ -17,9 +17,11 @@ def main():
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--seconds', type=float, default=30)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--impact', action='store_true')
+    parser.add_argument('--changed', nargs='+', action='extend')
     args = parser.parse_args()
     try:
-        value = build(args.project, seconds=args.seconds)
+        value = build(args.project, seconds=args.seconds, impact=args.impact, changed=args.changed)
         text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.json else markdown(value)
         if args.output:
             write(args.output, text, force=args.force)

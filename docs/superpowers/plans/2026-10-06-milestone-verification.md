@@ -90,7 +90,7 @@ def test_later_input_edit_requires_reverification(project_with_saved_receipt):
 
 ### Task 4: Explained impact advice and independent staged exercise
 
-**Files:** Modify `core/milestones/report.py`, `plugin/bin/ep_milestones.py`; create `eval/milestones.py`; test `tests/test_milestone_impact.py`, `tests/test_milestone_exercise.py`.
+**Files:** Modify `core/milestones/report.py`, `plugin/bin/ep_milestones.py`; create `core/milestones/impact.py`, `eval/milestones.py`; test `tests/test_milestone_impact.py`, `tests/test_milestone_exercise.py`.
 
 **Interfaces:** Optional `impact=True` with explicit `changed` or ledger touched paths, informational explained leads. `python -m eval.milestones --output NEW_DIR` explicitly creates disposable exercises and publishes capability observations; it starts no model.
 

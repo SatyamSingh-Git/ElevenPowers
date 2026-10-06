@@ -132,6 +132,8 @@ def _check(root, check, required, latest, scan, deadline, history_issues):
 
 def build(root, *, seconds=30, changed=None, impact=False):
     started = time.monotonic()
+    if changed is not None and not impact:
+        raise ValueError('changed paths require explicitly requested impact advice')
     if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 0 <= seconds <= 120:
         raise ValueError('milestone seconds must be finite and between 0 and 120')
     root = Path(root).resolve(strict=True)
@@ -165,8 +167,10 @@ def build(root, *, seconds=30, changed=None, impact=False):
         value['coverage'].update(source_fingerprint=fingerprint, source_complete=scan.complete,
                                  selected_files=len(scan.files), selected_bytes=scan.bytes)
     if impact:
-        value['impact'] = {'state': 'unavailable', 'leads': [],
-                           'issues': ['impact advice is not implemented in this delivery slice']}
+        from .impact import advise
+        value['impact'] = advise(root, definition['milestones'],
+                                 changed if changed is not None else payload.get('touched', []),
+                                 deadline=deadline)
         issues += value['impact']['issues']
     final_definition = load(root, deadline=deadline)
     _, final_ledger, final_issues = read_ledger(root, deadline)
@@ -199,6 +203,14 @@ def markdown(value):
             lines.append('| ' + ' | '.join(_text(check.get(k) or '—') for k in
                             ('command', 'state', 'result', 'execution', 'freshness', 'scope')) + ' |')
             lines += ['- ' + _text(i) for i in check['issues'] + check['qualifications']]
+    if value['impact']['state'] != 'not_requested':
+        lines += ['', '## Explained impact leads (informational)', '',
+                  'No missing path certifies unaffected behavior or permits excluding fallback checks.']
+        for lead in value['impact']['leads']:
+            lines.append(f"- {_text(lead['milestone'])}: {_text(lead['input'])} ({_text(lead['category'])})")
+            for edge in lead['explanation']:
+                lines.append(f"  - {_text(edge['source'])} → {_text(edge['target'])}: {_text(edge['kind'])}")
+        lines += ['- ' + _text(i) for i in value['impact']['issues']]
     lines += ['', '## Coverage and next actions', '']
     lines += ['- ' + _text(i) for i in value['coverage']['issues'] + value['next_actions']]
     lines += ['', '## Limits', '', *['- ' + _text(i) for i in value['limits']], '']
