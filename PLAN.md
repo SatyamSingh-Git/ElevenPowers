@@ -1,5 +1,14 @@
 # Master Plan v0.8
 
+**Milestone verification implementation approved, 2026-10-06.** The next local
+capability will retain project-owned behavior checks across tasks and report
+current, failed, stale, incomplete or absent evidence. The
+[design](docs/design/milestone-verification.md) and
+[implementation plan](docs/superpowers/plans/2026-10-06-milestone-verification.md)
+specify bounded atomic history, read-only reports and optional explained impact
+advice. Automatic completion integration, PatchProof binding and measured
+coding benefit remain separate exits; preparation is not delivered runtime.
+
 **PatchProof contributor preparation, 2026-10-04.** A
 [contributor brief](docs/design/patchproof-contributor-brief.md) now maps the first
 read-only patch identity and evidence-bundle contributions onto the existing
