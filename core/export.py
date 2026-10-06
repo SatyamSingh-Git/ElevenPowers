@@ -125,6 +125,11 @@ def build(root: Path, *, timeout=120):
     strength['issues'] += [d['why'] for d in ledger.decisions if d.get('what') == 'test strength incomplete']
     revision, revision_state, revision_issues = _revision(root, deadline)
     issues += revision_issues
+    milestones = None
+    from .milestones.definition import configured as milestones_configured
+    if milestones_configured(root):
+        from .milestones import build as milestone_report
+        milestones = milestone_report(root, seconds=max(0, min(30, deadline - time.monotonic())))
     if time.monotonic() >= deadline:
         issues.append('report deadline reached; report coverage is incomplete')
     issues += [d['why'] for d in ledger.decisions if d.get('what') == 'unattributed native edit']
@@ -157,6 +162,8 @@ def build(root: Path, *, timeout=120):
                         'The deadline is cooperative; an in-flight filesystem read can finish after it, then coverage is incomplete.',
                         'Target observations cannot prove absence of unrelated side effects or identify competing writers.',
                         'Prompts, transcripts, captured outputs and receipt details are excluded.']}
+    if milestones is not None:
+        value['milestones'] = milestones
     return _portable(value, root)
 
 
@@ -218,6 +225,9 @@ def markdown(value):
                    relation, observation.get('context','') or '—']
             lines.append('| ' + ' | '.join(_text(cell) for cell in cells) + ' |')
     lines += ['- ' + _text(limit) for limit in strength.get('limitations', [])]
+    if 'milestones' in value:
+        from .milestones import markdown as milestone_markdown
+        lines += ['', '## Behavior evidence across milestones', '', *milestone_markdown(value['milestones']).splitlines()[2:]]
     lines += ['', '## Changed targets', '']
     lines += ['- ' + _text(path) for path in task['touched']] or ['No edited targets recorded.']
     lines += ['', '## Coverage and next actions', '']
