@@ -39,8 +39,31 @@ could permanently poison reports. Both were reproduced before correction.
 Observation identities now separate new appends from replay; transient errors
 are current-file diagnostics, and unknown gaps require new observations for all
 declared checks. Declaration removal and malformed recovery diagnostics also
-have observed RED-to-GREEN controls. Final delivery checks are recorded below
-after actual completion.
+have observed RED-to-GREEN controls. The corrected focused history/report/exercise/
+ownership group passed **44 tests in 167.68 seconds**.
+
+Final local delivery checks:
+
+| Check | Actual result |
+|---|---|
+| Full regression suite on the final implementation | **1,694 passed, 2 skipped**, 1,472.92 seconds |
+| Independent grader | All four fix/regression/unfixed/setup controls correct |
+| Host doctor | All launcher, observation, report and blocking contract checks passed |
+| Standard-library imports with `-S` | Milestones, controller and existing runtime/evaluator imports passed |
+| Architecture | 126 nodes / 289 edges; all five tabs, cards, filters, keyboard, share links and narrow layout rendered |
+| Documentation | 411 local Markdown targets exist |
+| Published artifacts | 34 digests verified; all 18 actual producer runs retained |
+
+The full suite was started after the final code corrections. Documentation-only
+publication continued during execution. A preliminary suite was stopped to add
+the last recovery/removal controls; it is not counted as a completed validation.
+
+Hosted compatibility is the final integration gate on the exact candidate head:
+Ubuntu/Windows and Python 3.11/3.13, Node 22, optional engines installed. See the
+[branch's test runs](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml?query=branch%3Acodex%2Fmilestone-verification)
+and [main history](https://github.com/SatyamSingh-Git/ElevenPowers/commits/main/)
+for the actual remote result and integration. A configured matrix or queued run
+is not a passing result. Main advances only after exact-head hosted success.
 
 One Minor finding is deferred: an extremely large integer timestamp in corrupt
 receipt metadata can raise `OverflowError` rather than produce an incomplete

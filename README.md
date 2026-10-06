@@ -595,6 +595,13 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
+The October 6 milestone-verification delivery passed **1,694 local tests with
+2 skips**, the host doctor and all four independent grader controls. All five
+architecture views render at 126 nodes / 289 edges. The local behavior-retention
+capability is delivered; precise native attribution, automatic completion
+integration and end-to-end coding benefit remain open. See
+[delivery validation](docs/validation/2026-10-06-milestones.md).
+
 The October 2 native-validation delivery passed **1,237 local tests with 28 skips**,
 104 audit probes, all four grader controls and the launcher doctor. Five
 Important evaluator/export findings were reproduced and corrected. Architecture's

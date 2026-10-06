@@ -112,7 +112,13 @@ def test_staged_exercise_rejects_fault_and_accepts_repair(tmp_path):
 
 **Files:** Update `README.md`, `PLAN.md`, `docs/status.md`, `the-guide/commands.md`, `the-guide/configuration.md`, `the-guide/milestones.md`, `whats-offered/roadmap.md`, architecture views/mirror/README, design status, journey/index and dated validation/index; include the new stdlib imports in `.github/workflows/tests.yml`.
 
-- [ ] Dispatch one fresh whole-branch reviewer with the spec, plan, review focus, actual test/control artifacts and progress rulings. Re-grade findings by effect; Important/Critical findings get one RED-to-GREEN fix pass; deferred minors are recorded.
-- [ ] Run `.venv/Scripts/python.exe -m pytest -q`, host doctor, independent grader, stdlib imports and `architecture/check.py --render`. Expect all applicable checks to pass; record actual counts and platform qualifications.
-- [ ] Publish real exercise evidence and limitations; check affected local links. No coding-benefit or host-acceptance claim from capability controls.
-- [ ] Commit `Document cross-milestone evidence, independent controls and remaining integration limits`; push, obtain hosted Linux/Windows verification on the exact head and integrate to main under standing authorization. Keep updates descriptive rather than numbered.
+- [x] Dispatch one fresh whole-branch reviewer with the spec, plan, review focus, actual test/control artifacts and progress rulings. Re-grade findings by effect; Important/Critical findings get one RED-to-GREEN fix pass; deferred minors are recorded.
+- [x] Run `.venv/Scripts/python.exe -m pytest -q`, host doctor, independent grader, stdlib imports and `architecture/check.py --render`. Record actual counts and platform qualifications in dated validation.
+- [x] Publish real exercise evidence and limitations; check affected local links. No coding-benefit or host-acceptance claim from capability controls.
+- [x] Prepare and publish the documented final candidate with descriptive messages. Integration uses the exact-head hosted Linux/Windows gate below.
+
+**Integration rule:** obtain hosted success for the exact candidate head, then
+fast-forward main under standing authorization. Actual remote completion is
+recorded by the [branch's Actions runs](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml?query=branch%3Acodex%2Fmilestone-verification),
+main's commit history and the execution ledger; a prepared candidate is not a
+claim that the hosted gate has already passed.

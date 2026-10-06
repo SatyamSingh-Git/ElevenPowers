@@ -50,6 +50,11 @@ require new matching observations for all current checks before they clear.
 Deleting the declaration stops capture. These corrections preserve conservative
 qualification while allowing ordinary repair to recover.
 
+The final local regression suite passed 1,694 tests with two skips in 1,472.92
+seconds. The host doctor, all four independent grader controls, standard-library
+imports, all five rendered architecture views, 411 local links and 34 artifact
+digests passed. The exact-head hosted matrix is the final integration gate.
+
 This is a delivered capability with independently specified fault/control
 checks. It is not a measured coding gain or installed-session acceptance result.
 The next exit is qualification of precise attribution and ordinary usage cost,
