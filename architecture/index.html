@@ -1764,7 +1764,7 @@ const GRAPH = {
       "kind": "lib",
       "size": 2,
       "label": "milestones/",
-      "desc": "Strict bounded user-owned behavior declarations; no command execution. Opted-in aggregate receipt history survives tasks inside the existing locked atomic ledger; current task evidence remains separate. Read-only qualified state and freshness; never safe test exclusion or a new completion blocker. Optional ImpactGraph leads remain informational; actual disposable Python/Node exercises test state transitions.",
+      "desc": "Strict bounded user-owned behavior declarations; no command execution. Opted-in history survives tasks in the locked atomic ledger; saved observation identities prevent stale replay, and unknown gaps need new observations for all declared checks. Task evidence remains separate. Read-only qualified state and freshness; never safe test exclusion or a new completion blocker. Optional ImpactGraph leads remain informational; actual disposable Python/Node exercises test state transitions.",
       "files": [
         "core/milestones/definition.py",
         "core/milestones/history.py",
@@ -3309,7 +3309,6 @@ const ARCH_LAYERS = [
     {id:'a-cli',label:'status · report · validate',sub:'owed · flaky · test gaps · evidence',plane:'seam'},
   ]},
   { label:'Runtime — core/ (evidence in, verdict out)', boxes:[
-    {id:'a-milestones',label:'milestones/',sub:'cross-task receipts; read-only status',plane:'runtime'},
     {id:'a-hosts',label:'hosts/',sub:'5-host setup; native adapters',plane:'runtime'},
     {id:'a-ready',label:'health.py',sub:'fresh stages; timings; next actions',plane:'runtime'},
     {id:'a-validation',label:'validation + performance',sub:'dated cells; bounded readonly samples',plane:'runtime'},
@@ -3434,7 +3433,7 @@ const ARCH_LINKS = [
 
 /* ═══════════════════ WORKFLOW — numbered sequences ═══════════════════ */
 const WF_LANES = [
-  {key:'milestones',title:'Behavior evidence across development milestones',plane:'runtime',note:'Strict bounded user-owned behavior declarations; no command execution. Opted-in aggregate receipt history survives tasks inside the existing locked atomic ledger; current task evidence remains separate. Read-only qualified state and freshness; never safe test exclusion or a new completion blocker. Optional ImpactGraph leads remain informational; actual disposable Python/Node exercises test state transitions.',steps:[
+  {key:'milestones',title:'Behavior evidence across development milestones',plane:'runtime',note:'Strict bounded user-owned behavior declarations; no command execution. Opted-in history survives tasks in the locked atomic ledger; saved observation identities prevent stale replay, and unknown gaps need new observations for all declared checks. Task evidence remains separate. Read-only qualified state and freshness; never safe test exclusion or a new completion blocker. Optional ImpactGraph leads remain informational; actual disposable Python/Node exercises test state transitions.',steps:[
     {n:'M1',label:'Declare',sub:'exact commands; inputs; expectations'},
     {n:'M2',label:'Retain',sub:'atomic latest receipts across tasks'},
     {n:'M3',label:'Inspect',sub:'current; failed; stale; absent; gaps'},
@@ -3700,27 +3699,28 @@ const PLANNED = [
     "title": "Verification across development milestones",
     "area": "Evidence and verification",
     "status": "Open milestone",
-    "summary": "Track whether later development preserves earlier verified behavior and component contracts.",
+    "summary": "Local declarations, cross-task receipts and read-only views are delivered; precise native attribution, automatic integration and benefit remain open.",
     "why": "End-to-end development can invalidate an earlier successful feature through a later API, worker, schema or configuration change. A final green check can leave that history unexplained.",
-    "remaining": "Connect milestones to declared behavior, affected components and current evidence. Surface earlier properties needing re-verification after later changes, with explicit user-owned expectations and no reliance on conversational memory.",
+    "remaining": "Qualify ordinary native capture/read cost, scope attribution and recheck noise on unrelated multi-stage projects. Existing whole-source receipts expire after unrelated selected-source edits. Connect accepted advisories to completion only after those controls; exact patch binding remains separate PatchProof work. Run an equal-budget end-to-end comparison measuring preserved behavior, missed regressions and total work.",
     "acceptance": [
       "A multi-stage project catches an independently seeded break of an earlier feature at the relevant later change.",
       "Valid new behavior and unaffected milestones are handled without noisy blanket failure.",
       "A matched end-to-end comparison measures preserved behavior, missed regressions and total overhead rather than equating report completeness with coding benefit."
     ],
-    "first": "Deliver the approved strict behavior declarations, atomic cross-task receipt history and read-only milestone view, then exercise independent three-stage controls. Automatic integration and benefit remain separate.",
+    "first": "Use the delivered explicit milestone CLI and disposable exercise to add an independent scope/noise control on an unrelated multi-stage repository. Do not infer unaffected behavior from a missing graph path.",
     "sources": [
       "PLAN.md",
       "core/ledger.py",
       "core/ratchet.py",
       "architecture/README.md",
       "docs/design/milestone-verification.md",
-      "docs/superpowers/plans/2026-10-06-milestone-verification.md"
+      "docs/superpowers/plans/2026-10-06-milestone-verification.md",
+      "the-guide/milestones.md",
+      "results/milestone-verification/README.md",
+      "docs/validation/2026-10-06-milestones.md"
     ],
     "dependsOn": [
-      "impact-graph",
-      "patch-proof",
-      "held-out-benefit"
+      "impact-graph"
     ]
   },
   {

@@ -1,13 +1,19 @@
 # Master Plan v0.8
 
-**Milestone verification implementation approved, 2026-10-06.** The next local
-capability will retain project-owned behavior checks across tasks and report
-current, failed, stale, incomplete or absent evidence. The
-[design](docs/design/milestone-verification.md) and
-[implementation plan](docs/superpowers/plans/2026-10-06-milestone-verification.md)
-specify bounded atomic history, read-only reports and optional explained impact
-advice. Automatic completion integration, PatchProof binding and measured
-coding benefit remain separate exits; preparation is not delivered runtime.
+**Milestone verification local capability, 2026-10-06.** Optional strict
+project-owned declarations now select exact aggregate receipts retained across
+tasks in the existing atomic ledger. A qualified read-only JSON/Markdown view,
+explicit CLI, additive portable report and optional explained ImpactGraph leads
+are implemented. Three-stage Python and unrelated Node exercises record 18
+actual runs: 15 qualified passes and three assertion-fault rejections. Later
+changes become stale, failed refreshes stay failed, and repaired/equivalent checks
+become current. Native whole-source invalidation remains conservative; explicit
+scope is a separate producer control. This is capability evidence, not a coding
+benefit result. See [design](docs/design/milestone-verification.md),
+[guide](the-guide/milestones.md), [results](results/milestone-verification/README.md)
+and [validation](docs/validation/2026-10-06-milestones.md). Next qualify scope/noise
+and native cost, then a matched end-to-end benefit comparison. Automatic completion
+integration and PatchProof patch binding remain separate exits.
 
 **PatchProof contributor preparation, 2026-10-04.** A
 [contributor brief](docs/design/patchproof-contributor-brief.md) now maps the first

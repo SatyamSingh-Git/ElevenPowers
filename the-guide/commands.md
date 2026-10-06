@@ -1,5 +1,26 @@
 # Commands
 
+## ep_milestones — earlier behavior evidence across tasks
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH
+python plugin/bin/ep_milestones.py --project PATH --json --output milestones.json
+python plugin/bin/ep_milestones.py --project PATH --impact --changed src/auth.py
+python plugin/bin/ep_milestones.py --project PATH --seconds 30 --check
+```
+
+Opt in with tracked root `elevenpowers.milestones.json`. Existing ledger saves
+retain exact matching aggregate receipts automatically; reading launches no
+project check or host and writes no state. Reports separate current, failed,
+stale, incomplete and absent evidence, result, execution and freshness. Optional
+impact leads do not certify unaffected behavior. `--seconds` accepts 0-120;
+`--force` explicitly permits overwrite. Ordinary exit 0 means report produced;
+`--check` exits 1 unless the whole view is current with complete coverage;
+invalid invocation/export exits 2. See [schema, scope and limits](milestones.md).
+Portable `ep_report` adds the section only when configured, without changing
+the task verdict. `python -m eval.milestones --output NEW_DIR` explicitly runs
+the disposable capability exercise, with real checks and no model.
+
 ## ep_impact — explained consumers and candidate tests
 
 ```bash

@@ -1465,7 +1465,7 @@ window.ELEVENPOWERS_GRAPH = {
       "kind": "lib",
       "size": 2,
       "label": "milestones/",
-      "desc": "Strict bounded user-owned behavior declarations; no command execution. Opted-in aggregate receipt history survives tasks inside the existing locked atomic ledger; current task evidence remains separate. Read-only qualified state and freshness; never safe test exclusion or a new completion blocker. Optional ImpactGraph leads remain informational; actual disposable Python/Node exercises test state transitions.",
+      "desc": "Strict bounded user-owned behavior declarations; no command execution. Opted-in history survives tasks in the locked atomic ledger; saved observation identities prevent stale replay, and unknown gaps need new observations for all declared checks. Task evidence remains separate. Read-only qualified state and freshness; never safe test exclusion or a new completion blocker. Optional ImpactGraph leads remain informational; actual disposable Python/Node exercises test state transitions.",
       "files": [
         "core/milestones/definition.py",
         "core/milestones/history.py",

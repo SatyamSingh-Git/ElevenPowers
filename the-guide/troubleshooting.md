@@ -1,5 +1,14 @@
 # Troubleshooting
 
+For milestone reports, inspect exact command spelling, declared inputs and the
+root declaration file before rerunning a check. A receipt must actually observe
+the declaration plus every input; narrowing the declaration does not narrow a
+source-scoped receipt. An unrelated selected-source edit can make native evidence
+stale. Repair invalid declarations, then capture fresh matching checks. Unknown
+history gaps clear only after new observations cover every current declared check;
+re-saving old receipts is insufficient. Missing change observations or graph gaps
+make requested impact advice incomplete. See [milestone states and limits](milestones.md).
+
 Read test-strength state and issues before counts. `unavailable` means a missing
 or incompatible optional engine. `incomplete` can mean red/empty baseline, dirty
 attribution, unsafe inputs, import redirection, source changes or exhausted attempts.

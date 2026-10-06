@@ -10,7 +10,11 @@ command in this repository and can be reproduced.
 
 ## Read in order
 
-Latest: [62 — a focused list still needs its fallback](62-a-focused-list-still-needs-its-fallback.md)
+Latest: [63 — earlier behavior needs current evidence](63-earlier-behavior-needs-current-evidence.md)
+records generalized cross-task behavior receipts, fresh states, explained graph
+leads and 18 actual Python/Node capability attempts with scope qualifications.
+
+Earlier: [62 — a focused list still needs its fallback](62-a-focused-list-still-needs-its-fallback.md)
 records literal imports, context-bound fixtures, specific recommendation tiers,
 the withdrawn reference and actual preserved/corrected fault grades.
 [61 — the graph must face a missed regression](61-the-graph-must-face-a-missed-regression.md)

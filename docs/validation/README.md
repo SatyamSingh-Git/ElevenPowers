@@ -2,6 +2,8 @@
 
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
+- [2026-10-06 milestone verification](2026-10-06-milestones.md): optional project declarations, atomic cross-task receipts, read-only states and 18 actual Python/Node controls; automatic integration and coding benefit remain open.
+
 - [2026-10-04 ImpactGraph relevance repair](2026-10-04-impact-relevance.md): source-only literal imports and fixture contexts; retained focused/fallback/support groups; 4/12 to 11/12 valid test references; separate original/corrected real pytest fault grades; no safe test exclusion or coding-quality claim.
 
 - [2026-10-04 ImpactGraph real-project acceptance](2026-10-04-impact-acceptance.md): three pinned repositories, 24 references, actual coverage recovery, optional virtual compiler, eight independent fault attempts, both versions detecting 5/6 qualified faults, four reproduced review repairs and a failed automatic-integration exit.

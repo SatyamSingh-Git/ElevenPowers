@@ -1,0 +1,15 @@
+.F                                                                       [100%]
+================================== FAILURES ===================================
+______________________________ test_expired_work ______________________________
+
+    def test_expired_work():
+>       assert process(10, 10) == "denied"
+E       AssertionError: assert 'processed' == 'denied'
+E         
+E         - denied
+E         + processed
+
+checks\test_worker.py:7: AssertionError
+=========================== short test summary info ===========================
+FAILED checks/test_worker.py::test_expired_work - AssertionError: assert 'pro...
+1 failed, 1 passed in 0.11s

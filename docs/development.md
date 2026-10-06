@@ -65,6 +65,20 @@ read-only aggregate reproduction; start a new directory for a new comparison.
 See [observations](validation/2026-10-02-native-validation.md) and
 [commands](../the-guide/commands.md).
 
+## Milestone verification controls
+
+```bash
+python -m pytest tests/test_milestone_definition.py tests/test_milestone_history.py tests/test_milestone_report.py tests/test_milestone_impact.py tests/test_milestone_exercise.py -q
+python -S -c "import core.milestones; import eval.milestones; import core.export"
+python -m eval.milestones --output NEW_DISPOSABLE_DIR
+```
+
+The exercise explicitly writes a new disposable project and runs actual pytest
+and optional Node checks. It starts no model. Frozen assertions, later faults,
+repairs, equivalent implementations, scope controls, corrupt history recovery
+and stale writer replay qualify capability only. See
+[milestone validation](validation/2026-10-06-milestones.md).
+
 ## Windows PowerShell
 
 ```powershell

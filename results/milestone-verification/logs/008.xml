@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.054" timestamp="2026-10-06T14:34:34.210518+05:30" hostname="redacted-local-host"><testcase classname="checks.test_worker" name="test_valid_work" time="0.001" /><testcase classname="checks.test_worker" name="test_expired_work" time="0.001"><failure message="AssertionError: assert 'processed' == 'denied'&#10;  &#10;  - denied&#10;  + processed">def test_expired_work():
+&gt;       assert process(10, 10) == "denied"
+E       AssertionError: assert 'processed' == 'denied'
+E         
+E         - denied
+E         + processed
+
+checks\test_worker.py:7: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,2623 @@
+{
+  "schema": 1,
+  "environment": {
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "node": "v22.17.1"
+  },
+  "stages": [
+    {
+      "name": "provider",
+      "new_check": {
+        "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+        "exit_code": 0,
+        "elapsed_ms": 874.927,
+        "source_fingerprint": "7799811f567d850d",
+        "source_changed_during_execution": false,
+        "scope": "native source scope",
+        "output": "logs/001.txt",
+        "output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7",
+        "testcase_failures": 0,
+        "setup_errors": 0,
+        "qualified_pass": true,
+        "qualified_failure": false
+      },
+      "before_refresh": {
+        "schema": 1,
+        "generated_at": "2026-10-06T09:04:26.864736+00:00",
+        "project": "service",
+        "state": "INCOMPLETE",
+        "milestones": [
+          {
+            "id": "provider",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "checks/test_provider.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277466.696683,
+                "scope": "source",
+                "observed_files": 3,
+                "receipt_fingerprint": "7799811f567d850d",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "checkout",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "checks/test_checkout.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+                "state": "INCOMPLETE",
+                "result": null,
+                "execution": null,
+                "freshness": null,
+                "recorded_at": null,
+                "scope": null,
+                "observed_files": 0,
+                "receipt_fingerprint": "",
+                "issues": [
+                  "declared milestone input is missing: consumer.py",
+                  "declared milestone input is missing: checks/test_checkout.py"
+                ],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+              }
+            ],
+            "state": "INCOMPLETE"
+          },
+          {
+            "id": "worker",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "worker.py",
+              "checks/test_worker.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+                "state": "INCOMPLETE",
+                "result": null,
+                "execution": null,
+                "freshness": null,
+                "recorded_at": null,
+                "scope": null,
+                "observed_files": 0,
+                "receipt_fingerprint": "",
+                "issues": [
+                  "declared milestone input is missing: consumer.py",
+                  "declared milestone input is missing: worker.py",
+                  "declared milestone input is missing: checks/test_worker.py"
+                ],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+              }
+            ],
+            "state": "INCOMPLETE"
+          }
+        ],
+        "coverage": {
+          "complete": false,
+          "issues": [
+            "declared milestone input is missing: consumer.py",
+            "declared milestone input is missing: checks/test_checkout.py",
+            "declared milestone input is missing: worker.py",
+            "declared milestone input is missing: checks/test_worker.py"
+          ],
+          "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+          "ledger_fingerprint": "ca4d3439cefc5b0d44359c7dae6b90469744c5417429d8eda8d3c9007a316788",
+          "source_fingerprint": "7799811f567d850d",
+          "source_complete": true,
+          "selected_files": 3,
+          "selected_bytes": 1751
+        },
+        "impact": {
+          "state": "not_requested",
+          "leads": [],
+          "issues": []
+        },
+        "limits": [
+          "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+          "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+          "Unrecorded dependencies and external environment/services remain unknown.",
+          "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+          "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+          "Inspection runs no project checks, model, installer or host and creates no project state."
+        ],
+        "summary": {
+          "INCOMPLETE": 2,
+          "FAILED": 0,
+          "STALE": 0,
+          "ABSENT": 0,
+          "CURRENT": 1
+        },
+        "next_actions": [
+          "Resolve incomplete declaration, input or history coverage before relying on this view.",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+        ],
+        "timings": {
+          "report_ms": 109.195
+        }
+      },
+      "refreshes": [],
+      "after_refresh": {
+        "schema": 1,
+        "generated_at": "2026-10-06T09:04:26.976095+00:00",
+        "project": "service",
+        "state": "INCOMPLETE",
+        "milestones": [
+          {
+            "id": "provider",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "checks/test_provider.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277466.696683,
+                "scope": "source",
+                "observed_files": 3,
+                "receipt_fingerprint": "7799811f567d850d",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "checkout",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "checks/test_checkout.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+                "state": "INCOMPLETE",
+                "result": null,
+                "execution": null,
+                "freshness": null,
+                "recorded_at": null,
+                "scope": null,
+                "observed_files": 0,
+                "receipt_fingerprint": "",
+                "issues": [
+                  "declared milestone input is missing: consumer.py",
+                  "declared milestone input is missing: checks/test_checkout.py"
+                ],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+              }
+            ],
+            "state": "INCOMPLETE"
+          },
+          {
+            "id": "worker",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "worker.py",
+              "checks/test_worker.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+                "state": "INCOMPLETE",
+                "result": null,
+                "execution": null,
+                "freshness": null,
+                "recorded_at": null,
+                "scope": null,
+                "observed_files": 0,
+                "receipt_fingerprint": "",
+                "issues": [
+                  "declared milestone input is missing: consumer.py",
+                  "declared milestone input is missing: worker.py",
+                  "declared milestone input is missing: checks/test_worker.py"
+                ],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+              }
+            ],
+            "state": "INCOMPLETE"
+          }
+        ],
+        "coverage": {
+          "complete": false,
+          "issues": [
+            "declared milestone input is missing: consumer.py",
+            "declared milestone input is missing: checks/test_checkout.py",
+            "declared milestone input is missing: worker.py",
+            "declared milestone input is missing: checks/test_worker.py"
+          ],
+          "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+          "ledger_fingerprint": "ca4d3439cefc5b0d44359c7dae6b90469744c5417429d8eda8d3c9007a316788",
+          "source_fingerprint": "7799811f567d850d",
+          "source_complete": true,
+          "selected_files": 3,
+          "selected_bytes": 1751
+        },
+        "impact": {
+          "state": "not_requested",
+          "leads": [],
+          "issues": []
+        },
+        "limits": [
+          "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+          "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+          "Unrecorded dependencies and external environment/services remain unknown.",
+          "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+          "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+          "Inspection runs no project checks, model, installer or host and creates no project state."
+        ],
+        "summary": {
+          "INCOMPLETE": 2,
+          "FAILED": 0,
+          "STALE": 0,
+          "ABSENT": 0,
+          "CURRENT": 1
+        },
+        "next_actions": [
+          "Resolve incomplete declaration, input or history coverage before relying on this view.",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+        ],
+        "timings": {
+          "report_ms": 101.404
+        }
+      }
+    },
+    {
+      "name": "checkout",
+      "new_check": {
+        "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+        "exit_code": 0,
+        "elapsed_ms": 825.478,
+        "source_fingerprint": "f44e7bfafa3e5913",
+        "source_changed_during_execution": false,
+        "scope": "native source scope",
+        "output": "logs/002.txt",
+        "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+        "testcase_failures": 0,
+        "setup_errors": 0,
+        "qualified_pass": true,
+        "qualified_failure": false
+      },
+      "before_refresh": {
+        "schema": 1,
+        "generated_at": "2026-10-06T09:04:28.029245+00:00",
+        "project": "service",
+        "state": "INCOMPLETE",
+        "milestones": [
+          {
+            "id": "provider",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "checks/test_provider.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+                "state": "STALE",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "stale",
+                "recorded_at": 1791277466.696683,
+                "scope": "source",
+                "observed_files": 3,
+                "receipt_fingerprint": "7799811f567d850d",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py"
+              }
+            ],
+            "state": "STALE"
+          },
+          {
+            "id": "checkout",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "checks/test_checkout.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277467.8446505,
+                "scope": "source",
+                "observed_files": 5,
+                "receipt_fingerprint": "f44e7bfafa3e5913",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "worker",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "worker.py",
+              "checks/test_worker.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+                "state": "INCOMPLETE",
+                "result": null,
+                "execution": null,
+                "freshness": null,
+                "recorded_at": null,
+                "scope": null,
+                "observed_files": 0,
+                "receipt_fingerprint": "",
+                "issues": [
+                  "declared milestone input is missing: worker.py",
+                  "declared milestone input is missing: checks/test_worker.py"
+                ],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+              }
+            ],
+            "state": "INCOMPLETE"
+          }
+        ],
+        "coverage": {
+          "complete": false,
+          "issues": [
+            "declared milestone input is missing: worker.py",
+            "declared milestone input is missing: checks/test_worker.py"
+          ],
+          "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+          "ledger_fingerprint": "06091bdde3ee61b3a00e7c0b8be34dfa18dbe9f72b859aa50dbe2404406dd252",
+          "source_fingerprint": "f44e7bfafa3e5913",
+          "source_complete": true,
+          "selected_files": 5,
+          "selected_bytes": 2050
+        },
+        "impact": {
+          "state": "not_requested",
+          "leads": [],
+          "issues": []
+        },
+        "limits": [
+          "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+          "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+          "Unrecorded dependencies and external environment/services remain unknown.",
+          "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+          "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+          "Inspection runs no project checks, model, installer or host and creates no project state."
+        ],
+        "summary": {
+          "INCOMPLETE": 1,
+          "FAILED": 0,
+          "STALE": 1,
+          "ABSENT": 0,
+          "CURRENT": 1
+        },
+        "next_actions": [
+          "Resolve incomplete declaration, input or history coverage before relying on this view.",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+        ],
+        "timings": {
+          "report_ms": 107.115
+        }
+      },
+      "refreshes": [
+        {
+          "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+          "exit_code": 0,
+          "elapsed_ms": 797.451,
+          "source_fingerprint": "f44e7bfafa3e5913",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false
+        }
+      ],
+      "after_refresh": {
+        "schema": 1,
+        "generated_at": "2026-10-06T09:04:29.012244+00:00",
+        "project": "service",
+        "state": "INCOMPLETE",
+        "milestones": [
+          {
+            "id": "provider",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "checks/test_provider.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277468.8412552,
+                "scope": "source",
+                "observed_files": 5,
+                "receipt_fingerprint": "f44e7bfafa3e5913",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "checkout",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "checks/test_checkout.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277467.8446505,
+                "scope": "source",
+                "observed_files": 5,
+                "receipt_fingerprint": "f44e7bfafa3e5913",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "worker",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "worker.py",
+              "checks/test_worker.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+                "state": "INCOMPLETE",
+                "result": null,
+                "execution": null,
+                "freshness": null,
+                "recorded_at": null,
+                "scope": null,
+                "observed_files": 0,
+                "receipt_fingerprint": "",
+                "issues": [
+                  "declared milestone input is missing: worker.py",
+                  "declared milestone input is missing: checks/test_worker.py"
+                ],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+              }
+            ],
+            "state": "INCOMPLETE"
+          }
+        ],
+        "coverage": {
+          "complete": false,
+          "issues": [
+            "declared milestone input is missing: worker.py",
+            "declared milestone input is missing: checks/test_worker.py"
+          ],
+          "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+          "ledger_fingerprint": "5ce841d3f4d2fe873b215f449835479ccee7971ca572e9d5ad37f93e5212e05c",
+          "source_fingerprint": "f44e7bfafa3e5913",
+          "source_complete": true,
+          "selected_files": 5,
+          "selected_bytes": 2050
+        },
+        "impact": {
+          "state": "not_requested",
+          "leads": [],
+          "issues": []
+        },
+        "limits": [
+          "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+          "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+          "Unrecorded dependencies and external environment/services remain unknown.",
+          "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+          "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+          "Inspection runs no project checks, model, installer or host and creates no project state."
+        ],
+        "summary": {
+          "INCOMPLETE": 1,
+          "FAILED": 0,
+          "STALE": 0,
+          "ABSENT": 0,
+          "CURRENT": 2
+        },
+        "next_actions": [
+          "Resolve incomplete declaration, input or history coverage before relying on this view.",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+        ],
+        "timings": {
+          "report_ms": 107.81
+        }
+      }
+    },
+    {
+      "name": "worker",
+      "new_check": {
+        "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+        "exit_code": 0,
+        "elapsed_ms": 798.197,
+        "source_fingerprint": "f769204d25c65d84",
+        "source_changed_during_execution": false,
+        "scope": "native source scope",
+        "output": "logs/004.txt",
+        "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+        "testcase_failures": 0,
+        "setup_errors": 0,
+        "qualified_pass": true,
+        "qualified_failure": false
+      },
+      "before_refresh": {
+        "schema": 1,
+        "generated_at": "2026-10-06T09:04:30.009606+00:00",
+        "project": "service",
+        "state": "STALE",
+        "milestones": [
+          {
+            "id": "provider",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "checks/test_provider.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+                "state": "STALE",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "stale",
+                "recorded_at": 1791277468.8412552,
+                "scope": "source",
+                "observed_files": 5,
+                "receipt_fingerprint": "f44e7bfafa3e5913",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py"
+              }
+            ],
+            "state": "STALE"
+          },
+          {
+            "id": "checkout",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "checks/test_checkout.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+                "state": "STALE",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "stale",
+                "recorded_at": 1791277467.8446505,
+                "scope": "source",
+                "observed_files": 5,
+                "receipt_fingerprint": "f44e7bfafa3e5913",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+              }
+            ],
+            "state": "STALE"
+          },
+          {
+            "id": "worker",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "worker.py",
+              "checks/test_worker.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277469.8548653,
+                "scope": "source",
+                "observed_files": 7,
+                "receipt_fingerprint": "f769204d25c65d84",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          }
+        ],
+        "coverage": {
+          "complete": true,
+          "issues": [],
+          "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+          "ledger_fingerprint": "f18351e5f817dace3773f20cb06187013d247814111cb7ce0931baf6bbc7fa95",
+          "source_fingerprint": "f769204d25c65d84",
+          "source_complete": true,
+          "selected_files": 7,
+          "selected_bytes": 2374
+        },
+        "impact": {
+          "state": "not_requested",
+          "leads": [],
+          "issues": []
+        },
+        "limits": [
+          "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+          "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+          "Unrecorded dependencies and external environment/services remain unknown.",
+          "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+          "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+          "Inspection runs no project checks, model, installer or host and creates no project state."
+        ],
+        "summary": {
+          "INCOMPLETE": 0,
+          "FAILED": 0,
+          "STALE": 2,
+          "ABSENT": 0,
+          "CURRENT": 1
+        },
+        "next_actions": [
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+          "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+        ],
+        "timings": {
+          "report_ms": 148.951
+        }
+      },
+      "refreshes": [
+        {
+          "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+          "exit_code": 0,
+          "elapsed_ms": 938.293,
+          "source_fingerprint": "f769204d25c65d84",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/005.txt",
+          "output_sha256": "f4c61c0ac8f55c6c9a2d6c593731bf5f8c4a6c5bebbe514284fd4f899818f9e0",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false
+        },
+        {
+          "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+          "exit_code": 0,
+          "elapsed_ms": 971.588,
+          "source_fingerprint": "f769204d25c65d84",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/006.txt",
+          "output_sha256": "471c77f65875e4c272e08d0f1104f654c2ee63bed8cefdd055594fbb60385d29",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false
+        }
+      ],
+      "after_refresh": {
+        "schema": 1,
+        "generated_at": "2026-10-06T09:04:32.287269+00:00",
+        "project": "service",
+        "state": "CURRENT",
+        "milestones": [
+          {
+            "id": "provider",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "checks/test_provider.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277471.0256333,
+                "scope": "source",
+                "observed_files": 7,
+                "receipt_fingerprint": "f769204d25c65d84",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "checkout",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "checks/test_checkout.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277472.0783632,
+                "scope": "source",
+                "observed_files": 7,
+                "receipt_fingerprint": "f769204d25c65d84",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          },
+          {
+            "id": "worker",
+            "description": "Integer-tick expiry denies requests at and after the boundary.",
+            "inputs": [
+              "provider.py",
+              "consumer.py",
+              "worker.py",
+              "checks/test_worker.py"
+            ],
+            "checks": [
+              {
+                "kind": "test_suite",
+                "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+                "state": "CURRENT",
+                "result": "pass",
+                "execution": "complete",
+                "freshness": "fresh",
+                "recorded_at": 1791277469.8548653,
+                "scope": "source",
+                "observed_files": 7,
+                "receipt_fingerprint": "f769204d25c65d84",
+                "issues": [],
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope."
+                ],
+                "next_action": "No re-run required by the recorded declared-input evidence."
+              }
+            ],
+            "state": "CURRENT"
+          }
+        ],
+        "coverage": {
+          "complete": true,
+          "issues": [],
+          "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+          "ledger_fingerprint": "ea883512ec4463ae5c7ca425db00e13ccffc4ee82b1fc400abddd9c875edf9f9",
+          "source_fingerprint": "f769204d25c65d84",
+          "source_complete": true,
+          "selected_files": 7,
+          "selected_bytes": 2374
+        },
+        "impact": {
+          "state": "not_requested",
+          "leads": [],
+          "issues": []
+        },
+        "limits": [
+          "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+          "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+          "Unrecorded dependencies and external environment/services remain unknown.",
+          "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+          "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+          "Inspection runs no project checks, model, installer or host and creates no project state."
+        ],
+        "summary": {
+          "INCOMPLETE": 0,
+          "FAILED": 0,
+          "STALE": 0,
+          "ABSENT": 0,
+          "CURRENT": 3
+        },
+        "next_actions": [],
+        "timings": {
+          "report_ms": 134.287
+        }
+      }
+    }
+  ],
+  "new_task_kept_evidence": true,
+  "after_edit": {
+    "schema": 1,
+    "generated_at": "2026-10-06T09:04:32.447361+00:00",
+    "project": "service",
+    "state": "STALE",
+    "milestones": [
+      {
+        "id": "provider",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "checks/test_provider.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277471.0256333,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "checkout",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "checks/test_checkout.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277472.0783632,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "worker",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "worker.py",
+          "checks/test_worker.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277469.8548653,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+          }
+        ],
+        "state": "STALE"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+      "ledger_fingerprint": "f4e29f052305338a7ceb1f2f658a5a06f7ba76cda62735ab13b59f9591bfee0a",
+      "source_fingerprint": "28d59dde68a85e45",
+      "source_complete": true,
+      "selected_files": 7,
+      "selected_bytes": 2373
+    },
+    "impact": {
+      "state": "available",
+      "requested": [
+        "provider.py"
+      ],
+      "leads": [
+        {
+          "milestone": "provider",
+          "input": "provider.py",
+          "category": "direct change observation",
+          "explanation": []
+        },
+        {
+          "milestone": "provider",
+          "input": "checks/test_provider.py",
+          "category": "direct",
+          "explanation": [
+            {
+              "source": "file:checks/test_provider.py",
+              "target": "symbol:provider.py#expired",
+              "kind": "calls",
+              "origin": "static",
+              "path": "checks/test_provider.py",
+              "line": 4,
+              "identity": ""
+            }
+          ]
+        },
+        {
+          "milestone": "checkout",
+          "input": "provider.py",
+          "category": "direct change observation",
+          "explanation": []
+        },
+        {
+          "milestone": "checkout",
+          "input": "consumer.py",
+          "category": "direct",
+          "explanation": [
+            {
+              "source": "file:consumer.py",
+              "target": "symbol:provider.py#expired",
+              "kind": "calls",
+              "origin": "static",
+              "path": "consumer.py",
+              "line": 4,
+              "identity": ""
+            }
+          ]
+        },
+        {
+          "milestone": "checkout",
+          "input": "checks/test_checkout.py",
+          "category": "transitive",
+          "explanation": [
+            {
+              "source": "file:checks/test_checkout.py",
+              "target": "file:consumer.py",
+              "kind": "imports",
+              "origin": "static",
+              "path": "checks/test_checkout.py",
+              "line": 1,
+              "identity": ""
+            },
+            {
+              "source": "file:consumer.py",
+              "target": "symbol:provider.py#expired",
+              "kind": "calls",
+              "origin": "static",
+              "path": "consumer.py",
+              "line": 4,
+              "identity": ""
+            }
+          ]
+        },
+        {
+          "milestone": "worker",
+          "input": "provider.py",
+          "category": "direct change observation",
+          "explanation": []
+        },
+        {
+          "milestone": "worker",
+          "input": "consumer.py",
+          "category": "direct",
+          "explanation": [
+            {
+              "source": "file:consumer.py",
+              "target": "symbol:provider.py#expired",
+              "kind": "calls",
+              "origin": "static",
+              "path": "consumer.py",
+              "line": 4,
+              "identity": ""
+            }
+          ]
+        },
+        {
+          "milestone": "worker",
+          "input": "worker.py",
+          "category": "transitive",
+          "explanation": [
+            {
+              "source": "file:worker.py",
+              "target": "file:consumer.py",
+              "kind": "imports",
+              "origin": "static",
+              "path": "worker.py",
+              "line": 1,
+              "identity": ""
+            },
+            {
+              "source": "file:consumer.py",
+              "target": "symbol:provider.py#expired",
+              "kind": "calls",
+              "origin": "static",
+              "path": "consumer.py",
+              "line": 4,
+              "identity": ""
+            }
+          ]
+        },
+        {
+          "milestone": "worker",
+          "input": "checks/test_worker.py",
+          "category": "transitive",
+          "explanation": [
+            {
+              "source": "file:checks/test_worker.py",
+              "target": "symbol:worker.py#process",
+              "kind": "calls",
+              "origin": "static",
+              "path": "checks/test_worker.py",
+              "line": 4,
+              "identity": ""
+            },
+            {
+              "source": "symbol:worker.py#process",
+              "target": "file:consumer.py",
+              "kind": "uses",
+              "origin": "static",
+              "path": "worker.py",
+              "line": 4,
+              "identity": "python:qualified-call-module"
+            },
+            {
+              "source": "file:consumer.py",
+              "target": "symbol:provider.py#expired",
+              "kind": "calls",
+              "origin": "static",
+              "path": "consumer.py",
+              "line": 4,
+              "identity": ""
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "safe_to_exclude": false,
+      "limits": [
+        "A missing graph path cannot establish that a milestone is unaffected.",
+        "These are dependency leads, not predicted failures or passing checks.",
+        "Graph and receipt snapshots have separate fingerprints and are not atomic."
+      ],
+      "graph_fingerprint": "db1afe9d86c7b43740b11f6de42a6501f90140e458c2f8a8b26681867fff9bb1",
+      "coverage": {
+        "complete": true,
+        "unresolved_calls": 0,
+        "selected_files": 7,
+        "read_files": 7,
+        "read_bytes": 2373,
+        "selection_complete": true,
+        "inputs_complete": true,
+        "parsed_python": 6,
+        "pytest_fixtures": 0,
+        "pytest_collection": "Static default file/function/class names; plugins and collection are not executed.",
+        "parsed_typescript": 0,
+        "declarations_complete": true,
+        "issues": []
+      }
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 3,
+      "ABSENT": 0,
+      "CURRENT": 0
+    },
+    "next_actions": [
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+    ],
+    "timings": {
+      "report_ms": 273.492
+    }
+  },
+  "fault": {
+    "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+    "exit_code": 1,
+    "elapsed_ms": 830.659,
+    "source_fingerprint": "28d59dde68a85e45",
+    "source_changed_during_execution": false,
+    "scope": "native source scope",
+    "output": "logs/007.txt",
+    "output_sha256": "1355a7666203a6a1426e064313fa8e54e818b1cb3783920ba4611a441244b4ef",
+    "testcase_failures": 1,
+    "setup_errors": 0,
+    "qualified_pass": false,
+    "qualified_failure": true
+  },
+  "worker_fault": {
+    "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+    "exit_code": 1,
+    "elapsed_ms": 805.997,
+    "source_fingerprint": "28d59dde68a85e45",
+    "source_changed_during_execution": false,
+    "scope": "native source scope",
+    "output": "logs/008.txt",
+    "output_sha256": "8b2aa9bf4561f1a09f9999143587a3c2a3add66296998a1f4f26635d8dc7d533",
+    "testcase_failures": 1,
+    "setup_errors": 0,
+    "qualified_pass": false,
+    "qualified_failure": true
+  },
+  "after_failed_refresh": {
+    "schema": 1,
+    "generated_at": "2026-10-06T09:04:34.517418+00:00",
+    "project": "service",
+    "state": "FAILED",
+    "milestones": [
+      {
+        "id": "provider",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "checks/test_provider.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277471.0256333,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "checkout",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "checks/test_checkout.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+            "state": "FAILED",
+            "result": "fail",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277473.457368,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "28d59dde68a85e45",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+          }
+        ],
+        "state": "FAILED"
+      },
+      {
+        "id": "worker",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "worker.py",
+          "checks/test_worker.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+            "state": "FAILED",
+            "result": "fail",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277474.3729415,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "28d59dde68a85e45",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+          }
+        ],
+        "state": "FAILED"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+      "ledger_fingerprint": "9cce2b4626e112bebe54747dec405e4d1ed41064c57dc87dfccbc04d34f74ac4",
+      "source_fingerprint": "28d59dde68a85e45",
+      "source_complete": true,
+      "selected_files": 7,
+      "selected_bytes": 2373
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 2,
+      "STALE": 1,
+      "ABSENT": 0,
+      "CURRENT": 0
+    },
+    "next_actions": [
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+    ],
+    "timings": {
+      "report_ms": 135.788
+    }
+  },
+  "repair": {
+    "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+    "exit_code": 0,
+    "elapsed_ms": 781.993,
+    "source_fingerprint": "f769204d25c65d84",
+    "source_changed_during_execution": false,
+    "scope": "native source scope",
+    "output": "logs/011.txt",
+    "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+    "testcase_failures": 0,
+    "setup_errors": 0,
+    "qualified_pass": true,
+    "qualified_failure": false
+  },
+  "repair_checks": [
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 760.855,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/009.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 0,
+      "elapsed_ms": 777.813,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/010.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+      "exit_code": 0,
+      "elapsed_ms": 781.993,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/011.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    }
+  ],
+  "after_repair": {
+    "schema": 1,
+    "generated_at": "2026-10-06T09:04:37.197675+00:00",
+    "project": "service",
+    "state": "CURRENT",
+    "milestones": [
+      {
+        "id": "provider",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "checks/test_provider.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277475.3137133,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      },
+      {
+        "id": "checkout",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "checks/test_checkout.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277476.1547515,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      },
+      {
+        "id": "worker",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "worker.py",
+          "checks/test_worker.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277477.0405107,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "f769204d25c65d84",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+      "ledger_fingerprint": "ccd8f1b1feaf7be2e3fcc7d2b01fbfee764ca73bd1c12ece15362f10ffe97b16",
+      "source_fingerprint": "f769204d25c65d84",
+      "source_complete": true,
+      "selected_files": 7,
+      "selected_bytes": 2374
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 0,
+      "ABSENT": 0,
+      "CURRENT": 3
+    },
+    "next_actions": [],
+    "timings": {
+      "report_ms": 137.424
+    }
+  },
+  "equivalent": {
+    "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+    "exit_code": 0,
+    "elapsed_ms": 835.784,
+    "source_fingerprint": "2fccb5c0ea22fef4",
+    "source_changed_during_execution": false,
+    "scope": "native source scope",
+    "output": "logs/014.txt",
+    "output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7",
+    "testcase_failures": 0,
+    "setup_errors": 0,
+    "qualified_pass": true,
+    "qualified_failure": false
+  },
+  "equivalent_checks": [
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 743.727,
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/012.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 0,
+      "elapsed_ms": 767.583,
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/013.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+      "exit_code": 0,
+      "elapsed_ms": 835.784,
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/014.txt",
+      "output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    }
+  ],
+  "after_equivalent": {
+    "schema": 1,
+    "generated_at": "2026-10-06T09:04:39.944588+00:00",
+    "project": "service",
+    "state": "CURRENT",
+    "milestones": [
+      {
+        "id": "provider",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "checks/test_provider.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277477.9899921,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "2fccb5c0ea22fef4",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      },
+      {
+        "id": "checkout",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "checks/test_checkout.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277478.8496397,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "2fccb5c0ea22fef4",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      },
+      {
+        "id": "worker",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "worker.py",
+          "checks/test_worker.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277479.732765,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "2fccb5c0ea22fef4",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+      "ledger_fingerprint": "a3f9aa3f9625260bfa764ff4792900bad3a624dc8ebf02088b952dfa000c0ccc",
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_complete": true,
+      "selected_files": 7,
+      "selected_bytes": 2391
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 0,
+      "ABSENT": 0,
+      "CURRENT": 3
+    },
+    "next_actions": [],
+    "timings": {
+      "report_ms": 107.591
+    }
+  },
+  "native_after_unrelated": {
+    "schema": 1,
+    "generated_at": "2026-10-06T09:04:40.054613+00:00",
+    "project": "service",
+    "state": "STALE",
+    "milestones": [
+      {
+        "id": "provider",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "checks/test_provider.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277477.9899921,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "2fccb5c0ea22fef4",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "checkout",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "checks/test_checkout.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277478.8496397,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "2fccb5c0ea22fef4",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "worker",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "consumer.py",
+          "worker.py",
+          "checks/test_worker.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "recorded_at": 1791277479.732765,
+            "scope": "source",
+            "observed_files": 7,
+            "receipt_fingerprint": "2fccb5c0ea22fef4",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+          }
+        ],
+        "state": "STALE"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "9ac894eb3102829ac83f91c7597b1cb804566416a46eed2344c1ae80c9bb44e6",
+      "ledger_fingerprint": "a3f9aa3f9625260bfa764ff4792900bad3a624dc8ebf02088b952dfa000c0ccc",
+      "source_fingerprint": "78dee2f1538732f5",
+      "source_complete": true,
+      "selected_files": 8,
+      "selected_bytes": 2405
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 3,
+      "ABSENT": 0,
+      "CURRENT": 0
+    },
+    "next_actions": [
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "Run the project-owned check after resolving gaps: <python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py"
+    ],
+    "timings": {
+      "report_ms": 101.384
+    }
+  },
+  "scoped_run": {
+    "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+    "exit_code": 0,
+    "elapsed_ms": 751.182,
+    "source_fingerprint": "9746cda6eab66bfa",
+    "source_changed_during_execution": false,
+    "scope": "controller-declared inputs",
+    "output": "logs/015.txt",
+    "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+    "testcase_failures": 0,
+    "setup_errors": 0,
+    "qualified_pass": true,
+    "qualified_failure": false
+  },
+  "scoped_unrelated": {
+    "schema": 1,
+    "generated_at": "2026-10-06T09:04:40.990041+00:00",
+    "project": "scoped",
+    "state": "CURRENT",
+    "milestones": [
+      {
+        "id": "provider",
+        "description": "Integer-tick expiry denies requests at and after the boundary.",
+        "inputs": [
+          "provider.py",
+          "checks/test_provider.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "recorded_at": 1791277480.853774,
+            "scope": "explicit paths",
+            "observed_files": 3,
+            "receipt_fingerprint": "9746cda6eab66bfa",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "2fdd9828ac6dd6a1d6883a181488692bd25643423dac0e90f0066af6083827d2",
+      "ledger_fingerprint": "6795c843a2c662bb2fca90cce5ccc254ec890c4df753c4a89986d4d9713e0146",
+      "source_fingerprint": "add096805f747c2d",
+      "source_complete": true,
+      "selected_files": 4,
+      "selected_bytes": 766
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 0,
+      "ABSENT": 0,
+      "CURRENT": 1
+    },
+    "next_actions": [],
+    "timings": {
+      "report_ms": 123.608
+    }
+  },
+  "frozen_check_sha256": {
+    "provider": "02a6e18c7302070093475065405ac7530b80ed20d7eb48431b173fc5c28ef21b",
+    "checkout": "478c8d74c9c55948db6085bee58a7589f7ac38d6197fe5c10b63ce578edcec5c",
+    "worker": "a0f78fa545d4a0955e0b18d7134ea54e4b3b25d81270514ea92023495953a9f1"
+  },
+  "checks_unchanged": true,
+  "limits": [
+    "Authored local capability controls; not a model comparison, installed-host acceptance or coding-benefit measurement.",
+    "Native whole-source receipts conservatively expire on unrelated edits; explicit-scope controls use a separate controller producer.",
+    "Controller-owned expectations cover the stated integer-tick boundary, not arbitrary systems or inputs."
+  ],
+  "node": {
+    "state": "exercised",
+    "baseline": {
+      "command": "<node> --test spec/rules.test.mjs",
+      "exit_code": 0,
+      "elapsed_ms": 358.771,
+      "source_fingerprint": "57e6be6d979d6c2a",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/016.txt",
+      "output_sha256": "afcd2f2afa972abc2e6e981bae640468b0add9d9c7241de9a4ea330e3ff60c5a",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    },
+    "before_edit": {
+      "schema": 1,
+      "generated_at": "2026-10-06T09:04:41.760091+00:00",
+      "project": "client",
+      "state": "CURRENT",
+      "milestones": [
+        {
+          "id": "entitlement",
+          "description": "Integer-tick expiry denies requests at and after the boundary.",
+          "inputs": [
+            "lib/rules.mjs",
+            "spec/rules.test.mjs"
+          ],
+          "checks": [
+            {
+              "kind": "test_suite",
+              "command": "<node> --test spec/rules.test.mjs",
+              "state": "CURRENT",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh",
+              "recorded_at": 1791277481.6807306,
+              "scope": "source",
+              "observed_files": 3,
+              "receipt_fingerprint": "57e6be6d979d6c2a",
+              "issues": [],
+              "qualifications": [
+                "A passing command supports only its recorded property and declared input scope."
+              ],
+              "next_action": "No re-run required by the recorded declared-input evidence."
+            }
+          ],
+          "state": "CURRENT"
+        }
+      ],
+      "coverage": {
+        "complete": true,
+        "issues": [],
+        "declaration_fingerprint": "c0999dbdcca022b30c21e6402b408fa321698d5dc257b98ff31a85c2d42cc42d",
+        "ledger_fingerprint": "84e128e3addc978b73fe7407ac5abe513539b9754d206f25ab5d68a19a1c63e6",
+        "source_fingerprint": "57e6be6d979d6c2a",
+        "source_complete": true,
+        "selected_files": 3,
+        "selected_bytes": 705
+      },
+      "impact": {
+        "state": "not_requested",
+        "leads": [],
+        "issues": []
+      },
+      "limits": [
+        "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+        "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+        "Unrecorded dependencies and external environment/services remain unknown.",
+        "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+        "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+        "Inspection runs no project checks, model, installer or host and creates no project state."
+      ],
+      "summary": {
+        "INCOMPLETE": 0,
+        "FAILED": 0,
+        "STALE": 0,
+        "ABSENT": 0,
+        "CURRENT": 1
+      },
+      "next_actions": [],
+      "timings": {
+        "report_ms": 117.363
+      }
+    },
+    "after_edit": {
+      "schema": 1,
+      "generated_at": "2026-10-06T09:04:41.896161+00:00",
+      "project": "client",
+      "state": "STALE",
+      "milestones": [
+        {
+          "id": "entitlement",
+          "description": "Integer-tick expiry denies requests at and after the boundary.",
+          "inputs": [
+            "lib/rules.mjs",
+            "spec/rules.test.mjs"
+          ],
+          "checks": [
+            {
+              "kind": "test_suite",
+              "command": "<node> --test spec/rules.test.mjs",
+              "state": "STALE",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "stale",
+              "recorded_at": 1791277481.6807306,
+              "scope": "source",
+              "observed_files": 3,
+              "receipt_fingerprint": "57e6be6d979d6c2a",
+              "issues": [],
+              "qualifications": [
+                "A passing command supports only its recorded property and declared input scope."
+              ],
+              "next_action": "Run the project-owned check after resolving gaps: <node> --test spec/rules.test.mjs"
+            }
+          ],
+          "state": "STALE"
+        }
+      ],
+      "coverage": {
+        "complete": true,
+        "issues": [],
+        "declaration_fingerprint": "c0999dbdcca022b30c21e6402b408fa321698d5dc257b98ff31a85c2d42cc42d",
+        "ledger_fingerprint": "9f0100ccb4faa7f481266a66b550a4210cd48a5081897cbae268a54c887c7dbc",
+        "source_fingerprint": "2e9e279c38852d46",
+        "source_complete": true,
+        "selected_files": 3,
+        "selected_bytes": 706
+      },
+      "impact": {
+        "state": "not_requested",
+        "leads": [],
+        "issues": []
+      },
+      "limits": [
+        "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+        "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+        "Unrecorded dependencies and external environment/services remain unknown.",
+        "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+        "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+        "Inspection runs no project checks, model, installer or host and creates no project state."
+      ],
+      "summary": {
+        "INCOMPLETE": 0,
+        "FAILED": 0,
+        "STALE": 1,
+        "ABSENT": 0,
+        "CURRENT": 0
+      },
+      "next_actions": [
+        "Run the project-owned check after resolving gaps: <node> --test spec/rules.test.mjs"
+      ],
+      "timings": {
+        "report_ms": 84.673
+      }
+    },
+    "fault": {
+      "command": "<node> --test spec/rules.test.mjs",
+      "exit_code": 1,
+      "elapsed_ms": 362.587,
+      "source_fingerprint": "2e9e279c38852d46",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/017.txt",
+      "output_sha256": "406c7d2583a5aeb19c0ab4364273c7810588b3aa486c241d19af31f8fd078761",
+      "testcase_failures": 1,
+      "setup_errors": 0,
+      "qualified_pass": false,
+      "qualified_failure": true
+    },
+    "after_failed_refresh": {
+      "schema": 1,
+      "generated_at": "2026-10-06T09:04:42.413977+00:00",
+      "project": "client",
+      "state": "FAILED",
+      "milestones": [
+        {
+          "id": "entitlement",
+          "description": "Integer-tick expiry denies requests at and after the boundary.",
+          "inputs": [
+            "lib/rules.mjs",
+            "spec/rules.test.mjs"
+          ],
+          "checks": [
+            {
+              "kind": "test_suite",
+              "command": "<node> --test spec/rules.test.mjs",
+              "state": "FAILED",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh",
+              "recorded_at": 1791277482.335837,
+              "scope": "source",
+              "observed_files": 3,
+              "receipt_fingerprint": "2e9e279c38852d46",
+              "issues": [],
+              "qualifications": [
+                "A passing command supports only its recorded property and declared input scope."
+              ],
+              "next_action": "Run the project-owned check after resolving gaps: <node> --test spec/rules.test.mjs"
+            }
+          ],
+          "state": "FAILED"
+        }
+      ],
+      "coverage": {
+        "complete": true,
+        "issues": [],
+        "declaration_fingerprint": "c0999dbdcca022b30c21e6402b408fa321698d5dc257b98ff31a85c2d42cc42d",
+        "ledger_fingerprint": "a0f4c6e150fa00b9ef89100ca5a350c39a8dd223b7d3ae903e4b9b61dca90b95",
+        "source_fingerprint": "2e9e279c38852d46",
+        "source_complete": true,
+        "selected_files": 3,
+        "selected_bytes": 706
+      },
+      "impact": {
+        "state": "not_requested",
+        "leads": [],
+        "issues": []
+      },
+      "limits": [
+        "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+        "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+        "Unrecorded dependencies and external environment/services remain unknown.",
+        "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+        "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+        "Inspection runs no project checks, model, installer or host and creates no project state."
+      ],
+      "summary": {
+        "INCOMPLETE": 0,
+        "FAILED": 1,
+        "STALE": 0,
+        "ABSENT": 0,
+        "CURRENT": 0
+      },
+      "next_actions": [
+        "Run the project-owned check after resolving gaps: <node> --test spec/rules.test.mjs"
+      ],
+      "timings": {
+        "report_ms": 115.115
+      }
+    },
+    "repair": {
+      "command": "<node> --test spec/rules.test.mjs",
+      "exit_code": 0,
+      "elapsed_ms": 361.94,
+      "source_fingerprint": "57e6be6d979d6c2a",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/018.txt",
+      "output_sha256": "3bddef0244eb5c97d3da512ccd5e359011e0e053b364e2232b9f5cd2938918de",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false
+    },
+    "after_repair": {
+      "schema": 1,
+      "generated_at": "2026-10-06T09:04:42.966988+00:00",
+      "project": "client",
+      "state": "CURRENT",
+      "milestones": [
+        {
+          "id": "entitlement",
+          "description": "Integer-tick expiry denies requests at and after the boundary.",
+          "inputs": [
+            "lib/rules.mjs",
+            "spec/rules.test.mjs"
+          ],
+          "checks": [
+            {
+              "kind": "test_suite",
+              "command": "<node> --test spec/rules.test.mjs",
+              "state": "CURRENT",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh",
+              "recorded_at": 1791277482.8878329,
+              "scope": "source",
+              "observed_files": 3,
+              "receipt_fingerprint": "57e6be6d979d6c2a",
+              "issues": [],
+              "qualifications": [
+                "A passing command supports only its recorded property and declared input scope."
+              ],
+              "next_action": "No re-run required by the recorded declared-input evidence."
+            }
+          ],
+          "state": "CURRENT"
+        }
+      ],
+      "coverage": {
+        "complete": true,
+        "issues": [],
+        "declaration_fingerprint": "c0999dbdcca022b30c21e6402b408fa321698d5dc257b98ff31a85c2d42cc42d",
+        "ledger_fingerprint": "94f9832786a6d00ab2c693bb9790ab8f2bfd87dc2d85a72dc059dcc2137d6ab6",
+        "source_fingerprint": "57e6be6d979d6c2a",
+        "source_complete": true,
+        "selected_files": 3,
+        "selected_bytes": 705
+      },
+      "impact": {
+        "state": "not_requested",
+        "leads": [],
+        "issues": []
+      },
+      "limits": [
+        "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+        "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+        "Unrecorded dependencies and external environment/services remain unknown.",
+        "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+        "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+        "Inspection runs no project checks, model, installer or host and creates no project state."
+      ],
+      "summary": {
+        "INCOMPLETE": 0,
+        "FAILED": 0,
+        "STALE": 0,
+        "ABSENT": 0,
+        "CURRENT": 1
+      },
+      "next_actions": [],
+      "timings": {
+        "report_ms": 86.99
+      }
+    },
+    "qualified": true
+  },
+  "runs": [
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 874.927,
+      "source_fingerprint": "7799811f567d850d",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/001.txt",
+      "output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 0,
+      "elapsed_ms": 825.478,
+      "source_fingerprint": "f44e7bfafa3e5913",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/002.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 797.451,
+      "source_fingerprint": "f44e7bfafa3e5913",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/003.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+      "exit_code": 0,
+      "elapsed_ms": 798.197,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/004.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 938.293,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/005.txt",
+      "output_sha256": "f4c61c0ac8f55c6c9a2d6c593731bf5f8c4a6c5bebbe514284fd4f899818f9e0",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "f4c61c0ac8f55c6c9a2d6c593731bf5f8c4a6c5bebbe514284fd4f899818f9e0"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 0,
+      "elapsed_ms": 971.588,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/006.txt",
+      "output_sha256": "471c77f65875e4c272e08d0f1104f654c2ee63bed8cefdd055594fbb60385d29",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "471c77f65875e4c272e08d0f1104f654c2ee63bed8cefdd055594fbb60385d29"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 1,
+      "elapsed_ms": 830.659,
+      "source_fingerprint": "28d59dde68a85e45",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/007.txt",
+      "output_sha256": "1355a7666203a6a1426e064313fa8e54e818b1cb3783920ba4611a441244b4ef",
+      "testcase_failures": 1,
+      "setup_errors": 0,
+      "qualified_pass": false,
+      "qualified_failure": true,
+      "public_output_sha256": "1355a7666203a6a1426e064313fa8e54e818b1cb3783920ba4611a441244b4ef"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+      "exit_code": 1,
+      "elapsed_ms": 805.997,
+      "source_fingerprint": "28d59dde68a85e45",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/008.txt",
+      "output_sha256": "8b2aa9bf4561f1a09f9999143587a3c2a3add66296998a1f4f26635d8dc7d533",
+      "testcase_failures": 1,
+      "setup_errors": 0,
+      "qualified_pass": false,
+      "qualified_failure": true,
+      "public_output_sha256": "8b2aa9bf4561f1a09f9999143587a3c2a3add66296998a1f4f26635d8dc7d533"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 760.855,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/009.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 0,
+      "elapsed_ms": 777.813,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/010.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+      "exit_code": 0,
+      "elapsed_ms": 781.993,
+      "source_fingerprint": "f769204d25c65d84",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/011.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 743.727,
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/012.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/checkout.xml checks/test_checkout.py",
+      "exit_code": 0,
+      "elapsed_ms": 767.583,
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/013.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+      "exit_code": 0,
+      "elapsed_ms": 835.784,
+      "source_fingerprint": "2fccb5c0ea22fef4",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/014.txt",
+      "output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "19e95f03931508bcb63d5f1f276741db94fd3f8f0399d2690ed306a73c3ba6c7"
+    },
+    {
+      "command": "<python> -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/provider.xml checks/test_provider.py",
+      "exit_code": 0,
+      "elapsed_ms": 751.182,
+      "source_fingerprint": "9746cda6eab66bfa",
+      "source_changed_during_execution": false,
+      "scope": "controller-declared inputs",
+      "output": "logs/015.txt",
+      "output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "bfb94aa3bce5e5c9a8e413d4c0b8cbbecf5444cc553dd49310e15bc548c86a10"
+    },
+    {
+      "command": "<node> --test spec/rules.test.mjs",
+      "exit_code": 0,
+      "elapsed_ms": 358.771,
+      "source_fingerprint": "57e6be6d979d6c2a",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/016.txt",
+      "output_sha256": "afcd2f2afa972abc2e6e981bae640468b0add9d9c7241de9a4ea330e3ff60c5a",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "afcd2f2afa972abc2e6e981bae640468b0add9d9c7241de9a4ea330e3ff60c5a"
+    },
+    {
+      "command": "<node> --test spec/rules.test.mjs",
+      "exit_code": 1,
+      "elapsed_ms": 362.587,
+      "source_fingerprint": "2e9e279c38852d46",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/017.txt",
+      "output_sha256": "406c7d2583a5aeb19c0ab4364273c7810588b3aa486c241d19af31f8fd078761",
+      "testcase_failures": 1,
+      "setup_errors": 0,
+      "qualified_pass": false,
+      "qualified_failure": true,
+      "public_output_sha256": "327a2738b2f62e201ff85c0b155d96621c4f40f5149bad650daa9b368db4309b"
+    },
+    {
+      "command": "<node> --test spec/rules.test.mjs",
+      "exit_code": 0,
+      "elapsed_ms": 361.94,
+      "source_fingerprint": "57e6be6d979d6c2a",
+      "source_changed_during_execution": false,
+      "scope": "native source scope",
+      "output": "logs/018.txt",
+      "output_sha256": "3bddef0244eb5c97d3da512ccd5e359011e0e053b364e2232b9f5cd2938918de",
+      "testcase_failures": 0,
+      "setup_errors": 0,
+      "qualified_pass": true,
+      "qualified_failure": false,
+      "public_output_sha256": "3bddef0244eb5c97d3da512ccd5e359011e0e053b364e2232b9f5cd2938918de"
+    }
+  ],
+  "qualified": true,
+  "publication": {
+    "original_observations_sha256": "4b8f1ac9ed94171697d28611f7ddb10b07dd8907c2eecd2fab16f19f2a6754ba",
+    "runtime_commit": "dee2159",
+    "path_replacements": [
+      "exercise root",
+      "Python executable",
+      "Node executable",
+      "XML local hostname"
+    ],
+    "limits": "This is a sanitized public view. Original producer identities remain unchanged; it is not a regrade."
+  }
+}

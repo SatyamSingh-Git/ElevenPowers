@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.059" timestamp="2026-10-06T14:34:33.283568+05:30" hostname="redacted-local-host"><testcase classname="checks.test_checkout" name="test_valid_checkout" time="0.001" /><testcase classname="checks.test_checkout" name="test_expired_checkout" time="0.001"><failure message="assert 200 == 403&#10; +  where 200 = checkout(10, 10)">def test_expired_checkout():
+&gt;       assert checkout(10, 10) == 403
+E       assert 200 == 403
+E        +  where 200 = checkout(10, 10)
+
+checks\test_checkout.py:7: AssertionError</failure></testcase></testsuite></testsuites>

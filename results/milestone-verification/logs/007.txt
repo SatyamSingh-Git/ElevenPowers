@@ -1,0 +1,13 @@
+.F                                                                       [100%]
+================================== FAILURES ===================================
+____________________________ test_expired_checkout ____________________________
+
+    def test_expired_checkout():
+>       assert checkout(10, 10) == 403
+E       assert 200 == 403
+E        +  where 200 = checkout(10, 10)
+
+checks\test_checkout.py:7: AssertionError
+=========================== short test summary info ===========================
+FAILED checks/test_checkout.py::test_expired_checkout - assert 200 == 403
+1 failed, 1 passed in 0.11s

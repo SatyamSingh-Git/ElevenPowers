@@ -7,6 +7,16 @@ plan, current status and postponed list. Open milestones, planned research,
 conditional work and proposed directions have separate labels. Each card
 includes acceptance criteria, a small first contribution and source links.
 
+**Milestone verification local capability, 2026-10-06.** Optional declarations,
+atomic cross-task receipts, separate fresh status/CLI/export and explained graph
+leads are delivered. The three-stage Python plus unrelated Node exercise records
+15 qualified passes and three fault rejections; unrelated source additions expose
+native broad-scope invalidation. Next qualify scope/noise and normal-session cost,
+then measure preserved behavior in an equal-budget end-to-end comparison.
+Automatic completion integration and coding benefit remain open. See the
+[guide](../the-guide/milestones.md) and
+[actual observations](../results/milestone-verification/README.md).
+
 **PatchProof contributor preparation, 2026-10-04.** The shared receipt exporter
 and ImpactGraph foundation make a first contribution possible now. The
 [contributor brief](../docs/design/patchproof-contributor-brief.md) scopes an exact

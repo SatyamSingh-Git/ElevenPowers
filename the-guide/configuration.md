@@ -1,5 +1,13 @@
 # Configuration
 
+Optional project-owned milestones use a separate tracked root file,
+`elevenpowers.milestones.json`, schema 1. Declare human-owned behavior descriptions,
+ordinary relative inputs and exact aggregate check commands. Existing captured
+receipts are retained automatically across tasks; these declarations do not
+discover or execute commands and do not introduce completion blockers. Scope
+must come from the actual producer and cover the declaration plus every input.
+See [milestone setup, states and bounded history](milestones.md).
+
 ImpactGraph explicit queries use the same project-owned scan budgets/exclusions
 as repository evidence. Compiler selection is explicit through `--typescript`
 and optional relative `--tsconfig`; installation never runs the compiler or

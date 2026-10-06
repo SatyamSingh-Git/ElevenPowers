@@ -15,6 +15,7 @@ If something here is wrong, out of date, or simply does not work — **[satyambc
 | **[commands.md](commands.md)** | every command, every flag, and what the output means |
 | **[configuration.md](configuration.md)** | automatic setup, command overrides, scan budgets and profiles |
 | **[impactgraph.md](impactgraph.md)** | explicit impact queries, optional compiler, offline coverage receipts and measured limits |
+| **[milestones.md](milestones.md)** | optional earlier behavior checks, cross-task receipt history, fresh status and scope limits |
 | **[troubleshooting.md](troubleshooting.md)** | what goes wrong, why, and the fix |
 
 ---
@@ -63,6 +64,12 @@ the sample to the edit. Deleted behavior and exhausted budgets stay incomplete;
 legacy whole-file records remain readable. Use `ep_strength.py --root PATH`
 for an explicit run and [configuration](configuration.md) for focused commands and
 limits. Findings are qualified human observations and do not change the verdict.
+
+To keep earlier behaviors visible between tasks, declare project-owned inputs
+and exact checks in root `elevenpowers.milestones.json`. Capture retains receipts
+automatically; `ep_milestones.py --project PATH` inspects their current state.
+The portable report adds this separate section without changing task verdicts.
+See [milestones](milestones.md) for scope and history recovery qualifications.
 
 ---
 

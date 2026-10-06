@@ -1,6 +1,6 @@
 # Current delivery status
 
-Reviewed **2026-10-04**. ElevenPowers remains a research prototype. All five hosts
+Reviewed **2026-10-06**. ElevenPowers remains a research prototype. All five hosts
 share project-independent onboarding, command discovery, repository evidence and
 verification. Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI
 have reversible project wiring; the four additions also have portable bundles.
@@ -38,10 +38,23 @@ not a new coding comparison. Subprocess CLI links, framework/plugin behavior,
 unlabelled breadth and native cost keep automatic integration open. See
 [relevance validation](validation/2026-10-04-impact-relevance.md).
 
+Optional milestone verification is now delivered: strict project-owned behavior
+declarations, bounded cross-task receipts in the atomic ledger, a separate fresh
+read-only view/CLI and an additive portable report. Optional impact paths stay
+informational. The actual three-stage Python and unrelated Node exercise ran 18
+checks: 15 qualified passes and three assertion-fault rejections. Earlier evidence
+survives task changes, becomes stale after edits, records fresh failure, and becomes
+current after repair/equivalent checks. Native broad scopes expire on unrelated
+source additions; narrower attribution is a separate controller control. This
+does not establish coding benefit. See [guide](../the-guide/milestones.md),
+[results](../results/milestone-verification/README.md) and
+[validation](validation/2026-10-06-milestones.md).
+
 ## Shipped and exercised
 
 | Capability | Delivered behavior | Evidence boundary |
 |---|---|---|
+| Milestone verification | Optional strict declarations, latest cross-task aggregate receipts, separate current/fail/stale/incomplete/absent view and informational impact leads | 18 local authored attempts qualify; broad native invalidation, explicit user scopes and unsigned observations remain limits; automatic completion and coding benefit stay open |
 | ImpactGraph | Fresh Python literal imports, calls and context-bound default pytest fixtures; optional grammar/compiler JS/TS; declared/observed paths; focused/fallback/support tests and separate history | 11/12 new valid test refs, 6/12 focused; corrected authored-fault detection 3/3 versus 0/3 old. Partial oracle, subprocess/custom collection/source maps/runtime dispatch/native cost remain gaps; no safe exclusion or automatic integration |
 | Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested boundaries and project exclusions | Supported source extensions and named dependency files; excluded inputs are outside the fingerprint |
 | Scan coverage | Explicit file/byte/deadline/unreadable-input diagnostics | Default 20,000 files and 256 MiB; filesystem operations are not a hard wall-clock guarantee |
@@ -117,6 +130,13 @@ to generate it. See [report validation](validation/2026-10-01-portable-report.md
 and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 ## Next readiness milestone
+
+For milestone verification, qualify ordinary native capture/read cost and
+precise input attribution across unrelated multi-stage projects before automatic
+advisories. Keep missing scope and graph paths explicit, then compare preserved
+behavior, missed regressions and total work against equal ordinary verification.
+The local capability exit is delivered; automatic integration and the broader
+product-benefit exit remain open.
 
 The resumed session completed all twelve corrected evaluator regrades and the
 generalized changed-region/command qualification milestone. Current source

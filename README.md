@@ -470,6 +470,30 @@ automatic advisories and improved agent patch outcomes remain unqualified. See t
 [journey 62](journey/62-a-focused-list-still-needs-its-fallback.md), and
 [relevance results](results/impact-relevance/README.md).
 
+### Behavior evidence across development milestones
+
+An optional tracked `elevenpowers.milestones.json` declares earlier behavior
+expectations, inputs and exact checks. Matching aggregate receipts survive task
+transitions in the existing atomic ledger without supplying evidence for new
+task claims. A fresh read-only view distinguishes current, failed, stale,
+incomplete and absent checks; portable reports include the section when opted in.
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH
+python plugin/bin/ep_milestones.py --project PATH --impact --changed src/auth.py
+```
+
+Existing capture retains matching receipts automatically; inspection launches no
+project check or model. Optional impact paths explain recheck leads without safe
+test exclusion or a new completion blocker. Actual three-stage Python and
+unrelated Node controls recorded 15 qualified passes and three assertion-fault
+rejections across 18 runs. Whole-source receipts still expire after unrelated
+edits; narrower scope requires an actual producer observing all declared inputs.
+These are capability results, not measured coding improvement. See the
+[milestone guide](the-guide/milestones.md),
+[journey 63](journey/63-earlier-behavior-needs-current-evidence.md) and
+[published observations](results/milestone-verification/README.md).
+
 ### Optional test strength
 
 **Changed-region test strength** asks whether passing tests notice small changes to
@@ -591,7 +615,7 @@ resumed delivery launched no extra model sessions.
 Task size is not a criterion; an observable coding or verification improvement
 through any engaged mechanism can count.
 
-Research prototype; status reviewed 2026-10-04. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-06. Optional milestone declarations, atomic cross-task history and read-only qualified views are delivered; automatic integration and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
 after three independent-review fixes. Real Python/JavaScript/TypeScript fixture
@@ -707,6 +731,8 @@ And yes — this was built with coding agents, mostly Claude and Codex. A projec
 ---
 
 ## Reading further
+
+[Milestone behavior evidence](the-guide/milestones.md) explains project opt-in, exact commands, freshness and scope limits.
 
 | | |
 |---|---|

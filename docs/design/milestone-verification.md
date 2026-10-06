@@ -1,6 +1,7 @@
 # Verification across development milestones
 
-Status: first implementation approved on 2026-10-06. This document specifies
+Status: local capability implemented on 2026-10-06; delivery evidence is in
+[validation](../validation/2026-10-06-milestones.md). This document specifies
 the local capability; automatic completion integration and coding-benefit
 acceptance are separate, unqualified follow-ups.
 
@@ -62,6 +63,20 @@ as executed in the current task. Limit history to 256 command identities and
 coverage issue. Report reads also bound the ledger to 8 MiB. Missing declarations
 leave existing behavior unchanged and perform no milestone capture work.
 
+Replay of observations already loaded/saved by a writer is not a new historical
+entry. Content identities distinguish new appends, preserving a later failed
+observation when a stale writer re-saves at the same timestamp. Temporary
+declaration parse errors are recomputed from the current file, rather than
+permanently poisoning the archive. Aggregate observations can be retained during
+an interrupted declaration write with their original input identity.
+
+History gaps carry an optional bounded `pending` set of SHA-256 command/kind
+identities (at most 1,024). Recovery requires new valid observations covering
+each currently declared check and its declared inputs; existing receipt replay
+does not clear a gap. Check execution/freshness/scope qualification still applies
+after the archive gap resolves. New corruption or eviction reopens the recovery
+set. Removing declarations stops new capture; an existing archive is preserved.
+
 A qualifying receipt must match the exact command/kind, have valid recorded
 metadata and cover every declared input plus the declaration file. Its recorded
 inputs must be fresh now. Empty observations cannot qualify. Source-scoped
@@ -85,8 +100,8 @@ cannot pass its explicit `--check` gate, even if some checks are current.
 `core.milestones.build(root, *, seconds=30, changed=None, impact=False)` returns
 schema-1 JSON. `python plugin/bin/ep_milestones.py --project PATH` renders
 Markdown; `--json`, `--output`, `--force`, `--seconds` and `--check` follow existing
-CLI conventions. Exporting is an explicit write; inspection runs no commands or
-hosts and creates no project state. An absent file reports `not_configured`.
+CLI conventions. Exporting is an explicit write; inspection runs no project commands or
+hosts (bounded Git metadata enumeration is permitted) and creates no project state. An absent file reports `not_configured`.
 Invalid declarations, unavailable history, omitted work and concurrent movement
 remain incomplete. The cooperative operation budget is 0-120 seconds.
 

@@ -1,6 +1,17 @@
 # Features
 
-Current behavior reviewed 2026-10-04. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+Current behavior reviewed 2026-10-06. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
+
+Optional milestone verification keeps project-owned behavior checks visible
+across tasks. Exact aggregate receipts are retained automatically in the existing
+atomic ledger; a separate read-only view reports current, failed, stale,
+incomplete or absent evidence. Portable exports include the section only when
+configured, and optional ImpactGraph leads remain informational. The authored
+three-stage Python and unrelated Node exercise records 15 qualified passes and
+three assertion-fault rejections. Broad native scopes still expire after unrelated
+source changes; automatic completion and coding benefit remain unqualified.
+See [usage and recovery](../the-guide/milestones.md) and
+[actual observations](../results/milestone-verification/README.md).
 
 ImpactGraph now explains affected consumers and candidate tests from a fresh
 typed graph. Conservative Python imported calls and optional JS/TS imports join
