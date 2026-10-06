@@ -213,6 +213,8 @@ class Ledger:
     _surface: Surface | None = None
     _config: Config | None = None
     completed_tools: list[str] = field(default_factory=list)
+    milestone_history: dict = field(default_factory=dict)
+    """Opted-in project receipts, separate from the current task's evidence."""
 
     @property
     def config(self) -> Config:
@@ -254,6 +256,7 @@ class Ledger:
         return cls(
             root=root,
             completed_tools=raw.get("completed_tools", []),
+            milestone_history=raw.get("milestone_history", {}),
             task=raw.get("task", ""),
             request=raw.get("request", ""),
             claims=[Claim(c) for c in raw.get("claims", [])],
@@ -323,6 +326,14 @@ class Ledger:
                 and Ledger.load(self.root).task != self.task):
             raise Superseded('a newer task replaced this verification attempt')
         self._keep_concurrent_appends()
+        # This project-owned history is independent of task replacement. Capture
+        # prior task receipts too when upgrading an already configured project;
+        # they retain their original inputs/time and never satisfy new claims.
+        from .milestones.definition import configured as milestones_configured
+        if milestones_configured(self.root) or disk.milestone_history or self.milestone_history:
+            from .milestones.history import retain
+            prior = disk.milestone_history if self.path.exists() else self.milestone_history
+            self.milestone_history = retain(self.root, prior, [*disk.evidence, *self.evidence])
         payload = {
             "completed_tools": self.completed_tools,
             "task": self.task,
@@ -357,6 +368,8 @@ class Ledger:
             "config": {"profile": self.config.profile,
                        "commands": dict(self.config.commands)},
         }
+        if self.milestone_history:
+            payload['milestone_history'] = self.milestone_history
         # Named per process: a shared temporary file is its own race, where two
         # writers interleave into one buffer and the winner replaces with a
         # mixture of both.
