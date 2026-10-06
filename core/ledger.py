@@ -215,6 +215,7 @@ class Ledger:
     completed_tools: list[str] = field(default_factory=list)
     milestone_history: dict = field(default_factory=dict)
     """Opted-in project receipts, separate from the current task's evidence."""
+    _milestone_seen: set[str] = field(default_factory=set, repr=False)
 
     @property
     def config(self) -> Config:
@@ -253,7 +254,7 @@ class Ledger:
         if not path.exists():
             return cls(root=root)
         raw = json.loads(path.read_text(encoding="utf-8"))
-        return cls(
+        ledger = cls(
             root=root,
             completed_tools=raw.get("completed_tools", []),
             milestone_history=raw.get("milestone_history", {}),
@@ -279,6 +280,10 @@ class Ledger:
             discrimination_inputs=raw.get("discrimination_inputs", {}) or {},
             discrimination=raw.get("discrimination", {}) or {},
         )
+        if ledger.milestone_history:
+            from .milestones.history import observation
+            ledger._milestone_seen = {observation(e) for e in ledger.evidence}
+        return ledger
 
     @classmethod
     def append_note(cls, root: Path, what: str, why: str):
@@ -325,15 +330,17 @@ class Ledger:
                 and self.task == owner.task and self.path.exists()
                 and Ledger.load(self.root).task != self.task):
             raise Superseded('a newer task replaced this verification attempt')
-        self._keep_concurrent_appends()
         # This project-owned history is independent of task replacement. Capture
         # prior task receipts too when upgrading an already configured project;
         # they retain their original inputs/time and never satisfy new claims.
         from .milestones.definition import configured as milestones_configured
         if milestones_configured(self.root) or disk.milestone_history or self.milestone_history:
-            from .milestones.history import retain
+            from .milestones.history import observation, retain
             prior = disk.milestone_history if self.path.exists() else self.milestone_history
-            self.milestone_history = retain(self.root, prior, [*disk.evidence, *self.evidence])
+            pending = [e for e in self.evidence if observation(e) not in self._milestone_seen]
+            legacy = disk.evidence if not disk.milestone_history else []
+            self.milestone_history = retain(self.root, prior, [*legacy, *pending])
+        self._keep_concurrent_appends()
         payload = {
             "completed_tools": self.completed_tools,
             "task": self.task,
@@ -396,6 +403,9 @@ class Ledger:
                 stream.flush()
                 os.fsync(stream.fileno())
             replace(tmp, self.path)
+            if self.milestone_history:
+                from .milestones.history import observation
+                self._milestone_seen = {observation(e) for e in self.evidence}
         finally:
             tmp.unlink(missing_ok=True)
 

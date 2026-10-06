@@ -60,6 +60,77 @@ def test_stale_writer_cannot_overwrite_latest_history_observation(tmp_path):
     assert len(saved) == 1 and saved[0]['result'] == 'fail'
 
 
+def test_equal_timestamp_old_writer_replay_does_not_replace_later_failure(tmp_path):
+    from core.milestones import build
+    root = project(tmp_path)
+    old = Ledger(root=root, task='first')
+    old.add([receipt(root, at=10)]); old.save()
+    new = Ledger(root=root, task='second')
+    new.add([receipt(root, result=Result.FAIL, at=10)]); new.save()
+    assert build(root)['state'] == 'FAILED'
+    old.save()
+    assert build(root)['state'] == 'FAILED'
+
+
+def test_same_task_new_observation_wins_tie_but_save_replay_does_not(tmp_path):
+    from core.milestones import build
+    root = project(tmp_path)
+    ledger = Ledger(root=root, task='first')
+    ledger.add([receipt(root, at=10)]); ledger.save()
+    ledger.add([receipt(root, result=Result.FAIL, at=10)]); ledger.save()
+    assert build(root)['state'] == 'FAILED'
+    Ledger.load(root).save()
+    assert build(root)['state'] == 'FAILED'
+
+
+def test_transient_invalid_declaration_recovers_after_valid_fresh_capture(tmp_path):
+    from core.milestones import build
+    root = project(tmp_path)
+    path = root / 'elevenpowers.milestones.json'
+    valid = path.read_bytes(); path.write_text('{')
+    ledger = Ledger(root=root, task='first'); ledger.save()
+    assert build(root)['state'] == 'INCOMPLETE'
+    path.write_bytes(valid)
+    ledger.add([receipt(root)]); ledger.save()
+    assert build(root)['state'] == 'CURRENT'
+
+
+def test_unknown_history_gap_recovers_only_after_all_checks_have_new_observations(tmp_path):
+    from core.milestones import build
+    root = project(tmp_path)
+    value = declaration(root)
+    worker_command = 'python -m pytest tests/test_worker.py'
+    value['milestones'][0]['checks'].append({'kind': 'test_suite', 'command': worker_command})
+    (root / 'elevenpowers.milestones.json').write_text(json.dumps(value))
+    ledger = Ledger(root=root, task='first')
+    ledger.add([receipt(root), receipt(root, command=worker_command)])
+    ledger.save()
+    raw = json.loads(ledger.path.read_text()); raw['milestone_history'] = {'schema': 99}
+    ledger.path.write_text(json.dumps(raw))
+    recovered = Ledger.load(root); recovered.save()
+    assert build(root)['state'] == 'INCOMPLETE'
+    recovered.add([receipt(root)]); recovered.save()
+    assert build(root)['state'] == 'INCOMPLETE'
+    recovered.add([receipt(root, command=worker_command)]); recovered.save()
+    assert build(root)['state'] == 'CURRENT'
+
+
+def test_removing_declaration_stops_new_receipt_capture(tmp_path):
+    root = project(tmp_path)
+    ledger = Ledger(root=root, task='first'); ledger.add([receipt(root, at=10)]); ledger.save()
+    (root / 'elevenpowers.milestones.json').unlink()
+    ledger.add([receipt(root, result=Result.FAIL, at=11)]); ledger.save()
+    assert ledger.milestone_history['receipts'][0]['result'] == 'pass'
+
+
+def test_malformed_prior_diagnostics_cannot_break_recovery(tmp_path):
+    from core.milestones.history import retain
+    root = project(tmp_path)
+    for bad in (10, [[]], {'issue': 'invalid'}):
+        value = retain(root, {'schema': 1, 'receipts': [], 'issues': bad}, [receipt(root)])
+        assert value['issues']
+
+
 def test_unconfigured_projects_do_not_gain_milestone_state(tmp_path):
     ledger = Ledger(root=tmp_path, task='ordinary')
     ledger.save()

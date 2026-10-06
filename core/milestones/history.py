@@ -1,5 +1,6 @@
 """Bounded latest observations; storage is part of the ledger's atomic payload."""
 from dataclasses import fields
+import hashlib
 import json
 import math
 
@@ -17,6 +18,15 @@ def _data(item):
     value = {name: getattr(item, name) for name in FIELDS}
     value.update(kind=item.kind.value, result=item.result.value, detail='')
     return value
+
+
+def observation(item):
+    """Stable content identity for a saved observation, excluding private detail."""
+    return hashlib.sha256(json.dumps(scrub_values(_data(item)), sort_keys=True).encode()).hexdigest()
+
+
+def _key(kind, command):
+    return hashlib.sha256(json.dumps([kind, command]).encode()).hexdigest()
 
 
 def record(value):
@@ -50,11 +60,14 @@ def record(value):
 def read(value):
     if value == {}:
         return [], []
-    if (not isinstance(value, dict) or set(value) != {'schema', 'receipts', 'issues'}
+    if (not isinstance(value, dict) or set(value) - {'schema', 'receipts', 'issues', 'pending'}
             or type(value.get('schema')) is not int or value['schema'] != 1
             or not isinstance(value.get('receipts'), list)
             or not isinstance(value.get('issues'), list)
-            or any(not isinstance(i, str) or len(i) > 1024 for i in value['issues'])):
+            or any(not isinstance(i, str) or len(i) > 1024 for i in value['issues'])
+            or not isinstance(value.get('pending', []), list) or len(value.get('pending', [])) > 1024
+            or any(not isinstance(i, str) or len(i) != 64 or any(c not in '0123456789abcdef' for c in i)
+                   for i in value.get('pending', []))):
         return [], ['milestone history metadata is invalid']
     issues = value['issues'][:32]
     if len(value['issues']) > 32 or len(value['receipts']) > MAX_RECORDS:
@@ -71,8 +84,21 @@ def read(value):
 def retain(root, prior, records):
     definition = load(root)
     existing, issues = read(prior)
-    issues += definition['issues']
     wanted = {(c['kind'], c['command']) for m in definition['milestones'] for c in m['checks']}
+    required = {(c['kind'], c['command']): {'elevenpowers.milestones.json', *m['inputs']}
+                for m in definition['milestones'] for c in m['checks']}
+    # Current declaration errors are reported from the current file, not stored
+    # forever. Capture aggregate observations during an interrupted file write
+    # too; their original declaration bytes still determine freshness later.
+    prior_issues = prior.get('issues', []) if isinstance(prior, dict) else []
+    prior_issues = [i for i in prior_issues if isinstance(i, str)] if isinstance(prior_issues, list) else []
+    new_gap = bool(set(issues) - set(prior_issues))
+    wanted_keys = {_key(*key) for key in wanted}
+    pending = set(prior.get('pending', [])) if isinstance(prior, dict) and not new_gap else set()
+    if issues and not pending:
+        pending = set(wanted_keys)
+    if definition['milestones']:
+        pending &= wanted_keys
     latest = {}
     for item in existing:
         key = item.kind.value, item.command
@@ -80,21 +106,35 @@ def retain(root, prior, records):
             latest[key] = item
     for item in records:
         try:
+            if not definition['configured']:
+                continue
             key = item.kind.value, item.command
-            if key not in wanted:
+            if definition['milestones'] and key not in wanted:
+                continue
+            if item.kind.value not in KINDS:
                 continue
             item = record(_data(item))
             if key not in latest or item.at >= latest[key].at:
                 latest[key] = item
+                if not new_gap and required.get(key, set()) <= set(item.observed):
+                    pending.discard(_key(*key))
         except (ValueError, TypeError, KeyError, AttributeError):
             issues.append('milestone history could not retain invalid receipt metadata')
+            new_gap = True
+    if issues and not pending and not new_gap and definition['milestones']:
+        issues = []
+    if new_gap:
+        pending = set(wanted_keys)
     kept = sorted(latest.values(), key=lambda e: e.at)[-MAX_RECORDS:]
     if len(latest) > MAX_RECORDS:
         issues.append('milestone history command identity limit reached; older observations omitted')
+        pending = set(wanted_keys)
     value = {'schema': 1, 'receipts': [], 'issues': list(dict.fromkeys(issues))[:32]}
     # Account for row indentation once rather than repeatedly serializing an
     # oversized whole history while removing one item at a time under the lock.
-    size = len(json.dumps(value, indent=2).encode('utf-8')) + 256
+    # Reserve bounded pending-identity metadata even if an eviction is discovered
+    # while allocating rows. No command text is duplicated in the recovery set.
+    size = len(json.dumps(value, indent=2).encode('utf-8')) + 72 * 1024
     for item in reversed(kept):
         data = _data(item)
         encoded = json.dumps(data, indent=2).encode('utf-8')
@@ -103,7 +143,10 @@ def retain(root, prior, records):
             notice = 'milestone history byte limit reached; older observations omitted'
             if notice not in value['issues']:
                 value['issues'].append(notice)
+            pending = set(wanted_keys)
             continue
         size += cost
         value['receipts'].insert(0, data)
+    if value['issues']:
+        value['pending'] = sorted(pending)
     return scrub_values(value)
