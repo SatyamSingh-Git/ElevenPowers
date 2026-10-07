@@ -1,0 +1,16 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________________________________ test_boundary ________________________________
+
+    def test_boundary():
+        assert submit(9) == 'accept'
+>       assert submit(10) == 'deny'
+E       AssertionError: assert 'accept' == 'deny'
+E         
+E         - deny
+E         + accept
+
+checks\test_worker.py:5: AssertionError
+=========================== short test summary info ===========================
+FAILED checks/test_worker.py::test_boundary - AssertionError: assert 'accept'...
+1 failed in 0.23s
