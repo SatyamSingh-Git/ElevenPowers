@@ -1,0 +1,2214 @@
+{
+  "schema": 1,
+  "corpus_sha256": "2c2198ba73d762feca57f1ecb0e6f4701387a99c75b7a4b18c0ab2c2fc806ff4",
+  "environment": {
+    "python": "3.13.2",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "node": "v22.17.1"
+  },
+  "runtime_sources": {
+    "core/milestones/__init__.py": "9c51787ade93a461164464151e04d3496caaf386a1ff2b803d8dbf4f115be927",
+    "core/milestones/definition.py": "8023f7217cb5553a49ddefbe5a4d95e14e9a817f50e7f48a3d931800df6b5387",
+    "core/milestones/history.py": "e8b01b7fe6b41358c2e88fea08693bc9cf055df36ca38ef78df9b4c1386e7c2b",
+    "core/milestones/impact.py": "9a000d92c63cf91374be33e3f826e8330847c2d5ee7fdb2fbf40853c1257b766",
+    "core/milestones/rechecks.py": "ac083460a76d01148dc218119f909cceb88f79102714ca949a0b22bf4459f961",
+    "core/milestones/report.py": "a2ef4510710dae31137e9f5c4182ccbcac47db8900c8a5a13536270ab7ba87d7",
+    "core/impact/__init__.py": "17cc93de2931953789b800c87dbee350985edf0fb1736118ace85e02c2d64ee0",
+    "core/impact/build.py": "f485e568d5abb712afeb491c7342c696f5af3b1124c4d2132f22a59cf4803f6c",
+    "core/impact/compiler.py": "56bc12d0061ff8e098e8ae5776e0582bd66e1f35dcde5cccd0ed469f45f7fbac",
+    "core/impact/coverage.py": "45749611393f5524bf223599f7e783ed65ef230d0cde6bd2dee9b1e28a3f18e0",
+    "core/impact/fixtures.py": "2f6fd596f3ff396de5827a7e9d3b26980491f5cf85758088e30b66fdf475ca36",
+    "core/impact/history.py": "5fe62c9db98e67110e7edf6e2cadc68c64e604fbefea073a705f9bd1aca27f9b",
+    "core/impact/ingest.py": "90c707697e38523d7e90758add5e9ecde886f54c05718c9dc57eba2565550976",
+    "core/impact/model.py": "3d6e99f8194f7954445e5c4b70ecd51a29e091fd5b8f673124fca6d1fe3c6edb",
+    "core/impact/query.py": "e81bbc5d3a0c0b35c25d1d79f13c85a56581bb112bbc9c9f249897d15c4e59de",
+    "core/impact/selection.py": "00b95c05694ec06a0ae313186e850c681776d28c2581a2c62a1ff75429e59722",
+    "core/impact/source.py": "17870dc16045f682ca03e8cbea6ef5dc9485e53075fdb1521a8b13b6dc50442b",
+    "core/impact/typescript.py": "791596d0f1f78652773753c0cf881780da57ab21195a86f988b554553b5f65d8"
+  },
+  "cases": [
+    {
+      "id": "python-chain",
+      "partition": "development",
+      "language": "python",
+      "case_sha256": "3615dfb6f581f387691703c0af7befae71ad220d174ae61ab309173c6dd370c6",
+      "reads": [
+        {
+          "plain_ms": 108.847,
+          "advised_ms": 212.117,
+          "added_ms": 103.27,
+          "graph_ms": 81.46,
+          "query_ms": 0.343,
+          "ranking_ms": 0.039,
+          "selected_files": 9,
+          "selected_bytes": 1991,
+          "source_fingerprint": "b22204c3557994fd",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 95.391,
+          "advised_ms": 177.564,
+          "added_ms": 82.173,
+          "graph_ms": 83.912,
+          "query_ms": 0.307,
+          "ranking_ms": 0.027,
+          "selected_files": 9,
+          "selected_bytes": 1991,
+          "source_fingerprint": "b22204c3557994fd",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 105.649,
+          "advised_ms": 182.998,
+          "added_ms": 77.349,
+          "graph_ms": 81.742,
+          "query_ms": 0.317,
+          "ranking_ms": 0.023,
+          "selected_files": 9,
+          "selected_bytes": 1991,
+          "source_fingerprint": "b22204c3557994fd",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 96.306,
+          "advised_ms": 186.078,
+          "added_ms": 89.773,
+          "graph_ms": 85.357,
+          "query_ms": 0.498,
+          "ranking_ms": 0.023,
+          "selected_files": 9,
+          "selected_bytes": 1992,
+          "source_fingerprint": "8b55db204276e785",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 94.655,
+          "advised_ms": 182.697,
+          "added_ms": 88.042,
+          "graph_ms": 81.626,
+          "query_ms": 0.316,
+          "ranking_ms": 0.02,
+          "selected_files": 9,
+          "selected_bytes": 1992,
+          "source_fingerprint": "8b55db204276e785",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 92.333,
+          "advised_ms": 172.367,
+          "added_ms": 80.034,
+          "graph_ms": 78.816,
+          "query_ms": 0.315,
+          "ranking_ms": 0.04,
+          "selected_files": 9,
+          "selected_bytes": 1992,
+          "source_fingerprint": "8b55db204276e785",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 94.64,
+          "advised_ms": 179.301,
+          "added_ms": 84.66,
+          "graph_ms": 81.176,
+          "query_ms": 0.333,
+          "ranking_ms": 0.022,
+          "selected_files": 9,
+          "selected_bytes": 1996,
+          "source_fingerprint": "f5f4787c4326370b",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 98.473,
+          "advised_ms": 190.182,
+          "added_ms": 91.708,
+          "graph_ms": 88.678,
+          "query_ms": 0.402,
+          "ranking_ms": 0.045,
+          "selected_files": 9,
+          "selected_bytes": 1996,
+          "source_fingerprint": "f5f4787c4326370b",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 95.491,
+          "advised_ms": 188.141,
+          "added_ms": 92.65,
+          "graph_ms": 85.058,
+          "query_ms": 0.327,
+          "ranking_ms": 0.045,
+          "selected_files": 9,
+          "selected_bytes": 1996,
+          "source_fingerprint": "f5f4787c4326370b",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        }
+      ],
+      "runs": [
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/purchase.xml checks/test_purchase.py",
+          "exit_code": 0,
+          "elapsed_ms": 759.402,
+          "source_fingerprint": "b22204c3557994fd",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/001.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "purchase",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/delivery.xml checks/test_delivery.py",
+          "exit_code": 0,
+          "elapsed_ms": 781.667,
+          "source_fingerprint": "b22204c3557994fd",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/002.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "delivery",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/inventory.xml checks/test_inventory.py",
+          "exit_code": 0,
+          "elapsed_ms": 730.307,
+          "source_fingerprint": "b22204c3557994fd",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "3605abb09038ce24e90d81df8f7c0d87bb6f647a5e016bf461d8a8fcb408f6e9",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "inventory",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/purchase.xml checks/test_purchase.py",
+          "exit_code": 1,
+          "elapsed_ms": 792.992,
+          "source_fingerprint": "8b55db204276e785",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/004.txt",
+          "output_sha256": "75e5403d4bee09ae72d0962987debb21372ac19f9d6c891bd2799d7cfe2851d5",
+          "testcase_failures": 1,
+          "setup_errors": 0,
+          "qualified_pass": false,
+          "qualified_failure": true,
+          "phase": "fault",
+          "milestone": "purchase",
+          "expected": "assertion failure",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/delivery.xml checks/test_delivery.py",
+          "exit_code": 1,
+          "elapsed_ms": 830.421,
+          "source_fingerprint": "8b55db204276e785",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/005.txt",
+          "output_sha256": "4e97fde77b82f3a406a447032a9b1e98449c156581b5b2594595a83a9e3b710f",
+          "testcase_failures": 1,
+          "setup_errors": 0,
+          "qualified_pass": false,
+          "qualified_failure": true,
+          "phase": "fault",
+          "milestone": "delivery",
+          "expected": "assertion failure",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/inventory.xml checks/test_inventory.py",
+          "exit_code": 0,
+          "elapsed_ms": 750.974,
+          "source_fingerprint": "8b55db204276e785",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/006.txt",
+          "output_sha256": "3605abb09038ce24e90d81df8f7c0d87bb6f647a5e016bf461d8a8fcb408f6e9",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "fault",
+          "milestone": "inventory",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/purchase.xml checks/test_purchase.py",
+          "exit_code": 0,
+          "elapsed_ms": 711.505,
+          "source_fingerprint": "f5f4787c4326370b",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/007.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "purchase",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/delivery.xml checks/test_delivery.py",
+          "exit_code": 0,
+          "elapsed_ms": 761.449,
+          "source_fingerprint": "f5f4787c4326370b",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/008.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "delivery",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/inventory.xml checks/test_inventory.py",
+          "exit_code": 0,
+          "elapsed_ms": 839.512,
+          "source_fingerprint": "f5f4787c4326370b",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/009.txt",
+          "output_sha256": "99a24796443a1d07f66a424f8116a06a2079063af758e7d3c87801c191ad2ecd",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "inventory",
+          "expected": "pass",
+          "matches_expectation": true
+        }
+      ],
+      "frozen_checks": {
+        "checks/test_delivery.py": "c68dfebbd7c59e6cb1a482da9d4a334e92b735bef556dd58a7410a84e80f5fe7",
+        "checks/test_inventory.py": "4bcab40f225849f9992825b47ba5844ef8c82d668cbaa380d197cdd04a009080",
+        "checks/test_purchase.py": "639d747bf8aeddf9bc9c30dd96a899bad4efe2c7112aca5e2e3b9ec0949ece00"
+      },
+      "baseline": {
+        "qualified": true,
+        "before_states": {
+          "purchase": "ABSENT",
+          "delivery": "ABSENT",
+          "inventory": "ABSENT"
+        },
+        "after_state": "CURRENT"
+      },
+      "grade": {
+        "known_required": 2,
+        "known_negatives": 1,
+        "hits": [
+          "delivery",
+          "purchase"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": true,
+        "advice_available": true
+      },
+      "recommendations": {
+        "schema": 1,
+        "state": "available",
+        "commands": [
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/delivery.xml checks/test_delivery.py",
+            "origin": "project declaration",
+            "priority": "dependency",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "delivery",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [
+              {
+                "milestone": "delivery",
+                "input": "dispatcher.py",
+                "category": "transitive",
+                "explanation": [
+                  {
+                    "source": "file:dispatcher.py",
+                    "target": "file:shop.py",
+                    "kind": "imports",
+                    "origin": "static",
+                    "path": "dispatcher.py",
+                    "line": 1,
+                    "identity": ""
+                  },
+                  {
+                    "source": "file:shop.py",
+                    "target": "symbol:domain/token.py#valid",
+                    "kind": "calls",
+                    "origin": "static",
+                    "path": "shop.py",
+                    "line": 4,
+                    "identity": ""
+                  }
+                ]
+              },
+              {
+                "milestone": "delivery",
+                "input": "checks/test_delivery.py",
+                "category": "transitive",
+                "explanation": [
+                  {
+                    "source": "file:checks/test_delivery.py",
+                    "target": "symbol:dispatcher.py#deliver",
+                    "kind": "calls",
+                    "origin": "static",
+                    "path": "checks/test_delivery.py",
+                    "line": 4,
+                    "identity": ""
+                  },
+                  {
+                    "source": "symbol:dispatcher.py#deliver",
+                    "target": "file:shop.py",
+                    "kind": "uses",
+                    "origin": "static",
+                    "path": "dispatcher.py",
+                    "line": 4,
+                    "identity": "python:qualified-call-module"
+                  },
+                  {
+                    "source": "file:shop.py",
+                    "target": "symbol:domain/token.py#valid",
+                    "kind": "calls",
+                    "origin": "static",
+                    "path": "shop.py",
+                    "line": 4,
+                    "identity": ""
+                  }
+                ]
+              }
+            ],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "issues": []
+          },
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/purchase.xml checks/test_purchase.py",
+            "origin": "project declaration",
+            "priority": "dependency",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "purchase",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [
+              {
+                "milestone": "purchase",
+                "input": "shop.py",
+                "category": "direct",
+                "explanation": [
+                  {
+                    "source": "file:shop.py",
+                    "target": "symbol:domain/token.py#valid",
+                    "kind": "calls",
+                    "origin": "static",
+                    "path": "shop.py",
+                    "line": 4,
+                    "identity": ""
+                  }
+                ]
+              },
+              {
+                "milestone": "purchase",
+                "input": "checks/test_purchase.py",
+                "category": "transitive",
+                "explanation": [
+                  {
+                    "source": "file:checks/test_purchase.py",
+                    "target": "file:shop.py",
+                    "kind": "imports",
+                    "origin": "static",
+                    "path": "checks/test_purchase.py",
+                    "line": 1,
+                    "identity": ""
+                  },
+                  {
+                    "source": "file:shop.py",
+                    "target": "symbol:domain/token.py#valid",
+                    "kind": "calls",
+                    "origin": "static",
+                    "path": "shop.py",
+                    "line": 4,
+                    "identity": ""
+                  }
+                ]
+              }
+            ],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "issues": []
+          },
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/inventory.xml checks/test_inventory.py",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "inventory",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          }
+        ],
+        "safe_to_exclude": false,
+        "issues": [],
+        "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+        "timings": {
+          "ranking_ms": 0.04
+        }
+      },
+      "impact_issues": [],
+      "fault": {
+        "qualified": true,
+        "before_states": {
+          "purchase": "STALE",
+          "delivery": "STALE",
+          "inventory": "STALE"
+        },
+        "after_state": "FAILED"
+      },
+      "equivalent": {
+        "qualified": true,
+        "before_states": {
+          "purchase": "STALE",
+          "delivery": "STALE",
+          "inventory": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "frozen_checks_unchanged": true,
+      "state": "qualified"
+    },
+    {
+      "id": "dynamic-plugin",
+      "partition": "development",
+      "language": "python",
+      "case_sha256": "3196750d1a8dfc62e820659752a0caa83b15d961f8564e1a8f465b2a862a60e3",
+      "reads": [
+        {
+          "plain_ms": 104.729,
+          "advised_ms": 175.769,
+          "added_ms": 71.04,
+          "graph_ms": 80.337,
+          "query_ms": 0.178,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1271,
+          "source_fingerprint": "5026653516be8e91",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 97.762,
+          "advised_ms": 180.383,
+          "added_ms": 82.621,
+          "graph_ms": 86.413,
+          "query_ms": 0.18,
+          "ranking_ms": 0.027,
+          "selected_files": 6,
+          "selected_bytes": 1271,
+          "source_fingerprint": "5026653516be8e91",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 92.511,
+          "advised_ms": 172.346,
+          "added_ms": 79.835,
+          "graph_ms": 80.004,
+          "query_ms": 0.238,
+          "ranking_ms": 0.027,
+          "selected_files": 6,
+          "selected_bytes": 1271,
+          "source_fingerprint": "5026653516be8e91",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 93.287,
+          "advised_ms": 161.261,
+          "added_ms": 67.975,
+          "graph_ms": 76.023,
+          "query_ms": 0.17,
+          "ranking_ms": 0.018,
+          "selected_files": 6,
+          "selected_bytes": 1272,
+          "source_fingerprint": "8ae68d57b336ca9e",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 86.992,
+          "advised_ms": 164.794,
+          "added_ms": 77.803,
+          "graph_ms": 77.29,
+          "query_ms": 0.168,
+          "ranking_ms": 0.016,
+          "selected_files": 6,
+          "selected_bytes": 1272,
+          "source_fingerprint": "8ae68d57b336ca9e",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 83.034,
+          "advised_ms": 171.267,
+          "added_ms": 88.233,
+          "graph_ms": 80.768,
+          "query_ms": 0.201,
+          "ranking_ms": 0.03,
+          "selected_files": 6,
+          "selected_bytes": 1272,
+          "source_fingerprint": "8ae68d57b336ca9e",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 85.889,
+          "advised_ms": 167.363,
+          "added_ms": 81.474,
+          "graph_ms": 77.458,
+          "query_ms": 0.172,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1276,
+          "source_fingerprint": "9db663c15006f80f",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 85.733,
+          "advised_ms": 165.728,
+          "added_ms": 79.995,
+          "graph_ms": 77.869,
+          "query_ms": 0.185,
+          "ranking_ms": 0.016,
+          "selected_files": 6,
+          "selected_bytes": 1276,
+          "source_fingerprint": "9db663c15006f80f",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 98.465,
+          "advised_ms": 171.284,
+          "added_ms": 72.819,
+          "graph_ms": 77.216,
+          "query_ms": 0.178,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1276,
+          "source_fingerprint": "9db663c15006f80f",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        }
+      ],
+      "runs": [
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/dispatch.xml checks/test_dispatch.py",
+          "exit_code": 0,
+          "elapsed_ms": 933.153,
+          "source_fingerprint": "5026653516be8e91",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/001.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "dispatch",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/catalog.xml checks/test_catalog.py",
+          "exit_code": 0,
+          "elapsed_ms": 755.36,
+          "source_fingerprint": "5026653516be8e91",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/002.txt",
+          "output_sha256": "3605abb09038ce24e90d81df8f7c0d87bb6f647a5e016bf461d8a8fcb408f6e9",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "catalog",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/dispatch.xml checks/test_dispatch.py",
+          "exit_code": 1,
+          "elapsed_ms": 808.656,
+          "source_fingerprint": "8ae68d57b336ca9e",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "1ba4bb48e48beeadb84b93f04199f4a8d21decd78f5df61907a8297ce962b2d1",
+          "testcase_failures": 1,
+          "setup_errors": 0,
+          "qualified_pass": false,
+          "qualified_failure": true,
+          "phase": "fault",
+          "milestone": "dispatch",
+          "expected": "assertion failure",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/catalog.xml checks/test_catalog.py",
+          "exit_code": 0,
+          "elapsed_ms": 804.674,
+          "source_fingerprint": "8ae68d57b336ca9e",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/004.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "fault",
+          "milestone": "catalog",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/dispatch.xml checks/test_dispatch.py",
+          "exit_code": 0,
+          "elapsed_ms": 716.098,
+          "source_fingerprint": "9db663c15006f80f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/005.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "dispatch",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/catalog.xml checks/test_catalog.py",
+          "exit_code": 0,
+          "elapsed_ms": 738.082,
+          "source_fingerprint": "9db663c15006f80f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/006.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "catalog",
+          "expected": "pass",
+          "matches_expectation": true
+        }
+      ],
+      "frozen_checks": {
+        "checks/test_catalog.py": "5f8e077ff2f810f9a094b10d45e9b1a8c79a84e276ef77dae1a53c75368d9561",
+        "checks/test_dispatch.py": "9362c210dd3d17909229ec04da3ffb88774b6d46656eb419db9082b561d194a2"
+      },
+      "baseline": {
+        "qualified": true,
+        "before_states": {
+          "dispatch": "ABSENT",
+          "catalog": "ABSENT"
+        },
+        "after_state": "CURRENT"
+      },
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 1,
+        "hits": [
+          "dispatch"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": true,
+        "advice_available": true
+      },
+      "recommendations": {
+        "schema": 1,
+        "state": "available",
+        "commands": [
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/dispatch.xml checks/test_dispatch.py",
+            "origin": "project declaration",
+            "priority": "dependency",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "dispatch",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [
+              {
+                "milestone": "dispatch",
+                "input": "loader.py",
+                "category": "direct",
+                "explanation": [
+                  {
+                    "source": "file:loader.py",
+                    "target": "file:extension.py",
+                    "kind": "dynamic_import",
+                    "origin": "static",
+                    "path": "loader.py",
+                    "line": 4,
+                    "identity": "importlib.import_module"
+                  }
+                ]
+              },
+              {
+                "milestone": "dispatch",
+                "input": "checks/test_dispatch.py",
+                "category": "transitive",
+                "explanation": [
+                  {
+                    "source": "file:checks/test_dispatch.py",
+                    "target": "file:loader.py",
+                    "kind": "imports",
+                    "origin": "static",
+                    "path": "checks/test_dispatch.py",
+                    "line": 1,
+                    "identity": ""
+                  },
+                  {
+                    "source": "file:loader.py",
+                    "target": "file:extension.py",
+                    "kind": "dynamic_import",
+                    "origin": "static",
+                    "path": "loader.py",
+                    "line": 4,
+                    "identity": "importlib.import_module"
+                  }
+                ]
+              }
+            ],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "issues": []
+          },
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/catalog.xml checks/test_catalog.py",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "catalog",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          }
+        ],
+        "safe_to_exclude": false,
+        "issues": [],
+        "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+        "timings": {
+          "ranking_ms": 0.03
+        }
+      },
+      "impact_issues": [],
+      "fault": {
+        "qualified": true,
+        "before_states": {
+          "dispatch": "STALE",
+          "catalog": "STALE"
+        },
+        "after_state": "FAILED"
+      },
+      "equivalent": {
+        "qualified": true,
+        "before_states": {
+          "dispatch": "STALE",
+          "catalog": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "frozen_checks_unchanged": true,
+      "state": "qualified"
+    },
+    {
+      "id": "node-service",
+      "partition": "development",
+      "language": "node",
+      "case_sha256": "e50385a8298fb47f38ade17550b6d77422fb475caf641f0a07eb93af15ab96c9",
+      "reads": [
+        {
+          "plain_ms": 99.673,
+          "advised_ms": 186.759,
+          "added_ms": 87.086,
+          "graph_ms": 88.172,
+          "query_ms": 0.111,
+          "ranking_ms": 0.019,
+          "selected_files": 6,
+          "selected_bytes": 1319,
+          "source_fingerprint": "ba0b6dd9f752aa39",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 89.423,
+          "advised_ms": 181.476,
+          "added_ms": 92.053,
+          "graph_ms": 87.223,
+          "query_ms": 0.113,
+          "ranking_ms": 0.032,
+          "selected_files": 6,
+          "selected_bytes": 1319,
+          "source_fingerprint": "ba0b6dd9f752aa39",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 87.298,
+          "advised_ms": 169.159,
+          "added_ms": 81.861,
+          "graph_ms": 79.853,
+          "query_ms": 0.136,
+          "ranking_ms": 0.021,
+          "selected_files": 6,
+          "selected_bytes": 1319,
+          "source_fingerprint": "ba0b6dd9f752aa39",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 88.648,
+          "advised_ms": 171.781,
+          "added_ms": 83.133,
+          "graph_ms": 79.306,
+          "query_ms": 0.118,
+          "ranking_ms": 0.02,
+          "selected_files": 6,
+          "selected_bytes": 1320,
+          "source_fingerprint": "e45d8f393263c10f",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 91.55,
+          "advised_ms": 170.499,
+          "added_ms": 78.949,
+          "graph_ms": 80.776,
+          "query_ms": 0.1,
+          "ranking_ms": 0.026,
+          "selected_files": 6,
+          "selected_bytes": 1320,
+          "source_fingerprint": "e45d8f393263c10f",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 102.418,
+          "advised_ms": 179.118,
+          "added_ms": 76.7,
+          "graph_ms": 82.115,
+          "query_ms": 0.157,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1320,
+          "source_fingerprint": "e45d8f393263c10f",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 91.877,
+          "advised_ms": 177.524,
+          "added_ms": 85.646,
+          "graph_ms": 79.174,
+          "query_ms": 0.121,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1323,
+          "source_fingerprint": "e7affa877295725f",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 95.807,
+          "advised_ms": 181.934,
+          "added_ms": 86.127,
+          "graph_ms": 80.849,
+          "query_ms": 0.166,
+          "ranking_ms": 0.029,
+          "selected_files": 6,
+          "selected_bytes": 1323,
+          "source_fingerprint": "e7affa877295725f",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 99.589,
+          "advised_ms": 198.982,
+          "added_ms": 99.393,
+          "graph_ms": 92.799,
+          "query_ms": 0.106,
+          "ranking_ms": 0.025,
+          "selected_files": 6,
+          "selected_bytes": 1323,
+          "source_fingerprint": "e7affa877295725f",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        }
+      ],
+      "runs": [
+        {
+          "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/service.test.mjs",
+          "exit_code": 0,
+          "elapsed_ms": 402.117,
+          "source_fingerprint": "ba0b6dd9f752aa39",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/001.txt",
+          "output_sha256": "35eeda604409b7035e5bfe8584e90da6537b1554f19dd826da24c1daa2d5c5ee",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "service",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/other.test.mjs",
+          "exit_code": 0,
+          "elapsed_ms": 403.546,
+          "source_fingerprint": "ba0b6dd9f752aa39",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/002.txt",
+          "output_sha256": "1f00b847ef4acb56ad54390b751f7fa1c539684b3e577272568a553c41c5dcad",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "other",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/service.test.mjs",
+          "exit_code": 1,
+          "elapsed_ms": 397.491,
+          "source_fingerprint": "e45d8f393263c10f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "9c4c2b044cf2def7ea734b8b0042c438144324f64fa6c1492e77af6d4f7b9f40",
+          "testcase_failures": 1,
+          "setup_errors": 0,
+          "qualified_pass": false,
+          "qualified_failure": true,
+          "phase": "fault",
+          "milestone": "service",
+          "expected": "assertion failure",
+          "matches_expectation": true
+        },
+        {
+          "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/other.test.mjs",
+          "exit_code": 0,
+          "elapsed_ms": 399.242,
+          "source_fingerprint": "e45d8f393263c10f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/004.txt",
+          "output_sha256": "bea9cbbc4107123b7f8aecabc77bf785f3a1f466891fbe3feadcb0e712fae8d4",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "fault",
+          "milestone": "other",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/service.test.mjs",
+          "exit_code": 0,
+          "elapsed_ms": 415.923,
+          "source_fingerprint": "e7affa877295725f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/005.txt",
+          "output_sha256": "f6f5e11abcefdddf8428443f1426c816d7b6832cfbf2be4e666420dec194a902",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "service",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/other.test.mjs",
+          "exit_code": 0,
+          "elapsed_ms": 448.323,
+          "source_fingerprint": "e7affa877295725f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/006.txt",
+          "output_sha256": "c4bc9c49ecab2e3d524a579ad4d6cfef05ef3ecff8475fe51592b78e86176ef4",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "other",
+          "expected": "pass",
+          "matches_expectation": true
+        }
+      ],
+      "frozen_checks": {
+        "checks/other.test.mjs": "14107772bdae5deea89f861bb8601cf1666bac3502106e704eab3cce49ba3db7",
+        "checks/service.test.mjs": "86be19702e81a7c3684b93305c9c854f8434d57c23cc67d1d3ca5cc96207cb71"
+      },
+      "baseline": {
+        "qualified": true,
+        "before_states": {
+          "service": "ABSENT",
+          "other": "ABSENT"
+        },
+        "after_state": "CURRENT"
+      },
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 1,
+        "hits": [
+          "service"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": true,
+        "advice_available": true
+      },
+      "recommendations": {
+        "schema": 1,
+        "state": "available",
+        "commands": [
+          {
+            "kind": "test_suite",
+            "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/service.test.mjs",
+            "origin": "project declaration",
+            "priority": "dependency",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "service",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [
+              {
+                "milestone": "service",
+                "input": "app/service.mjs",
+                "category": "direct",
+                "explanation": [
+                  {
+                    "source": "file:app/service.mjs",
+                    "target": "file:core/limit.mjs",
+                    "kind": "imports",
+                    "origin": "static",
+                    "path": "app/service.mjs",
+                    "line": 1,
+                    "identity": ""
+                  }
+                ]
+              },
+              {
+                "milestone": "service",
+                "input": "checks/service.test.mjs",
+                "category": "transitive",
+                "explanation": [
+                  {
+                    "source": "file:checks/service.test.mjs",
+                    "target": "file:app/service.mjs",
+                    "kind": "imports",
+                    "origin": "static",
+                    "path": "checks/service.test.mjs",
+                    "line": 3,
+                    "identity": ""
+                  },
+                  {
+                    "source": "file:app/service.mjs",
+                    "target": "file:core/limit.mjs",
+                    "kind": "imports",
+                    "origin": "static",
+                    "path": "app/service.mjs",
+                    "line": 1,
+                    "identity": ""
+                  }
+                ]
+              }
+            ],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "issues": []
+          },
+          {
+            "kind": "test_suite",
+            "command": "C:\\nvm4w\\nodejs\\node.EXE --test --test-reporter=tap checks/other.test.mjs",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "other",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          }
+        ],
+        "safe_to_exclude": false,
+        "issues": [],
+        "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+        "timings": {
+          "ranking_ms": 0.022
+        }
+      },
+      "impact_issues": [],
+      "fault": {
+        "qualified": true,
+        "before_states": {
+          "service": "STALE",
+          "other": "STALE"
+        },
+        "after_state": "FAILED"
+      },
+      "equivalent": {
+        "qualified": true,
+        "before_states": {
+          "service": "STALE",
+          "other": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "frozen_checks_unchanged": true,
+      "state": "qualified"
+    },
+    {
+      "id": "configuration",
+      "partition": "held_out",
+      "language": "python",
+      "case_sha256": "111fa95e9ed920afa8fc76a819a2bdd0bcd24579e38ad9e1005fde2ecb28e3c8",
+      "reads": [
+        {
+          "plain_ms": 102.785,
+          "advised_ms": 184.708,
+          "added_ms": 81.922,
+          "graph_ms": 85.701,
+          "query_ms": 0.183,
+          "ranking_ms": 0.02,
+          "selected_files": 6,
+          "selected_bytes": 1347,
+          "source_fingerprint": "c683d53322aeae04",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 94.11,
+          "advised_ms": 199.844,
+          "added_ms": 105.735,
+          "graph_ms": 91.256,
+          "query_ms": 0.115,
+          "ranking_ms": 0.033,
+          "selected_files": 6,
+          "selected_bytes": 1347,
+          "source_fingerprint": "c683d53322aeae04",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 94.662,
+          "advised_ms": 176.489,
+          "added_ms": 81.827,
+          "graph_ms": 80.972,
+          "query_ms": 0.125,
+          "ranking_ms": 0.03,
+          "selected_files": 6,
+          "selected_bytes": 1347,
+          "source_fingerprint": "c683d53322aeae04",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 99.633,
+          "advised_ms": 173.719,
+          "added_ms": 74.086,
+          "graph_ms": 80.115,
+          "query_ms": 0.128,
+          "ranking_ms": 0.019,
+          "selected_files": 6,
+          "selected_bytes": 1347,
+          "source_fingerprint": "a5401b2cc0a25b98",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 92.972,
+          "advised_ms": 174.512,
+          "added_ms": 81.54,
+          "graph_ms": 80.583,
+          "query_ms": 0.132,
+          "ranking_ms": 0.019,
+          "selected_files": 6,
+          "selected_bytes": 1347,
+          "source_fingerprint": "a5401b2cc0a25b98",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 92.202,
+          "advised_ms": 183.048,
+          "added_ms": 90.846,
+          "graph_ms": 86.746,
+          "query_ms": 0.123,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1347,
+          "source_fingerprint": "a5401b2cc0a25b98",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 94.539,
+          "advised_ms": 178.607,
+          "added_ms": 84.068,
+          "graph_ms": 83.736,
+          "query_ms": 0.169,
+          "ranking_ms": 0.022,
+          "selected_files": 6,
+          "selected_bytes": 1349,
+          "source_fingerprint": "1eb0a92372e5a5fc",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 94.652,
+          "advised_ms": 175.229,
+          "added_ms": 80.577,
+          "graph_ms": 84.169,
+          "query_ms": 0.112,
+          "ranking_ms": 0.02,
+          "selected_files": 6,
+          "selected_bytes": 1349,
+          "source_fingerprint": "1eb0a92372e5a5fc",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 93.234,
+          "advised_ms": 182.6,
+          "added_ms": 89.366,
+          "graph_ms": 84.575,
+          "query_ms": 0.112,
+          "ranking_ms": 0.027,
+          "selected_files": 6,
+          "selected_bytes": 1349,
+          "source_fingerprint": "1eb0a92372e5a5fc",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        }
+      ],
+      "runs": [
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/retry.xml checks/test_retry.py",
+          "exit_code": 0,
+          "elapsed_ms": 783.94,
+          "source_fingerprint": "c683d53322aeae04",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/001.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "retry",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/health.xml checks/test_health.py",
+          "exit_code": 0,
+          "elapsed_ms": 795.965,
+          "source_fingerprint": "c683d53322aeae04",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/002.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "health",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/retry.xml checks/test_retry.py",
+          "exit_code": 1,
+          "elapsed_ms": 854.717,
+          "source_fingerprint": "a5401b2cc0a25b98",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "a95244982b7ee2b758326b394a1abb2f11278adc77ccb231d46b3a824912dc33",
+          "testcase_failures": 1,
+          "setup_errors": 0,
+          "qualified_pass": false,
+          "qualified_failure": true,
+          "phase": "fault",
+          "milestone": "retry",
+          "expected": "assertion failure",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/health.xml checks/test_health.py",
+          "exit_code": 0,
+          "elapsed_ms": 777.077,
+          "source_fingerprint": "a5401b2cc0a25b98",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/004.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "fault",
+          "milestone": "health",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/retry.xml checks/test_retry.py",
+          "exit_code": 0,
+          "elapsed_ms": 779.705,
+          "source_fingerprint": "1eb0a92372e5a5fc",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/005.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "retry",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/health.xml checks/test_health.py",
+          "exit_code": 0,
+          "elapsed_ms": 868.321,
+          "source_fingerprint": "1eb0a92372e5a5fc",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/006.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "health",
+          "expected": "pass",
+          "matches_expectation": true
+        }
+      ],
+      "frozen_checks": {
+        "checks/test_health.py": "3f9106906dce97faf4188d299a6844f314649254a4a31e1b818fd922c03bd4c3",
+        "checks/test_retry.py": "406b40e198922770800ebc55528cb2da1f1d735717c85b26ca5364d6235e787d"
+      },
+      "baseline": {
+        "qualified": true,
+        "before_states": {
+          "retry": "ABSENT",
+          "health": "ABSENT"
+        },
+        "after_state": "CURRENT"
+      },
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 1,
+        "hits": [
+          "retry"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": true,
+        "advice_available": true
+      },
+      "recommendations": {
+        "schema": 1,
+        "state": "available",
+        "commands": [
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/retry.xml checks/test_retry.py",
+            "origin": "project declaration",
+            "priority": "direct",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "retry",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [
+              {
+                "milestone": "retry",
+                "input": "settings.json",
+                "category": "direct change observation",
+                "explanation": []
+              }
+            ],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "issues": []
+          },
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/health.xml checks/test_health.py",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "health",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          }
+        ],
+        "safe_to_exclude": false,
+        "issues": [],
+        "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+        "timings": {
+          "ranking_ms": 0.022
+        }
+      },
+      "impact_issues": [],
+      "fault": {
+        "qualified": true,
+        "before_states": {
+          "retry": "STALE",
+          "health": "STALE"
+        },
+        "after_state": "FAILED"
+      },
+      "equivalent": {
+        "qualified": true,
+        "before_states": {
+          "retry": "STALE",
+          "health": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "frozen_checks_unchanged": true,
+      "state": "qualified"
+    },
+    {
+      "id": "subprocess-worker",
+      "partition": "held_out",
+      "language": "python",
+      "case_sha256": "7062134b6e32709b5d08394a47985715a8480c3e9fdaf956444ab41328144071",
+      "reads": [
+        {
+          "plain_ms": 99.469,
+          "advised_ms": 186.377,
+          "added_ms": 86.908,
+          "graph_ms": 89.143,
+          "query_ms": 0.145,
+          "ranking_ms": 0.028,
+          "selected_files": 7,
+          "selected_bytes": 1421,
+          "source_fingerprint": "14cd1951ac89003f",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 97.263,
+          "advised_ms": 186.948,
+          "added_ms": 89.685,
+          "graph_ms": 83.132,
+          "query_ms": 0.118,
+          "ranking_ms": 0.038,
+          "selected_files": 7,
+          "selected_bytes": 1421,
+          "source_fingerprint": "14cd1951ac89003f",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 96.49,
+          "advised_ms": 188.714,
+          "added_ms": 92.224,
+          "graph_ms": 89.511,
+          "query_ms": 0.111,
+          "ranking_ms": 0.021,
+          "selected_files": 7,
+          "selected_bytes": 1421,
+          "source_fingerprint": "14cd1951ac89003f",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 132.918,
+          "advised_ms": 201.675,
+          "added_ms": 68.758,
+          "graph_ms": 95.395,
+          "query_ms": 0.121,
+          "ranking_ms": 0.019,
+          "selected_files": 7,
+          "selected_bytes": 1422,
+          "source_fingerprint": "a03630a9540a7fd9",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 129.028,
+          "advised_ms": 256.663,
+          "added_ms": 127.636,
+          "graph_ms": 135.627,
+          "query_ms": 0.129,
+          "ranking_ms": 0.033,
+          "selected_files": 7,
+          "selected_bytes": 1422,
+          "source_fingerprint": "a03630a9540a7fd9",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 132.792,
+          "advised_ms": 215.821,
+          "added_ms": 83.029,
+          "graph_ms": 101.326,
+          "query_ms": 0.116,
+          "ranking_ms": 0.021,
+          "selected_files": 7,
+          "selected_bytes": 1422,
+          "source_fingerprint": "a03630a9540a7fd9",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 93.04,
+          "advised_ms": 185.675,
+          "added_ms": 92.635,
+          "graph_ms": 89.581,
+          "query_ms": 0.132,
+          "ranking_ms": 0.022,
+          "selected_files": 7,
+          "selected_bytes": 1422,
+          "source_fingerprint": "f1f9c5c25c09178d",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 99.336,
+          "advised_ms": 175.343,
+          "added_ms": 76.007,
+          "graph_ms": 85.104,
+          "query_ms": 0.113,
+          "ranking_ms": 0.019,
+          "selected_files": 7,
+          "selected_bytes": 1422,
+          "source_fingerprint": "f1f9c5c25c09178d",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 102.236,
+          "advised_ms": 191.597,
+          "added_ms": 89.36,
+          "graph_ms": 90.796,
+          "query_ms": 0.189,
+          "ranking_ms": 0.032,
+          "selected_files": 7,
+          "selected_bytes": 1422,
+          "source_fingerprint": "f1f9c5c25c09178d",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        }
+      ],
+      "runs": [
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+          "exit_code": 0,
+          "elapsed_ms": 1037.409,
+          "source_fingerprint": "14cd1951ac89003f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/001.txt",
+          "output_sha256": "016a4093788648644b08006f7d1d171ca7639313677f5aa929f004d4a3e52465",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "worker",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/metrics.xml checks/test_metrics.py",
+          "exit_code": 0,
+          "elapsed_ms": 1065.816,
+          "source_fingerprint": "14cd1951ac89003f",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/002.txt",
+          "output_sha256": "59907462a8d5fd93406cdf4c7d1eb2f7b7a96664ae85c4ec202693d419cd019e",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "metrics",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+          "exit_code": 1,
+          "elapsed_ms": 1006.066,
+          "source_fingerprint": "a03630a9540a7fd9",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "4b6671276d62d752a467723f5421222ee8577ffb98bd6753507dfd06f9807427",
+          "testcase_failures": 1,
+          "setup_errors": 0,
+          "qualified_pass": false,
+          "qualified_failure": true,
+          "phase": "fault",
+          "milestone": "worker",
+          "expected": "assertion failure",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/metrics.xml checks/test_metrics.py",
+          "exit_code": 0,
+          "elapsed_ms": 809.961,
+          "source_fingerprint": "a03630a9540a7fd9",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/004.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "fault",
+          "milestone": "metrics",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+          "exit_code": 0,
+          "elapsed_ms": 813.787,
+          "source_fingerprint": "f1f9c5c25c09178d",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/005.txt",
+          "output_sha256": "7fefcaf66f6e7137767bc25d16d128cbf7b8617ad0b6f14fbf9a0b8e7fdd81cd",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "worker",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/metrics.xml checks/test_metrics.py",
+          "exit_code": 0,
+          "elapsed_ms": 689.102,
+          "source_fingerprint": "f1f9c5c25c09178d",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/006.txt",
+          "output_sha256": "3605abb09038ce24e90d81df8f7c0d87bb6f647a5e016bf461d8a8fcb408f6e9",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "metrics",
+          "expected": "pass",
+          "matches_expectation": true
+        }
+      ],
+      "frozen_checks": {
+        "checks/test_metrics.py": "e3714045af38fabe9daee860582dbb289abc1c64da147510da7858a96dbd26fe",
+        "checks/test_worker.py": "b2403bca7e7bec59deb293b2dcfd507acc4c0f4f1bf608be14156c166263ae97"
+      },
+      "baseline": {
+        "qualified": true,
+        "before_states": {
+          "worker": "ABSENT",
+          "metrics": "ABSENT"
+        },
+        "after_state": "CURRENT"
+      },
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 1,
+        "hits": [],
+        "misses": [
+          "worker"
+        ],
+        "false_leads": [],
+        "fallback_retained": [
+          "worker"
+        ],
+        "unlabelled_leads": [],
+        "coverage_complete": true,
+        "advice_available": true
+      },
+      "recommendations": {
+        "schema": 1,
+        "state": "available",
+        "commands": [
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/metrics.xml checks/test_metrics.py",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "metrics",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          },
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/worker.xml checks/test_worker.py",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "worker",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          }
+        ],
+        "safe_to_exclude": false,
+        "issues": [],
+        "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+        "timings": {
+          "ranking_ms": 0.021
+        }
+      },
+      "impact_issues": [],
+      "fault": {
+        "qualified": true,
+        "before_states": {
+          "worker": "STALE",
+          "metrics": "STALE"
+        },
+        "after_state": "FAILED"
+      },
+      "equivalent": {
+        "qualified": true,
+        "before_states": {
+          "worker": "STALE",
+          "metrics": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "frozen_checks_unchanged": true,
+      "state": "qualified"
+    },
+    {
+      "id": "unrelated-edit",
+      "partition": "held_out",
+      "language": "python",
+      "case_sha256": "57b2a059ec826bb20a36c10310f330f56cd5a279891092a84a6c53e97c61de61",
+      "reads": [
+        {
+          "plain_ms": 78.378,
+          "advised_ms": 146.187,
+          "added_ms": 67.809,
+          "graph_ms": 68.727,
+          "query_ms": 0.07,
+          "ranking_ms": 0.018,
+          "selected_files": 4,
+          "selected_bytes": 597,
+          "source_fingerprint": "946837a26b99548c",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 76.147,
+          "advised_ms": 148.868,
+          "added_ms": 72.721,
+          "graph_ms": 72.758,
+          "query_ms": 0.074,
+          "ranking_ms": 0.012,
+          "selected_files": 4,
+          "selected_bytes": 597,
+          "source_fingerprint": "946837a26b99548c",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 80.641,
+          "advised_ms": 142.443,
+          "added_ms": 61.803,
+          "graph_ms": 65.614,
+          "query_ms": 0.071,
+          "ranking_ms": 0.01,
+          "selected_files": 4,
+          "selected_bytes": 597,
+          "source_fingerprint": "946837a26b99548c",
+          "ledger_unchanged": true,
+          "phase": "baseline"
+        },
+        {
+          "plain_ms": 83.881,
+          "advised_ms": 154.21,
+          "added_ms": 70.329,
+          "graph_ms": 74.566,
+          "query_ms": 0.073,
+          "ranking_ms": 0.017,
+          "selected_files": 4,
+          "selected_bytes": 597,
+          "source_fingerprint": "95eb52607cd376b3",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 85.296,
+          "advised_ms": 164.175,
+          "added_ms": 78.878,
+          "graph_ms": 80.115,
+          "query_ms": 0.089,
+          "ranking_ms": 0.014,
+          "selected_files": 4,
+          "selected_bytes": 597,
+          "source_fingerprint": "95eb52607cd376b3",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 80.249,
+          "advised_ms": 162.628,
+          "added_ms": 82.379,
+          "graph_ms": 77.297,
+          "query_ms": 0.165,
+          "ranking_ms": 0.014,
+          "selected_files": 4,
+          "selected_bytes": 597,
+          "source_fingerprint": "95eb52607cd376b3",
+          "ledger_unchanged": true,
+          "phase": "fault"
+        },
+        {
+          "plain_ms": 85.394,
+          "advised_ms": 159.804,
+          "added_ms": 74.41,
+          "graph_ms": 77.705,
+          "query_ms": 0.082,
+          "ranking_ms": 0.013,
+          "selected_files": 4,
+          "selected_bytes": 599,
+          "source_fingerprint": "23a33446c885eb07",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 75.777,
+          "advised_ms": 152.338,
+          "added_ms": 76.56,
+          "graph_ms": 73.183,
+          "query_ms": 0.073,
+          "ranking_ms": 0.009,
+          "selected_files": 4,
+          "selected_bytes": 599,
+          "source_fingerprint": "23a33446c885eb07",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        },
+        {
+          "plain_ms": 77.568,
+          "advised_ms": 145.73,
+          "added_ms": 68.162,
+          "graph_ms": 69.89,
+          "query_ms": 0.08,
+          "ranking_ms": 0.011,
+          "selected_files": 4,
+          "selected_bytes": 599,
+          "source_fingerprint": "23a33446c885eb07",
+          "ledger_unchanged": true,
+          "phase": "equivalent"
+        }
+      ],
+      "runs": [
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/feature.xml checks/test_feature.py",
+          "exit_code": 0,
+          "elapsed_ms": 711.128,
+          "source_fingerprint": "946837a26b99548c",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/001.txt",
+          "output_sha256": "e8c2ebdecc6c68bd31c948de0b0c1dd4c57dd47d093194a6c1d241c65727824d",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "baseline",
+          "milestone": "feature",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/feature.xml checks/test_feature.py",
+          "exit_code": 0,
+          "elapsed_ms": 713.986,
+          "source_fingerprint": "95eb52607cd376b3",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/002.txt",
+          "output_sha256": "3605abb09038ce24e90d81df8f7c0d87bb6f647a5e016bf461d8a8fcb408f6e9",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "fault",
+          "milestone": "feature",
+          "expected": "pass",
+          "matches_expectation": true
+        },
+        {
+          "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/feature.xml checks/test_feature.py",
+          "exit_code": 0,
+          "elapsed_ms": 665.082,
+          "source_fingerprint": "23a33446c885eb07",
+          "source_changed_during_execution": false,
+          "scope": "native source scope",
+          "output": "logs/003.txt",
+          "output_sha256": "3605abb09038ce24e90d81df8f7c0d87bb6f647a5e016bf461d8a8fcb408f6e9",
+          "testcase_failures": 0,
+          "setup_errors": 0,
+          "qualified_pass": true,
+          "qualified_failure": false,
+          "phase": "equivalent",
+          "milestone": "feature",
+          "expected": "pass",
+          "matches_expectation": true
+        }
+      ],
+      "frozen_checks": {
+        "checks/test_feature.py": "b37638974a9de614f4cb33043a446022b78965a3e2337250f3dd81ab7b85ad64"
+      },
+      "baseline": {
+        "qualified": true,
+        "before_states": {
+          "feature": "ABSENT"
+        },
+        "after_state": "CURRENT"
+      },
+      "grade": {
+        "known_required": 0,
+        "known_negatives": 1,
+        "hits": [],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": true,
+        "advice_available": true
+      },
+      "recommendations": {
+        "schema": 1,
+        "state": "available",
+        "commands": [
+          {
+            "kind": "test_suite",
+            "command": "python -m pytest -q --rootdir=. --confcutdir=. -p no:cacheprovider --junitxml=../logs/feature.xml checks/test_feature.py",
+            "origin": "project declaration",
+            "priority": "fallback",
+            "needs_refresh": true,
+            "milestones": [
+              {
+                "id": "feature",
+                "state": "STALE"
+              }
+            ],
+            "reasons": [],
+            "omitted_reasons": 0,
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+            ],
+            "issues": []
+          }
+        ],
+        "safe_to_exclude": false,
+        "issues": [],
+        "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+        "timings": {
+          "ranking_ms": 0.014
+        }
+      },
+      "impact_issues": [],
+      "fault": {
+        "qualified": true,
+        "before_states": {
+          "feature": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "equivalent": {
+        "qualified": true,
+        "before_states": {
+          "feature": "STALE"
+        },
+        "after_state": "CURRENT"
+      },
+      "frozen_checks_unchanged": true,
+      "state": "qualified"
+    }
+  ],
+  "qualified": true,
+  "limits": [
+    "Authored small projects; labelled references are not a complete dependency oracle.",
+    "No agent/model runs or measured incremental coding benefit.",
+    "Fallback retention is not a recovered relationship; missing paths remain misses.",
+    "Read-only local timings include cache/order effects; no installed-host overhead claim.",
+    "Whole-source receipt invalidation remains conservative."
+  ]
+}
