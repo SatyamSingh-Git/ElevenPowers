@@ -42,7 +42,7 @@ def replace(temporary, target):
 
 
 @contextmanager
-def ledger_write(root):
+def ledger_write(root, *, timeout=5):
     """Serialize the short read/merge/replace transaction across hook writers."""
     stream = (root / '.elevenpowers/ledger.lock').open('a+b')
     with stream:
@@ -50,7 +50,7 @@ def ledger_write(root):
         if not stream.tell():
             stream.write(b'0')
             stream.flush()
-        deadline = time.monotonic() + 5
+        deadline = time.monotonic() + timeout
         while True:
             try:
                 _lock(stream)
