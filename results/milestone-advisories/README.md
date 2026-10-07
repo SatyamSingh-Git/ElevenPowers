@@ -43,5 +43,10 @@ and check `{kind: "test_suite", command: "python -m pytest TEST_PATH -q"}`.
 Test paths in order: Click `tests/test_parser.py`, `tests/test_formatting.py`;
 attrs `tests/test_filters.py`, `tests/test_converters.py`; Jinja
 `tests/test_utils.py`, `tests/test_filters.py`. JSON is serialized by
-`json.dumps(value, indent=2)` without a trailing newline. No `.elevenpowers`
+`json.dumps(value, indent=2)` without a trailing newline. The original Windows
+declaration has CRLF line endings. Each final corpus project includes its exact
+`milestone_declaration` text: write that field with
+`Path("elevenpowers.milestones.json").write_bytes(text.encode("utf-8"))` on any OS
+to reproduce the original hash. Published observation JSON uses normalized LF;
+this changes formatting only, never source seals or measured values. No `.elevenpowers`
 directory is needed. Preserve upstream licenses in extracted snapshots.

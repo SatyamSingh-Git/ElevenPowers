@@ -186,7 +186,8 @@
         "tests/typing/typing_simple_example.py": "898170c4850a120690b5017c574f62021fe5ebfe3980db97d8ee38cc53fcc778",
         "tests/typing/typing_version_option.py": "670cbacb31aa102447712770e22d185937005e945104ea65e366f81f9bbfa2d2",
         "uv.lock": "4fbb410a7e149228300ec0bedaadf63937c74ad050993417b416eebdcfdfd23c"
-      }
+      },
+      "milestone_declaration": "{\r\n  \"schema\": 1,\r\n  \"milestones\": [\r\n    {\r\n      \"id\": \"check-0\",\r\n      \"description\": \"Upstream assertions in tests/test_parser.py\",\r\n      \"inputs\": [\r\n        \"tests/test_parser.py\"\r\n      ],\r\n      \"checks\": [\r\n        {\r\n          \"kind\": \"test_suite\",\r\n          \"command\": \"python -m pytest tests/test_parser.py -q\"\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"id\": \"check-1\",\r\n      \"description\": \"Upstream assertions in tests/test_formatting.py\",\r\n      \"inputs\": [\r\n        \"tests/test_formatting.py\"\r\n      ],\r\n      \"checks\": [\r\n        {\r\n          \"kind\": \"test_suite\",\r\n          \"command\": \"python -m pytest tests/test_formatting.py -q\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
     },
     {
       "id": "attrs",
@@ -335,7 +336,8 @@
         "typing_tests/pyrefly.py": "72586f13afe06fc90fd486e9b154dee3f37b6aa05f5480db8e6383f72c6855f6",
         "typing_tests/README.md": "cf656dbe47cb9831538b5347f32e588189814bca504d991499da73420d3efd46",
         "uv.lock": "eef931b1489a490cd287fb0a3d14a0c066b3abddcb02e8370851e840c3f273f0"
-      }
+      },
+      "milestone_declaration": "{\r\n  \"schema\": 1,\r\n  \"milestones\": [\r\n    {\r\n      \"id\": \"check-0\",\r\n      \"description\": \"Upstream assertions in tests/test_filters.py\",\r\n      \"inputs\": [\r\n        \"tests/test_filters.py\"\r\n      ],\r\n      \"checks\": [\r\n        {\r\n          \"kind\": \"test_suite\",\r\n          \"command\": \"python -m pytest tests/test_filters.py -q\"\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"id\": \"check-1\",\r\n      \"description\": \"Upstream assertions in tests/test_converters.py\",\r\n      \"inputs\": [\r\n        \"tests/test_converters.py\"\r\n      ],\r\n      \"checks\": [\r\n        {\r\n          \"kind\": \"test_suite\",\r\n          \"command\": \"python -m pytest tests/test_converters.py -q\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
     },
     {
       "id": "jinja2",
@@ -451,7 +453,8 @@
         "tests/test_tests.py": "473102bd586ca045016b1c3d5ca3dea061df9448a2a6b0a93d3c4a079d3355a9",
         "tests/test_utils.py": "95a55dcf6175a3f3d429acab8e087d355cb485b7e4797a6643e092ea6b08a958",
         "uv.lock": "c081d8fb15f51e7328bf74ee45716784cb99cead11e22611e46149df6302e8b4"
-      }
+      },
+      "milestone_declaration": "{\r\n  \"schema\": 1,\r\n  \"milestones\": [\r\n    {\r\n      \"id\": \"check-0\",\r\n      \"description\": \"Upstream assertions in tests/test_utils.py\",\r\n      \"inputs\": [\r\n        \"tests/test_utils.py\"\r\n      ],\r\n      \"checks\": [\r\n        {\r\n          \"kind\": \"test_suite\",\r\n          \"command\": \"python -m pytest tests/test_utils.py -q\"\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"id\": \"check-1\",\r\n      \"description\": \"Upstream assertions in tests/test_filters.py\",\r\n      \"inputs\": [\r\n        \"tests/test_filters.py\"\r\n      ],\r\n      \"checks\": [\r\n        {\r\n          \"kind\": \"test_suite\",\r\n          \"command\": \"python -m pytest tests/test_filters.py -q\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
     }
   ],
   "cases": [

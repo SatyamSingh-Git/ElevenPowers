@@ -77,4 +77,3 @@ def test_native_patch_advice_follows_saved_attribution_and_preserves_gaps(tmp_pa
     # Missing pre-event is retained independently of the advisory allowance.
     response, code = run('codex', 'PostToolUse', event(tmp_path, patch, 'missing-baseline'))
     assert code == 0 and 'attribution is incomplete' in json.dumps(response)
-

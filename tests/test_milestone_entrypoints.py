@@ -49,4 +49,3 @@ def test_invalid_declared_endpoint_cannot_establish_a_process_relationship(tmp_p
     assert value['rechecks']['state'] == 'incomplete'
     assert not value['impact']['leads']
     assert all(c['priority'] == 'fallback' for c in value['rechecks']['commands'])
-

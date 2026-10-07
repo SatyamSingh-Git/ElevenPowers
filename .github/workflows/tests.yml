@@ -38,7 +38,7 @@ jobs:
           python -m pip install -r requirements-strength.txt -r requirements-impact.txt -r requirements-impact-eval.txt
           npm install --prefix .venv/strength-js --ignore-scripts --no-audit --no-fund @stryker-mutator/instrumenter@9.5.1 typescript@5.7.3
       - name: Standard-library runtime without site packages
-        run: python -S -c "import core.milestones; import eval.milestones; import eval.milestone_rechecks; import core.milestones.rechecks; import core.impact; import core.strength.runner; import core.export; import core.hosts.validation; import core.hosts.performance; import eval.paired; import eval.benefit; import eval.benefit_archive; import eval.proposals; import eval.hard_archive; import eval.hard_audit"
+        run: python -S -c "import core.milestones; import eval.milestones; import eval.milestone_rechecks; import core.milestones.rechecks; import core.milestones.automatic; import core.milestones.advice_worker; import eval.milestone_large; import eval.advice_callbacks; import core.impact; import core.strength.runner; import core.export; import core.hosts.validation; import core.hosts.performance; import eval.paired; import eval.benefit; import eval.benefit_archive; import eval.proposals; import eval.hard_archive; import eval.hard_audit"
       - name: Identify the environment
         run: python -c "import platform, sys; print(sys.version); print(platform.platform())"
       # git needs an identity before the fixtures that commit will work, and the

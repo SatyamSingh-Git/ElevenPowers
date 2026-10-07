@@ -4,6 +4,11 @@ Five views of the system and its unfinished work — the runtime, plugin seam,
 durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.
 
+The latest map includes optional bounded milestone edit advice, isolated
+inspection workers and private reservation state. Planned cards keep installed
+advice acceptance, independently justified negative references and coding benefit
+open. See [dated checks](../docs/validation/2026-10-07-milestone-advisories.md).
+
 ### ▶ **[Open the live graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)**
 
 Or open [`index.html`](index.html) from a local clone — double-click it. No
