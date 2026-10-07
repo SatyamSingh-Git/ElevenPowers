@@ -26,14 +26,13 @@
 
 **What it can do today:**
 
-**ImpactGraph:** possible consumers, candidate tests and explained dependency paths.
-
-1. **Milestone verification:** earlier behavior checks and their evidence across tasks, with optional recheck advice.
-2. **Test strength:** optional mutation analysis that identifies possible test gaps.
-3. **Project readiness and health:** command discovery, repository-aware scanning and integration health.
-4. **Resumable verification:** saved progress, fresh-result reuse and qualified passing checkpoints.
-5. **Evidence reports:** reviewer-readable Markdown and JSON exports.
-6. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
+1. **ImpactGraph:** possible consumers, candidate tests and explained dependency paths.
+2. **Milestone verification:** earlier behavior checks and their evidence across tasks, with optional recheck advice.
+3. **Test strength:** optional mutation analysis that identifies possible test gaps.
+4. **Project readiness and health:** command discovery, repository-aware scanning and integration health.
+5. **Resumable verification:** saved progress, fresh-result reuse and qualified passing checkpoints.
+6. **Evidence reports:** reviewer-readable Markdown and JSON exports.
+7. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
 
