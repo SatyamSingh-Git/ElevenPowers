@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="0.011" timestamp="2026-10-07T11:01:34.165320+05:30" hostname="redacted"><testcase classname="checks.test_feature" name="test_value" time="0.000" /></testsuite></testsuites>
