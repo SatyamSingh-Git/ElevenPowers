@@ -1,5 +1,10 @@
 # What's Offered
 
+Optional [bounded milestone advice](../the-guide/milestones.md#optional-automatic-edit-advice)
+is available during edits. Broader precision, installed advice acceptance and
+incremental coding benefit remain open; [measurements](../results/milestone-advisories/README.md)
+are qualified separately from shipped capability.
+
 What ElevenPowers does today, what is coming, and an honest account of where it stands against everything else.
 
 ---

@@ -1,5 +1,9 @@
 # The journey
 
+Latest: [65 — advice must have a budget](65-advice-must-have-a-budget.md)
+records larger-project limits, withdrawn negative labels, isolated advisory
+delivery and the difference between replay and installed-session evidence.
+
 Latest: [64 — a recheck needs a command](64-a-recheck-needs-a-command.md)
 records exact-command priorities, retained fallback verification, independent
 relationship misses, real boundary/equivalent checks and descriptive read cost.

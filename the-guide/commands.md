@@ -2,6 +2,10 @@
 
 ## ep_milestones — earlier behavior evidence across tasks
 
+Optional edit-time context is configured through
+[`milestone_advice`](milestones.md#optional-automatic-edit-advice); the explicit
+CLI remains available when automatic advice is suppressed or incomplete.
+
 ```bash
 python plugin/bin/ep_milestones.py --project PATH
 python plugin/bin/ep_milestones.py --project PATH --json --output milestones.json

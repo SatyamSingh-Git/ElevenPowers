@@ -2,7 +2,9 @@
 
 Runtime source at the beginning of measurements: `9e3f618`, with the additional
 replay measurement harness and controls in the delivery that publishes this
-record. [Raw callback observations](callbacks.json) retain every sample.
+record. [Raw callback observations](callbacks.json) retain every sample;
+[saved attempt outcomes](attempt-outcomes.json) retain reservation statuses and
+elapsed times, separate from context coverage.
 
 Three disposable copies of the sealed Click, attrs and Jinja snapshots exercised
 all five launchers, three times each: **45 baseline/advised/duplicate triples,
@@ -25,6 +27,7 @@ disposable project with project/local settings and empty strict MCP configuratio
 No prompt was submitted. Its native SessionStart was received once and processed
 once, with a recorded callback sample **1135.235 ms**, runtime fingerprint
 `5e4aec22d498b74ebb3974fff3a113a6518ad82c452bb86bcd0483f057a01285`.
+[Saved startup metadata](native-startup.json) preserves that observation.
 This is startup delivery only; it does **not** exercise the new edit advice.
 The four added hosts and all five installed edit/advice sessions remain open.
 Automatic advice therefore remains explicit project opt-in.

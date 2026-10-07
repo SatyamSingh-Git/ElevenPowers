@@ -1,5 +1,20 @@
 # Master Plan v0.8
 
+**2026-10-07 — bounded optional milestone advice.** Shared saved-edit callbacks
+now deliver bounded exact-check context after explicit project opt-in, with
+isolated worker deadlines, atomic reservations, deduplication and task budgets.
+Declared file relationships cover known process boundaries without executing
+them. Three sealed upstream snapshots recover six selected required leads;
+four cross-reference leads remain unknown after unsupported negative labels were
+withdrawn. All static reports are incomplete. Eighteen paired report reads add
+median 947.254 ms; 135 replay launcher processes show no nonzero exits or
+duplicate advice, with median added 1282.703 ms. Installed Claude startup was
+observed without a prompt; installed advice cost and coding benefit remain open.
+Advice stays opt-in and creates no new gate. See
+[design](docs/design/milestone-advisories.md),
+[observations](results/milestone-advisories/README.md) and
+[validation](docs/validation/2026-10-07-milestone-advisories.md).
+
 **Explained milestone rechecks, 2026-10-07.** Explicit impact-enabled reports now
 group exact declared commands with direct/dependency/fallback priorities, all
 associated evidence states and bounded reasons. Missing paths never remove

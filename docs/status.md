@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-10-07 — bounded optional milestone advice.** Shared saved-edit callbacks
+now deliver bounded exact-check context after explicit project opt-in, with
+isolated worker deadlines, atomic reservations, deduplication and task budgets.
+Declared file relationships cover known process boundaries without executing
+them. Three sealed upstream snapshots recover six selected required leads;
+four cross-reference leads remain unknown after unsupported negative labels were
+withdrawn. All static reports are incomplete. Eighteen paired report reads add
+median 947.254 ms; 135 replay launcher processes show no nonzero exits or
+duplicate advice, with median added 1282.703 ms. Installed Claude startup was
+observed without a prompt; installed advice cost and coding benefit remain open.
+Advice stays opt-in and creates no new gate. See
+[design](design/milestone-advisories.md),
+[observations](../results/milestone-advisories/README.md) and
+[validation](validation/2026-10-07-milestone-advisories.md).
+
 **2026-10-07 — explained milestone rechecks.** Delivered explicit exact-command
 grouping, preserved per-milestone evidence, direct/dependency/fallback priority,
 bounded explained reasons and compatible byte-derived scan identities. All

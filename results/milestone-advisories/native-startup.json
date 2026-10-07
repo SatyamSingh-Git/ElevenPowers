@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "source": "installed unprompted startup only",
+  "host": "claude",
+  "version": "2.1.287",
+  "state": "active",
+  "last_event": "SessionStart",
+  "received": 1,
+  "processed": 1,
+  "phase": {
+    "received": 1,
+    "samples_ms": [
+      1135.235
+    ],
+    "task": "",
+    "last_at": 1791355873.3728225,
+    "runtime_fingerprint": "5e4aec22d498b74ebb3974fff3a113a6518ad82c452bb86bcd0483f057a01285",
+    "processed": 1
+  }
+}

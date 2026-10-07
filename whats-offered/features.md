@@ -1,5 +1,12 @@
 # Features
 
+Optional **milestone edit advice** now delivers bounded exact recheck previews
+through all five shared transports. Project opt-in, timeout isolation, atomic
+reservations, deduplication, task caps and explicit omissions limit interruptions.
+It runs no checks and changes no verdict. See
+[setup](../the-guide/milestones.md#optional-automatic-edit-advice) and
+[measured limits](../results/milestone-advisories/callbacks.md).
+
 Current behavior reviewed 2026-10-06. See [delivery status](../docs/status.md) for what has been exercised and what remains unverified. Historical measurements below retain their original scope.
 
 Optional milestone verification keeps project-owned behavior checks visible

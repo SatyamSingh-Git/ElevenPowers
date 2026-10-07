@@ -1,5 +1,11 @@
 # Roadmap
 
+**Bounded advice, 2026-10-07.** Optional shared edit context is implemented.
+Next qualify installed edit sessions and independently known unrelated references
+before default activation, then run the separately approved end-to-end comparison.
+Scope narrowing and PatchProof remain separate work. See
+[qualified observations](../results/milestone-advisories/README.md).
+
 **Explained rechecks, 2026-10-07.** Explicit recommendations now name exact
 commands and retain all fallback checks. Six authored controls recover 5/6 known
 required relationships; a subprocess dependency is still missed. Broader

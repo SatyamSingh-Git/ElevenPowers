@@ -580,6 +580,17 @@ Optional overrides in `.elevenpowers/config.json`; supported root manifests alre
 
 ---
 
+## Optional milestone edit advice
+
+Project-owned milestones can now request bounded recheck context automatically
+after edits on all five hosts. A separate worker, atomic duplicate reservations,
+cooldown and task limits bound work; incomplete coverage and omitted checks stay
+visible. Advice runs no tests and adds no completion gate. It is explicit opt-in
+pending installed edit-session cost and broader precision. See
+[setup and recovery](the-guide/milestones.md#optional-automatic-edit-advice),
+[larger-project observations](results/milestone-advisories/README.md) and
+[launcher/native measurements](results/milestone-advisories/callbacks.md).
+
 ## What claims cost
 
 Claims are inferred from the request by pattern matching — no model call, no added latency. Ask a question or request a code read and no claim opens at all; the runtime stays entirely out of the way.
@@ -635,7 +646,7 @@ resumed delivery launched no extra model sessions.
 Task size is not a criterion; an observable coding or verification improvement
 through any engaged mechanism can count.
 
-Research prototype; status reviewed 2026-10-07. Optional milestone declarations, atomic cross-task history, read-only qualified views and explained exact-command recheck priorities are delivered; automatic integration and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-07. Optional milestone declarations, atomic cross-task history, read-only qualified views and explained exact-command recheck priorities are delivered; bounded automatic edit advice is now project opt-in; installed advice acceptance and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
 after three independent-review fixes. Real Python/JavaScript/TypeScript fixture

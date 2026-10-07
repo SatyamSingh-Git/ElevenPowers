@@ -1,5 +1,9 @@
 # Validation records
 
+[Bounded milestone advice, 2026-10-07](2026-10-07-milestone-advisories.md)
+records larger-project relationships, optional shared delivery and qualified
+launcher/startup measurements. Installed edit advice and coding benefit remain open.
+
 - [2026-10-07 explained rechecks](2026-10-07-milestone-rechecks.md): exact-command
 priorities, preserved fallback verification, six frozen authored projects,
 36 actual checks and paired local read cost; native cost and coding gain remain open.

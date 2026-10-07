@@ -145,3 +145,6 @@ a bounded sample; passing them does not mean every requirement is covered.
 Impact-enabled milestone inspection now ranks exact checks and retains all
 fallback verification. Read [explained rechecks](milestones.md#explained-exact-rechecks)
 for priority/state separation and the explicit independent exercise.
+
+
+Optional [automatic edit advice](milestones.md#optional-automatic-edit-advice) uses a bounded worker after project opt-in; it never replaces explicit verification.

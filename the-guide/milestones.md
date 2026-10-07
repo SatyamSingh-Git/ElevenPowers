@@ -79,8 +79,8 @@ scope. Unrecorded dependencies, external services and environment remain unknown
 no `--changed`, it uses current task touched paths as observations. No available
 change observation or a graph budget gap stays incomplete. A missing path never
 certifies unaffected behavior or authorizes omitting fallback checks. Advice
-does not change an individual command's evidence state. Automatic graph hooks
-and new milestone completion blockers are not part of this release.
+does not change an individual command's evidence state. Optional bounded edit
+advice is available below; new milestone completion blockers remain outside this release.
 
 `ep_report.py` adds the section only for opted-in projects, while retaining the
 current task's own verdict. History strips captured output/details, retains at
@@ -98,6 +98,43 @@ Receipts are unsigned local observations, not independent attestations or proof
 of universal safety. Collection detects declaration/ledger movement but is not
 an atomic filesystem transaction. This release adds a useful inspection and
 retention capability; coding improvement still needs a controlled usage result.
+
+## Optional automatic edit advice
+
+After declaring milestones, add this to the existing `.elevenpowers/config.json`:
+
+```json
+{"milestone_advice": {"enabled": true, "seconds": 1, "cooldown": 30, "max_attempts": 3}}
+```
+
+Preserve your other configuration fields. All five hosts use the same saved-edit
+boundary. Advice appears after an observed edit and contains exact declared check
+previews, evidence states and direct/dependency/fallback reasons. It runs no
+checks, model or installer and adds no completion blocker. Off stays silent.
+Install/setup alone does not enable this optional experiment.
+
+Inspection runs in an isolated Python worker with a one-second cooperative report
+budget plus a 0.5-second process grace. Set `seconds` between 0.1 and 5,
+`cooldown` between 0 and 3600, and integer `max_attempts` between 1 and 10.
+Defaults are shown above. Bounds limit work, not overall OS/host latency.
+Repeated observations are suppressed, including failed attempts; content
+metadata changes can request another attempt after cooldown, up to the task cap.
+New tasks receive their own allowance. Stat metadata is only a dedup hint;
+existing content fingerprints still determine evidence freshness.
+
+The ignored `.elevenpowers/advice.json` retains reservations, digests, counters,
+timings and delivery outcomes for up to 20 tasks, never evidence or transcript
+text. Reservations are saved before work, so an interrupted worker consumes an
+attempt rather than silently launching again. Delivered advice can still have
+incomplete coverage. Corrupt/linked state declines work with a diagnostic.
+The full explicit report remains available after a timeout, cooldown or cap.
+
+Context shows at most six commands, three reasons each and 6000 characters;
+omissions and truncated previews are labelled. Keep omitted/fallback checks.
+For process launches, use [declared file relationships](impactgraph.md#query-before-editing).
+Larger-project precision and installed edit-session cost remain unqualified;
+see [actual measurements](../results/milestone-advisories/README.md) and
+[launcher/native distinctions](../results/milestone-advisories/callbacks.md).
 
 For a disposable exercise with real checks:
 

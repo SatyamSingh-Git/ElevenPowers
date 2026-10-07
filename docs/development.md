@@ -210,3 +210,6 @@ The controller checkpoints incomplete case/overall state atomically after reads
 and each requested/completed attempt. Pending identities remain when interrupted.
 Shared commands are graded using milestone-specific witness reasons; a command
 priority alone never credits a relationship. Saved original grades remain fixed.
+
+
+The optional edit adviser reuses the standard-library ImpactGraph/report, repository process cleanup and atomic state writer. `core/milestones/advice.py` validates limits/renders context; `automatic.py` reserves before launch; `advice_worker.py` inspects read-only. `eval/milestone_large.py` seals upstream snapshots; `eval/advice_callbacks.py` intentionally writes disposable config/state and measures replay launchers. Run `tests/test_milestone_advice_*.py`, `tests/test_milestone_large.py`, `tests/test_milestone_entrypoints.py` and `tests/test_advice_callbacks.py` after changing this flow. See [design](design/milestone-advisories.md) and [observations](../results/milestone-advisories/README.md).

@@ -385,8 +385,18 @@ commands, not automatic startup or completion work.
 ### Recheck priorities and declared scope
 
 The existing root `elevenpowers.milestones.json` supplies exact commands and
-inputs for optional `ep_milestones --impact` recommendations. There is no new
-configuration flag or automatic gate. Smaller declared inputs do not narrow
+inputs for optional `ep_milestones --impact` recommendations. Optional automatic
+edit advice uses `milestone_advice`; there is no new automatic gate. Smaller declared inputs do not narrow
 native source receipts. Direct/dependency/fallback priority changes ordering,
 never evidence freshness or permission to omit checks. See
 [explained rechecks](milestones.md#explained-exact-rechecks).
+
+### Optional bounded edit advice
+
+Add `"milestone_advice": {"enabled": true}` to existing project config, alongside
+a valid root milestone declaration. Defaults: `seconds: 1`, `cooldown: 30`,
+`max_attempts: 3`. Valid seconds are 0.1–5, cooldown 0–3600, integer attempts
+1–10. Unknown fields and invalid limits decline advice. Off stays passive.
+This is opt-in pending installed edit-session cost and broader precision;
+[delivery, suppression and recovery](milestones.md#optional-automatic-edit-advice)
+explain worker limits, incomplete output and private diagnostic state.

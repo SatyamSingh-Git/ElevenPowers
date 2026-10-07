@@ -32,7 +32,7 @@ def signature(ledger):
             items.append([name, stat.st_mtime_ns, stat.st_size])
         except (OSError, ValueError):
             items.append([name, None])
-    return digest([ledger.task, items, len(ledger.touched), ledger.config.milestone_advice,
+    return digest([ledger.task, items, len(ledger.touched), vars(ledger.config),
                    [(e.kind.value, e.command, e.at) for e in ledger.evidence[-128:]]])
 
 
@@ -135,14 +135,24 @@ def deliver(ledger):
         if (not isinstance(value, dict) or value.get('schema') != 1
                 or not isinstance(value.get('context'), str) or len(value['context']) > 6000):
             raise ValueError('invalid worker context')
-        current = Ledger.load(ledger.root)
-        if current.task != ledger.task or signature(current) != key:
-            raise ValueError('task observations changed during inspection')
         text, status = value['context'], 'delivered'
     except (OSError, ValueError, TypeError, RecursionError, subprocess.SubprocessError):
         pass
+    # Check current policy even after worker failure: off suppresses diagnostics
+    # as well as successful context. Metadata signatures are dedup hints only.
+    try:
+        current = Ledger.load(ledger.root)
+        if not current.config.speaks or current.task != ledger.task:
+            text, status = '', 'incomplete'
+        elif signature(current) != key:
+            text = 'ElevenPowers milestone advice incomplete: task inputs or configuration changed during inspection. Keep fallback verification.'
+            status = 'incomplete'
+    except (OSError, ValueError, TypeError, RecursionError):
+        text = 'ElevenPowers milestone advice incomplete: current delivery policy unavailable. Keep fallback verification.'
+        status = 'incomplete'
     try:
         _finish(ledger.root, task_id, identity, status, time.monotonic() - started)
     except (OSError, ValueError, TypeError, RecursionError, Busy):
-        return 'ElevenPowers milestone advice incomplete: delivery state unavailable. Keep fallback verification.'
+        return ('ElevenPowers milestone advice incomplete: delivery state unavailable. Keep fallback verification.'
+                if text else '')
     return text

@@ -94,3 +94,44 @@ def test_malformed_worker_output_is_not_delivered(tmp_path, monkeypatch):
     monkeypatch.setattr(automatic, 'run', lambda *args, **kwargs:
         subprocess.CompletedProcess(args[0], 0, 'not JSON', ''))
     assert 'incomplete' in automatic.deliver(ledger).lower()
+
+
+def test_profile_turned_off_during_worker_never_delivers_context(tmp_path, monkeypatch):
+    import subprocess
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    def turn_off(*args, **kwargs):
+        path = tmp_path / '.elevenpowers/config.json'
+        value = json.loads(path.read_text()); value['profile'] = 'off'
+        path.write_text(json.dumps(value))
+        return subprocess.CompletedProcess(args[0], 0,
+            json.dumps({'schema': 1, 'context': 'old guide context'}), '')
+    monkeypatch.setattr(automatic, 'run', turn_off)
+    assert automatic.deliver(ledger) == ''
+
+
+def test_profile_turned_off_during_failed_worker_suppresses_diagnostic(tmp_path, monkeypatch):
+    import subprocess
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    def turn_off(*args, **kwargs):
+        path = tmp_path / '.elevenpowers/config.json'
+        value = json.loads(path.read_text()); value['profile'] = 'off'
+        path.write_text(json.dumps(value))
+        raise subprocess.TimeoutExpired(args[0], kwargs['timeout'])
+    monkeypatch.setattr(automatic, 'run', turn_off)
+    assert automatic.deliver(ledger) == ''
+
+
+def test_scan_policy_movement_discards_pending_context(tmp_path, monkeypatch):
+    import subprocess
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    def change_scan(*args, **kwargs):
+        path = tmp_path / '.elevenpowers/config.json'
+        value = json.loads(path.read_text()); value['scan'] = {'max_files': 1}
+        path.write_text(json.dumps(value))
+        return subprocess.CompletedProcess(args[0], 0,
+            json.dumps({'schema': 1, 'context': 'old scan context'}), '')
+    monkeypatch.setattr(automatic, 'run', change_scan)
+    assert 'old scan context' not in automatic.deliver(ledger)

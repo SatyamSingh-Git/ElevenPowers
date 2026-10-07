@@ -342,3 +342,6 @@ check, and the dependency may be dynamic, subprocess-based or unsupported.
 Fallback does not mean unaffected. A stale fallback still needs refreshed evidence.
 Resolve report coverage gaps first; then use the project's normal verification.
 See [recheck policy](milestones.md#explained-exact-rechecks).
+
+
+For missing edit-time milestone context, check project opt-in and `off`, then cooldown, duplicate observations and the per-task cap. Inspect `.elevenpowers/advice.json` locally; reserved/incomplete attempts consume allowance. Repair corrupt state rather than repeatedly bypassing the limiter. Use the explicit milestone report for unsuppressed inspection. See [limits](milestones.md#optional-automatic-edit-advice).
