@@ -146,6 +146,7 @@ def build(root, *, seconds=30, changed=None, impact=False):
              'coverage': {'complete': True, 'issues': [],
                           'declaration_fingerprint': definition['fingerprint'], 'ledger_fingerprint': ''},
              'impact': {'state': 'not_requested', 'leads': [], 'issues': []},
+             'rechecks': {'state': 'not_requested', 'commands': [], 'issues': []},
              'limits': list(LIMITS)}
     if not definition['configured']:
         value['next_actions'] = [f'Declare project-owned behavior in {FILE} to opt in.']
@@ -168,10 +169,18 @@ def build(root, *, seconds=30, changed=None, impact=False):
                                  selected_files=len(scan.files), selected_bytes=scan.bytes)
     if impact:
         from .impact import advise
+        impact_started = time.monotonic()
         value['impact'] = advise(root, definition['milestones'],
                                  changed if changed is not None else payload.get('touched', []),
                                  deadline=deadline)
         issues += value['impact']['issues']
+        if (value['impact'].get('graph_fingerprint') is not None and
+                value['impact']['graph_fingerprint'] != fingerprint):
+            message = 'graph and evidence source snapshots disagree; source snapshot moved or coverage differs'
+            value['impact']['issues'].append(message)
+            value['impact']['state'] = 'incomplete'
+            issues.append(message)
+        impact_ms = round((time.monotonic() - impact_started) * 1000, 3)
     final_definition = load(root, deadline=deadline)
     _, final_ledger, final_issues = read_ledger(root, deadline)
     issues += final_definition['issues'] + final_issues
@@ -189,6 +198,11 @@ def build(root, *, seconds=30, changed=None, impact=False):
     if issues:
         value['next_actions'].insert(0, 'Resolve incomplete declaration, input or history coverage before relying on this view.')
     value['timings'] = {'report_ms': round((time.monotonic() - started) * 1000, 3)}
+    if impact:
+        from .rechecks import plan
+        value['rechecks'] = plan(value['milestones'], value['impact'], complete=not issues)
+        value['timings']['impact_ms'] = impact_ms
+        value['timings']['report_ms'] = round((time.monotonic() - started) * 1000, 3)
     return _portable(value, root)
 
 
@@ -211,6 +225,20 @@ def markdown(value):
             for edge in lead['explanation']:
                 lines.append(f"  - {_text(edge['source'])} → {_text(edge['target'])}: {_text(edge['kind'])}")
         lines += ['- ' + _text(i) for i in value['impact']['issues']]
+    if value.get('rechecks', {}).get('state') not in (None, 'not_requested'):
+        recommendations = value['rechecks']
+        lines += ['', '## Recommended recheck order (informational)', '',
+                  _text(recommendations['policy']), '',
+                  '| Exact command | Kind | Priority | Evidence | Milestones |', '|---|---|---|---|---|']
+        for command in recommendations['commands']:
+            refs = ', '.join(m['id'] + ': ' + m['state'] for m in command['milestones'])
+            lines.append('| ' + ' | '.join(_text(v) for v in (
+                command['command'], command['kind'], command['priority'],
+                'refresh needed' if command['needs_refresh'] else 'current within recorded scope', refs)) + ' |')
+            for reason in command['reasons']:
+                lines.append('- ' + _text(f"{reason['milestone']}: {reason['input']} ({reason['category']})"))
+            lines += ['- ' + _text(i) for i in command['qualifications'] + command['issues']]
+        lines += ['- ' + _text(i) for i in recommendations['issues']]
     lines += ['', '## Coverage and next actions', '']
     lines += ['- ' + _text(i) for i in value['coverage']['issues'] + value['next_actions']]
     lines += ['', '## Limits', '', *['- ' + _text(i) for i in value['limits']], '']
