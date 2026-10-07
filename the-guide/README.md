@@ -141,3 +141,7 @@ Archived comparisons can be inspected against their recorded protocol after
 evaluator updates. The current evaluator separates behavioral execution from
 final assertions and supports normal package imports. Its sixteen checks remain
 a bounded sample; passing them does not mean every requirement is covered.
+
+Impact-enabled milestone inspection now ranks exact checks and retains all
+fallback verification. Read [explained rechecks](milestones.md#explained-exact-rechecks)
+for priority/state separation and the explicit independent exercise.

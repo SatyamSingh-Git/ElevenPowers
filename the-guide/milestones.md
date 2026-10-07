@@ -112,3 +112,42 @@ fingerprints and every attempted outcome. It launches no model. These authored
 controls establish capability, not installed-host acceptance or a coding-benefit
 comparison. See [published observations](../results/milestone-verification/README.md)
 and [the design](../docs/design/milestone-verification.md).
+
+## Explained exact rechecks
+
+With `--impact`, JSON adds `rechecks` schema 1 and Markdown shows a recommended
+order. Each kind/exact-command identity appears once, retaining all associated
+milestones and their CURRENT/FAILED/STALE/INCOMPLETE/ABSENT states. No command is
+invented from filenames or prose. Refresh-needed commands come first, then:
+
+| Priority | What the report observed | What it does not establish |
+|---|---|---|
+| direct | A changed path is a declared milestone input | That the behavior is broken |
+| dependency | A current graph witness reaches a declared input | Actual assertion coverage or a failure probability |
+| fallback | No available witness reaches the declared inputs | That the milestone is unaffected or safe to skip |
+
+`needs_refresh` comes from evidence state, separately from priority. A shared
+command needs refresh if any associated check is not CURRENT. Current rows remain
+visible. Incomplete report coverage must be resolved before relying on the list.
+Source movement between graph/evidence snapshots, omitted explanations and graph
+budgets stay explicit and prevent a complete requested gate. Original graph
+fingerprints remain distinct from comparable evidence content identities.
+
+The limits are 1,024 exact check identities, 64 milestone references per identity,
+16 reasons per command and 256 change observations/leads. Extra observations and
+reasons are counted/reported. Direct matches survive graph deadline exhaustion;
+fallback commands remain even when no graph advice can finish. Graph/query/ranking
+times are descriptive local observations. Inspection executes no project command.
+
+For independent local controls, explicitly run:
+
+```bash
+python -m eval.milestone_rechecks --output NEW_DISPOSABLE_DIR
+```
+
+This creates fixed authored projects and executes Python/pytest and optional Node
+checks. It records misses, unrelated/equivalent behavior, all attempts and paired
+read cost. Missing Node is incomplete, not a passing Node case. See
+[results](../results/milestone-rechecks/README.md) and
+[design](../docs/design/milestone-rechecks.md). Automatic hooks, narrow native
+receipts and an agent-benefit comparison remain separate milestones.

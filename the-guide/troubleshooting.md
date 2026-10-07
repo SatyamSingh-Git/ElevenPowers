@@ -334,3 +334,11 @@ After evaluator updates, use explicit `eval.paired --inspect ... --protocol ...`
 to reproduce saved aggregates. This does not call models or repair an older
 grader. Private/unknown record fields and unsupported resolved claims are
 rejected. Preserve the original protocol when starting a newly identified run.
+
+### Why is an earlier command listed as fallback?
+
+No available graph witness reached its declared inputs. It is still a declared
+check, and the dependency may be dynamic, subprocess-based or unsupported.
+Fallback does not mean unaffected. A stale fallback still needs refreshed evidence.
+Resolve report coverage gaps first; then use the project's normal verification.
+See [recheck policy](milestones.md#explained-exact-rechecks).

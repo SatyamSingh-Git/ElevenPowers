@@ -573,3 +573,11 @@ and the separate current reproduction remain explicit. Follow its
 [reproduction guide](../docs/validation/2026-10-02-checkpoint-review/README.md)
 for pinned environment/cache preparation. The inspect command makes no model or
 test call; explicit regrading uses only local trusted test execution.
+
+### Explained milestone recheck order
+
+`ep_milestones.py --project PATH --impact --changed src/provider.py` now adds
+deduplicated exact declared commands with direct/dependency/fallback priority,
+all associated evidence states and explained reasons. Every fallback stays.
+`--check` cannot pass incomplete requested advice; ordinary inspection remains
+read-only. See [milestone rechecks](milestones.md#explained-exact-rechecks).

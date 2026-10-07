@@ -381,3 +381,12 @@ policy or new configuration option. Native host trust/enablement still applies.
 captures do not write project state or launch project tests. The optional installed
 version probe executes only `--version`. Reporting/pilot options are operator
 commands, not automatic startup or completion work.
+
+### Recheck priorities and declared scope
+
+The existing root `elevenpowers.milestones.json` supplies exact commands and
+inputs for optional `ep_milestones --impact` recommendations. There is no new
+configuration flag or automatic gate. Smaller declared inputs do not narrow
+native source receipts. Direct/dependency/fallback priority changes ordering,
+never evidence freshness or permission to omit checks. See
+[explained rechecks](milestones.md#explained-exact-rechecks).
