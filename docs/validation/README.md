@@ -1,5 +1,9 @@
 # Validation records
 
+- [2026-10-07 explained rechecks](2026-10-07-milestone-rechecks.md): exact-command
+priorities, preserved fallback verification, six frozen authored projects,
+36 actual checks and paired local read cost; native cost and coding gain remain open.
+
 Dated records distinguish implementation checks from real-project integration. [Current status](../status.md) identifies the next milestone; the documents here preserve what was actually run.
 
 - [2026-10-06 milestone verification](2026-10-06-milestones.md): optional project declarations, atomic cross-task receipts, read-only states and 18 actual Python/Node controls; automatic integration and coding benefit remain open.

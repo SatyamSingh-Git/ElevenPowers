@@ -1,5 +1,9 @@
 # The journey
 
+Latest: [64 — a recheck needs a command](64-a-recheck-needs-a-command.md)
+records exact-command priorities, retained fallback verification, independent
+relationship misses, real boundary/equivalent checks and descriptive read cost.
+
 A full record of how this project got from a prompt to a working thing: what was
 asked, what was tried, what was wrong, what the measurements said, and what
 changed as a result.
