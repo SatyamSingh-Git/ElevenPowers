@@ -30,6 +30,7 @@ class Config:
     scan: dict = field(default_factory=dict)
     auto_detect: bool = True
     strength: dict = field(default_factory=dict)
+    milestone_advice: dict = field(default_factory=dict)
 
     @property
     def blocks(self) -> bool:
@@ -90,6 +91,7 @@ def load(root: Path) -> Config:
         auto_detect=auto_detect,
         commands={k: v for k, v in effective.items() if v},
         strength=raw.get('strength', {}),
+        milestone_advice=raw.get('milestone_advice', {}),
     )
 
 
@@ -161,6 +163,6 @@ def save(root: Path, config: Config) -> None:
     path.write_text(
         json.dumps({"profile": config.profile, "commands": config.commands,
                     "scan": config.scan, "auto_detect": config.auto_detect,
-                    "strength": config.strength}, indent=2),
+                    "strength": config.strength, "milestone_advice": config.milestone_advice}, indent=2),
         encoding="utf-8",
     )
