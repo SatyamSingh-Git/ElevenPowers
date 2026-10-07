@@ -1,0 +1,14 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________________________________ test_boundary ________________________________
+
+    def test_boundary():
+        assert deliver(9, 10) is True
+>       assert deliver(10, 10) is False
+E       assert True is False
+E        +  where True = deliver(10, 10)
+
+checks\test_delivery.py:5: AssertionError
+=========================== short test summary info ===========================
+FAILED checks/test_delivery.py::test_boundary - assert True is False
+1 failed in 0.12s

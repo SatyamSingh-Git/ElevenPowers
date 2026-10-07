@@ -1,0 +1,16 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________________________________ test_boundary ________________________________
+
+    def test_boundary():
+        assert purchase(9, 10) == 'ok'
+>       assert purchase(10, 10) == 'denied'
+E       AssertionError: assert 'ok' == 'denied'
+E         
+E         - denied
+E         + ok
+
+checks\test_purchase.py:5: AssertionError
+=========================== short test summary info ===========================
+FAILED checks/test_purchase.py::test_boundary - AssertionError: assert 'ok' =...
+1 failed in 0.12s

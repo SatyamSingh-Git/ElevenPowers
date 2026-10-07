@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.070" timestamp="2026-10-07T11:00:53.911689+05:30" hostname="redacted"><testcase classname="checks.test_delivery" name="test_boundary" time="0.001"><failure message="assert True is False&#10; +  where True = deliver(10, 10)">def test_boundary():
+        assert deliver(9, 10) is True
+&gt;       assert deliver(10, 10) is False
+E       assert True is False
+E        +  where True = deliver(10, 10)
+
+checks\test_delivery.py:5: AssertionError</failure></testcase></testsuite></testsuites>
