@@ -1,5 +1,12 @@
 # Roadmap
 
+**Explained rechecks, 2026-10-07.** Explicit recommendations now name exact
+commands and retain all fallback checks. Six authored controls recover 5/6 known
+required relationships; a subprocess dependency is still missed. Broader
+independent labels, native cost and producer-supported scopes remain before
+automatic advice; coding benefit needs the matched end-to-end comparison.
+See [results](../results/milestone-rechecks/README.md).
+
 For contributor-sized entry points, open the architecture page's
 [Planned tab](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned).
 Its expandable cards consolidate the remaining work below and in the master

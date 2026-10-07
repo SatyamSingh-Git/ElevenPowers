@@ -472,6 +472,14 @@ automatic advisories and improved agent patch outcomes remain unqualified. See t
 
 ### Behavior evidence across development milestones
 
+Impact-enabled inspection now supplies a deduplicated list of exact declared
+commands with direct, dependency and fallback priorities. Each retains every
+associated milestone's evidence state; ranking never makes stale evidence current
+or removes fallback checks. Six authored project controls find 5/6 known required
+relationships with no leads to six labelled unrelated references. The subprocess
+miss and measured extra read cost stay explicit; this does not establish coding
+improvement. See [recheck results](results/milestone-rechecks/README.md).
+
 An optional tracked `elevenpowers.milestones.json` declares earlier behavior
 expectations, inputs and exact checks. Matching aggregate receipts survive task
 transitions in the existing atomic ledger without supplying evidence for new

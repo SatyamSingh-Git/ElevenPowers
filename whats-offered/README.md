@@ -45,3 +45,8 @@ What ElevenPowers does today, what is coming, and an honest account of where it 
 **What was withdrawn.** Several published claims, including a 252-run figure that came from dividing required pairs by the wrong rate, and three claims from a ninety-run sweep after an unrelated agent contaminated the machine mid-measurement. Withdrawals are listed in [`PLAN.md`](../PLAN.md) §10 rather than quietly deleted.
 
 If you want the version with every wrong turn included, see the [journey index](../journey/README.md), including [the native platform delivery](../journey/49-one-engine-several-hosts.md), and the record of mistakes and corrections.
+
+Explicit [milestone rechecks](../the-guide/milestones.md#explained-exact-rechecks)
+now turn dependency leads into exact declared commands, with evidence states and
+fallback verification preserved. [Measured controls](../results/milestone-rechecks/README.md)
+include a retained subprocess miss and descriptive added read cost.

@@ -355,3 +355,12 @@ and [delivery validation](../docs/validation/2026-09-29-platforms.md).
 **Command outcomes.** Exact configured or discovered commands retain completed success, completed failure and incomplete execution. Known runner failures override a zero exit; interruptions cannot count as reproduced failures. Historical identities and single-file scope remain intact.
 
 **Defaults and limits.** 20,000 files and 256 MiB; exclusions and budgets are project-owned. Selection covers supported source extensions and dependency filenames, not every file on disk. Source-observation hooks allow 120 seconds, which is a host allowance rather than a latency guarantee. [Configuration](../the-guide/configuration.md) documents the boundaries.
+
+### Explained earlier-check recommendations
+
+Explicit milestone impact reports now group exact declared commands, retain
+per-milestone evidence and show direct/dependency/fallback priorities. All
+fallbacks stay visible. The authored six-project exercise records relationship
+misses and actual fault/equivalent checks; there is no safe exclusion, automatic
+completion integration or measured incremental coding-quality gain. See
+[results](../results/milestone-rechecks/README.md).
