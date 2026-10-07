@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "label_policy": "Source-inspected selected whole-file references, frozen before evaluation; Jinja test relationships overlap previously seen graph labels. Not blinded or representative.",
+  "label_policy": "Source-inspected selected whole-file references, frozen before evaluation; Jinja test relationships overlap previously seen graph labels. Not blinded or representative. Correction: distinct test behavior is not a validated unrelated reference; initial negative labels withdrawn, retained as cross_reference only.",
   "projects": [
     {
       "id": "click",
@@ -462,10 +462,11 @@
       "required": [
         "check-0"
       ],
-      "negative": [
+      "witness": "tests/test_parser.py imports or exercises the named module; tests/test_formatting.py exercises a distinct behavior. Whole-file graph leads may still overapproximate.",
+      "cross_reference": [
         "check-1"
       ],
-      "witness": "tests/test_parser.py imports or exercises the named module; tests/test_formatting.py exercises a distinct behavior. Whole-file graph leads may still overapproximate."
+      "negative": []
     },
     {
       "id": "click-1",
@@ -474,10 +475,11 @@
       "required": [
         "check-1"
       ],
-      "negative": [
+      "witness": "tests/test_formatting.py imports or exercises the named module; tests/test_parser.py exercises a distinct behavior. Whole-file graph leads may still overapproximate.",
+      "cross_reference": [
         "check-0"
       ],
-      "witness": "tests/test_formatting.py imports or exercises the named module; tests/test_parser.py exercises a distinct behavior. Whole-file graph leads may still overapproximate."
+      "negative": []
     },
     {
       "id": "attrs-0",
@@ -486,10 +488,11 @@
       "required": [
         "check-0"
       ],
-      "negative": [
+      "witness": "tests/test_filters.py imports or exercises the named module; tests/test_converters.py exercises a distinct behavior. Whole-file graph leads may still overapproximate.",
+      "cross_reference": [
         "check-1"
       ],
-      "witness": "tests/test_filters.py imports or exercises the named module; tests/test_converters.py exercises a distinct behavior. Whole-file graph leads may still overapproximate."
+      "negative": []
     },
     {
       "id": "attrs-1",
@@ -498,10 +501,11 @@
       "required": [
         "check-1"
       ],
-      "negative": [
+      "witness": "tests/test_converters.py imports or exercises the named module; tests/test_filters.py exercises a distinct behavior. Whole-file graph leads may still overapproximate.",
+      "cross_reference": [
         "check-0"
       ],
-      "witness": "tests/test_converters.py imports or exercises the named module; tests/test_filters.py exercises a distinct behavior. Whole-file graph leads may still overapproximate."
+      "negative": []
     },
     {
       "id": "jinja2-0",
@@ -510,10 +514,11 @@
       "required": [
         "check-0"
       ],
-      "negative": [
+      "witness": "tests/test_utils.py imports or exercises the named module; tests/test_filters.py exercises a distinct behavior. Whole-file graph leads may still overapproximate.",
+      "cross_reference": [
         "check-1"
       ],
-      "witness": "tests/test_utils.py imports or exercises the named module; tests/test_filters.py exercises a distinct behavior. Whole-file graph leads may still overapproximate."
+      "negative": []
     },
     {
       "id": "jinja2-1",
@@ -522,10 +527,11 @@
       "required": [
         "check-1"
       ],
-      "negative": [
+      "witness": "tests/test_filters.py imports or exercises the named module; tests/test_utils.py exercises a distinct behavior. Whole-file graph leads may still overapproximate.",
+      "cross_reference": [
         "check-0"
       ],
-      "witness": "tests/test_filters.py imports or exercises the named module; tests/test_utils.py exercises a distinct behavior. Whole-file graph leads may still overapproximate."
+      "negative": []
     }
   ]
 }

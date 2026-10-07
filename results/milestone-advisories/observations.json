@@ -1,0 +1,1504 @@
+{
+  "schema": 1,
+  "state": "complete",
+  "projects": [
+    {
+      "id": "click",
+      "seal": {
+        "complete": true,
+        "issues": []
+      },
+      "files": 178,
+      "bytes": 1676581,
+      "after_seal": {
+        "complete": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "attrs",
+      "seal": {
+        "complete": true,
+        "issues": []
+      },
+      "files": 141,
+      "bytes": 2030786,
+      "after_seal": {
+        "complete": true,
+        "issues": []
+      }
+    },
+    {
+      "id": "jinja2",
+      "seal": {
+        "complete": true,
+        "issues": []
+      },
+      "files": 108,
+      "bytes": 1177522,
+      "after_seal": {
+        "complete": true,
+        "issues": []
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "click-0",
+      "project": "click",
+      "samples": [
+        {
+          "state": "complete",
+          "plain_ms": 132.625,
+          "advised_ms": 1368.876,
+          "added_ms": 1236.251
+        },
+        {
+          "state": "complete",
+          "plain_ms": 109.373,
+          "advised_ms": 1347.169,
+          "added_ms": 1237.796
+        },
+        {
+          "state": "complete",
+          "plain_ms": 108.826,
+          "advised_ms": 1310.465,
+          "added_ms": 1201.639
+        }
+      ],
+      "state": "complete",
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 0,
+        "hits": [
+          "check-0"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [
+          "check-1"
+        ],
+        "coverage_complete": false,
+        "advice_available": false
+      },
+      "coverage": {
+        "complete": false,
+        "issues": [
+          "ambiguous or rebound Python export: src/click/decorators.py:138",
+          "ambiguous or rebound Python export: src/click/decorators.py:144",
+          "ambiguous or rebound Python export: src/click/decorators.py:153",
+          "ambiguous or rebound Python export: src/click/decorators.py:163",
+          "ambiguous or rebound Python export: src/click/decorators.py:168",
+          "ambiguous or rebound Python export: src/click/decorators.py:263",
+          "ambiguous or rebound Python export: src/click/decorators.py:269",
+          "ambiguous or rebound Python export: src/click/decorators.py:278",
+          "ambiguous or rebound Python export: src/click/decorators.py:288",
+          "ambiguous or rebound Python export: src/click/decorators.py:293",
+          "ambiguous or rebound Python export: src/click/globals.py:13",
+          "ambiguous or rebound Python export: src/click/globals.py:17",
+          "ambiguous or rebound Python export: src/click/globals.py:20",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:586",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:588",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:590",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:592",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:593",
+          "ambiguous or rebound Python export: src/click/termui.py:139",
+          "ambiguous or rebound Python export: src/click/termui.py:154",
+          "ambiguous or rebound Python export: src/click/termui.py:168",
+          "ambiguous or rebound Python export: src/click/termui.py:403",
+          "ambiguous or rebound Python export: src/click/termui.py:423",
+          "ambiguous or rebound Python export: src/click/termui.py:443",
+          "ambiguous or rebound Python export: src/click/termui.py:815",
+          "ambiguous or rebound Python export: src/click/termui.py:825",
+          "ambiguous or rebound Python export: src/click/termui.py:835",
+          "ambiguous or rebound Python export: src/click/termui.py:848",
+          "ambiguous or rebound Python export: src/click/types.py:1332",
+          "ambiguous or rebound Python export: src/click/types.py:1334",
+          "ambiguous or rebound Python export: src/click/types.py:1338",
+          "ambiguous or rebound Python export: src/click/types.py:1341",
+          "ambiguous or rebound Python export: tests/test_types/test_Path.py:146",
+          "ambiguous or rebound Python export: tests/test_types/test_Path.py:75",
+          "query result limit reached",
+          "shadowed Python call binding at src/click/core.py:3543",
+          "unresolved Python import at examples/complex/complex/commands/cmd_init.py:1",
+          "unresolved Python import at examples/complex/complex/commands/cmd_status.py:1",
+          "unresolved Python import at src/click/_compat.py:10",
+          "unresolved Python import at src/click/_termui_impl.py:20",
+          "unresolved Python import at src/click/core.py:21",
+          "unresolved Python import at src/click/testing.py:12",
+          "unresolved Python import at src/click/utils.py:10",
+          "unresolved Python import at src/click/utils.py:11",
+          "unresolved Python import at tests/test_context.py:4",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:1206",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:1230",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:1246",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:741",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:763",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_echo.py:61",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_echo.py:92",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_echo_via_pager.py:155",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_prompt.py:10",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_prompt.py:17",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_prompt.py:34",
+          "unresolved pytest fixture: capsys at tests/test_utils/test_echo.py:55",
+          "unresolved pytest fixture: capsys at tests/test_utils/test_prompt.py:44",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:117",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:133",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:153",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:94",
+          "unresolved pytest fixture: monkeypatch at tests/test_arguments.py:82",
+          "unresolved pytest fixture: monkeypatch at tests/test_basic.py:863",
+          "unresolved pytest fixture: monkeypatch at tests/test_basic.py:893",
+          "unresolved pytest fixture: monkeypatch at tests/test_basic.py:922",
+          "unresolved pytest fixture: monkeypatch at tests/test_compat.py:105",
+          "unresolved pytest fixture: monkeypatch at tests/test_defaults.py:351",
+          "unresolved pytest fixture: monkeypatch at tests/test_options.py:2969",
+          "unresolved pytest fixture: monkeypatch at tests/test_options.py:3594",
+          "unresolved pytest fixture: monkeypatch at tests/test_options.py:896",
+          "unresolved pytest fixture: monkeypatch at tests/test_shell_completion.py:343",
+          "unresolved pytest fixture: monkeypatch at tests/test_shell_completion.py:394",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1008",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:101",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1040",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1070",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1091",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1108",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1138",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:114",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1206",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1230",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1246",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1262",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:242",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:257",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:318",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:341",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:357",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:390",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:403",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:416",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:44",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:60",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:741",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:763",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:787",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:807",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:891",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:90",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:928",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:966",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:988",
+          "unresolved pytest fixture: monkeypatch at tests/test_types/test_Path.py:90",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test__expand_args.py:6",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo.py:46",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo.py:61",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo.py:92",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo_via_pager.py:155",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo_via_pager.py:194",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo_via_pager.py:231",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:10",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:17",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:34",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:44",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:71",
+          "unresolved pytest fixture: request at tests/test_arguments.py:7",
+          "unresolved pytest fixture: request at tests/test_basic.py:7",
+          "unresolved pytest fixture: request at tests/test_chain.py:7",
+          "unresolved pytest fixture: request at tests/test_command_decorators.py:7",
+          "unresolved pytest fixture: request at tests/test_commands.py:7",
+          "unresolved pytest fixture: request at tests/test_context.py:7",
+          "unresolved pytest fixture: request at tests/test_custom_classes.py:7",
+          "unresolved pytest fixture: request at tests/test_defaults.py:7",
+          "unresolved pytest fixture: request at tests/test_deprecations.py:7",
+          "unresolved pytest fixture: request at tests/test_formatting.py:7",
+          "unresolved pytest fixture: request at tests/test_normalization.py:7",
+          "unresolved pytest fixture: request at tests/test_options.py:7",
+          "unresolved pytest fixture: request at tests/test_shell_completion.py:7",
+          "unresolved pytest fixture: request at tests/test_termui.py:7",
+          "unresolved pytest fixture: request at tests/test_testing.py:7",
+          "unresolved pytest fixture: request at tests/test_types/test_Path.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_confirm.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_echo.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_open_file.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_prompt.py:7",
+          "unresolved pytest fixture: tmp_path at tests/test_arguments.py:105",
+          "unresolved pytest fixture: tmp_path at tests/test_arguments.py:138",
+          "unresolved pytest fixture: tmp_path at tests/test_basic.py:418",
+          "unresolved pytest fixture: tmp_path at tests/test_basic.py:439",
+          "unresolved pytest fixture: tmp_path at tests/test_basic.py:479",
+          "unresolved pytest fixture: tmp_path at tests/test_shell_completion.py:578",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:1070",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:453",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:787",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:807",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:966",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:988",
+          "unresolved pytest fixture: tmp_path at tests/test_testing.py:452",
+          "unresolved pytest fixture: tmp_path at tests/test_testing.py:460",
+          "unresolved pytest fixture: tmp_path at tests/test_types/test_File.py:13",
+          "unresolved pytest fixture: tmp_path at tests/test_types/test_Path.py:52",
+          "unresolved pytest fixture: tmp_path at tests/test_types/test_Path.py:90",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_echo_via_pager.py:155",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_echo_via_pager.py:194",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_echo_via_pager.py:231",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:101",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:11",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:59",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:67",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:75",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:85",
+          "unresolved pytest fixture: tmpdir at tests/test_shell_completion.py:507",
+          "unresolved pytest fixture: tmpdir at tests/test_utils/test_KeepOpenFile.py:4",
+          "unresolved pytest fixture: tmpdir at tests/test_utils/test_LazyFile.py:4",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:637",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:654",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:680",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:726",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:761",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:785",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:810",
+          "Resolve incomplete report coverage before relying on recommendations."
+        ],
+        "declaration_fingerprint": "f978fac9e92bb45f2eac6bf772a1d56a13770cfbc2d87caa0330440375efd771",
+        "ledger_fingerprint": "",
+        "source_fingerprint": "5949ed08501b33da",
+        "source_complete": true,
+        "selected_files": 113,
+        "selected_bytes": 1269386
+      },
+      "commands": [
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_formatting.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-1",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-1",
+              "input": "tests/test_formatting.py",
+              "category": "transitive",
+              "explanation": [
+                {
+                  "source": "file:tests/test_formatting.py",
+                  "target": "file:src/click/__init__.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "tests/test_formatting.py",
+                  "line": 3,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/click/__init__.py",
+                  "target": "file:src/click/parser.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/click/__init__.py",
+                  "line": 102,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        },
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_parser.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-0",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-0",
+              "input": "tests/test_parser.py",
+              "category": "direct",
+              "explanation": [
+                {
+                  "source": "file:tests/test_parser.py",
+                  "target": "symbol:src/click/parser.py#_OptionParser",
+                  "kind": "calls",
+                  "origin": "static",
+                  "path": "tests/test_parser.py",
+                  "line": 23,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "click-1",
+      "project": "click",
+      "samples": [
+        {
+          "state": "complete",
+          "plain_ms": 106.369,
+          "advised_ms": 1299.833,
+          "added_ms": 1193.464
+        },
+        {
+          "state": "complete",
+          "plain_ms": 106.107,
+          "advised_ms": 1334.669,
+          "added_ms": 1228.562
+        },
+        {
+          "state": "complete",
+          "plain_ms": 105.566,
+          "advised_ms": 1498.692,
+          "added_ms": 1393.126
+        }
+      ],
+      "state": "complete",
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 0,
+        "hits": [
+          "check-1"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [
+          "check-0"
+        ],
+        "coverage_complete": false,
+        "advice_available": false
+      },
+      "coverage": {
+        "complete": false,
+        "issues": [
+          "ambiguous or rebound Python export: src/click/decorators.py:138",
+          "ambiguous or rebound Python export: src/click/decorators.py:144",
+          "ambiguous or rebound Python export: src/click/decorators.py:153",
+          "ambiguous or rebound Python export: src/click/decorators.py:163",
+          "ambiguous or rebound Python export: src/click/decorators.py:168",
+          "ambiguous or rebound Python export: src/click/decorators.py:263",
+          "ambiguous or rebound Python export: src/click/decorators.py:269",
+          "ambiguous or rebound Python export: src/click/decorators.py:278",
+          "ambiguous or rebound Python export: src/click/decorators.py:288",
+          "ambiguous or rebound Python export: src/click/decorators.py:293",
+          "ambiguous or rebound Python export: src/click/globals.py:13",
+          "ambiguous or rebound Python export: src/click/globals.py:17",
+          "ambiguous or rebound Python export: src/click/globals.py:20",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:586",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:588",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:590",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:592",
+          "ambiguous or rebound Python export: src/click/shell_completion.py:593",
+          "ambiguous or rebound Python export: src/click/termui.py:139",
+          "ambiguous or rebound Python export: src/click/termui.py:154",
+          "ambiguous or rebound Python export: src/click/termui.py:168",
+          "ambiguous or rebound Python export: src/click/termui.py:403",
+          "ambiguous or rebound Python export: src/click/termui.py:423",
+          "ambiguous or rebound Python export: src/click/termui.py:443",
+          "ambiguous or rebound Python export: src/click/termui.py:815",
+          "ambiguous or rebound Python export: src/click/termui.py:825",
+          "ambiguous or rebound Python export: src/click/termui.py:835",
+          "ambiguous or rebound Python export: src/click/termui.py:848",
+          "ambiguous or rebound Python export: src/click/types.py:1332",
+          "ambiguous or rebound Python export: src/click/types.py:1334",
+          "ambiguous or rebound Python export: src/click/types.py:1338",
+          "ambiguous or rebound Python export: src/click/types.py:1341",
+          "ambiguous or rebound Python export: tests/test_types/test_Path.py:146",
+          "ambiguous or rebound Python export: tests/test_types/test_Path.py:75",
+          "query result limit reached",
+          "shadowed Python call binding at src/click/core.py:3543",
+          "unresolved Python import at examples/complex/complex/commands/cmd_init.py:1",
+          "unresolved Python import at examples/complex/complex/commands/cmd_status.py:1",
+          "unresolved Python import at src/click/_compat.py:10",
+          "unresolved Python import at src/click/_termui_impl.py:20",
+          "unresolved Python import at src/click/core.py:21",
+          "unresolved Python import at src/click/testing.py:12",
+          "unresolved Python import at src/click/utils.py:10",
+          "unresolved Python import at src/click/utils.py:11",
+          "unresolved Python import at tests/test_context.py:4",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:1206",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:1230",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:1246",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:741",
+          "unresolved pytest fixture: capfd at tests/test_termui.py:763",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_echo.py:61",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_echo.py:92",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_echo_via_pager.py:155",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_prompt.py:10",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_prompt.py:17",
+          "unresolved pytest fixture: capfd at tests/test_utils/test_prompt.py:34",
+          "unresolved pytest fixture: capsys at tests/test_utils/test_echo.py:55",
+          "unresolved pytest fixture: capsys at tests/test_utils/test_prompt.py:44",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:117",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:133",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:153",
+          "unresolved pytest fixture: monkeypatch at tests/test_abort_interrupt.py:94",
+          "unresolved pytest fixture: monkeypatch at tests/test_arguments.py:82",
+          "unresolved pytest fixture: monkeypatch at tests/test_basic.py:863",
+          "unresolved pytest fixture: monkeypatch at tests/test_basic.py:893",
+          "unresolved pytest fixture: monkeypatch at tests/test_basic.py:922",
+          "unresolved pytest fixture: monkeypatch at tests/test_compat.py:105",
+          "unresolved pytest fixture: monkeypatch at tests/test_defaults.py:351",
+          "unresolved pytest fixture: monkeypatch at tests/test_options.py:2969",
+          "unresolved pytest fixture: monkeypatch at tests/test_options.py:3594",
+          "unresolved pytest fixture: monkeypatch at tests/test_options.py:896",
+          "unresolved pytest fixture: monkeypatch at tests/test_shell_completion.py:343",
+          "unresolved pytest fixture: monkeypatch at tests/test_shell_completion.py:394",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1008",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:101",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1040",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1070",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1091",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1108",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1138",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:114",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1206",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1230",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1246",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:1262",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:242",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:257",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:318",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:341",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:357",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:390",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:403",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:416",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:44",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:60",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:741",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:763",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:787",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:807",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:891",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:90",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:928",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:966",
+          "unresolved pytest fixture: monkeypatch at tests/test_termui.py:988",
+          "unresolved pytest fixture: monkeypatch at tests/test_types/test_Path.py:90",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test__expand_args.py:6",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo.py:46",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo.py:61",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo.py:92",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo_via_pager.py:155",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo_via_pager.py:194",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_echo_via_pager.py:231",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:10",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:17",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:34",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:44",
+          "unresolved pytest fixture: monkeypatch at tests/test_utils/test_prompt.py:71",
+          "unresolved pytest fixture: request at tests/test_arguments.py:7",
+          "unresolved pytest fixture: request at tests/test_basic.py:7",
+          "unresolved pytest fixture: request at tests/test_chain.py:7",
+          "unresolved pytest fixture: request at tests/test_command_decorators.py:7",
+          "unresolved pytest fixture: request at tests/test_commands.py:7",
+          "unresolved pytest fixture: request at tests/test_context.py:7",
+          "unresolved pytest fixture: request at tests/test_custom_classes.py:7",
+          "unresolved pytest fixture: request at tests/test_defaults.py:7",
+          "unresolved pytest fixture: request at tests/test_deprecations.py:7",
+          "unresolved pytest fixture: request at tests/test_formatting.py:7",
+          "unresolved pytest fixture: request at tests/test_normalization.py:7",
+          "unresolved pytest fixture: request at tests/test_options.py:7",
+          "unresolved pytest fixture: request at tests/test_shell_completion.py:7",
+          "unresolved pytest fixture: request at tests/test_termui.py:7",
+          "unresolved pytest fixture: request at tests/test_testing.py:7",
+          "unresolved pytest fixture: request at tests/test_types/test_Path.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_confirm.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_echo.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_open_file.py:7",
+          "unresolved pytest fixture: request at tests/test_utils/test_prompt.py:7",
+          "unresolved pytest fixture: tmp_path at tests/test_arguments.py:105",
+          "unresolved pytest fixture: tmp_path at tests/test_arguments.py:138",
+          "unresolved pytest fixture: tmp_path at tests/test_basic.py:418",
+          "unresolved pytest fixture: tmp_path at tests/test_basic.py:439",
+          "unresolved pytest fixture: tmp_path at tests/test_basic.py:479",
+          "unresolved pytest fixture: tmp_path at tests/test_shell_completion.py:578",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:1070",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:453",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:787",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:807",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:966",
+          "unresolved pytest fixture: tmp_path at tests/test_termui.py:988",
+          "unresolved pytest fixture: tmp_path at tests/test_testing.py:452",
+          "unresolved pytest fixture: tmp_path at tests/test_testing.py:460",
+          "unresolved pytest fixture: tmp_path at tests/test_types/test_File.py:13",
+          "unresolved pytest fixture: tmp_path at tests/test_types/test_Path.py:52",
+          "unresolved pytest fixture: tmp_path at tests/test_types/test_Path.py:90",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_echo_via_pager.py:155",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_echo_via_pager.py:194",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_echo_via_pager.py:231",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:101",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:11",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:59",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:67",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:75",
+          "unresolved pytest fixture: tmp_path at tests/test_utils/test_open_file.py:85",
+          "unresolved pytest fixture: tmpdir at tests/test_shell_completion.py:507",
+          "unresolved pytest fixture: tmpdir at tests/test_utils/test_KeepOpenFile.py:4",
+          "unresolved pytest fixture: tmpdir at tests/test_utils/test_LazyFile.py:4",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:637",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:654",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:680",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:726",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:761",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:785",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_testing.py:810",
+          "Resolve incomplete report coverage before relying on recommendations."
+        ],
+        "declaration_fingerprint": "f978fac9e92bb45f2eac6bf772a1d56a13770cfbc2d87caa0330440375efd771",
+        "ledger_fingerprint": "",
+        "source_fingerprint": "5949ed08501b33da",
+        "source_complete": true,
+        "selected_files": 113,
+        "selected_bytes": 1269386
+      },
+      "commands": [
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_formatting.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-1",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-1",
+              "input": "tests/test_formatting.py",
+              "category": "transitive",
+              "explanation": [
+                {
+                  "source": "file:tests/test_formatting.py",
+                  "target": "file:src/click/__init__.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "tests/test_formatting.py",
+                  "line": 3,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/click/__init__.py",
+                  "target": "file:src/click/formatting.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/click/__init__.py",
+                  "line": 40,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        },
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_parser.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-0",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-0",
+              "input": "tests/test_parser.py",
+              "category": "transitive",
+              "explanation": [
+                {
+                  "source": "file:tests/test_parser.py",
+                  "target": "file:src/click/__init__.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "tests/test_parser.py",
+                  "line": 3,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/click/__init__.py",
+                  "target": "file:src/click/formatting.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/click/__init__.py",
+                  "line": 40,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "attrs-0",
+      "project": "attrs",
+      "samples": [
+        {
+          "state": "complete",
+          "plain_ms": 103.08,
+          "advised_ms": 925.22,
+          "added_ms": 822.14
+        },
+        {
+          "state": "complete",
+          "plain_ms": 91.078,
+          "advised_ms": 865.446,
+          "added_ms": 774.368
+        },
+        {
+          "state": "complete",
+          "plain_ms": 89.51,
+          "advised_ms": 840.867,
+          "added_ms": 751.357
+        }
+      ],
+      "state": "complete",
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 0,
+        "hits": [
+          "check-0"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": false,
+        "advice_available": false
+      },
+      "coverage": {
+        "complete": false,
+        "issues": [
+          "ambiguous or rebound Python export: src/attr/_make.py:2462",
+          "ambiguous or rebound Python export: src/attr/_make.py:2731",
+          "ambiguous or rebound Python export: src/attr/_make.py:2902",
+          "ambiguous or rebound Python export: src/attr/_make.py:3084",
+          "ambiguous or rebound Python export: src/attr/_make.py:3142",
+          "ambiguous or rebound Python export: tests/test_dunders.py:1005",
+          "ambiguous or rebound Python export: tests/test_dunders.py:1013",
+          "ambiguous or rebound Python export: tests/test_dunders.py:126",
+          "ambiguous or rebound Python export: tests/test_dunders.py:996",
+          "shadowed Python call binding at tests/test_config.py:33",
+          "shadowed Python call binding at tests/test_config.py:35",
+          "shadowed Python call binding at tests/test_funcs.py:40",
+          "shadowed Python call binding at tests/test_funcs.py:41",
+          "unresolved pytest fixture registration context at tests/test_validators.py:500",
+          "unresolved pytest fixture registration context at tests/test_validators.py:509",
+          "unresolved pytest fixture registration context at tests/test_validators.py:547",
+          "unresolved pytest fixture registration context at tests/test_validators.py:556",
+          "unresolved pytest fixture registration context at tests/test_validators.py:567",
+          "unresolved pytest fixture: monkeypatch at tests/test_make.py:1524",
+          "unresolved pytest fixture: monkeypatch at tests/test_make.py:2186",
+          "unresolved pytest fixture: recwarn at tests/test_packaging.py:18",
+          "unresolved pytest fixture: recwarn at tests/test_packaging.py:36",
+          "unresolved pytest fixture: request at tests/test_abc.py:13",
+          "unresolved pytest fixture: request at tests/test_annotations.py:13",
+          "unresolved pytest fixture: request at tests/test_dunders.py:13",
+          "unresolved pytest fixture: request at tests/test_dunders.py:18",
+          "unresolved pytest fixture: request at tests/test_functional.py:13",
+          "unresolved pytest fixture: request at tests/test_functional.py:18",
+          "unresolved pytest fixture: request at tests/test_init_subclass.py:13",
+          "unresolved pytest fixture: request at tests/test_make.py:13",
+          "unresolved pytest fixture: request at tests/test_make.py:18",
+          "unresolved pytest fixture: request at tests/test_make.py:67",
+          "unresolved pytest fixture: request at tests/test_packaging.py:13",
+          "unresolved pytest fixture: request at tests/test_setattr.py:13",
+          "unresolved pytest fixture: request at tests/test_slots.py:13",
+          "unresolved pytest fixture: request at tests/test_slots.py:18",
+          "unresolved pytest fixture: tmp_path at tests/test_pyright.py:117",
+          "unresolved pytest fixture: tmp_path at tests/test_pyright.py:89",
+          "unsupported class pytest fixture registration at tests/test_validators.py:40",
+          "unsupported nested/class pytest fixture registration at tests/test_validators.py:42",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_3rd_party.py:23",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:139",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:434",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:555",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:570",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:585",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:766",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:784",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:808",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:928",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:104",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:139",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:150",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:160",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:174",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:187",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:197",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:214",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:307",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:316",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:325",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:343",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:384",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:395",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:404",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:413",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:424",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:434",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:448",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:52",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:590",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:606",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:61",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:617",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:634",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:664",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:680",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:691",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:711",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_functional.py:175",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_functional.py:187",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1595",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1639",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1646",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1678",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1699",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1785",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1804",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1954",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1978",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2003",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2014",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2022",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2633",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2700",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:640",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:723",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:738",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:754",
+          "Resolve incomplete report coverage before relying on recommendations."
+        ],
+        "declaration_fingerprint": "eb5eade574ccf8ad6a07fddd7c1cc39977df5f17650a0d903ce391c586a3b2cd",
+        "ledger_fingerprint": "",
+        "source_fingerprint": "066dead79f49141c",
+        "source_complete": true,
+        "selected_files": 72,
+        "selected_bytes": 1089943
+      },
+      "commands": [
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_filters.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-0",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-0",
+              "input": "tests/test_filters.py",
+              "category": "direct",
+              "explanation": [
+                {
+                  "source": "file:tests/test_filters.py",
+                  "target": "symbol:src/attr/filters.py#_split_what",
+                  "kind": "calls",
+                  "origin": "static",
+                  "path": "tests/test_filters.py",
+                  "line": 34,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        },
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_converters.py -q",
+          "origin": "project declaration",
+          "priority": "fallback",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-1",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope.",
+            "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+          ],
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "attrs-1",
+      "project": "attrs",
+      "samples": [
+        {
+          "state": "complete",
+          "plain_ms": 93.192,
+          "advised_ms": 846.651,
+          "added_ms": 753.459
+        },
+        {
+          "state": "complete",
+          "plain_ms": 89.751,
+          "advised_ms": 843.763,
+          "added_ms": 754.012
+        },
+        {
+          "state": "complete",
+          "plain_ms": 88.109,
+          "advised_ms": 830.042,
+          "added_ms": 741.933
+        }
+      ],
+      "state": "complete",
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 0,
+        "hits": [
+          "check-1"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [],
+        "coverage_complete": false,
+        "advice_available": false
+      },
+      "coverage": {
+        "complete": false,
+        "issues": [
+          "ambiguous or rebound Python export: src/attr/_make.py:2462",
+          "ambiguous or rebound Python export: src/attr/_make.py:2731",
+          "ambiguous or rebound Python export: src/attr/_make.py:2902",
+          "ambiguous or rebound Python export: src/attr/_make.py:3084",
+          "ambiguous or rebound Python export: src/attr/_make.py:3142",
+          "ambiguous or rebound Python export: tests/test_dunders.py:1005",
+          "ambiguous or rebound Python export: tests/test_dunders.py:1013",
+          "ambiguous or rebound Python export: tests/test_dunders.py:126",
+          "ambiguous or rebound Python export: tests/test_dunders.py:996",
+          "shadowed Python call binding at tests/test_config.py:33",
+          "shadowed Python call binding at tests/test_config.py:35",
+          "shadowed Python call binding at tests/test_funcs.py:40",
+          "shadowed Python call binding at tests/test_funcs.py:41",
+          "unresolved pytest fixture registration context at tests/test_validators.py:500",
+          "unresolved pytest fixture registration context at tests/test_validators.py:509",
+          "unresolved pytest fixture registration context at tests/test_validators.py:547",
+          "unresolved pytest fixture registration context at tests/test_validators.py:556",
+          "unresolved pytest fixture registration context at tests/test_validators.py:567",
+          "unresolved pytest fixture: monkeypatch at tests/test_make.py:1524",
+          "unresolved pytest fixture: monkeypatch at tests/test_make.py:2186",
+          "unresolved pytest fixture: recwarn at tests/test_packaging.py:18",
+          "unresolved pytest fixture: recwarn at tests/test_packaging.py:36",
+          "unresolved pytest fixture: request at tests/test_abc.py:13",
+          "unresolved pytest fixture: request at tests/test_annotations.py:13",
+          "unresolved pytest fixture: request at tests/test_dunders.py:13",
+          "unresolved pytest fixture: request at tests/test_dunders.py:18",
+          "unresolved pytest fixture: request at tests/test_functional.py:13",
+          "unresolved pytest fixture: request at tests/test_functional.py:18",
+          "unresolved pytest fixture: request at tests/test_init_subclass.py:13",
+          "unresolved pytest fixture: request at tests/test_make.py:13",
+          "unresolved pytest fixture: request at tests/test_make.py:18",
+          "unresolved pytest fixture: request at tests/test_make.py:67",
+          "unresolved pytest fixture: request at tests/test_packaging.py:13",
+          "unresolved pytest fixture: request at tests/test_setattr.py:13",
+          "unresolved pytest fixture: request at tests/test_slots.py:13",
+          "unresolved pytest fixture: request at tests/test_slots.py:18",
+          "unresolved pytest fixture: tmp_path at tests/test_pyright.py:117",
+          "unresolved pytest fixture: tmp_path at tests/test_pyright.py:89",
+          "unsupported class pytest fixture registration at tests/test_validators.py:40",
+          "unsupported nested/class pytest fixture registration at tests/test_validators.py:42",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_3rd_party.py:23",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:139",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:434",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:555",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:570",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:585",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:766",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:784",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:808",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_dunders.py:928",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:104",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:139",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:150",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:160",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:174",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:187",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:197",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:214",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:307",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:316",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:325",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:343",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:384",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:395",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:404",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:413",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:424",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:434",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:448",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:52",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:590",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:606",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:61",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:617",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:634",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:664",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:680",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:691",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_funcs.py:711",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_functional.py:175",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_functional.py:187",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1595",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1639",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1646",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1678",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1699",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1785",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1804",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1954",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:1978",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2003",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2014",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2022",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2633",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:2700",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:640",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:723",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:738",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_make.py:754",
+          "Resolve incomplete report coverage before relying on recommendations."
+        ],
+        "declaration_fingerprint": "eb5eade574ccf8ad6a07fddd7c1cc39977df5f17650a0d903ce391c586a3b2cd",
+        "ledger_fingerprint": "",
+        "source_fingerprint": "066dead79f49141c",
+        "source_complete": true,
+        "selected_files": 72,
+        "selected_bytes": 1089943
+      },
+      "commands": [
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_converters.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-1",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-1",
+              "input": "tests/test_converters.py",
+              "category": "direct",
+              "explanation": [
+                {
+                  "source": "file:tests/test_converters.py",
+                  "target": "symbol:src/attr/converters.py#default_if_none",
+                  "kind": "calls",
+                  "origin": "static",
+                  "path": "tests/test_converters.py",
+                  "line": 180,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        },
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_filters.py -q",
+          "origin": "project declaration",
+          "priority": "fallback",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-0",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope.",
+            "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+          ],
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "jinja2-0",
+      "project": "jinja2",
+      "samples": [
+        {
+          "state": "complete",
+          "plain_ms": 94.146,
+          "advised_ms": 1030.477,
+          "added_ms": 936.331
+        },
+        {
+          "state": "complete",
+          "plain_ms": 88.853,
+          "advised_ms": 1038.28,
+          "added_ms": 949.427
+        },
+        {
+          "state": "complete",
+          "plain_ms": 89.42,
+          "advised_ms": 1034.501,
+          "added_ms": 945.081
+        }
+      ],
+      "state": "complete",
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 0,
+        "hits": [
+          "check-0"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [
+          "check-1"
+        ],
+        "coverage_complete": false,
+        "advice_available": false
+      },
+      "coverage": {
+        "complete": false,
+        "issues": [
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1382",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1386",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1389",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1431",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1441",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1451",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1501",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1511",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1521",
+          "ambiguous or rebound Python export: src/jinja2/nodes.py:1195",
+          "ambiguous or rebound Python export: tests/test_async_filters.py:152",
+          "ambiguous or rebound Python export: tests/test_async_filters.py:187",
+          "non-literal module name dynamic import at src/jinja2/loaders.py:322",
+          "query result limit reached",
+          "shadowed Python call binding at src/jinja2/environment.py:1382",
+          "unresolved pytest fixture: monkeypatch at tests/test_loader.py:323",
+          "unresolved pytest fixture: monkeypatch at tests/test_loader.py:345",
+          "unresolved pytest fixture: monkeypatch at tests/test_loader.py:367",
+          "unresolved pytest fixture: request at tests/test_async.py:16",
+          "unresolved pytest fixture: request at tests/test_async_filters.py:16",
+          "unresolved pytest fixture: request at tests/test_filters.py:273",
+          "unresolved pytest fixture: request at tests/test_nativetypes.py:16",
+          "unresolved pytest fixture: tmp_path at tests/test_bytecode_cache.py:11",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:11",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:23",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:34",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:59",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:77",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:102",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:124",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:139",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:146",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:158",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:164",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:170",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:176",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:182",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:197",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:205",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:216",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:227",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:233",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:258",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:292",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:47",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:66",
+          "Resolve incomplete report coverage before relying on recommendations."
+        ],
+        "declaration_fingerprint": "b5d9483eb1b07714267f2ebbd77d657da8ba6b7e0a2a343a10c1a4ff299672b5",
+        "ledger_fingerprint": "",
+        "source_fingerprint": "d0082db76a30cfad",
+        "source_complete": true,
+        "selected_files": 71,
+        "selected_bytes": 976111
+      },
+      "commands": [
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_filters.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-1",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-1",
+              "input": "tests/test_filters.py",
+              "category": "transitive",
+              "explanation": [
+                {
+                  "source": "file:tests/test_filters.py",
+                  "target": "file:src/jinja2/__init__.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "tests/test_filters.py",
+                  "line": 7,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/__init__.py",
+                  "target": "file:src/jinja2/utils.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/__init__.py",
+                  "line": 35,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        },
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_utils.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-0",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-0",
+              "input": "tests/test_utils.py",
+              "category": "direct",
+              "explanation": [
+                {
+                  "source": "file:tests/test_utils.py",
+                  "target": "symbol:src/jinja2/utils.py#LRUCache",
+                  "kind": "calls",
+                  "origin": "static",
+                  "path": "tests/test_utils.py",
+                  "line": 21,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "jinja2-1",
+      "project": "jinja2",
+      "samples": [
+        {
+          "state": "complete",
+          "plain_ms": 87.704,
+          "advised_ms": 1047.38,
+          "added_ms": 959.676
+        },
+        {
+          "state": "complete",
+          "plain_ms": 87.767,
+          "advised_ms": 1016.344,
+          "added_ms": 928.577
+        },
+        {
+          "state": "complete",
+          "plain_ms": 88.425,
+          "advised_ms": 1088.037,
+          "added_ms": 999.612
+        }
+      ],
+      "state": "complete",
+      "grade": {
+        "known_required": 1,
+        "known_negatives": 0,
+        "hits": [
+          "check-1"
+        ],
+        "misses": [],
+        "false_leads": [],
+        "fallback_retained": [],
+        "unlabelled_leads": [
+          "check-0"
+        ],
+        "coverage_complete": false,
+        "advice_available": false
+      },
+      "coverage": {
+        "complete": false,
+        "issues": [
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1382",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1386",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1389",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1431",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1441",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1451",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1501",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1511",
+          "ambiguous or rebound Python export: src/jinja2/filters.py:1521",
+          "ambiguous or rebound Python export: src/jinja2/nodes.py:1195",
+          "ambiguous or rebound Python export: tests/test_async_filters.py:152",
+          "ambiguous or rebound Python export: tests/test_async_filters.py:187",
+          "non-literal module name dynamic import at src/jinja2/loaders.py:322",
+          "query result limit reached",
+          "shadowed Python call binding at src/jinja2/environment.py:1382",
+          "unresolved pytest fixture: monkeypatch at tests/test_loader.py:323",
+          "unresolved pytest fixture: monkeypatch at tests/test_loader.py:345",
+          "unresolved pytest fixture: monkeypatch at tests/test_loader.py:367",
+          "unresolved pytest fixture: request at tests/test_async.py:16",
+          "unresolved pytest fixture: request at tests/test_async_filters.py:16",
+          "unresolved pytest fixture: request at tests/test_filters.py:273",
+          "unresolved pytest fixture: request at tests/test_nativetypes.py:16",
+          "unresolved pytest fixture: tmp_path at tests/test_bytecode_cache.py:11",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:11",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:23",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:34",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:59",
+          "unresolved pytest fixture: tmp_path at tests/test_compile.py:77",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:102",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:124",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:139",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:146",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:158",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:164",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:170",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:176",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:182",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:197",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:205",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:216",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:227",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:233",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:258",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:292",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:47",
+          "unsupported pytest fixture request: unresolved decorator or pytest mark at tests/test_async_filters.py:66",
+          "Resolve incomplete report coverage before relying on recommendations."
+        ],
+        "declaration_fingerprint": "b5d9483eb1b07714267f2ebbd77d657da8ba6b7e0a2a343a10c1a4ff299672b5",
+        "ledger_fingerprint": "",
+        "source_fingerprint": "d0082db76a30cfad",
+        "source_complete": true,
+        "selected_files": 71,
+        "selected_bytes": 976111
+      },
+      "commands": [
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_filters.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-1",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-1",
+              "input": "tests/test_filters.py",
+              "category": "transitive",
+              "explanation": [
+                {
+                  "source": "file:tests/test_filters.py",
+                  "target": "file:src/jinja2/__init__.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "tests/test_filters.py",
+                  "line": 7,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/__init__.py",
+                  "target": "file:src/jinja2/environment.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/__init__.py",
+                  "line": 13,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/environment.py",
+                  "target": "file:src/jinja2/defaults.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/environment.py",
+                  "line": 21,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/defaults.py",
+                  "target": "file:src/jinja2/filters.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/defaults.py",
+                  "line": 3,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        },
+        {
+          "kind": "test_suite",
+          "command": "python -m pytest tests/test_utils.py -q",
+          "origin": "project declaration",
+          "priority": "dependency",
+          "needs_refresh": true,
+          "milestones": [
+            {
+              "id": "check-0",
+              "state": "ABSENT"
+            }
+          ],
+          "reasons": [
+            {
+              "milestone": "check-0",
+              "input": "tests/test_utils.py",
+              "category": "transitive",
+              "explanation": [
+                {
+                  "source": "file:tests/test_utils.py",
+                  "target": "file:src/jinja2/utils.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "tests/test_utils.py",
+                  "line": 10,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/utils.py",
+                  "target": "file:src/jinja2/environment.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/utils.py",
+                  "line": 133,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/environment.py",
+                  "target": "file:src/jinja2/defaults.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/environment.py",
+                  "line": 21,
+                  "identity": ""
+                },
+                {
+                  "source": "file:src/jinja2/defaults.py",
+                  "target": "file:src/jinja2/filters.py",
+                  "kind": "imports",
+                  "origin": "static",
+                  "path": "src/jinja2/defaults.py",
+                  "line": 3,
+                  "identity": ""
+                }
+              ]
+            }
+          ],
+          "omitted_reasons": 0,
+          "qualifications": [
+            "A passing command supports only its recorded property and declared input scope."
+          ],
+          "issues": []
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Selected known relationships, not population precision or coding benefit.",
+    "Commands are declarations; this evaluation executes no project checks.",
+    "Whole-project reads are paired sequentially, without native host launch."
+  ],
+  "cost": {
+    "paired_reads": 18,
+    "median_added_ms": 947.254,
+    "max_advised_ms": 1498.692
+  },
+  "qualification": "Negative labels withdrawn: distinct test behavior does not establish independence; four cross-reference leads are unlabelled, not false positives. Timing observations unchanged."
+}
