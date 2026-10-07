@@ -77,6 +77,8 @@ def test_existing_report_adds_exact_recheck_explanations_without_mutation(tmp_pa
     assert 'dependency' in markdown(value)
     assert value['timings']['impact_ms'] >= 0
     assert value['impact']['timings']['graph_ms'] >= 0
+    assert value['rechecks']['state'] == 'available'
+    assert value['state'] == 'CURRENT'
     assert before == {p: p.read_bytes() for p in root.rglob('*') if p.is_file()}
     assert build(root)['rechecks']['state'] == 'not_requested'
 
@@ -104,7 +106,7 @@ def test_graph_snapshot_movement_marks_advice_incomplete_without_changing_check_
     original = bridge.advise
     def moved(*args, **kwargs):
         value = original(*args, **kwargs)
-        value['graph_fingerprint'] = 'different'
+        value['evidence_source_fingerprint'] = 'different'
         return value
     monkeypatch.setattr(bridge, 'advise', moved)
     value = build(consumer_project(tmp_path), impact=True, changed=['provider.py'])
@@ -112,3 +114,16 @@ def test_graph_snapshot_movement_marks_advice_incomplete_without_changing_check_
     assert value['milestones'][0]['state'] == 'CURRENT'
     assert value['rechecks']['state'] == 'incomplete'
     assert any('source snapshot' in i for i in value['coverage']['issues'])
+
+
+def test_explanation_omissions_cannot_pass_the_requested_report_gate(tmp_path, monkeypatch):
+    import core.milestones.rechecks as recommendations
+    original = recommendations.plan
+    def truncated(*args, **kwargs):
+        value = original(*args, **kwargs)
+        value.update(state='incomplete', issues=['command explanation limit 16 reached'])
+        return value
+    monkeypatch.setattr(recommendations, 'plan', truncated)
+    value = build(consumer_project(tmp_path), impact=True, changed=['provider.py'])
+    assert value['state'] == 'INCOMPLETE' and not value['coverage']['complete']
+    assert value['milestones'][0]['state'] == 'CURRENT'

@@ -108,8 +108,16 @@ def build(root, *, seconds=30, max_files=None, max_bytes=None, observations=None
     graph.fingerprint = hashlib.sha256(json.dumps(
         {'files': fingerprints, 'policy': policy, 'file_limit': max_files,
          'byte_limit': max_bytes}, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    # Evidence uses a different identity format from the policy-bound graph.
+    # Derive the comparable receipt identity from these exact already-read bytes;
+    # comparing the two original formats would flag every unchanged graph.
+    evidence_digest = hashlib.sha256()
+    for path in sorted(fingerprints):
+        evidence_digest.update(path.encode())
+        evidence_digest.update(f"\0{fingerprints[path][:16]}\0".encode())
     graph.coverage.update(selected_files=len(graph.nodes), read_files=len(sources),
                           read_bytes=read_bytes, selection_complete=scan.complete,
+                          evidence_source_fingerprint=evidence_digest.hexdigest()[:16],
                           inputs_complete=scan.complete and not graph.issues)
     trees = extract(graph, sources, deadline)
     extract_fixtures(graph, trees, deadline)

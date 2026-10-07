@@ -8,7 +8,6 @@ from .definition import safe_path
 def advise(root, milestones, changed, *, deadline):
     if not isinstance(changed, (list, tuple)) or any(not isinstance(p, str) for p in changed):
         raise ValueError('changed observations must be a list of relative paths')
-    started = time.monotonic()
     result = {'state': 'incomplete', 'requested': list(changed[:256]),
               'omitted_observations': max(0, len(changed) - 256),
               'leads': [], 'issues': [], 'timings': {'graph_ms': 0.0, 'query_ms': 0.0},
@@ -48,6 +47,7 @@ def advise(root, milestones, changed, *, deadline):
     result['timings']['query_ms'] = round((time.monotonic() - query_started) * 1000, 3)
     result['graph_fingerprint'] = query['source_fingerprint']
     result['coverage'] = query['coverage']
+    result['evidence_source_fingerprint'] = query['coverage'].get('evidence_source_fingerprint')
     result['issues'] += query['coverage']['issues']
     for milestone in milestones:
         for candidate in [*query['affected'], *query['tests']]:

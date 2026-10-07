@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "purpose": "Authored independent relationship labels and behavioral assertions; not a representative project population or agent-benefit comparison.",
+  "cases": [
+    {
+      "id": "python-chain", "partition": "development", "language": "python",
+      "sources": {
+        "domain/__init__.py": "",
+        "domain/token.py": "def valid(now, until):\n    return now < until\n",
+        "shop.py": "from domain.token import valid\n\ndef purchase(now, until):\n    return 'ok' if valid(now, until) else 'denied'\n",
+        "dispatcher.py": "from shop import purchase\n\ndef deliver(now, until):\n    return purchase(now, until) == 'ok'\n",
+        "inventory.py": "def stock():\n    return 7\n",
+        "checks/test_purchase.py": "from shop import purchase\n\ndef test_boundary():\n    assert purchase(9, 10) == 'ok'\n    assert purchase(10, 10) == 'denied'\n",
+        "checks/test_delivery.py": "from dispatcher import deliver\n\ndef test_boundary():\n    assert deliver(9, 10) is True\n    assert deliver(10, 10) is False\n",
+        "checks/test_inventory.py": "from inventory import stock\n\ndef test_stock():\n    assert stock() == 7\n"
+      },
+      "milestones": [
+        {"id": "purchase", "inputs": ["shop.py", "checks/test_purchase.py"], "test": "purchase"},
+        {"id": "delivery", "inputs": ["dispatcher.py", "checks/test_delivery.py"], "test": "delivery"},
+        {"id": "inventory", "inputs": ["inventory.py", "checks/test_inventory.py"], "test": "inventory"}
+      ],
+      "change": "domain/token.py", "fault": "def valid(now, until):\n    return now <= until\n",
+      "equivalent": "def valid(now, until):\n    return not now >= until\n",
+      "required": ["purchase", "delivery"], "negative": ["inventory"], "fault_expected": true
+    },
+    {
+      "id": "dynamic-plugin", "partition": "development", "language": "python",
+      "sources": {
+        "extension.py": "def enabled(value):\n    return value > 0\n",
+        "loader.py": "import importlib\n\ndef dispatch(value):\n    return importlib.import_module('extension').enabled(value)\n",
+        "catalog.py": "count = 3\n",
+        "checks/test_dispatch.py": "from loader import dispatch\n\ndef test_boundary():\n    assert dispatch(1) is True\n    assert dispatch(0) is False\n",
+        "checks/test_catalog.py": "from catalog import count\n\ndef test_count():\n    assert count == 3\n"
+      },
+      "milestones": [
+        {"id": "dispatch", "inputs": ["loader.py", "checks/test_dispatch.py"], "test": "dispatch"},
+        {"id": "catalog", "inputs": ["catalog.py", "checks/test_catalog.py"], "test": "catalog"}
+      ],
+      "change": "extension.py", "fault": "def enabled(value):\n    return value >= 0\n",
+      "equivalent": "def enabled(value):\n    return not value <= 0\n",
+      "required": ["dispatch"], "negative": ["catalog"], "fault_expected": true
+    },
+    {
+      "id": "node-service", "partition": "development", "language": "node",
+      "sources": {
+        "core/limit.mjs": "export function allowed(size) { return size < 4; }\n",
+        "app/service.mjs": "import {allowed} from '../core/limit.mjs';\nexport function handle(size) { return allowed(size) ? 200 : 413; }\n",
+        "other.mjs": "export const count = 8;\n",
+        "checks/service.test.mjs": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {handle} from '../app/service.mjs';\ntest('boundary', () => { assert.equal(handle(3), 200); assert.equal(handle(4), 413); });\n",
+        "checks/other.test.mjs": "import {test} from 'node:test';\nimport assert from 'node:assert/strict';\nimport {count} from '../other.mjs';\ntest('count', () => assert.equal(count, 8));\n"
+      },
+      "milestones": [
+        {"id": "service", "inputs": ["app/service.mjs", "checks/service.test.mjs"], "test": "service"},
+        {"id": "other", "inputs": ["other.mjs", "checks/other.test.mjs"], "test": "other"}
+      ],
+      "change": "core/limit.mjs", "fault": "export function allowed(size) { return size <= 4; }\n",
+      "equivalent": "export function allowed(size) { return !(size >= 4); }\n",
+      "required": ["service"], "negative": ["other"], "fault_expected": true
+    },
+    {
+      "id": "configuration", "partition": "held_out", "language": "python",
+      "sources": {
+        "settings.json": "{\"max_attempts\": 3}\n",
+        "retry.py": "import json\nfrom pathlib import Path\n\ndef allowed(attempt):\n    settings = json.loads(Path(__file__).with_name('settings.json').read_text())\n    return attempt < settings['max_attempts']\n",
+        "health.py": "status = 'up'\n",
+        "checks/test_retry.py": "from retry import allowed\n\ndef test_boundary():\n    assert allowed(2) is True\n    assert allowed(3) is False\n",
+        "checks/test_health.py": "from health import status\n\ndef test_health():\n    assert status == 'up'\n"
+      },
+      "milestones": [
+        {"id": "retry", "inputs": ["settings.json", "retry.py", "checks/test_retry.py"], "test": "retry"},
+        {"id": "health", "inputs": ["health.py", "checks/test_health.py"], "test": "health"}
+      ],
+      "change": "settings.json", "fault": "{\"max_attempts\": 4}\n", "equivalent": "{ \"max_attempts\": 3 }\n",
+      "required": ["retry"], "negative": ["health"], "fault_expected": true
+    },
+    {
+      "id": "subprocess-worker", "partition": "held_out", "language": "python",
+      "sources": {
+        "cli.py": "import sys\nprint('accept' if int(sys.argv[1]) < 10 else 'deny')\n",
+        "jobs/__init__.py": "",
+        "jobs/worker.py": "from pathlib import Path\nimport subprocess\nimport sys\n\ndef submit(value):\n    path = Path(__file__).resolve().parents[1] / 'cli.py'\n    return subprocess.check_output([sys.executable, str(path), str(value)], text=True).strip()\n",
+        "metrics.py": "count = 1\n",
+        "checks/test_worker.py": "from jobs.worker import submit\n\ndef test_boundary():\n    assert submit(9) == 'accept'\n    assert submit(10) == 'deny'\n",
+        "checks/test_metrics.py": "from metrics import count\n\ndef test_count():\n    assert count == 1\n"
+      },
+      "milestones": [
+        {"id": "worker", "inputs": ["jobs/worker.py", "checks/test_worker.py"], "test": "worker"},
+        {"id": "metrics", "inputs": ["metrics.py", "checks/test_metrics.py"], "test": "metrics"}
+      ],
+      "change": "cli.py", "fault": "import sys\nprint('accept' if int(sys.argv[1]) <= 10 else 'deny')\n",
+      "equivalent": "import sys\nprint('deny' if int(sys.argv[1]) >= 10 else 'accept')\n",
+      "required": ["worker"], "negative": ["metrics"], "fault_expected": true
+    },
+    {
+      "id": "unrelated-edit", "partition": "held_out", "language": "python",
+      "sources": {
+        "feature.py": "def value():\n    return 42\n",
+        "scratch.py": "note = 'old'\n",
+        "checks/test_feature.py": "from feature import value\n\ndef test_value():\n    assert value() == 42\n"
+      },
+      "milestones": [{"id": "feature", "inputs": ["feature.py", "checks/test_feature.py"], "test": "feature"}],
+      "change": "scratch.py", "fault": "note = 'new'\n", "equivalent": "note = 'other'\n",
+      "required": [], "negative": ["feature"], "fault_expected": false
+    }
+  ]
+}

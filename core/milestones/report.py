@@ -174,8 +174,8 @@ def build(root, *, seconds=30, changed=None, impact=False):
                                  changed if changed is not None else payload.get('touched', []),
                                  deadline=deadline)
         issues += value['impact']['issues']
-        if (value['impact'].get('graph_fingerprint') is not None and
-                value['impact']['graph_fingerprint'] != fingerprint):
+        if (value['impact'].get('evidence_source_fingerprint') is not None and
+                value['impact']['evidence_source_fingerprint'] != fingerprint):
             message = 'graph and evidence source snapshots disagree; source snapshot moved or coverage differs'
             value['impact']['issues'].append(message)
             value['impact']['state'] = 'incomplete'
@@ -190,6 +190,10 @@ def build(root, *, seconds=30, changed=None, impact=False):
     if time.monotonic() >= deadline:
         issues.append('milestone deadline reached; requested coverage is incomplete')
     issues = list(dict.fromkeys(issues))
+    if impact:
+        from .rechecks import plan
+        value['rechecks'] = plan(value['milestones'], value['impact'], complete=not issues)
+        issues = list(dict.fromkeys([*issues, *value['rechecks']['issues']]))
     value['coverage'].update(complete=not issues, issues=issues, ledger_fingerprint=ledger_fingerprint)
     value['state'] = 'INCOMPLETE' if issues else _aggregate([m['state'] for m in value['milestones']])
     value['summary'] = {s: sum(m['state'] == s for m in value['milestones']) for s in STATES}
@@ -199,8 +203,6 @@ def build(root, *, seconds=30, changed=None, impact=False):
         value['next_actions'].insert(0, 'Resolve incomplete declaration, input or history coverage before relying on this view.')
     value['timings'] = {'report_ms': round((time.monotonic() - started) * 1000, 3)}
     if impact:
-        from .rechecks import plan
-        value['rechecks'] = plan(value['milestones'], value['impact'], complete=not issues)
         value['timings']['impact_ms'] = impact_ms
         value['timings']['report_ms'] = round((time.monotonic() - started) * 1000, 3)
     return _portable(value, root)
