@@ -1,0 +1,1258 @@
+{
+  "schema": 1,
+  "runtime": "9e3f618",
+  "source": "launcher replay, not installed-session acceptance",
+  "projects": [
+    {
+      "id": "click",
+      "schema": 1,
+      "source": "launcher replay",
+      "seconds": 1,
+      "samples": [
+        {
+          "host": "claude",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 202.936,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1456.418,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 765
+          },
+          "duplicate": {
+            "ms": 188.072,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1253.482
+        },
+        {
+          "host": "claude",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 194.445,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1491.022,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 768
+          },
+          "duplicate": {
+            "ms": 189.381,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1296.577
+        },
+        {
+          "host": "claude",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 208.532,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1473.383,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 768
+          },
+          "duplicate": {
+            "ms": 185.857,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1264.851
+        },
+        {
+          "host": "codex",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 199.942,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1493.403,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 768
+          },
+          "duplicate": {
+            "ms": 193.03,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1293.461
+        },
+        {
+          "host": "codex",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 201.833,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1486.065,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 768
+          },
+          "duplicate": {
+            "ms": 191.95,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1284.232
+        },
+        {
+          "host": "codex",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 200.901,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1490.08,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 768
+          },
+          "duplicate": {
+            "ms": 187.282,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1289.179
+        },
+        {
+          "host": "gemini",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 200.102,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1483.449,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 766
+          },
+          "duplicate": {
+            "ms": 193.118,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1283.347
+        },
+        {
+          "host": "gemini",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 195.922,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1493.684,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 766
+          },
+          "duplicate": {
+            "ms": 185.223,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1297.762
+        },
+        {
+          "host": "gemini",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 191.202,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1484.43,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 766
+          },
+          "duplicate": {
+            "ms": 196.192,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1293.228
+        },
+        {
+          "host": "cursor",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 201.682,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1485.321,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 713
+          },
+          "duplicate": {
+            "ms": 192.212,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1283.639
+        },
+        {
+          "host": "cursor",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 193.794,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1487.863,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 713
+          },
+          "duplicate": {
+            "ms": 198.433,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1294.069
+        },
+        {
+          "host": "cursor",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 192.183,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1475.155,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 713
+          },
+          "duplicate": {
+            "ms": 192.8,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1282.972
+        },
+        {
+          "host": "copilot",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 201.013,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1483.716,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 712
+          },
+          "duplicate": {
+            "ms": 196.359,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1282.703
+        },
+        {
+          "host": "copilot",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 188.88,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1470.85,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 712
+          },
+          "duplicate": {
+            "ms": 192.709,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1281.97
+        },
+        {
+          "host": "copilot",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 206.479,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1488.235,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 712
+          },
+          "duplicate": {
+            "ms": 191.045,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1281.756
+        }
+      ],
+      "limits": [
+        "No model, installed edit session or project check is executed.",
+        "Includes launcher and optional worker cost on this machine."
+      ]
+    },
+    {
+      "id": "attrs",
+      "schema": 1,
+      "source": "launcher replay",
+      "seconds": 1,
+      "samples": [
+        {
+          "host": "claude",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 191.044,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1451.235,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 754
+          },
+          "duplicate": {
+            "ms": 187.205,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1260.191
+        },
+        {
+          "host": "claude",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 188.696,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1371.729,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 799
+          },
+          "duplicate": {
+            "ms": 196.76,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1183.033
+        },
+        {
+          "host": "claude",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 190.783,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1329.589,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 799
+          },
+          "duplicate": {
+            "ms": 196.225,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1138.806
+        },
+        {
+          "host": "codex",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 202.943,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1497.901,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 799
+          },
+          "duplicate": {
+            "ms": 205.104,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1294.958
+        },
+        {
+          "host": "codex",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 195.172,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1330.021,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 799
+          },
+          "duplicate": {
+            "ms": 188.685,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1134.849
+        },
+        {
+          "host": "codex",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 197.418,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1351.764,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 799
+          },
+          "duplicate": {
+            "ms": 195.732,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1154.346
+        },
+        {
+          "host": "gemini",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 198.305,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1347.713,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 797
+          },
+          "duplicate": {
+            "ms": 186.791,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1149.408
+        },
+        {
+          "host": "gemini",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 192.861,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1486.401,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 753
+          },
+          "duplicate": {
+            "ms": 205.457,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1293.54
+        },
+        {
+          "host": "gemini",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 192.231,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1799.336,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 214
+          },
+          "duplicate": {
+            "ms": 225.984,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1607.105
+        },
+        {
+          "host": "cursor",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 201.638,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1412.588,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 744
+          },
+          "duplicate": {
+            "ms": 209.826,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1210.95
+        },
+        {
+          "host": "cursor",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 194.297,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1556.933,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 699
+          },
+          "duplicate": {
+            "ms": 199.613,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1362.636
+        },
+        {
+          "host": "cursor",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 199.311,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1428.802,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 744
+          },
+          "duplicate": {
+            "ms": 202.139,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1229.491
+        },
+        {
+          "host": "copilot",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 204.376,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1450.492,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 743
+          },
+          "duplicate": {
+            "ms": 195.65,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1246.116
+        },
+        {
+          "host": "copilot",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 203.492,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1436.589,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 743
+          },
+          "duplicate": {
+            "ms": 214.676,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1233.097
+        },
+        {
+          "host": "copilot",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 211.382,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1424.642,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 743
+          },
+          "duplicate": {
+            "ms": 220.691,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1213.26
+        }
+      ],
+      "limits": [
+        "No model, installed edit session or project check is executed.",
+        "Includes launcher and optional worker cost on this machine."
+      ]
+    },
+    {
+      "id": "jinja2",
+      "schema": 1,
+      "source": "launcher replay",
+      "seconds": 1,
+      "samples": [
+        {
+          "host": "claude",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 208.282,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1485.79,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 761
+          },
+          "duplicate": {
+            "ms": 207.496,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1277.508
+        },
+        {
+          "host": "claude",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 201.272,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1557.267,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 761
+          },
+          "duplicate": {
+            "ms": 194.146,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1355.995
+        },
+        {
+          "host": "claude",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 197.146,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "advised": {
+            "ms": 1484.402,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 761
+          },
+          "duplicate": {
+            "ms": 191.653,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 0
+          },
+          "added_ms": 1287.256
+        },
+        {
+          "host": "codex",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 194.998,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1484.645,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 761
+          },
+          "duplicate": {
+            "ms": 208.437,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1289.647
+        },
+        {
+          "host": "codex",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 194.322,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1475.505,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 761
+          },
+          "duplicate": {
+            "ms": 191.421,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1281.183
+        },
+        {
+          "host": "codex",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 197.095,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1479.559,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 761
+          },
+          "duplicate": {
+            "ms": 186.66,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1282.464
+        },
+        {
+          "host": "gemini",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 190.238,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1466.158,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 759
+          },
+          "duplicate": {
+            "ms": 190.03,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1275.92
+        },
+        {
+          "host": "gemini",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 196.574,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1479.722,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 759
+          },
+          "duplicate": {
+            "ms": 191.495,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1283.148
+        },
+        {
+          "host": "gemini",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 198.616,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1469.438,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 759
+          },
+          "duplicate": {
+            "ms": 192.863,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1270.822
+        },
+        {
+          "host": "cursor",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 199.172,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1525.126,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 706
+          },
+          "duplicate": {
+            "ms": 195.097,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1325.954
+        },
+        {
+          "host": "cursor",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 192.177,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1470.384,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 706
+          },
+          "duplicate": {
+            "ms": 195.813,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1278.207
+        },
+        {
+          "host": "cursor",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 198.495,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1489.268,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 706
+          },
+          "duplicate": {
+            "ms": 188.552,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1290.773
+        },
+        {
+          "host": "copilot",
+          "repeat": 0,
+          "state": "complete",
+          "baseline": {
+            "ms": 193.165,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1472.972,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 705
+          },
+          "duplicate": {
+            "ms": 189.204,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1279.807
+        },
+        {
+          "host": "copilot",
+          "repeat": 1,
+          "state": "complete",
+          "baseline": {
+            "ms": 203.074,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1589.181,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 705
+          },
+          "duplicate": {
+            "ms": 229.015,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1386.107
+        },
+        {
+          "host": "copilot",
+          "repeat": 2,
+          "state": "complete",
+          "baseline": {
+            "ms": 313.086,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "advised": {
+            "ms": 1651.47,
+            "exit_code": 0,
+            "has_advice": true,
+            "incomplete": true,
+            "output_chars": 705
+          },
+          "duplicate": {
+            "ms": 258.081,
+            "exit_code": 0,
+            "has_advice": false,
+            "incomplete": false,
+            "output_chars": 3
+          },
+          "added_ms": 1338.384
+        }
+      ],
+      "limits": [
+        "No model, installed edit session or project check is executed.",
+        "Includes launcher and optional worker cost on this machine."
+      ]
+    }
+  ]
+}

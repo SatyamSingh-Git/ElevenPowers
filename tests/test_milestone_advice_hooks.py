@@ -61,3 +61,20 @@ def test_off_and_unconfigured_hooks_do_not_launch_advice(tmp_path, monkeypatch):
     monkeypatch.setattr(automatic, 'run', forbidden)
     assert hook.on_post_tool(edit_payload(tmp_path), tmp_path) == 0
     assert not (tmp_path / '.elevenpowers/advice.json').exists()
+
+
+def test_native_patch_advice_follows_saved_attribution_and_preserves_gaps(tmp_path):
+    from core.hosts.bridge import run
+    from test_native_edits import event
+    opted(tmp_path)
+    patch = '*** Begin Patch\n*** Update File: cli.py\n@@\n-print(3)\n+print(4)\n*** End Patch'
+    payload = event(tmp_path, patch)
+    run('codex', 'PreToolUse', payload)
+    (tmp_path / 'cli.py').write_text('print(4)\n')
+    response, code = run('codex', 'PostToolUse', payload)
+    assert code == 0 and 'milestone advice' in json.dumps(response)
+    assert 'cli.py' in Ledger.load(tmp_path).touched
+    # Missing pre-event is retained independently of the advisory allowance.
+    response, code = run('codex', 'PostToolUse', event(tmp_path, patch, 'missing-baseline'))
+    assert code == 0 and 'attribution is incomplete' in json.dumps(response)
+

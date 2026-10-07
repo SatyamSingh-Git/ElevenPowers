@@ -72,3 +72,25 @@ def test_off_absent_and_corrupt_state_decline_work(tmp_path):
     (tmp_path / '.elevenpowers/config.json').write_text('{"profile":"off","milestone_advice":{"enabled":true}}')
     ledger._config = None
     assert deliver(ledger) == ''
+
+
+def test_changed_task_during_worker_discards_its_context(tmp_path, monkeypatch):
+    import subprocess
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    def changed(*args, **kwargs):
+        Ledger(root=tmp_path, task='new-task').save()
+        return subprocess.CompletedProcess(args[0], 0,
+            json.dumps({'schema': 1, 'context': 'old task advice'}), '')
+    monkeypatch.setattr(automatic, 'run', changed)
+    assert 'old task advice' not in automatic.deliver(ledger)
+    assert Ledger.load(tmp_path).task == 'new-task'
+
+
+def test_malformed_worker_output_is_not_delivered(tmp_path, monkeypatch):
+    import subprocess
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    monkeypatch.setattr(automatic, 'run', lambda *args, **kwargs:
+        subprocess.CompletedProcess(args[0], 0, 'not JSON', ''))
+    assert 'incomplete' in automatic.deliver(ledger).lower()
