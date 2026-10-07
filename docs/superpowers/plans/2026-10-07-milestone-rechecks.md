@@ -55,5 +55,10 @@
 
 - [x] Publish sanitized original observations and digests; distinguish capability, limited labelled relevance and no agent benefit.
 - [x] Render `python architecture/check.py --render`; verify docs links and runtime stdlib imports.
-- [ ] Fresh whole-branch reviewer, one reproduced important-fix pass if needed, then appropriate regression suite and hosted compatibility before authorized main integration.
-- [ ] Commit/push `Document explained rechecks and measured acceptance limits`; retain all open exits.
+- [x] Fresh whole-branch reviewer; one reproduced fix pass for relationship attribution, incomplete-attempt persistence and multirow Markdown; 16 corrected controls pass and original grades remain unchanged.
+- [x] Publish the code, six result families, guides, findings, status and all affected architecture views incrementally with descriptive messages; retain all open exits.
+
+**Main integration rule:** Run final affected regression and the hosted full suite
+on this exact branch head. Fast-forward authorized main only after all four
+Windows/Linux Python 3.11/3.13 jobs pass. Hosted execution and main history carry
+that integration evidence separately from implementation checkboxes.

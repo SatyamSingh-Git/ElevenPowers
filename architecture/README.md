@@ -204,3 +204,11 @@ The graph has 126 nodes and 289 edges. Optional milestone declarations, atomic h
 were exercised. The Planned tab exposes unfinished work separately from those
 delivered paths. See [journey 59](../journey/59-a-roadmap-contributors-can-open.md)
 for the contributor view and its verification boundary.
+
+The 2026-10-07 recheck delivery maps `core/milestones/rechecks.py` and
+`eval/milestone_rechecks.py` onto the existing milestone nodes. Explicit reports
+rank exact commands while retaining fallback verification and original states;
+frozen relationship/behavioral controls measure small-project read cost. The
+Architecture view now supplies the previously missing milestone runtime/state
+boxes referenced by its links. Automatic integration remains open. See
+[validation](../docs/validation/2026-10-07-milestone-rechecks.md).

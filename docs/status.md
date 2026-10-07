@@ -24,8 +24,8 @@ This delivery does not establish improved patch outcomes.
 The milestone-verification delivery passed **1,694 local tests with 2 skips**,
 the host doctor and four independent grader controls. All five architecture views
 rendered at 126 nodes / 289 edges; 411 local documentation links and 34 published
-artifact digests were checked. Hosted exact-head compatibility is the final
-main-integration gate; see [delivery validation](validation/2026-10-06-milestones.md).
+artifact digests were checked. That delivery subsequently passed hosted exact-head compatibility and main
+integration; see [delivery validation](validation/2026-10-06-milestones.md).
 
 The architecture page's [Planned view](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
 now gives contributors forty-one expandable entry points into unfinished delivery,

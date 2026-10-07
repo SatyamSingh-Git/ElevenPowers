@@ -39,6 +39,16 @@ of every saved published grade. The original six-case producer record is preserv
 its separate-command grades are unchanged. Checkpoints now retain incomplete state
 and pending source identities; complete table rows precede explanation blocks.
 
+Final local publication checks verify **78 artifact digests and 466 local document
+targets**. All five architecture views render at 126 nodes / 289 edges, including
+the previously absent milestone runtime/state boxes in the layered view. Actual
+CLI export renders all three command rows as a Markdown table. Standard-library
+runtime imports, the host doctor and all four independent grader controls pass.
+Final affected-regression and exact-head hosted full-suite results are integration
+gates, recorded with the delivery head in
+[Actions](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml)
+and main history; a queued job is not recorded as a successful check here.
+
 Native broad scopes still expire on unrelated source edits. Declarations cannot
 prove complete dependencies. Input completeness is not semantic completeness;
 the subprocess fault has no witness. Missing paths cannot justify excluding
