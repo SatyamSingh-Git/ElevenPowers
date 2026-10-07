@@ -227,6 +227,24 @@ def on_pre_tool(payload: dict, root: Path) -> int:
 
 
 def on_post_tool(payload: dict, root: Path) -> int:
+    # Both direct Claude invocation and adapter collectors receive one combined
+    # context message. Guidance and native attribution gaps must survive advice.
+    with transport.collect() as messages:
+        code = _on_post_tool(payload, root)
+        tool = payload.get('tool_name', '')
+        edited = tool in EDIT_TOOLS or (tool == 'Patch' and payload.get('_ep_platform'))
+        if edited and payload.get('hook_event_name') != 'PostToolUseFailure':
+            from .milestones.automatic import deliver
+            text = deliver(Ledger.load(root))
+            if text:
+                _emit('PostToolUse', additionalContext=text)
+    fields = transport.fields_of(messages)
+    if fields:
+        _emit('PostToolUse', **fields)
+    return code
+
+
+def _on_post_tool(payload: dict, root: Path) -> int:
     tool = payload.get("tool_name", "")
     if tool == "Patch" and payload.get("_ep_platform"):
         from .obligations import Claim

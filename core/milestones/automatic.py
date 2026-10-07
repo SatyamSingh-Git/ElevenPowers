@@ -1,7 +1,6 @@
 """Bounded optional advice; reservations are diagnostic state, never evidence."""
 import hashlib
 import json
-import math
 from pathlib import Path
 import subprocess
 import sys
