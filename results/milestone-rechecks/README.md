@@ -47,3 +47,8 @@ remain separate across **78 artifacts**. Partial attempts remain visible.
 This is capability and limited relevance evidence, **not incremental agent coding
 improvement**. Broader independent projects, native cost, producer-supported narrow
 attribution and a matched end-to-end comparison remain open before automatic integration.
+
+The subsequent review correction grades milestone-specific witnesses when commands
+are shared and atomically saves reads, completed attempts and pending identities.
+A regression regrade confirms every original six-case grade is unchanged. These
+fixes do not replace the published producer origin or timing observations.

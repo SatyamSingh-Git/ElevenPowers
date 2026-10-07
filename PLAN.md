@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**Explained milestone rechecks, 2026-10-07.** Explicit impact-enabled reports now
+group exact declared commands with direct/dependency/fallback priorities, all
+associated evidence states and bounded reasons. Missing paths never remove
+fallback verification. Comparable content identities qualify separate scans.
+Six authored projects record 36 real checks (30 passes, six assertion failures),
+5/6 known required relationships and no leads to six labelled negatives; the
+subprocess miss stays visible. Small-project paired reads add median 82.05 ms;
+native/large-project cost remains unqualified. Next independently label larger
+projects and measure native cost before automatic advice, then run a matched
+end-to-end comparison. No new coding-benefit claim. See
+[design](docs/design/milestone-rechecks.md), [results](results/milestone-rechecks/README.md)
+and [validation](docs/validation/2026-10-07-milestone-rechecks.md).
+
 **Milestone verification local capability, 2026-10-06.** Optional strict
 project-owned declarations now select exact aggregate receipts retained across
 tasks in the existing atomic ledger. A qualified read-only JSON/Markdown view,

@@ -127,3 +127,18 @@ def test_explanation_omissions_cannot_pass_the_requested_report_gate(tmp_path, m
     value = build(consumer_project(tmp_path), impact=True, changed=['provider.py'])
     assert value['state'] == 'INCOMPLETE' and not value['coverage']['complete']
     assert value['milestones'][0]['state'] == 'CURRENT'
+
+
+def test_markdown_keeps_multiple_command_rows_together(tmp_path):
+    root = consumer_project(tmp_path)
+    path = root / 'elevenpowers.milestones.json'
+    definition = json.loads(path.read_text())
+    definition['milestones'][0]['checks'].append({'kind': 'build', 'command': 'python -m compileall .'})
+    path.write_text(json.dumps(definition))
+    text = markdown(build(root, impact=True, changed=['provider.py']))
+    section = text.split('## Recommended recheck order')[1]
+    table = section.split('|---|---|---|---|---|\n', 1)[1]
+    first, second = table.splitlines()[:2]
+    assert first.startswith('| ') and second.startswith('| ')
+    assert 'compileall' in first + second
+    assert 'pytest' in first + second

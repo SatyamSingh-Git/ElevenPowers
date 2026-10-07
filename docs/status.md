@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-10-07 — explained milestone rechecks.** Delivered explicit exact-command
+grouping, preserved per-milestone evidence, direct/dependency/fallback priority,
+bounded explained reasons and compatible byte-derived scan identities. All
+fallback checks remain visible. The six authored projects record 36 actual runs
+(30 passes, six assertion failures), 5/6 known required relationships and no leads
+to six labelled unrelated references. The subprocess relationship is missed and
+kept as fallback. Paired small-project reads add median 82.05 ms; native/large
+repository cost and incremental coding benefit remain open. Automatic integration
+is deferred. See [results](../results/milestone-rechecks/README.md) and
+[validation](validation/2026-10-07-milestone-rechecks.md).
+
+The 2026-10-06 delivery below subsequently passed all four hosted compatibility
+jobs and was fast-forwarded to main at `1009532`; its integration gate is complete.
+The following dated observations retain that delivery's original test counts.
+
 Reviewed **2026-10-06**. ElevenPowers remains a research prototype. All five hosts
 share project-independent onboarding, command discovery, repository evidence and
 verification. Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI

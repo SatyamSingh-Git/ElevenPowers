@@ -237,6 +237,8 @@ def markdown(value):
             lines.append('| ' + ' | '.join(_text(v) for v in (
                 command['command'], command['kind'], command['priority'],
                 'refresh needed' if command['needs_refresh'] else 'current within recorded scope', refs)) + ' |')
+        for command in recommendations['commands']:
+            lines += ['', f"### {_text(command['kind'])}: {_text(command['command'])}", '']
             for reason in command['reasons']:
                 lines.append('- ' + _text(f"{reason['milestone']}: {reason['input']} ({reason['category']})"))
             lines += ['- ' + _text(i) for i in command['qualifications'] + command['issues']]

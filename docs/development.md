@@ -196,3 +196,17 @@ Exercise actual launcher paths with shell characters, not only project cwd.
 For release readiness, retain the host version and a real native event capture.
 Contract fixtures cannot replace it. See [the delivery record](validation/2026-09-29-platforms.md)
 for the independent review, corrections and remaining Linux diagnostic question.
+
+### Recheck evaluation controls
+
+`python -m eval.milestone_rechecks --output NEW_DISPOSABLE_DIR` runs frozen
+authored Python/Node boundary, equivalent and unrelated controls, grading known
+required/negative milestone labels separately from fallback retention. Keep
+assertions and labels fixed before interpreting the result; do not tune adapters
+to held-out outcomes. No model is launched. See
+[results](../results/milestone-rechecks/README.md).
+
+The controller checkpoints incomplete case/overall state atomically after reads
+and each requested/completed attempt. Pending identities remain when interrupted.
+Shared commands are graded using milestone-specific witness reasons; a command
+priority alone never credits a relationship. Saved original grades remain fixed.

@@ -30,6 +30,15 @@ delivery commit and [branch history](https://github.com/SatyamSingh-Git/ElevenPo
 [Public results](../../results/milestone-rechecks/README.md) preserve every attempt,
 actual source identities and 78 original/published artifact digests.
 
+The fresh reviewer found two important controller issues: shared-command priority
+could falsely credit unwitnessed milestones, and later interruptions could lose
+structured earlier attempts. A minor Markdown table break was also reproduced.
+All three controls failed before the single fix pass. Corrected recheck/controller
+tests passed **16 controls**, including a real interrupted producer and comparison
+of every saved published grade. The original six-case producer record is preserved;
+its separate-command grades are unchanged. Checkpoints now retain incomplete state
+and pending source identities; complete table rows precede explanation blocks.
+
 Native broad scopes still expire on unrelated source edits. Declarations cannot
 prove complete dependencies. Input completeness is not semantic completeness;
 the subprocess fault has no witness. Missing paths cannot justify excluding

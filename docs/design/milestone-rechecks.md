@@ -45,11 +45,14 @@ Freeze controller-owned Python and Node project sources, assertions, changes and
 required/extraneous milestone labels before applying faults. Use multiple unrelated
 layouts, including transitive imports, dynamic loading, a subprocess consumer and
 configuration changes. Hold out subprocess/config cases from algorithm development.
-Grade path-backed recommendations against explicit labels, preserve fallback misses,
+Grade milestone-specific path witnesses against explicit labels; a shared command's
+priority does not supply a relationship to every associated milestone. Preserve fallback misses,
 and report false leads only for labelled negatives. Actual tests must fail for a
 behavior fault and pass for correct/equivalent code; setup errors never count as
 detected faults. No agent/model is launched. New output directory only; save every
-attempt, source/oracle identities, output digests and timings. Do not infer the
+attempt, source/oracle identities, output digests and timings. Atomically checkpoint
+incomplete overall/case state, each completed read, and requested/finished attempts;
+retain a pending attempt identity when interrupted. Do not infer the
 precision of all unlabelled relationships or a coding-quality gain.
 
 ## Delivery exits

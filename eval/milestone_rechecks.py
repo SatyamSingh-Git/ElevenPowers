@@ -10,6 +10,7 @@ import time
 
 from core.ledger import Ledger
 from core.milestones import build
+from core.export import write
 from .milestones import Producer, _command, _definition, _put
 
 CORPUS = Path(__file__).with_name('milestone_recheck_cases.json')
@@ -21,21 +22,21 @@ def digest(path):
 
 def grade(case, report):
     """Only labelled references are an oracle; fallback is not a positive lead."""
-    linked, fallback = set(), set()
+    linked, retained = set(), set()
     for command in report['rechecks']['commands']:
-        target = fallback if command['priority'] == 'fallback' else linked
-        target.update(m['id'] for m in command['milestones'])
+        retained.update(m['id'] for m in command['milestones'])
+        linked.update(reason['milestone'] for reason in command.get('reasons', []))
     required, negative = set(case['required']), set(case['negative'])
     return {'known_required': len(required), 'known_negatives': len(negative),
             'hits': sorted(required & linked), 'misses': sorted(required - linked),
             'false_leads': sorted(negative & linked),
-            'fallback_retained': sorted((required - linked) & fallback),
+            'fallback_retained': sorted((required - linked) & retained),
             'unlabelled_leads': sorted(linked - required - negative),
             'coverage_complete': report['coverage']['complete'],
             'advice_available': report['rechecks']['state'] == 'available'}
 
 
-def _reads(root, changed, repeats):
+def _reads(root, changed, repeats, on_sample=None):
     samples = []
     report = None
     ledger = root / '.elevenpowers/ledger.json'
@@ -58,7 +59,70 @@ def _reads(root, changed, repeats):
                         'selected_bytes': report['coverage']['selected_bytes'],
                         'source_fingerprint': report['coverage']['source_fingerprint'],
                         'ledger_unchanged': before == digest(ledger)})
+        if on_sample is not None:
+            on_sample(samples[-1])
     return report, samples
+
+
+def _case(case, directory, node, repeats, record, checkpoint):
+    directory.mkdir()
+    root = directory / 'project'
+    root.mkdir()
+    producer = Producer(directory)
+    # Keep the live list visible even when a later call raises before returning.
+    record['runs'] = producer.runs
+    for path, text in case['sources'].items():
+        _put(root, path, text)
+    commands = {}
+    for milestone in case['milestones']:
+        name = milestone['test']
+        commands[milestone['id']] = (producer.python(name) if case['language'] == 'python' else
+            _command([node, '--test', '--test-reporter=tap', f'checks/{name}.test.mjs']))
+    rows = [{'id': m['id'], 'description': 'Controller-owned fixed boundary expectations.',
+             'inputs': m['inputs'], 'checks': [{'kind': 'test_suite', 'command': commands[m['id']]}]}
+            for m in case['milestones']]
+    _definition(root, rows)
+    frozen = {p.relative_to(root).as_posix(): digest(p) for p in (root / 'checks').rglob('*') if p.is_file()}
+    record['frozen_checks'] = frozen
+    Ledger(root=root, task='baseline').save()
+    checkpoint()
+    for phase in ('baseline', 'fault', 'equivalent'):
+        record['phase'] = phase
+        if phase != 'baseline':
+            _put(root, case['change'], case[phase])
+            Ledger(root=root, task=phase).save()
+        def sample_done(sample):
+            record['reads'].append(dict(sample, phase=phase))
+            checkpoint()
+        before, _ = _reads(root, case['change'], repeats, sample_done)
+        if phase == 'fault':
+            record['grade'] = grade(case, before)
+            record['recommendations'] = before['rechecks']
+            record['impact_issues'] = before['impact']['issues']
+        attempts = []
+        for milestone in case['milestones']:
+            record['pending_attempt'] = {'milestone': milestone['id'], 'phase': phase,
+                'command': commands[milestone['id']], 'state': 'incomplete',
+                'source_fingerprint': before['coverage']['source_fingerprint'],
+                'note': 'Attempt requested; completion has not been observed.'}
+            checkpoint()
+            outcome = producer.execute(root, commands[milestone['id']],
+                                       junit=milestone['test'] if case['language'] == 'python' else None)
+            outcome.update(phase=phase, milestone=milestone['id'])
+            expected_failure = phase == 'fault' and case['fault_expected'] and milestone['id'] in case['required']
+            outcome['expected'] = 'assertion failure' if expected_failure else 'pass'
+            outcome['matches_expectation'] = bool(outcome['qualified_failure'] if expected_failure else outcome['qualified_pass'])
+            attempts.append(outcome)
+            record['pending_attempt'] = None
+            checkpoint()
+        record[phase] = {'qualified': all(a['matches_expectation'] for a in attempts),
+                         'before_states': {m['id']: m['state'] for m in before['milestones']},
+                         'after_state': build(root)['state']}
+        checkpoint()
+    record['frozen_checks_unchanged'] = all(digest(root / p) == sha for p, sha in frozen.items())
+    record['state'] = 'qualified' if (record['frozen_checks_unchanged'] and
+        all(record[p]['qualified'] for p in ('baseline', 'fault', 'equivalent')) and
+        all(s['ledger_unchanged'] for s in record['reads'])) else 'incomplete'
 
 
 def exercise(destination, *, case_ids=None, repeats=3):
@@ -79,11 +143,9 @@ def exercise(destination, *, case_ids=None, repeats=3):
     node = shutil.which('node')
     # Node's real version/output is collected, not assumed from the executable name.
     node_version = None
-    if node:
-        node_version = subprocess.run([node, '--version'], capture_output=True, text=True, timeout=10).stdout.strip()
     value = {'schema': 1, 'corpus_sha256': hashlib.sha256(corpus_bytes).hexdigest(),
              'environment': {'python': platform.python_version(), 'platform': platform.platform(), 'node': node_version},
-             'runtime_sources': {}, 'cases': [], 'qualified': True,
+             'runtime_sources': {}, 'cases': [], 'qualified': False,
              'limits': ['Authored small projects; labelled references are not a complete dependency oracle.',
                         'No agent/model runs or measured incremental coding benefit.',
                         'Fallback retention is not a recovered relationship; missing paths remain misses.',
@@ -93,65 +155,40 @@ def exercise(destination, *, case_ids=None, repeats=3):
     for relative in ('core/milestones', 'core/impact'):
         for source in sorted((code_root / relative).rglob('*.py')):
             value['runtime_sources'][source.relative_to(code_root).as_posix()] = digest(source)
+    def checkpoint():
+        value['qualified'] = len(value['cases']) == len(cases) and all(c['state'] == 'qualified' for c in value['cases'])
+        write(destination / 'observations.json', json.dumps(value, indent=2) + '\n', force=True)
+    checkpoint()
+    if node:
+        try:
+            probe = subprocess.run([node, '--version'], capture_output=True, text=True, timeout=10)
+            if probe.returncode or not probe.stdout.strip():
+                raise ValueError('Node version probe did not complete successfully')
+            value['environment']['node'] = probe.stdout.strip()
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            value['environment']['node_issue'] = f'{type(error).__name__}: {error}'
+            node = None
+        finally:
+            checkpoint()
     for case in cases:
         directory = destination / case['id']
-        directory.mkdir()
-        root = directory / 'project'
-        root.mkdir()
         record = {'id': case['id'], 'partition': case['partition'], 'language': case['language'],
                   'case_sha256': hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest(),
-                  'reads': [], 'runs': []}
+                  'reads': [], 'runs': [], 'state': 'incomplete', 'pending_attempt': None}
         value['cases'].append(record)
+        checkpoint()
         if case['language'] == 'node' and node is None:
             record.update(state='incomplete', issues=['Node unavailable; no attempts discarded'])
-            value['qualified'] = False
+            checkpoint()
             continue
-        producer = Producer(directory)
-        for path, text in case['sources'].items():
-            _put(root, path, text)
-        commands = {}
-        for milestone in case['milestones']:
-            name = milestone['test']
-            commands[milestone['id']] = (producer.python(name) if case['language'] == 'python' else
-                _command([node, '--test', '--test-reporter=tap', f'checks/{name}.test.mjs']))
-        rows = [{'id': m['id'], 'description': 'Controller-owned fixed boundary expectations.',
-                 'inputs': m['inputs'], 'checks': [{'kind': 'test_suite', 'command': commands[m['id']]}]}
-                for m in case['milestones']]
-        _definition(root, rows)
-        frozen = {p.relative_to(root).as_posix(): digest(p) for p in (root / 'checks').rglob('*') if p.is_file()}
-        record['frozen_checks'] = frozen
-        Ledger(root=root, task='baseline').save()
-        for phase in ('baseline', 'fault', 'equivalent'):
-            if phase != 'baseline':
-                _put(root, case['change'], case[phase])
-                Ledger(root=root, task=phase).save()
-            before, samples = _reads(root, case['change'], repeats)
-            record['reads'] += [dict(s, phase=phase) for s in samples]
-            if phase == 'fault':
-                record['grade'] = grade(case, before)
-                record['recommendations'] = before['rechecks']
-                record['impact_issues'] = before['impact']['issues']
-            attempts = []
-            for milestone in case['milestones']:
-                outcome = producer.execute(root, commands[milestone['id']],
-                                           junit=milestone['test'] if case['language'] == 'python' else None)
-                outcome.update(phase=phase, milestone=milestone['id'])
-                expected_failure = phase == 'fault' and case['fault_expected'] and milestone['id'] in case['required']
-                outcome['expected'] = 'assertion failure' if expected_failure else 'pass'
-                outcome['matches_expectation'] = bool(outcome['qualified_failure'] if expected_failure else outcome['qualified_pass'])
-                attempts.append(outcome)
-            record[phase] = {'qualified': all(a['matches_expectation'] for a in attempts),
-                             'before_states': {m['id']: m['state'] for m in before['milestones']},
-                             'after_state': build(root)['state']}
-        record['runs'] = producer.runs
-        record['frozen_checks_unchanged'] = all(digest(root / p) == sha for p, sha in frozen.items())
-        record['state'] = 'qualified' if (record['frozen_checks_unchanged'] and
-            all(record[p]['qualified'] for p in ('baseline', 'fault', 'equivalent')) and
-            all(s['ledger_unchanged'] for s in record['reads'])) else 'incomplete'
-        value['qualified'] &= record['state'] == 'qualified'
-        _put(destination, 'observations.json', json.dumps(value, indent=2) + '\n')
+        try:
+            _case(case, directory, node, repeats, record, checkpoint)
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            record['issues'] = [f'{type(error).__name__}: {error}']
+        finally:
+            checkpoint()
     # Always publish partial attempts, including an entirely unavailable language.
-    _put(destination, 'observations.json', json.dumps(value, indent=2) + '\n')
+    checkpoint()
     return value
 
 

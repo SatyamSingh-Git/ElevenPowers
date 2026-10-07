@@ -33,10 +33,10 @@
 
 **Interfaces:** `rechecks.plan(milestones, advice, *, complete) -> dict`; consumes qualified report rows and bounded explained leads; returns schema/state/commands/issues/safe_to_exclude/timing.
 
-- [ ] Write tests grouping shared commands and preserving mixed CURRENT/STALE states; direct/dependency/fallback priority; graph gaps and source mismatch; no extra execution or state writes.
-- [ ] Observe failures: `.venv/Scripts/python.exe -m pytest tests/test_milestone_rechecks.py -q`.
-- [ ] Implement pure grouping, bounded reasons and read-only report/Markdown integration. Preserve existing CLI exit codes and optional behavior.
-- [ ] Run new tests plus existing milestone/report/impact controls; expect all pass. Commit/push `Explain exact milestone rechecks while retaining fallback verification`.
+- [x] Write tests grouping shared commands and preserving mixed CURRENT/STALE states; direct/dependency/fallback priority; graph gaps and source mismatch; no extra execution or state writes.
+- [x] Observe failures: `.venv/Scripts/python.exe -m pytest tests/test_milestone_rechecks.py -q`.
+- [x] Implement pure grouping, bounded reasons and read-only report/Markdown integration. Preserve existing CLI exit codes and optional behavior.
+- [x] Run new tests plus existing milestone/report/impact controls; expect all pass. Commit/push `Explain exact milestone rechecks while retaining fallback verification`.
 
 ### Task 2: Independent relevance and cost exercise
 
@@ -44,16 +44,16 @@
 
 **Interfaces:** `exercise(destination) -> dict`; explicit new disposable directory; frozen corpus sources, labels and fault/control assertions; ordinary `python -m eval.milestone_rechecks --output NEW_DIR` CLI.
 
-- [ ] Freeze case identities/labels before changes. Test required/direct/negative/fallback grading and prevent missing/setup checks counting as detection; verify overwrite refusal.
-- [ ] Observe failures before implementation.
-- [ ] Reuse existing real pytest/Node receipt producer; run positive, faulty and repaired/equivalent controls; collect all labels, actual outcomes, output/source digests and read timings.
-- [ ] Run exercise tests and actual explicit exercise; inspect every result including misses. Commit/push `Measure milestone recommendation relevance with frozen behavioral controls`.
+- [x] Freeze case identities/labels before changes. Test required/direct/negative/fallback grading and prevent missing/setup checks counting as detection; verify overwrite refusal.
+- [x] Observe failures before implementation.
+- [x] Reuse existing real pytest/Node receipt producer; run positive, faulty and repaired/equivalent controls; collect all labels, actual outcomes, output/source digests and read timings.
+- [x] Run exercise tests and actual explicit exercise; inspect every result including misses. Commit/push `Measure milestone recommendation relevance with frozen behavioral controls`.
 
 ### Task 3: Publish qualified delivery
 
 **Files:** Update PLAN/status/README feature section, guides, journey, validation, architecture and public results.
 
-- [ ] Publish sanitized original observations and digests; distinguish capability, limited labelled relevance and no agent benefit.
-- [ ] Render `python architecture/check.py --render`; verify docs links and runtime stdlib imports.
+- [x] Publish sanitized original observations and digests; distinguish capability, limited labelled relevance and no agent benefit.
+- [x] Render `python architecture/check.py --render`; verify docs links and runtime stdlib imports.
 - [ ] Fresh whole-branch reviewer, one reproduced important-fix pass if needed, then appropriate regression suite and hosted compatibility before authorized main integration.
 - [ ] Commit/push `Document explained rechecks and measured acceptance limits`; retain all open exits.
