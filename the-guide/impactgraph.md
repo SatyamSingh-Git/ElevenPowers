@@ -7,6 +7,22 @@ It works without an AI agent and executes no target source or verification comma
 
 ## Query before editing
 
+Process launches and custom dispatch can cross boundaries that static imports
+cannot witness. Declare an actual known relationship in project-owned
+`impactgraph.json`; for example, a test that launches `cli.py`:
+
+```json
+{"schema": 1, "edges": [
+  {"source": "file:test_cli.py", "target": "file:cli.py", "kind": "uses"}
+]}
+```
+
+Both files must be selected readable inputs. The relationship is labelled
+`declared`, with the declaration file as provenance. It is a project assertion,
+not proof that a subprocess ran. Invalid endpoints reject the declaration;
+missing relationships retain fallback checks. The same form works for any
+language's process or configuration boundary without executing project code.
+
 ```sh
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_impact.py --project . src/auth/session.py
 python PATH_TO_ELEVENPOWERS/plugin/bin/ep_impact.py --project . src/auth/session.ts --json
