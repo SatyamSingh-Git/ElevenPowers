@@ -26,13 +26,14 @@
 
 **What it can do today:**
 
-- **Explain change impact with [ImpactGraph](the-guide/impactgraph.md).** Find possible consumers and candidate tests through explained dependency paths, project-declared relationships and qualified observations. Coverage gaps stay visible; a missing path never makes a check safe to skip.
-- **Keep earlier behavior visible with [milestone verification](the-guide/milestones.md).** Retain project-owned checks and their latest receipts across tasks, distinguish current, failed, stale, absent and incomplete evidence, and optionally deliver bounded recheck advice after edits.
-- **Probe [test strength](the-guide/configuration.md).** Optional mutation analysis checks whether passing tests notice small changes in edited production code, using isolated inputs and explicit budgets. Findings expose possible test gaps without claiming correctness.
-- **Check [project readiness and health](the-guide/commands.md).** Discover commands from supported manifests, respect repository ignores and boundaries, report incomplete scan coverage, and inspect whether startup, edit, evidence capture and completion callbacks are working.
-- **Make [verification resumable](the-guide/configuration.md).** Persist check progress and receipts, retain incomplete attempts, reuse fresh results and keep qualified passing checkpoints available when later edits invalidate evidence.
-- **Export [reviewer-readable evidence](the-guide/commands.md#ep_report--evidence-to-share-with-a-reviewer).** Share Markdown or JSON reports with claims, receipt outcomes, current input fingerprints, coverage gaps and next actions.
-- **Work across [five coding-agent hosts](the-guide/platforms.md).** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI share the same project-aware evidence runtime, with host-specific setup and documented acceptance limits.
+**ImpactGraph:** possible consumers, candidate tests and explained dependency paths.
+
+1. **Milestone verification:** earlier behavior checks and their evidence across tasks, with optional recheck advice.
+2. **Test strength:** optional mutation analysis that identifies possible test gaps.
+3. **Project readiness and health:** command discovery, repository-aware scanning and integration health.
+4. **Resumable verification:** saved progress, fresh-result reuse and qualified passing checkpoints.
+5. **Evidence reports:** reviewer-readable Markdown and JSON exports.
+6. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
 
