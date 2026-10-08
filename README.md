@@ -607,6 +607,11 @@ pending installed edit-session cost and broader precision. See
 [larger-project observations](results/milestone-advisories/README.md) and
 [launcher/native measurements](results/milestone-advisories/callbacks.md).
 
+Readiness now separates generated advice, context flushed to a native host and
+later matching native check outcomes. This optional view tracks delivery;
+it does not establish that the model used advice or improved the code. See
+[advice observations and acceptance](the-guide/advice-delivery.md).
+
 The first installed two-stage comparison used four Sonnet 5 medium subscription
 sessions: queue leases/expiry followed by persistence, and inventory expiry
 followed by persistence. Both ordinary and assisted outputs passed 8/8 final

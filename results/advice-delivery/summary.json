@@ -1,0 +1,2536 @@
+{
+  "schema": 1,
+  "runtime": "fb99679a783f2c0091e92c58ea6f79e3fb66c1522e264314099d3845b362cf51",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "producer_sha256": "367c655cd369706979ac210ee09598fbe847e1ac0bab317a10d821b182c9c4ed",
+  "observations": [
+    {
+      "host": "claude",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 387,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 518,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.607,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "claude",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 387,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 518,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "83ddc6d6d8cf60a13e33e459862e598fce2eea897b25e0369dbdaa9157a50804",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "failed",
+              "receipt_key": "c99948800a1007128279132cf90c83625cf4c7440a92d6d48b2594583b8acde8",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "incomplete",
+              "receipt_key": "6925c41280dbc16f27a83c3b71f8dea6dc432aa321d0ae75ba5c493fd906acd0",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "166d7f2ddde7e0e62d928353660cb3b6209a26a8e600ce612d75f92daf8f0cdf",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 6.92,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 387,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 518,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.624,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 387,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 518,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "e59b9bc6fb85c56169c95db628905ca5a31a02414f8af6c159b58cfb658b2568",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "failed",
+              "receipt_key": "e4d7a22ff09573f1d6183b275e3316fd7a4f74499f2defa44a9ebfe705ff6281",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "incomplete",
+              "receipt_key": "3486378648816db2fdea2302168b9c979541d27601bea02fdfc247f3c7218b11",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "54ae19dea2292538e1ca0fe80a75447002fe587ff7501101c0ee48803607522b",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 6.873,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 387,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 516,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.281,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 387,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 516,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "a20edb4d8fd6629c6493367cb9ac002ea93496515f3d7d1fb2f14a96fee97fba",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "failed",
+              "receipt_key": "cd1348ce04f39d8a17fcde84780b024466d1010b82ac650a9106c623aed9d7ab",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "incomplete",
+              "receipt_key": "5938b5b831bb122d668e12d5c8c32bf3b878f3e04d4fbee9a18bf531362d6aeb",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "d0b2a7459c4c317cbf7568ac107b06c3caa0e781d7495cb178a154d360b689a6",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 6.533,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 331,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 463,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.648,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 331,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 463,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "e38cbf66c47af4ccf7d649afd4b503e2943ec7a38a13b49f77be5445d001a2cc",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "failed",
+              "receipt_key": "dbb7efa37e00e56e1f632561ec4114dc9d7edcd55b49b6e11fc592ff374d3cc1",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "incomplete",
+              "receipt_key": "3a4d78a02f51b30d4788de1e495565970a5558c2253467e5912a63a12c714f47",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "a5462ec18516b227a900ea34771e8cff8352f2edf5a131a6cecc4fb02aa54653",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 7.178,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 330,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 462,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.674,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 330,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 462,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "6b8dc08aed1b4fadb28cb2ecf5dc17a62f4e15def45c24c3467ec402889caf14",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "failed",
+              "receipt_key": "dfa2be0a34ef71e2848304fd1b496e863b71cb78d599c2afc931f273d1bb26bf",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "incomplete",
+              "receipt_key": "a37883c3116bd1cc9fbee8c376a8272beb3d9540388d24f7cd7a9e3b23627e42",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+              "state": "current",
+              "receipt_key": "49cf782a16c2f72630347dedb1afa7072dcbc9df82f087ca53af8abcfabc9d55",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 6.98,
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503"
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 382,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 521,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.425,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 382,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 521,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "69bc149e6f9b1a82b8dc1311b01be94477231e59781a44bbd6f60a9111b56961",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "failed",
+              "receipt_key": "007980da940abff1a0f25e711a61ae9bba3ac7708091e338d899c3496f40d2c1",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "incomplete",
+              "receipt_key": "459aeda7196e2db389dee3cd0e0a55f3de84b81e44010de9fdc7292e47cb31f9",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "c95f3b8edb6ccfba6d7391313831ee6ee9bac1ea9d4333a286390e71f4ea1366",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 7.045,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 383,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 521,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 6.034,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 383,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 521,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "bb9a6394c73de4a7beb7c6e25050fff40c885e00c22c73dac0d6eaeee7b1dafe",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "failed",
+              "receipt_key": "4f3f791b6c798178ab101fb9bc87c8b5a393327ef75bf7daeb861ce78c60868c",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "incomplete",
+              "receipt_key": "56a6fb4629abd6e6454def3f7b53aea091c82414939fb4554ebecd598538e825",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "934949f6d74bbb3a18e6efb367e180a62d970db4c2ce7fc6cbc6b1238caf4d72",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 7.141,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 383,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 519,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.725,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 383,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 519,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "d0782c59408de645148d38e69f833362e9f70d72f5e7a313a3fa0b4853c06182",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "failed",
+              "receipt_key": "beb9f9ee6353d65d36ef57e62f2dca3e4931047878e1214368e6206ccd5b626f",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "incomplete",
+              "receipt_key": "89fb1c75ac195f463dd9d9d2e9ec0b42a9decf5cd09369bf39a2762850fcda77",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "758db1dff158a23de58e050d66592fa1a13b67670ccf6fa998cb588c77a6fb5f",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 6.805,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 327,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 466,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.926,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 327,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 466,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "8bd614523f0045ac673e1beeb646a74df169dd5ec6dc7d1ece86b164799a521e",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "failed",
+              "receipt_key": "7f340f8eda48e8eb3d7b754d4cfcaaa4ef28e1b9094ec66a387487f666db63f2",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "incomplete",
+              "receipt_key": "0a1e96436cc235cad5eb1bc85d70fadd9beedce6fa34513ef01cac198468fc06",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "958e53920d37262ac505d995c9785561f8dcf8b28aeef0afe3e8d51028673ff1",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 7.232,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 326,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 465,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "generated",
+        "generated": 1,
+        "emitted": 0,
+        "matching_native_receipts": 0,
+        "checks": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "observations": [
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "generated",
+          "generated": 1,
+          "emitted": 0,
+          "matching_native_receipts": 0,
+          "checks": [],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 5.893,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 326,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 465,
+          "has_advice": true
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "before_check": {
+        "state": "emitted",
+        "generated": 1,
+        "emitted": 1,
+        "matching_native_receipts": 0,
+        "checks": [
+          {
+            "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+            "state": "unobserved",
+            "receipt_key": ""
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "observations": [
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "28dc8bc99cbc7f441ca07e130ebe97e4cfb828327dac4627c18590683910cf7d",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "failed",
+              "receipt_key": "dc235d1da63bbad3919852e3ac88a5796cde982ad5580accdd750dceab5eaa23",
+              "result": "fail",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "incomplete",
+              "receipt_key": "28e3eb66e330fc90c578904dfed6a7a7d4e1576f9f690e3564c43647db363e8a",
+              "result": "error",
+              "execution": "incomplete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        },
+        {
+          "state": "emitted",
+          "generated": 1,
+          "emitted": 1,
+          "matching_native_receipts": 1,
+          "checks": [
+            {
+              "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+              "state": "current",
+              "receipt_key": "826873064487d512247aee15f66a80e960cee1bfdb56a347067872cd8d4cba8e",
+              "result": "pass",
+              "execution": "complete",
+              "freshness": "fresh"
+            }
+          ],
+          "issues": [],
+          "model_consumption": "unproven"
+        }
+      ],
+      "seconds": 7.305,
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083"
+    }
+  ],
+  "unavailable": [],
+  "qualified": true,
+  "limits": [
+    "Native-control means synthetic launcher ingress, not an installed agent session.",
+    "Matching subsequent native receipts do not prove model comprehension or causal coding benefit.",
+    "Actual local commands and bounded interruption run on disposable authored projects."
+  ]
+}

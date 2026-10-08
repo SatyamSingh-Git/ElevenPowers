@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-08 advice delivery observations](2026-10-08-advice-delivery-observations.md): bounded native context emission, temporal check joins, optional acceptance and model-free actual-command controls.
+
 - [2026-10-08 native command qualification](2026-10-08-native-command-recognition.md):
   literal directory wrappers, raw/configured identity, unsuccessful supersession,
   scope and directory review controls, and 24 actual process/replay observations.

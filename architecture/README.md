@@ -4,7 +4,12 @@ Five views of the system and its unfinished work — the runtime, plugin seam,
 durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.
 
-The latest map includes conservative literal invocation qualification, exact
+The latest map adds optional advice context emission and temporal native check
+observations, plus the model-free Python/Node exercise. This is delivery metadata,
+not model comprehension or causal benefit; fresh installed qualification remains
+planned. See [the observation guide](../the-guide/advice-delivery.md).
+
+The map also includes conservative literal invocation qualification, exact
 receipt identity and actual shell/replay controls alongside the staged comparison
 and optional bounded milestone advice. The original four installed sessions
 retain their two correctness ties and missing wrapper links. Planned cards now

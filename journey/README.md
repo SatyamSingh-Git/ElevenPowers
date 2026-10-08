@@ -1,5 +1,7 @@
 # The journey
 
+Latest: [68 — text leaving the runtime](68-text-leaving-the-runtime.md).
+
 Latest: [67 — a wrapper is not another check](67-a-wrapper-is-not-another-check.md)
 records conservative directory qualification, exact receipt identity, targeted
 scope review repairs and real command controls without another model run.

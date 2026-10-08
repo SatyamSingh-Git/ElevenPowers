@@ -1,5 +1,9 @@
 # Configuration
 
+Optional milestone advice now has [read-only delivery observations](advice-delivery.md)
+across all five host launchers. Successful context emission and subsequent native
+checks remain separate from model comprehension and installed-session acceptance.
+
 Optional project-owned milestones use a separate tracked root file,
 `elevenpowers.milestones.json`, schema 1. Declare human-owned behavior descriptions,
 ordinary relative inputs and exact aggregate check commands. Existing captured

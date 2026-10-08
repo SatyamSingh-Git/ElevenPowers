@@ -16,6 +16,7 @@ If something here is wrong, out of date, or simply does not work — **[satyambc
 | **[configuration.md](configuration.md)** | automatic setup, command overrides, scan budgets and profiles |
 | **[impactgraph.md](impactgraph.md)** | explicit impact queries, optional compiler, offline coverage receipts and measured limits |
 | **[milestones.md](milestones.md)** | optional earlier behavior checks, cross-task receipt history, fresh status and scope limits |
+| **[advice-delivery.md](advice-delivery.md)** | generated versus emitted advice, subsequent native checks and optional acceptance |
 | **[troubleshooting.md](troubleshooting.md)** | what goes wrong, why, and the fix |
 
 ---

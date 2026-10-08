@@ -1,5 +1,9 @@
 # Native platforms
 
+Optional milestone advice now has [read-only delivery observations](advice-delivery.md)
+across all five host launchers. Successful context emission and subsequent native
+checks remain separate from model comprehension and installed-session acceptance.
+
 Optional changed-file test strength uses one backend across all five platforms.
 The shared completion handler considers it after ordinary verification and
 confirmation; host choice does not change operators, isolation, limits or report

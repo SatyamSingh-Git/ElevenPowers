@@ -1,5 +1,17 @@
 # Current delivery status
 
+**2026-10-08 — observable advice delivery.** Optional milestone advice now
+distinguishes worker-generated context, a native launcher flushing supported
+context, and subsequent exact matching native check outcomes. Readiness joins
+task, startup session, wiring generation and runtime with fresh receipts. Only
+fully visible, untruncated command recommendations qualify. Optional moving or
+damaged state affects its own view; required health and completion gates remain
+separate. Bounded hashes retain no context or command bodies. Model-free actual
+Python/Node commands exercise five hosts in replay and synthetic native modes.
+Fresh installed advice qualification, model comprehension and causal coding
+benefit remain open; earlier installed correctness ties are unchanged. See
+[guide](../the-guide/advice-delivery.md), [protocol](design/advice-delivery-observations.md), [observations](../results/advice-delivery/README.md) and [validation](validation/2026-10-08-advice-delivery-observations.md).
+
 **2026-10-08 — literal native command qualification.** The shared runtime now
 recognizes one literal project-directory wrapper around an exact declared check,
 retains raw and configured identities, and preserves failed/incomplete latest

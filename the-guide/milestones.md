@@ -140,6 +140,10 @@ text. Reservations are saved before work, so an interrupted worker consumes an
 attempt rather than silently launching again. Delivered advice can still have
 incomplete coverage. Corrupt/linked state declines work with a diagnostic.
 The full explicit report remains available after a timeout, cooldown or cap.
+Legacy `delivered` means worker text was available. [Advice delivery observations](advice-delivery.md)
+separately identify successful native context flushes and later matching checks;
+they do not prove model comprehension or benefit. The 64 KiB writer may evict
+older tasks, records that loss, and preserves the active task's attempt allowance.
 
 Context shows at most six commands, three reasons each and 6000 characters;
 omissions and truncated previews are labelled. Keep omitted/fallback checks.

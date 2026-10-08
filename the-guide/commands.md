@@ -25,6 +25,11 @@ Portable `ep_report` adds the section only when configured, without changing
 the task verdict. `python -m eval.milestones --output NEW_DIR` explicitly runs
 the disposable capability exercise, with real checks and no model.
 
+`ep_ready.py HOST --project PATH --json` adds informational `milestone_advice`:
+worker generation, qualified native emission and later exact native checks with
+current/failed/stale/incomplete/unobserved outcomes. Required health remains
+separate. Model consumption is always unproven; see [the observation guide](advice-delivery.md).
+
 ## ep_impact — explained consumers and candidate tests
 
 ```bash
@@ -68,6 +73,12 @@ source maps remain incomplete; static omissions remain visible independently.
 are 0 complete, 1 exported incomplete, 2 invalid invocation/export failure.
 See [the receipt contract](impactgraph.md#convert-actual-coverage).
 
+
+Optional `--advice` is accepted only with `ep_doctor.py --prepare-acceptance`.
+It prepares a sealed milestone declaration and explicit bounded advice settings;
+preparation launches no model. Acceptance additionally requires a qualified
+emission and subsequent current native check, without adding a product gate.
+See [protocol, states and limits](advice-delivery.md).
 
 ## ep_ready — fresh health for the whole integration
 
