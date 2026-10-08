@@ -4,12 +4,12 @@ Five views of the system and its unfinished work — the runtime, plugin seam,
 durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.
 
-The latest map includes source-sealed two-stage subscription comparison and
-versioned independent source regrades alongside optional bounded milestone advice.
-Four installed sessions produced two correctness ties; exact-command native links
-remain incomplete for wrappers. Planned cards keep command capture, broader
-independent references, advice consumption and coding benefit open. See
-[dated checks](../docs/validation/2026-10-08-behavior-preservation.md).
+The latest map includes conservative literal invocation qualification, exact
+receipt identity and actual shell/replay controls alongside the staged comparison
+and optional bounded milestone advice. The original four installed sessions
+retain their two correctness ties and missing wrapper links. Planned cards now
+track fresh installed capture, broader independent references, advice consumption
+and coding benefit. See [dated command checks](../docs/validation/2026-10-08-native-command-recognition.md).
 
 ### ▶ **[Open the live graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)**
 

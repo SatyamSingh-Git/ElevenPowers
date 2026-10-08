@@ -321,6 +321,12 @@ evidence from results recorded before the source changed. See
 [configuration](the-guide/configuration.md) and
 [portable evidence validation](docs/validation/2026-09-28-portable-evidence.md).
 
+A single literal `cd PROJECT && EXACT_COMMAND` can also bind to the configured
+check after directory qualification. The original invocation remains visible;
+wrong-directory and unfinished attempts stay incomplete, and targeted checks
+retain their scope. See [supported command capture](the-guide/command-capture.md)
+and [real process controls](results/native-command-recognition/README.md).
+
 ### Fresh project health
 
 Check whether the integration is working in a particular project:

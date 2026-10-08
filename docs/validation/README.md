@@ -1,5 +1,9 @@
 # Validation records
 
+- [2026-10-08 native command qualification](2026-10-08-native-command-recognition.md):
+  literal directory wrappers, raw/configured identity, unsuccessful supersession,
+  scope and directory review controls, and 24 actual process/replay observations.
+
 - [2026-10-08 staged preservation](2026-10-08-behavior-preservation.md): four
   approved Sonnet 5 medium sessions, eight resumed requests, corrected independent
   source grades, two correctness ties and incomplete exact-command native capture.

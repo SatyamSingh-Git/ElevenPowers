@@ -1,5 +1,9 @@
 # The journey
 
+Latest: [67 — a wrapper is not another check](67-a-wrapper-is-not-another-check.md)
+records conservative directory qualification, exact receipt identity, targeted
+scope review repairs and real command controls without another model run.
+
 Latest: [66 — earlier behavior needs a second task](66-earlier-behavior-needs-a-second-task.md)
 records the four staged subscription sessions, evaluator corrections, two
 correctness ties and the difference between current milestones and native capture.

@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**2026-10-08 — literal native command qualification.** The shared runtime now
+recognizes one literal project-directory wrapper around an exact declared check,
+retains raw and configured identities, and preserves failed/incomplete latest
+attempts across milestone history and reuse. Targeted checks retain their scope;
+ambiguous drive-relative and parent-traversal paths are excluded. Twenty-four
+actual Python/npm process controls through cmd and Git Bash qualify the local
+capture capability. No model calls or fresh installed sessions ran; original
+staged comparison archives remain unchanged. Next qualify installed capture and
+observe advice consumption before another causal benefit comparison. See
+[guide](the-guide/command-capture.md),
+[observations](results/native-command-recognition/README.md) and
+[validation](docs/validation/2026-10-08-native-command-recognition.md).
+
 **2026-10-08 — installed staged preservation comparison.** Four approved
 Sonnet 5 medium subscription sessions completed eight resumed requests on two
 authored systems. All stage-one outputs pass 6/6 independent groups and all final

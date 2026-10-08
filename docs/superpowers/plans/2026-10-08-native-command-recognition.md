@@ -56,9 +56,9 @@ Files: `core/hook.py`, `core/evidence.py`, `core/verify.py`, milestone history/r
 Files: model-free evaluation/results, guides, validation, journey, plan/status,
 architecture and CI.
 
-- [ ] Run real shell commands on unrelated disposable projects with success,
+- [x] Run real shell commands on unrelated disposable projects with success,
   failure, wrong-directory and interruption controls; retain measured results.
-- [ ] Perform one fresh review and repair important findings with witnessed
+- [x] Perform one fresh review and repair important findings with witnessed
   failing/passing controls. Update affected docs and architecture; render all tabs.
 - [ ] Verify regressions and exact-head hosted CI, push final documentation,
   fast-forward main and verify the published architecture.
