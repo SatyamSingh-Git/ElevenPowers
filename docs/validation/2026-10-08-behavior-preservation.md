@@ -66,6 +66,17 @@ python architecture/check.py --render
 
 Free source reproduction matched all eight corrected grades and their source/oracle
 identities. The host doctor and all four independent grader categories pass.
-Compatibility and exact-head integration results are recorded below after their
-actual commands complete. No installed acceptance or product-benefit exit is
+The final compatibility and hosted CI outcomes are reported against the actual
+revision at delivery. No installed acceptance or product-benefit exit is
 promoted by a passing regression suite.
+
+Recorded local checks: the focused case/controller group passed 20 controls;
+the final archive group passed four controls. All eight published stage grades
+reproduced, the host doctor passed and all four grader categories matched.
+Standard-library imports passed without site packages. All five architecture
+tabs rendered with 128 nodes, 295 edges and seven planes; 358 local documentation
+links resolved. CI now runs the published model-free source reproduction on its
+Windows/Linux and Python 3.11/3.13 matrix, separately from fresh native acceptance.
+The full local suite and hosted exact-revision run are final integration gates;
+their measured results belong to the corresponding command output and Actions
+run, rather than a predicted count here.
