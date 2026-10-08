@@ -55,5 +55,7 @@ jobs:
         run: python -m pytest tests/test_audit_probes.py -q
       - name: Grade the grader
         run: python -m eval.validate
+      - name: Reproduce published staged source grades without a model
+        run: python results/behavior-preservation/reproduce.py
       - name: The join between the runtime and its host
         run: python plugin/bin/ep_doctor.py --host
