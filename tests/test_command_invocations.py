@@ -15,7 +15,7 @@ def project(tmp_path):
     return root
 
 
-@pytest.mark.parametrize('prefix', ['cd . && ', 'cd "." && ', "cd '.' && ", 'absolute'])
+@pytest.mark.parametrize('prefix', ['cd . && ', 'cd "." && ', 'cd "./" && ', 'absolute'])
 @pytest.mark.parametrize('code,result', [(0, Result.PASS), (2, Result.FAIL), (None, Result.ERROR)])
 def test_literal_wrapper_preserves_declaration_provenance_and_outcome(project, prefix, code, result):
     if prefix == 'absolute':
@@ -72,3 +72,33 @@ def test_wrapped_targeted_check_does_not_become_a_whole_suite(project):
     row = parse('cd . && ' + leaf, '1 passed in 0.01s', 0, project)[0]
     assert row.declared_command == leaf
     assert not SUITE_GREEN.matches(row)
+
+
+@pytest.mark.parametrize('leaf', ['cargo test parser', 'go test package', 'swift test Parser'])
+def test_wrapped_native_selector_keeps_direct_scope(project, leaf):
+    from core.obligations import SUITE_GREEN, TEST_ADDED
+    save(project, Config(commands={'tests': leaf}))
+    direct = parse(leaf, '', 0, project)[-1]
+    wrapped = parse('cd . && ' + leaf, '', 0, project)[-1]
+    assert not SUITE_GREEN.matches(direct)
+    assert TEST_ADDED.matches(direct)
+    assert not SUITE_GREEN.matches(wrapped)
+    assert TEST_ADDED.matches(wrapped)
+
+
+@pytest.mark.parametrize('literal', ['C:', 'C:.', 'C:project', '../project', 'child/..'])
+def test_ambiguous_directory_semantics_never_bind_a_declaration(project, literal):
+    (project / 'child').mkdir()
+    assert not any(row.declaration for row in parse(f'cd "{literal}" && npm run ci', '', 0, project))
+
+
+def test_single_quotes_are_not_a_cross_shell_directory_literal(project):
+    assert not any(row.declaration for row in parse("cd '.' && npm run ci", '', 0, project))
+
+
+def test_windows_root_relative_path_is_not_a_bash_absolute_path(project):
+    import os
+    if os.name != 'nt':
+        pytest.skip('Windows rooted path semantics')
+    literal = project.as_posix()[2:]
+    assert not any(row.declaration for row in parse(f'cd "{literal}" && npm run ci', '', 0, project))

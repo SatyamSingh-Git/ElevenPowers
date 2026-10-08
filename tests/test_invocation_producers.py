@@ -1,5 +1,6 @@
 """Actual local processes feed replay callbacks; never claim installed acceptance."""
 import pytest
+import shutil
 
 
 def test_real_shell_receipts_qualify_success_failure_and_wrong_directory(tmp_path):
@@ -25,3 +26,10 @@ def test_existing_producer_destination_is_preserved(tmp_path):
     with pytest.raises(ValueError):
         exercise(tmp_path)
     assert marker.read_text() == 'existing'
+
+
+@pytest.mark.skipif(not shutil.which('node') or not shutil.which('npm'), reason='Node/npm unavailable')
+def test_actual_npm_ci_has_same_forward_and_adversarial_capture(tmp_path):
+    from eval.command_invocations import exercise
+    value = exercise(tmp_path / 'new', languages=('javascript',), shells=('system',))
+    assert value['qualified'] and len(value['observations']) == 6

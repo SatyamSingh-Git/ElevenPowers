@@ -85,9 +85,9 @@ class Obligation:
             return True
         # `go test -run TestX`, `pytest -k login`, `cargo test parser`: the
         # command names a selector, so the run was narrowed to specific tests.
-        if re.search(r"\s-(-run|run|k|-filter|-name)[\s=]|\s-t\s", e.command):
+        if re.search(r"\s-(-run|run|k|-filter|-name)[\s=]|\s-t\s", e.command_identity):
             return True
-        return bool(re.match(r"^\s*(cargo|go|swift)\s+test\s+[A-Za-z_][\w:]*\s*$", e.command))
+        return bool(re.match(r"^\s*(cargo|go|swift)\s+test\s+[A-Za-z_][\w:]*\s*$", e.command_identity))
 
     def satisfied_by(self, records: list[Evidence]) -> Evidence | None:
         candidates = [e for e in records if self.matches(e)]

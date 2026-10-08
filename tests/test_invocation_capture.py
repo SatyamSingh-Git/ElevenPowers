@@ -97,24 +97,26 @@ def test_portable_report_explains_raw_and_declared_command(project):
 
 
 @pytest.mark.parametrize('host', ['codex', 'gemini', 'cursor', 'copilot'])
-def test_all_added_host_contracts_share_qualified_capture(project, host):
+@pytest.mark.parametrize('code,state', [(0, 'CURRENT'), (1, 'FAILED'), (None, 'INCOMPLETE')])
+def test_all_added_host_contracts_share_qualified_capture(project, host, code, state):
     import importlib
     adapter = importlib.import_module('core.hosts.' + host)
     inputs = {'command': 'cd . && npm run ci'}
     payload = {'cwd': str(project), 'tool_name': 'Bash', 'tool_input': inputs,
-               'tool_response': {'exit_code': 0, 'stdout': 'checks complete'}}
+               'tool_response': {'exit_code': code, 'stdout': 'checks complete'}}
     phase = 'PostToolUse'
     if host == 'gemini':
         phase = 'AfterTool'; payload['tool_name'] = 'run_shell_command'
-        payload['tool_response'] = {'llmContent': 'checks complete', 'data': {'exitCode': 0}}
+        payload['tool_response'] = {'llmContent': 'checks complete', 'data': {'exitCode': code}}
     if host == 'cursor':
         phase = 'postToolUse'; payload['tool_name'] = 'Shell'
         payload['tool_output'] = payload['tool_response']
     if host == 'copilot':
         phase = 'postToolUse'; payload.update(toolName='bash', toolArgs=inputs,
-                                             toolResult={'exitCode': 0, 'textResultForLlm': 'checks complete'})
+                                             toolResult={'exitCode': code, 'textResultForLlm': 'checks complete'})
     event = adapter.normalize(phase, payload)
     on_post_tool(event.payload, event.root)
     row = Ledger.load(project).evidence[-1]
-    assert row.result is Result.PASS and row.declaration == 'tests'
-    assert build(project)['state'] == 'CURRENT'
+    assert row.declaration == 'tests'
+    assert row.result is ({0: Result.PASS, 1: Result.FAIL, None: Result.ERROR}[code])
+    assert build(project)['state'] == state

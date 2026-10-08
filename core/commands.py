@@ -1,6 +1,7 @@
 """Conservative literal invocation qualification; never execute or rewrite a shell."""
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
+import os
 import re
 import shlex
 
@@ -56,14 +57,22 @@ def qualify(command, root, *, cwd=None):
     if not match:
         return Invocation(text, issue=issue or 'unsupported directory-wrapper syntax')
     raw = match['path']
-    if (any(c in _DYNAMIC for c in raw) or
+    if (raw.startswith("'") or any(c in _DYNAMIC for c in raw) or
             ('\\' in raw and not raw.startswith(('"', "'")))):
         return Invocation(text, issue=issue or 'directory wrapper is not a portable literal')
     try:
         words = shlex.split(raw, posix=True)
         if len(words) != 1 or not words[0]:
             raise ValueError('invalid literal')
-        directory = Path(words[0])
+        literal = words[0]
+        windows = PureWindowsPath(literal)
+        # Shells disagree on drive-relative paths and logical `..` traversal
+        # through directory aliases. Do not claim equivalence for either.
+        if ((windows.drive and not windows.root) or windows.drive.startswith('\\\\') or
+                (os.name == 'nt' and windows.root and not windows.drive) or
+                '..' in literal.replace('\\', '/').split('/')):
+            return Invocation(text, issue=issue or 'directory wrapper has ambiguous shell semantics')
+        directory = Path(literal)
         project = Path(root).resolve(strict=True)
         directory = (directory if directory.is_absolute() else project / directory).resolve(strict=True)
         if not directory.is_dir() or directory != project:
