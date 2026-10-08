@@ -85,7 +85,7 @@ def emitted(response):
                             attempt['emission'] = {k: candidate[k] for k in
                                                    ('host', 'generation', 'session', 'runtime', 'context')}
                             attempt['emission']['at'] = time.time()
-                _store(path, value)
+                _store(path, value, keep_task=candidate['task'])
         except (OSError, ValueError, TypeError, KeyError, RecursionError, Busy):
             # The output has already been flushed. Never alter its decision.
             continue

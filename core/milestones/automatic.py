@@ -98,13 +98,16 @@ def _paths(root):
     return path
 
 
-def _store(path, value):
+def _store(path, value, *, keep_task=None):
     # Metadata grows with optional emission observations. Retain newest task
     # allowances, and keep every writer within the reader's existing limit.
     while len((json.dumps(value, indent=2) + '\n').encode('utf8')) > 65536:
         if len(value['tasks']) <= 1:
             raise ValueError('current advisory task exceeds state byte limit')
-        value['tasks'].pop(0)
+        remove = next((i for i, task in enumerate(value['tasks']) if task['id'] != keep_task), None)
+        if remove is None:
+            raise ValueError('protected advisory task exceeds state byte limit')
+        value['tasks'].pop(remove)
         value['evicted_tasks'] = min(10**9, value.get('evicted_tasks', 0) + 1)
     _write(path, value)
 
@@ -127,7 +130,7 @@ def _reserve(root, task_id, key, settings):
             return None
         identity = uuid.uuid4().hex
         attempts.append({'id': identity, 'key': key, 'at': now, 'status': 'reserved'})
-        _store(path, value)
+        _store(path, value, keep_task=task_id)
         return identity
 
 
@@ -143,7 +146,7 @@ def _finish(root, task_id, identity, status, elapsed, context='', checks=()):
                         if status == 'delivered':
                             from .delivery import content_hash
                             attempt.update(context=content_hash(context), checks=list(checks))
-        _store(path, value)
+        _store(path, value, keep_task=task_id)
 
 
 def deliver(ledger):

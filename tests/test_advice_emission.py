@@ -151,8 +151,11 @@ def test_many_emissions_keep_state_inside_its_read_budget(tmp_path):
                           'runtime': 'c'*64, 'context': content_hash('context'), 'at': 2}}
             for number in range(10)]})
     target = tmp_path / 'advice.json'
-    _store(target, {'schema': 1, 'tasks': rows})
+    _store(target, {'schema': 1, 'tasks': json.loads(json.dumps(rows))})
     assert target.stat().st_size <= 65536
     value = _read(target)
     assert value['tasks'][-1]['id'] == digest('19')
     assert value['evicted_tasks'] > 0
+    target.unlink()
+    _store(target, {'schema': 1, 'tasks': rows}, keep_task=rows[0]['id'])
+    assert any(task['id'] == rows[0]['id'] for task in _read(target)['tasks'])
