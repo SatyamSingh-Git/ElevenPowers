@@ -10,6 +10,12 @@ Milestones keep earlier behavior checks visible when development moves to a new
 task. They are optional, project-owned and shared by all five host integrations.
 Their evidence is separate from the current task's claims and completion verdict.
 
+Qualified [literal command wrappers](command-capture.md) retain the exact
+configured check identity across tasks. A later failed or incomplete invocation
+supersedes earlier success for that check; the raw invocation remains provenance.
+Changed declarations still stale earlier receipts, and targeted test scope stays
+separate from whole-suite evidence.
+
 Create a tracked `elevenpowers.milestones.json` at the project root:
 
 ```json

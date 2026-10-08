@@ -283,7 +283,7 @@ Questions, or a configuration case this does not cover? **[satyambcnrk@gmail.com
 
 ## Exact command receipts
 
-Declared `tests`, `typecheck`, `build`, `lint`, and `benchmark` commands are recognized by exact match after trimming outer whitespace. `"tests": "npm run ci"` recognizes that project command even though its name does not contain `test`. This applies to any project or wrapper; no Snag-specific rule exists. Added arguments, aliases, prefixes and pipelines are not normalized into the declaration. Known-runner recognition still applies independently.
+Declared `tests`, `typecheck`, `build`, `lint`, and `benchmark` commands are recognized by exact match after trimming outer whitespace. `"tests": "npm run ci"` recognizes that project command even though its name does not contain `test`. This applies to any project or wrapper; no Snag-specific rule exists. One literal `cd PROJECT && EXACT_COMMAND` is also recognized when its directory and supplied tool-directory metadata qualify against the project root. Added arguments, aliases, arbitrary prefixes and pipelines are not normalized into the declaration. Drive-relative paths and parent traversal are excluded. Original invocation and exact configured identity remain separate; see [command capture](command-capture.md). Known-runner recognition still applies independently.
 
 A completed zero exit produces a passing command receipt. Recognized failures override zero exits, including mixed runner output. A recognized zero-test summary does not establish that tests ran. An opaque successful wrapper remains an uncounted command receipt. Single-file commands retain their scope. Declarations express the project's claim about a command's purpose; they do not inspect shell-script behavior.
 

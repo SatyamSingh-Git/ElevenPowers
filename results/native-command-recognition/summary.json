@@ -1,0 +1,524 @@
+{
+  "schema": 1,
+  "runtime": "3757e331954323221144b3c3d8cdbb6db89f3d57869c1e076094afa2ca10eec7",
+  "producer_sha256": "66fbdce09e2489923b03efedb9fc3caefa437069892c86511b5540767e46aec3",
+  "environment": {
+    "python": "3.13.2",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "system_shell": "cmd.exe"
+  },
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "observations": [
+    {
+      "language": "python",
+      "shell": "system",
+      "case": "direct",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.798,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "system",
+      "case": "wrapped",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.698,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "system",
+      "case": "failed",
+      "qualified": true,
+      "process_exit": 1,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "FAILED",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.694,
+      "receipts": [
+        {
+          "result": "fail",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "system",
+      "case": "wrong_directory",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.735,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": [
+            "directory wrapper does not select the project root"
+          ]
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "system",
+      "case": "interrupted",
+      "qualified": true,
+      "process_exit": null,
+      "callback_exit": 0,
+      "interrupted": true,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.559,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "system",
+      "case": "masked_failure",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "ABSENT",
+      "declared_receipts": 0,
+      "native_activation_written": false,
+      "seconds": 0.532,
+      "receipts": []
+    },
+    {
+      "language": "python",
+      "shell": "bash",
+      "case": "direct",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.781,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "bash",
+      "case": "wrapped",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.703,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "bash",
+      "case": "failed",
+      "qualified": true,
+      "process_exit": 1,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "FAILED",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.706,
+      "receipts": [
+        {
+          "result": "fail",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "bash",
+      "case": "wrong_directory",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.756,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": [
+            "directory wrapper does not select the project root"
+          ]
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "bash",
+      "case": "interrupted",
+      "qualified": true,
+      "process_exit": null,
+      "callback_exit": 0,
+      "interrupted": true,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.511,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "python",
+      "shell": "bash",
+      "case": "masked_failure",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "ABSENT",
+      "declared_receipts": 0,
+      "native_activation_written": false,
+      "seconds": 0.591,
+      "receipts": []
+    },
+    {
+      "language": "javascript",
+      "shell": "system",
+      "case": "direct",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.279,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "system",
+      "case": "wrapped",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.259,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "system",
+      "case": "failed",
+      "qualified": true,
+      "process_exit": 1,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "FAILED",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.235,
+      "receipts": [
+        {
+          "result": "fail",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "system",
+      "case": "wrong_directory",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.343,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": [
+            "directory wrapper does not select the project root"
+          ]
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "system",
+      "case": "interrupted",
+      "qualified": true,
+      "process_exit": null,
+      "callback_exit": 0,
+      "interrupted": true,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.534,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "system",
+      "case": "masked_failure",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "ABSENT",
+      "declared_receipts": 0,
+      "native_activation_written": false,
+      "seconds": 1.092,
+      "receipts": []
+    },
+    {
+      "language": "javascript",
+      "shell": "bash",
+      "case": "direct",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.592,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "bash",
+      "case": "wrapped",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "CURRENT",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.464,
+      "receipts": [
+        {
+          "result": "pass",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "bash",
+      "case": "failed",
+      "qualified": true,
+      "process_exit": 1,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "FAILED",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.52,
+      "receipts": [
+        {
+          "result": "fail",
+          "execution": "complete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "bash",
+      "case": "wrong_directory",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 1.528,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": [
+            "directory wrapper does not select the project root"
+          ]
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "bash",
+      "case": "interrupted",
+      "qualified": true,
+      "process_exit": null,
+      "callback_exit": 0,
+      "interrupted": true,
+      "receipt_state": "INCOMPLETE",
+      "declared_receipts": 1,
+      "native_activation_written": false,
+      "seconds": 0.506,
+      "receipts": [
+        {
+          "result": "error",
+          "execution": "incomplete",
+          "provenance_preserved": true,
+          "declared_identity_preserved": true,
+          "coverage_issues": []
+        }
+      ]
+    },
+    {
+      "language": "javascript",
+      "shell": "bash",
+      "case": "masked_failure",
+      "qualified": true,
+      "process_exit": 0,
+      "callback_exit": 0,
+      "interrupted": false,
+      "receipt_state": "ABSENT",
+      "declared_receipts": 0,
+      "native_activation_written": false,
+      "seconds": 1.303,
+      "receipts": []
+    }
+  ],
+  "unavailable": [],
+  "limits": [
+    "Actual local commands feed explicit replay callbacks, not installed agent sessions.",
+    "No advice consumption, causal coding improvement or broad shell equivalence is established."
+  ],
+  "qualified": true
+}

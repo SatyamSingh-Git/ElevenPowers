@@ -13,6 +13,11 @@ configuration diagnostics and self-contained bundles. The four new integrations
 have documented-contract and launcher checks; live installed sessions remain an
 acceptance step. This distinction applies to every platform below.
 
+All five ingress paths share [declared-command capture](command-capture.md),
+including qualified literal project-directory wrappers and explicit failure or
+incomplete outcomes. Contract and replay checks do not establish fresh installed
+acceptance; actual host delivery remains separately qualified.
+
 ## Unified project readiness
 
 All five hosts use `ep_setup.py HOST --project PATH` and the read-only

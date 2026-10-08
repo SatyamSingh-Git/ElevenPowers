@@ -15,7 +15,10 @@ command rewriting. Keep exact configured invocations compatible.
   leaf command byte-for-byte apart from existing outer whitespace handling.
 - Resolve literal directories against the project/tool directory and require
   an existing directory with the same resolved identity as the project root.
-  Quoted spaces and forward-slash paths work across the portable subset.
+  Double-quoted spaces and forward-slash paths work across the portable subset.
+  Single quotes, UNC paths, drive-relative paths, Windows rooted paths without
+  a drive and parent-traversal components are excluded because shell semantics
+  differ. Scope classification uses the qualified identity, never the raw prefix.
 - Reject interpolation, globbing, control characters, unsupported setup,
   command aliases, extra arguments, pipelines, output redirection, multiple
   directory changes and trailing commands as automatic equivalences. A project

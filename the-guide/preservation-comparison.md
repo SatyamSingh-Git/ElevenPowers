@@ -6,6 +6,11 @@ It is research tooling, never an installation action or automatic model call.
 The same shipping milestone and hook implementation applies to any project;
 the first comparison corpus contains two authored Python systems.
 
+The subsequent [native command qualification](command-capture.md) fixes the
+recorded literal-wrapper gap in the generalized runtime. Its local process/replay
+controls do not alter this comparison's original native observations or establish
+advice consumption and coding benefit.
+
 ## Prepare without a model
 
 From the ElevenPowers checkout, with Python, Git and the project's development
