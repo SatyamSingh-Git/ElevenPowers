@@ -40,3 +40,39 @@ def test_changed_snapshot_is_unqualified(tmp_path):
     result = publish(tmp_path / 'out', {'queue-ordinary': batch})
     assert result['state'] == 'incomplete'
     assert result['paired_correctness_advantage_observed'] is False
+
+
+def test_four_source_matching_records_without_protocol_cannot_claim_gain(tmp_path):
+    from eval.preservation_archive import publish, EXPECTED
+    from eval.preservation_cases import case
+    import hashlib
+    batch = tmp_path / 'batch'; batch.mkdir(); (batch / 'protocol.json').write_text('{}')
+    for slot in EXPECTED:
+        folder = batch / slot; folder.mkdir(); value = case(slot.rsplit('-', 1)[0]); stages = []
+        for stage in (1, 2):
+            source = {'service.py': value['gold' if slot.endswith('assisted') else 'fault'][stage-1],
+                      'formatting.py': value['files']['formatting.py']}
+            (folder / f'source-{stage}.json').write_text(json.dumps(source))
+            stages.append({'stage': stage, 'state': 'completed', 'scope': 'preserved',
+                'source_after': {n:hashlib.sha256(s.encode()).hexdigest() for n,s in source.items()},
+                'native': {'state': 'incomplete'}})
+        (folder / 'result.json').write_text(json.dumps({'slot':slot,'state':'completed','model_seconds':10,'stages':stages}))
+    result = publish(tmp_path / 'out', {slot:batch for slot in EXPECTED})
+    assert result['state'] == 'incomplete'
+    assert result['paired_correctness_advantage_observed'] is False
+
+
+def test_valid_protocol_qualifies_but_over_budget_record_does_not(tmp_path):
+    from eval.preservation import prepare
+    from eval.preservation_archive import _qualification
+    from eval.preservation_cases import case
+    batch = tmp_path / 'batch'; protocol = prepare(batch, names=('queue',))
+    slot = 'queue-ordinary'
+    stages = [{'seconds_cap':240, 'elapsed_ms':1000,
+               'host_observation':{'completed':True,'models':['claude-sonnet-5']}},
+              {'seconds_cap':479, 'elapsed_ms':2000,
+               'host_observation':{'completed':True,'models':['claude-sonnet-5']}}]
+    record = {'stages':stages, 'model_seconds':3}
+    assert _qualification(batch,slot,protocol,record,case('queue'))['state'] == 'qualified'
+    record['model_seconds'] = 9999
+    assert _qualification(batch,slot,protocol,record,case('queue'))['state'] == 'incomplete'

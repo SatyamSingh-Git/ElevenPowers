@@ -2,14 +2,68 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import tempfile
 
-from .preservation import LIMITS, _read, _safe, _write
+from .preservation import LIMITS, PUBLIC_COMMAND, _read, _safe, _settings, _write
 from .preservation_cases import case
 from .preservation_oracles import grade
 
 EXPECTED = {'queue-ordinary', 'queue-assisted', 'inventory-ordinary', 'inventory-assisted'}
+
+
+def _qualification(batch, slot, protocol, original, definition):
+    """Compare dated unsigned inputs, never treat source regrading as a protocol."""
+    result = {'state': 'incomplete', 'public_inputs': {}, 'runtime': '', 'seconds': None}
+    try:
+        seconds = protocol['seconds_per_session']
+        if (protocol['schema'] != 1 or protocol['host'] != 'claude'
+                or protocol['model'] != 'claude-sonnet-5' or protocol['effort'] != 'medium'
+                or slot not in protocol['slots'] or len(set(protocol['slots'])) != len(protocol['slots'])
+                or type(seconds) not in (int,float) or not math.isfinite(seconds) or not 1 <= seconds <= 480):
+            return result
+        seal = protocol['seals'][slot]
+        if seal['requests'] != definition['requests']:
+            return result
+        public = {n:h for n,h in seal['initial'].items() if not n.startswith('.claude/')}
+        if set(public) != set(definition['files']) | {'elevenpowers.milestones.json'}:
+            return result
+        if any(public[n] != hashlib.sha256(s.encode()).hexdigest() for n,s in definition['files'].items()):
+            return result
+        root = _safe(batch, slot + '/candidate')
+        if _settings(root) != seal['settings']:
+            return result
+        config = _read(_safe(root, '.elevenpowers/config.json'))
+        assisted = slot.endswith('-assisted')
+        if (config.get('profile') != ('guide' if assisted else 'off')
+                or config.get('auto_detect') is not False or config.get('commands') != {'tests':PUBLIC_COMMAND}
+                or config.get('strength') != {'enabled':False}
+                or config.get('milestone_advice') != {'enabled':assisted,'seconds':1,'cooldown':30,'max_attempts':3}
+                or (seal['settings']['.claude/settings.local.json'] is not None) != assisted):
+            return result
+        stages = original['stages']
+        elapsed = 0
+        for index, stage in enumerate(stages):
+            cap = stage['seconds_cap']; duration = stage['elapsed_ms'] / 1000
+            if (type(cap) not in (int,float) or not math.isfinite(cap) or cap <= 0
+                    or cap > (seconds-elapsed)/(2-index) + .001
+                    or not math.isfinite(duration) or duration < 0 or duration > cap + 1
+                    or stage['host_observation']['completed'] is not True
+                    or stage['host_observation']['models'] != ['claude-sonnet-5']):
+                return result
+            elapsed += duration
+        total = original['model_seconds']
+        if (type(total) not in (int,float) or not math.isfinite(total)
+                or abs(total-elapsed) > .002 or total > seconds + 1 or len(stages) != 2):
+            return result
+        runtime = protocol['runtime_fingerprint']
+        if not isinstance(runtime,str) or len(runtime) != 64 or set(runtime)-set('0123456789abcdef'):
+            return result
+        result.update(state='qualified',public_inputs=public,runtime=runtime,seconds=seconds)
+    except (ValueError,KeyError,TypeError,OSError,ZeroDivisionError):
+        pass
+    return result
 
 
 def publish(destination, selection):
@@ -29,11 +83,13 @@ def publish(destination, selection):
         folder = _safe(batch, slot)
         original = _read(folder / 'result.json')
         raw = _safe(folder, 'result.json').read_bytes()
+        protocol = _read(batch / 'protocol.json')
         value = {'original_sha256': hashlib.sha256(raw).hexdigest(), 'original': original,
                  'protocol_sha256': hashlib.sha256((batch / 'protocol.json').read_bytes()).hexdigest(),
                  'state': 'incomplete', 'regrades': []}
-        _write(out / f'{slot}-protocol.json', _read(batch / 'protocol.json'))
+        _write(out / f'{slot}-protocol.json', protocol)
         definition = case(slot.rsplit('-', 1)[0])
+        value['protocol_qualification'] = _qualification(batch,slot,protocol,original,definition)
         try:
             if original.get('slot') != slot:
                 raise ValueError('record slot mismatch')
@@ -65,7 +121,8 @@ def publish(destination, selection):
             pass
         saved[slot] = value
         _write(out / f'{slot}.json', value)
-    complete = set(selection) == EXPECTED and all(v['state'] == 'regraded' for v in saved.values())
+    complete = (set(selection) == EXPECTED and all(v['state'] == 'regraded'
+                and v['protocol_qualification']['state'] == 'qualified' for v in saved.values()))
     for name in ('queue', 'inventory'):
         row = {'case': name, 'ordinary': None, 'assisted': None, 'difference': None}
         for arm in ('ordinary', 'assisted'):
@@ -77,7 +134,11 @@ def publish(destination, selection):
                             'model_seconds': round(value['original']['model_seconds'], 3),
                             'original_native_states': [s['native']['state'] for s in value['original']['stages']]}
         if row['ordinary'] and row['assisted']:
-            row['difference'] = row['assisted']['final_passed'] - row['ordinary']['final_passed']
+            a=saved[name+'-ordinary']['protocol_qualification']; b=saved[name+'-assisted']['protocol_qualification']
+            comparable=(a['state']==b['state']=='qualified' and a['public_inputs']==b['public_inputs']
+                        and a['runtime']==b['runtime'] and a['seconds']==b['seconds'])
+            if comparable: row['difference'] = row['assisted']['final_passed'] - row['ordinary']['final_passed']
+            else: complete=False
         summary['pairs'].append(row)
     summary['state'] = 'regraded' if complete else 'incomplete'
     summary['paired_correctness_advantage_observed'] = complete and any(r['difference'] > 0 for r in summary['pairs'])
