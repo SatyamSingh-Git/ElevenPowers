@@ -1,5 +1,9 @@
 # Validation records
 
+- [2026-10-08 staged preservation](2026-10-08-behavior-preservation.md): four
+  approved Sonnet 5 medium sessions, eight resumed requests, corrected independent
+  source grades, two correctness ties and incomplete exact-command native capture.
+
 [Bounded milestone advice, 2026-10-07](2026-10-07-milestone-advisories.md)
 records larger-project relationships, optional shared delivery and qualified
 launcher/startup measurements. Installed edit advice and coding benefit remain open.

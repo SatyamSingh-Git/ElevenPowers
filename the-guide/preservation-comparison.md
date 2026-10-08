@@ -73,6 +73,14 @@ causal correction. The controller does not archive every pre-intervention
 proposal and therefore never claims a linked correction. Ties, failures and
 unqualified native sessions must be published alongside any positive observation.
 
+When an evaluator correction is needed, keep original observations and protocol
+identities. `eval/preservation_archive.py` regrades saved source only after
+checking its exact recorded bytes; it separately qualifies the protocol, allowed
+configuration, equal public inputs and time/model allowances before comparing
+pairs. An unqualified protocol may retain a useful source grade. See the
+[first published comparison](../results/behavior-preservation/README.md) for
+original and corrected grades and model-free reproduction.
+
 The corpus and oracle are evaluation fixtures, separate from generalized runtime
 logic. Extend the frozen evaluation deliberately with independently specified
 contracts; do not special-case named user repositories in the runtime. Broader

@@ -41,10 +41,10 @@ Interface: `case(name) -> dict` contains files, two stage requests, gold stages
 and faulty controls. `grade(name, stage, candidate) -> dict` returns bounded
 per-check pass/fail/error outcomes from an isolated private copy.
 
-- [ ] Write tests asserting gold passes each stage, base fails new requirements,
+- [x] Write tests asserting gold passes each stage, base fails new requirements,
   reverting faults fail earlier behavior and equivalent changes remain accepted.
-- [ ] Witness missing implementation, implement cases/grading and rerun controls.
-- [ ] Retain source and oracle hashes; push qualified cases and protocol.
+- [x] Witness missing implementation, implement cases/grading and rerun controls.
+- [x] Retain source and oracle hashes; push qualified cases and protocol.
 
 ### Task 2: Generalized staged controller and immutable preparation
 
@@ -53,11 +53,11 @@ Files: `eval/preservation.py`, `tests/test_preservation.py`.
 Interface: `prepare(destination, cases, seconds=480) -> protocol`; stages use
 exact frozen public commands and immutable input/config manifests.
 
-- [ ] Test equal public inputs, explicit assisted wiring, existing destination
+- [x] Test equal public inputs, explicit assisted wiring, existing destination
   refusal, unsafe paths and source/config mutation detection before launch.
-- [ ] Implement preparation, private stage grading and resumable native command
+- [x] Implement preparation, private stage grading and resumable native command
   construction. Test removed no-session-persistence, session UUID/resume and caps.
-- [ ] Push preparation and controller controls.
+- [x] Push preparation and controller controls.
 
 ### Task 3: Native stage collection and conservative comparison
 
@@ -65,28 +65,41 @@ Files: `eval/preservation.py`, `tests/test_preservation.py`.
 
 Interface: `execute(batch, slot, executable) -> record`; `summarize(batch) -> dict`.
 
-- [ ] Test journal-before-launch, interruption retention, scope failures, no
+- [x] Test journal-before-launch, interruption retention, scope failures, no
   retry, incomplete grader separation and incomplete-pair aggregation.
-- [ ] Implement bounded requests, native response archives, report/diagnostic
+- [x] Implement bounded requests, native response archives, report/diagnostic
   capture, independent source snapshots and conservative summary.
-- [ ] Run free full rehearsal and auth/version/help preflight; push before calls.
+- [x] Run free full rehearsal and auth/version/help preflight; push before calls.
 
 ### Task 4: Approved installed comparison and evidence publication
 
 Files: `results/behavior-preservation/`, dated validation and journey.
 
-- [ ] Freeze source/case/oracle identities and all four slots before calls.
-- [ ] Run each session once within approved allowance; inspect all outcomes.
-- [ ] Publish bounded raw captures and explicit native/correctness/cost findings.
+- [x] Freeze source/case/oracle identities and all four slots before calls.
+- [x] Run each session once within approved allowance; inspect all outcomes.
+- [x] Publish bounded raw captures and explicit native/correctness/cost findings.
   Preserve private full outputs without publishing prompts/transcript secrets.
-- [ ] Push observations without expanding approval or making unsupported claims.
+- [x] Push observations without expanding approval or making unsupported claims.
 
 ### Task 5: Review, documentation and integration
 
 Files: plan, status, master plan, guides, architecture and CI import coverage.
 
-- [ ] Perform one fresh whole-branch review, repair important findings with
+- [x] Perform one fresh whole-branch review, repair important findings with
   witnessed failing/passing controls and retain unresolved limits.
-- [ ] Run affected regression tests, doctor/grader checks and architecture render.
-- [ ] Update all affected delivery records and Planned card. Push final work,
-  qualify hosted CI and integrate verified main under standing authorization.
+- [x] Run affected regression tests, doctor/grader checks and architecture render.
+- [x] Update all affected delivery records and Planned card.
+- Final integration gate: push the final revision, qualify hosted CI for that
+  exact revision and fast-forward main under standing authorization. Integration
+  status is verified from Git refs and the linked Actions run at delivery.
+
+## Execution record
+
+Four approved sessions completed without retries; producer revisions and unused
+prepared slots are preserved explicitly in the published record. One fresh code
+review plus one focused append for the subsequently added archive produced
+witnessed repairs. The corrected oracle gives two correctness ties. Native
+command-capture acceptance, advice consumption and coding benefit remain open;
+the plan's delivery does not close those product exits. See
+[observations](../../../results/behavior-preservation/README.md) and
+[validation](../../validation/2026-10-08-behavior-preservation.md).

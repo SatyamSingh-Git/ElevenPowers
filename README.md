@@ -601,6 +601,17 @@ pending installed edit-session cost and broader precision. See
 [larger-project observations](results/milestone-advisories/README.md) and
 [launcher/native measurements](results/milestone-advisories/callbacks.md).
 
+The first installed two-stage comparison used four Sonnet 5 medium subscription
+sessions: queue leases/expiry followed by persistence, and inventory expiry
+followed by persistence. Both ordinary and assisted outputs passed 8/8 final
+independent groups in each project: **two correctness ties, no demonstrated
+coding gain or speedup**. Native edit/completion callbacks and bounded advice
+attempts were observed, but exact declared-command capture stayed incomplete
+when the agent wrapped tests in `cd PROJECT &&`. See
+[all outcomes and corrected regrades](results/behavior-preservation/README.md),
+[reproduction](the-guide/preservation-comparison.md) and
+[journey 66](journey/66-earlier-behavior-needs-a-second-task.md).
+
 ## What claims cost
 
 Claims are inferred from the request by pattern matching — no model call, no added latency. Ask a question or request a code read and no claim opens at all; the runtime stays entirely out of the way.
@@ -656,7 +667,7 @@ resumed delivery launched no extra model sessions.
 Task size is not a criterion; an observable coding or verification improvement
 through any engaged mechanism can count.
 
-Research prototype; status reviewed 2026-10-07. Optional milestone declarations, atomic cross-task history, read-only qualified views and explained exact-command recheck priorities are delivered; bounded automatic edit advice is now project opt-in; installed advice acceptance and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-08. Optional milestone declarations, atomic cross-task history, read-only qualified views and explained exact-command recheck priorities are delivered; bounded automatic edit advice is now project opt-in; installed advice acceptance and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
 after three independent-review fixes. Real Python/JavaScript/TypeScript fixture

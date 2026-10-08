@@ -1,5 +1,18 @@
 # Current delivery status
 
+**2026-10-08 — installed staged preservation comparison.** Four approved
+Sonnet 5 medium subscription sessions completed eight resumed requests on two
+authored systems. All stage-one outputs pass 6/6 independent groups and all final
+outputs pass 8/8 under corrected checks: two correctness ties and no demonstrated
+coding gain or speedup. Total observed host execution was 541.873 seconds within
+the approved 1,920-second cap. Native startup/prompt/edit/completion and five
+worker attempts were observed, but exact declared-command links were absent for
+`cd PROJECT &&` wrappers. Completion-created current milestone receipts do not
+qualify native command capture. Original producer grades/protocols are preserved
+alongside source-checked corrected regrades; no extra model call was used.
+Advice stays opt-in; default activation and end-to-end benefit remain open.
+See [protocol](design/behavior-preservation.md), [observations](../results/behavior-preservation/README.md) and [validation](validation/2026-10-08-behavior-preservation.md).
+
 **2026-10-07 — bounded optional milestone advice.** Shared saved-edit callbacks
 now deliver bounded exact-check context after explicit project opt-in, with
 isolated worker deadlines, atomic reservations, deduplication and task budgets.
@@ -167,12 +180,14 @@ and [journey 51](../journey/51-receipts-another-person-can-read.md).
 
 ## Next readiness milestone
 
-For milestone verification, qualify ordinary native capture/read cost and
-precise input attribution across unrelated multi-stage projects before automatic
-advisories. Keep missing scope and graph paths explicit, then compare preserved
-behavior, missed regressions and total work against equal ordinary verification.
-The local capability exit is delivered; automatic integration and the broader
-product-benefit exit remain open.
+For milestone verification, qualify exact-command capture for ordinary native
+invocation forms and observe whether edit context reaches the agent. The first
+installed staged comparison recovered callbacks but no exact receipt links for
+wrapped commands, and both correctness pairs tied. Keep command identity,
+unknown scope and fallback checks explicit; qualify independently justified
+larger-project references before default activation. Any further matched
+comparison needs a specified opportunity to improve an actual missed regression,
+with equal ordinary verification and independent preservation checks.
 
 The resumed session completed all twelve corrected evaluator regrades and the
 generalized changed-region/command qualification milestone. Current source

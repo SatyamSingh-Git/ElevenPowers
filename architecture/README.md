@@ -4,10 +4,12 @@ Five views of the system and its unfinished work — the runtime, plugin seam,
 durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.
 
-The latest map includes optional bounded milestone edit advice, isolated
-inspection workers and private reservation state. Planned cards keep installed
-advice acceptance, independently justified negative references and coding benefit
-open. See [dated checks](../docs/validation/2026-10-07-milestone-advisories.md).
+The latest map includes source-sealed two-stage subscription comparison and
+versioned independent source regrades alongside optional bounded milestone advice.
+Four installed sessions produced two correctness ties; exact-command native links
+remain incomplete for wrappers. Planned cards keep command capture, broader
+independent references, advice consumption and coding benefit open. See
+[dated checks](../docs/validation/2026-10-08-behavior-preservation.md).
 
 ### ▶ **[Open the live graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)**
 
@@ -79,7 +81,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **126 nodes / 289 edges** across 7 planes (as of 2026-10-06),
+Current size: **128 nodes / 295 edges** across 7 planes (as of 2026-10-08),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,

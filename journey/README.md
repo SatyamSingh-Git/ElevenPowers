@@ -1,5 +1,9 @@
 # The journey
 
+Latest: [66 — earlier behavior needs a second task](66-earlier-behavior-needs-a-second-task.md)
+records the four staged subscription sessions, evaluator corrections, two
+correctness ties and the difference between current milestones and native capture.
+
 Latest: [65 — advice must have a budget](65-advice-must-have-a-budget.md)
 records larger-project limits, withdrawn negative labels, isolated advisory
 delivery and the difference between replay and installed-session evidence.

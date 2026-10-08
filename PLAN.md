@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**2026-10-08 — installed staged preservation comparison.** Four approved
+Sonnet 5 medium subscription sessions completed eight resumed requests on two
+authored systems. All stage-one outputs pass 6/6 independent groups and all final
+outputs pass 8/8 under corrected checks: two correctness ties and no demonstrated
+coding gain or speedup. Total observed host execution was 541.873 seconds within
+the approved 1,920-second cap. Native startup/prompt/edit/completion and five
+worker attempts were observed, but exact declared-command links were absent for
+`cd PROJECT &&` wrappers. Completion-created current milestone receipts do not
+qualify native command capture. Original producer grades/protocols are preserved
+alongside source-checked corrected regrades; no extra model call was used.
+Advice stays opt-in; default activation and end-to-end benefit remain open.
+See [protocol](docs/design/behavior-preservation.md), [observations](results/behavior-preservation/README.md) and [validation](docs/validation/2026-10-08-behavior-preservation.md).
+
 **2026-10-07 — bounded optional milestone advice.** Shared saved-edit callbacks
 now deliver bounded exact-check context after explicit project opt-in, with
 isolated worker deadlines, atomic reservations, deduplication and task budgets.

@@ -1,5 +1,11 @@
 # Verification across development milestones
 
+The [two-stage subscription comparison](preservation-comparison.md) exercises
+this workflow with identical ordinary/assisted inputs and independent checks.
+Its [first four sessions](../results/behavior-preservation/README.md) tied on
+correctness; current completion receipts did not establish exact-command native
+capture or a coding-quality benefit. Advice remains explicit project opt-in.
+
 Milestones keep earlier behavior checks visible when development moves to a new
 task. They are optional, project-owned and shared by all five host integrations.
 Their evidence is separate from the current task's claims and completion verdict.
