@@ -26,8 +26,9 @@ LIMITS = [
 def _stamp(root, host):
     paths = [root / '.elevenpowers' / name for name in
              ('ledger.json', 'integrations.json', 'verification.json', 'config.json', 'strength.json',
-              'hosts.json', 'patches.json')]
+              'hosts.json', 'patches.json', 'advice.json')]
     paths.append(config_path(host, root))
+    paths.append(root / 'elevenpowers.milestones.json')
     result = []
     for path in paths:
         if path.is_symlink() or any(p.is_symlink() for p in path.parents if p != root and root in p.parents):
@@ -249,6 +250,8 @@ def inspect(host, root, timeout=10):
              'health': {'state': status, 'stages': stages}, 'test_strength': body['test_strength'],
              'optional_engines': engines, 'timings': timings, 'next_actions': actions, 'limits': LIMITS}
     value['report_coverage'] = coverage
+    from .milestones.delivery import inspect as advice_inspect
+    value['milestone_advice'] = advice_inspect(root, host, body['task']['id'], live, body['receipts'])
     value['coverage']['complete'] = coverage.get('source_complete', False) and not any('diagnostic' in x.lower() for x in issues)
     value['coverage']['issues'] = list(coverage.get('source_issues', issues))
     from .hosts.edits import coverage as edit_coverage
@@ -294,6 +297,11 @@ def render(value):
     lines.append(f"Latest declared run: {receipt['execution']} / {receipt['result']}; {receipt['freshness']}; {receipt['command']}"
                  if receipt else 'Latest declared run: none recorded')
     lines.append(f"Health read: {value['timings']['health_read_ms']} ms; optional engines: {value['optional_engines']['state']}")
+    if 'milestone_advice' in value:
+        advice = value['milestone_advice']
+        lines.append(f"Advice delivery: {advice['state']}; subsequent matching native receipts: "
+                     f"{advice['matching_native_receipts']}; model consumption unproven")
+        lines.extend('Advice observation: ' + issue for issue in advice['issues'])
     lines.extend('Next action: ' + item for item in value['next_actions'])
     lines.extend('Limit: ' + item for item in value['limits'])
     return '\n'.join(lines)
