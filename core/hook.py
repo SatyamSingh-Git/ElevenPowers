@@ -283,14 +283,18 @@ def _on_post_tool(payload: dict, root: Path) -> int:
         return 0
 
     command = command_of(payload)
+    from .commands import tool_directory
+    cwd = tool_directory(root, payload.get('tool_input') or {})
     result = read_result(payload)
     raw = next((payload[k] for k in ("tool_result", "tool_response", "toolUseResult")
                 if isinstance(payload.get(k), dict)), {})
     incomplete = bool(result.skip or not result.readable
-                      or raw.get("timed_out") is True or raw.get("timeout") is True)
-    if incomplete and declared_needs(command, root):
+                      or raw.get("timed_out") is True or raw.get("timeout") is True
+                      or (raw.get('session_id') is not None and not any(
+                          raw.get(k) is not None for k in ('exit_code', 'exitCode', 'returncode', 'return_code', 'code'))))
+    if incomplete and declared_needs(command, root, cwd=cwd):
         ledger = Ledger.load(root)
-        records = parse(command, result.output, None, root)
+        records = parse(command, result.output, None, root, cwd=cwd)
         ledger.add(records)
         ledger.note("declared command incomplete", command)
         ledger.save()
@@ -304,7 +308,7 @@ def _on_post_tool(payload: dict, root: Path) -> int:
                           f"{tool}: no result field in {sorted(payload)}")
         return 0
 
-    records = parse(command, result.output, result.exit_code, root)
+    records = parse(command, result.output, result.exit_code, root, cwd=cwd)
     written = written_paths(command) if result.ok else []
 
     # Capture what the command printed BEFORE deciding whether it was evidence.

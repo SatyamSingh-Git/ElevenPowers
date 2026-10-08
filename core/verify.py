@@ -54,7 +54,7 @@ def dischargeable(ledger) -> list[str]:
         if not candidates:
             return False
         latest = max(enumerate(candidates), key=lambda pair: (pair[1].at, pair[0]))[1]
-        return (latest.command == scrub(config.command_for(need))
+        return (latest.command_identity == scrub(config.command_for(need))
                 and latest.result is Result.PASS and latest.execution == 'complete'
                 and latest.ran_tests and latest.freshness(ledger.root) is Freshness.FRESH)
     # An unresolved reproduction or scoped-test obligation cannot be fixed by

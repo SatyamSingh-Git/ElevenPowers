@@ -58,7 +58,8 @@ def _latest(payload, wanted):
         try:
             if not isinstance(value, dict):
                 raise ValueError('invalid current receipt')
-            if (value.get('kind'), value.get('command')) not in wanted:
+            command = (value.get('declared_command') or value.get('command')) if value.get('declaration') else value.get('command')
+            if (value.get('kind'), command) not in wanted:
                 continue
             records.append(record(value))
         except (ValueError, TypeError, KeyError, AttributeError):
@@ -66,7 +67,7 @@ def _latest(payload, wanted):
     # The atomic history has already reconciled later entries on timestamp ties.
     latest = {}
     for item in [*records, *historical]:
-        key = item.kind.value, item.command
+        key = item.kind.value, item.command_identity
         if key not in latest or item.at >= latest[key].at:
             latest[key] = item
     return latest, list(dict.fromkeys(issues))

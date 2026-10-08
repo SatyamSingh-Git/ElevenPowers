@@ -101,14 +101,14 @@ def retain(root, prior, records):
         pending &= wanted_keys
     latest = {}
     for item in existing:
-        key = item.kind.value, item.command
+        key = item.kind.value, item.command_identity
         if key not in latest or item.at >= latest[key].at:
             latest[key] = item
     for item in records:
         try:
             if not definition['configured']:
                 continue
-            key = item.kind.value, item.command
+            key = item.kind.value, item.command_identity
             if definition['milestones'] and key not in wanted:
                 continue
             if item.kind.value not in KINDS:

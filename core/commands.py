@@ -36,6 +36,14 @@ def directory_issue(root, cwd=None):
         return 'tool working directory is unavailable or invalid'
 
 
+def tool_directory(root, inputs):
+    """Require agreement from every supplied host directory alias."""
+    values = [inputs[k] for k in ('workdir', 'cwd', 'working_directory') if k in inputs]
+    if any(value is None or directory_issue(root, value) for value in values):
+        return ''  # Explicit invalid metadata, distinct from absent metadata.
+    return values[0] if values else None
+
+
 def qualify(command, root, *, cwd=None):
     """Read one portable cd literal; the caller still requires an exact leaf."""
     text = command.strip()

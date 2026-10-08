@@ -45,11 +45,11 @@ Files: `core/commands.py`, `core/parsers.py`, invocation tests.
 
 Files: `core/hook.py`, `core/evidence.py`, `core/verify.py`, milestone history/report.
 
-- [ ] Observe regressions for wrapper history, failed/interrupted supersession,
+- [x] Observe regressions for wrapper history, failed/interrupted supersession,
   fresh-result reuse, configuration movement and tool-directory mismatches.
-- [ ] Use qualified declared identity consistently; retain original provenance.
+- [x] Use qualified declared identity consistently; retain original provenance.
   Qualify all host ingress paths without trusting foreign-directory results.
-- [ ] Run affected host/milestone/verification tests and push the integration.
+- [x] Run affected host/milestone/verification tests and push the integration.
 
 ### Task 3: Producer controls and delivery
 

@@ -311,6 +311,7 @@ def parse(command: str, output: str, exit_code: int | None, root: Path,
 
 def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path, cwd=None) -> list[Evidence]:
     """A declaration authorizes its exact command, never a prefix or output file."""
+    from .redact import scrub
     needs, invocation = _declared_invocation(command, root, cwd)
     if not needs:
         records = _parse_known(command, output, exit_code if exit_code is not None else 1, root)
@@ -339,10 +340,7 @@ def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path
         if kind is Kind.SUITE:
             _declared_counts(record, output)
         record.declaration = need
-        from .redact import scrub
-        record.declared_command = scrub(needs[need])
         records.append(record)
-    from .redact import scrub
     for record in records:
         record.command = scrub(command)
         if record.declaration:

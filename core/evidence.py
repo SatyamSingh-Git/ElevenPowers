@@ -199,6 +199,11 @@ class Evidence:
         return Freshness.STALE
 
     @property
+    def command_identity(self) -> str:
+        """Qualified project check identity; keep command as invocation provenance."""
+        return self.declared_command if self.declaration and self.declared_command else self.command
+
+    @property
     def ran_tests(self) -> bool:
         """Whether a run that counts tests saw any test execute.
 

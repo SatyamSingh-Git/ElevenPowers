@@ -89,6 +89,7 @@ def build(root: Path, *, timeout=120):
             receipts.append({'kind': record.kind.value, 'identity': record.identity,
                              'receipt_key': receipt_key(record), 'declaration': record.declaration,
                              'command': record.command, 'result': record.result.value,
+                             'declared_command': record.declared_command,
                              'execution': record.execution, 'freshness': fresh.value,
                              'recorded_at': record.at, 'scope': record.scope or 'explicit paths',
                              'observed_files': len(record.observed), 'fingerprint': record.tree,
