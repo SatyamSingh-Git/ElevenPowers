@@ -1,0 +1,616 @@
+{
+  "original_sha256": "0e04b5f4cbb54ffd63d02fee97670ea9b7066367549508b5a7220e16843e0626",
+  "original": {
+    "schema": 1,
+    "slot": "inventory-ordinary",
+    "state": "completed",
+    "stages": [
+      {
+        "stage": 1,
+        "state": "completed",
+        "seconds_cap": 240.0,
+        "source_before": {
+          "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+          "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+          "service.py": "e4eea11f1fc8b3d411e8cd6db4ad303915bb9421418e4f8558458232ab356093",
+          "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+          "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+        },
+        "launched": true,
+        "prompt_sha256": "deac922ac9938bef2e5aa48c602c6f80504eea65e0a86f1652c86b1e4794a243",
+        "started_at": 1791436409.6198792,
+        "elapsed_ms": 49260.481,
+        "exit_code": 0,
+        "host_observation": {
+          "completed": true,
+          "usage": {
+            "input_tokens": 12,
+            "cache_creation_input_tokens": 15436,
+            "cache_read_input_tokens": 129612,
+            "output_tokens": 3697
+          },
+          "models": [
+            "claude-sonnet-5"
+          ],
+          "completion_language": true,
+          "failure": "unavailable"
+        },
+        "scope": "preserved",
+        "source_after": {
+          "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+          "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+          "service.py": "357237f9cf7ef24272a45f1fbff762cf320e5aeba2d11ecdf040b5c7f612225c",
+          "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+          "tests/test_expiry.py": "9e5c6f2223f6f6987eb4dced598208e04889b8fd1e490d9594573d782bb2af88",
+          "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+        },
+        "independent_grade": {
+          "state": "graded",
+          "checks": [
+            {
+              "id": "__main__.Base.test_idempotence_conflict_and_no_oversell",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Base.test_release_and_invalid_quantity",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Base.test_unrelated_formatting",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Expiry.test_boundary_and_live_retry",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Expiry.test_invalid_request_does_not_expire",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Expiry.test_permanent_sku_and_repeat_expiry",
+              "state": "passed"
+            }
+          ],
+          "passed": 6,
+          "failed": 0,
+          "oracle_sha256": "7e2e66736de4fafb960e9f876b20689b3a56d5edc2145b989715bf687483052e",
+          "source_sha256": {
+            "service.py": "357237f9cf7ef24272a45f1fbff762cf320e5aeba2d11ecdf040b5c7f612225c",
+            "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+          },
+          "elapsed_ms": 250.318
+        },
+        "native": {
+          "state": "incomplete",
+          "phases": {},
+          "receipt_links": 0,
+          "advice_attempts": []
+        },
+        "milestones": {
+          "schema": 1,
+          "generated_at": "2026-10-08T05:14:19.339879+00:00",
+          "project": "candidate",
+          "state": "INCOMPLETE",
+          "milestones": [
+            {
+              "id": "established-core",
+              "description": "Retain existing public core behavior.",
+              "inputs": [
+                "service.py",
+                "tests/test_core.py"
+              ],
+              "checks": [
+                {
+                  "kind": "test_suite",
+                  "command": "python -m unittest discover -s tests -v",
+                  "state": "STALE",
+                  "result": "pass",
+                  "execution": "complete",
+                  "freshness": "stale",
+                  "recorded_at": 1791436403.4073763,
+                  "scope": "source",
+                  "observed_files": 5,
+                  "receipt_fingerprint": "afcb7435754167bd",
+                  "issues": [],
+                  "qualifications": [
+                    "A passing command supports only its recorded property and declared input scope.",
+                    "Opaque command-level result; individual assertions were not counted."
+                  ],
+                  "next_action": "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+                }
+              ],
+              "state": "STALE"
+            },
+            {
+              "id": "formatting",
+              "description": "Preserve the independent formatting utility.",
+              "inputs": [
+                "formatting.py",
+                "tests/test_formatting.py"
+              ],
+              "checks": [
+                {
+                  "kind": "test_suite",
+                  "command": "python -m unittest discover -s tests -v",
+                  "state": "STALE",
+                  "result": "pass",
+                  "execution": "complete",
+                  "freshness": "stale",
+                  "recorded_at": 1791436403.4073763,
+                  "scope": "source",
+                  "observed_files": 5,
+                  "receipt_fingerprint": "afcb7435754167bd",
+                  "issues": [],
+                  "qualifications": [
+                    "A passing command supports only its recorded property and declared input scope.",
+                    "Opaque command-level result; individual assertions were not counted."
+                  ],
+                  "next_action": "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+                }
+              ],
+              "state": "STALE"
+            }
+          ],
+          "coverage": {
+            "complete": false,
+            "issues": [
+              "no current changed-path observation is available for requested impact advice",
+              "Resolve incomplete report coverage before relying on recommendations."
+            ],
+            "declaration_fingerprint": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+            "ledger_fingerprint": "582f9d8511ac7140749f1b334d56a04746b94908cfb0b4d4f712d1c06ccdd5a0",
+            "source_fingerprint": "66f0b19bdc0f9e13",
+            "source_complete": true,
+            "selected_files": 6,
+            "selected_bytes": 5652
+          },
+          "impact": {
+            "state": "incomplete",
+            "requested": [],
+            "omitted_observations": 0,
+            "leads": [],
+            "issues": [
+              "no current changed-path observation is available for requested impact advice"
+            ],
+            "timings": {
+              "graph_ms": 0.0,
+              "query_ms": 0.0
+            },
+            "safe_to_exclude": false,
+            "limits": [
+              "A missing graph path cannot establish that a milestone is unaffected.",
+              "These are dependency leads, not predicted failures or passing checks.",
+              "Graph and receipt snapshots have separate fingerprints and are not atomic."
+            ]
+          },
+          "rechecks": {
+            "schema": 1,
+            "state": "incomplete",
+            "commands": [
+              {
+                "kind": "test_suite",
+                "command": "python -m unittest discover -s tests -v",
+                "origin": "project declaration",
+                "priority": "fallback",
+                "needs_refresh": true,
+                "milestones": [
+                  {
+                    "id": "established-core",
+                    "state": "STALE"
+                  },
+                  {
+                    "id": "formatting",
+                    "state": "STALE"
+                  }
+                ],
+                "reasons": [],
+                "omitted_reasons": 0,
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope.",
+                  "Opaque command-level result; individual assertions were not counted.",
+                  "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+                ],
+                "issues": []
+              }
+            ],
+            "safe_to_exclude": false,
+            "issues": [
+              "no current changed-path observation is available for requested impact advice",
+              "Resolve incomplete report coverage before relying on recommendations."
+            ],
+            "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+            "timings": {
+              "ranking_ms": 0.031
+            }
+          },
+          "limits": [
+            "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+            "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+            "Unrecorded dependencies and external environment/services remain unknown.",
+            "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+            "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+            "Inspection runs no project checks, model, installer or host and creates no project state."
+          ],
+          "summary": {
+            "INCOMPLETE": 0,
+            "FAILED": 0,
+            "STALE": 2,
+            "ABSENT": 0,
+            "CURRENT": 0
+          },
+          "next_actions": [
+            "Resolve incomplete declaration, input or history coverage before relying on this view.",
+            "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+          ],
+          "timings": {
+            "report_ms": 146.911,
+            "impact_ms": 0.013
+          }
+        }
+      },
+      {
+        "stage": 2,
+        "state": "completed",
+        "seconds_cap": 430.739519,
+        "source_before": {
+          "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+          "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+          "service.py": "357237f9cf7ef24272a45f1fbff762cf320e5aeba2d11ecdf040b5c7f612225c",
+          "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+          "tests/test_expiry.py": "9e5c6f2223f6f6987eb4dced598208e04889b8fd1e490d9594573d782bb2af88",
+          "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+        },
+        "launched": true,
+        "prompt_sha256": "1a2a84c2c7b5f2c8cbb71f5c7d8d0412a9b176d1d7723f31ea05598a13432f4f",
+        "started_at": 1791436459.6586294,
+        "elapsed_ms": 39851.631,
+        "exit_code": 0,
+        "host_observation": {
+          "completed": true,
+          "usage": {
+            "input_tokens": 12,
+            "cache_creation_input_tokens": 5111,
+            "cache_read_input_tokens": 173692,
+            "output_tokens": 2672
+          },
+          "models": [
+            "claude-sonnet-5"
+          ],
+          "completion_language": true,
+          "failure": "unavailable"
+        },
+        "scope": "preserved",
+        "source_after": {
+          "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+          "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+          "service.py": "874763199cb575536f5d8d6e31e234b1955c6e8e0b369371e8cc951b9215e28e",
+          "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+          "tests/test_expiry.py": "9e5c6f2223f6f6987eb4dced598208e04889b8fd1e490d9594573d782bb2af88",
+          "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f",
+          "tests/test_serialization.py": "db9a6814bbb9766209d50cdd0877f9212021435fbfc8aa49afc40c6321f59605"
+        },
+        "independent_grade": {
+          "state": "graded",
+          "checks": [
+            {
+              "id": "__main__.Base.test_idempotence_conflict_and_no_oversell",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Base.test_release_and_invalid_quantity",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Base.test_unrelated_formatting",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Expiry.test_boundary_and_live_retry",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Expiry.test_invalid_request_does_not_expire",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Expiry.test_permanent_sku_and_repeat_expiry",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Persistence.test_restart_retry_deadline_and_release_once",
+              "state": "passed"
+            },
+            {
+              "id": "__main__.Persistence.test_snapshot_independence",
+              "state": "passed"
+            }
+          ],
+          "passed": 8,
+          "failed": 0,
+          "oracle_sha256": "2f0c9418cec56269d2135b40695ce20eeff24e7c6a98a59b9a68c0c63674ec66",
+          "source_sha256": {
+            "service.py": "874763199cb575536f5d8d6e31e234b1955c6e8e0b369371e8cc951b9215e28e",
+            "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+          },
+          "elapsed_ms": 1650.801
+        },
+        "native": {
+          "state": "incomplete",
+          "phases": {},
+          "receipt_links": 0,
+          "advice_attempts": []
+        },
+        "milestones": {
+          "schema": 1,
+          "generated_at": "2026-10-08T05:15:01.618448+00:00",
+          "project": "candidate",
+          "state": "INCOMPLETE",
+          "milestones": [
+            {
+              "id": "established-core",
+              "description": "Retain existing public core behavior.",
+              "inputs": [
+                "service.py",
+                "tests/test_core.py"
+              ],
+              "checks": [
+                {
+                  "kind": "test_suite",
+                  "command": "python -m unittest discover -s tests -v",
+                  "state": "STALE",
+                  "result": "pass",
+                  "execution": "complete",
+                  "freshness": "stale",
+                  "recorded_at": 1791436403.4073763,
+                  "scope": "source",
+                  "observed_files": 5,
+                  "receipt_fingerprint": "afcb7435754167bd",
+                  "issues": [],
+                  "qualifications": [
+                    "A passing command supports only its recorded property and declared input scope.",
+                    "Opaque command-level result; individual assertions were not counted."
+                  ],
+                  "next_action": "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+                }
+              ],
+              "state": "STALE"
+            },
+            {
+              "id": "formatting",
+              "description": "Preserve the independent formatting utility.",
+              "inputs": [
+                "formatting.py",
+                "tests/test_formatting.py"
+              ],
+              "checks": [
+                {
+                  "kind": "test_suite",
+                  "command": "python -m unittest discover -s tests -v",
+                  "state": "STALE",
+                  "result": "pass",
+                  "execution": "complete",
+                  "freshness": "stale",
+                  "recorded_at": 1791436403.4073763,
+                  "scope": "source",
+                  "observed_files": 5,
+                  "receipt_fingerprint": "afcb7435754167bd",
+                  "issues": [],
+                  "qualifications": [
+                    "A passing command supports only its recorded property and declared input scope.",
+                    "Opaque command-level result; individual assertions were not counted."
+                  ],
+                  "next_action": "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+                }
+              ],
+              "state": "STALE"
+            }
+          ],
+          "coverage": {
+            "complete": false,
+            "issues": [
+              "no current changed-path observation is available for requested impact advice",
+              "Resolve incomplete report coverage before relying on recommendations."
+            ],
+            "declaration_fingerprint": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+            "ledger_fingerprint": "582f9d8511ac7140749f1b334d56a04746b94908cfb0b4d4f712d1c06ccdd5a0",
+            "source_fingerprint": "c17b8ad3e0c5f7f6",
+            "source_complete": true,
+            "selected_files": 7,
+            "selected_bytes": 8418
+          },
+          "impact": {
+            "state": "incomplete",
+            "requested": [],
+            "omitted_observations": 0,
+            "leads": [],
+            "issues": [
+              "no current changed-path observation is available for requested impact advice"
+            ],
+            "timings": {
+              "graph_ms": 0.0,
+              "query_ms": 0.0
+            },
+            "safe_to_exclude": false,
+            "limits": [
+              "A missing graph path cannot establish that a milestone is unaffected.",
+              "These are dependency leads, not predicted failures or passing checks.",
+              "Graph and receipt snapshots have separate fingerprints and are not atomic."
+            ]
+          },
+          "rechecks": {
+            "schema": 1,
+            "state": "incomplete",
+            "commands": [
+              {
+                "kind": "test_suite",
+                "command": "python -m unittest discover -s tests -v",
+                "origin": "project declaration",
+                "priority": "fallback",
+                "needs_refresh": true,
+                "milestones": [
+                  {
+                    "id": "established-core",
+                    "state": "STALE"
+                  },
+                  {
+                    "id": "formatting",
+                    "state": "STALE"
+                  }
+                ],
+                "reasons": [],
+                "omitted_reasons": 0,
+                "qualifications": [
+                  "A passing command supports only its recorded property and declared input scope.",
+                  "Opaque command-level result; individual assertions were not counted.",
+                  "No available impact witness; dependency relevance is unknown. Keep fallback verification."
+                ],
+                "issues": []
+              }
+            ],
+            "safe_to_exclude": false,
+            "issues": [
+              "no current changed-path observation is available for requested impact advice",
+              "Resolve incomplete report coverage before relying on recommendations."
+            ],
+            "policy": "Refresh-needed checks first, then direct, dependency and fallback. Priority is a relationship lead, not a failure probability or permission to skip checks.",
+            "timings": {
+              "ranking_ms": 0.033
+            }
+          },
+          "limits": [
+            "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+            "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+            "Unrecorded dependencies and external environment/services remain unknown.",
+            "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+            "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+            "Inspection runs no project checks, model, installer or host and creates no project state."
+          ],
+          "summary": {
+            "INCOMPLETE": 0,
+            "FAILED": 0,
+            "STALE": 2,
+            "ABSENT": 0,
+            "CURRENT": 0
+          },
+          "next_actions": [
+            "Resolve incomplete declaration, input or history coverage before relying on this view.",
+            "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+          ],
+          "timings": {
+            "report_ms": 290.633,
+            "impact_ms": 0.016
+          }
+        }
+      }
+    ],
+    "model_seconds": 89.112112,
+    "host_version": "2.1.292 (Claude Code)",
+    "limits": [
+      "Two selected authored Python systems; no population effect or large-repository claim.",
+      "Guide feedback, milestone advice and receipt handling form one combined intervention.",
+      "Native tools have filesystem access; withholding grading paths is not an OS exposure boundary.",
+      "Unsigned callback observations are not host authentication.",
+      "Stage-final snapshots cannot establish a linked correction after an intervention.",
+      "Fresh receipts establish verification, not necessarily improved code."
+    ]
+  },
+  "protocol_sha256": "782c65f8ad1c6e9d576d627cf7e17cbc34ed3fb0cfcb25702a6fbf39fedf0103",
+  "state": "regraded",
+  "regrades": [
+    {
+      "state": "graded",
+      "checks": [
+        {
+          "id": "__main__.Base.test_idempotence_conflict_and_no_oversell",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Base.test_release_and_invalid_quantity",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Base.test_unrelated_formatting",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Expiry.test_boundary_and_live_retry",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Expiry.test_invalid_request_does_not_expire",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Expiry.test_permanent_sku_and_repeat_expiry",
+          "state": "passed"
+        }
+      ],
+      "passed": 6,
+      "failed": 0,
+      "oracle_sha256": "7e2e66736de4fafb960e9f876b20689b3a56d5edc2145b989715bf687483052e",
+      "source_sha256": {
+        "service.py": "357237f9cf7ef24272a45f1fbff762cf320e5aeba2d11ecdf040b5c7f612225c",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+      },
+      "elapsed_ms": 936.916
+    },
+    {
+      "state": "graded",
+      "checks": [
+        {
+          "id": "__main__.Base.test_idempotence_conflict_and_no_oversell",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Base.test_release_and_invalid_quantity",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Base.test_unrelated_formatting",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Expiry.test_boundary_and_live_retry",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Expiry.test_invalid_request_does_not_expire",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Expiry.test_permanent_sku_and_repeat_expiry",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Persistence.test_restart_retry_deadline_and_release_once",
+          "state": "passed"
+        },
+        {
+          "id": "__main__.Persistence.test_snapshot_independence",
+          "state": "passed"
+        }
+      ],
+      "passed": 8,
+      "failed": 0,
+      "oracle_sha256": "2f0c9418cec56269d2135b40695ce20eeff24e7c6a98a59b9a68c0c63674ec66",
+      "source_sha256": {
+        "service.py": "874763199cb575536f5d8d6e31e234b1955c6e8e0b369371e8cc951b9215e28e",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+      },
+      "elapsed_ms": 644.706
+    }
+  ],
+  "protocol_qualification": {
+    "state": "qualified",
+    "public_inputs": {
+      "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+      "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+      "service.py": "e4eea11f1fc8b3d411e8cd6db4ad303915bb9421418e4f8558458232ab356093",
+      "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+      "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+    },
+    "runtime": "fd8302dbef19c5fb42acb8590a194434065a38ac0eee214497cd7efa8860a1e7",
+    "seconds": 480
+  }
+}

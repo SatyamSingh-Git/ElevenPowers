@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "prepared_at": "2026-10-08T04:59:16.457843+00:00",
+  "host": "claude",
+  "model": "claude-sonnet-5",
+  "effort": "medium",
+  "seconds_per_session": 480,
+  "runtime_fingerprint": "fd8302dbef19c5fb42acb8590a194434065a38ac0eee214497cd7efa8860a1e7",
+  "harness_sha256": "5e876b9ad2cee4ffb33e530bd2e1c3293e190ded621334dc98556681a220f3f3",
+  "slots": [
+    "queue-ordinary",
+    "queue-assisted",
+    "inventory-assisted",
+    "inventory-ordinary"
+  ],
+  "seals": {
+    "queue-ordinary": {
+      "initial": {
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "4735ac8cb5d161b927495f6a5d5e20a7505d517017bf787adb805db21bcbb35a",
+        "tests/test_core.py": "5a6dea4f024c477e18fcba014a97bcd729c1c47338b5e40d10b1bfa25b6c8336",
+        "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+      },
+      "settings": {
+        ".elevenpowers/config.json": "ac62672d51c9a9d74079f17b0bb253eb51ffc7ce0289988c8138859d6b8e2f31",
+        ".claude/settings.local.json": null,
+        ".claude/settings.json": null,
+        "CLAUDE.md": null,
+        "CLAUDE.local.md": null,
+        "AGENTS.md": null,
+        "AGENTS.override.md": null,
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "impactgraph.json": null
+      },
+      "baseline": "8babd52b0fd411382910af0a391ce20f5f73d5214412e13c919598bc1213c44f",
+      "oracles": [
+        "e2ff914294894f9b124ad0b4beb08101d2fa2f317b9f07bb24fb213f19c30e24",
+        "d015bd2ff0213253a5fd20b7ae0a9059b95476aa1dd29249705ad9688d37241a",
+        "19a9c8eb3f813e9d0359a9a2204eb33821f02bd26478bf0371f509d597e46513"
+      ],
+      "session": "0875c7cc-c6a1-4ad8-9138-d772c9de0d2f",
+      "requests": [
+        "Extend Queue.claim(key, now=0, ttl=None) with optional leases. A positive ttl expires at now+ttl; a claim can be taken again at the exact expiry boundary. Each claim gets a new globally increasing integer token. Before expiry, and for ttl=None, a live claim cannot be retaken. Old tokens must never acknowledge a newer claim. A current token can acknowledge its lease until reassignment. Reject nonpositive ttl with ValueError without modifying state. Keep old call signatures, duplicate enqueue semantics, unknown-key handling and permanent completion intact.",
+        "Add Queue.dumps() -> JSON string and Queue.loads(text) -> independent Queue. Preserve payloads, permanent completion, current lease deadlines, and the globally increasing token counter across round trips. Deadlines are absolute caller-supplied ticks, not wall-clock time. A restored queue must reject a stale token after lease reassignment, continue increasing tokens and retain all earlier core/lease behavior. Mutating a restored instance must not mutate the original. Inputs need only be valid snapshots produced by dumps and payloads are JSON-compatible."
+      ]
+    },
+    "queue-assisted": {
+      "initial": {
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "4735ac8cb5d161b927495f6a5d5e20a7505d517017bf787adb805db21bcbb35a",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        "tests/test_core.py": "5a6dea4f024c477e18fcba014a97bcd729c1c47338b5e40d10b1bfa25b6c8336",
+        "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+      },
+      "settings": {
+        ".elevenpowers/config.json": "a7085b9fdd290198a86463dd7e3f60ae2bffe62e64f6cb1f7663fef8fec4e0fe",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        ".claude/settings.json": null,
+        "CLAUDE.md": null,
+        "CLAUDE.local.md": null,
+        "AGENTS.md": null,
+        "AGENTS.override.md": null,
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "impactgraph.json": null
+      },
+      "baseline": "4989c74817a108a5bf755e65c4ee7755c490be0dbbb48491b774ff539a691001",
+      "oracles": [
+        "e2ff914294894f9b124ad0b4beb08101d2fa2f317b9f07bb24fb213f19c30e24",
+        "d015bd2ff0213253a5fd20b7ae0a9059b95476aa1dd29249705ad9688d37241a",
+        "19a9c8eb3f813e9d0359a9a2204eb33821f02bd26478bf0371f509d597e46513"
+      ],
+      "session": "f0da6965-4dae-4da7-8286-a6b8a5b3d047",
+      "requests": [
+        "Extend Queue.claim(key, now=0, ttl=None) with optional leases. A positive ttl expires at now+ttl; a claim can be taken again at the exact expiry boundary. Each claim gets a new globally increasing integer token. Before expiry, and for ttl=None, a live claim cannot be retaken. Old tokens must never acknowledge a newer claim. A current token can acknowledge its lease until reassignment. Reject nonpositive ttl with ValueError without modifying state. Keep old call signatures, duplicate enqueue semantics, unknown-key handling and permanent completion intact.",
+        "Add Queue.dumps() -> JSON string and Queue.loads(text) -> independent Queue. Preserve payloads, permanent completion, current lease deadlines, and the globally increasing token counter across round trips. Deadlines are absolute caller-supplied ticks, not wall-clock time. A restored queue must reject a stale token after lease reassignment, continue increasing tokens and retain all earlier core/lease behavior. Mutating a restored instance must not mutate the original. Inputs need only be valid snapshots produced by dumps and payloads are JSON-compatible."
+      ]
+    },
+    "inventory-assisted": {
+      "initial": {
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "e4eea11f1fc8b3d411e8cd6db4ad303915bb9421418e4f8558458232ab356093",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+        "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+      },
+      "settings": {
+        ".elevenpowers/config.json": "a7085b9fdd290198a86463dd7e3f60ae2bffe62e64f6cb1f7663fef8fec4e0fe",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        ".claude/settings.json": null,
+        "CLAUDE.md": null,
+        "CLAUDE.local.md": null,
+        "AGENTS.md": null,
+        "AGENTS.override.md": null,
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "impactgraph.json": null
+      },
+      "baseline": "3efda3e367491f9b888e6adf318d4e10df0b51338b3af510c56dfe03a3ea837b",
+      "oracles": [
+        "99e414ae80da643e92ede86dec78cf3f40f5b8fdb0d0e35a42229483935d36e3",
+        "3d5dea75db8d859d0465c2c57714d9ff2bbe375f4ce374e44aa0a195c55323e9",
+        "2514c558f9cb07c377ef9063687e353093322cee12dccc3a3addad934d209fbd"
+      ],
+      "session": "1da3b665-9836-4fed-8ce6-530993096527",
+      "requests": [
+        "Extend Inventory.reserve(key, sku, qty, now=0, ttl=None) with optional expiry. Add expire(now), and available(sku, now=None) which expires holds first only when now is supplied. A hold with positive ttl expires exactly at now+ttl; ttl=None stays permanent. reserve expires existing holds at its supplied now before allocating. An identical live retry succeeds without extending its deadline or consuming more stock; conflicting retries fail unchanged. Reject nonpositive qty or ttl with ValueError before modifying any state. Preserve no overselling, SKU isolation, release and old signatures.",
+        "Add Inventory.dumps() -> JSON string and Inventory.loads(text) -> independent Inventory. Preserve original stock, every live reservation, idempotency identity and absolute expiry deadline. Restored expiry releases each quantity once, identical retries do not extend deadlines, and conflicting retries do not consume stock. Mutating the restored instance must not mutate the original. Retain all earlier core/expiry behavior. Inputs need only be valid snapshots produced by dumps."
+      ]
+    },
+    "inventory-ordinary": {
+      "initial": {
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "e4eea11f1fc8b3d411e8cd6db4ad303915bb9421418e4f8558458232ab356093",
+        "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+        "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+      },
+      "settings": {
+        ".elevenpowers/config.json": "ac62672d51c9a9d74079f17b0bb253eb51ffc7ce0289988c8138859d6b8e2f31",
+        ".claude/settings.local.json": null,
+        ".claude/settings.json": null,
+        "CLAUDE.md": null,
+        "CLAUDE.local.md": null,
+        "AGENTS.md": null,
+        "AGENTS.override.md": null,
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "impactgraph.json": null
+      },
+      "baseline": "b3ad9acc025c789bd3e1d0bf9e52ba6ae0ad304691bda4aceff55c380b63da9e",
+      "oracles": [
+        "99e414ae80da643e92ede86dec78cf3f40f5b8fdb0d0e35a42229483935d36e3",
+        "3d5dea75db8d859d0465c2c57714d9ff2bbe375f4ce374e44aa0a195c55323e9",
+        "2514c558f9cb07c377ef9063687e353093322cee12dccc3a3addad934d209fbd"
+      ],
+      "session": "58bab4ea-2677-4c81-92b5-5698816825e4",
+      "requests": [
+        "Extend Inventory.reserve(key, sku, qty, now=0, ttl=None) with optional expiry. Add expire(now), and available(sku, now=None) which expires holds first only when now is supplied. A hold with positive ttl expires exactly at now+ttl; ttl=None stays permanent. reserve expires existing holds at its supplied now before allocating. An identical live retry succeeds without extending its deadline or consuming more stock; conflicting retries fail unchanged. Reject nonpositive qty or ttl with ValueError before modifying any state. Preserve no overselling, SKU isolation, release and old signatures.",
+        "Add Inventory.dumps() -> JSON string and Inventory.loads(text) -> independent Inventory. Preserve original stock, every live reservation, idempotency identity and absolute expiry deadline. Restored expiry releases each quantity once, identical retries do not extend deadlines, and conflicting retries do not consume stock. Mutating the restored instance must not mutate the original. Retain all earlier core/expiry behavior. Inputs need only be valid snapshots produced by dumps."
+      ]
+    }
+  },
+  "limits": [
+    "Two selected authored Python systems; no population effect or large-repository claim.",
+    "Guide feedback, milestone advice and receipt handling form one combined intervention.",
+    "Native tools have filesystem access; withholding grading paths is not an OS exposure boundary.",
+    "Unsigned callback observations are not host authentication.",
+    "Stage-final snapshots cannot establish a linked correction after an intervention.",
+    "Fresh receipts establish verification, not necessarily improved code."
+  ]
+}

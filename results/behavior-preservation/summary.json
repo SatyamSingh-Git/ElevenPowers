@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "state": "regraded",
+  "selected_slots": [
+    "queue-ordinary",
+    "queue-assisted",
+    "inventory-assisted",
+    "inventory-ordinary"
+  ],
+  "pairs": [
+    {
+      "case": "queue",
+      "ordinary": {
+        "final_passed": 8,
+        "final_failed": 0,
+        "stage_passes": [
+          6,
+          8
+        ],
+        "model_seconds": 108.707,
+        "original_native_states": [
+          "incomplete",
+          "incomplete"
+        ]
+      },
+      "assisted": {
+        "final_passed": 8,
+        "final_failed": 0,
+        "stage_passes": [
+          6,
+          8
+        ],
+        "model_seconds": 126.596,
+        "original_native_states": [
+          "incomplete",
+          "incomplete"
+        ]
+      },
+      "difference": 0
+    },
+    {
+      "case": "inventory",
+      "ordinary": {
+        "final_passed": 8,
+        "final_failed": 0,
+        "stage_passes": [
+          6,
+          8
+        ],
+        "model_seconds": 89.112,
+        "original_native_states": [
+          "incomplete",
+          "incomplete"
+        ]
+      },
+      "assisted": {
+        "final_passed": 8,
+        "final_failed": 0,
+        "stage_passes": [
+          6,
+          8
+        ],
+        "model_seconds": 217.458,
+        "original_native_states": [
+          "incomplete",
+          "incomplete"
+        ]
+      },
+      "difference": 0
+    }
+  ],
+  "paired_correctness_advantage_observed": false,
+  "linked_correction_observed": false,
+  "limits": [
+    "Two selected authored Python systems; no population effect or large-repository claim.",
+    "Guide feedback, milestone advice and receipt handling form one combined intervention.",
+    "Native tools have filesystem access; withholding grading paths is not an OS exposure boundary.",
+    "Unsigned callback observations are not host authentication.",
+    "Stage-final snapshots cannot establish a linked correction after an intervention.",
+    "Fresh receipts establish verification, not necessarily improved code."
+  ],
+  "regrader_sha256": "d3f259d93b353b3fe707bb32f3271741d3d73c9e95fad4881e64aa5a31e3310a"
+}

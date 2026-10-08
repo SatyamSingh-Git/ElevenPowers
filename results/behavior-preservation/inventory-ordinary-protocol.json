@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "prepared_at": "2026-10-08T05:13:20.476737+00:00",
+  "host": "claude",
+  "model": "claude-sonnet-5",
+  "effort": "medium",
+  "seconds_per_session": 480,
+  "runtime_fingerprint": "fd8302dbef19c5fb42acb8590a194434065a38ac0eee214497cd7efa8860a1e7",
+  "harness_sha256": "c524543b300f195335945d4be9eb49af9b4a2d898866d6549c92b2f15d0fe3f4",
+  "slots": [
+    "inventory-ordinary",
+    "inventory-assisted"
+  ],
+  "seals": {
+    "inventory-ordinary": {
+      "initial": {
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "e4eea11f1fc8b3d411e8cd6db4ad303915bb9421418e4f8558458232ab356093",
+        "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+        "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+      },
+      "settings": {
+        ".elevenpowers/config.json": "ac62672d51c9a9d74079f17b0bb253eb51ffc7ce0289988c8138859d6b8e2f31",
+        ".claude/settings.local.json": null,
+        ".claude/settings.json": null,
+        "CLAUDE.md": null,
+        "CLAUDE.local.md": null,
+        "AGENTS.md": null,
+        "AGENTS.override.md": null,
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "impactgraph.json": null
+      },
+      "baseline": "e0097f160f4d500b27b70242667986ebbf4832ad7a0985a0a9db68525577e383",
+      "oracles": [
+        "0823a331cfcc3b6e46d96e8524ea9444d89a7c72acf9c67eba75f9cfe3a57ed3",
+        "7e2e66736de4fafb960e9f876b20689b3a56d5edc2145b989715bf687483052e",
+        "2f0c9418cec56269d2135b40695ce20eeff24e7c6a98a59b9a68c0c63674ec66"
+      ],
+      "session": "1705d679-3a7d-4c11-ac81-f27f2b3a7f25",
+      "requests": [
+        "Extend Inventory.reserve(key, sku, qty, now=0, ttl=None) with optional expiry. Add expire(now), and available(sku, now=None) which expires holds first only when now is supplied. A hold with positive ttl expires exactly at now+ttl; ttl=None stays permanent. reserve expires existing holds at its supplied now before allocating. An identical live retry succeeds without extending its deadline or consuming more stock; conflicting retries fail unchanged. Reject nonpositive qty or ttl with ValueError before modifying any state. Preserve no overselling, SKU isolation, release and old signatures.",
+        "Add Inventory.dumps() -> JSON string and Inventory.loads(text) -> independent Inventory. Preserve original stock, every live reservation, idempotency identity and absolute expiry deadline. Restored expiry releases each quantity once, identical retries do not extend deadlines, and conflicting retries do not consume stock. Mutating the restored instance must not mutate the original. Retain all earlier core/expiry behavior. Inputs need only be valid snapshots produced by dumps."
+      ]
+    },
+    "inventory-assisted": {
+      "initial": {
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "e4eea11f1fc8b3d411e8cd6db4ad303915bb9421418e4f8558458232ab356093",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        "tests/test_core.py": "69d5ce05a271d1da6054ff13a214acea0d29f7f76fbcdf536bad2db755de9061",
+        "tests/test_formatting.py": "c777d857d32769f7c6b500714208b957c210823aec403095e9d13e5acf590d3f"
+      },
+      "settings": {
+        ".elevenpowers/config.json": "a7085b9fdd290198a86463dd7e3f60ae2bffe62e64f6cb1f7663fef8fec4e0fe",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        ".claude/settings.json": null,
+        "CLAUDE.md": null,
+        "CLAUDE.local.md": null,
+        "AGENTS.md": null,
+        "AGENTS.override.md": null,
+        "elevenpowers.milestones.json": "8296a82c772bb3a5b1447af7cc3416a4fa44586dbda907f44cf39eadd23ef232",
+        "impactgraph.json": null
+      },
+      "baseline": "9891fe5d457f54e35e84664648b59513975f101cb69ea0fd0eda708609548e50",
+      "oracles": [
+        "0823a331cfcc3b6e46d96e8524ea9444d89a7c72acf9c67eba75f9cfe3a57ed3",
+        "7e2e66736de4fafb960e9f876b20689b3a56d5edc2145b989715bf687483052e",
+        "2f0c9418cec56269d2135b40695ce20eeff24e7c6a98a59b9a68c0c63674ec66"
+      ],
+      "session": "ee570ca4-e71e-4686-adee-4b8c6ccb5b3b",
+      "requests": [
+        "Extend Inventory.reserve(key, sku, qty, now=0, ttl=None) with optional expiry. Add expire(now), and available(sku, now=None) which expires holds first only when now is supplied. A hold with positive ttl expires exactly at now+ttl; ttl=None stays permanent. reserve expires existing holds at its supplied now before allocating. An identical live retry succeeds without extending its deadline or consuming more stock; conflicting retries fail unchanged. Reject nonpositive qty or ttl with ValueError before modifying any state. Preserve no overselling, SKU isolation, release and old signatures.",
+        "Add Inventory.dumps() -> JSON string and Inventory.loads(text) -> independent Inventory. Preserve original stock, every live reservation, idempotency identity and absolute expiry deadline. Restored expiry releases each quantity once, identical retries do not extend deadlines, and conflicting retries do not consume stock. Mutating the restored instance must not mutate the original. Retain all earlier core/expiry behavior. Inputs need only be valid snapshots produced by dumps."
+      ]
+    }
+  },
+  "limits": [
+    "Two selected authored Python systems; no population effect or large-repository claim.",
+    "Guide feedback, milestone advice and receipt handling form one combined intervention.",
+    "Native tools have filesystem access; withholding grading paths is not an OS exposure boundary.",
+    "Unsigned callback observations are not host authentication.",
+    "Stage-final snapshots cannot establish a linked correction after an intervention.",
+    "Fresh receipts establish verification, not necessarily improved code."
+  ]
+}
