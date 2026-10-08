@@ -54,3 +54,20 @@ def test_grader_timeout_is_incomplete(tmp_path):
         (tmp_path / name).write_text('while True: pass\n')
     result = grade(value, 0, tmp_path, seconds=.1)
     assert result['state'] == 'incomplete' and result['failed'] == 0
+
+
+@pytest.mark.parametrize('name,mutation', [
+    ('queue', lambda text: text.replace('result.items = value["items"]',
+        'result.items = value["items"]\n        for item in result.items.values(): item["payload"] = None')),
+    ('inventory', lambda text: text.replace('        self.expire(now)\n        if key in self.reservations:',
+                                           '        if key in self.reservations:')),
+    ('queue', lambda text: text.replace('import json', 'import copy').replace('json.dumps', 'copy.deepcopy').replace('json.loads', 'copy.deepcopy')),
+    ('inventory', lambda text: text.replace('import json', 'import copy').replace('json.dumps', 'copy.deepcopy').replace('json.loads', 'copy.deepcopy')),
+])
+def test_required_preservation_faults_are_detected(tmp_path, name, mutation):
+    case, grade = api(); value = case(name)
+    for path in value['production']:
+        text = mutation(value['gold'][1]) if path == 'service.py' else value['files'][path]
+        (tmp_path / path).write_text(text, encoding='utf-8')
+    result = grade(value, 2, tmp_path)
+    assert result['state'] == 'graded' and result['failed'] > 0

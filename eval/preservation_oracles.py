@@ -56,14 +56,15 @@ class Persistence(unittest.TestCase):
         q=service.Queue(); q.enqueue("a", {"p":[2]}); q.enqueue("done", 0)
         self.assertTrue(callable(getattr(q,"dumps",None))); self.assertTrue(callable(getattr(q,"loads",None)))
         q.ack("done",q.claim("done")[1]); _,old=q.claim("a", now=8, ttl=2)
-        r=q.loads(q.dumps()); self.assertIsNone(r.claim("a", now=9, ttl=2))
-        _,new=r.claim("a", now=10, ttl=2); self.assertGreater(new,old)
+        r=q.loads(snapshot(self,q)); self.assertIsNone(r.claim("a", now=9, ttl=2))
+        payload,new=r.claim("a", now=10, ttl=2); self.assertEqual(payload,{"p":[2]}); self.assertGreater(new,old)
         self.assertFalse(r.ack("a",old)); self.assertTrue(r.ack("a",new)); self.assertIsNone(r.claim("done"))
         r.enqueue("b",0); self.assertGreater(r.claim("b")[1],new)
     def test_snapshot_independence(self):
         q=service.Queue(); q.enqueue("a", [1]); self.assertTrue(callable(getattr(q,"dumps",None)))
-        r=q.loads(q.dumps()); self.assertTrue(r.ack("a",r.claim("a")[1]))
-        self.assertIsNotNone(q.claim("a"))
+        r=q.loads(snapshot(self,q)); payload,token=r.claim("a"); payload.append(2)
+        self.assertTrue(r.ack("a",token)); original=q.claim("a")
+        self.assertIsNotNone(original); self.assertEqual(original[0],[1])
 '''
 
 INVENTORY_CHECKS = '''
@@ -89,6 +90,8 @@ class Expiry(unittest.TestCase):
         self.assertTrue(s.reserve("x","a",3,now=9,ttl=20))
         self.assertEqual(s.available("a",now=9),2); self.assertEqual(s.available("a",now=10),5)
         self.assertTrue(s.reserve("x","a",4,now=10,ttl=2))
+        direct=service.Inventory({"a":1}); direct.reserve("old","a",1,now=0,ttl=1)
+        self.assertTrue(direct.reserve("new","a",1,now=1,ttl=1))
     def test_invalid_request_does_not_expire(self):
         s=service.Inventory({"a":3}); self.assertTrue("ttl" in inspect.signature(s.reserve).parameters)
         s.reserve("x","a",2,now=0,ttl=1)
@@ -104,13 +107,13 @@ class Persistence(unittest.TestCase):
     def test_restart_retry_deadline_and_release_once(self):
         s=service.Inventory({"a":5,"b":3}); self.assertTrue(callable(getattr(s,"dumps",None)))
         s.reserve("x","a",3,now=7,ttl=3); s.reserve("p","b",2)
-        r=s.loads(s.dumps()); self.assertEqual(r.available("a"),2)
+        r=s.loads(snapshot(self,s)); self.assertEqual(r.available("a"),2)
         self.assertTrue(r.reserve("x","a",3,now=9,ttl=100)); self.assertFalse(r.reserve("x","b",3,now=9))
         self.assertEqual(r.available("a",now=10),5); r.expire(100)
         self.assertEqual(r.available("a"),5); self.assertEqual(r.available("b"),1)
     def test_snapshot_independence(self):
         s=service.Inventory({"a":3}); s.reserve("x","a",2)
-        self.assertTrue(callable(getattr(s,"dumps",None))); r=s.loads(s.dumps())
+        self.assertTrue(callable(getattr(s,"dumps",None))); r=s.loads(snapshot(self,s))
         r.release("x"); self.assertEqual(s.available("a"),1); self.assertEqual(r.available("a"),3)
 '''
 
@@ -118,6 +121,11 @@ PREFIX = '''import inspect, json, sys, unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import service, formatting
+def snapshot(test,value):
+    text=value.dumps(); test.assertIsInstance(text,str)
+    try: json.loads(text)
+    except (ValueError,TypeError): test.fail("snapshot must be valid JSON")
+    return text
 '''
 SUFFIX = '''
 class Results(unittest.TestResult):

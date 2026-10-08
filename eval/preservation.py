@@ -159,12 +159,19 @@ def prepare(destination, *, names=('queue', 'inventory'), seconds=480):
                 'oracles': [_hash(oracle(value, stage).encode()) for stage in range(3)],
                 'session': str(uuid.uuid4()), 'requests': value['requests']}
     _write(root / 'protocol.json', protocol)
+    _write(root / 'protocol-seal.json', {'sha256': _hash((root / 'protocol.json').read_bytes())})
     return protocol
 
 
 def verify(batch, slot, *, initial=False):
     root = Path(batch).resolve(strict=True)
     protocol = _read(root / 'protocol.json')
+    allowance = protocol.get('seconds_per_session')
+    if (type(allowance) not in (int, float) or not math.isfinite(allowance)
+            or not 1 <= allowance <= 480):
+        raise ValueError('loaded session allowance exceeds approved bounds')
+    if _read(root / 'protocol-seal.json').get('sha256') != _hash((root / 'protocol.json').read_bytes()):
+        raise ValueError('sealed protocol changed')
     if slot not in protocol['slots'] or '/' in slot or '\\' in slot:
         raise ValueError('unknown slot')
     seal = protocol['seals'][slot]
@@ -177,6 +184,8 @@ def verify(batch, slot, *, initial=False):
     if seal['requests'] != value['requests'] or seal['baseline'] != _hash((root / slot / 'baseline.json').read_bytes()):
         raise ValueError('sealed request or baseline changed')
     actual = _manifest(candidate)
+    if initial and actual != seal['initial']:
+        raise ValueError('sealed initial candidate changed')
     if _settings(candidate) != seal['settings']:
         raise ValueError('sealed project configuration changed')
     for name, expected in seal['initial'].items():
@@ -241,6 +250,9 @@ def _native(root, protocol, *, since=None, session=None):
                      and phases.get('SessionStart', {}).get('runtime_fingerprint') == protocol['runtime_fingerprint']
                      and edit.get('changed', 0) > 0 and not edit.get('incomplete', True)
                      and edit.get('session') == expected_session and bool(links)
+                     and bool(edit.get('task')) and edit.get('task') == phases.get('Stop', {}).get('task')
+                     and all(phases.get(p, {}).get('task') == edit.get('task')
+                             for p in ('UserPromptSubmit', 'PostToolUse', 'Stop'))
                      and not host.get('errors'))
         return {'state': 'observed' if qualified else 'incomplete', 'phases': phases,
                 'receipt_links': len(links),

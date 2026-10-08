@@ -129,9 +129,37 @@ def test_matching_current_callbacks_and_receipt_link_qualify_observation(tmp_pat
     phases = {name: {'processed': 1, 'session': identity, 'task': 'c' * 64, 'last_at': 11}
               for name in ('SessionStart', 'UserPromptSubmit', 'PostToolUse', 'Stop')}
     phases['SessionStart']['runtime_fingerprint'] = 'a' * 64
-    phases['PostToolUse']['edit'] = {'changed': 1, 'incomplete': False, 'session': identity}
+    phases['PostToolUse']['edit'] = {'changed': 1, 'incomplete': False, 'session': identity, 'task': 'c' * 64}
     monkeypatch.setattr(p, 'diagnostics', lambda root: {'claude': {'phases': phases,
         'receipt_links': [{'session': identity, 'task': 'c' * 64, 'at': 11}]}})
     assert p._native(tmp_path, protocol, since=10, session=session)['state'] == 'observed'
     phases['PostToolUse']['edit']['incomplete'] = True
     assert p._native(tmp_path, protocol, since=10, session=session)['state'] == 'incomplete'
+
+
+def test_old_task_edit_cannot_be_reused_by_later_task_in_same_session(tmp_path, monkeypatch):
+    p = api(); session = 'resumed'; identity = p._hash(session.encode())
+    phases = {name: {'processed': 1, 'session': identity, 'task': 'c' * 64, 'last_at': 11}
+              for name in ('SessionStart', 'UserPromptSubmit', 'PostToolUse', 'Stop')}
+    phases['SessionStart']['runtime_fingerprint'] = 'a' * 64
+    phases['PostToolUse']['edit'] = {'changed': 1, 'incomplete': False, 'session': identity, 'task': 'd' * 64}
+    monkeypatch.setattr(p, 'diagnostics', lambda root: {'claude': {'phases': phases,
+        'receipt_links': [{'session': identity, 'task': 'c' * 64, 'at': 11}]}})
+    assert p._native(tmp_path, {'runtime_fingerprint': 'a' * 64}, since=10, session=session)['state'] == 'incomplete'
+
+
+def test_loaded_budget_cannot_expand_approved_allowance(tmp_path):
+    p = api(); batch = tmp_path / 'batch'; protocol = p.prepare(batch, names=('queue',))
+    for value in (960, -1, True, '480', float('nan')):
+        protocol['seconds_per_session'] = value
+        (batch / 'protocol.json').write_text(json.dumps(protocol))
+        with pytest.raises(ValueError, match='allowance'):
+            p.verify(batch, protocol['slots'][0], initial=True)
+
+
+def test_unsealed_extra_test_before_first_launch_breaks_equal_start(tmp_path):
+    p = api(); batch = tmp_path / 'batch'; protocol = p.prepare(batch, names=('queue',))
+    slot = protocol['slots'][0]
+    (batch / slot / 'candidate/tests/test_added.py').write_text('assert False\n')
+    with pytest.raises(ValueError, match='sealed'):
+        p.verify(batch, slot, initial=True)
