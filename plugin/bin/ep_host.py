@@ -6,6 +6,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.hosts.bridge import run
 from core.hosts.readiness import ingress
+from core.milestones.delivery import collect, emitted
 
 
 def main() -> int:
@@ -15,9 +16,10 @@ def main() -> int:
         payload = json.load(sys.stdin)
         if not isinstance(payload, dict):
             raise ValueError("hook input must be a JSON object")
-        with ingress('replay' if len(sys.argv) == 4 else 'host'):
+        with ingress('replay' if len(sys.argv) == 4 else 'host'), collect():
             response, code = run(sys.argv[1], sys.argv[2], payload)
-        print(json.dumps(response))
+            print(json.dumps(response), flush=True)
+            emitted(response)
         return code
     except (ValueError, OSError) as exc:
         print(f"ElevenPowers host event not processed: {exc}", file=sys.stderr)

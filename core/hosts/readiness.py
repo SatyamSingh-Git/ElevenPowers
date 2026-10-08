@@ -50,6 +50,13 @@ def record_edit(task, changed, incomplete=False):
         observation['edit'] = {'changed': changed, 'incomplete': incomplete}
 
 
+def emission_scope():
+    observation = _OBSERVATION.get()
+    if SOURCE.get() != 'host' or observation is None:
+        return None
+    return {key: observation[key] for key in ('host', 'generation', 'session')}
+
+
 @contextmanager
 def ingress(source):
     token = SOURCE.set(source)
@@ -134,7 +141,8 @@ def callback(platform, root, event, payload=None):
                     received=min(item.get('received', 0) + 1, 1_000_000_000))
         phase = item.setdefault('phases', {}).setdefault(event, {})
         phase.update(received=min(phase.get('received', 0) + 1, 1_000_000_000))
-    observation = {'links': [], 'task': '', 'session': session, 'evicted': 0}
+    observation = {'links': [], 'task': '', 'session': session, 'evicted': 0,
+                   'host': platform, 'generation': generation}
     token = _OBSERVATION.set(observation)
     error = None
     try:

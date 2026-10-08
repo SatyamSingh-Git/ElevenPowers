@@ -9,6 +9,7 @@ from core.milestones import build
 from core.milestones.advice import render
 from core.milestones.automatic import digest
 from core.milestones.report import read_ledger
+from core.milestones.delivery import check_hash
 import time
 
 
@@ -19,7 +20,9 @@ def main():
     if issues or digest(payload.get('task')) != sys.argv[3]:
         raise ValueError('task changed or unavailable before inspection')
     report = build(root, seconds=seconds, impact=True)
-    print(json.dumps({'schema': 1, 'context': render(report)}))
+    checks = [check_hash(row['kind'], row['command'])
+              for row in report['rechecks'].get('commands', [])[:6]]
+    print(json.dumps({'schema': 1, 'context': render(report), 'checks': checks}))
 
 
 if __name__ == '__main__':

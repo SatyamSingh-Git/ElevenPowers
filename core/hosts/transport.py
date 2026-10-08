@@ -10,7 +10,10 @@ _sink: ContextVar[list | None] = ContextVar("host_response", default=None)
 def emit(event: str, fields: dict) -> None:
     sink = _sink.get()
     if sink is None:
-        print(json.dumps({"hookSpecificOutput": {"hookEventName": event, **fields}}))
+        response = {"hookSpecificOutput": {"hookEventName": event, **fields}}
+        print(json.dumps(response), flush=True)
+        from ..milestones.delivery import emitted
+        emitted(response)
     else:
         sink.append({"event": event, **fields})
 

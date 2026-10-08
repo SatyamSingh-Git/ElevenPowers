@@ -1,6 +1,7 @@
 """Bounded optional advice; reservations are diagnostic state, never evidence."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -47,6 +48,8 @@ def _read(path):
     if (not isinstance(value, dict) or value.get('schema') != 1
             or not isinstance(value.get('tasks'), list) or len(value['tasks']) > 20):
         raise ValueError('invalid advisory state')
+    if type(value.get('evicted_tasks', 0)) is not int or not 0 <= value.get('evicted_tasks', 0) <= 10**9:
+        raise ValueError('invalid advisory eviction count')
     for task in value['tasks']:
         if (not isinstance(task, dict) or not _hash(task.get('id'))
                 or not isinstance(task.get('attempts'), list) or len(task['attempts']) > 10):
@@ -58,6 +61,24 @@ def _read(path):
                     or type(attempt.get('at')) not in (int, float)
                     or not 0 <= attempt['at'] <= 10**12):
                 raise ValueError('invalid advisory attempt')
+            if 'context' in attempt and not _hash(attempt['context']):
+                raise ValueError('invalid advisory context hash')
+            checks = attempt.get('checks', [])
+            if not isinstance(checks, list) or len(checks) > 6 or any(not _hash(c) for c in checks):
+                raise ValueError('invalid advisory check hashes')
+            if 'emission' in attempt:
+                emission = attempt['emission']
+                from ..hosts.setup import PATHS
+                if (not isinstance(emission, dict) or
+                        set(emission) != {'host', 'generation', 'session', 'runtime', 'context', 'at'} or
+                        emission['host'] not in PATHS or
+                        not isinstance(emission['generation'], str) or
+                        len(emission['generation']) != 32 or set(emission['generation']) - HEX or
+                        any(not _hash(emission[k]) for k in ('session', 'runtime', 'context')) or
+                        emission['context'] != attempt.get('context') or
+                        type(emission['at']) not in (int, float) or not math.isfinite(emission['at']) or
+                        not attempt['at'] <= emission['at'] <= 10**12):
+                    raise ValueError('invalid advisory emission')
     return value
 
 
@@ -77,6 +98,17 @@ def _paths(root):
     return path
 
 
+def _store(path, value):
+    # Metadata grows with optional emission observations. Retain newest task
+    # allowances, and keep every writer within the reader's existing limit.
+    while len((json.dumps(value, indent=2) + '\n').encode('utf8')) > 65536:
+        if len(value['tasks']) <= 1:
+            raise ValueError('current advisory task exceeds state byte limit')
+        value['tasks'].pop(0)
+        value['evicted_tasks'] = min(10**9, value.get('evicted_tasks', 0) + 1)
+    _write(path, value)
+
+
 def _reserve(root, task_id, key, settings):
     path = _paths(root)
     with ledger_write(root, timeout=.05):
@@ -84,6 +116,8 @@ def _reserve(root, task_id, key, settings):
         task = next((t for t in value['tasks'] if t['id'] == task_id), None)
         if task is None:
             task = {'id': task_id, 'attempts': []}
+            if len(value['tasks']) >= 20:
+                value['evicted_tasks'] = min(10**9, value.get('evicted_tasks', 0) + 1)
             value['tasks'] = [*value['tasks'][-19:], task]
         attempts = task['attempts']
         now = time.time()
@@ -93,11 +127,11 @@ def _reserve(root, task_id, key, settings):
             return None
         identity = uuid.uuid4().hex
         attempts.append({'id': identity, 'key': key, 'at': now, 'status': 'reserved'})
-        _write(path, value)
+        _store(path, value)
         return identity
 
 
-def _finish(root, task_id, identity, status, elapsed):
+def _finish(root, task_id, identity, status, elapsed, context='', checks=()):
     path = _paths(root)
     with ledger_write(root, timeout=.05):
         value = _read(path)
@@ -106,7 +140,10 @@ def _finish(root, task_id, identity, status, elapsed):
                 for attempt in task['attempts']:
                     if attempt['id'] == identity:
                         attempt.update(status=status, elapsed_ms=round(elapsed * 1000, 3))
-        _write(path, value)
+                        if status == 'delivered':
+                            from .delivery import content_hash
+                            attempt.update(context=content_hash(context), checks=list(checks))
+        _store(path, value)
 
 
 def deliver(ledger):
@@ -124,6 +161,7 @@ def deliver(ledger):
     except (OSError, ValueError, TypeError, RecursionError, Busy):
         return 'ElevenPowers milestone advice unavailable: resolve invalid configuration or advisory state. Keep fallback verification.'
     status = 'incomplete'
+    checks = []
     text = 'ElevenPowers milestone advice incomplete: worker timed out or failed. Keep fallback verification; inspect ep_milestones.py explicitly.'
     try:
         done = run([sys.executable, '-I', str(Path(__file__).with_name('advice_worker.py')),
@@ -135,6 +173,9 @@ def deliver(ledger):
         if (not isinstance(value, dict) or value.get('schema') != 1
                 or not isinstance(value.get('context'), str) or len(value['context']) > 6000):
             raise ValueError('invalid worker context')
+        checks = value.get('checks', [])
+        if not isinstance(checks, list) or len(checks) > 6 or any(not _hash(c) for c in checks):
+            raise ValueError('invalid worker recommendation identities')
         text, status = value['context'], 'delivered'
     except (OSError, ValueError, TypeError, RecursionError, subprocess.SubprocessError):
         pass
@@ -151,8 +192,11 @@ def deliver(ledger):
         text = 'ElevenPowers milestone advice incomplete: current delivery policy unavailable. Keep fallback verification.'
         status = 'incomplete'
     try:
-        _finish(ledger.root, task_id, identity, status, time.monotonic() - started)
+        _finish(ledger.root, task_id, identity, status, time.monotonic() - started, text, checks)
     except (OSError, ValueError, TypeError, RecursionError, Busy):
         return ('ElevenPowers milestone advice incomplete: delivery state unavailable. Keep fallback verification.'
                 if text else '')
+    if status == 'delivered':
+        from .delivery import prepare
+        prepare(ledger.root, task_id, identity, text)
     return text
