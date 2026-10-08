@@ -35,11 +35,11 @@ equivalence of extra commands, arguments, pipelines or interpolation.
 
 Files: `core/commands.py`, `core/parsers.py`, invocation tests.
 
-- [ ] Write forward/adversarial directory, quoting, outcome and exact-match
+- [x] Write forward/adversarial directory, quoting, outcome and exact-match
   controls; observe missing wrapper qualification before implementing it.
-- [ ] Add bounded literal analysis; retain exact leaf identity and raw invocation.
+- [x] Add bounded literal analysis; retain exact leaf identity and raw invocation.
   Reject unsupported automatic equivalences and preserve incomplete outcomes.
-- [ ] Run parser compatibility controls; push verified recognition.
+- [x] Run parser compatibility controls; push verified recognition.
 
 ### Task 2: Shared hook and evidence consumers
 

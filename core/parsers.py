@@ -271,10 +271,24 @@ DECLARED_KINDS = {"tests": Kind.SUITE, "typecheck": Kind.TYPECHECK,
                   "build": Kind.BUILD, "lint": Kind.LINT, "benchmark": Kind.BENCHMARK}
 
 
-def declared_needs(command: str, root: Path) -> list[str]:
+def _declared_invocation(command, root, cwd=None):
     from .config import load
-    return [need for need, configured in load(root).commands.items()
-            if need in DECLARED_KINDS and command.strip() == configured.strip()]
+    from .commands import Invocation, directory_issue, qualify
+    configured = load(root).commands
+    direct = {need: value for need, value in configured.items()
+              if need in DECLARED_KINDS and command.strip() == value.strip()}
+    if direct:
+        return direct, Invocation(command.strip(), issue=directory_issue(root, cwd))
+    invocation = qualify(command, root, cwd=cwd)
+    matched = {need: value for need, value in configured.items()
+               if need in DECLARED_KINDS and invocation.wrapped
+               and invocation.command == value.strip()}
+    return matched, invocation
+
+
+def declared_needs(command: str, root: Path, *, cwd=None) -> list[str]:
+    """Attempted declared identities; directory issues still make receipts incomplete."""
+    return list(_declared_invocation(command, root, cwd)[0])
 
 
 _SNAPSHOT = contextvars.ContextVar("receipt_snapshot", default=None)
@@ -286,22 +300,26 @@ def _snapshot(root):
 
 
 def parse(command: str, output: str, exit_code: int | None, root: Path,
-          *, snapshot=None) -> list[Evidence]:
+          *, snapshot=None, cwd=None) -> list[Evidence]:
     """Parse one output against one captured input state, shared by every record."""
     token = _SNAPSHOT.set((root, snapshot) if snapshot is not None else None)
     try:
-        return _parse_receipts(command, output, exit_code, root)
+        return _parse_receipts(command, output, exit_code, root, cwd)
     finally:
         _SNAPSHOT.reset(token)
 
 
-def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path) -> list[Evidence]:
+def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path, cwd=None) -> list[Evidence]:
     """A declaration authorizes its exact command, never a prefix or output file."""
-    needs = declared_needs(command, root)
+    needs, invocation = _declared_invocation(command, root, cwd)
     if not needs:
-        return _parse_known(command, output, exit_code if exit_code is not None else 1, root)
+        records = _parse_known(command, output, exit_code if exit_code is not None else 1, root)
+        if invocation.issue:
+            _incomplete(records, invocation.issue, coverage=True)
+        return records
     code = exit_code if exit_code is not None else 1
-    known = _parse_known(command, output, code, root)
+    leaf = invocation.command
+    known = _parse_known(leaf, output, code, root)
     records = [r for r in known if r.kind is Kind.TEST and "tests" in needs]
     for record in records:
         record.declaration = "tests"
@@ -311,23 +329,38 @@ def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path
         if record is None:
             if kind is Kind.SUITE:
                 if looks_like_tap(output):
-                    record = _tap(command, output, code, root)
+                    record = _tap(leaf, output, code, root)
                 elif VITEST_TESTS.search(output):
-                    record = _counted(kind, command, output, code, root, VITEST_TESTS)
+                    record = _counted(kind, leaf, output, code, root, VITEST_TESTS)
                 else:
-                    record = _wrapped(command, output, code, root)
+                    record = _wrapped(leaf, output, code, root)
             else:
-                record = _record(kind, _scope(command), code, command, root, output)
+                record = _record(kind, _scope(leaf), code, leaf, root, output)
         if kind is Kind.SUITE:
             _declared_counts(record, output)
         record.declaration = need
+        from .redact import scrub
+        record.declared_command = scrub(needs[need])
         records.append(record)
+    from .redact import scrub
+    for record in records:
+        record.command = scrub(command)
+        if record.declaration:
+            record.declared_command = scrub(needs[record.declaration])
+    if invocation.issue:
+        _incomplete(records, invocation.issue, coverage=True)
     if exit_code is None:
-        for record in records:
-            record.result = Result.ERROR
-            record.execution = "incomplete"
-            record.detail = "execution incomplete; no completed exit status. " + record.detail
+        _incomplete(records, 'execution incomplete; no completed exit status')
     return records
+
+
+def _incomplete(records, reason, *, coverage=False):
+    for record in records:
+        record.result = Result.ERROR
+        record.execution = 'incomplete'
+        record.detail = reason + '. ' + record.detail
+        if coverage:
+            record.coverage_issues = [*record.coverage_issues, reason]
 
 
 def _declared_counts(record: Evidence, output: str) -> None:
