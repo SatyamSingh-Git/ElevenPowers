@@ -33,6 +33,7 @@ def main(argv: list[str]) -> int:
     modes.add_argument('--acceptance', metavar='DIR')
     parser.add_argument('--language', choices=('python', 'javascript'))
     parser.add_argument('--host-version', help='Explicit operator version metadata; does not authenticate the host')
+    parser.add_argument('--advice', action='store_true', help='Explicitly enable bounded advice in a new acceptance exercise')
     parser.add_argument('--seconds', type=float, help='Cooperative acceptance read budget, default 10 seconds')
     parser.add_argument('--json', action='store_true')
     args = parser.parse_args(argv[1:])
@@ -45,11 +46,13 @@ def main(argv: list[str]) -> int:
         parser.error('--language and --host-version apply only to --prepare-acceptance')
     if args.seconds is not None and not args.acceptance:
         parser.error('--seconds applies only to --acceptance')
+    if args.advice and not args.prepare_acceptance:
+        parser.error('--advice applies only to --prepare-acceptance')
     try:
         if args.prepare_acceptance:
             from core.hosts.acceptance import prepare
             value = prepare(args.platform, args.prepare_acceptance, args.language or 'python',
-                            Path(__file__).resolve().parents[2], version=args.host_version or '')
+                            Path(__file__).resolve().parents[2], version=args.host_version or '', advice=args.advice)
             print(json.dumps(value, indent=2) if args.json else
                   f"Prepared {value['host']} / {value['language']} exercise: {value['project']}\n"
                   f"Instructions: {value['instructions']}\nNative acceptance: waiting; no host was launched.")

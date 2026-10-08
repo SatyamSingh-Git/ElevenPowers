@@ -57,11 +57,13 @@ test('stated boundary contract', async () => {
 '''
 
 
-def prepare(host, destination, language, source, version=''):
+def prepare(host, destination, language, source, version='', *, advice=False):
     if host not in PATHS:
         raise ValueError('unsupported host')
     if language not in ('python', 'javascript'):
         raise ValueError('unsupported acceptance language')
+    if type(advice) is not bool:
+        raise ValueError('advice selection must be boolean')
     if not isinstance(version, str) or len(version) > 128 or '\n' in version:
         raise ValueError('invalid operator host version')
     requested = Path(destination).absolute()
@@ -83,7 +85,14 @@ def prepare(host, destination, language, source, version=''):
     (root / test).write_text(PYTHON_TEST if language == 'python' else JS_TEST, encoding='utf-8')
     (root / '.gitignore').write_text('.elevenpowers/\nwait.flag\n__pycache__/\n', encoding='utf-8')
     command = f'"{runtime}" ' + ('check.py' if language == 'python' else '--test check.test.mjs')
-    save(root, Config(profile='guide', commands={'tests': command}, auto_detect=False, strength={'enabled': False}))
+    save(root, Config(profile='guide', commands={'tests': command}, auto_detect=False, strength={'enabled': False},
+                      milestone_advice=({'enabled': True, 'seconds': 2, 'cooldown': 0, 'max_attempts': 3}
+                                        if advice else {})))
+    if advice:
+        declarations = {'schema': 1, 'milestones': [
+            {'id': 'boundary', 'description': 'Values below ten are rejected; ten and above are accepted.',
+             'inputs': [app, test], 'checks': [{'kind': 'test_suite', 'command': command}]}]}
+        (root / 'elevenpowers.milestones.json').write_text(json.dumps(declarations, indent=2) + '\n', encoding='utf8')
     install(host, root, sys.executable, source)
     for args in (['init', '-q'], ['add', app, test, '.gitignore'],
                  ['-c', 'user.email=acceptance@example.invalid', '-c', 'user.name=ElevenPowers acceptance',
@@ -100,6 +109,8 @@ def prepare(host, destination, language, source, version=''):
              'configuration': signature(config_path(host, root)),
              'project_configuration': signature(root / '.elevenpowers/config.json'),
              'initial_source': signature(root / app), 'test_fingerprint': signature(root / test)}
+    if advice:
+        value.update(advice_requested=True, milestone_declaration=signature(root / 'elevenpowers.milestones.json'))
     (root / '.elevenpowers/acceptance.json').write_text(json.dumps(value, indent=2) + '\n', encoding='utf-8')
     instructions = f'''# Native acceptance exercise: {host} / {language}
 
@@ -118,9 +129,12 @@ Use one task/session for this exercise. Ask the host to:
 6. Rerun the declared command and finish normally, delivering completion.
 
 Run the declared command as its own tool call, exactly as written, from this
-directory. Run helper commands separately. Prefixes such as `cd ... &&`, suffixes
-such as `; echo $?`, pipelines and timeout wrappers change the declared command
-and may hide its exit status. For the interrupted step use the host tool's timeout
+directory. One supported literal prefix is also allowed:
+`cd "{root.as_posix()}" && {command}`. Keep helper commands separate. Arbitrary
+prefixes, suffixes such as `; echo $?`, pipelines and timeout wrappers change
+the declared command and may hide its exit status. Use quoted forward-slash
+absolute paths or `cd . &&`; parent traversal and shell expansion are unsupported.
+For the interrupted step use the host tool's timeout
 or interrupt control on the same standalone command. Do not rewrite declarations
 to make this exercise pass. End with the factual result of the exercise.
 
@@ -142,6 +156,26 @@ python "{source / 'plugin/bin/ep_report.py'}" --project "{root}" --output "{root
 
 Acceptance observations are local and unsigned. They do not authenticate the
 sender, certify a production patch or establish compatibility with other versions.
+'''
+    if advice:
+        instructions += f'''
+## Optional advice-delivery observation
+
+This exercise explicitly enables bounded milestone advice (two-second worker,
+three attempts, no cooldown). Keep `elevenpowers.milestones.json` unchanged.
+After the ordinary source edit, the host callback may supply informational advice.
+Run the declared test through the literal wrapper above after that edit, then
+inspect readiness from a separate terminal:
+
+```text
+python "{source / 'plugin/bin/ep_ready.py'}" {host} --project "{root}" --json
+```
+
+Inspect `milestone_advice`: generated context, native emission and subsequent
+matching native receipts are separate. A current matching receipt is not proof
+of model comprehension, causal advice use or better coding. Preparation and
+replay cannot establish installed acceptance. Native matrix captures retain
+their base acceptance fields; inspect advice diagnostics separately.
 '''
     (root / 'EXERCISE.md').write_text(instructions, encoding='utf-8')
     return {**value, 'project': str(root), 'instructions': str(root / 'EXERCISE.md')}
@@ -190,6 +224,11 @@ def inspect(host, root, timeout=10):
         files = ('app.py', 'check.py') if manifest['language'] == 'python' else ('app.mjs', 'check.test.mjs')
         if (manifest.get('source_file'), manifest.get('test_file')) != files:
             raise ValueError('exercise paths do not match the language contract')
+        if type(manifest.get('advice_requested', False)) is not bool:
+            raise ValueError('invalid advice exercise selection')
+        if manifest.get('advice_requested') and _fingerprint(root, 'elevenpowers.milestones.json') != manifest.get('milestone_declaration'):
+            value['next_actions'].append('Advice milestone declaration changed; prepare a new exercise.')
+            raise ValueError('advice declaration changed')
         initial = _fingerprint(root, files[0])
         test = _fingerprint(root, files[1])
         project = _fingerprint(root, '.elevenpowers/config.json')
@@ -206,6 +245,8 @@ def inspect(host, root, timeout=10):
         value.update(language=manifest['language'], host_version=manifest['host_version'],
                      version_source=manifest['version_source'])
         snapshot = health.inspect(host, root, timeout=max(0, timeout - (time.monotonic() - started)))
+        if manifest.get('advice_requested'):
+            value['milestone_advice'] = snapshot['milestone_advice']
         live = snapshot['activation']
         checks['generation'] = bool(manifest.get('generation')) and live.get('generation') == manifest['generation']
         # The immutable preparation config declares one test command. Exporter
@@ -247,6 +288,11 @@ def inspect(host, root, timeout=10):
             value['next_actions'].extend(snapshot['next_actions'])
         elif all(checks.values()) and all(value['outcomes'].values()):
             value['state'] = 'passed'
+            if manifest.get('advice_requested') and not (
+                    snapshot['milestone_advice']['state'] == 'emitted' and
+                    any(row['state'] == 'current' for row in snapshot['milestone_advice']['checks'])):
+                value['state'] = 'waiting'
+                value['next_actions'].append('Optional advice exercise needs a qualified emission and subsequent current native check.')
         else:
             value['state'] = 'incomplete' if live.get('links_evicted') else 'waiting'
             value['next_actions'].extend('Required acceptance observation: ' + k for k, present in
