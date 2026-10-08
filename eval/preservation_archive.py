@@ -27,8 +27,8 @@ def publish(destination, selection):
     for slot, batch in selection.items():
         batch = Path(batch).resolve(strict=True)
         folder = _safe(batch, slot)
-        raw = _safe(folder, 'result.json').read_bytes()
         original = _read(folder / 'result.json')
+        raw = _safe(folder, 'result.json').read_bytes()
         value = {'original_sha256': hashlib.sha256(raw).hexdigest(), 'original': original,
                  'protocol_sha256': hashlib.sha256((batch / 'protocol.json').read_bytes()).hexdigest(),
                  'state': 'incomplete', 'regrades': []}

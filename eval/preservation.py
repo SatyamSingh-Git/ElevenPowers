@@ -325,7 +325,7 @@ def execute(batch, slot, executable):
             verify(root, slot)
             item['scope'] = 'preserved'
             item['source_after'] = _manifest(candidate)
-            source = {name: (candidate / name).read_text(encoding='utf-8') for name in value['production']}
+            source = {name: (candidate / name).read_bytes().decode('utf-8') for name in value['production']}
             _write(folder / f'source-{stage}.json', source)
             item['independent_grade'] = grade(value, stage, candidate)
             item['native'] = _native(candidate, protocol, since=item['started_at'],

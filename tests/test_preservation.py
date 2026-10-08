@@ -83,7 +83,7 @@ def test_stage_journal_precedes_launch_and_resume_preserves_allowance(tmp_path, 
         assert ('--session-id' if stage == 1 else '--resume') in args
         calls.append(kwargs['timeout'])
         from eval.preservation_cases import case
-        (batch / slot / 'candidate/service.py').write_text(case('queue')['gold'][stage - 1])
+        (batch / slot / 'candidate/service.py').write_bytes(case('queue')['gold'][stage - 1].replace('\n', '\r\n').encode())
         output = json.dumps({'type': 'result', 'is_error': False, 'result': 'implemented',
                              'modelUsage': {'claude-sonnet-5': {}}})
         return subprocess.CompletedProcess(args, 0, output, '')
@@ -94,6 +94,9 @@ def test_stage_journal_precedes_launch_and_resume_preserves_allowance(tmp_path, 
     assert result['model_seconds'] <= 480
     assert [s['independent_grade']['passed'] for s in result['stages']] == [6, 8]
     assert all(s['native']['state'] == 'incomplete' for s in result['stages'])
+    for item in result['stages']:
+        captured = json.loads((batch / slot / f"source-{item['stage']}.json").read_text())
+        assert p._hash(captured['service.py'].encode()) == item['source_after']['service.py']
     with pytest.raises(ValueError, match='attempt'):
         p.execute(batch, slot, 'claude')
 
@@ -155,6 +158,10 @@ def test_loaded_budget_cannot_expand_approved_allowance(tmp_path):
         (batch / 'protocol.json').write_text(json.dumps(protocol))
         with pytest.raises(ValueError, match='allowance'):
             p.verify(batch, protocol['slots'][0], initial=True)
+    protocol['seconds_per_session'] = 240
+    (batch / 'protocol.json').write_text(json.dumps(protocol))
+    with pytest.raises(ValueError, match='sealed protocol'):
+        p.verify(batch, protocol['slots'][0], initial=True)
 
 
 def test_unsealed_extra_test_before_first_launch_breaks_equal_start(tmp_path):

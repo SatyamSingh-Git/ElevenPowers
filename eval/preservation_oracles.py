@@ -62,7 +62,7 @@ class Persistence(unittest.TestCase):
         r.enqueue("b",0); self.assertGreater(r.claim("b")[1],new)
     def test_snapshot_independence(self):
         q=service.Queue(); q.enqueue("a", [1]); self.assertTrue(callable(getattr(q,"dumps",None)))
-        r=q.loads(snapshot(self,q)); payload,token=r.claim("a"); payload.append(2)
+        r=q.loads(snapshot(self,q)); payload,token=r.claim("a"); self.assertIsInstance(payload,list); payload.append(2)
         self.assertTrue(r.ack("a",token)); original=q.claim("a")
         self.assertIsNotNone(original); self.assertEqual(original[0],[1])
 '''
