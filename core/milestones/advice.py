@@ -25,13 +25,15 @@ def _preview(value, limit=350):
     return text if len(text) <= limit else text[:limit] + ' [truncated preview]'
 
 
-def render(report):
+def render_with_checks(report):
+    """Return bounded text and only exact command lines retained in that text."""
     coverage = report['coverage']
     lines = ['ElevenPowers milestone advice (informational, not proof).',
              'Keep fallback verification; missing paths never establish unaffected behavior.',
              'Evidence: ' + _preview(report['state']) +
              ('; INCOMPLETE coverage.' if not coverage['complete'] else '; declared scope only.')]
     commands = report['rechecks'].get('commands', [])
+    visible = []
     for command in commands[:6]:
         states = ', '.join(_preview(m['id'], 40) + ': ' + _preview(m['state'], 20)
                            for m in command['milestones'][:8])
@@ -39,6 +41,8 @@ def render(report):
             states += f"; {len(command['milestones']) - 8} milestone states omitted"
         lines.append(f"- {_preview(command['priority'], 20)} / {_preview(command['kind'], 30)}: "
                      f"{_preview(command['command'])} [{states}]")
+        if _preview(command['command']) == command['command']:
+            visible.append((command, len('\n'.join(lines))))
         reasons = command.get('reasons', [])
         for reason in reasons[:3]:
             lines.append('  ' + _preview(f"{reason['milestone']}: {reason['input']} ({reason['category']})", 180))
@@ -53,4 +57,10 @@ def render(report):
         lines.append(f"{len(coverage['issues']) - 3} additional coverage issues omitted.")
     lines.append('Full view: ep_milestones.py --project PATH --impact. Advice executes no checks.')
     text = '\n'.join(lines)
-    return text if len(text) <= 6000 else text[:5900] + '\nContext truncated; consult the full report and keep all fallback checks.'
+    retained = len(text) if len(text) <= 6000 else 5900
+    context = text if len(text) <= 6000 else text[:5900] + '\nContext truncated; consult the full report and keep all fallback checks.'
+    return context, [command for command, end in visible if end <= retained]
+
+
+def render(report):
+    return render_with_checks(report)[0]

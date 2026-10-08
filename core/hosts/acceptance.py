@@ -226,14 +226,15 @@ def inspect(host, root, timeout=10):
             raise ValueError('exercise paths do not match the language contract')
         if type(manifest.get('advice_requested', False)) is not bool:
             raise ValueError('invalid advice exercise selection')
-        if manifest.get('advice_requested') and _fingerprint(root, 'elevenpowers.milestones.json') != manifest.get('milestone_declaration'):
+        declaration = _fingerprint(root, 'elevenpowers.milestones.json') if manifest.get('advice_requested') else None
+        if manifest.get('advice_requested') and declaration != manifest.get('milestone_declaration'):
             value['next_actions'].append('Advice milestone declaration changed; prepare a new exercise.')
             raise ValueError('advice declaration changed')
         initial = _fingerprint(root, files[0])
         test = _fingerprint(root, files[1])
         project = _fingerprint(root, '.elevenpowers/config.json')
         native = _fingerprint(root, str(config_path(host, root).relative_to(root)))
-        contract_before = (initial, test, project, native)
+        contract_before = (initial, test, project, native, declaration)
         checks = value['checks']
         checks.update(test_unchanged=test == manifest.get('test_fingerprint'),
                       runtime_identity=manifest.get('runtime_fingerprint') == runtime_before,
@@ -272,6 +273,7 @@ def inspect(host, root, timeout=10):
         contract_after = tuple(_fingerprint(root, name) for name in
                                (files[0], files[1], '.elevenpowers/config.json',
                                 str(config_path(host, root).relative_to(root))))
+        contract_after += (_fingerprint(root, 'elevenpowers.milestones.json') if manifest.get('advice_requested') else None,)
         if contract_after != contract_before or activation(host, root) != live:
             value['next_actions'].append('Exercise contract or native observations changed during inspection; read again.')
             raise ValueError('exercise changed during read')

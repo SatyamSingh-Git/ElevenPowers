@@ -99,7 +99,37 @@ LIMITS = [
 ]
 
 
+def _stamp(root):
+    result = []
+    for path in (root / '.elevenpowers/advice.json', root / 'elevenpowers.milestones.json'):
+        if path.is_symlink() or path.parent.is_symlink() or not path.resolve().is_relative_to(root):
+            raise ValueError('linked or escaped optional advice state')
+        try:
+            stat = path.stat()
+            result.append((stat.st_mtime_ns, stat.st_size))
+        except FileNotFoundError:
+            result.append(None)
+    return result
+
+
 def inspect(root, host, task, activation, receipts):
+    """Optional moving-state checks must never downgrade required health."""
+    root = Path(root).resolve(strict=True)
+    try:
+        before = _stamp(root)
+        value = _inspect(root, host, task, activation, receipts)
+        if _stamp(root) != before:
+            value.update(state='incomplete', checks=[], matching_native_receipts=0)
+            value['issues'].append('Optional advice state changed during this read; read again.')
+        return value
+    except (OSError, ValueError):
+        return {'schema': 1, 'state': 'incomplete', 'attempts': 0, 'generated': 0,
+                'emitted': 0, 'matching_native_receipts': 0, 'checks': [],
+                'issues': ['Optional advice state unavailable.'],
+                'model_consumption': 'unproven', 'limits': LIMITS}
+
+
+def _inspect(root, host, task, activation, receipts):
     """Read bounded metadata and join supplied fresh report rows; no execution."""
     from ..config import load
     from .advice import policy

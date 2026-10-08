@@ -26,9 +26,8 @@ LIMITS = [
 def _stamp(root, host):
     paths = [root / '.elevenpowers' / name for name in
              ('ledger.json', 'integrations.json', 'verification.json', 'config.json', 'strength.json',
-              'hosts.json', 'patches.json', 'advice.json')]
+              'hosts.json', 'patches.json')]
     paths.append(config_path(host, root))
-    paths.append(root / 'elevenpowers.milestones.json')
     result = []
     for path in paths:
         if path.is_symlink() or any(p.is_symlink() for p in path.parents if p != root and root in p.parents):
