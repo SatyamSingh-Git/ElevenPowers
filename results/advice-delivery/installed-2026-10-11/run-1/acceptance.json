@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "state": "waiting",
+  "host": "claude",
+  "project": "E:\\ep-advice-2026-10-11",
+  "host_version": "2.1.292",
+  "version_source": "operator",
+  "checks": {
+    "test_unchanged": true,
+    "runtime_identity": true,
+    "project_configuration": true,
+    "native_configuration": true,
+    "source_changed": true,
+    "host_version": true,
+    "generation": true,
+    "command": true,
+    "startup_runtime": true,
+    "startup_after_preparation": true,
+    "completion_after_commands": false,
+    "fresh_pipeline": false
+  },
+  "outcomes": {
+    "pass": false,
+    "fail": false,
+    "incomplete": false
+  },
+  "next_actions": [
+    "Required acceptance observation: completion_after_commands",
+    "Required acceptance observation: fresh_pipeline",
+    "Required acceptance observation: pass",
+    "Required acceptance observation: fail",
+    "Required acceptance observation: incomplete"
+  ],
+  "limits": [
+    "Local native observations are unsigned; they do not authenticate a host or certify a production patch.",
+    "Acceptance is limited to this exercise, retained history and the recorded operator version.",
+    "Current freshness is checked; the earlier manual stale-view step is not independently attested."
+  ],
+  "language": "python",
+  "milestone_advice": {
+    "schema": 1,
+    "state": "waiting",
+    "attempts": 0,
+    "generated": 0,
+    "emitted": 0,
+    "matching_native_receipts": 0,
+    "checks": [],
+    "issues": [],
+    "model_consumption": "unproven",
+    "limits": [
+      "Generated means the worker returned context; emitted means a native launcher flushed it in a supported context field.",
+      "A subsequent matching native receipt is a temporal observation, not proof the agent read or used advice.",
+      "These local unsigned observations do not authenticate a host or establish improved coding outcomes.",
+      "Missing or evicted history stays unobserved; fallback verification must remain available."
+    ]
+  },
+  "runtime_fingerprint": "ef18df78eb90461b34122c7f57830aa00ad7e71b8c0f01d28043595681027a62",
+  "health": {
+    "state": "waiting",
+    "stages": {
+      "configuration": {
+        "state": "observed",
+        "detail": "ElevenPowers claude: configuration checks\nPython 3.13.2\nok: 6 native event subscriptions\nCallback activation: active (27 received, 27 processed)\nHost enablement/trust: review in the host\nLive host session: not verified; callback observations are not host authentication"
+      },
+      "environment": {
+        "state": "observed",
+        "detail": "Declared runtime lookup only; project dependencies are established by execution"
+      },
+      "startup": {
+        "state": "observed",
+        "detail": "Processed native startup with session correlation required"
+      },
+      "edits": {
+        "state": "observed",
+        "detail": "Current-task native edit delivery; target observations do not prove all side effects"
+      },
+      "command_capture": {
+        "state": "waiting",
+        "detail": "Current receipt must link to this configuration, task and startup session"
+      },
+      "completion": {
+        "state": "waiting",
+        "detail": "Processed completion in the current task/session required"
+      },
+      "report": {
+        "state": "observed",
+        "detail": "Current shared report and input freshness view"
+      },
+      "verification": {
+        "state": "observed",
+        "detail": "Every declared command needs a complete, passing, fresh receipt; not task certification"
+      },
+      "strength": {
+        "state": "not_recorded",
+        "detail": "Optional saved mutation observations; excluded from required pipeline health"
+      }
+    }
+  },
+  "task_state": "UNVERIFIED",
+  "read_ms": 437.146
+}
