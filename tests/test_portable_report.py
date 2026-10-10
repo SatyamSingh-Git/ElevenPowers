@@ -240,7 +240,7 @@ def test_latest_receipts_follow_timestamps_and_limit_newest_identity(tmp_path, m
 
 def test_markdown_preserves_obligation_evidence_caveats(tmp_path):
     from core.export import build, markdown
-    from core.ledger import SUITE_GRAIN
+    from core.ledger import SUITE_GRAIN, UNTESTED
     from core.obligations import Risk
     ledger = seeded(tmp_path)
     ledger.claims = [Claim.BUG_FIXED]
@@ -248,7 +248,8 @@ def test_markdown_preserves_obligation_evidence_caveats(tmp_path):
     ledger.discrimination = {'tests': 'yes'}
     ledger.save()
     value = build(tmp_path)
-    assert any(c['caveat'] == SUITE_GRAIN for c in value['task']['claims'][0]['checks'])
+    # The seeded task wrote no test, so the untested-change qualification follows.
+    assert any(c['caveat'] == f"{SUITE_GRAIN}; {UNTESTED}" for c in value['task']['claims'][0]['checks'])
     from core.export import _text
     assert _text(SUITE_GRAIN) in markdown(value)
 

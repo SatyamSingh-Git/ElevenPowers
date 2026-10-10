@@ -11,7 +11,7 @@ import json
 from contextvars import ContextVar
 import os
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from pathlib import Path
 
@@ -36,6 +36,12 @@ DELIVERY = ContextVar("host_receipt_delivery", default=None)
 SUITE_GRAIN = ("suite-level: the declared check failed on the base tree and passes now. "
                "No individual test was seen red there and green here, so this is the "
                "same run that decided discrimination, not a second finding")
+
+# Measured 2026-10-10 (results/reverted/): 7 of 8 vacuous agent checks came from
+# patches that touched no test, and two of those runs replay to plain VERIFIED.
+UNTESTED = ("no test was written or edited for this change: this shows existing tests "
+            "still pass, not that the new behaviour is tested")
+BEHAVIOUR = (Claim.BUG_FIXED, Claim.FEATURE_ADDED)
 
 
 class Status(str, Enum):
@@ -551,7 +557,14 @@ class Ledger:
             status = Status.STALE
         else:
             status = Status.VERIFIED
+        if claim in BEHAVIOUR and not self._wrote_a_test():
+            # Said, not refused (§5.12): blocking has to earn its cost separately.
+            checks = [replace(c, caveat="; ".join(filter(None, (c.caveat, UNTESTED)))) if c.met else c
+                      for c in checks]
         return Verdict(claim=claim, risk=self.risk, status=status, checks=checks)
+
+    def _wrote_a_test(self) -> bool:
+        return any(TEST_NAME.search(p) and declares_a_test(self.root / p) for p in self.touched)
 
     def _contradictions(self) -> list[Evidence]:
         """Evidence that is failing now and was not already failing at the start.
@@ -813,8 +826,7 @@ class Ledger:
         # The file must also still declare a test. Emptying one is how a suite
         # goes green without the bug being fixed, and the held-out scenarios
         # caught exactly that the first time this rule was written without it.
-        if not any(TEST_NAME.search(p) and declares_a_test(self.root / p)
-                   for p in self.touched):
+        if not self._wrote_a_test():
             return None
         green = [
             e for e in self.evidence
