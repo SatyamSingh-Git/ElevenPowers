@@ -103,6 +103,10 @@ def _from_object(raw: dict, failed: bool) -> ToolResult:
         # Partial output from a command somebody stopped proves nothing either
         # way, and recording it as a pass would be worse than recording nothing.
         return ToolResult("", 0, skip="interrupted")
+    if raw.get("backgroundTaskId") or raw.get("timedOutAfterMs") is not None:
+        # Claude Code moves a call past its timeout to the background and reports
+        # it with no exit code (captured on 2.1.292). Still running is not passed.
+        return ToolResult("", 0, skip="unfinished")
 
     output = "".join(str(raw.get(key) or "") for key in OUTPUT_KEYS)
     if not output:

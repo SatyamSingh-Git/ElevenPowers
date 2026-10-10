@@ -48,10 +48,22 @@ def test_incomplete_replaces_previous_success(tmp_path):
     assert SUITE_GREEN.satisfied_by([passed, incomplete]) is None
 
 
+# Captured from Claude Code 2.1.292 on 2026-10-11: a Bash call past its tool
+# timeout is moved to the background and arrives as an ordinary PostToolUse with
+# no exit code. The installed advice exercise recorded exactly this as a pass.
+TIMED_OUT = {"stdout": "", "stderr": "", "interrupted": False, "isImage": False,
+             "noOutputExpected": False, "backgroundTaskId": "bu74sk7wh", "timedOutAfterMs": 3000}
+COMPLETED = {"stdout": "second", "stderr": "", "interrupted": False, "isImage": False,
+             "noOutputExpected": False}
+
+
 @pytest.mark.parametrize("response", [
     {"interrupted": True, "stdout": "partial"},
     {"timed_out": True, "stdout": "partial"},
     {"unexpected": "shape"},
+    TIMED_OUT,
+    {k: v for k, v in TIMED_OUT.items() if k != "timedOutAfterMs"},
+    {k: v for k, v in TIMED_OUT.items() if k != "backgroundTaskId"},
 ])
 def test_hook_records_incomplete_declared_execution(tmp_path, response):
     from core.hook import on_post_tool
@@ -65,12 +77,23 @@ def test_hook_records_incomplete_declared_execution(tmp_path, response):
     assert records[0].result is Result.ERROR
 
 
-def test_hook_still_ignores_interrupted_undeclared_commands(tmp_path):
+@pytest.mark.parametrize("response", [{"interrupted": True}, TIMED_OUT])
+def test_hook_still_ignores_interrupted_undeclared_commands(tmp_path, response):
     from core.hook import on_post_tool
     from core.ledger import Ledger
-    on_post_tool({"tool_name": "Bash", "tool_input": {"command": "npm run anything"},
-                  "tool_response": {"interrupted": True}}, tmp_path)
+    on_post_tool({"tool_name": "Bash", "tool_input": {"command": "python -m pytest -q"},
+                  "tool_response": response}, tmp_path)
     assert not Ledger.load(tmp_path).evidence
+
+
+def test_the_same_host_shape_completed_is_still_a_pass(tmp_path):
+    from core.hook import on_post_tool
+    from core.ledger import Ledger
+    save(tmp_path, Config(commands={"tests": "npm run ci"}))
+    on_post_tool({"tool_name": "Bash", "tool_input": {"command": "npm run ci"},
+                  "tool_response": COMPLETED}, tmp_path)
+    (record,) = Ledger.load(tmp_path).evidence
+    assert (record.result, record.execution) == (Result.PASS, "complete")
 
 
 @pytest.mark.parametrize("error", ["timeout", "launch"])
