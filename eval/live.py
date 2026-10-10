@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 import os
 import random
+import re
 import shutil
 import subprocess
 import sys
@@ -346,13 +347,48 @@ def environment() -> dict:
     they were the same experiment.
     """
     import platform
+    from importlib import metadata
 
     return {
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "claude": _claude_version(),
         "git": _tool_version(["git", "--version"]),
+        "tools": _toolchain(),
+        "packages": sorted({f"{d.metadata['Name'].lower().replace('_', '-')}=={d.version}"
+                            for d in metadata.distributions() if d.metadata["Name"]}),
     }
+
+
+# The runners whose output decides a verdict. Modules go through this
+# interpreter because workspaces inherit its site-packages: a `pytest` first on
+# PATH may belong to some other Python entirely.
+MODULES = ("pytest", "ruff", "mypy")
+EXECUTABLES = ("node", "npm")
+VERSION = re.compile(r"(?<![\w.])v?(\d+\.\d+\.\d+(?:[-+][\w.-]+)?)(?![\w.])")
+
+
+def _toolchain() -> dict[str, dict[str, str]]:
+    """Each runner's version, in `core/hosts/probes.py`'s state shape.
+
+    Not its parser: `node --version` prints `v22.17.1`, which that pattern
+    rejects, and an uninstalled module exits 1 there and reads as incomplete
+    rather than missing.
+    """
+    from importlib.util import find_spec
+
+    commands = {name: [sys.executable, "-m", name] if find_spec(name) else None for name in MODULES}
+    commands |= {name: [path] if (path := shutil.which(name)) else None for name in EXECUTABLES}
+    tools = {}
+    for name, command in commands.items():
+        if command is None:
+            tools[name] = {"state": "missing", "version": "", "source": "installed_probe"}
+            continue
+        versions = set(VERSION.findall(_tool_version(command + ["--version"])))
+        tools[name] = ({"state": "observed", "version": versions.pop(), "source": "installed_probe"}
+                       if len(versions) == 1 else
+                       {"state": "incomplete", "version": "", "source": "installed_probe"})
+    return tools
 
 
 def _claude_version() -> str:

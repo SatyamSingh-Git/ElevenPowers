@@ -709,6 +709,62 @@ def test_the_run_records_the_environment_it_happened_in():
     assert seen["python"] and seen["platform"]
 
 
+def test_the_run_records_the_test_runner_that_decided_it(tmp_path, monkeypatch):
+    """A saved run cannot be re-executed if the runner that judged it is unknown.
+
+    Twenty-two corpus base trees were re-collected under pytest 9.1.1 on
+    2026-10-10 and eighteen failed, click's on a file its saved patch never
+    touches. The manifests recorded python, platform, claude and git -- every
+    tool except the one that decides a verdict.
+
+    A decoy `pytest` goes first on PATH: workspaces run this interpreter's
+    module, so whatever else answers to the name must not be what is recorded.
+    """
+    import sys
+
+    from eval.live import environment
+
+    decoy = tmp_path / ("pytest.cmd" if os.name == "nt" else "pytest")
+    decoy.write_text("@echo pytest 0.0.1\n" if os.name == "nt" else "#!/bin/sh\necho pytest 0.0.1\n")
+    decoy.chmod(0o755)
+    monkeypatch.setenv("PATH", str(tmp_path) + os.pathsep + os.environ["PATH"])
+    reported = subprocess.run([sys.executable, "-m", "pytest", "--version"],
+                              capture_output=True, text=True).stdout.split()[-1]
+    assert reported != "0.0.1"
+    seen = environment()
+    assert seen["tools"]["pytest"] == {"state": "observed", "version": reported,
+                                       "source": "installed_probe"}
+    assert f"pytest=={reported}" in seen["packages"]
+
+
+def test_an_absent_tool_is_missing_and_a_garbled_one_incomplete(monkeypatch):
+    """Absent and unreadable are different facts; neither may read as a version."""
+    import eval.live as live
+
+    monkeypatch.setattr(live, "MODULES", ("no_such_module_ep",))
+    monkeypatch.setattr(live, "EXECUTABLES", ("no-such-executable-ep",))
+    tools = live.environment()["tools"]
+    assert tools["no_such_module_ep"]["state"] == "missing"
+    assert tools["no-such-executable-ep"]["state"] == "missing"
+
+    monkeypatch.setattr(live, "MODULES", ("pytest",))
+    monkeypatch.setattr(live, "EXECUTABLES", ())
+    for garbled in ("", "pytest", "1.2.3 then 4.5.6"):
+        monkeypatch.setattr(live, "_tool_version", lambda command, text=garbled: text)
+        assert live.environment()["tools"]["pytest"] == {
+            "state": "incomplete", "version": "", "source": "installed_probe"}
+
+
+def test_a_v_prefixed_version_is_still_a_version(monkeypatch):
+    """`node --version` prints `v22.17.1`; the host probe's pattern rejects that."""
+    import eval.live as live
+
+    monkeypatch.setattr(live, "MODULES", ())
+    monkeypatch.setattr(live, "EXECUTABLES", ("python",))
+    monkeypatch.setattr(live, "_tool_version", lambda command: "v22.17.1")
+    assert live.environment()["tools"]["python"]["version"] == "22.17.1"
+
+
 def test_arm_order_is_not_fixed():
     """E4: a fixed order confounds the arm with anything that drifts mid-sweep.
 
