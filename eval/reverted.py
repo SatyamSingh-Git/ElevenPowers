@@ -244,22 +244,26 @@ def main(argv: list[str]) -> int:
     options.add_argument("--limit", type=int, default=0, help="bundles to measure; 0 is all")
     args = options.parse_args(argv)
 
-    bundles = sorted({p.parent for p in args.bundles.glob("**/bundles/*/ledger.json")})
+    # Any directory holding a ledger. Globbing `bundles/` found 54 of 106: the
+    # chunked sweeps save to `bundles-chunk1/`, and nothing said they were missed.
+    bundles = sorted({p.parent for p in args.bundles.glob("**/ledger.json")})
     measured = bundles[:args.limit] if args.limit else bundles
     args.out.mkdir(parents=True, exist_ok=True)
     rows_file = args.out / "rows.jsonl"
-    done = {json.loads(ln)["bundle"] for ln in rows_file.read_text(encoding="utf-8").splitlines()
+    done = {json.loads(ln)["path"] for ln in rows_file.read_text(encoding="utf-8").splitlines()
             } if rows_file.exists() else set()
     with tempfile.TemporaryDirectory(prefix="ep-reverted-") as hold:
         for index, bundle in enumerate(measured, 1):
-            if bundle.name in done:
+            # Keyed by path: the same run name recurs across sweep directories.
+            path = bundle.relative_to(args.bundles).as_posix()
+            if path in done:
                 continue
-            rows = measure(bundle, Path(hold) / bundle.name)
+            rows = measure(bundle, Path(hold) / str(index))
             # One line per bundle, appended as it finishes, so an interrupted
             # sweep resumes rather than starts over. A bundle with nothing to
             # measure still gets a line, or it would be retried forever.
             with rows_file.open("a", encoding="utf-8") as out:
-                out.write(json.dumps({"bundle": bundle.name, "rows": rows}) + "\n")
+                out.write(json.dumps({"path": path, "rows": rows}) + "\n")
             print(f"[{index}/{len(measured)}] {bundle.name}: "
                   + (", ".join(f"{r['verdict'] or 'unknown'}" for r in rows) or "nothing to measure"),
                   flush=True)

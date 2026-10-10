@@ -176,6 +176,24 @@ def test_one_command_recorded_many_times_is_measured_once(tmp_path):
     assert row["records"] == 2
 
 
+def test_every_saved_ledger_is_found_whatever_its_directory_is_called(tmp_path):
+    """The first sweep globbed `bundles/` and missed `bundles-chunk1/`: 52 of 106 ledgers."""
+    failing = {"evidence": [{"kind": "test_suite", "result": "fail", "command": AGENT_SHAPED,
+                             "passed": 0, "failed": 1, "counted": True}]}
+    for parent in ("b3/bundles", "chunks/bundles-chunk1", "chunks/bundles-chunk2"):
+        bundle = tmp_path / "results" / parent / "demo--gate--1"
+        bundle.mkdir(parents=True)
+        (bundle / "ledger.json").write_text(json.dumps(failing), encoding="utf-8")
+    out = tmp_path / "out"
+    # Interrupted after one bundle, then resumed: the same run name in another
+    # directory is a different bundle, not one already measured.
+    assert reverted.main(["--bundles", str(tmp_path / "results"), "--out", str(out), "--limit", "1"]) == 0
+    assert reverted.main(["--bundles", str(tmp_path / "results"), "--out", str(out)]) == 0
+    summary = json.loads((out / "summary.json").read_text(encoding="utf-8"))
+    assert (summary["bundles"], summary["funnel"]["records"]) == (3, 3)
+    assert len((out / "rows.jsonl").read_text(encoding="utf-8").splitlines()) == 3
+
+
 def test_the_funnel_keeps_every_record_it_did_not_measure(tmp_path):
     test = "from calc import add\n\ndef test_add():\n    assert add(2, 2) == 4\n"
     bundle = _bundle(tmp_path, {**FIXED, "tests/test_calc.py": test},
