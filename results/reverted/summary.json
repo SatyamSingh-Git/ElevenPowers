@@ -1,0 +1,67 @@
+{
+ "method": "forward on base+patch, adversarial on base+carried tests; core/stress.py states",
+ "toolchain_today": {
+  "pytest": {
+   "state": "observed",
+   "version": "9.1.1",
+   "source": "installed_probe"
+  },
+  "ruff": {
+   "state": "missing",
+   "version": "",
+   "source": "installed_probe"
+  },
+  "mypy": {
+   "state": "missing",
+   "version": "",
+   "source": "installed_probe"
+  },
+  "node": {
+   "state": "observed",
+   "version": "22.17.1",
+   "source": "installed_probe"
+  },
+  "npm": {
+   "state": "observed",
+   "version": "11.3.0",
+   "source": "installed_probe"
+  }
+ },
+ "bundles": 54,
+ "funnel": {
+  "records": 2017,
+  "passing": 432,
+  "passing test records that ran tests": 200,
+  "re-executable": 62,
+  "excluded": {
+   "not passing": 1585,
+   "not a test record that ran tests": 232,
+   "not re-executable: not a pytest run": 134,
+   "not re-executable: could write, chain or substitute": 4
+  }
+ },
+ "checks": 44,
+ "verdicts": [
+  {
+   "toolchain": "unrecorded",
+   "verdict": "n/a",
+   "how": "",
+   "checks": 21
+  },
+  {
+   "toolchain": "unrecorded",
+   "verdict": "no",
+   "how": "",
+   "checks": 7
+  },
+  {
+   "toolchain": "unrecorded",
+   "verdict": "yes",
+   "how": "failing test",
+   "checks": 16
+  }
+ ],
+ "uncheckable": {
+  "does not reproduce on the patched tree": 21
+ }
+}
