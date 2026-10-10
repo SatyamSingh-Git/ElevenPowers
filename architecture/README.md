@@ -68,8 +68,8 @@ The statuses are substantive:
 - **Proposed** records a direction for design discussion, including
   PatchProof, OpenCodeMap, TestMiner and three additional contribution ideas.
 
-The current 41 cards comprise 4 open milestones, 17 planned research items,
-14 conditional extensions and 6 proposals. This view consolidates the remaining
+The current 40 cards comprise 5 open milestones, 16 planned research items,
+14 conditional extensions and 5 proposals. This view consolidates the remaining
 work in `PLAN.md`, `docs/status.md`, `docs/postponed.md` and the readable roadmap.
 Completed deliveries are context inside cards, not presented as future work.
 The view does not approve model runs or supersede research/defer conditions.
