@@ -1,5 +1,19 @@
 # Master Plan v0.8
 
+**2026-10-11 — first installed acceptance cell, with advice emitted.** Three
+real Claude Code 2.1.292 sessions ran the prepared claude/python advice exercise
+(Sonnet 5 high, $1.44 including probes). The third reached acceptance `passed`:
+pass, fail and incomplete outcomes captured natively, every check met, and
+advice emitted 3/3 with one subsequent matching native receipt. Two runtime
+defects surfaced on the way. A Bash call past its tool timeout is moved to the
+background and reported with no exit code; it was recorded as a complete pass
+and is now unfinished (`82b67e6`). And a prompt that opens a new subject without
+an inferable claim gets no task id, so nothing links: the first session began
+"Read EXERCISE.md" and stayed waiting throughout; this remains open. One cell of
+ten; model consumption of advice remains unproven. See
+[results](results/advice-delivery/installed-2026-10-11/README.md) and
+[journey 71](journey/71-one-cell-of-ten.md).
+
 **2026-10-11 — untested behaviour claims are qualified.** Replaying two
 test-less `bug_fixed` runs from the reverted-tree sweep through the current
 runtime reached plain VERIFIED: `test_added` is met by any passing test covering

@@ -1,5 +1,19 @@
 # Current delivery status
 
+**2026-10-11 — first installed acceptance cell, with advice emitted.** Three
+real Claude Code 2.1.292 sessions ran the prepared claude/python advice exercise
+(Sonnet 5 high, $1.44 including probes). The third reached acceptance `passed`:
+pass, fail and incomplete outcomes captured natively, every check met, and
+advice emitted 3/3 with one subsequent matching native receipt. Two runtime
+defects surfaced on the way. A Bash call past its tool timeout is moved to the
+background and reported with no exit code; it was recorded as a complete pass
+and is now unfinished (`82b67e6`). And a prompt that opens a new subject without
+an inferable claim gets no task id, so nothing links: the first session began
+"Read EXERCISE.md" and stayed waiting throughout; this remains open. One cell of
+ten; model consumption of advice remains unproven. See
+[results](../results/advice-delivery/installed-2026-10-11/README.md) and
+[journey 71](../journey/71-one-cell-of-ten.md).
+
 **2026-10-11 — untested behaviour claims are qualified.** Replaying two
 test-less `bug_fixed` runs from the reverted-tree sweep through the current
 runtime reached plain VERIFIED: `test_added` is met by any passing test covering
@@ -161,7 +175,7 @@ does not establish coding benefit. See [guide](../the-guide/milestones.md),
 | Five-host onboarding | Ownership-preserving setup, explicit or unambiguous auto host selection, command/environment discovery and readiness actions | Host trust/policy remains under the host; custom/ambiguous manifests need overrides |
 | Callback activation | Waiting, received, processed startup, errors/history, changed wiring and removal | Launcher observations only; replay excluded; callbacks are not sender authentication |
 | Fresh staged project health | One fresh report view; native startup/edit/capture/completion, every declared command's aggregate outcome, progress and read-only optional metadata | Ten-second cooperative default, 120-second maximum; unresolved current callback errors, corrupt/moving state and incomplete coverage cannot pass `--check` |
-| Versioned native reports | Bounded runtime identity, explicit installed-version probes, whitelisted captures and ten-cell matrix | Dated unsigned observations; duplicate, changed and incomplete histories cannot pass; full installed acceptance remains 0/10 |
+| Versioned native reports | Bounded runtime identity, explicit installed-version probes, whitelisted captures and ten-cell matrix | Dated unsigned observations; duplicate, changed and incomplete histories cannot pass; full installed acceptance is 1/10 (claude/python, 2026-10-11) |
 | Read-only performance | Every attempted repeated health read retained; finite source/timing checks and separate callback/command history | Descriptive local samples, cooperative deadline; no universal speedup or task certification |
 | Subscription coding pilot | Frozen original task, independent 16-check grader, exact requested models/medium effort and eight equal-budget journals | Initial pilot inconclusive due policy/activation/quota; no product benefit established; local separation is not an OS boundary |
 | Controlled completion comparison | Two original cases, eight actual Claude subscription runs, neutral before/after Stop snapshots and independent grades | All first/final candidates 16/16; three treatment receipt refreshes; no patch-correctness gain; wrapped baseline verification may be unobserved |

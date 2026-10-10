@@ -665,7 +665,8 @@ four tabs render with 102 nodes and 232 edges. This delivery has twenty-nine
 incremental publication boundaries with descriptive commit messages. See the
 [delivery checks](docs/validation/2026-10-02-native-validation-delivery.md).
 
-Installed-host acceptance remains **0/10**, and all eight original subscription
+Installed-host acceptance remained **0/10** then (1/10 since 2026-10-11:
+[claude/python](results/advice-delivery/installed-2026-10-11/README.md)), and all eight original subscription
 comparison records remain **inconclusive**. A trusted Codex fixture had corrected
 source and real failing/passing checks but no plugin callbacks. Later controlled
 completion runs have working native Claude delivery and added receipts, and the

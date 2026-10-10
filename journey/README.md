@@ -1,5 +1,7 @@
 # The journey
 
+Latest: [71 — one cell of ten](71-one-cell-of-ten.md).
+
 Latest: [70 — verified is not tested](70-verified-is-not-tested.md).
 
 Latest: [69 — the runner was never recorded](69-the-runner-was-never-recorded.md).

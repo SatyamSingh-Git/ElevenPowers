@@ -263,6 +263,10 @@ permits ordinary workspace commands but does not bypass native hook trust.
 Claude project setup writes local settings, so a restricted launch must include
 `--setting-sources project,local` to load them.
 
+**2026-10-11:** claude/python acceptance passed in an installed Claude Code
+2.1.292 session — 1/10. See
+[installed results](../results/advice-delivery/installed-2026-10-11/README.md).
+
 
 ### Native trust and actual delivery are separate
 
