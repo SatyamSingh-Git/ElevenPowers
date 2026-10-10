@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "host": "claude",
+  "project": "E:\\ep-advice-2026-10-11-run3",
+  "python": "3.13.2",
+  "configuration_ok": true,
+  "configuration_report": "ElevenPowers claude: configuration checks\nPython 3.13.2\nok: 6 native event subscriptions\nCallback activation: active (23 received, 23 processed)\nHost enablement/trust: review in the host\nLive host session: not verified; callback observations are not host authentication",
+  "activation": {
+    "state": "active",
+    "generation": "cf7768500b4b4b93a7ff5ca189e3f724",
+    "configuration": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+    "last_event": "Stop",
+    "received": 23,
+    "processed": 23,
+    "links_evicted": 0,
+    "configured_at": 1791661740.9038138,
+    "received_at": 1791661819.275168,
+    "processed_at": 1791661821.6948535,
+    "startup_processed_at": 1791661743.5078452,
+    "phases": {
+      "SessionStart": {
+        "received": 1,
+        "processed": 1,
+        "task": "",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "runtime_fingerprint": "544c16d8f2a3f75262d91632c6efb3756fa37d02353b0cb3cdf75593056f45eb",
+        "last_at": 1791661743.5078206,
+        "samples_ms": [
+          308.776
+        ]
+      },
+      "UserPromptSubmit": {
+        "received": 1,
+        "processed": 1,
+        "task": "",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "last_at": 1791661744.7430248,
+        "samples_ms": [
+          315.708
+        ]
+      },
+      "PostToolUse": {
+        "received": 11,
+        "processed": 11,
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "last_at": 1791661811.247326,
+        "samples_ms": [
+          25.893,
+          39.447,
+          28.632,
+          620.41,
+          193.907,
+          690.385,
+          195.101,
+          28.274,
+          15.276,
+          898.325,
+          181.37
+        ],
+        "edit": {
+          "changed": 1,
+          "incomplete": false,
+          "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+          "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb"
+        }
+      },
+      "PreToolUse": {
+        "received": 8,
+        "processed": 8,
+        "task": "",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "last_at": 1791661810.3349953,
+        "samples_ms": [
+          17.423,
+          58.207,
+          14.342,
+          41.703,
+          12.056,
+          20.113,
+          14.81,
+          13.006
+        ]
+      },
+      "PostToolUseFailure": {
+        "received": 1,
+        "processed": 1,
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "last_at": 1791661760.07853,
+        "samples_ms": [
+          191.494
+        ]
+      },
+      "Stop": {
+        "received": 1,
+        "processed": 1,
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "last_at": 1791661821.6948335,
+        "samples_ms": [
+          2417.79
+        ]
+      }
+    },
+    "receipt_links": [
+      {
+        "key": "f9a54a91f1b791991e5b913a607b3d64435bbea21d347c912fd3ef3c46fdf227",
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "result": "fail",
+        "execution": "complete",
+        "at": 1791661760.0785434
+      },
+      {
+        "key": "e8b4842da30c7beb66a86390c72338eae3fffbacce5721aa847d018d798deccf",
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "result": "pass",
+        "execution": "complete",
+        "at": 1791661770.067117
+      },
+      {
+        "key": "3c2193acab3d2ebe464d3de2a0a95c6118fc2157b628a052ef0684e5cdaa560b",
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "result": "error",
+        "execution": "incomplete",
+        "at": 1791661785.7228012
+      },
+      {
+        "key": "6b051246d78e872730e73e8d2ba267a328ed2e6f9f25ec9b9007794948a8deed",
+        "task": "5dc9c2ca2a6991772c3d1944698309562417f1e1ff9aa9f436c991c4b56fa4d9",
+        "session": "6d5afd32901e609d946fffe4e761e9bcd2c516c8d02b74bfe5d91a706606f9cb",
+        "result": "pass",
+        "execution": "complete",
+        "at": 1791661811.247338
+      }
+    ]
+  },
+  "commands": {
+    "tests": "\"E:\\ElevenPowers\\.venv\\Scripts\\python.exe\" check.py"
+  },
+  "runtimes": {
+    "E:\\ElevenPowers\\.venv\\Scripts\\python.exe": true
+  },
+  "profile": "guide",
+  "coverage": {
+    "complete": true,
+    "files": 3,
+    "bytes": 1302,
+    "issues": []
+  },
+  "latest_receipt": {
+    "kind": "test_suite",
+    "identity": "check.py",
+    "receipt_key": "6b051246d78e872730e73e8d2ba267a328ed2e6f9f25ec9b9007794948a8deed",
+    "declaration": "tests",
+    "command": "cd \"<project>\" && \"E:\\ElevenPowers\\.venv\\Scripts\\python.exe\" check.py",
+    "result": "pass",
+    "declared_command": "\"E:\\ElevenPowers\\.venv\\Scripts\\python.exe\" check.py",
+    "execution": "complete",
+    "freshness": "fresh",
+    "recorded_at": 1791661811.2298136,
+    "scope": "source",
+    "observed_files": 3,
+    "fingerprint": "00699d47ee8f8bb6",
+    "coverage_issues": [],
+    "passed": 1,
+    "failed": 0,
+    "counted": true
+  },
+  "pending_patches": 0,
+  "patch_gaps": 0,
+  "task_state": "VERIFIED",
+  "task": "t-1791661744444055300",
+  "health": {
+    "state": "observed",
+    "stages": {
+      "configuration": {
+        "state": "observed",
+        "detail": "ElevenPowers claude: configuration checks\nPython 3.13.2\nok: 6 native event subscriptions\nCallback activation: active (23 received, 23 processed)\nHost enablement/trust: review in the host\nLive host session: not verified; callback observations are not host authentication"
+      },
+      "environment": {
+        "state": "observed",
+        "detail": "Declared runtime lookup only; project dependencies are established by execution"
+      },
+      "startup": {
+        "state": "observed",
+        "detail": "Processed native startup with session correlation required"
+      },
+      "edits": {
+        "state": "observed",
+        "detail": "Current-task native edit delivery; target observations do not prove all side effects"
+      },
+      "command_capture": {
+        "state": "observed",
+        "detail": "Current receipt must link to this configuration, task and startup session"
+      },
+      "completion": {
+        "state": "observed",
+        "detail": "Processed completion in the current task/session required"
+      },
+      "report": {
+        "state": "observed",
+        "detail": "Current shared report and input freshness view"
+      },
+      "verification": {
+        "state": "observed",
+        "detail": "Every declared command needs a complete, passing, fresh receipt; not task certification"
+      },
+      "strength": {
+        "state": "not_recorded",
+        "detail": "Optional saved mutation observations; excluded from required pipeline health"
+      }
+    }
+  },
+  "test_strength": {
+    "state": "not_recorded",
+    "freshness": "unknown",
+    "issues": [],
+    "observations": [],
+    "summary": {},
+    "limitations": []
+  },
+  "optional_engines": {
+    "state": "disabled"
+  },
+  "timings": {
+    "source_snapshot_ms": 49.938,
+    "report_ms": 136.412,
+    "health_read_ms": 321.155,
+    "callbacks": {
+      "SessionStart": {
+        "samples": 1,
+        "median_ms": 308.776,
+        "p95_ms": 308.776
+      },
+      "UserPromptSubmit": {
+        "samples": 1,
+        "median_ms": 315.708,
+        "p95_ms": 315.708
+      },
+      "PostToolUse": {
+        "samples": 11,
+        "median_ms": 181.37,
+        "p95_ms": 898.325
+      },
+      "PreToolUse": {
+        "samples": 8,
+        "median_ms": 16.116,
+        "p95_ms": 58.207
+      },
+      "PostToolUseFailure": {
+        "samples": 1,
+        "median_ms": 191.494,
+        "p95_ms": 191.494
+      },
+      "Stop": {
+        "samples": 1,
+        "median_ms": 2417.79,
+        "p95_ms": 2417.79
+      }
+    },
+    "automatic_commands": {
+      "samples": 4,
+      "median_ms": 149.882,
+      "p95_ms": 259.161
+    },
+    "sample_limit": 32
+  },
+  "next_actions": [],
+  "limits": [
+    "Local callback observations are not sender authentication or independent attestation.",
+    "Pipeline health and task verification are separate; startup alone does not establish end-to-end delivery.",
+    "Timings describe the retained sample, not an improvement or a guarantee of future latency.",
+    "No project checks, host session or mutation engine are executed by this read-only view.",
+    "Freshness is checked at read time under a cooperative deadline; later edits require another read."
+  ],
+  "report_coverage": {
+    "complete": true,
+    "issues": [],
+    "selected_files": 3,
+    "source_complete": true,
+    "source_issues": [],
+    "selected_bytes": 1302,
+    "source_fingerprint": "00699d47ee8f8bb6",
+    "latest_receipts_total": 1,
+    "omitted_receipts": 0
+  },
+  "milestone_advice": {
+    "schema": 1,
+    "state": "emitted",
+    "attempts": 3,
+    "generated": 3,
+    "emitted": 3,
+    "matching_native_receipts": 1,
+    "checks": [
+      {
+        "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+        "state": "current",
+        "receipt_key": "6b051246d78e872730e73e8d2ba267a328ed2e6f9f25ec9b9007794948a8deed",
+        "result": "pass",
+        "execution": "complete",
+        "freshness": "fresh"
+      }
+    ],
+    "issues": [],
+    "model_consumption": "unproven",
+    "limits": [
+      "Generated means the worker returned context; emitted means a native launcher flushed it in a supported context field.",
+      "A subsequent matching native receipt is a temporal observation, not proof the agent read or used advice.",
+      "These local unsigned observations do not authenticate a host or establish improved coding outcomes.",
+      "Missing or evicted history stays unobserved; fallback verification must remain available."
+    ]
+  }
+}
