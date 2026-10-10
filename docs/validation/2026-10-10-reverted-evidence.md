@@ -31,10 +31,14 @@ labelling uses a stricter pattern. 22 controls on real repositories, real
 patches and real pytest; sixteen mutations, each caught — the last after adding
 the fixture-setup-error control it exposed.
 
-**Sweep (`bac2908`).** 54 ledgers, 2,017 records → 432 passing → 200 test records
-that ran tests → 62 re-executable → 44 checks from 28 bundles: 16 discriminate,
-7 vacuous, 21 uncheckable, every one of the 21 with a named environment cause.
-Six of seven vacuous checks come from patches touching no test.
+**Sweep.** The first (`bac2908`) globbed `bundles/` and measured 54 of 106
+ledgers, missing `bundles-chunk1/` and `bundles-chunk2/`. Discovery now finds any
+ledger and resumes by path (`1fd6b17`, both seen red, both mutations caught).
+Full corpus: 106 ledgers, 2,954 records → 676 passing → 342 test records that
+ran tests → 125 re-executable → 101 checks from 68 bundles and 29 tasks: 40
+discriminate, 8 vacuous, 53 uncheckable, every one of the 53 with a named
+environment cause. Seven of eight vacuous checks come from patches touching no
+test.
 
 ```sh
 python -m pytest tests/test_reverted.py tests/test_audit_probes.py -q

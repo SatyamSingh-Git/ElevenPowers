@@ -14,14 +14,19 @@ own docstring promised enough to ask whether two runs were the same experiment.
 
 So the runner is recorded now, and the measurement carries a forward control: a
 check must still pass on the patched tree today before anything it says about
-the old tree counts. Twenty-one checks failed that control. Without it, all
-twenty-one would have failed on the old tree too, and been scored as evidence
+the old tree counts. Fifty-three checks failed that control. Without it, all
+fifty-three would have failed on the old tree too, and been scored as evidence
 that discriminates.
 
-What survived is more ordinary than the literature's 46%. Seven of twenty-three
-agent checks were vacuous, and six of those came from patches with no test at
+What survived is more ordinary than the literature's 46%. Eight of forty-eight
+agent checks were vacuous, and seven of those came from patches with no test at
 all — a suite cannot tell old code from new when nothing new is tested. Where
-the patch carried tests, one check in seventeen passed anyway.
+the patch carried tests, one check in forty-one passed anyway.
+
+The first sweep was itself wrong by half. It globbed `bundles/` and measured 54
+of 106 ledgers, because the chunked sweeps save to `bundles-chunk1/`; it was
+published, noticed while checking which arms the corpus covered, and corrected
+the same day. The shape held; the denominator doubled.
 
 Two smaller lessons came from running rather than reading. The runtime's parser
 counts a collection error as a failed test, and stress's collection pattern also

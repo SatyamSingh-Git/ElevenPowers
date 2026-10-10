@@ -1,7 +1,7 @@
 # Reverted-tree discrimination — 2026-10-10
 
 Would the agents' own passing checks have passed without their change? P22,
-asked of every saved bundle with [`eval/reverted.py`](../../eval/reverted.py).
+asked of every saved ledger with [`eval/reverted.py`](../../eval/reverted.py).
 No agent and no model call: only local pytest runs.
 
 **Method.** Each bundle's base commit is built twice, the way the harness built
@@ -13,65 +13,70 @@ method and its states. Passing there is `VACUOUS`; failing tests there is
 shaping removed; anything that could write, chain, substitute or name the old
 workspace is refused.
 
+**Corrected the same day.** The first publication measured 54 of the 106 saved
+ledgers: its discovery globbed `bundles/` and missed the chunked sweeps'
+`bundles-chunk1/` and `bundles-chunk2/`. The figures below are the full corpus;
+the shape of the result did not change.
+
 ## Funnel
 
 | Step | Records |
 |---|---:|
-| Evidence records in 54 saved ledgers | 2,017 |
-| Passing | 432 |
-| Passing test records that ran at least one test | 200 |
-| Re-executable `python -m pytest` lines | 62 |
-| Distinct checks (bundle × command) | **44**, from 28 bundles |
+| Evidence records in 106 saved ledgers (all gate arm) | 2,954 |
+| Passing | 676 |
+| Passing test records that ran at least one test | 342 |
+| Re-executable `python -m pytest` lines | 125 |
+| Distinct checks (bundle × command) | **101**, from 68 bundles and 29 tasks |
 
-Excluded on the way, by reason: 1,585 not passing; 232 not a test record that
-ran tests (lint, typecheck, zero counts); 134 not a pytest run; 4 could write,
-chain or substitute.
+Excluded on the way, by reason: 2,278 not passing; 334 not a test record that
+ran tests (lint, typecheck, zero counts); 210 not a pytest run; 7 could write,
+chain or substitute. Vanilla-arm bundles carry no ledger and are not in scope.
 
 ## Result
 
 | Verdict | Checks |
 |---|---:|
-| `DISCRIMINATES` — failing test on the old tree | 16 |
-| `VACUOUS` — passes on the old tree | 7 |
-| `UNCHECKABLE` — does not reproduce on the patched tree today | 21 |
+| `DISCRIMINATES` — failing test on the old tree | 40 |
+| `VACUOUS` — passes on the old tree | 8 |
+| `UNCHECKABLE` — does not reproduce on the patched tree today | 53 |
 
-**The vacuous checks are almost all patches with no test.** Six of seven come
-from patches that touched no test file, where a suite run on the old code
-passes by construction (6/6; exact 95% interval 54.1–100%). Where the patch
-added or edited tests, 1 of 17 checks was vacuous (5.9%; 0.1–28.7%) — a single
+**The vacuous checks are the patches with no test.** Seven of eight come from
+patches that touched no test file, where a suite run on the old code passes by
+construction (7/7; exact 95% interval 59.0–100%). Where the patch added or
+edited tests, 1 of 41 checks was vacuous (2.4%; 0.1–12.9%) — a single
 parametrised case, `opt_params6`, whose sibling `opt_params7` discriminates.
-Pooled, 7 of 23 classified checks are vacuous (30.4%; 13.2–52.9%). None
+Pooled, 8 of 48 classified checks are vacuous (16.7%; 7.5–30.2%). None
 discriminated by import alone.
 
 That is consistent with [B9](../b9-gate-tests/), where all fourteen vacuous
-patches had no test, and with stress's declared-command verdicts on the same
-ledgers, 1 vacuous in 26 (3.8%; 0.1–19.6%). Those measure different checks —
-stress runs the project's declared command, this the agent's own — and do not
-contradict each other.
+patches had no test, and with stress's declared-command verdicts, 1 vacuous in
+26 ledgers that recorded one. Those measure different checks — stress runs the
+project's declared command, this the agent's own — and do not contradict each
+other.
 
 **Every uncheckable check has a named cause, and none is the agent's.**
 
 | Cause | Checks |
 |---|---:|
-| attrs: `No module named 'hypothesis'` | 10 |
-| click: pytest 9.1.1 raises `PytestRemovedIn10Warning` at collection | 8 |
-| itsdangerous: `No module named 'freezegun'` | 2 |
+| attrs: `No module named 'hypothesis'` | 32 |
+| click: pytest 9.1.1 raises `PytestRemovedIn10Warning` at collection | 14 |
+| itsdangerous: `No module named 'freezegun'` | 6 |
 | click: the recorded `-k` selection matches no test today | 1 |
 
-Without the forward control all twenty-one would have failed on the old tree and
-been counted as discriminating.
+Without the forward control all fifty-three would have failed on the old tree
+and been counted as discriminating.
 
 ## What this does not establish
 
 - **Every run predates toolchain recording** (`fafe61a`), so every result is the
   *unrecorded* stratum. Its only qualification is that the check reproduced
   forward under pytest 9.1.1 today.
-- **Checks are not independent.** Tasks repeat across sweeps and bundles hold
-  several checks; the intervals above treat them as independent and are
-  therefore narrower than the truth.
-- **Coverage is partial.** 44 of 432 passing records, and none of attrs: its
-  suite needs `hypothesis`, which this interpreter does not have. Installing it
-  would change the environment future runs inherit, so it was not done here.
+- **Checks are not independent.** The 48 classified checks come from 35 bundles
+  and only 14 tasks, which recur across sweeps; the intervals above treat checks
+  as independent and are narrower than the truth.
+- **Coverage is partial, and attrs is absent.** Its suite needs `hypothesis`,
+  which this interpreter does not have; installing it would change the
+  environment future runs inherit, so it was not done here.
 - It describes the evidence agents recorded, not whether any gate decision or
   outcome would have changed.
 
@@ -81,6 +86,6 @@ been counted as discriminating.
 python -m eval.reverted --bundles results --out NEW_DIRECTORY
 ```
 
-`rows.jsonl` holds one line per bundle with every check's command, record
-count, toolchain stratum, verdict and reason; `summary.json` the funnel and
-counts. An interrupted sweep resumes from `rows.jsonl`.
+`rows.jsonl` holds one line per ledger, keyed by its path, with every check's
+command, record count, toolchain stratum, verdict and reason; `summary.json` the
+funnel and counts. An interrupted sweep resumes from `rows.jsonl`.

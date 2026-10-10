@@ -27,41 +27,41 @@
    "source": "installed_probe"
   }
  },
- "bundles": 54,
+ "bundles": 106,
  "funnel": {
-  "records": 2017,
-  "passing": 432,
-  "passing test records that ran tests": 200,
-  "re-executable": 62,
+  "records": 2954,
+  "passing": 676,
+  "passing test records that ran tests": 342,
+  "re-executable": 125,
   "excluded": {
-   "not passing": 1585,
-   "not a test record that ran tests": 232,
-   "not re-executable: not a pytest run": 134,
-   "not re-executable: could write, chain or substitute": 4
+   "not passing": 2278,
+   "not a test record that ran tests": 334,
+   "not re-executable: not a pytest run": 210,
+   "not re-executable: could write, chain or substitute": 7
   }
  },
- "checks": 44,
+ "checks": 101,
  "verdicts": [
   {
    "toolchain": "unrecorded",
    "verdict": "n/a",
    "how": "",
-   "checks": 21
+   "checks": 53
   },
   {
    "toolchain": "unrecorded",
    "verdict": "no",
    "how": "",
-   "checks": 7
+   "checks": 8
   },
   {
    "toolchain": "unrecorded",
    "verdict": "yes",
    "how": "failing test",
-   "checks": 16
+   "checks": 40
   }
  ],
  "uncheckable": {
-  "does not reproduce on the patched tree": 21
+  "does not reproduce on the patched tree": 53
  }
 }

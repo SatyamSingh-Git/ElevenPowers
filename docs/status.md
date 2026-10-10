@@ -5,11 +5,12 @@ manifests now record pytest/ruff/mypy through the harness interpreter, node/npm
 and the installed package set; before this, 18 of 22 corpus base trees could not
 be re-collected today and nothing recorded why. `eval/reverted.py` re-runs
 agents' recorded passing pytest checks forward on base+patch and adversarially
-on the old source carrying the patch's tests. Of 44 checks from 28 bundles, 16
-discriminate, 7 are vacuous and 21 do not reproduce today (missing
-`hypothesis`/`freezegun`, pytest 9.1.1). Six of the seven vacuous checks come
-from patches with no test; 1 of 17 where the patch carried tests. All runs
-predate toolchain recording; checks are not independent; no model was called.
+on the old source carrying the patch's tests. Across all 106 saved ledgers, 101
+checks from 68 bundles: 40 discriminate, 8 are vacuous and 53 do not reproduce
+today (missing `hypothesis`/`freezegun`, pytest 9.1.1). Seven of the eight
+vacuous checks come from patches with no test; 1 of 41 where the patch carried
+tests. All runs predate toolchain recording; the classified checks come from 14
+tasks; no model was called.
 See [results](../results/reverted/README.md) and
 [validation](validation/2026-10-10-reverted-evidence.md).
 
