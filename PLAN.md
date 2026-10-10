@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**2026-10-10 — reverted-tree discrimination and runner provenance.** Run
+manifests now record pytest/ruff/mypy through the harness interpreter, node/npm
+and the installed package set; before this, 18 of 22 corpus base trees could not
+be re-collected today and nothing recorded why. `eval/reverted.py` re-runs
+agents' recorded passing pytest checks forward on base+patch and adversarially
+on the old source carrying the patch's tests. Of 44 checks from 28 bundles, 16
+discriminate, 7 are vacuous and 21 do not reproduce today (missing
+`hypothesis`/`freezegun`, pytest 9.1.1). Six of the seven vacuous checks come
+from patches with no test; 1 of 17 where the patch carried tests. All runs
+predate toolchain recording; checks are not independent; no model was called.
+See [results](results/reverted/README.md) and
+[validation](docs/validation/2026-10-10-reverted-evidence.md).
+
 **2026-10-08 — observable advice delivery.** Optional milestone advice now
 distinguishes worker-generated context, a native launcher flushing supported
 context, and subsequent exact matching native check outcomes. Readiness joins
@@ -1289,7 +1302,7 @@ Reordered by measured effect size, with the free ones first.
 | **Mutant feedback to an agent (B8)** *(RUN 2026-09-24)* | generic "tests are weak" vs the exact mutant list, 9 tasks x 2 reps, Opus 5.5 | **list kills 54/54 vs 38/54, but largely through white-box tests aimed at the mutation** — never hand raw mutants to an agent. `results/b8-feedback/` | $22.14+ |
 | **Gate vs vanilla test quality (B9)** *(RUN 2026-09-24)* | every resolved patch of the paired chunks sweep through the probe | **no difference in how well tests pin the change (p = 1.0); fewer VACUOUS patches under the gate, 4/49 vs 10/46 (p = 0.06)** — all 14 vacuous patches had no test at all. `results/b9-gate-tests/` | $0 |
 | **Vacuity by arm, one method** *(new)* | the same sweep, both arms, `stress.py`'s own check | **settles whether B3/B4's 1-in-22 was the gate's effect** rather than the phenomenon's absence | a paired sweep |
-| **Discrimination rate** | recorded pass vs the same command on the reverted tree | does our own evidence measure anything? | **$0** |
+| **Discrimination rate** *(RUN 2026-10-10)* | agents' recorded passing pytest checks, forward on base+patch and on base+carried tests | **44 checks from 28 bundles: 16 discriminate, 7 vacuous, 21 do not reproduce today.** 6 of the 7 vacuous come from patches with no test; 1 of 17 where the patch carried tests. All runs predate toolchain recording. `results/reverted/` | **$0**, ~20 min |
 | **Oracle gap** | pool coverage vs selected success on saved attempts | is a selector worth building, or under the 4pp harm line? | **$0** |
 | **Checkpoint density** | best intermediate candidate vs submitted | is there a better state to ratchet back to? | **$0** |
 | Boundary canary | nonsense token in the fix, boundary off vs on | is the book actually closed? | <$5 |
@@ -1324,7 +1337,7 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 | P19 | Pool coverage exceeds selected success by a margin worth attacking | **measured 2026-09-15, and it does not settle.** +2.0 to +20.0 across comparable pools; the gap comes entirely from the 1-5 tasks per pool whose attempts disagree, so at this corpus size it measures flakiness rather than a property of the pool |
 | P20 | Diagnosis branching finds solutions repeated attempts do not | new; Phase D |
 | P21 | Localisation expansion resolves tasks that fail from missing code | new; Phase D |
-| P22 | A meaningful fraction of our recorded passing evidence is vacuous — it passes on the reverted tree | **still open, and now askable.** B2.1 found a prior defect first (R10) and fixed it; the reversion measurement needs execution against the cached base trees. Established elsewhere at 46% of validation events |
+| P22 | A meaningful fraction of our recorded passing evidence is vacuous — it passes on the reverted tree | **measured 2026-10-10, and the fraction is the untested patches.** 7 of 23 classifiable agent checks are vacuous (30.4%; exact 95% 13.2–52.9%, checks not independent), but 6 of those 7 come from patches touching no test, where vacuity is by construction; 1 of 17 where the patch carried tests (0.1–28.7%). 21 more checks do not reproduce today — missing `hypothesis`/`freezegun`, pytest 9.1.1 — and would have read as discriminating without a forward control. `results/reverted/`. Established elsewhere at 46% of validation events |
 | P23 | A reproduction record (seen red before, green after) discriminates where an ordinary pass does not | new; falsifiable on saved bundles alongside P22 |
 | P24 | A verified intermediate state exists that is better than the submitted one, often enough to pay for keeping it | new; Phase B2.3 at Stop granularity, C0 at edit granularity |
 | P25 | Deriving a reproduction test early raises resolve rate in this setting | new; the field's +28pp lever, Phase C1 |

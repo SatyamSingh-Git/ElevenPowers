@@ -1,5 +1,18 @@
 # Current delivery status
 
+**2026-10-10 — reverted-tree discrimination and runner provenance.** Run
+manifests now record pytest/ruff/mypy through the harness interpreter, node/npm
+and the installed package set; before this, 18 of 22 corpus base trees could not
+be re-collected today and nothing recorded why. `eval/reverted.py` re-runs
+agents' recorded passing pytest checks forward on base+patch and adversarially
+on the old source carrying the patch's tests. Of 44 checks from 28 bundles, 16
+discriminate, 7 are vacuous and 21 do not reproduce today (missing
+`hypothesis`/`freezegun`, pytest 9.1.1). Six of the seven vacuous checks come
+from patches with no test; 1 of 17 where the patch carried tests. All runs
+predate toolchain recording; checks are not independent; no model was called.
+See [results](../results/reverted/README.md) and
+[validation](validation/2026-10-10-reverted-evidence.md).
+
 **2026-10-08 — observable advice delivery.** Optional milestone advice now
 distinguishes worker-generated context, a native launcher flushing supported
 context, and subsequent exact matching native check outcomes. Readiness joins

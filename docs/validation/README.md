@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-10 reverted-tree discrimination](2026-10-10-reverted-evidence.md): runner and package provenance in run manifests, forward and adversarial re-execution of 44 saved agent checks, and the environment causes of 21 that no longer reproduce.
+
 - [2026-10-08 advice delivery observations](2026-10-08-advice-delivery-observations.md): bounded native context emission, temporal check joins, optional acceptance and model-free actual-command controls.
 
 - [2026-10-08 native command qualification](2026-10-08-native-command-recognition.md):
