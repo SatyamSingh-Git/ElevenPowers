@@ -1,5 +1,7 @@
 # The journey
 
+Latest: [70 — verified is not tested](70-verified-is-not-tested.md).
+
 Latest: [69 — the runner was never recorded](69-the-runner-was-never-recorded.md).
 
 Latest: [68 — text leaving the runtime](68-text-leaving-the-runtime.md).

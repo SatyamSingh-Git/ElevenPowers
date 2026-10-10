@@ -1,5 +1,16 @@
 # Master Plan v0.8
 
+**2026-10-11 — untested behaviour claims are qualified.** Replaying two
+test-less `bug_fixed` runs from the reverted-tree sweep through the current
+runtime reached plain VERIFIED: `test_added` is met by any passing test covering
+the changed file, and `feature_added` at low/medium risk asks only for a green
+suite. Both claims now carry a stated qualification on every met check when no
+touched test file still declares a test; the status is unchanged (reported, not
+refused, per §5.12) and refactors are exempt. Found and not fixed: the parser
+reads a `-W filter::Name` value as a test node id, so a broad run with a warning
+filter counts as scoped and cannot meet `suite_green`. See
+[journey 70](journey/70-verified-is-not-tested.md).
+
 **2026-10-10 — reverted-tree discrimination and runner provenance.** Run
 manifests now record pytest/ruff/mypy through the harness interpreter, node/npm
 and the installed package set; before this, 18 of 22 corpus base trees could not
