@@ -60,3 +60,4 @@ The initial [observations](../../results/patchproof-v1/observations.json) remain
 unchanged at their producer identity. Standard-library imports passed again.
 Host doctor: all 11 probes passed; four independent grader controls passed.
 Preserved source grades reproduced: both stage-one 6/6 and final 8/8 ties remain.
+The separately named audit probes passed **107 checks in 125.02 seconds**.

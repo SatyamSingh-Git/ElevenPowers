@@ -1,10 +1,17 @@
 # PatchProof v1 capability controls
 
-2026-10-11. [Observations](observations.json) record real Python and JavaScript
+2026-10-11. [Final repaired observations](final-observations.json) record real Python and JavaScript
 commands in two independently created disposable Git repositories. Each retained
 one passing test, one assertion failure, a terminated timeout and an absent
 declared check, with dirty checkout binding unavailable. Exact head identities
 were checked directly against Git independently of bundle construction.
+
+The [initial observations](observations.json) remain unchanged as a dated record
+of producer `527c395`. The final exercise used producer `ea32327`, after the
+review repairs, with runtime fingerprint
+`9ef1513057c22ecf7daac0504a287a7b66fa8059232b39236c88ddeaa4a9c93b`.
+Both artifacts retain their own producer identity; later documentation commits
+do not change the recorded runtime bytes.
 
 These controls establish local patch/receipt representation and qualification.
 They do not establish installed-host acceptance, independent attestation, safe
