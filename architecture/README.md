@@ -2,7 +2,7 @@
 
 The ordinary-session milestone maps prompt-created task identity, preserved
 continuations and option-aware pytest scope. The generalized host rehearsal can
-open tasks through prompt callbacks without controller-seeded IDs. Installed
+open tasks through prompt callbacks without controller-seeded IDs. Claude/Python and Claude/JavaScript now pass fresh installed exercises (2/10);
 qualification and causal benefit remain separate; see [validation](../docs/validation/2026-10-11-ordinary-session-evidence.md).
 
 Five views of the system and its unfinished work — the runtime, plugin seam,
@@ -11,8 +11,8 @@ self-contained HTML file.
 
 The latest map adds optional advice context emission and temporal native check
 observations, plus the model-free Python/Node exercise. This is delivery metadata,
-not model comprehension or causal benefit; fresh installed qualification remains
-planned. See [the observation guide](../the-guide/advice-delivery.md).
+not model comprehension or causal benefit. Fresh installed Claude/Python and
+Claude/JavaScript are qualified; eight cells remain planned. See [the observation guide](../the-guide/advice-delivery.md).
 
 The map also includes conservative literal invocation qualification, exact
 receipt identity and actual shell/replay controls alongside the staged comparison

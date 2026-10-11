@@ -9,8 +9,11 @@ carry an explicit scope qualification. Queue-grader setup completes before
 competing claims start, preserving the concurrency assertions and deadlines.
 The original Windows job passed on rerun; its initial failing scenario remains
 unknown. Actual launcher rehearsals now support ordinary prompt callbacks without
-controller-seeded task IDs. Fresh installed exercises and final delivery checks
-are recorded in [the milestone validation](docs/validation/2026-10-11-ordinary-session-evidence.md). Previous coding
+controller-seeded task IDs. Two approved Sonnet 5.5 medium subscription sessions
+now qualify Claude/Python and Claude/JavaScript: 12/12 acceptance checks each,
+native pass/fail/incomplete capture and emitted advice with a current follow-up.
+These are 2/10 installed cells, not coding-benefit evidence. See [observations](results/ordinary-session-evidence/README.md).
+Final delivery checks are recorded in [the milestone validation](docs/validation/2026-10-11-ordinary-session-evidence.md). Previous coding
 comparisons remain ties; none of these repairs establish causal coding benefit.
 
 **2026-10-11 — first installed acceptance cell, with advice emitted.** Three

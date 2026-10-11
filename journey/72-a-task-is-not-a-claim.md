@@ -30,3 +30,11 @@ and installed sessions remain separate categories. These changes remove observed
 integration failures; they do not turn prior correctness ties into a product
 benefit. See [validation](../docs/validation/2026-10-11-ordinary-session-evidence.md)
 and [observations](../results/ordinary-session-evidence/README.md).
+
+The user approved two fresh subscription sessions, specifying Sonnet 5.5 at medium.
+Both the Python and JavaScript installed exercises passed all twelve checks with
+the original read prompt, in 206.184 seconds total. Native advice emission and
+current follow-up receipts were observed in both. This is useful integration
+progress: the first claim-less installed attempt's missing identity is repaired
+without making up a claim. It is still two cells of ten, and a prescribed check
+following advice cannot establish that advice caused better coding.

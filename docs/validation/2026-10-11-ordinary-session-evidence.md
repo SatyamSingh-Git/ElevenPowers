@@ -56,3 +56,16 @@ installed observations. Model-free launcher ingress cannot qualify an installed
 agent. Matching native commands cannot prove comprehension or coding benefit.
 Final review, full compatibility, hosted CI and published-map checks are recorded
 with delivery, rather than inferred from an earlier green revision.
+
+## Fresh installed sessions
+
+Two explicitly approved Claude Code 2.1.292 subscription sessions used Sonnet 5.5
+at medium, 180 seconds each, with no API fallback. Python and JavaScript both
+passed 12/12 acceptance checks and retained native pass/fail/incomplete outcomes,
+prompt-created identity without claims and fresh completion. Total observed host
+execution was 206.184 seconds, below the 360-second approval. Advice was
+emitted and a later current native receipt matched in each session. The sealed
+exercise requested those checks already: consumption and coding benefit remain
+unproven. Full bounded observations are [published separately](../../results/ordinary-session-evidence/installed.json).
+Private attempts and outputs are preserved; no failed attempt was retried into
+success. Only 2/10 installed host/language cells are qualified for this runtime.

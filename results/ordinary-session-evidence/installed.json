@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "category": "installed-subscription-exercise",
+  "model_calls": 2,
+  "host": "claude",
+  "version": "2.1.292",
+  "requested_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "approved_sessions": 2,
+  "approved_seconds_per_session": 180,
+  "api_fallback": false,
+  "observations": [
+    {
+      "language": "python",
+      "host": "claude",
+      "version": "2.1.292",
+      "requested_model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "limit_seconds": 180,
+      "runtime": "efba988bc33dd96198305a6b77777764a6b2c81e338eefe58d38b4ee97bcfe4e",
+      "attempted": true,
+      "state": "returned",
+      "seconds": 114.564,
+      "exit": 0,
+      "task_exists": true,
+      "claims": [],
+      "reported_cost_usd": 0.09723740000000002,
+      "observed_models": [
+        "claude-sonnet-5-5"
+      ],
+      "host_completed": true,
+      "acceptance": {
+        "state": "passed",
+        "checks": {
+          "test_unchanged": true,
+          "runtime_identity": true,
+          "project_configuration": true,
+          "native_configuration": true,
+          "source_changed": true,
+          "host_version": true,
+          "generation": true,
+          "command": true,
+          "startup_runtime": true,
+          "startup_after_preparation": true,
+          "completion_after_commands": true,
+          "fresh_pipeline": true
+        },
+        "outcomes": {
+          "pass": true,
+          "fail": true,
+          "incomplete": true
+        }
+      },
+      "advice": {
+        "state": "emitted",
+        "generated": 2,
+        "emitted": 2,
+        "matching_native_receipts": 1,
+        "model_consumption": "unproven",
+        "checks": [
+          {
+            "recommendation": "96be7715e24c01782c8c25d82b0b79806fceedf7beeeaa33584a7f2615d8de2b",
+            "state": "current",
+            "receipt_key": "fa9fafa89ff205e10de1a0bb633998f8e6734a39e0344a7c256b0c8ad6454936",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh"
+          }
+        ]
+      }
+    },
+    {
+      "language": "javascript",
+      "host": "claude",
+      "version": "2.1.292",
+      "requested_model": "claude-sonnet-5-5",
+      "effort": "medium",
+      "limit_seconds": 180,
+      "runtime": "efba988bc33dd96198305a6b77777764a6b2c81e338eefe58d38b4ee97bcfe4e",
+      "attempted": true,
+      "state": "returned",
+      "seconds": 91.62,
+      "exit": 0,
+      "task_exists": true,
+      "claims": [],
+      "reported_cost_usd": 0.10329760000000002,
+      "observed_models": [
+        "claude-sonnet-5-5"
+      ],
+      "host_completed": true,
+      "acceptance": {
+        "state": "passed",
+        "checks": {
+          "test_unchanged": true,
+          "runtime_identity": true,
+          "project_configuration": true,
+          "native_configuration": true,
+          "source_changed": true,
+          "host_version": true,
+          "generation": true,
+          "command": true,
+          "startup_runtime": true,
+          "startup_after_preparation": true,
+          "completion_after_commands": true,
+          "fresh_pipeline": true
+        },
+        "outcomes": {
+          "pass": true,
+          "fail": true,
+          "incomplete": true
+        }
+      },
+      "advice": {
+        "state": "emitted",
+        "generated": 2,
+        "emitted": 2,
+        "matching_native_receipts": 1,
+        "model_consumption": "unproven",
+        "checks": [
+          {
+            "recommendation": "75de12fdaeb5d63a9d5842929502d2fccefe29883ef0aea560e28938eab17f0a",
+            "state": "current",
+            "receipt_key": "6f4cbe3e0e8297273e193b117983a62f4ee003db02a9f436162ee2facb1200f5",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh"
+          }
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "One installed host and two authored languages; eight host/language cells remain unqualified.",
+    "Local unsigned callback capture does not authenticate host behavior.",
+    "The exercise requests these commands in advance; matching advice receipts do not prove consumption or coding benefit.",
+    "The manual stale-view step is not independently attested.",
+    "Reported equivalent model costs are host metadata, not claimed additional subscription charges."
+  ]
+}
