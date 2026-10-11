@@ -19,10 +19,13 @@ def lease_queue(module,request):
         if request.get('concurrent'):
             for n in range(32):
                 q.enqueue('t',str(n),n)
+            # Connection/schema setup is preparation, not concurrent claim work.
+            # Slow Windows setup must not spend another worker's barrier budget.
+            owned_queues = [module.Queue(path) for _ in range(8)]
             barrier=threading.Barrier(8);answers=[];errors=[];lock=threading.Lock()
             def worker(n):
                 try:
-                    owned=module.Queue(path);barrier.wait(timeout=5)
+                    owned=owned_queues[n];barrier.wait(timeout=5)
                     local=[]
                     while True:
                         item=owned.claim('t',str(n),0,10)
