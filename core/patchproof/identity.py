@@ -27,6 +27,8 @@ class GitRead:
                         GIT_NO_REPLACE_OBJECTS='1')
         self.command = ['git', '--no-optional-locks', '-c', f'safe.directory={root.as_posix()}',
                         '-c', 'core.fsmonitor=false', '-c', 'core.untrackedCache=false',
+                        '-c', 'core.ignoreStat=false', '-c', 'core.trustctime=true',
+                        '-c', 'core.checkStat=default',
                         '-c', 'diff.external=', '-c', 'core.pager=cat']
 
     def read(self, *args, allow_missing=False):
@@ -148,6 +150,9 @@ def collect(root, base='HEAD~1', head='HEAD', *, seconds=30):
         inventory = git.read('ls-tree', '-r', '-z', '--full-tree', value['head'])
         if any(entry.startswith((b'120000 ', b'160000 ')) for entry in inventory.split(b'\0')):
             checkout['issues'].append('linked inputs or submodules in the requested tree are unsupported binding inputs')
+        flags = git.read('ls-files', '-v', '-z')
+        if any(entry and (entry[:1].islower() or entry.startswith(b'S ')) for entry in flags.split(b'\0')):
+            checkout['issues'].append('assume-unchanged or skip-worktree index entries leave checkout contents unqualified')
         status = git.read('status', '--porcelain=v1', '-z', '--untracked-files=all', '--ignore-submodules=none')
         if status:
             checkout['issues'].append('tracked, staged or nonignored untracked checkout changes exist')

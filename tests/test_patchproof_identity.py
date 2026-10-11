@@ -157,3 +157,15 @@ def test_non_git_root_remains_unavailable(tmp_path):
     value = collect(tmp_path, 'HEAD~1', 'HEAD')
     assert not value['complete'] and value['empty'] is None
 
+
+@pytest.mark.parametrize('flag', ['--assume-unchanged', '--skip-worktree'])
+def test_hidden_index_worktree_changes_cannot_qualify_checkout(repo, flag):
+    from core.patchproof.identity import collect
+    root, base, head = repo
+    git(root, 'update-index', flag, 'service.py')
+    (root / 'service.py').write_bytes(b'value = 9\n')
+    assert not git(root, 'status', '--porcelain')  # Witness the misleading Git view.
+    value = collect(root, base, head)
+    assert value['complete']
+    assert not value['checkout']['eligible']
+
