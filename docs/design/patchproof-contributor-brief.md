@@ -12,14 +12,15 @@ foundation. No coding-benefit result is established by the bundle.
 
 ElevenPowers already records command outcomes and input freshness, exports
 portable JSON/Markdown reports, and exposes a fresh ImpactGraph API. These are
-enough to start PatchProof without waiting for every graph adapter or automatic
-host integration. The missing connection is between a particular patch, the
-inputs actually checked, the applicable properties, and explicit evidence gaps.
+enough to implement PatchProof without waiting for every graph adapter or automatic
+host integration. V1 connects a committed patch to currently matching scoped
+inputs. Applicable contract properties, richer producer/environment identity and
+compatible graph enrichment remain contribution opportunities.
 
 Build inside ElevenPowers first. Reuse the shared evidence, scanning, redaction
 and output policies; keep the CLI and Python API usable without an AI host.
 A separate repository would duplicate those policies before the interface is
-stable. The full product is an architectural extension; the first contribution
+stable. The full product is an architectural extension; the delivered foundation
 below is a deliberately small part of it.
 
 ## Foundation: exact patch identity
@@ -29,8 +30,8 @@ read-only patch description in `core/patchproof/identity.py`, controlled by
 `tests/test_patchproof_identity.py`. Keep identity collection independent of report formatting and
 check execution so the next PR can consume it without a second Git implementation.
 
-The description should carry resolved commit identities, a content digest of the
-chosen base-to-head patch, changed paths and change kinds, whether the checkout
+The description carries resolved commit identities, a content digest of the
+full base/head tree pair, changed paths and change kinds, whether the checkout
 matches the requested head, and explicit completeness issues. Use direct
 base-to-head comparison; do not silently substitute merge-base semantics. If an
 ancestor relationship is required, state and validate that policy explicitly.

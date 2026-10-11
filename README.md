@@ -647,12 +647,20 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
+[PatchProof v1](the-guide/patchproof.md) now identifies a committed patch and
+exports qualified existing receipt associations, missing checks and unobserved
+paths. It executes no verification commands during reporting. See
+[the validation](docs/validation/2026-10-11-patchproof-v1.md) and
+[journey 73](journey/73-a-patch-needs-its-own-identity.md).
+
 Recent integration repairs separate task identity from inferred claims and pytest
 option values from targets, preserving ordinary read/continue requests and real
 selected-test scope. See [ordinary-session qualification](docs/validation/2026-10-11-ordinary-session-evidence.md)
 and [journey 72](journey/72-a-task-is-not-a-claim.md). Fresh Claude/Python and
 Claude/JavaScript installed exercises each passed 12/12 acceptance checks using
-Sonnet 5.5 medium (2/10 cells); advice consumption and coding benefit remain unproven.
+Sonnet 5.5 medium (2/10 cells) at the ordinary-session runtime fingerprint.
+These remain dated successes after PatchProof changes the runtime; current-runtime
+requalification, advice consumption and coding benefit remain open.
 
 The October 7 explained-recheck delivery adds exact command priorities and
 independent authored relationship/cost controls. Its 36 actual checks yield 30
