@@ -8,6 +8,7 @@ import time
 from ..export import build as verification_report, markdown as verification_markdown, _portable, _text
 from ..hosts.readiness import receipt_key
 from ..ledger import Ledger
+from ..parsers import DECLARED_KINDS
 from .identity import collect
 
 
@@ -122,8 +123,12 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
                          'producer_version': 'unknown'})
     checks = []
     for name, command in (report['commands'].items() if report else []):
-        matches = [r for r in receipts if r['declaration'] == name and r['declared_command'] == command]
-        latest = max(matches, key=lambda r: r['recorded_at']) if matches else None
+        kind = DECLARED_KINDS.get(name)
+        matches = [r for r in receipts if kind is not None and r['kind'] == kind.value
+                   and r['declaration'] == name and r['declared_command'] == command]
+        # Match the portable exporter's later-entry tie rule, and never allow
+        # individual tests to substitute for their aggregate command outcome.
+        latest = max(reversed(matches), key=lambda r: r['recorded_at']) if matches else None
         checks.append({'property': name, 'command': command,
                        'state': _check_state(latest) if latest else 'absent',
                        'receipt_key': latest['receipt_key'] if latest else None,

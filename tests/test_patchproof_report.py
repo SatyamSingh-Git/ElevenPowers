@@ -173,3 +173,31 @@ def test_damaged_ledger_yields_unavailable_bundle_instead_of_traceback(project):
     assert value['binding']['state'] == 'unavailable'
     assert value['verification'] is None
 
+
+def test_passing_child_cannot_mask_real_failed_declared_suite(project):
+    from core.patchproof.report import build
+    from core.parsers import parse
+    from core.process import run
+    import os
+    import shlex
+    import subprocess
+    import sys
+    root, base, head = project
+    (root / 'test_service.py').write_text(
+        'def test_good():\n    assert True\ndef test_bad():\n    assert False\n', newline='\n')
+    end = commit(root, 'mixed tests')
+    args = [sys.executable, '-m', 'pytest', '-v', '-rN', '-p', 'no:cacheprovider']
+    command = subprocess.list2cmdline(args) if os.name == 'nt' else shlex.join(args)
+    (root / '.elevenpowers').mkdir()
+    (root / '.elevenpowers/config.json').write_text(json.dumps({'auto_detect': False, 'commands': {'tests': command}}))
+    snapshot = source_snapshot(root, fresh=True)
+    done = run(args, cwd=root, shell=False, timeout=15, env={**os.environ,
+        'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTEST_ADDOPTS': ''})
+    assert done.returncode == 1
+    records = parse(command, done.stdout + done.stderr, done.returncode, root, snapshot=snapshot)
+    assert any(r.kind is Kind.TEST and r.result is Result.PASS for r in records)
+    assert any(r.kind is Kind.SUITE and r.result is Result.FAIL for r in records)
+    Ledger(root=root, task='mixed', evidence=records).save()
+    value = build(root, head, end)
+    assert value['checks'][0]['state'] == 'failed'
+
