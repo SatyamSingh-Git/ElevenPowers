@@ -19,13 +19,17 @@ SOURCE = Path(__file__).resolve().parents[1]
 EVENTS = {'claude': ('SessionStart', 'PostToolUse'), 'codex': ('SessionStart', 'PostToolUse'),
           'gemini': ('SessionStart', 'AfterTool'), 'cursor': ('sessionStart', 'postToolUse'),
           'copilot': ('sessionStart', 'postToolUse')}
+PROMPTS = {'claude': 'UserPromptSubmit', 'codex': 'UserPromptSubmit', 'gemini': 'BeforeAgent',
+           'cursor': 'beforeSubmitPrompt', 'copilot': 'userPromptSubmitted'}
 
 
-def _callback(root, host, mode, phase, *, command=None, output='', code=0):
+def _callback(root, host, mode, phase, *, command=None, output='', code=0, prompt=None):
     payload = {'cwd': str(root), 'session_id': 'advice-control',
                'tool_name': 'Bash' if command else 'Write',
                'tool_input': {'command': command} if command else {'file_path': str(root / ('app.py' if (root / 'app.py').exists() else 'app.mjs'))},
                'tool_response': {'stdout': output, 'exit_code': code}}
+    if prompt is not None:
+        payload['prompt'] = prompt
     if code is None:
         payload['tool_response'] = {'stdout': output, 'interrupted': True}
     if host == 'gemini':
@@ -54,11 +58,16 @@ def _view(root, host):
                                        'checks', 'issues', 'model_consumption')}
 
 
-def _observe(root, host, language, mode):
+def _observe(root, host, language, mode, *, ordinary_prompts=False):
     started = time.monotonic()
     manifest = prepare(host, root, language, SOURCE, advice=True)
-    Ledger(root=root, task='advice-control').save()
+    if not ordinary_prompts:
+        Ledger(root=root, task='advice-control').save()
     callbacks = [_callback(root, host, mode, EVENTS[host][0])]
+    if ordinary_prompts:
+        callbacks.append(_callback(root, host, mode, PROMPTS[host],
+                                   prompt='Read EXERCISE.md and follow its instructions.'))
+    task = Ledger.load(root)
     def check(command, *, interrupted=False):
         try:
             done = run(command, cwd=root, shell=True, timeout=.02 if interrupted else 15)
@@ -74,6 +83,7 @@ def _observe(root, host, language, mode):
     app.write_text(original.replace('value > 10', 'value >= 10'))
     edit = _callback(root, host, mode, EVENTS[host][1])
     callbacks.append(edit)
+    after_edit = Ledger.load(root)
     before = _view(root, host)
     command = 'cd . && ' + manifest['command']
     codes, views = [], []
@@ -91,23 +101,29 @@ def _observe(root, host, language, mode):
                  and edit['has_advice'] and before['matching_native_receipts'] == 0 and followups == expected
                  and before['state'] == ('emitted' if mode == 'native-control' else 'generated')
                  and all(view['model_consumption'] == 'unproven' for view in views))
+    if ordinary_prompts:
+        qualified = qualified and bool(task.task) and not task.claims and after_edit.task == task.task
     return {'host': host, 'language': language, 'mode': mode, 'qualified': qualified,
             'initial_process_exit': initial, 'process_exits': codes, 'callbacks': callbacks,
             'before_check': before, 'followups': followups, 'observations': views,
+            'task_opened_by_prompt': bool(task.task) if ordinary_prompts else False,
+            'task_preserved_after_edit': after_edit.task == task.task,
+            'prompt_claims': [claim.value for claim in task.claims],
             'seconds': round(time.monotonic() - started, 3),
             'test_sha256': hashlib.sha256((root / manifest['test_file']).read_bytes()).hexdigest()}
 
 
 def exercise(destination, *, hosts=tuple(PATHS), languages=('python', 'javascript'),
-             modes=('replay', 'native-control')):
+             modes=('replay', 'native-control'), ordinary_prompts=False):
     destination = Path(destination).absolute()
     if destination.exists() or destination.is_symlink():
         raise ValueError('exercise destination must be new')
-    if (not hosts or not languages or not modes or set(hosts) - set(PATHS) or
+    if (type(ordinary_prompts) is not bool or not hosts or not languages or not modes or set(hosts) - set(PATHS) or
             set(languages) - {'python', 'javascript'} or set(modes) - {'replay', 'native-control'}):
         raise ValueError('unsupported exercise selection')
     destination.mkdir(parents=True)
     value = {'schema': 1, 'runtime': fingerprint(), 'model_calls': 0, 'installed_acceptance': False,
+             'ordinary_prompts': ordinary_prompts,
              'producer_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
              'observations': [], 'unavailable': [], 'qualified': False,
              'limits': ['Native-control means synthetic launcher ingress, not an installed agent session.',
@@ -119,7 +135,8 @@ def exercise(destination, *, hosts=tuple(PATHS), languages=('python', 'javascrip
             continue
         for host in hosts:
             for mode in modes:
-                row = _observe(destination / f'{language}-{host}-{mode}', host, language, mode)
+                row = _observe(destination / f'{language}-{host}-{mode}', host, language, mode,
+                               ordinary_prompts=ordinary_prompts)
                 value['observations'].append(row)
                 (destination / 'summary.json').write_text(json.dumps(value, indent=2) + '\n', encoding='utf8')
     value['qualified'] = (not value['unavailable'] and
@@ -132,8 +149,10 @@ def exercise(destination, *, hosts=tuple(PATHS), languages=('python', 'javascrip
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('destination', type=Path)
+    parser.add_argument('--ordinary-prompts', action='store_true',
+                        help='Open tasks through host prompt callbacks instead of controller-seeded IDs')
     args = parser.parse_args()
-    value = exercise(args.destination)
+    value = exercise(args.destination, ordinary_prompts=args.ordinary_prompts)
     print(json.dumps(value, indent=2))
     return 0 if value['qualified'] else 1
 

@@ -29,3 +29,14 @@ def test_producer_refuses_existing_destination_without_changing_it(tmp_path):
     with pytest.raises(ValueError, match='new'):
         exercise(tmp_path)
     assert marker.read_text() == 'keep'
+
+
+def test_ordinary_prompt_producer_opens_identity_through_launcher(tmp_path):
+    from eval.advice_delivery import exercise
+    value = exercise(tmp_path / 'ordinary', hosts=('claude',), languages=('python',),
+                     modes=('native-control',), ordinary_prompts=True)
+    assert value['qualified'] and value['ordinary_prompts']
+    row = value['observations'][0]
+    assert row['task_opened_by_prompt'] and row['task_preserved_after_edit']
+    assert row['prompt_claims'] == []
+    assert row['followups'] == ['current', 'failed', 'incomplete', 'current']
