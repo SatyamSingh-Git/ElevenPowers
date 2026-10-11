@@ -69,3 +69,14 @@ exercise requested those checks already: consumption and coding benefit remain
 unproven. Full bounded observations are [published separately](../../results/ordinary-session-evidence/installed.json).
 Private attempts and outputs are preserved; no failed attempt was retried into
 success. Only 2/10 installed host/language cells are qualified for this runtime.
+
+## Post-commit gates
+
+The final local suite and four hosted Linux/Windows, Python 3.11/3.13 jobs must
+pass before integrating the verified commit on main. Hosted outcomes are visible
+in [the workflow history](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml).
+The architecture renderer validates all five views (133 nodes, 311 edges), and
+448 local documentation links resolved before delivery. Standard-library imports,
+11 host-doctor probes, all four independent grader probes and the preserved
+source-grade reproduction passed. Published HTML/mirror bytes are checked after
+Pages deployment, with final gate results recorded in the delivery report.

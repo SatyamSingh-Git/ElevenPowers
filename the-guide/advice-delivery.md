@@ -1,5 +1,12 @@
 # Observe advice delivery and later checks
 
+Fresh Claude Code 2.1.292 Python and JavaScript installed exercises passed
+12/12 checks each using Sonnet 5.5 medium subscription sessions and ordinary
+read prompts. Native pass/fail/incomplete capture and optional advice emission
+were observed in both. This is 2/10 host/language cells; the other four hosts
+still need installed exercises. Consumption and coding benefit remain unproven.
+See [bounded observations](../results/ordinary-session-evidence/README.md).
+
 Milestone advice is optional, bounded context after a saved edit. Enable it in
 the project's configuration only when wanted; installation does not start model
 sessions or enable this optional feature. See [milestones](milestones.md).

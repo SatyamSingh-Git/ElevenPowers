@@ -1,5 +1,12 @@
 # Native platforms
 
+Fresh Claude Code 2.1.292 Python and JavaScript installed exercises passed
+12/12 checks each using Sonnet 5.5 medium subscription sessions and ordinary
+read prompts. Native pass/fail/incomplete capture and optional advice emission
+were observed in both. This is 2/10 host/language cells; the other four hosts
+still need installed exercises. Consumption and coding benefit remain unproven.
+See [bounded observations](../results/ordinary-session-evidence/README.md).
+
 Optional milestone advice now has [read-only delivery observations](advice-delivery.md)
 across all five host launchers. Successful context emission and subsequent native
 checks remain separate from model comprehension and installed-session acceptance.

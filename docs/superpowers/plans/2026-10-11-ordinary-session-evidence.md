@@ -60,5 +60,6 @@ Files: guides, status/plan, dated results/validation/journey and architecture.
   preserve failures and distinguish native capture from causal advice use.
 - [x] One branch review and witnessed repair pass; update all affected docs,
   map/workflow/dataflow/planned cards and render all five views.
-- [ ] Full compatibility and exact-head hosted CI, verified main integration and
-  published architecture check. Record final gate outcomes in delivery evidence.
+Post-commit delivery gates: full compatibility and exact-head hosted CI, verified
+main integration and published architecture check. Their outcomes are recorded in
+the delivery ledger and final report; do not infer them from earlier green code.
