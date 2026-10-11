@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "coding_benefit": "not measured",
+  "projects": [
+    {
+      "language": "python",
+      "states": [
+        "current",
+        "failed",
+        "incomplete",
+        "absent"
+      ],
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 1.222,
+          "records": 1,
+          "suite_counts": [
+            {
+              "passed": 1,
+              "failed": 0
+            }
+          ]
+        },
+        {
+          "exit_code": 1,
+          "seconds": 1.37,
+          "records": 2,
+          "suite_counts": [
+            {
+              "passed": 0,
+              "failed": 1
+            }
+          ]
+        },
+        {
+          "exit_code": null,
+          "seconds": 0.462,
+          "records": 1,
+          "suite_counts": []
+        }
+      ],
+      "exit_codes": [
+        0,
+        1,
+        null
+      ],
+      "dirty_binding": "unavailable",
+      "independent_head_matches": true,
+      "base": "287728e1e539549efbab7c01df623ec45da17a37",
+      "head": "20e83657150290fd493576bdf0c92eafdf97040f",
+      "patch_id": "f682b16f7934bb1c3f5783aea1b5d530e989b1c7e8b0e71b96ed20012395041b"
+    },
+    {
+      "language": "javascript",
+      "states": [
+        "current",
+        "failed",
+        "incomplete",
+        "absent"
+      ],
+      "runs": [
+        {
+          "exit_code": 0,
+          "seconds": 1.452,
+          "records": 1,
+          "suite_counts": [
+            {
+              "passed": 1,
+              "failed": 0
+            }
+          ]
+        },
+        {
+          "exit_code": 1,
+          "seconds": 0.612,
+          "records": 1,
+          "suite_counts": [
+            {
+              "passed": 0,
+              "failed": 1
+            }
+          ]
+        },
+        {
+          "exit_code": null,
+          "seconds": 0.265,
+          "records": 1,
+          "suite_counts": []
+        }
+      ],
+      "exit_codes": [
+        0,
+        1,
+        null
+      ],
+      "dirty_binding": "unavailable",
+      "independent_head_matches": true,
+      "base": "0bfbe5195c3b8a450add92f403f6fcd093bba786",
+      "head": "ae1a82f2488656ed18c31dd62576e09a5aeb9338",
+      "patch_id": "64e492b8e0ff18a878627b5d3c64763c96bdd67c96d43c24c40debcf5965641c"
+    }
+  ],
+  "runtime_fingerprint": "9ef1513057c22ecf7daac0504a287a7b66fa8059232b39236c88ddeaa4a9c93b",
+  "producer_revision": "ea32327"
+}

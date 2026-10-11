@@ -1616,7 +1616,7 @@ window.ELEVENPOWERS_GRAPH = {
       "plane": "runtime",
       "kind": "engine",
       "size": 2,
-      "desc": "Bounded direct base/head commit and full-tree pairs; NUL paths, modes/blob IDs, renames and binaries. Disabled Git helpers, clean checkout and hidden-index/linked-input qualifications. No project commands.",
+      "desc": "Git 2.45+ bounded commit/tree-pair identity; raw NUL paths, modes/blob IDs, rename/binary metadata. Effective worktree filters, lazy fetch and transport disabled. Hidden-index/linked inputs stay unqualified; no project commands.",
       "files": [
         "core/patchproof/identity.py"
       ]
@@ -1627,7 +1627,7 @@ window.ELEVENPOWERS_GRAPH = {
       "plane": "runtime",
       "kind": "engine",
       "size": 2,
-      "desc": "Before/after patch, report inputs and ledger/config guards. Scoped associations retain result/execution/freshness and unknown environment/execution provenance. Existing report wrapped, no safety percentage.",
+      "desc": "Before/after patch, report inputs and ledger/config guards. Scoped associations retain result/execution/freshness and unknown environment/execution provenance. Existing report wrapped, no safety percentage. Declared check states use the matching aggregate kind and later-entry timestamp ties.",
       "files": [
         "core/patchproof/report.py",
         "core/patchproof/__init__.py"
@@ -3260,6 +3260,11 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "patch-controls",
       "target": "process",
       "label": "actual bounded commands"
+    },
+    {
+      "source": "patch-bundle",
+      "target": "parsers",
+      "label": "declared aggregate kinds"
     }
   ]
 };

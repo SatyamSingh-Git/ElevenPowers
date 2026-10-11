@@ -20,6 +20,13 @@ with unavailable binding. `--require-bound` exits 1 unless patch/input binding
 qualifies. Invalid arguments or output failures exit nonzero. The binding gate
 does not mean all checks passed, that work is verified, or that a patch is safe.
 
+Patch identity requires **Git 2.45+**. Older/unknown versions cannot qualify the
+lazy-fetch guard and report unavailable identity. Missing partial-clone objects
+are never retrieved automatically; fetch needed objects explicitly in your normal
+workflow before exporting again. Effective worktree filters and included filter
+configurations are disabled along with lazy fetching and transport protocols.
+See [the Git source and controls](../docs/research/patchproof-git.md).
+
 Choose the repository root, including a linked worktree root. Subdirectories and
 non-Git projects cannot qualify committed-patch identity. Refs resolve to full
 commit IDs; comparison does not silently use merge-base semantics. The versioned
@@ -42,7 +49,9 @@ distinct from failed or incomplete collection.
 
 `bound` is an input association. A fresh failing or interrupted receipt can be
 associated with the patch while still reporting failure or incomplete execution.
-A passing unrelated check cannot associate with paths it never observed. No
+A passing unrelated check cannot associate with paths it never observed. Declared
+check state uses the property's aggregate receipt kind; a passing individual test
+cannot replace a failed suite, and timestamp ties use the later aggregate. No
 active claim stays `UNVERIFIED`; passing receipts cannot invent task completion.
 Check state and patch association are separate: an observed pass may be current
 for its own inputs while patch association remains unavailable.

@@ -22,8 +22,12 @@ An identical empty tree pair is explicitly empty. Invalid refs, absent Git,
 unsupported roots and exceeded output/time budgets produce unavailable or
 incomplete descriptions, never an empty successful patch.
 
+Git 2.45+ is required for the lazy-fetch prohibition; older/unknown versions
+produce unavailable identity rather than relying on an unverified setting.
 Git is invoked with argument arrays, no shell, optional locks disabled and
-external diff, textconv, fsmonitor and configured clean/process filters disabled.
+external diff, textconv, fsmonitor and effective clean/process filters disabled,
+including worktree configuration and includes. Lazy object fetching and transport
+protocols are disabled; unavailable local objects stay incomplete.
 Raw NUL-delimited output preserves path boundaries. Git's rename detection is
 heuristic; modes and old/new blob IDs remain authoritative. Submodules and
 symlinks are explicit unsupported binding inputs. Binary blobs retain object
@@ -36,7 +40,9 @@ worktrees are supported, nested project roots are qualified unavailable.
 `build(root, base='HEAD~1', head='HEAD', timeout=120)` returns a new schema-1
 PatchProof bundle containing the unchanged schema-1 portable report. It describes
 patch identity, binding state, per-receipt applicability and qualifications, and
-project-declared check availability. Result, execution and freshness remain
+project-declared aggregate check availability. Child test observations cannot
+replace a failed suite; timestamp ties prefer the later retained aggregate.
+Result, execution and freshness remain
 separate fields. Failed or incomplete commands are never turned into passes.
 No active claim remains unverified even if a current receipt exists.
 

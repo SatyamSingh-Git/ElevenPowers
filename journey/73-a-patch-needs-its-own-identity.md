@@ -30,6 +30,15 @@ The parser correctly refused to label the invented declaration. We corrected the
 fixture and kept the failing observation; changing runtime recognition to fit it
 would have made the experiment worse.
 
+The fresh branch review then found three defects the first controls missed.
+Filter commands from worktree configuration escaped the local-only enumeration;
+missing promisor blobs launched a configured retrieval helper; and a passing
+individual test tied with a failed suite could win the declared-check selector.
+Real helper markers and `pytest -v -rN` exposed them before the repair. Effective
+filters are now suppressed, lazy retrieval/transports are prohibited under the
+explicit Git 2.45+ requirement, and only the appropriate aggregate can describe
+a declared command. The full suite was restarted against those repairs.
+
 Failing and incomplete receipts can be bound to an unchanged inspected patch.
 That is useful evidence, but not approval. Missing declared checks, unrelated
 scopes, stale declarations, unobserved paths and unsupported compatibility stay
