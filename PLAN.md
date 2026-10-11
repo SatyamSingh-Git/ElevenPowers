@@ -1,11 +1,13 @@
 # Master Plan v0.8
 
-**2026-10-11 — PatchProof v1 implementation; qualification in progress.** Exact
+**2026-10-11 — PatchProof v1 delivered and qualified.** Exact
 committed base/head and full-tree pair identities now wrap existing schema-1
 reports with scoped input associations, missing declared checks and explicit
 compatibility gaps. The standalone CLI runs no checks or model calls. Dirty,
 hidden-index, linked or moving inputs cannot qualify clean committed binding.
 See [design](docs/design/patchproof-v1.md) and [guide](the-guide/patchproof.md).
+Local regressions, named audit probes and the corrected four-job hosted matrix
+passed; see [dated qualification](docs/validation/2026-10-11-patchproof-v1.md).
 
 Two Claude Code installed language cells succeeded at the ordinary-session
 runtime fingerprint `efba988bc33dd96198305a6b77777764a6b2c81e338eefe58d38b4ee97bcfe4e`.
@@ -13,9 +15,12 @@ They remain historical successes after this runtime change, not fresh PatchProof
 acceptance. Eight other cells, current-runtime requalification, advice consumption
 and causal coding benefit remain open. The prior intermittent Linux descendant
 cleanup CI failure remains unexplained; the following main CI run completed
-successfully. Do not describe either observation as a demonstrated cleanup repair.
+successfully. Hosted Windows queue-reference controls also returned SQLite
+locking errors in the initial v1 matrix; an instrumented local reference
+passed, so that cause remains open. Do not describe later green runs as
+demonstrated repairs of either incident.
 
-Next after v1 qualification: one real contract receipt adapter and compatible
+Next extension: one real contract receipt adapter and compatible
 ImpactGraph enrichment, with legitimate/incompatible/stale controls. Explicit
 bounded verification and GitHub presentation follow after those interfaces.
 

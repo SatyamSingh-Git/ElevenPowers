@@ -1,7 +1,8 @@
 # Postponed, with the trigger that would build it
 
 **PatchProof v1, 2026-10-11.** Exact committed patch descriptions and scoped
-existing receipt bundles are now implemented and undergoing qualification.
+existing receipt bundles are implemented and qualified by model-free controls
+and the four-job hosted matrix.
 Working-tree identity, compatible graph enrichment, contract adapters, explicit
 verification execution and GitHub presentation remain subsequent work. See
 [design](design/patchproof-v1.md) and [guide](../the-guide/patchproof.md).

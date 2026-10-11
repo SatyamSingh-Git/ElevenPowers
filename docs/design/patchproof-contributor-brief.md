@@ -1,6 +1,6 @@
 # PatchProof contributor brief
 
-Status: v1 implementation, 2026-10-11, with qualification in progress.
+Status: v1 delivered and qualified, 2026-10-11.
 Exact committed identity and scoped receipt bundles now exist inside the shared
 runtime. Read [the delivered contract](patchproof-v1.md) and
 [usage](../../the-guide/patchproof.md). The sections below preserve the original

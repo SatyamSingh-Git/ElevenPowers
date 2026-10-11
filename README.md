@@ -649,7 +649,8 @@ For a repeatable local test environment, see [Development and verification](docs
 
 [PatchProof v1](the-guide/patchproof.md) now identifies a committed patch and
 exports qualified existing receipt associations, missing checks and unobserved
-paths. It executes no verification commands during reporting. See
+paths. Its model-free controls and corrected four-job hosted matrix passed.
+It executes no verification commands during reporting. See
 [the validation](docs/validation/2026-10-11-patchproof-v1.md) and
 [journey 73](journey/73-a-patch-needs-its-own-identity.md).
 

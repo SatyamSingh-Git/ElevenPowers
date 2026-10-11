@@ -39,8 +39,8 @@ the bundle incorrectly called the declared check current before repair and faile
 after aggregate-kind selection. Four review controls passed in 10.41 seconds.
 
 The first full run was interrupted after these findings; it is not a qualification
-result. Full repaired regressions and hosted CI are pending and will be recorded
-after completion. Git 2.45+ is now explicit, with lazy fetching and transport
+result. Final repaired regressions and the corrected hosted matrix are recorded
+below. Git 2.45+ is now explicit, with lazy fetching and transport
 disabled; [source provenance](../research/patchproof-git.md) bounds that assumption.
 
 ## Boundaries retained
@@ -71,3 +71,19 @@ a new contention case retains the visible diagnostic. Advice/runtime behavior
 did not change. Worker and ownership controls passed **18 checks in 5.04 seconds**.
 The local full run had already collected the original test; a new hosted matrix
 qualifies the corrected test suite. This is not a descendant-cleanup repair.
+
+## Completed regression qualification
+
+Local full regressions: **2025 passed, 2 skipped in 1696.06s (0:28:16)**. This run collected the original
+advice test before its oracle repair; the 18 focused ownership controls
+and corrected hosted matrix qualify that test change with runtime bytes
+unchanged. The corrected [four-job hosted CI](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38150648555) passed on Ubuntu and Windows,
+Python 3.11 and 3.13, at `21279c6`. The second matrix followed the
+witnessed advice assertion repair. Both original Windows jobs separately
+returned SQLite `OperationalError` from the existing delayed-setup
+queue-reference control. A locally instrumented real reference passed
+32/32 unique claims in 6.02 seconds; the hosted cause remains unresolved.
+No reference, evaluator or fixture repair is claimed. The
+[original failed matrix](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38149812227)
+remains a dated observation. Architecture: 137 nodes / 321 edges,
+all five views rendered. No additional model session was used.

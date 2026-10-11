@@ -51,6 +51,12 @@ or establish improved coding. The intermittent Linux descendant-cleanup CI
 failure also remains unresolved. This feature provides a reviewer with a more
 precise artifact, not a new outcome-improvement claim.
 
+The final regression qualification passed locally and across four hosted
+Ubuntu/Windows and Python 3.11/3.13 jobs. CI also exposed an advice test that
+mistook a contention diagnostic for a second worker. A held-lock control
+recorded one worker and one reservation; the repaired assertion measures
+those facts and retains the diagnostic. Advice runtime behavior stayed intact.
+
 See [design](../docs/design/patchproof-v1.md), [guide](../the-guide/patchproof.md),
 [implementation plan](../docs/superpowers/plans/2026-10-11-patchproof-v1.md) and
 [validation](../docs/validation/2026-10-11-patchproof-v1.md).
