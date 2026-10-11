@@ -51,3 +51,11 @@ consumption or coding improvement. `model_consumption` remains `unproven`.
 The intermediate manual stale-view step is not independently attested. Earlier
 [installed attempts](../advice-delivery/installed-2026-10-11/README.md) remain
 unchanged, including their failure and runtime-change qualifications.
+
+## Compatibility and delivery
+
+The final local suite passed 1,985 tests with 2 skips. Four hosted Linux/Windows,
+Python 3.11/3.13 jobs passed at the delivered runtime revision `8996170`; see
+[full qualification and the retained cleanup failure](../../docs/validation/2026-10-11-ordinary-session-evidence.md#final-qualification).
+The closing commit adds only qualification prose. Runtime/test/CI bytes remain
+identical to the green revision; main's normal push-triggered CI is separate.

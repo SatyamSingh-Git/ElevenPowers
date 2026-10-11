@@ -12,7 +12,10 @@ unknown. Actual launcher rehearsals now support ordinary prompt callbacks withou
 controller-seeded task IDs. Two approved Sonnet 5.5 medium subscription sessions
 now qualify Claude/Python and Claude/JavaScript: 12/12 acceptance checks each,
 native pass/fail/incomplete capture and emitted advice with a current follow-up.
-These are 2/10 installed cells, not coding-benefit evidence. See [observations](results/ordinary-session-evidence/README.md).
+These are 2/10 installed cells, not coding-benefit evidence. The final local
+suite passed 1,985 tests with 2 skips; all four hosted jobs passed at `8996170`
+after one failed-job rerun. The initial Linux process-cleanup failure remains
+recorded and unexplained. See [observations](results/ordinary-session-evidence/README.md).
 Final delivery checks are recorded in [the milestone validation](docs/validation/2026-10-11-ordinary-session-evidence.md). Previous coding
 comparisons remain ties; none of these repairs establish causal coding benefit.
 

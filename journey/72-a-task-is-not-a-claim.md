@@ -38,3 +38,10 @@ current follow-up receipts were observed in both. This is useful integration
 progress: the first claim-less installed attempt's missing identity is repaired
 without making up a claim. It is still two cells of ten, and a prescribed check
 following advice cannot establish that advice caused better coding.
+
+The complete local suite finished at 1,985 passing tests and two skips. Hosted
+Linux/Windows 3.11/3.13 qualification passed all four jobs, but only after one
+Linux cleanup regression failed and then passed unchanged on a failed-job rerun.
+That failure is retained; its cause remains unknown. Successful repeated CI is
+not a diagnosis. The closing docs record this limit and preserve the exact green
+runtime revision instead of claiming a newer test run for documentation prose.

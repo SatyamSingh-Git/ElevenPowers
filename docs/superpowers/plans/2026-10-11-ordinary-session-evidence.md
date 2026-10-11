@@ -60,6 +60,12 @@ Files: guides, status/plan, dated results/validation/journey and architecture.
   preserve failures and distinguish native capture from causal advice use.
 - [x] One branch review and witnessed repair pass; update all affected docs,
   map/workflow/dataflow/planned cards and render all five views.
-Post-commit delivery gates: full compatibility and exact-head hosted CI, verified
-main integration and published architecture check. Their outcomes are recorded in
-the delivery ledger and final report; do not infer them from earlier green code.
+- [x] Full local compatibility and four exact-head hosted jobs at `8996170`;
+  preserve the first cleanup failure and successful failed-job rerun.
+- [x] Closing qualification prose and local-link checks; runtime/test/CI bytes
+  remain identical to that green revision.
+
+Post-commit delivery gates: verified fast-forward main integration and published
+architecture bytes. Their outcomes are recorded in the delivery ledger and final
+report. Main CI starts normally; documentation-only qualification does not
+invent a newer full-suite result.
