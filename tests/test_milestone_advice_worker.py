@@ -1,4 +1,5 @@
 import json
+import threading
 from concurrent.futures import ThreadPoolExecutor
 
 from core.ledger import Ledger
@@ -41,12 +42,56 @@ def test_changed_inputs_and_new_task_get_bounded_allowances(tmp_path):
     assert deliver(ledger)
 
 
-def test_atomic_reservation_prevents_concurrent_duplicate_worker(tmp_path):
-    from core.milestones.automatic import deliver
+def test_atomic_reservation_prevents_concurrent_duplicate_worker(tmp_path, monkeypatch):
+    import core.milestones.automatic as automatic
     ledger = opted(tmp_path)
+    run, workers = automatic.run, []
+
+    def real_worker(*args, **kwargs):
+        workers.append(args[0])
+        return run(*args, **kwargs)
+
+    monkeypatch.setattr(automatic, 'run', real_worker)
     with ThreadPoolExecutor(max_workers=2) as pool:
-        outputs = list(pool.map(lambda _: deliver(ledger), range(2)))
-    assert sum('milestone advice' in v for v in outputs) == 1
+        outputs = list(pool.map(lambda _: automatic.deliver(ledger), range(2)))
+    state = json.loads((tmp_path / '.elevenpowers/advice.json').read_text())
+    assert len(workers) == 1
+    assert len(state['tasks'][0]['attempts']) == 1
+    assert any('milestone advice' in value for value in outputs)
+
+
+def test_busy_reservation_keeps_diagnostic_without_starting_second_worker(tmp_path, monkeypatch):
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    entered, release = threading.Event(), threading.Event()
+    store, run, workers = automatic._store, automatic.run, []
+
+    def hold_reservation(*args, **kwargs):
+        # Hold the actual OS lock past the second caller's bounded allowance.
+        if not entered.is_set():
+            entered.set()
+            assert release.wait(5)
+        return store(*args, **kwargs)
+
+    def real_worker(*args, **kwargs):
+        workers.append(args[0])
+        return run(*args, **kwargs)
+
+    monkeypatch.setattr(automatic, '_store', hold_reservation)
+    monkeypatch.setattr(automatic, 'run', real_worker)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(automatic.deliver, ledger)
+        assert entered.wait(5)
+        try:
+            second = pool.submit(automatic.deliver, ledger).result(timeout=5)
+        finally:
+            release.set()
+        first_output = first.result(timeout=10)
+    state = json.loads((tmp_path / '.elevenpowers/advice.json').read_text())
+    assert len(workers) == 1
+    assert len(state['tasks'][0]['attempts']) == 1
+    assert 'milestone advice' in first_output
+    assert 'unavailable' in second and 'fallback' in second
 
 
 def test_timeout_is_visible_retained_and_never_counts_as_evidence(tmp_path, monkeypatch):

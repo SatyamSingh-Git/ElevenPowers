@@ -61,3 +61,13 @@ unchanged at their producer identity. Standard-library imports passed again.
 Host doctor: all 11 probes passed; four independent grader controls passed.
 Preserved source grades reproduced: both stage-one 6/6 and final 8/8 ties remain.
 The separately named audit probes passed **107 checks in 125.02 seconds**.
+
+The first hosted matrix exposed a separate test-oracle defect on Linux Python
+3.13: the concurrent advice assertion counted a lock-contention diagnostic as
+a second worker because both messages contain `milestone advice`. A deterministic
+held-OS-lock control reproduced the assertion failure while recording exactly
+one real worker and one saved reservation. The assertion now checks those facts;
+a new contention case retains the visible diagnostic. Advice/runtime behavior
+did not change. Worker and ownership controls passed **18 checks in 5.04 seconds**.
+The local full run had already collected the original test; a new hosted matrix
+qualifies the corrected test suite. This is not a descendant-cleanup repair.
