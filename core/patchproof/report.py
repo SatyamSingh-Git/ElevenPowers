@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import time
 
-from ..export import build as verification_report, _portable
+from ..export import build as verification_report, markdown as verification_markdown, _portable, _text
 from ..hosts.readiness import receipt_key
 from ..ledger import Ledger
 from .identity import collect
@@ -87,7 +87,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
             issues.append('observed inputs or receipts changed during bundle collection')
         if not report['coverage']['complete'] or not check['coverage']['complete']:
             issues.append('source, native edit or report coverage is incomplete')
-    except (OSError, ValueError, TimeoutError) as exc:
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, TimeoutError) as exc:
         issues.append(type(exc).__name__ + ': evidence report unavailable or incomplete')
     final = collect(root, base, head, seconds=max(0, deadline - time.monotonic()))
     if patch != final:
@@ -141,3 +141,50 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
                              + ['Run the missing project-declared check: ' + c['command'] for c in checks if c['state'] == 'absent'],
              'limits': LIMITS, 'elapsed_seconds': round(time.monotonic() - started, 3)}
     return _portable(value, root)
+
+
+def markdown(value):
+    patch, binding = value['patch'], value['binding']
+    lines = ['# ElevenPowers PatchProof evidence bundle', '',
+             '**Patch/input binding: ' + _text(binding['state']) + '**',
+             'Binding associates observed inputs with this checkout; it does not certify safety.', '',
+             '## Exact committed patch', '',
+             'Base: ' + _text(patch['base'] or 'unavailable'),
+             'Head: ' + _text(patch['head'] or 'unavailable'),
+             'Patch identity: ' + _text(patch['patch_id'] or 'unavailable'),
+             'Full tree-pair content digest: ' + _text(patch['content_digest'] or 'unavailable'),
+             'Collection: ' + ('complete' if patch['complete'] else 'incomplete')
+             + '; empty: ' + _text(patch['empty']), '',
+             '| Change | Path | Previous path | Binary |', '|---|---|---|---|']
+    for change in patch['changes']:
+        lines.append('| ' + ' | '.join(_text(c) for c in (change['kind'], change['path'],
+                     change['old_path'], change['binary'])) + ' |')
+    if not patch['changes']:
+        lines.append('| No collected changed paths | — | — | — |')
+    lines += ['', '## Receipt associations', '',
+              '| Command / identity | Result | Execution | Freshness | Patch association |',
+              '|---|---|---|---|---|']
+    for receipt in value['receipts']:
+        lines.append('| ' + ' | '.join(_text(c) for c in (receipt['command'] or receipt['identity'],
+                     receipt['result'], receipt['execution'], receipt['freshness'], receipt['association'])) + ' |')
+    if not value['receipts']:
+        lines.append('| No recorded receipts | — | — | — | unavailable |')
+    lines += ['']
+    for receipt in value['receipts']:
+        lines += ['- ' + _text(receipt['identity']) + ': ' + _text(issue)
+                  for issue in receipt['association_issues']]
+    lines += ['', '## Project-declared checks', '']
+    lines += ['- ' + _text(c['property']) + ': ' + _text(c['state']) + '; association '
+              + _text(c['association']) + '; command ' + _text(c['command']) for c in value['checks']]
+    if not value['checks']:
+        lines.append('No project-declared checks are available; applicability is unknown.')
+    lines += ['', '## Coverage gaps and next actions', '']
+    lines += ['- ' + _text(issue) for issue in binding['issues']]
+    lines += ['- Unobserved patch path: ' + _text(p) for p in value['coverage']['unobserved_patch_paths']]
+    lines += ['- Unsupported property; applicability unknown: ' + _text(p)
+              for p in value['coverage']['unsupported_properties']]
+    lines += ['- ' + _text(action) for action in value['next_actions']]
+    lines += ['', '## Evidence limits', '', *['- ' + _text(limit) for limit in value['limits']]]
+    if value['verification'] is not None:
+        lines += ['', '## Existing verification report', '', verification_markdown(value['verification'])]
+    return '\n'.join(lines) + '\n'

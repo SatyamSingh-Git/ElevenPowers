@@ -58,8 +58,8 @@ def test_declared_results_execution_and_association_remain_separate(project, res
     root, base, head = project
     (root / '.elevenpowers').mkdir(exist_ok=True)
     (root / '.elevenpowers/config.json').write_text(json.dumps({'auto_detect': False,
-        'commands': {'suite_green': 'python -m pytest', 'build': 'python build.py'}}))
-    seed(root, result=result, execution=execution, declaration='suite_green')
+        'commands': {'tests': 'python -m pytest', 'build': 'python build.py'}}))
+    seed(root, result=result, execution=execution, declaration='tests')
     value = build(root, base, head)
     assert value['checks'][0]['state'] == state
     assert value['checks'][1]['state'] == 'absent'
@@ -107,9 +107,9 @@ def test_changed_command_declaration_expires_receipt(project):
     state = root / '.elevenpowers'
     state.mkdir()
     config = state / 'config.json'
-    config.write_text(json.dumps({'commands': {'suite_green': 'old-check'}}))
-    seed(root, declaration='suite_green', command='old-check')
-    config.write_text(json.dumps({'commands': {'suite_green': 'new-check'}}))
+    config.write_text(json.dumps({'commands': {'tests': 'old-check'}}))
+    seed(root, declaration='tests', command='old-check')
+    config.write_text(json.dumps({'commands': {'tests': 'new-check'}}))
     value = build(root, base, head)
     assert value['receipts'][0]['freshness'] == 'stale'
     assert value['checks'][0]['state'] == 'absent'
@@ -162,4 +162,14 @@ def test_bundle_excludes_private_text_and_raw_changes(project):
     assert token not in text
     assert 'private prompt' not in text and 'private receipt detail' not in text
     assert 'value=2' not in text and str(root) not in text
+
+
+def test_damaged_ledger_yields_unavailable_bundle_instead_of_traceback(project):
+    from core.patchproof.report import build
+    root, base, head = project
+    seed(root)
+    (root / '.elevenpowers/ledger.json').write_text('{"evidence":[{}]}')
+    value = build(root, base, head)
+    assert value['binding']['state'] == 'unavailable'
+    assert value['verification'] is None
 
