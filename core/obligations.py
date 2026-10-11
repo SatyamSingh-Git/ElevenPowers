@@ -83,6 +83,11 @@ class Obligation:
     def _is_scoped(e: Evidence) -> bool:
         if TEST_FILE.search(e.identity):
             return True
+        from .pytest_scope import inspect
+        from .parsers import _bare
+        pytest = inspect(_bare(e.command_identity))
+        if pytest is not None:
+            return pytest.narrowed or bool(pytest.issue)
         # `go test -run TestX`, `pytest -k login`, `cargo test parser`: the
         # command names a selector, so the run was narrowed to specific tests.
         if re.search(r"\s-(-run|run|k|-filter|-name)[\s=]|\s-t\s", e.command_identity):

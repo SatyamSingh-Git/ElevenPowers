@@ -504,6 +504,10 @@ def _counts(body: str) -> tuple[int, int]:
 
 def _scope(command: str) -> str:
     """A stable identity for a command-level record: the target it names."""
+    from .pytest_scope import inspect
+    pytest = inspect(_bare(command))
+    if pytest is not None:
+        return pytest.identity
     parts = [p for p in _bare(command).split() if not p.startswith("-")]
     tail = [p for p in parts[1:] if "/" in p or "." in p or "::" in p]
     return tail[-1] if tail else " ".join(parts[:2]) if parts else command
@@ -671,6 +675,10 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
         )
     )
     _counts_decide(records[-1])
+    from .pytest_scope import inspect
+    scope = inspect(_bare(command))
+    if scope is not None and scope.issue:
+        records[-1].coverage_issues = [*records[-1].coverage_issues, scope.issue]
     return records
 
 
