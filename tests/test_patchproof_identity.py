@@ -169,3 +169,46 @@ def test_hidden_index_worktree_changes_cannot_qualify_checkout(repo, flag):
     assert value['complete']
     assert not value['checkout']['eligible']
 
+
+def test_worktree_configured_filter_never_executes(repo):
+    from core.patchproof.identity import collect
+    root, base, head = repo
+    git(root, 'config', 'extensions.worktreeConfig', 'true')
+    git(root, 'config', '--worktree', 'filter.private.clean', 'echo invoked > helper-ran; cat')
+    (root / '.gitattributes').write_bytes(b'*.py filter=private\n')
+    (root / 'service.py').write_bytes(b'value = 9\n')
+    assert not (root / 'helper-ran').exists()
+    value = collect(root, base, head)
+    assert not (root / 'helper-ran').exists()
+    assert value['complete'] and not value['checkout']['eligible']
+
+
+def test_missing_promisor_blob_does_not_fetch_or_execute_transport(repo):
+    from core.patchproof.identity import collect
+    root, base, head = repo
+    git(root, 'config', 'remote.origin.url', str(root))
+    git(root, 'config', 'remote.origin.promisor', 'true')
+    git(root, 'config', 'remote.origin.partialclonefilter', 'blob:none')
+    git(root, 'config', 'remote.origin.uploadpack', 'echo invoked > helper-ran; false')
+    blob = git(root, 'rev-parse', head + ':service.py').decode()
+    missing = root / '.git/objects' / blob[:2] / blob[2:]
+    assert missing.resolve().is_relative_to((root / '.git/objects').resolve())
+    missing.chmod(0o600)  # Git loose objects are read-only on Windows.
+    missing.unlink()
+    value = collect(root, base, head)
+    assert not (root / 'helper-ran').exists()
+    assert not missing.exists()
+    assert not value['complete'] and value['state'] == 'incomplete'
+
+
+def test_older_git_cannot_silently_ignore_lazy_fetch_protection(repo, monkeypatch):
+    from core.patchproof import identity
+    root, base, head = repo
+    actual = identity.GitRead.read
+    def old_version(self, *args, **kwargs):
+        return b'git version 2.44.0\n' if args == ('--version',) else actual(self, *args, **kwargs)
+    monkeypatch.setattr(identity.GitRead, 'read', old_version)
+    value = identity.collect(root, base, head)
+    assert not value['complete'] and not value['patch_id']
+    assert any('Git 2.45+' in issue for issue in value['issues'])
+

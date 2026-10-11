@@ -24,7 +24,8 @@ class GitRead:
         self.env = {k: v for k, v in os.environ.items() if not k.startswith('GIT_')}
         self.env.update(GIT_OPTIONAL_LOCKS='0', GIT_CONFIG_NOSYSTEM='1',
                         GIT_CONFIG_GLOBAL=os.devnull, GIT_TERMINAL_PROMPT='0',
-                        GIT_NO_REPLACE_OBJECTS='1')
+                        GIT_NO_REPLACE_OBJECTS='1', GIT_NO_LAZY_FETCH='1',
+                        GIT_ALLOW_PROTOCOL='')
         self.command = ['git', '--no-optional-locks', '-c', f'safe.directory={root.as_posix()}',
                         '-c', 'core.fsmonitor=false', '-c', 'core.untrackedCache=false',
                         '-c', 'core.ignoreStat=false', '-c', 'core.trustctime=true',
@@ -43,7 +44,7 @@ class GitRead:
         return done.stdout
 
     def disable_filters(self):
-        keys = self.read('config', '--local', '--includes', '--null', '--name-only',
+        keys = self.read('config', '--includes', '--null', '--name-only',
                          '--get-regexp', r'^filter\..*\.(clean|process|required)$',
                          allow_missing=True)
         drivers = set()
@@ -114,6 +115,10 @@ def collect(root, base='HEAD~1', head='HEAD', *, seconds=30):
              'issues': [], 'checkout': {'head': '', 'eligible': False, 'issues': []}}
     git = GitRead(root, time.monotonic() + seconds)
     try:
+        version = git.read('--version').decode('ascii', errors='strict')
+        match = re.match(r'git version (\d+)\.(\d+)', version)
+        if not match or tuple(map(int, match.groups())) < (2, 45):
+            raise ValueError('Git 2.45+ is required to prohibit lazy object fetching during PatchProof collection')
         top = Path(os.fsdecode(git.read('rev-parse', '--show-toplevel').strip())).resolve()
         if top != root:
             raise ValueError('project must be the Git repository root')
