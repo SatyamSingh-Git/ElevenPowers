@@ -60,3 +60,21 @@ def test_reference_worker_setup_does_not_spend_competing_claim_barrier_budget():
         return queue(path)
     result = lease_queue(SimpleNamespace(Queue=slow_setup), {'concurrent': True})
     assert result == {'claimed': 32, 'unique': 32, 'tokens': [1], 'pending': 32}
+
+
+def test_competing_claims_preserve_queue_connection_thread_ownership():
+    import sqlite3
+    from types import SimpleNamespace
+    from eval.hard_fixtures import QUEUE
+    from eval.hard_worker import lease_queue
+    namespace = {}
+    exec(QUEUE, namespace)
+    class ThreadOwnedQueue(namespace['Queue']):
+        def __init__(self, path):
+            super().__init__(path)
+            self.connection = sqlite3.connect(':memory:')
+        def claim(self, *args):
+            self.connection.execute('select 1')
+            return super().claim(*args)
+    result = lease_queue(SimpleNamespace(Queue=ThreadOwnedQueue), {'concurrent': True})
+    assert result == {'claimed': 32, 'unique': 32, 'tokens': [1], 'pending': 32}

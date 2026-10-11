@@ -60,3 +60,22 @@ def test_real_warning_filter_run_has_the_correct_scope_and_counts(tmp_path, node
     row = suite(tmp_path, command, done.stdout)
     assert row.result is Result.PASS and row.passed == (1 if node else 2)
     assert Obligation._is_scoped(row) is node
+
+
+@pytest.mark.parametrize('options,scoped', [
+    (['-qra'], False), (['-qk', 'one'], True),
+    (['--debug', 'debug.py', '-q'], False), (['--debug=debug.py', '-q'], False),
+    (['--sw-skip', '-q'], True), (['--stepwise-skip', '-q'], True),
+])
+def test_real_builtin_option_grammar_preserves_scope(tmp_path, options, scoped):
+    (tmp_path / 'test_sample.py').write_text('def test_one(): assert True\ndef test_two(): assert True\n')
+    cache = tmp_path / '.pytest_cache' / 'v' / 'cache'
+    cache.mkdir(parents=True)
+    (cache / 'stepwise').write_text('"test_sample.py::test_two"')
+    done = subprocess.run([sys.executable, '-m', 'pytest', *options], cwd=tmp_path,
+                          capture_output=True, text=True, timeout=15)
+    assert done.returncode == 0, done.stdout + done.stderr
+    row = suite(tmp_path, 'python -m pytest ' + ' '.join(options), done.stdout)
+    assert not row.coverage_issues
+    assert Obligation._is_scoped(row) is scoped
+    assert (SUITE_GREEN.satisfied_by([row]) is None) is scoped

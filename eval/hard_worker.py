@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 import tempfile
 import threading
+import time
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from eval.challenge_worker import OutputSink
@@ -21,11 +22,16 @@ def lease_queue(module,request):
                 q.enqueue('t',str(n),n)
             # Connection/schema setup is preparation, not concurrent claim work.
             # Slow Windows setup must not spend another worker's barrier budget.
-            owned_queues = [module.Queue(path) for _ in range(8)]
+            ready = [threading.Event() for _ in range(8)]
+            start = threading.Event()
             barrier=threading.Barrier(8);answers=[];errors=[];lock=threading.Lock()
             def worker(n):
                 try:
-                    owned=owned_queues[n];barrier.wait(timeout=5)
+                    owned=module.Queue(path)
+                    ready[n].set()
+                    if not start.wait(timeout=15):
+                        raise TimeoutError('queue setup readiness')
+                    barrier.wait(timeout=5)
                     local=[]
                     while True:
                         item=owned.claim('t',str(n),0,10)
@@ -35,8 +41,14 @@ def lease_queue(module,request):
                     with lock:answers.extend(local)
                 except BaseException as error:
                     with lock:errors.append(type(error).__name__)
+                finally:
+                    ready[n].set()
             threads=[threading.Thread(target=worker,args=(n,),daemon=True) for n in range(8)]
             for t in threads:t.start()
+            setup_deadline = time.monotonic() + 15
+            for signal in ready:
+                signal.wait(timeout=max(0, setup_deadline - time.monotonic()))
+            start.set()
             for t in threads:t.join(timeout=8)
             if errors or any(t.is_alive() for t in threads):
                 return {'errors':errors,'unfinished':sum(t.is_alive() for t in threads)}

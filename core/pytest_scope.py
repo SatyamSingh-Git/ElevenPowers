@@ -27,7 +27,9 @@ FLAGS = frozenset('''-x --exitfirst --strict-config --strict-markers --strict
 --keep-duplicates --collect-in-virtualenv --continue-on-collection-errors
 --doctest-modules --doctest-ignore-import-errors --doctest-continue-on-failure
 -V --version -h --help --debug --trace-config'''.split())
-SELECTORS = frozenset(('-k', '-m', '--deselect', '--lf', '--last-failed', '--sw', '--stepwise'))
+SELECTORS = frozenset(('-k', '-m', '--deselect', '--lf', '--last-failed', '--sw', '--stepwise',
+                       '--sw-skip', '--stepwise-skip'))
+OPTIONAL_VALUES = frozenset(('--debug', '--cache-show'))
 
 
 @dataclass(frozen=True)
@@ -65,12 +67,24 @@ def inspect(command):
             targets.append(word.replace('\\', '/'))
             continue
         option, attached, _ = word.partition('=')
-        # argparse also supports -Wvalue / -kexpression / -ovalue.
-        short = word[:2]
-        if option not in VALUES and short in ('-W', '-o', '-c', '-k', '-m', '-r', '-p') and len(word) > 2:
-            option, attached = short, True
+        # argparse reads clusters left to right; the first value-taking short
+        # option consumes the rest, or the following argument (-qra / -qk one).
+        if word.startswith('-') and not word.startswith('--') and len(word) > 2:
+            cluster = word[1:]
+            for offset, letter in enumerate(cluster):
+                short = '-' + letter
+                if short in VALUES:
+                    option, attached = short, bool(cluster[offset + 1:])
+                    break
+                if short not in FLAGS:
+                    break
+            else:
+                continue
         narrowed = narrowed or option in SELECTORS
-        if option in VALUES:
+        if option in OPTIONAL_VALUES:
+            if not attached and position < len(args) and not args[position].startswith('-'):
+                position += 1
+        elif option in VALUES:
             if not attached:
                 if position == len(args) or args[position].startswith('-'):
                     issue = 'pytest option scope unavailable: missing value for ' + option
