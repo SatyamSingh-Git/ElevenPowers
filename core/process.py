@@ -34,7 +34,8 @@ class OutputLimitExceeded(subprocess.SubprocessError):
 
 
 def run(command: str | list[str], *, cwd: Path, timeout: float,
-        shell: bool = True, env: dict | None = None) -> subprocess.CompletedProcess[str]:
+        shell: bool = True, env: dict | None = None,
+        text: bool = True) -> subprocess.CompletedProcess:
     """Return status and UTF-8 replacement-decoded stdout/stderr, or raise.
 
     A timeout raises TimeoutExpired with captured strings. Output above 8 MiB
@@ -46,6 +47,8 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
     signal handlers are preserved. Abrupt POSIX host termination (e.g. SIGKILL)
     cannot execute cleanup. Lists with shell=True retain Popen's platform-specific
     semantics.
+    With text=False, successful/timeout outputs retain exact bytes. Output-limit
+    exceptions retain bounded diagnostic text and never qualify a complete read.
     """
     if not math.isfinite(timeout):
         raise ValueError("timeout must be finite")
@@ -89,7 +92,7 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
                         child.kill()  # Also handles a failed Windows assignment.
                     child.wait()
         _check_output(command, out, err)
-        stdout, stderr = _read(out), _read(err)
+        stdout, stderr = _read(out, text=text), _read(err, text=text)
         if timed_out:
             raise subprocess.TimeoutExpired(command, timeout, stdout, stderr)
         return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
@@ -103,14 +106,14 @@ def _check_output(command, out, err) -> None:
                                   _read(err, MAX_OUTPUT_BYTES // 2))
 
 
-def _read(stream, limit: int = MAX_OUTPUT_BYTES + 1) -> str:
+def _read(stream, limit: int = MAX_OUTPUT_BYTES + 1, *, text=True):
     stream.seek(0)
     # Bounded even if a POSIX descendant escaped its process group and kept
     # writing after the final size check. A short read is never silently accepted.
     data = stream.read(limit)
     if len(data) > MAX_OUTPUT_BYTES:
         raise OutputLimitExceeded("captured stream")
-    return data.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n")
+    return data.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n") if text else data
 
 
 @contextmanager

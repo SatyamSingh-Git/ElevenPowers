@@ -213,3 +213,14 @@ def test_job_failure_refuses_to_execute_command(tmp_path, monkeypatch):
         process.run(python("from pathlib import Path; Path('executed').touch()"),
                     cwd=tmp_path, timeout=10, shell=False)
     assert not (tmp_path / "executed").exists()
+def test_binary_output_preserves_nul_crlf_and_non_utf8(tmp_path):
+    """Decoding or newline normalization would corrupt raw Git metadata."""
+    import sys
+    from core.process import run
+    result = run([sys.executable, '-c',
+                  "import sys; sys.stdout.buffer.write(b'a\\x00\\r\\n\\xff'); "
+                  "sys.stderr.buffer.write(b'\\xfe\\r')"],
+                 cwd=tmp_path, timeout=5, shell=False, text=False)
+    assert result.stdout == b'a\x00\r\n\xff'
+    assert result.stderr == b'\xfe\r'
+
