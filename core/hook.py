@@ -136,8 +136,23 @@ def on_prompt(payload: dict, root: Path) -> int:
 
     ledger = Ledger.load(root)
     claims = infer(request)
+    new_subject = request != ledger.request and (bool(claims) or opens_new_task(request))
+    identity_missing = not ledger.task
+    if new_subject:
+        # A new subject owns a new scope even when it states no coding claim.
+        # Questions/read requests must not inherit another task's receipts.
+        ledger = Ledger(root=root, task=f"t-{time.time_ns()}", base=base_commit(root),
+                        opened_dirty=_changed_paths(root))
+    elif identity_missing:
+        # Repair legacy empty-ID ledgers without discarding an ongoing claim.
+        ledger.task = f"t-{time.time_ns()}"
+        if not ledger.base:
+            ledger.base = base_commit(root)
+            ledger.opened_dirty = _changed_paths(root)
     if not claims:
         if ledger.claims and not opens_new_task(request):
+            if identity_missing:
+                ledger.save()
             return 0        # a continuation keeps the obligations already open
         # A task opens at the prompt, whether or not a claim was inferred from
         # it. `Ledger.open_by_edit` can attach a claim later, at the first edit,
@@ -153,14 +168,6 @@ def on_prompt(payload: dict, root: Path) -> int:
         ledger.save()
         return 0
 
-    if request != ledger.request:
-        # A prompt that states its own subject starts a task, and a task starts
-        # empty. Keeping the id meant the new request inherited the previous
-        # one's evidence, read set and guided flag — so a suite run for the last
-        # bug could discharge an obligation for this one, purely because the
-        # ledger happened to still be sitting in the same directory.
-        ledger = Ledger(root=root, task=f"t-{time.time_ns()}", base=base_commit(root),
-                        opened_dirty=_changed_paths(root))
     ledger.request = request
     ledger.claims = claims
     ledger.touched = _since_task_opened(ledger, root)
