@@ -32,7 +32,8 @@
 4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 5. **Resumable verification:** saves check progress and receipts so interrupted work can resume, fresh results can be reused and later edits can invalidate outdated evidence.
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether results still match the current files, where evidence is missing and what needs attention next.
-7. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
+7. **PatchProof:** binds an exact committed patch to qualified existing receipts and exports its evidence and remaining gaps for review.
+8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
 

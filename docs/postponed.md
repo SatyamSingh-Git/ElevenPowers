@@ -1,5 +1,11 @@
 # Postponed, with the trigger that would build it
 
+**PatchProof v1, 2026-10-11.** Exact committed patch descriptions and scoped
+existing receipt bundles are now implemented and undergoing qualification.
+Working-tree identity, compatible graph enrichment, contract adapters, explicit
+verification execution and GitHub presentation remain subsequent work. See
+[design](design/patchproof-v1.md) and [guide](../the-guide/patchproof.md).
+
 **Contributor view, 2026-10-04.** These triggers are now included in the
 [Planned tab](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
 as expandable conditional cards. Recording them there does not activate them.

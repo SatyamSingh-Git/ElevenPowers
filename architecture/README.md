@@ -1,5 +1,11 @@
 # ElevenPowers — living architecture graph
 
+PatchProof v1 adds exact committed/tree-pair identity, scoped receipt bundles,
+explicit export and real Python/Node controls in all affected views. Its Planned
+card now tracks graph/contract enrichment rather than the delivered foundation.
+Earlier 2/10 installed successes remain historical after the runtime change; see
+[PatchProof validation](../docs/validation/2026-10-11-patchproof-v1.md).
+
 The ordinary-session milestone maps prompt-created task identity, preserved
 continuations and option-aware pytest scope. The generalized host rehearsal can
 open tasks through prompt callbacks without controller-seeded IDs. Claude/Python and Claude/JavaScript now pass fresh installed exercises (2/10);
@@ -42,7 +48,7 @@ document on GitHub.
 | **Data flow** | One task from request to verdict, as numbered **request → / response ←** pairs. | SVG swimlanes |
 | **Architecture** | The system in tiers: host surface → the plugin seam → `core/` → durable state → `eval/` → external. | SVG layered lanes |
 | **Workflow** | Shipped runtime, evaluation, native validation and v0.8 mechanisms, with their limits. | SVG numbered steps |
-| **Planned** | Forty-one unfinished milestones, research questions, conditional extensions and proposals. Search and filter, then expand a card for requirements, acceptance criteria, a first contribution, prerequisites and sources. | responsive HTML cards using native `details` |
+| **Planned** | Forty unfinished milestones, research questions, conditional extensions and proposals. Search and filter, then expand a card for requirements, acceptance criteria, a first contribution, prerequisites and sources. | responsive HTML cards using native `details` |
 
 ## Files
 
@@ -71,10 +77,11 @@ The statuses are substantive:
 - **Planned research** represents remaining master-plan experiments.
 - **Conditional** waits for the documented measurement trigger.
 - **Proposed** records a direction for design discussion, including
-  PatchProof, OpenCodeMap, TestMiner and three additional contribution ideas.
+  OpenCodeMap, TestMiner and additional contribution ideas. PatchProof v1 is
+  implemented; its further adapters form an open milestone.
 
-The current 40 cards comprise 5 open milestones, 16 planned research items,
-14 conditional extensions and 5 proposals. This view consolidates the remaining
+The current 40 cards comprise 6 open milestones, 16 planned research items,
+14 conditional extensions and 4 proposals. This view consolidates the remaining
 work in `PLAN.md`, `docs/status.md`, `docs/postponed.md` and the readable roadmap.
 Completed deliveries are context inside cards, not presented as future work.
 The view does not approve model runs or supersede research/defer conditions.
@@ -91,7 +98,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **128 nodes / 295 edges** across 7 planes (as of 2026-10-08),
+Current size: **137 nodes / 320 edges** across 7 planes (as of 2026-10-11),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,

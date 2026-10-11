@@ -1,5 +1,10 @@
 # Native platforms
 
+PatchProof changes the shared runtime. The two successes below remain historical
+at their recorded ordinary-session fingerprint until current-runtime
+requalification; they are not erased or reused as fresh acceptance. The standalone
+[PatchProof CLI](patchproof.md) needs no installed coding host.
+
 Fresh Claude Code 2.1.292 Python and JavaScript installed exercises passed
 12/12 checks each using Sonnet 5.5 medium subscription sessions and ordinary
 read prompts. Native pass/fail/incomplete capture and optional advice emission

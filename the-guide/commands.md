@@ -1,5 +1,22 @@
 # Commands
 
+## ep_patchproof — exact committed patch evidence
+
+```bash
+python plugin/bin/ep_patchproof.py --project PATH --base HEAD~1 --head HEAD
+python plugin/bin/ep_patchproof.py --project PATH --base BASE --head HEAD --format json --output bundle.json
+python plugin/bin/ep_patchproof.py --project PATH --require-bound --timeout 120
+```
+
+Read-only schema-1 bundle wrapping the unchanged portable report. Full commit
+and tree-pair identities, changed paths, scoped receipt associations and missing
+declared checks remain separate from task verification and safety. Reporting
+runs no checks or host. Defaults: current directory, direct `HEAD~1` to `HEAD`,
+Markdown, stdout and 120 seconds. `--timeout` accepts 0–600; `--force` permits
+overwrite. Normal exit 0 means produced, even with gaps; `--require-bound` exits
+1 for unavailable patch/input association and does not require passing checks.
+See [binding conditions, schema and limits](patchproof.md).
+
 ## ep_milestones — earlier behavior evidence across tasks
 
 Optional edit-time context is configured through

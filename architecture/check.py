@@ -199,8 +199,11 @@ def render() -> list[str]:
                 if card.evaluate("e => e.open"):
                     bad.append("planned card does not collapse with the keyboard")
                 page.fill("#planned-search", "ImpactGraph")
-                if page.locator("#planned-grid details:visible").count() != 1:
-                    bad.append("planned search did not isolate ImpactGraph")
+                # The PatchProof card also describes its planned ImpactGraph
+                # enrichment. Searching a shared feature must retain both.
+                visible_ids = page.locator("#planned-grid details:visible").evaluate_all("els => els.map(e => e.id)")
+                if set(visible_ids) != {'planned-impact-graph', 'planned-patch-proof'}:
+                    bad.append("planned search did not retain the ImpactGraph and PatchProof work")
                 page.fill("#planned-search", "a-query-with-no-roadmap-match")
                 if page.locator("#planned-grid details:visible").count() or not page.locator("#planned-empty").is_visible():
                     bad.append("planned search does not explain an empty result")

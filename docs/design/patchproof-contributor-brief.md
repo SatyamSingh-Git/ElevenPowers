@@ -1,8 +1,12 @@
 # PatchProof contributor brief
 
-Status: proposed contribution scope, 2026-10-04. PatchProof is not implemented.
-This brief prepares work for a contributor; it records no new verification or
-coding-benefit result.
+Status: v1 implementation, 2026-10-11, with qualification in progress.
+Exact committed identity and scoped receipt bundles now exist inside the shared
+runtime. Read [the delivered contract](patchproof-v1.md) and
+[usage](../../the-guide/patchproof.md). The sections below preserve the original
+foundation criteria; a contributor should start with one real contract receipt
+adapter or compatible ImpactGraph enrichment, not rebuild the identity/export
+foundation. No coding-benefit result is established by the bundle.
 
 ## What is ready, and what is missing
 
@@ -18,12 +22,11 @@ A separate repository would duplicate those policies before the interface is
 stable. The full product is an architectural extension; the first contribution
 below is a deliberately small part of it.
 
-## Recommended first contribution: exact patch identity
+## Foundation: exact patch identity
 
-Own a first PR that resolves a requested Git base/head range into a bounded,
-read-only patch description. Proposed locations are
-`core/patchproof/identity.py` and `tests/test_patchproof_identity.py`; those files
-do not exist yet. Keep identity collection independent of report formatting and
+The v1 foundation resolves a requested Git base/head range into a bounded,
+read-only patch description in `core/patchproof/identity.py`, controlled by
+`tests/test_patchproof_identity.py`. Keep identity collection independent of report formatting and
 check execution so the next PR can consume it without a second Git implementation.
 
 The description should carry resolved commit identities, a content digest of the
@@ -43,12 +46,11 @@ deletions and renames explicit; an unsupported item is a gap, not zero impact.
 This first PR does not need to interpret API contracts or execute tests. Its
 useful result is a stable patch description the evidence layer can bind to.
 
-## Next contribution: a patch-bound evidence report
+## Foundation: a patch-bound evidence report
 
 Wrap the existing portable report rather than replacing its schema or verdicts.
-Proposed locations are `core/patchproof/report.py`,
-`plugin/bin/ep_patchproof.py` and `tests/test_patchproof_report.py`. Agree the
-versioned bundle schema in that PR. Existing `ep_report.py` behavior and its
+Implemented locations are `core/patchproof/report.py`,
+`plugin/bin/ep_patchproof.py` and `tests/test_patchproof_report.py`. The new bundle uses schema 1 and includes the unchanged portable report. Existing `ep_report.py` behavior and its
 schema-1 consumers must remain compatible.
 
 Start with reporting a committed range. Associate current receipts only when
@@ -139,7 +141,7 @@ points are [the exporter](../../core/export.py),
 [process runner](../../core/process.py) and
 [report regression controls](../../tests/test_portable_report.py).
 
-Use a fork/contribution branch such as `codex/patchproof-identity`, and make a
+Use a fork/contribution branch such as `contrib/patchproof-contract`, and make a
 focused PR with its behavior, validation and limits. A suitable first commit
 message is `Bind patch descriptions to exact Git base and head identities`.
 Incremental commits should describe their changes rather than a numbered part.
