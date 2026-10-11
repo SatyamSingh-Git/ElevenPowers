@@ -48,6 +48,15 @@ def test_repeated_claimless_prompt_and_its_continuation_keep_identity(tmp_path):
     repeated = prompt(tmp_path, before.request)
     continued = prompt(tmp_path, 'continue')
     assert before.task == repeated.task == continued.task != ''
+    assert continued.request == before.request
+
+
+def test_question_continuation_keeps_classification_after_edit(tmp_path):
+    before = prompt(tmp_path, 'what does app.py do?')
+    after = prompt(tmp_path, 'continue')
+    after.observe_edit('app.py')
+    assert after.request == before.request
+    assert not after.claims
 
 
 def test_empty_prompt_does_not_create_state(tmp_path):

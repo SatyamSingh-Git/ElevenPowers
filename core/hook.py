@@ -150,10 +150,10 @@ def on_prompt(payload: dict, root: Path) -> int:
             ledger.base = base_commit(root)
             ledger.opened_dirty = _changed_paths(root)
     if not claims:
-        if ledger.claims and not opens_new_task(request):
+        if ledger.request and not new_subject and not opens_new_task(request):
             if identity_missing:
                 ledger.save()
-            return 0        # a continuation keeps the obligations already open
+            return 0        # preserve the subject, including its no-claim classification
         # A task opens at the prompt, whether or not a claim was inferred from
         # it. `Ledger.open_by_edit` can attach a claim later, at the first edit,
         # and until 2026-09-16 that ledger carried no base commit at all -
