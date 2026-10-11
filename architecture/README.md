@@ -1,5 +1,10 @@
 # ElevenPowers — living architecture graph
 
+The ordinary-session milestone maps prompt-created task identity, preserved
+continuations and option-aware pytest scope. The generalized host rehearsal can
+open tasks through prompt callbacks without controller-seeded IDs. Installed
+qualification and causal benefit remain separate; see [validation](../docs/validation/2026-10-11-ordinary-session-evidence.md).
+
 Five views of the system and its unfinished work — the runtime, plugin seam,
 durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.

@@ -89,3 +89,17 @@ categories separate and never establish model comprehension or coding benefit.
 See [design](../docs/design/advice-delivery-observations.md),
 [observations](../results/advice-delivery/README.md) and
 [validation](../docs/validation/2026-10-08-advice-delivery-observations.md).
+
+## Ordinary prompt identity
+
+A nonempty first prompt opens a task ID even when it states no coding claim.
+Questions and read requests keep their conservative classification. Clearly new
+subjects isolate previous task evidence; continuations preserve the original
+request and identity. This shared lifecycle applies to every host. Legacy ledgers
+with empty IDs receive one at the next prompt without discarding an ongoing claim.
+Task existence enables correlation; it does not itself establish verification.
+
+Rehearse prompt-to-edit-to-command correlation without a model with
+`python -m eval.advice_delivery NEW_DISPOSABLE_DIRECTORY --ordinary-prompts`.
+Replay and synthetic native ingress remain distinct from installed acceptance.
+See [current qualification](../docs/validation/2026-10-11-ordinary-session-evidence.md).

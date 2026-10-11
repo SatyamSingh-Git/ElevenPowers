@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-11 ordinary-session evidence](2026-10-11-ordinary-session-evidence.md): task identity without claims, preserved continuations, option-aware pytest scope and queue setup controls.
+
 - [2026-10-10 reverted-tree discrimination](2026-10-10-reverted-evidence.md): runner and package provenance in run manifests, forward and adversarial re-execution of 101 saved agent checks, and the environment causes of 53 that no longer reproduce.
 
 - [2026-10-08 advice delivery observations](2026-10-08-advice-delivery-observations.md): bounded native context emission, temporal check joins, optional acceptance and model-free actual-command controls.

@@ -646,6 +646,11 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
+Recent integration repairs separate task identity from inferred claims and pytest
+option values from targets, preserving ordinary read/continue requests and real
+selected-test scope. See [ordinary-session qualification](docs/validation/2026-10-11-ordinary-session-evidence.md)
+and [journey 72](journey/72-a-task-is-not-a-claim.md).
+
 The October 7 explained-recheck delivery adds exact command priorities and
 independent authored relationship/cost controls. Its 36 actual checks yield 30
 passes and six assertion-fault rejections; the subprocess relationship remains

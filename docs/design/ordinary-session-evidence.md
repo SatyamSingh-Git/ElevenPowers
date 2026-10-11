@@ -16,8 +16,8 @@ the next milestone, with generalized behavior and frequent pushes.
 - Questions/read requests must not invent coding obligations. Existing edit
   inference remains conservative; task identity only enables diagnostic joins.
 - Parse pytest's positional targets separately from known option values. Broad
-  runs with `-W`, selectors, config paths and option values containing `::` must
-  not become node-scoped. Real file/node targets must retain their scope.
+  runs with `-W`, config paths and option values containing `::` must
+  not become node-scoped. Real file/node targets and selection options must retain their scope.
   Keep raw/configured command strings and receipt identity contracts unchanged.
 - Diagnose the gold-control failure with actual producer observations and
   bounded controls. Do not relax expected behavior, retry an incorrect candidate

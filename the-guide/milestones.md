@@ -204,3 +204,17 @@ read cost. Missing Node is incomplete, not a passing Node case. See
 [results](../results/milestone-rechecks/README.md) and
 [design](../docs/design/milestone-rechecks.md). Automatic hooks, narrow native
 receipts and an agent-benefit comparison remain separate milestones.
+
+## Ordinary prompt identity
+
+A nonempty first prompt opens a task ID even when it states no coding claim.
+Questions and read requests keep their conservative classification. Clearly new
+subjects isolate previous task evidence; continuations preserve the original
+request and identity. This shared lifecycle applies to every host. Legacy ledgers
+with empty IDs receive one at the next prompt without discarding an ongoing claim.
+Task existence enables correlation; it does not itself establish verification.
+
+Rehearse prompt-to-edit-to-command correlation without a model with
+`python -m eval.advice_delivery NEW_DISPOSABLE_DIRECTORY --ordinary-prompts`.
+Replay and synthetic native ingress remain distinct from installed acceptance.
+See [current qualification](../docs/validation/2026-10-11-ordinary-session-evidence.md).

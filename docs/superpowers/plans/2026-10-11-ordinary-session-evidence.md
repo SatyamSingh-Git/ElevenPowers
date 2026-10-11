@@ -28,9 +28,9 @@ setup errors versus incorrect reference behavior and frozen archive identities.
 ### Task 1: Diagnose reference control
 
 Files: `tests/test_hard_cases.py`, `eval/hard_worker.py` only if reproduced.
-- [ ] Capture failure and rerun failed Windows job; actual gold concurrency probes.
-- [ ] Add useful scenario diagnostics; reproduce any repair before changing it.
-- [ ] Keep frozen requests/expected outcomes and historical grades unchanged;
+- [x] Capture failure and rerun failed Windows job; actual gold concurrency probes.
+- [x] Add useful scenario diagnostics; reproduce any repair before changing it.
+- [x] Keep frozen requests/expected outcomes and historical grades unchanged;
   verify all four reference/mutant controls, commit and push.
 
 ### Task 2: Task identity independent of claims
@@ -38,27 +38,27 @@ Files: `tests/test_hard_cases.py`, `eval/hard_worker.py` only if reproduced.
 Files: `core/hook.py`, `tests/test_tasks.py`, new lifecycle regression controls.
 Consumes existing `infer`, `opens_new_task`, `Ledger.load/save` APIs.
 Produces same persisted task field with reliable nonempty identity.
-- [ ] Witness missing initial ID and cross-subject leakage controls failing.
-- [ ] Open/reset at the existing prompt boundary; preserve continuations and
+- [x] Witness missing initial ID and cross-subject leakage controls failing.
+- [x] Open/reset at the existing prompt boundary; preserve continuations and
   classification. Check legacy/task history, no-claim and host contracts.
-- [ ] Run focused lifecycle/claim/history tests, commit and push.
+- [x] Run focused lifecycle/claim/history tests, commit and push.
 
 ### Task 3: Pytest option-aware scope
 
 Files: `core/parsers.py` and a small stdlib helper if needed; scope controls.
 Consumes command text; produces positional target identity, not rewritten commands.
-- [ ] Run actual pytest warning filters, quoted selectors and real node targets.
-- [ ] Witness broad/scoped controls, implement conservative option handling,
+- [x] Run actual pytest warning filters, quoted selectors and real node targets.
+- [x] Witness broad/scoped controls, implement conservative option handling,
   verify counted outcomes and obligation compatibility, commit and push.
 
 ### Task 4: Installed qualification and delivery
 
 Files: guides, status/plan, dated results/validation/journey and architecture.
-- [ ] Five-host synthetic controls; prepare fresh sealed Python/JavaScript
+- [x] Five-host synthetic controls; prepare fresh sealed Python/JavaScript
   exercises with ordinary claim-less prompts after final runtime repairs.
-- [ ] Request a specific subscription allowance; run only approved attempts,
+- [x] Request a specific subscription allowance; run only approved attempts,
   preserve failures and distinguish native capture from causal advice use.
-- [ ] One branch review and witnessed repair pass; update all affected docs,
+- [x] One branch review and witnessed repair pass; update all affected docs,
   map/workflow/dataflow/planned cards and render all five views.
 - [ ] Full compatibility and exact-head hosted CI, verified main integration and
   published architecture check. Record final gate outcomes in delivery evidence.

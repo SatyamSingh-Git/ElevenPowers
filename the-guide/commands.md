@@ -596,3 +596,12 @@ deduplicated exact declared commands with direct/dependency/fallback priority,
 all associated evidence states and explained reasons. Every fallback stays.
 `--check` cannot pass incomplete requested advice; ordinary inspection remains
 read-only. See [milestone rechecks](milestones.md#explained-exact-rechecks).
+
+## Ordinary-session rehearsal
+
+`python -m eval.advice_delivery NEW_DISPOSABLE_DIRECTORY --ordinary-prompts`
+runs actual Python/Node pass, fail and interrupted commands through the five
+synthetic host launchers, opening task identity via ordinary prompt callbacks.
+It refuses existing destinations and launches no model. Results explicitly
+separate replay/synthetic ingress from installed acceptance; see
+[qualification and limits](../docs/validation/2026-10-11-ordinary-session-evidence.md).

@@ -404,3 +404,15 @@ a valid root milestone declaration. Defaults: `seconds: 1`, `cooldown: 30`,
 This is opt-in pending installed edit-session cost and broader precision;
 [delivery, suppression and recovery](milestones.md#optional-automatic-edit-advice)
 explain worker limits, incomplete output and private diagnostic state.
+
+## Pytest option scope
+
+Built-in pytest option values are separate from positional targets. For example,
+`python -m pytest -W ignore::UserWarning -q` stays broad; `tests/test_api.py::test_login`
+stays targeted, as do `-k`, `-m`, `--deselect`, last-failed and stepwise selection.
+Quoted, attached and combined short forms such as `-qra` and `-qk one` are supported.
+Optional `--debug`/`--cache-show` values are consumed separately; stepwise-skip
+aliases remain selected runs. Unknown plugin options or missing
+values carry an explicit coverage qualification instead of guessed scope.
+Completed outcome, counts and exact raw/configured command identities remain
+available; a scope gap cannot establish broad suite coverage.

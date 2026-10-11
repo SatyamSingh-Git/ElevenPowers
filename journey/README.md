@@ -1,5 +1,7 @@
 # The journey
 
+Latest: [72 — a task is not a claim](72-a-task-is-not-a-claim.md).
+
 Latest: [71 — one cell of ten](71-one-cell-of-ten.md).
 
 Latest: [70 — verified is not tested](70-verified-is-not-tested.md).
