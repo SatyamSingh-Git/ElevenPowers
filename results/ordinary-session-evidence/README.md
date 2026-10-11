@@ -18,7 +18,11 @@ Python and JavaScript commands fail, pass, regress, interrupt and recover throug
 all five replay/synthetic-native launchers. Follow-up states and task continuity
 are checked separately from process exits. Runtime/producer/test hashes bind the
 observations. No model calls, model-comprehension or installed-acceptance claim
-is made. Fresh matrix results will accompany the final qualification.
+is made. The [fresh matrix](matrix.json) qualified all **20/20** cells at the final runtime
+fingerprint in **251.844 seconds** of summed local exercise time. Each native
+cell retained current, failed, incomplete and current follow-up states; every
+replay stayed unobserved. All tasks opened through the prompt, with no invented
+claims, and preserved identity through the edit.
 
 ## Installed qualification
 

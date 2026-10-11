@@ -45,6 +45,11 @@ empty identities are repaired when their next prompt arrives.
 
 ## Delivery observations
 
+The final-runtime rehearsal qualified 20/20 cells across five hosts, two
+languages and replay/synthetic-native modes (251.844 seconds summed local time).
+Native follow-ups were current/failed/incomplete/current; replays stayed
+unobserved. All prompt-created IDs survived edits without invented claims.
+
 See [results](../../results/ordinary-session-evidence/README.md) for the five-host
 Python/JavaScript replay and synthetic native matrix, plus separately qualified
 installed observations. Model-free launcher ingress cannot qualify an installed

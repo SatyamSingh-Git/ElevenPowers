@@ -1,0 +1,497 @@
+{
+  "schema": 1,
+  "runtime": "efba988bc33dd96198305a6b77777764a6b2c81e338eefe58d38b4ee97bcfe4e",
+  "producer_sha256": "cd4c969231680dcb388b8edefd5932bd726f409b0a24635bc3177840e432836b",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "ordinary_prompts": true,
+  "qualified": true,
+  "unavailable": [],
+  "limits": [
+    "Native-control means synthetic launcher ingress, not an installed agent session.",
+    "Matching subsequent native receipts do not prove model comprehension or causal coding benefit.",
+    "Actual local commands and bounded interruption run on disposable authored projects."
+  ],
+  "observations": [
+    {
+      "host": "claude",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 34.28
+    },
+    {
+      "host": "claude",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 23.988
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 7.1
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 8.28
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 7.586
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 10.754
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 8.283
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 9.637
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 6.715
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "bb2bc4c3048a66b4b197872f4a685ba60bd808d583ebf08f93e0e9619a233503",
+      "seconds": 9.88
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 7.988
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 10.183
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 7.935
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 8.933
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 8.899
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 23.944
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 14.881
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 15.684
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "unobserved",
+        "unobserved",
+        "unobserved",
+        "unobserved"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 14.093
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "initial_process_exit": 1,
+      "process_exits": [
+        0,
+        1,
+        null,
+        0
+      ],
+      "followups": [
+        "current",
+        "failed",
+        "incomplete",
+        "current"
+      ],
+      "task_opened_by_prompt": true,
+      "task_preserved_after_edit": true,
+      "prompt_claims": [],
+      "test_sha256": "de05b034cf9db393b7ebc82635024e583d5841c1f0c0eb982402b0fe03de5083",
+      "seconds": 12.801
+    }
+  ]
+}
