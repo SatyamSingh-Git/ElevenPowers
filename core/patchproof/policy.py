@@ -53,7 +53,8 @@ def fingerprint(root, deadline):
         values[str(path)] = hashlib.sha256(data).hexdigest()
 
     add(Path(os.fsdecode(read('rev-parse', '--path-format=absolute', '--git-path', 'info/exclude').strip())))
-    configured = read('config', '--path', '--get', 'core.excludesfile', optional=True).strip()
+    configured = read('config', '--null', '--path', '--get',
+                      'core.excludesfile', optional=True).removesuffix(b'\0')
     if configured:
         path = Path(os.fsdecode(configured))
         add(path if path.is_absolute() else root / path)

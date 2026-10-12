@@ -216,7 +216,7 @@ def test_project_labels_are_literal_in_bundle_markdown(project):
     assert r'\[misleading proof\]' in markdown(value)
 
 
-@pytest.mark.parametrize('mode', ['local', 'configured_global', 'default_global', 'ignored_nested'])
+@pytest.mark.parametrize('mode', ['local', 'configured_global', 'relative_global', 'default_global', 'ignored_nested'])
 def test_unchanged_selected_bytes_do_not_hide_changed_ignore_policy(project, monkeypatch, mode):
     from core.patchproof import impact
     from core.patchproof.report import build
@@ -228,6 +228,11 @@ def test_unchanged_selected_bytes_do_not_hide_changed_ignore_policy(project, mon
         config = root / '.git/config-global'
         git(root, 'config', '--file', str(config), 'core.excludesfile', str(policy))
         monkeypatch.setenv('GIT_CONFIG_GLOBAL', str(config))
+    elif mode == 'relative_global':
+        policy = root / ' policy.ignore'
+        (root / '.git/info/exclude').write_text('\\ policy.ignore\n')
+        git(root, 'config', 'core.excludesfile', ' policy.ignore')
+        assert git(root, 'check-ignore', ' policy.ignore')
     elif mode == 'default_global':
         directory = root / '.git/xdg'
         monkeypatch.setenv('XDG_CONFIG_HOME', str(directory))

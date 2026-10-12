@@ -63,3 +63,7 @@ Warnings, links, unreadable inputs and limits leave qualification unavailable.
 Policy identity is compared before verification, around both graph reads and
 after their final state guard. Only hashes are exported. This is conservative
 selection-policy qualification, not authenticity or an atomic snapshot.
+
+Configured global exclude filenames use actual NUL-delimited Git path output;
+leading spaces in relative filenames remain significant. Trimming path text
+would inspect a different policy file and cannot qualify association.

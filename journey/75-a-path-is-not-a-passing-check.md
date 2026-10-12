@@ -56,3 +56,10 @@ The corrected hosted matrix also surfaced a surviving descendant in the Linux
 unchanged by this milestone. That identifies the failing observation, not its
 cause: it remains an open issue in the previously recorded POSIX cleanup area.
 A green retry cannot be presented as a runtime repair.
+
+A final portable-path control then caught a valid relative global ignore file
+whose name starts with a space. Trimming Git text output read the wrong file,
+leaving policy drift qualified. Git NUL-delimited path output preserves the
+filename bytes. The prior full suite passed 2,087 with two skips, but predates
+this small repair and stays a separate observation; final qualification uses
+the corrected producer.

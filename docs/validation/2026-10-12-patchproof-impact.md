@@ -67,3 +67,16 @@ surviving descendant (1 failed, 2,081 passed, 7 skipped). See the
 The root cause remains unknown; this is a recurrence in the earlier recorded
 POSIX cleanup area, not a demonstrated integration regression or a repair.
 Any identical-code rerun success below is separate qualification.
+
+The complete local run after the display repair passed **2,087 tests, 2 skipped
+in 1398.67s (23:18)**. Its producing runtime predates the final path-format
+repair: a relative global ignore filename beginning with a space was trimmed
+by text-line parsing, so its changed rules escaped association checks. The
+actual regression failed before repair. Git NUL-delimited config path output
+was observed and now preserves that significant space. Final-code qualification
+is recorded separately below; the earlier full count is not substituted.
+
+Final exact-path integration, selection and CLI controls passed **39 in 117.57s**.
+Runtime source fingerprint: `ca68e4c5643e30adb95c68881b8df44f944e46d6ce845307df0abba418e68222`.
+The prior saved larger-repository observation retains its original runtime
+identity rather than being relabelled. Final full/hosted results follow below.
