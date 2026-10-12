@@ -52,6 +52,9 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
     """
     if not math.isfinite(timeout):
         raise ValueError("timeout must be finite")
+    if timeout <= 0:
+        empty = '' if text else b''
+        raise subprocess.TimeoutExpired(command, timeout, empty, empty)
     started = time.monotonic()
     with _cleanup_on_sigterm(), tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
         job = _WindowsJob() if os.name == "nt" else None
@@ -60,11 +63,15 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
         try:
             options = ({"creationflags": 0x00000004 | subprocess.CREATE_NO_WINDOW}
                        if job else {"start_new_session": True})
+            if time.monotonic() - started >= timeout:
+                raise subprocess.TimeoutExpired(command, timeout, '' if text else b'', '' if text else b'')
             child = subprocess.Popen(command, cwd=cwd, shell=shell,
                                      stdin=subprocess.DEVNULL, stdout=out,
                                      stderr=err, env=env, **options)
             if job:
                 job.bind(child)
+                if time.monotonic() - started >= timeout:
+                    raise subprocess.TimeoutExpired(command, timeout, '' if text else b'', '' if text else b'')
                 job.resume(child.pid)
             while True:
                 _check_output(command, out, err)

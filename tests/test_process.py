@@ -203,6 +203,25 @@ def test_nonfinite_timeout_cannot_disable_deadline(tmp_path, timeout):
         runner().run(python("print('ran')"), cwd=tmp_path, timeout=timeout, shell=False)
 
 
+@pytest.mark.parametrize('timeout', [0, -1])
+def test_exhausted_deadline_does_not_start_a_process(tmp_path, monkeypatch, timeout):
+    # Observe the real launch boundary; running code with no allowance is a bug.
+    process = runner()
+    launches = []
+    original = subprocess.Popen
+
+    def launch(*args, **kwargs):
+        launches.append(args[0])
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(process.subprocess, 'Popen', launch)
+    with pytest.raises(subprocess.TimeoutExpired):
+        process.run(python("from pathlib import Path; Path('started').touch()"),
+                    cwd=tmp_path, timeout=timeout, shell=False)
+    assert launches == [], 'a command was launched after its budget was exhausted'
+    assert not (tmp_path / 'started').exists()
+
+
 def test_launch_errors_are_not_success(tmp_path):
     with pytest.raises(OSError):
         runner().run([str(tmp_path / "nonexistent-program")],
