@@ -1,0 +1,82 @@
+name: ElevenPowers evidence export (informational)
+description: Read-only exact-patch evidence summary and downloadable bundle; successful export is not patch safety.
+inputs:
+  project:
+    description: Caller-owned checked-out project directory
+    default: '.'
+  base:
+    description: Exact requested base commit (PR base.sha for pull requests)
+    required: true
+  head:
+    description: Exact requested head commit (PR head.sha, not the synthetic merge SHA)
+    required: true
+  repository:
+    description: Declared owner/name; defaults to the caller repository
+    default: ''
+  seconds:
+    description: Cooperative report allowance, finite 0–600
+    default: '120'
+  impact:
+    description: Optional advisory ImpactGraph enrichment
+    default: 'false'
+  retention-days:
+    description: GitHub cloud artifact retention within repository limits
+    default: '7'
+outputs:
+  artifact-url:
+    description: Authenticated download link subject to artifact retention
+    value: ${{ steps.upload.outputs.artifact-url }}
+  artifact-digest:
+    description: Uploader archive digest, not independent evidence attestation
+    value: ${{ steps.upload.outputs.artifact-digest }}
+  bundle-sha256:
+    description: Canonical public bundle digest inside evidence.json, separate from the uploader archive digest
+    value: ${{ steps.present.outputs.bundle_sha256 }}
+  evidence-directory:
+    description: New local directory containing evidence.json and summary.md
+    value: ${{ steps.present.outputs.directory }}
+runs:
+  using: composite
+  steps:
+    - name: Present evidence (informational; no project checks)
+      id: present
+      shell: bash
+      env:
+        EP_PROJECT: ${{ inputs.project }}
+        EP_BASE: ${{ inputs.base }}
+        EP_HEAD: ${{ inputs.head }}
+        EP_REPOSITORY: ${{ inputs.repository }}
+        EP_SECONDS: ${{ inputs.seconds }}
+        EP_IMPACT: ${{ inputs.impact }}
+      run: |
+        args=(--project "$EP_PROJECT" --base "$EP_BASE" --head "$EP_HEAD"
+              --repository "${EP_REPOSITORY:-$GITHUB_REPOSITORY}" --timeout "$EP_SECONDS"
+              --event "$GITHUB_EVENT_PATH" --actions)
+        if [[ "$EP_IMPACT" == "true" ]]; then
+          args+=(--impact)
+        elif [[ "$EP_IMPACT" != "false" ]]; then
+          exit 2
+        fi
+        python -I "$GITHUB_ACTION_PATH/../../plugin/bin/ep_github.py" "${args[@]}"
+    - name: Upload the exact public evidence files
+      id: upload
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4; MIT
+      with:
+        name: ${{ steps.present.outputs.artifact_name }}
+        path: |
+          ${{ steps.present.outputs.evidence }}
+          ${{ steps.present.outputs.summary }}
+        if-no-files-found: error
+        include-hidden-files: false
+        overwrite: false
+        retention-days: ${{ inputs.retention-days }}
+    - name: Attach the validated uploader link
+      shell: bash
+      env:
+        EP_PROJECT: ${{ inputs.project }}
+        EP_REPOSITORY: ${{ inputs.repository }}
+        EP_ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+      run: |
+        python -I "$GITHUB_ACTION_PATH/../../plugin/bin/ep_github.py" --project "$EP_PROJECT" \
+          --repository "${EP_REPOSITORY:-$GITHUB_REPOSITORY}" --actions \
+          --link-artifact "$EP_ARTIFACT_URL" --run-id "$GITHUB_RUN_ID"

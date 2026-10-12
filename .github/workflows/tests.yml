@@ -67,3 +67,30 @@ jobs:
         run: python results/behavior-preservation/reproduce.py
       - name: The join between the runtime and its host
         run: python plugin/bin/ep_doctor.py --host
+
+  github-evidence-presentation:
+    name: GitHub evidence presentation (disposable acceptance)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare independent actual-command exercise
+        id: fixture
+        shell: bash
+        run: |
+          python -m eval.github_presentation --output "$RUNNER_TEMP/ep-github-exercise" \
+            --repository "$GITHUB_REPOSITORY" --actions-output "$GITHUB_OUTPUT"
+      - name: Publish informational evidence, including the missing check
+        id: evidence
+        uses: ./github/patchproof
+        with:
+          project: ${{ steps.fixture.outputs.project }}
+          base: ${{ steps.fixture.outputs.base }}
+          head: ${{ steps.fixture.outputs.head }}
+          retention-days: '7'
