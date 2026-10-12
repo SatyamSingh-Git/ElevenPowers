@@ -103,7 +103,15 @@ def assert_tree_stopped(tmp_path):
     deadline = time.monotonic() + 5
     while any(alive(pid) for pid in pids) and time.monotonic() < deadline:
         time.sleep(.02)
-    assert not any(alive(pid) for pid in pids), f"processes survived: {pids}"
+    survivors = [pid for pid in pids if alive(pid)]
+    states = {}
+    if os.name != 'nt':
+        for pid in survivors:
+            try:
+                states[pid] = Path(f'/proc/{pid}/stat').read_text()
+            except OSError as error:
+                states[pid] = type(error).__name__
+    assert not survivors, f"processes survived: {survivors}; process states: {states}"
 
 
 @pytest.mark.skipif(os.name == "nt", reason="POSIX proc disappearance")

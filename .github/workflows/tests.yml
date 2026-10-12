@@ -57,6 +57,8 @@ jobs:
           git config --global init.defaultBranch main
       - name: Tests
         run: python -m pytest -q
+      - name: Retained execution reliability controls
+        run: python -m eval.execution_reliability --repetitions 10 --seconds 180
       - name: The audit probes, named separately so a failure is legible
         run: python -m pytest tests/test_audit_probes.py -q
       - name: Grade the grader
