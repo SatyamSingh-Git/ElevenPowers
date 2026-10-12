@@ -27,7 +27,8 @@ def test_json_and_markdown_queries_without_state_write(tmp_path):
     assert not (tmp_path / '.elevenpowers').exists()
     result = run(tmp_path, 'session.py')
     assert result.returncode == 0
-    assert 'api.py' in result.stdout and 'static' in result.stdout
+    from core.export import _text
+    assert _text('api.py') in result.stdout and 'static' in result.stdout
 
 
 def test_graph_export_and_no_overwrite(tmp_path):

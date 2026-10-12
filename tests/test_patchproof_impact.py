@@ -63,6 +63,7 @@ def test_deadline_exhaustion_is_visible(project):
 
 
 def test_bundle_export_separates_recommendations_from_receipts(project):
+    from core.export import _text
     from core.patchproof.report import build, markdown
     root, base, head = project
     value = build(root, base, head, impact=True)
@@ -71,8 +72,8 @@ def test_bundle_export_separates_recommendations_from_receipts(project):
     assert value['checks'] == [] and value['receipts'] == []
     text = markdown(value)
     assert 'ImpactGraph recommendations' in text
-    assert 'test_expiry' in text and 'test_import.py' in text
-    assert 'consumer.py' in text and 'calls' in text
+    assert _text('test_expiry') in text and _text('test_import.py') in text
+    assert _text('consumer.py') in text and 'calls' in text
     assert 'not execution evidence' in text
 
 
@@ -199,6 +200,20 @@ def test_configuration_change_during_graph_invalidates_receipt_binding(project, 
     value = build(*project, impact=True)
     assert value['binding']['state'] == 'unavailable'
     assert value['impact']['association'] == 'unavailable'
+
+
+def test_project_labels_are_literal_in_bundle_markdown(project):
+    from core.patchproof.report import build, markdown
+    root, base, head = project
+    label = '[misleading proof](https://example.invalid)'
+    (root / 'impactgraph.json').write_text(json.dumps({'schema': 1,
+        'nodes': [{'id': 'route:fake', 'kind': 'route', 'label': label}],
+        'edges': [{'source': 'route:fake', 'target': 'file:session.py', 'kind': 'uses'}]}))
+    newer = commit(root, 'declared label')
+    value = build(root, base, newer, impact=True)
+    assert value['impact']['association'] == 'bound'
+    assert label not in markdown(value)
+    assert r'\[misleading proof\]' in markdown(value)
 
 
 @pytest.mark.parametrize('change', ['source', 'declaration', 'configuration'])

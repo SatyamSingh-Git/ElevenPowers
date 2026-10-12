@@ -92,9 +92,9 @@ def analyze(graph, files, *, max_depth=6, max_results=100):
 
 
 def markdown(report):
+    from ..export import _text
     def escape(value):
-        value = scrub(str(value))
-        return value.replace('`', '\\`').replace('*', '\\*').replace('<', '&lt;').replace('>', '&gt;')
+        return _text(scrub(str(value)))
     lines = ['# ImpactGraph', '', report['summary'], '',
              'Input fingerprint: `' + report['source_fingerprint'] + '`', '']
     if report.get('change'):
