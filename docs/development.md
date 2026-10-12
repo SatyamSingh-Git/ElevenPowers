@@ -21,6 +21,21 @@ settings, source changes, deadlines, state validation and superseded writers.
 Without engines, real-engine cases skip; base imports remain stdlib-only.
 Runtime does not install dependencies or run paid model evaluations.
 
+## Explicit PatchProof verification controls
+
+```sh
+python -m pytest tests/test_process.py tests/test_patchproof_planning.py tests/test_patchproof_execution.py tests/test_patchproof_verification_cli.py -q
+python -m eval.execution_reliability --repetitions 10 --seconds 180
+python -S -c "import core.patchproof.planning; import core.patchproof.execution; import core.patchproof.execution_report"
+```
+
+Actual Python/Node assertions, source/configuration/environment drift, malformed
+and moving state, zero executed tests, exhausted budgets, output limits and actual
+CLI termination/recovery qualify the explicit workflow. The historical 20-second
+quoted-launch deadline remains unchanged. These controls run no model and do not
+establish coding benefit; [operation limits](../the-guide/patchproof-verification.md)
+and [dated observations](validation/2026-10-12-patchproof-verification.md) remain explicit.
+
 ## Generalized project-health acceptance
 
 ```sh

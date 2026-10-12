@@ -1,8 +1,14 @@
 # ElevenPowers — living architecture graph
 
+Explicit PatchProof verification now maps read-only plans, owned bounded execution
+and fresh saved associations across every view. The Planned card advances to
+GitHub evidence presentation and additional producers. Historical unexplained
+incidents remain separate from the established launch/reap deadline repairs.
+See [verification usage](../the-guide/patchproof-verification.md).
+
 Optional PatchProof impact enrichment now maps fresh graph/report input identities,
 exact patch associations and explained test candidates across all five views.
-Its Planned card advances to explicit bounded verification and further producers.
+Its Planned card advances beyond explicit bounded verification to presentation and further producers.
 Recommendations remain separate from execution and incomplete coverage stays visible.
 
 PatchProof v1 adds exact committed/tree-pair identity, scoped receipt bundles,
@@ -103,7 +109,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **144 nodes / 345 edges** across 7 planes (as of 2026-10-12),
+Current size: **148 nodes / 353 edges** across 7 planes (as of 2026-10-12),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,

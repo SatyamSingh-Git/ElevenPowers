@@ -1,5 +1,10 @@
 # ImpactGraph inside PatchProof
 
+The [verification planner](patchproof-verification.md) can include this advisory
+view through `--plan --impact`. Explicit execution preserves all declared checks;
+candidate paths never generate shell commands or justify safe exclusions.
+Graph scans share the selected operation's budget and may leave it incomplete.
+
 Export possible effects and relevant test candidates alongside exact patch
 evidence, for any repository using the shared runtime:
 

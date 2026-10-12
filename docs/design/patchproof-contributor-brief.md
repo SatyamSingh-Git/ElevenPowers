@@ -1,16 +1,22 @@
 # PatchProof contributor brief
 
-Status: v1, declared OpenAPI and default impact integration delivered and qualified, 2026-10-12.
+Status: v1, declared OpenAPI, default impact integration and explicit verification implemented, 2026-10-12; verification delivery qualification is in progress.
 Exact committed identity and scoped receipt bundles now exist inside the shared
 runtime. Read [the delivered contract](patchproof-v1.md) and
 [usage](../../the-guide/patchproof.md). The sections below preserve the original
-foundation criteria; a contributor should start with explicit bounded verification or a separately
+foundation criteria; a contributor should start with GitHub evidence presentation or a separately
 qualified additional producer, not rebuild the identity/export foundation. No coding-benefit result is established by the bundle.
 
 The [OpenAPI adapter](patchproof-openapi.md) now implements the first producer
 and has passed delivery qualification. [Impact enrichment](patchproof-impact.md) now composes fresh default graph paths
 with exact patch/report inputs. Contributor starting points are explicit
-verification planning/execution or a separately qualified additional producer.
+GitHub evidence presentation or a separately qualified additional producer.
+
+[Explicit verification](patchproof-verification.md) now reuses existing commands,
+ownership, parsers and receipts with exact patch/input/producer/environment guards.
+Plans and ordinary reports stay read-only; `--verify` is explicit and `--rerun`
+can refresh unobserved external inputs. Additional producer, dependency/environment
+witnesses and GitHub presentation remain contributor work.
 
 ## What is ready, and what is missing
 

@@ -46,6 +46,12 @@ consumer paths and focused/fallback/support test candidates through `--impact`.
 Graph recommendations remain separate from execution receipts and incomplete
 semantic coverage stays visible.
 
+[Explicit verification](patchproof-verification.md) adds a read-only `--plan`
+and separate `--verify` execution path. Existing bundle export only reads saved
+execution associations; new exact-head observations do not upgrade unknown
+legacy provenance. All project-declared checks remain required, with incomplete
+attempts and an explicit `--rerun` option when external inputs need refreshing.
+
 ## Reading the bundle
 
 | Field | What it establishes |
@@ -57,6 +63,7 @@ semantic coverage stays visible.
 | `verification` | The existing schema-1 task report, with its original verdict and obligations. |
 | `contracts` | Declared standalone OpenAPI checks, saved producer/configuration/input identities and current qualifications. |
 | `impact` | Optional fresh graph recommendations, exact patch/input identities and coverage qualifications; never passing evidence. |
+| `execution` | Saved explicit command associations, freshly inspected exact heads and source/configuration/policy/producer/environment digests; legacy receipts retain unknown provenance. |
 | `coverage` | Changed paths without a qualified receipt association and unsupported compatibility categories. |
 
 `bound` is an input association. A fresh failing or interrupted receipt can be
@@ -82,7 +89,8 @@ for the ledger and 1 MiB for configuration; Git output uses the shared 8 MiB cap
 
 This is an unsigned local evidence bundle. It does not establish authenticity,
 unchanged external services, producer/environment versions that were never
-recorded, or execution at the requested commit. Before/after bounded reads are
+recorded, or execution at the requested commit for legacy receipts. Separately
+qualified explicit execution records retain their inspected head. Before/after bounded reads are
 not an atomic snapshot and cannot detect transient changes that revert between
 observations. Existing receipt fingerprint and source-selection limits remain.
 Unknown API, database, security and behavioral compatibility stay unsupported;

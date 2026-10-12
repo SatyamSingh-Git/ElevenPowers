@@ -38,11 +38,11 @@ Git 2.45+, Windows Jobs/POSIX process groups, pytest and hosted matrix.
 Files: `core/process.py`, `tests/test_process.py`, `tests/test_host_setup.py`,
 new bounded `.github/workflows/execution-reliability.yml`, dated observations.
 
-- [ ] Read retained CI failures and run actual local quoted launch/tree controls.
-- [ ] Add PID/group/process-state diagnostics and repeat real controls in hosted Linux/Windows.
-- [ ] For each established defect, add its failing control, observe RED, fix the cause, observe GREEN.
-- [ ] Preserve unresolved incidents honestly; no timeout/assertion weakening.
-- [ ] Commit/push qualified reliability work before executor implementation.
+- [x] Read retained CI failures and run actual local quoted launch/tree controls.
+- [x] Add PID/group/process-state diagnostics and repeat real controls in hosted Linux/Windows.
+- [x] For each established defect, add its failing control, observe RED, fix the cause, observe GREEN.
+- [x] Preserve unresolved incidents honestly; no timeout/assertion weakening.
+- [x] Commit/push qualified reliability work before executor implementation.
 
 ### Task 2: Read-only exact-patch verification planner
 
@@ -50,11 +50,11 @@ Create `core/patchproof/planning.py`, `tests/test_patchproof_planning.py`.
 Consumes `report.build(root, base, head, timeout=..., impact=...)`; produces
 `plan(root, base='HEAD~1', head='HEAD', seconds=120, command_seconds=30, impact=False)`.
 
-- [ ] Add real project fixtures and failing assertions for all declared commands,
+- [x] Add real project fixtures and failing assertions for all declared commands,
   absent/stale/incomplete/latest-failure, duplicate commands, unsupported properties.
-- [ ] Run RED; implement bounded read-only plan identities/reasons and optional impact advice.
-- [ ] Assert byte-for-byte unchanged project state and mandatory-check preservation.
-- [ ] Run focused controls, commit/push.
+- [x] Run RED; implement bounded read-only plan identities/reasons and optional impact advice.
+- [x] Assert byte-for-byte unchanged project state and mandatory-check preservation.
+- [x] Run focused controls, commit/push.
 
 ### Task 3: Explicit durable execution and conservative reuse
 
@@ -63,24 +63,24 @@ Create `core/patchproof/execution.py`, `core/patchproof/execution_report.py`,
 Consumes planner and existing Session/parser/ledger; produces
 `verify(root, base='HEAD~1', head='HEAD', seconds=120, command_seconds=30, impact=False)`.
 
-- [ ] Actual Python/Node controls: passing/faulty commands, timeout, noisy output,
+- [x] Actual Python/Node controls: passing/faulty commands, timeout, noisy output,
   source/config drift, passive profile, interrupted latest attempt and clean reuse.
-- [ ] Observe RED; implement incomplete-before-launch, per-command shared deadline,
+- [x] Observe RED; implement incomplete-before-launch, per-command shared deadline,
   before/after witnesses and bounded atomic state; record receipt keys.
-- [ ] Fresh saved-association inspection rejects malformed/linked/oversized records.
-- [ ] Require latest exact aggregate and unchanged producer/environment/inputs for reuse.
-- [ ] Run focused controls; commit/push coherent increments.
+- [x] Fresh saved-association inspection rejects malformed/linked/oversized records.
+- [x] Require latest exact aggregate and unchanged producer/environment/inputs for reuse.
+- [x] Run focused controls; commit/push coherent increments.
 
 ### Task 4: CLI and independently checked end-to-end exercise
 
 Modify `plugin/bin/ep_patchproof.py`; create `tests/test_patchproof_verification_cli.py`
 and portable actual exercise observations.
 
-- [ ] Run failing CLI controls for `--plan`/`--verify`, budgets, JSON/Markdown and exits.
-- [ ] Add mutually exclusive flags; exits: 0 all required current, 1 completed failure,
+- [x] Run failing CLI controls for `--plan`/`--verify`, budgets, JSON/Markdown and exits.
+- [x] Add mutually exclusive flags; exits: 0 all required current, 1 completed failure,
   2 absent/unsupported/unqualified/incomplete; ordinary report gate unchanged.
-- [ ] Exercise independent Python/JavaScript assertions and reuse without a model.
-- [ ] Verify read-only default, captured-output exclusion, no hidden host execution; push.
+- [x] Exercise independent Python/JavaScript assertions and reuse without a model.
+- [x] Verify read-only default, captured-output exclusion, no hidden host execution; push.
 
 ### Task 5: Review, delivery qualification and contributor documentation
 

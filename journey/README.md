@@ -442,3 +442,6 @@ See [journey 54](54-a-comparison-needs-a-working-host.md) and
 [validation](../docs/validation/2026-10-02-native-validation.md).
 
 The first real PatchProof contract producer is recorded in [journey 74](74-a-contract-needs-a-producer.md).
+
+Explicit planning, durable command execution, qualified reuse and established
+deadline repairs are recorded in [journey 76](76-a-check-needs-time-to-leave-a-receipt.md).

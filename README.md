@@ -32,7 +32,7 @@
 4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 5. **Resumable verification:** saves check progress and receipts so interrupted work can resume, fresh results can be reused and later edits can invalidate outdated evidence.
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether results still match the current files, where evidence is missing and what needs attention next.
-7. **PatchProof:** binds exact committed patches to qualified receipts, declared OpenAPI observations and optional explained impact recommendations, with evidence and gaps for review.
+7. **PatchProof:** plans and explicitly runs declared checks, binds exact committed patches to qualified evidence, and exports impact, compatibility and verification gaps for review.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
@@ -646,6 +646,15 @@ Most requests state no claim, because one real prompt in five is four words or f
 For a repeatable local test environment, see [Development and verification](docs/development.md).
 
 ## Where this actually is
+
+[Explicit PatchProof verification](the-guide/patchproof-verification.md) now
+plans all project-declared checks and runs them only with `--verify`. Shared
+budgets, durable incomplete attempts and fresh exact-patch associations qualify
+reuse; `--rerun` refreshes checks when external inputs may have changed. Ordinary
+reports and plans remain read-only. The deadline launch/reap defects are repaired;
+the earlier cleanup/launcher/SQLite incident causes remain unresolved. See
+[journey 76](journey/76-a-check-needs-time-to-leave-a-receipt.md) and
+[qualification](docs/validation/2026-10-12-patchproof-verification.md).
 
 [Patch-qualified ImpactGraph recommendations](the-guide/patchproof-impact.md) now
 join consumer paths and focused/fallback/support test candidates to the exact

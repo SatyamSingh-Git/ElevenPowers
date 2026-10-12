@@ -1,5 +1,12 @@
 # Configuration
 
+[Explicit PatchProof verification](patchproof-verification.md) uses the same
+project commands and manifest discovery. It introduces no automatic execution
+setting: `--plan` reads, and `--verify` explicitly runs all recognized declarations
+under CLI-selected shared/per-command budgets. Off remains passive. Unknown
+properties are visible and unsupported; impact advice cannot remove a check.
+Saved execution associations live in `.elevenpowers/patch-verification.json`.
+
 Optional [PatchProof impact enrichment](patchproof-impact.md) is selected by
 `ep_patchproof.py --impact`; it adds no configuration key or automatic gate.
 It uses the same project scan policy and declarations, with bounded effective

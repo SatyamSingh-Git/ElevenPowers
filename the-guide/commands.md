@@ -7,6 +7,9 @@ python plugin/bin/ep_patchproof.py --project PATH --base HEAD~1 --head HEAD
 python plugin/bin/ep_patchproof.py --project PATH --base BASE --head HEAD --format json --output bundle.json
 python plugin/bin/ep_patchproof.py --project PATH --require-bound --timeout 120
 python plugin/bin/ep_patchproof.py --project PATH --impact
+python plugin/bin/ep_patchproof.py --project PATH --plan
+python plugin/bin/ep_patchproof.py --project PATH --verify --seconds 120 --command-seconds 30
+python plugin/bin/ep_patchproof.py --project PATH --verify --rerun --format json
 ```
 
 Read-only schema-1 bundle wrapping the unchanged portable report. Full commit
@@ -20,6 +23,15 @@ See [binding conditions, schema and limits](patchproof.md).
 
 Optional `ep_patchproof --impact` adds fresh [explained recommendations](patchproof-impact.md),
 not execution evidence. It retains all declared checks and graph coverage gaps.
+
+`--plan` is read-only and preserves all declared checks. Separate explicit
+`--verify` collects missing evidence with the existing project ownership lock,
+bounded commands and durable incomplete attempts. Defaults: 120 shared seconds
+(0–600), 30 per command (>0–300), 64 declarations and 8 MiB combined output.
+Cleanup has a separate allowance; limits are cooperative. `--rerun` bypasses
+qualified local reuse. Verification exits 0 for qualified required outcomes,
+1 for completed qualified failure and 2 for incomplete/unavailable verification.
+The `off` profile refuses execution. See [execution qualifications and recovery](patchproof-verification.md).
 
 ## ep_milestones — earlier behavior evidence across tasks
 

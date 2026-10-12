@@ -1,5 +1,12 @@
 # Postponed, with the trigger that would build it
 
+**Explicit verification, 2026-10-12.** Required-check planning, explicit bounded
+execution, durable incomplete attempts and qualified reuse are implemented;
+delivery qualification is in progress. GitHub evidence presentation, richer
+external-input witnesses, additional producers and broader installed acceptance
+remain work. Historical reliability incidents remain unexplained; established
+launch/reap deadline defects were repaired. See [guide](../the-guide/patchproof-verification.md).
+
 **2026-10-12.** A declared standalone OpenAPI producer is implemented and
 qualified by full regressions and four hosted jobs. Multi-file/custom policies and other producers stay
 subsequent work; see [design](design/patchproof-openapi.md).
@@ -8,8 +15,8 @@ subsequent work; see [design](design/patchproof-openapi.md).
 existing receipt bundles are implemented and qualified by model-free controls
 and the four-job hosted matrix.
 Compatible default graph enrichment is now implemented; broader adapters,
-working-tree identity, additional contract adapters, explicit
-verification execution and GitHub presentation remain subsequent work. See
+working-tree identity, additional contract adapters and GitHub presentation
+remain subsequent work; explicit verification is now implemented. See
 [design](design/patchproof-v1.md) and [guide](../the-guide/patchproof.md).
 
 **Contributor view, 2026-10-04.** These triggers are now included in the

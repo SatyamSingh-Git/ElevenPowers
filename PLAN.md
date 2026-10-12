@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**2026-10-12 — explicit PatchProof verification implemented; delivery qualification in progress.**
+Read-only plans preserve required commands; separate explicit execution retains
+incomplete attempts, exact-head/input/configuration/policy/producer/environment
+associations and conservative latest-result reuse. Explicit rerun refreshes
+unobserved external inputs. Exhausted-deadline launch and unbounded process reap
+were reproduced and repaired; earlier cleanup/launcher/SQLite causes remain open.
+See [guide](the-guide/patchproof-verification.md) and
+[qualification](docs/validation/2026-10-12-patchproof-verification.md).
+
+Next after delivery: read-only GitHub evidence presentation. Additional producers,
+external-input witnesses, current-runtime installed qualification and causal
+coding benefit remain independent work. No new model sessions.
+
 **2026-10-12 — PatchProof impact integration delivered and qualified.** Optional `--impact`
 joins fresh compatible graph snapshots to exact patch/report inputs, explained
 consumer paths and focused/fallback/support test candidates. Input association
