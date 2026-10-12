@@ -14,12 +14,13 @@ from .identity import collect
 from .contract_report import inspect as contract_report
 from .impact import inspect as impact_report, disabled as impact_disabled, qualify as qualify_impact
 from ..impact import markdown as impact_markdown
+from .execution_report import inspect as execution_report
 from .policy import fingerprint as policy_fingerprint
 
 
 LIMITS = [
     'Unsigned local evidence, not independent attestation or proof that a patch is safe.',
-    'Binding means recorded inputs match the inspected checkout; execution at the requested commit is unknown.',
+    'Binding means recorded inputs match the inspected checkout; legacy execution provenance is unknown unless separately qualified saved execution is present.',
     'Receipt producer versions, environment and external service freshness are unknown unless separately recorded.',
     'Source selection and explicit scopes do not certify ignored, excluded or unobserved patch inputs.',
     'Before/after reads detect observed changes; they are not an atomic snapshot and cannot detect changes that revert between reads.',
@@ -34,6 +35,7 @@ def _guard(root, deadline):
     for rel, limit in (('.elevenpowers/ledger.json', 8 * 1024 * 1024),
                        ('.elevenpowers/config.json', 1024 * 1024),
                        ('.elevenpowers/contracts.json', 1024 * 1024),
+                       ('.elevenpowers/patch-verification.json', 1024 * 1024),
                        ('elevenpowers.contracts.json', 65536)):
         if time.monotonic() >= deadline:
             raise TimeoutError('bundle deadline reached reading state')
@@ -165,12 +167,13 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
                        'state': _check_state(latest) if latest else 'absent',
                        'receipt_key': latest['receipt_key'] if latest else None,
                        'association': latest['association'] if latest else 'unavailable'})
+    execution = execution_report(root, patch, receipts, deadline, bound)
     value = {'schema_version': 1, 'kind': 'patchproof', 'patch': patch,
              'binding': {'state': 'bound' if bound else 'unavailable',
                          'meaning': 'current checkout and recorded input association, not universal patch safety',
                          'issues': list(dict.fromkeys(issues))},
              'verification': report, 'receipts': receipts, 'checks': checks, 'contracts': contracts,
-             'impact': impact_value,
+             'impact': impact_value, 'execution': execution,
              'coverage': {'unobserved_patch_paths': sorted(patch_paths - covered),
                           'unsupported_properties': ['API compatibility', 'database compatibility',
                                                      'security compatibility', 'behavioral compatibility']},
@@ -216,6 +219,19 @@ def markdown(value):
               + _text(c['association']) + '; command ' + _text(c['command']) for c in value['checks']]
     if not value['checks']:
         lines.append('No project-declared checks are available; applicability is unknown.')
+    execution = value['execution']
+    lines += ['', '## Explicit execution observations', '',
+              'Saved execution inspection: ' + _text(execution['state']), '',
+              '| Properties | Outcome | Input association | Inspected execution head |',
+              '|---|---|---|---|']
+    for check in execution['checks']:
+        lines.append('| ' + ' | '.join(_text(v) for v in (
+            ', '.join(check['properties']), check['status'], check['association'],
+            check['executed_at_patch_head'])) + ' |')
+        lines += ['- ' + _text(issue) for issue in check['association_issues']]
+    if not execution['checks']:
+        lines.append('| No saved command associations | — | unavailable | unknown |')
+    lines += ['', *['- ' + _text(issue) for issue in execution['issues'] + execution['limits']]]
     lines += ['', '## Declared contract checks', '',
               '| Contract / property | Result | Execution | Freshness | Patch association |',
               '|---|---|---|---|---|']
