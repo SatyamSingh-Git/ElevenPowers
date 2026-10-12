@@ -1,6 +1,6 @@
 # PatchProof contributor brief
 
-Status: v1 and declared OpenAPI delivered; impact integration implemented, 2026-10-12.
+Status: v1, declared OpenAPI and default impact integration delivered and qualified, 2026-10-12.
 Exact committed identity and scoped receipt bundles now exist inside the shared
 runtime. Read [the delivered contract](patchproof-v1.md) and
 [usage](../../the-guide/patchproof.md). The sections below preserve the original

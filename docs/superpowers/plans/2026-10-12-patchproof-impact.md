@@ -56,3 +56,14 @@ User approved the preceding scope and explicitly asked to build, push and finish
 on main. Proceed inline without repetitive design/plan approval menus. Reuse the
 clean current checkout on a dedicated feature branch; no separate worktree is
 created. This provides branch isolation but less filesystem isolation.
+
+## Completion
+
+All four tasks completed. One fresh independent review found one Important
+policy-identity gap, repaired with observed RED/GREEN controls. Subsequent
+exact-path and display controls retained their initial failures. Final
+qualification: 2,088 local passes/2 skips, 107 audit probes, 39 focused
+controls, all host/grader probes and all four hosted jobs at `cd19ed5`
+(Windows 3.11 retry). See the dated validation for original failures and
+unresolved cleanup/launcher causes. No new model session or coding-benefit
+claim. All delivery code is intended for the authorized main fast-forward.

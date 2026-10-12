@@ -63,3 +63,11 @@ leaving policy drift qualified. Git NUL-delimited path output preserves the
 filename bytes. The prior full suite passed 2,087 with two skips, but predates
 this small repair and stays a separate observation; final qualification uses
 the corrected producer.
+
+Final qualification passed 2,088 local tests with two skips, 107 named audit
+probes and all four hosted jobs. The Windows 3.11 retry passed at identical
+code after an unexplained 20-second quoted-launch timeout. All 39 focused
+integration/selection/CLI checks passed, and all five architecture views rendered.
+No new model session was run. Those results qualify the delivered composition;
+they do not repair the earlier cleanup/launcher observations or establish better
+coding outcomes. The complete incremental history is delivered to main.

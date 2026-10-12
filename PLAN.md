@@ -1,15 +1,19 @@
 # Master Plan v0.8
 
-**2026-10-12 — PatchProof impact integration implemented.** Optional `--impact`
+**2026-10-12 — PatchProof impact integration delivered and qualified.** Optional `--impact`
 joins fresh compatible graph snapshots to exact patch/report inputs, explained
 consumer paths and focused/fallback/support test candidates. Input association
 and semantic completeness remain separate; recommendations never become passing
-receipts or safe exclusions. Final review and full/hosted qualification are being
-completed. See [guide](the-guide/patchproof-impact.md).
+receipts or safe exclusions. Review repairs, 2,088 local tests, 107 named audit probes and all four hosted
+jobs passed. The first Windows 3.11 host-launch timeout remains retained; its
+identical-code retry passed without a launcher change. See [guide](the-guide/patchproof-impact.md).
 
 Next: explicit bounded verification planning/execution, then GitHub presentation.
 Other graph/contract producers and broader installed qualification remain open.
-No new model run or causal coding-benefit claim.
+No new model run or causal coding-benefit claim. POSIX interrupt cleanup and the
+initial Windows 3.11 quoted-launch timeout remain unexplained; successful
+qualification must not be described as repairs. Investigate execution reliability
+before extending automatic command execution.
 
 **2026-10-12 — declared OpenAPI contract observations delivered and qualified.**
 The first PatchProof contract adapter uses pinned oasdiff 1.33.0 against

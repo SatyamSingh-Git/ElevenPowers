@@ -66,7 +66,8 @@ surviving descendant (1 failed, 2,081 passed, 7 skipped). See the
 [retained job](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38230608648/job/114748864830).
 The root cause remains unknown; this is a recurrence in the earlier recorded
 POSIX cleanup area, not a demonstrated integration regression or a repair.
-Any identical-code rerun success below is separate qualification.
+Later successful qualification below is separate from a cleanup repair; the
+process runner was unchanged.
 
 The complete local run after the display repair passed **2,087 tests, 2 skipped
 in 1398.67s (23:18)**. Its producing runtime predates the final path-format
@@ -80,3 +81,40 @@ Final exact-path integration, selection and CLI controls passed **39 in 117.57s*
 Runtime source fingerprint: `ca68e4c5643e30adb95c68881b8df44f944e46d6ce845307df0abba418e68222`.
 The prior saved larger-repository observation retains its original runtime
 identity rather than being relabelled. Final full/hosted results follow below.
+
+At the final `ca68e4c...` runtime, **107 named audit probes passed in 82.68s**;
+standard-library imports, all 11 host probes, all four independent grader
+controls and preserved source grades passed. No new installed session or
+coding-benefit evaluation was run.
+
+The final-code matrix at `cd19ed5` passed both Linux jobs and Windows 3.13.
+The initial Windows 3.11 job timed out after 20 seconds in the existing
+`test_codex_setup_launches_quoted_paths` control (1 failed, 2,085 passed,
+4 skipped). See the [retained failure](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38233475183/job/114758348251).
+The same control passed locally in 1.20s without changing its timeout or host
+code. Its cause remains unknown; only that failed job was retried at identical
+code. Rerun qualification below does not constitute a launcher repair.
+
+## Final local qualification
+
+The final runtime passed **2,088 tests, 2 skipped in 1483.94s (24:43)**, plus
+**107 named audit probes in 82.68s**, 39 focused integration/presentation
+controls, all 11 host probes, four independent grader cases and preserved
+source-grade reproduction. No new installed/model session was run. The
+remaining hosted Windows 3.11 retry is recorded separately when it completes.
+
+## Final hosted qualification
+
+[All four hosted jobs passed](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38233475183)
+at `cd19ed59d1750892861ef2a53f63f88a6b10a609`: Ubuntu/Windows, Python
+3.11/3.13. Windows 3.11 passed on its identical-code retry; the original
+20-second launcher timeout remains unexplained. The previous Linux interrupt
+cleanup failure and older SQLite-reference observations also remain unresolved.
+No launcher/process runtime repair is inferred from these passes.
+
+The final architecture has **144 nodes / 345 edges / 7 planes**; all five tabs,
+contributor cards/filters, keyboard controls, shared links and narrow layout
+rendered. Current changed-document links resolved. Exact runtime and tests
+remain unchanged after this code commit; final delivery changes only docs and
+the already rendered architecture. Earlier installed cells and correctness
+ties remain historical. No deferred Minor review findings.

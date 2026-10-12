@@ -651,6 +651,8 @@ For a repeatable local test environment, see [Development and verification](docs
 join consumer paths and focused/fallback/support test candidates to the exact
 patch bundle. Fresh scan/input identities qualify association; recommendations
 never become passing receipts and missing paths never justify skipping checks.
+See [journey 75](journey/75-a-path-is-not-a-passing-check.md) and
+[delivery qualification](docs/validation/2026-10-12-patchproof-impact.md).
 
 [Declared OpenAPI checks](the-guide/contracts.md) now add a real compatibility
 producer to PatchProof. Explicit checks validate and compare committed JSON/YAML
