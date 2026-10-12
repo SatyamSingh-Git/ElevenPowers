@@ -59,7 +59,9 @@ Default Python and optional installed tree-sitter adapters plus project-owned
 `impactgraph.json` apply. Missing JS grammars and other language adapters remain
 gaps. This first integration does not select a TypeScript compiler, external
 observation artifact or Git history. Use the standalone ImpactGraph CLI for those
-options. The project's existing scan policy and repository boundaries apply.
+options. The project's existing scan policy and repository boundaries apply. The runtime
+fingerprint covers ElevenPowers source; installed parser packages and the
+execution environment are not independently certified.
 
 Policy inspection refuses linked/unreadable inputs, warnings, 1 MiB per rule
 file, 8 MiB total rule bytes, 20,000 visited directories or the shared deadline.

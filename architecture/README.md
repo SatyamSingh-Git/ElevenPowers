@@ -7,7 +7,7 @@ Recommendations remain separate from execution and incomplete coverage stays vis
 
 PatchProof v1 adds exact committed/tree-pair identity, scoped receipt bundles,
 explicit export and real Python/Node controls in all affected views. Its Planned
-card now tracks graph/contract enrichment rather than the delivered foundation.
+card now tracks further producers and explicit verification beyond the delivered foundation.
 Earlier 2/10 installed successes remain historical after the runtime change; see
 [PatchProof validation](../docs/validation/2026-10-11-patchproof-v1.md).
 
@@ -20,7 +20,7 @@ Five views of the system and its unfinished work — the runtime, plugin seam,
 durable ledger, evaluation harness and contributor roadmap — in one
 self-contained HTML file.
 
-The latest map adds optional advice context emission and temporal native check
+The advice map includes optional context emission and temporal native check
 observations, plus the model-free Python/Node exercise. This is delivery metadata,
 not model comprehension or causal benefit. Fresh installed Claude/Python and
 Claude/JavaScript are qualified; eight cells remain planned. See [the observation guide](../the-guide/advice-delivery.md).
@@ -103,7 +103,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **143 nodes / 338 edges** across 7 planes (as of 2026-10-11),
+Current size: **144 nodes / 345 edges** across 7 planes (as of 2026-10-12),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -113,8 +113,10 @@ including runtime-bound validation, readonly performance and a frozen subscripti
 fresh staged health, bounded native diagnostics, disposable acceptance,
 onboarding, native edits, portable reports and optional changed-file test strength.
 The fifth tab adds contributor content. ImpactGraph now has real runtime source
-nodes. PatchProof remains a proposal; its Planned card links a contributor brief
-for exact patch identity, current evidence bundles and subsequent adapters.
+nodes. PatchProof now includes exact patch identity, scoped evidence bundles,
+declared standalone OpenAPI observations and optional compatible impact leads.
+Its Planned card links the delivered interfaces and remaining explicit
+verification, additional producers and GitHub presentation.
 ImpactGraph also has an explicit CLI query workflow and an open acceptance card.
 Static paths, declared contracts, current unsigned observations and historical
 associations retain separate qualifications. Optional virtual TypeScript compiler, offline

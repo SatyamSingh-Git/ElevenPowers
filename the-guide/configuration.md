@@ -1,5 +1,11 @@
 # Configuration
 
+Optional [PatchProof impact enrichment](patchproof-impact.md) is selected by
+`ep_patchproof.py --impact`; it adds no configuration key or automatic gate.
+It uses the same project scan policy and declarations, with bounded effective
+Git ignore-policy inspection. Default adapters only; compiler, history and
+external observation selection remain standalone ImpactGraph options.
+
 Optional milestone advice now has [read-only delivery observations](advice-delivery.md)
 across all five host launchers. Successful context emission and subsequent native
 checks remain separate from model comprehension and installed-session acceptance.
