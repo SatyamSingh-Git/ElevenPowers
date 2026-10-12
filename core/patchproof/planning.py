@@ -1,11 +1,12 @@
 """Read-only exact-patch command plans; impact leads never remove checks."""
 import math
 from pathlib import Path
+import time
 
 from ..config import load
 from ..export import _text
 from ..parsers import DECLARED_KINDS
-from .report import build
+from .report import build, _guard
 from .execution_state import digest
 
 
@@ -26,10 +27,20 @@ def budgets(seconds, command_seconds):
 def plan(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30, impact=False, reuse=True):
     limits = budgets(seconds, command_seconds)
     root = Path(root).resolve(strict=True)
-    bundle = build(root, base, head, timeout=seconds, impact=impact)
+    deadline = time.monotonic() + seconds
+    try:
+        before = _guard(root, deadline)
+    except (OSError, ValueError, TimeoutError):
+        before = None
+    config = load(root)
+    bundle = build(root, base, head, timeout=max(0, deadline - time.monotonic()), impact=impact)
     issues = list(bundle['binding']['issues'])
     issues.extend(bundle['execution']['issues'])
-    config = load(root)
+    try:
+        if before is None or _guard(root, deadline) != before or config != load(root):
+            issues.append('command configuration or evidence state changed/unavailable during planning')
+    except (OSError, ValueError, TimeoutError):
+        issues.append('command configuration or evidence state inspection unavailable')
     if not config.verifies:
         issues.append('off profile is passive; explicit verification is unavailable')
     declared = bundle['checks']
@@ -39,9 +50,10 @@ def plan(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30, i
     groups = {}
     for check in declared[:MAX_DECLARATIONS]:
         command = check['command']
-        supported = check['property'] in DECLARED_KINDS and len(command) <= 8192 and '\0' not in command
+        raw = config.commands.get(check['property'], '')
+        supported = check['property'] in DECLARED_KINDS and len(raw) <= 8192 and '\0' not in raw
         # Unsupported properties cannot silently become verified by a supported alias.
-        key = (command, supported)
+        key = (digest(raw), supported)
         item = groups.setdefault(key, {'command': command, 'properties': [],
             'required': True, 'supported': supported, 'state': check['state'],
             'action': 'run', 'reasons': [], 'receipt_keys': []})

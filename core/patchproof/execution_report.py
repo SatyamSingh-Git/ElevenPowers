@@ -12,7 +12,7 @@ LIMITS = [
 ]
 
 
-def inspect(root, patch, receipts, deadline, bound):
+def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
     result = {'schema': 1, 'state': 'absent', 'checks': [], 'issues': [],
               'evicted': 0, 'limits': LIMITS}
     try:
@@ -20,14 +20,15 @@ def inspect(root, patch, receipts, deadline, bound):
         result['evicted'] = saved['evicted']
         if not saved['attempts']:
             return result
-        current, _ = witness(root, patch, deadline)
+        current, _ = witness(root, patch, deadline, base=base, head=head)
         if read(root) != saved:
             raise ValueError('saved execution state changed during inspection')
         latest = {}
         for item in saved['attempts']:
             latest[item['command_digest']] = item
         for item in latest.values():
-            matches = [r for r in receipts if r['receipt_key'] in item['receipt_keys']]
+            keys = set(item['receipt_keys'])
+            matches = [r for r in receipts if r['receipt_key'] in keys]
             why = []
             if not bound or item['witness'] != current or item.get('after') != current:
                 why.append('patch, source, configuration, policy, producer or environment association changed/unavailable')

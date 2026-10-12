@@ -259,3 +259,88 @@ def test_execution_state_moving_during_inspection_cannot_keep_old_success(runnab
     value = build(root, base, head)
     assert value['execution']['state'] == 'incomplete'
     assert not any(c['association'] == 'bound' for c in value['execution']['checks'])
+
+
+def test_requested_named_base_moving_during_command_is_unqualified(runnable):
+    from core.patchproof.execution import verify
+    root, base, head, _ = runnable
+    git(root, 'branch', 'requested-base', base)
+    (root / 'move_ref.py').write_text("import subprocess\nsubprocess.run(['git','update-ref','refs/heads/requested-base','HEAD'],check=True)\n")
+    head = commit(root, 'ref movement control')
+    save(root, Config(auto_detect=False, commands={'tests': f'"{sys.executable}" -B move_ref.py'}))
+    value = verify(root, 'requested-base', 'HEAD', seconds=120)
+    assert git(root, 'rev-parse', 'requested-base').decode() == head
+    assert value['state'] == 'incomplete'
+    assert not any(c['association'] == 'bound' for c in value['bundle']['execution']['checks'])
+
+
+def test_later_real_failure_during_inspection_invalidates_saved_success(runnable, monkeypatch):
+    from core.patchproof.execution import verify
+    from core.patchproof.report import build
+    from core.patchproof import execution_report
+    from core.parsers import parse
+    from core.process import run
+    root, base, head, command = runnable
+    script = root / 'check.py'
+    script.write_text(script.read_text() + "assert not Path('.elevenpowers/fail').exists(), 'later actual failure'\n")
+    head = commit(root, 'later failure control')
+    assert verify(root, base, head, seconds=120)['state'] == 'passed'
+    original = execution_report.witness
+    def later(*args, **kwargs):
+        value = original(*args, **kwargs)
+        (root / '.elevenpowers/fail').touch()
+        failed = run(command, cwd=root, timeout=5)
+        assert failed.returncode == 1
+        ledger = Ledger.load(root)
+        ledger.add(parse(command, failed.stdout + failed.stderr, failed.returncode, root))
+        ledger.save()
+        return value
+    monkeypatch.setattr(execution_report, 'witness', later)
+    value = build(root, base, head)
+    assert not any(c['association'] == 'bound' for c in value['execution']['checks'])
+    assert value['binding']['state'] == 'unavailable'
+    assert Ledger.load(root).evidence[-1].result.value == 'fail'
+
+
+def test_verbose_pytest_binds_aggregate_and_recovers_legacy_leaf_keys(runnable):
+    from core.patchproof.execution import verify
+    from core.patchproof.planning import plan
+    from core.patchproof.execution_state import read, save as save_state
+    from core.hosts.readiness import receipt_key
+    root, base, head, _ = runnable
+    (root / 'checks.py').write_text("import pytest\nimport service\n@pytest.mark.parametrize('n',range(65))\ndef test_value(n):\n assert service.value == 2\n assert n >= 0\n")
+    head = commit(root, 'verbose producer control')
+    command = f'"{sys.executable}" -B -m pytest -v -p no:cacheprovider checks.py'
+    save(root, Config(auto_detect=False, commands={'tests': command}))
+    value = verify(root, base, head, seconds=120)
+    assert value['state'] == 'passed', value
+    saved = read(root)
+    assert len(saved['attempts'][-1]['receipt_keys']) == 1
+    assert Ledger.load(root).evidence[-1].passed == 65
+    assert plan(root, base, head, seconds=120)['checks'][0]['action'] == 'reuse'
+    # Reconstruct the genuine old writer shape from actual producer receipts.
+    saved['attempts'][-1]['receipt_keys'] = [receipt_key(e) for e in Ledger.load(root).evidence
+        if e.execution == 'complete' and e.declaration == 'tests']
+    assert len(saved['attempts'][-1]['receipt_keys']) == 66
+    save_state(root, saved)
+    assert plan(root, base, head, seconds=120)['ready'] is True
+    recovered = verify(root, base, head, seconds=120)
+    assert recovered['state'] == 'passed', recovered
+    saved = read(root)
+    assert len(saved['attempts'][0]['receipt_keys']) == 66
+    assert len(saved['attempts'][-1]['receipt_keys']) == 1
+
+
+def test_distinct_raw_commands_with_same_redacted_display_run_separately(runnable):
+    from core.patchproof.execution import verify
+    from core.patchproof.planning import plan
+    root, base, head, _ = runnable
+    save(root, Config(auto_detect=False, commands={'tests': 'echo token=Alpha123',
+                                                 'build': 'echo token=Bravo456'}))
+    planned = plan(root, base, head, seconds=120)
+    assert planned['ready'] is True
+    assert [c['properties'] for c in planned['checks']] == [['tests'], ['build']]
+    assert planned['checks'][0]['command'] == planned['checks'][1]['command']
+    value = verify(root, base, head, seconds=120)
+    assert value['state'] == 'passed', value
+    assert [c['status'] for c in value['checks']] == ['passed', 'passed']

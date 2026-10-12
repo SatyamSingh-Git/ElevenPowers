@@ -167,7 +167,31 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
                        'state': _check_state(latest) if latest else 'absent',
                        'receipt_key': latest['receipt_key'] if latest else None,
                        'association': latest['association'] if latest else 'unavailable'})
-    execution = execution_report(root, patch, receipts, deadline, bound)
+    execution = execution_report(root, patch, receipts, deadline, bound, base=base, head=head)
+    try:
+        if before is None or _guard(root, deadline) != before:
+            issues.append('ledger or configuration changed during saved execution inspection')
+            bound = False
+    except (OSError, ValueError, TimeoutError) as error:
+        issues.append(type(error).__name__ + ': final execution state guard unavailable')
+        bound = False
+    if not bound:
+        covered.clear()
+        qualify_impact(impact_value, False)
+        for contract in contracts['checks']:
+            contract['association'] = 'unavailable'
+        for receipt in receipts:
+            receipt['association'] = 'unavailable'
+            if 'final bundle state inspection is unavailable' not in receipt['association_issues']:
+                receipt['association_issues'].append('final bundle state inspection is unavailable')
+        for check in checks:
+            check['association'] = 'unavailable'
+        for check in execution['checks']:
+            check['association'] = 'unavailable'
+            check['executed_at_patch_head'] = 'unknown'
+            check['association_issues'].append('final bundle state inspection is unavailable')
+        if execution['state'] != 'absent':
+            execution['state'] = 'incomplete'
     value = {'schema_version': 1, 'kind': 'patchproof', 'patch': patch,
              'binding': {'state': 'bound' if bound else 'unavailable',
                          'meaning': 'current checkout and recorded input association, not universal patch safety',

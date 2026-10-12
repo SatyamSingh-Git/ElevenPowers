@@ -9,12 +9,13 @@ from ..evidence import Result
 from ..hosts.readiness import receipt_key
 from ..jobs import Session, Busy
 from ..ledger import Ledger
-from ..parsers import parse
+from ..parsers import parse, DECLARED_KINDS
 from .. import process
 from .execution_state import digest, read, retain, save, witness
 from .planning import plan
 from .report import build
 from ..export import _text as literal
+from ..redact import scrub_values
 
 
 def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30, impact=False, reuse=True):
@@ -26,6 +27,8 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
     result = {'schema_version': 1, 'kind': 'patchproof_verification', 'state': 'incomplete',
               'patch_id': planned['patch_id'], 'checks': [], 'issues': list(planned['issues']),
               'budgets': planned['budgets'], 'bundle': planned['bundle']}
+    result['planned_patch'] = {name: planned['bundle']['patch'][name]
+                               for name in ('base', 'head', 'patch_id', 'content_digest')}
     for check in planned['checks']:
         result['checks'].append({'properties': check['properties'], 'command': check['command'],
                                  'status': 'deferred', 'receipt_keys': []})
@@ -35,13 +38,13 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
     try:
         # Do not replace damaged state and silently discard a later failed attempt.
         saved = read(root)
-        expected, _ = witness(root, patch, deadline)
+        expected, _ = witness(root, patch, deadline, base=base, head=head)
         ledger = Ledger.load(root)
         with Session(root, ledger.task, seconds=max(0, deadline - time.monotonic())) as session:
             saved = read(root)  # A former owner may have written before we obtained the lock.
             for check, outcome in zip(planned['checks'], result['checks']):
                 try:
-                    before, snapshot = witness(root, patch, deadline)
+                    before, snapshot = witness(root, patch, deadline, base=base, head=head)
                     if before != expected:
                         raise ValueError('verification inputs changed since preflight')
                     session.budget.timeout(command_seconds)
@@ -56,9 +59,13 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                     break
                 # Reinspect latest receipt/state under ownership before reuse.
                 if check['action'] == 'reuse':
-                    fresh = plan(root, patch['base'], patch['head'],
+                    fresh = plan(root, base, head,
                                  seconds=max(0, deadline - time.monotonic()), command_seconds=command_seconds)
                     reusable = next((c for c in fresh['checks'] if c['command_digest'] == check['command_digest']), None)
+                    final_reuse, _ = witness(root, patch, deadline, base=base, head=head)
+                    if not fresh['ready'] or fresh['patch_id'] != planned['patch_id'] or final_reuse != expected:
+                        result['issues'].append('requested patch or execution inputs moved during reuse inspection')
+                        break
                     if fresh['ready'] and reusable and reusable['action'] == 'reuse':
                         outcome.update(status='reused', receipt_keys=reusable['receipt_keys'])
                         continue
@@ -71,7 +78,7 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                 save(root, saved)
                 provisional = parse(command, 'explicit patch verification started', None, root, snapshot=snapshot)
                 ledger.add(provisional); ledger.save()
-                item['receipt_keys'] = [receipt_key(e) for e in provisional if e.declaration in check['properties']]
+                item['receipt_keys'] = _aggregates(provisional, check['properties'])
                 save(root, saved)
                 session.begin(job)
                 code, output, interruption = None, '', None
@@ -88,7 +95,7 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                         interruption = error
                 after = None
                 try:
-                    after, _ = witness(root, patch, deadline)
+                    after, _ = witness(root, patch, deadline, base=base, head=head)
                     if after != before:
                         raise ValueError('execution inputs changed during the command')
                 except (OSError, ValueError, TimeoutError, subprocess.SubprocessError):
@@ -100,7 +107,7 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                           'failed' if code or any(e.result is not Result.PASS for e in records)
                           else 'passed')
                 item.update(status=status, after=after, exit_code=code, finished=time.time(),
-                            receipt_keys=[receipt_key(e) for e in records if e.declaration in check['properties']])
+                            receipt_keys=_aggregates(records, check['properties']))
                 save(root, saved)
                 session.finish(job, status, exit_code=code)
                 outcome.update(status=status, receipt_keys=item['receipt_keys'])
@@ -111,7 +118,7 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                     break
     except (OSError, ValueError, Busy, TimeoutError, subprocess.SubprocessError) as error:
         result['issues'].append(type(error).__name__ + ': explicit verification unavailable or incomplete')
-    result['bundle'] = build(root, patch['base'], patch['head'], timeout=max(0, deadline - time.monotonic()), impact=impact)
+    result['bundle'] = build(root, base, head, timeout=max(0, deadline - time.monotonic()), impact=impact)
     states = {check['status'] for check in result['checks']}
     observations = result['bundle']['execution']['checks']
     qualified = all(any(set(e['properties']) == set(c['properties']) and e['association'] == 'bound'
@@ -130,6 +137,13 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
 
 def _text(value):
     return value.decode('utf-8', errors='replace') if isinstance(value, bytes) else value or ''
+
+
+def _aggregates(records, properties):
+    # Ledger persistence redacts the entire payload, including receipt identity.
+    # Associate the saved form, not an in-memory pre-redaction identity.
+    return [receipt_key(scrub_values(e.to_dict())) for e in records if e.declaration in properties
+            and e.kind is DECLARED_KINDS[e.declaration]]
 
 
 def markdown(value):

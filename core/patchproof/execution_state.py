@@ -63,7 +63,9 @@ def read(root):
                 {'incomplete', 'passed', 'failed', 'stale'}
                 or not isinstance(item.get('witness'), dict)
                 or not isinstance(item.get('receipt_keys'), list)
-                or len(item['receipt_keys']) > 64
+                # Older schema-1 writers retained individual pytest keys. Keep
+                # their bounded history readable; new writers use aggregates.
+                or len(item['receipt_keys']) > MAX_BYTES // 64
                 or not all(isinstance(k, str) and len(k) == 64 for k in item['receipt_keys'])
                 or not isinstance(item.get('command_digest'), str)
                 or len(item['command_digest']) != 64
@@ -102,6 +104,10 @@ def _witness_shape(value):
 def save(root, value):
     target = path(root)
     data = json.dumps(value, ensure_ascii=True, indent=2).encode()
+    while len(data) > MAX_BYTES and len(value['attempts']) > 1:
+        value['attempts'].pop(0)
+        value['evicted'] += 1
+        data = json.dumps(value, ensure_ascii=True, indent=2).encode()
     if len(data) > MAX_BYTES:
         raise ValueError('patch verification state exceeds write budget')
     temporary = target.with_suffix('.' + uuid.uuid4().hex + '.tmp')
@@ -123,11 +129,13 @@ def retain(value, item):
         value['evicted'] += excess
 
 
-def witness(root, patch, deadline):
+def witness(root, patch, deadline, *, base=None, head=None):
     """Return a qualification plus actual parser snapshot; never export env values."""
     if time.monotonic() >= deadline:
         raise TimeoutError('verification deadline reached before input inspection')
-    actual = collect(root, patch['base'], patch['head'], seconds=max(0, deadline - time.monotonic()))
+    actual = collect(root, base if base is not None else patch['base'],
+                     head if head is not None else patch['head'],
+                     seconds=max(0, deadline - time.monotonic()))
     if (not actual['complete'] or not actual['checkout']['eligible']
             or actual['patch_id'] != patch['patch_id']
             or actual['content_digest'] != patch['content_digest']):
