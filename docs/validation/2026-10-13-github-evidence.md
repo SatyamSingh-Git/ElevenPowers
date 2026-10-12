@@ -6,8 +6,8 @@ automatic correctness gate, PR comment or Check Run was run or added.
 
 Runtime/Action revision after review repairs:
 `b7627614dcc48ed048ba1647aedbadd433cd346f`.
-Documentation and architecture follow separately. Final gates and publication
-are recorded below as they complete; implementation is not itself qualification.
+Documentation and architecture follow separately. Final local and hosted gates
+passed; publication identity is recorded below after the authorized main update.
 
 ## Baseline reliability and established repair
 
@@ -165,8 +165,13 @@ matrix does not establish its repair. Subsequent changes so far are only docs
 and architecture, with runtime/test/evaluation/Action/workflow files identical
 to the qualified revision.
 
-The local full suite remains in progress. Its completed outcome and main/Pages
-identity will be recorded before delivery is marked qualified.
+The final local full suite passed **2,168 tests, 2 skipped in 2585.32s
+(43m05s)**, exit 0, after the single review repair pass. Named gates above and
+the completed four-cell hosted matrix qualify this runtime; the difference in
+local and hosted durations is not a performance-improvement result.
+Final documentation changes do not alter runtime/test/evaluation/Action/workflow
+files. Main/Pages identity is recorded separately after publication. Automatic
+main repeats are separate runs, never credited as passing before completion.
 
 See [guide](../../the-guide/patchproof-github.md),
 [design](../design/patchproof-github.md) and

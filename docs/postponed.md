@@ -2,7 +2,7 @@
 
 **GitHub presentation, 2026-10-13.** Read-only summaries and downloadable
 exact-patch bundles are implemented, with actual hosted transport and independent
-review repairs. Final delivery qualification is tracked in the
+review repairs. Local regressions, named audits and all five final-code hosted jobs passed; see the
 [dated record](validation/2026-10-13-github-evidence.md).
 External-input/dependency/environment witnesses, further producers and live
 PR/fork publication remain open. Declared metadata and upload success do not

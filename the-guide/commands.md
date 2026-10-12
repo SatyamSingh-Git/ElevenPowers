@@ -315,7 +315,9 @@ The deadline bounds observation loops and Git calls; an in-flight filesystem cal
 may return after it, in which case coverage is incomplete.
 
 Prompts, transcripts, captured outputs and receipt details are excluded. Known
-credential patterns are scrubbed and project-root text is replaced with
+credential patterns in public keys and values are scrubbed; colliding redacted
+keys cause controlled refusal instead of losing records. Private configuration
+and ledger identities remain unchanged. Project-root text is replaced with
 `<project>`. Supplied Markdown remains literal. This is an unsigned local
 observation for review; it does not authenticate the ledger or establish that
 passing tests exercised every changed behaviour.

@@ -93,7 +93,7 @@ Consumes Task 2/3 APIs; produces explicit Actions file writes and upload link mo
 ### Task 5: Review and complete delivery
 
 - [x] One fresh whole-branch review, regrade by effect, one RED→GREEN repair pass.
-- [ ] Full suite, named audits, independent grader/source reproduction, doctor,
+- [x] Full suite, named audits, independent grader/source reproduction, doctor,
   stdlib imports and hosted four-cell matrix plus actual presentation exercise.
 - [x] Update README, PLAN/status, guides/indexes, contributor brief, validation,
   journey/index and every affected architecture view/card/meta/mirror.

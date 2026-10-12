@@ -10,7 +10,7 @@ pending/native edit uncertainty and specific next actions. An absent active clai
 is unverified, never a claim that a passing command proves completed work.
 
 Exclude prompts, transcripts, captured output and receipt details. Scrub known
-credential patterns and substitute the project root in displayed text. Reporting
+credential patterns in public keys and values and substitute the project root in displayed text. Colliding redacted keys cause controlled refusal instead of record loss; private configuration and ledger identities are preserved. Reporting
 is read-only and executes no project commands. Source freshness uses one fresh,
 bounded content snapshot shared only within this report and this root; partial
 coverage cannot certify verification. Explicit-path receipts also read fresh

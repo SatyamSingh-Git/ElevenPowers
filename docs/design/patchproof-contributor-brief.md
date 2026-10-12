@@ -91,9 +91,9 @@ missing applicable check must remain visible. Recheck identity and relevant
 inputs around report collection; a detected concurrent change invalidates the
 binding. Bounded reads are not an atomic filesystem transaction.
 
-Reporting executes no checks. A future explicit `verify` command can run
+Reporting executes no checks. The separately delivered explicit `verify` command can run
 project-owned commands with recorded limits and environment identity after the
-read-only bundle is reliable. The current process runner manages lifecycle and
+read-only bundle is reliable; see [verification usage](../../the-guide/patchproof-verification.md). The current process runner manages lifecycle and
 output limits; it must not be advertised as a security sandbox.
 
 ## Subsequent independent PRs
