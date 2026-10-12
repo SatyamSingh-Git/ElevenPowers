@@ -222,6 +222,25 @@ def test_exhausted_deadline_does_not_start_a_process(tmp_path, monkeypatch, time
     assert not (tmp_path / 'started').exists()
 
 
+def test_cleanup_wait_has_a_finite_allowance(tmp_path, monkeypatch):
+    process = runner()
+    original = subprocess.Popen
+    waits = []
+    def launch(*args, **kwargs):
+        child = original(*args, **kwargs)
+        wait = child.wait
+        def bounded(timeout=None):
+            waits.append(timeout)
+            return wait(timeout=timeout)
+        child.wait = bounded
+        return child
+    monkeypatch.setattr(process.subprocess, 'Popen', launch)
+    assert process.run(python("print('actual command')"), cwd=tmp_path,
+                       timeout=10, shell=False).returncode == 0
+    assert waits and all(value is not None and 0 <= value <= 5 for value in waits), (
+        'cleanup must never wait indefinitely for a process to reap')
+
+
 def test_launch_errors_are_not_success(tmp_path):
     with pytest.raises(OSError):
         runner().run([str(tmp_path / "nonexistent-program")],

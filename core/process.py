@@ -19,6 +19,7 @@ import time
 
 
 MAX_OUTPUT_BYTES = 8 * 1024 * 1024
+CLEANUP_SECONDS = 5
 _POLL_SECONDS = .01
 
 
@@ -85,6 +86,7 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
         finally:
             # Cleanup also follows a normal parent exit: inherited file handles
             # and orphaned grandchildren must not keep running after verification.
+            cleanup_deadline = time.monotonic() + CLEANUP_SECONDS
             try:
                 if job:
                     job.close()
@@ -97,7 +99,7 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
                 if child:
                     if child.poll() is None:
                         child.kill()  # Also handles a failed Windows assignment.
-                    child.wait()
+                    child.wait(timeout=max(0, cleanup_deadline - time.monotonic()))
         _check_output(command, out, err)
         stdout, stderr = _read(out, text=text), _read(err, text=text)
         if timed_out:
