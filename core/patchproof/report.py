@@ -11,6 +11,8 @@ from ..ledger import Ledger
 from ..parsers import DECLARED_KINDS
 from .identity import collect
 from .contract_report import inspect as contract_report
+from .impact import inspect as impact_report, disabled as impact_disabled, qualify as qualify_impact
+from ..impact import markdown as impact_markdown
 
 
 LIMITS = [
@@ -63,7 +65,7 @@ def _check_state(receipt):
     return 'current'
 
 
-def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
+def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     """Read an unsigned bundle. Binding is not a task verdict or safety badge."""
     if not math.isfinite(timeout) or not 0 <= timeout <= 600:
         raise ValueError('bundle timeout must be between 0 and 600')
@@ -74,6 +76,9 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
     issues = list(patch['issues']) + list(patch['checkout']['issues'])
     report, records = None, {}
     contracts = {'schema': 1, 'complete': False, 'checks': [], 'issues': ['Contract inspection unavailable.'], 'evicted': 0, 'limits': []}
+    impact_value = impact_disabled()
+    fingerprints = []
+    before = None
     redirects = ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR',
                  'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES',
                  'GIT_CONFIG_COUNT', 'GIT_CONFIG_PARAMETERS', 'GIT_CONFIG')
@@ -85,6 +90,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
         records = {receipt_key(record): record for record in ledger.evidence}
         report = verification_report(root, timeout=max(0, deadline - time.monotonic()))
         check = verification_report(root, timeout=max(0, deadline - time.monotonic()))
+        fingerprints = [r['coverage']['source_fingerprint'] for r in (report, check)]
         contracts = contract_report(root, patch, deadline)
         after = _guard(root, deadline)
         if before != after:
@@ -95,6 +101,13 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
             issues.append('source, native edit or report coverage is incomplete')
     except (OSError, ValueError, TypeError, KeyError, AttributeError, TimeoutError) as exc:
         issues.append(type(exc).__name__ + ': evidence report unavailable or incomplete')
+    if impact:
+        impact_value = impact_report(root, patch, fingerprints, deadline)
+        try:
+            if before is None or before != _guard(root, deadline):
+                issues.append('ledger or project configuration changed during impact collection')
+        except (OSError, ValueError, TimeoutError) as exc:
+            issues.append(type(exc).__name__ + ': final impact state guard unavailable')
     final = collect(root, base, head, seconds=max(0, deadline - time.monotonic()))
     if patch != final:
         issues.append('patch identity or checkout qualification changed during bundle collection')
@@ -103,6 +116,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
     if time.monotonic() >= deadline:
         issues.append('bundle deadline reached; binding is incomplete')
     bound = patch['complete'] and patch['checkout']['eligible'] and report is not None and not issues
+    qualify_impact(impact_value, bound)
     for contract in contracts['checks']:
         if not bound:
             contract['association'] = 'unavailable'
@@ -146,6 +160,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
                          'meaning': 'current checkout and recorded input association, not universal patch safety',
                          'issues': list(dict.fromkeys(issues))},
              'verification': report, 'receipts': receipts, 'checks': checks, 'contracts': contracts,
+             'impact': impact_value,
              'coverage': {'unobserved_patch_paths': sorted(patch_paths - covered),
                           'unsupported_properties': ['API compatibility', 'database compatibility',
                                                      'security compatibility', 'behavioral compatibility']},
@@ -210,6 +225,22 @@ def markdown(value):
                       + '; findings: ' + _text(contract['findings']) + '; limits: ' + _text(contract['limits'])]
         lines += ['- ' + _text(issue) for issue in contract['issues']]
     lines += ['- ' + _text(limit) for limit in value['contracts']['limits']]
+    impact = value.get('impact', impact_disabled())
+    lines += ['', '## ImpactGraph recommendations', '',
+              'State: ' + _text(impact['state']) + '; patch association: ' + _text(impact['association']),
+              'Recommendations are not execution evidence or proof of safety.', '']
+    if impact['state'] == 'not_requested':
+        lines += ['Use --impact for optional fresh graph scans.']
+    else:
+        for key in ('patch_id', 'content_digest', 'source_fingerprint', 'snapshot_digest',
+                    'runtime_fingerprint', 'configuration', 'omitted_paths'):
+            lines += [_text(key) + ': ' + _text(impact.get(key, 'unavailable'))]
+        lines += ['- ' + _text(issue) for issue in impact['association_issues']]
+        if impact['association'] != 'bound':
+            lines += ['The following diagnostic recommendations are unqualified for this patch.']
+        if impact['query'] is not None:
+            lines += ['', impact_markdown(impact['query'])]
+    lines += ['- ' + _text(limit) for limit in impact['limits']]
     lines += ['', '## Coverage gaps and next actions', '']
     lines += ['- ' + _text(issue) for issue in binding['issues']]
     lines += ['- Unobserved patch path: ' + _text(p) for p in value['coverage']['unobserved_patch_paths']]

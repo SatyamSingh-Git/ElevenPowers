@@ -10,6 +10,9 @@ from core.patchproof.report import build, markdown
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, default=Path.cwd())
     parser.add_argument('--base', default='HEAD~1')
@@ -18,11 +21,13 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--timeout', type=float, default=120)
+    parser.add_argument('--impact', action='store_true',
+                        help='include optional fresh impact recommendations; runs no checks')
     parser.add_argument('--require-bound', action='store_true',
                         help='gate patch/input binding only; does not certify completed work or safety')
     args = parser.parse_args()
     try:
-        value = build(args.project, args.base, args.head, timeout=args.timeout)
+        value = build(args.project, args.base, args.head, timeout=args.timeout, impact=args.impact)
         text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.format == 'json' else markdown(value)
         if args.output:
             write(args.output, text, force=args.force)
