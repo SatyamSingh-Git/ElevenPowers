@@ -1,5 +1,13 @@
 # License and attribution register
 
+The 2026-10-13 GitHub presentation uses the official MIT-licensed
+[actions/upload-artifact v4](https://github.com/actions/upload-artifact/tree/v4)
+at `ea165f8d65b6e75b540449e92b4886f43607fa02`, without vendoring its code.
+The shared Python runtime remains stdlib-only. The uploader supports GitHub
+cloud, with authenticated retention-bound links; its archive digest is not
+independent attestation. We add exact-patch qualified bundle presentation,
+not another transport implementation. See [design](../design/patchproof-github.md).
+
 The 2026-10-02 fixed-patch review archive includes modified source fixtures from
 ItsDangerous, Click and Jinja2 under BSD-3-Clause, and attrs under MIT. Their
 pinned identities and full notices are retained in

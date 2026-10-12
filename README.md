@@ -32,7 +32,7 @@
 4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 5. **Resumable verification:** saves check progress and receipts so interrupted work can resume, fresh results can be reused and later edits can invalidate outdated evidence.
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether results still match the current files, where evidence is missing and what needs attention next.
-7. **PatchProof:** plans and explicitly runs declared checks, binds exact committed patches to qualified evidence, and exports impact, compatibility and verification gaps for review.
+7. **PatchProof:** plans and explicitly runs declared checks, binds exact committed patches to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries with downloadable evidence.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
@@ -646,6 +646,18 @@ Most requests state no claim, because one real prompt in five is four words or f
 For a repeatable local test environment, see [Development and verification](docs/development.md).
 
 ## Where this actually is
+
+[GitHub evidence presentation](the-guide/patchproof-github.md) now exports exact-patch
+receipts and gaps to an Actions summary and downloadable JSON/Markdown artifact.
+Actual passing, failing and interrupted commands were exercised without report
+reruns; a hosted artifact was downloaded and its canonical bundle hash verified.
+Successful export is informational, not a safety gate. Review repairs cover
+public credential-shaped keys, hard-linked runner files and cold-runtime bytecode.
+Final delivery checks are recorded in [qualification](docs/validation/2026-10-13-github-evidence.md)
+and [journey 77](journey/77-the-upload-is-not-the-evidence.md).
+The latest prior main repeat exposed a Windows cached-return-code termination
+problem; the repaired original-handle wait passed expanded hosted controls.
+Older unrelated cleanup/launcher/SQLite causes remain open.
 
 [Explicit PatchProof verification](the-guide/patchproof-verification.md) now
 plans all project-declared checks and runs them only with `--verify`. Shared

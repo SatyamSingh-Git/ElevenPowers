@@ -1,5 +1,11 @@
 # What we build on: prior art for each v0.8 component
 
+**GitHub presentation, 2026-10-13.** Reuse GitHub job summaries and the
+official pinned MIT artifact uploader rather than building a write-token
+publisher. Add literal, bounded exact-patch evidence with preserved gaps and
+a canonical public bundle digest. Cloud transport is not authenticated source
+attestation; live PR/fork qualification remains open.
+
 **Hard interacting tasks, 2026-10-02.** Reuse the MIT-licensed sealed completion
 runner, passive observer and independent worker pattern. Python standard-library
 SQLite, asyncio, JSON and base64 provide the task primitives; this delivery adds

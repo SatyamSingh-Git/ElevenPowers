@@ -1,5 +1,9 @@
 # Plan and explicitly run patch verification
 
+After explicit execution, [GitHub presentation](patchproof-github.md) can share
+the resulting receipts and gaps. Publishing remains read-only and does not
+convert incomplete or failed verification into a successful correctness gate.
+
 PatchProof can plan the project's declared checks and explicitly collect missing
 execution evidence for a clean committed patch. The same workflow applies to any
 supported project and host. Reports, plans and installation remain read-only with

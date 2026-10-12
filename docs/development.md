@@ -1,5 +1,21 @@
 # Local development and verification
 
+## GitHub presentation controls
+
+```sh
+python -m pytest tests/test_patchproof_github.py tests/test_patchproof_github_output.py tests/test_patchproof_github_cli.py tests/test_github_presentation_exercise.py tests/test_portable_report.py -q
+python -S -c "import core.patchproof.github_context; import core.patchproof.github; import core.patchproof.github_output; import eval.github_presentation"
+python -m eval.github_presentation --output NEW_EXTERNAL_DIRECTORY --repository OWNER/REPO
+```
+
+The explicit disposable exercise runs real passing, failing and interrupted
+checks; it asserts one execution each and no report-side source changes.
+The hosted dispatch/push job calls the actual composite Action; inspect and
+download its two-file artifact, then recompute the canonical bundle hash.
+PR-shaped controls do not qualify live fork transport. Cold vendored runtime,
+credential-key collision, hard links, event mismatch, literal output and byte
+limits are retained controls. See [qualification](validation/2026-10-13-github-evidence.md).
+
 Use Python 3.11 or newer and Git. Run these commands from the repository root.
 The runtime uses the standard library; pytest is a development dependency.
 Local checks and CI install the same pinned pytest version.
@@ -25,7 +41,7 @@ Runtime does not install dependencies or run paid model evaluations.
 
 ```sh
 python -m pytest tests/test_process.py tests/test_patchproof_planning.py tests/test_patchproof_execution.py tests/test_patchproof_verification_cli.py -q
-python -m eval.execution_reliability --repetitions 10 --seconds 180
+python -m eval.execution_reliability --repetitions 10 --seconds 240
 python -S -c "import core.patchproof.planning; import core.patchproof.execution; import core.patchproof.execution_report"
 ```
 

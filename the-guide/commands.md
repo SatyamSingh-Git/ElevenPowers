@@ -1,5 +1,19 @@
 # Commands
 
+## ep_github — informational GitHub evidence
+
+```sh
+python -I -B plugin/bin/ep_github.py --project PATH --repository OWNER/REPO --base BASE --head HEAD
+python -I -B plugin/bin/ep_github.py --project PATH --repository OWNER/REPO --base BASE --head HEAD --event EVENT_JSON --actions
+```
+
+Exports `evidence.json` and `summary.md` into a new external directory.
+Optional `--output-dir`, `--impact` and finite `--timeout` (default 120, 0–600)
+control publication and advisory enrichment. `--actions` explicitly writes
+validated runner files. Exit 0 means export, not passing correctness.
+The [GitHub guide](patchproof-github.md) documents reusable Action inputs/outputs,
+`--link-artifact` with `--run-id`, bounds, privacy and declared-context limits.
+
 ## ep_patchproof — exact committed patch evidence
 
 ```bash

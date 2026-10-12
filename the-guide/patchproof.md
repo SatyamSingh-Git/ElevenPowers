@@ -1,5 +1,9 @@
 # PatchProof: the patch and its evidence
 
+[GitHub presentation](patchproof-github.md) shares this read-only bundle through
+an informational Actions summary and downloadable artifact, retaining exact
+identities, failures, missing checks and coverage gaps. It runs no checks.
+
 PatchProof v1 exports an exact committed Git base/head identity alongside existing
 machine receipts. It helps a reviewer see what was checked, whether observed
 inputs still match the checkout, and what remains unsupported or unobserved.

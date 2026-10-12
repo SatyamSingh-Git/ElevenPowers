@@ -1,5 +1,10 @@
 # Configuration
 
+[GitHub evidence presentation](patchproof-github.md) adds no project configuration
+or implicit execution. It consumes existing receipts and declarations, preserving
+absent evidence in fresh CI checkouts. Caller-owned Actions inputs select the
+exact patch, report allowance, optional impact and artifact retention.
+
 [Explicit PatchProof verification](patchproof-verification.md) uses the same
 project commands and manifest discovery. It introduces no automatic execution
 setting: `--plan` reads, and `--verify` explicitly runs all recognized declarations
