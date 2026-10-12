@@ -43,6 +43,12 @@ Reuse only the latest complete passing associated aggregate for an unchanged
 command and qualified inputs; later failed/incomplete attempts supersede success.
 External services, installed dependency bytes and intervening reverted changes
 remain unobserved. Saved local records are unsigned and require producer trust.
+Original named selectors are re-resolved at each witness boundary. Final bundle
+guards cover execution inspection as well as receipt collection. New records
+use aggregate keys computed from persisted redacted identities; old leaf-key
+histories stay readable within the byte bound. Raw command digests, not redacted
+display strings, define command grouping. Catchable main-thread launch signals
+are deferred until process cleanup ownership is established, then forwarded.
 
 ## Reliability and acceptance
 

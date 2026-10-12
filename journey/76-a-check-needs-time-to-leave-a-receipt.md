@@ -50,6 +50,29 @@ command ran again. Earlier pass, incomplete attempt and recovered result stayed
 available. `--rerun` handles the deliberately unobserved case: changed services
 or installed dependencies need new execution even when local source hashes match.
 
+
+Independent review then found a different launch boundary: SIGINT could arrive
+inside actual process creation before cleanup owned the returned child. On
+Windows that left a suspended process alive. Catchable main-thread signals now
+wait until ownership can clean up the child, then forward restored custom policy.
+This repair is established separately from the original intermittent CI failures.
+
+Four other findings exposed identity and producer-shape mistakes. Original named
+refs must be re-resolved, not replaced permanently by earlier commit IDs. Final
+ledger guards must extend through saved execution inspection, where a later real
+failure can arrive. Actual verbose pytest yields individual results plus an
+aggregate; associating every leaf both exceeded the reader limit and defeated
+reuse. New observations bind aggregate keys, while genuine older histories stay
+readable. Distinct raw commands can share a redacted display and still need two
+executions; saved keys must match the persisted redacted receipt identity.
+
+All five entered one repair pass with witnessed failing controls. The named-ref
+author control first used a bytes/text assertion mistake; the corrected control
+failed against preserved old code and passed against the repair. An earlier
+archived-code invocation imported the current implementation by mistake, so its
+passing result is retained but does not count as RED. The final five execution
+controls passed, as did the process controls. No second review was requested.
+
 The new saved associations are local unsigned evidence. Source/configuration,
 repository policy, runtime producer and environment digests qualify reuse; raw
 environment values and outputs stay out of exported bundles. This establishes

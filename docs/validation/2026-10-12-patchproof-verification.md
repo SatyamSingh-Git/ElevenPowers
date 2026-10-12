@@ -1,8 +1,9 @@
 # Explicit PatchProof verification qualification — 2026-10-12
 
 Scope: generalized read-only planning, separate explicit execution, durable
-attempts, qualified reuse and saved exact-patch observations. No model or fresh
-installed-host session ran; no causal coding-benefit result is claimed.
+attempts, qualified reuse and saved exact-patch observations. No fresh coding
+comparison or installed-host session ran; no causal coding-benefit result is
+claimed. A separate internal model review inspected the implementation.
 
 ## Reliability investigation
 
@@ -48,13 +49,69 @@ Python and JavaScript assertions use independently fixed expected values and
 detect committed faulty changes; they are workflow smoke controls, not difficult
 coding comparisons or proof that an agent writes better code.
 
+## Independent review and repairs
+
+One fresh-context whole-branch review identified four Important findings and one
+initially Minor command-grouping collision. The collision was regraded Important
+because valid distinct declarations could not execute; all five were repaired in
+one author fix pass, with no second review.
+
+- An actual Windows process-creation SIGINT left an unowned suspended process.
+  Main-thread launch signals now wait until cleanup ownership exists; custom
+  signal policy is restored and forwarded. Process controls: 19 passed / 2 skipped.
+- An actual command moved the originally requested named base, but verification
+  accepted the older resolved pair. Witnesses now re-resolve the original selectors.
+- A later actual failing receipt arrived during saved execution inspection, but
+  an older success stayed bound. The final ledger/configuration guard now covers
+  that entire inspection and clears covered properties when qualification fails.
+- Actual verbose pytest with 65 cases produced 66 keys, poisoning the reader and
+  preventing reuse. New records associate aggregate keys only; individual test
+  results stay in the ledger. Genuine older leaf-key histories stay readable and
+  retained through recovery under the existing whole-file byte bound.
+- Distinct synthetic commands with the same redacted display were incorrectly
+  merged. Grouping uses raw command digests; saved keys use the actual persisted
+  redacted receipt identity. No raw credentials are exported.
+
+The five final execution/reuse controls passed in 163.20 seconds. An author
+named-ref assertion initially confused bytes and text; its corrected reproduction
+failed against preserved old `8519b4d` code and passed against the repair. The first
+archived-code invocation accidentally imported current code and passed; that run
+is retained but is not counted as a failing reproduction.
+
 ## Delivery gates
 
-Whole-branch review, final full suite, named audit probes, independent grader,
-doctor, architecture render, hosted final-code matrix and main promotion are
-still in progress. This paragraph will be replaced by observed results before
-delivery is claimed. Original attempts and private logs are retained in the
-milestone workspace; interrupted or failed runs are not silently relabelled.
+Final local Windows/Python 3.13 regression suite: **2,129 passed,
+2 skipped** in 2251.40 seconds. Named audits were
+rerun after all review repairs: **107 passed** in 97.59 seconds.
+The independent grader classified all four controls correctly; preserved ordinary
+and assisted queue/inventory source grades reproduced 6/6 and 8/8 stage checks.
+Those historical ties remain ties, without new installed sessions or model runs.
+The host doctor passed all 11 probes and runtime imports passed with `python -S`.
+
+The [final-code four-job matrix](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38286815118)
+passed at `e487480` on Windows/Linux and Python 3.11/3.13, including ten retained
+interrupt/termination/quoted-launch repetitions in each cell. The new launch
+handoff controls run in the full suites; they are not part of those ten repeats.
+This is a finite qualification, not an exhaustive cancellation or performance claim.
+
+| Hosted cell | Full suite | Named audits |
+| --- | --- | --- |
+| Windows / Python 3.11 | 2,127 passed / 4 skipped; 1490.94 s | 107 passed; 85.15 s |
+| Windows / Python 3.13 | 2,127 passed / 4 skipped; 1446.99 s | 107 passed; 55.03 s |
+| Linux / Python 3.11 | 2,124 passed / 7 skipped; 349.06 s | 105 passed / 2 skipped; 22.46 s |
+| Linux / Python 3.13 | 2,124 passed / 7 skipped; 265.25 s | 105 passed / 2 skipped; 10.82 s |
+
+Local raw-byte runtime fingerprint:
+`9a5855f8f6aa4639eb41806ab5a56d47ebb1693316f004b71ed279ff271324db`.
+It identifies this local producer, not an asserted identical cross-platform
+checkout byte hash. Documentation changes preserve runtime bytes; main promotion
+will be checked against that same fingerprint.
+
+Architecture rendering passed: 148 nodes, 353 edges, seven planes, all five tabs,
+expandable cards, filters, keyboard interaction, shared links and narrow layout.
+All 535 local targets in changed Markdown documents resolved. Main promotion,
+published byte comparison and automatic main CI are recorded below when observed;
+no unrun gate is silently marked passing.
 
 ## Limits
 

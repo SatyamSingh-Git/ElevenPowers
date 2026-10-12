@@ -16,8 +16,9 @@ python plugin/bin/ep_patchproof.py --project PATH --base BASE --head HEAD --veri
 Configure commands through the existing project-owned
 [configuration](configuration.md), or use supported manifest discovery. `tests`,
 `build`, `typecheck`, `lint` and `benchmark` are recognized. Identical commands can
-serve multiple properties with one execution. Unsupported properties remain
-visible and leave execution incomplete. A plan never fabricates a command from
+serve multiple properties with one execution. Grouping uses the original command
+digest, so distinct commands with the same redacted display stay separate.
+Unsupported properties remain visible and leave execution incomplete. A plan never fabricates a command from
 an ImpactGraph candidate file, and never removes required commands or fallbacks.
 Impact explanations are advisory even when their input association is bound.
 
@@ -32,7 +33,10 @@ Execution requires a complete eligible committed patch at the current head and
 complete source coverage. Dirty/staged/nonignored untracked files, linked inputs,
 moving refs and unavailable guards leave it incomplete. The `off` profile remains
 passive and refuses execution. Commit intended changes before using this path.
-Do not delete unrelated work to satisfy the clean-input condition.
+Do not delete unrelated work to satisfy the clean-input condition. Requested
+named refs are resolved again during execution and final inspection; moving a
+ref cannot silently switch the requested patch. JSON execution results retain
+the initial `planned_patch` identity as a diagnostic when later qualification fails.
 
 ## Durability and reuse
 
@@ -42,6 +46,9 @@ before the next command starts. Timeout, excessive output, interruption and
 unavailable final input inspection remain incomplete. A source/configuration/
 policy change stops later commands; earlier evidence remains visible with its
 qualifications. Process death leaves the saved attempt incomplete for recovery.
+Catchable main-thread cancellation during process creation is deferred until ownership
+can clean up the child; existing signal handlers are restored and forwarded.
+This does not promise cleanup after uncatchable termination or host death.
 
 `.elevenpowers/patch-verification.json` retains bounded unsigned associations to
 existing ledger receipts. Fresh inspection compares the exact patch/tree pair,
@@ -49,7 +56,12 @@ source, raw/effective command configuration, repository ignore policy, runtime
 producer and environment digests. Environment values and captured outputs are
 not exported. Only the latest complete passing associated aggregate can be reused;
 a later failed or incomplete receipt supersedes it. A changed command/configuration
-or qualified input prevents reuse. Historical entries and evictions remain visible.
+or qualified input prevents reuse. New associations store aggregate receipt keys;
+individual test results remain in the ledger. Older histories containing leaf
+keys remain readable and are retained during recovery. State is bounded to
+128 attempts and 1 MiB, with explicit count/byte evictions. Fresh inspection
+rechecks saved state and the parent ledger/configuration guard before granting
+association; a late real failure cannot preserve an older passing bundle.
 Use `--rerun` to execute every declared check again when services or installed
 dependencies may have changed: those external bytes are not covered by local reuse.
 

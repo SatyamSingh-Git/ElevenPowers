@@ -1,5 +1,10 @@
 # Validation records
 
+- [2026-10-12 explicit PatchProof verification](2026-10-12-patchproof-verification.md): required-check planning, explicit execution, durable recovery, review repairs and qualified reuse.
+- [2026-10-12 PatchProof impact integration](2026-10-12-patchproof-impact.md): fresh graph/report input association and explained candidates, with retained coverage gaps.
+- [2026-10-12 declared OpenAPI observations](2026-10-12-patchproof-openapi.md): pinned compatibility producer and qualified saved receipts.
+- [2026-10-11 PatchProof v1](2026-10-11-patchproof-v1.md): exact committed identity, scoped existing evidence and exported bundles.
+
 - [2026-10-11 ordinary-session evidence](2026-10-11-ordinary-session-evidence.md): task identity without claims, preserved continuations, option-aware pytest scope and queue setup controls.
 
 - [2026-10-10 reverted-tree discrimination](2026-10-10-reverted-evidence.md): runner and package provenance in run manifests, forward and adversarial re-execution of 101 saved agent checks, and the environment causes of 53 that no longer reproduce.

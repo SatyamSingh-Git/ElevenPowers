@@ -30,7 +30,9 @@ python -S -c "import core.patchproof.planning; import core.patchproof.execution;
 ```
 
 Actual Python/Node assertions, source/configuration/environment drift, malformed
-and moving state, zero executed tests, exhausted budgets, output limits and actual
+and moving state/refs, late real failed receipts, verbose aggregate recovery,
+redacted command collisions, launch handoff signals, zero executed tests,
+exhausted budgets, output limits and actual
 CLI termination/recovery qualify the explicit workflow. The historical 20-second
 quoted-launch deadline remains unchanged. These controls run no model and do not
 establish coding benefit; [operation limits](../the-guide/patchproof-verification.md)
