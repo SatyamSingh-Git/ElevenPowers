@@ -40,7 +40,7 @@ jobs:
       - name: Standard-library runtime without site packages
         run: python -S -c "import core.pytest_scope; import core.commands; import eval.command_invocations; import core.milestones; import eval.milestones; import eval.milestone_rechecks; import core.milestones.rechecks; import core.milestones.automatic; import core.milestones.advice_worker; import core.milestones.delivery; import eval.advice_delivery; import eval.milestone_large; import eval.advice_callbacks; import eval.preservation; import eval.preservation_archive; import eval.preservation_cases; import eval.preservation_oracles; import core.impact; import core.strength.runner; import core.export; import core.hosts.validation; import core.hosts.performance; import eval.paired; import eval.benefit; import eval.benefit_archive; import eval.proposals; import eval.hard_archive; import eval.hard_audit"
       - name: PatchProof standard-library imports
-        run: python -S -c "import core.patchproof.identity; import core.patchproof.report; import eval.patchproof; import core.patchproof.openapi; import core.patchproof.contract_report; import eval.openapi_contracts; import eval.oasdiff_install"
+        run: python -S -c "import core.patchproof.identity; import core.patchproof.report; import core.patchproof.planning; import core.patchproof.execution; import core.patchproof.execution_state; import core.patchproof.execution_report; import eval.execution_reliability; import eval.patchproof; import core.patchproof.openapi; import core.patchproof.contract_report; import eval.openapi_contracts; import eval.oasdiff_install"
       - name: Pinned optional OpenAPI acceptance checker
         run: |
           python -m eval.oasdiff_install --directory .venv/oasdiff-ci

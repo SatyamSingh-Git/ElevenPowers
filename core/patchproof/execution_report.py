@@ -21,6 +21,8 @@ def inspect(root, patch, receipts, deadline, bound):
         if not saved['attempts']:
             return result
         current, _ = witness(root, patch, deadline)
+        if read(root) != saved:
+            raise ValueError('saved execution state changed during inspection')
         latest = {}
         for item in saved['attempts']:
             latest[item['command_digest']] = item

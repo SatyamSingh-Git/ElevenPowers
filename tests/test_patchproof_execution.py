@@ -240,3 +240,22 @@ def test_explicit_rerun_can_refresh_unobserved_external_inputs(runnable):
     assert value['state'] == 'passed'
     assert value['checks'][0]['status'] == 'passed'
     assert (root / '.elevenpowers/count.txt').read_text() == '2'
+
+
+def test_execution_state_moving_during_inspection_cannot_keep_old_success(runnable, monkeypatch):
+    from core.patchproof.execution import verify
+    from core.patchproof.report import build
+    from core.patchproof import execution_report, execution_state
+    root, base, head, _ = runnable
+    assert verify(root, base, head, seconds=120)['state'] == 'passed'
+    original = execution_report.witness
+    def moving(*args, **kwargs):
+        value = original(*args, **kwargs)
+        saved = execution_state.read(root)
+        saved['attempts'][-1]['status'] = 'incomplete'
+        execution_state.save(root, saved)
+        return value
+    monkeypatch.setattr(execution_report, 'witness', moving)
+    value = build(root, base, head)
+    assert value['execution']['state'] == 'incomplete'
+    assert not any(c['association'] == 'bound' for c in value['execution']['checks'])
