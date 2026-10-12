@@ -1,5 +1,14 @@
 # Postponed, with the trigger that would build it
 
+**GitHub presentation, 2026-10-13.** Read-only summaries and downloadable
+exact-patch bundles are implemented, with actual hosted transport and independent
+review repairs. Final delivery qualification is tracked in the
+[dated record](validation/2026-10-13-github-evidence.md).
+External-input/dependency/environment witnesses, further producers and live
+PR/fork publication remain open. Declared metadata and upload success do not
+establish independent authenticity or coding benefit. Older notes below retain
+their historical scope.
+
 **Explicit verification, 2026-10-12.** Required-check planning, explicit bounded
 execution, durable incomplete attempts and qualified reuse are implemented;
 full regression and four-job hosted qualification passed. GitHub evidence presentation, richer

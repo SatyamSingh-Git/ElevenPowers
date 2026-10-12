@@ -1,22 +1,26 @@
 # PatchProof contributor brief
 
-Status: v1, declared OpenAPI, default impact integration and explicit verification implemented, 2026-10-12; verification delivery qualification passed. See [observations](../validation/2026-10-12-patchproof-verification.md).
+Status: v1, declared OpenAPI, impact integration, explicit verification and GitHub evidence presentation implemented, 2026-10-13. See [latest observations](../validation/2026-10-13-github-evidence.md).
 Exact committed identity and scoped receipt bundles now exist inside the shared
 runtime. Read [the delivered contract](patchproof-v1.md) and
 [usage](../../the-guide/patchproof.md). The sections below preserve the original
-foundation criteria; a contributor should start with GitHub evidence presentation or a separately
+foundation criteria; a contributor should start with external-input witnesses or a separately
 qualified additional producer, not rebuild the identity/export foundation. No coding-benefit result is established by the bundle.
 
 The [OpenAPI adapter](patchproof-openapi.md) now implements the first producer
 and has passed delivery qualification. [Impact enrichment](patchproof-impact.md) now composes fresh default graph paths
 with exact patch/report inputs. Contributor starting points are explicit
-GitHub evidence presentation or a separately qualified additional producer.
+external-input/dependency/environment witnesses or a separately qualified additional producer.
 
 [Explicit verification](patchproof-verification.md) now reuses existing commands,
 ownership, parsers and receipts with exact patch/input/producer/environment guards.
 Plans and ordinary reports stay read-only; `--verify` is explicit and `--rerun`
 can refresh unobserved external inputs. Additional producer, dependency/environment
-witnesses and GitHub presentation remain contributor work.
+witnesses remain contributor work. [GitHub presentation](patchproof-github.md)
+now reuses that bundle in an informational summary and artifact. Next, define
+a bounded project-owned witness format, qualify changes and incomplete reads,
+and preserve conservative reuse whenever external freshness is unknown. Live
+PR/fork acceptance and authenticated CI import are separate contribution scopes.
 
 ## What is ready, and what is missing
 

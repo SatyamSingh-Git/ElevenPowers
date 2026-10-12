@@ -445,3 +445,6 @@ The first real PatchProof contract producer is recorded in [journey 74](74-a-con
 
 Explicit planning, durable command execution, qualified reuse and established
 deadline repairs are recorded in [journey 76](76-a-check-needs-time-to-leave-a-receipt.md).
+
+GitHub evidence presentation, actual artifact transport and the cached Windows
+termination boundary are recorded in [journey 77](77-the-upload-is-not-the-evidence.md).

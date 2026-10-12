@@ -1,5 +1,15 @@
 # ElevenPowers — living architecture graph
 
+GitHub evidence presentation now maps strict declared subjects, canonical public
+bundle hashes, literal bounded summaries, external-only CLI publication and
+pinned cloud transport in all five views. Actual commands and downloaded
+artifacts qualify the declared disposable exercise; live PR/fork publication
+and authenticated import remain open. The Planned card advances to explicit
+external-input witnesses and further producers. Review repairs cover public
+keys, hard links and cold bytecode; the newly established Windows original-
+handle completion boundary is repaired. See [guide](../the-guide/patchproof-github.md)
+and [qualification](../docs/validation/2026-10-13-github-evidence.md).
+
 Explicit PatchProof verification now maps read-only plans, owned bounded execution
 and fresh saved associations across every view. The Planned card advances to
 GitHub evidence presentation and additional producers. Historical unexplained
@@ -111,7 +121,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **148 nodes / 353 edges** across 7 planes (as of 2026-10-12),
+Current size: **153 nodes / 363 edges** across 7 planes (as of 2026-10-13),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -238,7 +248,7 @@ bounded receipt/phase history. Explicit `core/hosts/acceptance.py` preparation
 creates a new Python/Node exercise; inspection rechecks its immutable contract
 and requires native pass/fail/incomplete history plus fresh completion.
 
-The graph has 148 nodes, 353 edges and seven planes. Optional milestone declarations, atomic history, read-only inspection, graph leads and explicit capability exercises are drawn in all affected views. [Current status](../docs/status.md) and
+The graph has 153 nodes, 363 edges and seven planes. Optional milestone declarations, atomic history, read-only inspection, graph leads and explicit capability exercises are drawn in all affected views. [Current status](../docs/status.md) and
 [validation records](../docs/validation/README.md) describe which product paths
 were exercised. The Planned tab exposes unfinished work separately from those
 delivered paths. See [journey 59](../journey/59-a-roadmap-contributors-can-open.md)

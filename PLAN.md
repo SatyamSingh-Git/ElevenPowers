@@ -1,5 +1,22 @@
 # Master Plan v0.8
 
+**2026-10-13 — GitHub evidence presentation implemented; final delivery qualification in progress.**
+The reusable cloud Action and portable CLI expose exact declared subjects,
+unchanged receipt states, coverage gaps and canonical public bundle hashes.
+Actual command controls and hosted summary/upload/download acceptance passed;
+three independently reproduced review defects were repaired. Presentation runs
+no project check, installation or model and export success is informational.
+The latest main repeat revealed a distinct Windows cached-return-code race;
+an original-handle wait repaired it within the existing cleanup deadline.
+Expanded thirty-round controls passed in all four hosted cells. Earlier
+unrelated cleanup/launcher/SQLite causes remain open.
+See [guide](the-guide/patchproof-github.md) and [qualification](docs/validation/2026-10-13-github-evidence.md).
+
+Next: declared external-input/dependency/environment witnesses for conservative
+receipt reuse, with independent drift controls. Additional producers, live
+PR/fork transport, current-runtime installed qualification and causal coding
+benefit remain independent work. No fresh coding comparison or installed session.
+
 **2026-10-12 — explicit PatchProof verification delivered and qualified.**
 Read-only plans preserve required commands; separate explicit execution retains
 incomplete attempts, exact-head/input/configuration/policy/producer/environment

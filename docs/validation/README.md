@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-13 GitHub evidence presentation](2026-10-13-github-evidence.md): real command outcomes, original Windows handle completion, public export review repairs and actual artifact transport.
+
 - [2026-10-12 explicit PatchProof verification](2026-10-12-patchproof-verification.md): required-check planning, explicit execution, durable recovery, review repairs and qualified reuse.
 - [2026-10-12 PatchProof impact integration](2026-10-12-patchproof-impact.md): fresh graph/report input association and explained candidates, with retained coverage gaps.
 - [2026-10-12 declared OpenAPI observations](2026-10-12-patchproof-openapi.md): pinned compatibility producer and qualified saved receipts.
