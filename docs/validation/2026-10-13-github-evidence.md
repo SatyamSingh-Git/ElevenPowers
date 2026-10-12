@@ -147,10 +147,26 @@ This identity is local source bytes; hosted platform checkout bytes can differ.
 
 Post-review runtime matrix
 [38302638722](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38302638722),
-local full regressions, named audits, grader/source reproduction, doctor and
-all-five-view architecture rendering are in progress. Their completed outcomes,
-final downloaded artifact and main/Pages identity will be appended before
-delivery is marked qualified.
+at the exact post-review revision completed successfully in all five jobs.
+Each suite cell also passed its ten expanded reliability repetitions, stdlib
+imports, independent grader/source reproduction and host doctor.
+
+| Cell | Full regressions | Named audits |
+|---|---|---|
+| Windows / Python 3.11 | 2,166 passed, 4 skipped / 1641.03s | 107 passed / 76.72s |
+| Windows / Python 3.13 | 2,166 passed, 4 skipped / 1614.63s | 107 passed / 53.97s |
+| Linux / Python 3.11 | 2,162 passed, 8 skipped / 351.09s | 105 passed, 2 skipped / 22.20s |
+| Linux / Python 3.13 | 2,162 passed, 8 skipped / 365.79s | 105 passed, 2 skipped / 17.83s |
+
+Platform/privilege skips retain their qualified scope; these are not four
+identical denominators. The presentation job separately passed actual cloud
+transport. The earlier failed SQLite cleanup remains unresolved; this passing
+matrix does not establish its repair. Subsequent changes so far are only docs
+and architecture, with runtime/test/evaluation/Action/workflow files identical
+to the qualified revision.
+
+The local full suite remains in progress. Its completed outcome and main/Pages
+identity will be recorded before delivery is marked qualified.
 
 See [guide](../../the-guide/patchproof-github.md),
 [design](../design/patchproof-github.md) and

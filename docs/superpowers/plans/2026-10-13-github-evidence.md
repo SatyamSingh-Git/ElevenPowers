@@ -68,7 +68,7 @@ Consumes presentation; produces `markdown(value)` and `publish(value, destinatio
   values and injected Markdown; assert `'<script>' not in markdown(value)` and
   recorded omissions point to the full JSON artifact.
 - [x] Add excessive-size, existing destination, link and inside-project controls:
-  `with pytest.raises(ValueError): publish(value, root / 'artifact')`.
+  `with pytest.raises(ValueError): publish(value, root / 'artifact', project=root)`.
 - [x] Run RED; implement fixed new external directory, bounded escaped summary,
   canonical JSON and no-overwrite outputs; no project mutation or transport call.
 - [x] Run GREEN; commit/push `Export bounded literal GitHub evidence summaries`.
