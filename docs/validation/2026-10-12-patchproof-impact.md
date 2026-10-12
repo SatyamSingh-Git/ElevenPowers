@@ -59,3 +59,11 @@ The test now checks the same candidates using literal Markdown text. Runtime
 bytes did not change. The initial local full run was stopped after that known
 assertion failed; a fresh complete run uses the corrected expectation. Neither
 this repair nor later green CI resolves earlier unrelated cleanup/SQLite causes.
+
+The corrected matrix at `ce6c3a1` passed Linux 3.11, but its first Linux 3.13
+job reported `test_keyboard_interrupt_cleans_tree_before_reraising` with a
+surviving descendant (1 failed, 2,081 passed, 7 skipped). See the
+[retained job](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38230608648/job/114748864830).
+The root cause remains unknown; this is a recurrence in the earlier recorded
+POSIX cleanup area, not a demonstrated integration regression or a repair.
+Any identical-code rerun success below is separate qualification.

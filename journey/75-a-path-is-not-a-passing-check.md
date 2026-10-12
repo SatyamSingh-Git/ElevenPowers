@@ -50,3 +50,9 @@ although the candidates were present as escaped literal text. The same failure
 reproduced locally and in both Linux jobs. The assertion now checks literal
 content, retaining the focused/fallback requirement; no runtime bytes changed.
 The initial full run was replaced with a fresh run of all checks.
+
+The corrected hosted matrix also surfaced a surviving descendant in the Linux
+3.13 interrupt-cleanup control while Linux 3.11 passed. The process runner was
+unchanged by this milestone. That identifies the failing observation, not its
+cause: it remains an open issue in the previously recorded POSIX cleanup area.
+A green retry cannot be presented as a runtime repair.
