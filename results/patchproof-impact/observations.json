@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "producing_commit": "5d04ec539eac9d6d45c96f61a5f0843ae5e3ca2f",
+  "runtime_fingerprint": "c58c3b8c024bc05411555b3a2826a22f4e5f8d6045342664003c16ded6b9fcce",
+  "case": "ElevenPowers committed integration range with contemporaneous local evidence",
+  "base": "ad1539c481698c03e30687aa0d0119badc2906f1",
+  "head": "5d04ec539eac9d6d45c96f61a5f0843ae5e3ca2f",
+  "patch_id": "896d6fdc668165331ea6fca8ea13f34dac4d6feda80350d56a1f8f79d18f190f",
+  "content_digest": "c06f3685eb2e91f4cee82fd997b4cb1c6b459d4efe304080c823b463788699c2",
+  "source_fingerprint": "654811f556d27b20669fe6aa2ad392c6e46aced18733e116d7b6cb76b39a10d6",
+  "snapshot_digest": "a47b0bcd5fc224e509c48dedeb47ee18f39376a663e31cf5cbfeec35d8e450c0",
+  "repository_policy_fingerprint": "ad8995da1500f877639ae741a8c3f819edb96553babf94d26e1dd34548d8ec17",
+  "elapsed_seconds": 31.315,
+  "receipt_binding": "bound",
+  "impact_state": "incomplete",
+  "impact_association": "unavailable",
+  "association_issues": [
+    "graph input or declaration coverage is incomplete",
+    "graph/evidence source fingerprints are incompatible"
+  ],
+  "coverage": {
+    "selected_files": 1456,
+    "read_files": 1455,
+    "complete": false,
+    "issue_count": 1262,
+    "unread_input": "results/impact-acceptance/coverage-nodes.json exceeds 4 MiB per-file limit"
+  },
+  "diagnostic_candidates": {
+    "affected_nodes": 60,
+    "focused_tests": 0,
+    "fallback_tests": 33,
+    "support_files": 0,
+    "safe_to_exclude_fallback": false
+  },
+  "limits": [
+    "One descriptive local read alongside ongoing tests, not a latency benchmark.",
+    "No independently labelled consumer recall or coding-benefit claim.",
+    "Diagnostic paths are unqualified; omitted graph inputs remain explicit.",
+    "This saved observation predates later documentation additions; regenerate for current inputs."
+  ]
+}

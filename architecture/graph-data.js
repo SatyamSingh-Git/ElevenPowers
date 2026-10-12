@@ -3451,6 +3451,26 @@ window.ELEVENPOWERS_GRAPH = {
       "source": "patch-impact",
       "target": "runtime-provenance",
       "label": "producer identity"
+    },
+    {
+      "source": "patch-impact",
+      "target": "patch-identity",
+      "label": "bounded Git metadata"
+    },
+    {
+      "source": "patch-impact",
+      "target": "process",
+      "label": "policy read limits"
+    },
+    {
+      "source": "patch-impact",
+      "target": "impact-query",
+      "label": "candidate explanations"
+    },
+    {
+      "source": "impact-query",
+      "target": "portable-export",
+      "label": "literal Markdown escaping"
     }
   ]
 };

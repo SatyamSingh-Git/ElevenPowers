@@ -34,3 +34,12 @@ repair; the single repair pass then passed all 24 integration checks in 111.03s.
 The policy witness covers unchanged-selection local, configured/default global
 and ignored nested rules and refuses excessive policy bytes. No re-review or
 model session was run. Final full and hosted qualification follows below.
+
+The separate final review regressions passed 5 in 26.03s. A real read of
+ElevenPowers at `5d04ec5` selected 1,456 files and read 1,455: receipt binding
+remained bound while impact stayed unavailable/incomplete because a tracked
+coverage artifact exceeds the existing 4 MiB per-file limit and queries retain
+semantic gaps. Sixty affected nodes and 33 fallback tests remain diagnostic.
+The 31.315s wall time was observed alongside tests, not a latency benchmark.
+[Saved identities and counts](../../results/patchproof-impact/observations.json)
+retain the producing snapshot; later source-selected docs change current inputs.
