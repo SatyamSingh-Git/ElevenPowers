@@ -21,6 +21,8 @@ def main():
     root = Path(__file__).resolve().parents[1]
     tests = ['tests/test_process.py::test_keyboard_interrupt_cleans_tree_before_reraising',
              'tests/test_process.py::test_sigterm_cleans_tree_in_main_thread',
+             'tests/test_process.py::test_real_interrupt_during_creation_handoff_cleans_created_process',
+             'tests/test_process.py::test_cancelled_creation_waits_for_original_kernel_handle',
              'tests/test_host_setup.py::test_codex_setup_launches_quoted_paths']
     started = time.monotonic()
     for index in range(args.repetitions):

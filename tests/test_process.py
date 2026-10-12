@@ -285,6 +285,35 @@ def test_creation_handoff_preserves_custom_signal_handler(tmp_path, monkeypatch)
         signal.signal(signal.SIGINT, previous)
 
 
+@pytest.mark.skipif(os.name != 'nt', reason='Windows asynchronous termination')
+def test_cancelled_creation_waits_for_original_kernel_handle(tmp_path, monkeypatch):
+    import _winapi
+    process = runner()
+    original = subprocess.Popen
+    created = []
+    def launch(*args, **kwargs):
+        child = original(*args, **kwargs)
+        created.append(child)
+        signal.raise_signal(signal.SIGINT)
+        return child
+    monkeypatch.setattr(process.subprocess, 'Popen', launch)
+    try:
+        for _ in range(8):
+            with pytest.raises(KeyboardInterrupt):
+                process.run(python('import time;time.sleep(60)'), cwd=tmp_path,
+                            timeout=10, shell=False)
+            child = created[-1]
+            state = _winapi.WaitForSingleObject(child._handle, 0)
+            assert state == _winapi.WAIT_OBJECT_0, (
+                f'cached exit {child.returncode} is not kernel termination: state {state}')
+    finally:
+        for child in created:
+            if _winapi.WaitForSingleObject(child._handle, 0) == _winapi.WAIT_TIMEOUT:
+                child.kill()
+            assert _winapi.WaitForSingleObject(child._handle, 5000) == _winapi.WAIT_OBJECT_0
+            child.wait(timeout=5)
+
+
 def test_launch_errors_are_not_success(tmp_path):
     with pytest.raises(OSError):
         runner().run([str(tmp_path / "nonexistent-program")],

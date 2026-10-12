@@ -105,12 +105,27 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
                 if child:
                     if child.poll() is None:
                         child.kill()  # Also handles a failed Windows assignment.
-                    child.wait(timeout=max(0, cleanup_deadline - time.monotonic()))
+                    _reap(child, cleanup_deadline)
         _check_output(command, out, err)
         stdout, stderr = _read(out, text=text), _read(err, text=text)
         if timed_out:
             raise subprocess.TimeoutExpired(command, timeout, stdout, stderr)
         return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
+
+
+def _reap(child, deadline):
+    child.wait(timeout=max(0, deadline - time.monotonic()))
+    if os.name == 'nt':
+        # TerminateProcess's access-denied recovery can cache an exit code while
+        # termination is still asynchronous. Popen.wait then skips its kernel
+        # wait. Check the original handle, not a PID that may later be reused.
+        import _winapi
+        milliseconds = int(max(0, deadline - time.monotonic()) * 1000)
+        state = _winapi.WaitForSingleObject(child._handle, milliseconds)
+        if state == _winapi.WAIT_TIMEOUT:
+            raise subprocess.TimeoutExpired(child.args, CLEANUP_SECONDS)
+        if state != _winapi.WAIT_OBJECT_0:
+            raise OSError('process termination could not be confirmed')
 
 
 def _check_output(command, out, err) -> None:

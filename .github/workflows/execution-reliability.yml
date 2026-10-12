@@ -5,7 +5,7 @@ on:
 
 jobs:
   retained-controls:
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -19,4 +19,4 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: python -m pip install pytest
       - name: Repeat actual interrupt, termination and quoted launcher controls
-        run: python -m eval.execution_reliability --repetitions 30 --seconds 360
+        run: python -m eval.execution_reliability --repetitions 30 --seconds 600
