@@ -6,6 +6,7 @@
 python plugin/bin/ep_patchproof.py --project PATH --base HEAD~1 --head HEAD
 python plugin/bin/ep_patchproof.py --project PATH --base BASE --head HEAD --format json --output bundle.json
 python plugin/bin/ep_patchproof.py --project PATH --require-bound --timeout 120
+python plugin/bin/ep_patchproof.py --project PATH --impact
 ```
 
 Read-only schema-1 bundle wrapping the unchanged portable report. Full commit
@@ -622,6 +623,9 @@ synthetic host launchers, opening task identity via ordinary prompt callbacks.
 It refuses existing destinations and launches no model. Results explicitly
 separate replay/synthetic ingress from installed acceptance; see
 [qualification and limits](../docs/validation/2026-10-11-ordinary-session-evidence.md).
+
+Optional `ep_patchproof --impact` adds fresh [explained recommendations](patchproof-impact.md),
+not execution evidence. It retains all declared checks and graph coverage gaps.
 
 ## ep_contract — observe declared OpenAPI compatibility
 

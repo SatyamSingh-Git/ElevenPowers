@@ -41,6 +41,11 @@ additive `contracts` section. Result, execution, freshness and exact-patch
 association remain separate; compatibility outside those standalone specs is
 unsupported. Ordinary bundle export never launches the checker.
 
+Optional [ImpactGraph enrichment](patchproof-impact.md) adds patch-qualified
+consumer paths and focused/fallback/support test candidates through `--impact`.
+Graph recommendations remain separate from execution receipts and incomplete
+semantic coverage stays visible.
+
 ## Reading the bundle
 
 | Field | What it establishes |
@@ -51,6 +56,7 @@ unsupported. Ordinary bundle export never launches the checker.
 | `checks` | Latest matching project-declared command observations; current, failed, stale, incomplete, no-tests or absent. |
 | `verification` | The existing schema-1 task report, with its original verdict and obligations. |
 | `contracts` | Declared standalone OpenAPI checks, saved producer/configuration/input identities and current qualifications. |
+| `impact` | Optional fresh graph recommendations, exact patch/input identities and coverage qualifications; never passing evidence. |
 | `coverage` | Changed paths without a qualified receipt association and unsupported compatibility categories. |
 
 `bound` is an input association. A fresh failing or interrupted receipt can be

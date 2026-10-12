@@ -32,7 +32,7 @@
 4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 5. **Resumable verification:** saves check progress and receipts so interrupted work can resume, fresh results can be reused and later edits can invalidate outdated evidence.
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether results still match the current files, where evidence is missing and what needs attention next.
-7. **PatchProof:** binds exact committed patches to qualified receipts and declared OpenAPI compatibility observations, with evidence and gaps for review.
+7. **PatchProof:** binds exact committed patches to qualified receipts, declared OpenAPI observations and optional explained impact recommendations, with evidence and gaps for review.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
@@ -646,6 +646,11 @@ Most requests state no claim, because one real prompt in five is four words or f
 For a repeatable local test environment, see [Development and verification](docs/development.md).
 
 ## Where this actually is
+
+[Patch-qualified ImpactGraph recommendations](the-guide/patchproof-impact.md) now
+join consumer paths and focused/fallback/support test candidates to the exact
+patch bundle. Fresh scan/input identities qualify association; recommendations
+never become passing receipts and missing paths never justify skipping checks.
 
 [Declared OpenAPI checks](the-guide/contracts.md) now add a real compatibility
 producer to PatchProof. Explicit checks validate and compare committed JSON/YAML

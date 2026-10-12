@@ -7,7 +7,8 @@ subsequent work; see [design](design/patchproof-openapi.md).
 **PatchProof v1, 2026-10-11.** Exact committed patch descriptions and scoped
 existing receipt bundles are implemented and qualified by model-free controls
 and the four-job hosted matrix.
-Working-tree identity, compatible graph enrichment, contract adapters, explicit
+Compatible default graph enrichment is now implemented; broader adapters,
+working-tree identity, additional contract adapters, explicit
 verification execution and GitHub presentation remain subsequent work. See
 [design](design/patchproof-v1.md) and [guide](../the-guide/patchproof.md).
 

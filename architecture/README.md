@@ -1,5 +1,10 @@
 # ElevenPowers — living architecture graph
 
+Optional PatchProof impact enrichment now maps fresh graph/report input identities,
+exact patch associations and explained test candidates across all five views.
+Its Planned card advances to explicit bounded verification and further producers.
+Recommendations remain separate from execution and incomplete coverage stays visible.
+
 PatchProof v1 adds exact committed/tree-pair identity, scoped receipt bundles,
 explicit export and real Python/Node controls in all affected views. Its Planned
 card now tracks graph/contract enrichment rather than the delivered foundation.

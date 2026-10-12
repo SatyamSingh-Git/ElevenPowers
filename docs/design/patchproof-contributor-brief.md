@@ -1,16 +1,16 @@
 # PatchProof contributor brief
 
-Status: v1 delivered and qualified, 2026-10-11.
+Status: v1 and declared OpenAPI delivered; impact integration implemented, 2026-10-12.
 Exact committed identity and scoped receipt bundles now exist inside the shared
 runtime. Read [the delivered contract](patchproof-v1.md) and
 [usage](../../the-guide/patchproof.md). The sections below preserve the original
-foundation criteria; a contributor should start with one real contract receipt
-adapter or compatible ImpactGraph enrichment, not rebuild the identity/export
-foundation. No coding-benefit result is established by the bundle.
+foundation criteria; a contributor should start with explicit bounded verification or a separately
+qualified additional producer, not rebuild the identity/export foundation. No coding-benefit result is established by the bundle.
 
 The [OpenAPI adapter](patchproof-openapi.md) now implements the first producer
-and has passed delivery qualification. Contributor starting points are
-compatible graph enrichment or a separately qualified additional producer.
+and has passed delivery qualification. [Impact enrichment](patchproof-impact.md) now composes fresh default graph paths
+with exact patch/report inputs. Contributor starting points are explicit
+verification planning/execution or a separately qualified additional producer.
 
 ## What is ready, and what is missing
 
@@ -19,7 +19,7 @@ portable JSON/Markdown reports, and exposes a fresh ImpactGraph API. These are
 enough to implement PatchProof without waiting for every graph adapter or automatic
 host integration. V1 connects a committed patch to currently matching scoped
 inputs. Applicable contract properties, richer producer/environment identity and
-compatible graph enrichment remain contribution opportunities.
+additional graph adapters remain contribution opportunities.
 
 Build inside ElevenPowers first. Reuse the shared evidence, scanning, redaction
 and output policies; keep the CLI and Python API usable without an AI host.
@@ -90,8 +90,8 @@ output limits; it must not be advertised as a security sandbox.
 
 | Contribution | Useful output | Boundary |
 |---|---|---|
-| ImpactGraph enrichment | Changed areas, explained consumer paths, focused/fallback/support test candidates and graph gaps in the bundle | Graph recommendations do not establish passing assertions, safe test exclusion or exhaustive blast radius. Compare graph and report input identities; do not combine incompatible fingerprints by assumption. |
-| One contract receipt adapter | Applicable contract, real checker identity/version, exact inputs and configuration, result, limits and freshness | Choose one producer, run it before defining its output parser, and cover legitimate, incompatible and stale cases. An unsupported contract stays absent/unsupported. |
+| Delivered default ImpactGraph enrichment | Changed areas, explained consumer paths, focused/fallback/support test candidates and graph gaps in the bundle | Graph recommendations do not establish passing assertions, safe test exclusion or exhaustive blast radius. Compare graph and report input identities; do not combine incompatible fingerprints by assumption. |
+| Additional contract receipt adapter | Applicable contract, real checker identity/version, exact inputs and configuration, result, limits and freshness | Choose one producer, run it before defining its output parser, and cover legitimate, incompatible and stale cases. An unsupported contract stays absent/unsupported. |
 | Explicit verification execution | Project-declared checks with complete/pass, complete/fail and incomplete receipts | No model calls, command execution or installation during ordinary report creation. Preserve existing runner limits; stronger isolation needs a separate design. |
 | GitHub presentation | A check summary and downloadable evidence bundle linked to the exact patch | Local unsigned receipts do not become independent attestation by being uploaded. Missing checks must not become a green safety badge. |
 

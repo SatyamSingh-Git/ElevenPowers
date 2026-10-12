@@ -1,5 +1,16 @@
 # Current delivery status
 
+**2026-10-12 — PatchProof impact integration implemented.** Optional `--impact`
+joins fresh compatible graph snapshots to exact patch/report inputs, explained
+consumer paths and focused/fallback/support test candidates. Input association
+and semantic completeness remain separate; recommendations never become passing
+receipts or safe exclusions. Final review and full/hosted qualification are being
+completed. See [guide](../the-guide/patchproof-impact.md).
+
+Next: explicit bounded verification planning/execution, then GitHub presentation.
+Other graph/contract producers and broader installed qualification remain open.
+No new model run or causal coding-benefit claim.
+
 **2026-10-12 — declared OpenAPI contract observations delivered and qualified.**
 The first PatchProof contract adapter uses pinned oasdiff 1.33.0 against
 project-declared committed JSON/YAML specifications. Validation precedes

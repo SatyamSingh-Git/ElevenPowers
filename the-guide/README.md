@@ -151,4 +151,5 @@ for priority/state separation and the explicit independent exercise.
 
 Optional [automatic edit advice](milestones.md#optional-automatic-edit-advice) uses a bounded worker after project opt-in; it never replaces explicit verification.
 
+- [PatchProof impact recommendations](patchproof-impact.md): patch-qualified consumers, candidate tests and explicit graph gaps.
 - [Declared OpenAPI contract checks](contracts.md): explicit real producer, retained results and fresh PatchProof association.

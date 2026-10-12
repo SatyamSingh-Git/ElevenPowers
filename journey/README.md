@@ -1,5 +1,10 @@
 # The journey
 
+Latest: [75 — a path is not a passing check](75-a-path-is-not-a-passing-check.md).
+
+Recent: [74 — a contract needs a producer](74-a-contract-needs-a-producer.md) and
+[73 — a patch needs its own identity](73-a-patch-needs-its-own-identity.md).
+
 Latest: [72 — a task is not a claim](72-a-task-is-not-a-claim.md).
 
 Latest: [71 — one cell of ten](71-one-cell-of-ten.md).

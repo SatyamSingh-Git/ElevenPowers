@@ -5,6 +5,9 @@ local graph for any project and returns actual dependency paths, candidate tests
 optional declared contracts, qualified observations and separate Git associations.
 It works without an AI agent and executes no target source or verification command.
 
+You can also include default fresh graph recommendations in
+[PatchProof bundles](patchproof-impact.md) with `ep_patchproof.py --impact`.
+
 ## Query before editing
 
 Process launches and custom dispatch can cross boundaries that static imports
