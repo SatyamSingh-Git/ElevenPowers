@@ -36,6 +36,11 @@ Renames retain Git's heuristic similarity and both paths, modes and blob IDs.
 Binary files retain identity without exposing contents. Empty patches remain
 distinct from failed or incomplete collection.
 
+Saved [declared OpenAPI observations](contracts.md) are now available in an
+additive `contracts` section. Result, execution, freshness and exact-patch
+association remain separate; compatibility outside those standalone specs is
+unsupported. Ordinary bundle export never launches the checker.
+
 ## Reading the bundle
 
 | Field | What it establishes |
@@ -45,6 +50,7 @@ distinct from failed or incomplete collection.
 | `receipts` | Original outcome, execution completeness and freshness, plus the changed paths in each recorded scope. |
 | `checks` | Latest matching project-declared command observations; current, failed, stale, incomplete, no-tests or absent. |
 | `verification` | The existing schema-1 task report, with its original verdict and obligations. |
+| `contracts` | Declared standalone OpenAPI checks, saved producer/configuration/input identities and current qualifications. |
 | `coverage` | Changed paths without a qualified receipt association and unsupported compatibility categories. |
 
 `bound` is an input association. A fresh failing or interrupted receipt can be

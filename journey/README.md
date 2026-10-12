@@ -435,3 +435,5 @@ and a subscription pilot. The original eight comparison records are inconclusive
 with no callbacks and no repaired candidates. Task size was not a criterion.
 See [journey 54](54-a-comparison-needs-a-working-host.md) and
 [validation](../docs/validation/2026-10-02-native-validation.md).
+
+The first real PatchProof contract producer is recorded in [journey 74](74-a-contract-needs-a-producer.md).

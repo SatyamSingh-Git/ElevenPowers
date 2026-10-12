@@ -622,3 +622,13 @@ synthetic host launchers, opening task identity via ordinary prompt callbacks.
 It refuses existing destinations and launches no model. Results explicitly
 separate replay/synthetic ingress from installed acceptance; see
 [qualification and limits](../docs/validation/2026-10-11-ordinary-session-evidence.md).
+
+## ep_contract — observe declared OpenAPI compatibility
+
+`python plugin/bin/ep_contract.py --project PATH --id ID --engine OASDIFF_EXECUTABLE --base BASE --head HEAD`
+explicitly validates and compares committed standalone specs with pinned oasdiff
+1.33.0, retaining a qualified receipt. Use `--format json --output PATH` for export,
+`--force` for replacement and `--seconds 0..600` (default 30). Exits 0/1/2 mean
+complete without ERR findings / complete with ERR findings / incomplete or error.
+Ordinary PatchProof export reads these observations and runs no checker.
+See [declarations, setup and limits](contracts.md).

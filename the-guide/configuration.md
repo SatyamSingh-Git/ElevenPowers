@@ -416,3 +416,12 @@ aliases remain selected runs. Unknown plugin options or missing
 values carry an explicit coverage qualification instead of guessed scope.
 Completed outcome, counts and exact raw/configured command identities remain
 available; a scope gap cannot establish broad suite coverage.
+
+## Project-declared OpenAPI contracts
+
+Commit `elevenpowers.contracts.json` with schema 1 and a `contracts` array of
+`{"id":"public-api","kind":"openapi","path":"api/openapi.yaml"}` entries.
+Declarations make applicability explicit; absent receipts stay absent. The
+optional checker is selected only by an explicit `ep_contract --engine` call,
+with a fixed recorded policy. Export runs no checks or installation.
+See [the contract guide](contracts.md) for limits and supported formats.

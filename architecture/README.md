@@ -98,7 +98,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **137 nodes / 321 edges** across 7 planes (as of 2026-10-11),
+Current size: **143 nodes / 333 edges** across 7 planes (as of 2026-10-11),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
