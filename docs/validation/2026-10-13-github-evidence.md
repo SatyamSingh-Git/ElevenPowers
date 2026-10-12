@@ -116,6 +116,9 @@ presentation job passed. The log establishes a retained open-file symptom, not
 which process held the file or a demonstrated SQLite/runner repair. The final
 post-review matrix remains a separate qualification, not a replacement for this
 failure. No assertion, cleanup deadline or correctness grade was weakened.
+Both unchanged reference controls passed in five local repetitions (7.31,
+7.05, 7.04, 7.00 and 7.02 seconds per pair). This did not reproduce the hosted
+open-file symptom and does not establish its cause or repair.
 
 ## Final qualification and publication
 

@@ -99,6 +99,13 @@ free-text cell, with explicit omissions and compact fallback if needed.
 Output directories are new, unlinked and outside the inspected project; filenames
 are fixed. Publication does not change project state. Actions file writing is
 explicit (`--actions`); local generation never touches runner environment files.
+Existing runner targets and opened descriptors must have exactly one hard link;
+preflight validates distinct external bounded regular files. The CLI suppresses
+bytecode before imports and the Action uses isolated Python with `-B`, preserving
+cold vendored checkouts. Public-only redaction covers dictionary keys and values;
+colliding scrubbed keys are a controlled refusal, never silent record loss.
+Private ledger/configuration identities are not rewritten. Hostile concurrent
+parent replacement and an atomic filesystem transaction are not qualified.
 Uploader links are appended only after successful upload and checked against the
 declared repository and run ID. Artifact retention/login requirements remain
 GitHub conditions; upload hashes do not sign the local evidence.
@@ -119,3 +126,8 @@ metadata, download and independently verify its JSON/content hash. Model-free
 controls establish presentation and recovery, not AI coding benefit. Full suite,
 named audits, independent grader, doctor, rendered architecture and hosted matrix
 are final gates, with all historical failures and limits retained.
+
+Delivered controls and actual cloud artifact observations are recorded in
+[dated validation](../validation/2026-10-13-github-evidence.md). Broader live PR/
+fork publication, additional producers and external-input witnesses remain
+separate work; informational export is not authenticated CI import.
