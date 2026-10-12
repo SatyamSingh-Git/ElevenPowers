@@ -180,8 +180,22 @@ inactive-ref/identical-tree switch preserved the local qualified runtime byte
 fingerprint above. The publication-record follow-up changes documentation only.
 Automatic main [repeat 38307508233](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38307508233)
 was still running when this record was written. It is separate from the completed
-final-code qualification, never credited as passing before completion. Pages
-publication and the served architecture bytes are checked independently.
+final-code qualification, never credited as passing before completion.
+The documentation closure at
+[`1ea73f920a632d08657c3354228054acf8e1fed7`](https://github.com/SatyamSingh-Git/ElevenPowers/commit/1ea73f920a632d08657c3354228054acf8e1fed7)
+also matched both remote refs. Its automatic main
+[repeat 38307644781](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38307644781)
+was still running and is not credited as completed.
+
+[Pages deployment 38307507556](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38307507556)
+succeeded. A fresh HTTPS fetch matched the current committed Git blobs exactly:
+HTML 327,623 bytes, SHA-256
+`0e8f9f7bb6d92f9ea037b9b3951692dfb71743700ea2fab1c4a5ea61a7aa77a4`;
+graph data 180,219 bytes, SHA-256
+`d08549938f5bbcc6be646c91cd53c3b87d6e45d30901e8ac3c99c19d7bcb5d14`.
+The subsequent publication-proof entry changes this record only; architecture
+and qualified runtime bytes remain unchanged. No later automatic run is inferred
+successful from this byte comparison.
 
 See [guide](../../the-guide/patchproof-github.md),
 [design](../design/patchproof-github.md) and
