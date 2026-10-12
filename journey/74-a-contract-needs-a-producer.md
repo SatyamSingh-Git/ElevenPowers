@@ -31,7 +31,8 @@ No caller-specific directory exception was introduced.
 
 The model-free exercise uses unrelated JSON/Python and YAML/JavaScript projects
 and distinguishes current, failed, incomplete, stale and absent observations.
-Review and full qualification are recorded in the dated validation as they finish.
+Review and full qualification are recorded in the dated validation. Full local
+regressions, named audit probes and four hosted jobs passed after the repairs.
 The fresh review then exposed what the producer alone did not qualify: duplicate
 JSON names could hide paths, and dynamic schema references could pass without
 observed external inputs. Strict JSON names and a producer-derived structural

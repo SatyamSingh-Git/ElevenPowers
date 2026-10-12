@@ -20,8 +20,8 @@ Development observations:
 - The explicit installer downloaded and verified the official archive; version
   1.33.0 and standard-library imports were observed.
 
-Full regression, independent review, hosted matrix and final publication are
-pending. [Design](../design/patchproof-openapi.md) and
+Final repaired qualification is recorded below; the development counts retain
+their producing stage. [Design](../design/patchproof-openapi.md) and
 [guide](../../the-guide/contracts.md) state the implementation boundaries.
 Earlier installed successes remain dated at their recorded runtime identity;
 this extension runs no new installed session and establishes no coding benefit.
@@ -38,4 +38,26 @@ or additional model session was run.
 
 The earlier combined new/existing focused suite passed **105 checks, 2 skipped in
 326.29 seconds** before the input-policy repairs. Final full/hosted qualification
-is pending against the repaired code; do not substitute that earlier count.
+below uses the repaired code; the earlier count is not substituted.
+
+## Completed repaired qualification
+
+Local full regression: **2063 passed, 2 skipped in 1368.86s (0:22:48)**. Named audit probes: **107 passed
+in 100.64 seconds**. All 37 contract controls passed after review repairs;
+the [four-job hosted qualification](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38214465591) passed on Ubuntu/Windows, Python 3.11/3.13, at
+`02b1c55`. Official pinned binaries are installed explicitly in CI;
+real producer acceptance is not replaced by launcher fixtures.
+
+Standard-library imports, all 11 host probes, four independent grader
+controls and preserved source grades passed. Both earlier stage-one 6/6
+and final 8/8 ties remain; no agent session was rerun. Architecture
+143 nodes / 338 edges, all five views rendered.
+
+[Final observations](../../results/patchproof-openapi/final-observations.json)
+retain the five expected states and independently matching Git/input
+identities in both projects. [Initial observations](../../results/patchproof-openapi/observations.json)
+remain unchanged at their earlier producer/configuration identity. Final
+runtime fingerprint: `57ab817aa257d22915e60260b1f4d633d8c10f3dbddfba0cd9bb503d9c68df28`.
+No deferred Minor findings and no new model calls. Prior intermittent
+cleanup/SQLite-reference observations remain unresolved; these green runs
+do not establish repairs for them.

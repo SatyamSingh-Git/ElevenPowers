@@ -1,11 +1,15 @@
 # Master Plan v0.8
 
-**2026-10-12 — declared OpenAPI contract observations; qualification in progress.**
+**2026-10-12 — declared OpenAPI contract observations delivered and qualified.**
 The first PatchProof contract adapter uses pinned oasdiff 1.33.0 against
 project-declared committed JSON/YAML specifications. Validation precedes
 comparison; producer/input/configuration hashes, limits and retained
 incomplete outcomes remain explicit. Exports freshly inspect saved receipts
 without launching the checker. See [guide](the-guide/contracts.md) and [design](docs/design/patchproof-openapi.md).
+
+Full local regressions, 107 named audit probes and all four hosted jobs passed;
+see [dated qualification](docs/validation/2026-10-12-patchproof-openapi.md). Three Important review findings
+were reproduced and repaired in one pass; no new installed/model run.
 
 Next: compatible ImpactGraph enrichment. Other producers, custom policies,
 multi-file specs and broader explicit verification remain independent work.

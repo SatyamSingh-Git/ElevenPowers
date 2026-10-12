@@ -650,8 +650,8 @@ For a repeatable local test environment, see [Development and verification](docs
 [Declared OpenAPI checks](the-guide/contracts.md) now add a real compatibility
 producer to PatchProof. Explicit checks validate and compare committed JSON/YAML
 specifications with pinned oasdiff; ordinary export reads saved results, fresh
-input/producer/configuration identities and remaining gaps. Qualification is
-recorded in [the dated validation](docs/validation/2026-10-12-patchproof-openapi.md).
+input/producer/configuration identities and remaining gaps. Repaired controls,
+full regressions and four hosted jobs passed; results are recorded in [the dated validation](docs/validation/2026-10-12-patchproof-openapi.md).
 
 [PatchProof v1](the-guide/patchproof.md) now identifies a committed patch and
 exports qualified existing receipt associations, missing checks and unobserved

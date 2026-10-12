@@ -9,7 +9,7 @@ adapter or compatible ImpactGraph enrichment, not rebuild the identity/export
 foundation. No coding-benefit result is established by the bundle.
 
 The [OpenAPI adapter](patchproof-openapi.md) now implements the first producer
-and is undergoing delivery qualification. Contributor starting points are
+and has passed delivery qualification. Contributor starting points are
 compatible graph enrichment or a separately qualified additional producer.
 
 ## What is ready, and what is missing

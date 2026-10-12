@@ -1,7 +1,7 @@
 # Postponed, with the trigger that would build it
 
 **2026-10-12.** A declared standalone OpenAPI producer is implemented and
-undergoing qualification. Multi-file/custom policies and other producers stay
+qualified by full regressions and four hosted jobs. Multi-file/custom policies and other producers stay
 subsequent work; see [design](design/patchproof-openapi.md).
 
 **PatchProof v1, 2026-10-11.** Exact committed patch descriptions and scoped
