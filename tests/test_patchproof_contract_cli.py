@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import pytest
 
 from test_patchproof_openapi import engine, project, spec
 
@@ -36,3 +37,24 @@ def test_explicit_output_refuses_overwrite_and_allows_force(tmp_path, engine):
     assert output.read_text() == 'keep'
     assert invoke(root, engine, '--format', 'json', '--output', str(output), '--force').returncode == 0
     assert json.loads(output.read_text())['execution'] == 'complete'
+
+
+@pytest.mark.parametrize('deep', [False, True])
+def test_damaged_receipt_shape_returns_error_without_traceback(tmp_path, engine, deep):
+    from core.patchproof.openapi import check
+    from core.patchproof.report import build
+    root = project(tmp_path / 'project')
+    check(root, 'api', engine)
+    path = root / '.elevenpowers/contracts.json'
+    if deep:
+        path.write_bytes(b'[' * 10000 + b']' * 10000)
+    else:
+        value = json.loads(path.read_text())
+        value['records'][0]['inputs'] = ['base', 'head']
+        path.write_text(json.dumps(value))
+    before = path.read_bytes()
+    done = invoke(root, engine)
+    assert done.returncode == 2 and 'Traceback' not in done.stderr, done.stderr
+    assert path.read_bytes() == before
+    value = build(root)['contracts']
+    assert not value['complete'] and value['checks'][0]['state'] == 'unavailable'

@@ -29,7 +29,7 @@ def spec(paths=None):
                 '/items': {'get': {'responses': {'200': {'description': 'ok'}}}}}}
 
 
-def project(root, revised=None, path='api.json'):
+def project(root, revised=None, path='api.json', initial_raw=None):
     root.mkdir(exist_ok=True)
     git(root, 'init', '-q')
     git(root, 'config', 'user.email', 'test@example.invalid')
@@ -37,7 +37,7 @@ def project(root, revised=None, path='api.json'):
     git(root, 'config', 'core.autocrlf', 'false')
     manifest(root, [{'id': 'api', 'kind': 'openapi', 'path': path}])
     (root / path).parent.mkdir(parents=True, exist_ok=True)
-    (root / path).write_bytes(json.dumps(spec()).encode())
+    (root / path).write_bytes(json.dumps(spec()).encode() if initial_raw is None else initial_raw)
     git(root, 'add', '.')
     git(root, 'commit', '-qm', 'Base contract')
     (root / path).write_bytes(json.dumps(spec() if revised is None else revised).encode())
@@ -123,3 +123,49 @@ def test_glob_and_unicode_contract_paths_are_literal_git_inputs(tmp_path, engine
     root = project(tmp_path, path='schema[1]/契約.yaml')
     row = check(root, 'api', engine)
     assert row['result'] == 'pass' and row['execution'] == 'complete', row
+
+
+@pytest.mark.parametrize('path', ['api.json', 'api.yaml'])
+def test_duplicate_json_keys_never_qualify_even_with_yaml_suffix(tmp_path, engine, path):
+    from core.patchproof.openapi import check
+    duplicate = json.dumps(spec()).encode()[:-1] + b',"paths":{}}'
+    root = project(tmp_path, spec({}), path=path, initial_raw=duplicate)
+    row = check(root, 'api', engine)
+    assert row['execution'] == 'incomplete' and row['result'] == 'unknown', row
+
+
+def test_dynamic_external_schema_is_unobserved_not_compatible(tmp_path, engine):
+    from core.patchproof.openapi import check
+    base = spec()
+    base['openapi'] = '3.1.0'
+    response = base['paths']['/items']['get']['responses']['200']
+    response['content'] = {'application/json': {'schema': {'$dynamicRef': 'https://127.0.0.1:1/base.json'}}}
+    head = json.loads(json.dumps(base))
+    head['paths']['/items']['get']['responses']['200']['content']['application/json']['schema']['$dynamicRef'] = 'https://127.0.0.1:1/incompatible.json'
+    root = project(tmp_path, head, initial_raw=json.dumps(base).encode())
+    row = check(root, 'api', engine)
+    assert row['execution'] == 'incomplete' and row['result'] == 'unknown', row
+
+
+def test_dynamic_yaml_schema_is_also_unavailable(tmp_path, engine):
+    from core.patchproof.openapi import check
+    raw = b"""openapi: 3.1.0
+info:
+  title: Dynamic schema
+  version: 1.0.0
+paths:
+  /items:
+    get:
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $dynamicRef: https://127.0.0.1:1/schema.json
+"""
+    root = project(tmp_path, path='api.yaml', initial_raw=raw)
+    (root / 'api.yaml').write_bytes(raw)
+    git(root, 'add', '.')
+    git(root, 'commit', '-qm', 'Retain dynamic schema')
+    assert check(root, 'api', engine)['execution'] == 'incomplete'

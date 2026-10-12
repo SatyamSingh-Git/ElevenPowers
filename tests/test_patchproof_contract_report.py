@@ -94,3 +94,17 @@ def test_real_state_movement_is_detected(tmp_path, engine, monkeypatch):
     monkeypatch.setattr(reports, '_stamp', moved)
     value = reports.inspect(root, collect(root), time.monotonic() + 30)
     assert not value['complete'] and value['checks'][0]['association'] == 'unavailable'
+
+
+def test_earlier_policy_receipt_is_retained_but_not_current(tmp_path, engine):
+    from core.patchproof.openapi import check
+    from core.patchproof.contracts import LEGACY_CONFIG, digest, save
+    from core.patchproof.report import build
+    root = project(tmp_path)
+    row = check(root, 'api', engine)
+    row['configuration'], row['configuration_digest'] = LEGACY_CONFIG, digest(LEGACY_CONFIG)
+    row['id'] = 'f' * 32
+    row['checked_at'] += 1
+    save(root, row)
+    current = build(root)['contracts']['checks'][0]
+    assert current['freshness'] == 'stale' and current['association'] == 'unavailable'

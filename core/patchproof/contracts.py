@@ -9,7 +9,28 @@ from ..jobs import ledger_write
 from ..ledger import _keep_out_of_git
 MANIFEST = 'elevenpowers.contracts.json'
 STATE = '.elevenpowers/contracts.json'
-CONFIG = {'schema': 1, 'adapter': 'openapi-v1', 'version': '1.33.0', 'validate_fail_on': 'WARN', 'breaking_fail_on': 'ERR', 'external_refs': False, 'checker_config': {}}
+LEGACY_CONFIG = {'schema': 1, 'adapter': 'openapi-v1', 'version': '1.33.0', 'validate_fail_on': 'WARN', 'breaking_fail_on': 'ERR', 'external_refs': False, 'checker_config': {}}
+UNSUPPORTED_SCHEMA_KEYS = ('$dynamicRef', '$recursiveRef', '$schema', '$id', '$vocabulary', '$dynamicAnchor', '$recursiveAnchor')
+CONFIG = {**LEGACY_CONFIG, 'input_qualification': {'unique_json_keys': True,
+          'canonical_probe': 'upgrade-json', 'unsupported_schema_keys': list(UNSUPPORTED_SCHEMA_KEYS)}}
+
+
+def json_read(raw):
+    def unique(pairs):
+        value = {}
+        for key, item in pairs:
+            if key in value:
+                raise ValueError('duplicate JSON object name')
+            value[key] = item
+        return value
+
+    def invalid_constant(value):
+        raise ValueError('nonfinite JSON constant')
+
+    try:
+        return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid_constant)
+    except RecursionError:
+        raise ValueError('JSON nesting exceeds supported depth') from None
 
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
@@ -43,7 +64,7 @@ def declarations(root):
     value = {'contracts': [], 'digest': '', 'complete': True, 'issues': []}
     try:
         raw = bounded(root / MANIFEST, 65536)
-        data = json.loads(raw)
+        data = json_read(raw)
         if not isinstance(data, dict) or set(data) != {'schema', 'contracts'} or type(data['schema']) is not int or (data['schema'] != 1) or (not isinstance(data['contracts'], list)) or (len(data['contracts']) > 16):
             raise ValueError('invalid contract manifest')
         seen = set()
@@ -79,22 +100,22 @@ def validate(row):
             _require(_hex(row[key], (40, 64), empty=True))
         for key in ('patch_id', 'content_digest', 'manifest_digest'):
             _require(_hex(row[key], empty=True))
-        _require(set(row['inputs']) == {'base', 'head'})
+        _require(isinstance(row['inputs'], dict) and set(row['inputs']) == {'base', 'head'})
         for entry in row['inputs'].values():
-            _require(set(entry) == {'sha256', 'blob'} and _hex(entry['sha256'], empty=True) and _hex(entry['blob'], (40, 64), empty=True))
+            _require(isinstance(entry, dict) and set(entry) == {'sha256', 'blob'} and _hex(entry['sha256'], empty=True) and _hex(entry['blob'], (40, 64), empty=True))
         producer = row['producer']
-        _require(set(producer) == {'name', 'version', 'binary_sha256', 'executable', 'platform'})
+        _require(isinstance(producer, dict) and set(producer) == {'name', 'version', 'binary_sha256', 'executable', 'platform'})
         _require(producer['name'] == 'oasdiff' and producer['version'] in ('', '1.33.0'))
         _require(_hex(producer['binary_sha256'], empty=True))
         _require(all((isinstance(producer[key], str) and len(producer[key]) <= 4096 and ('\x00' not in producer[key]) for key in ('executable', 'platform'))))
-        _require(row['configuration'] == CONFIG and row['configuration_digest'] == digest(CONFIG))
-        _require(set(row['limits']) == {'seconds', 'blob_bytes', 'engine_bytes'})
+        _require(row['configuration'] in (CONFIG, LEGACY_CONFIG) and row['configuration_digest'] == digest(row['configuration']))
+        _require(isinstance(row['limits'], dict) and set(row['limits']) == {'seconds', 'blob_bytes', 'engine_bytes'})
         _require(row['limits']['blob_bytes'] == 2097152 and row['limits']['engine_bytes'] == 134217728)
         _require(type(row['limits']['seconds']) in (int, float) and math.isfinite(row['limits']['seconds']) and (0 <= row['limits']['seconds'] <= 600))
         _require(row['result'] in ('pass', 'fail', 'unknown') and row['execution'] in ('complete', 'incomplete'))
         _require(row['exit_code'] is None or type(row['exit_code']) is int)
         findings = row['findings']
-        _require(set(findings) == {'info', 'warn', 'error', 'rule_ids'})
+        _require(isinstance(findings, dict) and set(findings) == {'info', 'warn', 'error', 'rule_ids'})
         _require(all((type(findings[k]) is int and 0 <= findings[k] <= 100000 for k in ('info', 'warn', 'error'))))
         _require(isinstance(findings['rule_ids'], list) and len(findings['rule_ids']) <= 256)
         _require(all((isinstance(rule, str) and re.fullmatch('[a-z0-9_-]{1,128}', rule) for rule in findings['rule_ids'])))
@@ -111,12 +132,12 @@ def validate(row):
             _require(producer['binary_sha256'] and producer['version'] == '1.33.0' and producer['executable'])
         else:
             _require(row['result'] == 'unknown')
-    except (AssertionError, KeyError, TypeError, ValueError):
+    except (AssertionError, KeyError, TypeError, ValueError, AttributeError, RecursionError):
         raise ValueError('invalid contract observation') from None
 
 def load(root):
     try:
-        value = json.loads(bounded(Path(root) / STATE, 1024 * 1024))
+        value = json_read(bounded(Path(root) / STATE, 1024 * 1024))
     except FileNotFoundError:
         return {'schema': 1, 'records': [], 'evicted': 0}
     if not isinstance(value, dict) or set(value) != {'schema', 'records', 'evicted'} or type(value['schema']) is not int or (value['schema'] != 1) or (not isinstance(value['records'], list)) or (len(value['records']) > 64) or (type(value['evicted']) is not int) or (not 0 <= value['evicted'] <= 10 ** 9):

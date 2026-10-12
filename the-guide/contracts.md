@@ -54,6 +54,16 @@ overrides. It records the exact commit/tree pair, input SHA-256s/blob IDs,
 manifest/configuration digest, producer version/binary hash, platform and limits.
 No raw specs, output, endpoint findings or executable paths appear in exports.
 
+Ambiguous JSON object names are rejected, even when a JSON-form document has a
+YAML suffix. The checker also produces a bounded canonical JSON representation
+for a conservative input-coverage guard; original committed bytes remain the
+comparison inputs. Dynamic/recursive references and custom dialect/identity keys
+(`$dynamicRef`, `$recursiveRef`, `$schema`, `$id`, `$vocabulary`, `$dynamicAnchor`,
+`$recursiveAnchor`) are unsupported anywhere in that structure, including literal
+examples. Structures deeper than 128 are unsupported. These cases remain
+incomplete instead of receiving a compatibility pass. Receipts from the earlier
+known policy are retained but marked stale under this strengthened policy.
+
 Spec or manifest edits, changed executable bytes, another requested patch range,
 missing files, corrupt state and observed concurrent changes leave association
 unavailable. Freshness, result, execution and patch association are distinct:

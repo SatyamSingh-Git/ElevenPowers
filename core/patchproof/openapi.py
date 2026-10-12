@@ -32,7 +32,7 @@ def file_hash(path, deadline, maximum=134217728):
 
 
 def findings(output, code, *, validating=False):
-    value = json.loads(output)
+    value = contracts.json_read(output)
     if not isinstance(value, list) or len(value) > 100000:
         raise ValueError('unsupported checker output')
     counts = {'info': 0, 'warn': 0, 'error': 0, 'rule_ids': []}
@@ -51,6 +51,35 @@ def findings(output, code, *, validating=False):
     if code != (1 if rejected else 0):
         raise ValueError('checker exit code and findings disagree')
     return counts
+
+
+def _json_input(raw, suffix):
+    # The real YAML loader rejects duplicate mappings. JSON-form YAML still
+    # needs the strict JSON path because the producer accepts duplicate names.
+    if suffix == '.json':
+        contracts.json_read(raw)
+    else:
+        try:
+            contracts.json_read(raw)
+        except json.JSONDecodeError:
+            pass  # Actual YAML is validated/parsed by the pinned producer.
+
+
+def _standalone(output):
+    value = contracts.json_read(output)
+    if not isinstance(value, dict) or not isinstance(value.get('openapi'), str):
+        raise ValueError('unsupported canonical contract')
+    pending = [(value, 0)]
+    while pending:
+        item, depth = pending.pop()
+        if depth > 128:
+            raise ValueError('contract structure exceeds supported depth')
+        if isinstance(item, dict):
+            if any(key in item for key in contracts.UNSUPPORTED_SCHEMA_KEYS):
+                raise ValueError('dynamic, recursive or custom schema dialect semantics are unsupported')
+            pending.extend((child, depth + 1) for child in item.values())
+        elif isinstance(item, list):
+            pending.extend((child, depth + 1) for child in item)
 
 
 def _blob(git, commit, path):
@@ -92,6 +121,7 @@ def check(root, contract_id, engine, base='HEAD~1', head='HEAD', *, seconds=30):
            'result': 'unknown', 'execution': 'incomplete', 'exit_code': None,
            'findings': {'info': 0, 'warn': 0, 'error': 0, 'rule_ids': []},
            'issues': [], 'checked_at': time.time(), 'elapsed_seconds': 0.0}
+    phase = 'resolve committed inputs'
     try:
         patch = collect(root, base, head, seconds=max(0, deadline - time.monotonic()))
         if not patch['complete']:
@@ -102,6 +132,7 @@ def check(root, contract_id, engine, base='HEAD~1', head='HEAD', *, seconds=30):
         data = {}
         for side in ('base', 'head'):
             data[side], row['inputs'][side] = _blob(git, patch[side], selected['path'])
+            _json_input(data[side], Path(selected['path']).suffix.lower())
         executable = Path(engine).resolve(strict=True)
         if not executable.is_file():
             raise ValueError('checker executable unavailable')
@@ -125,6 +156,7 @@ def check(root, contract_id, engine, base='HEAD~1', head='HEAD', *, seconds=30):
                     raise ValueError('checker emitted diagnostics')
                 return done
 
+            phase = 'identify checker'
             version = execute('--version')
             if version.returncode or version.stdout.strip() != 'oasdiff version 1.33.0':
                 raise ValueError('unsupported oasdiff version; require 1.33.0')
@@ -134,14 +166,22 @@ def check(root, contract_id, engine, base='HEAD~1', head='HEAD', *, seconds=30):
                 path = private / (side + Path(selected['path']).suffix.lower())
                 path.write_bytes(data[side])
                 paths[side] = str(path)
+                phase = 'validate ' + side
                 done = execute('validate', '--format', 'json', '--fail-on', 'WARN',
                                '--allow-external-refs=false', '--', str(path))
                 validated = findings(done.stdout, done.returncode, validating=True)
                 if validated['error'] or validated['warn']:
                     raise ValueError('contract validation reported WARN or ERR findings')
+                phase = 'qualify standalone ' + side
+                canonical = execute('upgrade', '--format', 'json', '--allow-external-refs=false', '--', str(path))
+                if canonical.returncode:
+                    raise ValueError('canonical contract unavailable')
+                _standalone(canonical.stdout)
+            phase = 'compare contracts'
             done = execute('breaking', '--format', 'json', '--fail-on', 'ERR',
                            '--allow-external-refs=false', '--', paths['base'], paths['head'])
             row['findings'] = findings(done.stdout, done.returncode)
+        phase = 'recheck provenance'
         if file_hash(executable, deadline) != producer['binary_sha256']:
             raise ValueError('checker executable changed during inspection')
         if contracts.declarations(root) != declaration:
@@ -151,9 +191,9 @@ def check(root, contract_id, engine, base='HEAD~1', head='HEAD', *, seconds=30):
             raise ValueError('patch or checkout changed during inspection')
         row['result'] = 'fail' if row['findings']['error'] else 'pass'
         row['execution'] = 'complete'
-    except (OSError, ValueError, UnicodeError, TypeError, TimeoutError, subprocess.SubprocessError):
+    except (OSError, ValueError, UnicodeError, TypeError, RecursionError, TimeoutError, subprocess.SubprocessError):
         # Raw producer diagnostics can contain contract contents, paths or credentials.
-        row['issues'].append('Checker, validation, input integrity or bounded execution unavailable; compatibility is incomplete.')
+        row['issues'].append('OpenAPI compatibility incomplete during ' + phase + '; inspect format, checker, policy and recorded limits.')
     row['elapsed_seconds'] = round(time.monotonic() - started, 6)
     contracts.save(root, row)
     return row

@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.export import _portable, _text, write
 from core.patchproof.openapi import check
+from core.jobs import Busy
 
 
 def main():
@@ -38,7 +39,7 @@ def main():
         else:
             print(text, end='')
         return (0 if row['result'] == 'pass' else 1) if row['execution'] == 'complete' else 2
-    except (OSError, ValueError, TypeError):
+    except (OSError, ValueError, TypeError, RecursionError, Busy):
         print('Contract observation or publication unavailable; inspect declared inputs, engine and retained state.', file=sys.stderr)
         return 2
 

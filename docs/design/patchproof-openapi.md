@@ -48,6 +48,14 @@ First run `validate --format json --fail-on WARN --allow-external-refs=false`
 on each input. Only complete exit 0 and a well-formed finding array without
 WARN/ERR qualify validation. Invalid/load-error inputs retain incomplete
 compatibility execution, never a compatible result.
+Strict standard-library JSON loading rejects duplicate object names, including
+JSON-form documents with a YAML suffix. Actual YAML duplicate mappings are
+rejected by the pinned producer. Its `upgrade --format json` output is used only
+as a bounded structural probe, with external references disabled; original blobs
+remain the comparison inputs. The probe conservatively rejects `$dynamicRef`,
+`$recursiveRef`, `$schema`, `$id`, `$vocabulary`, `$dynamicAnchor` and
+`$recursiveAnchor` anywhere, including literal/example occurrences, and structures
+deeper than 128. Custom/dynamic schema semantics are currently unsupported.
 Then run `breaking --format json --fail-on ERR --allow-external-refs=false`.
 The observed output is an array: empty with exit 0 for no findings, and rule
 records with integer `level` 1/2/3. Exit 1 must agree with ERR findings; exit 0

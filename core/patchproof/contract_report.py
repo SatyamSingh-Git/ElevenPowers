@@ -65,6 +65,7 @@ def inspect(root, patch, deadline):
                     binary = file_hash(engine, deadline) if original['producer']['executable'] else ''
                     row['freshness'] = ('fresh' if
                         original['manifest_digest'] == declaration['digest'] and
+                        original['configuration'] == contracts.CONFIG and
                         original['path'] == declared['path'] and
                         first == original['inputs']['head']['sha256'] and
                         binary == original['producer']['binary_sha256'] and binary and
