@@ -62,7 +62,7 @@ Files: new `core/patchproof/github_context.py`, `core/patchproof/github.py`,
 ### Task 3: Bounded literal summary and durable output
 
 Files: new `core/patchproof/github_output.py`, `tests/test_patchproof_github_output.py`.
-Consumes presentation; produces `markdown(value)` and `publish(value, destination=None)`.
+Consumes presentation; produces `markdown(value)` and `publish(value, destination=None, project=root)`.
 
 - [ ] Add controls for missing/failed/incomplete/stale states, credential-shaped
   values and injected Markdown; assert `'<script>' not in markdown(value)` and

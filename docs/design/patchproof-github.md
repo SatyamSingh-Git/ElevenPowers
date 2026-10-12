@@ -58,7 +58,7 @@ boundary is separate from older unexplained cleanup/launcher/SQLite incidents.
   attested. `artifact_link(repository, run_id, url)` accepts only the uploader's
   canonical HTTPS github.com repository/run/artifact URL.
 - `core/patchproof/github_output.py`: bounded summary rendering and publication
-  files. `publish(value, destination=None)` writes `evidence.json` and `summary.md`
+  files. `publish(value, destination=None, *, project)` writes `evidence.json` and `summary.md`
   in a new directory outside the inspected project, with no overwrite. All hashes
   describe canonical public JSON, not captured outputs or an attestation.
 - `plugin/bin/ep_github.py`: portable CLI for generation and explicit Actions
