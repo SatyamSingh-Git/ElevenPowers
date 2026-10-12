@@ -32,5 +32,12 @@ No caller-specific directory exception was introduced.
 The model-free exercise uses unrelated JSON/Python and YAML/JavaScript projects
 and distinguishes current, failed, incomplete, stale and absent observations.
 Review and full qualification are recorded in the dated validation as they finish.
+The fresh review then exposed what the producer alone did not qualify: duplicate
+JSON names could hide paths, and dynamic schema references could pass without
+observed external inputs. Strict JSON names and a producer-derived structural
+guard now leave those inputs incomplete. Original bytes remain the comparison
+inputs. Malformed receipt shapes and deep JSON now preserve controlled errors;
+older policy observations are retained but stale. All three findings were
+witnessed before repair, and no second reviewer was dispatched.
 See [guide](../the-guide/contracts.md), [design](../docs/design/patchproof-openapi.md)
 and [validation](../docs/validation/2026-10-12-patchproof-openapi.md).

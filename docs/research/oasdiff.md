@@ -27,3 +27,17 @@ semantics. Only stable rule IDs/counts are retained, never raw messages or endpo
 locations. Private raw producer observations are retained for diagnosis; public
 project observations contain semantic states and hashes. Other engine versions,
 custom policies, split specifications and broader API guarantees need new controls.
+
+The independent branch review exposed two producer limits. Duplicate JSON names
+were accepted and the later `paths` value hid an earlier one; duplicate YAML
+mappings were rejected. An external OpenAPI 3.1 `$dynamicRef` passed validation
+and comparison without observing the referenced schema. This demonstrated missing
+semantic input coverage, not a network request. Actual `upgrade --format json`
+preserved that keyword, allowing a producer-backed structural guard for both
+formats without writing a YAML parser. Canonicalization is only that guard;
+comparison still receives the original committed bytes.
+
+The adapter now rejects duplicate-key JSON and conservative dynamic/recursive/
+custom-dialect keys, including literal occurrences. The recorded configuration
+identifies this strengthened policy; earlier known profiles remain retained but
+stale. This does not certify the upstream engine across all JSON Schema features.

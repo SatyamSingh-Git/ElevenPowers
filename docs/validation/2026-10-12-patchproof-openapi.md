@@ -26,3 +26,16 @@ pending. [Design](../design/patchproof-openapi.md) and
 Earlier installed successes remain dated at their recorded runtime identity;
 this extension runs no new installed session and establishes no coding benefit.
 The earlier Linux cleanup and initial Windows SQLite-reference causes remain open.
+
+One independent whole-branch review found three Important findings and no
+Critical/Minor findings. Real duplicate JSON (also with YAML suffix) and unobserved
+dynamic references produced complete passes; malformed nested history raised
+uncaught AttributeError/RecursionError with the CLI's exit 1. Five regression
+cases failed before repair and passed after it: **5 passed in 24.70 seconds**.
+The single repair pass qualified all contract controls: **37 passed in 189.79
+seconds**, including dynamic YAML and stale retained legacy profiles. No re-review
+or additional model session was run.
+
+The earlier combined new/existing focused suite passed **105 checks, 2 skipped in
+326.29 seconds** before the input-policy repairs. Final full/hosted qualification
+is pending against the repaired code; do not substitute that earlier count.

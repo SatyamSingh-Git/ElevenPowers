@@ -1,11 +1,17 @@
 # Declared OpenAPI capability controls
 
-2026-10-12. [Observations](observations.json) retain real pinned oasdiff 1.33.0
+2026-10-12. [Final reviewed observations](final-observations.json) retain real pinned oasdiff 1.33.0
 execution in independently created JSON/Python and YAML/JavaScript repositories.
 Both distinguish current, failed, incomplete, stale and absent contract states.
 The public record preserves actual exits, producer/configuration hashes and
 independent Git/input comparisons, with its producing commit/runtime identity.
 It includes no specifications, raw outputs, endpoint findings or engine paths.
+
+The [initial observations](observations.json) remain unchanged at producer
+`7e94306`. Final observations use `02b1c55`, after the three witnessed review
+repairs and strengthened input policy. Each artifact retains its own producer,
+runtime and configuration identity; later documentation commits do not change
+those recorded bytes.
 
 This establishes the local producer/receipt/export mechanism under the fixed
 policy. It establishes no installed-host acceptance, attestation, deployed API

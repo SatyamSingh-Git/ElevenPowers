@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "coding_benefit": "not_measured",
+  "runtime_fingerprint": "57ab817aa257d22915e60260b1f4d633d8c10f3dbddfba0cd9bb503d9c68df28",
+  "producer_commit": "02b1c554db647760a23d9f103a6e2940822eba4e",
+  "projects": [
+    {
+      "project": "stock-python",
+      "format": "json",
+      "states": [
+        "current",
+        "failed",
+        "incomplete",
+        "stale",
+        "absent"
+      ],
+      "actual_exits": [
+        0,
+        1,
+        null
+      ],
+      "independent_head_matches": true,
+      "independent_input_matches": true,
+      "dirty_association": "unavailable",
+      "producer_version": "1.33.0",
+      "producer_sha256": "f450465c0f4bd35ec49ba35b436820730843c5b21b5499e618963803bd8da919",
+      "configuration_digest": "1ded18ef3ae8bb3739bb54f6dbd8076dcb0e0e42a192ed35651a220c296a3e8d",
+      "seconds": 38.278
+    },
+    {
+      "project": "gateway-javascript",
+      "format": "yaml",
+      "states": [
+        "current",
+        "failed",
+        "incomplete",
+        "stale",
+        "absent"
+      ],
+      "actual_exits": [
+        0,
+        1,
+        null
+      ],
+      "independent_head_matches": true,
+      "independent_input_matches": true,
+      "dirty_association": "unavailable",
+      "producer_version": "1.33.0",
+      "producer_sha256": "f450465c0f4bd35ec49ba35b436820730843c5b21b5499e618963803bd8da919",
+      "configuration_digest": "1ded18ef3ae8bb3739bb54f6dbd8076dcb0e0e42a192ed35651a220c296a3e8d",
+      "seconds": 27.593
+    }
+  ]
+}
