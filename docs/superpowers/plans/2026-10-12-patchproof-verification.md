@@ -84,10 +84,10 @@ and portable actual exercise observations.
 
 ### Task 5: Review, delivery qualification and contributor documentation
 
-- [ ] One fresh-context branch review; repair Critical/Important once with RED→GREEN.
-- [ ] Full suite, named audit probes, eval.validate, published source graders, doctor,
+- [x] One fresh-context branch review; repair Critical/Important once with RED→GREEN.
+- [x] Full suite, named audit probes, eval.validate, published source graders, doctor,
   standard-library imports and hosted matrix. Preserve every failing attempt/cause.
-- [ ] Update README, PLAN/status, command/configuration/feature guides, contributor
+- [x] Update README, PLAN/status, command/configuration/feature guides, contributor
   brief, journey/index, all architecture views/card/mirror and dated validation.
 - [ ] Run `python architecture/check.py --render`, local links and published bytes.
 - [ ] Push verified docs; fast-forward main without force, verify remote identity/CI.

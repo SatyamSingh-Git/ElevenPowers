@@ -2,10 +2,10 @@
 
 **Explicit verification, 2026-10-12.** Required-check planning, explicit bounded
 execution, durable incomplete attempts and qualified reuse are implemented;
-delivery qualification is in progress. GitHub evidence presentation, richer
+full regression and four-job hosted qualification passed. GitHub evidence presentation, richer
 external-input witnesses, additional producers and broader installed acceptance
 remain work. Historical reliability incidents remain unexplained; established
-launch/reap deadline defects were repaired. See [guide](../the-guide/patchproof-verification.md).
+launch/reap deadline and cancellation handoff defects were repaired. See [guide](../the-guide/patchproof-verification.md).
 
 **2026-10-12.** A declared standalone OpenAPI producer is implemented and
 qualified by full regressions and four hosted jobs. Multi-file/custom policies and other producers stay

@@ -1,17 +1,19 @@
 # Current delivery status
 
-**2026-10-12 — explicit PatchProof verification implemented; delivery qualification in progress.**
+**2026-10-12 — explicit PatchProof verification delivered and qualified.**
 Read-only plans preserve required commands; separate explicit execution retains
 incomplete attempts, exact-head/input/configuration/policy/producer/environment
 associations and conservative latest-result reuse. Explicit rerun refreshes
-unobserved external inputs. Exhausted-deadline launch and unbounded process reap
-were reproduced and repaired; earlier cleanup/launcher/SQLite causes remain open.
+unobserved external inputs. Deadline launch/reap and cancellation handoff
+defects were reproduced and repaired. All five review findings, 2,129
+local tests, 107 audits and four final-code hosted jobs passed. Earlier
+cleanup/launcher/SQLite incident causes remain open.
 See [guide](../the-guide/patchproof-verification.md) and
 [qualification](validation/2026-10-12-patchproof-verification.md).
 
-Next after delivery: read-only GitHub evidence presentation. Additional producers,
+Next: read-only GitHub evidence presentation. Additional producers,
 external-input witnesses, current-runtime installed qualification and causal
-coding benefit remain independent work. No new model sessions.
+coding benefit remain independent work. No fresh coding comparison or installed-host session.
 
 **2026-10-12 — PatchProof impact integration delivered and qualified.** Optional `--impact`
 joins fresh compatible graph snapshots to exact patch/report inputs, explained

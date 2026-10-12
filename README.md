@@ -651,7 +651,9 @@ For a repeatable local test environment, see [Development and verification](docs
 plans all project-declared checks and runs them only with `--verify`. Shared
 budgets, durable incomplete attempts and fresh exact-patch associations qualify
 reuse; `--rerun` refreshes checks when external inputs may have changed. Ordinary
-reports and plans remain read-only. The deadline launch/reap defects are repaired;
+reports and plans remain read-only. Review repairs, 2,129 local tests,
+107 audits and four hosted jobs passed. Deadline launch/reap and cancellation
+handoff defects are repaired;
 the earlier cleanup/launcher/SQLite incident causes remain unresolved. See
 [journey 76](journey/76-a-check-needs-time-to-leave-a-receipt.md) and
 [qualification](docs/validation/2026-10-12-patchproof-verification.md).

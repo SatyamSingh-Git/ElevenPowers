@@ -3,7 +3,9 @@
 Explicit PatchProof verification now maps read-only plans, owned bounded execution
 and fresh saved associations across every view. The Planned card advances to
 GitHub evidence presentation and additional producers. Historical unexplained
-incidents remain separate from the established launch/reap deadline repairs.
+incidents remain separate from the established launch/reap deadline and
+cancellation handoff repairs. Review repairs, full regressions and all four
+hosted final-code jobs passed; see [qualification](../docs/validation/2026-10-12-patchproof-verification.md).
 See [verification usage](../the-guide/patchproof-verification.md).
 
 Optional PatchProof impact enrichment now maps fresh graph/report input identities,
@@ -236,7 +238,7 @@ bounded receipt/phase history. Explicit `core/hosts/acceptance.py` preparation
 creates a new Python/Node exercise; inspection rechecks its immutable contract
 and requires native pass/fail/incomplete history plus fresh completion.
 
-The graph has 126 nodes and 289 edges. Optional milestone declarations, atomic history, read-only inspection, graph leads and explicit capability exercises are drawn in all affected views. [Current status](../docs/status.md) and
+The graph has 148 nodes, 353 edges and seven planes. Optional milestone declarations, atomic history, read-only inspection, graph leads and explicit capability exercises are drawn in all affected views. [Current status](../docs/status.md) and
 [validation records](../docs/validation/README.md) describe which product paths
 were exercised. The Planned tab exposes unfinished work separately from those
 delivered paths. See [journey 59](../journey/59-a-roadmap-contributors-can-open.md)
