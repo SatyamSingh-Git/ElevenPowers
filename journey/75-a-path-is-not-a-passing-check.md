@@ -43,3 +43,10 @@ failed before repair. Selection policy now has its own bounded identity across
 verification and graph collection. Effective Git config and applicable rule
 bytes are hashed locally; exported evidence contains neither their bodies nor
 external paths. Equal observed source bytes do not imply equal selection policy.
+
+Full-suite qualification caught one remaining old Markdown assertion that the
+focused renderer checks had not included. It expected raw underscores/dots,
+although the candidates were present as escaped literal text. The same failure
+reproduced locally and in both Linux jobs. The assertion now checks literal
+content, retaining the focused/fallback requirement; no runtime bytes changed.
+The initial full run was replaced with a fresh run of all checks.

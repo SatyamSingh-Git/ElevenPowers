@@ -109,9 +109,10 @@ def test_depth_and_result_caps_do_not_establish_safe_exclusion(tmp_path):
 
 
 def test_markdown_explains_focused_fallback_and_support_without_hiding_them(tmp_path):
+    from core.export import _text
     sample(tmp_path)
     output = markdown(analyze(build(tmp_path), ['api.py']))
     assert 'Focused test candidates' in output
     assert 'Broader fallback candidates' in output
-    assert 'test_call.py' in output and 'test_import.py' in output
+    assert _text('test_call.py') in output and _text('test_import.py') in output
     assert 'safe' in output.lower() and 'exclude' in output.lower()

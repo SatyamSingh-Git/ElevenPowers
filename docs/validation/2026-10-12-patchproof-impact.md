@@ -43,3 +43,19 @@ semantic gaps. Sixty affected nodes and 33 fallback tests remain diagnostic.
 The 31.315s wall time was observed alongside tests, not a latency benchmark.
 [Saved identities and counts](../../results/patchproof-impact/observations.json)
 retain the producing snapshot; later source-selected docs change current inputs.
+
+At the repaired runtime, 107 named audit probes passed in 85.71s, all 11 host
+probes passed, all four independent grader cases were correct and preserved
+stage-one 6/6 and final 8/8 ties reproduced without rerunning native sessions.
+A separate JavaScript export under `python -S` (optional parsers unavailable)
+returned bound input association and incomplete semantic coverage with explicit
+missing-grammar issues. Its 5.26s local read is descriptive, not a benchmark.
+
+The initial hosted matrix at `5d04ec5` exposed one old display assertion in
+`test_markdown_explains_focused_fallback_and_support_without_hiding_them`: it
+expected raw filenames after the renderer began escaping them. Linux 3.11
+reported 1 failed, 2,081 passed and 7 skipped; the same assertion failed locally.
+The test now checks the same candidates using literal Markdown text. Runtime
+bytes did not change. The initial local full run was stopped after that known
+assertion failed; a fresh complete run uses the corrected expectation. Neither
+this repair nor later green CI resolves earlier unrelated cleanup/SQLite causes.
