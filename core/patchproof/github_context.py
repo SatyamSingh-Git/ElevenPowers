@@ -98,3 +98,14 @@ def declared(repo, event=None):
         raise ValueError('event subject metadata is incomplete') from error
 
 
+def artifact_link(repo, run_id, url):
+    repo = repository(repo)
+    if not isinstance(run_id, str) or not re.fullmatch(r'[1-9][0-9]{0,19}', run_id):
+        raise ValueError('artifact link requires a positive run ID')
+    pattern = (r'https://github\.com/'+re.escape(repo)+'/actions/runs/'
+               +run_id+r'/artifacts/[1-9][0-9]{0,19}')
+    if not isinstance(url, str) or not re.fullmatch(pattern, url, re.IGNORECASE):
+        raise ValueError('artifact URL does not match repository and run')
+    return '[Download the evidence artifact]('+url+')'
+
+
