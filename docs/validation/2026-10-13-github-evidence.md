@@ -170,8 +170,18 @@ The final local full suite passed **2,168 tests, 2 skipped in 2585.32s
 the completed four-cell hosted matrix qualify this runtime; the difference in
 local and hosted durations is not a performance-improvement result.
 Final documentation changes do not alter runtime/test/evaluation/Action/workflow
-files. Main/Pages identity is recorded separately after publication. Automatic
-main repeats are separate runs, never credited as passing before completion.
+files. All changed local Markdown links resolved (574 at release), and the final
+architecture render again passed all five views and contributor interactions.
+
+The complete delivery was normally fast-forwarded and pushed to main at
+[`b36bbe5ad292a604f58786df3924bc21edc0c99e`](https://github.com/SatyamSingh-Git/ElevenPowers/commit/b36bbe5ad292a604f58786df3924bc21edc0c99e).
+Both main and `codex/github-evidence` remote refs matched that commit. The
+inactive-ref/identical-tree switch preserved the local qualified runtime byte
+fingerprint above. The publication-record follow-up changes documentation only.
+Automatic main [repeat 38307508233](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38307508233)
+was still running when this record was written. It is separate from the completed
+final-code qualification, never credited as passing before completion. Pages
+publication and the served architecture bytes are checked independently.
 
 See [guide](../../the-guide/patchproof-github.md),
 [design](../design/patchproof-github.md) and

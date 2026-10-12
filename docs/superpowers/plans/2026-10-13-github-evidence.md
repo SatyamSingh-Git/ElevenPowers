@@ -98,5 +98,5 @@ Consumes Task 2/3 APIs; produces explicit Actions file writes and upload link mo
 - [x] Update README, PLAN/status, guides/indexes, contributor brief, validation,
   journey/index and every affected architecture view/card/meta/mirror.
 - [x] Render architecture, resolve local links, preserve all failed attempts.
-- [ ] Push and fast-forward main normally without rewriting qualified runtime bytes;
+- [x] Push and fast-forward main normally without rewriting qualified runtime bytes;
   verify remote identity, final Pages bytes and separately report automatic repeats.
