@@ -49,3 +49,17 @@ No improvement in coding correctness or speed is claimed by this integration.
 
 Borrow existing ElevenPowers graph, selection, Git identity and portable export
 components under the repository license; add patch-qualified composition only.
+
+## Review repair: selection policy
+
+`core/patchproof/policy.py` reuses bounded Git metadata reads and SHA-256.
+The source enumerator inherits effective global/system Git configuration, so
+the witness reads that same environment, hashes effective configuration and
+local/configured/default global excludes, and walks active directories for
+`.gitignore` files even when the filename itself is ignored. Git identifies
+wholly ignored directories to prune; nested repositories/runtime state remain
+separate. Limits: 1 MiB per rule, 8 MiB total, 20,000 directories, shared deadline.
+Warnings, links, unreadable inputs and limits leave qualification unavailable.
+Policy identity is compared before verification, around both graph reads and
+after their final state guard. Only hashes are exported. This is conservative
+selection-policy qualification, not authenticity or an atomic snapshot.

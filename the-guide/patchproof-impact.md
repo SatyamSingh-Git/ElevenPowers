@@ -17,9 +17,12 @@ existing overwrite policy. This does not add a host-specific completion gate.
 
 The section contains the exact patch identity and full tree-pair digest, current
 runtime fingerprint, graph input and snapshot digests and the bounded query
-configuration. Two fresh scans of the chosen root are compared against each
+configuration and repository-policy fingerprint. Two fresh scans of the chosen root are compared against each
 other and both verification reads; final patch and ignored state guards qualify
-the association. No saved or foreign graph is accepted.
+the association. Effective Git configuration, local `info/exclude`, configured
+or default global excludes and nested rules in active directories are inspected
+across the whole collection window, even when selected bytes stay unchanged.
+No saved or foreign graph is accepted.
 
 `association: bound` means these graph recommendations qualify for the inspected
 patch/current inputs. It does not mean exhaustive impact coverage, that a test
@@ -57,6 +60,12 @@ Default Python and optional installed tree-sitter adapters plus project-owned
 gaps. This first integration does not select a TypeScript compiler, external
 observation artifact or Git history. Use the standalone ImpactGraph CLI for those
 options. The project's existing scan policy and repository boundaries apply.
+
+Policy inspection refuses linked/unreadable inputs, warnings, 1 MiB per rule
+file, 8 MiB total rule bytes, 20,000 visited directories or the shared deadline.
+Wholly ignored directories are identified by Git and pruned; their nested rules
+cannot re-include children while the parent remains ignored. Raw rule/config
+bodies and external paths are hashed locally and excluded from exports.
 
 Two snapshots and state guards are bounded reads, not an atomic transaction;
 transient reverted changes cannot be detected. Local declarations and evidence

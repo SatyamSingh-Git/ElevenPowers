@@ -18,6 +18,9 @@ overwrite. Normal exit 0 means produced, even with gaps; `--require-bound` exits
 1 for unavailable patch/input association and does not require passing checks.
 See [binding conditions, schema and limits](patchproof.md).
 
+Optional `ep_patchproof --impact` adds fresh [explained recommendations](patchproof-impact.md),
+not execution evidence. It retains all declared checks and graph coverage gaps.
+
 ## ep_milestones — earlier behavior evidence across tasks
 
 Optional edit-time context is configured through
@@ -623,9 +626,6 @@ synthetic host launchers, opening task identity via ordinary prompt callbacks.
 It refuses existing destinations and launches no model. Results explicitly
 separate replay/synthetic ingress from installed acceptance; see
 [qualification and limits](../docs/validation/2026-10-11-ordinary-session-evidence.md).
-
-Optional `ep_patchproof --impact` adds fresh [explained recommendations](patchproof-impact.md),
-not execution evidence. It retains all declared checks and graph coverage gaps.
 
 ## ep_contract — observe declared OpenAPI compatibility
 

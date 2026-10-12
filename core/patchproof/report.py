@@ -2,6 +2,7 @@
 import hashlib
 import math
 import os
+import subprocess
 from pathlib import Path
 import time
 
@@ -13,6 +14,7 @@ from .identity import collect
 from .contract_report import inspect as contract_report
 from .impact import inspect as impact_report, disabled as impact_disabled, qualify as qualify_impact
 from ..impact import markdown as impact_markdown
+from .policy import fingerprint as policy_fingerprint
 
 
 LIMITS = [
@@ -79,12 +81,18 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     impact_value = impact_disabled()
     fingerprints = []
     before = None
+    policy_before = None
     redirects = ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR',
                  'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES',
                  'GIT_CONFIG_COUNT', 'GIT_CONFIG_PARAMETERS', 'GIT_CONFIG')
     if any(name in os.environ for name in redirects):
         issues.append('ambient Git repository/config overrides leave legacy report enumeration unqualified')
     try:
+        if impact:
+            try:
+                policy_before = policy_fingerprint(root, deadline)
+            except (OSError, ValueError, TimeoutError, subprocess.SubprocessError):
+                issues.append('repository ignore policy inspection unavailable or incomplete')
         before = _guard(root, deadline)
         ledger = Ledger.load(root)
         records = {receipt_key(record): record for record in ledger.evidence}
@@ -104,9 +112,11 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     if impact:
         impact_value = impact_report(root, patch, fingerprints, deadline)
         try:
+            if policy_before is None or policy_before != policy_fingerprint(root, deadline):
+                issues.append('repository ignore policy changed or unavailable during bundle collection')
             if before is None or before != _guard(root, deadline):
                 issues.append('ledger or project configuration changed during impact collection')
-        except (OSError, ValueError, TimeoutError) as exc:
+        except (OSError, ValueError, TimeoutError, subprocess.SubprocessError) as exc:
             issues.append(type(exc).__name__ + ': final impact state guard unavailable')
     final = collect(root, base, head, seconds=max(0, deadline - time.monotonic()))
     if patch != final:
@@ -233,7 +243,7 @@ def markdown(value):
         lines += ['Use --impact for optional fresh graph scans.']
     else:
         for key in ('patch_id', 'content_digest', 'source_fingerprint', 'snapshot_digest',
-                    'runtime_fingerprint', 'configuration', 'omitted_paths'):
+                    'repository_policy_fingerprint', 'runtime_fingerprint', 'configuration', 'omitted_paths'):
             lines += [_text(key) + ': ' + _text(impact.get(key, 'unavailable'))]
         lines += ['- ' + _text(issue) for issue in impact['association_issues']]
         if impact['association'] != 'bound':

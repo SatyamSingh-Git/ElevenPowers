@@ -216,6 +216,50 @@ def test_project_labels_are_literal_in_bundle_markdown(project):
     assert r'\[misleading proof\]' in markdown(value)
 
 
+@pytest.mark.parametrize('mode', ['local', 'configured_global', 'default_global', 'ignored_nested'])
+def test_unchanged_selected_bytes_do_not_hide_changed_ignore_policy(project, monkeypatch, mode):
+    from core.patchproof import impact
+    from core.patchproof.report import build
+    root, base, head = project
+    if mode == 'local':
+        policy = root / '.git/info/exclude'
+    elif mode == 'configured_global':
+        policy = root / '.git/ignore-global'
+        config = root / '.git/config-global'
+        git(root, 'config', '--file', str(config), 'core.excludesfile', str(policy))
+        monkeypatch.setenv('GIT_CONFIG_GLOBAL', str(config))
+    elif mode == 'default_global':
+        directory = root / '.git/xdg'
+        monkeypatch.setenv('XDG_CONFIG_HOME', str(directory))
+        policy = directory / 'git/ignore'
+    else:
+        (root / '.git/info/exclude').write_text('.gitignore\n')
+        (root / 'nested').mkdir()
+        policy = root / 'nested/.gitignore'
+    policy.parent.mkdir(exist_ok=True, parents=True)
+    policy.write_text('# initial unchanged selection\n')
+    original = impact.graph_build
+    calls = []
+    def changed(*args, **kwargs):
+        graph = original(*args, **kwargs)
+        if not calls:
+            policy.write_text('future-source.py\n')
+            calls.append(True)
+        return graph
+    monkeypatch.setattr(impact, 'graph_build', changed)
+    value = build(root, base, head, impact=True)
+    assert value['impact']['association'] == 'unavailable'
+    assert value['binding']['state'] == 'unavailable'
+    assert 'policy' in ' '.join(value['binding']['issues'] + value['impact']['association_issues'])
+
+
+def test_over_budget_ignore_policy_cannot_qualify(project):
+    (project[0] / '.git/info/exclude').write_bytes(b'#' * (1024 * 1024 + 1))
+    value = inspect_project(project)
+    assert value['association'] == 'unavailable'
+    assert 'policy byte budget exceeded' in ' '.join(value['association_issues'])
+
+
 @pytest.mark.parametrize('change', ['source', 'declaration', 'configuration'])
 def test_moving_graph_inputs_are_not_spliced_into_patch(project, monkeypatch, change):
     from core.patchproof import impact

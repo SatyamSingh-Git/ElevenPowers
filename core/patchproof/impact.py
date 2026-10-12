@@ -1,10 +1,12 @@
 """Compose fresh graph leads with an exact patch; never promote leads to receipts."""
 import hashlib
 import json
+import subprocess
 import time
 
 from ..hosts.provenance import fingerprint as runtime_fingerprint
 from ..impact import analyze, build as graph_build
+from .policy import fingerprint as policy_fingerprint, PolicyError
 
 
 CONFIGURATION = {'adapter': 'patchproof-impact/1', 'seconds_per_scan': 30,
@@ -35,7 +37,7 @@ def inspect(root, patch, fingerprints, deadline):
     value = {'schema': 1, 'state': 'incomplete', 'association': 'unavailable',
              'patch_id': patch['patch_id'], 'content_digest': patch['content_digest'],
              'configuration': dict(CONFIGURATION), 'runtime_fingerprint': '',
-             'source_fingerprint': '', 'snapshot_digest': '',
+             'source_fingerprint': '', 'snapshot_digest': '', 'repository_policy_fingerprint': '',
              'omitted_paths': max(0, len(paths) - CONFIGURATION['max_paths']),
              'association_issues': [], 'query': None, 'limits': LIMITS}
     why = value['association_issues']
@@ -47,12 +49,15 @@ def inspect(root, patch, fingerprints, deadline):
         if time.monotonic() >= deadline:
             raise TimeoutError('impact bundle deadline reached')
         value['runtime_fingerprint'] = runtime_fingerprint()
+        value['repository_policy_fingerprint'] = policy_fingerprint(root, deadline)
         graph = graph_build(root, seconds=min(30, max(0, deadline - time.monotonic())))
         value['source_fingerprint'] = graph.fingerprint
         value['snapshot_digest'] = _snapshot(graph)
         if paths:
             value['query'] = analyze(graph, paths[:256], max_depth=6, max_results=100)
         after = graph_build(root, seconds=min(30, max(0, deadline - time.monotonic())))
+        if value['repository_policy_fingerprint'] != policy_fingerprint(root, deadline):
+            why.append('repository ignore policy changed during impact collection')
         if value['snapshot_digest'] != _snapshot(after):
             why.append('graph inputs, declarations, scan policy or relationships changed during collection')
         if value['runtime_fingerprint'] != runtime_fingerprint():
@@ -67,7 +72,9 @@ def inspect(root, patch, fingerprints, deadline):
             why.append('impact bundle deadline reached; collection is incomplete')
         query_complete = value['query'] is None or value['query']['coverage']['complete']
         value['state'] = 'incomplete' if why or not query_complete else ('available' if paths else 'empty')
-    except (OSError, ValueError, TypeError, KeyError, RecursionError, TimeoutError) as exc:
+    except PolicyError as exc:
+        why.append(str(exc))
+    except (OSError, ValueError, TypeError, KeyError, RecursionError, TimeoutError, subprocess.SubprocessError) as exc:
         why.append(type(exc).__name__ + ': impact collection unavailable or incomplete')
     value['association_issues'] = list(dict.fromkeys(why))
     value['association'] = 'unavailable' if why else 'bound'

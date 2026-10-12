@@ -35,3 +35,11 @@ verification planning/execution, with unsigned evidence and limits preserved.
 This work explains existing evidence; it does not establish improved coding
 correctness or speed. See [validation](../docs/validation/2026-10-12-patchproof-impact.md)
 and [guide](../the-guide/patchproof-impact.md).
+
+The fresh reviewer then found a third identity gap: changing `info/exclude`
+without changing selected files escaped both graph hashes. Five controls for
+local, configured/default global, ignored nested rules and excessive bytes
+failed before repair. Selection policy now has its own bounded identity across
+verification and graph collection. Effective Git config and applicable rule
+bytes are hashed locally; exported evidence contains neither their bodies nor
+external paths. Equal observed source bytes do not imply equal selection policy.

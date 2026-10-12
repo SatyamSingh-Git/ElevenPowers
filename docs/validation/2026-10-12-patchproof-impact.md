@@ -21,3 +21,16 @@ Development controls:
 Final review/full/hosted results are recorded below when completed. Historical
 installed cells, correctness ties and unexplained cleanup/SQLite observations
 remain dated; none are requalified or repaired by representation of graph leads.
+
+Before final review repairs: 33 integration and graph presentation checks passed
+in 66.46s; 107 named audit probes passed in 93.35s. Standard-library imports,
+11 host probes, four independent grader controls and preserved source grades
+passed. Architecture 144 nodes/341 edges, all five views rendered; 463 local
+documentation targets resolved. Final repaired qualification follows below.
+
+One independent whole-branch review found one Important ignore-policy identity
+gap and no Critical/Minor findings. Five actual policy controls failed before
+repair; the single repair pass then passed all 24 integration checks in 111.03s.
+The policy witness covers unchanged-selection local, configured/default global
+and ignored nested rules and refuses excessive policy bytes. No re-review or
+model session was run. Final full and hosted qualification follows below.
