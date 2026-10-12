@@ -116,3 +116,10 @@ def test_real_binary_movement_during_check_retains_incomplete(tmp_path, engine, 
     monkeypatch.setattr(runner, 'run', moved)
     row = runner.check(root, 'api', copied)
     assert row['execution'] == 'incomplete' and row['result'] == 'unknown'
+
+
+def test_glob_and_unicode_contract_paths_are_literal_git_inputs(tmp_path, engine):
+    from core.patchproof.openapi import check
+    root = project(tmp_path, path='schema[1]/契約.yaml')
+    row = check(root, 'api', engine)
+    assert row['result'] == 'pass' and row['execution'] == 'complete', row
