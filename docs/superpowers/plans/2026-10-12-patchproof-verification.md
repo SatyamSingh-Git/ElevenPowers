@@ -89,5 +89,7 @@ and portable actual exercise observations.
   standard-library imports and hosted matrix. Preserve every failing attempt/cause.
 - [x] Update README, PLAN/status, command/configuration/feature guides, contributor
   brief, journey/index, all architecture views/card/mirror and dated validation.
-- [ ] Run `python architecture/check.py --render`, local links and published bytes.
-- [ ] Push verified docs; fast-forward main without force, verify remote identity/CI.
+- [x] Run `python architecture/check.py --render`, local links and published bytes.
+- [x] Push verified docs; fast-forward main without force and verify remote identity
+  and completed final-code CI. The automatic main repeat remains separately
+  reported in the dated validation record until it completes.

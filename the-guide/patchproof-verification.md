@@ -75,7 +75,7 @@ their unknown execution provenance.
 Defaults: 120 shared seconds, 30 seconds per command, 64 declared properties,
 8 MiB combined command output. Shared seconds range from 0 to 600; command seconds
 must be greater than 0 and at most 300. The shared deadline includes planning and
-input inspection, with a separate cleanup allowance. These are cooperative limits;
+input inspection, with a separate five-second cleanup allowance per process. These are cooperative limits;
 filesystem/system calls and existing parser metadata reads can take additional
 time. Interrupted or unavailable final inspection never becomes passing evidence.
 

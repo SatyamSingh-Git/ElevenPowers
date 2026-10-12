@@ -80,6 +80,14 @@ workflow behavior, not causal AI code-quality or performance improvement. Broade
 installed qualification, richer external-input witnesses and GitHub presentation
 remain independent work.
 
+Final qualification passed 2,129 local tests with 2 skips, all 107 named audits,
+the independent grader and all four final-code hosted jobs. Every architecture
+view rendered and 535 changed-document links resolved. Main promotion and Pages
+publication completed on October 13; published HTML and graph mirror matched
+committed bytes. Runtime bytes stayed unchanged through documentation and
+promotion. The automatic main repeat was still running when publication was
+checked and stays separate from the completed final-code qualification.
+
 See [usage](../the-guide/patchproof-verification.md),
 [design](../docs/design/patchproof-verification.md) and
 [dated delivery qualification](../docs/validation/2026-10-12-patchproof-verification.md).

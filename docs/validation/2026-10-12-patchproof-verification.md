@@ -109,9 +109,28 @@ will be checked against that same fingerprint.
 
 Architecture rendering passed: 148 nodes, 353 edges, seven planes, all five tabs,
 expandable cards, filters, keyboard interaction, shared links and narrow layout.
-All 535 local targets in changed Markdown documents resolved. Main promotion,
-published byte comparison and automatic main CI are recorded below when observed;
-no unrun gate is silently marked passing.
+All 535 local targets in changed Markdown documents resolved.
+
+## Publication and main
+
+The milestone began on 2026-10-12. Main promotion and publication completed on
+2026-10-13 in Asia/Kolkata. A compare-and-swap update of inactive main followed
+by an identical-tree switch preserved raw runtime bytes; normal non-force push
+placed all twelve preceding milestone commits on main at `deeb1ae`.
+Local main, remote main and the feature branch matched that commit.
+
+The [Pages deployment](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38291373501)
+passed. Published `architecture/index.html` (320,257 bytes) and `graph-data.js`
+(175,474 bytes) matched committed Git blobs exactly. Comparing Git blobs avoids
+mistaking local checkout newline differences for publication failure.
+
+The [automatic main CI repeat](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38291373737)
+was still running when publication was checked; it is not relabelled passing.
+The completed final-code four-cell matrix above qualifies the runtime. Every
+subsequent change is documentation only: core, plugin entrypoints, tests,
+evaluation code and workflows remain identical to `e487480`. The final record
+commit retains that distinction rather than requiring another manual runtime
+sweep for documentation alone.
 
 ## Limits
 
