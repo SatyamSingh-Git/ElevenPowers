@@ -10,6 +10,7 @@ from ..hosts.readiness import receipt_key
 from ..ledger import Ledger
 from ..parsers import DECLARED_KINDS
 from .identity import collect
+from .contract_report import inspect as contract_report
 
 
 LIMITS = [
@@ -27,7 +28,9 @@ def _guard(root, deadline):
     """Bound the state read before the legacy exporter loads the same files."""
     values = []
     for rel, limit in (('.elevenpowers/ledger.json', 8 * 1024 * 1024),
-                       ('.elevenpowers/config.json', 1024 * 1024)):
+                       ('.elevenpowers/config.json', 1024 * 1024),
+                       ('.elevenpowers/contracts.json', 1024 * 1024),
+                       ('elevenpowers.contracts.json', 65536)):
         if time.monotonic() >= deadline:
             raise TimeoutError('bundle deadline reached reading state')
         path = root / rel
@@ -70,6 +73,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
     patch = collect(root, base, head, seconds=max(0, deadline - time.monotonic()))
     issues = list(patch['issues']) + list(patch['checkout']['issues'])
     report, records = None, {}
+    contracts = {'schema': 1, 'complete': False, 'checks': [], 'issues': ['Contract inspection unavailable.'], 'evicted': 0, 'limits': []}
     redirects = ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR',
                  'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES',
                  'GIT_CONFIG_COUNT', 'GIT_CONFIG_PARAMETERS', 'GIT_CONFIG')
@@ -81,6 +85,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
         records = {receipt_key(record): record for record in ledger.evidence}
         report = verification_report(root, timeout=max(0, deadline - time.monotonic()))
         check = verification_report(root, timeout=max(0, deadline - time.monotonic()))
+        contracts = contract_report(root, patch, deadline)
         after = _guard(root, deadline)
         if before != after:
             issues.append('ledger or project configuration changed during bundle collection')
@@ -98,6 +103,9 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
     if time.monotonic() >= deadline:
         issues.append('bundle deadline reached; binding is incomplete')
     bound = patch['complete'] and patch['checkout']['eligible'] and report is not None and not issues
+    for contract in contracts['checks']:
+        if not bound:
+            contract['association'] = 'unavailable'
     patch_paths = {change['path'] for change in patch['changes']}
     receipts, covered = [], set()
     for receipt in report['receipts'] if report else []:
@@ -137,7 +145,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120):
              'binding': {'state': 'bound' if bound else 'unavailable',
                          'meaning': 'current checkout and recorded input association, not universal patch safety',
                          'issues': list(dict.fromkeys(issues))},
-             'verification': report, 'receipts': receipts, 'checks': checks,
+             'verification': report, 'receipts': receipts, 'checks': checks, 'contracts': contracts,
              'coverage': {'unobserved_patch_paths': sorted(patch_paths - covered),
                           'unsupported_properties': ['API compatibility', 'database compatibility',
                                                      'security compatibility', 'behavioral compatibility']},
@@ -183,6 +191,25 @@ def markdown(value):
               + _text(c['association']) + '; command ' + _text(c['command']) for c in value['checks']]
     if not value['checks']:
         lines.append('No project-declared checks are available; applicability is unknown.')
+    lines += ['', '## Declared contract checks', '',
+              '| Contract / property | Result | Execution | Freshness | Patch association |',
+              '|---|---|---|---|---|']
+    for contract in value['contracts']['checks']:
+        lines.append('| ' + ' | '.join(_text(c) for c in
+            (contract['id'] + ' / ' + contract['property'], contract['result'], contract['execution'],
+             contract['freshness'], contract['association'])) + ' |')
+    if not value['contracts']['checks']:
+        lines.append('| No declared contract observation | unknown | unobserved | unavailable | unavailable |')
+    lines += ['', *['- ' + _text(issue) for issue in value['contracts']['issues']]]
+    for contract in value['contracts']['checks']:
+        lines += ['- ' + _text(contract['id']) + ': state ' + _text(contract['state'])
+                  + '; path ' + _text(contract['path'])]
+        if contract['producer']:
+            lines += ['  Producer: ' + _text(contract['producer']) + '; inputs: '
+                      + _text(contract['inputs']) + '; configuration: ' + _text(contract['configuration'])
+                      + '; findings: ' + _text(contract['findings']) + '; limits: ' + _text(contract['limits'])]
+        lines += ['- ' + _text(issue) for issue in contract['issues']]
+    lines += ['- ' + _text(limit) for limit in value['contracts']['limits']]
     lines += ['', '## Coverage gaps and next actions', '']
     lines += ['- ' + _text(issue) for issue in binding['issues']]
     lines += ['- Unobserved patch path: ' + _text(p) for p in value['coverage']['unobserved_patch_paths']]

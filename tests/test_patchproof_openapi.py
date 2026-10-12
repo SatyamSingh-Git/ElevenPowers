@@ -96,3 +96,23 @@ def test_observed_protocol_requires_consistent_severity_and_exit():
                          ('[{"id":"unknown","level":true}]', 0)]:
         with pytest.raises(ValueError):
             findings(output, code)
+
+
+def test_real_binary_movement_during_check_retains_incomplete(tmp_path, engine, monkeypatch):
+    import shutil
+    import core.patchproof.openapi as runner
+    copied = tmp_path.parent / (tmp_path.name + '-moving.exe')
+    shutil.copyfile(engine, copied)
+    copied.chmod(0o755)
+    root = project(tmp_path)
+    execute = runner.run
+
+    def moved(args, **kwargs):
+        done = execute(args, **kwargs)
+        if 'breaking' in args:
+            copied.write_bytes(copied.read_bytes() + b'changed')
+        return done
+
+    monkeypatch.setattr(runner, 'run', moved)
+    row = runner.check(root, 'api', copied)
+    assert row['execution'] == 'incomplete' and row['result'] == 'unknown'
