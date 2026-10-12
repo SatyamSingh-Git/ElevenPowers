@@ -1,10 +1,15 @@
 """Read-only GitHub evidence presentation; successful export is informational."""
+import sys
+
+# Isolated mode ignores PYTHONDONTWRITEBYTECODE. Protect cold, vendored runtimes
+# before any imports can write caches into the inspected checkout.
+sys.dont_write_bytecode = True
+
 import argparse
 import json
 import os
 from pathlib import Path
 import stat
-import sys
 import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -30,6 +35,8 @@ def runner_files(project, *, link=False):
             raise ValueError('Actions runner file must be outside inspected project')
         if path.exists() and (not path.is_file() or path.stat().st_size > MAX_RUNNER_BYTES):
             raise ValueError('Actions runner file is not a bounded regular file')
+        if path.exists() and path.stat().st_nlink != 1:
+            raise ValueError('Actions runner file must have exactly one hard link')
         paths[name] = path
     if len(set(paths.values())) != len(paths):
         raise ValueError('Actions runner files must be distinct')
@@ -42,6 +49,8 @@ def append(path, text):
     descriptor = os.open(path, flags, 0o600)
     try:
         state = os.fstat(descriptor)
+        if state.st_nlink != 1:
+            raise ValueError('Actions runner file must have exactly one hard link')
         if not stat.S_ISREG(state.st_mode) or state.st_size+len(data) > MAX_RUNNER_BYTES:
             raise ValueError('Actions runner file byte/type limit exceeded')
         with os.fdopen(descriptor, 'ab', closefd=False) as stream:

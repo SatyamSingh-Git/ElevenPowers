@@ -57,7 +57,7 @@ runs:
         elif [[ "$EP_IMPACT" != "false" ]]; then
           exit 2
         fi
-        python -I "$GITHUB_ACTION_PATH/../../plugin/bin/ep_github.py" "${args[@]}"
+        python -I -B "$GITHUB_ACTION_PATH/../../plugin/bin/ep_github.py" "${args[@]}"
     - name: Upload the exact public evidence files
       id: upload
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4; MIT
@@ -77,6 +77,6 @@ runs:
         EP_REPOSITORY: ${{ inputs.repository }}
         EP_ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
       run: |
-        python -I "$GITHUB_ACTION_PATH/../../plugin/bin/ep_github.py" --project "$EP_PROJECT" \
+        python -I -B "$GITHUB_ACTION_PATH/../../plugin/bin/ep_github.py" --project "$EP_PROJECT" \
           --repository "${EP_REPOSITORY:-$GITHUB_REPOSITORY}" --actions \
           --link-artifact "$EP_ARTIFACT_URL" --run-id "$GITHUB_RUN_ID"

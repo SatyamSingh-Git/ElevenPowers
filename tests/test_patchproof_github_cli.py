@@ -1,6 +1,7 @@
 """Actual CLI and Actions file transport, without project verification."""
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -9,6 +10,7 @@ import pytest
 
 from tests.test_patchproof_report import project, seed
 from tests.test_patchproof_github import event, snapshot
+from tests.test_patchproof_identity import commit
 
 CLI = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_github.py'
 
@@ -90,3 +92,58 @@ def test_uploader_link_matches_exact_repository_run_and_artifact(project, tmp_pa
     done = invoke(root, '--actions', '--link-artifact', url, '--run-id', '42', env=env)
     assert done.returncode == 0, done.stderr
     assert url in summary.read_text() and 'login' in summary.read_text()
+
+
+def test_hard_link_runner_target_cannot_modify_source_or_create_output(project, tmp_path_factory):
+    root, base, head = project
+    seed(root)
+    parent = tmp_path_factory.mktemp('hardlink-runner')
+    summary, output = parent/'summary.md', parent/'new'
+    try:
+        os.link(root/'service.py', summary)
+    except OSError:
+        pytest.skip('hard links unavailable')
+    before = snapshot(root)
+    env = {**os.environ, 'GITHUB_STEP_SUMMARY': str(summary), 'GITHUB_OUTPUT': str(parent/'outputs')}
+    done = invoke(root, '--base', base, '--head', head, '--actions', '--output-dir', output, env=env)
+    assert done.returncode != 0, 'hard-linked runner target was accepted'
+    assert snapshot(root) == before and not output.exists()
+
+
+def test_descriptor_rechecks_hard_links_after_preflight(project, tmp_path_factory, monkeypatch):
+    from plugin.bin.ep_github import runner_files, append
+    root, _, _ = project
+    parent = tmp_path_factory.mktemp('late-hardlink')
+    summary = parent/'summary.md'
+    summary.touch()
+    monkeypatch.setenv('GITHUB_STEP_SUMMARY', str(summary))
+    targets = runner_files(root.resolve(), link=True)
+    summary.unlink()
+    try:
+        os.link(root/'service.py', summary)
+    except OSError:
+        pytest.skip('hard links unavailable')
+    before = snapshot(root)
+    with pytest.raises(ValueError):
+        append(targets['GITHUB_STEP_SUMMARY'], 'must not enter source\n')
+    assert snapshot(root) == before
+
+
+def test_cold_runtime_inside_project_generates_no_bytecode(project, tmp_path_factory):
+    root, base, _ = project
+    source = CLI.parents[2]
+    shutil.copytree(source/'core', root/'core', ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+    target = root/'plugin/bin/ep_github.py'
+    target.parent.mkdir(parents=True)
+    shutil.copy2(CLI, target)
+    seed(root)
+    head = commit(root, 'trusted runtime inside project')
+    before = snapshot(root)
+    output = tmp_path_factory.mktemp('cold-output')/'new'
+    done = subprocess.run([sys.executable, '-I', str(target), '--project', str(root),
+                           '--repository', 'example/project', '--base', base, '--head', head,
+                           '--output-dir', str(output)], capture_output=True, text=True, timeout=120,
+                          env={**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'})
+    assert done.returncode == 0, done.stderr
+    assert not list(root.rglob('*.pyc')), 'presentation wrote bytecode inside the inspected checkout'
+    assert snapshot(root) == before
