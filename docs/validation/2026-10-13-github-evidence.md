@@ -108,6 +108,15 @@ Declared fixture repository context does not authenticate ownership. Dispatch/
 push hosted exercises do not qualify live PR/fork transport; PR-shaped offline
 controls and the actual PR API metadata read establish only their declared scope.
 
+The initial full matrix ultimately failed its Windows 3.11 cell:
+`test_reference_worker_setup_does_not_spend_competing_claim_barrier_budget`
+raised `PermissionError`/WinError 32 deleting its temporary `jobs.db`. It reported
+1 failed, 2,160 passed, 4 skipped in 1595.23s; the other three suite cells and
+presentation job passed. The log establishes a retained open-file symptom, not
+which process held the file or a demonstrated SQLite/runner repair. The final
+post-review matrix remains a separate qualification, not a replacement for this
+failure. No assertion, cleanup deadline or correctness grade was weakened.
+
 ## Final qualification and publication
 
 Post-review hosted presentation passed again in
