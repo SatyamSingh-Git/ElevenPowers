@@ -112,3 +112,30 @@ def test_hash_or_byte_limit_failure_creates_no_output(presentation, tmp_path_fac
     with pytest.raises(ValueError):
         github_output.publish(value, destination, project=root)
     assert not destination.exists()
+
+
+def test_known_credential_command_keys_are_scrubbed_in_all_public_exports(project):
+    from core.export import build as report
+    from core.patchproof.github import build
+    from core.config import load
+    root, base, head = project
+    secret = 'ghp_' + 'Abc123XYZ' * 4
+    seed(root)
+    save(root, Config(auto_detect=False, commands={secret: 'unused'}))
+    before = snapshot(root)
+    assert secret not in json.dumps(report(root))
+    assert secret not in json.dumps(build(root, base, head, repository='example/project'))
+    assert secret in load(root).commands
+    assert snapshot(root) == before
+
+
+def test_public_key_redaction_collision_is_controlled_and_private_config_retained(project):
+    from core.export import build as report
+    from core.config import load
+    root, _, _ = project
+    keys = ['ghp_' + 'Abc123XYZ' * 4, 'ghp_' + 'Def456UVW' * 4]
+    seed(root)
+    save(root, Config(auto_detect=False, commands={keys[0]: 'one', keys[1]: 'two'}))
+    with pytest.raises(ValueError, match='collision'):
+        report(root)
+    assert list(load(root).commands) == keys

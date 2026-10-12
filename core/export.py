@@ -53,7 +53,13 @@ def _portable(value, root):
     if isinstance(value, list):
         return [_portable(item, root) for item in value]
     if isinstance(value, dict):
-        return {key: _portable(item, root) for key, item in value.items()}
+        public = {}
+        for key, item in value.items():
+            key = _portable(key, root)
+            if key in public:
+                raise ValueError('public key redaction collision')
+            public[key] = _portable(item, root)
+        return public
     return value
 
 
