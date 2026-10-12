@@ -241,6 +241,50 @@ def test_cleanup_wait_has_a_finite_allowance(tmp_path, monkeypatch):
         'cleanup must never wait indefinitely for a process to reap')
 
 
+def test_real_interrupt_during_creation_handoff_cleans_created_process(tmp_path, monkeypatch):
+    process = runner()
+    original = subprocess.Popen
+    created = []
+    def launch(*args, **kwargs):
+        child = original(*args, **kwargs)
+        created.append(child)
+        signal.raise_signal(signal.SIGINT)
+        return child
+    monkeypatch.setattr(process.subprocess, 'Popen', launch)
+    try:
+        with pytest.raises(KeyboardInterrupt):
+            process.run(python("import time; time.sleep(60)"), cwd=tmp_path,
+                        timeout=10, shell=False)
+        assert created and not alive(created[0].pid), 'created process escaped cancellation cleanup'
+    finally:
+        for child in created:
+            if child.poll() is None:
+                child.kill()
+            child.wait(timeout=5)
+
+
+def test_creation_handoff_preserves_custom_signal_handler(tmp_path, monkeypatch):
+    process = runner()
+    original = subprocess.Popen
+    previous = signal.getsignal(signal.SIGINT)
+    signals = []
+    def custom(signum, frame):
+        signals.append(signum)
+    def launch(*args, **kwargs):
+        child = original(*args, **kwargs)
+        signal.raise_signal(signal.SIGINT)
+        return child
+    signal.signal(signal.SIGINT, custom)
+    monkeypatch.setattr(process.subprocess, 'Popen', launch)
+    try:
+        assert process.run(python("print('ordinary command')"), cwd=tmp_path,
+                           timeout=10, shell=False).returncode == 0
+        assert signals == [signal.SIGINT]
+        assert signal.getsignal(signal.SIGINT) is custom
+    finally:
+        signal.signal(signal.SIGINT, previous)
+
+
 def test_launch_errors_are_not_success(tmp_path):
     with pytest.raises(OSError):
         runner().run([str(tmp_path / "nonexistent-program")],

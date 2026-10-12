@@ -58,19 +58,25 @@ def run(command: str | list[str], *, cwd: Path, timeout: float,
         raise subprocess.TimeoutExpired(command, timeout, empty, empty)
     started = time.monotonic()
     with _cleanup_on_sigterm(), tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
-        job = _WindowsJob() if os.name == "nt" else None
+        job = None
         child = None
         timed_out = False
         try:
-            options = ({"creationflags": 0x00000004 | subprocess.CREATE_NO_WINDOW}
-                       if job else {"start_new_session": True})
-            if time.monotonic() - started >= timeout:
-                raise subprocess.TimeoutExpired(command, timeout, '' if text else b'', '' if text else b'')
-            child = subprocess.Popen(command, cwd=cwd, shell=shell,
-                                     stdin=subprocess.DEVNULL, stdout=out,
-                                     stderr=err, env=env, **options)
+            # Python can deliver cancellation after CreateProcess/fork succeeds
+            # but before Popen returns its object. Defer catchable main-thread
+            # signals until cleanup owns the child and (on Windows) its Job.
+            with _defer_launch_signals():
+                job = _WindowsJob() if os.name == 'nt' else None
+                options = ({"creationflags": 0x00000004 | subprocess.CREATE_NO_WINDOW}
+                           if job else {"start_new_session": True})
+                if time.monotonic() - started >= timeout:
+                    raise subprocess.TimeoutExpired(command, timeout, '' if text else b'', '' if text else b'')
+                child = subprocess.Popen(command, cwd=cwd, shell=shell,
+                                         stdin=subprocess.DEVNULL, stdout=out,
+                                         stderr=err, env=env, **options)
+                if job:
+                    job.bind(child)
             if job:
-                job.bind(child)
                 if time.monotonic() - started >= timeout:
                     raise subprocess.TimeoutExpired(command, timeout, '' if text else b'', '' if text else b'')
                 job.resume(child.pid)
@@ -123,6 +129,37 @@ def _read(stream, limit: int = MAX_OUTPUT_BYTES + 1, *, text=True):
     if len(data) > MAX_OUTPUT_BYTES:
         raise OutputLimitExceeded("captured stream")
     return data.decode("utf-8", errors="replace").replace("\r\n", "\n").replace("\r", "\n") if text else data
+
+
+@contextmanager
+def _defer_launch_signals():
+    """Replay catchable cancellation after the creation/ownership handoff.
+
+    Ignored signals and non-main-thread policies stay unchanged. Repeated arrivals
+    of one signal may coalesce during this narrow region, like OS blocked signals.
+    This cannot protect against uncatchable termination or a blocked OS syscall.
+    """
+    if threading.current_thread() is not threading.main_thread():
+        yield
+        return
+    handlers = {s: signal.getsignal(s) for s in (signal.SIGINT, signal.SIGTERM)
+                if signal.getsignal(s) != signal.SIG_IGN}
+    pending = {}
+    def defer(signum, frame):
+        pending.setdefault(signum, frame)
+    try:
+        for signum in handlers:
+            signal.signal(signum, defer)
+        yield
+    finally:
+        for signum, handler in handlers.items():
+            signal.signal(signum, handler)
+        for signum, frame in pending.items():
+            handler = handlers[signum]
+            if callable(handler):
+                handler(signum, frame)
+            elif handler == signal.SIG_DFL:
+                raise SystemExit(128 + signum)
 
 
 @contextmanager
