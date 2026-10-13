@@ -526,7 +526,23 @@ class Ledger:
         return self.status()
 
     def verdicts(self) -> list[Verdict]:
-        return [self._verdict(claim) for claim in self.claims]
+        from .evidence import _FRESHNESS_VIEW,freshness_view
+        view=_FRESHNESS_VIEW.get()
+        policy=self.root/'elevenpowers.inputs.json'
+        if (view is not None and view.root==self.root.resolve()) or (
+                not policy.exists() and not policy.is_symlink() and
+                not any(e.external_inputs for e in self.evidence)):
+            return [self._verdict(claim) for claim in self.claims]
+        from .jobs import current
+        session=current()
+        deadline=session.budget.deadline if session is not None else time.monotonic()+10
+        with freshness_view(self.root,deadline=deadline) as (scan,_):
+            verdicts=[self._verdict(claim) for claim in self.claims]
+        if not scan.complete:
+            for verdict in verdicts:
+                if verdict.status is not Status.CONTRADICTED:
+                    verdict.status=Status.UNVERIFIED
+        return verdicts
 
     def status(self) -> Status:
         verdicts = self.verdicts()

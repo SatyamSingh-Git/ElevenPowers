@@ -17,6 +17,8 @@ def _data(item):
     # No deep copy of large inventories or private output just to drop detail.
     value = {name: getattr(item, name) for name in FIELDS}
     value.update(kind=item.kind.value, result=item.result.value, detail='')
+    if item.external_inputs=={}:
+        value.pop('external_inputs')
     return value
 
 
@@ -36,6 +38,10 @@ def record(value):
     if not {'kind', 'identity', 'result', 'observed', 'tree', 'command', 'at'} <= set(value):
         raise ValueError('missing milestone receipt fields')
     item = Evidence.from_dict({**value, 'detail': ''})
+    if item.external_inputs!={}:
+        from ..inputs.receipts import valid
+        if not valid(item.external_inputs):
+            raise ValueError('invalid milestone external execution observations')
     if (item.kind.value not in KINDS or not isinstance(item.command, str) or not item.command
             or len(item.command) > 4096 or not isinstance(item.identity, str) or not item.identity
             or len(item.identity) > 4096 or not isinstance(item.tree, str) or not item.tree

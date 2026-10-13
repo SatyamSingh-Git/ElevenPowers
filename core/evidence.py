@@ -55,6 +55,9 @@ _FRESHNESS_VIEW = ContextVar('freshness_report_view', default=None)
 def freshness_view(root: Path, *, deadline=None):
     """Fresh source and explicit inputs, scoped to one bounded operation."""
     resolved = root.resolve()
+    from .inputs.collection import capture
+    input_deadline = deadline if deadline is not None else time.monotonic()+10
+    inputs = capture(resolved,input_deadline)
     digests = {}
     parent = _FRESHNESS_VIEW.set(None)
     try:
@@ -62,11 +65,20 @@ def freshness_view(root: Path, *, deadline=None):
     finally:
         _FRESHNESS_VIEW.reset(parent)
     view = _FreshView(resolved, snapshot, digests, deadline)
+    view.inputs = inputs
     token = _FRESHNESS_VIEW.set(view)
     try:
         yield snapshot
     finally:
-        _FRESHNESS_VIEW.reset(token)
+        try:
+            final_inputs = capture(resolved,input_deadline)
+            if (inputs['state']!=final_inputs['state'] or inputs['fingerprint']!=final_inputs['fingerprint']
+                    or final_inputs['state']=='incomplete'):
+                snapshot[0].issues.append('external input coverage changed or is incomplete during freshness inspection')
+        except (OSError,ValueError,TimeoutError):
+            snapshot[0].issues.append('external input final inspection is unavailable')
+        finally:
+            _FRESHNESS_VIEW.reset(token)
 
 
 class _FreshView:
@@ -170,7 +182,20 @@ class Evidence:
     ordinary case, and it stales nothing at all.
     """
 
+    external_inputs: dict = field(default_factory=dict)
+    """Optional bounded before/after execution observations; source facts stay separate."""
+
     def freshness(self, root: Path) -> Freshness:
+        source=self.source_freshness(root)
+        policy=root/'elevenpowers.inputs.json'
+        if not self.external_inputs and not policy.exists() and not policy.is_symlink():
+            return source
+        from .inputs.receipts import inspect
+        if inspect(self,root)['state'] not in {'bound','not_configured'}:
+            return Freshness.GONE if source is Freshness.GONE else Freshness.STALE
+        return source
+
+    def source_freshness(self, root: Path) -> Freshness:
         if self.declaration:
             from .config import load
             from .redact import scrub
@@ -238,6 +263,8 @@ class Evidence:
         d = asdict(self)
         d["kind"] = self.kind.value
         d["result"] = self.result.value
+        if self.external_inputs=={}:
+            d.pop('external_inputs')
         return d
 
     @classmethod
