@@ -31,7 +31,25 @@ standard-library imports passed. All five architecture views rendered with
 The final-code hosted run is
 [38388865266](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38388865266)
 at `f7448f0a71038d3514fcc6d17f3f54f8b1599182`. Its disposable GitHub artifact
-job passed; the four matrix cells remain pending. Downloaded `evidence.json`
+job and all four matrix cells passed. Linux Python
+3.11 passed 2,352 tests with 8 platform skips in 510.79 seconds; Python 3.13
+passed 2,352 with 8 skips in 525.94 seconds. Their named audits passed 105 with
+2 Windows-only skips. Actual session acceptance passed in 3.765 and 4.002
+seconds respectively, with the same states/counts and two read-only report
+collections. These timings describe disposable authored controls, not
+normal-session latency or a speedup. Hosted runtime raw-byte identity is
+`014c40b6fdfe854a5d9e54994315b89eb00c544efceb4c23d8ec9a2cdee0a166`;
+local and checkout newline conventions differ, and each producer/consumer is
+qualified against its own actual bytes. Windows Python 3.11 passed 2,355 tests
+with 5 skips in 2,528.29 seconds; Python 3.13 passed 2,355 with 5 skips in
+2,470.57 seconds. Their named audits passed all 107 controls in 69.59 and 48.14
+seconds, and actual session exercises passed in 28.265 and 27.308 seconds,
+respectively. All hosted execution reliability, dependency/session acceptance,
+grader, source reproduction, doctor and stdlib gates passed. Windows raw-byte
+identity is `eea546bcc447e260b529f29466b311b3bae33bae28eef79aaf0804d686b34fea`.
+Checking all 133 runtime Git blobs confirms that local/Git/Windows identities
+differ only by newline representation; freshness rules were not normalized.
+The local full-suite result is still pending. Downloaded `evidence.json`
 and `summary.md` are 9,419 and 4,113 bytes. The independent fixture logged
 `current, failed, incomplete`, launch counts `[1,1,1]` and read-only reports.
 Its base `c3ddf16b8d85990c1899c258668d7b0d48d6dc0a` and head
