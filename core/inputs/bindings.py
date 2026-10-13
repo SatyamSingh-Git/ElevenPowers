@@ -43,6 +43,11 @@ def target(root):
 def private(root, deadline):
     if not (Path(root)/'.git').exists():
         return
+    redirects = ('GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE','GIT_COMMON_DIR',
+                 'GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES',
+                 'GIT_CONFIG_COUNT','GIT_CONFIG_PARAMETERS','GIT_CONFIG')
+    if any(name in os.environ for name in redirects):
+        raise ValueError('ambient Git redirects cannot qualify local input approval')
     remaining = deadline-time.monotonic()
     if remaining <= 0:
         raise TimeoutError('input approval inspection deadline reached')

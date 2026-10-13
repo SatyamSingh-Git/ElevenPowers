@@ -164,3 +164,18 @@ def test_git_tracked_approval_cannot_qualify_as_local(tmp_path):
         load(root, definition(root), time.monotonic()+10)
     with pytest.raises(ValueError):
         bind(root, 'deps', directory, replace=True)
+
+
+def test_git_environment_redirect_cannot_hide_tracked_approval(tmp_path,monkeypatch):
+    from core.inputs.bindings import bind,load
+    from core.inputs.definition import load as definition
+    from tests.test_patchproof_identity import git
+    root = tmp_path/'project'; root.mkdir(); policy(root)
+    other = tmp_path/'other'; other.mkdir()
+    directory = tmp_path/'deps'; directory.mkdir()
+    git(root,'init','-q'); git(other,'init','-q')
+    bind(root,'deps',directory)
+    git(root,'add','-f','.elevenpowers/input-roots.json')
+    monkeypatch.setenv('GIT_DIR',str(other/'.git'))
+    with pytest.raises(ValueError):
+        load(root,definition(root),time.monotonic()+10)

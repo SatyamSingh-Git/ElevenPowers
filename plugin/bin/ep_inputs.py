@@ -4,10 +4,15 @@ sys.dont_write_bytecode = True
 
 import argparse
 import json
+import math
 from pathlib import Path
+import subprocess
+import time
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 from core.inputs.bindings import bind
+from core.inputs.collection import capture
+from core.jobs import Busy
 from core.redact import scrub_values
 
 
@@ -19,12 +24,22 @@ def main():
     approval.add_argument('--name',required=True)
     approval.add_argument('--path',type=Path,required=True)
     approval.add_argument('--replace',action='store_true')
+    inspection = commands.add_parser('inspect',help='read fresh declared inputs without running commands')
+    inspection.add_argument('--project',type=Path,default=Path.cwd())
+    inspection.add_argument('--seconds',type=float,default=10)
+    inspection.add_argument('--check',action='store_true')
     args = parser.parse_args()
     try:
+        if args.action == 'inspect':
+            if not math.isfinite(args.seconds) or not 0 <= args.seconds <= 60:
+                raise ValueError('inspection seconds outside finite range')
+            value = capture(args.project,time.monotonic()+args.seconds)
+            print(json.dumps(value,ensure_ascii=True))
+            return 1 if args.check and value['state'] != 'available' else 0
         bind(args.project,args.name,args.path,replace=args.replace)
         print(json.dumps(scrub_values({'root':args.name,'state':'bound'}),ensure_ascii=True))
         return 0
-    except (ValueError,OSError,TimeoutError) as error:
+    except (ValueError,OSError,TimeoutError,Busy,subprocess.SubprocessError) as error:
         parser.exit(2,'Input approval unavailable: '+type(error).__name__+'; inspect declaration and local root.\n')
 
 

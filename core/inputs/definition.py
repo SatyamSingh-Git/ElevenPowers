@@ -7,6 +7,8 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import re
 import stat
 
+from .access import opened
+
 FILE = 'elevenpowers.inputs.json'
 MAX_BYTES = 65536
 DEFAULTS = {'files': 2048, 'bytes': 32*1024*1024, 'seconds': 10}
@@ -39,7 +41,7 @@ def raw(path, limit=MAX_BYTES, *, optional=False):
     if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1 or before.st_size > limit:
         raise ValueError('input state type, link or byte limit exceeded')
     flags = os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_NONBLOCK', 0) | getattr(os, 'O_BINARY', 0)
-    descriptor = os.open(path, flags)
+    descriptor = opened(path, flags)
     with os.fdopen(descriptor, 'rb') as stream:
         if stamp(os.fstat(stream.fileno())) != stamp(before):
             raise ValueError('input state changed before read')
