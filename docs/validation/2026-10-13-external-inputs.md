@@ -120,6 +120,26 @@ manifest, and final hosted `f9fe758` differs from the delivery only in docs.
 No runtime code changed after qualification began. Main and served architecture
 publication are verified separately below.
 
+## Main and published architecture
+
+Main was fast-forwarded normally from `c44ff23` to
+`5dd1e9fd6e2f40a71e195b6e3c8e9ddb9c7a4895`; the feature branch matched that
+remote identity. The same frozen runtime bytes survived the inactive-ref update
+and identical-tree branch switch. No reset, forced push, model session or new
+checkout was used.
+
+[Pages deployment](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38370903935)
+passed. HTTPS bytes matched the actual Git blobs: `architecture/index.html`
+337,814 bytes, SHA-256
+`3775dbae66c9633002a48915a9309c20209804a9f381b67c413eefe91c0647d0`;
+`architecture/graph-data.js` 187,796 bytes, SHA-256
+`4d204bf5aa3da3fd684a5d22dfb2c67ce5b01f6ebf3e5cb6717195d10bb6aa81`.
+The final closure changes delivery documentation only; code and graph blobs
+remain the qualified bytes. Automatic main-push test repeats are separate from
+the completed final-code qualification and were still running at closure.
+Only this plan's private validation workspace is archived; prior failure
+evidence and other plans are preserved.
+
 V1 limits: selected locally approved regular inputs only; unsupported links and
 special files remain incomplete; no complete environment, remote-service
 freshness, authenticated attestation, native passive integration or per-command

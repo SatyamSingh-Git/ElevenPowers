@@ -110,5 +110,5 @@ Files: `eval/external_inputs.py`, `tests/test_external_inputs_exercise.py`,
   hosted four-cell matrix, actual exercise and architecture/link checks.
 - [x] Update README/plan/status/contributor brief, guides, journey 78, validation,
   all five architecture views/Planned card/meta/generated mirror; push.
-- [ ] Fast-forward main normally after gates; verify remote refs, raw runtime
+- [x] Fast-forward main normally after gates; verify remote refs, raw runtime
   identity and served graph bytes. Archive only this plan's private workspace.
