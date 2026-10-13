@@ -69,6 +69,26 @@ counts are `[5,5,6,6,7,8,8,8,9,10,10]`. Ordinary report inspection is read-only
 and shares two selected-target collections. Five synthetic host envelopes are
 adapter acceptance, not installed-session proof.
 
+## Main and published closure
+
+Remote main and feature refs were verified equal at
+`a73c2276d5728aace5b85f52e1e6c03aeefc1438`, through a normal fast-forward from
+`3996ab2435005b9a24b8141c3bf24acb9056e1a4`. Code, tests, evaluator and workflow
+trees are unchanged from the qualified `f7448f0` commit. Local runtime raw bytes
+remain `10a99c67ac2b2e8776765be640703c280539312610a94eb939b2a94cfe2dc470`.
+
+[Pages deployment](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38396345681)
+passed. HTTPS bodies match the actual main Git blobs: `architecture/index.html`
+345,014 bytes, SHA-256
+`732896c8d60c7de7dd82ab2e0dc84b71f0b1b24d6e5a8b969876a70ad7c1c283`;
+`architecture/graph-data.js` 192,979 bytes, SHA-256
+`605df4b3a8d2f5f4c1c0566bd782033ce17996611bff9b2a46517914088d89a0`.
+The final closure changes documentation only and preserves these code/map blobs.
+Automatic main-push test repeats are separate from final-code qualification;
+they were still in progress at closure. This milestone's owned private evidence
+workspace is archived, including earlier failures; unrelated plans and archives
+are preserved.
+
 ## Limits and retained findings
 
 Private native schema 2 is capped at 1 MiB with 128 pending attempts, 256
