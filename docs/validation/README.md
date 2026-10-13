@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-13 external input sessions v2](2026-10-13-external-input-sessions.md): ordinary and retained receipts, actual dependency drift/recovery, replay/task/closing-read review controls and qualified delivery gates.
+
 - [2026-10-13 external input witnesses](2026-10-13-external-inputs.md): actual Python/Node dependency drift, explicit approval, bounded reads and directory/source/authority review controls.
 
 - [2026-10-13 GitHub evidence presentation](2026-10-13-github-evidence.md): real command outcomes, original Windows handle completion, public export review repairs and actual artifact transport.

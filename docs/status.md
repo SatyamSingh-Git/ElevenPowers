@@ -1,5 +1,25 @@
 # Current delivery status
 
+**2026-10-13 — External Input Witnesses v2 implementation; final qualification in progress.**
+Ordinary identified native receipts, completion-owned verification, confirmation
+and reuse, retained milestones and public views now share selected approved local
+input qualifications. Actual unrelated Python/Node projects pass the seven-state
+drift/failure/repair/incomplete/recovery protocol, with source/HEAD/environment
+unchanged during the independent dependency fault. Inspection is read-only and
+ordinary export shares two selected-target reads. Five synthetic host adapters
+are exercised; no fresh installed-session or causal coding-benefit claim.
+One final review exposed five Important defects; the first repair group passed
+74 tests including all 18 regression controls. Full/local/hosted delivery gates
+are still pending, so main delivery is not yet claimed. See
+[qualification](validation/2026-10-13-external-input-sessions.md) and
+[journey 79](../journey/79-a-pass-needs-its-before.md).
+
+Next: qualify broader adoption and behavior preservation. Further producers,
+per-command selections, remote observations and live PR/fork transport remain
+separate work. Deferred operation cost: native-only PatchProof bundles can still
+collect selected targets eight times; monotone native-ID filter collisions
+conservatively leave attempts incomplete.
+
 **2026-10-13 — External Input Witnesses v1 delivered and qualified.**
 Project-owned literal selections and explicit private root approval add bounded
 file/tree observations to PatchProof execution, reuse and read-only evidence.
@@ -290,6 +310,7 @@ does not establish coding benefit. See [guide](../the-guide/milestones.md),
 
 | Capability | Delivered behavior | Evidence boundary |
 |---|---|---|
+| Selected external inputs v2 | Explicit root approval and bounded local file/tree witnesses qualify ordinary identified native, owned and explicit receipts, reuse and retained milestones | Actual unrelated Python/Node drift/refusal/recovery; synthetic five-host callbacks; missing identities and legacy provenance stay incomplete; no complete environment or installed-session/causal benefit claim |
 | Milestone verification | Optional strict declarations, latest cross-task aggregate receipts, separate current/fail/stale/incomplete/absent view and informational impact leads | 18 local authored attempts qualify; broad native invalidation, explicit user scopes and unsigned observations remain limits; automatic completion and coding benefit stay open |
 | ImpactGraph | Fresh Python literal imports, calls and context-bound default pytest fixtures; optional grammar/compiler JS/TS; declared/observed paths; focused/fallback/support tests and separate history | 11/12 new valid test refs, 6/12 focused; corrected authored-fault detection 3/3 versus 0/3 old. Partial oracle, subprocess/custom collection/source maps/runtime dispatch/native cost remain gaps; no safe exclusion or automatic integration |
 | Repository selection | Git-aware tracked/untracked inputs, inherited ignores, nested boundaries and project exclusions | Supported source extensions and named dependency files; excluded inputs are outside the fingerprint |

@@ -1,6 +1,11 @@
 # The journey
 
-Latest: [75 — a path is not a passing check](75-a-path-is-not-a-passing-check.md).
+Latest: [79 — a pass needs its before](79-a-pass-needs-its-before.md).
+
+Recent: [78 — the dependency can change without the patch](78-the-dependency-can-change-without-the-patch.md),
+[77 — the upload is not the evidence](77-the-upload-is-not-the-evidence.md),
+[76 — a check needs time to leave a receipt](76-a-check-needs-time-to-leave-a-receipt.md)
+and [75 — a path is not a passing check](75-a-path-is-not-a-passing-check.md).
 
 Recent: [74 — a contract needs a producer](74-a-contract-needs-a-producer.md) and
 [73 — a patch needs its own identity](73-a-patch-needs-its-own-identity.md).

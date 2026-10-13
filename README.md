@@ -27,11 +27,11 @@
 **What it can do today:**
 
 1. **ImpactGraph:** maps a change's possible blast radius to affected files, dependencies and candidate tests, grounding plans and milestone recheck advice in repository evidence while showing coverage gaps.
-2. **Milestone verification:** tracks checks for previously built behavior across tasks, flags failed, stale or missing evidence, and can advise which checks to rerun as development continues.
+2. **Milestone verification:** tracks checks for previously built behavior across tasks, flags failed, stale, missing or incomplete evidence, and can advise which checks to rerun as development continues.
 3. **Test strength:** optionally makes small mutations to edited production code in isolation and checks whether passing tests detect them, exposing possible gaps in regression protection.
 4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 5. **Resumable verification:** saves check progress and receipts so interrupted work can resume, fresh results can be reused and later edits can invalidate outdated evidence.
-6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether results still match the current files, where evidence is missing and what needs attention next.
+6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and approved external inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
@@ -647,15 +647,17 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-[External Input Witnesses v1](the-guide/external-inputs.md) now binds selected
-approved local dependency files and tree structure to explicit PatchProof
-execution and reuse. Actual Python/JavaScript checks reproduce same-path drift
-with source, HEAD and environment unchanged: current inputs reuse once; changed
-inputs require execution; missing inputs defer launch. Read-only bundles and
-GitHub summaries keep current collection separate from saved execution association.
-Native passive capture, remote services and complete environment coverage remain
-outside this version. See [qualification](docs/validation/2026-10-13-external-inputs.md)
-and [journey 78](journey/78-the-dependency-can-change-without-the-patch.md).
+[External Input Witnesses v2](the-guide/external-inputs.md) extends selected,
+approved local dependency observations to ordinary identified native receipts,
+completion-owned checks, reuse and retained milestone history. Actual unrelated
+Python/JavaScript projects reproduce dependency drift with source, HEAD and
+environment unchanged: old evidence becomes stale, missing inputs prevent owned
+launch, and a fresh identified check recovers qualification. Reports separate
+source freshness, current freshness and external association; they preserve the
+original command result. Unsupported callbacks, remote services and complete
+environment coverage remain limits. See
+[qualification](docs/validation/2026-10-13-external-input-sessions.md) and
+[journey 79](journey/79-a-pass-needs-its-before.md).
 
 [GitHub evidence presentation](the-guide/patchproof-github.md) now exports exact-patch
 receipts and gaps to an Actions summary and downloadable JSON/Markdown artifact.
@@ -742,7 +744,7 @@ resumed delivery launched no extra model sessions.
 Task size is not a criterion; an observable coding or verification improvement
 through any engaged mechanism can count.
 
-Research prototype; status reviewed 2026-10-08. Optional milestone declarations, atomic cross-task history, read-only qualified views and explained exact-command recheck priorities are delivered; bounded automatic edit advice is now project opt-in; installed advice acceptance and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
+Research prototype; status reviewed 2026-10-13. Selected approved external inputs now qualify ordinary identified native receipts, completion-owned checks, reuse and retained milestones; missing provenance remains incomplete. Optional milestone declarations, atomic cross-task history, read-only qualified views and explained exact-command recheck priorities are delivered; bounded automatic edit advice is now project opt-in; installed advice acceptance and end-to-end coding benefit remain open. ImpactGraph now ships explicit fresh CLI/API queries with explained paths and candidate tests; broader precision and automatic hook acceptance remain open. Repository evidence, exact receipts, five-host onboarding, callback activation, durable completion execution and portable Markdown/JSON reports are shipped. Native patches use bounded target content comparisons; missing/evicted callbacks remain UNVERIFIED. A real Claude Code startup was observed in Snag without a prompt/model call. Its actual external CI passed 14/15 checks and failed the production dependency audit; explicit replay recorded complete/fail, separately from native-host command capture. Its report preserves that failure and does not certify a task with no active claim. The earlier onboarding suite passed 1,062 tests with 28 skips; subsequent delivery checks are recorded separately. Improved patch outcomes have not been demonstrated. See [current status](docs/status.md) and [validation records](docs/validation/README.md).
 
 The optional test-strength delivery passed **1,127 local tests with 28 skips**
 after three independent-review fixes. Real Python/JavaScript/TypeScript fixture

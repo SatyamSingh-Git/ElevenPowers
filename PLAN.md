@@ -1,5 +1,22 @@
 # Master Plan v0.8
 
+**2026-10-13 — External Input Witnesses v2 implementation; final qualification in progress.**
+The shared selected-input contract now qualifies ordinary identified native
+receipts, completion-owned checks, targeted confirmation/reuse, retained
+milestones and public views. Unrelated actual Python/Node projects pass the
+seven-state drift/failure/repair/incomplete/recovery protocol; source, HEAD and
+environment stay unchanged during the independent fault. No new installed-host
+or model session was launched. One final review's five Important gaps were
+reproduced and repaired; broader final gates and main delivery remain pending.
+See [qualification](docs/validation/2026-10-13-external-input-sessions.md),
+[journey 79](journey/79-a-pass-needs-its-before.md) and
+[implementation plan](docs/superpowers/plans/2026-10-13-external-input-sessions.md).
+
+Next: qualify broader adoption and behavior preservation before claiming coding
+benefit. Additional producers, per-command selections, remote observations and
+live PR/fork transport remain scoped future work. Read multiplication in nested
+PatchProof exports is retained as a deferred operation cost.
+
 **2026-10-13 — External Input Witnesses v1 delivered and qualified.**
 Project-owned literal selections and explicit private root approval add bounded
 file/tree observations to PatchProof execution, reuse and read-only evidence.
