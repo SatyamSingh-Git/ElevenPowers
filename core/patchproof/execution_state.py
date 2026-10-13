@@ -15,6 +15,7 @@ from ..hosts.provenance import fingerprint
 from ..jobs import replace
 from .identity import collect
 from .policy import fingerprint as policy_fingerprint
+from ..inputs.collection import capture as input_capture
 
 FILE = 'patch-verification.json'
 MAX_BYTES = 1024 * 1024
@@ -95,6 +96,8 @@ def _witness_shape(value):
              'source_fingerprint': (16,), 'configuration_fingerprint': (64,),
              'policy_fingerprint': (64,), 'producer_fingerprint': (64,),
              'environment_fingerprint': (64,)}
+    if isinstance(value,dict) and 'external_inputs_fingerprint' in value:
+        sizes['external_inputs_fingerprint'] = (64,)
     if (not isinstance(value, dict) or set(value) != set(sizes)
             or any(not isinstance(v, str) or len(v) not in sizes[k]
                    or re.fullmatch('[0-9a-f]+', v) is None for k, v in value.items())):
@@ -165,6 +168,11 @@ def witness(root, patch, deadline, *, base=None, head=None):
              'producer_fingerprint': fingerprint(),
              'environment_fingerprint': digest([sys.version, sys.executable, platform.platform(),
                                                 str(root), dict(os.environ)])}
+    external = input_capture(root,deadline)
+    if external['state'] == 'incomplete':
+        raise ValueError('required external input observation is incomplete')
+    if external['state'] == 'available':
+        value['external_inputs_fingerprint'] = external['fingerprint']
     if time.monotonic() >= deadline:
         raise TimeoutError('verification deadline reached during input inspection')
     return value, snapshot

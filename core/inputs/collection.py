@@ -148,3 +148,17 @@ def capture(root,deadline):
         if 'scan' in locals():
             value['counts'] = dict(scan.counts)
     return scrub_values(value)
+
+
+def markdown(value):
+    from ..export import _text
+    lines = ['## Declared external inputs', '',
+             'Current collection: '+_text(value['state']),
+             'Selected-input fingerprint: '+_text(value['fingerprint'] or 'unavailable'),
+             'Source-only receipt facts remain separate; current collection does not imply a matching saved execution.',
+             'Only declared approved bytes are inspected; the complete environment remains unobserved.', '',
+             '| Witness | Root label | Collection | Files |', '|---|---|---|---|']
+    for row in value['witnesses']:
+        lines.append('| '+' | '.join(_text(v) for v in (row['id'],row['root'],row['state'],row['files']))+' |')
+    lines += ['', *['- '+_text(i) for i in value['issues']+value['limits']]]
+    return '\n'.join(lines)+'\n'

@@ -81,6 +81,14 @@ def markdown(value):
               +'; unsupported properties: '+str(len(bundle['coverage']['unsupported_properties'])),
               'Report coverage complete: '+_cell(verification.get('coverage', {}).get('complete', 'unavailable'))]
     header = list(lines)
+    external = bundle.get('external_inputs',{'state':'not_configured','fingerprint':None,'witnesses':[],'issues':[]})
+    lines += ['Declared external inputs: '+_cell(external['state'])+'; witnesses: '+str(len(external['witnesses'])),
+              'Selected-input fingerprint: '+_cell(external['fingerprint'] or 'unavailable'),
+              'Source-only receipts do not establish external freshness or the complete environment.']
+    header = list(lines)
+    _table(lines,'Declared external inputs',['Witness','Root label','Collection','Files'],
+           [(w['id'],w['root'],w['state'],w['files']) for w in external['witnesses']])
+    _list(lines,'External input gaps',external['issues'])
     _table(lines, 'Project-declared checks', ['Property', 'Reported state', 'Association', 'Command'],
            [(c['property'], c['state'], c['association'], c['command']) for c in bundle['checks']])
     _table(lines, 'Receipt observations', ['Command', 'Result', 'Execution', 'Freshness', 'Association'],
@@ -109,6 +117,7 @@ def markdown(value):
         groups = [('Declared checks', bundle['checks']), ('Receipts', bundle['receipts']),
                   ('Saved executions', execution.get('checks', [])),
                   ('Contracts', contracts.get('checks', []))]
+        groups.append(('External input witnesses',external['witnesses']))
         omissions = [f'{name}: {len(rows)} rows omitted by the byte fallback; '
                      f'{max(0, len(rows)-MAX_ROWS)} rows omitted by the row cap.'
                      for name, rows in groups if rows]

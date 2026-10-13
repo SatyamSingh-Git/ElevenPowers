@@ -16,6 +16,7 @@ from .impact import inspect as impact_report, disabled as impact_disabled, quali
 from ..impact import markdown as impact_markdown
 from .execution_report import inspect as execution_report
 from .policy import fingerprint as policy_fingerprint
+from ..inputs.collection import capture as input_capture, markdown as input_markdown
 
 
 LIMITS = [
@@ -36,6 +37,8 @@ def _guard(root, deadline):
                        ('.elevenpowers/config.json', 1024 * 1024),
                        ('.elevenpowers/contracts.json', 1024 * 1024),
                        ('.elevenpowers/patch-verification.json', 1024 * 1024),
+                       ('.elevenpowers/input-roots.json', 65536),
+                       ('elevenpowers.inputs.json', 65536),
                        ('elevenpowers.contracts.json', 65536)):
         if time.monotonic() >= deadline:
             raise TimeoutError('bundle deadline reached reading state')
@@ -76,6 +79,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     started = time.monotonic()
     deadline = started + timeout
     root = Path(root).resolve(strict=True)
+    external_inputs = input_capture(root,deadline)
     patch = collect(root, base, head, seconds=max(0, deadline - time.monotonic()))
     issues = list(patch['issues']) + list(patch['checkout']['issues'])
     report, records = None, {}
@@ -168,6 +172,21 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
                        'receipt_key': latest['receipt_key'] if latest else None,
                        'association': latest['association'] if latest else 'unavailable'})
     execution = execution_report(root, patch, receipts, deadline, bound, base=base, head=head)
+    external_final = input_capture(root,deadline)
+    if (external_inputs['state'] != external_final['state'] or
+            external_inputs['fingerprint'] != external_final['fingerprint']):
+        external_inputs = external_final
+        external_inputs.update(state='incomplete',fingerprint=None)
+        external_inputs['issues'].append('external inputs changed during bundle inspection')
+    else:
+        external_inputs = external_final
+    if external_inputs['state'] == 'incomplete':
+        for observation in execution['checks']:
+            observation.update(association='unavailable',external_inputs_association='unavailable',
+                               executed_at_patch_head='unknown')
+            observation['association_issues'].append('final external input inspection is incomplete')
+        if execution['state'] != 'absent':
+            execution['state'] = 'incomplete'
     try:
         if before is None or _guard(root, deadline) != before:
             issues.append('ledger or configuration changed during saved execution inspection')
@@ -197,7 +216,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
                          'meaning': 'current checkout and recorded input association, not universal patch safety',
                          'issues': list(dict.fromkeys(issues))},
              'verification': report, 'receipts': receipts, 'checks': checks, 'contracts': contracts,
-             'impact': impact_value, 'execution': execution,
+             'impact': impact_value, 'execution': execution, 'external_inputs': external_inputs,
              'coverage': {'unobserved_patch_paths': sorted(patch_paths - covered),
                           'unsupported_properties': ['API compatibility', 'database compatibility',
                                                      'security compatibility', 'behavioral compatibility']},
@@ -291,7 +310,7 @@ def markdown(value):
         if impact['query'] is not None:
             lines += ['', impact_markdown(impact['query'])]
     lines += ['- ' + _text(limit) for limit in impact['limits']]
-    lines += ['', '## Coverage gaps and next actions', '']
+    lines += ['', input_markdown(value['external_inputs']), '', '## Coverage gaps and next actions', '']
     lines += ['- ' + _text(issue) for issue in binding['issues']]
     lines += ['- Unobserved patch path: ' + _text(p) for p in value['coverage']['unobserved_patch_paths']]
     lines += ['- Unsupported property; applicability unknown: ' + _text(p)

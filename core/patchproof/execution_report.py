@@ -7,7 +7,7 @@ from .execution_state import read, witness
 LIMITS = [
     'Unsigned local execution records require trust in the producer and state directory.',
     'Before/after input reads are not atomic and cannot detect intervening reverted changes.',
-    'Environment values are hashed, not exported; installed dependency bytes and external services are unobserved.',
+    'Environment values are hashed, not exported; only explicitly approved selected local bytes are witnessed. Other dependencies and external services remain unobserved.',
     'A passing declared command and current inputs do not certify correctness or universal safety.',
 ]
 
@@ -30,8 +30,14 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
             keys = set(item['receipt_keys'])
             matches = [r for r in receipts if r['receipt_key'] in keys]
             why = []
+            external = current.get('external_inputs_fingerprint')
+            external_matching = (external is not None and
+                item['witness'].get('external_inputs_fingerprint') == external and
+                (item.get('after') or {}).get('external_inputs_fingerprint') == external)
+            if external is not None and not external_matching:
+                why.append('declared external inputs changed or have no matching saved observation')
             if not bound or item['witness'] != current or item.get('after') != current:
-                why.append('patch, source, configuration, policy, producer or environment association changed/unavailable')
+                why.append('patch, source, configuration, policy, producer, environment or external-input association changed/unavailable')
             if item['status'] not in {'passed', 'failed'}:
                 why.append('execution did not retain a complete qualified result')
             if not matches or len(matches) != len(item['receipt_keys']):
@@ -55,6 +61,9 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
                 'executed_at_patch_head': current['head'] if not why else 'unknown',
                 'producer_fingerprint': item['witness'].get('producer_fingerprint', ''),
                 'environment_fingerprint': item['witness'].get('environment_fingerprint', ''),
+                'external_inputs_fingerprint': item['witness'].get('external_inputs_fingerprint'),
+                'external_inputs_association': ('not_configured' if external is None else
+                                               'bound' if external_matching and not why else 'unavailable'),
                 'budgets': item.get('budgets', {})})
         result['state'] = 'available' if all(c['association'] == 'bound' for c in result['checks']) else 'incomplete'
     except (OSError, ValueError, KeyError, TypeError, TimeoutError, subprocess.SubprocessError) as error:

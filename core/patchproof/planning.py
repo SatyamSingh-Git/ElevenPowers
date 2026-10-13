@@ -36,6 +36,8 @@ def plan(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30, i
     bundle = build(root, base, head, timeout=max(0, deadline - time.monotonic()), impact=impact)
     issues = list(bundle['binding']['issues'])
     issues.extend(bundle['execution']['issues'])
+    if bundle['external_inputs']['state'] == 'incomplete':
+        issues.extend(bundle['external_inputs']['issues'])
     try:
         if before is None or _guard(root, deadline) != before or config != load(root):
             issues.append('command configuration or evidence state changed/unavailable during planning')
