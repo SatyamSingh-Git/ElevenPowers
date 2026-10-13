@@ -8,8 +8,8 @@ from tests.test_external_input_reuse import dependency_project
 from tests.test_input_sessions_gap import session_project
 
 
-@pytest.mark.parametrize('host',['claude','codex','gemini','cursor','copilot'])
-def test_normalized_host_pair_observes_actual_command(dependency_project,host):
+@pytest.mark.parametrize('host,directory',[(host,None) for host in ['claude','codex','gemini','cursor','copilot']]+[('gemini','.'),('gemini','./')])
+def test_normalized_host_pair_observes_actual_command(dependency_project,host,directory):
     from core.inputs.receipts import inspect
     from core.hook import dispatch
     from core.hosts.bridge import run
@@ -19,7 +19,7 @@ def test_normalized_host_pair_observes_actual_command(dependency_project,host):
     pre,post='PreToolUse','PostToolUse'
     if host=='gemini':
         pre,post='BeforeTool','AfterTool';payload['tool_name']='run_shell_command'
-        payload['tool_input']['dir_path']=str(root)
+        payload['tool_input']['dir_path']=directory or str(root)
     elif host=='cursor':
         pre,post='preToolUse','postToolUse';payload['tool_name']='Shell'
         payload['conversation_id']='synthetic-session'

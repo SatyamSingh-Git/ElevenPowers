@@ -44,7 +44,9 @@ def identity(payload):
 
 def invocation(payload,root):
     where=tool_directory(root,payload.get('tool_input') or {})
-    return digest([payload.get('tool_name'),command_of(payload),str(where if where is not None else root.resolve())]),directory_issue(root,where)
+    issue=directory_issue(root,where)
+    directory=str(root.resolve()) if not issue else str(where)
+    return digest([payload.get('tool_name'),command_of(payload),directory]),issue
 
 
 def configuration(root):
