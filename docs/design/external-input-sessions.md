@@ -48,8 +48,11 @@ at most ten cooperative seconds each, further limited by v1 declared budgets.
 No configured policy means no new native state/capture work. Unknown command
 results can retain their original facts but cannot acquire missing pre evidence.
 
-`.elevenpowers/input-attempts.json` is schema 1, at most 1 MiB, 128 pending
-attempts and 256 consumed IDs. Pending expiry is one hour; negative/non-finite
+`.elevenpowers/input-attempts.json` is private schema 2, at most 1 MiB, 128 pending
+attempts and 256 consumed details. A fixed 256 KiB monotone seen-ID filter uses
+seven digest positions and never forgets eligibility after detail eviction.
+Collisions refuse qualification; older experimental state without seen memory
+is explicitly incomplete, never silently reset. Pending expiry is one hour; negative/non-finite
 clock intervals are incomplete. Validate safe state reads and private tracking;
 use the existing write lock and atomic replacement. Do not hold a lock during
 filesystem collection. Revalidate state when consuming it. Duplicate pre,
@@ -57,6 +60,10 @@ replayed post, overlapping calls, changed task/session/invocation, changed runti
 eviction and interrupted/unfinished outcomes cannot create qualified success.
 Terminal post consumes once; unfinished callbacks retain explicit incomplete
 history. A fresh identified retry can supersede an earlier incomplete check.
+Post-only terminal IDs are also remembered. Native provisional persistence
+validates the expected task inside the attempt handoff lock; no filesystem
+capture occurs under that lock. Missing-ID provisional scope survives policy
+removal without command-text pairing.
 
 ## Owned execution and consumers
 

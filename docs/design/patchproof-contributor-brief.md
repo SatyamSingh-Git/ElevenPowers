@@ -6,8 +6,8 @@ See [latest observations](../validation/2026-10-13-external-inputs.md),
 [the foundation](patchproof-v1.md), [usage](../../the-guide/patchproof.md) and
 [external input design](external-input-witnesses.md).
 
-Contributor starting points are a separately qualified producer, native passive
-or milestone witness integration, or a narrow input adapter with actual drift
+Contributor starting points are a separately qualified producer
+or a narrow input adapter with actual drift
 and incomplete-read controls. Reuse explicit approval and shared collection;
 do not rebuild the identity/export foundation or let tracked declarations grant
 external access. Per-command input selection, remote freshness, live PR/fork
@@ -104,7 +104,7 @@ output limits; it must not be advertised as a security sandbox.
 | Additional contract receipt adapter | Applicable contract, real checker identity/version, exact inputs and configuration, result, limits and freshness | Choose one producer, run it before defining its output parser, and cover legitimate, incompatible and stale cases. An unsupported contract stays absent/unsupported. |
 | Explicit verification execution (implemented) | Project-declared checks with complete/pass, complete/fail and incomplete receipts | No model calls, command execution or installation during ordinary report creation. Preserve existing runner limits; stronger isolation needs a separate design. |
 | GitHub presentation (implemented) | An informational summary and downloadable evidence bundle linked to the exact declared patch | Local unsigned receipts do not become independent attestation by being uploaded. Live PR/fork publishing remains separately unqualified. |
-| Selected local input witnesses (implemented) | Bounded approved file/tree fingerprints qualify explicit reuse; incomplete capture defers launch | Native passive/milestone adapters and further scopes remain open. Missing witnesses never infer remote freshness; history stays intact. |
+| Selected local input witnesses (implemented) | Bounded approved file/tree fingerprints qualify explicit and completion-owned execution, ordinary identified native receipts, reuse and retained milestone history | Unsupported callback identities, further producers, per-command selections and remote scopes remain open. Missing witnesses never infer remote freshness; history stays intact. |
 
 Build/type/test receipts are already reusable. API, database-schema, dependency,
 security and behavioral compatibility each need their own applicability and

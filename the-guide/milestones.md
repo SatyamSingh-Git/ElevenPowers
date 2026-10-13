@@ -10,6 +10,13 @@ Milestones keep earlier behavior checks visible when development moves to a new
 task. They are optional, project-owned and shared by all five host integrations.
 Their evidence is separate from the current task's claims and completion verdict.
 
+Declared [external inputs](external-inputs.md) now qualify retained receipts too.
+Selected dependency bytes can stale a passing behavior check without a source
+edit or HEAD movement. `source_freshness` and `external_inputs` explain the
+separate facts; old unpaired history and incomplete current access remain
+`INCOMPLETE`. A fresh actual execution can recover `CURRENT`. Inspection and
+recheck advice do not run the commands or exclude required checks.
+
 Qualified [literal command wrappers](command-capture.md) retain the exact
 configured check identity across tasks. A later failed or incomplete invocation
 supersedes earlier success for that check; the raw invocation remains provenance.

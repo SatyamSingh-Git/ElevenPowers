@@ -1,5 +1,19 @@
 # What we build on: prior art for each v0.8 component
 
+**External input sessions, 2026-10-13.** Reuse the delivered v1 approval,
+descriptor collection, existing native adapters, evidence parsers, locked atomic
+ledger writes and milestone history. These are repository components under the
+existing licenses, with Python standard-library hashing/JSON/context primitives.
+Add bounded identified before/after receipt observations and shared fresh views,
+then connect existing owned runners and public consumers. No package resolver,
+remote probe or new runtime dependency; see [design](../design/external-input-sessions.md).
+Bounded native detail eviction reuses the existing state writer and adds
+monotone Bloom-style membership using standard-library SHA-256/base64. This is
+original small glue, with no vendored filter library: remembered identities
+never regain eligibility after eviction, while collisions refuse qualification.
+The tradeoff is conservative incompleteness as membership fills, rather than
+inventing a new valid execution after bounded history is forgotten.
+
 **External input witnesses, 2026-10-13.** Reuse existing source snapshots,
 owned execution, receipt associations, redaction and atomic local writes.
 Python's standard-library descriptor/stat primitives and the Windows

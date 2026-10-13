@@ -72,6 +72,10 @@ must be explicit and private. Stable matching captures permit reuse; changed
 captures require execution; incomplete captures defer launch. Older eight-field
 observations stay readable but cannot satisfy newly declared witnesses. Current
 collection in a report does not create a missing saved execution association.
+The same optional receipt metadata qualifies completion-owned and identified
+ordinary native commands and retained milestones. Public receipt fields expose
+`source_freshness` separately from current `freshness` and `external_inputs`;
+historical pass/fail outcomes stay intact after drift or incomplete association.
 Use `--rerun` when unobserved dependencies or services may have changed.
 
 An ordinary PatchProof bundle reads these saved observations without launching

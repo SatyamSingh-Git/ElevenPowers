@@ -1,6 +1,7 @@
 # PatchProof: the patch and its evidence
 
-[External input witnesses](external-inputs.md) can qualify saved explicit
+[External input witnesses](external-inputs.md) qualify ordinary identified native
+receipts, completion-owned checks, retained milestone history and saved explicit
 execution with selected approved dependency files and trees. Reports show current
 collection separately from saved association; source-only receipt facts remain
 visible when an external association becomes unavailable.

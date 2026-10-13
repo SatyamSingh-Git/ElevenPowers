@@ -29,6 +29,13 @@ producer observations and shared-executor limits are in
 [mutation engine provenance](mutation-engines.md). This adds delivery provenance;
 it does not revise the historical survey or assert a new upstream legal audit.
 
+External Input Witnesses v2 composes the repository's existing approval,
+bounded collection, parsers, locked atomic writer, verification ownership and
+history/report APIs. It adds original standard-library receipt association and
+bounded monotone seen-ID memory, with no vendored implementation or additional
+runtime package. Disposable Python/Node checks use their standard APIs. Internal
+reuse and its limits are recorded in [build-on](build-on.md).
+
 Read from each clone's LICENSE file on 2026-09-09 at the commits recorded in `cards/`. Obligations listed are those that apply if code, prompts, templates, or documentation are reused; ideas and abstractions carry no obligation.
 
 | System | Commit | License (SPDX) | Copyright holder | Reuse obligations | Caveats found in source |

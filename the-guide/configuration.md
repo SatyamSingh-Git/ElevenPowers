@@ -2,11 +2,12 @@
 
 [External input witnesses](external-inputs.md) use a project-owned
 `elevenpowers.inputs.json` and explicit private `.elevenpowers/input-roots.json`
-approval. Required selected file/tree fingerprints qualify PatchProof execution
-and reuse. Missing approval, changed inputs or incomplete capture never qualify
+approval. Required selected file/tree fingerprints qualify ordinary receipts,
+owned execution, retained milestones and PatchProof reuse. Missing approval, changed inputs or incomplete capture never qualify
 reuse. Configuration does not install packages, invoke checks or authorize reads
-outside approved roots. Native passive receipts and milestone invalidation are
-not yet consumers of these witnesses.
+outside approved roots. Native pairing requires supplied session/tool-use IDs;
+unsupported or missing callbacks remain incomplete. Private attempt retention
+and budget limits are documented in the linked guide.
 
 [GitHub evidence presentation](patchproof-github.md) adds no project configuration
 or implicit execution. It consumes existing receipts and declarations, preserving

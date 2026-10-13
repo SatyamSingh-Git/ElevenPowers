@@ -218,7 +218,7 @@ python -m playwright install chromium --only-shell
 python architecture/check.py --render
 ```
 
-Confirm the output says all four tabs draw; a skipped render is not a rendered check. These tools are not runtime dependencies. Use [the validation index](validation/README.md) for dated outcomes and [current status](status.md) for remaining integration work.
+Confirm the output says all five views draw; a skipped render is not a rendered check. These tools are not runtime dependencies. Use [the validation index](validation/README.md) for dated outcomes and [current status](status.md) for remaining integration work.
 
 ## Durable runner checks
 
@@ -261,3 +261,20 @@ priority alone never credits a relationship. Saved original grades remain fixed.
 
 
 The optional edit adviser reuses the standard-library ImpactGraph/report, repository process cleanup and atomic state writer. `core/milestones/advice.py` validates limits/renders context; `automatic.py` reserves before launch; `advice_worker.py` inspects read-only. `eval/milestone_large.py` seals upstream snapshots; `eval/advice_callbacks.py` intentionally writes disposable config/state and measures replay launchers. Run `tests/test_milestone_advice_*.py`, `tests/test_milestone_large.py`, `tests/test_milestone_entrypoints.py` and `tests/test_advice_callbacks.py` after changing this flow. See [design](design/milestone-advisories.md) and [observations](../results/milestone-advisories/README.md).
+
+## External input session controls
+
+```sh
+python -m pytest tests/test_input_sessions_gap.py tests/test_input_receipts.py tests/test_input_native.py tests/test_input_owned.py tests/test_input_views.py tests/test_input_sessions_review.py -q
+python -m eval.input_sessions --output NEW_DISPOSABLE_DIR
+python -S -c "import core.inputs.receipts; import core.inputs.native; import core.inputs.execution; import eval.input_sessions"
+```
+
+The exercise requires Python, Node and Git and runs actual independent checks in
+unrelated temporary Python/JavaScript projects. Its five host envelopes are
+synthetic adapter controls, not installed-host acceptance. It retains exact
+command launch counters, cross-task states and read-only inspection controls;
+it launches no model. Review regressions reproduce delayed results after detail
+eviction, task replacement, missing-ID policy removal and source/configuration/
+external movement during report closure. Optional receipt metadata stays absent
+for unconfigured legacy evidence. See [the design](design/external-input-sessions.md).

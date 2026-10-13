@@ -5,6 +5,11 @@ root labels and selected fingerprints alongside saved execution qualifications.
 Successful current collection cannot replace absent or unavailable execution
 association. Source-only receipt facts and unobserved environment gaps remain
 visible; the public bundle contains no approved absolute root paths or input bytes.
+Receipt presentation separates source freshness from combined current freshness
+and external association for ordinary native, owned and explicit checks. Missing
+before callbacks and unidentified execution remain gaps even when current
+collection succeeds. Closing source/configuration/input movement invalidates
+nested qualifications without rewriting command outcomes.
 
 PatchProof can present a fresh, read-only evidence bundle in an Actions job
 summary and upload its JSON and Markdown files. It keeps exact patch identity,

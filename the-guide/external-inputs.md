@@ -1,14 +1,16 @@
 # External input witnesses
 
-External Input Witnesses v1 extends explicit PatchProof verification and reuse
-to selected local dependency/tool files. A dependency can change at the same
+External Input Witnesses v2 extends ordinary receipts, owned verification,
+cross-task milestones and PatchProof reuse to selected local dependency/tool
+files. A dependency can change at the same
 path while source, HEAD, lockfiles and environment values remain unchanged.
 With declarations and local approval, such a change prevents reuse of an older
 passing execution and schedules the required checks again.
 
-This is shared, language-independent core behavior for any eligible Git project.
-The initial integration is PatchProof; native passive receipt capture and
-milestone invalidation do not yet consume these witnesses. Existing source-only
+This is shared, language-independent core behavior for any project using the
+evidence runtime; explicit PatchProof still requires an eligible Git patch.
+Native passive receipt capture and milestone invalidation use the same approved
+selections. Existing source-only
 receipt freshness remains a separate fact. Matching selected bytes does not
 establish a complete environment or universal patch safety.
 
@@ -109,11 +111,59 @@ Final source, checkout, configuration and ignore-policy guards extend through
 collection; a persistent edit during the scan prevents reuse or launch.
 
 The original receipt outcome is retained. A historical pass is not rewritten to
-a failed command. Source-only receipt states may remain current while saved
-external execution association is unavailable. Earlier eight-field execution
+a failed command. `source_freshness` remains separate from current `freshness`
+and the receipt's `external_inputs` association. Source can remain fresh while
+external qualification becomes stale or incomplete. Earlier eight-field execution
 witnesses remain readable; they cannot acquire a newly required external
 observation. Without declarations, their existing semantics remain unchanged.
 The new optional fingerprint does not certify every installed dependency.
+
+## Ordinary sessions and retained behavior
+
+After declaring inputs and explicitly approving roots, recognized native commands
+observe inputs automatically before and after execution. Qualification requires
+the same platform, nonempty session and tool-use IDs, task, invocation, directory,
+source, configuration and producer. Command-text similarity cannot supply a
+missing identity. Existing adapters preserve supplied IDs; unavailable callbacks
+or fields remain incomplete. A post-only result cannot invent its before-state.
+
+Before execution, the ledger retains an incomplete provisional receipt.
+`.elevenpowers/input-attempts.json` keeps private identified pending/consumed
+attempts: private schema 2, at most 1 MiB, 128 pending and 256 consumed details,
+with one-hour pending expiry. A fixed 256 KiB monotone seen-ID filter retains
+eligibility history after details are evicted. Filter collisions conservatively
+leave attempts incomplete; they never admit a previously seen ID. Earlier
+experimental private state without this memory stays incomplete rather than
+being silently reset. Terminal callbacks consume once, including post-only
+results; unfinished callbacks retain
+incomplete history. Duplicate, overlapping, mismatched, replayed or evicted
+attempts cannot qualify an old result. Removing the declaration during an active
+call preserves its required before observation. Native commands are observed,
+not blocked by this observer. Each native capture has ten cooperative seconds,
+further limited by declared budgets.
+
+Provisional ledger writes validate the task under the same short write lock;
+an old before callback cannot replace a newer task. An unidentified active
+provisional receipt remains incomplete if its policy is removed. A fresh owned
+check or a new task resolves that ambiguity without inventing an identity.
+
+Completion-owned verification and targeted confirmations also record paired
+observations, refuse launch when required inputs are incomplete, and preserve
+their existing shared deadlines. Selected external changes expire result reuse
+and baseline cache identities. A fresh identified retry can recover qualification.
+No declarations preserve the earlier unconfigured behavior and serialization.
+
+[Milestone history](milestones.md) retains this optional metadata across tasks.
+Old or malformed records stay incomplete when selected inputs are required;
+current reads cannot upgrade their execution provenance. Reports distinguish
+bound, stale, incomplete and not-configured external association, keep source
+facts separate, and retain required recheck commands. Reports run no checks.
+Closing inspection guards source, command configuration and selected external
+inputs. Persistent movement invalidates receipt, claim and milestone
+qualifications together; the original command result remains unchanged.
+Ordinary reports share two external collections. A PatchProof bundle can collect
+the same selected target eight times through its paired witnesses and nested
+verification exports; each capture retains its limits and the shared deadline.
 
 ## Budgets, output and limits
 

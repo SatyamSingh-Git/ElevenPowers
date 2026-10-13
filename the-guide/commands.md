@@ -15,8 +15,12 @@ python plugin/bin/ep_inputs.py inspect --project PROJECT --seconds 10 --check
 Use `bind ... --replace` to deliberately change an existing root. Ordinary
 inspection runs no project checks and exits zero for a diagnostic result;
 `--check` exits one unless collection is available, including when unconfigured.
-Invalid CLI arguments or binding failures exit two. After setup, PatchProof
-captures required witnesses automatically around execution and reuse inspection.
+Invalid CLI arguments or binding failures exit two. After setup, identified
+ordinary native receipts, completion-owned checks, retained milestones and
+explicit PatchProof execution use the same required observations automatically.
+Missing callbacks or identities remain incomplete. Reports inspect current
+inputs without rerunning checks; source freshness and external association are
+separate fields.
 See [declarations, approval, bounds and limits](external-inputs.md).
 
 ## ep_github — informational GitHub evidence

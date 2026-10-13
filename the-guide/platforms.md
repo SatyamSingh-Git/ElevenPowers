@@ -1,5 +1,12 @@
 # Native platforms
 
+External Input Witnesses v2 uses the shared native runtime across all five hosts.
+Supplied platform/session/tool-use identities pair actual before/after
+observations; missing fields or callbacks remain incomplete. Python/Node commands
+through synthetic envelopes exercise adapters without establishing installed
+acceptance. The changed runtime requires separate installed requalification;
+see [input usage and limits](external-inputs.md).
+
 PatchProof changes the shared runtime. The two successes below remain historical
 at their recorded ordinary-session fingerprint until current-runtime
 requalification; they are not erased or reused as fresh acceptance. The standalone

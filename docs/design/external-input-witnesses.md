@@ -1,5 +1,10 @@
 # External Input Witnesses v1
 
+This remains the historical explicit-PatchProof foundation. The
+[v2 design](external-input-sessions.md) extends its approval and collection
+contract to ordinary identified native receipts, completion-owned checks and
+retained milestone history; it does not silently upgrade old execution provenance.
+
 Approved purpose, 2026-10-13: detect declared local dependency/tool inputs that
 change while project source, commits and environment values stay unchanged.
 Build generalized shared core behavior, qualify legitimate reuse and drift,
