@@ -62,6 +62,14 @@ def freshness_view(root: Path, *, deadline=None):
     from .inputs.collection import capture
     input_deadline = deadline if deadline is not None else time.monotonic()+10
     inputs = existing.inputs if shared_inputs else capture(resolved,input_deadline)
+    guarded=inputs['state']!='not_configured'
+    configuration_before=None
+    if guarded:
+        from .inputs.native import configuration
+        try:
+            configuration_before=configuration(resolved)
+        except (OSError,ValueError,TimeoutError):
+            pass
     digests = {}
     parent = _FRESHNESS_VIEW.set(None)
     try:
@@ -80,10 +88,34 @@ def freshness_view(root: Path, *, deadline=None):
                 if (inputs['state']!=final_inputs['state'] or inputs['fingerprint']!=final_inputs['fingerprint']
                         or final_inputs['state']=='incomplete'):
                     snapshot[0].issues.append('external input coverage changed or is incomplete during freshness inspection')
+            if guarded:
+                parent=_FRESHNESS_VIEW.set(None)
+                try:
+                    final_digests={}
+                    final_snapshot=source_snapshot(resolved,fresh=True,deadline=input_deadline,digests=final_digests)
+                    if not final_snapshot[0].complete or final_snapshot[1]!=snapshot[1]:
+                        snapshot[0].issues.append('source input coverage changed or is incomplete during freshness inspection')
+                    # Explicit paths outside the source selection are also observed inputs.
+                    closing=_FreshView(resolved,final_snapshot,final_digests,input_deadline)
+                    for rel,value in view.digests.items():
+                        if rel not in snapshot[0].files and closing.digest(rel)!=value:
+                            snapshot[0].issues.append('source input coverage changed during freshness inspection')
+                            break
+                    if not final_snapshot[0].complete and not any('source input' in i for i in snapshot[0].issues):
+                        snapshot[0].issues.append('source input coverage is incomplete during freshness inspection')
+                    if configuration_before is None or configuration_before!=configuration(resolved):
+                        snapshot[0].issues.append('command configuration changed or is incomplete during freshness inspection')
+                finally:
+                    _FRESHNESS_VIEW.reset(parent)
         except (OSError,ValueError,TimeoutError):
             snapshot[0].issues.append('external input final inspection is unavailable')
         finally:
             _FRESHNESS_VIEW.reset(token)
+
+
+def closing_input_gap(issues):
+    return any(('during freshness inspection' in issue or 'final inspection is unavailable' in issue)
+               for issue in issues)
 
 
 class _FreshView:

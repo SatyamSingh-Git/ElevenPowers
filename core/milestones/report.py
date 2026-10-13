@@ -79,7 +79,8 @@ def _aggregate(values):
 
 def invalidate_inputs(value,issues):
     """Carry a shared view's closing input gap into every nested qualification."""
-    if not any('external input' in i for i in issues): return
+    from ..evidence import closing_input_gap
+    if not closing_input_gap(issues): return
     value['coverage'].update(complete=False,source_complete=False)
     value['coverage']['issues']=list(dict.fromkeys(value['coverage']['issues']+list(issues)))
     value['state']='INCOMPLETE'
@@ -87,9 +88,12 @@ def invalidate_inputs(value,issues):
         milestone['state']='INCOMPLETE'
         for check in milestone['checks']:
             check['state']='INCOMPLETE'
-            if check['external_inputs']:
+            if check['external_inputs'] and any('external input' in i for i in issues):
                 check['external_inputs']['state']='incomplete'
-            check['issues'].append('final external input inspection changed or was incomplete')
+            if check['freshness']=='fresh': check['freshness']='stale'
+            if any('source input' in i for i in issues) and check['source_freshness']=='fresh':
+                check['source_freshness']='stale'
+            check['issues'].append('final input inspection changed or was incomplete')
             check['next_action']='Resolve input gaps and run the project-owned check: '+check['command']
     value['summary']={s:sum(m['state']==s for m in value['milestones']) for s in STATES}
     value['next_actions']=list(dict.fromkeys(c['next_action'] for m in value['milestones'] for c in m['checks']))

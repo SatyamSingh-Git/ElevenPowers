@@ -304,7 +304,7 @@ class Ledger:
             ledger._save_locked()
         return ledger
 
-    def save(self) -> None:
+    def save(self, *, expected_task=None) -> None:
         """Write the ledger, keeping anything another writer appended meanwhile.
 
         A short OS lock serializes read/merge/replace across hook writers.
@@ -316,9 +316,9 @@ class Ledger:
         _keep_out_of_git(self.path.parent)
         from .jobs import ledger_write
         with ledger_write(self.root):
-            self._save_locked()
+            self._save_locked(expected_task=expected_task)
 
-    def _save_locked(self) -> None:
+    def _save_locked(self, *, expected_task=None) -> None:
         from .jobs import current, Superseded, replace
         try:
             disk = Ledger.load(self.root)
@@ -326,6 +326,8 @@ class Ledger:
             if DELIVERY.get():
                 raise  # Cannot safely deduplicate against unreadable state.
             disk = Ledger(root=self.root)
+        if expected_task is not None and disk.task != expected_task:
+            raise Superseded('a newer task replaced this native observation')
         identity = DELIVERY.get()
         if identity and identity in disk.completed_tools:
             return  # Receipt and delivery marker were already committed together.
@@ -542,6 +544,9 @@ class Ledger:
             for verdict in verdicts:
                 if verdict.status is not Status.CONTRADICTED:
                     verdict.status=Status.UNVERIFIED
+                for check in verdict.checks:
+                    if check.freshness is Freshness.FRESH:
+                        check.freshness=Freshness.STALE
         return verdicts
 
     def status(self) -> Status:

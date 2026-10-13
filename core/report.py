@@ -34,6 +34,7 @@ def _input_message(ledger,render):
     if not scan.complete:
         if text.startswith('VERIFIED'): text='UNVERIFIED'+text[len('VERIFIED'):]
         text=text.replace('\nstate     VERIFIED','\nstate     UNVERIFIED')
+        text=text.replace('(verified)','(unverified)').replace('    ok      ','    stale   ')
         text+='\nIncomplete current input inspection: '+'; '.join(scan.issues)
     return text
 

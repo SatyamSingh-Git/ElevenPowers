@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import time
 
-from .evidence import freshness_view
+from .evidence import freshness_view,closing_input_gap
 from .hosts.edits import coverage as edit_coverage
 from .ledger import Ledger, Status
 from .redact import scrub_values
@@ -150,11 +150,19 @@ def build(root: Path, *, timeout=120):
         issues.append(f'Native edit coverage incomplete: {pending} pending callbacks; {gaps} evicted baselines')
     if omitted:
         issues.append(f'{omitted} latest receipts omitted because the report budget was exceeded')
-    if any('external input' in i for i in scan.issues):
+    if closing_input_gap(scan.issues):
         for receipt in receipts:
-            receipt['external_inputs'].update(state='incomplete')
-            receipt['external_inputs']['issues'].append('Final external input inspection changed or was incomplete.')
+            if any('external input' in i for i in scan.issues):
+                receipt['external_inputs'].update(state='incomplete')
+                receipt['external_inputs']['issues'].append('Final external input inspection changed or was incomplete.')
+            if any('source input' in i for i in scan.issues) and receipt['source_freshness']=='fresh':
+                receipt['source_freshness']='stale'
             if receipt['freshness']=='fresh': receipt['freshness']='stale'
+        for claim in claims:
+            if claim['state']!=Status.CONTRADICTED.value: claim['state']=Status.UNVERIFIED.value
+            for check in claim['checks']:
+                if check['freshness']=='fresh': check['freshness']='stale'
+                check['caveat']='; '.join(filter(None,[check['caveat'],'Final input inspection changed or was incomplete.']))
         if milestones is not None:
             from .milestones.report import invalidate_inputs
             invalidate_inputs(milestones,scan.issues)

@@ -1,5 +1,6 @@
 """Bounded identified native attempts; post-only capture never invents a before."""
 from contextlib import contextmanager
+import base64
 import hashlib
 import json
 import math
@@ -11,7 +12,7 @@ from .collection import capture
 from .receipts import attach,hexadecimal
 from ..evidence import Result,source_snapshot
 from ..hosts.provenance import fingerprint
-from ..jobs import ledger_write,Busy
+from ..jobs import ledger_write,Busy,Superseded
 from ..ledger import Ledger,_keep_out_of_git
 from ..parsers import parse
 from ..payload import command_of
@@ -22,6 +23,32 @@ MAX_BYTES=1024*1024
 MAX_PENDING=128
 MAX_COMPLETED=256
 AGE=3600
+SEEN_BYTES=256*1024
+
+
+def seen_bits(value):
+    encoded=value.get('seen')
+    if not isinstance(encoded,str) or len(encoded)!=4*((SEEN_BYTES+2)//3):
+        raise ValueError('native seen identity memory is unavailable')
+    try:
+        bits=base64.b64decode(encoded,validate=True)
+    except ValueError as error:
+        raise ValueError('native seen identity memory is invalid') from error
+    if len(bits)!=SEEN_BYTES or base64.b64encode(bits).decode()!=encoded:
+        raise ValueError('native seen identity memory is invalid')
+    return bytearray(bits)
+
+
+def remembered(value,key,*,remember=False):
+    """Monotone bounded membership: collisions refuse qualification, never admit it."""
+    bits=seen_bits(value)
+    raw=bytes.fromhex(key)
+    positions=[int.from_bytes(raw[n:n+4],'big')%(SEEN_BYTES*8) for n in range(0,28,4)]
+    present=all(bits[p//8] & (1<<(p%8)) for p in positions)
+    if remember:
+        for p in positions: bits[p//8]|=1<<(p%8)
+        value['seen']=base64.b64encode(bits).decode()
+    return present
 
 
 def digest(value):
@@ -63,13 +90,15 @@ def read(root,deadline):
     bindings.private(root,deadline,filename=FILE)
     data=definition.raw(root/'.elevenpowers'/FILE,MAX_BYTES,optional=True)
     value=definition.decode(data) if data is not None else {
-        'schema':1,'project':bindings.identity(root),'pending':{},'completed':{}}
-    if (not isinstance(value,dict) or set(value)!={'schema','project','pending','completed'}
-            or type(value['schema']) is not int or value['schema']!=1
+        'schema':2,'project':bindings.identity(root),'pending':{},'completed':{},
+        'seen':base64.b64encode(bytes(SEEN_BYTES)).decode()}
+    if (not isinstance(value,dict) or set(value)!={'schema','project','pending','completed','seen'}
+            or type(value['schema']) is not int or value['schema']!=2
             or value['project']!=bindings.identity(root)
             or not isinstance(value['pending'],dict) or len(value['pending'])>MAX_PENDING
             or not isinstance(value['completed'],dict) or len(value['completed'])>MAX_COMPLETED):
         raise ValueError('native input state shape or project identity is unavailable')
+    seen_bits(value)
     for key,row in value['pending'].items():
         if (not hexadecimal(key) or not isinstance(row,dict)
                 or set(row)!={'before','source','task','invocation','producer','configuration','created','issues'}
@@ -115,27 +144,44 @@ def before(payload,root):
             gaps.append('Source coverage moved or was incomplete before the command.')
         raw,issue=invocation(payload,root)
         if issue: gaps.append('Command directory does not qualify for this project.')
+        producer,config=fingerprint(),configuration(root)
         if not key or not ledger.task:
             gaps.append('Native command lacks a session, call or task identity.')
-        else:
-            with transaction(root,deadline) as state:
-                if key in state['completed']:
-                    gaps.append('A consumed native call identity cannot qualify a new execution.')
-                elif key in state['pending']:
+        with transaction(root,deadline) as state:
+            if Ledger.load(root).task!=ledger.task:
+                gaps.append('A newer task replaced this native before observation.')
+            if key and ledger.task:
+                if key in state['pending']:
                     state['pending'][key]['issues']=['Duplicate before callbacks cannot qualify an execution.']
                     gaps+=state['pending'][key]['issues']
+                elif remembered(state,key):
+                    gaps.append('A previously seen native call identity cannot qualify a new execution.')
                 else:
                     state['pending'][key]={'before':observed['fingerprint'],'source':snapshot[1],
-                        'task':digest(ledger.task),'invocation':raw,'producer':fingerprint(),
-                        'configuration':configuration(root),'created':time.time(),'issues':gaps}
+                        'task':digest(ledger.task),'invocation':raw,'producer':producer,
+                        'configuration':config,'created':time.time(),'issues':list(gaps)}
+                remembered(state,key,remember=True)
                 while len(state['pending'])>MAX_PENDING:
                     state['pending'].pop(next(iter(state['pending'])))
+            for item in records:
+                item.execution='incomplete';item.result=Result.ERROR
+            attach(records,observed,{'state':'incomplete','fingerprint':None},key,gaps)
+            ledger.add(records)
+            try:
+                ledger._save_locked(expected_task=ledger.task)
+            except Superseded:
+                return False
+        return True
     except (OSError,ValueError,TimeoutError,Busy):
         gaps.append('Native before observation could not be safely persisted.')
     for item in records:
         item.execution='incomplete';item.result=Result.ERROR
     attach(records,observed,{'state':'incomplete','fingerprint':None},key,gaps)
-    ledger.add(records);ledger.save()
+    ledger.add(records)
+    try:
+        ledger.save(expected_task=ledger.task)
+    except Superseded:
+        return False
     return True
 
 
@@ -143,8 +189,6 @@ def after(payload,root,records,terminal=True):
     root=Path(root).resolve(strict=True)
     unconfigured=not configured(root)
     state_path=root/'.elevenpowers'/FILE
-    if unconfigured and not any(r.external_inputs for r in records) and not (
-            state_path.exists() or state_path.is_symlink()): return True
     deadline=time.monotonic()+10
     key=identity(payload);row=None;gaps=[]
     try:
@@ -154,7 +198,7 @@ def after(payload,root,records,terminal=True):
     except (OSError,ValueError,TimeoutError):
         gaps.append('Native input attempt state is unavailable or invalid.')
     if unconfigured and row is None and not any(r.external_inputs for r in records):
-        active=any(isinstance(r.external_inputs,dict) and r.external_inputs.get('attempt')==key
+        active=any(isinstance(r.external_inputs,dict) and r.external_inputs.get('attempt') in (key,'')
                    and r.external_inputs.get('state')=='incomplete' for r in Ledger.load(root).evidence)
         if not active: return True
     observed=capture(root,deadline)
@@ -176,14 +220,18 @@ def after(payload,root,records,terminal=True):
                 gaps.append('Source inputs moved or coverage was incomplete during execution.')
             if not 0<=time.time()-row['created']<=AGE:
                 gaps.append('Native before observation expired or the clock changed.')
-            if terminal:
-                with transaction(root,deadline) as state:
-                    if key in state['completed']: return False
-                    if state['pending'].pop(key,None)!=row:
-                        gaps.append('Native before state changed during post collection.')
-                    state['completed'][key]=time.time()
-                    while len(state['completed'])>MAX_COMPLETED:
-                        state['completed'].pop(next(iter(state['completed'])))
+        except (OSError,ValueError,TimeoutError,Busy):
+            gaps.append('Native final input observation is unavailable or incomplete.')
+    if terminal and key:
+        try:
+            with transaction(root,deadline) as state:
+                if key in state['completed']: return False
+                if state['pending'].pop(key,None)!=row:
+                    gaps.append('Native before state changed during post collection.')
+                remembered(state,key,remember=True)
+                state['completed'][key]=time.time()
+                while len(state['completed'])>MAX_COMPLETED:
+                    state['completed'].pop(next(iter(state['completed'])))
         except (OSError,ValueError,TimeoutError,Busy):
             gaps.append('Native final input observation is unavailable or incomplete.')
     if not terminal: gaps.append('Native execution has not completed.')
