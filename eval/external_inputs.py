@@ -21,7 +21,7 @@ from core.process import run
 from eval.github_presentation import _git, _snapshot
 
 
-def case(directory,language):
+def project(directory,language):
     root = directory/(language+'-project'); root.mkdir()
     installed = directory/(language+'-installed'); installed.mkdir()
     _git(root,'init','-q')
@@ -61,6 +61,11 @@ def case(directory,language):
     head = _git(root,'rev-parse','HEAD')
     command = subprocess.list2cmdline(args) if os.name=='nt' else shlex.join(args)
     save(root,Config(auto_detect=False,commands={'tests':command}))
+    return root,base,head,target,good,bad,args,command
+
+
+def case(directory,language):
+    root,base,head,target,good,bad,args,command=project(directory,language)
     counts = []
     count = lambda:int((root/'.elevenpowers/count.txt').read_text())
     first = verify(root,base,head,seconds=120,command_seconds=15); counts.append(count())
