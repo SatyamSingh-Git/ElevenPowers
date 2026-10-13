@@ -220,6 +220,12 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
             verdicts.pop(need, None)
             ledger.discrimination = dict(verdicts)
             ledger.save()
+        if not stamp:
+            verdicts[need] = UNCHECKABLE
+            ledger.discrimination_inputs.pop(need, None)
+            ledger.discrimination = dict(verdicts)
+            ledger.save()
+            continue
         if not _passing(ledger, need):
             # Nothing claims this check passed, so there is nothing to question.
             continue
@@ -280,8 +286,12 @@ def _inputs_stamp(root: Path, base: str, command: str, carried: tuple[str, ...])
     holds.
     """
     from .evidence import tree_hash
-
-    return f"{base}|{command}|{tree_hash(root, carried, fresh=True) if carried else '-'}"
+    from .inputs.collection import capture
+    session=jobs.current()
+    observed=capture(root,min(session.budget.deadline if session else float('inf'),time.monotonic()+10))
+    if observed['state']=='incomplete': return ''
+    original=f"{base}|{command}|{tree_hash(root, carried, fresh=True) if carried else '-'}"
+    return original if observed['state']=='not_configured' else original+'|'+observed['fingerprint']
 
 
 def _with_outcomes(command: str) -> str:
@@ -487,6 +497,9 @@ def confirm(ledger) -> list:
     from .redact import scrub
     session = jobs.current()
     before, tree = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
+    from .inputs import execution as input_execution
+    from .inputs.receipts import inspect as input_inspect
+    observed=input_execution.begin(ledger.root,session.budget.deadline)
     # A historical decision is advisory; only receipts for these inputs can
     # suppress another confirmation after the source changes.
     latest = {}
@@ -499,9 +512,14 @@ def confirm(ledger) -> list:
                if e.result is Result.PASS and e.command == run
                and e.declared_command == scrub(command)
                and e.execution == "complete" and not e.coverage_issues
-               and e.tree == tree and e.observed == before.files}
-    if before.complete and set(chosen) <= current:
-        return []
+               and e.tree == tree and e.observed == before.files
+               and input_inspect(e,ledger.root,current=observed['inputs'])['state'] in {'bound','not_configured'}}
+    if before.complete and input_execution.ready(observed) and set(chosen) <= current:
+        final_inputs=input_execution.finish(ledger.root,session.budget.deadline,observed,[])
+        if (not observed['final_issues'] and final_inputs['state']==observed['inputs']['state']
+                and final_inputs['fingerprint']==observed['inputs']['fingerprint']):
+            return []
+        observed=input_execution.begin(ledger.root,session.budget.deadline)
 
     provisional = [Evidence(kind=Kind.TEST, identity=i, result=Result.ERROR,
                             observed=before.files, tree=tree, scope="source", command=run,
@@ -510,9 +528,10 @@ def confirm(ledger) -> list:
                             at=time.time(),
                             detail="targeted confirmation started; completion not yet recorded")
                    for i in chosen]
+    input_execution.provisional(provisional,observed)
     ledger.add(provisional)
     ledger.save()
-    if not before.complete:
+    if not before.complete or not input_execution.ready(observed):
         item = session.queue("confirmation", run)
         session.finish(item, "deferred" if session.budget.remaining <= 0 else "incomplete",
                        "; ".join(before.issues))
@@ -582,11 +601,12 @@ def confirm(ledger) -> list:
     failed = [replace(e, declaration="tests", declared_command=command)
               for e in parse(run, output, done.returncode, ledger.root, snapshot=(before, tree))
               if e.kind is Kind.TEST and e.result is not Result.PASS and e.identity in chosen]
+    input_execution.finish(ledger.root,session.budget.deadline,observed,failed+found,issues)
     ledger.add(failed + found)
     ledger.save()
     known = {e.identity for e in failed + found}
     incomplete = set(chosen) - known or any(e.result is Result.ERROR for e in failed)
-    finish("stale" if issues else "incomplete" if incomplete else
+    finish("stale" if issues or any(e.external_inputs and e.external_inputs['state']!='bound' for e in failed+found) else "incomplete" if incomplete else
            "failed" if failed or done.returncode else "passed",
            "; ".join(issues) if issues else "not every chosen test produced an outcome" if incomplete else "")
     return found

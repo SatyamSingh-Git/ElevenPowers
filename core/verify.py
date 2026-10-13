@@ -25,6 +25,7 @@ from .evidence import Evidence, Freshness, Result, source_snapshot
 from .jobs import Session, current, BudgetExhausted
 from .process import run as run_command
 from .parsers import parse, DECLARED_KINDS
+from .inputs import execution as input_execution
 
 TIMEOUT = 300
 
@@ -89,13 +90,15 @@ def discharge(ledger) -> list[Evidence]:
             session.finish(item, 'deferred', str(error))
             continue
         before = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
+        observed = input_execution.begin(ledger.root, session.budget.deadline)
         provisional = parse(command, 'verification started; completion not yet recorded',
                             None, ledger.root, snapshot=before)
+        input_execution.provisional(provisional, observed)
         ledger.add(provisional)
         ledger.save()
         session.begin(item)
         code, output = None, ''
-        if not before[0].complete:
+        if not before[0].complete or not input_execution.ready(observed):
             output = 'input coverage incomplete; command was not launched'
         else:
             try:
@@ -113,12 +116,14 @@ def discharge(ledger) -> list[Evidence]:
             before[0].issues.append('source inputs changed during verification')
         before[0].issues.extend(i for i in after[0].issues if i not in before[0].issues)
         found = parse(command, output, code, ledger.root, snapshot=before)
+        input_execution.finish(ledger.root, session.budget.deadline, observed, found, before[0].issues)
         ledger.add(found)
         ledger.note('ran a declared command' if code is not None else 'declared command incomplete',
                     f'{need}: {command}')
         ledger.save()
         records.extend(found)
-        status = ('incomplete' if code is None else 'stale' if before[0].issues else
+        status = ('incomplete' if code is None else 'stale' if before[0].issues or any(
+                  e.external_inputs and e.external_inputs['state'] != 'bound' for e in found) else
                   'failed' if code or any(e.result is not Result.PASS for e in found) else 'passed')
         session.finish(item, status, '; '.join(before[0].issues), exit_code=code)
     return records

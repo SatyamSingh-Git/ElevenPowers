@@ -16,6 +16,8 @@ from .planning import plan
 from .report import build
 from ..export import _text as literal
 from ..redact import scrub_values
+from ..inputs.execution import from_witness
+from ..inputs.receipts import attach
 
 
 def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30, impact=False, reuse=True):
@@ -77,6 +79,8 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                 retain(saved, item)
                 save(root, saved)
                 provisional = parse(command, 'explicit patch verification started', None, root, snapshot=snapshot)
+                if 'external_inputs_fingerprint' in before:
+                    attach(provisional,from_witness(before),from_witness(None),digest(item['id']))
                 ledger.add(provisional); ledger.save()
                 item['receipt_keys'] = _aggregates(provisional, check['properties'])
                 save(root, saved)
@@ -101,6 +105,7 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                 except (OSError, ValueError, TimeoutError, subprocess.SubprocessError):
                     snapshot[0].issues.append('execution inputs changed or final inspection was incomplete')
                 records = parse(command, output, code, root, snapshot=snapshot)
+                attach(records,from_witness(before),from_witness(after),digest(item['id']))
                 ledger.add(records); ledger.save()
                 status = ('incomplete' if code is None else 'stale' if snapshot[0].issues else
                           'incomplete' if not records or any(not e.ran_tests for e in records) else
