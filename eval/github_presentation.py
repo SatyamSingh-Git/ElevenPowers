@@ -26,18 +26,30 @@ def _snapshot(root):
             for p in root.rglob('*') if p.is_file()}
 
 
-def _case(root, mode, repository):
+def _case(root, mode, repository, external_inputs=False):
     root.mkdir()
     _git(root, 'init', '-q')
     _git(root, 'config', 'user.email', 'exercise@example.invalid')
     _git(root, 'config', 'user.name', 'Evidence exercise')
     _git(root, 'config', 'core.autocrlf', 'false')
     Ledger(root=root).save()
+    dependency_check = ''
+    if external_inputs:
+        from core.inputs.bindings import bind
+        dependency = root.parent/(mode+'-dependency')
+        dependency.mkdir()
+        target = dependency/'settings.json'
+        target.write_bytes(b'{"value":2}\n')
+        (root/'elevenpowers.inputs.json').write_text(json.dumps({'schema':1,'witnesses':[
+            {'id':'runtime-data','root':'deps','paths':['settings.json']}]}),encoding='utf-8')
+        bind(root,'deps',dependency)
+        dependency_check = f'assert __import__("json").loads(Path({str(target)!r}).read_text())["value"] == 2\n'
     (root/'service.py').write_text('value=1\n', encoding='utf-8')
     (root/'check.py').write_text(
         "from pathlib import Path\nimport service,time\n"
         "p=Path('.elevenpowers/count.txt')\np.write_text(str(int(p.read_text())+1) if p.exists() else '1')\n"
         +( "time.sleep(60)\n" if mode == 'incomplete' else '')
+        +dependency_check
         +"assert service.value == 2, 'independent expected value'\n"
         +"print('TAP version 13\\nok 1 - expected value\\n1..1\\n# pass 1\\n# fail 0')\n",
         encoding='utf-8')
@@ -69,12 +81,12 @@ def _case(root, mode, repository):
             'count': int((root/'.elevenpowers/count.txt').read_text())}
 
 
-def prepare(directory, *, repository='example/project'):
+def prepare(directory, *, repository='example/project', external_inputs=False):
     directory = Path(directory).absolute()
     if directory.resolve() != directory or directory.is_symlink():
         raise ValueError('linked exercise directory')
     directory.mkdir()
-    cases = [_case(directory/mode, mode, repository) for mode in ('passing', 'failed', 'incomplete')]
+    cases = [_case(directory/mode, mode, repository, external_inputs) for mode in ('passing', 'failed', 'incomplete')]
     states = [c['state'] for c in cases]
     if states != ['current', 'failed', 'incomplete']:
         raise ValueError('presentation lost actual producer states')
@@ -88,8 +100,9 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--repository', default='example/project')
     parser.add_argument('--actions-output', type=Path)
+    parser.add_argument('--external-inputs',action='store_true')
     args = parser.parse_args()
-    result = prepare(args.output, repository=args.repository)
+    result = prepare(args.output, repository=args.repository,external_inputs=args.external_inputs)
     print(json.dumps({k: v for k, v in result.items() if k != 'passing'}, ensure_ascii=True))
     if args.actions_output:
         # Only controlled fixture paths and Git hashes; no captured output enters
