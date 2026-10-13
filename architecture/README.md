@@ -1,12 +1,22 @@
 # ElevenPowers — living architecture graph
 
+External Input Witnesses v2 maps optional receipt association, identified native
+attempts, completion-owned observations, retained milestone qualification and
+actual cross-task acceptance in all five views. Private state retains bounded
+monotone seen-ID memory, and report closure checks source/configuration/external
+movement. Ordinary export shares external captures; nested PatchProof exports
+can still multiply reads. See [design](../docs/design/external-input-sessions.md),
+[journey 79](../journey/79-a-pass-needs-its-before.md) and
+[qualification](../docs/validation/2026-10-13-external-input-sessions.md).
+Final delivery checks are recorded separately from the historical v1 results.
+
 External Input Witnesses v1 now maps explicit local root approval, verified
 bounded file/tree collection, PatchProof execution/reuse and public evidence
 views in every tab. The map contains 161 nodes, 386 edges and seven planes.
 Actual Python/Node drift controls, late source/policy edits and directory-only
 changes qualify the selected-input mechanism. Current collection stays separate
-from saved execution association; native passive/milestone adapters and further
-producers remain contributor work. See [guide](../the-guide/external-inputs.md)
+from saved execution association; v2 adds native passive/milestone adapters,
+while further producers remain contributor work. See [guide](../the-guide/external-inputs.md)
 and [qualification](../docs/validation/2026-10-13-external-inputs.md).
 Final local regressions, named gates and all five hosted jobs passed; raw runtime
 bytes stayed fixed through qualification.
