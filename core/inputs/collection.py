@@ -106,16 +106,15 @@ def capture(root,deadline):
         if declaration is None:
             return value
         value['state'] = 'incomplete'
+        value['witnesses'] = [{'id':w['id'],'root':w['root'],'state':'incomplete',
+                              'fingerprint':None,'files':0,'issues':[]} for w in declaration['witnesses']]
         if not math.isfinite(deadline):
             raise ValueError('input collection requires finite deadline')
         scan = Scan(declaration['limits'],deadline)
         value['budgets'] = {**declaration['limits'],'entries':declaration['limits']['files']*2,'depth':32}
         scan.check()
         approval = bindings.load(root,declaration,scan.deadline)
-        for witness in declaration['witnesses']:
-            row = {'id':witness['id'],'root':witness['root'],'state':'incomplete',
-                   'fingerprint':None,'files':0,'issues':[]}
-            value['witnesses'].append(row)
+        for witness,row in zip(declaration['witnesses'],value['witnesses']):
             try:
                 approved = bindings.directory(root,approval['roots'][witness['root']])
                 scan.roots.setdefault(approved,definition.stamp(approved.stat()))

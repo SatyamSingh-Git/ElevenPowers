@@ -76,6 +76,14 @@ def test_empty_scope_missing_file_and_unapproved_root_stay_incomplete(inputs):
     assert read(root)['state'] == 'incomplete'
 
 
+def test_missing_approval_still_names_the_declared_witness_and_root(inputs):
+    root,_ = inputs
+    (root/'.elevenpowers/input-roots.json').unlink()
+    value = read(root)
+    assert value['state'] == 'incomplete'
+    assert [(w['id'],w['root'],w['state']) for w in value['witnesses']] == [('dependencies','deps','incomplete')]
+
+
 @pytest.mark.parametrize('limits', [{'bytes':1},{'seconds':0},{'files':1}])
 def test_aggregate_limits_never_return_a_partial_fingerprint(inputs,limits):
     root,directory = inputs

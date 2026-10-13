@@ -71,7 +71,7 @@ def decode(data):
 
 def relative(value):
     if (not isinstance(value, str) or not value or len(value) > 4096
-            or any(c in value for c in '\\:*?[]\0') or PurePosixPath(value).is_absolute()
+            or any(c in value for c in '\\:*?\0') or PurePosixPath(value).is_absolute()
             or PureWindowsPath(value).drive or '..' in value.split('/')
             or PurePosixPath(value).as_posix() != value):
         raise ValueError('input paths must be literal portable relative paths')

@@ -80,3 +80,26 @@ def test_report_preserves_source_facts_but_explains_external_drift(dependency_pr
     assert 'Declared external inputs' in github_markdown(presented)
     assert str(target.parent) not in json.dumps(presented)
     assert snapshot(root) == before and (root/'.elevenpowers/count.txt').read_text() == '1'
+
+
+def test_unconfigured_report_does_not_inspect_unused_approval(tmp_path):
+    from tests.test_patchproof_report import seed
+    from tests.test_patchproof_identity import git
+    from core.patchproof.report import build
+    git(tmp_path,'init','-q')
+    (tmp_path/'service.py').write_bytes(b'value=1\n')
+    base = commit(tmp_path,'base')
+    (tmp_path/'service.py').write_bytes(b'value=2\n')
+    head = commit(tmp_path,'change')
+    seed(tmp_path)
+    outside = tmp_path/'unrelated'; outside.write_bytes(b'unrelated private data')
+    # Keep unrelated content ignored, not an untracked patch input.
+    outside.unlink()
+    unused = tmp_path/'.elevenpowers/unused.json'; unused.write_bytes(b'unrelated private data')
+    try:
+        (tmp_path/'.elevenpowers/input-roots.json').symlink_to(unused)
+    except OSError:
+        pytest.skip('symlinks unavailable')
+    value = build(tmp_path,base,head)
+    assert value['external_inputs']['state'] == 'not_configured'
+    assert value['binding']['state'] == 'bound', value['binding']['issues']

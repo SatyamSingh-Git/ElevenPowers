@@ -40,6 +40,8 @@ def _guard(root, deadline):
                        ('.elevenpowers/input-roots.json', 65536),
                        ('elevenpowers.inputs.json', 65536),
                        ('elevenpowers.contracts.json', 65536)):
+        if rel == '.elevenpowers/input-roots.json' and not (root/'elevenpowers.inputs.json').exists():
+            continue  # Unconfigured users do not authorize reading unused approvals.
         if time.monotonic() >= deadline:
             raise TimeoutError('bundle deadline reached reading state')
         path = root / rel

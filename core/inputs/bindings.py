@@ -117,8 +117,9 @@ def bind(root, name, approved, replace=False):
         ignored = path.parent/'.gitignore'
         prior = definition.raw(ignored, optional=True) or b''
         text = prior.decode('utf-8')
-        if FILE not in text.splitlines():
-            text += ('\n' if text and not text.endswith('\n') else '') + FILE+'\n'
+        required = '/'+FILE+'\n/.gitignore\n/ledger.lock\n'
+        if not text.endswith(required):
+            text += ('\n' if text and not text.endswith('\n') else '') + required
             _write(ignored,text.encode())
         _write(path,json.dumps(value,ensure_ascii=True,indent=2).encode())
 

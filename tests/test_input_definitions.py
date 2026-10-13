@@ -179,3 +179,19 @@ def test_git_environment_redirect_cannot_hide_tracked_approval(tmp_path,monkeypa
     monkeypatch.setenv('GIT_DIR',str(other/'.git'))
     with pytest.raises(ValueError):
         load(root,definition(root),time.monotonic()+10)
+
+
+def test_binding_fresh_git_project_does_not_leave_private_lock_or_ignore_untracked(tmp_path):
+    from core.inputs.bindings import bind
+    from tests.test_patchproof_identity import git,commit
+    root = tmp_path/'project'; root.mkdir(); policy(root)
+    directory = tmp_path/'deps'; directory.mkdir()
+    git(root,'init','-q'); commit(root,'project declaration')
+    bind(root,'deps',directory)
+    assert git(root,'status','--porcelain') == b'', 'local approval must not make verification source dirty'
+
+
+def test_bracketed_paths_remain_literal_files_instead_of_globs(tmp_path):
+    from core.inputs.definition import load
+    policy(tmp_path,witnesses=[{'id':'route','root':'deps','paths':['types/[slug]/route.d.ts']}])
+    assert load(tmp_path)['witnesses'][0]['paths'] == ['types/[slug]/route.d.ts']
