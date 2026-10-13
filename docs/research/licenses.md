@@ -1,5 +1,7 @@
 # License and attribution register
 
+External Input Witnesses v1 adds no third-party runtime dependency or copied library. It reuses this project's licensed evidence/ownership modules and Python standard-library filesystem and ctypes APIs. The Windows handle API is documented prior art; documentation links do not vendor implementation code.
+
 The 2026-10-13 GitHub presentation uses the official MIT-licensed
 [actions/upload-artifact v4](https://github.com/actions/upload-artifact/tree/v4)
 at `ea165f8d65b6e75b540449e92b4886f43607fa02`, without vendoring its code.

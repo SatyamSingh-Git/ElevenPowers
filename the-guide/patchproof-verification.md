@@ -66,8 +66,13 @@ keys remain readable and are retained during recovery. State is bounded to
 128 attempts and 1 MiB, with explicit count/byte evictions. Fresh inspection
 rechecks saved state and the parent ledger/configuration guard before granting
 association; a late real failure cannot preserve an older passing bundle.
-Use `--rerun` to execute every declared check again when services or installed
-dependencies may have changed: those external bytes are not covered by local reuse.
+Optional [external input witnesses](external-inputs.md) add required selected
+local dependency bytes and tree structure to this association. Their approval
+must be explicit and private. Stable matching captures permit reuse; changed
+captures require execution; incomplete captures defer launch. Older eight-field
+observations stay readable but cannot satisfy newly declared witnesses. Current
+collection in a report does not create a missing saved execution association.
+Use `--rerun` when unobserved dependencies or services may have changed.
 
 An ordinary PatchProof bundle reads these saved observations without launching
 commands. For qualified new observations, it can report the actual inspected head
@@ -93,8 +98,8 @@ Commands run project code with your account's permissions. Windows Jobs and POSI
 process groups manage descendants; they are not a security sandbox. Deliberate
 POSIX group escapes and abrupt host death remain outside cleanup guarantees.
 Unsigned local records require trust in the producer and project state. Installed
-dependency bytes, services and changes that revert between observations remain
-unobserved. A passing command is evidence of that command's result, not proof of
+dependency bytes outside declared approved scopes, services and changes that
+revert between observations remain unobserved. A passing command is evidence of that command's result, not proof of
 correctness or a demonstrated improvement in AI coding outcomes.
 
 See the [design](../docs/design/patchproof-verification.md),

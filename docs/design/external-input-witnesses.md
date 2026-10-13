@@ -73,7 +73,10 @@ No per-witness multiplication of these aggregate limits. Configurations outside
 these finite ranges, duplicate/unknown fields, non-finite values and malformed
 state are incomplete. Zero seconds permits diagnostic incomplete collection.
 
-Hash content, relative names and witness scope deterministically. Shared files
+Hash content, relative file and directory names/types, and witness scope
+deterministically. Empty-directory additions/deletions must change a selected
+tree fingerprint when it also contains regular file bytes; an entirely empty
+selection remains incomplete. Shared files
 are read once within a capture. Descriptor metadata must match the selected
 unlinked regular file before/after reading; directory inventories and policy/
 approval bytes are checked again. Missing, unreadable, moving, truncated or
@@ -85,6 +88,9 @@ detect a change that reverts between observations.
 
 All configured witnesses are required for the verification attempt as a whole.
 Collect before and after command execution and freshly during reuse inspection.
+Recheck source, checkout, configuration and repository policy after external
+collection; persistent changes during the scan cannot retain earlier association
+or launch a command. Read both new state files through the same safe reader.
 Complete matching observations augment the existing eight-field execution
 witness with an optional external-input fingerprint. The saved-state reader
 accepts old eight-field witnesses and the new qualified variant. An old record

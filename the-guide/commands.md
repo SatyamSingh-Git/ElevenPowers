@@ -1,5 +1,24 @@
 # Commands
 
+## ep_inputs — declared external input witnesses
+
+Declare selected dependency files or trees in `elevenpowers.inputs.json`, then
+explicitly approve each root locally. Approval is private project state; the
+tracked declaration cannot grant access to a directory by itself.
+
+```sh
+python plugin/bin/ep_inputs.py bind deps DEPENDENCY_DIRECTORY --project PROJECT
+python plugin/bin/ep_inputs.py inspect --project PROJECT
+python plugin/bin/ep_inputs.py inspect --project PROJECT --seconds 10 --check
+```
+
+Use `bind ... --replace` to deliberately change an existing root. Ordinary
+inspection runs no project checks and exits zero for a diagnostic result;
+`--check` exits one unless collection is available, including when unconfigured.
+Invalid CLI arguments or binding failures exit two. After setup, PatchProof
+captures required witnesses automatically around execution and reuse inspection.
+See [declarations, approval, bounds and limits](external-inputs.md).
+
 ## ep_github — informational GitHub evidence
 
 ```sh

@@ -1,5 +1,13 @@
 # Configuration
 
+[External input witnesses](external-inputs.md) use a project-owned
+`elevenpowers.inputs.json` and explicit private `.elevenpowers/input-roots.json`
+approval. Required selected file/tree fingerprints qualify PatchProof execution
+and reuse. Missing approval, changed inputs or incomplete capture never qualify
+reuse. Configuration does not install packages, invoke checks or authorize reads
+outside approved roots. Native passive receipts and milestone invalidation are
+not yet consumers of these witnesses.
+
 [GitHub evidence presentation](patchproof-github.md) adds no project configuration
 or implicit execution. It consumes existing receipts and declarations, preserving
 absent evidence in fresh CI checkouts. Caller-owned Actions inputs select the

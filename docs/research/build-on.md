@@ -1,5 +1,15 @@
 # What we build on: prior art for each v0.8 component
 
+**External input witnesses, 2026-10-13.** Reuse existing source snapshots,
+owned execution, receipt associations, redaction and atomic local writes.
+Python's standard-library descriptor/stat primitives and the Windows
+[final-path handle API](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfinalpathnamebyhandlew)
+provide local read-target checks. Add explicit project-owned selection, private
+root approval and bounded file/tree fingerprints. Actual file and descriptor
+controls precede adapter claims. This is no package resolver, remote freshness
+probe or authenticated environment attestation; see
+[design](../design/external-input-witnesses.md).
+
 **GitHub presentation, 2026-10-13.** Reuse GitHub job summaries and the
 official pinned MIT artifact uploader rather than building a write-token
 publisher. Add literal, bounded exact-patch evidence with preserved gaps and

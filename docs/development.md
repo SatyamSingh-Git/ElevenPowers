@@ -1,5 +1,20 @@
 # Local development and verification
 
+## External input witness controls
+
+```sh
+python -m pytest tests/test_input_definitions.py tests/test_input_collection.py tests/test_input_io.py tests/test_input_cli.py tests/test_external_input_reuse.py tests/test_external_input_execution.py tests/test_external_input_review.py tests/test_external_inputs_exercise.py -q
+python -S -c "import core.inputs.definition; import core.inputs.bindings; import core.inputs.collection; import core.inputs.access; import eval.external_inputs"
+python -m eval.external_inputs --output NEW_EXTERNAL_DIRECTORY
+python -m eval.github_presentation --output ANOTHER_NEW_DIRECTORY --repository OWNER/REPO --external-inputs
+```
+
+The dependency exercise requires Python, Git and Node, creates fresh disposable
+projects, launches actual Python/JavaScript checks, and measures unchanged reuse,
+independently failing drift, required rerun and missing-input refusal. No model
+or package installation runs. CI repeats the exercise across Windows/Linux and
+Python 3.11/3.13. See [qualification](validation/2026-10-13-external-inputs.md).
+
 ## GitHub presentation controls
 
 ```sh

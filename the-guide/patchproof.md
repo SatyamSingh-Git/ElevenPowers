@@ -1,5 +1,10 @@
 # PatchProof: the patch and its evidence
 
+[External input witnesses](external-inputs.md) can qualify saved explicit
+execution with selected approved dependency files and trees. Reports show current
+collection separately from saved association; source-only receipt facts remain
+visible when an external association becomes unavailable.
+
 [GitHub presentation](patchproof-github.md) shares this read-only bundle through
 an informational Actions summary and downloadable artifact, retaining exact
 identities, failures, missing checks and coverage gaps. It runs no checks.

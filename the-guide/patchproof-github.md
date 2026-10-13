@@ -1,5 +1,11 @@
 # GitHub evidence presentation
 
+[Declared external inputs](external-inputs.md) appear as current collection,
+root labels and selected fingerprints alongside saved execution qualifications.
+Successful current collection cannot replace absent or unavailable execution
+association. Source-only receipt facts and unobserved environment gaps remain
+visible; the public bundle contains no approved absolute root paths or input bytes.
+
 PatchProof can present a fresh, read-only evidence bundle in an Actions job
 summary and upload its JSON and Markdown files. It keeps exact patch identity,
 check outcomes, input freshness and coverage gaps visible. A successful export
