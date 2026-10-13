@@ -188,6 +188,8 @@ def on_pre_tool(payload: dict, root: Path) -> int:
 
     if tool in COMMAND_TOOLS:
         command = command_of(payload)
+        from .inputs.native import before as input_before
+        input_before(payload,root)
         hit = next((d for d in DESTRUCTIVE if d.lower() in command.lower()), None)
         if hit:
             _emit(
@@ -302,6 +304,8 @@ def _on_post_tool(payload: dict, root: Path) -> int:
     if incomplete and declared_needs(command, root, cwd=cwd):
         ledger = Ledger.load(root)
         records = parse(command, result.output, None, root, cwd=cwd)
+        from .inputs.native import after as input_after
+        if not input_after(payload,root,records,terminal=False): return 0
         ledger.add(records)
         ledger.note("declared command incomplete", command)
         ledger.save()
@@ -316,6 +320,8 @@ def _on_post_tool(payload: dict, root: Path) -> int:
         return 0
 
     records = parse(command, result.output, result.exit_code, root, cwd=cwd)
+    from .inputs.native import after as input_after
+    if not input_after(payload,root,records,terminal=not incomplete): return 0
     written = written_paths(command) if result.ok else []
 
     # Capture what the command printed BEFORE deciding whether it was evidence.

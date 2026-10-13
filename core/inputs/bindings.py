@@ -40,7 +40,7 @@ def target(root):
     return path
 
 
-def private(root, deadline):
+def private(root, deadline, filename=FILE):
     # A nested project can still have approval tracked by its containing worktree.
     root = Path(root).resolve(strict=True)
     repository = next((p for p in (root,*root.parents) if (p/'.git').exists()),None)
@@ -57,7 +57,7 @@ def private(root, deadline):
     env = {**os.environ, 'GIT_OPTIONAL_LOCKS':'0'}
     done = subprocess.run(['git','-c',f'safe.directory={repository.as_posix()}',
         '-c','core.fsmonitor=false','-c',f'core.hooksPath={os.devnull}',
-        'ls-files','--error-unmatch','--','.elevenpowers/'+FILE], cwd=root,
+        'ls-files','--error-unmatch','--','.elevenpowers/'+filename], cwd=root,
         capture_output=True, timeout=min(5,remaining), env=env)
     if done.returncode == 0:
         raise ValueError('Git-tracked input approval is not local approval')
