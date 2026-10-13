@@ -67,7 +67,7 @@ class Scan:
         if stat.S_ISDIR(before.st_mode):
             if path not in self.directories:
                 self.directories[path] = self.inventory(path)
-            result = []
+            result = [path]
             for name,_ in self.directories[path][1]:
                 result.extend(self.walk(approved,path/name,depth+1))
             return result
@@ -121,10 +121,13 @@ def capture(root,deadline):
                 selected = set()
                 for relative in witness['paths']:
                     selected.update(scan.walk(approved,approved/relative))
-                if not selected:
+                files = {p for p in selected if p in scan.files}
+                if not files:
                     raise ValueError('selected input scope is empty; no file bytes observed')
-                records = {p.relative_to(approved).as_posix():list(scan.files[p][:2]) for p in selected}
-                row.update(state='available',files=len(selected),
+                records = {p.relative_to(approved).as_posix():
+                           ['file',*scan.files[p][:2]] if p in files else ['directory']
+                           for p in selected}
+                row.update(state='available',files=len(files),
                            fingerprint=digest([witness,records]))
             except (OSError,ValueError,TimeoutError,subprocess.SubprocessError) as error:
                 row['issues'].append(issue(error))

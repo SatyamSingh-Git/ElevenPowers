@@ -105,7 +105,7 @@ def load(root):
     limits = {**DEFAULTS, **limits}
     if (type(limits['files']) is not int or not 1 <= limits['files'] <= 16384
             or type(limits['bytes']) is not int or not 1 <= limits['bytes'] <= 256*1024*1024
-            or type(limits['seconds']) not in (int,float) or not math.isfinite(limits['seconds'])
-            or not 0 <= limits['seconds'] <= 60):
+            or type(limits['seconds']) not in (int,float) or not 0 <= limits['seconds'] <= 60
+            or not math.isfinite(limits['seconds'])):
         raise ValueError('input limits exceed supported finite ranges')
     return {**value, 'limits': limits, '_digest': hashlib.sha256(data).hexdigest()}

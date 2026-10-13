@@ -132,7 +132,7 @@ def retain(value, item):
         value['evicted'] += excess
 
 
-def witness(root, patch, deadline, *, base=None, head=None):
+def _source_witness(root, patch, deadline, *, base=None, head=None):
     """Return a qualification plus actual parser snapshot; never export env values."""
     if time.monotonic() >= deadline:
         raise TimeoutError('verification deadline reached before input inspection')
@@ -168,7 +168,17 @@ def witness(root, patch, deadline, *, base=None, head=None):
              'producer_fingerprint': fingerprint(),
              'environment_fingerprint': digest([sys.version, sys.executable, platform.platform(),
                                                 str(root), dict(os.environ)])}
+    return value, snapshot
+
+
+def witness(root, patch, deadline, *, base=None, head=None):
+    """External collection cannot preserve an earlier source qualification."""
+    value, snapshot = _source_witness(root,patch,deadline,base=base,head=head)
     external = input_capture(root,deadline)
+    if external['state'] != 'not_configured':
+        final, _ = _source_witness(root,patch,deadline,base=base,head=head)
+        if final != value:
+            raise ValueError('source or execution inputs changed during external inspection')
     if external['state'] == 'incomplete':
         raise ValueError('required external input observation is incomplete')
     if external['state'] == 'available':

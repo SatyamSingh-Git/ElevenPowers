@@ -17,6 +17,7 @@ from ..impact import markdown as impact_markdown
 from .execution_report import inspect as execution_report
 from .policy import fingerprint as policy_fingerprint
 from ..inputs.collection import capture as input_capture, markdown as input_markdown
+from ..inputs.definition import raw as input_raw
 
 
 LIMITS = [
@@ -45,6 +46,10 @@ def _guard(root, deadline):
         if time.monotonic() >= deadline:
             raise TimeoutError('bundle deadline reached reading state')
         path = root / rel
+        if rel in ('.elevenpowers/input-roots.json','elevenpowers.inputs.json'):
+            raw = input_raw(path,limit,optional=True)
+            values.append(hashlib.sha256(raw).hexdigest() if raw is not None else None)
+            continue
         if path.is_symlink() or path.parent.is_symlink():
             raise ValueError('linked evidence state is unsupported')
         if not path.exists():
@@ -96,7 +101,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     if any(name in os.environ for name in redirects):
         issues.append('ambient Git repository/config overrides leave legacy report enumeration unqualified')
     try:
-        if impact:
+        if impact or external_inputs['state'] != 'not_configured':
             try:
                 policy_before = policy_fingerprint(root, deadline)
             except (OSError, ValueError, TimeoutError, subprocess.SubprocessError):
@@ -190,6 +195,15 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
         if execution['state'] != 'absent':
             execution['state'] = 'incomplete'
     try:
+        if external_inputs['state'] != 'not_configured':
+            final_patch = collect(root,base,head,seconds=max(0,deadline-time.monotonic()))
+            final_report = verification_report(root,timeout=max(0,deadline-time.monotonic()))
+            if final_patch != patch or report is None or _inputs(final_report) != _inputs(report):
+                issues.append('patch, checkout or source changed during external input inspection')
+                bound = False
+            if policy_before is None or policy_before != policy_fingerprint(root,deadline):
+                issues.append('repository policy changed during external input inspection')
+                bound = False
         if before is None or _guard(root, deadline) != before:
             issues.append('ledger or configuration changed during saved execution inspection')
             bound = False

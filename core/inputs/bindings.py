@@ -41,7 +41,10 @@ def target(root):
 
 
 def private(root, deadline):
-    if not (Path(root)/'.git').exists():
+    # A nested project can still have approval tracked by its containing worktree.
+    root = Path(root).resolve(strict=True)
+    repository = next((p for p in (root,*root.parents) if (p/'.git').exists()),None)
+    if repository is None:
         return
     redirects = ('GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE','GIT_COMMON_DIR',
                  'GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES',
@@ -52,7 +55,7 @@ def private(root, deadline):
     if remaining <= 0:
         raise TimeoutError('input approval inspection deadline reached')
     env = {**os.environ, 'GIT_OPTIONAL_LOCKS':'0'}
-    done = subprocess.run(['git','-c',f'safe.directory={Path(root).as_posix()}',
+    done = subprocess.run(['git','-c',f'safe.directory={repository.as_posix()}',
         '-c','core.fsmonitor=false','-c',f'core.hooksPath={os.devnull}',
         'ls-files','--error-unmatch','--','.elevenpowers/'+FILE], cwd=root,
         capture_output=True, timeout=min(5,remaining), env=env)
