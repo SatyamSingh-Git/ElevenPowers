@@ -73,6 +73,7 @@ attempts and an explicit `--rerun` option when external inputs need refreshing.
 | `contracts` | Declared standalone OpenAPI checks, saved producer/configuration/input identities and current qualifications. |
 | `impact` | Optional fresh graph recommendations, exact patch/input identities and coverage qualifications; never passing evidence. |
 | `execution` | Saved explicit command associations, freshly inspected exact heads and source/configuration/policy/producer/environment digests; legacy receipts retain unknown provenance. |
+| `external_inputs` | Current required selected local file/tree collection, public fingerprints, root labels, budgets and gaps; not a substitute for matching saved execution association. |
 | `coverage` | Changed paths without a qualified receipt association and unsupported compatibility categories. |
 
 `bound` is an input association. A fresh failing or interrupted receipt can be

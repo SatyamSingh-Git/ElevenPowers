@@ -129,5 +129,7 @@ are final gates, with all historical failures and limits retained.
 
 Delivered controls and actual cloud artifact observations are recorded in
 [dated validation](../validation/2026-10-13-github-evidence.md). Broader live PR/
-fork publication, additional producers and external-input witnesses remain
-separate work; informational export is not authenticated CI import.
+fork publication and additional producers remain separate work. The subsequent
+[local input witnesses](external-input-witnesses.md) now add a qualified current
+view without inventing saved execution provenance; informational export is not
+authenticated CI import.

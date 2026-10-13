@@ -79,6 +79,23 @@ No second reviewer pass, model session or favorable comparison retry was launche
 All five architecture views render and pass cards/filter/keyboard/shared-link/
 narrow-layout controls: 161 nodes, 386 edges and seven planes.
 
+Final named gates: 107 audits passed in 101.71s; all four independent grader
+states were correct; published staged source grades reproduced; doctor host
+wiring and standard-library imports passed. The separate actual dependency
+acceptance completed in 283.262s under concurrent local regression load, with
+both languages retaining states and counters `[1,1,2,3,3]`. This elapsed time is
+a local observation, not a latency or speedup claim.
+
+[Final-code hosted run](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38365093469)
+uses `f9fe7584b35dbb77a44cac80b7c0bacbc28f29ba`. Its artifact job passed;
+downloaded artifact `11796550966` contains 8,812-byte JSON and 3,885-byte Markdown.
+Canonical public bundle SHA-256 independently recomputes to
+`21f726e22b9bafc948b49ae7ecad64bbb65feb0f3c265c5032bd9c8532cbb0d8`.
+Declared repository/base/head/patch identities match the bundle. Tests remain
+current and the unrun typecheck absent; selected external collection is available
+while saved execution stays absent. Actual Markdown escapes labels literally.
+This is a declared disposable context, not live PR/fork or authenticated CI import.
+
 The initial runtime/workflow revision was
 `43d15822d30bde9038ae662849ca38c3f406509b`; the repaired runtime is `f6353c5`.
 [Initial hosted qualification](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38361484187)

@@ -41,8 +41,11 @@ command/configuration/source/policy/producer/environment digests, exit status,
 execution state and limits. No outputs or environment values enter exports.
 Reuse only the latest complete passing associated aggregate for an unchanged
 command and qualified inputs; later failed/incomplete attempts supersede success.
-External services, installed dependency bytes and intervening reverted changes
-remain unobserved. Saved local records are unsigned and require producer trust.
+External services, installed bytes outside subsequently declared approved scopes,
+and intervening reverted changes remain unobserved. The
+[external input extension](external-input-witnesses.md) adds selected local
+file/tree observations with explicit authority and optional saved fingerprints.
+Saved local records are unsigned and require producer trust.
 Original named selectors are re-resolved at each witness boundary. Final bundle
 guards cover execution inspection as well as receipt collection. New records
 use aggregate keys computed from persisted redacted identities; old leaf-key
