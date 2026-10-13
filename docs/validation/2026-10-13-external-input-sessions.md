@@ -1,7 +1,6 @@
 # External Input Witnesses v2 — 2026-10-13
 
-Delivery qualification in progress. Main delivery and final gates are not yet
-claimed here. Scope: selected approved local file/tree inputs qualify ordinary
+Final-code qualification passed. Scope: selected approved local file/tree inputs qualify ordinary
 identified native receipts, completion-owned verification, targeted confirmation
 and reuse, retained milestone history and public evidence views for any project.
 
@@ -18,7 +17,8 @@ and reuse, retained milestone history and public evidence views for any project.
 - First repaired group: 74 passed in 139.86 seconds, including all 18 review
   regressions. The broader affected-path group passed 91 tests in 706.35 seconds,
   including owned execution, reuse, five host adapters, public/portable views and
-  the actual multi-task exercise. Full-suite qualification remains pending.
+  the actual multi-task exercise. Final local full suite passed **2,357 tests
+  with 3 skips in 3,606.33 seconds**, with unchanged runtime byte identity.
 
 Final candidate actual exercise passed both protocols in 46.458 seconds, runtime
 fingerprint `10a99c67ac2b2e8776765be640703c280539312610a94eb939b2a94cfe2dc470`.
@@ -49,7 +49,7 @@ grader, source reproduction, doctor and stdlib gates passed. Windows raw-byte
 identity is `eea546bcc447e260b529f29466b311b3bae33bae28eef79aaf0804d686b34fea`.
 Checking all 133 runtime Git blobs confirms that local/Git/Windows identities
 differ only by newline representation; freshness rules were not normalized.
-The local full-suite result is still pending. Downloaded `evidence.json`
+Downloaded `evidence.json`
 and `summary.md` are 9,419 and 4,113 bytes. The independent fixture logged
 `current, failed, incomplete`, launch counts `[1,1,1]` and read-only reports.
 Its base `c3ddf16b8d85990c1899c258668d7b0d48d6dc0a` and head

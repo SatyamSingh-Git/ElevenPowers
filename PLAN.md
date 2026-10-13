@@ -1,13 +1,17 @@
 # Master Plan v0.8
 
-**2026-10-13 — External Input Witnesses v2 implementation; final qualification in progress.**
+**2026-10-13 — External Input Witnesses v2 delivered and qualified.**
 The shared selected-input contract now qualifies ordinary identified native
 receipts, completion-owned checks, targeted confirmation/reuse, retained
 milestones and public views. Unrelated actual Python/Node projects pass the
 seven-state drift/failure/repair/incomplete/recovery protocol; source, HEAD and
 environment stay unchanged during the independent fault. No new installed-host
 or model session was launched. One final review's five Important gaps were
-reproduced and repaired; broader final gates and main delivery remain pending.
+reproduced and repaired. Final local qualification passed 2,357 tests with 3
+skips in 3,606.33 seconds; all four hosted cells and artifact acceptance passed.
+Named audits, independent grader/source reproduction, doctor, stdlib imports and
+all five rendered architecture views passed. Main receives the qualified code
+through a normal fast-forward; later delivery records change documentation only.
 See [qualification](docs/validation/2026-10-13-external-input-sessions.md),
 [journey 79](journey/79-a-pass-needs-its-before.md) and
 [implementation plan](docs/superpowers/plans/2026-10-13-external-input-sessions.md).

@@ -8,7 +8,10 @@ movement. Ordinary export shares external captures; nested PatchProof exports
 can still multiply reads. See [design](../docs/design/external-input-sessions.md),
 [journey 79](../journey/79-a-pass-needs-its-before.md) and
 [qualification](../docs/validation/2026-10-13-external-input-sessions.md).
-Final delivery checks are recorded separately from the historical v1 results.
+Final v2 qualification passed 2,357 local tests with 3 skips, all four hosted
+cells and artifact acceptance, named audits and independent gates. All five
+views render with 166 nodes, 400 edges and seven planes. These checks remain
+separate from installed-session acceptance and coding benefit.
 
 External Input Witnesses v1 now maps explicit local root approval, verified
 bounded file/tree collection, PatchProof execution/reuse and public evidence

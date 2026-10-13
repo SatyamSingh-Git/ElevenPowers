@@ -43,7 +43,11 @@ qualification together. Original command outcomes remain intact. The first
 repair group passed 74 tests, including all 18 review controls.
 The broader integration group passed 91 tests in 706.35 seconds. Final actual
 Python/Node acceptance passed both protocols in 46.458 seconds on the frozen
-runtime; the full local and hosted gates are recorded separately in validation.
+runtime. Final local qualification passed 2,357 tests with 3 skips in 3,606.33
+seconds, and all four hosted cells plus artifact acceptance passed. Named audits,
+independent grader/source reproduction, doctor, stdlib imports and all five
+rendered architecture views passed. Actual limits and platform skips are retained
+in validation; these are separate from installed acceptance and coding benefit.
 
 One Minor finding is deferred: an unchanged native-only PatchProof bundle can
 collect the selected target eight times through paired witnesses and nested

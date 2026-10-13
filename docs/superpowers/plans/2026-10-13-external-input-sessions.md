@@ -90,6 +90,6 @@ Files: `eval/input_sessions.py`, tests, workflow, docs, journey 79 and architect
 - [x] Run actual multi-task Python/Node controls with independent fault checks, all five synthetic host adapters, owned verification, counters and read costs.
 - [x] Add the exercise and stdlib imports to four-cell hosted qualification; push.
 - [x] One whole-branch reviewer; regrade and repair Important/Critical findings in one witnessed pass, retain other rulings/minors.
-- [ ] Freeze code and run full suite, named audits, independent grader/source reproduction, doctor, stdlib, final hosted matrix, architecture render and added links.
-- [ ] Update all affected docs, roadmap, journey/validation and five views; push descriptive parts.
+- [x] Freeze code and run full suite, named audits, independent grader/source reproduction, doctor, stdlib, final hosted matrix, architecture render and added links.
+- [x] Update all affected docs, roadmap, journey/validation and five views; push descriptive parts.
 - [ ] Fast-forward main normally, verify refs/raw bytes/published map, and archive only this owned private workspace.

@@ -1,6 +1,6 @@
 # Current delivery status
 
-**2026-10-13 — External Input Witnesses v2 implementation; final qualification in progress.**
+**2026-10-13 — External Input Witnesses v2 delivered and qualified.**
 Ordinary identified native receipts, completion-owned verification, confirmation
 and reuse, retained milestones and public views now share selected approved local
 input qualifications. Actual unrelated Python/Node projects pass the seven-state
@@ -9,8 +9,12 @@ unchanged during the independent dependency fault. Inspection is read-only and
 ordinary export shares two selected-target reads. Five synthetic host adapters
 are exercised; no fresh installed-session or causal coding-benefit claim.
 One final review exposed five Important defects; the first repair group passed
-74 tests including all 18 regression controls. Full/local/hosted delivery gates
-are still pending, so main delivery is not yet claimed. See
+74 tests including all 18 regression controls; the broader affected-path group
+passed 91. The final local suite passed 2,357 tests with 3 skips in 3,606.33
+seconds. All four final-code hosted cells and artifact acceptance passed,
+alongside named audits, independent grader/source reproduction, doctor, stdlib
+imports and all five rendered architecture views. Delivery uses a normal main
+fast-forward with unchanged qualified runtime bytes. See
 [qualification](validation/2026-10-13-external-input-sessions.md) and
 [journey 79](../journey/79-a-pass-needs-its-before.md).
 
