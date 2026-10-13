@@ -36,12 +36,12 @@ Python and Node disposable exercises. No runtime package or model installation.
 Files: `tests/test_external_input_reuse.py`.
 Consumes existing `verify`/`plan`; produces actual dependency control fixtures.
 
-- [ ] Write Python/Node fixtures with a separate dependency directory, committed
+- [x] Write Python/Node fixtures with a separate dependency directory, committed
   unchanged source and stable private root approval. First check passes.
-- [ ] Independently change dependency value 2→9; actual direct check fails.
-- [ ] Assert `plan(...)["checks"][0]["action"] == "run"`; observe RED from current reuse.
-- [ ] Keep unchanged-input positive controls, private counters and source/HEAD checks.
-- [ ] Preserve the RED outcome and push the reproduced controls with scope explained.
+- [x] Independently change dependency value 2→9; actual direct check fails.
+- [x] Assert `plan(...)["checks"][0]["action"] == "run"`; observe RED from current reuse.
+- [x] Keep unchanged-input positive controls, private counters and source/HEAD checks.
+- [x] Preserve the RED outcome and push the reproduced controls with scope explained.
 
 ### Task 2: Strict policy and explicit local root approval
 
@@ -52,15 +52,15 @@ Interfaces: `definition.load(root) -> dict|None`;
 `bindings.load(root, definition, deadline) -> dict`;
 `bindings.bind(root, name, directory, replace=False) -> None`.
 
-- [ ] Assert missing policy returns None, valid literals load, malformed/duplicate/
+- [x] Assert missing policy returns None, valid literals load, malformed/duplicate/
   traversal/drive/unknown/non-finite/oversized policy raises controlled ValueError.
-- [ ] Assert `bind(...)` approves only declared roots, refuses links/state/ancestors,
+- [x] Assert `bind(...)` approves only declared roots, refuses links/state/ancestors,
   refuses copied/tracked approvals and replacement without explicit flag.
-- [ ] Run absent-module RED, then implement strict bounded reads and atomic private
+- [x] Run absent-module RED, then implement strict bounded reads and atomic private
   binding save with existing `jobs.replace`; preserve other ignore rules.
-- [ ] Implement explicit bind/inspect CLI, bytecode suppression before imports and
+- [x] Implement explicit bind/inspect CLI, bytecode suppression before imports and
   controlled scrubbed diagnostics; no inspection-side writes.
-- [ ] Verify actual CLI and legitimate/adversarial controls GREEN; commit/push.
+- [x] Verify actual CLI and legitimate/adversarial controls GREEN; commit/push.
 
 ### Task 3: Shared bounded external-byte collection
 
@@ -68,13 +68,13 @@ Files: `core/inputs/collection.py`, `tests/test_input_collection.py`.
 Interface: `capture(root, deadline) -> dict` with schema/state/fingerprint,
 witnesses/counts/issues/limits. Missing declaration is `not_configured`.
 
-- [ ] Assert content/name/scope edits, additions/deletions alter complete fingerprints;
+- [x] Assert content/name/scope edits, additions/deletions alter complete fingerprints;
   repeated unmodified captures match and project file bytes remain unchanged.
-- [ ] Assert linked/special/unavailable/moving inputs, limits and malformed approval
+- [x] Assert linked/special/unavailable/moving inputs, limits and malformed approval
   yield incomplete with no qualifying fingerprint, including empty-tree coverage.
-- [ ] Observe RED; implement explicit scoped traversal, shared deduplicated reads,
+- [x] Observe RED; implement explicit scoped traversal, shared deduplicated reads,
   descriptor/path checks, bounded inventories and policy/binding rechecks.
-- [ ] Run full collector controls GREEN and standard-library import; commit/push.
+- [x] Run full collector controls GREEN and standard-library import; commit/push.
 
 ### Task 4: Execution, reuse and read-only evidence views
 
@@ -83,15 +83,15 @@ Files: `core/patchproof/execution_state.py`, `execution_report.py`, `execution.p
 Consumes `capture`; optional complete `external_inputs_fingerprint` augments
 existing witness only when policy is configured. Legacy shapes remain readable.
 
-- [ ] Run Task 1 RED again; add old-record/new-policy, incomplete-approval,
+- [x] Run Task 1 RED again; add old-record/new-policy, incomplete-approval,
   during-execution drift, binding/config movement and latest-result controls.
-- [ ] Add capture to execution witnesses and optional strict state shape. The
+- [x] Add capture to execution witnesses and optional strict state shape. The
   report's independent view checks current policy before launch even with no history.
-- [ ] Preserve source binding while external associations explain drift/missing data.
+- [x] Preserve source binding while external associations explain drift/missing data.
   Complete drift allows fresh execution; incomplete capture refuses launch/reuse.
-- [ ] Make actual gap controls GREEN: source/HEAD/env unchanged, direct failure,
+- [x] Make actual gap controls GREEN: source/HEAD/env unchanged, direct failure,
   no obsolete reuse, actual new failure; unchanged input retains one execution.
-- [ ] Retain every declared command and old history. Export literal bounded summaries
+- [x] Retain every declared command and old history. Export literal bounded summaries
   without private paths/contents. Run affected controls GREEN; commit/push parts.
 
 ### Task 5: Actual disposable acceptance and qualification
@@ -99,12 +99,12 @@ existing witness only when policy is configured. Legacy shapes remain readable.
 Files: `eval/external_inputs.py`, `tests/test_external_inputs_exercise.py`,
 `.github/workflows/tests.yml`; documentation and architecture.
 
-- [ ] Build an explicit new-directory exercise using Task 1 behavior expectations;
+- [x] Build an explicit new-directory exercise using Task 1 behavior expectations;
   controller checks current dependency correctness independently of report labels.
-- [ ] Rehearse Python/Node actual producers, readonly exports and private counters,
+- [x] Rehearse Python/Node actual producers, readonly exports and private counters,
   with good/drifted/incomplete cases and saved machine-readable outcomes.
-- [ ] Push the actual exercise and add it plus stdlib imports to hosted qualification.
-- [ ] Request one fresh whole-branch review; regrade by user effect and repair
+- [x] Push the actual exercise and add it plus stdlib imports to hosted qualification.
+- [x] Request one fresh whole-branch review; regrade by user effect and repair
   Important/Critical findings in one witnessed RED→GREEN pass.
 - [ ] Run full regressions, named audits, grader/source reproduction, doctor,
   hosted four-cell matrix, actual exercise and architecture/link checks.

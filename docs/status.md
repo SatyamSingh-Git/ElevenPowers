@@ -1,5 +1,19 @@
 # Current delivery status
 
+**2026-10-13 — External Input Witnesses v1 implemented; final qualification in progress.**
+Project-owned literal selections and explicit private root approval add bounded
+file/tree observations to PatchProof execution, reuse and read-only evidence.
+Actual Python/Node controls show unchanged reuse, independent dependency failure,
+required rerun and missing-input refusal. One review exposed five Important
+defects; regression checks and the single repair pass are retained. Final full
+and hosted gates are recorded in [qualification](validation/2026-10-13-external-inputs.md).
+See [usage](../the-guide/external-inputs.md).
+
+Next: qualify broader end-to-end adoption and behavior preservation before claiming
+coding benefit. Native passive/milestone witness adapters, additional producers,
+per-command input selection, remote observations and live PR/fork transport remain
+separately scoped work. No new model or installed session was launched.
+
 **2026-10-13 — GitHub evidence presentation delivered and qualified.**
 The reusable cloud Action and portable CLI expose exact declared subjects,
 unchanged receipt states, coverage gaps and canonical public bundle hashes.

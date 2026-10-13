@@ -1,18 +1,27 @@
 # ElevenPowers — living architecture graph
 
+External Input Witnesses v1 now maps explicit local root approval, verified
+bounded file/tree collection, PatchProof execution/reuse and public evidence
+views in every tab. The map contains 161 nodes, 386 edges and seven planes.
+Actual Python/Node drift controls, late source/policy edits and directory-only
+changes qualify the selected-input mechanism. Current collection stays separate
+from saved execution association; native passive/milestone adapters and further
+producers remain contributor work. See [guide](../the-guide/external-inputs.md)
+and [qualification](../docs/validation/2026-10-13-external-inputs.md).
+
 GitHub evidence presentation now maps strict declared subjects, canonical public
 bundle hashes, literal bounded summaries, external-only CLI publication and
 pinned cloud transport in all five views. Actual commands and downloaded
 artifacts qualify the declared disposable exercise; live PR/fork publication
-and authenticated import remain open. The Planned card advances to explicit
-external-input witnesses and further producers. Review repairs cover public
+and authenticated import remain open. The Planned card now tracks further
+witness adapters and producers. Review repairs cover public
 keys, hard links and cold bytecode; the newly established Windows original-
 handle completion boundary is repaired. See [guide](../the-guide/patchproof-github.md)
 and [qualification](../docs/validation/2026-10-13-github-evidence.md).
 
 Explicit PatchProof verification now maps read-only plans, owned bounded execution
 and fresh saved associations across every view. GitHub presentation now extends
-those paths; external-input witnesses and additional producers remain next. Historical unexplained
+those paths; selected local input witnesses are implemented and additional adapters remain open. Historical unexplained
 incidents remain separate from the established launch/reap deadline and
 cancellation handoff repairs. Review repairs, full regressions and all four
 hosted final-code jobs passed; see [qualification](../docs/validation/2026-10-12-patchproof-verification.md).
@@ -20,12 +29,12 @@ See [verification usage](../the-guide/patchproof-verification.md).
 
 Optional PatchProof impact enrichment now maps fresh graph/report input identities,
 exact patch associations and explained test candidates across all five views.
-Its Planned card now tracks external-input witnesses and further producers beyond the delivered explicit verification and presentation.
+Its Planned card now tracks further witness adapters and producers beyond delivered verification, presentation and selected local inputs.
 Recommendations remain separate from execution and incomplete coverage stays visible.
 
 PatchProof v1 adds exact committed/tree-pair identity, scoped receipt bundles,
 explicit export and real Python/Node controls in all affected views. Its Planned
-card now tracks further producers and external-input witnesses beyond the delivered foundation, explicit verification and presentation.
+card now tracks further producers and witness adapters beyond the delivered foundation, verification, presentation and selected local inputs.
 Earlier 2/10 installed successes remain historical after the runtime change; see
 [PatchProof validation](../docs/validation/2026-10-11-patchproof-v1.md).
 

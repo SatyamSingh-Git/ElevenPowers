@@ -1,26 +1,26 @@
 # PatchProof contributor brief
 
-Status: v1, declared OpenAPI, impact integration, explicit verification and GitHub evidence presentation implemented, 2026-10-13. See [latest observations](../validation/2026-10-13-github-evidence.md).
-Exact committed identity and scoped receipt bundles now exist inside the shared
-runtime. Read [the delivered contract](patchproof-v1.md) and
-[usage](../../the-guide/patchproof.md). The sections below preserve the original
-foundation criteria; a contributor should start with external-input witnesses or a separately
-qualified additional producer, not rebuild the identity/export foundation. No coding-benefit result is established by the bundle.
+Status: v1, declared OpenAPI, impact integration, explicit verification, GitHub
+presentation and selected external input witnesses implemented, 2026-10-13.
+See [latest observations](../validation/2026-10-13-external-inputs.md),
+[the foundation](patchproof-v1.md), [usage](../../the-guide/patchproof.md) and
+[external input design](external-input-witnesses.md).
 
-The [OpenAPI adapter](patchproof-openapi.md) now implements the first producer
-and has passed delivery qualification. [Impact enrichment](patchproof-impact.md) now composes fresh default graph paths
-with exact patch/report inputs. Contributor starting points are explicit
-external-input/dependency/environment witnesses or a separately qualified additional producer.
+Contributor starting points are a separately qualified producer, native passive
+or milestone witness integration, or a narrow input adapter with actual drift
+and incomplete-read controls. Reuse explicit approval and shared collection;
+do not rebuild the identity/export foundation or let tracked declarations grant
+external access. Per-command input selection, remote freshness, live PR/fork
+transport and authenticated CI import need their own reviewed contracts.
 
-[Explicit verification](patchproof-verification.md) now reuses existing commands,
-ownership, parsers and receipts with exact patch/input/producer/environment guards.
-Plans and ordinary reports stay read-only; `--verify` is explicit and `--rerun`
-can refresh unobserved external inputs. Additional producer, dependency/environment
-witnesses remain contributor work. [GitHub presentation](patchproof-github.md)
-now reuses that bundle in an informational summary and artifact. Next, define
-a bounded project-owned witness format, qualify changes and incomplete reads,
-and preserve conservative reuse whenever external freshness is unknown. Live
-PR/fork acceptance and authenticated CI import are separate contribution scopes.
+[Explicit verification](patchproof-verification.md) preserves every required
+command and qualifies saved execution against exact patch/source/configuration/
+policy/producer/environment and required selected external inputs. Plans and
+reports launch no checks. [GitHub presentation](patchproof-github.md) shares
+the same qualified facts and gaps. Neither export nor a witness proves safety
+or a population improvement in coding outcomes.
+
+The sections below preserve the original foundation criteria.
 
 ## What is ready, and what is missing
 

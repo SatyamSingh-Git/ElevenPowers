@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-13 external input witnesses](2026-10-13-external-inputs.md): actual Python/Node dependency drift, explicit approval, bounded reads and directory/source/authority review controls.
+
 - [2026-10-13 GitHub evidence presentation](2026-10-13-github-evidence.md): real command outcomes, original Windows handle completion, public export review repairs and actual artifact transport.
 
 - [2026-10-12 explicit PatchProof verification](2026-10-12-patchproof-verification.md): required-check planning, explicit execution, durable recovery, review repairs and qualified reuse.

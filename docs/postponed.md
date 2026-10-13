@@ -1,5 +1,12 @@
 # Postponed, with the trigger that would build it
 
+**External inputs, 2026-10-13.** Selected approved local file/tree witnesses now
+qualify explicit PatchProof execution and reuse. See [usage](../the-guide/external-inputs.md)
+and [qualification](validation/2026-10-13-external-inputs.md). Automatic package
+resolution, remote services, native passive/milestone integration and per-command
+selection remain open. A declaration is selection, not read authority; incomplete
+capture never grants reuse. Historical notes below retain their dated scope.
+
 **GitHub presentation, 2026-10-13.** Read-only summaries and downloadable
 exact-patch bundles are implemented, with actual hosted transport and independent
 review repairs. Local regressions, named audits and all five final-code hosted jobs passed; see the

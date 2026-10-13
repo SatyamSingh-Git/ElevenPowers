@@ -448,3 +448,5 @@ deadline repairs are recorded in [journey 76](76-a-check-needs-time-to-leave-a-r
 
 GitHub evidence presentation, actual artifact transport and the cached Windows
 termination boundary are recorded in [journey 77](77-the-upload-is-not-the-evidence.md).
+
+Selected dependency drift, bounded approved reads and conservative reuse are recorded in [journey 78](78-the-dependency-can-change-without-the-patch.md).

@@ -32,7 +32,7 @@
 4. **Project readiness and health:** discovers project verification commands and checks whether the agent integration is capturing edits, command results and completion correctly, surfacing setup and coverage problems.
 5. **Resumable verification:** saves check progress and receipts so interrupted work can resume, fresh results can be reused and later edits can invalidate outdated evidence.
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether results still match the current files, where evidence is missing and what needs attention next.
-7. **PatchProof:** plans and explicitly runs declared checks, binds exact committed patches to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries with downloadable evidence.
+7. **PatchProof:** plans and runs declared checks, binds patches and approved external inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
 
 ---
@@ -646,6 +646,16 @@ Most requests state no claim, because one real prompt in five is four words or f
 For a repeatable local test environment, see [Development and verification](docs/development.md).
 
 ## Where this actually is
+
+[External Input Witnesses v1](the-guide/external-inputs.md) now binds selected
+approved local dependency files and tree structure to explicit PatchProof
+execution and reuse. Actual Python/JavaScript checks reproduce same-path drift
+with source, HEAD and environment unchanged: current inputs reuse once; changed
+inputs require execution; missing inputs defer launch. Read-only bundles and
+GitHub summaries keep current collection separate from saved execution association.
+Native passive capture, remote services and complete environment coverage remain
+outside this version. See [qualification](docs/validation/2026-10-13-external-inputs.md)
+and [journey 78](journey/78-the-dependency-can-change-without-the-patch.md).
 
 [GitHub evidence presentation](the-guide/patchproof-github.md) now exports exact-patch
 receipts and gaps to an Actions summary and downloadable JSON/Markdown artifact.
