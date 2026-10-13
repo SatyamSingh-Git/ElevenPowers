@@ -70,6 +70,9 @@ def _inputs(value):
 def _check_state(receipt):
     if receipt['execution'] != 'complete':
         return 'incomplete'
+    external=receipt.get('external_inputs',{}).get('state')
+    if external=='incomplete': return 'incomplete'
+    if external=='stale': return 'stale'
     if receipt['result'] != 'pass':
         return 'failed'
     if receipt['freshness'] != 'fresh':
@@ -155,7 +158,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
             why.append('no recorded input scope is available')
         if not paths:
             why.append('no changed patch path is in the recorded input scope')
-        if receipt['freshness'] != 'fresh' or receipt['coverage_issues']:
+        if receipt.get('source_freshness',receipt['freshness']) != 'fresh' or receipt['coverage_issues']:
             why.append('recorded inputs or declaration are stale, gone or incomplete')
         if original and original.scope not in ('', 'source'):
             why.append('unsupported receipt scope')
@@ -273,6 +276,8 @@ def markdown(value):
     for receipt in value['receipts']:
         lines += ['- ' + _text(receipt['identity']) + ': ' + _text(issue)
                   for issue in receipt['association_issues']]
+        if receipt.get('external_inputs'):
+            lines.append('- Source freshness: '+_text(receipt['source_freshness'])+'; External inputs: '+_text(receipt['external_inputs']['state'])+'.')
     lines += ['', '## Project-declared checks', '']
     lines += ['- ' + _text(c['property']) + ': ' + _text(c['state']) + '; association '
               + _text(c['association']) + '; command ' + _text(c['command']) for c in value['checks']]

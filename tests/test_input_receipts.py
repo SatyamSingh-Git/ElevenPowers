@@ -96,6 +96,20 @@ def test_freshness_view_shares_reads_across_receipts(receipt_project,monkeypatch
     assert len(reads)==2, 'one opening and one closing capture, not one per receipt'
 
 
+@pytest.mark.parametrize('malformed',[None,[],False,0])
+def test_falsy_malformed_metadata_is_not_legacy_absence(receipt_project,malformed):
+    from dataclasses import replace
+    from core.evidence import source_snapshot
+    from core.inputs.receipts import inspect
+    root,_,item=receipt_project
+    (root/'elevenpowers.inputs.json').unlink()
+    scan,tree=source_snapshot(root,fresh=True)
+    item=replace(item,observed=scan.files,tree=tree,external_inputs=malformed)
+    assert item.source_freshness(root) is Freshness.FRESH
+    assert inspect(item,root)['state']=='incomplete'
+    assert item.freshness(root) is Freshness.STALE
+
+
 def test_final_view_drift_is_an_explicit_coverage_gap(receipt_project):
     from core.inputs.receipts import attach
     from core.inputs.collection import capture

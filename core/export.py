@@ -91,16 +91,22 @@ def build(root: Path, *, timeout=120):
                 omitted += len(records) - len(receipts)
                 break
             fresh = record.freshness(root)
+            from .inputs.receipts import inspect as input_inspect
+            external = input_inspect(record, root)
             from .hosts.readiness import receipt_key
             receipts.append({'kind': record.kind.value, 'identity': record.identity,
                              'receipt_key': receipt_key(record), 'declaration': record.declaration,
                              'command': record.command, 'result': record.result.value,
                              'declared_command': record.declared_command,
                              'execution': record.execution, 'freshness': fresh.value,
+                             'source_freshness': record.source_freshness(root).value,
+                             'external_inputs': external,
                              'recorded_at': record.at, 'scope': record.scope or 'explicit paths',
                              'observed_files': len(record.observed), 'fingerprint': record.tree,
                              'coverage_issues': list(record.coverage_issues),
                              'passed': record.passed, 'failed': record.failed, 'counted': record.counted})
+            if external['state']=='incomplete':
+                actions.append(f'Resolve incomplete external input observations and rerun: {record.command or record.identity}')
             if record.execution != 'complete':
                 actions.append(f'Complete the incomplete command: {record.command or record.identity}')
             elif record.result.value != 'pass':
@@ -126,17 +132,17 @@ def build(root: Path, *, timeout=120):
             claims.append({'claim': verdict.claim.value, 'state': verdict.status.value, 'checks': checks})
         order = [Status.CONTRADICTED, Status.UNVERIFIED, Status.STALE, Status.VERIFIED]
         status = min((v.status for v in verdicts), key=order.index).value if verdicts else Status.UNVERIFIED.value
+        milestones = None
+        from .milestones.definition import configured as milestones_configured
+        if milestones_configured(root):
+            from .milestones import build as milestone_report
+            milestones = milestone_report(root, seconds=max(0, min(30, deadline - time.monotonic())))
     issues = list(scan.issues)
     from .strength.view import view as strength_view
     strength = strength_view(root, ledger.task, ledger.config, fingerprint, deadline)
     strength['issues'] += [d['why'] for d in ledger.decisions if d.get('what') == 'test strength incomplete']
     revision, revision_state, revision_issues = _revision(root, deadline)
     issues += revision_issues
-    milestones = None
-    from .milestones.definition import configured as milestones_configured
-    if milestones_configured(root):
-        from .milestones import build as milestone_report
-        milestones = milestone_report(root, seconds=max(0, min(30, deadline - time.monotonic())))
     if time.monotonic() >= deadline:
         issues.append('report deadline reached; report coverage is incomplete')
     issues += [d['why'] for d in ledger.decisions if d.get('what') == 'unattributed native edit']
@@ -144,6 +150,14 @@ def build(root: Path, *, timeout=120):
         issues.append(f'Native edit coverage incomplete: {pending} pending callbacks; {gaps} evicted baselines')
     if omitted:
         issues.append(f'{omitted} latest receipts omitted because the report budget was exceeded')
+    if any('external input' in i for i in scan.issues):
+        for receipt in receipts:
+            receipt['external_inputs'].update(state='incomplete')
+            receipt['external_inputs']['issues'].append('Final external input inspection changed or was incomplete.')
+            if receipt['freshness']=='fresh': receipt['freshness']='stale'
+        if milestones is not None:
+            from .milestones.report import invalidate_inputs
+            invalidate_inputs(milestones,scan.issues)
     complete = not issues
     if not complete and status != Status.CONTRADICTED.value:
         status = Status.UNVERIFIED.value
@@ -195,10 +209,10 @@ def markdown(value):
                 lines.append(f"    Qualification: {_text(check['caveat'])}")
     if not task['claims']:
         lines.append('No active claim is recorded; passing commands do not certify completed work.')
-    lines += ['', '## Latest execution receipts', '', '| Command / identity | Result | Execution | Source freshness | Observed files |',
-              '|---|---|---|---|---|']
+    lines += ['', '## Latest execution receipts', '', '| Command / identity | Result | Execution | Current freshness | Source freshness | External inputs | Observed files |',
+              '|---|---|---|---|---|---|---|']
     for receipt in value['receipts']:
-        cells = [receipt['command'] or receipt['identity'], receipt['result'], receipt['execution'], receipt['freshness'], receipt['observed_files']]
+        cells = [receipt['command'] or receipt['identity'], receipt['result'], receipt['execution'], receipt['freshness'], receipt['source_freshness'], receipt['external_inputs']['state'], receipt['observed_files']]
         lines.append('| ' + ' | '.join(_text(cell) for cell in cells) + ' |')
     if not value['receipts']:
         lines.append('| No receipts recorded | — | — | — | — |')

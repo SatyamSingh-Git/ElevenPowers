@@ -77,10 +77,29 @@ def _aggregate(values):
     return min(values, key=STATES.index) if values else 'ABSENT'
 
 
+def invalidate_inputs(value,issues):
+    """Carry a shared view's closing input gap into every nested qualification."""
+    if not any('external input' in i for i in issues): return
+    value['coverage'].update(complete=False,source_complete=False)
+    value['coverage']['issues']=list(dict.fromkeys(value['coverage']['issues']+list(issues)))
+    value['state']='INCOMPLETE'
+    for milestone in value['milestones']:
+        milestone['state']='INCOMPLETE'
+        for check in milestone['checks']:
+            check['state']='INCOMPLETE'
+            if check['external_inputs']:
+                check['external_inputs']['state']='incomplete'
+            check['issues'].append('final external input inspection changed or was incomplete')
+            check['next_action']='Resolve input gaps and run the project-owned check: '+check['command']
+    value['summary']={s:sum(m['state']==s for m in value['milestones']) for s in STATES}
+    value['next_actions']=list(dict.fromkeys(c['next_action'] for m in value['milestones'] for c in m['checks']))
+    if value['rechecks']['state']!='not_requested': value['rechecks']['state']='incomplete'
+
+
 def _check(root, check, required, latest, scan, deadline, history_issues):
     item = latest.get((check['kind'], check['command']))
     value = {**check, 'state': 'ABSENT', 'result': None, 'execution': None,
-             'freshness': None, 'recorded_at': None, 'scope': None,
+             'freshness': None, 'source_freshness': None, 'external_inputs': None, 'recorded_at': None, 'scope': None,
              'observed_files': 0, 'receipt_fingerprint': '', 'issues': [],
              'qualifications': ['A passing command supports only its recorded property and declared input scope.']}
     if scrub(check['command']) != check['command']:
@@ -104,6 +123,11 @@ def _check(root, check, required, latest, scan, deadline, history_issues):
         try:
             if time.monotonic() < deadline:
                 value['freshness'] = item.freshness(root).value
+                from ..inputs.receipts import inspect as input_inspect
+                value['source_freshness'] = item.source_freshness(root).value
+                value['external_inputs'] = input_inspect(item,root)
+                if value['external_inputs']['state']=='incomplete':
+                    value['issues'].append('required external execution or current input coverage is incomplete')
         except (OSError, ValueError, TimeoutError):
             value['issues'].append('receipt input freshness could not be completed')
         if item.coverage_issues or not scan.complete:
@@ -165,9 +189,11 @@ def build(root, *, seconds=30, changed=None, impact=False):
             value['milestones'].append({**milestone, 'checks': checks,
                                         'state': _aggregate([c['state'] for c in checks])})
             issues += [i for c in checks for i in c['issues']]
-        issues += scan.issues
         value['coverage'].update(source_fingerprint=fingerprint, source_complete=scan.complete,
                                  selected_files=len(scan.files), selected_bytes=scan.bytes)
+    issues += scan.issues
+    value['coverage']['source_complete']=scan.complete
+    invalidate_inputs(value,scan.issues)
     if impact:
         from .impact import advise
         impact_started = time.monotonic()
@@ -220,6 +246,8 @@ def markdown(value):
             lines.append('| ' + ' | '.join(_text(check.get(k) or '—') for k in
                             ('command', 'state', 'result', 'execution', 'freshness', 'scope')) + ' |')
             lines += ['- ' + _text(i) for i in check['issues'] + check['qualifications']]
+            if check['external_inputs']:
+                lines.append('Source freshness: '+_text(check['source_freshness'])+'; External inputs: '+_text(check['external_inputs']['state'])+'.')
     if value['impact']['state'] != 'not_requested':
         lines += ['', '## Explained impact leads (informational)', '',
                   'No missing path certifies unaffected behavior or permits excluding fallback checks.']

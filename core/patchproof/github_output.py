@@ -88,6 +88,8 @@ def markdown(value):
     header = list(lines)
     _table(lines,'Declared external inputs',['Witness','Root label','Collection','Files'],
            [(w['id'],w['root'],w['state'],w['files']) for w in external['witnesses']])
+    _table(lines,'Receipt input qualification',['Command / identity','Source freshness','External inputs','Current freshness'],
+           [(r['command'] or r['identity'],r.get('source_freshness',r['freshness']),r.get('external_inputs',{}).get('state','unknown'),r['freshness']) for r in bundle['receipts']])
     _list(lines,'External input gaps',external['issues'])
     _table(lines, 'Project-declared checks', ['Property', 'Reported state', 'Association', 'Command'],
            [(c['property'], c['state'], c['association'], c['command']) for c in bundle['checks']])

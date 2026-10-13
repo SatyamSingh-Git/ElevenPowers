@@ -17,6 +17,28 @@ MARK = {True: "met     ", False: "missing "}
 
 
 def gate_message(ledger: Ledger) -> str:
+    return _input_message(ledger,lambda: _gate_message(ledger))
+
+
+def _input_message(ledger,render):
+    from .inputs.native import configured
+    if not configured(ledger.root) and not any(e.external_inputs!={} for e in ledger.evidence):
+        return render()
+    import time
+    from .evidence import freshness_view
+    from .jobs import current
+    session=current()
+    deadline=min(time.monotonic()+10,session.budget.deadline if session else float('inf'))
+    with freshness_view(ledger.root,deadline=deadline) as (scan,_):
+        text=render()
+    if not scan.complete:
+        if text.startswith('VERIFIED'): text='UNVERIFIED'+text[len('VERIFIED'):]
+        text=text.replace('\nstate     VERIFIED','\nstate     UNVERIFIED')
+        text+='\nIncomplete current input inspection: '+'; '.join(scan.issues)
+    return text
+
+
+def _gate_message(ledger: Ledger) -> str:
     """What the agent is told when the gate blocks. Specific, not scolding."""
     lines: list[str] = []
     for verdict in ledger.verdicts():
@@ -26,7 +48,7 @@ def gate_message(ledger: Ledger) -> str:
         for check in verdict.checks:
             if check.met and check.freshness is Freshness.STALE:
                 lines.append(f"  stale    {check.obligation.description}")
-                lines.append(f"           recorded at tree {check.evidence.tree}, files have changed since")
+                lines.append(f"           recorded at tree {check.evidence.tree}, observed inputs or their qualification changed")
                 lines.append(f"           re-run: {check.evidence.command}")
             elif check.met:
                 lines.append(f"  met      {check.obligation.description}")
@@ -154,6 +176,10 @@ def _tokens(path: str) -> set[str]:
 
 
 def end_report(ledger: Ledger) -> str:
+    return _input_message(ledger,lambda: _end_report(ledger))
+
+
+def _end_report(ledger: Ledger) -> str:
     from .jobs import progress
     status = ledger.status()
     lines = [f"{status.value}", *_coverage_warnings(ledger), *progress(ledger.root, ledger.task)]
@@ -217,7 +243,14 @@ def _coverage_warnings(ledger: Ledger) -> list[str]:
     for record in ledger.evidence:
         latest[record.kind, record.identity] = record
     issues = sorted({issue for record in latest.values() for issue in record.coverage_issues})
+    from .inputs.receipts import inspect
+    external=[]
+    for record in latest.values():
+        observed=inspect(record,ledger.root)
+        if observed['state'] not in {'bound','not_configured'}:
+            external.append(f"  external inputs {observed['state']}: {record.command or record.identity}; resolve gaps and rerun")
     return ([f"  incomplete source coverage: {d['why']}" for d in ledger.decisions if d.get("what") == "unattributed native edit"]
+            + external
             + [f"  incomplete source coverage: {issue}" for issue in issues]
             + [f"  incomplete command: {record.command}; rerun to obtain a completed result"
                for record in latest.values() if record.execution == "incomplete"])

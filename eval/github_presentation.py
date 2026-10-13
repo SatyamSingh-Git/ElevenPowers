@@ -62,6 +62,9 @@ def _case(root, mode, repository, external_inputs=False):
     head = _git(root, 'rev-parse', 'HEAD')
     command = f'"{sys.executable}" -B check.py'
     save(root, Config(auto_detect=False, commands={'tests': command, 'typecheck': 'declared-check-not-run'}))
+    import time
+    from core.inputs import execution as input_execution
+    observed=input_execution.begin(root,time.monotonic()+10)
     try:
         done = run(command, cwd=root, timeout=2 if mode == 'incomplete' else 10)
         text, status = done.stdout+done.stderr, done.returncode
@@ -70,7 +73,9 @@ def _case(root, mode, repository, external_inputs=False):
     if mode == 'passing' and status != 0 or mode == 'failed' and status == 0 or mode == 'incomplete' and status is not None:
         raise ValueError('independent producer control did not establish its expected outcome')
     ledger = Ledger.load(root)
-    ledger.add(parse(command, text, status, root))
+    records=parse(command, text, status, root)
+    input_execution.finish(root,time.monotonic()+10,observed,records)
+    ledger.add(records)
     ledger.save()
     before = _snapshot(root)
     value = build(root, base, head, repository=repository)

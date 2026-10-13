@@ -123,6 +123,20 @@ def test_policy_removal_during_call_cannot_drop_required_before(dependency_proje
     assert records[-1].freshness(root) is Freshness.STALE
 
 
+def test_reused_consumed_call_cannot_leave_previous_pass_current(dependency_project):
+    from tests.test_input_sessions_gap import native_check
+    from core.milestones import build
+    root,_,_,language,args,command=session_project(dependency_project)
+    script=root/('check.py' if language=='python' else 'check.cjs')
+    with script.open('a') as stream:
+        stream.write('assert p.read_text()=="1"\n' if language=='python' else
+                     'assert.equal(fs.readFileSync(p,"utf8"),"1");\n')
+    assert native_check(root,args,command,call='reused').returncode==0
+    assert build(root)['state']=='CURRENT'
+    assert native_check(root,args,command,call='reused').returncode==1
+    assert build(root)['state'] in {'INCOMPLETE','FAILED'}, 'a consumed-ID pre callback must supersede previous success with an unqualified attempt'
+
+
 def test_invalid_platform_identity_is_controlled(dependency_project):
     from core.inputs.native import before,after
     from core.inputs.receipts import inspect

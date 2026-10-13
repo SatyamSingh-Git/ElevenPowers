@@ -55,9 +55,13 @@ _FRESHNESS_VIEW = ContextVar('freshness_report_view', default=None)
 def freshness_view(root: Path, *, deadline=None):
     """Fresh source and explicit inputs, scoped to one bounded operation."""
     resolved = root.resolve()
+    existing = _FRESHNESS_VIEW.get()
+    shared_inputs = existing is not None and existing.root == resolved
+    if shared_inputs and existing.deadline is not None:
+        deadline=min(deadline if deadline is not None else float('inf'),existing.deadline)
     from .inputs.collection import capture
     input_deadline = deadline if deadline is not None else time.monotonic()+10
-    inputs = capture(resolved,input_deadline)
+    inputs = existing.inputs if shared_inputs else capture(resolved,input_deadline)
     digests = {}
     parent = _FRESHNESS_VIEW.set(None)
     try:
@@ -71,10 +75,11 @@ def freshness_view(root: Path, *, deadline=None):
         yield snapshot
     finally:
         try:
-            final_inputs = capture(resolved,input_deadline)
-            if (inputs['state']!=final_inputs['state'] or inputs['fingerprint']!=final_inputs['fingerprint']
-                    or final_inputs['state']=='incomplete'):
-                snapshot[0].issues.append('external input coverage changed or is incomplete during freshness inspection')
+            if not shared_inputs:
+                final_inputs = capture(resolved,input_deadline)
+                if (inputs['state']!=final_inputs['state'] or inputs['fingerprint']!=final_inputs['fingerprint']
+                        or final_inputs['state']=='incomplete'):
+                    snapshot[0].issues.append('external input coverage changed or is incomplete during freshness inspection')
         except (OSError,ValueError,TimeoutError):
             snapshot[0].issues.append('external input final inspection is unavailable')
         finally:
@@ -188,7 +193,7 @@ class Evidence:
     def freshness(self, root: Path) -> Freshness:
         source=self.source_freshness(root)
         policy=root/'elevenpowers.inputs.json'
-        if not self.external_inputs and not policy.exists() and not policy.is_symlink():
+        if self.external_inputs=={} and not policy.exists() and not policy.is_symlink():
             return source
         from .inputs.receipts import inspect
         if inspect(self,root)['state'] not in {'bound','not_configured'}:

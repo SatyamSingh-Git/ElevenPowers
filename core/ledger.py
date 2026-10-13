@@ -531,7 +531,7 @@ class Ledger:
         policy=self.root/'elevenpowers.inputs.json'
         if (view is not None and view.root==self.root.resolve()) or (
                 not policy.exists() and not policy.is_symlink() and
-                not any(e.external_inputs for e in self.evidence)):
+                not any(e.external_inputs!={} for e in self.evidence)):
             return [self._verdict(claim) for claim in self.claims]
         from .jobs import current
         session=current()

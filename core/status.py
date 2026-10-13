@@ -18,6 +18,11 @@ from .jobs import progress
 
 def render(root: Path) -> str:
     ledger = Ledger.load(root)
+    from .report import _input_message
+    return _input_message(ledger,lambda: _render(root,ledger))
+
+
+def _render(root,ledger):
     config = ledger.config
     lines = [f"profile   {config.profile}", *progress(root, ledger.task)]
     if ledger.native_coverage_pending():
@@ -107,6 +112,10 @@ def _evidence_lines(ledger: Ledger) -> list[str]:
     out = [f"evidence  {len(ledger.evidence)} record(s), {fresh} fresh"]
     for record in ledger.evidence[-3:]:
         out.append(f"          {record.kind.value:<10} {record.result.value:<5} {record.identity}")
+        from .inputs.receipts import inspect
+        observed=inspect(record,ledger.root)
+        if observed['state']!='not_configured':
+            out.append('          external inputs '+observed['state'])
     return out
 
 

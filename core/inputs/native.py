@@ -117,8 +117,9 @@ def before(payload,root):
             gaps.append('Native command lacks a session, call or task identity.')
         else:
             with transaction(root,deadline) as state:
-                if key in state['completed']: return False
-                if key in state['pending']:
+                if key in state['completed']:
+                    gaps.append('A consumed native call identity cannot qualify a new execution.')
+                elif key in state['pending']:
                     state['pending'][key]['issues']=['Duplicate before callbacks cannot qualify an execution.']
                     gaps+=state['pending'][key]['issues']
                 else:

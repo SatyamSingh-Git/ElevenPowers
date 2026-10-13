@@ -71,7 +71,8 @@ def test_report_preserves_source_facts_but_explains_external_drift(dependency_pr
     before = snapshot(root)
     changed = build(root,base,head)
     assert changed['binding']['state'] == 'bound'
-    assert changed['checks'][0]['state'] == 'current', 'source-only receipt facts remain unchanged'
+    assert changed['checks'][0]['state'] == 'stale', 'selected external drift changes current qualification'
+    assert changed['receipts'][-1]['source_freshness'] == 'fresh', 'source facts remain unchanged'
     assert changed['execution']['checks'][0]['association'] == 'unavailable'
     assert changed['execution']['checks'][0]['external_inputs_association'] == 'unavailable'
     assert changed['external_inputs']['state'] == 'available'
