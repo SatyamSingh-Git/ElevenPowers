@@ -8,6 +8,8 @@ changes qualify the selected-input mechanism. Current collection stays separate
 from saved execution association; native passive/milestone adapters and further
 producers remain contributor work. See [guide](../the-guide/external-inputs.md)
 and [qualification](../docs/validation/2026-10-13-external-inputs.md).
+Final local regressions, named gates and all five hosted jobs passed; raw runtime
+bytes stayed fixed through qualification.
 
 GitHub evidence presentation now maps strict declared subjects, canonical public
 bundle hashes, literal bounded summaries, external-only CLI publication and

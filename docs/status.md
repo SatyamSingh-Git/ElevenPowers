@@ -1,12 +1,14 @@
 # Current delivery status
 
-**2026-10-13 — External Input Witnesses v1 implemented; final qualification in progress.**
+**2026-10-13 — External Input Witnesses v1 delivered and qualified.**
 Project-owned literal selections and explicit private root approval add bounded
 file/tree observations to PatchProof execution, reuse and read-only evidence.
 Actual Python/Node controls show unchanged reuse, independent dependency failure,
 required rerun and missing-input refusal. One review exposed five Important
-defects; regression checks and the single repair pass are retained. Final full
-and hosted gates are recorded in [qualification](validation/2026-10-13-external-inputs.md).
+defects; all seven regression checks passed after one repair pass. 2,236 local tests passed, 3 skipped, in 3056.55s.
+All four final-code hosted cells and actual artifact transport passed. Named
+audits, independent grader/source reproduction, doctor, stdlib imports and all
+five rendered architecture views passed. Qualification is recorded in [qualification](validation/2026-10-13-external-inputs.md).
 See [usage](../the-guide/external-inputs.md).
 
 Next: qualify broader end-to-end adoption and behavior preservation before claiming

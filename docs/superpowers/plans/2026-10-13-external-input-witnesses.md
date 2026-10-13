@@ -106,9 +106,9 @@ Files: `eval/external_inputs.py`, `tests/test_external_inputs_exercise.py`,
 - [x] Push the actual exercise and add it plus stdlib imports to hosted qualification.
 - [x] Request one fresh whole-branch review; regrade by user effect and repair
   Important/Critical findings in one witnessed RED→GREEN pass.
-- [ ] Run full regressions, named audits, grader/source reproduction, doctor,
+- [x] Run full regressions, named audits, grader/source reproduction, doctor,
   hosted four-cell matrix, actual exercise and architecture/link checks.
-- [ ] Update README/plan/status/contributor brief, guides, journey 78, validation,
+- [x] Update README/plan/status/contributor brief, guides, journey 78, validation,
   all five architecture views/Planned card/meta/generated mirror; push.
 - [ ] Fast-forward main normally after gates; verify remote refs, raw runtime
   identity and served graph bytes. Archive only this plan's private workspace.

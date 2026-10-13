@@ -91,7 +91,10 @@ uses `f9fe7584b35dbb77a44cac80b7c0bacbc28f29ba`. Its artifact job passed;
 downloaded artifact `11796550966` contains 8,812-byte JSON and 3,885-byte Markdown.
 Canonical public bundle SHA-256 independently recomputes to
 `21f726e22b9bafc948b49ae7ecad64bbb65feb0f3c265c5032bd9c8532cbb0d8`.
-Declared repository/base/head/patch identities match the bundle. Tests remain
+Declared repository/base/head/patch identities match the bundle and the actual
+producing-job fixture's returned base/head. Its three command outcomes are
+current, failed and incomplete, with counters `[1,1,1]` and read-only publication.
+Tests remain
 current and the unrun typecheck absent; selected external collection is available
 while saved execution stays absent. Actual Markdown escapes labels literally.
 This is a declared disposable context, not live PR/fork or authenticated CI import.
@@ -99,10 +102,23 @@ This is a declared disposable context, not live PR/fork or authenticated CI impo
 The initial runtime/workflow revision was
 `43d15822d30bde9038ae662849ca38c3f406509b`; the repaired runtime is `f6353c5`.
 [Initial hosted qualification](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38361484187)
-is retained separately. Final full regression, current-code hosted matrix,
-actual uploaded bytes and main/Pages publication will be recorded before this
-milestone is marked qualified. Named audits, independent grader/source
-reproduction, doctor and standard-library imports have passed.
+passed all five jobs and is retained separately. Final qualification:
+2,236 local tests passed, 3 skipped, in 3056.55s; the separate 107 audits, independent grader/source reproduction,
+doctor and standard-library imports passed. All five final-code hosted jobs
+passed, including four platform cells and actual artifact presentation.
+
+| Final-code cell | Full regression | Named audits | Dependency acceptance |
+|---|---|---|---|
+| Linux 3.11 | 2231 passed / 8 skipped (433.27s) | 105 passed / 2 skipped | Python and JavaScript counters `[1,1,2,3,3]` |
+| Linux 3.13 | 2231 passed / 8 skipped (484.74s) | 105 passed / 2 skipped | Python and JavaScript counters `[1,1,2,3,3]` |
+| Windows 3.11 | 2234 passed / 5 skipped (2298.29s) | 107 passed / 0 skipped | Python and JavaScript counters `[1,1,2,3,3]` |
+| Windows 3.13 | 2234 passed / 5 skipped (2482.46s) | 107 passed / 0 skipped | Python and JavaScript counters `[1,1,2,3,3]` |
+
+Hosted skips remain explicit; passing a cell does not qualify skipped controls.
+Every runtime/evaluator/test/workflow file still matches the local frozen byte
+manifest, and final hosted `f9fe758` differs from the delivery only in docs.
+No runtime code changed after qualification began. Main and served architecture
+publication are verified separately below.
 
 V1 limits: selected locally approved regular inputs only; unsupported links and
 special files remain incomplete; no complete environment, remote-service
