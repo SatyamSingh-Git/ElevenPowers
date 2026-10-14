@@ -42,6 +42,33 @@ def closing_affected(qualification,scan):
             or before['fingerprint']!=after['fingerprint'])
 
 
+def invalidate_report(value,scan,*,unknown=False):
+    """Propagate an external closing gap into public rows and their consumers."""
+    if value is None: return
+    message='external input final inspection is unavailable or changed'
+    affected=set()
+    for receipt in value['receipts']:
+        if not unknown and not closing_affected(receipt['external_inputs'],scan): continue
+        receipt['external_inputs'].update(state='incomplete')
+        receipt['external_inputs']['issues'].append(message)
+        if unknown: receipt['external_inputs']['current']=None
+        if receipt['freshness']=='fresh': receipt['freshness']='stale'
+        affected.add(receipt['identity'])
+    value['coverage']['complete']=False
+    value['coverage']['issues']=list(dict.fromkeys([*value['coverage']['issues'],message]))
+    if value['state']!='CONTRADICTED': value['state']='UNVERIFIED'
+    for claim in value['task']['claims']:
+        selected=[c for c in claim['checks'] if unknown or c['evidence'] in affected]
+        if selected and claim['state']!='CONTRADICTED': claim['state']='UNVERIFIED'
+        for check in selected:
+            if check['freshness']=='fresh': check['freshness']='stale'
+            check['caveat']='; '.join(filter(None,[check['caveat'],message]))
+    if value.get('milestones') is not None:
+        from ..milestones.report import invalidate_inputs
+        invalidate_inputs(value['milestones'],[message],scan=None if unknown else scan)
+    value['next_actions']=list(dict.fromkeys([message,*value['next_actions']]))
+
+
 def for_record(observed,record):
     return project(observed,record.declared_command,declared=bool(record.declaration))
 

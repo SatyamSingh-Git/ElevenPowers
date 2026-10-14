@@ -232,6 +232,11 @@ def markdown(value):
         lines.append('| ' + ' | '.join(_text(cell) for cell in cells) + ' |')
     if not value['receipts']:
         lines.append('| No receipts recorded | — | — | — | — |')
+    from .inputs.receipts import markdown as input_markdown
+    for receipt in value['receipts']:
+        details=input_markdown(receipt['external_inputs'])
+        if details:
+            lines += ['', 'External input qualification for '+_text(receipt['command'] or receipt['identity'])+':',*details]
     strength = value.get('test_strength', {})
     lines += ['', '## Changed-code test strength (informational)', '',
               f"Saved analysis: {_text(strength.get('state', 'not_recorded'))}; input freshness: {_text(strength.get('freshness', 'unknown'))}.",

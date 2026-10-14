@@ -82,7 +82,9 @@ def _check_state(receipt):
     return 'current'
 
 
-from ..inputs.shared import operation, closing as closing_inputs
+from ..inputs.shared import operation, closing as closing_inputs, validate as validate_inputs
+from ..inputs.scopes import invalidate_report
+from types import SimpleNamespace
 
 
 @operation
@@ -187,14 +189,21 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
                        'association': latest['association'] if latest else 'unavailable'})
     execution = execution_report(root, patch, receipts, deadline, bound, base=base, head=head)
     external_final = closing_inputs(root,deadline)
+    closure=SimpleNamespace(external_before=external_inputs,external_after=external_final)
     if (external_inputs['state'] != external_final['state'] or
             external_inputs['fingerprint'] != external_final['fingerprint']):
-        external_inputs = external_final
-        external_inputs.update(state='incomplete',fingerprint=None)
-        external_inputs['issues'].append('external inputs changed during bundle inspection')
+        external_inputs = {**external_final,'state':'incomplete','fingerprint':None,
+                          'issues':[*external_final['issues'],'external inputs changed during bundle inspection']}
     else:
         external_inputs = external_final
     if external_inputs['state'] == 'incomplete':
+        invalidate_report(report,closure)
+        latest={r['receipt_key']:r for r in report['receipts']} if report else {}
+        for receipt in receipts:
+            if receipt['receipt_key'] in latest:
+                receipt['freshness']=latest[receipt['receipt_key']]['freshness']
+        for check in checks:
+            if check['receipt_key'] in latest: check['state']=_check_state(latest[check['receipt_key']])
         for observation in execution['checks']:
             observation.update(association='unavailable',external_inputs_association='unavailable',
                                executed_at_patch_head='unknown')
@@ -217,6 +226,18 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     except (OSError, ValueError, TimeoutError) as error:
         issues.append(type(error).__name__ + ': final execution state guard unavailable')
         bound = False
+    try:
+        validate_inputs(root,deadline)
+    except (OSError,ValueError,TimeoutError,subprocess.SubprocessError):
+        issues.append('final shared external state changed or was incomplete')
+        bound=False
+        external_inputs.update(state='incomplete',fingerprint=None)
+        external_inputs['issues'].append('Final external state guard is unavailable or changed.')
+        invalidate_report(report,closure,unknown=True)
+        for receipt in receipts:
+            if receipt['freshness']=='fresh': receipt['freshness']='stale'
+        for check in checks:
+            if check['state']=='current': check['state']='incomplete'
     if not bound:
         covered.clear()
         qualify_impact(impact_value, False)
@@ -282,6 +303,8 @@ def markdown(value):
                   for issue in receipt['association_issues']]
         if receipt.get('external_inputs'):
             lines.append('- Source freshness: '+_text(receipt['source_freshness'])+'; External inputs: '+_text(receipt['external_inputs']['state'])+'.')
+            from ..inputs.receipts import markdown as input_markdown
+            lines += input_markdown(receipt['external_inputs'])
     lines += ['', '## Project-declared checks', '']
     lines += ['- ' + _text(c['property']) + ': ' + _text(c['state']) + '; association '
               + _text(c['association']) + '; command ' + _text(c['command']) for c in value['checks']]

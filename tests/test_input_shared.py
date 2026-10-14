@@ -75,6 +75,28 @@ def test_shorter_deadline_cannot_reuse_cached_available_observation(scoped_proje
     assert read(root)['state']=='incomplete'
 
 
+def test_external_change_after_closing_bytes_cannot_leave_bundle_bound(scoped_project,monkeypatch):
+    from core.patchproof import report as patch_report
+    root,target,other,commands,base,head=saved_consumers(scoped_project)
+    original=patch_report.verification_report
+    calls=0
+    def late(root,**kwargs):
+        nonlocal calls
+        calls+=1
+        value=original(root,**kwargs)
+        if calls==3:
+            target.write_text('value=9\n' if target.suffix=='.py' else 'module.exports={value:9};\n')
+        return value
+    monkeypatch.setattr(patch_report,'verification_report',late)
+    value=patch_report.build(root,base,head,timeout=120)
+    assert calls==3
+    assert value['binding']['state']=='unavailable'
+    assert not value['verification']['coverage']['complete']
+    for receipt in value['verification']['receipts']:
+        assert receipt['external_inputs']['state']=='incomplete'
+        assert receipt['freshness']!='fresh'
+
+
 def test_patchproof_nested_reports_read_each_input_only_twice(scoped_project,monkeypatch):
     root,target,other,commands,*_=scoped_project
     base=commit(root,'two independent consumers')

@@ -103,9 +103,17 @@ def _witness_shape(value):
         from ..inputs.scopes import valid as valid_scope
         if 'external_inputs_fingerprint' not in value or not valid_scope(value['external_inputs_scope']):
             raise ValueError('unsupported saved verification command scope')
-    if (not isinstance(value, dict) or set(value) != set(sizes)|({'external_inputs_scope'} if scoped else set())
+    additional={'external_inputs_scope'} if scoped else set()
+    if isinstance(value,dict) and 'external_inputs_witnesses' in value:
+        from ..inputs.receipts import hexadecimal
+        rows=value['external_inputs_witnesses']
+        if (not scoped or not isinstance(rows,dict) or set(rows)!=set(value['external_inputs_scope']['witnesses'])
+                or any(not hexadecimal(v) for v in rows.values())):
+            raise ValueError('unsupported saved verification witness identities')
+        additional.add('external_inputs_witnesses')
+    if (not isinstance(value, dict) or set(value) != set(sizes)|additional
             or any(not isinstance(v, str) or len(v) not in sizes[k]
-                   or re.fullmatch('[0-9a-f]+', v) is None for k, v in value.items() if k!='external_inputs_scope')):
+                   or re.fullmatch('[0-9a-f]+', v) is None for k, v in value.items() if k not in additional)):
         raise ValueError('unsupported saved verification witness')
 
 
@@ -180,18 +188,25 @@ def witness(root, patch, deadline, *, base=None, head=None, command=''):
     """External collection cannot preserve an earlier source qualification."""
     value, snapshot = _source_witness(root,patch,deadline,base=base,head=head)
     external = input_capture(root,deadline)
-    from ..inputs.scopes import project
-    external=project(external,command,declared=bool(command))
     if external['state'] != 'not_configured':
         final, _ = _source_witness(root,patch,deadline,base=base,head=head)
         if final != value:
             raise ValueError('source or execution inputs changed during external inspection')
-    if external['state'] == 'incomplete':
-        raise ValueError('required external input observation is incomplete')
-    if external['state'] == 'available':
-        value['external_inputs_fingerprint'] = external['fingerprint']
-        if external.get('scope') is not None:
-            value['external_inputs_scope']=external['scope']
+    snapshot[0].external_observation=external
+    value=qualify_external(value,external,command)
     if time.monotonic() >= deadline:
         raise TimeoutError('verification deadline reached during input inspection')
     return value, snapshot
+
+
+def qualify_external(value,external,command=''):
+    from ..inputs.scopes import project
+    external=project(external,command,declared=bool(command))
+    value={k:v for k,v in value.items() if not k.startswith('external_inputs_')}
+    if external['state']=='incomplete': raise ValueError('required external input observation is incomplete')
+    if external['state']=='available':
+        value['external_inputs_fingerprint']=external['fingerprint']
+        if external.get('scope') is not None:
+            value['external_inputs_scope']=external['scope']
+            value['external_inputs_witnesses']={w['id']:w['scope_fingerprint'] for w in external['witnesses']}
+    return value

@@ -15,7 +15,9 @@ def hexadecimal(value):
 def valid(value):
     if not isinstance(value,dict): return False
     scoped=value.get('schema')==2
-    if (set(value)!=(KEYS|{'scope'} if scoped else KEYS) or type(value.get('schema')) is not int
+    expected=KEYS|{'scope'} if scoped else KEYS
+    if scoped and 'witnesses' in value: expected=expected|{'witnesses'}
+    if (set(value)!=expected or type(value.get('schema')) is not int
             or value['schema'] not in (1,2) or not isinstance(value['state'],str)
             or value['state'] not in {'bound','stale','incomplete'}
             or any(v is not None and not hexadecimal(v) for v in (value['before'],value['after']))
@@ -26,6 +28,14 @@ def valid(value):
     if scoped:
         from .scopes import valid as valid_scope
         if not valid_scope(value['scope']): return False
+        if 'witnesses' in value:
+            rows=value['witnesses']
+            if (not isinstance(rows,dict) or set(rows)!=set(value['scope']['witnesses'])
+                    or any(not isinstance(row,dict) or set(row)!={'before','after'}
+                           or any(v is not None and not hexadecimal(v) for v in row.values())
+                           for row in rows.values())): return False
+            if value['state']=='bound' and any(not hexadecimal(r['before']) or r['before']!=r['after']
+                                             for r in rows.values()): return False
     if value['state']=='bound':
         return (hexadecimal(value['before']) and value['before']==value['after']
                 and hexadecimal(value['attempt']) and not value['issues'])
@@ -53,6 +63,11 @@ def metadata(before,after,attempt,issues=()):
     scope=before.get('scope')
     if scope is not None:
         value.update(schema=2,scope=scope)
+        if 'witnesses' in before:
+            first_rows={w['id']:w.get('scope_fingerprint') for w in before['witnesses']}
+            last_rows={w['id']:w.get('scope_fingerprint') for w in after.get('witnesses',[])}
+            value['witnesses']={name:{'before':first_rows.get(name),'after':last_rows.get(name)}
+                                for name in scope['witnesses']}
         if after.get('scope')!=scope and after['state']!='incomplete':
             value.update(state='stale')
     return value
@@ -92,9 +107,19 @@ def inspect(record,root,current=None):
         from .scopes import for_record
         observed=for_record(observed,record)
         value.update(current=observed.get('fingerprint'),scope=stored['scope'])
+        if observed['state']=='incomplete' and observed.get('scope') is None:
+            value['issues'].append('Current command scope is unavailable; its change cannot be established.')
+            return value
         if observed.get('scope')!=stored['scope']:
             value.update(state='stale',issues=['Declared command witness scope changed or was removed.'])
             return value
+        rows={w['id']:w for w in observed.get('witnesses',[])}
+        saved=stored.get('witnesses',{})
+        value['changed_witnesses']=sorted(name for name,row in rows.items() if name in saved
+            and hexadecimal(saved[name]['after']) and row['state']=='available'
+            and row.get('scope_fingerprint')!=saved[name]['after'])
+        value['unavailable_witnesses']=sorted(name for name in stored['scope']['witnesses']
+            if name not in rows or rows[name]['state']!='available')
     value.update(before=stored['before'],after=stored['after'])
     if observed['state']=='incomplete':
         value['issues'].append('Required current external input coverage is incomplete.')
@@ -104,4 +129,17 @@ def inspect(record,root,current=None):
         value.update(state='stale',issues=['Selected external inputs changed or their required scope was removed.'])
     else:
         value['state']='bound'
+    if value.get('changed_witnesses'):
+        value['issues'].append('Changed selected witnesses: '+', '.join(value['changed_witnesses']))
+    if value.get('unavailable_witnesses'):
+        value['issues'].append('Unavailable selected witnesses: '+', '.join(value['unavailable_witnesses']))
     return value
+
+
+def markdown(value):
+    from ..export import _text
+    lines=[]
+    if value.get('scope'):
+        lines.append('Selected witnesses: '+_text(', '.join(value['scope']['witnesses'])))
+    lines += ['- '+_text(issue) for issue in value.get('issues',[])]
+    return lines

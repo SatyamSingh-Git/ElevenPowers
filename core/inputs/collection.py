@@ -96,6 +96,16 @@ class Scan:
             if path.resolve() != path or definition.stamp(path.stat()) != before:
                 raise ValueError('approved input root changed')
 
+    def late(self,deadline):
+        """Bounded stamp checks after nested consumers, without another byte read."""
+        states=[(p,row[2]) for p,row in self.files.items()]
+        states += [(p,row[0]) for p,row in self.directories.items()]
+        states += list(self.roots.items())
+        for path,before in states:
+            if time.monotonic()>=deadline: raise TimeoutError('final input state deadline reached')
+            if path.resolve()!=path or definition.stamp(path.stat())!=before:
+                raise ValueError('selected external state changed after collection')
+
 
 def capture(root,deadline):
     from .shared import observation
@@ -121,6 +131,8 @@ def _capture(root,deadline):
         approval = bindings.load(root,declaration,scan.deadline)
         for witness,row in zip(declaration['witnesses'],value['witnesses']):
             try:
+                if witness['root'] not in approval['roots']:
+                    raise ValueError('required input root has not been locally approved')
                 approved = bindings.directory(root,approval['roots'][witness['root']])
                 scan.roots.setdefault(approved,definition.stamp(approved.stat()))
                 selected = set()
@@ -145,6 +157,8 @@ def _capture(root,deadline):
         if (definition.load(root) != declaration or
                 bindings.load(root,declaration,scan.deadline) != approval):
             raise ValueError('input declaration or local approval changed during collection')
+        from .shared import register
+        register(root,scan,declaration,approval)
         value['counts'] = dict(scan.counts)
         if declaration['schema']==2:
             from .scopes import command_key

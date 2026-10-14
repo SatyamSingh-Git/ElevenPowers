@@ -1,7 +1,7 @@
 """Inspect saved execution associations; inspection never launches checks."""
 import subprocess
 
-from .execution_state import read, witness
+from .execution_state import read, witness, qualify_external
 
 
 LIMITS = [
@@ -20,7 +20,7 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
         result['evicted'] = saved['evicted']
         if not saved['attempts']:
             return result
-        current, _ = witness(root, patch, deadline, base=base, head=head)
+        broad, snapshot = witness(root, patch, deadline, base=base, head=head)
         if read(root) != saved:
             raise ValueError('saved execution state changed during inspection')
         latest = {}
@@ -30,9 +30,9 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
             if 'external_inputs_scope' in item['witness']:
                 from ..config import load
                 command=load(root).commands.get(item['properties'][0],'')
-                current,_=witness(root,patch,deadline,base=base,head=head,command=command)
+                current=qualify_external(broad,snapshot[0].external_observation,command)
             else:
-                current,_=witness(root,patch,deadline,base=base,head=head)
+                current=broad
             keys = set(item['receipt_keys'])
             matches = [r for r in receipts if r['receipt_key'] in keys]
             why = []

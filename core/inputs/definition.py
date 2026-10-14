@@ -104,6 +104,7 @@ def load(root):
     if not isinstance(commands,list) or len(commands)>64:
         raise ValueError('unsupported input command mappings')
     mapped=set()
+    from ..redact import scrub
     for item in commands:
         if (not isinstance(item,dict) or set(item)!={'command','witnesses','complete'}
                 or not isinstance(item['command'],str) or not item['command'].strip()
@@ -115,6 +116,8 @@ def load(root):
                 or item['command'].strip() in mapped):
             raise ValueError('unsupported or ambiguous input command scope')
         mapped.add(item['command'].strip())
+        if scrub(item['command'])!=item['command']:
+            raise ValueError('redacted command identity cannot qualify an input scope')
     limits = value.get('limits', {})
     if not isinstance(limits, dict) or set(limits)-set(DEFAULTS):
         raise ValueError('unsupported input limits')

@@ -32,6 +32,29 @@ def closing(root,deadline):
     return capture(root,deadline)
 
 
+def register(root,scan,declaration,approval):
+    value=current(root)
+    if value is not None:
+        value[value['phase']+'_guard']=(scan,declaration,approval)
+
+
+def validate(root,deadline):
+    """Keep late persistent edits visible without multiplying selected-byte reads."""
+    from . import definition,bindings
+    value=current(root)
+    if value is None: return
+    observed=value.get('closing')
+    if observed is None: raise ValueError('shared input closing observation is absent')
+    if observed['state']=='not_configured': return
+    guard=value.get('closing_guard')
+    if guard is None: raise ValueError('shared input closing state is unavailable')
+    scan,declaration,approval=guard
+    deadline=min(deadline,value['deadline'])
+    scan.late(deadline)
+    if definition.load(root)!=declaration or bindings.load(root,declaration,deadline)!=approval:
+        raise ValueError('shared input declaration or approval changed after collection')
+
+
 def operation(function):
     @wraps(function)
     def run(root,*args,**kwargs):

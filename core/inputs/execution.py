@@ -54,4 +54,6 @@ def from_witness(value):
     result={'state':'available' if selected else 'not_configured','fingerprint':selected}
     if value.get('external_inputs_scope') is not None:
         result['scope']=value['external_inputs_scope']
+    if value.get('external_inputs_witnesses') is not None:
+        result['witnesses']=[{'id':name,'scope_fingerprint':fp} for name,fp in value['external_inputs_witnesses'].items()]
     return result

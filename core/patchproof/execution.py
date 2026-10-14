@@ -145,7 +145,7 @@ def _text(value):
 
 
 def _source_fields(value):
-    return {k:v for k,v in value.items() if k not in ('external_inputs_fingerprint','external_inputs_scope')}
+    return {k:v for k,v in value.items() if not k.startswith('external_inputs_')}
 
 
 def _aggregates(records, properties):

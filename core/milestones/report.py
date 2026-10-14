@@ -256,6 +256,8 @@ def markdown(value):
             lines += ['- ' + _text(i) for i in check['issues'] + check['qualifications']]
             if check['external_inputs']:
                 lines.append('Source freshness: '+_text(check['source_freshness'])+'; External inputs: '+_text(check['external_inputs']['state'])+'.')
+                from ..inputs.receipts import markdown as input_markdown
+                lines += input_markdown(check['external_inputs'])
     if value['impact']['state'] != 'not_requested':
         lines += ['', '## Explained impact leads (informational)', '',
                   'No missing path certifies unaffected behavior or permits excluding fallback checks.']

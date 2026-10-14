@@ -87,7 +87,7 @@ def load(root, declaration, deadline):
         if str(approved) != path:
             raise ValueError('input approval root is not canonical')
         roots[name] = path
-    if any(w['root'] not in roots for w in declaration['witnesses']):
+    if declaration['schema']==1 and any(w['root'] not in roots for w in declaration['witnesses']):
         raise ValueError('required input root has not been locally approved')
     return {**value, '_digest': hashlib.sha256(data).hexdigest()}
 

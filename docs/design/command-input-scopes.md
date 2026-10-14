@@ -3,11 +3,12 @@
 Projects may opt into schema 2 of `elevenpowers.inputs.json`. Its optional
 `commands` list contains exact declared `command` strings, a nonempty list of
 `witnesses` IDs, and an explicit Boolean `complete`. At most 64 mappings are
-allowed. A complete mapping selects its witnesses; an incomplete or unmatched
+allowed. Identities that redact are refused, since distinct secret-bearing
+commands can collapse to the same public identity. A complete mapping selects its witnesses; an incomplete or unmatched
 mapping retains every witness. Only the existing parser's declared command
 identity licenses narrowing. No dependency graph or missing edge licenses it.
 
-New receipts carry the selected command digest and witness IDs alongside paired
+New receipts carry the selected command digest, witness IDs and per-witness digests alongside paired
 fingerprints. Scoped fingerprints include selected witness definitions, approved
 root identities and effective budgets. Unrelated declaration edits do not expire
 a scoped association, but selected edits, rebinding, command/scope changes and
@@ -24,6 +25,10 @@ across nested PatchProof, ordinary and milestone reports. It never shares source
 snapshots, execution observations, project roots, or results across operations.
 The closing phase reads bytes again. Unchanged bundles should read each selected
 file twice, rather than the eight reads observed in the previous milestone.
+After nested consumers, a bounded stamp/declaration/approval guard checks for
+persistent late movement without a third byte read. This is sampling, not an
+atomic snapshot; undetectable reverted or deliberately hidden changes remain out
+of scope. An opaque final-state failure conservatively invalidates associations.
 
 Acceptance uses real Python and JavaScript consumers with two independently
 selected inputs, command counters, broad fallback, source controls, relevant and

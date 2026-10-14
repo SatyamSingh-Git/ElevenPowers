@@ -101,7 +101,7 @@ def read(root,deadline):
     seen_bits(value)
     for key,row in value['pending'].items():
         if (not hexadecimal(key) or not isinstance(row,dict)
-                or set(row)-{'before_scope'}!={'before','source','task','invocation','producer','configuration','created','issues'}
+                or set(row)-{'before_scope','before_witnesses'}!={'before','source','task','invocation','producer','configuration','created','issues'}
                 or any(not hexadecimal(row[k]) for k in ('task','invocation','producer','configuration'))
                 or not isinstance(row['source'],str) or len(row['source'])!=16
                 or row['before'] is not None and not hexadecimal(row['before'])
@@ -112,6 +112,12 @@ def read(root,deadline):
             from .scopes import valid as valid_scope
             if not valid_scope(row['before_scope']):
                 raise ValueError('native input command scope is invalid')
+        if 'before_witnesses' in row:
+            witnesses=row['before_witnesses']
+            if ('before_scope' not in row or not isinstance(witnesses,dict)
+                    or set(witnesses)!=set(row['before_scope']['witnesses'])
+                    or any(v is not None and not hexadecimal(v) for v in witnesses.values())):
+                raise ValueError('native input witness identities are invalid')
     if any(not hexadecimal(k) or not timestamp(v) for k,v in value['completed'].items()):
         raise ValueError('native consumed attempt metadata is invalid')
     return value
@@ -168,6 +174,8 @@ def before(payload,root):
                         'configuration':config,'created':time.time(),'issues':list(gaps)}
                     if observed.get('scope') is not None:
                         state['pending'][key]['before_scope']=observed['scope']
+                        state['pending'][key]['before_witnesses']={w['id']:w.get('scope_fingerprint')
+                                                                  for w in observed['witnesses']}
                 remembered(state,key,remember=True)
                 while len(state['pending'])>MAX_PENDING:
                     state['pending'].pop(next(iter(state['pending'])))
@@ -216,6 +224,8 @@ def after(payload,root,records,terminal=True):
     else:
         first={'state':'available' if row['before'] else 'incomplete','fingerprint':row['before']}
         if 'before_scope' in row: first['scope']=row['before_scope']
+        if 'before_witnesses' in row:
+            first['witnesses']=[{'id':name,'scope_fingerprint':fp} for name,fp in row['before_witnesses'].items()]
         gaps+=row['issues']
         try:
             raw,issue=invocation(payload,root)
