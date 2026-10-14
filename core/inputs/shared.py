@@ -16,9 +16,12 @@ def current(root):
 def observation(root,deadline,collector):
     value=current(root)
     if value is None: return collector(root,deadline)
+    deadline=min(deadline,value['deadline'])
+    if time.monotonic()>=deadline:
+        return collector(root,deadline)
     phase=value['phase']
     if phase not in value:
-        value[phase]=collector(root,min(deadline,value['deadline']))
+        value[phase]=collector(root,deadline)
     return deepcopy(value[phase])
 
 

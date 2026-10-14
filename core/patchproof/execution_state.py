@@ -98,9 +98,14 @@ def _witness_shape(value):
              'environment_fingerprint': (64,)}
     if isinstance(value,dict) and 'external_inputs_fingerprint' in value:
         sizes['external_inputs_fingerprint'] = (64,)
-    if (not isinstance(value, dict) or set(value) != set(sizes)
+    scoped=isinstance(value,dict) and 'external_inputs_scope' in value
+    if scoped:
+        from ..inputs.scopes import valid as valid_scope
+        if 'external_inputs_fingerprint' not in value or not valid_scope(value['external_inputs_scope']):
+            raise ValueError('unsupported saved verification command scope')
+    if (not isinstance(value, dict) or set(value) != set(sizes)|({'external_inputs_scope'} if scoped else set())
             or any(not isinstance(v, str) or len(v) not in sizes[k]
-                   or re.fullmatch('[0-9a-f]+', v) is None for k, v in value.items())):
+                   or re.fullmatch('[0-9a-f]+', v) is None for k, v in value.items() if k!='external_inputs_scope')):
         raise ValueError('unsupported saved verification witness')
 
 
@@ -171,10 +176,12 @@ def _source_witness(root, patch, deadline, *, base=None, head=None):
     return value, snapshot
 
 
-def witness(root, patch, deadline, *, base=None, head=None):
+def witness(root, patch, deadline, *, base=None, head=None, command=''):
     """External collection cannot preserve an earlier source qualification."""
     value, snapshot = _source_witness(root,patch,deadline,base=base,head=head)
     external = input_capture(root,deadline)
+    from ..inputs.scopes import project
+    external=project(external,command,declared=bool(command))
     if external['state'] != 'not_configured':
         final, _ = _source_witness(root,patch,deadline,base=base,head=head)
         if final != value:
@@ -183,6 +190,8 @@ def witness(root, patch, deadline, *, base=None, head=None):
         raise ValueError('required external input observation is incomplete')
     if external['state'] == 'available':
         value['external_inputs_fingerprint'] = external['fingerprint']
+        if external.get('scope') is not None:
+            value['external_inputs_scope']=external['scope']
     if time.monotonic() >= deadline:
         raise TimeoutError('verification deadline reached during input inspection')
     return value, snapshot

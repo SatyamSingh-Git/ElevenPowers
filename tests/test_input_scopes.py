@@ -117,3 +117,70 @@ def test_invalid_scope_cannot_narrow_coverage(scoped_project,change):
     assert capture(root,time.monotonic()+10)['state']=='incomplete'
 
 
+def test_explicit_patch_reuses_only_independent_command(scoped_project):
+    from core.patchproof.execution import verify
+    from core.patchproof.planning import plan
+    from tests.test_patchproof_identity import commit
+    root,target,other,commands,args,_=scoped_project
+    base=commit(root,'independent command scopes')
+    (root/'service.py').write_text('value=3\n')
+    head=commit(root,'service change')
+    first=verify(root,base,head,seconds=120)
+    assert first['state']=='passed',first['issues']
+    assert (root/'.elevenpowers/count.txt').read_text()=='1'
+    assert (root/'.elevenpowers/other-count.txt').read_text()=='1'
+    target.write_text('value=9\n' if target.suffix=='.py' else 'module.exports={value:9};\n')
+    choices=plan(root,base,head,seconds=120)
+    actions={c['properties'][0]:c['action'] for c in choices['checks']}
+    assert actions=={'tests':'run','build':'reuse'},choices['bundle']['execution']
+    final=verify(root,base,head,seconds=120)
+    assert final['state']=='failed',final['issues']
+    assert (root/'.elevenpowers/count.txt').read_text()=='2'
+    assert (root/'.elevenpowers/other-count.txt').read_text()=='1'
+
+
+def test_legacy_broad_receipt_is_not_retroactively_narrowed(scoped_project):
+    from core.inputs.receipts import metadata
+    root,target,other,commands,*_=scoped_project
+    before=capture(root,time.monotonic()+10)
+    _,records=observed_run(root,commands[1])
+    records[-1].external_inputs=metadata(before,before,'a'*64)
+    assert inspect(records[-1],root)['state']=='bound'
+    target.write_text('value=9\n' if target.suffix=='.py' else 'module.exports={value:9};\n')
+    assert inspect(records[-1],root)['state']=='stale'
+
+
+def test_scope_removal_cannot_relabel_old_execution(scoped_project):
+    root,target,other,commands,args,policy=scoped_project
+    _,records=observed_run(root,commands[1])
+    policy['commands'][1]['witnesses']=['first']
+    (root/'elevenpowers.inputs.json').write_text(json.dumps(policy))
+    assert inspect(records[-1],root)['state']=='stale'
+
+
+def test_missing_unrelated_approved_directory_preserves_available_scope(scoped_project):
+    root,target,other,commands,args,policy=scoped_project
+    separate=target.parent/'separate';separate.mkdir()
+    moved=separate/target.name;moved.write_bytes(target.read_bytes())
+    policy['witnesses'][0]['root']='otherroot'
+    (root/'elevenpowers.inputs.json').write_text(json.dumps(policy))
+    path=root/'.elevenpowers/input-roots.json'
+    approval=json.loads(path.read_text());approval['roots']['otherroot']=str(separate.resolve())
+    path.write_text(json.dumps(approval))
+    _,records=observed_run(root,commands[1])
+    assert inspect(records[-1],root)['state']=='bound'
+    moved.unlink();separate.rmdir()
+    assert inspect(records[-1],root)['state']=='bound'
+
+
+def test_supported_literal_wrapper_uses_declared_scope(scoped_project):
+    root,target,other,commands,*_=scoped_project
+    _,records=observed_run(root,f'cd "{root}" && {commands[1]}')
+    assert inspect(records[-1],root)['state']=='bound'
+
+
+    assert records[-1].external_inputs['schema']==2
+    target.unlink()
+    assert inspect(records[-1],root)['state']=='bound'
+
+

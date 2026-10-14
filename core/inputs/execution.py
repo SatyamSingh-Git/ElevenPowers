@@ -51,4 +51,7 @@ def finish(root,deadline,value,records,issues=()):
 def from_witness(value):
     if value is None: return {'state':'incomplete','fingerprint':None}
     selected=value.get('external_inputs_fingerprint')
-    return {'state':'available' if selected else 'not_configured','fingerprint':selected}
+    result={'state':'available' if selected else 'not_configured','fingerprint':selected}
+    if value.get('external_inputs_scope') is not None:
+        result['scope']=value['external_inputs_scope']
+    return result

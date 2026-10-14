@@ -64,6 +64,17 @@ def test_shared_collections_do_not_survive_operations_or_hide_closing_drift(scop
     assert rows['build']['external_inputs']['state']=='bound'
 
 
+def test_shorter_deadline_cannot_reuse_cached_available_observation(scoped_project):
+    from core.inputs.shared import operation
+    from core.inputs.collection import capture
+    root,*_=scoped_project
+    @operation
+    def read(root,*,timeout=10):
+        assert capture(root,time.monotonic()+10)['state']=='available'
+        return capture(root,time.monotonic()-1)
+    assert read(root)['state']=='incomplete'
+
+
 def test_patchproof_nested_reports_read_each_input_only_twice(scoped_project,monkeypatch):
     root,target,other,commands,*_=scoped_project
     base=commit(root,'two independent consumers')

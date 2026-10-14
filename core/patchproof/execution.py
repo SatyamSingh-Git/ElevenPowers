@@ -11,7 +11,7 @@ from ..jobs import Session, Busy
 from ..ledger import Ledger
 from ..parsers import parse, DECLARED_KINDS
 from .. import process
-from .execution_state import digest, read, retain, save, witness
+from .execution_state import digest, read, retain, save, witness, _source_witness
 from .planning import plan
 from .report import build
 from ..export import _text as literal
@@ -40,21 +40,21 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
     try:
         # Do not replace damaged state and silently discard a later failed attempt.
         saved = read(root)
-        expected, _ = witness(root, patch, deadline, base=base, head=head)
+        expected, _ = _source_witness(root, patch, deadline, base=base, head=head)
         ledger = Ledger.load(root)
         with Session(root, ledger.task, seconds=max(0, deadline - time.monotonic())) as session:
             saved = read(root)  # A former owner may have written before we obtained the lock.
             for check, outcome in zip(planned['checks'], result['checks']):
+                config = load(root)
+                command = config.commands.get(check['properties'][0], '')
                 try:
-                    before, snapshot = witness(root, patch, deadline, base=base, head=head)
-                    if before != expected:
+                    before, snapshot = witness(root, patch, deadline, base=base, head=head,command=command)
+                    if _source_fields(before) != expected:
                         raise ValueError('verification inputs changed since preflight')
                     session.budget.timeout(command_seconds)
                 except (OSError, ValueError, TimeoutError, subprocess.SubprocessError) as error:
                     result['issues'].append(type(error).__name__ + ': execution preflight unavailable')
                     break
-                config = load(root)
-                command = config.commands.get(check['properties'][0], '')
                 if (digest(command) != check['command_digest'] or not config.verifies
                         or any(config.commands.get(p) != command for p in check['properties'])):
                     result['issues'].append('declared commands changed since planning')
@@ -64,8 +64,8 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                     fresh = plan(root, base, head,
                                  seconds=max(0, deadline - time.monotonic()), command_seconds=command_seconds)
                     reusable = next((c for c in fresh['checks'] if c['command_digest'] == check['command_digest']), None)
-                    final_reuse, _ = witness(root, patch, deadline, base=base, head=head)
-                    if not fresh['ready'] or fresh['patch_id'] != planned['patch_id'] or final_reuse != expected:
+                    final_reuse, _ = witness(root, patch, deadline, base=base, head=head,command=command)
+                    if not fresh['ready'] or fresh['patch_id'] != planned['patch_id'] or final_reuse != before:
                         result['issues'].append('requested patch or execution inputs moved during reuse inspection')
                         break
                     if fresh['ready'] and reusable and reusable['action'] == 'reuse':
@@ -99,7 +99,7 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
                         interruption = error
                 after = None
                 try:
-                    after, _ = witness(root, patch, deadline, base=base, head=head)
+                    after, _ = witness(root, patch, deadline, base=base, head=head,command=command)
                     if after != before:
                         raise ValueError('execution inputs changed during the command')
                 except (OSError, ValueError, TimeoutError, subprocess.SubprocessError):
@@ -142,6 +142,10 @@ def verify(root, base='HEAD~1', head='HEAD', *, seconds=120, command_seconds=30,
 
 def _text(value):
     return value.decode('utf-8', errors='replace') if isinstance(value, bytes) else value or ''
+
+
+def _source_fields(value):
+    return {k:v for k,v in value.items() if k not in ('external_inputs_fingerprint','external_inputs_scope')}
 
 
 def _aggregates(records, properties):

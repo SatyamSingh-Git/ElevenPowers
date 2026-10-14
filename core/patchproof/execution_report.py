@@ -27,6 +27,12 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
         for item in saved['attempts']:
             latest[item['command_digest']] = item
         for item in latest.values():
+            if 'external_inputs_scope' in item['witness']:
+                from ..config import load
+                command=load(root).commands.get(item['properties'][0],'')
+                current,_=witness(root,patch,deadline,base=base,head=head,command=command)
+            else:
+                current,_=witness(root,patch,deadline,base=base,head=head)
             keys = set(item['receipt_keys'])
             matches = [r for r in receipts if r['receipt_key'] in keys]
             why = []

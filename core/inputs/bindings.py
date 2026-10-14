@@ -80,7 +80,10 @@ def load(root, declaration, deadline):
         definition.label(name)
         if not isinstance(path, str) or not Path(path).is_absolute():
             raise ValueError('input approval requires canonical absolute roots')
-        approved = directory(root, path) if name in required else Path(path).absolute()
+        # Schema 2 qualifies directories per selected witness. A missing sibling
+        # root cannot invalidate a different complete command scope. Shape and
+        # project identity still apply globally; selected roots use directory().
+        approved = directory(root, path) if name in required and declaration['schema']==1 else Path(path).absolute()
         if str(approved) != path:
             raise ValueError('input approval root is not canonical')
         roots[name] = path
