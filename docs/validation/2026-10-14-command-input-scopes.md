@@ -37,6 +37,23 @@ Named audits passed again: 107 in 78.98 seconds. All four independent grader
 states, eight committed-source grades, doctor and standard-library imports
 passed on the corrected local runtime. Full suite/matrix qualification is pending.
 
+Both corrected Linux cells completed successfully. Python 3.11 passed 2,412 tests
+with 8 skips in 556.59 seconds; Python 3.13 passed 2,412 with 8 skips in 547.01
+seconds. Named audits passed 105 with 2 Windows-only skips in 19.36 and 16.90
+seconds. Their dependency/session acceptance, grader, committed-source
+reproduction, doctor and standard-library gates passed.
+
+Downloaded Linux scoped-versus-broad protocols passed in 67.021 and 67.147
+seconds. Both JSON artifacts were independently checked against their actual
+runtime identity and expected counters, outcomes, retained milestones and read
+counts. Each language retained pass/fail/pass, independent bad exit 1, two
+selected-file reads per unchanged nested report, and incomplete first inputs
+without erasing the healthy second scope. Scoped owned verification launched
+four commands across initial/failure/repair, versus six broad launches; the
+separate independent fault probe adds one first-command execution to both arms.
+The five synthetic host envelopes remain adapter controls. Windows and local
+full-suite gates are still pending.
+
 ## Witnessed controls
 
 Actual Python/JavaScript consumers exercise independent command scope,

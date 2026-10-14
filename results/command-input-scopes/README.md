@@ -1,5 +1,12 @@
 # Command-scoped input controls
 
+Final-runtime Linux protocols are retained for [Python 3.11](hosted-ubuntu-latest-3.11.json)
+and [Python 3.13](hosted-ubuntu-latest-3.13.json). Both passed all four language/scope
+cases, in 67.021 and 67.147 seconds. Their raw producer identity matches the Git
+LF identity below. The scoped/broad launch counts, relevant failure detection,
+missing-input states and two selected-file reads reproduce the preliminary
+mechanism result on the corrected runtime. Windows qualification is pending.
+
 [Corrected-candidate GitHub artifact](github-artifact.json) records the actual
 downloaded public bundle's canonical hash, declared/embedded patch subject,
 independently logged current/failed/incomplete producer states and read-only
