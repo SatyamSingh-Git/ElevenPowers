@@ -77,7 +77,7 @@ def _aggregate(values):
     return min(values, key=STATES.index) if values else 'ABSENT'
 
 
-def invalidate_inputs(value,issues):
+def invalidate_inputs(value,issues,*,scan=None):
     """Carry a shared view's closing input gap into every nested qualification."""
     from ..evidence import closing_input_gap
     if not closing_input_gap(issues): return
@@ -85,8 +85,11 @@ def invalidate_inputs(value,issues):
     value['coverage']['issues']=list(dict.fromkeys(value['coverage']['issues']+list(issues)))
     value['state']='INCOMPLETE'
     for milestone in value['milestones']:
-        milestone['state']='INCOMPLETE'
         for check in milestone['checks']:
+            from ..inputs.scopes import closing_affected
+            other_gap=any('source input' in i or 'command configuration' in i for i in issues)
+            if scan is not None and not other_gap and not closing_affected(check['external_inputs'],scan):
+                continue
             check['state']='INCOMPLETE'
             if check['external_inputs'] and any('external input' in i for i in issues):
                 check['external_inputs']['state']='incomplete'
@@ -95,6 +98,7 @@ def invalidate_inputs(value,issues):
                 check['source_freshness']='stale'
             check['issues'].append('final input inspection changed or was incomplete')
             check['next_action']='Resolve input gaps and run the project-owned check: '+check['command']
+        milestone['state']=_aggregate([c['state'] for c in milestone['checks']])
     value['summary']={s:sum(m['state']==s for m in value['milestones']) for s in STATES}
     value['next_actions']=list(dict.fromkeys(c['next_action'] for m in value['milestones'] for c in m['checks']))
     if value['rechecks']['state']!='not_requested': value['rechecks']['state']='incomplete'
@@ -197,7 +201,7 @@ def build(root, *, seconds=30, changed=None, impact=False):
                                  selected_files=len(scan.files), selected_bytes=scan.bytes)
     issues += scan.issues
     value['coverage']['source_complete']=scan.complete
-    invalidate_inputs(value,scan.issues)
+    invalidate_inputs(value,scan.issues,scan=scan)
     if impact:
         from .impact import advise
         impact_started = time.monotonic()

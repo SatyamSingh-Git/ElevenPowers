@@ -151,21 +151,29 @@ def build(root: Path, *, timeout=120):
     if omitted:
         issues.append(f'{omitted} latest receipts omitted because the report budget was exceeded')
     if closing_input_gap(scan.issues):
+        from .inputs.scopes import closing_affected
+        external_gap=any('external input' in i for i in scan.issues)
+        other_gap=any('source input' in i or 'command configuration' in i for i in scan.issues)
+        affected=set()
         for receipt in receipts:
-            if any('external input' in i for i in scan.issues):
+            selected_gap=external_gap and closing_affected(receipt['external_inputs'],scan)
+            if selected_gap:
                 receipt['external_inputs'].update(state='incomplete')
                 receipt['external_inputs']['issues'].append('Final external input inspection changed or was incomplete.')
             if any('source input' in i for i in scan.issues) and receipt['source_freshness']=='fresh':
                 receipt['source_freshness']='stale'
-            if receipt['freshness']=='fresh': receipt['freshness']='stale'
+            if selected_gap or other_gap:
+                affected.add(receipt['identity'])
+                if receipt['freshness']=='fresh': receipt['freshness']='stale'
         for claim in claims:
             if claim['state']!=Status.CONTRADICTED.value: claim['state']=Status.UNVERIFIED.value
             for check in claim['checks']:
+                if not other_gap and check['evidence'] not in affected: continue
                 if check['freshness']=='fresh': check['freshness']='stale'
                 check['caveat']='; '.join(filter(None,[check['caveat'],'Final input inspection changed or was incomplete.']))
         if milestones is not None:
             from .milestones.report import invalidate_inputs
-            invalidate_inputs(milestones,scan.issues)
+            invalidate_inputs(milestones,scan.issues,scan=scan)
     complete = not issues
     if not complete and status != Status.CONTRADICTED.value:
         status = Status.UNVERIFIED.value

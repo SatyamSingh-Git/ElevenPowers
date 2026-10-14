@@ -98,6 +98,11 @@ class Scan:
 
 
 def capture(root,deadline):
+    from .shared import observation
+    return observation(root,deadline,_capture)
+
+
+def _capture(root,deadline):
     root = Path(root).resolve(strict=True)
     value = {'schema':1,'state':'not_configured','fingerprint':None,'witnesses':[],
              'counts':{'files':0,'bytes':0,'entries':0},'issues':[],'limits':LIMITS}

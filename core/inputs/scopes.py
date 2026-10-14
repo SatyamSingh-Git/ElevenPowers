@@ -16,6 +16,10 @@ def project(observed, command='', *, declared=False):
     candidate=next((s for s in observed.get('scopes',[]) if s['command']==key),None)
     if candidate is None:
         return observed
+    return selected(observed,candidate)
+
+
+def selected(observed,candidate):
     scope={k:candidate[k] for k in ('command','witnesses')}
     rows=[w for w in observed['witnesses'] if w['id'] in scope['witnesses']]
     available=(len(rows)==len(scope['witnesses']) and all(w['state']=='available' for w in rows))
@@ -23,6 +27,19 @@ def project(observed, command='', *, declared=False):
             'fingerprint':digest([scope,[(w['id'],w['scope_fingerprint']) for w in rows]]) if available else None,
             'witnesses':rows,'scope':scope,
             'issues':[i for w in rows for i in w['issues']]}
+
+
+def closing_affected(qualification,scan):
+    before=getattr(scan,'external_before',None)
+    after=getattr(scan,'external_after',None)
+    if before is None or after is None: return True
+    scope=(qualification or {}).get('scope')
+    if scope is not None:
+        for observed in (before,after):
+            if scope not in observed.get('scopes',[]): return True
+        before,after=selected(before,scope),selected(after,scope)
+    return (after['state']=='incomplete' or before['state']!=after['state']
+            or before['fingerprint']!=after['fingerprint'])
 
 
 def for_record(observed,record):

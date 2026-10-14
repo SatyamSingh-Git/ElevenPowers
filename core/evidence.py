@@ -56,12 +56,14 @@ def freshness_view(root: Path, *, deadline=None):
     """Fresh source and explicit inputs, scoped to one bounded operation."""
     resolved = root.resolve()
     existing = _FRESHNESS_VIEW.get()
-    shared_inputs = existing is not None and existing.root == resolved
-    if shared_inputs and existing.deadline is not None:
+    from .inputs.shared import current as input_operation
+    nested = existing is not None and existing.root == resolved
+    shared_inputs = nested or input_operation(resolved) is not None
+    if nested and existing.deadline is not None:
         deadline=min(deadline if deadline is not None else float('inf'),existing.deadline)
     from .inputs.collection import capture
     input_deadline = deadline if deadline is not None else time.monotonic()+10
-    inputs = existing.inputs if shared_inputs else capture(resolved,input_deadline)
+    inputs = existing.inputs if nested else capture(resolved,input_deadline)
     guarded=inputs['state']!='not_configured'
     configuration_before=None
     if guarded:
@@ -85,6 +87,8 @@ def freshness_view(root: Path, *, deadline=None):
         try:
             if not shared_inputs:
                 final_inputs = capture(resolved,input_deadline)
+                snapshot[0].external_before=inputs
+                snapshot[0].external_after=final_inputs
                 if (inputs['state']!=final_inputs['state'] or inputs['fingerprint']!=final_inputs['fingerprint']
                         or final_inputs['state']=='incomplete'):
                     snapshot[0].issues.append('external input coverage changed or is incomplete during freshness inspection')

@@ -82,6 +82,10 @@ def _check_state(receipt):
     return 'current'
 
 
+from ..inputs.shared import operation, closing as closing_inputs
+
+
+@operation
 def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     """Read an unsigned bundle. Binding is not a task verdict or safety badge."""
     if not math.isfinite(timeout) or not 0 <= timeout <= 600:
@@ -182,7 +186,7 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
                        'receipt_key': latest['receipt_key'] if latest else None,
                        'association': latest['association'] if latest else 'unavailable'})
     execution = execution_report(root, patch, receipts, deadline, bound, base=base, head=head)
-    external_final = input_capture(root,deadline)
+    external_final = closing_inputs(root,deadline)
     if (external_inputs['state'] != external_final['state'] or
             external_inputs['fingerprint'] != external_final['fingerprint']):
         external_inputs = external_final
