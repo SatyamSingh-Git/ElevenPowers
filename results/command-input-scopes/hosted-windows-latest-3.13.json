@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "category": "actual-command-controlled-scope-exercise",
+  "runtime": "ab26e43561954a7560fddc019c423f27612923b3c80e5912127fbc8ef2f968e2",
+  "observations": [
+    {
+      "language": "python",
+      "scoped": true,
+      "native_retained": [
+        "CURRENT",
+        "CURRENT"
+      ],
+      "outcomes": [
+        "passed",
+        "failed",
+        "passed"
+      ],
+      "drift_actions": {
+        "tests": "run",
+        "build": "reuse"
+      },
+      "command_counts": [
+        [
+          6,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "reads_per_file": [
+        2,
+        2
+      ],
+      "missing_associations": {
+        "build": "bound",
+        "tests": "incomplete"
+      },
+      "independent_bad_exit": 1
+    },
+    {
+      "language": "python",
+      "scoped": false,
+      "native_retained": [],
+      "outcomes": [
+        "passed",
+        "failed",
+        "passed"
+      ],
+      "drift_actions": {
+        "tests": "run",
+        "build": "run"
+      },
+      "command_counts": [
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          3
+        ]
+      ],
+      "reads_per_file": [
+        2,
+        2
+      ],
+      "missing_associations": {
+        "tests": "incomplete",
+        "build": "incomplete"
+      },
+      "independent_bad_exit": 1
+    },
+    {
+      "language": "javascript",
+      "scoped": true,
+      "native_retained": [
+        "CURRENT",
+        "CURRENT"
+      ],
+      "outcomes": [
+        "passed",
+        "failed",
+        "passed"
+      ],
+      "drift_actions": {
+        "tests": "run",
+        "build": "reuse"
+      },
+      "command_counts": [
+        [
+          6,
+          6
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          9,
+          6
+        ]
+      ],
+      "reads_per_file": [
+        2,
+        2
+      ],
+      "missing_associations": {
+        "build": "bound",
+        "tests": "incomplete"
+      },
+      "independent_bad_exit": 1
+    },
+    {
+      "language": "javascript",
+      "scoped": false,
+      "native_retained": [],
+      "outcomes": [
+        "passed",
+        "failed",
+        "passed"
+      ],
+      "drift_actions": {
+        "tests": "run",
+        "build": "run"
+      },
+      "command_counts": [
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          3
+        ]
+      ],
+      "reads_per_file": [
+        2,
+        2
+      ],
+      "missing_associations": {
+        "tests": "incomplete",
+        "build": "incomplete"
+      },
+      "independent_bad_exit": 1
+    }
+  ],
+  "seconds": 327.731,
+  "model_calls": 0,
+  "limits": [
+    "Synthetic host envelopes are not installed host acceptance.",
+    "Two selected local consumers per language; no full environment or population benefit claim."
+  ]
+}
