@@ -116,7 +116,7 @@ def load(root):
                 or item['command'].strip() in mapped):
             raise ValueError('unsupported or ambiguous input command scope')
         mapped.add(item['command'].strip())
-        if scrub(item['command'])!=item['command']:
+        if scrub(item['command'])!=item['command'] or 'REDACTED' in item['command']:
             raise ValueError('redacted command identity cannot qualify an input scope')
     limits = value.get('limits', {})
     if not isinstance(limits, dict) or set(limits)-set(DEFAULTS):

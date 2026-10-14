@@ -67,6 +67,20 @@ def _inputs(value):
     return [value['coverage'], value['commands'], value['receipts'], value['task']]
 
 
+def _source_inputs(value):
+    """Compare source and recorded facts separately from derived input verdicts."""
+    from copy import deepcopy
+    value=deepcopy(value)
+    for receipt in value['receipts']:
+        receipt.pop('external_inputs',None)
+        receipt['freshness']=receipt['source_freshness']
+    for claim in value['task']['claims']:
+        claim.pop('state',None)
+        for check in claim['checks']:
+            for field in ('met','freshness','caveat'): check.pop(field,None)
+    return _inputs(value)
+
+
 def _check_state(receipt):
     if receipt['execution'] != 'complete':
         return 'incomplete'
@@ -192,29 +206,17 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     closure=SimpleNamespace(external_before=external_inputs,external_after=external_final)
     if (external_inputs['state'] != external_final['state'] or
             external_inputs['fingerprint'] != external_final['fingerprint']):
+        issues.append('external inputs changed during bundle inspection')
+        bound=False
         external_inputs = {**external_final,'state':'incomplete','fingerprint':None,
                           'issues':[*external_final['issues'],'external inputs changed during bundle inspection']}
     else:
         external_inputs = external_final
-    if external_inputs['state'] == 'incomplete':
-        invalidate_report(report,closure)
-        latest={r['receipt_key']:r for r in report['receipts']} if report else {}
-        for receipt in receipts:
-            if receipt['receipt_key'] in latest:
-                receipt['freshness']=latest[receipt['receipt_key']]['freshness']
-        for check in checks:
-            if check['receipt_key'] in latest: check['state']=_check_state(latest[check['receipt_key']])
-        for observation in execution['checks']:
-            observation.update(association='unavailable',external_inputs_association='unavailable',
-                               executed_at_patch_head='unknown')
-            observation['association_issues'].append('final external input inspection is incomplete')
-        if execution['state'] != 'absent':
-            execution['state'] = 'incomplete'
     try:
         if external_inputs['state'] != 'not_configured':
             final_patch = collect(root,base,head,seconds=max(0,deadline-time.monotonic()))
             final_report = verification_report(root,timeout=max(0,deadline-time.monotonic()))
-            if final_patch != patch or report is None or _inputs(final_report) != _inputs(report):
+            if final_patch != patch or report is None or _source_inputs(final_report) != _source_inputs(report):
                 issues.append('patch, checkout or source changed during external input inspection')
                 bound = False
             if policy_before is None or policy_before != policy_fingerprint(root,deadline):
@@ -226,6 +228,24 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
     except (OSError, ValueError, TimeoutError) as error:
         issues.append(type(error).__name__ + ': final execution state guard unavailable')
         bound = False
+    if external_inputs['state'] == 'incomplete':
+        invalidate_report(report,closure)
+        latest={r['receipt_key']:r for r in report['receipts']} if report else {}
+        from ..inputs.scopes import closing_affected
+        for receipt in receipts:
+            if receipt['receipt_key'] in latest:
+                receipt['freshness']=latest[receipt['receipt_key']]['freshness']
+        for check in checks:
+            if check['receipt_key'] in latest: check['state']=_check_state(latest[check['receipt_key']])
+        for observation in execution['checks']:
+            associated=[r for r in receipts if r['receipt_key'] in observation['receipt_keys']]
+            if associated and all(not closing_affected(r['external_inputs'],closure) for r in associated):
+                continue
+            observation.update(association='unavailable',external_inputs_association='unavailable',
+                               executed_at_patch_head='unknown')
+            observation['association_issues'].append('final external input inspection is incomplete')
+        if execution['state'] != 'absent':
+            execution['state']='available' if all(c['association']=='bound' for c in execution['checks']) else 'incomplete'
     try:
         validate_inputs(root,deadline)
     except (OSError,ValueError,TimeoutError,subprocess.SubprocessError):
@@ -234,6 +254,8 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
         external_inputs.update(state='incomplete',fingerprint=None)
         external_inputs['issues'].append('Final external state guard is unavailable or changed.')
         invalidate_report(report,closure,unknown=True)
+        for observation in execution['checks']:
+            observation['external_inputs_association']='unavailable'
         for receipt in receipts:
             if receipt['freshness']=='fresh': receipt['freshness']='stale'
         for check in checks:

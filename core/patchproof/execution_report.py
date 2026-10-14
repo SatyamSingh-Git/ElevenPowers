@@ -1,7 +1,8 @@
 """Inspect saved execution associations; inspection never launches checks."""
 import subprocess
 
-from .execution_state import read, witness, qualify_external
+from .execution_state import read, _source_witness, qualify_external
+from ..inputs.collection import capture
 
 
 LIMITS = [
@@ -20,22 +21,30 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
         result['evicted'] = saved['evicted']
         if not saved['attempts']:
             return result
-        broad, snapshot = witness(root, patch, deadline, base=base, head=head)
+        source, _ = _source_witness(root, patch, deadline, base=base, head=head)
+        external_observation = capture(root, deadline)
+        if external_observation['state'] != 'not_configured':
+            final, _ = _source_witness(root, patch, deadline, base=base, head=head)
+            if final != source:
+                raise ValueError('source changed during external inspection')
         if read(root) != saved:
             raise ValueError('saved execution state changed during inspection')
         latest = {}
         for item in saved['attempts']:
             latest[item['command_digest']] = item
         for item in latest.values():
+            why = []
+            command = ''
             if 'external_inputs_scope' in item['witness']:
                 from ..config import load
                 command=load(root).commands.get(item['properties'][0],'')
-                current=qualify_external(broad,snapshot[0].external_observation,command)
-            else:
-                current=broad
+            try:
+                current=qualify_external(source,external_observation,command)
+            except ValueError:
+                current=source
+                why.append('required external input observation is incomplete')
             keys = set(item['receipt_keys'])
             matches = [r for r in receipts if r['receipt_key'] in keys]
-            why = []
             external = current.get('external_inputs_fingerprint')
             external_matching = (external is not None and
                 item['witness'].get('external_inputs_fingerprint') == external and
@@ -68,7 +77,8 @@ def inspect(root, patch, receipts, deadline, bound, *, base=None, head=None):
                 'producer_fingerprint': item['witness'].get('producer_fingerprint', ''),
                 'environment_fingerprint': item['witness'].get('environment_fingerprint', ''),
                 'external_inputs_fingerprint': item['witness'].get('external_inputs_fingerprint'),
-                'external_inputs_association': ('not_configured' if external is None else
+                'external_inputs_association': ('not_configured' if external is None and
+                                               'external_inputs_fingerprint' not in item['witness'] and not why else
                                                'bound' if external_matching and not why else 'unavailable'),
                 'budgets': item.get('budgets', {})})
         result['state'] = 'available' if all(c['association'] == 'bound' for c in result['checks']) else 'incomplete'

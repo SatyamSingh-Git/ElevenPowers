@@ -6,7 +6,12 @@ from .collection import digest
 
 
 def command_key(command):
-    return hashlib.sha256(scrub(command.strip()).encode()).hexdigest()
+    command=command.strip()
+    # A parser may already have scrubbed this spelling. Neither a raw secret
+    # nor its lossy public replacement can identify an exact scoped command.
+    if scrub(command)!=command or 'REDACTED' in command:
+        return None
+    return hashlib.sha256(command.encode()).hexdigest()
 
 
 def project(observed, command='', *, declared=False):
