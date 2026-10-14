@@ -248,14 +248,14 @@ def test_execution_state_moving_during_inspection_cannot_keep_old_success(runnab
     from core.patchproof import execution_report, execution_state
     root, base, head, _ = runnable
     assert verify(root, base, head, seconds=120)['state'] == 'passed'
-    original = execution_report.witness
+    original = execution_report._source_witness
     def moving(*args, **kwargs):
         value = original(*args, **kwargs)
         saved = execution_state.read(root)
         saved['attempts'][-1]['status'] = 'incomplete'
         execution_state.save(root, saved)
         return value
-    monkeypatch.setattr(execution_report, 'witness', moving)
+    monkeypatch.setattr(execution_report, '_source_witness', moving)
     value = build(root, base, head)
     assert value['execution']['state'] == 'incomplete'
     assert not any(c['association'] == 'bound' for c in value['execution']['checks'])
@@ -285,7 +285,7 @@ def test_later_real_failure_during_inspection_invalidates_saved_success(runnable
     script.write_text(script.read_text() + "assert not Path('.elevenpowers/fail').exists(), 'later actual failure'\n")
     head = commit(root, 'later failure control')
     assert verify(root, base, head, seconds=120)['state'] == 'passed'
-    original = execution_report.witness
+    original = execution_report._source_witness
     def later(*args, **kwargs):
         value = original(*args, **kwargs)
         (root / '.elevenpowers/fail').touch()
@@ -295,7 +295,7 @@ def test_later_real_failure_during_inspection_invalidates_saved_success(runnable
         ledger.add(parse(command, failed.stdout + failed.stderr, failed.returncode, root))
         ledger.save()
         return value
-    monkeypatch.setattr(execution_report, 'witness', later)
+    monkeypatch.setattr(execution_report, '_source_witness', later)
     value = build(root, base, head)
     assert not any(c['association'] == 'bound' for c in value['execution']['checks'])
     assert value['binding']['state'] == 'unavailable'

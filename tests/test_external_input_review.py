@@ -18,20 +18,24 @@ def project(tmp_path):
 
 @pytest.mark.parametrize('stage', ['report', 'preflight', 'report-policy'])
 def test_source_edit_during_external_read_refuses_reuse_or_launch(tmp_path, monkeypatch, stage):
-    from core.inputs import definition
+    from core.inputs import definition, collection
     from core.patchproof import report, execution_state
     from core.patchproof.execution import verify
     from core.patchproof.planning import plan
     root, base, head, target, *_ = project(tmp_path)
     assert verify(root, base, head, seconds=120)['state'] == 'passed'
-    module = report if stage.startswith('report') else execution_state
-    original_capture, original_raw = module.input_capture, definition.raw
+    module = collection if stage.startswith('report') else execution_state
+    function = '_capture' if stage.startswith('report') else 'input_capture'
+    original_capture, original_raw = getattr(module,function), definition.raw
     scans = 0
+    mutations = 0
     def capture(*args, **kwargs):
         nonlocal scans
         scans += 1
         def changing_read(path, *a, **k):
-            if scans == (2 if stage.startswith('report') else 3) and Path(path) == target:
+            nonlocal mutations
+            if scans == (2 if stage.startswith('report') else 1) and Path(path) == target:
+                mutations += 1
                 if stage == 'report-policy':
                     (root/'.git/info/exclude').write_bytes(b'unobserved-neighbor\n')
                 else:
@@ -40,7 +44,7 @@ def test_source_edit_during_external_read_refuses_reuse_or_launch(tmp_path, monk
         with monkeypatch.context() as patch:
             patch.setattr(definition, 'raw', changing_read)
             return original_capture(*args, **kwargs)
-    monkeypatch.setattr(module, 'input_capture', capture)
+    monkeypatch.setattr(module, function, capture)
     if stage.startswith('report'):
         result = plan(root, base, head, seconds=120)
         assert not result['ready']
@@ -51,6 +55,7 @@ def test_source_edit_during_external_read_refuses_reuse_or_launch(tmp_path, monk
         assert result['state'] == 'incomplete'
         assert result['checks'][0]['status'] == 'deferred'
     assert (root/'.elevenpowers/count.txt').read_text() == '1'
+    assert mutations == 1, 'the real source/policy mutation boundary must have been exercised'
 
 
 def test_empty_directory_changes_actual_behavior_and_refuses_reuse(tmp_path):

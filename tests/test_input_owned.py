@@ -141,8 +141,8 @@ def test_confirmation_rechecks_inputs_before_suppressing_execution(dependency_pr
     ledger=owned(dependency_project);ledger.failed_before=['tests/test_dependency.py::test_dependency'];ledger.save()
     assert stress.confirm(ledger)
     original=execution.begin
-    def moved(root,deadline):
-        value=original(root,deadline)
+    def moved(root,deadline,**kwargs):
+        value=original(root,deadline,**kwargs)
         target.write_bytes(b'value=9\n' if language=='python' else b'module.exports={value:9};\n')
         return value
     monkeypatch.setattr(execution,'begin',moved)
