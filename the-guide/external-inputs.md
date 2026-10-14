@@ -1,6 +1,6 @@
 # External input witnesses
 
-External Input Witnesses v2 extends ordinary receipts, owned verification,
+Command-scoped input witnesses extend ordinary receipts, owned verification,
 cross-task milestones and PatchProof reuse to selected local dependency/tool
 files. A dependency can change at the same
 path while source, HEAD, lockfiles and environment values remain unchanged.
@@ -213,7 +213,28 @@ Ordinary reports and nested PatchProof bundles share opening and closing externa
 collections within one operation. Each selected file is read once per phase;
 paired execution phases and later operations always collect independently.
 
-## Budgets, output and limits
+## Command-specific qualification
+
+Schema 2 can map an exact declared command to a complete list of required
+witness IDs. Partial maps, unmatched commands and historical broad receipts
+retain all configured witnesses. Command spellings that redact, or contain
+the reserved `REDACTED` replacement marker, cannot authorize narrowing; supply
+credentials through the environment. Selected dependency drift expires that
+command's evidence without expiring an independent complete scope.
+
+An unavailable unused witness remains visible in overall scan coverage. It does
+not prevent a required command with a complete, available scope from running or
+reusing qualified execution. An unavailable required witness still prevents a
+complete verification result. Every declared check remains required; scopes
+never authorize skipping a check. Source edits and configuration changes retain
+their independent invalidation rules.
+
+The collector still reads the configured union under aggregate budgets. This
+feature narrows qualification, not the files collected for each execution.
+Malformed shared state, opaque late movement and exhausted collection budgets
+can conservatively leave several scopes incomplete.
+
+## Collection bounds
 
 Defaults per capture are 2,048 files, 4,096 enumerated entries, 32 MiB, ten
 cooperative seconds and depth 32. Directory inventories are checked again within

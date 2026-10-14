@@ -264,6 +264,26 @@ The optional edit adviser reuses the standard-library ImpactGraph/report, reposi
 
 ## External input session controls
 
+For command scopes and operation-local report collection:
+
+```sh
+python -m pytest tests/test_input_scopes.py tests/test_input_scope_details.py tests/test_input_shared.py tests/test_input_scope_review.py -q
+python -m eval.input_scopes --output NEW_DISPOSABLE_DIR
+python -m eval.input_scope_pilot --output NEW_DISPOSABLE_DIR --language python --rehearse
+python -m eval.input_scope_pilot --output NEW_DISPOSABLE_DIR --language javascript --rehearse
+```
+
+The portable protocol runs actual Python/Node consumers and five synthetic host
+envelopes, comparing scoped declarations with broad controls. CI retains one
+`command-input-scopes-OS-PYTHON` JSON artifact per matrix cell. These are
+mechanism controls, separate from installed sessions and coding-quality claims.
+Removing `--rehearse` launches a subscription model and requires an explicit
+allowance. The installed pilot uses two tasks under one persistent conversation
+UUID per language, one shared 180-second cap and no API fallback. Its destination
+must be a new system-temp directory outside any Git ancestor. It records host
+task transitions, per-turn outcomes and timings, and retained milestone states;
+controller-driven checks are labeled separately.
+
 ```sh
 python -m pytest tests/test_input_sessions_gap.py tests/test_input_receipts.py tests/test_input_native.py tests/test_input_owned.py tests/test_input_views.py tests/test_input_sessions_review.py -q
 python -m eval.input_sessions --output NEW_DISPOSABLE_DIR

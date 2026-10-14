@@ -85,6 +85,14 @@ their unknown execution provenance.
 
 ## Bounds, exits and limitations
 
+With a complete [command-scoped input mapping](external-inputs.md#command-specific-qualification),
+saved execution reuse is qualified against that command's selected witnesses.
+An unrelated missing witness remains a coverage gap without erasing an
+independent saved association. Required commands with missing selected inputs
+still defer verification. Broad and historical observations retain broad
+qualification. Reporting shares external opening/closing reads within the
+bundle; execution reads remain separate before and after each command.
+
 Defaults: 120 shared seconds, 30 seconds per command, 64 declared properties,
 8 MiB combined command output. Shared seconds range from 0 to 600; command seconds
 must be greater than 0 and at most 300. The shared deadline includes planning and
