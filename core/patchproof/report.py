@@ -325,8 +325,8 @@ def markdown(value):
                   for issue in receipt['association_issues']]
         if receipt.get('external_inputs'):
             lines.append('- Source freshness: '+_text(receipt['source_freshness'])+'; External inputs: '+_text(receipt['external_inputs']['state'])+'.')
-            from ..inputs.receipts import markdown as input_markdown
-            lines += input_markdown(receipt['external_inputs'])
+            from ..inputs.receipts import markdown as receipt_input_markdown
+            lines += receipt_input_markdown(receipt['external_inputs'])
     lines += ['', '## Project-declared checks', '']
     lines += ['- ' + _text(c['property']) + ': ' + _text(c['state']) + '; association '
               + _text(c['association']) + '; command ' + _text(c['command']) for c in value['checks']]
