@@ -1,5 +1,14 @@
 # ElevenPowers — living architecture graph
 
+Command-scoped input witnesses and operation-local report collection are now
+drawn in all five views. Complete command maps preserve independent evidence;
+legacy/partial identities retain broad coverage. Two external byte phases and a
+late state guard retain explicit gaps while source snapshots stay independent.
+The current graph has 168 nodes, 407 edges and seven planes; older sizes below
+describe their dated deliveries. See [design](../docs/design/command-input-scopes.md),
+[journey 80](../journey/80-one-input-should-not-expire-every-check.md) and
+[qualification in progress](../docs/validation/2026-10-14-command-input-scopes.md).
+
 External Input Witnesses v2 maps optional receipt association, identified native
 attempts, completion-owned observations, retained milestone qualification and
 actual cross-task acceptance in all five views. Private state retains bounded
@@ -145,7 +154,7 @@ The view does not approve model runs or supersede research/defer conditions.
   **Search** filters by name. **Drag** to pan, **scroll** to zoom, **freeze**
   stops the simulation.
 
-Current size: **153 nodes / 363 edges** across 7 planes (as of 2026-10-13),
+Earlier snapshot: **153 nodes / 363 edges** across 7 planes (as of 2026-10-13),
 including changed-region targets, schema-2 command qualifications and completed
 corrected regrades alongside frozen original producer identities,
 four hard interacting task graders, every-attempt regrading,
@@ -272,7 +281,7 @@ bounded receipt/phase history. Explicit `core/hosts/acceptance.py` preparation
 creates a new Python/Node exercise; inspection rechecks its immutable contract
 and requires native pass/fail/incomplete history plus fresh completion.
 
-The graph has 153 nodes, 363 edges and seven planes. Optional milestone declarations, atomic history, read-only inspection, graph leads and explicit capability exercises are drawn in all affected views. [Current status](../docs/status.md) and
+That earlier graph snapshot had 153 nodes, 363 edges and seven planes. Optional milestone declarations, atomic history, read-only inspection, graph leads and explicit capability exercises are drawn in all affected views. [Current status](../docs/status.md) and
 [validation records](../docs/validation/README.md) describe which product paths
 were exercised. The Planned tab exposes unfinished work separately from those
 delivered paths. See [journey 59](../journey/59-a-roadmap-contributors-can-open.md)
