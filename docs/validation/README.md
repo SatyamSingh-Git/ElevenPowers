@@ -1,6 +1,6 @@
 # Validation records
 
-- [2026-10-14 command-scoped witnesses](2026-10-14-command-input-scopes.md): independent command qualifications, shared nested collections, review regressions and final qualification in progress.
+- [2026-10-14 command-scoped witnesses](2026-10-14-command-input-scopes.md): independent command qualifications, shared nested collections, review regressions, qualified local/hosted controls and partial installed observations.
 
 - [2026-10-13 external input sessions v2](2026-10-13-external-input-sessions.md): ordinary and retained receipts, actual dependency drift/recovery, replay/task/closing-read review controls and qualified delivery gates.
 

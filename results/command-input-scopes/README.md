@@ -5,7 +5,10 @@ and [Python 3.13](hosted-ubuntu-latest-3.13.json). Both passed all four language
 cases, in 67.021 and 67.147 seconds. Their raw producer identity matches the Git
 LF identity below. The scoped/broad launch counts, relevant failure detection,
 missing-input states and two selected-file reads reproduce the preliminary
-mechanism result on the corrected runtime. Windows qualification is pending.
+mechanism result on the corrected runtime. Windows [Python 3.11](hosted-windows-latest-3.11.json)
+and [Python 3.13](hosted-windows-latest-3.13.json) protocols passed too. All four
+cells and the local full suite passed; see
+[qualification](../../docs/validation/2026-10-14-command-input-scopes.md).
 
 [Corrected-candidate GitHub artifact](github-artifact.json) records the actual
 downloaded public bundle's canonical hash, declared/embedded patch subject,
@@ -16,8 +19,9 @@ record the 135 runtime files under local, Git LF and Windows CRLF representation
 freshness always uses actual raw bytes.
 
 [Installed Python](installed-python.json) and [installed JavaScript](installed-javascript.json)
-record the two approved Sonnet 5.5 medium subscription conversations on the final
-recorded local runtime. Each used two turns under one persistent UUID, with one shared
+record the two approved Sonnet 5.5 medium subscription conversations at their
+recorded pre-formatter runtime. Each used two turns under one persistent UUID,
+with one shared
 180-second cap and no API fallback. Both host-created task transitions were
 observed. Total conversation observation times were 62.547 and 63.477 seconds;
 model-process wall time including cleanup was 60.928 and 62.000 seconds.

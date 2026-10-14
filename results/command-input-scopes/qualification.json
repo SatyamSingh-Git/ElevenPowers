@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "candidate": "25a9771",
+  "hosted_run": 38613186556,
+  "local": {
+    "passed": 2417,
+    "skipped": 3,
+    "seconds": 3663.14,
+    "runtime": "7c435fe720b68fe1948b6dafdb8492a81262334f9a1388ed2673b31d9408ba92"
+  },
+  "hosted": [
+    {
+      "os": "ubuntu-latest",
+      "python": "3.11",
+      "passed": 2412,
+      "skipped": 8,
+      "suite_seconds": 556.59,
+      "protocol_seconds": 67.021,
+      "runtime": "dfe95c51cbe5c2153328f55f6414ba7a1ee2c5e4f6a8f5465c779a8baa22e897"
+    },
+    {
+      "os": "ubuntu-latest",
+      "python": "3.13",
+      "passed": 2412,
+      "skipped": 8,
+      "suite_seconds": 547.01,
+      "protocol_seconds": 67.147,
+      "runtime": "dfe95c51cbe5c2153328f55f6414ba7a1ee2c5e4f6a8f5465c779a8baa22e897"
+    },
+    {
+      "os": "windows-latest",
+      "python": "3.11",
+      "passed": 2415,
+      "skipped": 5,
+      "suite_seconds": 3062.48,
+      "protocol_seconds": 366.282,
+      "runtime": "ab26e43561954a7560fddc019c423f27612923b3c80e5912127fbc8ef2f968e2"
+    },
+    {
+      "os": "windows-latest",
+      "python": "3.13",
+      "passed": 2415,
+      "skipped": 5,
+      "suite_seconds": 2919.89,
+      "protocol_seconds": 327.731,
+      "runtime": "ab26e43561954a7560fddc019c423f27612923b3c80e5912127fbc8ef2f968e2"
+    }
+  ],
+  "named_audits": {
+    "passed": 107,
+    "seconds": 78.98
+  },
+  "installed_acceptance": "partial at recorded pre-formatter runtime; no final-runtime installed claim",
+  "limits": [
+    "Mechanism counts and read counts, not causal coding-quality or population performance."
+  ]
+}

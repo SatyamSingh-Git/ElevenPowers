@@ -1,23 +1,23 @@
 # Current delivery status
 
-**2026-10-14 — command-scoped witnesses and shared collection: qualification in progress.**
-Explicit complete command maps preserve independent witness qualifications,
-including saved PatchProof reuse when an unrelated witness is unavailable.
-Required unavailable scopes still defer complete verification; every command
-remains required. Shared external report phases retain closing and late guards.
-The three review findings passed all eight actual regressions within a 30-test
-repair group. The first full gate exposed a formatter bug and stale probe
-interfaces; their correction passed four CLI and seven adversarial checks.
-Both corrected Linux cells and artifact acceptance passed. Windows and the
-local full suite remain running on the frozen candidate. Both approved installed
-conversations completed with partial failure-capture acceptance at their recorded
-runtime. See [validation](validation/2026-10-14-command-input-scopes.md)
-and [journey 80](../journey/80-one-input-should-not-expire-every-check.md).
+**2026-10-15 — command-scoped witnesses and shared collection qualified.**
+Complete command maps retain independent receipt, milestone and PatchProof
+execution evidence, including when an unused witness is unavailable. Every
+declared check remains required. Shared external opening/closing reads and late
+guards keep gaps explicit. 2,417 local tests passed, 3 skipped in 3663.14 seconds.
+All four hosted cells, actual scoped/broad
+protocols and artifact acceptance passed, with named audits and independent gates.
+The first failed full candidate and its formatter/probe repairs remain recorded.
+The two approved Claude conversations established native task transitions and
+retained independent milestones; echoed shell trailers prevented exact failure
+attribution. Installed acceptance remains partial at the recorded earlier runtime.
+See [qualification](validation/2026-10-14-command-input-scopes.md) and
+[journey 80](../journey/80-one-input-should-not-expire-every-check.md).
 
-Next: broader installed adoption and independently graded behavior preservation.
-Additional producers, remote observations and live PR/fork transport remain
-separate work. The older per-command/read-multiplication next-step notes below
-describe the earlier deliveries; command scopes and nested sharing are now built.
+Next: safe exact invocation in installed workflows and broader behavior
+preservation. Further producers, remote observations and live PR/fork transport
+remain separate. Earlier per-command/read-multiplication notes below describe
+past deliveries; scopes and nested sharing are now implemented and qualified.
 
 **2026-10-13 — External Input Witnesses v2 delivered and qualified.**
 Ordinary identified native receipts, completion-owned verification, confirmation

@@ -66,3 +66,5 @@ The [design](../docs/design/command-input-scopes.md) and
 [usage guide](../the-guide/external-inputs.md) explain the general contract.
 Additional producers, remote observations, broader installed acceptance and
 causal coding benefit remain separate work.
+
+Final mechanism qualification completed on 2026-10-15: 2,417 local tests passed, 3 skipped in 3663.14 seconds. All four hosted cells and their actual scoped/broad protocols passed, with independently checked downloaded artifacts. Installed failure-capture limits remain as recorded above. Main and publication closure are recorded in the dated validation.

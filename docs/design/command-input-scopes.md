@@ -3,7 +3,8 @@
 Projects may opt into schema 2 of `elevenpowers.inputs.json`. Its optional
 `commands` list contains exact declared `command` strings, a nonempty list of
 `witnesses` IDs, and an explicit Boolean `complete`. At most 64 mappings are
-allowed. Identities that redact are refused, since distinct secret-bearing
+allowed. Identities that redact, or contain the reserved `REDACTED` replacement
+marker, are refused, since distinct secret-bearing
 commands can collapse to the same public identity. A complete mapping selects its witnesses; an incomplete or unmatched
 mapping retains every witness. Only the existing parser's declared command
 identity licenses narrowing. No dependency graph or missing edge licenses it.

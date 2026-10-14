@@ -1,121 +1,127 @@
-# Command-scoped witnesses and shared collection — 2026-10-14
+# Command-scoped witnesses and shared collection — 2026-10-14–15
 
-Final qualification is in progress. Do not treat the earlier pre-review protocol
-or the first failed qualification attempt as final-runtime release evidence.
+Mechanism qualification passed. Complete command mappings preserve independent
+selected-input evidence, and operation-local report collection shares external
+opening/closing reads. Every declared check remains required. Installed
+exact-failure acceptance remains partial, as described below.
 
-The installed-observation runtime fingerprint was
-`06f5bc356d5cac035cd9334e3737887c6ee9c215050570a8a5d553c77ecde7e3`.
-The reviewed repairs and new regressions are committed at `3201312`.
-The first hosted qualification ran at
-[38610603850](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38610603850).
-Its Linux Python 3.13 cell failed: 23 failed, 2,389 passed and 8 skipped in
-529.15 seconds. A real Markdown formatter shadowing bug caused most failures;
-older regression probes also targeted interfaces/read counts changed by this
-milestone. The formatter correction passed all four actual CLI export tests in
-21.21 seconds. Race probes now target actual collection/source boundaries,
-forward scope arguments and assert that the injected mutation occurred. The
-remaining hosted jobs and the local full run at 20% were stopped rather than
-treated as qualification. A fresh full run is required after the repair group.
+## Final qualification
 
-All seven retargeted adversarial cases passed in 165.26 seconds. The final
-candidate is `25a9771`; the runtime differs from `3201312` only by the formatter
-alias correction in `core/patchproof/report.py`. Fresh qualification runs at
-[38613186556](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38613186556).
-The local full suite is running on raw runtime identity
-`7c435fe720b68fe1948b6dafdb8492a81262334f9a1388ed2673b31d9408ba92`.
-All 135 runtime Git blobs were compared with local files: only checkout newline
-representations differ. [Recorded identities](../../results/command-input-scopes/runtime-identities.json)
-are not normalized by runtime freshness checks.
+The qualified runtime/test/evaluation/workflow candidate is `25a9771`. Later
+delivery changes are documentation and retained results. The full local suite
+passed **2,417 tests with 3 skips in 3663.14 seconds**.
+Named audits passed all 107 controls in 78.98 seconds. All four independent
+grader states, eight committed-source grades, host doctor and standard-library
+imports passed. All five architecture views render with 168 nodes, 407 edges
+and seven planes.
 
-The corrected candidate's evidence-presentation job passed. Its downloaded
-JSON/Markdown are 9,416 and 4,113 bytes. Canonical bundle SHA-256 is
-`6f01c9e6c696a538d2b77a2af7a99d26450f6f28633effa8eec7bfc6a90ab96d`.
-Actual job logs independently confirm `current/failed/incomplete`, counts
-`[1,1,1]`, read-only inspection and matching base/head subjects. See
-[retained verification](../../results/command-input-scopes/github-artifact.json).
-Named audits passed again: 107 in 78.98 seconds. All four independent grader
-states, eight committed-source grades, doctor and standard-library imports
-passed on the corrected local runtime. Full suite/matrix qualification is pending.
+All five jobs in [hosted qualification 38613186556](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38613186556)
+passed, including four full suites, execution reliability, dependency/session
+acceptance, scoped-versus-broad controls, named audits, grader, source reproduction,
+doctor and standard-library imports, plus the separate artifact job.
 
-Both corrected Linux cells completed successfully. Python 3.11 passed 2,412 tests
-with 8 skips in 556.59 seconds; Python 3.13 passed 2,412 with 8 skips in 547.01
-seconds. Named audits passed 105 with 2 Windows-only skips in 19.36 and 16.90
-seconds. Their dependency/session acceptance, grader, committed-source
-reproduction, doctor and standard-library gates passed.
+| Hosted OS | Python | Passed | Skipped | Suite seconds | Four-case protocol seconds |
+|---|---|---:|---:|---:|---:|
+| ubuntu-latest | 3.11 | 2,412 | 8 | 556.59 | 67.021 |
+| ubuntu-latest | 3.13 | 2,412 | 8 | 547.01 | 67.147 |
+| windows-latest | 3.11 | 2,415 | 5 | 3062.48 | 366.282 |
+| windows-latest | 3.13 | 2,415 | 5 | 2919.89 | 327.731 |
 
-Downloaded Linux scoped-versus-broad protocols passed in 67.021 and 67.147
-seconds. Both JSON artifacts were independently checked against their actual
-runtime identity and expected counters, outcomes, retained milestones and read
-counts. Each language retained pass/fail/pass, independent bad exit 1, two
-selected-file reads per unchanged nested report, and incomplete first inputs
-without erasing the healthy second scope. Scoped owned verification launched
-four commands across initial/failure/repair, versus six broad launches; the
-separate independent fault probe adds one first-command execution to both arms.
-The five synthetic host envelopes remain adapter controls. Windows and local
-full-suite gates are still pending.
+All four downloaded protocol JSON artifacts were independently checked against
+their raw runtime identities and expected outcomes, counters, milestone states
+and read counts. All 135 runtime Git blobs match the local files modulo checkout
+newline representation only; runtime freshness never normalizes those bytes.
+See [identities](../../results/command-input-scopes/runtime-identities.json) and
+[qualification data](../../results/command-input-scopes/qualification.json).
 
-## Witnessed controls
+## Measured mechanism result
 
-Actual Python/JavaScript consumers exercise independent command scope,
-partial/unmatched broad fallback, legacy receipt retention, native identified
-pairing, owned execution and exact-patch reuse. Opening/closing descriptor reads
-delegate to the real producer. New controls were observed failing before their
-implementation; intermediate results and limits remain in
-[the preliminary record](../../results/command-input-scopes/README.md).
+In both languages and all four hosted cells, initial/fault/repair verification
+retained `passed/failed/passed`. The independent faulty consumer exited 1.
+Scoped owned verification launched four commands across those stages, versus
+six broad launches: **two independent-command reruns avoided per language**.
+The separate direct fault probe adds one first-command execution to both arms;
+the scoped synthetic host warmup adds five earlier executions per command.
+
+Unchanged nested bundles read each selected file **twice**, reproducing the
+improvement from eight reads witnessed before shared collection. Missing first
+inputs leave the independent second scope bound; broad observations remain
+incomplete. Five synthetic host envelopes are adapter controls, not installed
+sessions. These authored controls measure selected-file reads and command
+executions, not total latency, population performance or coding-quality benefit.
+See [retained results](../../results/command-input-scopes/README.md).
+
+## Review, regressions and failed qualification
 
 One fresh whole-branch review found three Important issues, no Critical or Minor.
-All eight regressions failed before the single repair pass. The repaired group
-passed **30 tests in 311.06 seconds**, including the stronger sole-required-command
-case with an unused missing witness. Repairs refuse ambiguous redacted command
-identities, retain per-command saved execution and source qualification, defer
-public invalidation until original source comparisons finish, admit required
-scopes independently, and clear late external association fields consistently.
+All eight Python/JavaScript regressions failed before the one repair pass; the
+repaired group passed 30 tests in 311.06 seconds. Repairs refuse ambiguous
+redacted identities, preserve per-command saved execution and independent source
+qualification, compare original source facts before public invalidation, admit
+available complete required scopes, and clear late external association fields.
 
-## Installed allowance
+The [first full hosted attempt](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38610603850)
+failed on Linux 3.13: 23 failed, 2,389 passed, 8 skipped in 529.15 seconds. A
+receipt Markdown import shadowed the bundle formatter; old regression probes
+also targeted interfaces/read counts changed by sharing. Four actual CLI
+controls passed after the alias correction in 21.21 seconds. Seven retargeted
+adversarial controls passed in 165.26 seconds, now asserting their mutations
+actually fire. The unfinished local/other hosted runs were stopped. The same
+repair pass continued through the green full qualification above; no re-review.
+The first attempt's successful artifact was not treated as a green release gate.
 
-The user approved two Claude Code subscription conversations, Sonnet 5.5 medium,
-at most 180 seconds each, with no API fallback. Each conversation can perform a
-coding task and a resumed evidence-review task under the same UUID and shared
-deadline. Actual host callbacks must create distinct task identities. Model-free
-producer/reference/oracle rehearsals passed for both languages before launch.
-Both conversations returned successfully under the cap: Python 62.547 seconds,
+## Installed observations
+
+The approved allowance was two Claude Code 2.1.292 subscription conversations,
+Sonnet 5.5 medium, at most 180 seconds each, no API fallback. Each performed two
+tasks under one persistent UUID and shared deadline. Producer/reference/oracle
+rehearsals ran before launch. Python observation time was 62.547 seconds;
 JavaScript 63.477 seconds, with model-process wall time including cleanup of
-60.928 and 62.000 seconds. Both host-created distinct task identities, protected
-inputs were unchanged, and both fixes passed the independent four-case arithmetic
-oracle. The first-task milestones were `CURRENT/CURRENT`; after first-input drift
-and the second task they were `STALE/CURRENT`. Each agent reran only the affected
-command (delta `[1,0]`).
+60.928 and 62.000 seconds. Both host-created distinct task identities; protected
+inputs stayed unchanged and both fixes passed the independent four-case
+arithmetic oracle, including the large integer.
 
-Full installed exact-failure acceptance remains incomplete. Inspection of the
-actual generated conversations showed both agents appended `; echo "exit=$?"`
-to the declared failing command. That shell chain did not match the exact
-declaration, so no new declared failure receipt was attributed. The conservative
-mapping behavior stands; do not treat a trailer's exit status as the inner
-command's success or invent an exact identity. Controller continuation separately
-observed `passed/failed` with only the affected command rerun. See
-[retained installed observations](../../results/command-input-scopes/README.md).
+Both first-task milestone pairs were `CURRENT/CURRENT`; after dependency drift
+and the second task they were `STALE/CURRENT`. Each model reran only the affected
+command, delta `[1,0]`. Both appended `; echo "exit=$?"` to the failing declared
+command, however. The chain did not match its exact declaration, so no new
+declared failure receipt was attributed. Full installed exact-failure acceptance
+is **not established**. Do not credit a trailer's exit status to an inner command.
+Controller continuation separately verified `passed/failed` with delta `[1,0]`.
 
-The GitHub artifact job passed; downloaded JSON/Markdown are 9,418 and 4,113
-bytes. The canonical bundle SHA-256 recomputed as
-`7bb6ad7f9e74a96ee22fa14f8b631fa9d9ebddceeef824b0a201c22d0c749d56`.
-Declared base/head/patch/content identities match the embedded bundle; current
-and absent required checks and bound external receipt qualifications are retained.
-The remaining full local and hosted matrix gates must be rerun after the
-formatter repair. The installed observations remain at their recorded identity;
-no new installed claim is made for the later formatter-only runtime change.
+These sessions exercised runtime
+`06f5bc356d5cac035cd9334e3737887c6ee9c215050570a8a5d553c77ecde7e3`,
+before the formatter-only correction. They do not silently qualify the later
+runtime. No additional model sessions were launched. Prompts explicitly directed
+the task and evidence inspection; no causal agent-behavior or coding-quality
+claim. Private transcripts were inspected for actual command shape and excluded
+from exports. See [installed results](../../results/command-input-scopes/README.md).
 
-## Interpretation and limits
+## Artifact transport and delivery
 
-Complete mappings are trusted project declarations. Unknown, partial, redacted
-and old broad identities cannot license narrowing. Every declared check remains
-required. An unavailable unrelated witness remains an overall coverage gap while
-an independently available complete command scope may run or reuse its evidence.
-Source/configuration/producer/task guards remain separate.
+The corrected candidate's downloaded evidence JSON/Markdown are 9,416 and 4,113
+bytes. Canonical bundle SHA-256 is
+`6f01c9e6c696a538d2b77a2af7a99d26450f6f28633effa8eec7bfc6a90ab96d`.
+Independent job logs confirm `current/failed/incomplete`, counts `[1,1,1]`,
+read-only inspection and matching declared/embedded subjects. See
+[artifact verification](../../results/command-input-scopes/github-artifact.json).
+This is a disposable declared subject, not live PR/fork or authenticated attestation.
+Main integration and publication verification follow this qualification record.
 
-Collection still reads the configured union with aggregate budgets. The two-phase
-report context lives only inside one operation and root; it never shares source
-snapshots or execution phases. A bounded late stamp/declaration/approval guard
-does not add a third byte read. These are sampled unsigned local observations,
-not atomic snapshots, malicious-state attestation, complete-environment coverage,
-or detection of reverted changes. Command counts and selected-file reads do not
-establish total latency, population performance or improved coding quality.
+## Limits and next work
+
+Complete mappings are trusted project assertions. Unknown, partial, redacted and
+historical broad identities cannot license narrowing. An unavailable unused
+witness remains an overall coverage gap without erasing an available complete
+required scope. Source/configuration/producer/task guards remain independent.
+Collection still reads the configured union under aggregate budgets; narrowing
+qualifies evidence rather than discovering complete dependencies or selecting
+safe exclusions. The context never shares source snapshots, roots, operations
+or execution phases. A bounded late stamp/declaration/approval guard adds no
+third selected-byte read.
+
+Unsigned local sampling cannot establish atomic snapshots, deliberate-state
+attestation, reverted/hidden movement, complete environment coverage or remote
+freshness. No deferred Minor finding remains from this review. Next: safe exact
+declared invocation in installed workflows, broader behavior preservation and
+separately qualified producers. No project-specific runtime branch was added.

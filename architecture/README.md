@@ -7,7 +7,12 @@ late state guard retain explicit gaps while source snapshots stay independent.
 The current graph has 168 nodes, 407 edges and seven planes; older sizes below
 describe their dated deliveries. See [design](../docs/design/command-input-scopes.md),
 [journey 80](../journey/80-one-input-should-not-expire-every-check.md) and
-[qualification in progress](../docs/validation/2026-10-14-command-input-scopes.md).
+[qualification](../docs/validation/2026-10-14-command-input-scopes.md).
+
+Final qualification on 2026-10-15 passed 2,417 local tests with 3 skips, all four
+hosted cells and independently checked scoped/broad protocol artifacts. Installed
+failure attribution remains partial at the recorded earlier runtime; a rendered
+map and passing mechanism controls do not establish general coding benefit.
 
 External Input Witnesses v2 maps optional receipt association, identified native
 attempts, completion-owned observations, retained milestone qualification and

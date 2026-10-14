@@ -29,19 +29,13 @@ retain broad coverage. Earlier model allowances do not authorize new sessions.
 
 ## Progress
 
-- Design recorded; baseline main `38f80eb` and its hosted repeat succeeded.
-- Steps 1–6 implemented and incrementally pushed. Actual scope/read/reuse probes
-  were witnessed RED→GREEN; one final review's three Important findings passed
-  all eight actual regressions within a 30-test repair group.
-- The first hosted candidate failed 23 tests, exposing a Markdown alias bug and
-  stale injection interfaces. Four CLI controls and seven retargeted adversarial
-  cases passed after correction. Runtime is frozen at the `25a9771` code tree;
-  fresh local/hosted qualification is running. Independent grader, source reproduction,
-  doctor, stdlib imports and all-five architecture render passed.
-- Two explicitly approved Sonnet 5.5 medium conversations completed two native
-  tasks each under the shared 180-second caps, without API fallback. Independent
-  arithmetic passed; affected/independent milestones retained STALE/CURRENT.
-  Both models appended shell trailers to the failed check, so the second exact
-  declared failure receipt was not attributed. Installed acceptance is partial;
-  no further sessions were run. See retained results and dated validation.
-- Final qualification records, docs/main integration and publication remain open.
+- Steps 1–7 complete, including one fresh review, witnessed repairs and corrected
+  full qualification: 2,417 local tests passed, 3 skipped in 3663.14 seconds; all four hosted cells and artifact job passed.
+- All four protocol artifacts independently verified against actual raw runtimes
+  and exact command/read/state controls. Named audits and independent gates passed.
+- Both approved Sonnet 5.5 medium conversations completed two native tasks under
+  their shared caps. Exact failure attribution remains partial because both models
+  appended shell trailers; records retain their pre-formatter runtime identity.
+  No more model sessions were launched.
+- Final docs/journey/all-five map are updated for delivery; main fast-forward,
+  publication check and owned evidence archive are the remaining closure actions.

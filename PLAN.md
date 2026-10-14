@@ -1,23 +1,20 @@
 # Master Plan v0.8
 
-**2026-10-14 — command-scoped witnesses and shared collection: final qualification.**
-Complete exact-command mappings now retain independent selected-input evidence;
-partial, unmatched and historical broad receipts remain broad. Nested reports
-share bounded opening/closing external observations with a late state guard.
-One review's three Important findings reproduced in eight Python/Node cases;
-the repaired group passed 30 checks. A later full gate found a formatter bug and
-stale probe interfaces; four CLI checks and seven retargeted adversarial cases
-passed after correction. Both corrected Linux cells are fully green; Windows
-and the local full suite remain running on the frozen candidate. Both approved
-installed conversations completed, with partial failure-capture acceptance at
-their recorded runtime. See [validation](docs/validation/2026-10-14-command-input-scopes.md),
+**2026-10-15 — command-scoped witnesses and shared collection qualified.**
+Complete exact-command mappings preserve independent external qualifications;
+legacy/partial/unmatched observations remain broad. Shared external report phases
+retain closing and late guards. 2,417 local tests passed, 3 skipped in 3663.14 seconds; all four hosted cells and artifact
+acceptance passed, alongside named audits and independent gates. Three Important
+review findings and the later formatter/probe issues were repaired with witnessed
+controls. Installed observations remain partial at their recorded runtime.
+See [qualification](docs/validation/2026-10-14-command-input-scopes.md),
 [journey 80](journey/80-one-input-should-not-expire-every-check.md) and
 [plan](docs/superpowers/plans/2026-10-14-command-input-scopes.md).
 
-Next: broader installed adoption and independently graded behavior preservation,
-then separately qualified producers and remote observations. Dependency-set
-completeness and causal coding-quality benefit remain unestablished. Earlier
-dated next-step notes below are historical snapshots.
+Next: safe exact declared invocation in installed workflows and independently
+graded behavior preservation, then additional producers and remote observations.
+Dependency completeness and causal coding-quality benefit remain unestablished.
+Older dated next-step entries below are historical snapshots.
 
 **2026-10-13 — External Input Witnesses v2 delivered and qualified.**
 The shared selected-input contract now qualifies ordinary identified native

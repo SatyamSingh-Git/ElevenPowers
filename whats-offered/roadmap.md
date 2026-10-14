@@ -1,7 +1,6 @@
 # Roadmap
 
-**Command scopes and shared collection, 2026-10-14.** Implemented, with final
-qualification in progress. Complete project assertions preserve independent
+**Command scopes and shared collection, 2026-10-14.** Implemented and qualified on local and four hosted cells; installed failure capture remains partial. Complete project assertions preserve independent
 evidence and bounded report phases remove repeated nested reads. Next qualify
 broader installed adoption and behavior preservation; additional producers,
 remote observations and live PR/fork publication remain independent contributor

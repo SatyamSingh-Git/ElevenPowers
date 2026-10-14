@@ -25,3 +25,8 @@ runtime dependencies. Collection limits still apply to the project union, so
 exhausting a shared budget can conservatively leave observations incomplete.
 Before/after sampling cannot detect reverted changes between observations.
 Installed acceptance and generalized coding benefit remain separate conclusions.
+
+Final [qualification](../validation/2026-10-14-command-input-scopes.md) and
+[retained observations](../../results/command-input-scopes/README.md) include
+the failed first full candidate, its repair, all four hosted cells and partial
+installed-session results at their actual producer identity.
