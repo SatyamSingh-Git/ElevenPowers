@@ -45,6 +45,52 @@ depend on, not as another manifest-only declaration of installed freshness.
 
 ## Approve local roots explicitly
 
+## Select inputs for a declared command
+
+Schema 1 keeps every configured witness applicable to every receipt. Opt into
+schema 2 to declare a complete nonempty witness set for a specific command:
+
+```json
+{
+  "schema": 2,
+  "witnesses": [
+    {"id": "auth-sdk", "root": "sdk", "paths": ["auth"]},
+    {"id": "billing-sdk", "root": "sdk", "paths": ["billing"]}
+  ],
+  "commands": [
+    {"command": "npm run test:auth", "witnesses": ["auth-sdk"], "complete": true},
+    {"command": "npm run test:billing", "witnesses": ["billing-sdk"], "complete": true}
+  ]
+}
+```
+
+Also declare those exact commands through the ordinary project configuration.
+Recognition reuses the runtime's existing declared-command parser, including
+supported literal project-directory wrappers. Up to 64 mappings are supported;
+empty, unknown, duplicate or ambiguous witness selections are refused.
+`complete: false`, unmatched commands and older receipts retain broad coverage.
+An assertion of completeness is your project's dependency contract; ImpactGraph
+and a missing edge do not infer it or permit skipping a required check.
+
+With unchanged project source, auth SDK drift expires auth evidence while an
+independently scoped billing receipt can remain current. Missing selected bytes
+leave their scope incomplete. Selected root rebinding, relevant declarations and
+scope changes expire the association. Source changes still expire source-scoped
+evidence, including edits to this project-owned declaration itself.
+
+Collection budgets apply to the project union, not once per command. Exhausted
+coverage stays conservative. Nested PatchProof, ordinary and milestone reports
+share opening and closing external observations within one operation; source
+snapshots remain independent. No observations are cached across executions or
+later report calls. Closing movement keeps overall report coverage incomplete,
+even when an independent receipt retains its qualified current state.
+
+This milestone is undergoing final qualification; see the
+[design](../docs/design/command-input-scopes.md) and
+[implementation plan](../docs/superpowers/plans/2026-10-14-command-input-scopes.md).
+
+## Approve local roots explicitly
+
 A declaration does not authorize external reads. On each machine, bind its root
 labels to the intended directories:
 
