@@ -289,6 +289,10 @@ def _inputs_stamp(root: Path, base: str, command: str, carried: tuple[str, ...])
     from .inputs.collection import capture
     session=jobs.current()
     observed=capture(root,min(session.budget.deadline if session else float('inf'),time.monotonic()+10))
+    from .inputs.scopes import project
+    from .config import load
+    declared=command==load(root).command_for('tests')
+    observed=project(observed,command,declared=declared)
     if observed['state']=='incomplete': return ''
     original=f"{base}|{command}|{tree_hash(root, carried, fresh=True) if carried else '-'}"
     return original if observed['state']=='not_configured' else original+'|'+observed['fingerprint']
@@ -499,7 +503,7 @@ def confirm(ledger) -> list:
     before, tree = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
     from .inputs import execution as input_execution
     from .inputs.receipts import inspect as input_inspect
-    observed=input_execution.begin(ledger.root,session.budget.deadline)
+    observed=input_execution.begin(ledger.root,session.budget.deadline,command=command,declared=True)
     # A historical decision is advisory; only receipts for these inputs can
     # suppress another confirmation after the source changes.
     latest = {}
@@ -519,7 +523,7 @@ def confirm(ledger) -> list:
         if (not observed['final_issues'] and final_inputs['state']==observed['inputs']['state']
                 and final_inputs['fingerprint']==observed['inputs']['fingerprint']):
             return []
-        observed=input_execution.begin(ledger.root,session.budget.deadline)
+        observed=input_execution.begin(ledger.root,session.budget.deadline,command=command,declared=True)
 
     provisional = [Evidence(kind=Kind.TEST, identity=i, result=Result.ERROR,
                             observed=before.files, tree=tree, scope="source", command=run,

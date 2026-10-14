@@ -83,8 +83,9 @@ def load(root):
     if data is None:
         return None
     value = decode(data)
-    if (not isinstance(value, dict) or set(value)-{'schema','witnesses','limits'}
-            or type(value.get('schema')) is not int or value['schema'] != 1
+    if (not isinstance(value, dict) or set(value)-{'schema','witnesses','limits','commands'}
+            or type(value.get('schema')) is not int or value['schema'] not in (1,2)
+            or value['schema']==1 and 'commands' in value
             or not isinstance(value.get('witnesses'), list) or not 1 <= len(value['witnesses']) <= 32):
         raise ValueError('unsupported input declaration')
     seen = set()
@@ -99,6 +100,21 @@ def load(root):
         if (not isinstance(paths, list) or not 1 <= len(paths) <= 32
                 or any(relative(p) != p for p in paths) or len(set(paths)) != len(paths)):
             raise ValueError('unsupported or duplicate input paths')
+    commands = value.get('commands', [])
+    if not isinstance(commands,list) or len(commands)>64:
+        raise ValueError('unsupported input command mappings')
+    mapped=set()
+    for item in commands:
+        if (not isinstance(item,dict) or set(item)!={'command','witnesses','complete'}
+                or not isinstance(item['command'],str) or not item['command'].strip()
+                or len(item['command'])>8192 or '\0' in item['command']
+                or type(item['complete']) is not bool
+                or not isinstance(item['witnesses'],list) or not 1<=len(item['witnesses'])<=32
+                or any(not isinstance(w,str) or w not in seen for w in item['witnesses'])
+                or len(set(item['witnesses']))!=len(item['witnesses'])
+                or item['command'].strip() in mapped):
+            raise ValueError('unsupported or ambiguous input command scope')
+        mapped.add(item['command'].strip())
     limits = value.get('limits', {})
     if not isinstance(limits, dict) or set(limits)-set(DEFAULTS):
         raise ValueError('unsupported input limits')

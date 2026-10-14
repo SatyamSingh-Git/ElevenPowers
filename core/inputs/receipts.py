@@ -13,14 +13,19 @@ def hexadecimal(value):
 
 
 def valid(value):
-    if (not isinstance(value,dict) or set(value)!=KEYS or type(value['schema']) is not int
-            or value['schema']!=1 or not isinstance(value['state'],str)
+    if not isinstance(value,dict): return False
+    scoped=value.get('schema')==2
+    if (set(value)!=(KEYS|{'scope'} if scoped else KEYS) or type(value.get('schema')) is not int
+            or value['schema'] not in (1,2) or not isinstance(value['state'],str)
             or value['state'] not in {'bound','stale','incomplete'}
             or any(v is not None and not hexadecimal(v) for v in (value['before'],value['after']))
             or not (value['attempt']=='' or hexadecimal(value['attempt']))
             or not isinstance(value['issues'],list) or len(value['issues'])>16
             or any(not isinstance(i,str) or len(i)>192 for i in value['issues'])):
         return False
+    if scoped:
+        from .scopes import valid as valid_scope
+        if not valid_scope(value['scope']): return False
     if value['state']=='bound':
         return (hexadecimal(value['before']) and value['before']==value['after']
                 and hexadecimal(value['attempt']) and not value['issues'])
@@ -44,12 +49,19 @@ def metadata(before,after,attempt,issues=()):
         state='incomplete'
     elif first!=last:
         state='stale'
-    return {'schema':1,'state':state,'before':first,'after':last,'attempt':attempt,'issues':gaps[:16]}
+    value={'schema':1,'state':state,'before':first,'after':last,'attempt':attempt,'issues':gaps[:16]}
+    scope=before.get('scope')
+    if scope is not None:
+        value.update(schema=2,scope=scope)
+        if after.get('scope')!=scope and after['state']!='incomplete':
+            value.update(state='stale')
+    return value
 
 
 def attach(records,before,after,attempt,issues=()):
-    value=metadata(before,after,attempt,issues)
     for record in records:
+        from .scopes import for_record
+        value=metadata(for_record(before,record),for_record(after,record),attempt,issues)
         record.external_inputs={**value,'issues':list(value['issues'])} if value else {}
 
 
@@ -76,6 +88,13 @@ def inspect(record,root,current=None):
     if not valid(stored):
         value['issues'].append('Saved external execution observations are absent or malformed.')
         return value
+    if stored['schema']==2:
+        from .scopes import for_record
+        observed=for_record(observed,record)
+        value.update(current=observed.get('fingerprint'),scope=stored['scope'])
+        if observed.get('scope')!=stored['scope']:
+            value.update(state='stale',issues=['Declared command witness scope changed or was removed.'])
+            return value
     value.update(before=stored['before'],after=stored['after'])
     if observed['state']=='incomplete':
         value['issues'].append('Required current external input coverage is incomplete.')

@@ -9,10 +9,12 @@ from .receipts import attach
 from ..hosts.provenance import fingerprint
 
 
-def begin(root,deadline):
+def begin(root,deadline,*,command='',declared=False):
     observed=capture(root,min(deadline,time.monotonic()+10))
+    from .scopes import project
+    observed=project(observed,command,declared=declared)
     value={'inputs':observed,'attempt':hashlib.sha256(uuid.uuid4().bytes).hexdigest(),
-           'configuration':None,'producer':None,'issues':[]}
+           'configuration':None,'producer':None,'issues':[], 'command':command,'declared':declared}
     if observed['state']!='not_configured':
         try:
             value.update(configuration=configuration(root),producer=fingerprint())
@@ -32,6 +34,8 @@ def provisional(records,value):
 
 def finish(root,deadline,value,records,issues=()):
     observed=capture(root,min(deadline,time.monotonic()+10))
+    from .scopes import project
+    observed=project(observed,value['command'],declared=value['declared'])
     gaps=list(value['issues'])+list(issues)
     if value['inputs']['state']!='not_configured' or observed['state']!='not_configured':
         try:

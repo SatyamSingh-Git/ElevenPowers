@@ -90,7 +90,7 @@ def discharge(ledger) -> list[Evidence]:
             session.finish(item, 'deferred', str(error))
             continue
         before = source_snapshot(ledger.root, fresh=True, deadline=session.budget.deadline)
-        observed = input_execution.begin(ledger.root, session.budget.deadline)
+        observed = input_execution.begin(ledger.root, session.budget.deadline,command=command,declared=True)
         provisional = parse(command, 'verification started; completion not yet recorded',
                             None, ledger.root, snapshot=before)
         input_execution.provisional(provisional, observed)

@@ -129,6 +129,9 @@ def capture(root,deadline):
                            for p in selected}
                 row.update(state='available',files=len(files),
                            fingerprint=digest([witness,records]))
+                if declaration['schema']==2:
+                    row['scope_fingerprint']=digest([witness,records,approval['roots'][witness['root']],
+                                                     declaration['limits']])
             except (OSError,ValueError,TimeoutError,subprocess.SubprocessError) as error:
                 row['issues'].append(issue(error))
                 value['issues'].append(witness['id']+': '+issue(error))
@@ -138,6 +141,10 @@ def capture(root,deadline):
                 bindings.load(root,declaration,scan.deadline) != approval):
             raise ValueError('input declaration or local approval changed during collection')
         value['counts'] = dict(scan.counts)
+        if declaration['schema']==2:
+            from .scopes import command_key
+            value['scopes']=[{'command':command_key(c['command']), 'witnesses':sorted(c['witnesses'])}
+                             for c in declaration.get('commands',[]) if c['complete']]
         if not value['issues'] and all(w['state']=='available' for w in value['witnesses']):
             value.update(state='available',fingerprint=digest([declaration['_digest'],
                          approval['_digest'],[(w['id'],w['fingerprint']) for w in value['witnesses']]]))
@@ -147,6 +154,7 @@ def capture(root,deadline):
         value['issues'].append(issue(error))
         for row in value['witnesses']:
             row.update(state='incomplete',fingerprint=None)
+            row.pop('scope_fingerprint',None)
         if 'scan' in locals():
             value['counts'] = dict(scan.counts)
     return scrub_values(value)

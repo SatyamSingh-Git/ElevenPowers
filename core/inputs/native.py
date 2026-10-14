@@ -101,13 +101,17 @@ def read(root,deadline):
     seen_bits(value)
     for key,row in value['pending'].items():
         if (not hexadecimal(key) or not isinstance(row,dict)
-                or set(row)!={'before','source','task','invocation','producer','configuration','created','issues'}
+                or set(row)-{'before_scope'}!={'before','source','task','invocation','producer','configuration','created','issues'}
                 or any(not hexadecimal(row[k]) for k in ('task','invocation','producer','configuration'))
                 or not isinstance(row['source'],str) or len(row['source'])!=16
                 or row['before'] is not None and not hexadecimal(row['before'])
                 or not timestamp(row['created']) or not isinstance(row['issues'],list)
                 or len(row['issues'])>16 or any(not isinstance(i,str) or len(i)>192 for i in row['issues'])):
             raise ValueError('native input attempt metadata is invalid')
+        if 'before_scope' in row:
+            from .scopes import valid as valid_scope
+            if not valid_scope(row['before_scope']):
+                raise ValueError('native input command scope is invalid')
     if any(not hexadecimal(k) or not timestamp(v) for k,v in value['completed'].items()):
         raise ValueError('native consumed attempt metadata is invalid')
     return value
@@ -138,6 +142,8 @@ def before(payload,root):
     if not records: return False
     key=identity(payload);ledger=Ledger.load(root);gaps=[]
     observed=capture(root,deadline)
+    from .scopes import for_record
+    observed=for_record(observed,records[0])
     try:
         final=source_snapshot(root,fresh=True,deadline=deadline)
         if not final[0].complete or final[1]!=snapshot[1] or not snapshot[0].complete:
@@ -160,6 +166,8 @@ def before(payload,root):
                     state['pending'][key]={'before':observed['fingerprint'],'source':snapshot[1],
                         'task':digest(ledger.task),'invocation':raw,'producer':producer,
                         'configuration':config,'created':time.time(),'issues':list(gaps)}
+                    if observed.get('scope') is not None:
+                        state['pending'][key]['before_scope']=observed['scope']
                 remembered(state,key,remember=True)
                 while len(state['pending'])>MAX_PENDING:
                     state['pending'].pop(next(iter(state['pending'])))
@@ -207,6 +215,7 @@ def after(payload,root,records,terminal=True):
         gaps.append('No identified native before observation is available.')
     else:
         first={'state':'available' if row['before'] else 'incomplete','fingerprint':row['before']}
+        if 'before_scope' in row: first['scope']=row['before_scope']
         gaps+=row['issues']
         try:
             raw,issue=invocation(payload,root)
