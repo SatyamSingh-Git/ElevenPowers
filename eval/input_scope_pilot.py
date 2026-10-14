@@ -1,4 +1,4 @@
-"""Explicit one-session subscription pilot plus model-free scope continuation."""
+"""Two installed tasks per subscription conversation, under one shared cap."""
 import argparse
 import hashlib
 import json
@@ -8,6 +8,8 @@ import shutil
 import subprocess
 import sys
 import time
+import uuid
+import tempfile
 
 from core.config import Config, save
 from core.hosts.setup import install
@@ -42,6 +44,12 @@ def prepare(directory,language,source):
     path=root/'elevenpowers.inputs.json';policy=json.loads(path.read_text())
     for row,command in zip(policy['commands'],commands): row['command']=command
     path.write_text(json.dumps(policy),encoding='utf-8')
+    milestones=root/'elevenpowers.milestones.json'
+    declaration=json.loads(milestones.read_text())
+    for row,command in zip(declaration['milestones'],commands):
+        row['inputs']=[production.name]
+        row['checks'][0]['command']=command
+    milestones.write_text(json.dumps(declaration),encoding='utf-8')
     install('claude',root,sys.executable,source)
     with (root/'.gitignore').open('a',encoding='utf-8') as stream: stream.write('\n.claude/settings.local.json\n')
     _git(root,'add','.');_git(root,'commit','-qm','installed scoped consumer exercise')
@@ -53,7 +61,7 @@ def prepare(directory,language,source):
     independent=oracle(root,language)
     production.write_text(broken,encoding='utf-8')
     if wrong==0 or right!=0 or independent!=0: raise ValueError('actual contract rehearsal did not flip')
-    protected=[root/a[-1] for a in args]+[path,root/'.elevenpowers/config.json',
+    protected=[root/a[-1] for a in args]+[path,milestones,root/'.elevenpowers/config.json',
         root/'.elevenpowers/input-roots.json',root/'.claude/settings.local.json']
     seal={p:hashlib.sha256(p.read_bytes()).hexdigest() for p in protected}
     return root,base,target,good,bad,args,commands,production,seal
@@ -72,9 +80,29 @@ def oracle(root,language):
     return run(command,cwd=root,timeout=15,shell=False).returncode
 
 
+def session_command(executable,root,prompt,identity,*,resume=False):
+    command=subscription.command('claude',executable,root,prompt,model='claude-sonnet-5-5')
+    command.remove('--no-session-persistence')
+    command.extend(['--resume' if resume else '--session-id',identity])
+    return command
+
+
+def snapshot(root):
+    current=report(root,timeout=90)
+    task=Ledger.load(root).task
+    return {'task':hashlib.sha256(task.encode()).hexdigest() if task else None,
+            'associations':{r['declaration']:r['external_inputs']['state'] for r in current['receipts'] if r['declaration']},
+            'milestones':{m['id']:m['state'] for m in current['milestones']['milestones']},
+            'counts':[int(p.read_text()) if p.exists() else 0 for p in
+                      (root/'.elevenpowers/count.txt',root/'.elevenpowers/other-count.txt')]}
+
+
 def pilot(destination,language,source,*,seconds=180,rehearse=False):
     if type(seconds) not in (int,float) or not 0<seconds<=180: raise ValueError('pilot cap exceeds approved range')
     destination=Path(destination).absolute()
+    if not rehearse and (not destination.is_relative_to(Path(tempfile.gettempdir()).resolve())
+            or any((p/'.git').exists() for p in destination.parents)):
+        raise ValueError('installed conversations require a new system-temp directory outside Git ancestors')
     if destination.exists() or any(p.is_symlink() for p in (destination,*destination.parents)):
         raise ValueError('pilot destination must be new and unlinked')
     destination.mkdir(parents=True)
@@ -82,7 +110,7 @@ def pilot(destination,language,source,*,seconds=180,rehearse=False):
     value={'schema':1,'language':language,'host':'claude','requested_model':'claude-sonnet-5-5',
            'effort':'medium','seconds_cap':seconds,'runtime':fingerprint(),'model_calls':0,
            'api_fallback':False,'state':'rehearsed','continuation':'not_run',
-           'limits':['One installed initial coding session; subsequent cross-task drift/reuse is controller-driven and model-free.',
+           'turns':[], 'limits':['Two tasks in one persistent conversation per language, sharing one 180-second wall allowance; process cleanup has a separate five-second allowance per call.',
                      'No causal coding-quality or population benefit claim; no OS closed-book boundary.']}
     if not rehearse:
         executable=shutil.which('claude')
@@ -94,27 +122,59 @@ Run these exact declared commands separately with Bash, then report the result:
 {commands[0]}
 {commands[1]}
 Do not fetch, install, use network tools or delegate to another model. Work in this project only.'''
-        command=subscription.command('claude',executable,root,prompt,model='claude-sonnet-5-5')
-        started=time.monotonic();value['model_calls']=1;value['state']='running'
-        (destination/'result.json').write_text(json.dumps(value,indent=2),encoding='utf-8')
-        try:
-            done=run(command,cwd=root,timeout=seconds,shell=False)
-            value.update(state='returned' if done.returncode==0 else 'host_failed',exit=done.returncode,
-                         host_observation=subscription.observation('claude',done.stdout,done.stderr))
-        except (OSError,subprocess.SubprocessError) as error:
-            value.update(state='incomplete',failure=type(error).__name__)
+        identity=str(uuid.uuid4())
+        value['conversation_identity']=identity
+        value['host_version']=run([executable,'--version'],cwd=root,timeout=10,shell=False).stdout.strip()
+        started=time.monotonic();deadline=started+seconds
+        def turn(prompt,resume=False):
+            remaining=deadline-time.monotonic()
+            if remaining<=0: return False
+            row={'resume':resume,'allowance_seconds':round(remaining,3)}
+            value['turns'].append(row);value['model_calls']+=1;value['state']='running'
+            (destination/'result.json').write_text(json.dumps(value,indent=2),encoding='utf-8')
+            began=time.monotonic()
+            try:
+                done=run(session_command(executable,root,prompt,identity,resume=resume),cwd=root,timeout=remaining,shell=False)
+                row.update(exit=done.returncode,observation=subscription.observation('claude',done.stdout,done.stderr))
+                # Private disposable diagnostics are not copied into public results.
+                (destination/f'turn-{len(value["turns"])}.json').write_text(done.stdout,encoding='utf-8')
+                completed=done.returncode==0 and row['observation']['completed']
+            except (OSError,subprocess.SubprocessError) as error:
+                row['failure']=type(error).__name__;completed=False
+            row['wall_seconds']=round(time.monotonic()-began,3)
+            return completed
+        returned=turn(prompt)
+        first=snapshot(root);value['first_task']=first
+        if returned and time.monotonic()<deadline:
+            target.write_bytes(bad)
+            value['before_second_task']=snapshot(root)
+            second=f'''Review this as a new task: the first installed SDK input changed after the earlier coding task.
+Do not edit any file, SDK, Git state, hook or configuration. Inspect current ElevenPowers evidence first:
+"{sys.executable.replace(chr(92),'/')}" "{(source/'plugin/bin/ep_report.py').as_posix()}" --project . --format json
+Retain earlier milestone evidence. Run the exact declared command whose evidence needs refresh, using Bash:
+{commands[0]}
+The other independent declared command is {commands[1]}.
+Report the observed failure honestly; do not repair the dependency or claim that all checks pass.
+Do not fetch, install, use network tools or delegate to another model.'''
+            returned=turn(second,resume=True)
+            value['second_task']=snapshot(root)
+            value['host_created_distinct_tasks']=bool(first['task'] and value['second_task']['task']
+                                                      and first['task']!=value['second_task']['task'])
         value['session_seconds']=round(time.monotonic()-started,3)
+        value['model_wall_seconds_including_cleanup']=round(sum(t['wall_seconds'] for t in value['turns']),3)
+        value['state']='returned' if returned else 'incomplete'
+        value['installed_multitask_observed']=bool(len(value['turns'])==2 and returned
+            and value.get('host_created_distinct_tasks') and value['second_task']['associations'].get('tests')=='bound'
+            and value['second_task']['milestones'].get('first')=='FAILED'
+            and value['second_task']['milestones'].get('second')=='CURRENT')
+        target.write_bytes(good)
         value['protected_inputs_unchanged']=all(hashlib.sha256(p.read_bytes()).hexdigest()==seal[p] for p in seal)
         value['independent_correctness_exit']=oracle(root,language)
-        current=report(root,timeout=120)
-        value['installed_associations']={r['declaration']:r['external_inputs']['state'] for r in current['receipts'] if r['declaration']}
-        value['task_created_by_host']=bool(Ledger.load(root).task)
         if value['state']=='returned' and value['protected_inputs_unchanged'] and value['independent_correctness_exit']==0:
             _git(root,'add',production.name);_git(root,'commit','-qm','installed coding result')
             head=_git(root,'rev-parse','HEAD')
             initial=verify(root,base,head,seconds=180,command_seconds=15)
             before=counts(root)
-            Ledger(root=root,task='controlled next task').save()
             target.write_bytes(bad)
             value['controlled_milestone_drift']={m['id']:m['state'] for m in report(root,timeout=120)['milestones']['milestones']}
             failed=verify(root,base,head,seconds=180,command_seconds=15);after=counts(root)
