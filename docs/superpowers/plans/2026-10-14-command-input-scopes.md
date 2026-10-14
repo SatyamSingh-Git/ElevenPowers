@@ -37,5 +37,8 @@ retain broad coverage. Earlier model allowances do not authorize new sessions.
   their shared caps. Exact failure attribution remains partial because both models
   appended shell trailers; records retain their pre-formatter runtime identity.
   No more model sessions were launched.
-- Final docs/journey/all-five map are updated for delivery; main fast-forward,
-  publication check and owned evidence archive are the remaining closure actions.
+- Step 8 complete: docs/journey/all-five map updated, main fast-forwarded with all
+  feature commits present and unchanged runtime bytes. Pages deployment passed;
+  actual HTML/JavaScript match main Git blobs. This plan's 50-file private evidence
+  workspace is archived; unrelated plans remain untouched. The final closure
+  changes documentation and retained delivery metadata only.

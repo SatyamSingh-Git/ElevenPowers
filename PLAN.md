@@ -11,6 +11,10 @@ See [qualification](docs/validation/2026-10-14-command-input-scopes.md),
 [journey 80](journey/80-one-input-should-not-expire-every-check.md) and
 [plan](docs/superpowers/plans/2026-10-14-command-input-scopes.md).
 
+Main integration and published architecture bodies are verified. The final
+closure preserves the qualified runtime and map blobs; this plan's private
+evidence workspace is archived.
+
 Next: safe exact declared invocation in installed workflows and independently
 graded behavior preservation, then additional producers and remote observations.
 Dependency completeness and causal coding-quality benefit remain unestablished.

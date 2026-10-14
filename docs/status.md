@@ -14,6 +14,10 @@ attribution. Installed acceptance remains partial at the recorded earlier runtim
 See [qualification](validation/2026-10-14-command-input-scopes.md) and
 [journey 80](../journey/80-one-input-should-not-expire-every-check.md).
 
+Delivery is verified on main and the published architecture. The final closure
+preserves the qualified code and map bytes; automatic main CI repeats remain
+separate from the successful final-code qualification.
+
 Next: safe exact invocation in installed workflows and broader behavior
 preservation. Further producers, remote observations and live PR/fork transport
 remain separate. Earlier per-command/read-multiplication notes below describe

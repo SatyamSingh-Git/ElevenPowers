@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "integrated_commit": "543cc4de250c9d5fc8a3a2625e78258f81f1a806",
+  "previous_main": "38f80eb737c91e246f19b86b9e2b0b725fff54a2",
+  "qualified_candidate": "25a9771",
+  "hosted_run": 38613186556,
+  "pages_run": 38622627838,
+  "publication": [
+    {
+      "path": "architecture/index.html",
+      "bytes": 350907,
+      "sha256": "1a9a5689564aa9c94d321356f9e40a274014a85ee83acb564044dfea06e70cb5",
+      "expected_sha256": "1a9a5689564aa9c94d321356f9e40a274014a85ee83acb564044dfea06e70cb5",
+      "matches": true
+    },
+    {
+      "path": "architecture/graph-data.js",
+      "bytes": 196405,
+      "sha256": "541ac65970ef31088706794a3d6b4d1c6f045a6487ef1ec766f06dc6dd9393b2",
+      "expected_sha256": "541ac65970ef31088706794a3d6b4d1c6f045a6487ef1ec766f06dc6dd9393b2",
+      "matches": true
+    }
+  ],
+  "private_evidence_archived": true,
+  "archived_files": 50,
+  "closure": "Documentation and delivery metadata only; qualified code and published map blobs unchanged.",
+  "automatic_main_repeats": "Separate from final-code qualification; in progress at closure."
+}

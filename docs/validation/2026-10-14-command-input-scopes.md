@@ -106,7 +106,27 @@ Independent job logs confirm `current/failed/incomplete`, counts `[1,1,1]`,
 read-only inspection and matching declared/embedded subjects. See
 [artifact verification](../../results/command-input-scopes/github-artifact.json).
 This is a disposable declared subject, not live PR/fork or authenticated attestation.
-Main integration and publication verification follow this qualification record.
+Remote main and the feature branch were verified equal at
+`543cc4de250c9d5fc8a3a2625e78258f81f1a806`, through a normal fast-forward from
+`38f80eb737c91e246f19b86b9e2b0b725fff54a2`. Every feature commit is present on
+main. Runtime/test/evaluation/workflow trees remain identical to the qualified
+candidate, and local raw runtime identity remains
+`7c435fe720b68fe1948b6dafdb8492a81262334f9a1388ed2673b31d9408ba92`.
+
+[Pages deployment 38622627838](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38622627838)
+passed. Actual HTTPS bodies match main's Git blobs: HTML 350,907 bytes, SHA-256
+`1a9a5689564aa9c94d321356f9e40a274014a85ee83acb564044dfea06e70cb5`;
+JavaScript 196,405 bytes, SHA-256
+`541ac65970ef31088706794a3d6b4d1c6f045a6487ef1ec766f06dc6dd9393b2`.
+The first fetch while deployment was pending correctly showed the old page;
+verification passed only after deployment completed. See
+[delivery metadata](../../results/command-input-scopes/delivery.json).
+
+The milestone's 50-file private evidence workspace is archived. Unrelated plans
+and evidence are preserved. Final closure changes documentation and delivery
+metadata only, retaining the qualified code and published map blobs. Automatic
+main-push CI repeats are separate from the successful qualification run above
+and were still in progress at closure.
 
 ## Limits and next work
 
