@@ -50,6 +50,16 @@ the second task did not retain a new declared failure receipt. This is partial
 installed acceptance. Treating the shell chain as an exact command would hide
 the distinction the evidence is meant to preserve. No extra sessions were run.
 
+The first full hosted suite then found what the focused groups had missed: a
+receipt Markdown import shadowed the bundle formatter. It returned a list where
+the bundle needed a string, and was unbound when no receipt used it. Linux
+reported 23 failures, including several older race probes whose injection
+interfaces or expected capture counts had changed. The four CLI formatter tests
+passed after the alias correction. The race probes were moved to actual current
+boundaries and made to assert that their adversarial mutation fired. The first
+qualification was stopped; its artifact success did not make the suite green.
+Installed observations retain their earlier recorded runtime identity.
+
 Final qualification and installed outcomes are recorded in
 [the dated validation](../docs/validation/2026-10-14-command-input-scopes.md).
 The [design](../docs/design/command-input-scopes.md) and

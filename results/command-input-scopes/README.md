@@ -2,7 +2,7 @@
 
 [Installed Python](installed-python.json) and [installed JavaScript](installed-javascript.json)
 record the two approved Sonnet 5.5 medium subscription conversations on the final
-local runtime. Each used two turns under one persistent UUID, with one shared
+recorded local runtime. Each used two turns under one persistent UUID, with one shared
 180-second cap and no API fallback. Both host-created task transitions were
 observed. Total conversation observation times were 62.547 and 63.477 seconds;
 model-process wall time including cleanup was 60.928 and 62.000 seconds.
@@ -24,6 +24,8 @@ command (`[1,0]`). This is model-free mechanism evidence. The prompts explicitly
 directed the task and evidence inspection, so these observations do not establish
 a causal improvement in agent behavior or coding quality. No additional model
 sessions were launched after the two approved conversations.
+The later formatter-only correction changes the raw runtime identity; these
+installed observations are retained at the identity they actually exercised.
 
 [Pre-review observations](pre-review.json) contain four actual-command cases
 completed in 874.594 seconds, with no model calls, on the recorded runtime.

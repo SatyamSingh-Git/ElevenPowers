@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "candidate_code_commit": "ed031b1",
+  "runtime_files": 135,
+  "fingerprints": {
+    "local": "7c435fe720b68fe1948b6dafdb8492a81262334f9a1388ed2673b31d9408ba92",
+    "git_lf": "dfe95c51cbe5c2153328f55f6414ba7a1ee2c5e4f6a8f5465c779a8baa22e897",
+    "git_crlf": "ab26e43561954a7560fddc019c423f27612923b3c80e5912127fbc8ef2f968e2"
+  },
+  "interpretation": "Raw byte identities differ by checkout newline representation only. Runtime freshness is never normalized; every execution qualifies against its own actual producer bytes."
+}

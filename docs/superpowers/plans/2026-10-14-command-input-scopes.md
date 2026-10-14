@@ -33,8 +33,10 @@ retain broad coverage. Earlier model allowances do not authorize new sessions.
 - Steps 1–6 implemented and incrementally pushed. Actual scope/read/reuse probes
   were witnessed RED→GREEN; one final review's three Important findings passed
   all eight actual regressions within a 30-test repair group.
-- Runtime frozen at the `3201312` code tree. Local full suite and final hosted
-  matrix/artifact acceptance are running. Independent grader, source reproduction,
+- The first hosted candidate failed 23 tests, exposing a Markdown alias bug and
+  stale injection interfaces. Four CLI controls and seven retargeted adversarial
+  cases passed after correction. Runtime is frozen at the `25a9771` code tree;
+  fresh local/hosted qualification is running. Independent grader, source reproduction,
   doctor, stdlib imports and all-five architecture render passed.
 - Two explicitly approved Sonnet 5.5 medium conversations completed two native
   tasks each under the shared 180-second caps, without API fallback. Independent

@@ -1,13 +1,31 @@
 # Command-scoped witnesses and shared collection — 2026-10-14
 
 Final qualification is in progress. Do not treat the earlier pre-review protocol
-as final-runtime release evidence.
+or the first failed qualification attempt as final-runtime release evidence.
 
-The frozen local runtime fingerprint is
+The installed-observation runtime fingerprint was
 `06f5bc356d5cac035cd9334e3737887c6ee9c215050570a8a5d553c77ecde7e3`.
 The reviewed repairs and new regressions are committed at `3201312`.
-Hosted qualification runs at
+The first hosted qualification ran at
 [38610603850](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38610603850).
+Its Linux Python 3.13 cell failed: 23 failed, 2,389 passed and 8 skipped in
+529.15 seconds. A real Markdown formatter shadowing bug caused most failures;
+older regression probes also targeted interfaces/read counts changed by this
+milestone. The formatter correction passed all four actual CLI export tests in
+21.21 seconds. Race probes now target actual collection/source boundaries,
+forward scope arguments and assert that the injected mutation occurred. The
+remaining hosted jobs and the local full run at 20% were stopped rather than
+treated as qualification. A fresh full run is required after the repair group.
+
+All seven retargeted adversarial cases passed in 165.26 seconds. The final
+candidate is `25a9771`; the runtime differs from `3201312` only by the formatter
+alias correction in `core/patchproof/report.py`. Fresh qualification runs at
+[38613186556](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38613186556).
+The local full suite is running on raw runtime identity
+`7c435fe720b68fe1948b6dafdb8492a81262334f9a1388ed2673b31d9408ba92`.
+All 135 runtime Git blobs were compared with local files: only checkout newline
+representations differ. [Recorded identities](../../results/command-input-scopes/runtime-identities.json)
+are not normalized by runtime freshness checks.
 
 ## Witnessed controls
 
@@ -55,7 +73,9 @@ bytes. The canonical bundle SHA-256 recomputed as
 `7bb6ad7f9e74a96ee22fa14f8b631fa9d9ebddceeef824b0a201c22d0c749d56`.
 Declared base/head/patch/content identities match the embedded bundle; current
 and absent required checks and bound external receipt qualifications are retained.
-The remaining full local and hosted matrix gates are still in progress.
+The remaining full local and hosted matrix gates must be rerun after the
+formatter repair. The installed observations remain at their recorded identity;
+no new installed claim is made for the later formatter-only runtime change.
 
 ## Interpretation and limits
 
