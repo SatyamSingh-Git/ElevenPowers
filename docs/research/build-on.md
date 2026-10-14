@@ -1,5 +1,13 @@
 # What we build on: prior art for each v0.8 component
 
+**Command scopes and shared collection, 2026-10-14.** Reuse the delivered input
+declarations, private approvals, checked descriptor reads, parsers, native attempt
+identity and exact-patch execution state under the existing attribution register.
+Standard-library context variables hold operation-local opening/closing phases;
+SHA-256 binds explicit command identities and per-witness observations. We add
+complete project-declared command selections and independent qualification, not
+a dependency resolver or new execution authority. See [provenance](command-input-scopes.md).
+
 **External input sessions, 2026-10-13.** Reuse the delivered v1 approval,
 descriptor collection, existing native adapters, evidence parsers, locked atomic
 ledger writes and milestone history. These are repository components under the

@@ -1,5 +1,14 @@
 # Native platforms
 
+Current-runtime [command-scope observations](../results/command-input-scopes/README.md)
+used two Sonnet 5.5 medium Claude Code subscription conversations, one per
+language, with two host-created tasks each. Initial exact commands qualified;
+dependency drift preserved the independent milestone. Both model fixes passed
+the independent arithmetic oracle. The resumed failing commands included an
+`echo` trailer and were not attributed to the exact declaration, so these are
+partial installed observations, not a new 12/12 acceptance claim. The other four
+hosts still need current installed exercises.
+
 External Input Witnesses v2 uses the shared native runtime across all five hosts.
 Supplied platform/session/tool-use identities pair actual before/after
 observations; missing fields or callbacks remain incomplete. Python/Node commands

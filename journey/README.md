@@ -1,6 +1,8 @@
 # The journey
 
-Latest: [79 — a pass needs its before](79-a-pass-needs-its-before.md).
+Latest: [80 — one input should not expire every check](80-one-input-should-not-expire-every-check.md).
+
+Recent: [79 — a pass needs its before](79-a-pass-needs-its-before.md).
 
 Recent: [78 — the dependency can change without the patch](78-the-dependency-can-change-without-the-patch.md),
 [77 — the upload is not the evidence](77-the-upload-is-not-the-evidence.md),

@@ -30,4 +30,16 @@ retain broad coverage. Earlier model allowances do not authorize new sessions.
 ## Progress
 
 - Design recorded; baseline main `38f80eb` and its hosted repeat succeeded.
-- Implementation and new acceptance are pending.
+- Steps 1–6 implemented and incrementally pushed. Actual scope/read/reuse probes
+  were witnessed RED→GREEN; one final review's three Important findings passed
+  all eight actual regressions within a 30-test repair group.
+- Runtime frozen at the `3201312` code tree. Local full suite and final hosted
+  matrix/artifact acceptance are running. Independent grader, source reproduction,
+  doctor, stdlib imports and all-five architecture render passed.
+- Two explicitly approved Sonnet 5.5 medium conversations completed two native
+  tasks each under the shared 180-second caps, without API fallback. Independent
+  arithmetic passed; affected/independent milestones retained STALE/CURRENT.
+  Both models appended shell trailers to the failed check, so the second exact
+  declared failure receipt was not attributed. Installed acceptance is partial;
+  no further sessions were run. See retained results and dated validation.
+- Final qualification records, docs/main integration and publication remain open.

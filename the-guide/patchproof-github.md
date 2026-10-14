@@ -1,5 +1,7 @@
 # GitHub evidence presentation
 
+The exported bundle also preserves [command-specific external qualifications](external-inputs.md#command-specific-qualification), per-witness expiry reasons and union coverage gaps. GitHub presentation collects no new execution evidence and does not turn an informational export into a passing verification.
+
 [Declared external inputs](external-inputs.md) appear as current collection,
 root labels and selected fingerprints alongside saved execution qualifications.
 Successful current collection cannot replace absent or unavailable execution

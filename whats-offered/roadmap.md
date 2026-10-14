@@ -1,5 +1,12 @@
 # Roadmap
 
+**Command scopes and shared collection, 2026-10-14.** Implemented, with final
+qualification in progress. Complete project assertions preserve independent
+evidence and bounded report phases remove repeated nested reads. Next qualify
+broader installed adoption and behavior preservation; additional producers,
+remote observations and live PR/fork publication remain independent contributor
+work. See [current status](../docs/status.md). Earlier entries retain their dates.
+
 **Bounded advice, 2026-10-07.** Optional shared edit context is implemented.
 Next qualify installed edit sessions and independently known unrelated references
 before default activation, then run the separately approved end-to-end comparison.

@@ -1,5 +1,7 @@
 # Configuration
 
+Schema 2 [command mappings](external-inputs.md#command-specific-qualification) optionally declare complete witness sets for exact commands. Partial/unmatched/legacy observations remain broad; no check becomes optional. Shared report collection needs no new configuration.
+
 [External input witnesses](external-inputs.md) use a project-owned
 `elevenpowers.inputs.json` and explicit private `.elevenpowers/input-roots.json`
 approval. Required selected file/tree fingerprints qualify ordinary receipts,

@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-10-14 — command-scoped witnesses and shared collection: qualification in progress.**
+Explicit complete command maps preserve independent witness qualifications,
+including saved PatchProof reuse when an unrelated witness is unavailable.
+Required unavailable scopes still defer complete verification; every command
+remains required. Shared external report phases retain closing and late guards.
+The three review findings passed all eight actual regressions within a 30-test
+repair group. Full local/hosted gates and two approved installed conversations
+are running on a frozen runtime. See [validation](validation/2026-10-14-command-input-scopes.md)
+and [journey 80](../journey/80-one-input-should-not-expire-every-check.md).
+
+Next: broader installed adoption and independently graded behavior preservation.
+Additional producers, remote observations and live PR/fork transport remain
+separate work. The older per-command/read-multiplication next-step notes below
+describe the earlier deliveries; command scopes and nested sharing are now built.
+
 **2026-10-13 — External Input Witnesses v2 delivered and qualified.**
 Ordinary identified native receipts, completion-owned verification, confirmation
 and reuse, retained milestones and public views now share selected approved local

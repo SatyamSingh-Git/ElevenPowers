@@ -1,5 +1,7 @@
 # Commands
 
+[Command-scoped witnesses](external-inputs.md#command-specific-qualification) require no new command: declare schema 2 mappings and retain explicit private root approval. Ordinary reports, PatchProof planning/execution, native capture and retained milestones share the qualification. Reports share bounded external phases and launch no checks.
+
 ## ep_inputs — declared external input witnesses
 
 Declare selected dependency files or trees in `elevenpowers.inputs.json`, then

@@ -1,5 +1,7 @@
 # Verification across development milestones
 
+Complete [command input scopes](external-inputs.md#command-specific-qualification) now qualify retained milestones independently. Drift in one selected dependency can stale its behavior check while an independent complete scope stays current. Missing provenance remains incomplete; source freshness is a separate fact.
+
 The [two-stage subscription comparison](preservation-comparison.md) exercises
 this workflow with identical ordinary/assisted inputs and independent checks.
 Its [first four sessions](../results/behavior-preservation/README.md) tied on

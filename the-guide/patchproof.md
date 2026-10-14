@@ -1,5 +1,7 @@
 # PatchProof: the patch and its evidence
 
+[Complete command input mappings](external-inputs.md#command-specific-qualification) preserve independent receipt and saved execution qualifications. Overall union gaps remain visible; an unavailable required scope still defers verification. Nested bundle consumers share opening/closing external reads, with independent source and late-state guards.
+
 [External input witnesses](external-inputs.md) qualify ordinary identified native
 receipts, completion-owned checks, retained milestone history and saved explicit
 execution with selected approved dependency files and trees. Reports show current
