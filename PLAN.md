@@ -5,8 +5,12 @@ Complete exact-command mappings now retain independent selected-input evidence;
 partial, unmatched and historical broad receipts remain broad. Nested reports
 share bounded opening/closing external observations with a late state guard.
 One review's three Important findings reproduced in eight Python/Node cases;
-the repaired group passed 30 checks. Runtime is frozen while local/hosted gates
-and the two approved installed conversations run. See [validation](docs/validation/2026-10-14-command-input-scopes.md),
+the repaired group passed 30 checks. A later full gate found a formatter bug and
+stale probe interfaces; four CLI checks and seven retargeted adversarial cases
+passed after correction. Both corrected Linux cells are fully green; Windows
+and the local full suite remain running on the frozen candidate. Both approved
+installed conversations completed, with partial failure-capture acceptance at
+their recorded runtime. See [validation](docs/validation/2026-10-14-command-input-scopes.md),
 [journey 80](journey/80-one-input-should-not-expire-every-check.md) and
 [plan](docs/superpowers/plans/2026-10-14-command-input-scopes.md).
 
