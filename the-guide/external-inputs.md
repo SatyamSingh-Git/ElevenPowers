@@ -43,8 +43,6 @@ Common manifests and lockfiles are already included in supported repository
 source selection. Use witnesses for additional bytes that your checks actually
 depend on, not as another manifest-only declaration of installed freshness.
 
-## Approve local roots explicitly
-
 ## Select inputs for a declared command
 
 Schema 1 keeps every configured witness applicable to every receipt. Opt into
@@ -68,6 +66,9 @@ Also declare those exact commands through the ordinary project configuration.
 Recognition reuses the runtime's existing declared-command parser, including
 supported literal project-directory wrappers. Up to 64 mappings are supported;
 empty, unknown, duplicate or ambiguous witness selections are refused.
+Commands containing credential values that the runtime redacts cannot qualify
+a narrower identity. Put credentials in the environment instead of a declared
+command string; distinct secret values must never collapse into one scope.
 `complete: false`, unmatched commands and older receipts retain broad coverage.
 An assertion of completeness is your project's dependency contract; ImpactGraph
 and a missing edge do not infer it or permit skipping a required check.
@@ -147,8 +148,9 @@ python ElevenPowers/plugin/bin/ep_patchproof.py --project PROJECT --base BASE --
 python ElevenPowers/plugin/bin/ep_patchproof.py --project PROJECT --base BASE --head HEAD --verify
 ```
 
-No separate capture command is required. All declared witnesses are required for
-the attempt as a whole. Complete unchanged observations can qualify reuse;
+No separate capture command is required. Schema 1 and unmapped commands require
+all declared witnesses; schema 2 complete mappings qualify their selected set.
+Complete unchanged observations can qualify reuse;
 changed bytes, filenames, directory structure, additions/deletions, declaration or binding identity
 prevent reuse. Missing approval, empty selected scope, unreadable inputs or
 partial inspection leave the plan incomplete and block launch/reuse. Changes
@@ -207,9 +209,9 @@ facts separate, and retain required recheck commands. Reports run no checks.
 Closing inspection guards source, command configuration and selected external
 inputs. Persistent movement invalidates receipt, claim and milestone
 qualifications together; the original command result remains unchanged.
-Ordinary reports share two external collections. A PatchProof bundle can collect
-the same selected target eight times through its paired witnesses and nested
-verification exports; each capture retains its limits and the shared deadline.
+Ordinary reports and nested PatchProof bundles share opening and closing external
+collections within one operation. Each selected file is read once per phase;
+paired execution phases and later operations always collect independently.
 
 ## Budgets, output and limits
 

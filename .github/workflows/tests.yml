@@ -46,7 +46,7 @@ jobs:
           python -m eval.oasdiff_install --directory .venv/oasdiff-ci
           python -c "import os, pathlib; p=pathlib.Path('.venv/oasdiff-ci') / ('oasdiff.exe' if os.name == 'nt' else 'oasdiff'); f=open(os.environ['GITHUB_ENV'],'a',encoding='utf-8'); f.write('EP_OASDIFF=' + str(p.resolve()) + '\n'); f.close()"
       - name: External input standard-library imports
-        run: python -S -c "import core.inputs.definition; import core.inputs.bindings; import core.inputs.collection; import core.inputs.access; import core.inputs.receipts; import core.inputs.native; import core.inputs.execution; import eval.external_inputs; import eval.input_sessions"
+        run: python -S -c "import core.inputs.definition; import core.inputs.bindings; import core.inputs.collection; import core.inputs.access; import core.inputs.receipts; import core.inputs.native; import core.inputs.execution; import core.inputs.scopes; import core.inputs.shared; import eval.external_inputs; import eval.input_sessions; import eval.input_scopes; import eval.input_scope_pilot"
       - name: Identify the environment
         run: python -c "import platform, sys; print(sys.version); print(platform.platform())"
       # git needs an identity before the fixtures that commit will work, and the
@@ -67,6 +67,15 @@ jobs:
       - name: Actual ordinary-session external input acceptance
         shell: bash
         run: python -m eval.input_sessions --output "$RUNNER_TEMP/ep-input-sessions"
+      - name: Actual scoped-versus-broad command and shared collection acceptance
+        shell: bash
+        run: python -m eval.input_scopes --output "$RUNNER_TEMP/ep-input-scopes"
+      - name: Retain command-scope observations
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: command-input-scopes-${{ matrix.os }}-${{ matrix.python }}
+          path: ${{ runner.temp }}/ep-input-scopes/result.json
+          retention-days: 7
       - name: The audit probes, named separately so a failure is legible
         run: python -m pytest tests/test_audit_probes.py -q
       - name: Grade the grader

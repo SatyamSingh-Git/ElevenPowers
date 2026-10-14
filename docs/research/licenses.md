@@ -1,5 +1,10 @@
 # License and attribution register
 
+Command-scoped witnesses and shared report collection add no copied library or
+runtime package. They extend the existing declared-command, receipt, descriptor
+reader and ContextVar freshness implementation. Original disposable consumers
+use Python/Node standard APIs. See [provenance](command-input-scopes.md).
+
 External Input Witnesses v1 adds no third-party runtime dependency or copied library. It reuses this project's licensed evidence/ownership modules and Python standard-library filesystem and ctypes APIs. The Windows handle API is documented prior art; documentation links do not vendor implementation code.
 
 The 2026-10-13 GitHub presentation uses the official MIT-licensed

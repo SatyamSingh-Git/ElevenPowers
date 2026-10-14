@@ -2,7 +2,7 @@
 
 This delivery extends ElevenPowers' existing declared-command parser,
 descriptor-checked external collection, receipt metadata and ContextVar freshness
-views (repository MIT license). It introduces no package, command inference,
+views, following the repository's existing attribution register. It introduces no package, command inference,
 dependency graph authority or independent attestation service.
 
 The addition is an explicit project assertion selecting witness IDs for a
