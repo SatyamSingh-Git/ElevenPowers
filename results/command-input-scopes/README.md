@@ -1,5 +1,13 @@
 # Command-scoped input controls
 
+[Corrected-candidate GitHub artifact](github-artifact.json) records the actual
+downloaded public bundle's canonical hash, declared/embedded patch subject,
+independently logged current/failed/incomplete producer states and read-only
+launch counts. This verifies the disposable artifact transport, separately from
+the full suite and live PR/fork publication. [Runtime identities](runtime-identities.json)
+record the 135 runtime files under local, Git LF and Windows CRLF representations;
+freshness always uses actual raw bytes.
+
 [Installed Python](installed-python.json) and [installed JavaScript](installed-javascript.json)
 record the two approved Sonnet 5.5 medium subscription conversations on the final
 recorded local runtime. Each used two turns under one persistent UUID, with one shared

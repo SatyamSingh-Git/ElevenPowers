@@ -27,6 +27,16 @@ All 135 runtime Git blobs were compared with local files: only checkout newline
 representations differ. [Recorded identities](../../results/command-input-scopes/runtime-identities.json)
 are not normalized by runtime freshness checks.
 
+The corrected candidate's evidence-presentation job passed. Its downloaded
+JSON/Markdown are 9,416 and 4,113 bytes. Canonical bundle SHA-256 is
+`6f01c9e6c696a538d2b77a2af7a99d26450f6f28633effa8eec7bfc6a90ab96d`.
+Actual job logs independently confirm `current/failed/incomplete`, counts
+`[1,1,1]`, read-only inspection and matching base/head subjects. See
+[retained verification](../../results/command-input-scopes/github-artifact.json).
+Named audits passed again: 107 in 78.98 seconds. All four independent grader
+states, eight committed-source grades, doctor and standard-library imports
+passed on the corrected local runtime. Full suite/matrix qualification is pending.
+
 ## Witnessed controls
 
 Actual Python/JavaScript consumers exercise independent command scope,
