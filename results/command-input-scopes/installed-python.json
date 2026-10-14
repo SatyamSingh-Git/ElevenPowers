@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "language": "python",
+  "host": "claude",
+  "requested_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_cap": 180,
+  "runtime": "06f5bc356d5cac035cd9334e3737887c6ee9c215050570a8a5d553c77ecde7e3",
+  "model_calls": 2,
+  "api_fallback": false,
+  "state": "returned",
+  "continuation": "failed",
+  "turns": [
+    {
+      "resume": false,
+      "allowance_seconds": 180.0,
+      "exit": 0,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 18,
+          "cache_creation_input_tokens": 6047,
+          "cache_read_input_tokens": 59978,
+          "output_tokens": 1704
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 44.29
+    },
+    {
+      "resume": true,
+      "allowance_seconds": 134.568,
+      "exit": 0,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 4178,
+          "cache_read_input_tokens": 37614,
+          "output_tokens": 670
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 16.638
+    }
+  ],
+  "limits": [
+    "Two tasks in one persistent conversation per language, sharing one 180-second wall allowance; process cleanup has a separate five-second allowance per call.",
+    "No causal coding-quality or population benefit claim; no OS closed-book boundary."
+  ],
+  "conversation_identity": "5c7e2250-35cb-4df7-a5ee-e1f97efaf465",
+  "host_version": "2.1.292 (Claude Code)",
+  "first_task": {
+    "task": "d6ed1d3c8b359c6fb292334877c92ba3f32d00480e8a7fb8965262222b9e1e09",
+    "associations": {
+      "tests": "bound",
+      "build": "bound"
+    },
+    "milestones": {
+      "first": "CURRENT",
+      "second": "CURRENT"
+    },
+    "counts": [
+      4,
+      1
+    ]
+  },
+  "before_second_task": {
+    "task": "d6ed1d3c8b359c6fb292334877c92ba3f32d00480e8a7fb8965262222b9e1e09",
+    "associations": {
+      "tests": "stale",
+      "build": "bound"
+    },
+    "milestones": {
+      "first": "STALE",
+      "second": "CURRENT"
+    },
+    "counts": [
+      4,
+      1
+    ]
+  },
+  "second_task": {
+    "task": "908ae4e5d8930f8502a81905e5cfb8d3df4d47774b10b4ceefe3a75e8a9ddd2b",
+    "associations": {},
+    "milestones": {
+      "first": "STALE",
+      "second": "CURRENT"
+    },
+    "counts": [
+      5,
+      1
+    ]
+  },
+  "host_created_distinct_tasks": true,
+  "session_seconds": 62.547,
+  "model_wall_seconds_including_cleanup": 60.928,
+  "installed_multitask_observed": false,
+  "protected_inputs_unchanged": true,
+  "independent_correctness_exit": 0,
+  "controlled_milestone_drift": {
+    "first": "STALE",
+    "second": "CURRENT"
+  },
+  "controlled_initial": "passed",
+  "controlled_count_delta": [
+    1,
+    0
+  ],
+  "qualification": {
+    "installed_exact_failure_receipt": "not_observed",
+    "observed_failed_command_shape": "declared command; echo \"exit=$?\"",
+    "interpretation": "Host-created task transition and retained independent evidence observed; exact-command failure acceptance incomplete because the model appended a shell trailer.",
+    "count_baseline": "First counter includes two producer/reference rehearsal executions before model calls.",
+    "causal_benefit": "not_measured"
+  }
+}

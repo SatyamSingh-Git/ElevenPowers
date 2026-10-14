@@ -1,5 +1,30 @@
 # Command-scoped input controls
 
+[Installed Python](installed-python.json) and [installed JavaScript](installed-javascript.json)
+record the two approved Sonnet 5.5 medium subscription conversations on the final
+local runtime. Each used two turns under one persistent UUID, with one shared
+180-second cap and no API fallback. Both host-created task transitions were
+observed. Total conversation observation times were 62.547 and 63.477 seconds;
+model-process wall time including cleanup was 60.928 and 62.000 seconds.
+Both model-produced arithmetic fixes passed the independent four-case oracle,
+including a large integer. Protected inputs were unchanged.
+
+Before the second task, drift changed the affected milestone from `CURRENT` to
+`STALE`; the independent milestone stayed `CURRENT`. Each agent reran only the
+affected check, with counter delta `[1,0]`. However, both appended
+`; echo "exit=$?"` to the declared command. The exact-command parser did not
+attribute that shell chain to the declaration. The second task therefore retained
+`STALE/CURRENT`, with no new exact declared failure receipt. Full installed
+failure-capture acceptance is **not established**. The private transcripts were
+inspected to identify this actual command shape and are not exported here.
+
+Separately labeled controller continuation on each model-produced patch passed
+initial verification, observed the injected failure, and reran only the affected
+command (`[1,0]`). This is model-free mechanism evidence. The prompts explicitly
+directed the task and evidence inspection, so these observations do not establish
+a causal improvement in agent behavior or coding quality. No additional model
+sessions were launched after the two approved conversations.
+
 [Pre-review observations](pre-review.json) contain four actual-command cases
 completed in 874.594 seconds, with no model calls, on the recorded runtime.
 This is an intermediate mechanism measurement, not final delivery qualification.
