@@ -35,6 +35,11 @@ four-stage correctness comparison has not been approved or run. No coding
 improvement follows from these controls. Earlier comparisons remain
 [correctness ties](../behavior-preservation/README.md).
 
+[The prepared comparison](prepared-comparison.json) freezes alternating arm
+order, equal 720-second allowances, four public requests per case, initial-file
+and oracle identities before any outcome is observed. Baselines have been
+executed and verified with zero model calls. Preparation grants no live allowance.
+
 See the [contributor guide](../../the-guide/installed-multistage.md),
 [design](../../docs/superpowers/specs/2026-10-16-installed-multistage-design.md)
 and [dated qualification](../../docs/validation/2026-10-16-installed-multistage.md).

@@ -1,0 +1,126 @@
+{
+  "schema": 2,
+  "prepared_at": "2026-10-16T19:00:33.493375+00:00",
+  "host": "claude",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_per_session": 720,
+  "stage_count": 4,
+  "runtime_fingerprint": "6697ec4ad2c5f2c01dbc8d1cf3f6fea35758a573a9b6fdd19971b3e127997e12",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "slots": [
+    "workflow-queue-py-ordinary",
+    "workflow-queue-py-assisted",
+    "workflow-orders-js-assisted",
+    "workflow-orders-js-ordinary"
+  ],
+  "limits": [
+    "Two authored four-stage Python/Node cases, not population evidence.",
+    "Unsigned native delivery and independent outcome comparison are separate qualifications.",
+    "Native tools are not an OS isolation boundary; subscription processes have equal reserved allowances."
+  ],
+  "category": "prepared-not-run",
+  "model_calls": 0,
+  "comparison_approved": false,
+  "protocol_sha256": "9a65cade3796e2069528f9b0c81b697b1374338c0dadfa4d713f3dc8625c8c9c",
+  "input_seals": {
+    "workflow-queue-py-ordinary": {
+      "initial": {
+        "CONTRACT.md": "57c39c802e954471afefcd9b35922c7cbb79e5e069d5cb79b55e0be63361c265",
+        "elevenpowers.milestones.json": "ab51591890b8653ac93f67d9f90cf31abbc3f605fb195021ad5d555a4f4d2825",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "35fc6ec53c6c7f54da91bdceb6f94c6dec9870fa29a0b76ecc42b3315fca6c24",
+        "tests/test_core.py": "4d47a4c4c62239b83398e89ed533d2fd52c5568004b3febd703e862902c507d8",
+        "tests/test_formatting.py": "aafb4c701bf07465eca8a71c307dd5c6e93543d9decb633b4b8e83b64c85623f"
+      },
+      "baseline": "cb09af1c33105b2ad170ae7239f1bda68f9809583b5a2bf538ae9b63e2739b75",
+      "oracles": [
+        "5246b9de7477db8b14e80b17c7aac1fc65e6294226235e870e4226e81c81e9f7",
+        "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+        "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+        "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+        "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee"
+      ],
+      "requests": [
+        "Add leases and retries: claim(key,now=0,ttl=10) validates integer now>=0 and ttl>0 before mutation. A token is live before now+ttl and retakable exactly at expiry. Tokens globally increase; old tokens cannot ack/retry a reassigned claim. retry(key,token) returns bool and releases a current claim. max_attempts is a positive integer constructor option (default3); at that many claims, retry or another expired claim makes the item permanently dead. Preserve duplicate enqueue payload and completed items.",
+        "Add dumps()->JSON with version2 and Queue.loads(text)->independent Queue. The version2 object requires version, serial, max_attempts, items and seen (a reserved event-identity mapping, initially empty). items maps keys to objects requiring payload, done, token, until, attempts and dead. Preserve payloads, completion, lease deadlines, serial and attempts/max_attempts across restart. Future tokens must exceed earlier tokens. Reject malformed JSON, nonobject/unsupported version and missing required snapshot fields with ValueError. Input is normally a valid own snapshot; do not use wall-clock time.",
+        "Add dead(key)->bool and batch(keys,now=0,ttl=10)->dict mapping each key to its (payload,token), in input order. Claim all keys atomically: if any is unknown/completed/live/dead/unclaimable return None and change nothing, including serial. Reject duplicate/nonstring keys or non-list input with ValueError. Empty batch returns {}. Retain earlier retry and restart behavior.",
+        "Add version1 migration: loads accepts {version:1,serial:int,items:{key:{payload,done,token}}}; current token is permanent until ack/retry, attempts are1 when token exists else0, max_attempts defaults3. Add replay(events) atomically applying {event:string,op:enqueue|claim|ack|retry,args:list}. Exact duplicate event IDs are ignored, conflicting payload for an ID raises ValueError unchanged. Persist event identities in version2 dumps across restart. Invalid event/batch raises ValueError without partial mutation."
+      ]
+    },
+    "workflow-queue-py-assisted": {
+      "initial": {
+        "CONTRACT.md": "57c39c802e954471afefcd9b35922c7cbb79e5e069d5cb79b55e0be63361c265",
+        "elevenpowers.milestones.json": "ab51591890b8653ac93f67d9f90cf31abbc3f605fb195021ad5d555a4f4d2825",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc",
+        "service.py": "35fc6ec53c6c7f54da91bdceb6f94c6dec9870fa29a0b76ecc42b3315fca6c24",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        "tests/test_core.py": "4d47a4c4c62239b83398e89ed533d2fd52c5568004b3febd703e862902c507d8",
+        "tests/test_formatting.py": "aafb4c701bf07465eca8a71c307dd5c6e93543d9decb633b4b8e83b64c85623f"
+      },
+      "baseline": "794b01d25c0bb35f625938df4ef4300846eacb077c67a1e6318a549523c3a3fe",
+      "oracles": [
+        "5246b9de7477db8b14e80b17c7aac1fc65e6294226235e870e4226e81c81e9f7",
+        "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+        "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+        "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+        "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee"
+      ],
+      "requests": [
+        "Add leases and retries: claim(key,now=0,ttl=10) validates integer now>=0 and ttl>0 before mutation. A token is live before now+ttl and retakable exactly at expiry. Tokens globally increase; old tokens cannot ack/retry a reassigned claim. retry(key,token) returns bool and releases a current claim. max_attempts is a positive integer constructor option (default3); at that many claims, retry or another expired claim makes the item permanently dead. Preserve duplicate enqueue payload and completed items.",
+        "Add dumps()->JSON with version2 and Queue.loads(text)->independent Queue. The version2 object requires version, serial, max_attempts, items and seen (a reserved event-identity mapping, initially empty). items maps keys to objects requiring payload, done, token, until, attempts and dead. Preserve payloads, completion, lease deadlines, serial and attempts/max_attempts across restart. Future tokens must exceed earlier tokens. Reject malformed JSON, nonobject/unsupported version and missing required snapshot fields with ValueError. Input is normally a valid own snapshot; do not use wall-clock time.",
+        "Add dead(key)->bool and batch(keys,now=0,ttl=10)->dict mapping each key to its (payload,token), in input order. Claim all keys atomically: if any is unknown/completed/live/dead/unclaimable return None and change nothing, including serial. Reject duplicate/nonstring keys or non-list input with ValueError. Empty batch returns {}. Retain earlier retry and restart behavior.",
+        "Add version1 migration: loads accepts {version:1,serial:int,items:{key:{payload,done,token}}}; current token is permanent until ack/retry, attempts are1 when token exists else0, max_attempts defaults3. Add replay(events) atomically applying {event:string,op:enqueue|claim|ack|retry,args:list}. Exact duplicate event IDs are ignored, conflicting payload for an ID raises ValueError unchanged. Persist event identities in version2 dumps across restart. Invalid event/batch raises ValueError without partial mutation."
+      ]
+    },
+    "workflow-orders-js-assisted": {
+      "initial": {
+        "CONTRACT.md": "534d0a08ba49777fdf248b75b32e8c0cba7879271710c53784051ce54d4a080d",
+        "elevenpowers.milestones.json": "72532ac3d35e77abbeaee8efd20aa627e949a7bf7f653790de3df6b1419485b1",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf",
+        "service.cjs": "90cd796fa40f5f71087b73bfab374db966b46caac18011f9b669829656425f85",
+        ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+        "test/core.test.cjs": "3188a44b5fcfb39612683aaa99cabbf9faac21ce140a18c8ffbfc7f72d27ff76",
+        "test/formatting.test.cjs": "0507d5685f1ff262e18747291396426ba1f855c2c9b7201e0c327b40d2a1b2ee"
+      },
+      "baseline": "0047d1afc14f797e1d6fd55cda8a90b78b15824218f27509beacd8d09b5417f5",
+      "oracles": [
+        "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
+        "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+        "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+        "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+        "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91"
+      ],
+      "requests": [
+        "Extend Orders(stock,prices={}) reservations: reserve(id,sku,qty,now=0,ttl=10) expires earlier holds before allocation, positive safe-integer qty/ttl and nonnegative safe-integer now validated before any mutation. expire(now) releases unfulfilled stock exactly at deadline; available(sku,now) optionally expires first. Identical live retries succeed without extending deadline; conflicting or expired-ID reuse fails unchanged. No overselling or double release; SKU isolation and existing signatures remain.",
+        "Add fulfill(id,qty,now=0) and refund(id,qty), returning exact BigInt cents or null for unknown/ineligible/over-quantity operations. Prices are nonnegative decimal integer strings (missing price means0). fulfill expires first and can partially fulfill a live hold; refund is limited to fulfilled-but-unrefunded quantity and returns that stock once. Expiry releases only unfulfilled units, including after partial refunds. Reject nonpositive/non-safe quantities with RangeError before mutation. Preserve exact arithmetic beyond Number.MAX_SAFE_INTEGER.",
+        "Add dumps()->version2 JSON string and static Orders.loads(text)->independent Orders. Preserve stock, decimal-string prices, hold identities/deadlines, fulfillment/refund totals and replay IDs if present. Expiry after restoration must release once; identical retries must not extend original deadlines. Reject malformed/nonobject/unsupported-version/missing-fields snapshots with RangeError. Retain all earlier accounting and validation contracts.",
+        "Add replay(events), atomically applying {event:string,op:reserve|fulfill|refund|expire,args:array}. Exact duplicate event IDs are skipped, including across snapshot/restart. A conflicting repeat, unknown operation, invalid arguments or rejected operation throws RangeError and leaves the entire original state unchanged. Successful expiry events can have no return value. Preserve all previous contracts and exact BigInt accounting."
+      ]
+    },
+    "workflow-orders-js-ordinary": {
+      "initial": {
+        "CONTRACT.md": "534d0a08ba49777fdf248b75b32e8c0cba7879271710c53784051ce54d4a080d",
+        "elevenpowers.milestones.json": "72532ac3d35e77abbeaee8efd20aa627e949a7bf7f653790de3df6b1419485b1",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf",
+        "service.cjs": "90cd796fa40f5f71087b73bfab374db966b46caac18011f9b669829656425f85",
+        "test/core.test.cjs": "3188a44b5fcfb39612683aaa99cabbf9faac21ce140a18c8ffbfc7f72d27ff76",
+        "test/formatting.test.cjs": "0507d5685f1ff262e18747291396426ba1f855c2c9b7201e0c327b40d2a1b2ee"
+      },
+      "baseline": "877db9e229f6844a3542e40fccf89313d7023e86f34c030788d21c567a08ac30",
+      "oracles": [
+        "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
+        "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+        "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+        "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+        "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91"
+      ],
+      "requests": [
+        "Extend Orders(stock,prices={}) reservations: reserve(id,sku,qty,now=0,ttl=10) expires earlier holds before allocation, positive safe-integer qty/ttl and nonnegative safe-integer now validated before any mutation. expire(now) releases unfulfilled stock exactly at deadline; available(sku,now) optionally expires first. Identical live retries succeed without extending deadline; conflicting or expired-ID reuse fails unchanged. No overselling or double release; SKU isolation and existing signatures remain.",
+        "Add fulfill(id,qty,now=0) and refund(id,qty), returning exact BigInt cents or null for unknown/ineligible/over-quantity operations. Prices are nonnegative decimal integer strings (missing price means0). fulfill expires first and can partially fulfill a live hold; refund is limited to fulfilled-but-unrefunded quantity and returns that stock once. Expiry releases only unfulfilled units, including after partial refunds. Reject nonpositive/non-safe quantities with RangeError before mutation. Preserve exact arithmetic beyond Number.MAX_SAFE_INTEGER.",
+        "Add dumps()->version2 JSON string and static Orders.loads(text)->independent Orders. Preserve stock, decimal-string prices, hold identities/deadlines, fulfillment/refund totals and replay IDs if present. Expiry after restoration must release once; identical retries must not extend original deadlines. Reject malformed/nonobject/unsupported-version/missing-fields snapshots with RangeError. Retain all earlier accounting and validation contracts.",
+        "Add replay(events), atomically applying {event:string,op:reserve|fulfill|refund|expire,args:array}. Exact duplicate event IDs are skipped, including across snapshot/restart. A conflicting repeat, unknown operation, invalid arguments or rejected operation throws RangeError and leaves the entire original state unchanged. Successful expiry events can have no return value. Preserve all previous contracts and exact BigInt accounting."
+      ]
+    }
+  }
+}

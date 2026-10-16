@@ -1,6 +1,6 @@
 # Installed Multi-Stage Verification v1 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Qualify installed declared-check adoption, then measure cross-task behavior preservation with a frozen ordinary-versus-assisted comparison.
 
@@ -41,12 +41,12 @@
 
 **Interfaces:** Preserve `pilot(destination, language, source, *, seconds=180, rehearse=False)` behavior. Add keyword `protocol='exact-command'`; `declared-runner` permits at most 240 seconds and emits schema-2 result with `qualified`, `native_runner_adoption`, `task_boundaries`, three `turns`, milestone transitions, seals and qualification predicates. Add CLI `--protocol exact-command|declared-runner` and `--seconds` (default 180); default protocol remains existing behavior. Live acceptance selects 240 explicitly.
 
-- [ ] Inspect final-main CI and retained logs; record real failures/open incident. Repair only demonstrated runtime defects with witnessed RED/GREEN controls before live runs.
-- [ ] Write RED controls for three-turn rehearsal, unchanged legacy behavior, zero model calls in rehearsal, absent native runner usage, outer-success failure preservation, missing seals, shared allowance exhaustion and incomplete receipt retention.
-- [ ] Pin `test_receipts_without_native_runner_usage_do_not_qualify` (`result['qualified'] is False`) and `test_rehearsal_never_launches_models` (`result['model_calls'] == 0`); verify failure before implementation.
-- [ ] Extend the pilot using shipping guidance and native event/ledger inspection. Persist an attempt before every model launch; refuse unapproved execution via the implementation's explicit live-run handoff, not automatic installation or CI.
-- [ ] Run `python -m pytest tests/test_declared_workflow_pilot.py tests/test_declared_check_protocol.py -q`; require forward/adversarial controls green. Rehearse both languages without model calls and retain exact producer identity.
-- [ ] Commit/push the inspected acceptance protocol. Request the separate two-conversation/eight-minute allowance only when it is executable and reviewable; do not launch in this task without it.
+- [x] Inspect final-main CI and retained logs; record real failures/open incident. Repair only demonstrated runtime defects with witnessed RED/GREEN controls before live runs.
+- [x] Write RED controls for three-turn rehearsal, unchanged legacy behavior, zero model calls in rehearsal, absent native runner usage, outer-success failure preservation, missing seals, shared allowance exhaustion and incomplete receipt retention.
+- [x] Pin `test_receipts_without_native_runner_usage_do_not_qualify` (`result['qualified'] is False`) and `test_rehearsal_never_launches_models` (`result['model_calls'] == 0`); verify failure before implementation.
+- [x] Extend the pilot using shipping guidance and native event/ledger inspection. Persist an attempt before every model launch; refuse unapproved execution via the implementation's explicit live-run handoff, not automatic installation or CI.
+- [x] Run `python -m pytest tests/test_declared_workflow_pilot.py tests/test_declared_check_protocol.py -q`; require forward/adversarial controls green. Rehearse both languages without model calls and retain exact producer identity.
+- [x] Commit/push the inspected acceptance protocol. Request the separate two-conversation/eight-minute allowance only when it is executable and reviewable; do not launch in this task without it.
 
 ### Task 2: Freeze two cross-language four-stage cases and independent oracles
 
@@ -54,11 +54,11 @@
 
 **Interfaces:** `workflow_cases.case(name: str) -> dict` resolves only `workflow-queue-py` / `workflow-orders-js`, returning `id`, `language`, `files`, `public_command`, `production`, `new_test_paths`, `milestones` and four `requests`. `workflow_oracles.grade(value: dict, stage: int, candidate: Path, *, seconds: float=15) -> dict` accepts stages 0..4 and returns existing graded/setup/incomplete state plus `groups` rows (`id`, `introduced_stage`, `state` passed/failed), passed/failed counts and input identity. Stages have 2/4/6/8/10 cumulative groups. Existing case names/oracles remain unchanged.
 
-- [ ] Write RED reference/fault controls: valid behavior accepted, stale lease/replay/expiry/accounting/restart/atomicity breaks rejected at the intended group, unchanged utility accepted, deterministic clocks, malformed saved state explicit, both runtimes available/absent handled.
-- [ ] Pin `test_four_stage_group_counts_are_cumulative` (`[len(grade(value,s,reference)['groups']) for s in range(5)] == [2,4,6,8,10]`) and require each named fault to fail its intended group without counting a setup error as detection.
-- [ ] Implement public contracts, reference solutions and independently calculated observable oracles. Reference implementations, faults and grading files live outside model project trees. Public documents fully define promised semantics before case freezing.
-- [ ] Run `python -m pytest tests/test_workflow_cases.py tests/test_preservation_cases.py -q`; require all gold/fault directions and legacy controls green. Record no-model case rehearsal and freeze the suite before any live comparison.
-- [ ] Commit/push the cases with limitations that they are authored systems, not independently sampled upstream repositories.
+- [x] Write RED reference/fault controls: valid behavior accepted, stale lease/replay/expiry/accounting/restart/atomicity breaks rejected at the intended group, unchanged utility accepted, deterministic clocks, malformed saved state explicit, both runtimes available/absent handled.
+- [x] Pin `test_four_stage_group_counts_are_cumulative` (`[len(grade(value,s,reference)['groups']) for s in range(5)] == [2,4,6,8,10]`) and require each named fault to fail its intended group without counting a setup error as detection.
+- [x] Implement public contracts, reference solutions and independently calculated observable oracles. Reference implementations, faults and grading files live outside model project trees. Public documents fully define promised semantics before case freezing.
+- [x] Run `python -m pytest tests/test_workflow_cases.py tests/test_preservation_cases.py -q`; require all gold/fault directions and legacy controls green. Record no-model case rehearsal and freeze the suite before any live comparison.
+- [x] Commit/push the cases with limitations that they are authored systems, not independently sampled upstream repositories.
 
 ### Task 3: Extend the existing staged controller without breaking archived protocols
 
@@ -66,11 +66,11 @@
 
 **Interfaces:** Preserve `prepare(destination, *, names=('queue','inventory'), seconds=480)` defaults and schema-1 behavior. Add `model=None`, choosing legacy model for schema 1 and `claude-sonnet-5-5` for schema 2; only supported subscription models allowed. New case selection produces schema 2 with four immutable requests, language-specific public commands, per-stage oracle hashes and allowance cap 720. Existing `verify(batch, slot, *, initial=False)`, `execute(batch, slot, executable)` and `summarize(batch)` consume both schemas explicitly; neither infers stages from a result count.
 
-- [ ] Write RED controls for identical matched source/contracts, alternating arm order, four resumed turns under one allocated model allowance, changed runtime/grader/configuration rejection, protected-public-test tampering, allowed new tests, missing native transitions lowering delivery verification, and partial journal preservation after interruption.
-- [ ] Pin `test_comparison_reserves_later_turn_allowances`: with a 720-second cap and simulated calls taking 90 seconds, expected caps are `[180,210,270,450]`; no model call occurs in this control. Controller/grading delays must not reduce these caps.
-- [ ] Replace hardcoded Python/two-stage assumptions with frozen case metadata and schema-aware dispatch. Preserve the existing schema-1 constants and artifacts; seals include stage count, model, order, commands, case/oracle/runtime bytes and allowed path rules. Do not expose independent grades as feedback between stages.
-- [ ] Run `python -m pytest tests/test_workflow_controller.py tests/test_preservation.py tests/test_preservation_archive.py tests/test_subscription.py -q`; require four-stage forward/adversarial controls and all legacy behavior green.
-- [ ] Commit/push the controller and documented explicit preparation/run procedure; no model launch required for this deliverable.
+- [x] Write RED controls for identical matched source/contracts, alternating arm order, four resumed turns under one allocated model allowance, changed runtime/grader/configuration rejection, protected-public-test tampering, allowed new tests, missing native transitions lowering delivery verification, and partial journal preservation after interruption.
+- [x] Pin `test_comparison_reserves_later_turn_allowances`: with a 720-second cap and simulated calls taking 90 seconds, expected caps are `[180,210,270,450]`; no model call occurs in this control. Controller/grading delays must not reduce these caps.
+- [x] Replace hardcoded Python/two-stage assumptions with frozen case metadata and schema-aware dispatch. Preserve the existing schema-1 constants and artifacts; seals include stage count, model, order, commands, case/oracle/runtime bytes and allowed path rules. Do not expose independent grades as feedback between stages.
+- [x] Run `python -m pytest tests/test_workflow_controller.py tests/test_preservation.py tests/test_preservation_archive.py tests/test_subscription.py -q`; require four-stage forward/adversarial controls and all legacy behavior green.
+- [x] Commit/push the controller and documented explicit preparation/run procedure; no model launch required for this deliverable.
 
 ### Task 4: Retain independent results and separate readiness from benefit
 
@@ -78,11 +78,11 @@
 
 **Interfaces:** Schema-2 summary contains `scheduled`, `attempted`, `outcome_comparable`, `delivery_verified`, `readiness`, per-case/per-stage `regressed`, `earlier_failed`, `new_failed`, cumulative grades, paired differences, observed command/feedback delivery and separate model/analysis time. `regressed` names earlier groups that passed at the preceding graded stage and fail now; missing prior grade is null. Outcome comparison requires both paired arms host-completed, graded, identity-valid and scope-valid for all four stages; unqualified attempts remain rows. Missing assisted adoption/native delivery alone sets `delivery_verified=False`, without excluding otherwise comparable outcomes. Reproducer accepts exported source snapshots and verifies the frozen case/grader identities without a model call.
 
-- [ ] Write RED outcome controls for assisted advantage, tie, worse result, missing/timeout/setup stage, scope violation, early regression followed by repair, missing receipt, fabricated adoption and post-run fingerprint drift.
-- [ ] Pin `test_failed_delivery_does_not_drop_a_graded_pair` (`outcome_comparable is True`, `delivery_verified is False`) and `test_previously_failing_feature_is_not_a_new_regression`: an unchanged earlier failing group remains in `earlier_failed` but is absent from `regressed`.
-- [ ] Implement summaries/reproduction/public export with explicit scheduled denominators and grade provenance. Distinguish observed receipts, contract correctness, installed readiness and causal interpretation. Use existing redacted evidence exports; no raw prompt/transcript/machine paths in public artifacts.
-- [ ] Run `python -m pytest tests/test_workflow_results.py tests/test_preservation_archive.py -q` and a full no-model four-stage rehearsal; require exact source grades reproduce and all attempt records survive.
-- [ ] Commit/push the report path and frozen protocol before asking for the separate four-conversation/48-minute comparison allowance.
+- [x] Write RED outcome controls for assisted advantage, tie, worse result, missing/timeout/setup stage, scope violation, early regression followed by repair, missing receipt, fabricated adoption and post-run fingerprint drift.
+- [x] Pin `test_failed_delivery_does_not_drop_a_graded_pair` (`outcome_comparable is True`, `delivery_verified is False`) and `test_previously_failing_feature_is_not_a_new_regression`: an unchanged earlier failing group remains in `earlier_failed` but is absent from `regressed`.
+- [x] Implement summaries/reproduction/public export with explicit scheduled denominators and grade provenance. Distinguish observed receipts, contract correctness, installed readiness and causal interpretation. Use existing redacted evidence exports; no raw prompt/transcript/machine paths in public artifacts.
+- [x] Run `python -m pytest tests/test_workflow_results.py tests/test_preservation_archive.py -q` and a full no-model four-stage rehearsal; require exact source grades reproduce and all attempt records survive.
+- [x] Commit/push the report path and frozen protocol before asking for the separate four-conversation/48-minute comparison allowance.
 
 ### Task 5: Installed acceptance, bounded comparison and delivery
 
@@ -90,7 +90,7 @@
 
 **Interfaces:** Task 1 readiness gates Tasks 3–4 live comparison; all independent controls are runnable without a model. Public status distinguishes designed, rehearsed, installed-qualified and compared.
 
-- [ ] Complete one fresh whole-branch review and witness/fix Important findings; inspect current CI and free rehearsal before requesting approved live runs.
+- [x] Complete one fresh whole-branch review and witness/fix Important findings; inspect current CI and free rehearsal before requesting approved live runs.
 - [ ] After fresh allowance, run exactly the two installed sessions. If adoption fails, publish the defect/limit and stop live comparison pending repair/requalification; do not spend the larger allowance automatically.
 - [ ] After readiness and separate allowance, run the four predeclared comparison conversations. Freeze each source stage before independently grading it; keep all incomplete and negative outcomes. Do not change cases/oracles based on results.
 - [ ] Reproduce grades without models; inspect evidence/export privacy. Report selected-sample advantage, tie or worse outcome with exact limits; do not require a favorable result to count as completed measurement.
