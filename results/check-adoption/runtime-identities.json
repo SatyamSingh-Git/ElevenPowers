@@ -3,12 +3,12 @@
   "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
   "runtime_files": 138,
   "local_raw": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
-  "git_lf": "0a74cd94e0d4ecc0434e6ee435e8d138c8107c789a63e7e6b8350e916d4fc3d1",
+  "git_lf": "743652aa9991fab64289f773a545f81369683e4b11a66850d35d482bb4b0e45e",
   "windows_crlf": "0a74cd94e0d4ecc0434e6ee435e8d138c8107c789a63e7e6b8350e916d4fc3d1",
   "harness_local": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
-  "harness_git_lf": "dd09198f38f6f4574fd28c8510cbce9bb6d987a5d3d91c86af985f488dcbdba7",
+  "harness_git_lf": "1f4bc9af12eeca6a59cb52eb2b81e4be995dc4999206ce14a5bcda3afbdc68cc",
   "harness_windows_crlf": "dd09198f38f6f4574fd28c8510cbce9bb6d987a5d3d91c86af985f488dcbdba7",
-  "exercise_sha256": "ef370a678123d9b6946ad58c7ce37bce823ba2920ecea2700763badacec32d14",
+  "exercise_sha256": "441650448ddec9f9afc2dd12b6a401bc8d5c690e0523d909a25936c18f584bb6",
   "limits": [
     "Checkout forms are representation metadata; runtime freshness remains strict raw bytes.",
     "Source qualification and installed acceptance are separate."

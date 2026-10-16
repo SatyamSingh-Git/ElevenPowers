@@ -94,6 +94,13 @@ rendered map views pass with 171 nodes, 423 edges and seven planes in 7.044
 seconds. Full local execution and the current four-cell hosted run remain in
 progress; these records do not establish installed-model adoption.
 
+The checkout-form metadata was corrected after an independent comparison showed
+that `git archive` applies Windows line-ending conversion here. The exporter now
+reads exact stored blobs through `git cat-file --batch`; canonical Git and Windows
+checkout hashes are consequently distinct. This corrects exported representation
+metadata only. The observed local runtime hash and strict raw-byte freshness
+guards are unchanged, and no installed trial used the erroneous forms.
+
 ## Installed history and next observation
 
 [Earlier native findings](2026-10-16-installed-multistage.md) and all four
