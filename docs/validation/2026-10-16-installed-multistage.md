@@ -47,8 +47,8 @@ population benefit, complete dependency coverage, patch safety or OS isolation.
 
 Fresh review, affected/full regression, no-model integrated rehearsal, four-cell
 hosted qualification and all five rendered views are complete for repaired source.
-Installed requalification, any separately approved comparison and final
-main/publication identity remain pending.
+Installed requalification and any separately approved comparison remain pending.
+Main/publication identity is recorded below.
 The earlier Windows advice incident remains unexplained; fresh successful repeats
 do not establish its cause.
 
@@ -220,4 +220,21 @@ Both original native attempts remain unqualified at their earlier producer.
 No fresh installed allowance has been approved, and no additional conversation
 or larger comparison has run. Source qualification does not establish installed
 readiness or a coding-quality advantage. Main integration and publication are
-the remaining delivery steps; both earlier CI incident causes stay open.
+verified below; both earlier CI incident causes stay open.
+
+## Main and published delivery
+
+First delivery [`366048d`](https://github.com/SatyamSingh-Git/ElevenPowers/commit/366048d75378d45526d653675eccb0b8b04acb86)
+was a normal main fast-forward with every task commit included. Remote main and
+the feature branch matched, and zero feature commits were absent. Pages run
+[38972715986](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38972715986)
+succeeded. Independent HTTPS reads matched committed architecture HTML and
+generated graph data byte for byte. [Delivery evidence](../../results/installed-multistage/repaired/delivery.json)
+retains sizes and SHA-256 hashes.
+
+The final documentation closure preserves qualified runtime, harness, test,
+workflow and map bytes. Manual run 38963268204 remains the four-cell source
+qualification; automatic main repeats are separate observations and are not
+reported as passed while pending. Both original installed trials remain failed;
+fresh installed and outcome allowances remain unapproved. The private plan
+workspace is retained for those unfinished measurement steps.

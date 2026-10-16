@@ -78,3 +78,8 @@ executed and verified with zero model calls. Preparation grants no live allowanc
 See the [contributor guide](../../the-guide/installed-multistage.md),
 [design](../../docs/superpowers/specs/2026-10-16-installed-multistage-design.md)
 and [dated qualification](../../docs/validation/2026-10-16-installed-multistage.md).
+
+[Delivery evidence](repaired/delivery.json) binds the first verified main
+fast-forward and exact published HTML/data hashes. Documentation closure keeps
+qualified source and map bytes intact; pending paid measurement is not relabeled
+complete.

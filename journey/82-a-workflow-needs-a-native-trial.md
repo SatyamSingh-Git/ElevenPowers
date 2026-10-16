@@ -55,3 +55,8 @@ pass. A new installed allowance is needed before proceeding. [The validation
 record](../docs/validation/2026-10-16-installed-multistage.md) retains the original
 attempts and exact producer identities. Earlier correctness ties remain unchanged;
 these controls do not establish a coding-quality advantage.
+
+All qualified source reached main at `366048d`. The five rendered views were
+deployed and their HTML/data bytes independently matched the committed files.
+The final record adds documentation only. Native requalification remains a
+separate, allowance-gated next step, with both original failures retained.

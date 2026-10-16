@@ -12,6 +12,8 @@ Repairs pass 2,519 local tests (3 skipped), all four hosted cells, 107 audits
 and all five rendered views. A separate two-conversation installed allowance
 is pending; earlier trials do not qualify the repaired producer. The larger comparison
 remains unrun and no new coding-quality advantage is established.
+Main delivery `366048d` and published architecture byte identities are verified;
+see the [delivery record](results/installed-multistage/repaired/delivery.json).
 See [guide](the-guide/installed-multistage.md), [journey 82](journey/82-a-workflow-needs-a-native-trial.md) and [validation](docs/validation/2026-10-16-installed-multistage.md).
 
 **2026-10-16 — Reliable Declared-Check Execution v1 qualified.**

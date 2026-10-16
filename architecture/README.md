@@ -2,6 +2,8 @@
 
 Installed Multi-Stage Verification is drawn in all five views. Both initial native trials completed but did not qualify. Shared task/provenance/independent-command repairs pass 2,519 local tests and all four hosted cells; a new installed allowance remains pending. Frozen four-stage source grades stay separate from native readiness and benefit. See [guide](../the-guide/installed-multistage.md) and [validation](../docs/validation/2026-10-16-installed-multistage.md).
 
+Main delivery and exact published HTML/data identities are retained in the [delivery record](../results/installed-multistage/repaired/delivery.json). The closure preserves rendered source bytes.
+
 Reliable Declared-Check Execution v1 is now drawn in all five views: explicit property selection, owned real child result, provisional receipts, separate execution-context qualification and host guidance. Final local and four-cell hosted qualification passed; the original advice CI cause remains open. See [guide](../the-guide/declared-checks.md), [journey 81](../journey/81-the-check-owns-its-exit.md) and [validation](../docs/validation/2026-10-16-declared-check-execution.md).
 
 Command-scoped input witnesses and operation-local report collection are now

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "first_main_delivery": "366048d75378d45526d653675eccb0b8b04acb86",
+  "qualified_source_candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+  "qualification_run": 38963268204,
+  "pages_run": 38972715986,
+  "publication": {
+    "commit": "366048d75378d45526d653675eccb0b8b04acb86",
+    "published": [
+      {
+        "path": "architecture/index.html",
+        "status": 200,
+        "bytes": 374445,
+        "sha256": "29a5ef54ed27b35a18a01cdb7c0d2c4f3cbf0c3502db12f54072392c30c1b1ea"
+      },
+      {
+        "path": "architecture/graph-data.js",
+        "status": 200,
+        "bytes": 201605,
+        "sha256": "0edc7bc28ccd06f78b15037fc46788f5d19982a826c1ce546f6d6c41954897e0"
+      }
+    ]
+  },
+  "closure": "Documentation-only closure preserves qualified source and published architecture bytes.",
+  "installed_requalification": "not_run_fresh_allowance_pending",
+  "outcome_comparison": "not_run_unapproved",
+  "open_ci_incidents": [
+    {
+      "run": 38623263659,
+      "cause": "unexplained"
+    },
+    {
+      "run": 38941005978,
+      "cause": "encoded-invocation timeout; not established"
+    }
+  ]
+}

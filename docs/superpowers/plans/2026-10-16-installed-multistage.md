@@ -94,7 +94,7 @@
 - [x] After fresh allowance, run exactly the two installed sessions. If adoption fails, publish the defect/limit and stop live comparison pending repair/requalification; do not spend the larger allowance automatically.
 - [ ] After readiness and separate allowance, run the four predeclared comparison conversations. Freeze each source stage before independently grading it; keep all incomplete and negative outcomes. Do not change cases/oracles based on results.
 - [ ] Reproduce grades without models; inspect evidence/export privacy. Report selected-sample advantage, tie or worse outcome with exact limits; do not require a favorable result to count as completed measurement.
-- [ ] Run affected/full regression gates and all five rendered maps; update guides, plan, status, research, results and journey. Push descriptive parts, integrate verified inputs onto main, and verify remote/published identity without describing pending repeats as passed.
+- [x] Run affected/full regression gates and all five rendered maps; update guides, plan, status, research, results and journey. Push descriptive parts, integrate verified inputs onto main, and verify remote/published identity without describing pending repeats as passed.
 
 ## Self-review
 
@@ -121,3 +121,12 @@ the original observations and their producer; never relabel them after repair.
 The repair changes no completion gate or automatic model activation. Guidance
 remains bounded and reports omitted command instructions explicitly. Earlier
 CI incident causes remain open; green source qualification does not explain them.
+
+## Qualified source delivery
+
+First main fast-forward `366048d` contains all task work. Remote main and the
+feature branch matched with zero feature commits absent. Pages run 38972715986
+succeeded; independent HTTPS reads matched committed architecture HTML/data
+bytes. The documentation closure preserves qualified source and rendered-map
+bytes. Installed requalification and the larger comparison remain pending their
+specific allowances; this does not complete the measurement gate or claim benefit.
