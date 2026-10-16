@@ -172,20 +172,25 @@ Refresh affected verification and inspect the retained independent consumer. Do 
                 if cap<=0: value['state']='incomplete';break
                 row={'stage':stage,'allowance_seconds':cap,'state':'running','started_at':time.time()}
                 value['turns'].append(row);value['model_calls']+=1;_write(path,value)
-                started=time.monotonic();output=''
+                started=time.monotonic();output='';diagnostic=''
                 try:
                     done=run(_command(executable,root,prompt+'\nWork only in this project; do not fetch, install, use network tools or delegate.',identity,stage),
                              cwd=root,timeout=cap,shell=False)
-                    output=done.stdout
+                    output=done.stdout;diagnostic=done.stderr
                     event=next((json.loads(line) for line in reversed(output.splitlines()) if json.loads(line).get('type')=='result'),{})
                     obs=subscription.observation('claude',json.dumps(event),done.stderr)
                     row.update(state='completed' if done.returncode==0 and obs['completed'] and obs['models']==['claude-sonnet-5-5'] else 'incomplete',observation=obs)
                 except (OSError,ValueError,subprocess.SubprocessError) as error:
+                    output=getattr(error,'stdout','') or output
+                    diagnostic=getattr(error,'stderr','') or diagnostic
+                    if isinstance(output,bytes):output=output.decode('utf8','replace')
+                    if isinstance(diagnostic,bytes):diagnostic=diagnostic.decode('utf8','replace')
                     row.update(state='incomplete',error=type(error).__name__)
                 finally:
                     row['wall_seconds']=round(time.monotonic()-started,3)
                     value['model_seconds']+=row['wall_seconds']
-                    log=destination/f'native-{stage}.jsonl';log.write_text(output,encoding='utf8')
+                    log=destination/f'native-{stage}.jsonl';log.write_bytes(output.encode('utf8'))
+                    (destination/f'diagnostic-{stage}.txt').write_bytes(diagnostic.encode('utf8'))
                     row['native']=observe(root,log,since=row['started_at'],session=identity,runtime=value['runtime'])
                     row['scope_preserved']=protected(expected)
                     value['snapshots'].append(snapshot(root));_write(path,value)

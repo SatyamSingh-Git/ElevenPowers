@@ -89,3 +89,30 @@ def test_reserved_allowance_rejects_exhaustion_and_preserves_later_turns():
     assert [p.allowance(720,spent,4-index) for index,spent in enumerate((0,90,180,270))]==[180,210,270,450]
     assert p.allowance(240,240,1)==0
     with pytest.raises(ValueError): p.allowance(240,0,0)
+
+
+@pytest.mark.parametrize('failure',['timeout','output_limit'])
+def test_interrupted_native_run_retains_partial_private_streams(tmp_path,monkeypatch,failure):
+    import subprocess
+    from core.process import OutputLimitExceeded
+    p=api();monkeypatch.setattr(p.tempfile,'gettempdir',lambda:str(tmp_path))
+    # This machine's home is itself a Git repository; model only the outer
+    # location guard while the real exercise preparation and files remain intact.
+    exists=Path.exists
+    monkeypatch.setattr(Path,'exists',lambda path:False if path.name=='.git' and path.parent in tmp_path.parents else exists(path))
+    monkeypatch.setattr(p.shutil,'which',lambda name:'claude')
+    monkeypatch.setattr(p.subscription,'auth',lambda *args:True)
+    output=b'{"type":"assistant","message":{"content":[]}}\n'
+    diagnostic=b'partial diagnostic\n'
+    def interrupted(command,**kwargs):
+        if '--version' in command:return subprocess.CompletedProcess(command,0,'test-version','')
+        error=(subprocess.TimeoutExpired(command,1,output,diagnostic) if failure=='timeout' else
+               OutputLimitExceeded(command,output,diagnostic))
+        raise error
+    monkeypatch.setattr(p,'run',interrupted)
+    destination=tmp_path/'interrupted'
+    result=p.pilot(destination,'python',ROOT,seconds=240)
+    assert result['model_calls']==1 and result['qualified'] is False
+    assert result['turns'][0]['state']=='incomplete'
+    assert (destination/'native-1.jsonl').read_bytes()==output
+    assert (destination/'diagnostic-1.txt').read_bytes()==diagnostic
