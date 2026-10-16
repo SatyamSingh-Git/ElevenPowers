@@ -1,5 +1,19 @@
 # Master Plan v0.8
 
+**2026-10-16 — Reliable Declared-Check Execution v1 implemented; qualification in progress.**
+An explicit project-property runner retains real child outcomes independently of
+outer shells, using existing ownership, provisional receipts and source/input
+guards. Configuration/producer qualification remains separate from source bytes.
+Startup and configured recheck/completion guidance expose the portable entry point.
+See [design](docs/design/declared-check-execution.md), [usage](the-guide/declared-checks.md),
+[journey 81](journey/81-the-check-owns-its-exit.md) and [validation](docs/validation/2026-10-16-declared-check-execution.md).
+
+The prior Windows 3.13 advice failure remains unexplained after 12 local and 80
+hosted successful repetitions; improved diagnostics preserve the next failing
+boundary. No new model session. Next qualify ordinary installed adoption and an
+independently graded multi-stage behavior-preservation comparison before more
+producers or causal coding-benefit claims. Older next-step entries are historical.
+
 **2026-10-15 — command-scoped witnesses and shared collection qualified.**
 Complete exact-command mappings preserve independent external qualifications;
 legacy/partial/unmatched observations remain broad. Shared external report phases

@@ -1,5 +1,7 @@
 # What we build on: prior art for each v0.8 component
 
+[Declared-check execution](declared-check-execution.md) reuses the existing completion runner, contained process execution, project OS ownership, exact parser and paired input observations. It adds explicit property selection and durable outcomes independent of outer shell status; no new third-party dependency.
+
 **Command scopes and shared collection, 2026-10-14.** Reuse the delivered input
 declarations, private approvals, checked descriptor reads, parsers, native attempt
 identity and exact-patch execution state under the existing attribution register.

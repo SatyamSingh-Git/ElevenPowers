@@ -1,5 +1,16 @@
 # Current delivery status
 
+**2026-10-16 — Reliable Declared-Check Execution v1 implemented; final qualification pending.**
+The explicit [runner](../the-guide/declared-checks.md) selects an effective declared
+property and saves the actual child result even when an outer shell exits zero.
+Durable provisional receipts, task ownership and before/after qualification reuse
+the existing runtime. Startup, recheck and completion guidance expose the CLI.
+Actual Python/Node controls retain independent milestones and missing-input refusal;
+five synthetic host callbacks do not replace owned failure evidence. They are not
+installed acceptance. The original Windows advice CI cause remains open after
+successful repetitions with retained diagnostics. See [validation](validation/2026-10-16-declared-check-execution.md).
+Next: ordinary installed adoption and independently graded multi-stage benefit.
+
 **2026-10-15 — command-scoped witnesses and shared collection qualified.**
 Complete command maps retain independent receipt, milestone and PatchProof
 execution evidence, including when an unused witness is unavailable. Every

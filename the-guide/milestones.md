@@ -1,5 +1,7 @@
 # Verification across development milestones
 
+[Owned declared checks](declared-checks.md) feed the existing cross-task history. A failed child remains failed even if its outer shell succeeds. The independent scoped consumer remains current after a different selected dependency changes. Owned configuration/producer association and source-byte freshness are separate qualifications.
+
 Complete [command input scopes](external-inputs.md#command-specific-qualification) now qualify retained milestones independently. Drift in one selected dependency can stale its behavior check while an independent complete scope stays current. Missing provenance remains incomplete; source freshness is a separate fact.
 
 The [two-stage subscription comparison](preservation-comparison.md) exercises

@@ -1,5 +1,7 @@
 # Plan and explicitly run patch verification
 
+[ep_check](declared-checks.md) explicitly runs a single declared property in ordinary working trees. `ep_patchproof.py --verify` remains the separate committed-patch workflow, with its own planning, ownership and reuse checks. Ordinary owned receipts do not establish execution at a particular patch head.
+
 After explicit execution, [GitHub presentation](patchproof-github.md) can share
 the resulting receipts and gaps. Publishing remains read-only and does not
 convert incomplete or failed verification into a successful correctness gate.

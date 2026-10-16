@@ -1,5 +1,19 @@
 # Commands
 
+## ep_check — exact declared checks with owned receipts
+
+```sh
+python plugin/bin/ep_check.py --list --project PATH
+python plugin/bin/ep_check.py tests --project PATH --seconds 120 --json
+```
+
+Select tests/build/typecheck/lint/benchmark when configured. Each execution runs
+the exact command again; listing is read-only. Exit 0 passes, 1 fails, 2 means
+incomplete/refused and 130 means keyboard interruption. The child's owned receipt
+survives an outer successful shell. Default 120 seconds, finite positive maximum
+600; existing bounded cleanup is separate. `off` refuses execution. See
+[the complete contract](declared-checks.md).
+
 [Command-scoped witnesses](external-inputs.md#command-specific-qualification) require no new command: declare schema 2 mappings and retain explicit private root approval. Ordinary reports, PatchProof planning/execution, native capture and retained milestones share the qualification. Reports share bounded external phases and launch no checks.
 
 ## ep_inputs — declared external input witnesses

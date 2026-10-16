@@ -1,5 +1,7 @@
 # Local development and verification
 
+Run owned-check controls with `python -m pytest tests/test_checks.py tests/test_check_cli.py tests/test_declared_check_protocol.py -q`, and actual disposable acceptance with `python -m eval.declared_checks --output NEW_DIR`. No model calls. The manual execution-reliability workflow also retains twenty JavaScript advice repetitions per OS/Python cell, with component diagnostics on failure.
+
 ## External input witness controls
 
 ```sh

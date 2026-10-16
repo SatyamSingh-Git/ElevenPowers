@@ -1,5 +1,7 @@
 # External input witnesses
 
+The [declared-check runner](declared-checks.md) uses existing before/after command-scoped witnesses. Missing required inputs refuse launch; a different complete scope retains its evidence. Explicit execution always reruns its selected command and does not discover complete dependencies.
+
 Command-scoped input witnesses extend ordinary receipts, owned verification,
 cross-task milestones and PatchProof reuse to selected local dependency/tool
 files. A dependency can change at the same

@@ -1,5 +1,7 @@
 # Native platforms
 
+All five host adapters share [the explicit declared-check runner](declared-checks.md). Startup advertises the trusted interpreter/script invocation; configured recheck and completion guidance can offer it. Owned execution does not become a native callback observation or establish installed acceptance by itself.
+
 Recorded-runtime [command-scope observations](../results/command-input-scopes/README.md)
 used two Sonnet 5.5 medium Claude Code subscription conversations, one per
 language, with two host-created tasks each. Initial exact commands qualified;

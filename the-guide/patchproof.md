@@ -1,5 +1,7 @@
 # PatchProof: the patch and its evidence
 
+For ordinary working-tree checks, including dirty/non-Git projects, use [ep_check](declared-checks.md). Its ordinary receipts can enrich a separately eligible PatchProof bundle; the runner does not confer committed patch identity or certify all required checks.
+
 [Complete command input mappings](external-inputs.md#command-specific-qualification) preserve independent receipt and saved execution qualifications. Overall union gaps remain visible; an unavailable required scope still defers verification. Nested bundle consumers share opening/closing external reads, with independent source and late-state guards.
 
 [External input witnesses](external-inputs.md) qualify ordinary identified native
