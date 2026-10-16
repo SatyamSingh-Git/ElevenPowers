@@ -118,10 +118,10 @@ def on_session_start(payload: dict, root: Path) -> int:
                      "Use owned checks for verification tasks, including tasks without edits.")
         from .checks import guidance
         try:
-            runner = guidance(root)
+            runner = guidance(root,batch=True)
             if runner:
                 lines.append(runner)
-                lines.append('Use a declared property to retain the actual child outcome even if an outer shell masks its exit.')
+                lines.append('Use the owned entry point to retain each actual child outcome even if an outer shell masks its exit.')
         except (OSError, ValueError):
             lines.append('Declared-check runner unavailable; inspect saved command configuration.')
     else:
@@ -199,7 +199,7 @@ def _declared_advice(root: Path, request: str) -> str:
         return ''
     from .checks import guidance as declared_guidance
     try:
-        words = declared_guidance(root)
+        words = declared_guidance(root,batch=True)
     except (OSError, ValueError):
         return ''
     return ('Owned receipts preserve child outcomes despite outer shell status.\n' + words) if words else ''

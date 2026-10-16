@@ -46,9 +46,9 @@ def test_startup_supplies_an_executable_exact_check_runner(tmp_path):
     done = subprocess.run([sys.executable, str(launcher), 'SessionStart'],
                           input=json.dumps({'cwd': str(tmp_path)}), capture_output=True, text=True, timeout=30)
     context = json.loads(done.stdout)['hookSpecificOutput']['additionalContext']
-    line = next((x for x in context.splitlines() if x.startswith('Owned declared check tests: ')), '')
+    line = next((x for x in context.splitlines() if x.startswith('Owned declared checks (tests): ')), '')
     assert line
-    args = invocation_args(line.removeprefix('Owned declared check tests: '))
+    args = invocation_args(line.split(': ',1)[1])
     checked = subprocess.run(args, capture_output=True, text=True, timeout=30)
     assert checked.returncode == 1
     from core.ledger import Ledger

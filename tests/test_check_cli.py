@@ -23,9 +23,10 @@ def fixture(root, exit_code=1):
     Ledger(root=root, task='test-cli').save()
 
 
-def test_successful_outer_shell_cannot_replace_owned_failure(tmp_path):
+@pytest.mark.parametrize('selection',['tests','--all'])
+def test_successful_outer_shell_cannot_replace_owned_failure(tmp_path,selection):
     fixture(tmp_path)
-    invocation = f'"{sys.executable}" "{CLI}" tests --project "{tmp_path}" --json'
+    invocation = f'"{sys.executable}" "{CLI}" {selection} --project "{tmp_path}" --json'
     command = invocation + (' & echo outer-complete' if os.name == 'nt' else '; echo outer-complete')
     done = subprocess.run(command, cwd=tmp_path, shell=True, capture_output=True, text=True, timeout=30)
     assert done.returncode == 0

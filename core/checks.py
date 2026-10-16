@@ -67,7 +67,7 @@ def available(root):
             'commands': {k: scrub(v) for k, v in sorted(config.commands.items()) if k in DECLARED_KINDS}}
 
 
-def guidance(root, *, commands=None):
+def guidance(root, *, commands=None, batch=False):
     """Executable host-shell-neutral entry point; inspection never launches it."""
     from .hosts.setup import invocation
     root = Path(root).resolve(strict=True)
@@ -77,6 +77,17 @@ def guidance(root, *, commands=None):
     if not properties or not config.verifies:
         return ''
     ordered=sorted(properties,key=lambda p:(p!='tests',p));lines=[];shown=[]
+    if batch and commands is None:
+        import json
+        args=[sys.executable,str(Path(__file__).resolve().parents[1]/'plugin/bin/ep_check.py'),
+              '--all','--project',str(root)]
+        message=('Owned check arguments: '+json.dumps(args,ensure_ascii=True)+'\n'
+                 +'Owned declared checks ('+', '.join(ordered)+'): '+invocation(args))
+        # Leave room for the native prompt's brief receipt explanation.
+        if len(message)<=1930:
+            return message
+        return ('Owned batch instructions not shown for '+', '.join(ordered)
+                +': invocation exceeds the context bound. Inspect ep_check.py --list; no check is verified by this advice.')
     for selected in ordered:
         line = f'Owned declared check {selected}: ' + invocation([
             sys.executable, str(Path(__file__).resolve().parents[1] / 'plugin/bin/ep_check.py'),

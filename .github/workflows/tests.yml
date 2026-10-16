@@ -48,7 +48,7 @@ jobs:
       - name: External input standard-library imports
         run: python -S -c "import core.inputs.definition; import core.inputs.bindings; import core.inputs.collection; import core.inputs.access; import core.inputs.receipts; import core.inputs.native; import core.inputs.execution; import core.inputs.scopes; import core.inputs.shared; import eval.external_inputs; import eval.input_sessions; import eval.input_scopes; import eval.input_scope_pilot"
       - name: Declared-check standard-library imports
-        run: python -S -c "import core.checks; import eval.declared_checks"
+        run: python -S -c "import core.checks; import core.check_batch; import eval.declared_checks; import eval.check_adoption"
       - name: Multi-stage standard-library imports
         run: python -S -c "import eval.declared_workflow; import eval.workflow_cases; import eval.workflow_oracles; import eval.workflow_results; import eval.workflow_rehearsal"
       - name: Identify the environment
@@ -68,6 +68,16 @@ jobs:
       - name: Actual owned declared-check acceptance
         shell: bash
         run: python -m eval.declared_checks --output "$RUNNER_TEMP/ep-declared-checks"
+      - name: Actual declared batch and guidance acceptance without models
+        shell: bash
+        run: python -m eval.check_adoption --output "$RUNNER_TEMP/ep-check-adoption"
+      - name: Retain batch adoption controls
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: check-adoption-${{ matrix.os }}-${{ matrix.python }}
+          path: ${{ runner.temp }}/ep-check-adoption/result.json
+          retention-days: 7
       - name: Retain declared-check observations
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
