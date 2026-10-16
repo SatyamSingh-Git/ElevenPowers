@@ -34,10 +34,10 @@
 
 **Interfaces:** Consumes `exercise(destination, hosts, languages, modes)`; preserves existing result shape, adds actionable component diagnostics where needed.
 
-- [ ] Preserve assertion diagnostics; inspect hosted evidence and run repeated actual JavaScript controls.
-- [ ] Write a focused regression at the observed failing boundary; run it RED before repair.
-- [ ] Repair the demonstrated cause; verify affected producer controls GREEN. If evidence cannot establish a cause, record that honestly and continue diagnostic qualification rather than inventing a fix.
-- [ ] Commit and push the inspected reliability change with its actual evidence.
+- [x] Preserve assertion diagnostics; inspect hosted evidence and run repeated actual JavaScript controls.
+- [ ] Reproduce the original intermittent failure at a specific boundary and witness its regression RED. **Open incident:** the original log retained only a Boolean failure; twelve local and eighty hosted repetitions passed. There is no defensible boundary regression yet.
+- [x] Record the inconclusive cause and complete diagnostic qualification, rather than inventing a fix. The cause of run 38623263659 remains unresolved.
+- [x] Commit and push the inspected diagnostic change with its actual evidence.
 
 ### Task 2: Add owned declared-check execution
 
@@ -45,10 +45,10 @@
 
 **Interfaces:** Produces `execute(root: Path, property: str, *, seconds: float = 120) -> dict` and `available(root: Path) -> dict`; schema 1 result has `state`, `property`, redacted `command`, `exit_code`, `issues`, `receipt_count`, `attempt`. States passed/failed/incomplete.
 
-- [ ] Write actual-command tests for pass/fail/timeout/repair, unknown/off refusal, and during-command source/config/task/runtime drift; run RED (missing API).
-- [ ] Implement exact property resolution, ownership, provisional save, fresh source/input/guard pairs, contained execution and final save. Recheck configuration under ownership before launch; refuse nesting that would overwrite another journal.
-- [ ] Run `python -m pytest tests/test_checks.py -q`; require all controls GREEN, including persisted receipts and actual execution counters.
-- [ ] Commit and push.
+- [x] Write actual-command tests for pass/fail/timeout/repair, unknown/off refusal, and during-command source/config/task/runtime drift; run RED (missing API).
+- [x] Implement exact property resolution, ownership, provisional save, fresh source/input/guard pairs, contained execution and final save. Recheck configuration under ownership before launch; refuse nesting that would overwrite another journal.
+- [x] Run `python -m pytest tests/test_checks.py -q`; require all controls GREEN, including persisted receipts and actual execution counters.
+- [x] Commit and push.
 
 ### Task 3: Ship the portable CLI
 
@@ -56,10 +56,10 @@
 
 **Interfaces:** Consumes Task 2; accepts optional selector, `--project`, `--list`, `--seconds`, `--json`. Lists without creating state; execution exits according to spec.
 
-- [ ] Write subprocess tests for shell-masked failure, read-only listing, invalid/unknown/zero budgets, aliases, interruption, and redacted public output; run RED (CLI absent).
-- [ ] Implement CLI with metadata-only human/JSON output and explicit failure/incomplete exit status. Do not interpret outer command chains.
-- [ ] Run `python -m pytest tests/test_check_cli.py tests/test_checks.py -q`; require actual child and saved receipt assertions GREEN.
-- [ ] Commit and push.
+- [x] Write subprocess tests for shell-masked failure, read-only listing, invalid/unknown/zero budgets, aliases, interruption, and redacted public output; run RED (CLI absent).
+- [x] Implement CLI with metadata-only human/JSON output and explicit failure/incomplete exit status. Do not interpret outer command chains.
+- [x] Run `python -m pytest tests/test_check_cli.py tests/test_checks.py -q`; require actual child and saved receipt assertions GREEN.
+- [x] Commit and push.
 
 ### Task 4: Connect host guidance and portable acceptance
 
@@ -67,10 +67,10 @@
 
 **Interfaces:** Consumes Tasks 2–3; produces `exercise(destination) -> dict` and `python -m eval.declared_checks --output NEW_DIR`; no model calls.
 
-- [ ] Write actual Python/Node scoped-input, milestones and outer-host callback controls; show pre-feature rejection/absence before implementation where the existing runner already suffices.
-- [ ] Add shared startup guidance using the actual runtime/script paths; keep passive and read-only semantics. Add hosted protocol execution/artifact retention.
-- [ ] Run protocol plus affected host/receipt tests; require owned failure survives outer callbacks, repaired checks become current, independent scopes remain current, and controls are explicitly synthetic rather than installed acceptance.
-- [ ] Commit and push.
+- [x] Write actual Python/Node scoped-input, milestones and outer-host callback controls; show pre-feature rejection/absence before implementation where the existing runner already suffices.
+- [x] Add shared startup guidance using the actual runtime/script paths; keep passive and read-only semantics. Add hosted protocol execution/artifact retention.
+- [x] Run protocol plus affected host/receipt tests; require owned failure survives outer callbacks, repaired checks become current, independent scopes remain current, and controls are explicitly synthetic rather than installed acceptance.
+- [x] Commit and push.
 
 ### Task 5: Review, qualification and publication
 
@@ -78,7 +78,7 @@
 
 **Interfaces:** Final public documentation describes the shipped CLI and actual qualified states; all five maps match final structure.
 
-- [ ] Refresh documentation, journey and architecture; render using `python architecture/check.py --render`.
-- [ ] Conduct one fresh whole-branch review; reproduce/fix Important findings RED→GREEN, retain rulings and deferred minors.
+- [x] Refresh documentation, journey and architecture; render using `python architecture/check.py --render`.
+- [x] Conduct one fresh whole-branch review; reproduce/fix Important findings RED→GREEN, retain rulings and deferred minors.
 - [ ] Run full suite, named audits, independent grader/reproduction, doctor, standard-library imports and final hosted matrix/artifact protocol. Read all failures; no green rerun is described as a demonstrated repair.
 - [ ] Push descriptive qualified parts, integrate main normally, verify remote heads and final docs/runtime/map identities, and report measured results and limitations.
