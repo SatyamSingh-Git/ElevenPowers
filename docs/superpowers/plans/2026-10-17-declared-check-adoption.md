@@ -46,10 +46,10 @@
 
 **Interfaces:** core.check_batch.execute(root, seconds=120) -> schema2 selected/results/state/issues/elapsed_seconds. Internal single-check implementation accepts the current Session; public execute remains schema1. CLI adds mutually-exclusive --all.
 
-- [ ] Write RED real-process tests: independent pass/failure, continued build, one owner/journal run, off/busy/invalid/empty refusal, task/config movement, deadline and interruption; CLI denominator/exit/privacy/legacy controls.
-- [ ] Run tests and witness absent batch behavior; implement minimal orchestration and shared single-check body.
-- [ ] Require exact per-property receipts and no outer wrapper inference. Use actual subprocesses for forward/adversarial controls; controlled clocks/launch boundaries only for races/deadline.
-- [ ] Run batch/single/CLI/declared workflow controls; commit/push.
+- [x] Write RED real-process tests: independent pass/failure, continued build, one owner/journal run, off/busy/invalid/empty refusal, task/config movement, deadline and interruption; CLI denominator/exit/privacy/legacy controls.
+- [x] Run tests and witness absent batch behavior; implement minimal orchestration and shared single-check body.
+- [x] Require exact per-property receipts and no outer wrapper inference. Use actual subprocesses for forward/adversarial controls; controlled clocks/launch boundaries only for races/deadline.
+- [x] Run batch/single/CLI/declared workflow controls; commit/push.
 
 ### Task3: Integrate one-command guidance and portable acceptance
 

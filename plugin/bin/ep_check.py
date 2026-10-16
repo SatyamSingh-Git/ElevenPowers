@@ -13,13 +13,18 @@ def main():
     parser.add_argument('property', nargs='?')
     parser.add_argument('--project', type=Path, default=Path.cwd())
     parser.add_argument('--list', action='store_true', help='list configured checks without running or writing state')
+    parser.add_argument('--all', action='store_true', help='run every declared property with one shared deadline and owner')
     parser.add_argument('--seconds', type=float, default=120, help='shared execution allowance, >0–600 (default 120)')
     parser.add_argument('--json', action='store_true', help='print metadata only, without captured process output')
     args = parser.parse_args()
-    if args.list == bool(args.property):
-        parser.error('choose either --list or one declared property')
+    if sum((args.list,args.all,bool(args.property)))!=1:
+        parser.error('choose one declared property, --all or --list')
     try:
-        value = available(args.project) if args.list else execute(args.project, args.property, seconds=args.seconds)
+        if args.all:
+            from core.check_batch import execute as execute_batch
+            value=execute_batch(args.project,seconds=args.seconds)
+        else:
+            value = available(args.project) if args.list else execute(args.project, args.property, seconds=args.seconds)
         if args.json:
             print(json.dumps(value, ensure_ascii=True, indent=2))
         elif args.list:
@@ -27,11 +32,16 @@ def main():
             for key, command in value['commands'].items():
                 print(key + ': ' + command)
         else:
-            print('Declared check ' + value['property'] + ': ' + value['state'])
-            print('Command: ' + value['command'])
-            print('Child exit: ' + str(value['exit_code']))
-            for issue in value['issues']:
-                print('Issue: ' + issue)
+            if args.all:
+                print('Declared check batch: '+value['state'])
+                for issue in value['issues']:
+                    print('Issue: '+issue)
+            for result in value['results'] if args.all else [value]:
+                print('Declared check ' + result['property'] + ': ' + result['state'])
+                print('Command: ' + result['command'])
+                print('Child exit: ' + str(result['exit_code']))
+                for issue in result['issues']:
+                    print('Issue: ' + issue)
         return 0 if args.list else {'passed': 0, 'failed': 1, 'incomplete': 2}[value['state']]
     except KeyboardInterrupt:
         parser.exit(130, 'Declared check interrupted; started evidence remains incomplete.\n')

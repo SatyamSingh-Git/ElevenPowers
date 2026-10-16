@@ -50,6 +50,30 @@ def test_cli_reports_real_child_outcome(tmp_path, code, state):
     assert 'not ok 1' not in done.stdout and 'stdout' not in value and 'stderr' not in value
 
 
+@pytest.mark.parametrize('code,state',[(0,'passed'),(1,'failed')])
+def test_all_cli_retains_independent_metadata_and_aggregate_exit(tmp_path,code,state):
+    fixture(tmp_path,code)
+    (tmp_path/'build.py').write_text("print('private-captured-build-output')\n")
+    config=Ledger.load(tmp_path).config
+    config.commands['build']=f'"{sys.executable}" build.py'
+    save(tmp_path,config)
+    done=subprocess.run([sys.executable,str(CLI),'--all','--project',str(tmp_path),'--json'],
+                        capture_output=True,text=True,timeout=30)
+    assert done.returncode==code,done.stderr
+    value=json.loads(done.stdout)
+    assert value['state']==state and value['selected']==['tests','build']
+    assert [r['state'] for r in value['results']]==[state,'passed']
+    assert 'private-captured-build-output' not in done.stdout+done.stderr
+
+
+@pytest.mark.parametrize('args',[['tests','--all'],['--list','--all']])
+def test_all_cli_cannot_be_combined_with_another_selection(tmp_path,args):
+    fixture(tmp_path,0)
+    done=subprocess.run([sys.executable,str(CLI),*args,'--project',str(tmp_path)],
+                        capture_output=True,text=True,timeout=15)
+    assert done.returncode==2 and not Ledger.load(tmp_path).evidence
+
+
 def test_listing_does_not_create_private_state(tmp_path):
     (tmp_path / 'package.json').write_text(json.dumps({'scripts': {'test': 'node check.mjs'}}))
     done = subprocess.run([sys.executable, str(CLI), '--list', '--project', str(tmp_path), '--json'],
