@@ -9,6 +9,9 @@ Actual Python/Node controls retain independent milestones and missing-input refu
 five synthetic host callbacks do not replace owned failure evidence. They are not
 installed acceptance. The original Windows advice CI cause remains open after
 successful repetitions with retained diagnostics. See [validation](validation/2026-10-16-declared-check-execution.md).
+Qualification: 2,458 local tests passed with three skips; all four hosted cells,
+107 named audits and five rendered architecture views passed. Main delivery and
+published-body identities are retained in the dated validation record.
 Next: ordinary installed adoption and independently graded multi-stage benefit.
 
 **2026-10-15 — command-scoped witnesses and shared collection qualified.**

@@ -45,3 +45,5 @@ also completed: 2,456 passes, five skips in 3272.58 seconds, with a 32.305-secon
 declared-check protocol. The full local suite also passed; see final qualification below.
 
 Final local regression result: 2458 passed, 3 skipped in 4971.66s. Named audits:107/107; independent grader:4/4; retained source grades:8/8; doctor:11/11. Hosted Windows observations are retained for [3.11](hosted-windows-latest-3.11.json) and [3.13](hosted-windows-latest-3.13.json).
+
+[Delivery evidence](delivery.json) records the first verified main fast-forward and exact published HTML/data hashes. The documentation closure preserves qualified source inputs.

@@ -29,3 +29,5 @@ An owned receipt is useful mechanism evidence, not an installed agent acceptance
 claim and not evidence that coding outcomes improved. The next comparison should
 grade preserved behavior across several development stages. The exact current
 qualification is recorded in [the validation record](../docs/validation/2026-10-16-declared-check-execution.md).
+
+Final qualification passed 2,458 local tests with three skips, all four hosted OS/Python cells, 107 named audits, the four-case grader, eight retained source grades and eleven doctor checks. First main delivery `2139b7f` included all qualified work. All five maps rendered; deployed HTML and graph data matched the committed bytes. The final delivery record adds documentation only, with the runtime and the unexplained earlier CI incident unchanged.

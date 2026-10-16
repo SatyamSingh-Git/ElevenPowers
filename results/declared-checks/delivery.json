@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "first_main_delivery": "2139b7f0c7bc69aac584f0f354732c42292121d0",
+  "qualified_source_candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+  "qualification_run": 38929622453,
+  "pages_run": 38940666124,
+  "publication": {
+    "commit": "2139b7f0c7bc69aac584f0f354732c42292121d0",
+    "published": [
+      {
+        "path": "architecture/index.html",
+        "status": 200,
+        "bytes": 355133,
+        "sha256": "362a0f7a4d70ee293c8306161b4885be3bd4fa4bc4e92a1e727912ff3d1c53cb"
+      },
+      {
+        "path": "architecture/graph-data.js",
+        "status": 200,
+        "bytes": 198898,
+        "sha256": "ce42ff16c16dc002993a7c3fdcfc9343df5265bd694218110eb151c7766ea470"
+      }
+    ]
+  },
+  "closure": "Documentation-only closure preserves qualified runtime/test/workflow inputs and the published architecture bytes.",
+  "open_incident": {
+    "run": 38623263659,
+    "cause": "unexplained"
+  }
+}

@@ -151,3 +151,9 @@ deferred after the failure-artifact issue was regraded and repaired.
 The full local suite passed **2458 tests, 3 skipped, in 4971.66 seconds**. The named audit run passed **107/107 in 105.87 seconds**. Independent grader 4/4, retained source grades 8/8, doctor 11/11, standard-library imports and all five rendered views passed.
 
 [Machine-readable qualification](../../results/declared-checks/qualification.json) retains the exact candidate and all four hosted results. Main integration uses a normal fast-forward of the same qualified runtime/test/workflow inputs, followed by remote identity and published-body checks. A later documentation closure does not requalify a changed runtime. The original advice CI cause remains open; no new model evaluation session or causal coding-benefit claim.
+
+## Main and published delivery
+
+First main delivery [`2139b7f`](https://github.com/SatyamSingh-Git/ElevenPowers/commit/2139b7f0c7bc69aac584f0f354732c42292121d0) was a normal fast-forward; remote main and the feature branch matched, with zero feature commits absent from main. Pages run [38940666124](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38940666124) succeeded. Independent HTTPS reads matched the committed architecture HTML and generated graph data byte for byte. [Delivery evidence](../../results/declared-checks/delivery.json) retains their sizes and SHA-256 hashes.
+
+The final documentation closure preserves the qualified runtime, tests, workflows and architecture bytes. Qualification run 38929622453 remains the four-cell source qualification; automatic runs started by later main pushes are separate observations. The original advice incident remains open.
