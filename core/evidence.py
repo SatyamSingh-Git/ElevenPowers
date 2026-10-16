@@ -226,6 +226,9 @@ class Evidence:
     external_inputs: dict = field(default_factory=dict)
     """Optional bounded before/after execution observations; source facts stay separate."""
 
+    owned_execution: dict = field(default_factory=dict)
+    """Optional explicit runner configuration/producer association; local unsigned metadata."""
+
     def freshness(self, root: Path) -> Freshness:
         source=self.source_freshness(root)
         policy=root/'elevenpowers.inputs.json'
@@ -237,6 +240,10 @@ class Evidence:
         return source
 
     def source_freshness(self, root: Path) -> Freshness:
+        if self.owned_execution != {}:
+            from .checks import bound
+            if not bound(self.owned_execution, root):
+                return Freshness.STALE
         if self.declaration:
             from .config import load
             from .redact import scrub
@@ -306,6 +313,8 @@ class Evidence:
         d["result"] = self.result.value
         if self.external_inputs=={}:
             d.pop('external_inputs')
+        if self.owned_execution=={}:
+            d.pop('owned_execution')
         return d
 
     @classmethod

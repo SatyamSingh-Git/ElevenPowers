@@ -19,6 +19,8 @@ def _data(item):
     value.update(kind=item.kind.value, result=item.result.value, detail='')
     if item.external_inputs=={}:
         value.pop('external_inputs')
+    if item.owned_execution=={}:
+        value.pop('owned_execution')
     return value
 
 
@@ -38,6 +40,10 @@ def record(value):
     if not {'kind', 'identity', 'result', 'observed', 'tree', 'command', 'at'} <= set(value):
         raise ValueError('missing milestone receipt fields')
     item = Evidence.from_dict({**value, 'detail': ''})
+    if item.owned_execution != {}:
+        from ..checks import valid
+        if not valid(item.owned_execution):
+            raise ValueError('invalid owned execution observations')
     if item.external_inputs!={}:
         from ..inputs.receipts import valid
         if not valid(item.external_inputs):
