@@ -67,6 +67,9 @@ def _qualification(batch, slot, protocol, original, definition):
 
 
 def publish(destination, selection):
+    if selection and all(name.rsplit('-',1)[0] in ('workflow-queue-py','workflow-orders-js') for name in selection):
+        from .workflow_results import publish as workflow_publish
+        return workflow_publish(destination,selection)
     if not selection or set(selection) - EXPECTED:
         raise ValueError('select only the four frozen slots')
     out = Path(destination).absolute()

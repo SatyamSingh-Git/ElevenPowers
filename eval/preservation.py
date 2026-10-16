@@ -95,7 +95,7 @@ def _harness(schema=1):
     names=['eval/preservation.py','eval/preservation_cases.py','eval/preservation_oracles.py','eval/subscription.py']
     if schema==2:
         names+=['eval/workflow_cases.py','eval/workflow_queue.py','eval/workflow_orders.py',
-                'eval/workflow_oracles.py','eval/declared_workflow.py','eval/transcript.py']
+                'eval/workflow_oracles.py','eval/declared_workflow.py','eval/transcript.py','eval/workflow_results.py']
     return _hash(b''.join((TOOL_ROOT/name).read_bytes() for name in names))
 
 
@@ -358,6 +358,11 @@ def execute(batch, slot, executable):
         if item['state'] == 'returned':
             item['state'] = 'completed' if item['host_observation']['completed'] else 'host_incomplete'
             if new and item['host_observation'].get('models')!=[protocol['model']]: item['state']='model_unqualified'
+        if new:
+            try:item['conversation_identity']=json.loads(result_event).get('session_id')
+            except (ValueError,TypeError):item['conversation_identity']=None
+            if item['conversation_identity']!=protocol['seals'][slot]['session'] and item['state']=='completed':
+                item['state']='conversation_unqualified'
         try:
             verify(root, slot)
             item['scope'] = 'preserved'
@@ -390,6 +395,9 @@ def execute(batch, slot, executable):
 def summarize(batch):
     root = Path(batch).resolve(strict=True)
     protocol = _read(root / 'protocol.json')
+    if protocol.get('schema')==2:
+        from .workflow_results import summarize as workflow_summary
+        return workflow_summary(root)
     records = {}
     for slot in protocol['slots']:
         path = root / slot / 'result.json'
