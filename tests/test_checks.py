@@ -113,6 +113,7 @@ def test_configuration_change_after_pass_expires_owned_evidence(tmp_path):
     assert execute(tmp_path, 'tests')['state'] == 'passed'
     save(tmp_path, Config(profile='strict', commands={'tests': command}, auto_detect=False))
     assert aggregate(tmp_path).freshness(tmp_path) is Freshness.STALE
+    assert aggregate(tmp_path).source_freshness(tmp_path) is Freshness.FRESH
 
 
 def test_unknown_listing_is_read_only(tmp_path):
@@ -128,3 +129,22 @@ def test_aliases_receive_exact_declared_receipts(tmp_path):
     save(tmp_path, Config(profile='guide', commands={'tests': command, 'build': command}, auto_detect=False))
     assert execute(tmp_path, 'tests')['state'] == 'passed'
     assert {e.declaration for e in Ledger.load(tmp_path).evidence} == {'tests', 'build'}
+
+
+@pytest.mark.parametrize('formatter', ['gate_message', 'end_report'])
+def test_missing_completion_guidance_supplies_executable_check(tmp_path, formatter):
+    from core import report
+    from core.obligations import Claim
+    from core.hosts.setup import invocation_args
+    import subprocess
+    project(tmp_path)
+    ledger = Ledger.load(tmp_path)
+    ledger.claims = [Claim.REFACTOR_SAFE]
+    ledger.save()
+    message = getattr(report, formatter)(ledger)
+    line = next((x for x in message.splitlines() if x.startswith('Declared-check runner: ')), '')
+    assert line
+    checked = subprocess.run(invocation_args(line.removeprefix('Declared-check runner: ')),
+                             capture_output=True, text=True, timeout=30)
+    assert checked.returncode == 0
+    assert aggregate(tmp_path).result is Result.PASS

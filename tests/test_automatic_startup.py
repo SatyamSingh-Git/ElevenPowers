@@ -37,6 +37,25 @@ def test_startup_announces_health_and_discovered_command_through_launcher(tmp_pa
     assert not (tmp_path / ".elevenpowers/config.json").exists()
 
 
+def test_startup_supplies_an_executable_exact_check_runner(tmp_path):
+    from core.hosts.setup import invocation_args
+    (tmp_path / 'check.py').write_text("print('not ok 1 - broken'); raise SystemExit(1)\n")
+    save(tmp_path, Config(profile='guide', auto_detect=False,
+                          commands={'tests': f'"{sys.executable}" check.py'}))
+    launcher = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_hook.py'
+    done = subprocess.run([sys.executable, str(launcher), 'SessionStart'],
+                          input=json.dumps({'cwd': str(tmp_path)}), capture_output=True, text=True, timeout=30)
+    context = json.loads(done.stdout)['hookSpecificOutput']['additionalContext']
+    line = next((x for x in context.splitlines() if x.startswith('Declared-check runner: ')), '')
+    assert line
+    args = invocation_args(line.removeprefix('Declared-check runner: '))
+    checked = subprocess.run(args, capture_output=True, text=True, timeout=30)
+    assert checked.returncode == 1
+    from core.ledger import Ledger
+    evidence = [e for e in Ledger.load(tmp_path).evidence if e.declaration == 'tests']
+    assert evidence[-1].result is Result.FAIL
+
+
 def test_passive_startup_does_not_run_health_work(tmp_path, monkeypatch, capsys):
     from core import hook
     save(tmp_path, Config(profile="off"))

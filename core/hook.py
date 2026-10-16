@@ -115,6 +115,14 @@ def on_session_start(payload: dict, root: Path) -> int:
         lines.append("Verification commands: " + "; ".join(
             f"{need}: {command}" for need, command in sorted(ledger.config.commands.items())))
         lines.append("Missing verification runs automatically at completion; observed commands are recorded as you work.")
+        from .checks import guidance
+        try:
+            runner = guidance(root)
+            if runner:
+                lines.append(runner)
+                lines.append('Use a declared property to retain the actual child outcome even if an outer shell masks its exit.')
+        except (OSError, ValueError):
+            lines.append('Declared-check runner unavailable; inspect saved command configuration.')
     else:
         lines.append("No unambiguous verification command found. Known runners are still observed; "
                      "set commands in .elevenpowers/config.json for automatic verification.")

@@ -134,6 +134,9 @@ def _check(root, check, required, latest, scan, deadline, history_issues):
                 from ..inputs.receipts import inspect as input_inspect
                 value['source_freshness'] = item.source_freshness(root).value
                 value['external_inputs'] = input_inspect(item,root)
+                if item.owned_execution != {}:
+                    from ..checks import inspect as owned_inspect
+                    value['owned_execution'] = owned_inspect(item.owned_execution, root)
                 if value['external_inputs']['state']=='incomplete':
                     value['issues'].append('required external execution or current input coverage is incomplete')
         except (OSError, ValueError, TimeoutError):

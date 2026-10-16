@@ -21,6 +21,10 @@ def main():
         raise ValueError('task changed or unavailable before inspection')
     report = build(root, seconds=seconds, impact=True)
     context, visible = render_with_checks(report)
+    from core.checks import guidance
+    runner = guidance(root, commands=[row['command'] for row in visible])
+    if runner and len(context) + len(runner) + 1 <= 6000:
+        context += '\n' + runner
     checks = [check_hash(row['kind'], row['command']) for row in visible]
     print(json.dumps({'schema': 1, 'context': context, 'checks': checks}))
 

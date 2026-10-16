@@ -231,6 +231,10 @@ class Evidence:
 
     def freshness(self, root: Path) -> Freshness:
         source=self.source_freshness(root)
+        if self.owned_execution != {}:
+            from .checks import bound
+            if not bound(self.owned_execution, root):
+                return Freshness.GONE if source is Freshness.GONE else Freshness.STALE
         policy=root/'elevenpowers.inputs.json'
         if self.external_inputs=={} and not policy.exists() and not policy.is_symlink():
             return source
@@ -240,10 +244,6 @@ class Evidence:
         return source
 
     def source_freshness(self, root: Path) -> Freshness:
-        if self.owned_execution != {}:
-            from .checks import bound
-            if not bound(self.owned_execution, root):
-                return Freshness.STALE
         if self.declaration:
             from .config import load
             from .redact import scrub

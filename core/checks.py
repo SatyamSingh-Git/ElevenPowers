@@ -2,6 +2,7 @@
 import math
 from pathlib import Path
 import subprocess
+import sys
 import time
 import uuid
 
@@ -22,18 +23,26 @@ def context(root):
 
 
 def valid(value):
-    return (isinstance(value, dict) and set(value) == {'schema', 'attempt', 'configuration', 'producer'}
+    return (isinstance(value, dict) and set(value) - {'issues'} == {'schema', 'attempt', 'configuration', 'producer'}
             and type(value['schema']) is int and value['schema'] == 1
+            and isinstance(value.get('issues', []), list) and len(value.get('issues', [])) <= 16
+            and all(isinstance(i, str) and len(i) <= 256 for i in value.get('issues', []))
             and all(hexadecimal(value[k]) for k in ('attempt', 'configuration', 'producer')))
 
 
 def bound(value, root):
-    if not valid(value):
+    if not valid(value) or value.get('issues'):
         return False
     try:
         return context(root) == {k: value[k] for k in ('configuration', 'producer')}
     except (OSError, ValueError, TimeoutError):
         return False
+
+
+def inspect(value, root):
+    state = 'not_configured' if value == {} else 'bound' if bound(value, root) else 'incomplete'
+    return {'state': state, 'issues': [] if state != 'incomplete' else
+            ['Owned command configuration/producer association changed or is incomplete.']}
 
 
 def _config(root):
@@ -56,6 +65,22 @@ def available(root):
     config = _config(root)
     return {'schema_version': 1, 'profile': config.profile,
             'commands': {k: scrub(v) for k, v in sorted(config.commands.items()) if k in DECLARED_KINDS}}
+
+
+def guidance(root, *, commands=None):
+    """Executable host-shell-neutral entry point; inspection never launches it."""
+    from .hosts.setup import invocation
+    root = Path(root).resolve(strict=True)
+    config = _config(root)
+    properties = [k for k, v in config.commands.items() if k in DECLARED_KINDS
+                  and (commands is None or v in commands)]
+    if not properties or not config.verifies:
+        return ''
+    selected = 'tests' if 'tests' in properties else sorted(properties)[0]
+    text = 'Declared-check runner: ' + invocation([
+        sys.executable, str(Path(__file__).resolve().parents[1] / 'plugin/bin/ep_check.py'),
+        selected, '--project', str(root)])
+    return text if len(text) <= 2000 else 'Run ep_check.py PROPERTY --project PATH; inspect --list for declared properties.'
 
 
 def execute(root, property, *, seconds=120):
@@ -115,14 +140,16 @@ def execute(root, property, *, seconds=120):
                     output = _text(getattr(error, 'stdout', '')) + _text(getattr(error, 'stderr', ''))
             result['exit_code'] = code
             after = source_snapshot(root, fresh=True, deadline=session.budget.deadline)
+            source_issues = list(after[0].issues)
             if after[1] != snapshot[1] or after[0].files != snapshot[0].files:
-                issues.append('source inputs changed during declared check')
-            issues.extend(after[0].issues)
+                source_issues.append('source inputs changed during declared check')
+            issues.extend(source_issues)
             if context(root) != before_context:
                 issues.append('configuration or producer changed during declared check')
+                binding = {**binding, 'issues': ['configuration or producer changed during declared check']}
             if Ledger.load(root).task != session.task:
                 raise Superseded('task changed during declared check; provisional evidence retained')
-            snapshot[0].issues.extend(i for i in issues if i not in snapshot[0].issues)
+            snapshot[0].issues.extend(i for i in source_issues if i not in snapshot[0].issues)
             records = parse(command, output, code, root, snapshot=snapshot)
             for record in records:
                 record.owned_execution = binding

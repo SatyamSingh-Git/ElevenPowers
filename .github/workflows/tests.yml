@@ -47,6 +47,8 @@ jobs:
           python -c "import os, pathlib; p=pathlib.Path('.venv/oasdiff-ci') / ('oasdiff.exe' if os.name == 'nt' else 'oasdiff'); f=open(os.environ['GITHUB_ENV'],'a',encoding='utf-8'); f.write('EP_OASDIFF=' + str(p.resolve()) + '\n'); f.close()"
       - name: External input standard-library imports
         run: python -S -c "import core.inputs.definition; import core.inputs.bindings; import core.inputs.collection; import core.inputs.access; import core.inputs.receipts; import core.inputs.native; import core.inputs.execution; import core.inputs.scopes; import core.inputs.shared; import eval.external_inputs; import eval.input_sessions; import eval.input_scopes; import eval.input_scope_pilot"
+      - name: Declared-check standard-library imports
+        run: python -S -c "import core.checks; import eval.declared_checks"
       - name: Identify the environment
         run: python -c "import platform, sys; print(sys.version); print(platform.platform())"
       # git needs an identity before the fixtures that commit will work, and the
@@ -61,6 +63,15 @@ jobs:
         run: python -m pytest -q
       - name: Retained execution reliability controls
         run: python -m eval.execution_reliability --repetitions 10 --seconds 240
+      - name: Actual owned declared-check acceptance
+        shell: bash
+        run: python -m eval.declared_checks --output "$RUNNER_TEMP/ep-declared-checks"
+      - name: Retain declared-check observations
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: declared-checks-${{ matrix.os }}-${{ matrix.python }}
+          path: ${{ runner.temp }}/ep-declared-checks/result.json
+          retention-days: 7
       - name: Actual external dependency drift acceptance
         shell: bash
         run: python -m eval.external_inputs --output "$RUNNER_TEMP/ep-external-inputs"

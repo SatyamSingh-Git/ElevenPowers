@@ -63,6 +63,9 @@ def _gate_message(ledger: Ledger) -> str:
         return ""
     lines.append("")
     lines.append("Discharge the missing obligations, or record cannot_complete with a reason.")
+    runner = _declared_runner(ledger)
+    if runner:
+        lines.append(runner)
     return "\n".join(lines)
 
 
@@ -75,6 +78,14 @@ def start_banner(ledger: Ledger) -> str:
         f"risk:   {ledger.risk.value}{domains}\n"
         f"proof:  {obligations} obligation(s) to discharge"
     )
+
+
+def _declared_runner(ledger):
+    from .checks import guidance
+    try:
+        return guidance(ledger.root)
+    except (OSError, ValueError):
+        return ''
 
 
 def guidance(ledger: Ledger) -> str:
@@ -236,6 +247,10 @@ def _end_report(ledger: Ledger) -> str:
     # repeatedly before anything checked them.
     for said in assumption_wording(unverified(ledger), vacuous_tests(ledger), ledger):
         lines.append(f"  {said}")
+    if status is not Status.VERIFIED:
+        runner = _declared_runner(ledger)
+        if runner:
+            lines.append(runner)
     return "\n".join(lines)
 
 

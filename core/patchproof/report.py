@@ -73,6 +73,7 @@ def _source_inputs(value):
     value=deepcopy(value)
     for receipt in value['receipts']:
         receipt.pop('external_inputs',None)
+        receipt.pop('owned_execution',None)
         receipt['freshness']=receipt['source_freshness']
     for claim in value['task']['claims']:
         claim.pop('state',None)

@@ -105,6 +105,9 @@ def build(root: Path, *, timeout=120):
                              'observed_files': len(record.observed), 'fingerprint': record.tree,
                              'coverage_issues': list(record.coverage_issues),
                              'passed': record.passed, 'failed': record.failed, 'counted': record.counted})
+            if record.owned_execution != {}:
+                from .checks import inspect as owned_inspect
+                receipts[-1]['owned_execution'] = owned_inspect(record.owned_execution, root)
             if external['state']=='incomplete':
                 actions.append(f'Resolve incomplete external input observations and rerun: {record.command or record.identity}')
             if record.execution != 'complete':
