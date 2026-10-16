@@ -141,6 +141,9 @@ print(json.dumps(result.rows))
 
 
 def oracle(value, stage):
+    if value['id'] in ('workflow-queue-py','workflow-orders-js'):
+        from .workflow_oracles import oracle as workflow_oracle
+        return workflow_oracle(value,stage)
     if value['id'] not in ('queue', 'inventory') or type(stage) is not int or not 0 <= stage <= 2:
         raise ValueError('invalid oracle case or stage')
     checks = QUEUE_CHECKS if value['id'] == 'queue' else INVENTORY_CHECKS
@@ -149,6 +152,9 @@ def oracle(value, stage):
 
 
 def grade(value, stage, candidate, *, seconds=15):
+    if value['id'] in ('workflow-queue-py','workflow-orders-js'):
+        from .workflow_oracles import grade as workflow_grade
+        return workflow_grade(value,stage,candidate,seconds=seconds)
     if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 0 < seconds <= 30:
         raise ValueError('invalid grading budget')
     source = oracle(value, stage)

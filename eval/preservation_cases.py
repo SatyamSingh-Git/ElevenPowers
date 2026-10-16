@@ -189,6 +189,9 @@ REQUESTS = {
 
 
 def case(name):
+    if name in ('workflow-queue-py','workflow-orders-js'):
+        from .workflow_cases import case as workflow_case
+        return workflow_case(name)
     if name not in REQUESTS:
         raise ValueError('unknown preservation case')
     base, one, two, public = ((QUEUE, QUEUE_ONE, QUEUE_TWO, PUBLIC_QUEUE) if name == 'queue'
