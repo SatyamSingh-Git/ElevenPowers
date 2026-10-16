@@ -42,9 +42,10 @@ population benefit, complete dependency coverage, patch safety or OS isolation.
 
 ## Pending delivery gates
 
-Final review, complete affected/full regression, no-model integrated rehearsal,
-installed acceptance, any separately approved comparison, hosted qualification,
-all five rendered architecture views and main/publication identity remain pending.
+Fresh review, affected regression, no-model integrated rehearsal and the first
+five-view render are complete. Full regression, installed acceptance, any
+separately approved comparison, hosted matrix qualification, final map refresh
+and main/publication identity remain pending.
 The earlier Windows advice incident remains unexplained; fresh successful repeats
 do not establish its cause.
 
@@ -81,3 +82,10 @@ The full local suite and corrected-candidate hosted run
 are in progress at source candidate `ed18a53`. Shipping runtime files are
 unchanged by this evaluation milestone. Native acceptance is still held for
 release health; the approved two conversations have not been used.
+
+The independently downloaded [GitHub evidence artifact](../../results/installed-multistage/github-artifact.json)
+matches its canonical bundle hash and independently logged subject. Its producer
+states are current/failed/incomplete, counts are `[1,1,1]`, and reporting is
+read-only. The missing typecheck remains absent. This disposable informational
+transport result does not establish installed adoption or patch correctness.
+All **107 named audits passed in 102.46 seconds**.

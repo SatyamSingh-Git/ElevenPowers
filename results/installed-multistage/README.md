@@ -5,6 +5,10 @@ ordinary-versus-assisted correctness measurement. Passing one does not establish
 the others. The new cases are authored Python and JavaScript systems, not a
 representative sample of upstream projects.
 
+[Disposable GitHub transport](github-artifact.json) independently verifies the
+candidate's canonical bundle, logged subject and current/failed/incomplete
+states. It is a separate capability check, not a live workflow outcome.
+
 ## Retained controls
 
 [The local rehearsal](local.json) records four scheduled arms, four stages per
