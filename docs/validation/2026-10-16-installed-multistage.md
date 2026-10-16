@@ -68,3 +68,16 @@ the existing process runner, with the same 30-second cap. This does not establis
 or repair the cause of the hosted latency. Live runs remain held for a fresh
 healthy candidate. The earlier JavaScript advice incident is a separate open
 cause, not explained by either successful repeats or this timeout.
+
+The single review repair pass passed **65 affected and legacy controls in
+262.78 seconds**; the encoded-runner diagnostic group passed **8 in 12.33
+seconds**. Standard-library imports, the four-case independent grader, all
+eight historical source grades and eleven host diagnostics passed. The final
+[local no-model rehearsal](../../results/installed-multistage/local.json)
+reproduced all sixteen scheduled source snapshots in **37.108 seconds**.
+
+The full local suite and corrected-candidate hosted run
+[38951108845](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38951108845)
+are in progress at source candidate `ed18a53`. Shipping runtime files are
+unchanged by this evaluation milestone. Native acceptance is still held for
+release health; the approved two conversations have not been used.
