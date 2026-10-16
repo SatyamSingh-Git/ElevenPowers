@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "state": "partial_matrix",
+  "cells": [
+    {
+      "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+      "hosted_run": 38963268204,
+      "job": 117183374367,
+      "platform": "ubuntu-latest",
+      "python": "3.11",
+      "suite": {
+        "passed": 2513,
+        "skipped": 9,
+        "seconds": 595.09
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 22.72
+      },
+      "workflow_rehearsal_seconds": 4.572,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    },
+    {
+      "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+      "hosted_run": 38963268204,
+      "job": 117183374456,
+      "platform": "ubuntu-latest",
+      "python": "3.13",
+      "suite": {
+        "passed": 2513,
+        "skipped": 9,
+        "seconds": 623.7
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 18.4
+      },
+      "workflow_rehearsal_seconds": 4.877,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    }
+  ],
+  "limits": [
+    "No model calls; authored reference controls are not installed adoption or coding benefit."
+  ]
+}

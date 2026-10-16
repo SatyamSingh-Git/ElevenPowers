@@ -46,6 +46,8 @@ source `ed18a53`, including its two failed live attempts. The subsequent
 modules. Its [separate no-model rehearsal](repaired/local.json) reproduces all
 sixteen stages. Earlier qualification does not automatically qualify that new
 producer or establish installed readiness for it.
+The [repaired matrix record](repaired/hosted-qualification.json) retains new
+source qualification separately; incomplete cells remain pending.
 
 The two approved Claude Code Sonnet 5.5 medium conversations completed all three
 turns, using 104.287 seconds for Python and 73.077 seconds for JavaScript. Both

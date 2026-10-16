@@ -177,3 +177,17 @@ targets exist. Fresh full local and hosted run
 [38963268204](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38963268204)
 remain pending. A new two-conversation installed allowance is requested but not
 approved at this observation; no additional model call has run.
+
+Both repaired-source Linux jobs are complete. Their downloaded ZIP digests,
+sixteen stage rows, reference source/oracle hashes and raw runtime/harness forms
+match candidate `8d26185`:
+
+| Repaired cell | Suite passed | Skipped | Suite seconds | Rehearsal seconds |
+|---|---:|---:|---:|---:|
+| Linux / Python 3.11 | 2513 | 9 | 595.09 | 4.572 |
+| Linux / Python 3.13 | 2513 | 9 | 623.70 | 4.877 |
+
+Their named audits pass 105 applicable controls with two platform skips in 22.72
+and 18.40 seconds. Grader, historical source reproduction and doctor pass.
+[Repaired-source matrix evidence](../../results/installed-multistage/repaired/hosted-qualification.json)
+remains partial while Windows runs; it does not reuse initial-source qualification.
