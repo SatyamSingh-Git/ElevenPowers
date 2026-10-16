@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "producer": "743652aa9991fab64289f773a545f81369683e4b11a66850d35d482bb4b0e45e",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "observations": [
+    {
+      "language": "python",
+      "outcomes": [
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "failed",
+          "passed"
+        ],
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "incomplete",
+          "passed"
+        ]
+      ],
+      "aggregate_states": [
+        "passed",
+        "failed",
+        "passed",
+        "incomplete"
+      ],
+      "milestones": [
+        [
+          "CURRENT",
+          "CURRENT"
+        ],
+        [
+          "STALE",
+          "CURRENT"
+        ],
+        [
+          "FAILED",
+          "CURRENT"
+        ],
+        [
+          "CURRENT",
+          "CURRENT"
+        ]
+      ],
+      "counts_before_missing": [
+        3,
+        3
+      ],
+      "counts_after_missing": [
+        3,
+        4
+      ],
+      "outer_shell_exit": 0,
+      "owned_failure_survived_callbacks": true,
+      "synthetic_hosts": [
+        "claude",
+        "codex",
+        "gemini",
+        "cursor",
+        "copilot"
+      ],
+      "new_task_guidance_emitted": true,
+      "advice_characters": 539,
+      "advice_sha256": "07dba71c94c8cda26640340f0e3f79c99e640b6bb0d3d7dbe0fb3460dd096921",
+      "advice_launched_nothing": true,
+      "missing_property_unrun": true,
+      "model_calls": 0,
+      "installed_acceptance": false,
+      "qualified": true
+    },
+    {
+      "language": "javascript",
+      "outcomes": [
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "failed",
+          "passed"
+        ],
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "incomplete",
+          "passed"
+        ]
+      ],
+      "aggregate_states": [
+        "passed",
+        "failed",
+        "passed",
+        "incomplete"
+      ],
+      "milestones": [
+        [
+          "CURRENT",
+          "CURRENT"
+        ],
+        [
+          "STALE",
+          "CURRENT"
+        ],
+        [
+          "FAILED",
+          "CURRENT"
+        ],
+        [
+          "CURRENT",
+          "CURRENT"
+        ]
+      ],
+      "counts_before_missing": [
+        3,
+        3
+      ],
+      "counts_after_missing": [
+        3,
+        4
+      ],
+      "outer_shell_exit": 0,
+      "owned_failure_survived_callbacks": true,
+      "synthetic_hosts": [
+        "claude",
+        "codex",
+        "gemini",
+        "cursor",
+        "copilot"
+      ],
+      "new_task_guidance_emitted": true,
+      "advice_characters": 555,
+      "advice_sha256": "5a90cb924b34fa858d4bedfcda0d1e7b346d6e8e458e83473b4fc2fcba2d3f8f",
+      "advice_launched_nothing": true,
+      "missing_property_unrun": true,
+      "model_calls": 0,
+      "installed_acceptance": false,
+      "qualified": true
+    }
+  ],
+  "limits": [
+    "Actual Python/Node child processes with synthetic guidance and outer-host callbacks.",
+    "No installed-model acceptance, causal coding benefit or exhaustive dependency coverage."
+  ],
+  "qualified": true,
+  "seconds": 4.689,
+  "retention": {
+    "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+    "hosted_run": 38979692214,
+    "job": 117237378104,
+    "artifact_id": 12080932353,
+    "artifact_sha256": "8f149223be92c20f6f9234ef12a30a38e1c4ad9456f039382c4c9408751f7296",
+    "platform": "ubuntu-latest",
+    "python": "3.13",
+    "producer_form": "git_lf",
+    "independently_checked_cases": 2
+  }
+}

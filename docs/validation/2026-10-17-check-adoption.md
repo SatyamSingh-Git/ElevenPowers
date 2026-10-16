@@ -109,6 +109,15 @@ snapshots in 31.849 seconds, with zero model calls. Process durations and privat
 log digests remain distinct from the tools' own reported durations. A running
 full suite is explicitly pending in this record.
 
+The [current hosted record](../../results/check-adoption/hosted-qualification.json)
+has two completed Linux cells. Python 3.11 passed 2,552 tests with nine skips in
+600.70 seconds; Python 3.13 passed the same counts in 589.44 seconds. Their
+105 passing audits each skip two platform-specific probes. Both complete the
+four-case grader, eight source reproductions and remaining workflow gates.
+Downloaded batch artifacts match the API's ZIP digests, canonical producer bytes,
+all expected outcome transitions and independent execution counts. The Windows
+cells remain pending; this is a partial matrix, not four-cell qualification.
+
 ## Installed history and next observation
 
 [Earlier native findings](2026-10-16-installed-multistage.md) and all four

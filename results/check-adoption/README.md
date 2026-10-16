@@ -17,6 +17,10 @@ progress. No new installed session has run at this producer yet.
 source reproduction, host-doctor and sixteen-snapshot workflow results. The full
 suite remains pending until its own process exits successfully.
 
+The [hosted record](hosted-qualification.json) currently retains both completed
+Linux cells and their independently checked Python/Node artifacts. Windows
+cells remain pending. A partial matrix is not complete source qualification.
+
 The user has given standing permission for needed Sonnet 5.5 medium subscription
 conversations. The next installed gate uses two disposable conversations,
 240 seconds each across three turns, after healthy source qualification, with

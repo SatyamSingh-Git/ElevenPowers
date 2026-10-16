@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+  "hosted_run": 38979692214,
+  "state": "partial",
+  "cells": [
+    {
+      "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+      "hosted_run": 38979692214,
+      "job": 117237378134,
+      "artifact_id": 12080648918,
+      "artifact_sha256": "f2cdc6cf2facf4e6c9a2a3233e055f0cfe3d141dd8a4941a55500775ef60f7ab",
+      "platform": "ubuntu-latest",
+      "python": "3.11",
+      "producer_form": "git_lf",
+      "independently_checked_cases": 2,
+      "suite": {
+        "passed": 2552,
+        "skipped": 9,
+        "seconds": 600.7
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 21.98
+      },
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "exercise_seconds": 5.129,
+      "log_sha256": "9e766e4b5a113eecdd15328fcb454b38ee97ab553b53ff858c4fcc129d66a717"
+    },
+    {
+      "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+      "hosted_run": 38979692214,
+      "job": 117237378104,
+      "artifact_id": 12080932353,
+      "artifact_sha256": "8f149223be92c20f6f9234ef12a30a38e1c4ad9456f039382c4c9408751f7296",
+      "platform": "ubuntu-latest",
+      "python": "3.13",
+      "producer_form": "git_lf",
+      "independently_checked_cases": 2,
+      "suite": {
+        "passed": 2552,
+        "skipped": 9,
+        "seconds": 589.44
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 16.53
+      },
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "exercise_seconds": 4.689,
+      "log_sha256": "c1d8a0aaccbf70bc8706fb3b6e1cf255fdade9717da2b69afa105115c53958a9"
+    }
+  ],
+  "pending": [
+    "suite (windows-latest, 3.11)",
+    "suite (windows-latest, 3.13)"
+  ],
+  "failed": [],
+  "github_presentation": {
+    "job": 117237377806,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "limits": [
+    "Every retained artifact is independently checked against actual outcomes, counters and producer bytes.",
+    "No installed-model acceptance or causal coding-benefit claim."
+  ]
+}
