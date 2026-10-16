@@ -114,7 +114,8 @@ def on_session_start(payload: dict, root: Path) -> int:
     if ledger.config.commands:
         lines.append("Verification commands: " + "; ".join(
             f"{need}: {command}" for need, command in sorted(ledger.config.commands.items())))
-        lines.append("Missing verification runs automatically at completion; observed commands are recorded as you work.")
+        lines.append("Completion may run missing coding obligations; each declared property needs its own receipt. "
+                     "Use owned checks for verification tasks, including tasks without edits.")
         from .checks import guidance
         try:
             runner = guidance(root)
@@ -159,6 +160,7 @@ def on_prompt(payload: dict, root: Path) -> int:
             ledger.opened_dirty = _changed_paths(root)
     from .hosts.readiness import record_task
     record_task(ledger.task)
+    advice = _declared_advice(root, request) if new_subject or identity_missing else ''
     if not claims:
         if ledger.request and not new_subject and not opens_new_task(request):
             if identity_missing:
@@ -176,6 +178,8 @@ def on_prompt(payload: dict, root: Path) -> int:
         ledger.claims = []
         ledger.request = request
         ledger.save()
+        if advice:
+            _emit("UserPromptSubmit", additionalContext=advice)
         return 0
 
     ledger.request = request
@@ -184,8 +188,21 @@ def on_prompt(payload: dict, root: Path) -> int:
     ledger.risk, ledger.domains = risk_of(ledger.touched, request)
     ledger.blocks = 0
     ledger.save()
-    _emit("UserPromptSubmit", additionalContext=start_banner(ledger))
+    _emit("UserPromptSubmit", additionalContext='\n'.join(filter(None, (start_banner(ledger), advice))))
     return 0
+
+
+def _declared_advice(root: Path, request: str) -> str:
+    """Advice for a new verification subject; never creates a claim or runs it."""
+    import re
+    if not re.search(r'\b(?:verify|verification|recheck|rerun|validate|validation)\b', request, re.I):
+        return ''
+    from .checks import guidance as declared_guidance
+    try:
+        words = declared_guidance(root)
+    except (OSError, ValueError):
+        return ''
+    return ('Owned receipts preserve child outcomes despite outer shell status.\n' + words) if words else ''
 
 
 def on_pre_tool(payload: dict, root: Path) -> int:

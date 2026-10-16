@@ -142,9 +142,9 @@ def test_missing_completion_guidance_supplies_executable_check(tmp_path, formatt
     ledger.claims = [Claim.REFACTOR_SAFE]
     ledger.save()
     message = getattr(report, formatter)(ledger)
-    line = next((x for x in message.splitlines() if x.startswith('Declared-check runner: ')), '')
+    line = next((x for x in message.splitlines() if x.startswith('Owned declared check tests: ')), '')
     assert line
-    checked = subprocess.run(invocation_args(line.removeprefix('Declared-check runner: ')),
+    checked = subprocess.run(invocation_args(line.removeprefix('Owned declared check tests: ')),
                              capture_output=True, text=True, timeout=30)
     assert checked.returncode == 0
     assert aggregate(tmp_path).result is Result.PASS

@@ -78,11 +78,11 @@ def guidance(root, *, commands=None):
         return ''
     ordered=sorted(properties,key=lambda p:(p!='tests',p));lines=[];shown=[]
     for selected in ordered:
-        line = 'Declared-check runner: ' + invocation([
+        line = f'Owned declared check {selected}: ' + invocation([
             sys.executable, str(Path(__file__).resolve().parents[1] / 'plugin/bin/ep_check.py'),
             selected, '--project', str(root)])
         # Reserve room to name any command instructions omitted by the bound.
-        if len('\n'.join([*lines,line]))<=1750:
+        if len('\n'.join([*lines,line]))<=1680:
             lines.append(line);shown.append(selected)
     missing=[p for p in ordered if p not in shown]
     if missing:

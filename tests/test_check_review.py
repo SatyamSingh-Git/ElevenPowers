@@ -50,7 +50,7 @@ def test_actual_encoded_runner_envelope_does_not_become_a_typecheck(tmp_path):
     from core.process import run
     (tmp_path / 'check.py').write_text('raise SystemExit(1)\n')
     save(tmp_path, Config(profile='guide', commands={'typecheck':f'"{sys.executable}" check.py .'}, auto_detect=False))
-    command = guidance(tmp_path).removeprefix('Declared-check runner: ') + ' & echo outer-complete'
+    command = guidance(tmp_path).split(': ',1)[1] + ' & echo outer-complete'
     started=time.monotonic()
     try:
         done = run(command,cwd=tmp_path,shell=True,timeout=30)
@@ -63,6 +63,9 @@ def test_actual_encoded_runner_envelope_does_not_become_a_typecheck(tmp_path):
                 'stdout':done.stdout[-4096:],'stderr':done.stderr[-4096:]}
     assert done.returncode == 0,diagnostic
     assert parse(command,done.stdout,0,tmp_path) == [],diagnostic
+    from core.evidence import Result
+    assert any(e.declaration=='typecheck' and e.owned_execution and e.result is Result.FAIL
+               for e in Ledger.load(tmp_path).evidence),diagnostic
 
 
 def test_unrelated_genuine_typecheck_still_produces_evidence(tmp_path):

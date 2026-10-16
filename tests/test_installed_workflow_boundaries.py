@@ -70,7 +70,7 @@ def test_guidance_exposes_each_independent_declared_property(tmp_path):
     lines=guidance(tmp_path).splitlines()
     assert len(lines)==2 and len(guidance(tmp_path))<=2000
     for line in lines:
-        args=invocation_args(line.removeprefix('Declared-check runner: '))
+        args=invocation_args(line.split(': ',1)[1])
         done=subprocess.run(args,cwd=tmp_path,capture_output=True,text=True,timeout=30)
         assert done.returncode==0
     assert {e.declaration for e in Ledger.load(tmp_path).evidence if e.owned_execution}=={'tests','build'}
