@@ -118,3 +118,27 @@ def test_source_regrading_does_not_claim_historical_harness_execution(batch,tmp_
     result=api().reproduce(archive)
     assert result['qualified'] and result['grading_only']
     assert result['historical_harness_matches'] is False
+
+
+@pytest.mark.parametrize('late_defect',['protected_test','source_snapshot'])
+def test_late_integrity_failure_retains_earlier_regression_and_time(batch,late_defect):
+    root,protocol=batch;slot=protocol['slots'][1];folder=root/slot;candidate=folder/'candidate'
+    value=case('workflow-queue-py');record=p._read(folder/'result.json')
+    (candidate/'service.py').write_text(value['fault'][0],encoding='utf8')
+    earlier=record['stages'][2]
+    earlier['source_after']=p._manifest(candidate)
+    earlier['independent_grade']=grade(value,3,candidate)
+    p._write(folder/'source-3.json',{n:(candidate/n).read_bytes().decode('utf8') for n in value['production']})
+    (candidate/'service.py').write_text(value['gold'][3],encoding='utf8')
+    if late_defect=='protected_test':
+        public=next((candidate/'tests').glob('test_*.py'));public.write_text('# changed protected test\n')
+    else:
+        (folder/'source-4.json').write_text('{')
+    p._write(folder/'result.json',record)
+    result=p.summarize(root);arm=result['pairs'][0]['assisted']
+    assert result['outcome_comparable'] is False and arm['qualified'] is False
+    assert arm['model_seconds']==0.4
+    assert len(arm['stages'])==4
+    assert arm['stages'][2]['regressed']==['lease_expiry','restart_fencing']
+    assert arm['stages'][2]['source_grade_valid'] is True
+    assert arm['issues']

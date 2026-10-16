@@ -43,11 +43,16 @@ def _arm(batch,slot,protocol):
     if not path.exists():return result
     try:
         record=_read(path);result['state']=record.get('state','incomplete')
-        verify(batch,slot)
+        result['model_seconds']=record.get('model_seconds')
+        integrity=True
+        try:verify(batch,slot)
+        except (OSError,ValueError,KeyError,TypeError,AttributeError):
+            integrity=False
+            result['issues'].append('protocol_scope_or_snapshot_invalid')
         if record.get('schema')!=2 or record.get('slot')!=slot:raise ValueError('record identity')
         stages=record['stages']
         if not isinstance(stages,list) or len(stages)>4:raise ValueError('stage list')
-        previous=_read(folder/'baseline.json');spent=0;tasks=[];valid=True
+        previous=_read(folder/'baseline.json');spent=0;tasks=[];valid=integrity
         expected_session=protocol['seals'][slot]['session']
         for index,item in enumerate(stages,1):
             stage=item.get('stage');g=item.get('independent_grade',{})
@@ -57,8 +62,12 @@ def _arm(batch,slot,protocol):
                          and all(r.get('state') in ('passed','failed') for r in rows)
                          and g.get('passed')==sum(r['state']=='passed' for r in rows)
                          and g.get('failed')==sum(r['state']=='failed' for r in rows))
-            source=_sources(folder,index,value)
-            hashes={name:hashlib.sha256(s.encode()).hexdigest() for name,s in source.items()}
+            hashes={}
+            try:
+                source=_sources(folder,index,value)
+                hashes={name:hashlib.sha256(s.encode()).hexdigest() for name,s in source.items()}
+            except (OSError,ValueError,KeyError,TypeError):
+                result['issues'].append(f'stage_{index}_source_snapshot_invalid')
             source_valid=(hashes==g.get('source_sha256') and all(item.get('source_after',{}).get(n)==h for n,h in hashes.items())
                           and g.get('oracle_sha256')==hashlib.sha256(oracle(value,index).encode()).hexdigest())
             cap=item.get('seconds_cap');elapsed=item.get('elapsed_ms',-1)/1000
@@ -74,9 +83,11 @@ def _arm(batch,slot,protocol):
             result['stages'].append({'stage':index,'state':item.get('state','incomplete'),
                 'grade_state':g.get('state','incomplete'),'passed':g.get('passed'),'failed':g.get('failed'),
                 'source_sha256':hashes,'oracle_sha256':g.get('oracle_sha256'),
+                'source_grade_valid':bool(grade_valid and source_valid),
+                'provenance':'retained_record_checked_against_source_snapshot',
                 'model_seconds':elapsed,'delivery_verified':native.get('state')=='observed' and native.get('native_runner_adoption') is True,
-                **metrics(previous,g,index)})
-            previous=g if grade_valid else None
+                **metrics(previous,g if grade_valid and source_valid else None,index)})
+            previous=g if grade_valid and source_valid else None
         total=record.get('model_seconds')
         valid=(valid and len(stages)==4 and record.get('state')=='completed' and type(total) in (int,float)
                and math.isfinite(total) and abs(total-spent)<.002 and total<=protocol['seconds_per_session']+5)
