@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "hosted_run": 38963268204,
+  "job": 117183374103,
+  "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+  "canonical_sha256": "ab5acad1e986932c52e365c451281d855b28880bf41c441cb0ceeca1aac77b00",
+  "subject": {
+    "base": "e03f6199b7f236233c638fa338efe7e405a6f05f",
+    "content_digest": "8976c5683c3e5a19dc859bdbaec176de573cf0417cabe0e17a0cb5fb78fcb797",
+    "expected_base": null,
+    "expected_head": null,
+    "head": "bbe39b90e540c06101dc3b6bc83552b4833e7f3f",
+    "head_repository": "SatyamSingh-Git/ElevenPowers",
+    "issues": [],
+    "patch_id": "67d9663a02112d820f85f8dbc511f1a9ca5fd39825241983f066c6e092bb7dc5",
+    "pull_request": null,
+    "repository": "SatyamSingh-Git/ElevenPowers",
+    "state": "declared"
+  },
+  "sizes": {
+    "evidence.json": 9416,
+    "summary.md": 4113
+  },
+  "producer_states": [
+    "current",
+    "failed",
+    "incomplete"
+  ],
+  "producer_counts": [
+    1,
+    1,
+    1
+  ],
+  "readonly": true,
+  "limits": [
+    "Disposable declared subject; no live PR/fork or authenticated attestation claim."
+  ]
+}

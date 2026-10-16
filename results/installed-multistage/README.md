@@ -48,6 +48,11 @@ sixteen stages. Earlier qualification does not automatically qualify that new
 producer or establish installed readiness for it.
 The [repaired matrix record](repaired/hosted-qualification.json) retains new
 source qualification separately; incomplete cells remain pending.
+The repaired [evidence transport check](repaired/github-artifact.json) verifies
+its own bundle and logged subject. A [fresh prepared comparison](repaired/prepared-comparison.json)
+keeps the same initial files, public requests and oracles at the new runtime;
+fresh baseline records have their own timing/hash identity. Model calls remain
+zero and preparation grants no allowance.
 
 The two approved Claude Code Sonnet 5.5 medium conversations completed all three
 turns, using 104.287 seconds for Python and 73.077 seconds for JavaScript. Both

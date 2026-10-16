@@ -191,3 +191,10 @@ Their named audits pass 105 applicable controls with two platform skips in 22.72
 and 18.40 seconds. Grader, historical source reproduction and doctor pass.
 [Repaired-source matrix evidence](../../results/installed-multistage/repaired/hosted-qualification.json)
 remains partial while Windows runs; it does not reuse initial-source qualification.
+
+The repaired source's [GitHub artifact](../../results/installed-multistage/repaired/github-artifact.json)
+also independently matches its canonical bundle, logged subject and
+current/failed/incomplete producer states. The [fresh prepared comparison](../../results/installed-multistage/repaired/prepared-comparison.json)
+has identical initial project files, requests and oracle identities to the old
+preparation, with a new runtime identity and fresh baseline records. No model
+has run in either comparison batch.
