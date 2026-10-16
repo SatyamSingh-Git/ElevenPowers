@@ -97,13 +97,21 @@ def _observe(root, host, language, mode, *, ordinary_prompts=False):
     codes.append(check(command)); views.append(_view(root, host))
     followups = [view['checks'][0]['state'] if view['checks'] else 'unobserved' for view in views]
     expected = ['current', 'failed', 'incomplete', 'current'] if mode == 'native-control' else ['unobserved'] * 4
-    qualified = (initial == 1 and codes == [0, 1, None, 0] and all(row['exit'] == 0 for row in callbacks)
-                 and edit['has_advice'] and before['matching_native_receipts'] == 0 and followups == expected
-                 and before['state'] == ('emitted' if mode == 'native-control' else 'generated')
-                 and all(view['model_consumption'] == 'unproven' for view in views))
+    requirements = {
+        'initial_failure': initial == 1,
+        'process_outcomes': codes == [0, 1, None, 0],
+        'callbacks_processed': all(row['exit'] == 0 for row in callbacks),
+        'advice_delivered': edit['has_advice'],
+        'no_early_receipt': before['matching_native_receipts'] == 0,
+        'followup_states': followups == expected,
+        'emission_state': before['state'] == ('emitted' if mode == 'native-control' else 'generated'),
+        'no_consumption_claim': all(view['model_consumption'] == 'unproven' for view in views),
+    }
+    qualified = all(requirements.values())
     if ordinary_prompts:
         qualified = qualified and bool(task.task) and not task.claims and after_edit.task == task.task
     return {'host': host, 'language': language, 'mode': mode, 'qualified': qualified,
+            'requirements': requirements,
             'initial_process_exit': initial, 'process_exits': codes, 'callbacks': callbacks,
             'before_check': before, 'followups': followups, 'observations': views,
             'task_opened_by_prompt': bool(task.task) if ordinary_prompts else False,

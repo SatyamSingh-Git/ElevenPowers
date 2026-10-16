@@ -1,5 +1,6 @@
 """Actual commands and synthetic launcher ingress; no model sessions."""
 from pathlib import Path
+import json
 import shutil
 
 import pytest
@@ -11,7 +12,7 @@ def test_actual_producer_keeps_replay_and_native_ingress_distinct(tmp_path, lang
     if language == 'javascript' and not shutil.which('node'):
         pytest.skip('Node unavailable')
     value = exercise(tmp_path / 'new', languages=(language,), hosts=('claude',))
-    assert value['qualified']
+    assert value['qualified'], json.dumps(value, indent=2)
     assert value['model_calls'] == 0 and value['installed_acceptance'] is False
     assert len(value['observations']) == 2
     native = next(row for row in value['observations'] if row['mode'] == 'native-control')
