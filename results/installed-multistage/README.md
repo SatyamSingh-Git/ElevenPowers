@@ -11,6 +11,11 @@ states. It is a separate capability check, not a live workflow outcome.
 
 ## Retained controls
 
+[Hosted qualification](hosted-qualification.json) records completed cells.
+Each hosted rehearsal artifact is independently checked for all sixteen stage
+rows, exact reference source/oracle hashes, raw runtime/harness identity,
+candidate and downloaded ZIP digest. An incomplete matrix stays labeled partial.
+
 [The local rehearsal](local.json) records four scheduled arms, four stages per
 arm and sixteen independently reproduced source snapshots. Every reference arm
 passes 4/6/8/10 cumulative groups. The two base groups are revisited throughout;

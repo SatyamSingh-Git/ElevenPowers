@@ -89,3 +89,22 @@ states are current/failed/incomplete, counts are `[1,1,1]`, and reporting is
 read-only. The missing typecheck remains absent. This disposable informational
 transport result does not establish installed adoption or patch correctness.
 All **107 named audits passed in 102.46 seconds**.
+
+## Hosted matrix evidence
+
+The completed Linux artifacts were downloaded as ZIPs and checked against
+GitHub's artifact digest and source candidate. All sixteen per-stage rows in
+each cell match independently calculated reference source hashes, generated
+oracle identities and expected group outcomes. Raw runtime and harness identities
+match the Git LF checkout form; no newline normalization qualifies freshness.
+
+| Cell | Suite passed | Skipped | Suite seconds | Rehearsal seconds |
+|---|---:|---:|---:|---:|
+| Linux / Python 3.11 | 2501 | 9 | 543.68 | 4.169 |
+| Linux / Python 3.13 | 2501 | 9 | 601.73 | 4.267 |
+
+Both passed 105 applicable named audits with two platform skips, the independent
+grader, eight historical source grades and eleven doctor checks. The
+[machine-readable matrix record](../../results/installed-multistage/hosted-qualification.json)
+remains partial while Windows runs. These are actual-command/reference controls,
+not installed acceptance or cross-platform speed measurements.
