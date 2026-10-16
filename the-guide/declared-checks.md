@@ -95,3 +95,7 @@ not discover every dependency or cover unobserved services/environment.
 See [design](../docs/design/declared-check-execution.md),
 [dated qualification](../docs/validation/2026-10-16-declared-check-execution.md)
 and [journey 81](../journey/81-the-check-owns-its-exit.md).
+For the later batch and readable/no-edit guidance work, see its
+[design](../docs/superpowers/specs/2026-10-17-declared-check-adoption-design.md),
+[current qualification](../docs/validation/2026-10-17-check-adoption.md) and
+[journey 83](../journey/83-one-entry-point-separate-receipts.md).

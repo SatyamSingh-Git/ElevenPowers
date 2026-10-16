@@ -16,8 +16,10 @@ recovery receipts but leaves the dependency failure stale; JavaScript uses
 ordinary compound commands throughout and retains no qualifying receipts.
 The larger comparison remains blocked. See the [original attempts](../results/installed-multistage/installed-acceptance.json)
 and [repaired-runtime attempts](../results/installed-multistage/repaired/installed-acceptance.json).
-Both two-conversation allowances are consumed. Further runs need a new specific
-allowance after diagnosing and qualifying the remaining adoption boundary.
+Both earlier two-conversation allowances were consumed. The subsequent readable
+guidance and owned-batch repair has its own [current qualification record](../results/check-adoption/README.md).
+The user has since given standing authorization for needed Sonnet 5.5 medium
+subscription sessions; no-model qualification still precedes new live use.
 
 ## Rehearse without a model
 
@@ -53,14 +55,16 @@ session or ordinary-versus-assisted coding comparison.
 
 ## Live execution is explicit
 
-Before a live pilot, inspect current release health and obtain a specific
-subscription-session allowance. The installed gate uses two Claude Code Sonnet
-5.5 medium conversations, at most 240 seconds each across three turns. Invoke
-the pilot without `--rehearse` only after that approval. It requires a new
+Before a live pilot, inspect current release health and confirm explicit user
+authorization, either a session-specific allowance or an applicable standing
+approval. Do not request the same permission again when it is already given.
+The installed gate uses two Claude Code Sonnet 5.5 medium conversations, at most
+240 seconds each across three turns. Invoke the pilot without `--rehearse` only
+under that authorization. It requires a new
 unlinked system-temp directory outside Git ancestors. Prompts do not name the
 runner; shipping startup/recheck/completion guidance must make it discoverable.
 
-The separate comparison requires installed acceptance and a further allowance:
+The separate comparison requires installed acceptance and applicable user authorization:
 four matched Sonnet 5.5 medium conversations, 720 seconds each across four turns.
 Use `python -m eval.preservation --execute BATCH --slot SLOT --executable CLAUDE`
 for each frozen slot. No API fallback, favorable retries or case replacement.
