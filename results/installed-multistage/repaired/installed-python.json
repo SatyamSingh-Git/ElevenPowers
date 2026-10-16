@@ -1,0 +1,189 @@
+{
+  "schema": 2,
+  "protocol": "declared-runner",
+  "host": "claude",
+  "language": "python",
+  "requested_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "runtime": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "seconds_cap": 240,
+  "model_calls": 3,
+  "model_seconds": 94.76299999999999,
+  "turns": [
+    {
+      "stage": 1,
+      "allowance_seconds": 80.0,
+      "state": "completed",
+      "started_at": 1792188745.1875992,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 20,
+          "cache_creation_input_tokens": 11064,
+          "cache_read_input_tokens": 91068,
+          "output_tokens": 2419
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 57.604,
+      "native": {
+        "native_runner_adoption": true,
+        "task": "e52bd393d49a3cf47fa7707508bfb3b86ed779f3b9fed9ba1b2384f660c19ca0",
+        "owned_receipts": 2,
+        "completed_runner_calls": 2
+      },
+      "scope_preserved": true
+    },
+    {
+      "stage": 2,
+      "allowance_seconds": 91.19800000000001,
+      "state": "completed",
+      "started_at": 1792188807.9117818,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 3308,
+          "cache_read_input_tokens": 52769,
+          "output_tokens": 683
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 19.21,
+      "native": {
+        "native_runner_adoption": false,
+        "task": "503d403a957a4ad9a4c7bf1e20551a5e0d34cdc23caeea7a3c1cf2987f90db4d",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      },
+      "scope_preserved": true
+    },
+    {
+      "stage": 3,
+      "allowance_seconds": 163.186,
+      "state": "completed",
+      "started_at": 1792188828.6698096,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 2255,
+          "cache_read_input_tokens": 40386,
+          "output_tokens": 606
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 17.949,
+      "native": {
+        "native_runner_adoption": true,
+        "task": "a4b11a9a799f9665210e36d02f158b7921d5db213741eea6f4f5e24cf7db674c",
+        "owned_receipts": 2,
+        "completed_runner_calls": 1
+      },
+      "scope_preserved": true
+    }
+  ],
+  "snapshots": [
+    {
+      "task": "e52bd393d49a3cf47fa7707508bfb3b86ed779f3b9fed9ba1b2384f660c19ca0",
+      "associations": {
+        "tests": "bound",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "CURRENT",
+        "second": "CURRENT"
+      },
+      "counts": [
+        5,
+        2
+      ]
+    },
+    {
+      "task": "e52bd393d49a3cf47fa7707508bfb3b86ed779f3b9fed9ba1b2384f660c19ca0",
+      "associations": {
+        "tests": "stale",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "STALE",
+        "second": "CURRENT"
+      },
+      "counts": [
+        5,
+        2
+      ]
+    },
+    {
+      "task": "503d403a957a4ad9a4c7bf1e20551a5e0d34cdc23caeea7a3c1cf2987f90db4d",
+      "associations": {},
+      "milestones": {
+        "first": "STALE",
+        "second": "CURRENT"
+      },
+      "counts": [
+        6,
+        3
+      ]
+    },
+    {
+      "task": "a4b11a9a799f9665210e36d02f158b7921d5db213741eea6f4f5e24cf7db674c",
+      "associations": {
+        "tests": "bound",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "CURRENT",
+        "second": "CURRENT"
+      },
+      "counts": [
+        7,
+        4
+      ]
+    }
+  ],
+  "qualified": false,
+  "native_runner_adoption": false,
+  "task_boundaries": true,
+  "state": "returned",
+  "installed_acceptance": false,
+  "api_fallback": false,
+  "limits": [
+    "Synthetic rehearsal is not installed acceptance.",
+    "Native local observations are unsigned; no OS closed-book or causal coding benefit claim."
+  ],
+  "host_version": "2.1.292 (Claude Code)",
+  "protected_inputs_unchanged": true,
+  "independent_correctness_exit": 0,
+  "behavior_qualified": false,
+  "rehearsal_qualified": false,
+  "timing": {
+    "total_controller_wall_seconds": 108.042,
+    "model_process_seconds": 94.76299999999999,
+    "outside_model_process_seconds": 13.279,
+    "limits": [
+      "Outside-process time includes preparation, authentication checks, inspection and grading; it is not CPU time.",
+      "Model-process wall time includes its hooks and bounded cleanup; subscription time is not an API-dollar estimate."
+    ]
+  },
+  "retention": {
+    "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+    "qualification_run": 38963268204,
+    "conversation_sha256": "673e6ad92d43ba9828d348b0d54fbd011fe35c75963df68aee14376898f08829",
+    "limits": [
+      "Unsigned native observations, not an OS attestation or causal coding-benefit comparison."
+    ]
+  }
+}

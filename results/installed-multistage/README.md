@@ -83,3 +83,35 @@ and [dated qualification](../../docs/validation/2026-10-16-installed-multistage.
 fast-forward and exact published HTML/data hashes. Documentation closure keeps
 qualified source and map bytes intact; pending paid measurement is not relabeled
 complete.
+
+## Requalification at the repaired producer — 2026-10-17
+
+Both specifically approved Sonnet 5.5 medium conversations completed three
+turns at source `8d26185`, with a 240-second cap each, no API fallback and no
+retries. [Python](repaired/installed-python.json) used 94.763 model-process
+seconds; [JavaScript](repaired/installed-javascript.json) used 47.005. Both
+passed the independent arithmetic check and preserved protected inputs.
+Both now have three distinct task identities, but **zero of two qualify**.
+The [aggregate](repaired/installed-acceptance.json) keeps both outcomes.
+
+| Snapshot | Python affected / independent | JavaScript affected / independent |
+|---|---|---|
+| After initial repair | CURRENT / CURRENT | ABSENT / ABSENT |
+| After external dependency drift | STALE / CURRENT | ABSENT / ABSENT |
+| After failed-behavior task | STALE / CURRENT | ABSENT / ABSENT |
+| After recovery task | CURRENT / CURRENT | ABSENT / ABSENT |
+
+Python's first and recovery turns have qualified native owned-runner calls,
+receipts and callback provenance. The drift turn uses ordinary compound shell
+commands with trailing output, so it leaves no owned failed receipt. JavaScript
+uses compound ordinary commands throughout and creates no qualifying receipts.
+The native output shows the intended dependency assertion failing; an echoed
+exit status does not become an owned child result. Do not relax attribution or
+relabel absent/stale evidence to make these trials pass.
+
+These are separate new observations, not replacements for the original two
+failures or a controlled estimate of the repairs' effect. The two requalification
+allowances are consumed. No further model attempt or ordinary-versus-assisted
+comparison is approved or run. Next work is reliable delivery and adoption of
+the shipped runner during ordinary verification, including tasks with no edits;
+reproduce that boundary with actual callback producers before another live trial.

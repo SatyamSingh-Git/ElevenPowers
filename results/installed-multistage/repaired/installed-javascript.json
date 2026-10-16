@@ -1,0 +1,180 @@
+{
+  "schema": 2,
+  "protocol": "declared-runner",
+  "host": "claude",
+  "language": "javascript",
+  "requested_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "runtime": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "seconds_cap": 240,
+  "model_calls": 3,
+  "model_seconds": 47.004999999999995,
+  "turns": [
+    {
+      "stage": 1,
+      "allowance_seconds": 80.0,
+      "state": "completed",
+      "started_at": 1792188861.0727568,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 5674,
+          "cache_read_input_tokens": 23727,
+          "output_tokens": 969
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 18.363,
+      "native": {
+        "native_runner_adoption": false,
+        "task": "b9360bce81d3b6d4277fc8a1bce1454780866b25b3c303693cf2395418804a1c",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      },
+      "scope_preserved": true
+    },
+    {
+      "stage": 2,
+      "allowance_seconds": 110.8185,
+      "state": "completed",
+      "started_at": 1792188881.0456755,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 2700,
+          "cache_read_input_tokens": 23083,
+          "output_tokens": 772
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 15.919,
+      "native": {
+        "native_runner_adoption": false,
+        "task": "cd9c096bfc90a0e3cd4b05ac11908a694ce50614fb4dedf570b9d639c69d79a9",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      },
+      "scope_preserved": true
+    },
+    {
+      "stage": 3,
+      "allowance_seconds": 205.71800000000002,
+      "state": "completed",
+      "started_at": 1792188897.8837867,
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 860,
+          "cache_read_input_tokens": 27181,
+          "output_tokens": 440
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 12.723,
+      "native": {
+        "native_runner_adoption": false,
+        "task": "ee5f42b980627199ca7d894ad53271faf51dc176d6d8ea13b53456af38ccd049",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      },
+      "scope_preserved": true
+    }
+  ],
+  "snapshots": [
+    {
+      "task": "b9360bce81d3b6d4277fc8a1bce1454780866b25b3c303693cf2395418804a1c",
+      "associations": {},
+      "milestones": {
+        "first": "ABSENT",
+        "second": "ABSENT"
+      },
+      "counts": [
+        3,
+        1
+      ]
+    },
+    {
+      "task": "b9360bce81d3b6d4277fc8a1bce1454780866b25b3c303693cf2395418804a1c",
+      "associations": {},
+      "milestones": {
+        "first": "ABSENT",
+        "second": "ABSENT"
+      },
+      "counts": [
+        3,
+        1
+      ]
+    },
+    {
+      "task": "cd9c096bfc90a0e3cd4b05ac11908a694ce50614fb4dedf570b9d639c69d79a9",
+      "associations": {},
+      "milestones": {
+        "first": "ABSENT",
+        "second": "ABSENT"
+      },
+      "counts": [
+        4,
+        2
+      ]
+    },
+    {
+      "task": "ee5f42b980627199ca7d894ad53271faf51dc176d6d8ea13b53456af38ccd049",
+      "associations": {},
+      "milestones": {
+        "first": "ABSENT",
+        "second": "ABSENT"
+      },
+      "counts": [
+        5,
+        3
+      ]
+    }
+  ],
+  "qualified": false,
+  "native_runner_adoption": false,
+  "task_boundaries": true,
+  "state": "returned",
+  "installed_acceptance": false,
+  "api_fallback": false,
+  "limits": [
+    "Synthetic rehearsal is not installed acceptance.",
+    "Native local observations are unsigned; no OS closed-book or causal coding benefit claim."
+  ],
+  "host_version": "2.1.292 (Claude Code)",
+  "protected_inputs_unchanged": true,
+  "independent_correctness_exit": 0,
+  "behavior_qualified": false,
+  "rehearsal_qualified": false,
+  "timing": {
+    "total_controller_wall_seconds": 54.082,
+    "model_process_seconds": 47.004999999999995,
+    "outside_model_process_seconds": 7.077,
+    "limits": [
+      "Outside-process time includes preparation, authentication checks, inspection and grading; it is not CPU time.",
+      "Model-process wall time includes its hooks and bounded cleanup; subscription time is not an API-dollar estimate."
+    ]
+  },
+  "retention": {
+    "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+    "qualification_run": 38963268204,
+    "conversation_sha256": "589e799132338c80fd0b3f68014c2c28e4fc85aad74a8a375ee1c7705cef24a9",
+    "limits": [
+      "Unsigned native observations, not an OS attestation or causal coding-benefit comparison."
+    ]
+  }
+}
