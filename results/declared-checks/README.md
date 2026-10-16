@@ -24,7 +24,12 @@ canonical public bundle hash, declared/embedded subject and separately logged
 producer states/counts/read-only outcome. This is disposable informational
 artifact transport, not a live PR/fork or authenticated execution claim.
 
-Full local and four-cell hosted qualification remains in progress. See
+Final-code Linux [Python 3.11](hosted-ubuntu-latest-3.11.json) and
+[Python 3.13](hosted-ubuntu-latest-3.13.json) jobs passed. Each suite recorded
+2,452 passes and nine skips; the actual protocol qualified in 3.107 and 3.291
+seconds. Both artifacts match the Git LF runtime identity and retain the full
+state/counter/outer-callback assertions. Local and Windows qualification remains
+in progress. See
 [the dated record](../../docs/validation/2026-10-16-declared-check-execution.md).
 The earlier Windows advice CI cause remains open after twelve local and eighty
 hosted successful repetitions with improved diagnostic retention.

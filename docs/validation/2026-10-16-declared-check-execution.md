@@ -63,3 +63,49 @@ artifact pattern. No new script-text assertion test was added for this workflow
 configuration; hosted artifact retention is part of qualification. No second
 review was dispatched; the single repair pass is verified by controls and the
 final suite. No deferred Minor finding remains after this regrading.
+
+## Corrected-runtime evidence retained
+
+The repair group passed **121 tests in 69.81 seconds**. The standalone
+[actual local protocol](../../results/declared-checks/local.json) qualified in
+**45.957 seconds**, preserving both languages' independent milestone states,
+actual owned failure through a successful outer shell, and missing-input refusal.
+The four-case independent grader, eight retained source grades and host doctor
+passed before the final parser repair; final gate results remain pending below.
+
+All five architecture views render, with **169 nodes, 410 edges and seven planes**.
+The render found overflowing new labels; shortened labels then passed cards,
+filters, keyboard navigation, shared links, contrast and narrow-layout checks.
+The changed documentation's 499 relative file-link targets were present.
+
+[The final-candidate artifact](../../results/declared-checks/github-artifact.json)
+was downloaded from successful job 117069962378 in run 38929622453.
+Its canonical public bundle SHA-256 is
+`17fb4d492d457f2e95c4115b64f4557653f645b99ea26abe3f05d65a6a3f863a`.
+Independent job-log producer states were current/failed/incomplete, counts
+`[1,1,1]`, and read-only `true`. Logged and embedded base/head identities matched
+the declared subject; the missing typecheck remained absent. JSON and Markdown
+sizes were 9418 and 4113 bytes. This is informational disposable transport.
+
+[Raw runtime identities](../../results/declared-checks/runtime-identities.json)
+cover 137 files. The local actual bytes, Git LF form and Windows CRLF form
+differ only by newline representation; freshness remains strict over actual
+bytes. Candidate `af6dfca` contains the corrected runtime, tests and workflow;
+later result/map/documentation commits preserve those qualified inputs.
+
+## Hosted corrected-runtime qualification
+
+Run [38929622453](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38929622453)
+qualifies candidate `af6dfca`. Completed Linux artifacts were downloaded and
+independently checked for expected states, counts and exact producer identity.
+Both include the grader, retained source reproduction, doctor and applicable
+audit controls. Windows and local full-suite results are still pending.
+
+| Cell | Suite passed | Skipped | Suite seconds | Protocol seconds |
+|---|---:|---:|---:|---:|
+| Linux / Python 3.11 | 2452 | 9 | 575.26 | 3.107 |
+| Linux / Python 3.13 | 2452 | 9 | 573.94 | 3.291 |
+
+The named audit step passed 105 applicable controls with two platform skips in
+each Linux cell. The protocol uses actual child processes with synthetic host
+envelopes; it is not installed acceptance or a cross-platform speed comparison.
