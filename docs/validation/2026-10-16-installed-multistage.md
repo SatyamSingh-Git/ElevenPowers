@@ -285,3 +285,10 @@ strict attribution and current unrelated evidence. Requalification does not
 establish a causal repair effect or coding advantage: these are unmatched trials
 at different producers, with no ordinary arm. The frozen comparison remains
 blocked until installed acceptance and a separate specific allowance.
+
+All five updated architecture views pass the rendered check: 169 nodes,
+416 edges and seven planes, including cards, filters, keyboard navigation,
+shared links and narrow layout. The normal-access check completed in 12.402
+seconds after a sandboxed browser launch stalled and was interrupted. Runtime,
+harness, tests and CI workflow bytes still match the qualified source; this
+evidence/documentation update requires no new full-suite result or model call.
