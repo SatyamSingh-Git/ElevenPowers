@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "producer": "ba7f7102a7de7bd6d30385def6fe34b993ffbd08b6d6f92f8eae7d035b68579f",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "observations": [
+    {
+      "language": "python",
+      "outcomes": [
+        "passed",
+        "passed",
+        "failed",
+        "passed",
+        "incomplete"
+      ],
+      "milestones_after_fault": [
+        "STALE",
+        "CURRENT"
+      ],
+      "milestones_after_failure": [
+        "FAILED",
+        "CURRENT"
+      ],
+      "milestones_after_repair": [
+        "CURRENT",
+        "CURRENT"
+      ],
+      "counts_before_missing": [
+        3,
+        1
+      ],
+      "outer_shell_exit": 0,
+      "owned_failure_survived_callbacks": true,
+      "synthetic_hosts": [
+        "claude",
+        "codex",
+        "gemini",
+        "cursor",
+        "copilot"
+      ],
+      "model_calls": 0,
+      "installed_acceptance": false,
+      "qualified": true
+    },
+    {
+      "language": "javascript",
+      "outcomes": [
+        "passed",
+        "passed",
+        "failed",
+        "passed",
+        "incomplete"
+      ],
+      "milestones_after_fault": [
+        "STALE",
+        "CURRENT"
+      ],
+      "milestones_after_failure": [
+        "FAILED",
+        "CURRENT"
+      ],
+      "milestones_after_repair": [
+        "CURRENT",
+        "CURRENT"
+      ],
+      "counts_before_missing": [
+        3,
+        1
+      ],
+      "outer_shell_exit": 0,
+      "owned_failure_survived_callbacks": true,
+      "synthetic_hosts": [
+        "claude",
+        "codex",
+        "gemini",
+        "cursor",
+        "copilot"
+      ],
+      "model_calls": 0,
+      "installed_acceptance": false,
+      "qualified": true
+    }
+  ],
+  "limits": [
+    "Actual local child processes with synthetic outer-host callbacks.",
+    "No installed-session acceptance, causal coding benefit or universal dependency coverage."
+  ],
+  "qualified": true,
+  "seconds": 27.063,
+  "qualification": {
+    "hosted_run": 38929622453,
+    "job": 117069962955,
+    "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+    "platform": "windows-latest",
+    "python": "3.11",
+    "suite": {
+      "passed": 2456,
+      "skipped": 5,
+      "seconds": 3112.02
+    },
+    "audits": {
+      "passed": 107,
+      "skipped": 0,
+      "seconds": 67.46
+    }
+  }
+}

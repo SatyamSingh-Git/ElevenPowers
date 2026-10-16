@@ -111,7 +111,14 @@ audit controls. Windows and local full-suite results are still pending.
 |---|---:|---:|---:|---:|
 | Linux / Python 3.11 | 2452 | 9 | 575.26 | 3.107 |
 | Linux / Python 3.13 | 2452 | 9 | 573.94 | 3.291 |
+| Windows / Python 3.11 | 2456 | 5 | 3112.02 | 27.063 |
 
 The named audit step passed 105 applicable controls with two platform skips in
 each Linux cell. The protocol uses actual child processes with synthetic host
 envelopes; it is not installed acceptance or a cross-platform speed comparison.
+
+The completed Windows 3.11 job also passed all 107 named audits in 67.46 seconds,
+the independent grader, retained source grades and doctor. Its downloaded
+[declared-check artifact](../../results/declared-checks/hosted-windows-latest-3.11.json)
+matches the Windows CRLF producer identity. Windows 3.13 and the full local suite
+remain in progress at this checkpoint.
