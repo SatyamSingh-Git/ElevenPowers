@@ -5,6 +5,7 @@ import io
 import json
 import math
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -36,6 +37,26 @@ def allowance(total, spent, turns):
     return max(0,total-spent)/turns
 
 
+def _reported(output):
+    if isinstance(output,dict):
+        values=[output[k] for k in ('stdout','content','text','output') if k in output]
+        if output.get('schema_version')==1:values.append(json.dumps(output))
+        return [row for value in values for row in _reported(value)]
+    if isinstance(output,list):return [row for value in output for row in _reported(value)]
+    if not isinstance(output,str) or len(output)>256*1024:return []
+    rows=[(m[0],m[1],None) for m in re.findall(r'(?m)^Declared check (tests|build|typecheck|lint|benchmark): (passed|failed|incomplete)\s*$',output)]
+    decoder=json.JSONDecoder()
+    for match in list(re.finditer(r'(?m)^\s*\{',output))[:32]:
+        try:
+            data,_=decoder.raw_decode(output[match.start():].lstrip())
+            if (isinstance(data,dict) and data.get('schema_version')==1
+                    and data.get('property') in ('tests','build','typecheck','lint','benchmark')
+                    and data.get('state') in ('passed','failed','incomplete') and isinstance(data.get('attempt'),str)):
+                rows.append((data['property'],data['state'],data['attempt']))
+        except (ValueError,TypeError):pass
+    return rows
+
+
 def observe(root, log, *, since, session, runtime):
     """Join completed native calls, current task callbacks and fresh owned receipts."""
     value={'native_runner_adoption':False,'task':'','owned_receipts':0,'completed_runner_calls':0}
@@ -43,11 +64,15 @@ def observe(root, log, *, since, session, runtime):
         rows=[json.loads(line) for line in Path(log).read_text(encoding='utf8').splitlines() if line.strip()]
         result=next((r for r in reversed(rows) if r.get('type')=='result'),{})
         if result.get('session_id')!=session: return value
-        calls=[c for turn in transcript.load(Path(log)) for c in turn.calls
+        candidates=[c for turn in transcript.load(Path(log)) for c in turn.calls
                if c.name in ('Bash','Shell') and c.result is not None
                and owned_check_envelope(c.args.get('command',''))]
         ledger=Ledger.load(root); task=digest(ledger.task) if ledger.task else ''
         receipts=[e for e in ledger.evidence if e.owned_execution and e.at>=since and e.execution=='complete']
+        calls=[c for c in candidates if any(e.declaration==prop
+               and e.result.value=={'passed':'pass','failed':'fail','incomplete':'unknown'}[state]
+               and (attempt is None or e.owned_execution.get('attempt')==attempt)
+               for prop,state,attempt in _reported(c.result) for e in receipts)]
         host=diagnostics(root).get('claude',{}); phases=host.get('phases',{})
         native=bool(task and not host.get('errors') and all(
             phases.get(p,{}).get('processed',0)>0 and phases[p].get('last_at',0)>=since

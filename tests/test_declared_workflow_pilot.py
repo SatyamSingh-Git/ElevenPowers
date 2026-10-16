@@ -67,6 +67,11 @@ def test_receipts_without_native_runner_usage_do_not_qualify(tmp_path, monkeypat
         {'type':'user','session_id':session,'message':{'content':[{'type':'tool_result','tool_use_id':'c','content':'Declared check tests: passed'}]}}]
     log.write_text('\n'.join(json.dumps(e) for e in events))
     assert p.observe(tmp_path,log,since=since,session=session,runtime=fingerprint())['native_runner_adoption'] is True
+    events[1]['message']['content'][0]['content']='python plugin/bin/ep_check.py tests --project .'
+    log.write_text('\n'.join(json.dumps(e) for e in events))
+    assert p.observe(tmp_path,log,since=since,session=session,runtime=fingerprint())['native_runner_adoption'] is False
+    events[1]['message']['content'][0]['content']='Declared check tests: passed'
+    log.write_text('\n'.join(json.dumps(e) for e in events))
     phases['Stop']['session']=p.digest('wrong')
     assert p.observe(tmp_path,log,since=since,session=session,runtime=fingerprint())['native_runner_adoption'] is False
 
