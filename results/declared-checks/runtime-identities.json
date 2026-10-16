@@ -1,0 +1,11 @@
+{
+  "runtime_files": 137,
+  "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+  "local_raw": "6697ec4ad2c5f2c01dbc8d1cf3f6fea35758a573a9b6fdd19971b3e127997e12",
+  "git_lf": "9436321285d7d9c7a755284bfd0a7035c58b74c17172fa776ce34abbb4c865a2",
+  "windows_crlf": "ba7f7102a7de7bd6d30385def6fe34b993ffbd08b6d6f92f8eae7d035b68579f",
+  "only_newline_differences": true,
+  "limits": [
+    "Runtime freshness uses actual raw bytes; checkout forms are not normalized by qualification."
+  ]
+}

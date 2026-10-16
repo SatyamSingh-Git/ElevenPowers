@@ -2066,7 +2066,7 @@ window.ELEVENPOWERS_GRAPH = {
       "kind": "engine",
       "size": 2,
       "label": "Declared-check execution",
-      "desc": "Explicit effective property selection, real child status, provisional receipts and fresh source/input/context guards. Outer successful shells do not overwrite owned failures; read-only listing and passive/busy refusal. Ordinary working trees remain separate from committed PatchProof binding.",
+      "desc": "Explicit effective property selection, real child status, provisional receipts and fresh source/input/context guards. Outer successful shells do not overwrite owned failures; read-only listing and passive/busy refusal. Ordinary working trees remain separate from committed PatchProof binding. Review controls protect obligation-level outcomes for every selector and the full requested allowance; generic literal/encoded outer envelopes never certify inner checks.",
       "files": [
         "core/checks.py",
         "plugin/bin/ep_check.py",
@@ -2078,7 +2078,8 @@ window.ELEVENPOWERS_GRAPH = {
         "docs/design/declared-check-execution.md",
         "docs/research/declared-check-execution.md",
         "docs/validation/2026-10-16-declared-check-execution.md",
-        "journey/81-the-check-owns-its-exit.md"
+        "journey/81-the-check-owns-its-exit.md",
+        "tests/test_check_review.py"
       ]
     }
   ],
