@@ -19,6 +19,10 @@ Windows encoded guidance and allowance propagation above 300 seconds.
 under the actual local, Git LF and Windows CRLF representations. Only newline
 representation differs; evidence freshness never normalizes raw bytes.
 
+[Portable bundles](bundles.json) verify the four additional host packages contain
+the CLI, retain identical runtime bytes, and execute a real failing child with
+failed status/exit 1. This packaging check makes no installed-host claim.
+
 [GitHub artifact](github-artifact.json) independently checks the downloaded
 canonical public bundle hash, declared/embedded subject and separately logged
 producer states/counts/read-only outcome. This is disposable informational

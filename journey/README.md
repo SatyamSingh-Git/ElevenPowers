@@ -1,6 +1,8 @@
 # The journey
 
-Latest: [80 — one input should not expire every check](80-one-input-should-not-expire-every-check.md).
+Latest: [81 — the check owns its exit](81-the-check-owns-its-exit.md).
+
+Recent: [80 — one input should not expire every check](80-one-input-should-not-expire-every-check.md).
 
 Recent: [79 — a pass needs its before](79-a-pass-needs-its-before.md).
 

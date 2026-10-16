@@ -4419,19 +4419,34 @@ const GRAPH = {
       "label": "selective closing gaps"
     },
     {
-      "label": "project ownership and deadline",
       "source": "declared-checks",
-      "target": "jobs"
+      "target": "jobs",
+      "label": "ownership and deadline"
     },
     {
-      "label": "existing completion primitives",
       "source": "declared-checks",
-      "target": "verify"
+      "target": "input-owned",
+      "label": "paired selected inputs"
     },
     {
-      "label": "selected command witnesses",
       "source": "declared-checks",
-      "target": "input-scopes"
+      "target": "parsers",
+      "label": "exact aggregate receipts"
+    },
+    {
+      "source": "declared-checks",
+      "target": "evidence",
+      "label": "source and context qualification"
+    },
+    {
+      "source": "declared-checks",
+      "target": "ledger",
+      "label": "durable provisional and final records"
+    },
+    {
+      "source": "declared-checks",
+      "target": "process",
+      "label": "contained real child"
     }
   ]
 };
@@ -4597,7 +4612,7 @@ const ARCH_LAYERS = [
   ]},
 ];
 const ARCH_LINKS = [
-  ['a-declared-checks','a-verify','existing owned primitives'],['a-declared-checks','a-input-owned','paired selected inputs'],
+  ['a-declared-checks','a-jobs','shared ownership and deadline'],['a-declared-checks','a-input-owned','paired selected inputs'],['a-declared-checks','a-parsers','actual exit receipts'],['a-declared-checks','a-ledger','persist attempts'],['a-declared-checks','a-process','contained child'],
   ['a-input-scopes','a-inputs','witness projections'],['a-input-receipts','a-input-scopes','command association'],['a-patch','a-input-shared','nested reports'],['a-input-shared','a-inputs','opening and closing bytes'],
   ['a-verify','a-input-owned','required paired observations'],['a-stress','a-input-owned','confirmation and reuse'],
   ['a-hook','a-input-native','identified callbacks'],['a-input-native','a-input-attempts','bounded state'],['a-input-native','a-inputs','pre/post captures'],['a-input-native','a-input-receipts','retained qualification'],['a-input-owned','a-inputs','required observations'],['a-milestones','a-input-receipts','cross-task freshness'],['a-export','a-input-receipts','separate source/external facts'],

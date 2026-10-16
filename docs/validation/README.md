@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-16 reliable declared-check execution](2026-10-16-declared-check-execution.md): actual child outcomes through outer shells, source/context separation, review regressions and portable qualification. The earlier advice CI cause remains open.
+
 - [2026-10-14 command-scoped witnesses](2026-10-14-command-input-scopes.md): independent command qualifications, shared nested collections, review regressions, qualified local/hosted controls and partial installed observations.
 
 - [2026-10-13 external input sessions v2](2026-10-13-external-input-sessions.md): ordinary and retained receipts, actual dependency drift/recovery, replay/task/closing-read review controls and qualified delivery gates.

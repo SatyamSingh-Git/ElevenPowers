@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "producer": "6697ec4ad2c5f2c01dbc8d1cf3f6fea35758a573a9b6fdd19971b3e127997e12",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "observations": [
+    {
+      "host": "codex",
+      "contains_cli": true,
+      "producer_matches": true,
+      "state": "failed",
+      "exit_code": 1
+    },
+    {
+      "host": "gemini",
+      "contains_cli": true,
+      "producer_matches": true,
+      "state": "failed",
+      "exit_code": 1
+    },
+    {
+      "host": "cursor",
+      "contains_cli": true,
+      "producer_matches": true,
+      "state": "failed",
+      "exit_code": 1
+    },
+    {
+      "host": "copilot",
+      "contains_cli": true,
+      "producer_matches": true,
+      "state": "failed",
+      "exit_code": 1
+    }
+  ],
+  "limits": [
+    "Actual portable bundle build and child command, not an installed host/model session."
+  ]
+}

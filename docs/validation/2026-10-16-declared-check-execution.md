@@ -73,7 +73,7 @@ actual owned failure through a successful outer shell, and missing-input refusal
 The four-case independent grader, eight retained source grades and host doctor
 passed before the final parser repair; final gate results remain pending below.
 
-All five architecture views render, with **169 nodes, 410 edges and seven planes**.
+All five architecture views render, with **169 nodes, 413 edges and seven planes**.
 The render found overflowing new labels; shortened labels then passed cards,
 filters, keyboard navigation, shared links, contrast and narrow-layout checks.
 The changed documentation's 499 relative file-link targets were present.
@@ -94,6 +94,12 @@ bytes. Candidate `af6dfca` contains the corrected runtime, tests and workflow;
 later result/map/documentation commits preserve those qualified inputs.
 
 ## Hosted corrected-runtime qualification
+
+The [four portable host bundles](../../results/declared-checks/bundles.json)
+were built into new disposable directories. Each included `ep_check.py`, matched
+the local raw runtime identity and ran its packaged CLI against an actual failing
+child: failed outcome and exit 1 in all four. This verifies distribution of the
+entry point, not installed host execution or model adoption.
 
 Run [38929622453](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38929622453)
 qualifies candidate `af6dfca`. Completed Linux artifacts were downloaded and

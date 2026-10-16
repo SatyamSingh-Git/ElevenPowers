@@ -1,5 +1,13 @@
 # Troubleshooting
 
+For [ep_check](declared-checks.md), exit **2** means incomplete/refused, not a
+passing check. Inspect `--list`, the profile, source/input coverage, ownership and
+allowance. `off` launches nothing. A new attempt saves incomplete evidence first,
+so interruption cannot leave an older pass looking like its result. Use the
+shipped entry point from startup guidance; its owned receipt records the actual
+child outcome independently of a successful outer shell. A stale combined result
+can have unchanged source bytes but an expired configuration/producer association.
+
 For milestone reports, inspect exact command spelling, declared inputs and the
 root declaration file before rerunning a check. A receipt must actually observe
 the declaration plus every input; narrowing the declaration does not narrow a

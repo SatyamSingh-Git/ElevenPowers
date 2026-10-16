@@ -6,7 +6,7 @@ Command-scoped input witnesses and operation-local report collection are now
 drawn in all five views. Complete command maps preserve independent evidence;
 legacy/partial identities retain broad coverage. Two external byte phases and a
 late state guard retain explicit gaps while source snapshots stay independent.
-The current graph has 168 nodes, 407 edges and seven planes; older sizes below
+That delivery's graph had 168 nodes, 407 edges and seven planes; older sizes below
 describe their dated deliveries. See [design](../docs/design/command-input-scopes.md),
 [journey 80](../journey/80-one-input-should-not-expire-every-check.md) and
 [qualification](../docs/validation/2026-10-14-command-input-scopes.md).

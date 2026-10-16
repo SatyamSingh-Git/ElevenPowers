@@ -4120,19 +4120,34 @@ window.ELEVENPOWERS_GRAPH = {
       "label": "selective closing gaps"
     },
     {
-      "label": "project ownership and deadline",
       "source": "declared-checks",
-      "target": "jobs"
+      "target": "jobs",
+      "label": "ownership and deadline"
     },
     {
-      "label": "existing completion primitives",
       "source": "declared-checks",
-      "target": "verify"
+      "target": "input-owned",
+      "label": "paired selected inputs"
     },
     {
-      "label": "selected command witnesses",
       "source": "declared-checks",
-      "target": "input-scopes"
+      "target": "parsers",
+      "label": "exact aggregate receipts"
+    },
+    {
+      "source": "declared-checks",
+      "target": "evidence",
+      "label": "source and context qualification"
+    },
+    {
+      "source": "declared-checks",
+      "target": "ledger",
+      "label": "durable provisional and final records"
+    },
+    {
+      "source": "declared-checks",
+      "target": "process",
+      "label": "contained real child"
     }
   ]
 };

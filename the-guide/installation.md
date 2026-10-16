@@ -1,5 +1,11 @@
 # Installation
 
+[Reliable declared checks](declared-checks.md) need no additional dependency.
+After native wiring is loaded, startup advertises the trusted runner invocation
+for an effective declared property. Command discovery and existing completion
+verification remain automatic; explicit `ep_check.py` execution is a separate
+operator/agent action. `--list` inspects available properties without writing state.
+
 Changed-code test strength is optional; the base runtime remains Python 3.11+
 standard library. Install Cosmic Ray in the interpreter selected by `strength.python`
 (or the runtime interpreter), and Stryker in the project using Node >=20:

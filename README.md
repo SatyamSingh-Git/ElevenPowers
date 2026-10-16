@@ -328,6 +328,11 @@ wrong-directory and unfinished attempts stay incomplete, and targeted checks
 retain their scope. See [supported command capture](the-guide/command-capture.md)
 and [real process controls](results/native-command-recognition/README.md).
 
+For an owned result independent of the surrounding shell, use
+`python plugin/bin/ep_check.py tests --project PATH`, or inspect `--list` first.
+The [declared-check runner](the-guide/declared-checks.md) saves incomplete evidence
+before launch and retains the real child outcome with fresh input qualifications.
+
 ### Fresh project health
 
 Check whether the integration is working in a particular project:

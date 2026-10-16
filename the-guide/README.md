@@ -15,6 +15,7 @@ If something here is wrong, out of date, or simply does not work — **[satyambc
 | **[installation.md](installation.md)** | requirements, install, and how to prove it actually loaded |
 | **[platforms.md](platforms.md)** | all five hosts, native setup/removal, bundles and per-platform validation limits |
 | **[commands.md](commands.md)** | every command, every flag, and what the output means |
+| **[declared-checks.md](declared-checks.md)** | exact configured checks, durable real child outcomes, interruption and qualified receipts |
 | **[configuration.md](configuration.md)** | automatic setup, command overrides, scan budgets and profiles |
 | **[impactgraph.md](impactgraph.md)** | explicit impact queries, optional compiler, offline coverage receipts and measured limits |
 | **[milestones.md](milestones.md)** | optional earlier behavior checks, cross-task receipt history, fresh status and scope limits |
@@ -40,6 +41,7 @@ Then, from inside a project:
 ```bash
 python ElevenPowers/plugin/bin/ep_doctor.py    # is the runtime actually hearing the host?
 python ElevenPowers/plugin/bin/ep_status.py    # what does this task still owe?
+python ElevenPowers/plugin/bin/ep_check.py tests --project .  # run the exact configured check
 ```
 
 Check the doctor's reported results rather than a fixed line count. For the four additional hosts, use `ep_doctor.py --platform PLATFORM --cwd PATH`; this checks configuration and launcher availability, not live delivery. See [troubleshooting.md](troubleshooting.md) for failures.

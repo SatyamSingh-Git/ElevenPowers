@@ -1,5 +1,10 @@
 # Declared commands and native invocation capture
 
+For an explicit configured check, [ep_check](declared-checks.md) retains its real
+child outcome through outer-shell wrappers using owned before/after observations.
+That receipt is separate from native callback attribution. Ordinary passive
+capture below still requires its own literal command and provenance conditions.
+
 ElevenPowers recognizes configured `tests`, `typecheck`, `build`, `lint` and
 `benchmark` commands. Recognition records an observed result; it does not launch
 the command or infer that an opaque check covered every assertion.
