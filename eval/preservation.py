@@ -91,14 +91,22 @@ def _settings(root):
             for name in names}
 
 
-def _harness():
-    return _hash(b''.join((TOOL_ROOT / name).read_bytes() for name in
-        ('eval/preservation.py', 'eval/preservation_cases.py', 'eval/preservation_oracles.py',
-         'eval/subscription.py')))
+def _harness(schema=1):
+    names=['eval/preservation.py','eval/preservation_cases.py','eval/preservation_oracles.py','eval/subscription.py']
+    if schema==2:
+        names+=['eval/workflow_cases.py','eval/workflow_queue.py','eval/workflow_orders.py',
+                'eval/workflow_oracles.py','eval/declared_workflow.py','eval/transcript.py']
+    return _hash(b''.join((TOOL_ROOT/name).read_bytes() for name in names))
 
 
-def prepare(destination, *, names=('queue', 'inventory'), seconds=480):
-    if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 1 <= seconds <= 480:
+def prepare(destination, *, names=('queue', 'inventory'), seconds=480, model=None):
+    from .workflow_cases import NAMES
+    new=bool(names) and all(name in NAMES for name in names)
+    if any(name in NAMES for name in names) and not new: raise ValueError('mixed staged protocols')
+    schema=2 if new else 1
+    selected=model or ('claude-sonnet-5-5' if new else 'claude-sonnet-5')
+    if selected!=('claude-sonnet-5-5' if new else 'claude-sonnet-5'): raise ValueError('unsupported staged model')
+    if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 1 <= seconds <= (720 if new else 480):
         raise ValueError('invalid total session allowance')
     if not names or len(names) > 2 or len(set(names)) != len(names):
         raise ValueError('one or two distinct frozen cases required')
@@ -108,10 +116,14 @@ def prepare(destination, *, names=('queue', 'inventory'), seconds=480):
         raise ValueError('new unlinked batch required')
     root.mkdir(parents=True)
     root = root.resolve()
-    protocol = {'schema': 1, 'prepared_at': datetime.now(timezone.utc).isoformat(),
-                'host': 'claude', 'model': 'claude-sonnet-5', 'effort': 'medium',
+    protocol = {'schema': schema, 'prepared_at': datetime.now(timezone.utc).isoformat(),
+                'host': 'claude', 'model': selected, 'effort': 'medium',
                 'seconds_per_session': seconds, 'runtime_fingerprint': fingerprint(),
-                'harness_sha256': _harness(), 'slots': [], 'seals': {}, 'limits': LIMITS}
+                'harness_sha256': _harness(schema), 'slots': [], 'seals': {}, 'limits': LIMITS if not new else [
+                    'Two authored four-stage Python/Node cases, not population evidence.',
+                    'Unsigned native delivery and independent outcome comparison are separate qualifications.',
+                    'Native tools are not an OS isolation boundary; subscription processes have equal reserved allowances.']}
+    if new: protocol['stage_count']=4
     # Alternate which arm goes first; retain order rather than choosing after outcomes.
     for index, value in enumerate(cases):
         arms = ('ordinary', 'assisted') if index % 2 == 0 else ('assisted', 'ordinary')
@@ -125,7 +137,8 @@ def prepare(destination, *, names=('queue', 'inventory'), seconds=480):
                 path = _safe(candidate, name)
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes(text.encode('utf-8'))
-            rows = [{'id': 'established-core', 'description': 'Retain existing public core behavior.',
+            command=value.get('public_command',PUBLIC_COMMAND)
+            rows = value['milestones'] if new else [{'id': 'established-core', 'description': 'Retain existing public core behavior.',
                      'inputs': ['service.py', 'tests/test_core.py'],
                      'checks': [{'kind': 'test_suite', 'command': PUBLIC_COMMAND}]},
                     {'id': 'formatting', 'description': 'Preserve the independent formatting utility.',
@@ -140,23 +153,23 @@ def prepare(destination, *, names=('queue', 'inventory'), seconds=480):
                 if done.returncode:
                     raise ValueError('disposable Git preparation failed')
             save(candidate, Config(profile='guide' if arm == 'assisted' else 'off',
-                auto_detect=False, commands={'tests': PUBLIC_COMMAND}, strength={'enabled': False},
+                auto_detect=False, commands={'tests': command}, strength={'enabled': False},
                 milestone_advice={'enabled': arm == 'assisted', 'seconds': 1, 'cooldown': 30, 'max_attempts': 3}))
             if arm == 'assisted':
                 install('claude', candidate, sys.executable, TOOL_ROOT)
             baseline = grade(value, 0, candidate)
             snapshot = source_snapshot(candidate, fresh=True)
-            done = run(PUBLIC_COMMAND, cwd=candidate, timeout=20)
+            done = run(command, cwd=candidate, timeout=20)
             (folder / 'baseline-output.txt').write_text(done.stdout + done.stderr, encoding='utf-8')
             if baseline['state'] != 'graded' or baseline['failed'] or done.returncode != 0 or not snapshot[0].complete:
                 raise ValueError('baseline qualification failed; preserve the batch')
             ledger = Ledger(root=candidate, task='established-behavior')
-            ledger.add(parse(PUBLIC_COMMAND, done.stdout + done.stderr, done.returncode, candidate, snapshot=snapshot))
+            ledger.add(parse(command, done.stdout + done.stderr, done.returncode, candidate, snapshot=snapshot))
             ledger.save()
             _write(folder / 'baseline.json', baseline)
             protocol['seals'][slot] = {'initial': _manifest(candidate), 'settings': _settings(candidate),
                 'baseline': _hash((folder / 'baseline.json').read_bytes()),
-                'oracles': [_hash(oracle(value, stage).encode()) for stage in range(3)],
+                'oracles': [_hash(oracle(value, stage).encode()) for stage in range(5 if new else 3)],
                 'session': str(uuid.uuid4()), 'requests': value['requests']}
     _write(root / 'protocol.json', protocol)
     _write(root / 'protocol-seal.json', {'sha256': _hash((root / 'protocol.json').read_bytes())})
@@ -166,9 +179,12 @@ def prepare(destination, *, names=('queue', 'inventory'), seconds=480):
 def verify(batch, slot, *, initial=False):
     root = Path(batch).resolve(strict=True)
     protocol = _read(root / 'protocol.json')
+    schema=protocol.get('schema');new=schema==2
+    if schema not in (1,2) or (new and (protocol.get('stage_count')!=4 or protocol.get('model')!='claude-sonnet-5-5')):
+        raise ValueError('invalid staged protocol')
     allowance = protocol.get('seconds_per_session')
     if (type(allowance) not in (int, float) or not math.isfinite(allowance)
-            or not 1 <= allowance <= 480):
+            or not 1 <= allowance <= (720 if new else 480)):
         raise ValueError('loaded session allowance exceeds approved bounds')
     if _read(root / 'protocol-seal.json').get('sha256') != _hash((root / 'protocol.json').read_bytes()):
         raise ValueError('sealed protocol changed')
@@ -177,9 +193,10 @@ def verify(batch, slot, *, initial=False):
     seal = protocol['seals'][slot]
     candidate = _safe(root, slot + '/candidate')
     value = case(slot.rsplit('-', 1)[0])
-    if protocol['runtime_fingerprint'] != fingerprint() or protocol['harness_sha256'] != _harness():
+    if new != ('public_command' in value): raise ValueError('case/protocol mismatch')
+    if protocol['runtime_fingerprint'] != fingerprint() or protocol['harness_sha256'] != _harness(schema):
         raise ValueError('sealed runtime or harness changed')
-    if seal['oracles'] != [_hash(oracle(value, stage).encode()) for stage in range(3)]:
+    if seal['oracles'] != [_hash(oracle(value, stage).encode()) for stage in range(5 if new else 3)]:
         raise ValueError('sealed independent oracle changed')
     if seal['requests'] != value['requests'] or seal['baseline'] != _hash((root / slot / 'baseline.json').read_bytes()):
         raise ValueError('sealed request or baseline changed')
@@ -193,7 +210,11 @@ def verify(batch, slot, *, initial=False):
             if actual.get(name) != expected:
                 raise ValueError('sealed public input changed: ' + name)
     for name in actual.keys() - seal['initial'].keys():
-        if not (name.startswith('tests/test_') and name.endswith('.py') and '/' not in name[6:]):
+        if new:
+            from fnmatch import fnmatchcase
+            allowed=name.count('/')==1 and any(fnmatchcase(name,pattern) for pattern in value['new_test_paths'])
+        else: allowed=name.startswith('tests/test_') and name.endswith('.py') and '/' not in name[6:]
+        if not allowed:
             raise ValueError('candidate added a file outside permitted test scope')
     for name in value['production']:
         if name not in actual:
@@ -201,10 +222,10 @@ def verify(batch, slot, *, initial=False):
     return protocol, candidate, value
 
 
-def native_command(executable, root, prompt, session, stage):
-    if stage not in (1, 2):
+def native_command(executable, root, prompt, session, stage, *, model='claude-sonnet-5', stages=2):
+    if stages not in (2,4) or type(stage) is not int or not 1<=stage<=stages:
         raise ValueError('invalid request stage')
-    args = subscription.command('claude', executable, root, prompt, model='claude-sonnet-5')
+    args = subscription.command('claude', executable, root, prompt, model=model)
     args.remove('--no-session-persistence')
     args[args.index('--output-format') + 1] = 'stream-json'
     args += ['--verbose', '--session-id' if stage == 1 else '--resume', session,
@@ -215,6 +236,16 @@ def native_command(executable, root, prompt, session, stage):
 
 
 def _prompt(value, stage):
+    if 'public_command' in value:
+        return f'''Continue this working project, stage {stage} of four feature requests.
+{value['requests'][stage-1]}
+Edit only {', '.join(value['production'])}; add tests matching {', '.join(value['new_test_paths'])} if useful.
+Existing public tests, contracts, configuration, hooks, instructions and Git state are immutable.
+Preserve all earlier behavior and run ordinary verification including: {value['public_command']}
+Work only in this project. Do not read parent/sibling/evaluator directories, fetch answers,
+use network tools, install dependencies or delegate. Implement this request and useful tests;
+report changes and commands actually run. Independent grading is not supplied between stages.
+'''
     return f'''Continue developing this working project. This is stage {stage} of two feature requests.
 {value['requests'][stage - 1]}
 Edit only service.py and formatting.py; add tests/test_*.py files if useful.
@@ -268,9 +299,10 @@ def execute(batch, slot, executable):
     if (folder / 'result.json').exists():
         raise ValueError('attempt already exists; never retry launched slots')
     protocol, candidate, value = verify(root, slot, initial=True)
+    new=protocol['schema']==2;stage_count=4 if new else 2
     if os.environ.get('EP_PROFILE'):
         raise ValueError('profile environment override is not a frozen input')
-    record = {'schema': 1, 'slot': slot, 'state': 'preflight', 'stages': [],
+    record = {'schema': protocol['schema'], 'slot': slot, 'state': 'preflight', 'stages': [],
               'model_seconds': 0, 'host_version': '', 'limits': LIMITS}
     _write(folder / 'result.json', record)
     version = run([executable, '--version'], cwd=candidate, timeout=10, shell=False)
@@ -279,10 +311,11 @@ def execute(batch, slot, executable):
         record['state'] = 'authentication_or_host_unavailable'
         _write(folder / 'result.json', record)
         return record
-    for stage in (1, 2):
+    for stage in range(1,stage_count+1):
         verify(root, slot, initial=stage == 1)
         remaining = protocol['seconds_per_session'] - record['model_seconds']
-        allowance = remaining / (3 - stage)
+        allowance = remaining / (stage_count+1-stage)
+        if allowance<=0: break
         item = {'stage': stage, 'state': 'running', 'seconds_cap': allowance,
                 'source_before': _manifest(candidate), 'launched': True}
         prompt = _prompt(value, stage)
@@ -295,7 +328,10 @@ def execute(batch, slot, executable):
         item['started_at'] = time.time()
         output, diagnostic, code = '', '', None
         try:
-            done = run(native_command(executable, candidate, prompt, protocol['seals'][slot]['session'], stage),
+            command=(native_command(executable,candidate,prompt,protocol['seals'][slot]['session'],stage,
+                                    model=protocol['model'],stages=stage_count) if new else
+                     native_command(executable,candidate,prompt,protocol['seals'][slot]['session'],stage))
+            done = run(command,
                        cwd=candidate, timeout=allowance, shell=False)
             output, diagnostic, code = done.stdout, done.stderr, done.returncode
             item['state'] = 'returned' if code == 0 else 'host_failed'
@@ -321,6 +357,7 @@ def execute(batch, slot, executable):
         item['host_observation'] = subscription.observation('claude', result_event, diagnostic)
         if item['state'] == 'returned':
             item['state'] = 'completed' if item['host_observation']['completed'] else 'host_incomplete'
+            if new and item['host_observation'].get('models')!=[protocol['model']]: item['state']='model_unqualified'
         try:
             verify(root, slot)
             item['scope'] = 'preserved'
@@ -328,8 +365,14 @@ def execute(batch, slot, executable):
             source = {name: (candidate / name).read_bytes().decode('utf-8') for name in value['production']}
             _write(folder / f'source-{stage}.json', source)
             item['independent_grade'] = grade(value, stage, candidate)
-            item['native'] = _native(candidate, protocol, since=item['started_at'],
-                                     session=protocol['seals'][slot]['session'])
+            if new:
+                from .declared_workflow import observe
+                native=observe(candidate,folder/f'native-{stage}.jsonl',since=item['started_at'],
+                               session=protocol['seals'][slot]['session'],runtime=protocol['runtime_fingerprint'])
+                item['native']={'state':'observed' if native['native_runner_adoption'] else 'incomplete',**native}
+            else:
+                item['native'] = _native(candidate, protocol, since=item['started_at'],
+                                         session=protocol['seals'][slot]['session'])
             item['milestones'] = build(candidate, seconds=10, impact=True)
         except (OSError, ValueError, KeyError, TypeError):
             item['scope'] = 'violated'
@@ -337,7 +380,7 @@ def execute(batch, slot, executable):
         _write(folder / 'result.json', record)
         if item['state'] != 'completed':
             break
-    record['state'] = ('completed' if len(record['stages']) == 2
+    record['state'] = ('completed' if len(record['stages']) == stage_count
                        and all(s['state'] == 'completed' and s.get('independent_grade', {}).get('state') == 'graded'
                                for s in record['stages']) else 'incomplete')
     _write(folder / 'result.json', record)
@@ -381,8 +424,11 @@ def main():
     action.add_argument('--summary', type=Path)
     parser.add_argument('--slot')
     parser.add_argument('--executable')
+    parser.add_argument('--case',action='append',dest='cases')
+    parser.add_argument('--seconds',type=float,default=480)
+    parser.add_argument('--model')
     args = parser.parse_args()
-    if args.prepare: value = prepare(args.prepare)
+    if args.prepare: value = prepare(args.prepare,names=tuple(args.cases or ('queue','inventory')),seconds=args.seconds,model=args.model)
     elif args.summary: value = summarize(args.summary)
     else:
         if not args.slot or not args.executable: parser.error('execution requires an explicit slot and installed executable')
