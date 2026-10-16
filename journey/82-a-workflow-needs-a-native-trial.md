@@ -60,3 +60,19 @@ All qualified source reached main at `366048d`. The five rendered views were
 deployed and their HTML/data bytes independently matched the committed files.
 The final record adds documentation only. Native requalification remains a
 separate, allowance-gated next step, with both original failures retained.
+
+
+The separately approved requalification also completed all six turns. Both
+fresh conversations now have distinct task identities. Python records owned
+tests/build receipts on its first and recovery turns; its changed-dependency
+turn still uses ordinary compound commands with trailing output and stays stale.
+JavaScript uses that style throughout, so both milestones stay absent. The code
+passes both independent arithmetic checks, yet zero of two workflows qualify.
+
+This narrows the next repair to delivery and adoption during ordinary/no-edit
+verification. An agent can observe an assertion failure and describe it correctly
+without leaving a qualified execution receipt. We should improve the shared
+guidance boundary, not infer child outcomes from echoed text or weaken the gate.
+Both failed requalification results remain alongside the originals. The two new
+allowances are consumed and the larger comparison remains blocked. Distinct tasks
+are an observed improvement in these sessions, not a causal coding-quality result.

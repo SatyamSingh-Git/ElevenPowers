@@ -151,13 +151,43 @@
     ]
   },
   "installed_requalification": {
-    "state": "not_run",
+    "state": "completed_unqualified",
     "qualified": false,
-    "allowance": "pending"
+    "allowance": {
+      "approved_conversations": 2,
+      "consumed_conversations": 2,
+      "remaining": 0
+    },
+    "record": "results/installed-multistage/repaired/installed-acceptance.json",
+    "observations": [
+      {
+        "language": "python",
+        "qualified": false,
+        "state": "returned",
+        "model_calls": 3,
+        "model_seconds": 94.76299999999999,
+        "behavior_qualified": false,
+        "native_runner_adoption": false,
+        "task_boundaries": true,
+        "outside_model_process_seconds": 13.279
+      },
+      {
+        "language": "javascript",
+        "qualified": false,
+        "state": "returned",
+        "model_calls": 3,
+        "model_seconds": 47.004999999999995,
+        "behavior_qualified": false,
+        "native_runner_adoption": false,
+        "task_boundaries": true,
+        "outside_model_process_seconds": 7.077
+      }
+    ]
   },
   "outcome_comparison": {
     "state": "not_run",
-    "approved": false
+    "approved": false,
+    "blocked_by": "installed_acceptance"
   },
   "limits": [
     "Source qualification does not establish installed readiness or coding benefit.",

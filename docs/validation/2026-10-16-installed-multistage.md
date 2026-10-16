@@ -3,9 +3,11 @@
 Status: the initial implementation passed full local and four-cell hosted
 qualification. Both specifically approved native conversations completed but
 failed acceptance, exposing general task/provenance/guidance boundaries.
-Repairs pass full local and four-cell source qualification; fresh installed
-qualification requires a new specific allowance.
-No additional model allowance or four-conversation comparison is approved.
+Repairs pass full local and four-cell source qualification. Both freshly
+approved requalification conversations completed but failed acceptance, with
+distinct task identities and continuing ordinary compound-command receipt gaps.
+Both two-conversation allowances are consumed. No further model conversation or
+four-conversation comparison is approved or run. See the requalification section below.
 
 ## Deterministic controls so far
 
@@ -47,7 +49,7 @@ population benefit, complete dependency coverage, patch safety or OS isolation.
 
 Fresh review, affected/full regression, no-model integrated rehearsal, four-cell
 hosted qualification and all five rendered views are complete for repaired source.
-Installed requalification and any separately approved comparison remain pending.
+Installed requalification completed without acceptance; the separate comparison remains blocked.
 Main/publication identity is recorded below.
 The earlier Windows advice incident remains unexplained; fresh successful repeats
 do not establish its cause.
@@ -217,8 +219,9 @@ also retains 107 named audits, four grader controls, eight historical source
 grades, eleven doctor checks, standard-library imports and five rendered views.
 
 Both original native attempts remain unqualified at their earlier producer.
-No fresh installed allowance has been approved, and no additional conversation
-or larger comparison has run. Source qualification does not establish installed
+At that source-qualification checkpoint, no fresh installed allowance had
+been approved and no additional conversation or larger comparison had run.
+The later approved requalification is recorded below. Source qualification does not establish installed
 readiness or a coding-quality advantage. Main integration and publication are
 verified below; both earlier CI incident causes stay open.
 
@@ -236,5 +239,49 @@ The final documentation closure preserves qualified runtime, harness, test,
 workflow and map bytes. Manual run 38963268204 remains the four-cell source
 qualification; automatic main repeats are separate observations and are not
 reported as passed while pending. Both original installed trials remain failed;
-fresh installed and outcome allowances remain unapproved. The private plan
-workspace is retained for those unfinished measurement steps.
+the fresh installed allowance was pending at that delivery checkpoint. The
+later approved requalification is recorded below; the larger outcome comparison
+remains unapproved. The private plan workspace is retained for unfinished steps.
+
+## Repaired-runtime installed requalification — 2026-10-17
+
+A fresh human allowance authorized exactly two Sonnet 5.5 medium subscription
+conversations, 240 seconds each across three turns, no API fallback or retries.
+Both completed all six turns at the unchanged qualified source/runtime/harness.
+Both independent arithmetic checks exit 0 and protected inputs remain intact.
+Both now have three distinct task identities. **Zero of two qualify.**
+
+| Observation | Python | JavaScript |
+|---|---|---|
+| Model-process seconds | 94.763 | 47.005 |
+| Outside-model controller seconds | 13.279 | 7.077 |
+| Owned native adoption by turn | yes / no / yes | no / no / no |
+| After initial task, affected / independent | CURRENT / CURRENT | ABSENT / ABSENT |
+| After input drift | STALE / CURRENT | ABSENT / ABSENT |
+| After failure task | STALE / CURRENT | ABSENT / ABSENT |
+| After recovery task | CURRENT / CURRENT | ABSENT / ABSENT |
+
+Python's first and recovery calls join native usage, owned receipts and task
+callback provenance. Its drift turn executes ordinary compound shell commands
+with trailing output, retaining no owned failed receipt. JavaScript uses that
+style throughout and creates no qualifying receipts. The private native outputs
+show the expected dependency assertions failing. Echoed exit strings are not
+owned child evidence; absent/stale states must remain so.
+
+The [aggregate](../../results/installed-multistage/repaired/installed-acceptance.json)
+and individual [Python](../../results/installed-multistage/repaired/installed-python.json)
+and [JavaScript](../../results/installed-multistage/repaired/installed-javascript.json)
+records retain every approved attempt and producer identity. Original failures
+are untouched. Public export is validated against the actual snapshots, native
+calls, elapsed-time sums, current runtime and credential/path redaction rules.
+Both new allowances are consumed: 141.768 total model-process seconds, plus
+20.356 outside-model controller seconds. These times are not an API-dollar or
+speedup estimate. No further trial or larger comparison has run.
+
+The next plan step is deterministic reproduction of shipped guidance delivery
+and adoption during ordinary verification and tasks with no edits. Improve the
+shared bounded guidance only after identifying its failing boundary; preserve
+strict attribution and current unrelated evidence. Requalification does not
+establish a causal repair effect or coding advantage: these are unmatched trials
+at different producers, with no ordinary arm. The frozen comparison remains
+blocked until installed acceptance and a separate specific allowance.

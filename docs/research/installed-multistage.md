@@ -31,8 +31,15 @@ records task association, recognizes explicit new subjects and exposes independe
 command guidance; it does not weaken the gate or replace the original results.
 Actual callback ingress now supplies forward controls, alongside unbound-event
 and continuation refusals. The repaired source passes full local and four-cell
-qualification. Fresh installed evidence belongs to that new producer and requires
-a new allowance.
+qualification. Two freshly approved conversations at that producer completed
+with distinct task identities but neither qualified. Python has owned initial
+and recovery receipts; its drift turn and all JavaScript turns use compound
+ordinary commands with trailing output. Actual dependency assertions fail,
+but echoed exit strings do not establish owned execution. Preserve these new
+observations alongside the originals. They do not establish causal improvement:
+there is no matched ordinary arm and the source producer changed between trials.
+Next reproduce guidance delivery and adoption during ordinary/no-edit tasks
+without weakening command attribution. Both new allowances are consumed.
 
 See [design](../superpowers/specs/2026-10-16-installed-multistage-design.md),
 [plan](../superpowers/plans/2026-10-16-installed-multistage.md) and

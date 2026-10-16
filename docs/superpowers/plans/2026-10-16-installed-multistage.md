@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-16-installed-multistage-design.md`
 
-**Status:** Initial implementation source-qualified; both approved native conversations completed but failed acceptance. Three shared runtime boundaries are repaired and source-qualified: 70 affected controls, 2,519 local passes/3 skips and all four hosted cells. A new two-conversation installed allowance is pending; the four-conversation comparison is blocked and unapproved.
+**Status:** Shared repairs remain source-qualified with 70 affected controls, 2,519 local passes/3 skips and all four hosted cells. Both original native trials and both separately approved requalification conversations completed but failed acceptance. Distinct task identities are now present in both fresh trials; owned-runner adoption remains incomplete. Both two-conversation allowances are consumed. The larger comparison is blocked, unapproved and unrun.
 
 ## Global Constraints
 
@@ -115,7 +115,7 @@ the original observations and their producer; never relabel them after repair.
 - [x] Reproduce missing native task metadata using actual callback ingress rather than fabricated diagnostic fields.
 - [x] Repair explicit task declarations, native prompt/tool correlation and independent declared-property guidance for every project/host; 70 affected controls pass.
 - [x] Qualify repaired source `8d26185` with full local suite, four hosted cells, standard-library imports, audits, grader/source reproduction, doctor and updated rendered maps.
-- [ ] After a new specific allowance, run two fresh Sonnet 5.5 medium conversations, 240 seconds each across three turns, no API fallback or retry; keep every result.
+- [x] After a new specific allowance, run two fresh Sonnet 5.5 medium conversations, 240 seconds each across three turns, no API fallback or retry; keep every result. Both completed but failed acceptance; 94.763s Python and 47.005s JavaScript model-process time.
 - [ ] Only if both qualify, freeze a new comparison batch at that producer and request the separate four-conversation allowance. Existing authored contracts/oracles remain unchanged.
 
 The repair changes no completion gate or automatic model activation. Guidance
@@ -128,5 +128,31 @@ First main fast-forward `366048d` contains all task work. Remote main and the
 feature branch matched with zero feature commits absent. Pages run 38972715986
 succeeded; independent HTTPS reads matched committed architecture HTML/data
 bytes. The documentation closure preserves qualified source and rendered-map
-bytes. Installed requalification and the larger comparison remain pending their
-specific allowances; this does not complete the measurement gate or claim benefit.
+bytes. Subsequent requalification completed but remained unqualified, with
+both original and fresh attempts retained. The larger comparison is still blocked
+and unapproved; source delivery does not complete the measurement gate or claim benefit.
+
+## Next acceptance repair after requalification
+
+Both approved requalification conversations completed all three turns. Task
+identity is distinct in both; Python records qualified owned calls on first
+and recovery turns. Both drift turns use compound ordinary commands with
+trailing output. Python stays STALE and JavaScript retains ABSENT evidence.
+No new model run is authorized by this plan extension.
+
+- [ ] Reproduce the real ordinary compound-command and no-edit prompt/Stop
+  boundaries without a model; retain command, emitted guidance, child outcome,
+  actual native callback shape and owned receipt facts as separate authorities.
+- [ ] Determine why shipped runner guidance is not reliably delivered/adopted
+  across those turns. Improve bounded project-aware instructions through the
+  existing shared path; preserve continuations, unrelated current evidence,
+  passive/off behavior and explicit project configuration.
+- [ ] Keep arbitrary shell trailers/output as non-owned observations. Do not
+  infer per-child exit codes, fabricate receipts or weaken qualification to
+  satisfy a fixture. Add real producer forward/adversarial controls for the
+  demonstrated boundary before a justified runtime change.
+- [ ] Qualify any changed source, update fingerprints and report limits before
+  requesting another specific installed allowance. Do not change frozen cases,
+  prompts or independent oracles in response to failed outcomes.
+- [ ] Run the larger comparison only after installed acceptance and a separate
+  specific allowance. Retain all failed/incomplete attempts.

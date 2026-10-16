@@ -1,6 +1,6 @@
 # Roadmap
 
-**2026-10-17 — Installed multi-stage trial completed without readiness qualification.** Two native three-task conversations exposed task identity, callback provenance and independent-command visibility gaps. Shared repairs pass 70 affected controls, 2,519 local tests and all four hosted cells. Obtain a fresh installed allowance, then consider the separate outcome comparison. Initial failures remain published. See [guide](../the-guide/installed-multistage.md).
+**2026-10-17 — Installed requalification still exposes runner-adoption gaps.** Both newly approved three-task conversations completed and now have distinct task identities; Python owns initial/recovery receipts but misses the failure, while JavaScript retains no qualifying receipts. Zero of two qualify. Reproduce ordinary compound-command and no-edit guidance boundaries before another installed trial. The larger outcome comparison remains blocked and unapproved; both original and repaired-runtime attempts stay published. See [guide](../the-guide/installed-multistage.md).
 
 **2026-10-16 — Declared-check execution qualified.** The explicit runner makes exact configured checks independent of outer-shell status and feeds retained evidence. The prior CI incident has diagnostics and successful repetitions, without an established cause. Next qualify ordinary installed adoption and independently graded multi-stage behavior preservation. See [status](../docs/status.md) and [guide](../the-guide/declared-checks.md).
 

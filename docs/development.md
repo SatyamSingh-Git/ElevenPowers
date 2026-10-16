@@ -311,3 +311,10 @@ ordinary continuations, task-correlated prompt/tool ingress, unbound callbacks
 and independent/bounded command guidance. They launch no model. Original
 failed trials and repaired-source qualification remain separate in the
 [validation record](validation/2026-10-16-installed-multistage.md).
+
+Both approved repaired-runtime requalification conversations completed but
+failed acceptance. The next free controls must reproduce ordinary compound
+commands and no-edit prompt/completion guidance at actual callback ingress.
+Keep native command execution, emitted advice, owned receipts and independent
+behavior separate; never turn shell trailers into authenticated child outcomes.
+The original and fresh results are retained in the validation record above.

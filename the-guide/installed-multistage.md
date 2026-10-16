@@ -8,11 +8,16 @@ and order-system cases exist only in evaluation code.
 Run these evaluation commands from an ElevenPowers repository checkout; plugin
 installation does not launch them or spend a model allowance.
 
-The first two installed trials completed but did not qualify. Their retained
-results expose missing independent-command evidence, recovery-task reuse and a
-native task-metadata mismatch. Shared runtime repairs pass real-producer controls,
-full local and four-cell qualification; a new installed allowance is required. The larger
-comparison remains blocked. See the [retained attempts](../results/installed-multistage/installed-acceptance.json).
+The first two installed trials completed but did not qualify. After shared
+task/provenance/guidance repairs passed full local and four-cell qualification,
+two separately approved requalification conversations also completed but did
+not qualify. Both now have distinct task identities. Python owns initial and
+recovery receipts but leaves the dependency failure stale; JavaScript uses
+ordinary compound commands throughout and retains no qualifying receipts.
+The larger comparison remains blocked. See the [original attempts](../results/installed-multistage/installed-acceptance.json)
+and [repaired-runtime attempts](../results/installed-multistage/repaired/installed-acceptance.json).
+Both two-conversation allowances are consumed. Further runs need a new specific
+allowance after diagnosing and qualifying the remaining adoption boundary.
 
 ## Rehearse without a model
 
