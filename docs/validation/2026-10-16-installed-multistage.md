@@ -292,3 +292,19 @@ shared links and narrow layout. The normal-access check completed in 12.402
 seconds after a sandboxed browser launch stalled and was interrupted. Runtime,
 harness, tests and CI workflow bytes still match the qualified source; this
 evidence/documentation update requires no new full-suite result or model call.
+
+Inspection of the actual native SessionStart responses narrows the delivery
+question further. All six startup/resume responses exit 0 and emit both owned
+tests/build instructions. Their Windows PowerShell instructions were decoded as
+data and checked against the shipped owned-command recognizer; they were not
+executed by this inspection. [Guidance observations](../../results/installed-multistage/repaired/requalification-guidance.json)
+retain hashes, property labels and separate completed-use counts, without raw
+commands or native transcripts. Emission does not establish model consumption;
+the cause of non-adoption remains unestablished.
+
+The updated map reached main at `dc5494b`. Pages run
+[38975197154](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38975197154)
+succeeded; independent HTTPS reads match both committed map files byte for byte.
+[Requalification delivery evidence](../../results/installed-multistage/repaired/requalification-delivery.json)
+retains response hashes, render outcome and the unchanged source identity.
+The final evidence/documentation closure preserves those map and runtime bytes.

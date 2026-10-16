@@ -76,3 +76,9 @@ guidance boundary, not infer child outcomes from echoed text or weaken the gate.
 Both failed requalification results remain alongside the originals. The two new
 allowances are consumed and the larger comparison remains blocked. Distinct tasks
 are an observed improvement in these sessions, not a causal coding-quality result.
+
+Reading the real startup responses prevents another mistaken diagnosis. Both
+owned tests/build instructions were emitted in all six turns, encoded for the
+Windows shell. The entry points were present. We still need to establish why
+the agent chose ordinary commands and how to improve readable, task-relevant
+guidance. Emission and consumption require separate evidence.

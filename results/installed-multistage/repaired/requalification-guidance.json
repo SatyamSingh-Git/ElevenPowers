@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "state": "observed_startup_guidance",
+  "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+  "runtime": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "conversations": 2,
+  "turns": 6,
+  "rows": [
+    {
+      "language": "python",
+      "stage": 1,
+      "hook_event": "SessionStart",
+      "hook_name": "SessionStart:startup",
+      "exit_code": 0,
+      "additional_context_characters": 1605,
+      "additional_context_sha256": "2095be6170548ede63b856d8264564e251578b9db714aa85c8371ee4aaa0f735",
+      "owned_instruction_lines": 2,
+      "declared_properties": [
+        "tests",
+        "build"
+      ],
+      "instruction_form": "powershell_encoded",
+      "completed_owned_runner_calls": 2,
+      "native_runner_adoption": true
+    },
+    {
+      "language": "python",
+      "stage": 2,
+      "hook_event": "SessionStart",
+      "hook_name": "SessionStart:resume",
+      "exit_code": 0,
+      "additional_context_characters": 1945,
+      "additional_context_sha256": "b2fb55899b3ae45a6c5ec40b3fd1bc06a6c6d6d7ac6a5cbbaaee43edf81c12ff",
+      "owned_instruction_lines": 2,
+      "declared_properties": [
+        "tests",
+        "build"
+      ],
+      "instruction_form": "powershell_encoded",
+      "completed_owned_runner_calls": 0,
+      "native_runner_adoption": false
+    },
+    {
+      "language": "python",
+      "stage": 3,
+      "hook_event": "SessionStart",
+      "hook_name": "SessionStart:resume",
+      "exit_code": 0,
+      "additional_context_characters": 1945,
+      "additional_context_sha256": "a6ee4ab6088fb2b2bc8e9c749ec89efa533e71b2b46c339470ad9cc5f382822b",
+      "owned_instruction_lines": 2,
+      "declared_properties": [
+        "tests",
+        "build"
+      ],
+      "instruction_form": "powershell_encoded",
+      "completed_owned_runner_calls": 1,
+      "native_runner_adoption": true
+    },
+    {
+      "language": "javascript",
+      "stage": 1,
+      "hook_event": "SessionStart",
+      "hook_name": "SessionStart:startup",
+      "exit_code": 0,
+      "additional_context_characters": 1639,
+      "additional_context_sha256": "31c3bf60148f09748c854cb2658f719d169beb4bdbec29572c7a70c00377a0d0",
+      "owned_instruction_lines": 2,
+      "declared_properties": [
+        "tests",
+        "build"
+      ],
+      "instruction_form": "powershell_encoded",
+      "completed_owned_runner_calls": 0,
+      "native_runner_adoption": false
+    },
+    {
+      "language": "javascript",
+      "stage": 2,
+      "hook_event": "SessionStart",
+      "hook_name": "SessionStart:resume",
+      "exit_code": 0,
+      "additional_context_characters": 1979,
+      "additional_context_sha256": "ed6950e3c413684ef79b04ddfcf8f7c8553eb66d2b8400944f237e7e14e0ee48",
+      "owned_instruction_lines": 2,
+      "declared_properties": [
+        "tests",
+        "build"
+      ],
+      "instruction_form": "powershell_encoded",
+      "completed_owned_runner_calls": 0,
+      "native_runner_adoption": false
+    },
+    {
+      "language": "javascript",
+      "stage": 3,
+      "hook_event": "SessionStart",
+      "hook_name": "SessionStart:resume",
+      "exit_code": 0,
+      "additional_context_characters": 1979,
+      "additional_context_sha256": "ed6950e3c413684ef79b04ddfcf8f7c8553eb66d2b8400944f237e7e14e0ee48",
+      "owned_instruction_lines": 2,
+      "declared_properties": [
+        "tests",
+        "build"
+      ],
+      "instruction_form": "powershell_encoded",
+      "completed_owned_runner_calls": 0,
+      "native_runner_adoption": false
+    }
+  ],
+  "limits": [
+    "Actual native hook responses contain both declared-property instructions in every turn.",
+    "Emission is separate from model consumption and completed owned-runner use.",
+    "Encoded instructions were decoded as data, never executed by this inspection.",
+    "The cause of non-adoption remains unestablished; no model retry or coding-benefit inference."
+  ]
+}

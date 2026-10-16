@@ -140,6 +140,12 @@ and recovery turns. Both drift turns use compound ordinary commands with
 trailing output. Python stays STALE and JavaScript retains ABSENT evidence.
 No new model run is authorized by this plan extension.
 
+Actual native startup/resume inspection already confirms that both encoded
+tests/build instructions were emitted in all six turns. Preserve that forward
+observation: investigate readable property guidance, prompt/completion context
+and subsequent adoption without assuming startup instructions were absent.
+Emission alone does not establish model consumption or the cause of non-adoption.
+
 - [ ] Reproduce the real ordinary compound-command and no-edit prompt/Stop
   boundaries without a model; retain command, emitted guidance, child outcome,
   actual native callback shape and owned receipt facts as separate authorities.

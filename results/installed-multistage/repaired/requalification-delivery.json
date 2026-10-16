@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "qualified_source_candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+  "runtime": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "source_qualification_run": 38963268204,
+  "publication": {
+    "commit": "dc5494bd5886f3a381c64de5509bd93ae86e51ad",
+    "pages_run": 38975197154,
+    "published": [
+      {
+        "path": "architecture/index.html",
+        "status": 200,
+        "bytes": 375934,
+        "sha256": "19162e4ffc4ae00020338c4c93101dfe6b8c4884b86ca0ff214770cbb6c256df"
+      },
+      {
+        "path": "architecture/graph-data.js",
+        "status": 200,
+        "bytes": 202327,
+        "sha256": "ad46da1f9603aead182e60d733bb864523442a418b24c8bea87144303b8d7b7d"
+      }
+    ]
+  },
+  "render": {
+    "exit_code": 0,
+    "seconds": 12.402,
+    "views": 5,
+    "nodes": 169,
+    "edges": 416,
+    "planes": 7
+  },
+  "installed_requalification": {
+    "scheduled": 2,
+    "completed": 2,
+    "qualified": 0,
+    "remaining_conversations": 0
+  },
+  "outcome_comparison": {
+    "state": "not_run",
+    "approved": false,
+    "blocked_by": "installed_acceptance"
+  },
+  "closure": "Subsequent evidence and documentation closure preserves these published map bytes and the qualified runtime/harness. Automatic CI repeats remain separate from completed source qualification."
+}

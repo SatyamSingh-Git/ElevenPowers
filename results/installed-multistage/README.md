@@ -115,3 +115,9 @@ allowances are consumed. No further model attempt or ordinary-versus-assisted
 comparison is approved or run. Next work is reliable delivery and adoption of
 the shipped runner during ordinary verification, including tasks with no edits;
 reproduce that boundary with actual callback producers before another live trial.
+
+[Actual startup guidance observations](repaired/requalification-guidance.json)
+show both owned tests/build instructions in all six startup/resume responses.
+Instruction emission and completed runner use remain separate observations;
+the cause of non-adoption is not established. The [updated delivery record](repaired/requalification-delivery.json)
+binds the rendered map publication and unchanged qualified source.
