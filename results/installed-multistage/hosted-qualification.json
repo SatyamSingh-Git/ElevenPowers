@@ -45,6 +45,28 @@
       "grader_cases": 4,
       "retained_legacy_source_grades": 8,
       "host_doctor_controls": 11
+    },
+    {
+      "candidate": "ed18a53fc9b9cb9500fc544a63b2fb1988e5e24d",
+      "hosted_run": 38951108845,
+      "job": 117142428070,
+      "platform": "windows-latest",
+      "python": "3.11",
+      "suite": {
+        "passed": 2505,
+        "skipped": 5,
+        "seconds": 3463.08
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 74.1
+      },
+      "workflow_rehearsal_seconds": 20.312,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
     }
   ],
   "limits": [

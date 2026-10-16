@@ -102,9 +102,16 @@ match the Git LF checkout form; no newline normalization qualifies freshness.
 |---|---:|---:|---:|---:|
 | Linux / Python 3.11 | 2501 | 9 | 543.68 | 4.169 |
 | Linux / Python 3.13 | 2501 | 9 | 601.73 | 4.267 |
+| Windows / Python 3.11 | 2505 | 5 | 3463.08 | 20.312 |
 
 Both passed 105 applicable named audits with two platform skips, the independent
 grader, eight historical source grades and eleven doctor checks. The
 [machine-readable matrix record](../../results/installed-multistage/hosted-qualification.json)
 remains partial while Windows runs. These are actual-command/reference controls,
 not installed acceptance or cross-platform speed measurements.
+
+Windows 3.11 also completed all gates: 107 named audits in 74.10 seconds,
+grader/source reproduction/doctor and actual dependency/scope protocols. Its
+downloaded ZIP digest and all sixteen stage rows match the raw Windows CRLF
+runtime/harness form and independently calculated source/oracle identities.
+Windows 3.13 remains pending at this observation.
