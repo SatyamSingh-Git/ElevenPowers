@@ -31,6 +31,9 @@ python -m eval.workflow_results --reproduce NEW_DIR/source-archive
 ```
 
 The result retains the source candidate and raw local/Git/Windows harness forms.
+[Runtime identities](runtime-identities.json) confirm that the 137 shipping
+runtime files are unchanged; the new protocol is a twelve-file evaluation
+harness. Checkout forms explain representation, not equivalent fresh evidence.
 Source grading reports historical harness matching separately; evidence freshness
 still uses actual unnormalized runtime bytes. Raw prompts, host streams,
 credentials and machine-specific paths are not published here.
