@@ -135,7 +135,7 @@ def execute(root, property, *, seconds=120):
     return result
 
 
-def _execute(root, property, session, *, seconds, job=None):
+def _execute(root, property, session, *, seconds, job=None, expected_command=None, expected_context=None):
     """The same qualified child path, using an already held single or batch owner."""
     started = time.monotonic()
     result = {'schema_version': 1, 'state': 'incomplete', 'property': property,
@@ -149,10 +149,15 @@ def _execute(root, property, session, *, seconds, job=None):
             raise ValueError('selected check is unavailable or passive')
         command = config.command_for(property)
         result['command'] = scrub(command)
+        if expected_command is not None and command!=expected_command:
+            result['command']=scrub(expected_command)
+            raise Superseded('the frozen batch command changed before execution')
         ledger = Ledger.load(root)
         if ledger.task != session.task:
             raise Superseded('task changed before ownership')
         before_context = context(root)
+        if expected_context is not None and before_context!=expected_context:
+            raise Superseded('the frozen batch context changed before execution')
         if _config(root).command_for(property) != command or not _config(root).verifies:
             raise ValueError('declared command or profile changed before launch')
         snapshot = source_snapshot(root, fresh=True, deadline=session.budget.deadline)
@@ -171,7 +176,8 @@ def _execute(root, property, session, *, seconds, job=None):
             issues.append('input coverage is incomplete; command was not launched')
         else:
             try:
-                if context(root) != before_context or Ledger.load(root).task != session.task:
+                if (context(root) != before_context or Ledger.load(root).task != session.task
+                        or _config(root).command_for(property)!=command or not _config(root).verifies):
                     raise ValueError('execution context changed before launch')
                 allowance = session.budget.timeout(seconds)
                 result['unrun'] = False

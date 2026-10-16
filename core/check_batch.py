@@ -16,6 +16,8 @@ def execute(root, *, seconds=120):
     root=Path(root).resolve(strict=True)
     value={'schema_version':2,'selected':[],'results':[],'state':'incomplete','issues':[]}
     try:
+        task=Ledger.load(root).task
+        identity=checks.context(root)
         config=checks._config(root)
         selected=[p for p in ORDER if config.declares(p)]
         value['selected']=selected
@@ -26,16 +28,17 @@ def execute(root, *, seconds=120):
             raise ValueError('passive off profile does not execute checks')
         if current() is not None:
             raise Busy('another verification session owns this operation')
-        task=Ledger.load(root).task
-        identity=checks.context(root)
         commands={p:config.command_for(p) for p in selected}
+        if Ledger.load(root).task!=task or checks.context(root)!=identity:
+            raise Superseded('task, configuration or producer changed while selecting checks')
         with Session(root,task,seconds=max(0,seconds-(time.monotonic()-started))) as session:
             jobs=[session.queue('declared check '+p,commands[p]) for p in selected]
             for index,(property,job) in enumerate(zip(selected,jobs)):
                 if Ledger.load(root).task!=task or checks.context(root)!=identity:
                     raise Superseded('task, configuration or producer changed during batch')
                 session.budget.timeout(seconds)
-                value['results'][index]=checks._execute(root,property,session,seconds=seconds,job=job)
+                value['results'][index]=checks._execute(root,property,session,seconds=seconds,job=job,
+                    expected_command=commands[property],expected_context=identity)
             if Ledger.load(root).task!=task or checks.context(root)!=identity:
                 raise Superseded('task, configuration or producer changed before batch closure')
     except (OSError,ValueError,Busy,Superseded,subprocess.SubprocessError) as error:

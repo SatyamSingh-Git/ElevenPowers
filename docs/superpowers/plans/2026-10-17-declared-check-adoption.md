@@ -60,7 +60,7 @@
 - [x] Write RED for batch guidance and selected-property refusal to broaden, and exercise output if needed.
 - [x] Prefer batch at startup and distinct no-edit verification prompts; expose each result independently to existing observers.
 - [x] Execute unrelated project pass/fail/drift/recovery, owner/deadline/refusal controls and retain results; add stdlib/CI exercise/artifact coverage.
-- [ ] Commit/push; run one fresh whole-change review and one witnessed repair pass for actual findings.
+- [x] Commit/push; run one fresh whole-change review and one witnessed repair pass for actual findings.
 
 ### Task4: Qualify, observe installed adoption and deliver
 
