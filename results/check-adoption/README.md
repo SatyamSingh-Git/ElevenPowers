@@ -13,6 +13,10 @@ Git LF and Windows CRLF forms are metadata for independently checking downloaded
 hosted artifacts. Current full local and four-cell source qualification are in
 progress. No new installed session has run at this producer yet.
 
+[Independent local gates](local-gates.json) retain the audit, grader, historical
+source reproduction, host-doctor and sixteen-snapshot workflow results. The full
+suite remains pending until its own process exits successfully.
+
 The user has given standing permission for needed Sonnet 5.5 medium subscription
 conversations. The next installed gate uses two disposable conversations,
 240 seconds each across three turns, after healthy source qualification, with

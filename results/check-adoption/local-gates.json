@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "state": "independent_gates_passed_full_pending",
+  "full_suite": {
+    "state": "running"
+  },
+  "audits": {
+    "passed": 107,
+    "seconds": 134.16,
+    "exit_code": 0,
+    "process_seconds": 136.276,
+    "log_sha256": "94cf266561be99c960dd7657ab044bc469d9f3d12eec25491e8c83ad190ae43e"
+  },
+  "grader": {
+    "correct": 4,
+    "exit_code": 0,
+    "process_seconds": 9.065,
+    "log_sha256": "50848d486b86b793c2d36ab54dad10a9e8485899ec2ddd6a798a7840ccabc12e"
+  },
+  "legacy_source_grades": {
+    "reproduced": 8,
+    "exit_code": 0,
+    "process_seconds": 1.81,
+    "log_sha256": "11f1c53a17efb3a33ed82d207cae083892bd9a0d0430490d7385223f49a4e636"
+  },
+  "host_doctor": {
+    "ok": 11,
+    "exit_code": 0,
+    "process_seconds": 6.077,
+    "log_sha256": "fc6d21b82d17a5c841c0920ba1fa630b1e0fdb16d63f14971ca2ce6845a88fcd"
+  },
+  "workflow": {
+    "model_calls": 0,
+    "source_snapshots": 16,
+    "internal_seconds": 31.849,
+    "qualified": true,
+    "exit_code": 0,
+    "process_seconds": 37.513,
+    "log_sha256": "2013c0dd021eb21b04d1f60de99d4666d34135a2c20622101c6511904efbd459"
+  },
+  "limits": [
+    "No installed-model acceptance or causal coding-benefit claim.",
+    "Hosted qualification and new installed adoption are retained separately."
+  ]
+}

@@ -101,6 +101,14 @@ checkout hashes are consequently distinct. This corrects exported representation
 metadata only. The observed local runtime hash and strict raw-byte freshness
 guards are unchanged, and no installed trial used the erroneous forms.
 
+[Independent local gates](../../results/check-adoption/local-gates.json) retain
+107 passing audit probes (134.16 seconds), all four correct grader controls,
+eight reproduced historical source grades and eleven passing host-doctor
+controls. The unchanged workflow harness reproduces sixteen staged source
+snapshots in 31.849 seconds, with zero model calls. Process durations and private
+log digests remain distinct from the tools' own reported durations. A running
+full suite is explicitly pending in this record.
+
 ## Installed history and next observation
 
 [Earlier native findings](2026-10-16-installed-multistage.md) and all four
