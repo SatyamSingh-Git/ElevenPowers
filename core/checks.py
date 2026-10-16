@@ -76,11 +76,19 @@ def guidance(root, *, commands=None):
                   and (commands is None or v in commands)]
     if not properties or not config.verifies:
         return ''
-    selected = 'tests' if 'tests' in properties else sorted(properties)[0]
-    text = 'Declared-check runner: ' + invocation([
-        sys.executable, str(Path(__file__).resolve().parents[1] / 'plugin/bin/ep_check.py'),
-        selected, '--project', str(root)])
-    return text if len(text) <= 2000 else 'Run ep_check.py PROPERTY --project PATH; inspect --list for declared properties.'
+    ordered=sorted(properties,key=lambda p:(p!='tests',p));lines=[];shown=[]
+    for selected in ordered:
+        line = 'Declared-check runner: ' + invocation([
+            sys.executable, str(Path(__file__).resolve().parents[1] / 'plugin/bin/ep_check.py'),
+            selected, '--project', str(root)])
+        # Reserve room to name any command instructions omitted by the bound.
+        if len('\n'.join([*lines,line]))<=1750:
+            lines.append(line);shown.append(selected)
+    missing=[p for p in ordered if p not in shown]
+    if missing:
+        lines.append('Additional declared check instructions not shown: '+', '.join(missing)+
+                     '. Inspect ep_check.py --list; these checks are not verified by another property passing.')
+    return '\n'.join(lines)
 
 
 def execute(root, property, *, seconds=120):

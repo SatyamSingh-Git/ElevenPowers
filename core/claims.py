@@ -41,6 +41,10 @@ NO_CLAIM = re.compile(
     re.I,
 )
 
+EXPLICIT_TASK = re.compile(
+    r"^\s*(?:this\s+is\s+(?:a\s+)?(?:new|separate)\s+task|"
+    r"(?:new|separate|next)\s+task)(?:\s*[:.!-]|\s*$)", re.I)
+
 
 def infer(request: str) -> list[Claim]:
     """Zero or more claims. Zero means the runtime stays out of the way."""
@@ -87,4 +91,4 @@ def opens_new_task(request: str) -> bool:
         return False
     if infer(text):
         return True
-    return bool(QUESTION.match(text) or NO_CLAIM.search(text))
+    return bool(EXPLICIT_TASK.match(text) or QUESTION.match(text) or NO_CLAIM.search(text))

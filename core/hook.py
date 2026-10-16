@@ -157,6 +157,8 @@ def on_prompt(payload: dict, root: Path) -> int:
         if not ledger.base:
             ledger.base = base_commit(root)
             ledger.opened_dirty = _changed_paths(root)
+    from .hosts.readiness import record_task
+    record_task(ledger.task)
     if not claims:
         if ledger.request and not new_subject and not opens_new_task(request):
             if identity_missing:
@@ -247,6 +249,11 @@ def on_post_tool(payload: dict, root: Path) -> int:
     # Both direct Claude invocation and adapter collectors receive one combined
     # context message. Guidance and native attribution gaps must survive advice.
     with transport.collect() as messages:
+        from .hosts.readiness import SOURCE, record_task
+        if SOURCE.get() == 'host':
+            # Owned runner output is deliberately not parsed a second time.
+            # Its native callback still belongs to the current task.
+            record_task(Ledger.load(root).task)
         code = _on_post_tool(payload, root)
         tool = payload.get('tool_name', '')
         edited = tool in EDIT_TOOLS or (tool == 'Patch' and payload.get('_ep_platform'))
