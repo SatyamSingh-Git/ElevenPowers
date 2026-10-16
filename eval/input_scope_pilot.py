@@ -97,7 +97,12 @@ def snapshot(root):
                       (root/'.elevenpowers/count.txt',root/'.elevenpowers/other-count.txt')]}
 
 
-def pilot(destination,language,source,*,seconds=180,rehearse=False):
+def pilot(destination,language,source,*,seconds=180,rehearse=False,protocol='exact-command'):
+    if protocol == 'declared-runner':
+        from .declared_workflow import pilot as declared_pilot
+        return declared_pilot(destination,language,source,seconds=seconds,rehearse=rehearse)
+    if protocol != 'exact-command':
+        raise ValueError('unknown installed protocol')
     if type(seconds) not in (int,float) or not 0<seconds<=180: raise ValueError('pilot cap exceeds approved range')
     destination=Path(destination).absolute()
     if not rehearse and (not destination.is_relative_to(Path(tempfile.gettempdir()).resolve())
@@ -190,8 +195,11 @@ def main(argv=None):
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--language',choices=('python','javascript'),required=True)
     parser.add_argument('--rehearse',action='store_true')
+    parser.add_argument('--protocol',choices=('exact-command','declared-runner'),default='exact-command')
+    parser.add_argument('--seconds',type=float,default=180)
     options=parser.parse_args(argv)
-    print(json.dumps(pilot(options.output,options.language,Path(__file__).resolve().parents[1],rehearse=options.rehearse),indent=2))
+    print(json.dumps(pilot(options.output,options.language,Path(__file__).resolve().parents[1],
+                          seconds=options.seconds,rehearse=options.rehearse,protocol=options.protocol),indent=2))
 
 
 if __name__=='__main__': main()
