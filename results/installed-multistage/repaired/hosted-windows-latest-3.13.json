@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "category": "deterministic-four-stage-rehearsal",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "benefit_comparison": false,
+  "scheduled_slots": 4,
+  "observations": [
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    }
+  ],
+  "runtime": "1f568ff76b25fcfc37f1040059150eea1108f1b4dc7ef53ca077162aa0cbbd2b",
+  "harness": "dd09198f38f6f4574fd28c8510cbce9bb6d987a5d3d91c86af985f488dcbdba7",
+  "limits": [
+    "Full valid references with actual commands and private source regrades.",
+    "No native agent, installed acceptance or measured coding benefit."
+  ],
+  "reproduction": {
+    "qualified": true,
+    "stages": 16,
+    "issues": [],
+    "grading_only": true,
+    "historical_harness_matches": true
+  },
+  "qualified": true,
+  "seconds": 22.604,
+  "retention": {
+    "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+    "hosted_run": 38963268204,
+    "job": 117183374542,
+    "platform": "windows-latest",
+    "python": "3.13",
+    "artifact_id": 12076865809,
+    "artifact_sha256": "1380f3f7abfb80397320782559fa591af53e10dfc6dd274a373c7f26b37d2d2f",
+    "independently_checked_stage_rows": 16,
+    "limits": [
+      "Actual control rows and source/oracle identities independently checked; no installed session or benefit comparison."
+    ]
+  }
+}

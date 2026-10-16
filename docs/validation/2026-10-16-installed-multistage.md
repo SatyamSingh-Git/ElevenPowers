@@ -187,14 +187,17 @@ match candidate `8d26185`:
 | Linux / Python 3.11 | 2513 | 9 | 595.09 | 4.572 |
 | Linux / Python 3.13 | 2513 | 9 | 623.70 | 4.877 |
 | Windows / Python 3.11 | 2517 | 5 | 3341.86 | 17.453 |
+| Windows / Python 3.13 | 2517 | 5 | 3561.70 | 22.604 |
 
 Their named audits pass 105 applicable controls with two platform skips in 22.72
 and 18.40 seconds. Grader, historical source reproduction and doctor pass.
 [Repaired-source matrix evidence](../../results/installed-multistage/repaired/hosted-qualification.json)
-remains partial while Windows runs; it does not reuse initial-source qualification.
+records all four successful repaired-source cells; it does not reuse initial-source qualification.
 Repaired Windows 3.11 completed every gate, including 107 audits in 76.45
 seconds. Its downloaded digest and all sixteen stage identities match the new
-Windows CRLF producer. Windows 3.13 remains pending at this observation.
+Windows CRLF producer. Windows 3.13 subsequently completed every gate, including
+107 audits in 50.79 seconds. Its downloaded digest and all sixteen stage rows
+pass the same independent validation. Run 38963268204 is fully successful.
 
 The repaired source's [GitHub artifact](../../results/installed-multistage/repaired/github-artifact.json)
 also independently matches its canonical bundle, logged subject and
