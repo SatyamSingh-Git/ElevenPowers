@@ -30,8 +30,9 @@ missing build evidence and recovery-task reuse. The repaired shared producer
 records task association, recognizes explicit new subjects and exposes independent
 command guidance; it does not weaken the gate or replace the original results.
 Actual callback ingress now supplies forward controls, alongside unbound-event
-and continuation refusals. Fresh installed evidence belongs to a new producer
-and requires a new allowance.
+and continuation refusals. The repaired source passes full local and four-cell
+qualification. Fresh installed evidence belongs to that new producer and requires
+a new allowance.
 
 See [design](../superpowers/specs/2026-10-16-installed-multistage-design.md),
 [plan](../superpowers/plans/2026-10-16-installed-multistage.md) and

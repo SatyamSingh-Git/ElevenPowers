@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "state": "source_qualified",
+  "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+  "runtime": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "local_suite": {
+    "passed": 2519,
+    "skipped": 3,
+    "seconds": 4665.15
+  },
+  "named_audits": {
+    "passed": 107,
+    "skipped": 0,
+    "seconds": 98.55
+  },
+  "grader_cases": 4,
+  "retained_source_grades": 8,
+  "reference_source_snapshots": 16,
+  "host_doctor_controls": 11,
+  "stdlib_imports": true,
+  "rendered_architecture_views": 5,
+  "hosted": [
+    {
+      "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+      "hosted_run": 38963268204,
+      "job": 117183374367,
+      "platform": "ubuntu-latest",
+      "python": "3.11",
+      "suite": {
+        "passed": 2513,
+        "skipped": 9,
+        "seconds": 595.09
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 22.72
+      },
+      "workflow_rehearsal_seconds": 4.572,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    },
+    {
+      "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+      "hosted_run": 38963268204,
+      "job": 117183374456,
+      "platform": "ubuntu-latest",
+      "python": "3.13",
+      "suite": {
+        "passed": 2513,
+        "skipped": 9,
+        "seconds": 623.7
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 18.4
+      },
+      "workflow_rehearsal_seconds": 4.877,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    },
+    {
+      "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+      "hosted_run": 38963268204,
+      "job": 117183374514,
+      "platform": "windows-latest",
+      "python": "3.11",
+      "suite": {
+        "passed": 2517,
+        "skipped": 5,
+        "seconds": 3341.86
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 76.45
+      },
+      "workflow_rehearsal_seconds": 17.453,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    },
+    {
+      "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+      "hosted_run": 38963268204,
+      "job": 117183374542,
+      "platform": "windows-latest",
+      "python": "3.13",
+      "suite": {
+        "passed": 2517,
+        "skipped": 5,
+        "seconds": 3561.7
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 50.79
+      },
+      "workflow_rehearsal_seconds": 22.604,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    }
+  ],
+  "original_installed_attempts": {
+    "schema": 1,
+    "scheduled_conversations": 2,
+    "attempted_conversations": 2,
+    "approved_model": "claude-sonnet-5-5",
+    "effort": "medium",
+    "seconds_per_conversation": 240,
+    "qualified": false,
+    "observations": [
+      {
+        "language": "python",
+        "qualified": false,
+        "state": "returned",
+        "model_calls": 3,
+        "model_seconds": 104.287,
+        "behavior_qualified": false,
+        "native_runner_adoption": false,
+        "task_boundaries": false,
+        "outside_model_process_seconds": 12.323
+      },
+      {
+        "language": "javascript",
+        "qualified": false,
+        "state": "returned",
+        "model_calls": 3,
+        "model_seconds": 73.077,
+        "behavior_qualified": false,
+        "native_runner_adoption": false,
+        "task_boundaries": false,
+        "outside_model_process_seconds": 6.939
+      }
+    ],
+    "api_fallback": false,
+    "retries": 0,
+    "benefit_comparison": false,
+    "limits": [
+      "Installed readiness is separate from independent coding outcomes.",
+      "All attempted languages remain present regardless of qualification."
+    ]
+  },
+  "installed_requalification": {
+    "state": "not_run",
+    "qualified": false,
+    "allowance": "pending"
+  },
+  "outcome_comparison": {
+    "state": "not_run",
+    "approved": false
+  },
+  "limits": [
+    "Source qualification does not establish installed readiness or coding benefit.",
+    "All original failed conversations remain retained at their original producer.",
+    "Previous CI incident causes remain open; green qualification does not establish their repair."
+  ]
+}

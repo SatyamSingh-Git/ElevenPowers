@@ -63,8 +63,9 @@ original callback producer does not supply the task fields required by the new
 native predicate. Python's actual owned runner calls remain visible despite that
 false-negative provenance flag; JavaScript uses ordinary command capture.
 
-Both original attempts remain published. General runtime repairs are being
-qualified; their installed acceptance needs a new specific allowance. The
+Both original attempts remain published. General runtime repairs are
+[source-qualified](repaired/qualification.json); their installed acceptance needs
+a new specific allowance. The
 separate four-conversation correctness comparison is blocked and has not been
 approved or run. No coding improvement follows from these controls. Earlier comparisons remain
 [correctness ties](../behavior-preservation/README.md).

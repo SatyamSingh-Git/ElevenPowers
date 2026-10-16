@@ -1,6 +1,6 @@
 # Current delivery status
 
-**2026-10-17 — Installed multi-stage trial exposed three general boundaries; repairs are qualifying.**
+**2026-10-17 — Installed multi-stage repairs source-qualified; fresh installed allowance pending.**
 The initial implementation passed 2,507 local tests and all four hosted cells.
 Both approved Sonnet 5.5 medium conversations completed three turns but failed
 installed acceptance. Independent arithmetic checks passed; missing build
@@ -8,8 +8,9 @@ evidence, reused recovery-task identity and missing native callback task fields
 prevent readiness qualification. The original attempts remain retained.
 Shared runtime repairs now recognize explicit task declarations, correlate native
 prompt/tool callbacks and expose independent declared checks with bounded gaps.
-Seventy affected controls pass; fresh full/hosted qualification and a separate
-two-conversation requalification allowance are pending. The larger comparison
+Repairs pass 2,519 local tests (3 skipped), all four hosted cells, 107 audits
+and all five rendered views. A separate two-conversation installed allowance
+is pending; earlier trials do not qualify the repaired producer. The larger comparison
 remains unrun and no new coding-quality advantage is established.
 See [guide](../the-guide/installed-multistage.md), [journey 82](../journey/82-a-workflow-needs-a-native-trial.md) and [validation](validation/2026-10-16-installed-multistage.md).
 

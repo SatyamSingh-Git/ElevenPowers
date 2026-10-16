@@ -304,3 +304,10 @@ for unconfigured legacy evidence. See [the design](design/external-input-session
 ## Installed multi-stage controls
 
 Use the [installed multi-stage guide](../the-guide/installed-multistage.md) for free rehearsals and source reproduction. Installation/CI launch no model. The live adoption gate and matched outcome comparison each need their own specific allowance, and native delivery remains separate from correctness.
+
+The installed trial's real callback controls are in
+`tests/test_installed_workflow_boundaries.py`: explicit task declarations,
+ordinary continuations, task-correlated prompt/tool ingress, unbound callbacks
+and independent/bounded command guidance. They launch no model. Original
+failed trials and repaired-source qualification remain separate in the
+[validation record](validation/2026-10-16-installed-multistage.md).

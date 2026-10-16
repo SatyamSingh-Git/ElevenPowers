@@ -48,8 +48,10 @@ prompt/tool callbacks and expose independent declared-property commands within
 a bounded context. Seventy affected controls pass, including ordinary
 continuations and unbound callbacks. They apply to every project and host.
 
-The larger comparison stopped at the readiness gate. Fresh source qualification
-and a new installed allowance are needed before proceeding. [The validation
+The larger comparison stopped at the readiness gate. Repaired source qualified
+with 2,519 local tests, three skips and all four hosted cells. All 107 audits,
+the independent grader, eight historical source grades and eleven doctor checks
+pass. A new installed allowance is needed before proceeding. [The validation
 record](../docs/validation/2026-10-16-installed-multistage.md) retains the original
 attempts and exact producer identities. Earlier correctness ties remain unchanged;
 these controls do not establish a coding-quality advantage.

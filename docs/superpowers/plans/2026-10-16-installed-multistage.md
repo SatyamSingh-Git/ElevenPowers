@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-16-installed-multistage-design.md`
 
-**Status:** Initial implementation source-qualified; both approved native conversations completed but failed acceptance. Three shared runtime boundaries are repaired with 70 passing controls and are undergoing fresh full/hosted qualification. A new two-conversation installed allowance is pending; the four-conversation comparison is blocked and unapproved.
+**Status:** Initial implementation source-qualified; both approved native conversations completed but failed acceptance. Three shared runtime boundaries are repaired and source-qualified: 70 affected controls, 2,519 local passes/3 skips and all four hosted cells. A new two-conversation installed allowance is pending; the four-conversation comparison is blocked and unapproved.
 
 ## Global Constraints
 
@@ -114,7 +114,7 @@ the original observations and their producer; never relabel them after repair.
 - [x] Publish both original attempts, including missing build evidence and recovery task reuse.
 - [x] Reproduce missing native task metadata using actual callback ingress rather than fabricated diagnostic fields.
 - [x] Repair explicit task declarations, native prompt/tool correlation and independent declared-property guidance for every project/host; 70 affected controls pass.
-- [ ] Qualify repaired source `8d26185` with full local suite, four hosted cells, standard-library imports, audits, grader/source reproduction, doctor and updated rendered maps.
+- [x] Qualify repaired source `8d26185` with full local suite, four hosted cells, standard-library imports, audits, grader/source reproduction, doctor and updated rendered maps.
 - [ ] After a new specific allowance, run two fresh Sonnet 5.5 medium conversations, 240 seconds each across three turns, no API fallback or retry; keep every result.
 - [ ] Only if both qualify, freeze a new comparison batch at that producer and request the separate four-conversation allowance. Existing authored contracts/oracles remain unchanged.
 

@@ -1,8 +1,8 @@
 # Installed Multi-Stage Verification v1 — proposed design
 
 Status: initial source qualified; both approved installed conversations completed
-but did not qualify. General task/provenance/guidance repairs pass 70 affected
-controls and are under fresh source qualification. A new specific two-session
+but did not qualify. General task/provenance/guidance repairs are source-qualified
+with 70 affected controls, 2,519 local passes/3 skips and all four hosted cells. A new specific two-session
 allowance is pending. The larger comparison is blocked, unapproved and unrun;
 the authored contracts and independent oracles are unchanged.
 

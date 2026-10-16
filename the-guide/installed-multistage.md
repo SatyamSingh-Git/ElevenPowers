@@ -10,8 +10,8 @@ installation does not launch them or spend a model allowance.
 
 The first two installed trials completed but did not qualify. Their retained
 results expose missing independent-command evidence, recovery-task reuse and a
-native task-metadata mismatch. Shared runtime repairs pass real-producer controls;
-fresh source qualification and a new installed allowance are required. The larger
+native task-metadata mismatch. Shared runtime repairs pass real-producer controls,
+full local and four-cell qualification; a new installed allowance is required. The larger
 comparison remains blocked. See the [retained attempts](../results/installed-multistage/installed-acceptance.json).
 
 ## Rehearse without a model

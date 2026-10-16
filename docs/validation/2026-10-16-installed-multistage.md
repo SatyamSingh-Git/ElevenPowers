@@ -3,7 +3,8 @@
 Status: the initial implementation passed full local and four-cell hosted
 qualification. Both specifically approved native conversations completed but
 failed acceptance, exposing general task/provenance/guidance boundaries.
-Repairs are implemented and require fresh source and installed qualification.
+Repairs pass full local and four-cell source qualification; fresh installed
+qualification requires a new specific allowance.
 No additional model allowance or four-conversation comparison is approved.
 
 ## Deterministic controls so far
@@ -44,10 +45,10 @@ population benefit, complete dependency coverage, patch safety or OS isolation.
 
 ## Pending delivery gates
 
-Fresh review, affected regression, no-model integrated rehearsal and the first
-five-view render are complete. Full regression, installed acceptance, any
-separately approved comparison, hosted matrix qualification, final map refresh
-and main/publication identity remain pending.
+Fresh review, affected/full regression, no-model integrated rehearsal, four-cell
+hosted qualification and all five rendered views are complete for repaired source.
+Installed requalification, any separately approved comparison and final
+main/publication identity remain pending.
 The earlier Windows advice incident remains unexplained; fresh successful repeats
 do not establish its cause.
 
@@ -205,3 +206,18 @@ current/failed/incomplete producer states. The [fresh prepared comparison](../..
 has identical initial project files, requests and oracle identities to the old
 preparation, with a new runtime identity and fresh baseline records. No model
 has run in either comparison batch.
+
+## Final repaired-source qualification
+
+The final local suite passed **2,519 tests, 3 skipped, in 4,665.15 seconds**.
+All four hosted OS/Python cells pass, and their downloaded artifacts match the
+new producer, expected source/oracle hashes and all sixteen stage rows. The
+[qualification record](../../results/installed-multistage/repaired/qualification.json)
+also retains 107 named audits, four grader controls, eight historical source
+grades, eleven doctor checks, standard-library imports and five rendered views.
+
+Both original native attempts remain unqualified at their earlier producer.
+No fresh installed allowance has been approved, and no additional conversation
+or larger comparison has run. Source qualification does not establish installed
+readiness or a coding-quality advantage. Main integration and publication are
+the remaining delivery steps; both earlier CI incident causes stay open.
