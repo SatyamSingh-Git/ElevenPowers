@@ -49,6 +49,8 @@ jobs:
         run: python -S -c "import core.inputs.definition; import core.inputs.bindings; import core.inputs.collection; import core.inputs.access; import core.inputs.receipts; import core.inputs.native; import core.inputs.execution; import core.inputs.scopes; import core.inputs.shared; import eval.external_inputs; import eval.input_sessions; import eval.input_scopes; import eval.input_scope_pilot"
       - name: Declared-check standard-library imports
         run: python -S -c "import core.checks; import eval.declared_checks"
+      - name: Multi-stage standard-library imports
+        run: python -S -c "import eval.declared_workflow; import eval.workflow_cases; import eval.workflow_oracles; import eval.workflow_results; import eval.workflow_rehearsal"
       - name: Identify the environment
         run: python -c "import platform, sys; print(sys.version); print(platform.platform())"
       # git needs an identity before the fixtures that commit will work, and the
@@ -76,6 +78,19 @@ jobs:
       - name: Actual external dependency drift acceptance
         shell: bash
         run: python -m eval.external_inputs --output "$RUNNER_TEMP/ep-external-inputs"
+      - name: Four-stage no-model workflow and source reproduction
+        shell: bash
+        run: python -m eval.workflow_rehearsal --output "$RUNNER_TEMP/ep-installed-multistage"
+      - name: Retain multi-stage control observations
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: installed-multistage-${{ matrix.os }}-${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/ep-installed-multistage/result.json
+            ${{ runner.temp }}/ep-installed-multistage/protocol.json
+            ${{ runner.temp }}/ep-installed-multistage/*/result.json
+          retention-days: 7
       - name: Actual ordinary-session external input acceptance
         shell: bash
         run: python -m eval.input_sessions --output "$RUNNER_TEMP/ep-input-sessions"

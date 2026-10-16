@@ -1,7 +1,8 @@
 # Installed Multi-Stage Verification v1 — proposed design
 
-Status: proposed next milestone; planning only. No new model sessions approved
-or launched. This is a delivery and measurement milestone, not a claim that
+Status: implementation approved. Two installed Sonnet 5.5 medium conversations
+(240 seconds each) are separately approved and not yet launched. The four-session
+comparison still needs its own allowance. This is a delivery and measurement milestone, not a claim that
 ElevenPowers already improves coding outcomes.
 
 ## Intent and choice
@@ -169,8 +170,7 @@ authored cases, fault variants and project names stay in eval/tests/results.
 
 Readiness succeeds only if both installed language sessions meet Gate 1. This
 first live gate qualifies Claude Code only; it does not qualify all five hosts.
-The
-comparison is delivered when every scheduled attempt and grade is accounted
+The comparison is delivered when every scheduled attempt and grade is accounted
 for and reproducible, including negative and incomplete outcomes. An observed
 advantage supports only a selected-sample observation; ties do not establish
 added correctness benefit, and two cases cannot establish population effects.

@@ -1,0 +1,49 @@
+# Installed Multi-Stage Verification v1 — validation
+
+Status: implementation and final qualification in progress. Two new installed
+Sonnet 5.5 medium conversations are approved (240 seconds each); none has run.
+The separate four-conversation outcome-comparison allowance is not approved.
+
+## Deterministic controls so far
+
+- Three-task adapter: ten missing-feature failures before implementation;
+  twelve controls passed in 82.58s, including actual Python/Node rehearsals and
+  existing outer-shell failure controls. Rehearsals do not qualify native use.
+- Authored four-stage cases/oracles: 23 controls passed in 11.44s, including
+  core-only baseline, full valid references, eight intended behavioral defects,
+  source-formatting controls and existing legacy cases.
+- Versioned controller: six missing-API failures, then 26 controls passed in
+  55.55s alongside legacy controller/archive and subscription controls. External
+  process/clock substitutes verify time allocation, not installed acceptance.
+- Result/archive layer: initial missing-module controls failed. A first actual
+  grade correctly counted both lease and restart loss from the same expiry bug;
+  the too-narrow test expectation was corrected. Two additional failures exposed
+  missing evidence export and admission of an archive after dropping a scheduled
+  source row. After repair, 20 controls passed in 78.31s.
+
+## Evidence boundaries
+
+Ordinary and assisted candidates share public source, contracts, commands,
+requirements, model effort and time. Optional strength is disabled. Existing
+public tests/configuration remain sealed, while explicit new-test paths are
+allowed. New protocols preserve four resumed host turns, raw runtime/harness
+identity during execution and independent per-stage source grades.
+
+Outcome-comparable pairs are independent of delivery qualification. Missing
+adoption cannot justify excluding an otherwise graded unfavorable result.
+Missing stages, host/session mismatch, scope violation or changed source identity
+remain unqualified attempts in the scheduled denominator. Source reproduction is
+a separate claim from historical native-session provenance.
+
+The authored cases and controlled faults are not evidence of coding benefit.
+Previous two-stage comparisons were correctness ties; no improvement is inferred
+from extending the harness. A later selected-sample observation cannot establish
+population benefit, complete dependency coverage, patch safety or OS isolation.
+
+## Pending delivery gates
+
+Final review, complete affected/full regression, no-model integrated rehearsal,
+installed acceptance, any separately approved comparison, hosted qualification,
+all five rendered architecture views and main/publication identity remain pending.
+The earlier Windows advice incident remains unexplained; fresh successful repeats
+do not establish its cause.

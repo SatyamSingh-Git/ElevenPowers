@@ -1,6 +1,8 @@
 # The journey
 
-Latest: [81 — the check owns its exit](81-the-check-owns-its-exit.md).
+Latest: [82 — a workflow needs a native trial](82-a-workflow-needs-a-native-trial.md).
+
+Recent: [81 — the check owns its exit](81-the-check-owns-its-exit.md).
 
 Recent: [80 — one input should not expire every check](80-one-input-should-not-expire-every-check.md).
 

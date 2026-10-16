@@ -1,5 +1,7 @@
 # The Guide
 
+[Installed multi-stage verification](installed-multistage.md): explicit contributor rehearsals, session allowances, independent grading and archived source reproduction.
+
 [External input witnesses](external-inputs.md): declare selected local dependency files or trees, approve their roots privately, and qualify explicit PatchProof execution and reuse without report-side checks.
 
 Everything you need to install ElevenPowers, run it, understand what it is telling you, and get unstuck.

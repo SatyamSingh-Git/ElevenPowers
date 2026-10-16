@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-16-installed-multistage-design.md`
 
-**Status:** Proposed; no implementation or model-session allowance approved by this plan. Native execution is recommended because the controller, case metadata, grading and archive interfaces are tightly coupled.
+**Status:** Implementation approved by the user. Two installed Sonnet 5.5 medium conversations (240 seconds each) are separately approved; none has run. The four-conversation comparison allowance is not approved. Native execution is recommended because the controller, case metadata, grading and archive interfaces are tightly coupled.
 
 ## Global Constraints
 

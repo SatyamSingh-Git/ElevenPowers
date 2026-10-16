@@ -1,5 +1,7 @@
 # ElevenPowers — living architecture graph
 
+Installed Multi-Stage Verification is drawn in all five views: native runner adoption, frozen four-stage inputs and separate source grades/delivery. Qualification and live sessions are pending. See [guide](../the-guide/installed-multistage.md) and [validation](../docs/validation/2026-10-16-installed-multistage.md).
+
 Reliable Declared-Check Execution v1 is now drawn in all five views: explicit property selection, owned real child result, provisional receipts, separate execution-context qualification and host guidance. Final local and four-cell hosted qualification passed; the original advice CI cause remains open. See [guide](../the-guide/declared-checks.md), [journey 81](../journey/81-the-check-owns-its-exit.md) and [validation](../docs/validation/2026-10-16-declared-check-execution.md).
 
 Command-scoped input witnesses and operation-local report collection are now

@@ -378,3 +378,7 @@ tuples into lists and would accept a different Python contract. The controller
 uses the same representation for its expected values, while keeping assertions
 outside candidate code. Review controls reject tuple statuses and list journal
 values; archived failure records receive the same private-field checks as success.
+
+## Installed multi-stage verification
+
+The [provenance note](installed-multistage.md) records reuse of the existing subscription, native transcript, preservation and archival primitives. Authored Python/Node contracts and a versioned controller add cumulative independent grading and separate native delivery; no new third-party runtime dependency, automatic model run or coding-benefit claim.

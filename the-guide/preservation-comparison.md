@@ -1,5 +1,7 @@
 # Comparing behavior preservation across tasks
 
+The two-stage comparison below is retained for historical reproduction. New four-stage trials use the explicit [installed multi-stage protocol](installed-multistage.md), with Sonnet 5.5 medium, separate live allowances and all-attempt accounting.
+
 The explicit development comparison in `eval/preservation.py` studies whether
 ElevenPowers helps retain earlier behavior while an agent adds later features.
 It is research tooling, never an installation action or automatic model call.

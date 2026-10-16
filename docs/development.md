@@ -300,3 +300,7 @@ it launches no model. Review regressions reproduce delayed results after detail
 eviction, task replacement, missing-ID policy removal and source/configuration/
 external movement during report closure. Optional receipt metadata stays absent
 for unconfigured legacy evidence. See [the design](design/external-input-sessions.md).
+
+## Installed multi-stage controls
+
+Use the [installed multi-stage guide](../the-guide/installed-multistage.md) for free rehearsals and source reproduction. Installation/CI launch no model. The live adoption gate and matched outcome comparison each need their own specific allowance, and native delivery remains separate from correctness.

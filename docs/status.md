@@ -1,5 +1,15 @@
 # Current delivery status
 
+**2026-10-17 — Installed Multi-Stage Verification v1 implemented; qualification in progress.**
+The opt-in three-task installed pilot joins native runner calls with fresh owned
+receipts. A versioned four-stage Python/Node comparison retains independent
+source grades, every scheduled outcome and separate delivery qualification.
+No-model rehearsal and portable source archives are implemented; no live result
+or coding benefit is claimed. Two installed sessions are approved; the separate
+comparison allowance is pending. See [guide](../the-guide/installed-multistage.md),
+[journey 82](../journey/82-a-workflow-needs-a-native-trial.md) and
+[validation](validation/2026-10-16-installed-multistage.md).
+
 **2026-10-16 — Reliable Declared-Check Execution v1 qualified.**
 The explicit [runner](../the-guide/declared-checks.md) selects an effective declared
 property and saves the actual child result even when an outer shell exits zero.
