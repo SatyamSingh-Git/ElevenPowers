@@ -1,8 +1,10 @@
 # Installed Multi-Stage Verification v1 — validation
 
-Status: implementation and final qualification in progress. Two new installed
-Sonnet 5.5 medium conversations are approved (240 seconds each); none has run.
-The separate four-conversation outcome-comparison allowance is not approved.
+Status: the initial implementation passed full local and four-cell hosted
+qualification. Both specifically approved native conversations completed but
+failed acceptance, exposing general task/provenance/guidance boundaries.
+Repairs are implemented and require fresh source and installed qualification.
+No additional model allowance or four-conversation comparison is approved.
 
 ## Deterministic controls so far
 
@@ -118,5 +120,41 @@ runtime/harness form and independently calculated source/oracle identities.
 Windows 3.13 subsequently completed every gate, with 107 audits in 60.89 seconds.
 Its independently downloaded artifact passes the same digest, sixteen-stage and
 raw-identity checks. Run 38951108845 is fully successful at candidate `ed18a53`.
-The two specifically approved native conversations may now run; the prior CI
-incident causes remain open rather than inferred from this successful candidate.
+The prior CI incident causes remain open rather than inferred from this
+successful candidate.
+
+## Initial installed trial and repair boundary
+
+The initial full local suite passed **2,507 tests, 3 skipped, in 5,207.83
+seconds**, before the following runtime repairs. The two approved Sonnet 5.5
+medium conversations then completed every turn: **104.287 model-process seconds
+for Python** and **73.077 for JavaScript**, with no API fallback or retry.
+Outside-process preparation/inspection/grading took 12.323 and 6.939 seconds.
+
+[Both attempts are retained](../../results/installed-multistage/installed-acceptance.json),
+including the failed predicates. Both source fixes pass the independent arithmetic
+oracle. Neither establishes three-task readiness: build evidence is absent after
+task one, Python's drift stays stale instead of becoming failed, and the recovery
+prompt inherits the preceding task identity. JavaScript does record the failed
+dependency through ordinary native command capture, then recovers its tests.
+
+There is also a measurement-interface mismatch: actual prompt/tool callback
+diagnostics contain empty task fields, while the new observer requires them.
+Python creates owned receipts and completed native runner calls despite its
+false native-adoption flag. Preserve that flag as the original unqualified
+result; do not interpret it as proof that no runner was used. No native tool IDs
+were replayed between turns; Git remained at the prepared baseline with no staged
+paths, and protected inputs remained unchanged.
+
+Real callback controls reproduced six failures across explicit task declarations,
+native task metadata and independent command guidance, with four forward controls
+already passing. The initial repair run found a test expectation error: owned
+execution retains more than one receipt kind. Comparing unchanged receipt records
+instead verifies the intended no-duplication boundary. **70 controls passed in
+91.09 seconds** after repair, including continuations, unbound callbacks, actual
+owned execution, bounded omissions and startup/completion guidance.
+
+The repairs affect the shared runtime for every project and host, not these
+fixtures. The larger comparison is stopped as designed. Original live results
+belong to their recorded producer; a new source qualification and a fresh
+specific allowance are required before installed requalification.

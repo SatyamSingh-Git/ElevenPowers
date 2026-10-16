@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "scheduled_conversations": 2,
+  "attempted_conversations": 2,
+  "approved_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_per_conversation": 240,
+  "qualified": false,
+  "observations": [
+    {
+      "language": "python",
+      "qualified": false,
+      "state": "returned",
+      "model_calls": 3,
+      "model_seconds": 104.287,
+      "behavior_qualified": false,
+      "native_runner_adoption": false,
+      "task_boundaries": false,
+      "outside_model_process_seconds": 12.323
+    },
+    {
+      "language": "javascript",
+      "qualified": false,
+      "state": "returned",
+      "model_calls": 3,
+      "model_seconds": 73.077,
+      "behavior_qualified": false,
+      "native_runner_adoption": false,
+      "task_boundaries": false,
+      "outside_model_process_seconds": 6.939
+    }
+  ],
+  "api_fallback": false,
+  "retries": 0,
+  "benefit_comparison": false,
+  "limits": [
+    "Installed readiness is separate from independent coding outcomes.",
+    "All attempted languages remain present regardless of qualification."
+  ]
+}

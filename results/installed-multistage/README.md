@@ -40,11 +40,19 @@ credentials and machine-specific paths are not published here.
 
 ## Live gates
 
-Two installed Claude Code Sonnet 5.5 medium conversations are approved, capped at
-240 seconds each across three turns. They remain unrun while the corrected
-candidate's release qualification is pending. The separate four-conversation,
-four-stage correctness comparison has not been approved or run. No coding
-improvement follows from these controls. Earlier comparisons remain
+The two approved Claude Code Sonnet 5.5 medium conversations completed all three
+turns, using 104.287 seconds for Python and 73.077 seconds for JavaScript. Both
+failed the [installed acceptance gate](installed-acceptance.json). Their code
+passes the independent arithmetic check, but the independent build evidence is
+missing after the first task, recovery retains the prior task identity, and the
+original callback producer does not supply the task fields required by the new
+native predicate. Python's actual owned runner calls remain visible despite that
+false-negative provenance flag; JavaScript uses ordinary command capture.
+
+Both original attempts remain published. General runtime repairs are being
+qualified; their installed acceptance needs a new specific allowance. The
+separate four-conversation correctness comparison is blocked and has not been
+approved or run. No coding improvement follows from these controls. Earlier comparisons remain
 [correctness ties](../behavior-preservation/README.md).
 
 [The prepared comparison](prepared-comparison.json) freezes alternating arm
