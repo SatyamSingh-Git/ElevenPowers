@@ -42,3 +42,24 @@ checks and rendered architecture are pending. No installed session or model was
 launched. Ordinary dirty/non-Git execution and exact committed PatchProof binding
 remain distinct. No complete dependency discovery, universal safety, attestation
 or causal coding-quality/latency improvement is established.
+
+## Fresh branch review and repair
+
+One fresh review found two Important defects: an undeclared generic outer
+typecheck could supersede the owned failed receipt at obligation level, and
+accepted allowances above 300 seconds inherited a 300-second child cap.
+The authored tests had inspected declared test receipts too narrowly.
+
+Independent regression controls reproduced both the typecheck and benchmark
+outer-success laundering and the inherited cap: three failures, five passing
+controls before repair. The repair suppresses generic evidence for literal
+owned-runner envelopes and the bounded actual Windows encoded producer form;
+it never credits arbitrary inner commands. Explicitly declared genuine checks
+still work. The runner now passes its requested maximum to the shared deadline.
+
+The review also noted lost protocol artifacts after failure. It is treated as an
+acceptance-debuggability issue and repaired using the existing `if: always()`
+artifact pattern. No new script-text assertion test was added for this workflow
+configuration; hosted artifact retention is part of qualification. No second
+review was dispatched; the single repair pass is verified by controls and the
+final suite. No deferred Minor finding remains after this regrading.

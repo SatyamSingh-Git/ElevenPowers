@@ -314,6 +314,9 @@ def _parse_receipts(command: str, output: str, exit_code: int | None, root: Path
     from .redact import scrub
     needs, invocation = _declared_invocation(command, root, cwd)
     if not needs:
+        from .commands import owned_check_envelope
+        if owned_check_envelope(command):
+            return []  # The owned receipt is authoritative; outer status is not a check.
         records = _parse_known(command, output, exit_code if exit_code is not None else 1, root)
         if invocation.issue:
             _incomplete(records, invocation.issue, coverage=True)

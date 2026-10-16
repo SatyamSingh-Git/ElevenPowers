@@ -133,7 +133,7 @@ def execute(root, property, *, seconds=120):
                 try:
                     if context(root) != before_context or Ledger.load(root).task != session.task:
                         raise ValueError('execution context changed before launch')
-                    done = _run(command, root, session.budget.timeout())
+                    done = _run(command, root, session.budget.timeout(seconds))
                     code, output = done.returncode, (done.stdout or '') + (done.stderr or '')
                 except (OSError, ValueError, subprocess.SubprocessError) as error:
                     issues.append(type(error).__name__ + ': declared check did not complete')

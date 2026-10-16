@@ -9,6 +9,30 @@ import shlex
 MAX_COMMAND = 16384
 _CD = re.compile(r'''^cd[ \t]+(?P<path>"[^"\r\n]*"|'[^'\r\n]*'|[^\s'";&|<>]+)[ \t]*&&[ \t]*(?P<leaf>[^\r\n]+)$''')
 _DYNAMIC = set('$`%!*?[]{};&|<>^~\r\n\0')
+_OWNED_CHECK = re.compile(r'''(?:^|[/\\\s"'])ep_check\.py(?=$|[\s"';&|)])''', re.I)
+
+
+def owned_check_envelope(command):
+    """Refuse generic evidence from an owned runner's outer shell status.
+
+    This only withholds inference; it never qualifies an inner command. Decode
+    the bounded actual Windows guidance producer as data, without executing or
+    interpreting its PowerShell. Arbitrary scripts/renamed entry points are not
+    recognized as owned execution.
+    """
+    if not isinstance(command, str) or len(command) > MAX_COMMAND:
+        return False
+    if _OWNED_CHECK.search(command):
+        return True
+    import base64
+    for match in re.finditer(r'(?i)\bpowershell(?:\.exe)?\s+[^\r\n]*?-EncodedCommand\s+([A-Za-z0-9+/=]+)', command):
+        try:
+            script = base64.b64decode(match[1], validate=True).decode('utf-16-le')
+        except (ValueError, UnicodeError):
+            continue
+        if _OWNED_CHECK.search(script):
+            return True
+    return False
 
 
 @dataclass(frozen=True)

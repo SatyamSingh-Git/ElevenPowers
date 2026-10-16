@@ -27,6 +27,11 @@ child's actual exit status and the normal parser evidence. A successful outer
 shell trailer cannot replace that receipt with a pass. This does not decode an
 arbitrary shell command or establish what an unobserved command did. Reports
 contain metadata and redacted declared identities, not captured output.
+Generic callback parsing withholds evidence for literal runner envelopes and the
+bounded encoded Windows guidance form, so words such as `typecheck` or `benchmark`
+in the outer invocation cannot manufacture a later generic pass. Renamed entry
+points and arbitrary third-party wrapper scripts are not recognized as owned
+envelopes; execute the shipped entry point advertised at startup.
 
 Fresh source and command-specific selected input observations surround execution.
 Task replacement, source movement, changed command configuration, runtime changes
