@@ -4,7 +4,7 @@ import subprocess
 import sys
 import pytest
 
-from test_patchproof_openapi import engine, project, spec
+from tests.test_patchproof_openapi import engine, project, spec
 
 CLI = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_contract.py'
 

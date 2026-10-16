@@ -5,8 +5,8 @@ import pytest
 
 from core import health
 from core.milestones import advice, automatic, delivery
-from test_advice_followup import emitted_project, inspect
-from test_project_health import prepared
+from tests.test_advice_followup import emitted_project, inspect
+from tests.test_project_health import prepared
 
 
 def report(commands):

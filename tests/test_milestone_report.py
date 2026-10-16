@@ -8,7 +8,7 @@ import pytest
 
 from core.evidence import Kind, Result, tree_hash
 from core.ledger import Ledger
-from test_milestone_history import project, receipt
+from tests.test_milestone_history import project, receipt
 
 CLI = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_milestones.py'
 

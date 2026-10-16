@@ -5,7 +5,7 @@ import pytest
 
 from core.ledger import Ledger
 from core.milestones import build
-from test_milestone_history import project, receipt
+from tests.test_milestone_history import project, receipt
 
 
 def consumer_project(root):

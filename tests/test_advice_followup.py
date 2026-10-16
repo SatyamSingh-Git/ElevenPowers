@@ -11,7 +11,7 @@ from core.ledger import Ledger
 from core.milestones import delivery
 from core.milestones.automatic import deliver
 from core.parsers import parse
-from test_advice_emission import project, attempts
+from tests.test_advice_emission import project, attempts
 
 COMMAND = 'python -m pytest test_cli.py -q'
 

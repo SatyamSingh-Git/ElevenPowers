@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-from test_native_acceptance import exercise_history
+from tests.test_native_acceptance import exercise_history
 
 
 def test_prepared_exercise_records_runtime_identity(tmp_path):

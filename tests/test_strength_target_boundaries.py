@@ -4,7 +4,7 @@ import time
 import pytest
 from core.strength.engines import cosmic, stryker
 from core.strength.execution import Budget
-from test_strength import stryker_path
+from tests.test_strength import stryker_path
 
 
 @pytest.mark.parametrize('language', ['python', 'javascript'])

@@ -4,7 +4,7 @@ import pytest
 from core.config import Config
 from core.ledger import Ledger
 from core.strength.runner import analyze
-from test_strength import repository, stryker_path
+from tests.test_strength import repository, stryker_path
 
 
 def test_entire_deleted_production_file_is_incomplete_coverage(tmp_path):

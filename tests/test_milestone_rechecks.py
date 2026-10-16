@@ -2,7 +2,7 @@ import json
 import time
 
 from core.milestones import build, markdown
-from test_milestone_impact import consumer_project
+from tests.test_milestone_impact import consumer_project
 
 
 def row(name, state, command='python -m pytest', kind='test_suite'):

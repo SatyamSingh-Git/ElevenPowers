@@ -3,7 +3,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 
 from core.ledger import Ledger
-from test_milestone_entrypoints import process_project
+from tests.test_milestone_entrypoints import process_project
 
 
 def opted(root, task='task'):

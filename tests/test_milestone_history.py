@@ -5,7 +5,7 @@ import pytest
 
 from core.evidence import Evidence, Kind, Result, source_snapshot
 from core.ledger import Ledger
-from test_milestone_definition import declaration
+from tests.test_milestone_definition import declaration
 
 
 def project(root):

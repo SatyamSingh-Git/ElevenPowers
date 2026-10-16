@@ -5,7 +5,7 @@ import subprocess
 
 import pytest
 
-from test_patchproof_contracts import manifest
+from tests.test_patchproof_contracts import manifest
 
 
 @pytest.fixture

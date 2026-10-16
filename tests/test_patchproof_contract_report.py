@@ -3,7 +3,7 @@ import time
 
 import pytest
 
-from test_patchproof_openapi import engine, project, spec
+from tests.test_patchproof_openapi import engine, project, spec
 
 
 @pytest.mark.parametrize('revised,result', [(spec(), 'pass'), (spec({}), 'fail')])

@@ -8,7 +8,7 @@ import pytest
 
 from core.ledger import Ledger
 from core.obligations import Claim
-from test_milestone_advice_worker import opted
+from tests.test_milestone_advice_worker import opted
 
 
 def edit_payload(root):

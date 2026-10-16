@@ -1,7 +1,7 @@
 """Health ordering, timing retention and cooperative read boundaries."""
 import json
 
-from test_project_health import prepared, captured
+from tests.test_project_health import prepared, captured
 
 
 def test_a_new_command_requires_a_new_completion(tmp_path):

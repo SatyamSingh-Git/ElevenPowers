@@ -10,7 +10,7 @@ import pytest
 from core.hosts import readiness
 from core.hosts.setup import install
 from core.milestones.automatic import deliver
-from test_milestone_advice_worker import opted
+from tests.test_milestone_advice_worker import opted
 
 SOURCE = Path(__file__).resolve().parents[1]
 EVENTS = {'claude': 'PostToolUse', 'codex': 'PostToolUse', 'gemini': 'AfterTool',

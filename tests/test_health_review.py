@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from test_project_health import prepared, captured
+from tests.test_project_health import prepared, captured
 
 
 def test_mixed_verbose_failure_cannot_be_overridden_by_a_passing_test(tmp_path):

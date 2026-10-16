@@ -1,4 +1,4 @@
-from test_patchproof_openapi import engine
+from tests.test_patchproof_openapi import engine
 
 
 def test_two_unrelated_real_contract_projects(tmp_path, engine):
