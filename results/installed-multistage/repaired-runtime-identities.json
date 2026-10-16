@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+  "runtime_files": 137,
+  "local_raw": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "git_lf": "99384a1db054510a7baffa4fc7f905ece066e364e3fb505520a00a5bee3ea8f8",
+  "windows_crlf": "1f568ff76b25fcfc37f1040059150eea1108f1b4dc7ef53ca077162aa0cbbd2b",
+  "harness_local": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "changed_runtime_files": [
+    "core/checks.py",
+    "core/claims.py",
+    "core/hook.py"
+  ],
+  "limits": [
+    "Original installed attempts belong to their earlier producer; these repairs are not installed-qualified.",
+    "Checkout forms describe representation; runtime freshness remains raw-byte strict."
+  ]
+}

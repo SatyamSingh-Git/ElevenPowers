@@ -1,9 +1,10 @@
 # Installed Multi-Stage Verification v1 — proposed design
 
-Status: implementation approved. Two installed Sonnet 5.5 medium conversations
-(240 seconds each) are separately approved and not yet launched. The four-session
-comparison still needs its own allowance. This is a delivery and measurement milestone, not a claim that
-ElevenPowers already improves coding outcomes.
+Status: initial source qualified; both approved installed conversations completed
+but did not qualify. General task/provenance/guidance repairs pass 70 affected
+controls and are under fresh source qualification. A new specific two-session
+allowance is pending. The larger comparison is blocked, unapproved and unrun;
+the authored contracts and independent oracles are unchanged.
 
 ## Intent and choice
 

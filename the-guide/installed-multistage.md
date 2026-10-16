@@ -5,6 +5,14 @@ agent uses the declared-check runner across tasks, and whether the combined
 workflow preserves behavior while adding features. Installation launches no
 model experiment. Runtime behavior remains project-independent; authored queue
 and order-system cases exist only in evaluation code.
+Run these evaluation commands from an ElevenPowers repository checkout; plugin
+installation does not launch them or spend a model allowance.
+
+The first two installed trials completed but did not qualify. Their retained
+results expose missing independent-command evidence, recovery-task reuse and a
+native task-metadata mismatch. Shared runtime repairs pass real-producer controls;
+fresh source qualification and a new installed allowance are required. The larger
+comparison remains blocked. See the [retained attempts](../results/installed-multistage/installed-acceptance.json).
 
 ## Rehearse without a model
 

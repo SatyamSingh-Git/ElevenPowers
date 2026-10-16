@@ -1,14 +1,17 @@
 # Master Plan v0.8
 
-**2026-10-17 — Installed Multi-Stage Verification v1 implemented; qualification in progress.**
-The opt-in three-task installed pilot joins native runner calls with fresh owned
-receipts. A versioned four-stage Python/Node comparison retains independent
-source grades, every scheduled outcome and separate delivery qualification.
-No-model rehearsal and portable source archives are implemented; no live result
-or coding benefit is claimed. Two installed sessions are approved; the separate
-comparison allowance is pending. See [guide](the-guide/installed-multistage.md),
-[journey 82](journey/82-a-workflow-needs-a-native-trial.md) and
-[validation](docs/validation/2026-10-16-installed-multistage.md).
+**2026-10-17 — Installed multi-stage trial exposed three general boundaries; repairs are qualifying.**
+The initial implementation passed 2,507 local tests and all four hosted cells.
+Both approved Sonnet 5.5 medium conversations completed three turns but failed
+installed acceptance. Independent arithmetic checks passed; missing build
+evidence, reused recovery-task identity and missing native callback task fields
+prevent readiness qualification. The original attempts remain retained.
+Shared runtime repairs now recognize explicit task declarations, correlate native
+prompt/tool callbacks and expose independent declared checks with bounded gaps.
+Seventy affected controls pass; fresh full/hosted qualification and a separate
+two-conversation requalification allowance are pending. The larger comparison
+remains unrun and no new coding-quality advantage is established.
+See [guide](the-guide/installed-multistage.md), [journey 82](journey/82-a-workflow-needs-a-native-trial.md) and [validation](docs/validation/2026-10-16-installed-multistage.md).
 
 **2026-10-16 — Reliable Declared-Check Execution v1 qualified.**
 An explicit project-property runner retains real child outcomes independently of

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "category": "deterministic-four-stage-rehearsal",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "benefit_comparison": false,
+  "scheduled_slots": 4,
+  "observations": [
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    }
+  ],
+  "runtime": "5ae373c8a79a74de565705477872242c639e037e649e4414985a317aae7b1b91",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "limits": [
+    "Full valid references with actual commands and private source regrades.",
+    "No native agent, installed acceptance or measured coding benefit."
+  ],
+  "reproduction": {
+    "qualified": true,
+    "stages": 16,
+    "issues": [],
+    "grading_only": true,
+    "historical_harness_matches": true
+  },
+  "qualified": true,
+  "seconds": 34.879,
+  "retention": {
+    "candidate": "8d261850fcfc857feab99b2d79cfaecdac050fe6",
+    "harness_files": [
+      "eval/preservation.py",
+      "eval/preservation_cases.py",
+      "eval/preservation_oracles.py",
+      "eval/subscription.py",
+      "eval/workflow_cases.py",
+      "eval/workflow_queue.py",
+      "eval/workflow_orders.py",
+      "eval/workflow_oracles.py",
+      "eval/declared_workflow.py",
+      "eval/transcript.py",
+      "eval/workflow_results.py",
+      "eval/workflow_rehearsal.py"
+    ],
+    "harness_forms": {
+      "local": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+      "git_lf": "1f4bc9af12eeca6a59cb52eb2b81e4be995dc4999206ce14a5bcda3afbdc68cc",
+      "windows_crlf": "dd09198f38f6f4574fd28c8510cbce9bb6d987a5d3d91c86af985f488dcbdba7"
+    },
+    "limits": [
+      "Raw historical harness forms are metadata; source grading never attests an installed session.",
+      "Actual runtime freshness remains strict over unnormalized bytes."
+    ]
+  }
+}

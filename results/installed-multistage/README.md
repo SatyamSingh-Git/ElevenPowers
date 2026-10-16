@@ -32,13 +32,20 @@ python -m eval.workflow_results --reproduce NEW_DIR/source-archive
 
 The result retains the source candidate and raw local/Git/Windows harness forms.
 [Runtime identities](runtime-identities.json) confirm that the 137 shipping
-runtime files are unchanged; the new protocol is a twelve-file evaluation
+runtime files were unchanged at the initial trial; the new protocol is a twelve-file evaluation
 harness. Checkout forms explain representation, not equivalent fresh evidence.
 Source grading reports historical harness matching separately; evidence freshness
 still uses actual unnormalized runtime bytes. Raw prompts, host streams,
 credentials and machine-specific paths are not published here.
 
 ## Live gates
+
+[Initial qualification](qualification-before-installed-repair.json) belongs to
+source `ed18a53`, including its two failed live attempts. The subsequent
+[runtime repair identity](repaired-runtime-identities.json) changes three shared
+modules. Its [separate no-model rehearsal](repaired/local.json) reproduces all
+sixteen stages. Earlier qualification does not automatically qualify that new
+producer or establish installed readiness for it.
 
 The two approved Claude Code Sonnet 5.5 medium conversations completed all three
 turns, using 104.287 seconds for Python and 73.077 seconds for JavaScript. Both

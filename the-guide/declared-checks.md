@@ -15,6 +15,11 @@ accept arbitrary command text or infer equivalence from shell syntax. Each
 explicit invocation runs again; it does not reuse an earlier pass or remove any
 other required check. `--list` creates no project state and runs no command.
 
+Startup and applicable completion/recheck guidance expose separate invocations
+for independent declared properties. Run the shown commands separately; a tests
+pass does not establish a build pass. Guidance stays bounded: any omitted command
+instructions are named explicitly, and those properties remain required.
+
 The default cooperative allowance is 120 seconds; `--seconds` accepts finite
 positive values up to 600. Existing process containment, output limits and a
 separate bounded cleanup allowance apply. Exit codes: **0 passed**, **1 failed**,

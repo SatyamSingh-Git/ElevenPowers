@@ -1,6 +1,6 @@
 # Installed Multi-Stage Verification v1 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Qualify installed declared-check adoption, then measure cross-task behavior preservation with a frozen ordinary-versus-assisted comparison.
 
@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-16-installed-multistage-design.md`
 
-**Status:** Implementation approved by the user. Two installed Sonnet 5.5 medium conversations (240 seconds each) are separately approved; none has run. The four-conversation comparison allowance is not approved. Native execution is recommended because the controller, case metadata, grading and archive interfaces are tightly coupled.
+**Status:** Initial implementation source-qualified; both approved native conversations completed but failed acceptance. Three shared runtime boundaries are repaired with 70 passing controls and are undergoing fresh full/hosted qualification. A new two-conversation installed allowance is pending; the four-conversation comparison is blocked and unapproved.
 
 ## Global Constraints
 
@@ -91,7 +91,7 @@
 **Interfaces:** Task 1 readiness gates Tasks 3–4 live comparison; all independent controls are runnable without a model. Public status distinguishes designed, rehearsed, installed-qualified and compared.
 
 - [x] Complete one fresh whole-branch review and witness/fix Important findings; inspect current CI and free rehearsal before requesting approved live runs.
-- [ ] After fresh allowance, run exactly the two installed sessions. If adoption fails, publish the defect/limit and stop live comparison pending repair/requalification; do not spend the larger allowance automatically.
+- [x] After fresh allowance, run exactly the two installed sessions. If adoption fails, publish the defect/limit and stop live comparison pending repair/requalification; do not spend the larger allowance automatically.
 - [ ] After readiness and separate allowance, run the four predeclared comparison conversations. Freeze each source stage before independently grading it; keep all incomplete and negative outcomes. Do not change cases/oracles based on results.
 - [ ] Reproduce grades without models; inspect evidence/export privacy. Report selected-sample advantage, tie or worse outcome with exact limits; do not require a favorable result to count as completed measurement.
 - [ ] Run affected/full regression gates and all five rendered maps; update guides, plan, status, research, results and journey. Push descriptive parts, integrate verified inputs onto main, and verify remote/published identity without describing pending repeats as passed.
@@ -104,3 +104,20 @@ All five review-focus failures have explicit test ownership. Shared signatures,
 schema values, stage counts and budgets agree across tasks. Legacy source grades
 are regression inputs, never replaced by the new suite. No model run is needed
 to implement and rehearse Tasks 1–4; live spending remains separately approved.
+
+## Installed trial repair and requalification
+
+The initial source candidate passed 2,507 local tests and all four hosted cells.
+Both native conversations completed within allowance but failed Gate 1. Retain
+the original observations and their producer; never relabel them after repair.
+
+- [x] Publish both original attempts, including missing build evidence and recovery task reuse.
+- [x] Reproduce missing native task metadata using actual callback ingress rather than fabricated diagnostic fields.
+- [x] Repair explicit task declarations, native prompt/tool correlation and independent declared-property guidance for every project/host; 70 affected controls pass.
+- [ ] Qualify repaired source `8d26185` with full local suite, four hosted cells, standard-library imports, audits, grader/source reproduction, doctor and updated rendered maps.
+- [ ] After a new specific allowance, run two fresh Sonnet 5.5 medium conversations, 240 seconds each across three turns, no API fallback or retry; keep every result.
+- [ ] Only if both qualify, freeze a new comparison batch at that producer and request the separate four-conversation allowance. Existing authored contracts/oracles remain unchanged.
+
+The repair changes no completion gate or automatic model activation. Guidance
+remains bounded and reports omitted command instructions explicitly. Earlier
+CI incident causes remain open; green source qualification does not explain them.

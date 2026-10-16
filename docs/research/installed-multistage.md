@@ -22,6 +22,17 @@ runtime/harness guards during execution do not become an authenticity claim for
 unsigned local records. Reproduced source grades retain exact source/oracle and
 public-case identities while separately reporting historical harness matching.
 
+The first native trial refuted a synthetic diagnostic assumption: the observer
+expected prompt/tool task hashes that the real callback producer did not emit.
+Python actually used the owned runner despite a false native-adoption flag.
+Both language trials still failed independent readiness predicates, including
+missing build evidence and recovery-task reuse. The repaired shared producer
+records task association, recognizes explicit new subjects and exposes independent
+command guidance; it does not weaken the gate or replace the original results.
+Actual callback ingress now supplies forward controls, alongside unbound-event
+and continuation refusals. Fresh installed evidence belongs to a new producer
+and requires a new allowance.
+
 See [design](../superpowers/specs/2026-10-16-installed-multistage-design.md),
 [plan](../superpowers/plans/2026-10-16-installed-multistage.md) and
 [dated checks](../validation/2026-10-16-installed-multistage.md).

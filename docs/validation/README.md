@@ -1,6 +1,6 @@
 # Validation records
 
-- [2026-10-16 installed multi-stage verification](2026-10-16-installed-multistage.md): versioned rehearsals, native adoption, independent cumulative grades and separate delivery/outcome accounting; live qualification pending.
+- [2026-10-16 installed multi-stage verification](2026-10-16-installed-multistage.md): initial source qualified, both native trials retained as unqualified, general task/provenance/guidance repairs and fresh qualification pending; independent four-stage comparison remains separate.
 
 - [2026-10-16 reliable declared-check execution](2026-10-16-declared-check-execution.md): actual child outcomes through outer shells, source/context separation, review regressions and portable qualification. The earlier advice CI cause remains open.
 

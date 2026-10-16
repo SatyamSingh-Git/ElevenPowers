@@ -332,4 +332,4 @@ Rehearse prompt-to-edit-to-command correlation without a model with
 Replay and synthetic native ingress remain distinct from installed acceptance.
 See [current qualification](../docs/validation/2026-10-11-ordinary-session-evidence.md).
 
-The [installed multi-stage protocol](installed-multistage.md) adds a three-task Claude/Python and Claude/JavaScript adoption gate for the declared runner. It is implemented with live qualification pending; it does not qualify the four other hosts or replace their dated installed acceptance limits.
+The [installed multi-stage protocol](installed-multistage.md) adds a three-task Claude/Python and Claude/JavaScript gate. Both initial conversations completed but did not qualify. Shared task/provenance/guidance repairs are undergoing source qualification and need a fresh allowance for installed requalification. This does not qualify the four other hosts or replace their dated acceptance limits.

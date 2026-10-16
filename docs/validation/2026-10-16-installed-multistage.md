@@ -79,11 +79,11 @@ eight historical source grades and eleven host diagnostics passed. The final
 [local no-model rehearsal](../../results/installed-multistage/local.json)
 reproduced all sixteen scheduled source snapshots in **37.108 seconds**.
 
-The full local suite and corrected-candidate hosted run
+The initial full local suite and corrected-candidate hosted run
 [38951108845](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38951108845)
-are in progress at source candidate `ed18a53`. Shipping runtime files are
-unchanged by this evaluation milestone. Native acceptance is still held for
-release health; the approved two conversations have not been used.
+completed at source candidate `ed18a53`. Shipping runtime files were unchanged
+at that point. The subsequent native trial and three shared runtime repairs are
+recorded below, at a new producer identity.
 
 The independently downloaded [GitHub evidence artifact](../../results/installed-multistage/github-artifact.json)
 matches its canonical bundle hash and independently logged subject. Its producer
@@ -158,3 +158,22 @@ The repairs affect the shared runtime for every project and host, not these
 fixtures. The larger comparison is stopped as designed. Original live results
 belong to their recorded producer; a new source qualification and a fresh
 specific allowance are required before installed requalification.
+
+## Repaired-source qualification in progress
+
+The [new runtime identity](../../results/installed-multistage/repaired-runtime-identities.json)
+binds 137 files at source `8d26185`, changing only `core/checks.py`,
+`core/claims.py` and `core/hook.py`. The twelve-file evaluation harness and
+authored case/oracle definitions are unchanged. Initial trial identities and
+[qualification](../../results/installed-multistage/qualification-before-installed-repair.json)
+remain separately retained.
+
+The repaired [no-model rehearsal](../../results/installed-multistage/repaired/local.json)
+reproduces all sixteen source snapshots in 34.879 seconds. Standard-library
+imports, four grader controls, eight historical source grades and eleven doctor
+checks pass. All 107 named audits pass in 98.55 seconds. All five rendered views
+pass with 169 nodes, 416 edges and seven planes; 631 relative documentation link
+targets exist. Fresh full local and hosted run
+[38963268204](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38963268204)
+remain pending. A new two-conversation installed allowance is requested but not
+approved at this observation; no additional model call has run.

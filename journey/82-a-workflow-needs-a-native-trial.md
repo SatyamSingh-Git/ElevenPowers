@@ -30,7 +30,26 @@ in the comparison. Discarding it would make the tool look better by removing
 its failed deliveries. A live timeout or unidentified conversation remains a
 scheduled incomplete attempt rather than a silent omission.
 
-This entry records implementation in progress. Installed acceptance and final
-qualification are retained in [the validation record](../docs/validation/2026-10-16-installed-multistage.md).
-The previous correctness ties remain unchanged; no new benefit is established
-by a rehearsal, and no live comparison has run yet.
+The first two native conversations completed all six turns. Both code fixes
+passed independent arithmetic checks, but neither workflow qualified. Build
+evidence was missing after the first task. Python's failed dependency remained
+stale instead of receiving a failed receipt; JavaScript did record the failure.
+Both recovery prompts inherited the preceding task identity.
+
+One failure belonged to our measurement interface. The synthetic diagnostics
+in the initial test supplied prompt/tool task fields that the real producer
+left empty. Python had used the owned runner, so its false native-adoption flag
+could not honestly mean no adoption occurred. The old result stays retained;
+the producer needs the task association rather than a relaxed qualification rule.
+
+Real callback controls reproduced six failures. Shared repairs now recognize
+explicit new-task declarations without inventing claims, correlate native
+prompt/tool callbacks and expose independent declared-property commands within
+a bounded context. Seventy affected controls pass, including ordinary
+continuations and unbound callbacks. They apply to every project and host.
+
+The larger comparison stopped at the readiness gate. Fresh source qualification
+and a new installed allowance are needed before proceeding. [The validation
+record](../docs/validation/2026-10-16-installed-multistage.md) retains the original
+attempts and exact producer identities. Earlier correctness ties remain unchanged;
+these controls do not establish a coding-quality advantage.
