@@ -1,6 +1,6 @@
 # Current delivery status
 
-**2026-10-16 — Reliable Declared-Check Execution v1 implemented; final qualification pending.**
+**2026-10-16 — Reliable Declared-Check Execution v1 qualified.**
 The explicit [runner](../the-guide/declared-checks.md) selects an effective declared
 property and saves the actual child result even when an outer shell exits zero.
 Durable provisional receipts, task ownership and before/after qualification reuse

@@ -1,6 +1,6 @@
 # Master Plan v0.8
 
-**2026-10-16 — Reliable Declared-Check Execution v1 implemented; qualification in progress.**
+**2026-10-16 — Reliable Declared-Check Execution v1 qualified.**
 An explicit project-property runner retains real child outcomes independently of
 outer shells, using existing ownership, provisional receipts and source/input
 guards. Configuration/producer qualification remains separate from source bytes.

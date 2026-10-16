@@ -32,8 +32,7 @@ Final-code Linux [Python 3.11](hosted-ubuntu-latest-3.11.json) and
 [Python 3.13](hosted-ubuntu-latest-3.13.json) jobs passed. Each suite recorded
 2,452 passes and nine skips; the actual protocol qualified in 3.107 and 3.291
 seconds. Both artifacts match the Git LF runtime identity and retain the full
-state/counter/outer-callback assertions. All four hosted cells passed; full local
-regression qualification remains in progress. See
+state/counter/outer-callback assertions. All four hosted cells and full local regression qualification passed; see [qualification](qualification.json). See
 [the dated record](../../docs/validation/2026-10-16-declared-check-execution.md).
 The earlier Windows advice CI cause remains open after twelve local and eighty
 hosted successful repetitions with improved diagnostic retention.
@@ -43,4 +42,6 @@ five skips in 3112.02 seconds, 107 named audits passed, and actual declared-chec
 protocol qualified in 27.063 seconds. The downloaded artifact matches the Windows
 CRLF producer identity. Windows [Python 3.13](hosted-windows-latest-3.13.json)
 also completed: 2,456 passes, five skips in 3272.58 seconds, with a 32.305-second
-declared-check protocol. The full local suite remains pending.
+declared-check protocol. The full local suite also passed; see final qualification below.
+
+Final local regression result: 2458 passed, 3 skipped in 4971.66s. Named audits:107/107; independent grader:4/4; retained source grades:8/8; doctor:11/11. Hosted Windows observations are retained for [3.11](hosted-windows-latest-3.11.json) and [3.13](hosted-windows-latest-3.13.json).

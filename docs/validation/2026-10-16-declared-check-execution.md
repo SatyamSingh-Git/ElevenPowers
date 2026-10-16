@@ -1,6 +1,6 @@
 # Reliable Declared-Check Execution v1 — validation
 
-Status: implementation and final qualification in progress; no new model session.
+Status: corrected runtime qualified locally and in all four hosted cells; no new installed-host evaluation session.
 
 ## CI investigation
 
@@ -37,8 +37,8 @@ not evidence of a repaired root cause.
 
 ## Limits and remaining qualification
 
-Full regressions, independent gates, fresh review, final hosted protocol/artifact
-checks and rendered architecture are pending. No installed session or model was
+Full regressions, independent gates, review repairs, hosted protocol/artifact
+checks and all five rendered architecture views passed; see final results below. No installed session or model was
 launched. Ordinary dirty/non-Git execution and exact committed PatchProof binding
 remain distinct. No complete dependency discovery, universal safety, attestation
 or causal coding-quality/latency improvement is established.
@@ -70,13 +70,13 @@ The repair group passed **121 tests in 69.81 seconds**. The standalone
 [actual local protocol](../../results/declared-checks/local.json) qualified in
 **45.957 seconds**, preserving both languages' independent milestone states,
 actual owned failure through a successful outer shell, and missing-input refusal.
-The four-case independent grader, eight retained source grades and host doctor
-passed before the final parser repair; final gate results remain pending below.
+The corrected runtime also passed the four-case independent grader, all eight
+retained source grades, eleven doctor checks and 107 named audits.
 
 All five architecture views render, with **169 nodes, 413 edges and seven planes**.
 The render found overflowing new labels; shortened labels then passed cards,
 filters, keyboard navigation, shared links, contrast and narrow-layout checks.
-The changed documentation's 499 relative file-link targets were present.
+The changed documentation's relative file-link targets were present.
 
 [The final-candidate artifact](../../results/declared-checks/github-artifact.json)
 was downloaded from successful job 117069962378 in run 38929622453.
@@ -105,7 +105,7 @@ Run [38929622453](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/3
 qualifies candidate `af6dfca`. Completed Linux artifacts were downloaded and
 independently checked for expected states, counts and exact producer identity.
 Both include the grader, retained source reproduction, doctor and applicable
-audit controls. Both Windows cells also passed; the local full suite is pending.
+audit controls. All four hosted cells and the local full suite passed.
 
 | Cell | Suite passed | Skipped | Suite seconds | Protocol seconds |
 |---|---:|---:|---:|---:|
@@ -123,4 +123,31 @@ the independent grader, retained source grades and doctor. Its downloaded
 [declared-check artifact](../../results/declared-checks/hosted-windows-latest-3.11.json)
 matches the Windows CRLF producer identity. Windows 3.13 also completed all gates;
 its [artifact](../../results/declared-checks/hosted-windows-latest-3.13.json) passed
-the same independent validation. The full local suite remains in progress.
+the same independent validation. The full local suite also passed; final results follow below.
+
+## Review decisions and remaining limits
+
+The implementation reuses the existing ownership, process and ledger primitives.
+Execution-context metadata remains optional and separate from source-byte facts;
+legacy receipts keep their original interpretation. An empty standalone task is
+explicit local execution, without native provenance. Ordinary receipts do not
+establish execution at a committed patch head; PatchProof binding stays separate.
+
+Before/after observations cannot establish hidden or reverted edits, undeclared
+or remote inputs, or resistance to deliberate local-state tampering. Literal
+owned envelopes and the shipped Windows encoded form are recognized; arbitrary
+renamed wrappers are outside this contract. Synthetic host callbacks and portable
+bundles do not establish installed-agent adoption or causal coding benefit.
+
+The clean existing checkout was reused to preserve installed dependencies and
+actual runtime bytes. A native Windows ledger replaced an unavailable shell
+workspace helper, accepting weaker checkout isolation and manual task tracking.
+One fresh review and its single repair pass were checked against real controls
+and the full gates; uncovered edge cases remain possible. No Minor finding was
+deferred after the failure-artifact issue was regraded and repaired.
+
+## Final local gates and delivery
+
+The full local suite passed **2458 tests, 3 skipped, in 4971.66 seconds**. The named audit run passed **107/107 in 105.87 seconds**. Independent grader 4/4, retained source grades 8/8, doctor 11/11, standard-library imports and all five rendered views passed.
+
+[Machine-readable qualification](../../results/declared-checks/qualification.json) retains the exact candidate and all four hosted results. Main integration uses a normal fast-forward of the same qualified runtime/test/workflow inputs, followed by remote identity and published-body checks. A later documentation closure does not requalify a changed runtime. The original advice CI cause remains open; no new model evaluation session or causal coding-benefit claim.

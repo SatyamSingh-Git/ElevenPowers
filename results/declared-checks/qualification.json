@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "state": "qualified",
+  "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+  "local_suite": {
+    "passed": 2458,
+    "skipped": 3,
+    "seconds": 4971.66
+  },
+  "named_audits": {
+    "passed": 107,
+    "skipped": 0,
+    "seconds": 105.87
+  },
+  "grader_cases": 4,
+  "retained_source_grades": 8,
+  "host_doctor_controls": 11,
+  "stdlib_imports": true,
+  "rendered_architecture_views": 5,
+  "hosted": [
+    {
+      "hosted_run": 38929622453,
+      "job": 117069962877,
+      "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+      "platform": "ubuntu-latest",
+      "python": "3.11",
+      "suite": {
+        "passed": 2452,
+        "skipped": 9,
+        "seconds": 575.26
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 22.43
+      },
+      "protocol_seconds": 3.107
+    },
+    {
+      "hosted_run": 38929622453,
+      "job": 117069962731,
+      "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+      "platform": "ubuntu-latest",
+      "python": "3.13",
+      "suite": {
+        "passed": 2452,
+        "skipped": 9,
+        "seconds": 573.94
+      },
+      "audits": {
+        "passed": 105,
+        "skipped": 2,
+        "seconds": 17.93
+      },
+      "protocol_seconds": 3.291
+    },
+    {
+      "hosted_run": 38929622453,
+      "job": 117069962955,
+      "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+      "platform": "windows-latest",
+      "python": "3.11",
+      "suite": {
+        "passed": 2456,
+        "skipped": 5,
+        "seconds": 3112.02
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 67.46
+      },
+      "protocol_seconds": 27.063
+    },
+    {
+      "hosted_run": 38929622453,
+      "job": 117069963070,
+      "candidate": "af6dfca2da1426d1307db4f1fdacc7e491e0a79d",
+      "platform": "windows-latest",
+      "python": "3.13",
+      "suite": {
+        "passed": 2456,
+        "skipped": 5,
+        "seconds": 3272.58
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 54.66
+      },
+      "protocol_seconds": 32.305
+    }
+  ],
+  "original_ci_incident": {
+    "run": 38623263659,
+    "state": "unexplained",
+    "local_successful_repetitions": 12,
+    "hosted_successful_repetitions": 80
+  },
+  "model_evaluation_sessions": 0,
+  "limits": [
+    "Actual-command/synthetic-host capability controls, not installed acceptance or causal coding benefit.",
+    "Green repetitions do not establish a repair of the original Windows advice failure."
+  ]
+}

@@ -652,7 +652,7 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-[Reliable declared-check execution](the-guide/declared-checks.md) adds an explicit property runner with durable actual-child outcomes, bounded ownership and separate execution-context qualification. Actual Python/Node and synthetic five-host controls exercise failure, repair and independent scopes; final qualification is in progress. The original Windows advice CI failure remains unexplained after successful repetitions. No new installed/model session or causal coding-benefit claim. See [validation](docs/validation/2026-10-16-declared-check-execution.md) and [journey 81](journey/81-the-check-owns-its-exit.md).
+[Reliable declared-check execution](the-guide/declared-checks.md) adds an explicit property runner with durable actual-child outcomes, bounded ownership and separate execution-context qualification. Actual Python/Node and synthetic five-host controls exercise failure, repair and independent scopes; final local and four-cell hosted qualification passed. The original Windows advice CI failure remains unexplained after successful repetitions. No new installed/model session or causal coding-benefit claim. See [validation](docs/validation/2026-10-16-declared-check-execution.md) and [journey 81](journey/81-the-check-owns-its-exit.md).
 
 [Command-scoped witnesses](the-guide/external-inputs.md#command-specific-qualification)
 retain independent evidence for complete exact-command declarations. An unrelated

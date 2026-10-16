@@ -80,5 +80,5 @@
 
 - [x] Refresh documentation, journey and architecture; render using `python architecture/check.py --render`.
 - [x] Conduct one fresh whole-branch review; reproduce/fix Important findings RED→GREEN, retain rulings and deferred minors.
-- [ ] Run full suite, named audits, independent grader/reproduction, doctor, standard-library imports and final hosted matrix/artifact protocol. Read all failures; no green rerun is described as a demonstrated repair.
+- [x] Run full suite, named audits, independent grader/reproduction, doctor, standard-library imports and final hosted matrix/artifact protocol. Local: 2,458 passed / 3 skipped; all four hosted cells passed. Read all failures; no green rerun is described as a demonstrated repair.
 - [ ] Push descriptive qualified parts, integrate main normally, verify remote heads and final docs/runtime/map identities, and report measured results and limitations.

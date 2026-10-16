@@ -1,6 +1,6 @@
 # ElevenPowers — living architecture graph
 
-Reliable Declared-Check Execution v1 is now drawn in all five views: explicit property selection, owned real child result, provisional receipts, separate execution-context qualification and host guidance. Final qualification is in progress; the original advice CI cause remains open. See [guide](../the-guide/declared-checks.md), [journey 81](../journey/81-the-check-owns-its-exit.md) and [validation](../docs/validation/2026-10-16-declared-check-execution.md).
+Reliable Declared-Check Execution v1 is now drawn in all five views: explicit property selection, owned real child result, provisional receipts, separate execution-context qualification and host guidance. Final local and four-cell hosted qualification passed; the original advice CI cause remains open. See [guide](../the-guide/declared-checks.md), [journey 81](../journey/81-the-check-owns-its-exit.md) and [validation](../docs/validation/2026-10-16-declared-check-execution.md).
 
 Command-scoped input witnesses and operation-local report collection are now
 drawn in all five views. Complete command maps preserve independent evidence;
