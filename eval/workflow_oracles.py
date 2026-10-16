@@ -34,10 +34,23 @@ saved=q.dumps();r=Queue.loads(saved);assert r.claim('x',7) is None
 next_token=r.claim('x',8)[1];assert next_token>t and not r.ack('x',t)
 assert r.ack('x',next_token) and q.claim('x',7) is None
 assert json.loads(saved)['version']==2'''),
-('snapshot_validation',2,'''for bad in ('{','[]','{}','{"version":99}'):
+('snapshot_validation',2,'''for bad in ('{','[]','{}','{"version":99}',
+    '{"version":2,"serial":0,"items":{}}'):
     try: Queue.loads(bad)
     except ValueError: pass
     else: assert False
+saved=json.loads(Queue().dumps())
+for field in ('serial','max_attempts','items','seen'):
+    bad=dict(saved);bad.pop(field)
+    try:Queue.loads(json.dumps(bad))
+    except ValueError:pass
+    else:assert False
+q=Queue();q.enqueue('x',1);saved=json.loads(q.dumps())
+for field in ('until','attempts','dead'):
+    bad=json.loads(json.dumps(saved));bad['items']['x'].pop(field)
+    try:Queue.loads(json.dumps(bad))
+    except ValueError:pass
+    else:assert False
 q=Queue(1);q.enqueue('x',1);q.retry('x',q.claim('x')[1]);r=Queue.loads(q.dumps())
 assert r.claim('x',100) is None'''),
 ('batch_atomicity',3,'''q=Queue();q.enqueue('x',1);q.enqueue('y',2)

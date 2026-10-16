@@ -55,12 +55,16 @@ class Queue:
         try:
             value = json.loads(text)
             if value.get("version") not in (1, 2): raise ValueError("version")
+            if value["version"] == 2:
+                if not {"serial", "max_attempts", "items", "seen"} <= value.keys(): raise ValueError("fields")
             result = cls(value.get("max_attempts", 3))
             if type(value["serial"]) is not int or value["serial"] < 0: raise ValueError("serial")
             result.serial = value["serial"]; result.items = value["items"]
             if not isinstance(result.items, dict): raise ValueError("items")
             for row in result.items.values():
                 if not isinstance(row, dict) or not {"payload", "done", "token"} <= row.keys(): raise ValueError("row")
+                if value["version"] == 2:
+                    if not {"until", "attempts", "dead"} <= row.keys(): raise ValueError("fields")
                 row.setdefault("until", None)
                 row.setdefault("attempts", 1 if row["token"] is not None else 0); row.setdefault("dead", False)
             result.seen = value.get("seen", {})
@@ -98,7 +102,7 @@ class Queue:
 
 REQUESTS = [
     'Add leases and retries: claim(key,now=0,ttl=10) validates integer now>=0 and ttl>0 before mutation. A token is live before now+ttl and retakable exactly at expiry. Tokens globally increase; old tokens cannot ack/retry a reassigned claim. retry(key,token) returns bool and releases a current claim. max_attempts is a positive integer constructor option (default3); at that many claims, retry or another expired claim makes the item permanently dead. Preserve duplicate enqueue payload and completed items.',
-    'Add dumps()->JSON with version2 and Queue.loads(text)->independent Queue. Preserve payloads, completion, lease deadlines, serial and attempts/max_attempts across restart. Future tokens must exceed earlier tokens. Reject malformed JSON, nonobject/unsupported version and missing required snapshot fields with ValueError. Input is normally a valid own snapshot; do not use wall-clock time.',
+    'Add dumps()->JSON with version2 and Queue.loads(text)->independent Queue. The version2 object requires version, serial, max_attempts, items and seen (a reserved event-identity mapping, initially empty). items maps keys to objects requiring payload, done, token, until, attempts and dead. Preserve payloads, completion, lease deadlines, serial and attempts/max_attempts across restart. Future tokens must exceed earlier tokens. Reject malformed JSON, nonobject/unsupported version and missing required snapshot fields with ValueError. Input is normally a valid own snapshot; do not use wall-clock time.',
     'Add dead(key)->bool and batch(keys,now=0,ttl=10)->dict mapping each key to its (payload,token), in input order. Claim all keys atomically: if any is unknown/completed/live/dead/unclaimable return None and change nothing, including serial. Reject duplicate/nonstring keys or non-list input with ValueError. Empty batch returns {}. Retain earlier retry and restart behavior.',
     'Add version1 migration: loads accepts {version:1,serial:int,items:{key:{payload,done,token}}}; current token is permanent until ack/retry, attempts are1 when token exists else0, max_attempts defaults3. Add replay(events) atomically applying {event:string,op:enqueue|claim|ack|retry,args:list}. Exact duplicate event IDs are ignored, conflicting payload for an ID raises ValueError unchanged. Persist event identities in version2 dumps across restart. Invalid event/batch raises ValueError without partial mutation.'
 ]

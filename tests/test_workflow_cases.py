@@ -67,3 +67,18 @@ def test_case_dispatch_preserves_existing_frozen_cases():
     assert len(case('queue')['requests'])==2
     assert len(case('workflow-queue-py')['requests'])==4
     with pytest.raises(ValueError): case('../project')
+
+
+def test_python_v2_snapshot_requires_fields_and_oracle_detects_missing_field_default(tmp_path):
+    import json
+    case,grade=api();value=case('workflow-queue-py');namespace={}
+    exec(value['gold'][3],namespace)
+    snapshot=json.loads(namespace['Queue']().dumps())
+    for field in ('max_attempts','seen','serial','items'):
+        bad=dict(snapshot);bad.pop(field)
+        with pytest.raises(ValueError):namespace['Queue'].loads(json.dumps(bad))
+    mutant=value['gold'][3].replace('if value["version"] == 2:', 'if False:')
+    root=materialize(tmp_path/'missing-fields-mutant',value,mutant)
+    result=grade(value,2,root)
+    assert result['state']=='graded'
+    assert next(g['state'] for g in result['groups'] if g['id']=='snapshot_validation')=='failed'
