@@ -26,7 +26,7 @@ def test_cli_rejects_invalid_input_and_unknown_flags(tmp_path):
 
 
 def test_performance_cli_is_read_only_on_real_project(tmp_path):
-    from test_project_health import prepared
+    from tests.test_project_health import prepared
     prepared(tmp_path)
     def snapshot():
         return {p.relative_to(tmp_path).as_posix(): p.read_bytes() for p in tmp_path.rglob('*')

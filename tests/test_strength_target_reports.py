@@ -24,7 +24,7 @@ def test_strength_report_explains_relation_and_command_coverage():
 
 def test_historical_sample_stays_unattributed_and_read_only(tmp_path):
     import time
-    from test_strength_target_store import record
+    from tests.test_strength_target_store import record
     from core.config import Config
     from core.strength.store import save
     from core.strength.view import view

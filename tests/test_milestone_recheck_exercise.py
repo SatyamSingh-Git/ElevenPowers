@@ -50,7 +50,7 @@ def test_invalid_case_and_repeat_budget_rejected_before_creating_output(tmp_path
 def test_shared_command_does_not_invent_a_relationship_for_other_milestones():
     from core.milestones.rechecks import plan
     from eval.milestone_rechecks import grade
-    from test_milestone_rechecks import advice, lead, row
+    from tests.test_milestone_rechecks import advice, lead, row
     report = {'coverage': {'complete': True}, 'rechecks': plan(
         [row('witnessed', 'STALE'), row('missing', 'STALE'), row('unrelated', 'STALE')],
         advice([lead('witnessed')]), complete=True)}

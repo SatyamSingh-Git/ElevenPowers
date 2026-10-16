@@ -7,7 +7,7 @@ import pytest
 
 def test_shared_analysis_persists_targeting_and_command_only_coverage(tmp_path):
     import subprocess
-    from test_strength import repository
+    from tests.test_strength import repository
     from core.config import Config
     from core.ledger import Ledger
     from core.strength.runner import analyze
@@ -33,7 +33,7 @@ def test_shared_analysis_persists_targeting_and_command_only_coverage(tmp_path):
 
 
 def test_changed_source_after_selection_never_reaches_baseline(tmp_path, monkeypatch):
-    from test_strength import repository
+    from tests.test_strength import repository
     from core.config import Config
     from core.ledger import Ledger
     from core.strength import runner
@@ -57,7 +57,7 @@ def test_changed_source_after_selection_never_reaches_baseline(tmp_path, monkeyp
 
 def test_pure_deletion_is_context_and_does_not_sample_another_function(tmp_path):
     import subprocess
-    from test_strength import repository
+    from tests.test_strength import repository
     from core.config import Config
     from core.ledger import Ledger
     from core.strength.runner import analyze

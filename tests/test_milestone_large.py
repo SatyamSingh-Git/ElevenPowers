@@ -27,7 +27,7 @@ def test_larger_evaluation_declines_unsealed_project_before_reporting(tmp_path):
 
 def test_evaluation_preserves_unknown_leads_and_cost_samples(tmp_path):
     from eval.milestone_large import evaluate
-    from test_milestone_entrypoints import process_project
+    from tests.test_milestone_entrypoints import process_project
     process_project(tmp_path)
     files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in tmp_path.iterdir()}
     corpus = {'schema': 1, 'projects': [{'id': 'project', 'files': files}],

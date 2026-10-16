@@ -65,7 +65,7 @@ def test_unresolved_current_phase_error_requires_same_phase_recovery(tmp_path):
 def test_acceptance_rechecks_the_contract_after_the_nested_health_read(tmp_path, monkeypatch):
     from core.hosts.acceptance import inspect
     from core import health
-    from test_native_acceptance import exercise_history
+    from tests.test_native_acceptance import exercise_history
     root = tmp_path / 'exercise'
     exercise_history(root, monkeypatch)
     real = health.inspect

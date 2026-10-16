@@ -7,7 +7,7 @@ import pytest
 
 def test_scope_records_current_line_hunks_new_files_and_deletion_anchors(tmp_path):
     from core.strength.scope import select
-    from test_strength import repository
+    from tests.test_strength import repository
     base = repository(tmp_path)
     (tmp_path/'a.py').write_text('value = 2\n')
     (tmp_path/'new.py').write_text('def new():\n    return 4\n')

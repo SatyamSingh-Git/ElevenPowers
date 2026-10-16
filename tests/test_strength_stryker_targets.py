@@ -9,7 +9,7 @@ import pytest
 def test_real_stryker_sample_reaches_changed_function_and_keeps_other_functions(tmp_path,suffix):
     from core.strength.engines import stryker
     from core.strength.execution import Budget
-    from test_strength import stryker_path
+    from tests.test_strength import stryker_path
     engine = stryker_path()
     annotation = ': number' if suffix != 'js' else ''
     source = f'export function old(x{annotation}) {{\n  return x > 0;\n}}\nexport function edited(x{annotation}) {{\n  return x > 1;\n}}\n'

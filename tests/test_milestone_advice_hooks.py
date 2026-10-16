@@ -65,7 +65,7 @@ def test_off_and_unconfigured_hooks_do_not_launch_advice(tmp_path, monkeypatch):
 
 def test_native_patch_advice_follows_saved_attribution_and_preserves_gaps(tmp_path):
     from core.hosts.bridge import run
-    from test_native_edits import event
+    from tests.test_native_edits import event
     opted(tmp_path)
     patch = '*** Begin Patch\n*** Update File: cli.py\n@@\n-print(3)\n+print(4)\n*** End Patch'
     payload = event(tmp_path, patch)
