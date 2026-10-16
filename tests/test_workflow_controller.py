@@ -89,3 +89,10 @@ def test_mixed_protocols_and_unsupported_models_cannot_prepare(tmp_path):
     with pytest.raises(ValueError):p.prepare(tmp_path/'mixed',names=('queue','workflow-orders-js'),seconds=720)
     with pytest.raises(ValueError):p.prepare(tmp_path/'model',names=('workflow-orders-js',),model='other')
     assert not (tmp_path/'model').exists()
+
+
+def test_agent_cannot_replace_the_frozen_git_head(tmp_path):
+    protocol=prepare(tmp_path);slot=protocol['slots'][0];candidate=tmp_path/'batch'/slot/'candidate'
+    subprocess.run(['git','-c','user.name=control','-c','user.email=control@example.invalid',
+                    'commit','--allow-empty','-qm','unexpected commit'],cwd=candidate,check=True)
+    with pytest.raises(ValueError,match='Git'):p.verify(tmp_path/'batch',slot)

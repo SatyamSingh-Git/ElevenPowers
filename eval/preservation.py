@@ -95,7 +95,8 @@ def _harness(schema=1):
     names=['eval/preservation.py','eval/preservation_cases.py','eval/preservation_oracles.py','eval/subscription.py']
     if schema==2:
         names+=['eval/workflow_cases.py','eval/workflow_queue.py','eval/workflow_orders.py',
-                'eval/workflow_oracles.py','eval/declared_workflow.py','eval/transcript.py','eval/workflow_results.py']
+                'eval/workflow_oracles.py','eval/declared_workflow.py','eval/transcript.py',
+                'eval/workflow_results.py','eval/workflow_rehearsal.py']
     return _hash(b''.join((TOOL_ROOT/name).read_bytes() for name in names))
 
 
@@ -171,6 +172,10 @@ def prepare(destination, *, names=('queue', 'inventory'), seconds=480, model=Non
                 'baseline': _hash((folder / 'baseline.json').read_bytes()),
                 'oracles': [_hash(oracle(value, stage).encode()) for stage in range(5 if new else 3)],
                 'session': str(uuid.uuid4()), 'requests': value['requests']}
+            if new:
+                done=run(['git','rev-parse','HEAD'],cwd=candidate,timeout=10,shell=False)
+                if done.returncode:raise ValueError('Git baseline unavailable')
+                protocol['seals'][slot]['git_head']=done.stdout.strip()
     _write(root / 'protocol.json', protocol)
     _write(root / 'protocol-seal.json', {'sha256': _hash((root / 'protocol.json').read_bytes())})
     return protocol
@@ -205,6 +210,11 @@ def verify(batch, slot, *, initial=False):
         raise ValueError('sealed initial candidate changed')
     if _settings(candidate) != seal['settings']:
         raise ValueError('sealed project configuration changed')
+    if new:
+        done=run(['git','rev-parse','HEAD'],cwd=candidate,timeout=10,shell=False)
+        index=run(['git','diff','--cached','--name-only'],cwd=candidate,timeout=10,shell=False)
+        if done.returncode or index.returncode or done.stdout.strip()!=seal.get('git_head') or index.stdout.strip():
+            raise ValueError('sealed Git state changed')
     for name, expected in seal['initial'].items():
         if initial or name not in value['production']:
             if actual.get(name) != expected:

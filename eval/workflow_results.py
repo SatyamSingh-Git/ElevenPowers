@@ -30,6 +30,11 @@ def _sources(folder,stage,value):
     return data
 
 
+def _public_case_hash(value):
+    keys=('id','language','files','production','public_command','new_test_paths','milestones','requests')
+    return hashlib.sha256(json.dumps({k:value[k] for k in keys},sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+
 def _arm(batch,slot,protocol):
     value=case(slot.rsplit('-',1)[0]);folder=_safe(batch,slot)
     result={'state':'not_attempted','qualified':False,'delivery_verified':False,'stages':[],
@@ -125,7 +130,9 @@ def publish(destination,selection):
     summary=summarize(batch);out.mkdir(parents=True)
     manifest={'schema':2,'scheduled_slots':list(protocol['slots']),'stage_count':4,
               'protocol_sha256':hashlib.sha256((batch/'protocol.json').read_bytes()).hexdigest(),
-              'harness_sha256':_harness(2),'sources':[]}
+              'harness_sha256':_harness(2),
+              'public_case_sha256':{name:_public_case_hash(case(name)) for name in dict.fromkeys(s.rsplit('-',1)[0] for s in protocol['slots'])},
+              'sources':[]}
     matches=True
     for slot in protocol['slots']:
         value=case(slot.rsplit('-',1)[0]);folder=batch/slot
@@ -171,9 +178,10 @@ def publish(destination,selection):
 
 def reproduce(archive):
     archive=Path(archive).resolve(strict=True);manifest=_read(archive/'manifest.json')
-    result={'qualified':False,'stages':0,'issues':[]}
+    result={'qualified':False,'stages':0,'issues':[],'grading_only':True,
+            'historical_harness_matches':manifest.get('harness_sha256')==_harness(2)}
     try:
-        if manifest.get('schema')!=2 or manifest.get('harness_sha256')!=_harness(2):raise ValueError('grader changed')
+        if manifest.get('schema')!=2:raise ValueError('archive schema changed')
         slots=manifest.get('scheduled_slots',[])
         if (not slots or len(set(slots))!=len(slots) or len(slots)>4 or manifest.get('stage_count')!=4
                 or any(s.rsplit('-',1)[0] not in NAMES or s.rsplit('-',1)[-1] not in ('ordinary','assisted') for s in slots)):
@@ -185,6 +193,7 @@ def reproduce(archive):
             path=_safe(archive,row['file'])
             if hashlib.sha256(path.read_bytes()).hexdigest()!=row['file_sha256']:raise ValueError('source changed')
             value=case(row['slot'].rsplit('-',1)[0]);source=_read(path)
+            if manifest.get('public_case_sha256',{}).get(value['id'])!=_public_case_hash(value):raise ValueError('case changed')
             if set(source)!=set(value['production']):raise ValueError('source set changed')
             with tempfile.TemporaryDirectory(prefix='ep-workflow-reproduce-') as temp:
                 root=Path(temp)

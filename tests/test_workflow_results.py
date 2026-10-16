@@ -108,3 +108,13 @@ def test_archive_cannot_qualify_after_a_scheduled_source_row_is_removed(batch,tm
     archive=tmp_path/'public';publish(archive,{slot:root for slot in protocol['slots']})
     manifest=p._read(archive/'manifest.json');manifest['sources'].pop();p._write(archive/'manifest.json',manifest)
     assert api().reproduce(archive)['qualified'] is False
+
+
+def test_source_regrading_does_not_claim_historical_harness_execution(batch,tmp_path):
+    root,protocol=batch
+    from eval.preservation_archive import publish
+    archive=tmp_path/'public';publish(archive,{slot:root for slot in protocol['slots']})
+    manifest=p._read(archive/'manifest.json');manifest['harness_sha256']='0'*64;p._write(archive/'manifest.json',manifest)
+    result=api().reproduce(archive)
+    assert result['qualified'] and result['grading_only']
+    assert result['historical_harness_matches'] is False
