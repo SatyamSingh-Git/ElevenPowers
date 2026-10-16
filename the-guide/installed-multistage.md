@@ -66,6 +66,10 @@ independently graded four-stage output. Missing runner adoption or feedback does
 not remove an otherwise comparable unfavorable outcome: delivery is reported
 separately. Timeouts, missing stages and scope/setup failures remain scheduled
 attempts. The ordinary arm is not expected to emit plugin callbacks.
+Earlier source-checked grades and model time remain visible after a later
+scope or snapshot failure. Each stage labels `source_grade_valid`; final
+integrity failures disqualify the arm without deleting its measured trajectory.
+Interrupted native output and diagnostics stay in private attempt files.
 
 The archive extends `eval.preservation_archive` for the new slot names. Retain
 every scheduled slot from the same frozen batch. It exports exact source

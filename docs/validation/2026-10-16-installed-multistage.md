@@ -47,3 +47,24 @@ installed acceptance, any separately approved comparison, hosted qualification,
 all five rendered architecture views and main/publication identity remain pending.
 The earlier Windows advice incident remains unexplained; fresh successful repeats
 do not establish its cause.
+
+## Fresh review and release observation
+
+The whole-branch review found no Critical issue and one Important defect: final
+scope verification ran before projecting earlier grades, so a late failure hid
+the earlier trajectory. Actual controls reproduced both protected-test and late
+source-snapshot failures after a measured lease/restart regression. The repair
+preserves earlier source-checked grades and recorded model time while keeping
+the arm unqualified. Two smaller review findings retain interrupted private
+streams and reject missing version-2 Python snapshot fields. The public snapshot
+format is explicit before any live case is frozen.
+
+The previous-main repeat [38941005978](https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/38941005978)
+failed on Windows/Python 3.11: the actual encoded PowerShell runner-envelope
+control exceeded its 30-second limit. That cell retained 2,455 passes and five
+skips; the other matrix cells passed. A local exact-node rerun passed. The
+control now retains bounded process diagnostics and cleans descendants using
+the existing process runner, with the same 30-second cap. This does not establish
+or repair the cause of the hosted latency. Live runs remain held for a fresh
+healthy candidate. The earlier JavaScript advice incident is a separate open
+cause, not explained by either successful repeats or this timeout.

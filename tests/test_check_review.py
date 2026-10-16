@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -46,12 +47,22 @@ def test_requested_allowance_above_300_is_not_silently_capped(tmp_path, monkeypa
 @pytest.mark.skipif(os.name != 'nt', reason='actual Windows encoded invocation producer')
 def test_actual_encoded_runner_envelope_does_not_become_a_typecheck(tmp_path):
     from core.checks import guidance
+    from core.process import run
     (tmp_path / 'check.py').write_text('raise SystemExit(1)\n')
     save(tmp_path, Config(profile='guide', commands={'typecheck':f'"{sys.executable}" check.py .'}, auto_detect=False))
     command = guidance(tmp_path).removeprefix('Declared-check runner: ') + ' & echo outer-complete'
-    done = subprocess.run(command,cwd=tmp_path,shell=True,capture_output=True,text=True,timeout=30)
-    assert done.returncode == 0
-    assert parse(command,done.stdout,0,tmp_path) == []
+    started=time.monotonic()
+    try:
+        done = run(command,cwd=tmp_path,shell=True,timeout=30)
+    except subprocess.SubprocessError as error:
+        pytest.fail(json.dumps({'state':'incomplete','error':type(error).__name__,
+            'seconds':round(time.monotonic()-started,3),
+            'stdout':str(getattr(error,'stdout',''))[-4096:],
+            'stderr':str(getattr(error,'stderr',''))[-4096:]},indent=2))
+    diagnostic={'exit_code':done.returncode,'seconds':round(time.monotonic()-started,3),
+                'stdout':done.stdout[-4096:],'stderr':done.stderr[-4096:]}
+    assert done.returncode == 0,diagnostic
+    assert parse(command,done.stdout,0,tmp_path) == [],diagnostic
 
 
 def test_unrelated_genuine_typecheck_still_produces_evidence(tmp_path):
