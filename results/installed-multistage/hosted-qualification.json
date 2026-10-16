@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "state": "partial_matrix",
+  "state": "all_four_cells_passed",
   "cells": [
     {
       "candidate": "ed18a53fc9b9cb9500fc544a63b2fb1988e5e24d",
@@ -63,6 +63,28 @@
         "seconds": 74.1
       },
       "workflow_rehearsal_seconds": 20.312,
+      "independently_checked_stage_rows": 16,
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "host_doctor_controls": 11
+    },
+    {
+      "candidate": "ed18a53fc9b9cb9500fc544a63b2fb1988e5e24d",
+      "hosted_run": 38951108845,
+      "job": 117142428048,
+      "platform": "windows-latest",
+      "python": "3.13",
+      "suite": {
+        "passed": 2505,
+        "skipped": 5,
+        "seconds": 3973.61
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 60.89
+      },
+      "workflow_rehearsal_seconds": 23.65,
       "independently_checked_stage_rows": 16,
       "grader_cases": 4,
       "retained_legacy_source_grades": 8,
