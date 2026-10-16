@@ -145,7 +145,15 @@ Calibration from that run: focused Opus 5.5 runs at effort high averaged
 reply cost $0.47). A 25-minute agent timeout returns **no** cost record, so a
 sweep's total is a floor when any run times out.
 
-Paid evaluation runs cost real money and are never started without asking.
+Evaluation runs require user authorization, including explicit standing permission.
+The user gave standing authorization on 2026-10-17 for needed Claude subscription
+sessions using **Sonnet 5.5 at medium effort**, without repeated permission
+questions. For this work that authorization supersedes older per-trial allowance
+instructions. Use no-model checks first, conservative explicit process caps,
+healthy qualified source and no API fallback; retain every failed/incomplete
+attempt. This approval covers subscription conversations. Do not silently retry
+for a favorable result; any further trial follows a demonstrated repair and
+fresh no-model qualification.
 **`claude-sonnet-5` at effort high** is the default model for them unless the
 user says otherwise for that run, and the per-run `--budget` must match the
 model — `$3.00` was sized for Sonnet and truncates most Opus runs mid-task,

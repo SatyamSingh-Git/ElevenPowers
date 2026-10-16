@@ -1,6 +1,6 @@
 # Configuration
 
-Use [ep_check](declared-checks.md) to explicitly execute an effective declared property. It honors command overrides/discovery and passive `off`, retains interrupted attempts and separately qualifies source, selected inputs and owned configuration/producer context. No additional setup file is required.
+Use [ep_check](declared-checks.md) to explicitly execute one effective declared property, or `--all` for independent checks under one owner and shared deadline. It honors command overrides/discovery and passive `off`, retains interrupted attempts and separately qualifies source, selected inputs and owned configuration/producer context. No additional setup file is required.
 
 Schema 2 [command mappings](external-inputs.md#command-specific-qualification) optionally declare complete witness sets for exact commands. Partial/unmatched/legacy observations remain broad; no check becomes optional. Shared report collection needs no new configuration.
 

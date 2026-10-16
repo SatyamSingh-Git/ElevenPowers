@@ -5,6 +5,7 @@
 ```sh
 python plugin/bin/ep_check.py --list --project PATH
 python plugin/bin/ep_check.py tests --project PATH --seconds 120 --json
+python plugin/bin/ep_check.py --all --project PATH --seconds 120 --json
 ```
 
 Select tests/build/typecheck/lint/benchmark when configured. Each execution runs

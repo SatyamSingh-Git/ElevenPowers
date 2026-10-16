@@ -6,6 +6,7 @@ Run one of the project's effective declared properties through ElevenPowers:
 python plugin/bin/ep_check.py --list --project PATH
 python plugin/bin/ep_check.py tests --project PATH
 python plugin/bin/ep_check.py build --project PATH --seconds 120 --json
+python plugin/bin/ep_check.py --all --project PATH --seconds 120 --json
 ```
 
 The selectors are `tests`, `build`, `typecheck`, `lint` and `benchmark`, when
@@ -15,10 +16,42 @@ accept arbitrary command text or infer equivalence from shell syntax. Each
 explicit invocation runs again; it does not reuse an earlier pass or remove any
 other required check. `--list` creates no project state and runs no command.
 
-Startup and applicable completion/recheck guidance expose separate invocations
-for independent declared properties. Run the shown commands separately; a tests
-pass does not establish a build pass. Guidance stays bounded: any omitted command
-instructions are named explicitly, and those properties remain required.
+Startup and explicit new verification tasks expose an owned batch command and
+readable argument list. This also applies when the task makes no edits and
+infers no coding claim. Per-property and filtered completion/recheck instructions
+remain available; a selected check's advice never broadens to all commands.
+Labels identify properties outside encoded shell text. Guidance stays bounded
+and names omitted instructions; those properties remain required. Advice itself
+runs nothing, and passive `off` stays quiet. Duplicate prompts and ordinary
+continuations preserve their existing task and do not repeat the advice.
+
+## Run every declared property with one command
+
+`--all` selects supported effective declarations in tests/build/typecheck/lint/
+benchmark order and runs each again under one project lock and deadline. Failed
+checks do not suppress later independent checks. Every property retains its own
+actual result, source/configuration/producer qualification and selected external
+input observations. The human output includes one `Declared check PROPERTY:
+STATE` line per result. JSON uses `schema_version: 2`, `selected`, `results`,
+aggregate `state`, `issues` and elapsed time; individual results keep schema 1.
+
+A batch is passed only when every selected check passes. Incomplete/unrun results
+make the batch incomplete; otherwise any failure makes it failed. Task,
+configuration or producer movement refuses subsequent execution and prevents a
+passing batch at closure. Selections deferred before an owned check begins have
+`attempt: null`. Input inspection can retain an incomplete verification attempt
+while refusing the child; `unrun: true` means the child executor was not called.
+No child result is fabricated. A launch attempt that times out remains incomplete.
+The durable verification journal queues the
+whole selection before execution, so interruption retains the denominator.
+
+The default 120 seconds is shared by the entire batch, including inspection;
+`--seconds` sets the same finite positive <=600-second limit. Existing bounded
+cleanup remains separate. `--all`, a property and `--list` are mutually exclusive.
+Empty declarations, off, busy ownership and invalid requests launch nothing.
+This command runs all selected checks; it does not reuse a prior result. Ordinary
+completion retains its existing obligation-based execution rules and does not
+automatically launch batches.
 
 The default cooperative allowance is 120 seconds; `--seconds` accepts finite
 positive values up to 600. Existing process containment, output limits and a

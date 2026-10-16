@@ -1,5 +1,7 @@
 # Validation records
 
+- [2026-10-17 runner guidance and owned batches](2026-10-17-check-adoption.md): no-edit advice, readable arguments, independent batch receipts, actual no-model controls and fresh-review race repair; current full/installed qualification pending.
+
 - [2026-10-16 installed multi-stage verification](2026-10-16-installed-multistage.md): source-qualified repairs and two further completed but unqualified native conversations; distinct task identities now observed, compound-command runner adoption still incomplete, original failures retained; independent four-stage comparison remains blocked.
 
 - [2026-10-16 reliable declared-check execution](2026-10-16-declared-check-execution.md): actual child outcomes through outer shells, source/context separation, review regressions and portable qualification. The earlier advice CI cause remains open.

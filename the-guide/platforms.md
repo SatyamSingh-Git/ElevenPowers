@@ -1,5 +1,7 @@
 # Native platforms
 
+Shared startup/new verification-task guidance now offers readable arguments and an explicit all-declared-check batch, including no-edit tasks. Passive/off and filtered recheck behavior remain. Synthetic five-host outer-callback controls do not establish installed acceptance on those hosts; current source/native qualification is pending. See [runner guide](declared-checks.md).
+
 All five host adapters share [the explicit declared-check runner](declared-checks.md). Startup advertises the trusted interpreter/script invocation; configured recheck and completion guidance can offer it. Owned execution does not become a native callback observation or establish installed acceptance by itself.
 
 Recorded-runtime [command-scope observations](../results/command-input-scopes/README.md)

@@ -1,5 +1,7 @@
 # The Guide
 
+[Owned check batches](declared-checks.md): one explicit command, independent property receipts, shared deadline and automatic no-edit verification guidance.
+
 [Installed multi-stage verification](installed-multistage.md): explicit contributor rehearsals, session allowances, independent grading and archived source reproduction.
 
 [External input witnesses](external-inputs.md): declare selected local dependency files or trees, approve their roots privately, and qualify explicit PatchProof execution and reuse without report-side checks.

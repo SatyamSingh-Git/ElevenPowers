@@ -1,6 +1,8 @@
 # The journey
 
-Latest: [82 — a workflow needs a native trial](82-a-workflow-needs-a-native-trial.md): both repaired-runtime requalification conversations completed with distinct tasks, but ordinary compound-command adoption still leaves zero of two qualified.
+Latest: [83 — one entry point, separate receipts](83-one-entry-point-separate-receipts.md).
+
+Recent: [82 — a workflow needs a native trial](82-a-workflow-needs-a-native-trial.md): both repaired-runtime requalification conversations completed with distinct tasks, but ordinary compound-command adoption still leaves zero of two qualified.
 
 Recent: [81 — the check owns its exit](81-the-check-owns-its-exit.md).
 

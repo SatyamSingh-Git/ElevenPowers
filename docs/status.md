@@ -1,5 +1,21 @@
 # Current delivery status
 
+**2026-10-17 — Runner guidance repaired; owned declared-check batches implemented.**
+Explicit new verification tasks now receive bounded owned-check advice even
+without edits or inferred coding claims. Readable property labels/arguments
+accompany executable commands. The additional `ep_check.py --all` feature holds
+one owner/deadline while retaining independent property receipts, failures,
+unrun selections and drift guards. Advice itself launches nothing; filtered
+rechecks stay narrow and off/continuation behavior remains.
+No-model Python/Node controls reproduce current/stale/failed/recovered evidence,
+independent missing-input refusal and successful-outer-shell masking. A fresh
+review found one frozen-selection race, now covered by three witnessed failures
+and a repair. Full current source and installed qualification are pending;
+all earlier failed native trials remain retained. Standing user authorization
+covers needed Sonnet 5.5 medium subscription sessions without repeated questions.
+No new coding-quality advantage is established.
+See [plan](superpowers/plans/2026-10-17-declared-check-adoption.md), [validation](validation/2026-10-17-check-adoption.md) and [journey 83](../journey/83-one-entry-point-separate-receipts.md).
+
 **2026-10-17 — Repaired-runtime installed requalification completed; zero of two qualify.**
 Two newly approved Sonnet 5.5 medium conversations completed all six turns with
 no API fallback or retries, using 94.763 model-process seconds for Python and

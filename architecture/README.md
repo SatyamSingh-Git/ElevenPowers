@@ -1,5 +1,13 @@
 # ElevenPowers — living architecture graph
 
+Readable no-edit verification guidance and explicit owned batches are drawn in
+all five views: one owner/deadline, separate property receipts, complete selected
+outcomes and frozen command/context guards. The rendered map passes with 171
+nodes, 423 edges and seven planes. Current full-source and installed qualification
+are in progress; earlier failed native attempts remain retained. See
+[journey 83](../journey/83-one-entry-point-separate-receipts.md) and
+[validation](../docs/validation/2026-10-17-check-adoption.md).
+
 Installed Multi-Stage Verification is drawn in all five views. Both initial native trials completed but did not qualify. Shared task/provenance/independent-command repairs pass 2,519 local tests and all four hosted cells. Two separately approved requalification conversations completed but neither qualified: task identities are distinct, while ordinary compound commands still leave receipt gaps. The larger comparison remains blocked. Frozen four-stage source grades stay separate from native readiness and benefit. See [guide](../the-guide/installed-multistage.md) and [validation](../docs/validation/2026-10-16-installed-multistage.md).
 
 Main delivery and exact published HTML/data identities are retained in the [delivery record](../results/installed-multistage/repaired/delivery.json). That first closure preserved rendered source bytes; later requalification status changes are rendered and published separately.

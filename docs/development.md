@@ -318,3 +318,11 @@ commands and no-edit prompt/completion guidance at actual callback ingress.
 Keep native command execution, emitted advice, owned receipts and independent
 behavior separate; never turn shell trailers into authenticated child outcomes.
 The original and fresh results are retained in the validation record above.
+
+## Owned batch adoption controls
+
+`python -m eval.check_adoption --output NEW_DIR` executes actual Python/Node
+batch pass/fail/drift/recovery/missing-input controls and synthetic five-host
+outer callbacks, with zero model calls. `core/check_batch.py` reuses the existing
+owned single-check body; tests pin one owner, shared deadline, selected denominator
+and frozen-command/context guards. See [validation](validation/2026-10-17-check-adoption.md).

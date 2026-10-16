@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "producer": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "observations": [
+    {
+      "language": "python",
+      "outcomes": [
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "failed",
+          "passed"
+        ],
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "incomplete",
+          "passed"
+        ]
+      ],
+      "aggregate_states": [
+        "passed",
+        "failed",
+        "passed",
+        "incomplete"
+      ],
+      "milestones": [
+        [
+          "CURRENT",
+          "CURRENT"
+        ],
+        [
+          "STALE",
+          "CURRENT"
+        ],
+        [
+          "FAILED",
+          "CURRENT"
+        ],
+        [
+          "CURRENT",
+          "CURRENT"
+        ]
+      ],
+      "counts_before_missing": [
+        3,
+        3
+      ],
+      "counts_after_missing": [
+        3,
+        4
+      ],
+      "outer_shell_exit": 0,
+      "owned_failure_survived_callbacks": true,
+      "synthetic_hosts": [
+        "claude",
+        "codex",
+        "gemini",
+        "cursor",
+        "copilot"
+      ],
+      "new_task_guidance_emitted": true,
+      "advice_characters": 975,
+      "advice_sha256": "fe94a5bba829232e38df6a870c1481b847fbc2e267ca99c5e2068872744228f9",
+      "advice_launched_nothing": true,
+      "missing_property_unrun": true,
+      "model_calls": 0,
+      "installed_acceptance": false,
+      "qualified": true
+    },
+    {
+      "language": "javascript",
+      "outcomes": [
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "failed",
+          "passed"
+        ],
+        [
+          "passed",
+          "passed"
+        ],
+        [
+          "incomplete",
+          "passed"
+        ]
+      ],
+      "aggregate_states": [
+        "passed",
+        "failed",
+        "passed",
+        "incomplete"
+      ],
+      "milestones": [
+        [
+          "CURRENT",
+          "CURRENT"
+        ],
+        [
+          "STALE",
+          "CURRENT"
+        ],
+        [
+          "FAILED",
+          "CURRENT"
+        ],
+        [
+          "CURRENT",
+          "CURRENT"
+        ]
+      ],
+      "counts_before_missing": [
+        3,
+        3
+      ],
+      "counts_after_missing": [
+        3,
+        4
+      ],
+      "outer_shell_exit": 0,
+      "owned_failure_survived_callbacks": true,
+      "synthetic_hosts": [
+        "claude",
+        "codex",
+        "gemini",
+        "cursor",
+        "copilot"
+      ],
+      "new_task_guidance_emitted": true,
+      "advice_characters": 1003,
+      "advice_sha256": "6feae56040db79e86ec56f67c04ccf5e9a0745baedfa3924e9b20b3b6092a055",
+      "advice_launched_nothing": true,
+      "missing_property_unrun": true,
+      "model_calls": 0,
+      "installed_acceptance": false,
+      "qualified": true
+    }
+  ],
+  "limits": [
+    "Actual Python/Node child processes with synthetic guidance and outer-host callbacks.",
+    "No installed-model acceptance, causal coding benefit or exhaustive dependency coverage."
+  ],
+  "qualified": true,
+  "seconds": 52.984,
+  "retention": {
+    "observed_source": "2a161e288d3d355db886fffe8ae6689f797846cf",
+    "source_candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+    "same_runtime": true,
+    "limits": [
+      "The later test-package isolation changes no runtime or evaluation source byte."
+    ]
+  }
+}
