@@ -47,6 +47,13 @@ component medians fell from about 0.63 seconds to 0.28–0.29 seconds locally.
 Separate single Stop profiles changed little. Neither exercise measures model
 behavior, general repository latency, application performance or coding benefit.
 
+A separate [single-receipt measurement](../../results/workflow-checks/single-receipt-benchmark.json)
+exposes the tradeoff: one legacy scan becomes two to supply the closing guard.
+It ran during local qualification and partially overlapping component work;
+[conditions](../../results/workflow-checks/report-tradeoff.json) prohibit comparing
+its absolute times with the earlier measurements. A default five-receipt rerun
+still gives five-to-two scans. No blanket speed claim is supported.
+
 Actual Python/Node child controls precede model use. Vitest advice uses an existing
 parser summary fixture and is identified as replay rather than an installed
 Vitest run. The fresh review's two Important and one Minor findings were all

@@ -16,6 +16,14 @@ median times are Python 0.637→0.284 seconds and JavaScript-shaped inputs
 check and does not measure full Stop or model workflow speedup. Late source or
 configuration movement, incomplete reads and deadlines keep report text unverified.
 
+The [one-receipt control](single-receipt-benchmark.json) has a different cost:
+one legacy source scan becomes two to add the closing guard. Its timing samples
+ran during qualification load and partly overlapped another component run;
+[conditions](report-tradeoff.json) keep them separate from earlier medians.
+The default five-receipt rerun still gives five-to-two scans. No blanket report
+speedup is claimed. Use `--receipts 1` with a new output file to reproduce this
+tradeoff.
+
 Reproduce the work counts and new timing samples with Python and Git, using a
 new output file so the original measurements remain intact:
 

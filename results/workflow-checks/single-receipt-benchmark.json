@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "category": "source-only-human-report-controlled-ablation",
+  "model_calls": 0,
+  "host_launched": false,
+  "project_checks_launched": false,
+  "observations": [
+    {
+      "language": "python",
+      "repeat": 0,
+      "mode": "legacy",
+      "seconds": 0.854395,
+      "source_snapshots": 1,
+      "fresh_source_reads": 0,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "python",
+      "repeat": 0,
+      "mode": "optimized",
+      "seconds": 1.485741,
+      "source_snapshots": 2,
+      "fresh_source_reads": 2,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "python",
+      "repeat": 1,
+      "mode": "optimized",
+      "seconds": 1.935451,
+      "source_snapshots": 2,
+      "fresh_source_reads": 2,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "python",
+      "repeat": 1,
+      "mode": "legacy",
+      "seconds": 0.927711,
+      "source_snapshots": 1,
+      "fresh_source_reads": 0,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "python",
+      "repeat": 2,
+      "mode": "legacy",
+      "seconds": 0.696316,
+      "source_snapshots": 1,
+      "fresh_source_reads": 0,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "python",
+      "repeat": 2,
+      "mode": "optimized",
+      "seconds": 1.69639,
+      "source_snapshots": 2,
+      "fresh_source_reads": 2,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "javascript",
+      "repeat": 0,
+      "mode": "legacy",
+      "seconds": 0.716115,
+      "source_snapshots": 1,
+      "fresh_source_reads": 0,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "javascript",
+      "repeat": 0,
+      "mode": "optimized",
+      "seconds": 1.746015,
+      "source_snapshots": 2,
+      "fresh_source_reads": 2,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "javascript",
+      "repeat": 1,
+      "mode": "optimized",
+      "seconds": 2.626503,
+      "source_snapshots": 2,
+      "fresh_source_reads": 2,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "javascript",
+      "repeat": 1,
+      "mode": "legacy",
+      "seconds": 1.130563,
+      "source_snapshots": 1,
+      "fresh_source_reads": 0,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "javascript",
+      "repeat": 2,
+      "mode": "legacy",
+      "seconds": 0.570306,
+      "source_snapshots": 1,
+      "fresh_source_reads": 0,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    },
+    {
+      "language": "javascript",
+      "repeat": 2,
+      "mode": "optimized",
+      "seconds": 1.830586,
+      "source_snapshots": 2,
+      "fresh_source_reads": 2,
+      "source_files": 150,
+      "receipts": 1,
+      "verified": true,
+      "five_fresh": false,
+      "all_fresh": true
+    }
+  ],
+  "summary": [
+    {
+      "language": "python",
+      "legacy_median_seconds": 0.854395,
+      "optimized_median_seconds": 1.69639
+    },
+    {
+      "language": "javascript",
+      "legacy_median_seconds": 0.716115,
+      "optimized_median_seconds": 1.830586
+    }
+  ],
+  "limits": [
+    "Three local samples per mode/language on fresh 150-file inputs with 1 source receipts; order alternates by repetition.",
+    "Legacy mode reproduces the prior source-only early return by overriding only the read-only report wrapper; no production source or prior artifact is changed.",
+    "No external input policy or mutation engine is enabled; independent regression controls qualify closing/configuration movement and deadline handling.",
+    "Component timing is not full Stop, native-model workflow speedup, application performance or coding benefit."
+  ]
+}

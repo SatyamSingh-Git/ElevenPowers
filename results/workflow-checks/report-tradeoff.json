@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "category": "source-report-closing-guard-tradeoff",
+  "model_calls": 0,
+  "conditions": "Local full regression qualification was running; the single/default component runs partly overlapped.",
+  "observations": [
+    {
+      "mode": "single",
+      "receipts": 1,
+      "observations": 12,
+      "legacy_scans": 1,
+      "guarded_scans": 2,
+      "all_receipts_fresh": true,
+      "record_sha256": "0def90dd7bcd134a82798a4cdafa53a62282b79cf4edaa0df69d85b1909f776d",
+      "timing_summary": [
+        {
+          "language": "python",
+          "legacy_median_seconds": 0.854395,
+          "optimized_median_seconds": 1.69639
+        },
+        {
+          "language": "javascript",
+          "legacy_median_seconds": 0.716115,
+          "optimized_median_seconds": 1.830586
+        }
+      ]
+    },
+    {
+      "mode": "default",
+      "receipts": 5,
+      "observations": 12,
+      "legacy_scans": 5,
+      "guarded_scans": 2,
+      "all_receipts_fresh": true,
+      "record_sha256": "09bc63ed7c6d36e9530a93d6f5bd01d21e3da7e930bef6d4147137a8e734ee10",
+      "timing_summary": [
+        {
+          "language": "python",
+          "legacy_median_seconds": 2.57828,
+          "optimized_median_seconds": 2.16206
+        },
+        {
+          "language": "javascript",
+          "legacy_median_seconds": 2.532128,
+          "optimized_median_seconds": 1.684485
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Absolute timing medians are not comparable with the earlier separately recorded measurements.",
+    "One source-wide receipt adds a closing scan rather than reducing work; five receipts still reduce scans five to two.",
+    "No host, model or project check is executed by the component measurement.",
+    "The default rerun raw output is retained privately with this plan audit; original five-receipt benchmark is unchanged."
+  ]
+}

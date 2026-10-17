@@ -159,6 +159,9 @@ reports do not acquire a full scan. This needs no setting and caches nothing
 across reports, commands, execution phases or tasks. It reduces repeated report
 work, not the checks required to verify a change. See the
 [measured scope and reproducer](../results/workflow-checks/README.md).
+The closing guard can add work for a one-receipt report: one legacy source scan
+becomes two. Sharing avoids repeated per-receipt reads; it does not guarantee
+every report is faster.
 
 [← The Guide](README.md)
 

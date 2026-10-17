@@ -72,6 +72,12 @@ source snapshots from five to two. Local medians move from about 0.63 seconds to
 0.28–0.29 seconds. Single whole Stop timings change little. We removed repeated
 report work; we did not establish a whole-model speedup or faster application.
 
+The one-receipt control exposes a cost rather than a saving: one legacy scan
+becomes two to add the closing guard. Its extra timing samples ran during local
+qualification load and are kept separate from the earlier measurements. Default
+five-receipt work still falls five to two. Sharing is useful when it removes
+repeated reads; it is not a promise that every report becomes faster.
+
 ## A new producer needs its own evidence
 
 The repairs change runtime identity. Earlier installed successes cannot qualify

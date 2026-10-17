@@ -65,6 +65,15 @@ model benefit measurement or application performance result. Fresh closing
 source/configuration, incomplete-coverage and deadline controls prevent unsafe
 read reuse. File-only reports add no source scan; separate reports re-read bytes.
 
+The public reproducer also accepts `--receipts 1`. Its separate twelve-sample
+[record](../../results/workflow-checks/single-receipt-benchmark.json) retains
+one-to-two source scans: the closing guard adds work to this case. It and the
+default five-receipt rerun occurred during local full qualification and partly
+overlapped each other. Their [conditions](../../results/workflow-checks/report-tradeoff.json)
+preclude treating absolute medians as comparable with the earlier measurement.
+Both modes preserve all expected fresh receipts. The optimization does not make
+every report faster.
+
 ## Fresh installed boundary
 
 [Preparation](../../results/workflow-checks/installed-prepared.json) freezes one

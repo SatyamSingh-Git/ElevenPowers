@@ -685,7 +685,7 @@ const GRAPH = {
       "kind": "lib",
       "size": 2,
       "label": "report.py",
-      "desc": "The two messages that are the product's visible surface: the start banner announcing obligations at the first edit, and the end report. On the 2026-09-15 evidence this is the product, and blocking is a profile (PLAN 1.3, 5.12). Source-backed human reports share opening/closing source inspection only within one read-only render; late source/configuration movement, incomplete scans and deadlines refuse green text and earlier fresh counts. File-only reports add no scan. No cache spans executions or reports.",
+      "desc": "The two messages that are the product's visible surface: the start banner announcing obligations at the first edit, and the end report. On the 2026-09-15 evidence this is the product, and blocking is a profile (PLAN 1.3, 5.12). Source-backed human reports share opening/closing source inspection only within one read-only render; late source/configuration movement, incomplete scans and deadlines refuse green text and earlier fresh counts. File-only reports add no scan. No cache spans executions or reports. One-receipt reports add a closing scan (one to two); multi-receipt sharing does not guarantee every report is faster.",
       "files": [
         "core/report.py",
         "tests/test_report_source_scope.py"
@@ -7051,13 +7051,13 @@ const PLANNED = [
     "status": "Open milestone",
     "summary": "Measure callback, evidence-read and verification costs during normal development on unrelated projects.",
     "why": "Bounded health-read samples exist. They are not representative callback overhead, a total development cost or a universal speedup.",
-    "remaining": "Retained native timings do not isolate all workflow costs. A generalized source-report repair reduces measured repository scans from five to two using operation-local opening/closing guards. Three local samples per mode/language-shaped input set give component medians about 0.63 to 0.28–0.29 seconds; single whole Stop samples change little. The public reproducer retains fresh 150-file inputs and five receipts. Larger real repositories, cold/warm distributions and representative total workflow costs remain open; no model speedup or application-performance benefit is established.",
+    "remaining": "Retained native timings do not isolate all workflow costs. A generalized source-report repair reduces measured repository scans from five to two using operation-local opening/closing guards. Three local samples per mode/language-shaped input set give component medians about 0.63 to 0.28–0.29 seconds; single whole Stop samples change little. The public reproducer retains fresh 150-file inputs and five receipts. Larger real repositories, cold/warm distributions and representative total workflow costs remain open; no model speedup or application-performance benefit is established. The separately retained one-receipt control adds work, one scan to two, for closing freshness. Extra timing samples ran during qualification load and are not comparable with earlier medians.",
     "acceptance": [
       "Publish repository sizes, input coverage, installed versions, individual attempts and bounded latency summaries.",
       "Measure total work with and without the relevant feature under comparable conditions.",
       "Describe slow or incomplete cases and a justified improvement target before changing budgets or caching."
     ],
-    "first": "Reproduce results/workflow-checks/reproduce_report_benchmark.py into a new output file, then design representative repository-size and total workflow measurements before broader caching or budget changes.",
+    "first": "Reproduce results/workflow-checks/reproduce_report_benchmark.py into new output files with default five receipts and --receipts 1, then design representative repository-size and total workflow measurements before broader caching or budget changes.",
     "sources": [
       "docs/design/project-health.md",
       "docs/design/native-validation.md",

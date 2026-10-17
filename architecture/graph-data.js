@@ -386,7 +386,7 @@ window.ELEVENPOWERS_GRAPH = {
       "kind": "lib",
       "size": 2,
       "label": "report.py",
-      "desc": "The two messages that are the product's visible surface: the start banner announcing obligations at the first edit, and the end report. On the 2026-09-15 evidence this is the product, and blocking is a profile (PLAN 1.3, 5.12). Source-backed human reports share opening/closing source inspection only within one read-only render; late source/configuration movement, incomplete scans and deadlines refuse green text and earlier fresh counts. File-only reports add no scan. No cache spans executions or reports.",
+      "desc": "The two messages that are the product's visible surface: the start banner announcing obligations at the first edit, and the end report. On the 2026-09-15 evidence this is the product, and blocking is a profile (PLAN 1.3, 5.12). Source-backed human reports share opening/closing source inspection only within one read-only render; late source/configuration movement, incomplete scans and deadlines refuse green text and earlier fresh counts. File-only reports add no scan. No cache spans executions or reports. One-receipt reports add a closing scan (one to two); multi-receipt sharing does not guarantee every report is faster.",
       "files": [
         "core/report.py",
         "tests/test_report_source_scope.py"
