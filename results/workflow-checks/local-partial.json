@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "category": "intentional-partial-local-qualification",
+  "producer": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "command": "python -m pytest tests -q",
+  "state": "stopped_as_redundant_while_hosted_matrix_continues",
+  "exit_code": 1,
+  "seconds": 2904.541,
+  "log_sha256": "ee6f962f9f126e74cc9267833859593544facb0975bf6ac81e76f15a8c9143be",
+  "failure_markers_before_stop": false,
+  "not_a_full_pass": true,
+  "reason": "Two current-source Linux full cells and affected/named local gates already pass; both full Windows CI cells continue. Stop duplicate local CPU without weakening the four-cell source gate.",
+  "limits": [
+    "No partial progress symbols are credited as a full-suite pass.",
+    "Installed model launch remains blocked until all four hosted source cells qualify."
+  ]
+}

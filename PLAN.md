@@ -5,8 +5,9 @@
 Shared completed-result advice and guarded source-report reads are pushed
 to main. Witnessed affected controls, 107 named audits, actual Python/Node
 checks, the reference rehearsal and both complete Linux CI cells pass.
-Windows full cells and a local full invocation are still running. One
-fresh JavaScript installed acceptance is sealed but has made no model
+Windows full cells are still running. The redundant local full invocation
+is retained as an intentional partial run. One fresh JavaScript acceptance
+is sealed but has made no model
 calls; current-source qualification precedes it. Prior successes and
 comparison ties retain their own producer. See [current evidence](results/workflow-checks/README.md).
 <!-- workflow-checks-progress:end -->
