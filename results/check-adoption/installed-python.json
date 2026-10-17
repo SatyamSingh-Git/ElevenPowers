@@ -1,0 +1,195 @@
+{
+  "schema": 2,
+  "protocol": "declared-runner",
+  "host": "claude",
+  "language": "python",
+  "requested_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "seconds_cap": 240,
+  "model_calls": 3,
+  "model_seconds": 96.92099999999999,
+  "snapshots": [
+    {
+      "task": "a183ceb74d5f90116b303506b5b221d93263da31d9fa2f184019040044e5b0b3",
+      "associations": {
+        "tests": "bound",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "CURRENT",
+        "second": "CURRENT"
+      },
+      "counts": [
+        5,
+        2
+      ]
+    },
+    {
+      "task": "a183ceb74d5f90116b303506b5b221d93263da31d9fa2f184019040044e5b0b3",
+      "associations": {
+        "tests": "stale",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "STALE",
+        "second": "CURRENT"
+      },
+      "counts": [
+        5,
+        2
+      ]
+    },
+    {
+      "task": "77fed91d4d7add02c9c4011e1a8083cf0f04b0eccac5d2544a346c8e5a0977dc",
+      "associations": {
+        "tests": "bound",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "FAILED",
+        "second": "CURRENT"
+      },
+      "counts": [
+        7,
+        3
+      ]
+    },
+    {
+      "task": "86d5dcf8742a1e79ea72b0500913246075d040649bcbcf3b2d6d7ea0bf909d71",
+      "associations": {
+        "tests": "bound",
+        "build": "bound"
+      },
+      "milestones": {
+        "first": "CURRENT",
+        "second": "CURRENT"
+      },
+      "counts": [
+        8,
+        4
+      ]
+    }
+  ],
+  "qualified": true,
+  "native_runner_adoption": true,
+  "task_boundaries": true,
+  "state": "returned",
+  "installed_acceptance": true,
+  "api_fallback": false,
+  "limits": [
+    "Synthetic rehearsal is not installed acceptance.",
+    "Native local observations are unsigned; no OS closed-book or causal coding benefit claim."
+  ],
+  "host_version": "2.1.292 (Claude Code)",
+  "protected_inputs_unchanged": true,
+  "independent_correctness_exit": 0,
+  "behavior_qualified": true,
+  "rehearsal_qualified": false,
+  "turns": [
+    {
+      "stage": 1,
+      "allowance_seconds": 80.0,
+      "state": "completed",
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 18,
+          "cache_creation_input_tokens": 9814,
+          "cache_read_input_tokens": 73816,
+          "output_tokens": 1460
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 52.78,
+      "native": {
+        "native_runner_adoption": true,
+        "task": "a183ceb74d5f90116b303506b5b221d93263da31d9fa2f184019040044e5b0b3",
+        "owned_receipts": 4,
+        "completed_runner_calls": 2
+      },
+      "scope_preserved": true
+    },
+    {
+      "stage": 2,
+      "allowance_seconds": 93.61,
+      "state": "completed",
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 8,
+          "cache_creation_input_tokens": 3891,
+          "cache_read_input_tokens": 67517,
+          "output_tokens": 819
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 27.654,
+      "native": {
+        "native_runner_adoption": true,
+        "task": "77fed91d4d7add02c9c4011e1a8083cf0f04b0eccac5d2544a346c8e5a0977dc",
+        "owned_receipts": 2,
+        "completed_runner_calls": 1
+      },
+      "scope_preserved": true
+    },
+    {
+      "stage": 3,
+      "allowance_seconds": 159.566,
+      "state": "completed",
+      "observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 1685,
+          "cache_read_input_tokens": 38545,
+          "output_tokens": 395
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "wall_seconds": 16.487,
+      "native": {
+        "native_runner_adoption": true,
+        "task": "86d5dcf8742a1e79ea72b0500913246075d040649bcbcf3b2d6d7ea0bf909d71",
+        "owned_receipts": 2,
+        "completed_runner_calls": 1
+      },
+      "scope_preserved": true
+    }
+  ],
+  "timing": {
+    "total_controller_wall_seconds": 112.114,
+    "model_process_seconds": 96.921,
+    "outside_model_process_seconds": 15.193,
+    "limits": [
+      "Outside-process time includes preparation, authentication, inspection and grading; it is not CPU time.",
+      "Model-process wall time includes hooks and bounded cleanup; subscription time is not an API-dollar estimate."
+    ]
+  },
+  "retention": {
+    "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+    "qualification_run": 38979692214,
+    "conversation_sha256": "ea27c0be10c458088297d79deccd01e5d2ce1ef59a0e09a98c807858d291c827",
+    "native_stream_sha256": [
+      "9a6d80322ca1885655f25977029b1ade7dd3e90ac10f7dfc749349345383cd73",
+      "6a3849774474c7f404e66f1eed13f1df3fa33c0b72e2cf052e8bffbd625dd304",
+      "3560be9162cc2780694b6e190ba82cbb57227cb5fac997747976f091f10e6106"
+    ],
+    "authorization": "Standing user authorization, 2026-10-17; no API fallback or favorable retries.",
+    "limits": [
+      "Unsigned local native observations; no OS attestation or causal coding-benefit comparison."
+    ]
+  }
+}

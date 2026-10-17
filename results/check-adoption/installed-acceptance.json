@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "protocol": "declared-runner",
+  "requested_model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "conversations": 1,
+  "qualified_conversations": 1,
+  "observations": [
+    {
+      "language": "python",
+      "state": "returned",
+      "qualified": true,
+      "native_runner_adoption": true,
+      "task_boundaries": true,
+      "behavior_qualified": true,
+      "independent_correctness_exit": 0,
+      "model_calls": 3,
+      "model_seconds": 96.921
+    }
+  ],
+  "model_process_seconds": 96.921,
+  "api_fallback": false,
+  "retries": 0,
+  "limits": [
+    "Every attempted language is retained, including failed and incomplete outcomes.",
+    "These authored cases measure installed adoption, not population performance or causal coding quality."
+  ]
+}
