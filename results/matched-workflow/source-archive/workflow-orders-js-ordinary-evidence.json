@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T07:39:08.778202+00:00",
+  "project": {
+    "name": "candidate",
+    "revision": "e46639f35be094a316348922f5c54207b7f55a32",
+    "revision_state": "available"
+  },
+  "state": "UNVERIFIED",
+  "task": {
+    "id": "established-behavior",
+    "risk": "low",
+    "touched": [],
+    "claims": []
+  },
+  "coverage": {
+    "complete": true,
+    "issues": [],
+    "selected_files": 9,
+    "source_complete": true,
+    "source_issues": [],
+    "selected_bytes": 10176,
+    "source_fingerprint": "2b090d253482ce17",
+    "latest_receipts_total": 1,
+    "omitted_receipts": 0
+  },
+  "commands": {
+    "tests": "node --test --test-reporter=tap"
+  },
+  "receipts": [
+    {
+      "kind": "test_suite",
+      "identity": "node",
+      "receipt_key": "754178c3bbaf287b10fe7bfdaefcf64edf7a47a071b8aef19b928872cd6b0e5e",
+      "declaration": "tests",
+      "command": "node --test --test-reporter=tap",
+      "result": "pass",
+      "declared_command": "node --test --test-reporter=tap",
+      "execution": "complete",
+      "freshness": "stale",
+      "source_freshness": "stale",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792221591.8102934,
+      "scope": "source",
+      "observed_files": 5,
+      "fingerprint": "9f609c64670ffeae",
+      "coverage_issues": [],
+      "passed": 2,
+      "failed": 0,
+      "counted": true
+    }
+  ],
+  "test_strength": {
+    "state": "not_recorded",
+    "freshness": "unknown",
+    "issues": [],
+    "observations": [],
+    "summary": {},
+    "limitations": []
+  },
+  "timings": {
+    "source_snapshot_ms": 123.109,
+    "report_ms": 297.774
+  },
+  "next_actions": [
+    "No active task claim is recorded; execution receipts do not certify completed work.",
+    "Rerun the stale command: node --test --test-reporter=tap"
+  ],
+  "limits": [
+    "Unsigned local observation, not independent attestation or an improved patch-outcome claim.",
+    "Input freshness is evaluated at report creation; later edits require a new report.",
+    "The deadline is cooperative; an in-flight filesystem read can finish after it, then coverage is incomplete.",
+    "Target observations cannot prove absence of unrelated side effects or identify competing writers.",
+    "Prompts, transcripts, captured outputs and receipt details are excluded."
+  ],
+  "milestones": {
+    "schema": 1,
+    "generated_at": "2026-10-17T07:39:08.608109+00:00",
+    "project": "candidate",
+    "state": "STALE",
+    "milestones": [
+      {
+        "id": "established-core",
+        "description": "Retain established core behavior.",
+        "inputs": [
+          "service.cjs"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "node --test --test-reporter=tap",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "source_freshness": "stale",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792221591.8102934,
+            "scope": "source",
+            "observed_files": 5,
+            "receipt_fingerprint": "9f609c64670ffeae",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: node --test --test-reporter=tap"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "formatting",
+        "description": "Retain independent formatting.",
+        "inputs": [
+          "formatting.cjs"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "node --test --test-reporter=tap",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "source_freshness": "stale",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792221591.8102934,
+            "scope": "source",
+            "observed_files": 5,
+            "receipt_fingerprint": "9f609c64670ffeae",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: node --test --test-reporter=tap"
+          }
+        ],
+        "state": "STALE"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "72532ac3d35e77abbeaee8efd20aa627e949a7bf7f653790de3df6b1419485b1",
+      "ledger_fingerprint": "f7e9fdfa6445759f5efbb5e6d175463f9d68e3935bd75eaf2e8185a108fdaeed",
+      "source_fingerprint": "2b090d253482ce17",
+      "source_complete": true,
+      "selected_files": 9,
+      "selected_bytes": 10176
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "rechecks": {
+      "state": "not_requested",
+      "commands": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 2,
+      "ABSENT": 0,
+      "CURRENT": 0
+    },
+    "next_actions": [
+      "Run the project-owned check after resolving gaps: node --test --test-reporter=tap"
+    ],
+    "timings": {
+      "report_ms": 105.171
+    }
+  }
+}

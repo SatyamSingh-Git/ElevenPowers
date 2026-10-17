@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "category": "focused-no-model-controls",
+  "model_calls": 0,
+  "environment": {
+    "platform": "Windows",
+    "python": "3.13.2",
+    "pytest": "9.1.1",
+    "node": "v22.17.1",
+    "git": "2.45.1.windows.1",
+    "claude": "2.1.292 (Claude Code)"
+  },
+  "checks": [
+    {
+      "command": "python -m pytest tests/test_workflow_cases.py tests/test_workflow_results.py::test_previously_failing_feature_is_not_a_new_regression -q",
+      "passed": 17,
+      "seconds": 7.09,
+      "exit_code": 0
+    },
+    {
+      "command": "python -m pytest tests/test_workflow_results.py::test_failed_delivery_does_not_drop_a_graded_pair tests/test_workflow_results.py::test_observed_advantage_and_worse_outcomes_are_both_retained -q",
+      "passed": 3,
+      "seconds": 52.11,
+      "exit_code": 0
+    }
+  ],
+  "runtime_and_frozen_harness_unchanged": true,
+  "limits": [
+    "These twenty focused controls are not a fresh full runtime suite.",
+    "Current source qualification and the historical main CI incident remain separately recorded in readiness.json.",
+    "The live comparison's four conversations and sixteen turns are separately accounted in measurements.json."
+  ]
+}

@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "files": [
+        {
+          "file": "result.json",
+          "bytes": 49016,
+          "sha256": "496e4f92044e74d58779eb563509fa07acf2c19b58c09faf64e4b1c882a2dda3"
+        },
+        {
+          "file": "native-1.jsonl",
+          "bytes": 33348,
+          "sha256": "cf90f7905c7f7c55078b1fcfa556d0d927108c446c586a22b03dd138b39bb05b"
+        },
+        {
+          "file": "diagnostic-1.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-1.txt",
+          "bytes": 1156,
+          "sha256": "c80c2ce598bb6122d85c46a451ad765d137dab516a6d84237b27fe5f6ac69caa"
+        },
+        {
+          "file": "source-1.json",
+          "bytes": 1916,
+          "sha256": "2ce1dc874c6a92326cc71f4acddc57c240404447505d7eabd8957037570d780a"
+        },
+        {
+          "file": "native-2.jsonl",
+          "bytes": 24188,
+          "sha256": "7266eac3f3e33276919a87f6dde7e10933e6b0e07f4c3e773709ac7804e7b63c"
+        },
+        {
+          "file": "diagnostic-2.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-2.txt",
+          "bytes": 1253,
+          "sha256": "52fc4dc7fb7fcdacae4999bd03ee354a3b16da7b0132ad59fbcdaa412236faf7"
+        },
+        {
+          "file": "source-2.json",
+          "bytes": 3824,
+          "sha256": "123a7ea53798978b4793b9fa39fabd1b839612bc0a1771ec4a1642a32c046467"
+        },
+        {
+          "file": "native-3.jsonl",
+          "bytes": 19708,
+          "sha256": "d6932d04bc3dd04cdcf9628abadeae131534742aa744b82ee3a409a0da501049"
+        },
+        {
+          "file": "diagnostic-3.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-3.txt",
+          "bytes": 1024,
+          "sha256": "b832b1cf7a43c6eda3dcda72739e02704d03403e4bd7adc10fc27363eb12cf4c"
+        },
+        {
+          "file": "source-3.json",
+          "bytes": 4723,
+          "sha256": "528e7cb1d1eb86c68564fd35d3e7eaca82b3d215a6c9391e06782bcdb12588d5"
+        },
+        {
+          "file": "native-4.jsonl",
+          "bytes": 38198,
+          "sha256": "23b78a05b4933a9aaec5e51d13fbb6a14710f83828f9d4c0e902a348394f9781"
+        },
+        {
+          "file": "diagnostic-4.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-4.txt",
+          "bytes": 1166,
+          "sha256": "6e9cce6d659877d8f32c4e1be8b1a941368cae749239aa21e6a893d2860d8d31"
+        },
+        {
+          "file": "source-4.json",
+          "bytes": 7323,
+          "sha256": "f5c2e3eaf46b17a9660703b5b9b6bf9bbaf456f6360abf73fdd5d252b2df5de1"
+        }
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "files": [
+        {
+          "file": "result.json",
+          "bytes": 52049,
+          "sha256": "9359f630daaad534c5bbba7bda75d693f2ed8865bab4520e320cd3b24970d1a6"
+        },
+        {
+          "file": "native-1.jsonl",
+          "bytes": 52262,
+          "sha256": "62bd02becef60ed518d5d4176bf5a5dd555c121e1242d850b3dde7ec973e2ad4"
+        },
+        {
+          "file": "diagnostic-1.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-1.txt",
+          "bytes": 1156,
+          "sha256": "c80c2ce598bb6122d85c46a451ad765d137dab516a6d84237b27fe5f6ac69caa"
+        },
+        {
+          "file": "source-1.json",
+          "bytes": 1951,
+          "sha256": "c9b49b508d38bc9230658aedf09d1ce707a716be538767bdcc2eb5dafb1cadad"
+        },
+        {
+          "file": "native-2.jsonl",
+          "bytes": 38903,
+          "sha256": "24ae6642a5f6e9cbaa7c978289536d4414cf4b4aa3bfaa151695ec78257b274f"
+        },
+        {
+          "file": "diagnostic-2.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-2.txt",
+          "bytes": 1253,
+          "sha256": "52fc4dc7fb7fcdacae4999bd03ee354a3b16da7b0132ad59fbcdaa412236faf7"
+        },
+        {
+          "file": "source-2.json",
+          "bytes": 4250,
+          "sha256": "d51c492d1946fb28ccd0f23df20b1259f0d3e1eb86f648fcb16ae27f168d13f2"
+        },
+        {
+          "file": "native-3.jsonl",
+          "bytes": 30948,
+          "sha256": "65084c8760cf0436c2b449754edb79a903fdb6187c314caa54a9d50fcb250795"
+        },
+        {
+          "file": "diagnostic-3.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-3.txt",
+          "bytes": 1024,
+          "sha256": "b832b1cf7a43c6eda3dcda72739e02704d03403e4bd7adc10fc27363eb12cf4c"
+        },
+        {
+          "file": "source-3.json",
+          "bytes": 5217,
+          "sha256": "520f4cba0b3e0ee5c8a72039ee1c93756e31e792711498a2b2326ea67be00a09"
+        },
+        {
+          "file": "native-4.jsonl",
+          "bytes": 61130,
+          "sha256": "ade8fd1f50cd5b74ca670ecc79b8f0e33c3976fe081eeaecd05b963db6a2151a"
+        },
+        {
+          "file": "diagnostic-4.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-4.txt",
+          "bytes": 1166,
+          "sha256": "6e9cce6d659877d8f32c4e1be8b1a941368cae749239aa21e6a893d2860d8d31"
+        },
+        {
+          "file": "source-4.json",
+          "bytes": 8189,
+          "sha256": "0786a72ec370a4337aa5c7cb37d7ec77efc9bc16fd9792e6e552e61f84e0cf26"
+        }
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "files": [
+        {
+          "file": "result.json",
+          "bytes": 56899,
+          "sha256": "876dd29579110b6d153fb350dfc04a84e17a63bdcef0281050a13be96dca93b3"
+        },
+        {
+          "file": "native-1.jsonl",
+          "bytes": 28775,
+          "sha256": "e111004fa100bd20bcbcaa441f20c12cbacc640ea5f14900aed06621ebdd5d21"
+        },
+        {
+          "file": "diagnostic-1.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-1.txt",
+          "bytes": 1151,
+          "sha256": "edd330fdb5feb302d03b626f9bda8c5429afafe1ce7a1e11e146ab22d03e5caf"
+        },
+        {
+          "file": "source-1.json",
+          "bytes": 1213,
+          "sha256": "b90b70cb07a91e220d2375f54dfe41028f4343224f4a404e66b43740fa9b8603"
+        },
+        {
+          "file": "native-2.jsonl",
+          "bytes": 42860,
+          "sha256": "0fa9cf0572265e19337cca2688fccf2434b3c01ea745baa4038c7b51df46cf98"
+        },
+        {
+          "file": "diagnostic-2.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-2.txt",
+          "bytes": 1196,
+          "sha256": "327fef9ca56988d20e50bc9c0cd6131693f6efa7d294fcd6d68c23577ea693bf"
+        },
+        {
+          "file": "source-2.json",
+          "bytes": 2119,
+          "sha256": "d5dd782a0985c17ec9428e0b95b0130131972b66d1085fc7efce37290eb09312"
+        },
+        {
+          "file": "native-3.jsonl",
+          "bytes": 36787,
+          "sha256": "e8a5dc20554352627b7e4b6c624640ffeca1a1428a2b4f00b6a0bfd558b8c2ab"
+        },
+        {
+          "file": "diagnostic-3.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-3.txt",
+          "bytes": 1092,
+          "sha256": "28e32895b3f8192744f0cfbfbe55ccf78d661eae8c8f79acb90cb2e1c7e71596"
+        },
+        {
+          "file": "source-3.json",
+          "bytes": 3915,
+          "sha256": "8dc4be46d1394d20fa7d6b0d67dfe276e7deb177c74e2ee4085f6eef978b8893"
+        },
+        {
+          "file": "native-4.jsonl",
+          "bytes": 30853,
+          "sha256": "26dc8acbcaff27dd745834ca7843b3090bdaa77165fb7d1f7d58cac950ab7633"
+        },
+        {
+          "file": "diagnostic-4.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-4.txt",
+          "bytes": 1078,
+          "sha256": "f7602a0b28c1a067ce95a1d68b6fbda2350a1dc78381088bea1e6c6ce7af0260"
+        },
+        {
+          "file": "source-4.json",
+          "bytes": 6170,
+          "sha256": "4a8137f893574cb120aaea0f5504b1ca3d9c32ec6b86cbef11aadd9c59a2edee"
+        }
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "files": [
+        {
+          "file": "result.json",
+          "bytes": 47805,
+          "sha256": "1bdbfe38ca7df75580553b5ca85d913c69839fe19ad5567d977ed32c2c50db45"
+        },
+        {
+          "file": "native-1.jsonl",
+          "bytes": 26653,
+          "sha256": "c28f5125e1e0544636de66cca938dee8aefb835248b96a0c3b3f7ea40c5f4ee0"
+        },
+        {
+          "file": "diagnostic-1.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-1.txt",
+          "bytes": 1151,
+          "sha256": "edd330fdb5feb302d03b626f9bda8c5429afafe1ce7a1e11e146ab22d03e5caf"
+        },
+        {
+          "file": "source-1.json",
+          "bytes": 1199,
+          "sha256": "01b8ed05f7c82736d6e81d0b73a8f039254d47320e112a850b741074dfb68fec"
+        },
+        {
+          "file": "native-2.jsonl",
+          "bytes": 17406,
+          "sha256": "af4bbedf0a11295ea079755f7d9f14b9ea638422786a5737429797c3c8c1777d"
+        },
+        {
+          "file": "diagnostic-2.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-2.txt",
+          "bytes": 1196,
+          "sha256": "327fef9ca56988d20e50bc9c0cd6131693f6efa7d294fcd6d68c23577ea693bf"
+        },
+        {
+          "file": "source-2.json",
+          "bytes": 1949,
+          "sha256": "18a44fafff371f7383d4ff0aee72c4678415cfe50e81e2a5d517a1291e029785"
+        },
+        {
+          "file": "native-3.jsonl",
+          "bytes": 19677,
+          "sha256": "022cadd847c021c170cd0b8c5b751626f146b417ecb9b7fbbc0d20d6b3543221"
+        },
+        {
+          "file": "diagnostic-3.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-3.txt",
+          "bytes": 1092,
+          "sha256": "28e32895b3f8192744f0cfbfbe55ccf78d661eae8c8f79acb90cb2e1c7e71596"
+        },
+        {
+          "file": "source-3.json",
+          "bytes": 3567,
+          "sha256": "3cecd45fbdbece72d5ae184b685c1c0856852868231665162903f12ffecd5e6b"
+        },
+        {
+          "file": "native-4.jsonl",
+          "bytes": 21095,
+          "sha256": "36fb7de26a568f7a268a06191d3529e14ffab0d96019ec4ee59b11930527e211"
+        },
+        {
+          "file": "diagnostic-4.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "file": "prompt-4.txt",
+          "bytes": 1078,
+          "sha256": "f7602a0b28c1a067ce95a1d68b6fbda2350a1dc78381088bea1e6c6ce7af0260"
+        },
+        {
+          "file": "source-4.json",
+          "bytes": 5003,
+          "sha256": "773bf14b78592cf23c409be3e5db433e43544951a9fac060ef6a105837fe1a14"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Hashes identify retained private originals; their contents are not published.",
+    "Unsigned hashes do not authenticate observations or enable native replay without private records."
+  ]
+}

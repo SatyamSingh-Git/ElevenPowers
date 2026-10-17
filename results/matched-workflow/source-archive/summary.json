@@ -1,0 +1,370 @@
+{
+  "schema": 2,
+  "state": "regraded",
+  "scheduled": 4,
+  "attempted": 4,
+  "outcome_comparable": true,
+  "delivery_verified": false,
+  "readiness": "separate_installed_acceptance_required",
+  "pairs": [
+    {
+      "case": "workflow-queue-py",
+      "ordinary": {
+        "state": "completed",
+        "qualified": true,
+        "delivery_verified": false,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "1d34375d7c606dbdfbaa58fcf773a1792e30e6613ba4dbf17f59015b586d2303",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 26.946654,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "e2ab1304de6080bb28e7d639cc642c199ffbddb48021bed74f66c23bcfcff5e7",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 22.901190999999997,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "a75a40fbfac2f66f6fbf36d7d54409ec641aeb771d3301e65b98a6bf23c34ea2",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 22.295979,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "b07460b446d3fe1ada5cb0b98d40ce950e2e0b64a7848cca940d222837e3297b",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 48.755479,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 120.899303,
+        "issues": []
+      },
+      "assisted": {
+        "state": "completed",
+        "qualified": true,
+        "delivery_verified": true,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "1fa71efb75da8d34c04cc9c52fbf9e7afdf1111c40c042b5bbe92f2f2179758a",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 90.271537,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "4a56ad57292b5951e2644e556fb276b5286645c0a2d16a0f53efcb3812a933e9",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 73.245465,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "b9cde51ec01888836b3c2695e7b08a5618a210e6308cb84038738baacdeb63e2",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 62.25685,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "215e2cafc0c5537a3de8d9bd657ddd50340e354716f5204e9c13a8009c2d33f3",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 57.57483,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 283.348682,
+        "issues": []
+      },
+      "outcome_comparable": true,
+      "delivery_verified": true,
+      "difference": 0
+    },
+    {
+      "case": "workflow-orders-js",
+      "ordinary": {
+        "state": "completed",
+        "qualified": true,
+        "delivery_verified": false,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "3f1976ce03753af02dfe81ab8d819d981e12ba4d2c06554f357bc71875837daa",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 23.716677,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "b96f9d40b34c0e476a5958e3d6b31cda59f7f3b62de552b5b7b6602a87bbd97e",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 19.397232,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "4a209624a2377f9a6ec23215d74a0e152ceef5a72719eba8762bb81333af4c8a",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 21.100053,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "e937e5637e29552e39f3da9bcbd7800a7088f589443783b42af95371ad764197",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 24.000829000000003,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 88.21479099999999,
+        "issues": []
+      },
+      "assisted": {
+        "state": "completed",
+        "qualified": true,
+        "delivery_verified": false,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "fda6dfe61c2788ef8988104981dc823386801780eed58922c9cc8177663a9b59",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 35.300958,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "f59f3470cdaad757dcb6e55e12eabf5f3da6bcba62898e055538144ea1fa4f6f",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 47.030573,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "9d7ba83375bae04719af726071f67481fe31d44cb1f48bac9240846cf392e49e",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 45.187265,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "891c66441776a9f19a607963317a64d045db08337fe009aaf12c250a288b8c6e",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 39.99072,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 167.509516,
+        "issues": []
+      },
+      "outcome_comparable": true,
+      "delivery_verified": false,
+      "difference": 0
+    }
+  ],
+  "paired_correctness_advantage_observed": false,
+  "limits": [
+    "Two authored four-stage Python/Node cases, not population evidence.",
+    "Unsigned native delivery and independent outcome comparison are separate qualifications.",
+    "Native tools are not an OS isolation boundary; subscription processes have equal reserved allowances."
+  ],
+  "source_grades_match": true
+}

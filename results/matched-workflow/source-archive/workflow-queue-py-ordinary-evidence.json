@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T07:38:58.590898+00:00",
+  "project": {
+    "name": "candidate",
+    "revision": "93650fce9bca19d98f2d44aeb186addc3b2b20a2",
+    "revision_state": "available"
+  },
+  "state": "UNVERIFIED",
+  "task": {
+    "id": "established-behavior",
+    "risk": "low",
+    "touched": [],
+    "claims": []
+  },
+  "coverage": {
+    "complete": true,
+    "issues": [],
+    "selected_files": 9,
+    "source_complete": true,
+    "source_issues": [],
+    "selected_bytes": 15612,
+    "source_fingerprint": "f38125c156a3a22d",
+    "latest_receipts_total": 1,
+    "omitted_receipts": 0
+  },
+  "commands": {
+    "tests": "python -m unittest discover -s tests -v"
+  },
+  "receipts": [
+    {
+      "kind": "test_suite",
+      "identity": "python unittest",
+      "receipt_key": "d76cab688ae4cd065cd2c18a9b669a9245ba63da4e68e691a9d48ec5ce0dc4e4",
+      "declaration": "tests",
+      "command": "python -m unittest discover -s tests -v",
+      "result": "pass",
+      "declared_command": "python -m unittest discover -s tests -v",
+      "execution": "complete",
+      "freshness": "stale",
+      "source_freshness": "stale",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792221585.3280401,
+      "scope": "source",
+      "observed_files": 5,
+      "fingerprint": "b2ec73605a85533a",
+      "coverage_issues": [],
+      "passed": 0,
+      "failed": 0,
+      "counted": false
+    }
+  ],
+  "test_strength": {
+    "state": "not_recorded",
+    "freshness": "unknown",
+    "issues": [],
+    "observations": [],
+    "summary": {},
+    "limitations": []
+  },
+  "timings": {
+    "source_snapshot_ms": 130.616,
+    "report_ms": 393.141
+  },
+  "next_actions": [
+    "No active task claim is recorded; execution receipts do not certify completed work.",
+    "Rerun the stale command: python -m unittest discover -s tests -v"
+  ],
+  "limits": [
+    "Unsigned local observation, not independent attestation or an improved patch-outcome claim.",
+    "Input freshness is evaluated at report creation; later edits require a new report.",
+    "The deadline is cooperative; an in-flight filesystem read can finish after it, then coverage is incomplete.",
+    "Target observations cannot prove absence of unrelated side effects or identify competing writers.",
+    "Prompts, transcripts, captured outputs and receipt details are excluded."
+  ],
+  "milestones": {
+    "schema": 1,
+    "generated_at": "2026-10-17T07:38:58.346905+00:00",
+    "project": "candidate",
+    "state": "STALE",
+    "milestones": [
+      {
+        "id": "established-core",
+        "description": "Retain established core behavior.",
+        "inputs": [
+          "service.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "python -m unittest discover -s tests -v",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "source_freshness": "stale",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792221585.3280401,
+            "scope": "source",
+            "observed_files": 5,
+            "receipt_fingerprint": "b2ec73605a85533a",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "Opaque command-level result; individual assertions were not counted."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "formatting",
+        "description": "Retain independent formatting.",
+        "inputs": [
+          "formatting.py"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "python -m unittest discover -s tests -v",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "source_freshness": "stale",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792221585.3280401,
+            "scope": "source",
+            "observed_files": 5,
+            "receipt_fingerprint": "b2ec73605a85533a",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope.",
+              "Opaque command-level result; individual assertions were not counted."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+          }
+        ],
+        "state": "STALE"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "ab51591890b8653ac93f67d9f90cf31abbc3f605fb195021ad5d555a4f4d2825",
+      "ledger_fingerprint": "5c61809bc068fb1df7b40d3f94f30a44b272422e26952ccb1290306eaed732d6",
+      "source_fingerprint": "f38125c156a3a22d",
+      "source_complete": true,
+      "selected_files": 9,
+      "selected_bytes": 15612
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "rechecks": {
+      "state": "not_requested",
+      "commands": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 2,
+      "ABSENT": 0,
+      "CURRENT": 0
+    },
+    "next_actions": [
+      "Run the project-owned check after resolving gaps: python -m unittest discover -s tests -v"
+    ],
+    "timings": {
+      "report_ms": 142.202
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "category": "exported-evidence-state-summary",
+  "observations": [
+    {
+      "slot": "workflow-orders-js-assisted",
+      "task_state": "VERIFIED",
+      "milestone_state": "STALE",
+      "milestones": [
+        {
+          "id": "established-core",
+          "state": "STALE",
+          "checks": [
+            {
+              "state": "STALE",
+              "result": "pass",
+              "freshness": "stale",
+              "owned_state": "not_bound"
+            }
+          ]
+        },
+        {
+          "id": "formatting",
+          "state": "STALE",
+          "checks": [
+            {
+              "state": "STALE",
+              "result": "pass",
+              "freshness": "stale",
+              "owned_state": "not_bound"
+            }
+          ]
+        }
+      ],
+      "latest_receipts": [
+        {
+          "result": "pass",
+          "freshness": "fresh",
+          "declaration": "",
+          "owned_state": "not_bound"
+        }
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "task_state": "UNVERIFIED",
+      "milestone_state": "STALE",
+      "milestones": [
+        {
+          "id": "established-core",
+          "state": "STALE",
+          "checks": [
+            {
+              "state": "STALE",
+              "result": "pass",
+              "freshness": "stale",
+              "owned_state": "not_bound"
+            }
+          ]
+        },
+        {
+          "id": "formatting",
+          "state": "STALE",
+          "checks": [
+            {
+              "state": "STALE",
+              "result": "pass",
+              "freshness": "stale",
+              "owned_state": "not_bound"
+            }
+          ]
+        }
+      ],
+      "latest_receipts": [
+        {
+          "result": "pass",
+          "freshness": "stale",
+          "declaration": "tests",
+          "owned_state": "not_bound"
+        }
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "task_state": "VERIFIED",
+      "milestone_state": "CURRENT",
+      "milestones": [
+        {
+          "id": "established-core",
+          "state": "CURRENT",
+          "checks": [
+            {
+              "state": "CURRENT",
+              "result": "pass",
+              "freshness": "fresh",
+              "owned_state": "bound"
+            }
+          ]
+        },
+        {
+          "id": "formatting",
+          "state": "CURRENT",
+          "checks": [
+            {
+              "state": "CURRENT",
+              "result": "pass",
+              "freshness": "fresh",
+              "owned_state": "bound"
+            }
+          ]
+        }
+      ],
+      "latest_receipts": [
+        {
+          "result": "pass",
+          "freshness": "fresh",
+          "declaration": "tests",
+          "owned_state": "bound"
+        }
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "task_state": "UNVERIFIED",
+      "milestone_state": "STALE",
+      "milestones": [
+        {
+          "id": "established-core",
+          "state": "STALE",
+          "checks": [
+            {
+              "state": "STALE",
+              "result": "pass",
+              "freshness": "stale",
+              "owned_state": "not_bound"
+            }
+          ]
+        },
+        {
+          "id": "formatting",
+          "state": "STALE",
+          "checks": [
+            {
+              "state": "STALE",
+              "result": "pass",
+              "freshness": "stale",
+              "owned_state": "not_bound"
+            }
+          ]
+        }
+      ],
+      "latest_receipts": [
+        {
+          "result": "pass",
+          "freshness": "stale",
+          "declaration": "tests",
+          "owned_state": "not_bound"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Source correctness grades, task receipts and exact declared milestone qualification are separate.",
+    "A fresh generic passing receipt does not replace stale exact declared-command evidence.",
+    "These read-only exports run no project command and establish no committed PatchProof subject."
+  ]
+}

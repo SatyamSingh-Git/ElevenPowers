@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T07:39:06.286726+00:00",
+  "project": {
+    "name": "candidate",
+    "revision": "41b5cdf309e8e48b0ebb6607f8acdb81805b99be",
+    "revision_state": "available"
+  },
+  "state": "VERIFIED",
+  "task": {
+    "id": "t-1792222545639431200",
+    "risk": "low",
+    "touched": [
+      "o.replay",
+      "test/agent-replay.test.cjs",
+      "tmp/p.js"
+    ],
+    "claims": [
+      {
+        "claim": "bug_fixed",
+        "state": "VERIFIED",
+        "checks": [
+          {
+            "obligation": "a test covering the change passes",
+            "met": true,
+            "freshness": "fresh",
+            "evidence": "assert.throws(()=>o.replay('x'),RangeError);",
+            "caveat": "a test was written and the suite that runs it passed"
+          },
+          {
+            "obligation": "the related test suite passes",
+            "met": true,
+            "freshness": "fresh",
+            "evidence": "assert.throws(()=>o.replay('x'),RangeError);",
+            "caveat": ""
+          }
+        ]
+      }
+    ]
+  },
+  "coverage": {
+    "complete": true,
+    "issues": [],
+    "selected_files": 9,
+    "source_complete": true,
+    "source_issues": [],
+    "selected_bytes": 11981,
+    "source_fingerprint": "b0ba12e03c896330",
+    "latest_receipts_total": 1,
+    "omitted_receipts": 0
+  },
+  "commands": {
+    "tests": "node --test --test-reporter=tap"
+  },
+  "receipts": [
+    {
+      "kind": "test_suite",
+      "identity": "assert.throws(()=>o.replay('x'),RangeError);",
+      "receipt_key": "5d4ac29411e022068f4939461931a7663e7e35b523e7f586bb722051f40503a8",
+      "declaration": "",
+      "command": "cat > /tmp/p.js <<'EOF'\nconst fs=require('fs');let s=fs.readFileSync('service.cjs','utf8');\nconst rep=(a,b)=>{if(!s.includes(a)) throw new Error('missing '+a);s=s.replace(a,()=>b);};\nrep(\"  if('replay' in d&&!isObj(d.replay)&&!Array.isArray(d.replay)) bad('replay');\",\n`  if('replay' in d) {\n    if(!isObj(d.replay)) bad('replay');\n    for(const k of Object.keys(d.replay)) {\n      const e=d.replay[k];\n      if(!isObj(e)||!Object.hasOwn(ARITY,e.op)||!Array.isArray(e.args)) bad('replay entry');\n    }\n  }`);\nrep(\"function validate(d) {\",`const ARITY={reserve:[3,5],fulfill:[2,3],refund:[2,2],expire:[1,1]};\nfunction validate(d) {`);\nrep(\"this.rows={}; }\",\"this.rows={};this.applied={}; }\");\nrep(\"    if(this.replay!==undefined) d.replay=this.replay;\",\n\"    if(Object.keys(this.applied).length) d.replay=this.applied;\");\nrep(\"    if('replay' in d) o.replay=JSON.parse(JSON.stringify(d.replay));\",\n\"    if('replay' in d) for(const k of Object.keys(d.replay)) put(o.applied,k,{op:d.replay[k].op,args:JSON.parse(JSON.stringify(d.replay[k].args))});\");\nrep(\"  cents(sku\",`  replay(events) {\n    if(!Array.isArray(events)) throw new RangeError('events');\n    const [lo,hi]=[0,1];\n    for(const ev of events) {\n      if(!isObj(ev)||typeof ev.event!=='string'||!Object.hasOwn(ARITY,ev.op)||!Array.isArray(ev.args)) throw new RangeError('event');\n      const a=ev.args,n=ARITY[ev.op];\n      if(a.length<n[lo]||a.length>n[hi]) throw new RangeError('args');\n      let j;\n      try {j=JSON.stringify(a);} catch(e) {throw new RangeError('args');}\n      if(JSON.parse(j).length!==a.length||JSON.stringify(JSON.parse(j))!==j) throw new RangeError('args');\n    }\n    const saved=JSON.parse(JSON.stringify({stock:this.stock,rows:this.rows,applied:this.applied}));\n    const restore=()=>{\n      for(const k of ['stock','rows','applied']) {\n        const o={};for(const x of Object.keys(saved[k])) put(o,x,saved[k][x]);\n        this[k]=o;\n      }\n    };\n    let count=0;\n    try {\n      for(const ev of events) {\n        const rec={op:ev.op,args:JSON.parse(JSON.stringify(ev.args))};\n        if(Object.hasOwn(this.applied,ev.event)) {\n          const p=this.applied[ev.event];\n          if(p.op===rec.op&&JSON.stringify(p.args)===JSON.stringify(rec.args)) continue;\n          throw new RangeError('conflicting event');\n        }\n        const a=rec.args;\n        if(ev.op!=='expire'&&typeof a[0]!=='string') throw new RangeError('id');\n        if(ev.op==='reserve'&&typeof a[1]!=='string') throw new RangeError('sku');\n        if(ev.op==='reserve'&&this.reserve(...a)!==true) throw new RangeError('rejected');\n        if((ev.op==='fulfill'||ev.op==='refund')&&this[ev.op](...a)===null) throw new RangeError('rejected');\n        if(ev.op==='expire') this.expire(...a);\n        put(this.applied,ev.event,rec);count++;\n      }\n    } catch(e) {\n      restore();\n      throw e instanceof RangeError?e:new RangeError('replay: '+e.message);\n    }\n    return count;\n  }\n  cents(sku`);\nfs.writeFileSync('service.cjs',s);\nEOF\nnode /tmp/p.js\ncat > test/agent-replay.test.cjs <<'EOF'\nconst test=require('node:test'),assert=require('node:assert/strict');\nconst {Orders}=require('../service.cjs');\nconst ev=(event,op,...args)=>({event,op,args});\ntest('replay applies, skips duplicates, survives restart',()=>{\n const o=new Orders({x:10},{x:'7'});\n assert.equal(o.replay([ev('1','reserve','a','x',4,0,10),ev('2','fulfill','a',2,1),ev('3','expire',5)]),3);\n assert.equal(o.replay([ev('1','reserve','a','x',4,0,10),ev('2','fulfill','a',2,1)]),0);\n const p=Orders.loads(o.dumps());\n assert.equal(p.replay([ev('2','fulfill','a',2,1),ev('4','refund','a',1)]),1);\n assert.equal(p.replay([ev('4','refund','a',1)]),0);\n assert.equal(p.available('x',10),9);\n assert.equal(o.available('x'),6);\n});\ntest('failures roll back everything',()=>{\n const o=new Orders({x:5});o.replay([ev('1','reserve','a','x',1)]);\n const before=o.dumps();\n const cases=[\n  [ev('2','reserve','b','x',2),ev('1','reserve','a','x',2)],\n  [ev('2','reserve','b','x',2),ev('3','bogus')],\n  [ev('2','reserve','b','x',2),ev('3','reserve','c','x',0)],\n  [ev('2','reserve','b','x',2),ev('3','reserve','c','x',9)],\n  [ev('2','reserve','b','x',2),ev('3','fulfill','zz',1)],\n  [ev('2','reserve','b','x',2),ev('2','reserve','b','x',3)],\n  [ev('2','reserve','b','x',2),{event:'9',op:'refund',args:'no'}],\n ];\n for(const c of cases){assert.throws(()=>o.replay(c),RangeError);assert.equal(o.dumps(),before);}\n assert.throws(()=>o.replay('x'),RangeError);\n});\nEOF\nnode --test --test-reporter=tap 2>&1 | grep -E \"^# (tests|pass|fail)|not ok\"",
+      "result": "pass",
+      "declared_command": "",
+      "execution": "complete",
+      "freshness": "fresh",
+      "source_freshness": "fresh",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792222570.8529582,
+      "scope": "source",
+      "observed_files": 9,
+      "fingerprint": "b0ba12e03c896330",
+      "coverage_issues": [],
+      "passed": 10,
+      "failed": 0,
+      "counted": true
+    }
+  ],
+  "test_strength": {
+    "state": "not_recorded",
+    "freshness": "unknown",
+    "issues": [],
+    "observations": [],
+    "summary": {},
+    "limitations": []
+  },
+  "timings": {
+    "source_snapshot_ms": 109.33,
+    "report_ms": 287.855
+  },
+  "next_actions": [],
+  "limits": [
+    "Unsigned local observation, not independent attestation or an improved patch-outcome claim.",
+    "Input freshness is evaluated at report creation; later edits require a new report.",
+    "The deadline is cooperative; an in-flight filesystem read can finish after it, then coverage is incomplete.",
+    "Target observations cannot prove absence of unrelated side effects or identify competing writers.",
+    "Prompts, transcripts, captured outputs and receipt details are excluded."
+  ],
+  "milestones": {
+    "schema": 1,
+    "generated_at": "2026-10-17T07:39:06.124039+00:00",
+    "project": "candidate",
+    "state": "STALE",
+    "milestones": [
+      {
+        "id": "established-core",
+        "description": "Retain established core behavior.",
+        "inputs": [
+          "service.cjs"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "node --test --test-reporter=tap",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "source_freshness": "stale",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792222536.1304047,
+            "scope": "source",
+            "observed_files": 8,
+            "receipt_fingerprint": "79119c0eab227012",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: node --test --test-reporter=tap"
+          }
+        ],
+        "state": "STALE"
+      },
+      {
+        "id": "formatting",
+        "description": "Retain independent formatting.",
+        "inputs": [
+          "formatting.cjs"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "node --test --test-reporter=tap",
+            "state": "STALE",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "stale",
+            "source_freshness": "stale",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792222536.1304047,
+            "scope": "source",
+            "observed_files": 8,
+            "receipt_fingerprint": "79119c0eab227012",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "Run the project-owned check after resolving gaps: node --test --test-reporter=tap"
+          }
+        ],
+        "state": "STALE"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "72532ac3d35e77abbeaee8efd20aa627e949a7bf7f653790de3df6b1419485b1",
+      "ledger_fingerprint": "b54c7bc428f044a644c5ec80948887190d8a0a82e112dea7f719d22706cce60d",
+      "source_fingerprint": "b0ba12e03c896330",
+      "source_complete": true,
+      "selected_files": 9,
+      "selected_bytes": 11981
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "rechecks": {
+      "state": "not_requested",
+      "commands": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 2,
+      "ABSENT": 0,
+      "CURRENT": 0
+    },
+    "next_actions": [
+      "Run the project-owned check after resolving gaps: node --test --test-reporter=tap"
+    ],
+    "timings": {
+      "report_ms": 107.725
+    }
+  }
+}

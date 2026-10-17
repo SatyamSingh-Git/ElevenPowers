@@ -1,0 +1,738 @@
+{
+  "schema": 2,
+  "scheduled_slots": [
+    "workflow-queue-py-ordinary",
+    "workflow-queue-py-assisted",
+    "workflow-orders-js-assisted",
+    "workflow-orders-js-ordinary"
+  ],
+  "stage_count": 4,
+  "protocol_sha256": "b8c7d61bf4aceaca8bafdbf05f17827121c693e829e4203550bb58033b959c73",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "public_case_sha256": {
+    "workflow-queue-py": "9209e8f4825471eea72e76ddc9ac1fc1a3d513f08ed44cbfa14fbaaede50c1da",
+    "workflow-orders-js": "1be70c68617a0003b0bd1446d681c801d8f80a14527dfbeea3b8f0bf1cd7fb2d"
+  },
+  "sources": [
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage": 1,
+      "file": "workflow-queue-py-ordinary-source-1.json",
+      "file_sha256": "2ce1dc874c6a92326cc71f4acddc57c240404447505d7eabd8957037570d780a",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage": 2,
+      "file": "workflow-queue-py-ordinary-source-2.json",
+      "file_sha256": "123a7ea53798978b4793b9fa39fabd1b839612bc0a1771ec4a1642a32c046467",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "restart_fencing",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 2,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage": 3,
+      "file": "workflow-queue-py-ordinary-source-3.json",
+      "file_sha256": "528e7cb1d1eb86c68564fd35d3e7eaca82b3d215a6c9391e06782bcdb12588d5",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "restart_fencing",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "batch_atomicity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "dead_and_batch_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage": 4,
+      "file": "workflow-queue-py-ordinary-source-4.json",
+      "file_sha256": "f5c2e3eaf46b17a9660703b5b9b6bf9bbaf456f6360abf73fdd5d252b2df5de1",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "restart_fencing",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "batch_atomicity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "dead_and_batch_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "replay_identity",
+          "introduced_stage": 4,
+          "state": "passed"
+        },
+        {
+          "id": "migration_and_replay_atomicity",
+          "introduced_stage": 4,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage": 1,
+      "file": "workflow-queue-py-assisted-source-1.json",
+      "file_sha256": "c9b49b508d38bc9230658aedf09d1ce707a716be538767bdcc2eb5dafb1cadad",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage": 2,
+      "file": "workflow-queue-py-assisted-source-2.json",
+      "file_sha256": "d51c492d1946fb28ccd0f23df20b1259f0d3e1eb86f648fcb16ae27f168d13f2",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "restart_fencing",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 2,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage": 3,
+      "file": "workflow-queue-py-assisted-source-3.json",
+      "file_sha256": "520f4cba0b3e0ee5c8a72039ee1c93756e31e792711498a2b2326ea67be00a09",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "restart_fencing",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "batch_atomicity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "dead_and_batch_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage": 4,
+      "file": "workflow-queue-py-assisted-source-4.json",
+      "file_sha256": "0786a72ec370a4337aa5c7cb37d7ec77efc9bc16fd9792e6e552e61f84e0cf26",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "lease_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "retry_limits",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "restart_fencing",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "batch_atomicity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "dead_and_batch_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "replay_identity",
+          "introduced_stage": 4,
+          "state": "passed"
+        },
+        {
+          "id": "migration_and_replay_atomicity",
+          "introduced_stage": 4,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 1,
+      "file": "workflow-orders-js-assisted-source-1.json",
+      "file_sha256": "b90b70cb07a91e220d2375f54dfe41028f4343224f4a404e66b43740fa9b8603",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 2,
+      "file": "workflow-orders-js-assisted-source-2.json",
+      "file_sha256": "d5dd782a0985c17ec9428e0b95b0130131972b66d1085fc7efce37290eb09312",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 3,
+      "file": "workflow-orders-js-assisted-source-3.json",
+      "file_sha256": "8dc4be46d1394d20fa7d6b0d67dfe276e7deb177c74e2ee4085f6eef978b8893",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "restart_identity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 4,
+      "file": "workflow-orders-js-assisted-source-4.json",
+      "file_sha256": "4a8137f893574cb120aaea0f5504b1ca3d9c32ec6b86cbef11aadd9c59a2edee",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "restart_identity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "batch_replay",
+          "introduced_stage": 4,
+          "state": "passed"
+        },
+        {
+          "id": "replay_atomicity",
+          "introduced_stage": 4,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage": 1,
+      "file": "workflow-orders-js-ordinary-source-1.json",
+      "file_sha256": "01b8ed05f7c82736d6e81d0b73a8f039254d47320e112a850b741074dfb68fec",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage": 2,
+      "file": "workflow-orders-js-ordinary-source-2.json",
+      "file_sha256": "18a44fafff371f7383d4ff0aee72c4678415cfe50e81e2a5d517a1291e029785",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage": 3,
+      "file": "workflow-orders-js-ordinary-source-3.json",
+      "file_sha256": "3cecd45fbdbece72d5ae184b685c1c0856852868231665162903f12ffecd5e6b",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "restart_identity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage": 4,
+      "file": "workflow-orders-js-ordinary-source-4.json",
+      "file_sha256": "773bf14b78592cf23c409be3e5db433e43544951a9fac060ef6a105837fe1a14",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "restart_identity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "batch_replay",
+          "introduced_stage": 4,
+          "state": "passed"
+        },
+        {
+          "id": "replay_atomicity",
+          "introduced_stage": 4,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+      "grade_matches": true
+    }
+  ]
+}

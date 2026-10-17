@@ -1,0 +1,8 @@
+{
+  "state": "not_exported",
+  "committed_checkout_eligible": false,
+  "issues": [
+    "tracked, staged or nonignored untracked checkout changes exist"
+  ],
+  "reason": "No committed final patch subject supplied; source grades and owned receipts are separate evidence."
+}

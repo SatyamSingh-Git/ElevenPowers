@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "model_calls": 0,
+  "category": "secondary-retained-native-counts",
+  "observations": [
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stages": [
+        {
+          "stage": 1,
+          "tool_calls": {
+            "Bash": 3
+          },
+          "completed_tool_calls": 3,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 8,
+          "output_tokens": 2616
+        },
+        {
+          "stage": 2,
+          "tool_calls": {
+            "Bash": 2
+          },
+          "completed_tool_calls": 2,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 2,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 6,
+          "output_tokens": 2474
+        },
+        {
+          "stage": 3,
+          "tool_calls": {
+            "Bash": 1
+          },
+          "completed_tool_calls": 1,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 4,
+          "output_tokens": 2224
+        },
+        {
+          "stage": 4,
+          "tool_calls": {
+            "Bash": 2
+          },
+          "completed_tool_calls": 2,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 2,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 6,
+          "output_tokens": 4882
+        }
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stages": [
+        {
+          "stage": 1,
+          "tool_calls": {
+            "Bash": 2,
+            "Glob": 1,
+            "Read": 4,
+            "Write": 2
+          },
+          "completed_tool_calls": 9,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 1,
+          "input_tokens": 10,
+          "output_tokens": 3435
+        },
+        {
+          "stage": 2,
+          "tool_calls": {
+            "Bash": 1
+          },
+          "completed_tool_calls": 1,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 1,
+          "input_tokens": 4,
+          "output_tokens": 2974
+        },
+        {
+          "stage": 3,
+          "tool_calls": {
+            "Bash": 1
+          },
+          "completed_tool_calls": 1,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 1,
+          "input_tokens": 4,
+          "output_tokens": 2249
+        },
+        {
+          "stage": 4,
+          "tool_calls": {
+            "Bash": 2
+          },
+          "completed_tool_calls": 2,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 2,
+          "observed_owned_envelopes": 2,
+          "input_tokens": 6,
+          "output_tokens": 5487
+        }
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stages": [
+        {
+          "stage": 1,
+          "tool_calls": {
+            "Bash": 3,
+            "Glob": 1
+          },
+          "completed_tool_calls": 4,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 8,
+          "output_tokens": 2364
+        },
+        {
+          "stage": 2,
+          "tool_calls": {
+            "Bash": 4,
+            "Edit": 1
+          },
+          "completed_tool_calls": 5,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 2,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 10,
+          "output_tokens": 3220
+        },
+        {
+          "stage": 3,
+          "tool_calls": {
+            "Bash": 2,
+            "Edit": 1
+          },
+          "completed_tool_calls": 3,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 2,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 6,
+          "output_tokens": 3459
+        },
+        {
+          "stage": 4,
+          "tool_calls": {
+            "Bash": 1
+          },
+          "completed_tool_calls": 1,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 4,
+          "output_tokens": 3939
+        }
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stages": [
+        {
+          "stage": 1,
+          "tool_calls": {
+            "Bash": 3
+          },
+          "completed_tool_calls": 3,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 8,
+          "output_tokens": 2159
+        },
+        {
+          "stage": 2,
+          "tool_calls": {
+            "Bash": 1
+          },
+          "completed_tool_calls": 1,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 4,
+          "output_tokens": 2135
+        },
+        {
+          "stage": 3,
+          "tool_calls": {
+            "Bash": 2
+          },
+          "completed_tool_calls": 2,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 6,
+          "output_tokens": 2242
+        },
+        {
+          "stage": 4,
+          "tool_calls": {
+            "Bash": 1
+          },
+          "completed_tool_calls": 1,
+          "literal_public_commands": 0,
+          "bash_containing_public_command": 1,
+          "observed_owned_envelopes": 0,
+          "input_tokens": 4,
+          "output_tokens": 2776
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Counts come from completed retained native logs; no command text, prompts or captured outputs are exported.",
+    "Owned envelopes remain separate from callback/receipt qualification.",
+    "Counts and process wall time do not isolate the cause of overhead or measure production-code performance."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "protocol_sha256": "b8c7d61bf4aceaca8bafdbf05f17827121c693e829e4203550bb58033b959c73",
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "scheduled_conversations": 4,
+  "attempted_conversations": 4,
+  "scheduled_turns": 16,
+  "launched_turns": 16,
+  "outcome_comparable": true,
+  "independently_reproduced_snapshots": 16,
+  "reproduction_qualified": true,
+  "total_model_process_seconds": 659.972,
+  "total_controller_seconds": 718.98,
+  "archive_and_reproduction_seconds": 17.522,
+  "qualified_arms": 4,
+  "assisted_native_adoption_turns": 4,
+  "scheduled_assisted_turns": 8,
+  "pair_final_differences": {
+    "workflow-queue-py": 0,
+    "workflow-orders-js": 0
+  },
+  "population_effect_established": false,
+  "component_causal_effect_established": false,
+  "model_retries": 0,
+  "api_fallback": false,
+  "hidden_grade_feedback": false
+}
