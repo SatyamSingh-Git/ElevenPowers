@@ -15,6 +15,11 @@ survives an outer successful shell. Default 120 seconds, finite positive maximum
 600; existing bounded cleanup is separate. `off` refuses execution. See
 [the complete contract](declared-checks.md).
 
+Shared host capture can offer this entry point after completed generic
+verification leaves an exact declaration absent, stale or incomplete. The
+bounded reminder executes nothing and does not turn pipeline output into an
+owned receipt; current exact outcomes and unfinished callbacks remain distinct.
+
 [Command-scoped witnesses](external-inputs.md#command-specific-qualification) require no new command: declare schema 2 mappings and retain explicit private root approval. Ordinary reports, PatchProof planning/execution, native capture and retained milestones share the qualification. Reports share bounded external phases and launch no checks.
 
 ## ep_inputs — declared external input witnesses

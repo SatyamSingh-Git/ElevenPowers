@@ -1,6 +1,14 @@
 # Native platforms
 
-Shared startup/new verification-task guidance now offers readable arguments and an explicit all-declared-check batch, including no-edit tasks. Passive/off and filtered recheck behavior remain. Synthetic five-host outer-callback controls do not establish installed acceptance on those hosts; current source qualification passes all four hosted cells, and the two new Claude conversations retain 2/2 installed acceptances. Other hosts still require their own live acceptance. See [runner guide](declared-checks.md).
+Shared startup/new verification-task guidance offers readable arguments and an
+explicit all-declared-check batch, including no-edit tasks. Completed generic
+verification can now receive bounded advice when its exact declaration remains
+unqualified. Passive/off, unfinished and filtered recheck behavior remain.
+Synthetic five-host callbacks do not establish installed acceptance. The prior
+qualified source passed all four hosted cells and retained two authored Claude
+acceptances; the changed workflow repair has its own
+[current qualification](../results/workflow-checks/README.md). Other hosts still
+require their own live acceptance. See [runner guide](declared-checks.md).
 
 All five host adapters share [the explicit declared-check runner](declared-checks.md). Startup advertises the trusted interpreter/script invocation; configured recheck and completion guidance can offer it. Owned execution does not become a native callback observation or establish installed acceptance by itself.
 

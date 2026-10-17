@@ -652,6 +652,17 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
+<!-- workflow-checks-progress:start -->
+**2026-10-17 — Workflow repairs implemented; full qualification running.**
+Shared completed-result advice and guarded source-report reads are pushed
+to main. Witnessed affected controls, 107 named audits, actual Python/Node
+checks, the reference rehearsal and both complete Linux CI cells pass.
+Windows full cells and a local full invocation are still running. One
+fresh JavaScript installed acceptance is sealed but has made no model
+calls; current-source qualification precedes it. Prior successes and
+comparison ties retain their own producer. See [current evidence](results/workflow-checks/README.md).
+<!-- workflow-checks-progress:end -->
+
 [The matched four-stage comparison](results/matched-workflow/README.md) completed all four Sonnet 5.5 medium conversations and independently reproduced sixteen source snapshots. Both ordinary/assisted pairs tied at 10/10 groups with no observed regressions. Assisted model-process time was higher: 2.34× Python and 1.90× JavaScript. Python used the owned runner in 4/4 turns and retained current declared milestones; JavaScript qualified 0/4 and left those milestones stale despite a fresh generic passing task receipt. No coding-quality or speed improvement was observed. Next: diagnose that gap and measure native/hook overhead with no-model controls. See [validation](docs/validation/2026-10-17-matched-workflow.md) and [journey 84](journey/84-a-tie-is-still-a-result.md).
 
 [Owned declared-check batches](the-guide/declared-checks.md) run all declared properties with one command, owner and shared deadline while retaining separate receipts. Startup and new no-edit verification tasks expose readable guidance. All four hosted source cells passed, and both new Claude conversations qualified across three tasks each, including dependency failure and recovery. That installed result does not itself establish a coding-quality advantage. See [qualification](docs/validation/2026-10-17-check-adoption.md) and [journey 83](journey/83-one-entry-point-separate-receipts.md).

@@ -1,5 +1,16 @@
 # Master Plan v0.8
 
+<!-- workflow-checks-progress:start -->
+**2026-10-17 — Workflow repairs implemented; full qualification running.**
+Shared completed-result advice and guarded source-report reads are pushed
+to main. Witnessed affected controls, 107 named audits, actual Python/Node
+checks, the reference rehearsal and both complete Linux CI cells pass.
+Windows full cells and a local full invocation are still running. One
+fresh JavaScript installed acceptance is sealed but has made no model
+calls; current-source qualification precedes it. Prior successes and
+comparison ties retain their own producer. See [current evidence](results/workflow-checks/README.md).
+<!-- workflow-checks-progress:end -->
+
 **2026-10-17 — Matched four-stage comparison completed: two correctness ties.**
 All four Sonnet 5.5 medium conversations completed sixteen turns with qualified
 scope/session identities. Every trajectory passes 4/6/8/10 independent groups,
