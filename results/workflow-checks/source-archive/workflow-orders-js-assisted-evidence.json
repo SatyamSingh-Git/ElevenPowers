@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T10:23:15.084648+00:00",
+  "project": {
+    "name": "candidate",
+    "revision": "50f18ee026154bdeea4520c6989e79e144a123ad",
+    "revision_state": "available"
+  },
+  "state": "UNVERIFIED",
+  "task": {
+    "id": "t-1792232354775772200",
+    "risk": "low",
+    "touched": [
+      "o.replay",
+      "test/agent-replay.test.cjs"
+    ],
+    "claims": [
+      {
+        "claim": "bug_fixed",
+        "state": "UNVERIFIED",
+        "checks": [
+          {
+            "obligation": "a test covering the change passes",
+            "met": true,
+            "freshness": "stale",
+            "evidence": "test/agent-replay.test.cjs",
+            "caveat": ""
+          },
+          {
+            "obligation": "the related test suite passes",
+            "met": false,
+            "freshness": null,
+            "evidence": null,
+            "caveat": ""
+          }
+        ]
+      }
+    ]
+  },
+  "coverage": {
+    "complete": true,
+    "issues": [],
+    "selected_files": 9,
+    "source_complete": true,
+    "source_issues": [],
+    "selected_bytes": 11389,
+    "source_fingerprint": "e8dcaf5c0c803be2",
+    "latest_receipts_total": 4,
+    "omitted_receipts": 0
+  },
+  "commands": {
+    "tests": "node --test --test-reporter=tap"
+  },
+  "receipts": [
+    {
+      "kind": "test_suite",
+      "identity": "assert.equal(o.available('x'),2);",
+      "receipt_key": "64a3f68004136db0b85a6f3511e8519d7a83b1a18c0a2bcfcbba546308fa1d5c",
+      "declaration": "",
+      "command": "node -e \"\nconst fs=require('fs');let s=fs.readFileSync('service.cjs','utf8');\ns=s.replace('  dumps() {',\\`  replay(events) {\n    if(!Array.isArray(events)) throw new RangeError('events');\n    const w=new Orders(this.stock,this.prices);\n    w.rows=Object.fromEntries(Object.entries(this.rows).map(([k,r])=>[k,{...r}]));\n    if(this.events!==undefined) w.events=Object.fromEntries(Object.entries(this.events));\n    const ops={reserve:'reserve',fulfill:'fulfill',refund:'refund',expire:'expire'};\n    for(const e of events) {\n      if(!isObj(e)||typeof e.event!=='string'||typeof e.op!=='string'||!Array.isArray(e.args)||!Object.hasOwn(ops,e.op)) throw new RangeError('event');\n      const sig=JSON.stringify([e.op,e.args]);\n      if(w.events!==undefined&&Object.hasOwn(w.events,e.event)) {\n        if(w.events[e.event]!==sig) throw new RangeError('conflict');\n        continue;\n      }\n      let res;\n      try {res=w[e.op](...e.args);} catch(err) {throw new RangeError('args');}\n      if(e.op!=='expire'&&(res===false||res===null)) throw new RangeError('rejected');\n      if(w.events===undefined) w.events={};\n      Object.defineProperty(w.events,e.event,{value:sig,enumerable:true,writable:true,configurable:true});\n    }\n    this.stock=w.stock;this.rows=w.rows;\n    if(w.events!==undefined) this.events=w.events;\n  }\n  dumps() {\\`);\nfs.writeFileSync('service.cjs',s);\"\ncat > test/agent-replay.test.cjs <<'EOF'\nconst test=require('node:test'),assert=require('node:assert/strict');\nconst {Orders}=require('../service.cjs');\nconst ev=(event,op,...args)=>({event,op,args});\ntest('applies events and skips exact duplicates, also across snapshot',()=>{\n const o=new Orders({x:10},{x:'7'});\n o.replay([ev('e1','reserve','a','x',4,0,10),ev('e2','fulfill','a',2,1),ev('e1','reserve','a','x',4,0,10)]);\n assert.equal(o.available('x'),6);\n const p=Orders.loads(o.dumps());\n p.replay([ev('e2','fulfill','a',2,1),ev('e3','refund','a',1),ev('e4','expire',10)]);\n assert.equal(p.available('x'),10);\n assert.equal(o.available('x'),6);\n});\ntest('failures leave state unchanged',()=>{\n const o=new Orders({x:5});o.replay([ev('e1','reserve','a','x',2)]);\n const before=o.dumps();\n const bads=[\n  [ev('n','reserve','b','x',1),ev('e1','reserve','a','x',3)],\n  [ev('n','reserve','b','x',1),ev('m','bogus')],\n  [ev('n','reserve','b','x',1),ev('m','reserve','c','x',0)],\n  [ev('n','reserve','b','x',1),ev('m','reserve','c','x',99)],\n  [ev('n','reserve','b','x',1),ev('m','fulfill','zz',1)],\n  [ev('n','reserve','b','x',1),ev('m','refund','a',1)],\n  [ev('n','reserve','b','x',1),{event:'k',op:'expire',args:'no'}],\n  [ev('n','reserve','b','x',1),ev('n','reserve','b','x',2)],\n ];\n for(const b of bads) {assert.throws(()=>o.replay(b),RangeError);assert.equal(o.dumps(),before);}\n assert.throws(()=>o.replay('x'),RangeError);\n assert.equal(o.available('x'),3);\n});\ntest('expiry event returns nothing and releases',()=>{\n const o=new Orders({x:2});\n assert.equal(o.replay([ev('a','reserve','h','x',2,0,5),ev('b','expire',5)]),undefined);\n assert.equal(o.available('x'),2);\n});\nEOF\nnode --test --test-reporter=tap 2>&1 | grep -E \"^(not ok|# (pass|fail))\"",
+      "result": "fail",
+      "declared_command": "",
+      "execution": "complete",
+      "freshness": "stale",
+      "source_freshness": "stale",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792232372.3399544,
+      "scope": "source",
+      "observed_files": 9,
+      "fingerprint": "229220cc8252ec4e",
+      "coverage_issues": [],
+      "passed": 15,
+      "failed": 1,
+      "counted": true
+    },
+    {
+      "kind": "test_suite",
+      "identity": "test/agent-replay.test.cjs",
+      "receipt_key": "317c01a82c0791b297822bf0bb39d5f7be58444b33f079f3dbf993ecea389f9c",
+      "declaration": "",
+      "command": "node --test --test-reporter=tap test/agent-replay.test.cjs 2>&1 | grep -E -A3 \"error:|expected|actual\" | head",
+      "result": "pass",
+      "declared_command": "",
+      "execution": "complete",
+      "freshness": "stale",
+      "source_freshness": "stale",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792232377.0121691,
+      "scope": "source",
+      "observed_files": 9,
+      "fingerprint": "229220cc8252ec4e",
+      "coverage_issues": [],
+      "passed": 0,
+      "failed": 0,
+      "counted": false
+    },
+    {
+      "kind": "test_suite",
+      "identity": "test/agent-replay.test.cjs;",
+      "receipt_key": "93cdfe7f23974cf124bf6fa988baf57d4a6512cc355af2884e2f97b15db1dae9",
+      "declaration": "",
+      "command": "sed -i \"s/assert.equal(p.available('x'),10);/assert.equal(p.available('x'),9);/\" test/agent-replay.test.cjs; node --test --test-reporter=tap 2>&1 | grep -E \"^(not ok|# (pass|fail))\"; git status --short",
+      "result": "pass",
+      "declared_command": "",
+      "execution": "complete",
+      "freshness": "fresh",
+      "source_freshness": "fresh",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792232381.5601115,
+      "scope": "source",
+      "observed_files": 9,
+      "fingerprint": "e8dcaf5c0c803be2",
+      "coverage_issues": [],
+      "passed": 16,
+      "failed": 0,
+      "counted": true
+    },
+    {
+      "kind": "test_suite",
+      "identity": "node",
+      "receipt_key": "a11fc3d27b8cd2ccef29f74fec03e332c67c963caa294591d4591c08be7cf7f1",
+      "declaration": "tests",
+      "command": "node --test --test-reporter=tap",
+      "result": "pass",
+      "declared_command": "node --test --test-reporter=tap",
+      "execution": "complete",
+      "freshness": "fresh",
+      "source_freshness": "fresh",
+      "external_inputs": {
+        "state": "not_configured",
+        "before": null,
+        "after": null,
+        "current": null,
+        "issues": []
+      },
+      "recorded_at": 1792232388.570885,
+      "scope": "source",
+      "observed_files": 9,
+      "fingerprint": "e8dcaf5c0c803be2",
+      "coverage_issues": [],
+      "passed": 16,
+      "failed": 0,
+      "counted": true
+    }
+  ],
+  "test_strength": {
+    "state": "not_recorded",
+    "freshness": "unknown",
+    "issues": [],
+    "observations": [],
+    "summary": {},
+    "limitations": []
+  },
+  "timings": {
+    "source_snapshot_ms": 101.052,
+    "report_ms": 281.345
+  },
+  "next_actions": [
+    "Inspect the failed command: node -e \"\nconst fs=require('fs');let s=fs.readFileSync('service.cjs','utf8');\ns=s.replace('  dumps() {',\\`  replay(events) {\n    if(!Array.isArray(events)) throw new RangeError('events');\n    const w=new Orders(this.stock,this.prices);\n    w.rows=Object.fromEntries(Object.entries(this.rows).map(([k,r])=>[k,{...r}]));\n    if(this.events!==undefined) w.events=Object.fromEntries(Object.entries(this.events));\n    const ops={reserve:'reserve',fulfill:'fulfill',refund:'refund',expire:'expire'};\n    for(const e of events) {\n      if(!isObj(e)||typeof e.event!=='string'||typeof e.op!=='string'||!Array.isArray(e.args)||!Object.hasOwn(ops,e.op)) throw new RangeError('event');\n      const sig=JSON.stringify([e.op,e.args]);\n      if(w.events!==undefined&&Object.hasOwn(w.events,e.event)) {\n        if(w.events[e.event]!==sig) throw new RangeError('conflict');\n        continue;\n      }\n      let res;\n      try {res=w[e.op](...e.args);} catch(err) {throw new RangeError('args');}\n      if(e.op!=='expire'&&(res===false||res===null)) throw new RangeError('rejected');\n      if(w.events===undefined) w.events={};\n      Object.defineProperty(w.events,e.event,{value:sig,enumerable:true,writable:true,configurable:true});\n    }\n    this.stock=w.stock;this.rows=w.rows;\n    if(w.events!==undefined) this.events=w.events;\n  }\n  dumps() {\\`);\nfs.writeFileSync('service.cjs',s);\"\ncat > test/agent-replay.test.cjs <<'EOF'\nconst test=require('node:test'),assert=require('node:assert/strict');\nconst {Orders}=require('../service.cjs');\nconst ev=(event,op,...args)=>({event,op,args});\ntest('applies events and skips exact duplicates, also across snapshot',()=>{\n const o=new Orders({x:10},{x:'7'});\n o.replay([ev('e1','reserve','a','x',4,0,10),ev('e2','fulfill','a',2,1),ev('e1','reserve','a','x',4,0,10)]);\n assert.equal(o.available('x'),6);\n const p=Orders.loads(o.dumps());\n p.replay([ev('e2','fulfill','a',2,1),ev('e3','refund','a',1),ev('e4','expire',10)]);\n assert.equal(p.available('x'),10);\n assert.equal(o.available('x'),6);\n});\ntest('failures leave state unchanged',()=>{\n const o=new Orders({x:5});o.replay([ev('e1','reserve','a','x',2)]);\n const before=o.dumps();\n const bads=[\n  [ev('n','reserve','b','x',1),ev('e1','reserve','a','x',3)],\n  [ev('n','reserve','b','x',1),ev('m','bogus')],\n  [ev('n','reserve','b','x',1),ev('m','reserve','c','x',0)],\n  [ev('n','reserve','b','x',1),ev('m','reserve','c','x',99)],\n  [ev('n','reserve','b','x',1),ev('m','fulfill','zz',1)],\n  [ev('n','reserve','b','x',1),ev('m','refund','a',1)],\n  [ev('n','reserve','b','x',1),{event:'k',op:'expire',args:'no'}],\n  [ev('n','reserve','b','x',1),ev('n','reserve','b','x',2)],\n ];\n for(const b of bads) {assert.throws(()=>o.replay(b),RangeError);assert.equal(o.dumps(),before);}\n assert.throws(()=>o.replay('x'),RangeError);\n assert.equal(o.available('x'),3);\n});\ntest('expiry event returns nothing and releases',()=>{\n const o=new Orders({x:2});\n assert.equal(o.replay([ev('a','reserve','h','x',2,0,5),ev('b','expire',5)]),undefined);\n assert.equal(o.available('x'),2);\n});\nEOF\nnode --test --test-reporter=tap 2>&1 | grep -E \"^(not ok|# (pass|fail))\"",
+    "Rerun the stale command: node --test --test-reporter=tap test/agent-replay.test.cjs 2>&1 | grep -E -A3 \"error:|expected|actual\" | head",
+    "Rerun evidence for: a test covering the change passes",
+    "run: node --test --test-reporter=tap"
+  ],
+  "limits": [
+    "Unsigned local observation, not independent attestation or an improved patch-outcome claim.",
+    "Input freshness is evaluated at report creation; later edits require a new report.",
+    "The deadline is cooperative; an in-flight filesystem read can finish after it, then coverage is incomplete.",
+    "Target observations cannot prove absence of unrelated side effects or identify competing writers.",
+    "Prompts, transcripts, captured outputs and receipt details are excluded."
+  ],
+  "milestones": {
+    "schema": 1,
+    "generated_at": "2026-10-17T10:23:14.922096+00:00",
+    "project": "candidate",
+    "state": "CURRENT",
+    "milestones": [
+      {
+        "id": "established-core",
+        "description": "Retain established core behavior.",
+        "inputs": [
+          "service.cjs"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "node --test --test-reporter=tap",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "source_freshness": "fresh",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792232388.570885,
+            "scope": "source",
+            "observed_files": 9,
+            "receipt_fingerprint": "e8dcaf5c0c803be2",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      },
+      {
+        "id": "formatting",
+        "description": "Retain independent formatting.",
+        "inputs": [
+          "formatting.cjs"
+        ],
+        "checks": [
+          {
+            "kind": "test_suite",
+            "command": "node --test --test-reporter=tap",
+            "state": "CURRENT",
+            "result": "pass",
+            "execution": "complete",
+            "freshness": "fresh",
+            "source_freshness": "fresh",
+            "external_inputs": {
+              "state": "not_configured",
+              "before": null,
+              "after": null,
+              "current": null,
+              "issues": []
+            },
+            "recorded_at": 1792232388.570885,
+            "scope": "source",
+            "observed_files": 9,
+            "receipt_fingerprint": "e8dcaf5c0c803be2",
+            "issues": [],
+            "qualifications": [
+              "A passing command supports only its recorded property and declared input scope."
+            ],
+            "next_action": "No re-run required by the recorded declared-input evidence."
+          }
+        ],
+        "state": "CURRENT"
+      }
+    ],
+    "coverage": {
+      "complete": true,
+      "issues": [],
+      "declaration_fingerprint": "72532ac3d35e77abbeaee8efd20aa627e949a7bf7f653790de3df6b1419485b1",
+      "ledger_fingerprint": "6731dcbc71ad1eb0547e06db389528ea14c285482796620870a0b7201e2316b9",
+      "source_fingerprint": "e8dcaf5c0c803be2",
+      "source_complete": true,
+      "selected_files": 9,
+      "selected_bytes": 11389
+    },
+    "impact": {
+      "state": "not_requested",
+      "leads": [],
+      "issues": []
+    },
+    "rechecks": {
+      "state": "not_requested",
+      "commands": [],
+      "issues": []
+    },
+    "limits": [
+      "CURRENT is a current passing command within declared observed inputs, not universal behavior correctness.",
+      "Expectations and scopes are project assertions; receipts are unsigned local observations, not independent attestation.",
+      "Unrecorded dependencies and external environment/services remain unknown.",
+      "Source-scoped receipts conservatively expire after unrelated selected-source edits; explicit scopes need all declared inputs.",
+      "The deadline is cooperative; bounded observations are not an atomic filesystem transaction.",
+      "Inspection runs no project checks, model, installer or host and creates no project state."
+    ],
+    "summary": {
+      "INCOMPLETE": 0,
+      "FAILED": 0,
+      "STALE": 0,
+      "ABSENT": 0,
+      "CURRENT": 2
+    },
+    "next_actions": [],
+    "timings": {
+      "report_ms": 99.388
+    }
+  }
+}

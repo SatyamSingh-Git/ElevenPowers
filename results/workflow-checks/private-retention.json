@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "file": "protocol-seal.json",
+      "bytes": 82,
+      "sha256": "425444ae58d90fc03b24c99f2abc20323f6499bc3f860610f9e8b62554e08069"
+    },
+    {
+      "file": "protocol.json",
+      "bytes": 4745,
+      "sha256": "dc7a05cdcd85578aefe782bb8d44c5263d056bc9ee8bb6fc969e2538bc3fcfa7"
+    },
+    {
+      "file": "workflow-orders-js-assisted/baseline.json",
+      "bytes": 759,
+      "sha256": "5fa78814afbb84f57d985c399f76222632e9ccdb724d4c1f406b041428d13e50"
+    },
+    {
+      "file": "workflow-orders-js-assisted/diagnostic-1.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-orders-js-assisted/diagnostic-2.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-orders-js-assisted/diagnostic-3.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-orders-js-assisted/diagnostic-4.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "workflow-orders-js-assisted/native-1.jsonl",
+      "bytes": 38620,
+      "sha256": "83bd52890c4fe09110be38e19d8bd0b1d09c7b1e8cf53ab6811b36e4ec11046e"
+    },
+    {
+      "file": "workflow-orders-js-assisted/native-2.jsonl",
+      "bytes": 44438,
+      "sha256": "54ab5f71c39fdf2e138ecfb6c5a5fcd56b0597c92177e2e58744559685b961c2"
+    },
+    {
+      "file": "workflow-orders-js-assisted/native-3.jsonl",
+      "bytes": 32090,
+      "sha256": "3a9753ab4ad7b248a5e2c199678d2ac0d1abe083ea11205758a9c042a37b853a"
+    },
+    {
+      "file": "workflow-orders-js-assisted/native-4.jsonl",
+      "bytes": 33585,
+      "sha256": "e7fada8f46fa6c611b3b907b308cbe4a2d3d2e6225e804a2a17ae891bdc55932"
+    },
+    {
+      "file": "workflow-orders-js-assisted/prompt-1.txt",
+      "bytes": 1151,
+      "sha256": "edd330fdb5feb302d03b626f9bda8c5429afafe1ce7a1e11e146ab22d03e5caf"
+    },
+    {
+      "file": "workflow-orders-js-assisted/prompt-2.txt",
+      "bytes": 1196,
+      "sha256": "327fef9ca56988d20e50bc9c0cd6131693f6efa7d294fcd6d68c23577ea693bf"
+    },
+    {
+      "file": "workflow-orders-js-assisted/prompt-3.txt",
+      "bytes": 1092,
+      "sha256": "28e32895b3f8192744f0cfbfbe55ccf78d661eae8c8f79acb90cb2e1c7e71596"
+    },
+    {
+      "file": "workflow-orders-js-assisted/prompt-4.txt",
+      "bytes": 1078,
+      "sha256": "f7602a0b28c1a067ce95a1d68b6fbda2350a1dc78381088bea1e6c6ce7af0260"
+    },
+    {
+      "file": "workflow-orders-js-assisted/result.json",
+      "bytes": 54961,
+      "sha256": "bcb663cc747c10993d41b8080ea73501faf5f9068156880e02937688b1dd1ad2"
+    },
+    {
+      "file": "workflow-orders-js-assisted/source-1.json",
+      "bytes": 1088,
+      "sha256": "b53c41a54ef8d0f073c5c78bd48da5efda5b8855354d05da89bb78d277f8000d"
+    },
+    {
+      "file": "workflow-orders-js-assisted/source-2.json",
+      "bytes": 1811,
+      "sha256": "7445fbbe0c3da03aa5da83c47f34a6c862791cfc65ed0f93fbbb1235ff765188"
+    },
+    {
+      "file": "workflow-orders-js-assisted/source-3.json",
+      "bytes": 3281,
+      "sha256": "d21d8805468193e213115c1dd0756a1202d88a2ef0cc59a8cd0b42b4b5604c56"
+    },
+    {
+      "file": "workflow-orders-js-assisted/source-4.json",
+      "bytes": 4515,
+      "sha256": "a8b9637319aee342a5f00c5157911cd43565dcda34d42ae4196d49aeb838ef38"
+    }
+  ],
+  "limits": [
+    "Raw originals remain private and immutable; unsigned hashes are consistency evidence only."
+  ]
+}

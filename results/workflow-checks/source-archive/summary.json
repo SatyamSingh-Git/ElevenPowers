@@ -1,0 +1,115 @@
+{
+  "schema": 2,
+  "state": "incomplete",
+  "scheduled": 1,
+  "attempted": 1,
+  "outcome_comparable": false,
+  "delivery_verified": false,
+  "readiness": "separate_installed_acceptance_required",
+  "pairs": [
+    {
+      "case": "workflow-orders-js",
+      "ordinary": {
+        "state": "not_scheduled",
+        "qualified": false,
+        "stages": [],
+        "delivery_verified": false
+      },
+      "assisted": {
+        "state": "completed",
+        "qualified": true,
+        "delivery_verified": false,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "ddcb6c96b8c8461d64f783165d216116b935f3b3de5ba6626ea060ab5d0b8e1a",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 44.689288,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "6450dbddc6b30a6be73a5390d6aa474c44747bbb7e651daacf828750cac1115f",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 45.907525,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "fb7113fe56dddad9cc09a58445461dddac5b4c3ed827cb68629afb8417498bc4",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 37.609561,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "3dbf5caf74e563735dab56c2ea87a5432c327e7f8b7fef46ced465b3fc2318ff",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 38.227196000000006,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 166.43356999999997,
+        "issues": []
+      },
+      "outcome_comparable": false,
+      "delivery_verified": false,
+      "difference": null
+    }
+  ],
+  "paired_correctness_advantage_observed": false,
+  "limits": [
+    "One authored JavaScript four-stage acceptance; no ordinary comparison arm.",
+    "Historical JavaScript result remains unchanged; no causal coding-quality or speed comparison.",
+    "No favorable retry, API fallback, case/request/oracle change or human candidate repair."
+  ],
+  "source_grades_match": true
+}

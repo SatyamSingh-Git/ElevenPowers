@@ -1,0 +1,194 @@
+{
+  "schema": 2,
+  "scheduled_slots": [
+    "workflow-orders-js-assisted"
+  ],
+  "stage_count": 4,
+  "protocol_sha256": "dc7a05cdcd85578aefe782bb8d44c5263d056bc9ee8bb6fc969e2538bc3fcfa7",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "public_case_sha256": {
+    "workflow-orders-js": "1be70c68617a0003b0bd1446d681c801d8f80a14527dfbeea3b8f0bf1cd7fb2d"
+  },
+  "sources": [
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 1,
+      "file": "workflow-orders-js-assisted-source-1.json",
+      "file_sha256": "b53c41a54ef8d0f073c5c78bd48da5efda5b8855354d05da89bb78d277f8000d",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 2,
+      "file": "workflow-orders-js-assisted-source-2.json",
+      "file_sha256": "7445fbbe0c3da03aa5da83c47f34a6c862791cfc65ed0f93fbbb1235ff765188",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 3,
+      "file": "workflow-orders-js-assisted-source-3.json",
+      "file_sha256": "d21d8805468193e213115c1dd0756a1202d88a2ef0cc59a8cd0b42b4b5604c56",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "restart_identity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+      "grade_matches": true
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage": 4,
+      "file": "workflow-orders-js-assisted-source-4.json",
+      "file_sha256": "a8b9637319aee342a5f00c5157911cd43565dcda34d42ae4196d49aeb838ef38",
+      "groups": [
+        {
+          "id": "core",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "formatting",
+          "introduced_stage": 0,
+          "state": "passed"
+        },
+        {
+          "id": "hold_expiry",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "hold_validation",
+          "introduced_stage": 1,
+          "state": "passed"
+        },
+        {
+          "id": "exact_refunds",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "fulfillment_rejection",
+          "introduced_stage": 2,
+          "state": "passed"
+        },
+        {
+          "id": "restart_identity",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "snapshot_validation",
+          "introduced_stage": 3,
+          "state": "passed"
+        },
+        {
+          "id": "batch_replay",
+          "introduced_stage": 4,
+          "state": "passed"
+        },
+        {
+          "id": "replay_atomicity",
+          "introduced_stage": 4,
+          "state": "passed"
+        }
+      ],
+      "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+      "grade_matches": true
+    }
+  ]
+}

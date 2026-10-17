@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "purpose": "single-assisted-installed-acceptance-not-a-paired-comparison",
+  "scheduled": 1,
+  "attempted": 1,
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_cap": 720,
+  "runtime_fingerprint": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "host_version": "2.1.292 (Claude Code)",
+  "protocol_sha256": "dc7a05cdcd85578aefe782bb8d44c5263d056bc9ee8bb6fc969e2538bc3fcfa7",
+  "state": "completed",
+  "outcome_qualified": true,
+  "installed_adoption_qualified": false,
+  "model_seconds": 166.43356999999997,
+  "stages": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 4,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "ddcb6c96b8c8461d64f783165d216116b935f3b3de5ba6626ea060ab5d0b8e1a",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 44.689288,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 6,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "6450dbddc6b30a6be73a5390d6aa474c44747bbb7e651daacf828750cac1115f",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 45.907525,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 3,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 8,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "fb7113fe56dddad9cc09a58445461dddac5b4c3ed827cb68629afb8417498bc4",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 37.609561,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 4,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 10,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "3dbf5caf74e563735dab56c2ea87a5432c327e7f8b7fef46ced465b3fc2318ff",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 38.227196000000006,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    }
+  ],
+  "native": [
+    {
+      "stage": 1,
+      "native_runner_adoption": false,
+      "task": "855eee5b569b79e783988c4d82037026eb1424da77c18f7375c4acd0fc0b90ea",
+      "owned_receipts": 0,
+      "completed_runner_calls": 0
+    },
+    {
+      "stage": 2,
+      "native_runner_adoption": false,
+      "task": "ec1d228c145827f3f242a3202c964ca3d58fd6856469cd0c235bd605ffbc86fb",
+      "owned_receipts": 0,
+      "completed_runner_calls": 0
+    },
+    {
+      "stage": 3,
+      "native_runner_adoption": false,
+      "task": "54c94327cf737d7ebb3ad25d7be01f28f5e6b38c312b71e558d1edac05c5278f",
+      "owned_receipts": 0,
+      "completed_runner_calls": 0
+    },
+    {
+      "stage": 4,
+      "native_runner_adoption": false,
+      "task": "8b8cd5ec238d8cff5d77ab5cd395bf9165e2a043624905cf151a5036432fcef6",
+      "owned_receipts": 0,
+      "completed_runner_calls": 0
+    }
+  ],
+  "declared_milestone_observations": {
+    "descriptive_only": true,
+    "current_turns": 3,
+    "scheduled_turns": 4,
+    "stages": [
+      {
+        "stage": 1,
+        "states": [
+          {
+            "id": "established-core",
+            "state": "CURRENT"
+          },
+          {
+            "id": "formatting",
+            "state": "CURRENT"
+          }
+        ],
+        "feedback_intents_in_final_ledger": 0
+      },
+      {
+        "stage": 2,
+        "states": [
+          {
+            "id": "established-core",
+            "state": "STALE"
+          },
+          {
+            "id": "formatting",
+            "state": "STALE"
+          }
+        ],
+        "feedback_intents_in_final_ledger": 0
+      },
+      {
+        "stage": 3,
+        "states": [
+          {
+            "id": "established-core",
+            "state": "CURRENT"
+          },
+          {
+            "id": "formatting",
+            "state": "CURRENT"
+          }
+        ],
+        "feedback_intents_in_final_ledger": 0
+      },
+      {
+        "stage": 4,
+        "states": [
+          {
+            "id": "established-core",
+            "state": "CURRENT"
+          },
+          {
+            "id": "formatting",
+            "state": "CURRENT"
+          }
+        ],
+        "feedback_intents_in_final_ledger": 1
+      }
+    ],
+    "limits": [
+      "These retained stage statuses do not redefine the frozen owned-runner adoption criterion.",
+      "A reminder reservation is not proof of transport consumption or a causal effect."
+    ]
+  },
+  "final_ledger_feedback_intent_reservations": 1,
+  "source_reproduction": {
+    "qualified": true,
+    "stages": 4,
+    "issues": [],
+    "grading_only": true,
+    "historical_harness_matches": true
+  },
+  "export_and_reproduction_seconds": 3.142,
+  "api_fallback": false,
+  "favorable_retries": 0,
+  "limits": [
+    "One fresh assisted acceptance, without an ordinary comparison arm.",
+    "Feedback intent count covers the final saved ledger, not cumulative delivery; intent is not comprehension or a causal mechanism.",
+    "The original JavaScript gap, correctness ties and higher assisted times remain unchanged.",
+    "Archive summary marks paired comparison incomplete because the ordinary arm was never scheduled.",
+    "Dirty generated code has no committed PatchProof subject; unsigned native observations are not attestation."
+  ]
+}
