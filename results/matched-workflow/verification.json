@@ -36,5 +36,12 @@
     "Final main and served HTML/data byte identities are recorded separately in delivery.json.",
     "Automatic documentation/results-only CI repeats are separate from completed unchanged-source qualification.",
     "A restricted-sandbox reproduction failure is retained separately from the unchanged command's normal-access success."
-  ]
+  ],
+  "closing_publication_guard": {
+    "relative_targets": 720,
+    "json_files": 43,
+    "runtime_and_harness_unchanged": true,
+    "exit_code": 0,
+    "scope": "Final changed documentation and all public metadata, including delivery.json; metadata values do not alter link/JSON file counts."
+  }
 }

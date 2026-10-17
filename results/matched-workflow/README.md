@@ -62,7 +62,8 @@ a representative upstream-project sample or an OS-isolated closed-book trial.
   delivery/adverse-outcome accounting checks, with environment versions.
 - [Fresh whole-result review](review.json) found no material defect;
   [verification](verification.json) retains normal-access reproduction and all
-  five rendered map views. Final delivery is recorded separately.
+  five rendered map views. [Delivery](delivery.json) verifies remote main, all
+  thirty fetched branch heads contained, and actual served HTML/data bytes.
 - [Fresh reference rehearsal](rehearsal.json): all sixteen reference snapshots
   reproduce 4/6/8/10 groups with zero model calls.
 - Original bounded observations: [Python ordinary](workflow-queue-py-ordinary.json),

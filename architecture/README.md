@@ -10,6 +10,11 @@ See [journey 84](../journey/84-a-tie-is-still-a-result.md) and
 [validation](../docs/validation/2026-10-17-matched-workflow.md). Earlier dated
 milestones and delivery records below keep their original producer identities.
 
+The [current delivery record](../results/matched-workflow/delivery.json) verifies
+remote main and the actual served HTML/graph-data bytes at `50bd89b`. All thirty
+fetched remote branch heads are contained. Closing metadata preserves these map
+and source bytes; automatic results/docs CI repeats remain separately in progress.
+
 Readable no-edit verification guidance and explicit owned batches are drawn in
 all five views: one owner/deadline, separate property receipts, complete selected
 outcomes and frozen command/context guards. The rendered map passes with 171
@@ -19,7 +24,7 @@ nodes, 423 edges and seven planes. Current qualification: **all four hosted cell
 
 Installed Multi-Stage Verification is drawn in all five views. Both initial native trials completed but did not qualify. Shared task/provenance/independent-command repairs pass 2,519 local tests and all four hosted cells. Two separately approved requalification conversations completed but neither qualified: task identities are distinct, while ordinary compound commands still leave receipt gaps. At that earlier producer the comparison remained blocked; current adoption observations and next work are recorded above. Frozen four-stage source grades stay separate from native readiness and benefit. See [guide](../the-guide/installed-multistage.md) and [validation](../docs/validation/2026-10-16-installed-multistage.md).
 
-Current main delivery and exact served HTML/data identities are retained in the
+Earlier main delivery and exact served HTML/data identities are retained in the
 [delivery record](../results/check-adoption/delivery.json). Closing metadata
 preserves qualified source and rendered map bytes. Earlier milestone closures
 retain their own recorded producers.

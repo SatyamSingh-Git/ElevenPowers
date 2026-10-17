@@ -117,3 +117,14 @@ edges and seven planes. Before closing metadata, the publication guard verified
 712 relative targets and 40 public JSON files, privacy and unchanged runtime/
 frozen-harness identities. These are bounded documentation checks, separate from
 the reused full source qualification. See [verification](../../results/matched-workflow/verification.json).
+
+## Main and published delivery
+
+The [delivery record](../../results/matched-workflow/delivery.json) verifies
+local/remote main at `50bd89b4d1b4b33b0a92c01e21cd59b5190f355d`, with all thirty
+fetched remote branch heads contained. The Pages build is built at that commit;
+actual HTTPS architecture HTML and graph-data bodies match committed blobs
+byte-for-byte. Subsequent metadata-only closure preserves shipping, evaluation,
+tests/workflows and rendered map bytes. Automatic CI run 39015254992 is separately
+in progress at this observation; it is not relabeled passing. The unchanged
+source retains its completed four-cell qualification and green initial main repeat.

@@ -57,7 +57,7 @@ standing permission covers Claude subscription Sonnet 5.5 at medium effort.
 
 - [x] Update README/status/plan, guides/research/validation, journey 84 and all five
   architecture views, including the next planned work supported by the findings.
-- [ ] Render all five map views, validate relative documentation links/privacy,
+- [x] Render all five map views, validate relative documentation links/privacy,
   push descriptive parts and verify remote main plus actual published map bytes.
 
 ## Execution rulings
@@ -70,3 +70,14 @@ use. Preserve the earlier local setup failure and all four earlier failed native
 trials. The two new native successes establish this producer's prerequisite,
 not a coding-quality advantage. Retain private raw streams for audit rather than
 deleting them before the outcome and source archive can be independently checked.
+
+Completed: four conversations and sixteen source snapshots, two correctness
+ties, higher assisted time, Python 4/4 versus JavaScript 0/4 owned adoption.
+Twenty focused controls, independent reproduction and one fresh review pass;
+no runtime/harness or grading repair. Current docs, journey and five rendered
+views are on main; thirty fetched remote branch heads are contained. Actual
+served HTML/data bytes match the committed map. See
+[delivery](../../../results/matched-workflow/delivery.json). Subsequent closing
+metadata preserves those source/map bytes. Automatic CI repeats remain separate
+from the completed unchanged-source qualification. Next work is no-model diagnosis
+of JavaScript exact-check adoption and native/hook overhead before a generalized repair.
