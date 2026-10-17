@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
+  "run": 39019396283,
+  "url": "https://github.com/SatyamSingh-Git/ElevenPowers/actions/runs/39019396283",
+  "state": "all_four_cells_passed",
+  "github_presentation": "success",
+  "cells": [
+    {
+      "job": 117358000444,
+      "platform": "ubuntu-latest",
+      "python": "3.11",
+      "suite": "2579 passed, 9 skipped in 606.10s (0:10:06)",
+      "audits": "105 passed, 2 skipped in 21.69s",
+      "log_sha256": "b8c9207916a0c15d4525cb66f451f21efbba7e48600fc2ea3e06f9b940357e85",
+      "artifacts": [
+        {
+          "name": "check-adoption-ubuntu-latest-3.11",
+          "id": 12096626344,
+          "zip_sha256": "3cda56bf4d0c03be2f7cb4b69486c2a56a92d4d241e3750ff93334d3e37aea9c",
+          "producer_form": "git_lf",
+          "qualified": true,
+          "model_calls": 0
+        },
+        {
+          "name": "installed-multistage-ubuntu-latest-3.11",
+          "id": 12096183258,
+          "zip_sha256": "fcc37b818a6346451804416de33ae6519b1c5600e438fe278f83a1bbe0916770",
+          "producer_form": "git_lf",
+          "qualified": true,
+          "model_calls": 0
+        }
+      ]
+    },
+    {
+      "job": 117358000461,
+      "platform": "windows-latest",
+      "python": "3.11",
+      "suite": "2583 passed, 5 skipped in 3114.70s (0:51:54)",
+      "audits": "107 passed in 63.68s (0:01:03)",
+      "log_sha256": "1796d728d6cde6287bc68f83dcfe975c261aeb10195f13602261565615c59303",
+      "artifacts": [
+        {
+          "name": "check-adoption-windows-latest-3.11",
+          "id": 12097526921,
+          "zip_sha256": "dfdb3f48c38f4fc4a9d14344b8b3aa19b221226a360a6e2e77c9fe586696c06c",
+          "producer_form": "windows_crlf",
+          "qualified": true,
+          "model_calls": 0
+        },
+        {
+          "name": "installed-multistage-windows-latest-3.11",
+          "id": 12096489721,
+          "zip_sha256": "57310c02e4c2fac68641995e351d955557306731f549b195d373489f744616f3",
+          "producer_form": "windows_crlf",
+          "qualified": true,
+          "model_calls": 0
+        }
+      ]
+    },
+    {
+      "job": 117358000478,
+      "platform": "windows-latest",
+      "python": "3.13",
+      "suite": "2583 passed, 5 skipped in 3730.96s (1:02:10)",
+      "audits": "107 passed in 56.02s",
+      "log_sha256": "90287a587d369a35721e13eaa297b5ead911a3683c1cc08b9874fdf3cc81b009",
+      "artifacts": [
+        {
+          "name": "check-adoption-windows-latest-3.13",
+          "id": 12097681702,
+          "zip_sha256": "35de4b706d273eff6c6f11722b6ecf1de6b203dde106745b87af358b65ea2539",
+          "producer_form": "windows_crlf",
+          "qualified": true,
+          "model_calls": 0
+        },
+        {
+          "name": "installed-multistage-windows-latest-3.13",
+          "id": 12097588155,
+          "zip_sha256": "e68bb8cf4812b8b19582595e3e903784ba8104bd2c3c49c6b68e7691963c0c08",
+          "producer_form": "windows_crlf",
+          "qualified": true,
+          "model_calls": 0
+        }
+      ]
+    },
+    {
+      "job": 117358000535,
+      "platform": "ubuntu-latest",
+      "python": "3.13",
+      "suite": "2579 passed, 9 skipped in 628.27s (0:10:28)",
+      "audits": "105 passed, 2 skipped in 18.26s",
+      "log_sha256": "ef2ccfb091eef2c46cb8619a4f234d07043d2acbab170e59b51b3e907ea6be8b",
+      "artifacts": [
+        {
+          "name": "check-adoption-ubuntu-latest-3.13",
+          "id": 12096795349,
+          "zip_sha256": "7eb79d5ca46424348d8d7440ba8189037b4497808d7d7618d1564cd9ad6afd6c",
+          "producer_form": "git_lf",
+          "qualified": true,
+          "model_calls": 0
+        },
+        {
+          "name": "installed-multistage-ubuntu-latest-3.13",
+          "id": 12096272632,
+          "zip_sha256": "1c15a94c3163acd30bfd37c9ce5a9cb5b7ffd9cfbfbe8fba7aff06e7f4144cfb",
+          "producer_form": "git_lf",
+          "qualified": true,
+          "model_calls": 0
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Actual hosted full-suite and no-model artifacts; no installed model acceptance.",
+    "Checkout byte representations are metadata, not relaxed runtime freshness."
+  ]
+}

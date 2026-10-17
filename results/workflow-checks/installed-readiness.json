@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "state": "current_source_qualified_before_native_launch",
+  "candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
+  "producer": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "hosted": "hosted-qualification.json",
+  "local": "local-gates.json",
+  "reviewed_fix": "review.json",
+  "intentional_local_partial": "local-partial.json",
+  "prepared": "installed-prepared.json",
+  "models_launched": 0,
+  "scheduled_conversations": 1,
+  "stages": 4,
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_cap": 720,
+  "api_fallback": false,
+  "outside_git_ancestors": true,
+  "limits": [
+    "All four full suites and eight downloaded actual acceptance artifacts verified before native model use.",
+    "One subscription conversation is acceptance-only; no new paired coding-benefit experiment.",
+    "The earlier unexplained advice CI cause and all original comparison/native results remain unchanged."
+  ]
+}
