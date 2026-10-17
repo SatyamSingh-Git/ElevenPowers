@@ -73,6 +73,15 @@
 
 ## Self-review
 
+Qualification adjustment after the actual local full run: isolated milestone
+children could not import user-site-only pytest from the global interpreter.
+The existing pinned project virtual environment passes both exercise controls.
+Preserve the original 1,474 passes/two skips/one setup failure and complete only
+the unexecuted suffix in that environment, with an exact disjoint node-ID
+denominator. Local coverage across environments is not a fresh single full-suite
+pass. All four hosted cells must still pass complete coherent suites before live
+use. This is an environment repair; shipping and evaluation source stay unchanged.
+
 Task1 guidance remains compatible until Task2 supplies batch execution. Task3
 consumes both after tested integration; filtered advice cannot broaden. Task2
 single-body reuse avoids nested owners. All five review-focus classes have tests.

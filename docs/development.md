@@ -37,6 +37,21 @@ Use Python 3.11 or newer and Git. Run these commands from the repository root.
 The runtime uses the standard library; pytest is a development dependency.
 Local checks and CI install the same pinned pytest version.
 
+Use a project virtual environment so isolated child checks can import the pinned
+runner too. A global interpreter can find a user-site pytest in the parent while
+the intentional `PYTHONNOUSERSITE=1` child cannot. Check this before a long run:
+
+```sh
+python -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements-dev.txt
+.venv/Scripts/python.exe -s -c "import pytest; print(pytest.__version__)"
+.venv/Scripts/python.exe -m pytest -q
+```
+
+On Linux/macOS use `.venv/bin/python` for the last three commands. Reuse an existing
+environment; do not recreate it when it already has the project dependencies.
+Keep child isolation enabled when repairing a dependency setup problem.
+
 Optional mutation acceptance also needs `requirements-strength.txt`, Node 22 and
 `@stryker-mutator/instrumenter@9.5.1` under `.venv/strength-js`. CI installs them
 in all four Windows/Linux, Python 3.11/3.13 cells. Local equivalents:

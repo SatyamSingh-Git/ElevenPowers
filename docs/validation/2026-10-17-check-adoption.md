@@ -120,6 +120,24 @@ cells remain pending; this is a partial matrix, not four-cell qualification.
 
 ## Installed history and next observation
 
+The local full invocation later stopped at the staged milestone exercise:
+1,474 passed, two skipped, one failed in 2,966.54 seconds. Its private producer
+logs show that all fifteen Python checks failed with `No module named pytest`;
+the global interpreter's pytest exists only in the user-site directory that
+these children deliberately disable. The existing project virtual environment
+exposes pinned pytest 9.1.1 under `-s`, and both milestone exercise tests pass
+there in 18.58 seconds without changing source or weakening isolation.
+The new readable-guidance and batch controls also pass in that environment:
+32 tests in 60.25 seconds.
+
+The local continuation selects the 1,083 cases after that repaired two-test
+module. Its collected node IDs must match all 2,561 original cases exactly;
+the 1,476 earlier completed cases, two repaired controls and suffix form disjoint
+coverage. Each invocation and environment remains separate. This does not
+relabel the failed full command as passing or claim a fresh single full-suite
+pass. The four hosted cells still require complete coherent suites. The first
+inline live handoff stopped at the failed local gate before any model call.
+
 [Earlier native findings](2026-10-16-installed-multistage.md) and all four
 original/requalification attempts remain unchanged at their own producer
 identities. Distinct tasks and emitted guidance did not establish owned-runner

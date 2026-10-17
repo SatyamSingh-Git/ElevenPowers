@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "canonical_run": 38979692214,
+  "source_candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+  "cancelled": [
+    {
+      "run": 38981118323,
+      "candidate": "a35ebf71ca56e48d17b11975dbbf056991c1e4a8",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "identical_source_documentation_repeat",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38981014991,
+      "candidate": "bdab73c19c1a0ad5cfb23ddadb51a30d32b0e212",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "identical_source_documentation_repeat",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38980482241,
+      "candidate": "48281d9b8345f911d817f6c00be8d63c3dfe9d16",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "identical_source_documentation_repeat",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38980327188,
+      "candidate": "06d22dbef158eaece2b452a4895c08dbf81d97e0",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "identical_source_documentation_repeat",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38979960074,
+      "candidate": "a1d29f8f52793f24e2c95689dfb0a09446f1cff6",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "identical_source_documentation_repeat",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38979354268,
+      "candidate": "db1477cd143b18e3f6b6ff534e7234d76b4dc9ee",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "superseded_implementation_candidate",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38978835606,
+      "candidate": "2a161e288d3d355db886fffe8ae6689f797846cf",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "superseded_implementation_candidate",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38978213837,
+      "candidate": "1d248d41026aa0ceb8ee015d9f9ab0761166d36e",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "superseded_implementation_candidate",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38977711183,
+      "candidate": "80a473ff6e9ef5f4f93c624fbe62f5875f282621",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "superseded_implementation_candidate",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    },
+    {
+      "run": 38976940340,
+      "candidate": "dbbd01ce7a92a0032bacf6ab64002eeab49216ff",
+      "status_before": "in_progress",
+      "action": "cancellation_requested",
+      "reason": "superseded_implementation_candidate",
+      "status_after": "completed",
+      "conclusion_after": "cancelled"
+    }
+  ],
+  "limits": [
+    "Task-owned automatic repeats and superseded intermediate candidates only; the final source matrix remains running.",
+    "Cancellation is neither a passing nor a failing source qualification."
+  ]
+}

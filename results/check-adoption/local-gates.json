@@ -2,9 +2,38 @@
   "schema": 1,
   "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
   "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
-  "state": "independent_gates_passed_full_pending",
+  "state": "environment_repaired_continuation_pending",
   "full_suite": {
-    "state": "running"
+    "state": "failed_setup",
+    "failed": 1,
+    "passed": 1474,
+    "skipped": 2,
+    "seconds": 2966.54,
+    "isolated_python_checks_missing_pytest": 15,
+    "exit_code": 1,
+    "process_seconds": 2970.224,
+    "log_sha256": "0d69c78a1a81e1c8a411cc8e49bd4678659e9406bc95b7a0e520023b49c91605"
+  },
+  "repaired_exercise": {
+    "passed": 2,
+    "seconds": 18.58,
+    "environment": "Existing project venv, Python 3.13.2, pytest 9.1.1",
+    "exit_code": 0,
+    "process_seconds": 19.012,
+    "log_sha256": "40e3d78c0fbd96fff9912ba5bda9d3b37dae568b436e61453813c6a072b02ac9"
+  },
+  "continuation": null,
+  "coverage": {
+    "qualified": false,
+    "state": "pending"
+  },
+  "runner_in_repaired_environment": {
+    "passed": 32,
+    "seconds": 60.25,
+    "environment": "Existing project venv, pytest 9.1.1",
+    "exit_code": 0,
+    "process_seconds": 60.715,
+    "log_sha256": "3621eefbd44256fa2fc3e9e8e28827019b2c45077720da96a220a356e464f137"
   },
   "audits": {
     "passed": 107,
