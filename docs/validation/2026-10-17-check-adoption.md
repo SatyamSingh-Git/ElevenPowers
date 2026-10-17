@@ -178,5 +178,13 @@ The continuation passed 1,081 cases with two skips and 1,478 deselections in
 1,803.10 seconds. Together with the 1,476 completed prefix cases and repaired
 two-case module, this covers the exact 2,561-case collection across disjoint
 cohorts. All five final map views render with 171 nodes, 423 edges and seven
-planes in 5.954 seconds. The final documentation target check passed 728 relative
-links before the closing cross-references; no shipping source changed.
+planes in 5.954 seconds. The final documentation target check passed 737 relative
+links including the closing cross-references; no shipping source changed.
+
+The [delivery record](../../results/check-adoption/delivery.json) verifies remote
+main at `7df1365` and a successful Pages build at that commit. Actual HTTPS HTML
+and graph-data bodies match the committed blobs byte-for-byte. A transient Git
+DNS lookup failure did not establish a ref result; the subsequent authoritative
+GitHub branch-ref API returned the exact expected main identity. Closing metadata
+preserves those map bytes and the four-cell-qualified source. Automatic
+documentation-only CI repeats remain separate from completed source qualification.

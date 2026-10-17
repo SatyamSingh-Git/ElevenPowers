@@ -35,6 +35,10 @@ coding experiment or population estimate.
 
 Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
 
+[Delivery evidence](delivery.json) binds verified remote main and the exact
+served architecture HTML/data bytes. The [joined qualification](qualification.json)
+keeps local coverage, coherent hosted suites and installed adoption distinct.
+
 See [validation](../../docs/validation/2026-10-17-check-adoption.md),
 [provenance](../../docs/research/check-adoption.md),
 [guide](../../the-guide/declared-checks.md) and

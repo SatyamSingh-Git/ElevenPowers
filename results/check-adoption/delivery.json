@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "verified_main_before_record": "7df13655755008d0f65f7063fbc18e7381a5af13",
+  "remote_main_before_record": "7df13655755008d0f65f7063fbc18e7381a5af13",
+  "remote_verification_method": "GitHub REST refs/heads/main",
+  "qualified_source_candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "qualification_run": 38979692214,
+  "pages_build_commit": "7df13655755008d0f65f7063fbc18e7381a5af13",
+  "pages_build_status": "built",
+  "checked_at": "2026-10-17T00:35:36.931925+00:00",
+  "published": [
+    {
+      "path": "architecture/index.html",
+      "url": "https://satyamsingh-git.github.io/ElevenPowers/architecture/",
+      "bytes": 383494,
+      "sha256": "83d5fe10b336aca1c657301041d3baeea25a6131aaab54f83ba8c56b91a899d9"
+    },
+    {
+      "path": "architecture/graph-data.js",
+      "url": "https://satyamsingh-git.github.io/ElevenPowers/architecture/graph-data.js",
+      "bytes": 207322,
+      "sha256": "4045916329930f450f471937cc62ebfadd1fb6df4bbe2f4a8809c7e88607af4b"
+    }
+  ],
+  "installed_qualified": 2,
+  "installed_attempted": 2,
+  "causal_coding_benefit_measured": false,
+  "closure": "Subsequent metadata-only closure preserves qualified source and published architecture bytes. Automatic CI repeats remain separate from completed candidate qualification."
+}
