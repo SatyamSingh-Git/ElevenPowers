@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "category": "no-model-feedback-regression-controls",
+  "model_calls": 0,
+  "command": "python -m pytest tests/test_declared_check_feedback.py tests/test_check_adoption.py -q",
+  "passed": 24,
+  "seconds": 37.58,
+  "exit_code": 0,
+  "boundaries": [
+    "Actual Python pytest and Node outcomes behind native-shaped filtered commands leave exact receipts stale and offer the owned runner.",
+    "Only explicit owned execution refreshes the declaration, retaining actual child failure despite outer success.",
+    "Current exact passing and failing receipts, off/empty declarations, owned envelopes, interruption and unrelated commands suppress the reminder.",
+    "Concurrent callbacks reserve one reminder; a new task can receive its own advice; existing failure context remains visible.",
+    "Existing bounded/readable batch and filtered guidance controls still pass."
+  ],
+  "limits": [
+    "Native-shaped replay and actual project checks do not establish installed model adoption or advice consumption.",
+    "Unknown runners retain existing parser/blindspot behavior; no new generic parser was introduced.",
+    "Python fixture bytecode writes are disabled to avoid timestamp-based stale imports in same-size rapid edits.",
+    "Full changed-source qualification and overhead repair remain separate pending work."
+  ]
+}

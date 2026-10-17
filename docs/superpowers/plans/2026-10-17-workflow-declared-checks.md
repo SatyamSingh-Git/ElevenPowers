@@ -32,20 +32,20 @@
 
 **Files:** own private trace/profile artifacts; new sanitized `results/workflow-checks/` diagnostic record.
 
-- [ ] Verify clean main/current CI and immutable original hashes; inspect native verification command shapes and callback timing boundaries without exposing transcripts.
-- [ ] Run no-model native-shaped Python/JavaScript reproductions and component profiling. Record working and adverse states, total/runtime timing and repeated expensive work.
-- [ ] State root-cause hypotheses and expand Tasks 2–3 into precise failing controls and minimal repairs before changing production code. Push the diagnostic findings and plan.
+- [x] Verify clean main/current CI and immutable original hashes; inspect native verification command shapes and callback timing boundaries without exposing transcripts.
+- [x] Run no-model native-shaped Python/JavaScript reproductions and component profiling. Record working and adverse states, total/runtime timing and repeated expensive work.
+- [x] State root-cause hypotheses and expand Tasks 2–3 into precise failing controls and minimal repairs before changing production code. Push the diagnostic findings and plan.
 
 ### Task 2: Repair the declared-check boundary
 
 **Files:** `core/hook.py`, `core/checks.py` only if needed for bounded readable narrow instructions; new `tests/test_declared_check_feedback.py`.
 
-**Interfaces:** consumes parsed `Evidence` and `Ledger`; emits shared transport context only, using `checks.guidance(root, commands=...)` and bounded task/declaration decisions. No new execution API or receipt schema.
+**Interfaces:** `core.check_feedback.feedback(ledger, records, command)` consumes parsed `Evidence`, actual command and `Ledger`; emits shared transport context only, using `checks.guidance` and atomic bounded task/declaration decisions. No new execution API or receipt schema.
 
 Controls: actual Python/Node generic results after source edits leave exact milestones stale and emit one owned-check reminder; exact current failure/pass and owned envelopes suppress it; off, unrelated and incomplete calls remain quiet; repeated callbacks stay bounded and a new task/configuration permits new advice. A masked child failure remains failure and requires actual owned execution for the stronger association.
 
-- [ ] Pin the demonstrated generalized failure with a meaningful regression watched RED; retain exact/owned attribution refusals and unrelated-language forward controls.
-- [ ] Make the minimal shared repair; observe GREEN and run affected command/hook/milestone controls. Push the verified repair with its evidence.
+- [x] Pin the demonstrated generalized failure with a meaningful regression watched RED; retain exact/owned attribution refusals and unrelated-language forward controls.
+- [x] Make the minimal shared repair; observe GREEN and run affected guidance/feedback controls. Push the verified repair with its evidence; broader combined qualification follows Task 3.
 
 ### Task 3: Remove demonstrated redundant work
 
