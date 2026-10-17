@@ -33,6 +33,12 @@ unchanged. These successive observations do not estimate the causal effect of
 the guidance repair or a coding-quality advantage. See the
 [retained outcomes](../../results/check-adoption/installed-acceptance.json).
 
+The subsequent [matched comparison](../../results/matched-workflow/README.md)
+completes four conversations and sixteen independently reproduced snapshots.
+Both correctness pairs tie, assisted process time is higher, and native owned
+adoption is Python 4/4 versus JavaScript 0/4. The controlled prerequisite success
+does not generalize to every development workflow or establish a coding benefit.
+
 See [design](../superpowers/specs/2026-10-17-declared-check-adoption-design.md),
 [plan](../superpowers/plans/2026-10-17-declared-check-adoption.md) and
 [guide](../../the-guide/declared-checks.md).

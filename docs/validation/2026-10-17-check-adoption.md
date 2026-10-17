@@ -1,5 +1,11 @@
 # Declared-check adoption and batches — validation
 
+Follow-on: the [matched comparison](2026-10-17-matched-workflow.md) has since
+completed at the same frozen runtime. It retains two correctness ties, higher
+assisted times, Python 4/4 and JavaScript 0/4 owned adoption, and sixteen reproduced
+source snapshots. The prerequisite observations below remain their own record;
+their earlier next-step statements describe the sequence before that comparison.
+
 **2026-10-17 — Readable runner guidance and owned declared-check batches qualified.**
 Explicit new verification tasks receive bounded advice even without edits or
 inferred coding claims. Readable arguments accompany executable commands.

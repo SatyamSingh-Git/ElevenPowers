@@ -318,6 +318,18 @@ for unconfigured legacy evidence. See [the design](design/external-input-session
 
 ## Installed multi-stage controls
 
+The [completed matched batch](../results/matched-workflow/README.md) can be
+independently graded without a model:
+
+```sh
+python -m eval.workflow_results --reproduce results/matched-workflow/source-archive
+```
+
+All sixteen snapshots reproduce. Both pairs tie on correctness with higher
+assisted process times and mixed native adoption. Preserve its frozen protocol
+and every original outcome; do not replace cases or use reproduction as native
+attestation. Use the existing pinned project environment for isolated child checks.
+
 Use the [installed multi-stage guide](../the-guide/installed-multistage.md) for free rehearsals and source reproduction. Installation/CI launch no model. Live adoption and matched outcome comparison require explicit user authorization, which may be standing approval; do not ask again when it already covers the work. No-model qualification comes first, and native delivery remains separate from correctness.
 
 The installed trial's real callback controls are in

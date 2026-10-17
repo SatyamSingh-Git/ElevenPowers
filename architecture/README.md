@@ -1,5 +1,15 @@
 # ElevenPowers — living architecture graph
 
+The completed [matched workflow comparison](../results/matched-workflow/README.md)
+is drawn in all five views: four conversations, sixteen reproduced snapshots,
+two correctness ties, higher assisted time and Python 4/4 versus JavaScript 0/4
+owned adoption. Current task receipts and exact declared milestone states stay
+separate. No coding-quality/speed gain was observed. Next diagnose the JavaScript
+gap and native/hook overhead with no-model controls before a generalized repair.
+See [journey 84](../journey/84-a-tie-is-still-a-result.md) and
+[validation](../docs/validation/2026-10-17-matched-workflow.md). Earlier dated
+milestones and delivery records below keep their original producer identities.
+
 Readable no-edit verification guidance and explicit owned batches are drawn in
 all five views: one owner/deadline, separate property receipts, complete selected
 outcomes and frozen command/context guards. The rendered map passes with 171

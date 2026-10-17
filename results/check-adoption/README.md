@@ -33,7 +33,12 @@ that the guidance change caused a measured difference. The authored arithmetic
 check is an independent correctness control, not an ordinary-versus-assisted
 coding experiment or population estimate.
 
-Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
+Follow-on completed: the [fresh matched comparison](../matched-workflow/README.md)
+retains all four conversations and sixteen independently reproduced snapshots.
+Both pairs tie at 10/10 groups with no observed regression; assisted process time
+is higher in both. Owned adoption qualifies Python 4/4 turns and JavaScript 0/4,
+with stale exact milestones in the latter. No coding-quality/speed gain was
+observed. Next diagnose that gap and native/hook overhead with no-model controls.
 
 [Delivery evidence](delivery.json) binds verified remote main and the exact
 served architecture HTML/data bytes. The [joined qualification](qualification.json)

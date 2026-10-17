@@ -1,5 +1,12 @@
 # Installed multi-stage verification
 
+Current follow-on results live separately: the later guidance/batch producer
+[qualified both controlled installed trials](../check-adoption/README.md), then
+[completed all four matched conversations](../matched-workflow/README.md).
+That comparison retains two correctness ties, higher assisted times and mixed
+owned-runner adoption. All sixteen snapshots reproduce. The original failures
+and rehearsals below remain unchanged at their recorded producers.
+
 This directory separates deterministic harness controls, installed adoption and
 ordinary-versus-assisted correctness measurement. Passing one does not establish
 the others. The new cases are authored Python and JavaScript systems, not a

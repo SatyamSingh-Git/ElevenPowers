@@ -1,5 +1,27 @@
 # Current delivery status
 
+**2026-10-17 — Matched four-stage comparison completed: two correctness ties.**
+All four Sonnet 5.5 medium conversations complete sixteen turns and qualify for
+outcome comparison. All trajectories pass 4/6/8/10 groups, with no observed
+regressions; sixteen exported source snapshots independently reproduce.
+Assisted model-process time is higher in both cases: 2.34× Python, 1.90×
+JavaScript. Python qualifies owned-runner adoption in 4/4 turns and leaves its
+declared milestones CURRENT. JavaScript qualifies 0/4 and leaves both exact
+milestones STALE despite a fresh generic passing task receipt. That pair stays
+in the comparison. No coding-quality or speed improvement was observed.
+
+Twenty focused no-model controls passed. Runtime and frozen harness bytes remain
+unchanged from the separately qualified source; this is not a fresh full-suite
+claim. Earlier installed failures, controlled successes and the unexplained
+advice CI incident keep their own records. Next: no-model diagnosis of the
+JavaScript declared-check gap and native/hook overhead, then a generalized repair
+if justified. Further benefit experiments need independently sourced longitudinal
+cases and frozen sampling, not harder replacements tuned against these results.
+See [findings](../results/matched-workflow/README.md),
+[validation](validation/2026-10-17-matched-workflow.md) and
+[journey 84](../journey/84-a-tie-is-still-a-result.md). Entries below are dated
+history; their earlier next-step statements do not override this status.
+
 **2026-10-17 — Readable runner guidance and owned declared-check batches qualified.**
 Explicit new verification tasks receive bounded advice even without edits or
 inferred coding claims. Readable arguments accompany executable commands.

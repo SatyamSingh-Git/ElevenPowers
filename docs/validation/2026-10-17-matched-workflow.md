@@ -99,3 +99,21 @@ cases and a frozen sampling rule, preserving these ties and all adverse attempts
 Two authored cases and one conversation per arm establish neither population
 benefit nor a particular mechanism's causal contribution. Final review, map/link
 checks and delivery closure are recorded separately as they complete.
+
+## Review and documentation checks
+
+One fresh whole-result reviewer found no Critical, Important or actionable Minor
+defect. The read-only audit independently checked frozen seals, source and
+private-original hashes, prompt identities, timing arithmetic, all-arm summary
+and the exact public reproduction command. Its first restricted-sandbox attempt
+failed before grading; the unchanged command then reproduced sixteen snapshots
+with normal access. This is an environment observation, not an archive repair.
+The implementer's identical normal-access command also passed without a temp
+override in 3.98 seconds. See [review](../../results/matched-workflow/review.json).
+
+The current map passes `python architecture/check.py --render`: all five tabs,
+cards, filters, keyboard, shared links and narrow layout, with 171 nodes, 423
+edges and seven planes. Before closing metadata, the publication guard verified
+712 relative targets and 40 public JSON files, privacy and unchanged runtime/
+frozen-harness identities. These are bounded documentation checks, separate from
+the reused full source qualification. See [verification](../../results/matched-workflow/verification.json).

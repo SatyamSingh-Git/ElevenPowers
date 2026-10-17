@@ -1,4 +1,15 @@
-# Installed Multi-Stage Verification v1 — proposed design
+# Installed Multi-Stage Verification v1 — design and execution history
+
+Current execution: the later guidance/batch producer qualified both controlled
+installed exercises, then completed the explicitly authorized four-conversation
+[matched comparison](../../../results/matched-workflow/README.md). Both pairs
+tie on correctness; assisted time is higher, owned adoption is Python 4/4 and
+JavaScript 0/4, and all sixteen snapshots reproduce. The
+[current execution plan](../plans/2026-10-17-matched-workflow-comparison.md)
+records standing authorization and unchanged contracts/oracles/time policy.
+The proposal and initial blocked status below are historical, not a current
+permission or readiness decision. Next investigate the observed JavaScript
+gap and native overhead with no-model controls before a generalized repair.
 
 Status: initial source and shared task/provenance/guidance repairs are qualified,
 including 70 affected controls, 2,519 local passes/3 skips and all four hosted cells.

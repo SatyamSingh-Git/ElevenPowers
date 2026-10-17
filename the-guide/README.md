@@ -136,6 +136,14 @@ So: use it, and tell me when it is wrong. Bug reports are the most valuable thin
 
 ## Dated native validation and performance
 
+The [four-stage matched comparison](../results/matched-workflow/README.md) is
+complete: both pairs tie at 10/10 independent groups, all sixteen snapshots
+reproduce, and assisted process time is higher in both cases. Python qualifies
+owned-runner use in four turns; JavaScript qualifies none and retains stale exact
+milestones. Correctness, task evidence and milestone evidence remain separate.
+These results establish no coding-quality or speed gain. See
+[validation](../docs/validation/2026-10-17-matched-workflow.md).
+
 Use `ep_validate.py` explicitly to capture current disposable acceptance, build a
 ten-cell host/language matrix, or sample read-only health costs. Software content
 identity now binds preparation and real startup; a runtime update needs a new

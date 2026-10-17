@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "category": "pre-delivery-documentation-and-source-checks",
+  "runtime_fingerprint": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "shipping_evaluation_tests_and_workflows_unchanged": true,
+  "focused_controls_passed": 20,
+  "fresh_full_runtime_suite_claimed": false,
+  "documented_reproduction": {
+    "command": "python -m eval.workflow_results --reproduce results/matched-workflow/source-archive",
+    "normal_temp_and_subprocess_access": true,
+    "temp_override": false,
+    "qualified": true,
+    "stages": 16,
+    "issues": [],
+    "historical_harness_matches": true,
+    "exit_code": 0,
+    "seconds": 3.98
+  },
+  "architecture": {
+    "command": "python architecture/check.py --render",
+    "exit_code": 0,
+    "nodes": 171,
+    "edges": 423,
+    "planes": 7,
+    "views": 5,
+    "cards_filters_keyboard_shared_links_and_narrow_layout": "passed"
+  },
+  "publication_guard_before_closing_metadata": {
+    "relative_targets": 712,
+    "json_files": 40,
+    "runtime_and_harness_unchanged": true,
+    "exit_code": 0
+  },
+  "limits": [
+    "Final main and served HTML/data byte identities are recorded separately in delivery.json.",
+    "Automatic documentation/results-only CI repeats are separate from completed unchanged-source qualification.",
+    "A restricted-sandbox reproduction failure is retained separately from the unchanged command's normal-access success."
+  ]
+}

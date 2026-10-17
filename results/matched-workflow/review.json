@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "category": "fresh-whole-result-review",
+  "base": "55e64e102af2043e4c53d5c2fd48456290432674",
+  "scope": "Completed comparison, source archive, current documentation and five map datasets before delivery closure.",
+  "verdict": "Ready for documentation and results delivery; no experiment, runtime or archive repair warranted.",
+  "critical": [],
+  "important": [],
+  "minor": [],
+  "independent_checks": [
+    "Frozen protocol bytes, matched inputs, scope seals and regenerated live-summary match retained public records.",
+    "All archived source-file hashes, original production snapshots, private-original byte counts/hashes and prompt identities match.",
+    "Exact documented no-model reproduction succeeds with normal subprocess access: sixteen snapshots, no issues, historical harness matches.",
+    "Timing sums and displayed ratios agree; controller wall time includes model-process time, archive/reproduction time is separate.",
+    "JavaScript delivery failure does not exclude its comparable correctness outcome; current task and stale exact milestone states remain distinct.",
+    "Publication guard checks 712 relative targets and 40 JSON files before closing metadata; runtime and frozen harness are unchanged."
+  ],
+  "declined_to_judge": [
+    {
+      "behavior": "Independent authenticity of native execution",
+      "reason": "Unsigned local hashes establish byte correspondence, not attestation.",
+      "disposition": "Accepted limitation; no authenticity claim."
+    },
+    {
+      "behavior": "OS isolation, advice comprehension or component-specific causality",
+      "reason": "These are outside the available observations and protocol guarantees.",
+      "disposition": "Accepted limitation; all remain explicitly unestablished."
+    },
+    {
+      "behavior": "Cause or repair of the older advice CI failure",
+      "reason": "Subsequent green runs do not establish causal evidence.",
+      "disposition": "Accepted; historical incident retained with cause open."
+    },
+    {
+      "behavior": "Fresh full runtime suites and independent browser re-render",
+      "reason": "Reviewer performed a read-only outcome audit; source qualification and implementer render are separate gates.",
+      "disposition": "Accepted; no source change or fresh full-suite claim, implementer all-five-view render passed."
+    },
+    {
+      "behavior": "Restricted-sandbox reproduction failure before snapshot one",
+      "reason": "The unchanged documented command succeeds normally; the sandbox-only auxiliary attempt was stopped.",
+      "disposition": "Retain as an environment restriction, not an archive defect or repair."
+    }
+  ],
+  "recommendation": "Finish main and published-map verification; retain original evidence; diagnose JavaScript exact-check adoption and native overhead without favorable reruns."
+}

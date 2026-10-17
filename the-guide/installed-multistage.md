@@ -25,8 +25,17 @@ Both later conversations now qualify across all three tasks, with owned failure
 and recovery evidence, distinct task identities, preserved protected inputs and
 passing independent correctness checks. See [their retained outcomes](../results/check-adoption/installed-acceptance.json).
 This is acceptance for two authored Claude cases at the recorded runtime. The
-separate coding-outcome comparison needs a fresh batch at that producer; earlier
-prepared batches retain their own source/configuration identities.
+separate coding-outcome comparison has now completed in a fresh batch at that
+producer; earlier prepared batches retain their own source/configuration identities.
+
+The [four-stage results](../results/matched-workflow/README.md) retain all four
+conversations and sixteen independently reproduced source snapshots. Both pairs
+tie at 10/10 groups with no observed regressions. Assisted model-process time is
+2.34× Python and 1.90× JavaScript. Python qualifies owned-runner adoption in 4/4
+turns and leaves declared milestones CURRENT; JavaScript qualifies 0/4 and leaves
+them STALE despite a fresh generic passing task receipt. Missing adoption does
+not exclude that graded pair. No coding-quality or speed improvement was observed.
+Next diagnose the JavaScript gap and native/hook overhead with no-model controls.
 
 ## Rehearse without a model
 
@@ -113,6 +122,8 @@ matches; source grading does not replay or authenticate the old installed
 session. Runtime evidence freshness never normalizes raw bytes. Review source
 privacy before publication; raw host output and captured prompts stay private.
 
-See [design](../docs/superpowers/specs/2026-10-16-installed-multistage-design.md),
+See [current comparison validation](../docs/validation/2026-10-17-matched-workflow.md),
+[journey 84](../journey/84-a-tie-is-still-a-result.md),
+[design](../docs/superpowers/specs/2026-10-16-installed-multistage-design.md),
 [validation](../docs/validation/2026-10-16-installed-multistage.md) and
 [journey 82](../journey/82-a-workflow-needs-a-native-trial.md).

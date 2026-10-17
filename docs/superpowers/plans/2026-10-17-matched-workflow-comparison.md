@@ -40,22 +40,22 @@ standing permission covers Claude subscription Sonnet 5.5 at medium effort.
 
 ### Task 2: Execute the four scheduled arms
 
-- [ ] Check subscription authentication/model/version without a model probe;
+- [x] Check subscription authentication/model/version without a model probe;
   run each scheduled slot once using the frozen controller.
-- [ ] Retain per-stage grades, snapshots, identity/scope/delivery and timing,
+- [x] Retain per-stage grades, snapshots, identity/scope/delivery and timing,
   including incomplete outcomes; push each completed arm's sanitized record.
 
 ### Task 3: Independently reproduce and review
 
-- [ ] Export every scheduled slot with the existing source archiver; independently
+- [x] Export every scheduled slot with the existing source archiver; independently
   regrade the exported snapshots and retain mismatches/missing stages explicitly.
-- [ ] Compute paired outcomes and regressions without filtering delivery failures.
-- [ ] One fresh whole-result review of methods, source identities and claims;
+- [x] Compute paired outcomes and regressions without filtering delivery failures.
+- [x] One fresh whole-result review of methods, source identities and claims;
   fix only demonstrated material export/accounting defects, with witnessed controls.
 
 ### Task 4: Document and deliver
 
-- [ ] Update README/status/plan, guides/research/validation, journey 84 and all five
+- [x] Update README/status/plan, guides/research/validation, journey 84 and all five
   architecture views, including the next planned work supported by the findings.
 - [ ] Render all five map views, validate relative documentation links/privacy,
   push descriptive parts and verify remote main plus actual published map bytes.

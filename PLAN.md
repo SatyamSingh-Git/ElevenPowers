@@ -1,5 +1,25 @@
 # Master Plan v0.8
 
+**2026-10-17 — Matched four-stage comparison completed: two correctness ties.**
+All four Sonnet 5.5 medium conversations completed sixteen turns with qualified
+scope/session identities. Every trajectory passes 4/6/8/10 independent groups,
+with no observed regression. Assisted model-process time was 2.34× Python and
+1.90× JavaScript. Python owns checks in 4/4 turns and finishes with CURRENT
+declared milestones; JavaScript owns none and leaves its exact milestones STALE
+despite a fresh generic passing task receipt. Delivery failure did not exclude
+that pair. All sixteen exported snapshots reproduce; twenty focused no-model
+controls pass. No runtime/harness change or coding-quality/speed gain is claimed.
+
+Next: diagnose the JavaScript declared-check gap and measure native/hook overhead
+from retained traces and no-model controls before a generalized repair. Further
+benefit work needs independently sourced longitudinal cases and a sampling rule
+frozen before outcomes. Keep these ties, earlier failures and open CI causes.
+See [results](results/matched-workflow/README.md),
+[execution plan](docs/superpowers/plans/2026-10-17-matched-workflow-comparison.md),
+[validation](docs/validation/2026-10-17-matched-workflow.md) and
+[journey 84](journey/84-a-tie-is-still-a-result.md). Earlier entries below retain
+their dated qualification and next-step context.
+
 **2026-10-17 — Readable runner guidance and owned declared-check batches qualified.**
 Explicit new verification tasks receive bounded advice even without edits or
 inferred coding claims. Readable arguments accompany executable commands.

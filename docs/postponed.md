@@ -1,5 +1,12 @@
 # Postponed, with the trigger that would build it
 
+**Matched workflow, 2026-10-17.** The [four-stage comparison](../results/matched-workflow/README.md)
+is complete: two correctness ties, higher assisted time and mixed owned adoption.
+Next qualify a no-model diagnosis of JavaScript's stale declared milestones and
+native/hook overhead before a generalized repair. A further benefit trial needs
+independently sourced longitudinal cases and a frozen sampling rule. More producers
+or a harder replacement suite do not establish a coding-quality gain by themselves.
+
 **External inputs, 2026-10-13.** Selected approved local file/tree witnesses now
 qualify explicit PatchProof execution and reuse. See [usage](../the-guide/external-inputs.md)
 and [qualification](validation/2026-10-13-external-inputs.md). Automatic package

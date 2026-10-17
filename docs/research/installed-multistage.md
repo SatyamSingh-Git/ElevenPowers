@@ -1,5 +1,14 @@
 # Provenance of installed multi-stage verification
 
+Current follow-on: the readable-guidance/owned-batch producer qualified both
+controlled installed exercises, then completed the separately authorized
+[matched four-stage comparison](../../results/matched-workflow/README.md).
+Both pairs tie at 10/10 groups with no observed regression, all sixteen source
+snapshots reproduce, and assisted process time is higher. Owned adoption is 4/4
+Python turns and 0/4 JavaScript turns; the latter's exact milestones stay stale.
+No coding-quality/speed gain is observed. Earlier findings below retain their
+original producer and stage of work. See [comparison provenance](matched-workflow.md).
+
 This work extends the existing subscription and preservation harnesses; it adds
 no external runtime dependency. The repository declares Apache-2.0. Reused code:
 `eval/subscription.py` (explicit subscription authentication, no API fallback),

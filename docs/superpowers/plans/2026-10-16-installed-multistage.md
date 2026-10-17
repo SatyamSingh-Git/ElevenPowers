@@ -1,5 +1,14 @@
 # Installed Multi-Stage Verification v1 Implementation Plan
 
+Current follow-on: later shared guidance/batch qualification cleared both
+controlled installed trials. The separately authorized
+[fresh matched comparison](../../../results/matched-workflow/README.md) now
+completes all four conversations and reproduces sixteen snapshots, retaining
+two correctness ties, higher assisted time and mixed native adoption. The
+[current execution checklist](2026-10-17-matched-workflow-comparison.md) supersedes
+the earlier blocked status and per-trial permission proposal below; original
+contracts, oracles and negative attempts remain unchanged.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Qualify installed declared-check adoption, then measure cross-task behavior preservation with a frozen ordinary-versus-assisted comparison.
