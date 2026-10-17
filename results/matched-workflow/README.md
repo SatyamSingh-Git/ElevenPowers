@@ -1,12 +1,16 @@
 # Fresh matched multi-stage comparison
 
-Status: two of four scheduled conversations completed; comparison in progress.
+Status: three of four scheduled conversations completed; comparison in progress.
 The [ordinary Python arm](workflow-queue-py-ordinary.json) and
 [assisted Python arm](workflow-queue-py-assisted.json) each retain 4/6/8/10
 passing cumulative groups, no observed regression, preserved scope and qualified
 session identity. Model-process times were 120.899 and 283.349 seconds,
 respectively: a correctness tie, with a slower assisted arm. Owned-runner
-adoption is observed in all four assisted turns. The JavaScript pair remains.
+adoption is observed in all four assisted Python turns. The
+[assisted JavaScript arm](workflow-orders-js-assisted.json) also finishes at
+4/6/8/10 with no observed regression, using 167.510 model-process seconds;
+none of its four turns qualifies owned-runner adoption. It remains in the
+comparison. The ordinary JavaScript arm is the final scheduled conversation.
 
 [Preparation](prepared.json) freezes the current qualified producer, equal
 matched public inputs, independent baselines, requests/oracle identities and
