@@ -1,6 +1,10 @@
 # Fresh matched multi-stage comparison
 
-Status: prepared and approved; no model slot has launched yet.
+Status: one of four scheduled conversations completed; comparison in progress.
+The [ordinary Python arm](workflow-queue-py-ordinary.json) retains 4/6/8/10
+passing cumulative groups, no observed regression, preserved scope and qualified
+session identity. Its model-process time was 120.899 seconds. No paired outcome
+is available until the matched arm completes; the other scheduled arms remain.
 
 [Preparation](prepared.json) freezes the current qualified producer, equal
 matched public inputs, independent baselines, requests/oracle identities and

@@ -30,13 +30,13 @@ standing permission covers Claude subscription Sonnet 5.5 at medium effort.
 
 ### Task 1: Preflight, rehearse and freeze
 
-- [ ] Verify clean main, current runtime/harness and completed source qualification;
+- [x] Verify clean main, current runtime/harness and completed source qualification;
   inspect current automatic CI for actual failures. Reuse the existing pinned venv.
-- [ ] Run the positive/reference and intended-fault oracle controls, plus fresh
+- [x] Run the positive/reference and intended-fault oracle controls, plus fresh
   four-stage no-model rehearsal and independent sixteen-snapshot reproduction.
-- [ ] Prepare a fresh live batch, validate equal matched public inputs and seal
+- [x] Prepare a fresh live batch, validate equal matched public inputs and seal
   the order, requests, baselines, source/oracle identities and time policy.
-- [ ] Publish sanitized preparation evidence with zero model calls and push.
+- [x] Publish sanitized preparation evidence with zero model calls and push.
 
 ### Task 2: Execute the four scheduled arms
 
