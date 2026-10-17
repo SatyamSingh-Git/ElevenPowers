@@ -1,0 +1,221 @@
+{
+  "schema": 2,
+  "slot": "workflow-queue-py-assisted",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_per_session": 720,
+  "runtime_fingerprint": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "protocol_sha256": "b8c7d61bf4aceaca8bafdbf05f17827121c693e829e4203550bb58033b959c73",
+  "host_version": "2.1.292 (Claude Code)",
+  "controller_seconds": 313.795,
+  "state": "completed",
+  "qualified": true,
+  "delivery_verified": true,
+  "stages": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 4,
+      "failed": 0,
+      "source_sha256": {
+        "service.py": "1fa71efb75da8d34c04cc9c52fbf9e7afdf1111c40c042b5bbe92f2f2179758a",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+      },
+      "oracle_sha256": "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 90.271537,
+      "delivery_verified": true,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 6,
+      "failed": 0,
+      "source_sha256": {
+        "service.py": "4a56ad57292b5951e2644e556fb276b5286645c0a2d16a0f53efcb3812a933e9",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+      },
+      "oracle_sha256": "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 73.245465,
+      "delivery_verified": true,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 3,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 8,
+      "failed": 0,
+      "source_sha256": {
+        "service.py": "b9cde51ec01888836b3c2695e7b08a5618a210e6308cb84038738baacdeb63e2",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+      },
+      "oracle_sha256": "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 62.25685,
+      "delivery_verified": true,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 4,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 10,
+      "failed": 0,
+      "source_sha256": {
+        "service.py": "215e2cafc0c5537a3de8d9bd657ddd50340e354716f5204e9c13a8009c2d33f3",
+        "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+      },
+      "oracle_sha256": "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 57.57483,
+      "delivery_verified": true,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    }
+  ],
+  "model_seconds": 283.348682,
+  "issues": [],
+  "observations": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 180.0,
+      "elapsed_ms": 90271.537,
+      "exit_code": 0,
+      "prompt_sha256": "f25e62f17cc258d72060e8e59f6a0be0d294ea63318fee4ad0b31b1c852ebd93",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 10,
+          "cache_creation_input_tokens": 9885,
+          "cache_read_input_tokens": 50121,
+          "output_tokens": 3435
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "35d2b81b6c98dc7edfa89d8b750747bedf5502e01552bdc530c762d535b4d53b",
+      "native": {
+        "state": "observed",
+        "native_runner_adoption": true,
+        "task": "6f32a8c556d9acb229035e62c32bb8df506deff330b01e9789066c15ab760df1",
+        "owned_receipts": 1,
+        "completed_runner_calls": 1
+      }
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 209.90948766666668,
+      "elapsed_ms": 73245.465,
+      "exit_code": 0,
+      "prompt_sha256": "35798b0f02fbe94c12ed5285c3b4c621fdd4164ae765f230f556f241f9593595",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 7504,
+          "cache_read_input_tokens": 32610,
+          "output_tokens": 2974
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "35d2b81b6c98dc7edfa89d8b750747bedf5502e01552bdc530c762d535b4d53b",
+      "native": {
+        "state": "observed",
+        "native_runner_adoption": true,
+        "task": "b1e51543e8221a539163fe46370a241dfd98c575258caa4ee1143f78b3ab8aac",
+        "owned_receipts": 1,
+        "completed_runner_calls": 1
+      }
+    },
+    {
+      "stage": 3,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 278.241499,
+      "elapsed_ms": 62256.85,
+      "exit_code": 0,
+      "prompt_sha256": "a99842fa4ece7d8654860e53477d33fe2711b03b080ded6c2f09bab6d9c0f25b",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 6624,
+          "cache_read_input_tokens": 49289,
+          "output_tokens": 2249
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "35d2b81b6c98dc7edfa89d8b750747bedf5502e01552bdc530c762d535b4d53b",
+      "native": {
+        "state": "observed",
+        "native_runner_adoption": true,
+        "task": "d09dc0453794ce33b725c6d9eb8f8123d261d25ba94db6b785b8c249b7a09149",
+        "owned_receipts": 1,
+        "completed_runner_calls": 1
+      }
+    },
+    {
+      "stage": 4,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 494.226148,
+      "elapsed_ms": 57574.83,
+      "exit_code": 0,
+      "prompt_sha256": "bf8ed8c65d7c2d64241028236c3d1230af323b694a567d169924b2cde1e758be",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 9891,
+          "cache_read_input_tokens": 101105,
+          "output_tokens": 5487
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "35d2b81b6c98dc7edfa89d8b750747bedf5502e01552bdc530c762d535b4d53b",
+      "native": {
+        "state": "observed",
+        "native_runner_adoption": true,
+        "task": "0af82ebc22b374debeec24cc156c23c8096f79c3952ebd0669240c5a85dcc8aa",
+        "owned_receipts": 2,
+        "completed_runner_calls": 2
+      }
+    }
+  ]
+}

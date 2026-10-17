@@ -2,7 +2,7 @@
   "schema": 2,
   "state": "incomplete",
   "scheduled": 4,
-  "attempted": 1,
+  "attempted": 2,
   "outcome_comparable": false,
   "delivery_verified": false,
   "readiness": "separate_installed_acceptance_required",
@@ -95,16 +95,93 @@
         "issues": []
       },
       "assisted": {
-        "state": "not_attempted",
-        "qualified": false,
-        "delivery_verified": false,
-        "stages": [],
-        "model_seconds": null,
+        "state": "completed",
+        "qualified": true,
+        "delivery_verified": true,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "1fa71efb75da8d34c04cc9c52fbf9e7afdf1111c40c042b5bbe92f2f2179758a",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 90.271537,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "4a56ad57292b5951e2644e556fb276b5286645c0a2d16a0f53efcb3812a933e9",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 73.245465,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "b9cde51ec01888836b3c2695e7b08a5618a210e6308cb84038738baacdeb63e2",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 62.25685,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.py": "215e2cafc0c5537a3de8d9bd657ddd50340e354716f5204e9c13a8009c2d33f3",
+              "formatting.py": "1ab17ab667313ac42c38133839bd99f2e0ee2efd8e2cb0f6ef787f59dc6017fc"
+            },
+            "oracle_sha256": "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 57.57483,
+            "delivery_verified": true,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 283.348682,
         "issues": []
       },
-      "outcome_comparable": false,
-      "delivery_verified": false,
-      "difference": null
+      "outcome_comparable": true,
+      "delivery_verified": true,
+      "difference": 0
     },
     {
       "case": "workflow-orders-js",
