@@ -1,0 +1,87 @@
+{
+  "schema": 2,
+  "prepared_at": "2026-10-17T08:59:34.930092+00:00",
+  "host": "claude",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_per_session": 720,
+  "runtime_fingerprint": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "slots": [
+    "workflow-orders-js-assisted"
+  ],
+  "limits": [
+    "One authored JavaScript four-stage acceptance; no ordinary comparison arm.",
+    "Historical JavaScript result remains unchanged; no causal coding-quality or speed comparison.",
+    "No favorable retry, API fallback, case/request/oracle change or human candidate repair."
+  ],
+  "stage_count": 4,
+  "purpose": "single-assisted-installed-acceptance-not-a-paired-comparison",
+  "category": "prepared-not-run",
+  "model_calls": 0,
+  "source_candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
+  "protocol_sha256": "e0b0c795198c4fb8c0f27b4ae8733383506308c422811db2ea5941ff47cd7a21",
+  "host_version": "2.1.292 (Claude Code)",
+  "authorization": "Standing user permission for needed Sonnet 5.5 medium subscription sessions; no API fallback.",
+  "launch_prerequisite": "Current repaired source no-model regression and four-cell hosted qualification.",
+  "initial": {
+    "CONTRACT.md": "534d0a08ba49777fdf248b75b32e8c0cba7879271710c53784051ce54d4a080d",
+    "elevenpowers.milestones.json": "72532ac3d35e77abbeaee8efd20aa627e949a7bf7f653790de3df6b1419485b1",
+    "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf",
+    "service.cjs": "90cd796fa40f5f71087b73bfab374db966b46caac18011f9b669829656425f85",
+    ".claude/settings.local.json": "afbb8d2c67f0b06cc3362f0f087f3adc43f890498aaa4f2a2524f67aec8ed0ce",
+    "test/core.test.cjs": "3188a44b5fcfb39612683aaa99cabbf9faac21ce140a18c8ffbfc7f72d27ff76",
+    "test/formatting.test.cjs": "0507d5685f1ff262e18747291396426ba1f855c2c9b7201e0c327b40d2a1b2ee"
+  },
+  "baseline": {
+    "state": "graded",
+    "groups": [
+      {
+        "id": "core",
+        "introduced_stage": 0,
+        "state": "passed"
+      },
+      {
+        "id": "formatting",
+        "introduced_stage": 0,
+        "state": "passed"
+      }
+    ],
+    "checks": [
+      {
+        "id": "core",
+        "introduced_stage": 0,
+        "state": "passed"
+      },
+      {
+        "id": "formatting",
+        "introduced_stage": 0,
+        "state": "passed"
+      }
+    ],
+    "passed": 2,
+    "failed": 0,
+    "source_sha256": {
+      "service.cjs": "90cd796fa40f5f71087b73bfab374db966b46caac18011f9b669829656425f85",
+      "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+    },
+    "oracle_sha256": "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
+    "elapsed_ms": 132.797
+  },
+  "oracles": [
+    "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
+    "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+    "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+    "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+    "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91"
+  ],
+  "requests_sha256": [
+    "ed3ce6e1f23b0b2c2e35a4081f2c58926a32e560d02ddf6061336075f0973779",
+    "902e7e89f8e41eb752bfdb63d00b2e0e51778e3588f7169e69b09494083a26e9",
+    "b20b0fb32351cc6490b06015d32dbfd9e68a3c48754f93a2cb035b50c25d83ea",
+    "6d7fcfd11cf6aa5015c907f1168f5387551ff84db4514dce54f14d2bd81809a1"
+  ],
+  "prepared_not_scheduled": [
+    "workflow-orders-js-ordinary"
+  ]
+}

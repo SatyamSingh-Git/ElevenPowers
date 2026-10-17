@@ -87,6 +87,15 @@ adverse outcome remains retained; no API fallback, favorable retry or human
 candidate repair is allowed. This does not replace the earlier comparison or
 establish that a repair caused a behavioral difference.
 
+Final prelaunch inspection found the first unlaunched batch beneath this
+machine's home Git repository. Its [original zero-call preparation](../../results/workflow-checks/installed-prepared-original.json)
+and raw directory remain retained. A fresh active preparation uses system temp
+outside Git ancestors. Case, request/oracle identities, runtime, harness, model,
+single assisted schedule and time cap are unchanged; both baseline groups pass.
+The replacement is sealed and pushed before any model outcome. Launch now
+asserts the outside-Git boundary. This is an evaluation preparation repair,
+not an installed failure or a new runtime change.
+
 ## Delivery gates
 
 Full repaired-source regression, four-cell hosted results, named no-model gates,

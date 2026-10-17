@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "prepared_at": "2026-10-17T08:59:34.930092+00:00",
+  "prepared_at": "2026-10-17T09:58:34.678033+00:00",
   "host": "claude",
   "model": "claude-sonnet-5-5",
   "effort": "medium",
@@ -19,8 +19,8 @@
   "purpose": "single-assisted-installed-acceptance-not-a-paired-comparison",
   "category": "prepared-not-run",
   "model_calls": 0,
-  "source_candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
-  "protocol_sha256": "e0b0c795198c4fb8c0f27b4ae8733383506308c422811db2ea5941ff47cd7a21",
+  "source_candidate": "bf52d92bbea7f397520fe1c4c28a509383212f82",
+  "protocol_sha256": "dc7a05cdcd85578aefe782bb8d44c5263d056bc9ee8bb6fc969e2538bc3fcfa7",
   "host_version": "2.1.292 (Claude Code)",
   "authorization": "Standing user permission for needed Sonnet 5.5 medium subscription sessions; no API fallback.",
   "launch_prerequisite": "Current repaired source no-model regression and four-cell hosted qualification.",
@@ -66,7 +66,7 @@
       "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
     },
     "oracle_sha256": "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
-    "elapsed_ms": 132.797
+    "elapsed_ms": 143.465
   },
   "oracles": [
     "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
@@ -83,5 +83,7 @@
   ],
   "prepared_not_scheduled": [
     "workflow-orders-js-ordinary"
-  ]
+  ],
+  "supersedes": "installed-prepared-original.json",
+  "preparation_repair": "Original batch was unlaunched beneath a home Git ancestor. New disposable batch is outside Git ancestors; case, requests, oracles, runtime, model, schedule and cap are unchanged."
 }

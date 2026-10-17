@@ -87,6 +87,13 @@ same four-stage requests and independent checks, Sonnet 5.5 medium and a shared
 720-second cap. It has no ordinary comparison arm. The preparation helper's
 ordinary baseline is explicitly not scheduled or launched.
 
+One more no-model check caught a setup error before launch: the first disposable
+batch was under this machine's home Git ancestor. We retained its zero-call
+preparation and created a fresh identical protocol outside Git ancestors. Requests,
+oracles, producer, model, schedule and cap stayed fixed. The new seal was pushed
+before outcomes; the launch guard now checks the boundary. No model allowance
+was spent finding this.
+
 Full changed-source qualification precedes that live use. Its actual outcomes,
 including any failure or incomplete stage, belong in the
 [current evidence record](../results/workflow-checks/README.md) and
