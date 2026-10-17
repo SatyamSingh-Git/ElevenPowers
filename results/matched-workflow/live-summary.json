@@ -1,9 +1,9 @@
 {
   "schema": 2,
-  "state": "incomplete",
+  "state": "complete",
   "scheduled": 4,
-  "attempted": 3,
-  "outcome_comparable": false,
+  "attempted": 4,
+  "outcome_comparable": true,
   "delivery_verified": false,
   "readiness": "separate_installed_acceptance_required",
   "pairs": [
@@ -186,11 +186,88 @@
     {
       "case": "workflow-orders-js",
       "ordinary": {
-        "state": "not_attempted",
-        "qualified": false,
+        "state": "completed",
+        "qualified": true,
         "delivery_verified": false,
-        "stages": [],
-        "model_seconds": null,
+        "stages": [
+          {
+            "stage": 1,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 4,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "3f1976ce03753af02dfe81ab8d819d981e12ba4d2c06554f357bc71875837daa",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 23.716677,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 2,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 6,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "b96f9d40b34c0e476a5958e3d6b31cda59f7f3b62de552b5b7b6602a87bbd97e",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 19.397232,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 3,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 8,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "4a209624a2377f9a6ec23215d74a0e152ceef5a72719eba8762bb81333af4c8a",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 21.100053,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          },
+          {
+            "stage": 4,
+            "state": "completed",
+            "grade_state": "graded",
+            "passed": 10,
+            "failed": 0,
+            "source_sha256": {
+              "service.cjs": "e937e5637e29552e39f3da9bcbd7800a7088f589443783b42af95371ad764197",
+              "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+            },
+            "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+            "source_grade_valid": true,
+            "provenance": "retained_record_checked_against_source_snapshot",
+            "model_seconds": 24.000829000000003,
+            "delivery_verified": false,
+            "regressed": [],
+            "earlier_failed": [],
+            "new_failed": []
+          }
+        ],
+        "model_seconds": 88.21479099999999,
         "issues": []
       },
       "assisted": {
@@ -278,9 +355,9 @@
         "model_seconds": 167.509516,
         "issues": []
       },
-      "outcome_comparable": false,
+      "outcome_comparable": true,
       "delivery_verified": false,
-      "difference": null
+      "difference": 0
     }
   ],
   "paired_correctness_advantage_observed": false,

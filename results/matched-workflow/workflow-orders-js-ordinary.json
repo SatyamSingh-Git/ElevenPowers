@@ -1,0 +1,221 @@
+{
+  "schema": 2,
+  "slot": "workflow-orders-js-ordinary",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds_per_session": 720,
+  "runtime_fingerprint": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "harness_sha256": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "protocol_sha256": "b8c7d61bf4aceaca8bafdbf05f17827121c693e829e4203550bb58033b959c73",
+  "host_version": "2.1.292 (Claude Code)",
+  "controller_seconds": 95.648,
+  "state": "completed",
+  "qualified": true,
+  "delivery_verified": false,
+  "stages": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 4,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "3f1976ce03753af02dfe81ab8d819d981e12ba4d2c06554f357bc71875837daa",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 23.716677,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 6,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "b96f9d40b34c0e476a5958e3d6b31cda59f7f3b62de552b5b7b6602a87bbd97e",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 19.397232,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 3,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 8,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "4a209624a2377f9a6ec23215d74a0e152ceef5a72719eba8762bb81333af4c8a",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 21.100053,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    },
+    {
+      "stage": 4,
+      "state": "completed",
+      "grade_state": "graded",
+      "passed": 10,
+      "failed": 0,
+      "source_sha256": {
+        "service.cjs": "e937e5637e29552e39f3da9bcbd7800a7088f589443783b42af95371ad764197",
+        "formatting.cjs": "438fcca05d780743207b0138fe2baf5e7f838be361ba4b023024b62e29fca5bf"
+      },
+      "oracle_sha256": "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91",
+      "source_grade_valid": true,
+      "provenance": "retained_record_checked_against_source_snapshot",
+      "model_seconds": 24.000829000000003,
+      "delivery_verified": false,
+      "regressed": [],
+      "earlier_failed": [],
+      "new_failed": []
+    }
+  ],
+  "model_seconds": 88.21479099999999,
+  "issues": [],
+  "observations": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 180.0,
+      "elapsed_ms": 23716.677,
+      "exit_code": 0,
+      "prompt_sha256": "83edf2c403b7c92ddc48255edbcbd7d0607e50549cee9612d45f7cd092195e4b",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 8,
+          "cache_creation_input_tokens": 6102,
+          "cache_read_input_tokens": 30795,
+          "output_tokens": 2159
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": true,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "b15387a69c90466aa3f0d94cea0a264002498461482b9b5bc5ba15b67782ca7b",
+      "native": {
+        "state": "incomplete",
+        "native_runner_adoption": false,
+        "task": "8219a4b82163e283011140c7ad0cea0d2123078eff26b4bd5557ed5e9dbf798d",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      }
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 232.094441,
+      "elapsed_ms": 19397.232,
+      "exit_code": 0,
+      "prompt_sha256": "a634ebd00d1d329df84736c3cda8e7d4b8ebfffc014e6f31e718e53131743b05",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 2645,
+          "cache_read_input_tokens": 23054,
+          "output_tokens": 2135
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "b15387a69c90466aa3f0d94cea0a264002498461482b9b5bc5ba15b67782ca7b",
+      "native": {
+        "state": "incomplete",
+        "native_runner_adoption": false,
+        "task": "8219a4b82163e283011140c7ad0cea0d2123078eff26b4bd5557ed5e9dbf798d",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      }
+    },
+    {
+      "stage": 3,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 338.4430455,
+      "elapsed_ms": 21100.053,
+      "exit_code": 0,
+      "prompt_sha256": "a991afa392d8e545cb099a3b5acc22ee62fc951e3918140453383b559530d0cf",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 6,
+          "cache_creation_input_tokens": 2777,
+          "cache_read_input_tokens": 44556,
+          "output_tokens": 2242
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "b15387a69c90466aa3f0d94cea0a264002498461482b9b5bc5ba15b67782ca7b",
+      "native": {
+        "state": "incomplete",
+        "native_runner_adoption": false,
+        "task": "8219a4b82163e283011140c7ad0cea0d2123078eff26b4bd5557ed5e9dbf798d",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      }
+    },
+    {
+      "stage": 4,
+      "state": "completed",
+      "scope": "preserved",
+      "seconds_cap": 655.786038,
+      "elapsed_ms": 24000.829,
+      "exit_code": 0,
+      "prompt_sha256": "ba14d487316c70326416ea5b6a13668d0e37892f626aee294f2e71c4307036a4",
+      "host_observation": {
+        "completed": true,
+        "usage": {
+          "input_tokens": 4,
+          "cache_creation_input_tokens": 3113,
+          "cache_read_input_tokens": 33820,
+          "output_tokens": 2776
+        },
+        "models": [
+          "claude-sonnet-5-5"
+        ],
+        "completion_language": false,
+        "failure": "unavailable"
+      },
+      "conversation_sha256": "b15387a69c90466aa3f0d94cea0a264002498461482b9b5bc5ba15b67782ca7b",
+      "native": {
+        "state": "incomplete",
+        "native_runner_adoption": false,
+        "task": "8219a4b82163e283011140c7ad0cea0d2123078eff26b4bd5557ed5e9dbf798d",
+        "owned_receipts": 0,
+        "completed_runner_calls": 0
+      }
+    }
+  ]
+}
