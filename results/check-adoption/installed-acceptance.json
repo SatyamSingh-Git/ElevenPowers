@@ -5,8 +5,8 @@
   "protocol": "declared-runner",
   "requested_model": "claude-sonnet-5-5",
   "effort": "medium",
-  "conversations": 1,
-  "qualified_conversations": 1,
+  "conversations": 2,
+  "qualified_conversations": 2,
   "observations": [
     {
       "language": "python",
@@ -18,9 +18,20 @@
       "independent_correctness_exit": 0,
       "model_calls": 3,
       "model_seconds": 96.921
+    },
+    {
+      "language": "javascript",
+      "state": "returned",
+      "qualified": true,
+      "native_runner_adoption": true,
+      "task_boundaries": true,
+      "behavior_qualified": true,
+      "independent_correctness_exit": 0,
+      "model_calls": 3,
+      "model_seconds": 115.408
     }
   ],
-  "model_process_seconds": 96.921,
+  "model_process_seconds": 212.329,
   "api_fallback": false,
   "retries": 0,
   "limits": [
