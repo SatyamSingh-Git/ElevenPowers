@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "observations": [
+    {
+      "language": "python",
+      "stage": 1,
+      "completed_owned_envelopes": 2,
+      "literal_batch_flag_calls": 1,
+      "native_owned_adoption": true,
+      "native_stream_sha256": "9a6d80322ca1885655f25977029b1ade7dd3e90ac10f7dfc749349345383cd73"
+    },
+    {
+      "language": "python",
+      "stage": 2,
+      "completed_owned_envelopes": 1,
+      "literal_batch_flag_calls": 1,
+      "native_owned_adoption": true,
+      "native_stream_sha256": "6a3849774474c7f404e66f1eed13f1df3fa33c0b72e2cf052e8bffbd625dd304"
+    },
+    {
+      "language": "python",
+      "stage": 3,
+      "completed_owned_envelopes": 1,
+      "literal_batch_flag_calls": 1,
+      "native_owned_adoption": true,
+      "native_stream_sha256": "3560be9162cc2780694b6e190ba82cbb57227cb5fac997747976f091f10e6106"
+    },
+    {
+      "language": "javascript",
+      "stage": 1,
+      "completed_owned_envelopes": 2,
+      "literal_batch_flag_calls": 1,
+      "native_owned_adoption": true,
+      "native_stream_sha256": "c4e736aeec7ea0897c5c45f6fafdb46649c34721ecc9a2d814e07a291de7bc6d"
+    },
+    {
+      "language": "javascript",
+      "stage": 2,
+      "completed_owned_envelopes": 1,
+      "literal_batch_flag_calls": 1,
+      "native_owned_adoption": true,
+      "native_stream_sha256": "e46ac3671ce596997706ef9987afdfe95691291d50ef5ae33538720568a3b258"
+    },
+    {
+      "language": "javascript",
+      "stage": 3,
+      "completed_owned_envelopes": 1,
+      "literal_batch_flag_calls": 1,
+      "native_owned_adoption": true,
+      "native_stream_sha256": "a465e4924918eb3a4c1b9ef1c6fb0304b115b47c2e533d596affafed3f7e8915"
+    }
+  ],
+  "model_calls_added": 0,
+  "limits": [
+    "Literal --all presence is an observation of command text, not a general shell parser or execution proof.",
+    "Actual owned receipts, completed native calls and callback qualification are joined separately in each installed language record.",
+    "No command text, private paths or raw host output is exported."
+  ]
+}

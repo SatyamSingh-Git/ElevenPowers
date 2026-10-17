@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "state": "source_and_installed_protocol_qualified",
+  "source_qualified": true,
+  "local_gate_record": "local-gates.json",
+  "hosted_gate_record": "hosted-qualification.json",
+  "local_qualification": "Disjoint complete coverage after an environment repair; the original full invocation remains failed setup.",
+  "no_model_actual_projects": "local.json",
+  "runtime_identities": "runtime-identities.json",
+  "installed_record": "installed-acceptance.json",
+  "installed_qualified": 2,
+  "installed_attempted": 2,
+  "review": {
+    "critical": 0,
+    "important": 1,
+    "minor": 0,
+    "important_fixed": true,
+    "witnessed_red_controls": 3,
+    "affected_passed": 75,
+    "affected_seconds": 76.02
+  },
+  "historical_attempts": "../installed-multistage/README.md",
+  "causal_coding_benefit_measured": false,
+  "limits": [
+    "Installed acceptance concerns these two authored Claude conversations at the recorded runtime.",
+    "Other hosts, arbitrary projects, complete external environments and causal coding improvement remain separate.",
+    "Successful new observations do not replace adverse earlier producer outcomes or prove a repair caused the difference."
+  ]
+}

@@ -1,32 +1,39 @@
 # Runner guidance and owned batch observations
 
+Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage.
+
 The [local no-model exercise](local.json) executes actual unrelated Python and
-JavaScript project checks. Both retain CURRENT/CURRENT, STALE/CURRENT,
-FAILED/CURRENT and recovered CURRENT/CURRENT milestones. A missing first input
-refuses only its consumer while the independent build executes. Native callback
-envelopes are synthetic; `model_calls: 0` and `installed_acceptance: false` remain
-explicit. This is command/evidence validation, not an agent coding comparison.
+JavaScript checks: CURRENT/CURRENT, STALE/CURRENT, FAILED/CURRENT, then recovered
+CURRENT/CURRENT. A missing first input refuses only its consumer while the
+independent build runs. Five synthetic outer-host callbacks cannot overwrite an
+owned failure despite outer exit zero. Model calls are zero; this exercise does
+not qualify installed adoption.
 
-[Producer identities](runtime-identities.json) bind 138 runtime files and the
-unchanged staged evaluation harness. Runtime freshness uses actual raw bytes;
-Git LF and Windows CRLF forms are metadata for independently checking downloaded
-hosted artifacts. Current full local and four-cell source qualification are in
-progress. No new installed session has run at this producer yet.
+[Local gates](local-gates.json) and [hosted qualification](hosted-qualification.json)
+retain actual source checks. Each downloaded batch artifact matches the API ZIP
+digest, expected outcomes/counters and its [raw checkout producer](runtime-identities.json).
+Checkout forms are metadata; runtime freshness remains strict over actual bytes.
 
-[Independent local gates](local-gates.json) retain the audit, grader, historical
-source reproduction, host-doctor and sixteen-snapshot workflow results. The full
-suite remains pending until its own process exits successfully.
+The [new installed aggregate](installed-acceptance.json) retains the two standing-
+authorized Sonnet 5.5 medium conversations, unchanged three-task prompts, a shared
+240-second allowance per conversation, no API fallback and no favorable retries.
+The language records retain turns, scope, task and owned-receipt observations.
+The [native command observations](native-batch-use.json) also retain a completed
+owned envelope with a literal `--all` flag in each of the six turns. Command text
+observations remain separate from actual receipt/callback qualification.
 
-The [hosted record](hosted-qualification.json) currently retains both completed
-Linux cells and their independently checked Python/Node artifacts. Windows
-cells remain pending. A partial matrix is not complete source qualification.
+| Case | Installed qualified | Model-process seconds | Milestone snapshots: affected/independent |
+|---|---|---|---|
+| python | True | 96.921 | CURRENT/CURRENT → STALE/CURRENT → FAILED/CURRENT → CURRENT/CURRENT |
+| javascript | True | 115.408 | CURRENT/CURRENT → STALE/CURRENT → FAILED/CURRENT → CURRENT/CURRENT |
 
-The user has given standing permission for needed Sonnet 5.5 medium subscription
-conversations. The next installed gate uses two disposable conversations,
-240 seconds each across three turns, after healthy source qualification, with
-no API fallback or favorable retries. All outcomes must be retained.
-[Earlier trials](../installed-multistage/README.md) stay unchanged at their own
-producers; none of their failures becomes current acceptance.
+[Earlier trials](../installed-multistage/README.md) remain unchanged at their own
+producers. A new producer's observation neither replaces them nor establishes
+that the guidance change caused a measured difference. The authored arithmetic
+check is an independent correctness control, not an ordinary-versus-assisted
+coding experiment or population estimate.
+
+Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
 
 See [validation](../../docs/validation/2026-10-17-check-adoption.md),
 [provenance](../../docs/research/check-adoption.md),
