@@ -1,5 +1,11 @@
 # What we build on: prior art for each v0.8 component
 
+**Workflow feedback and report reads, 2026-10-17.** Reuse the existing Apache-2.0
+parser, exact/owned checks, native transport, ledger ownership and operation-local
+freshness context. Add bounded advice at a completed generic result and guarded
+source sharing within one read-only human report. No shell evaluator, persistent
+cache or dependency is added; see [provenance](workflow-checks.md).
+
 [Declared-check execution](declared-check-execution.md) reuses the existing completion runner, contained process execution, project OS ownership, exact parser and paired input observations. It adds explicit property selection and durable outcomes independent of outer shell status; no new third-party dependency.
 
 **Command scopes and shared collection, 2026-10-14.** Reuse the delivered input

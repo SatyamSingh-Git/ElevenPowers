@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
+  "runtime_files": 139,
+  "local_raw": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "git_lf": "f0f7dafe84f89c1845a8c7a11f839c65652d21838ecb20957ac2c8e266b50f07",
+  "windows_crlf": "eaa2e9896431672adc4aec5f4b0671be67472a30db2cbb3de1744cccc008b3ea",
+  "harness_local": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "harness_git_lf": "1f4bc9af12eeca6a59cb52eb2b81e4be995dc4999206ce14a5bcda3afbdc68cc",
+  "harness_windows_crlf": "dd09198f38f6f4574fd28c8510cbce9bb6d987a5d3d91c86af985f488dcbdba7",
+  "limits": [
+    "Checkout representations are qualification metadata only; runtime freshness remains strict raw bytes.",
+    "Runtime/harness bytes remain fixed while documentation/results evolve."
+  ]
+}

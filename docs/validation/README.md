@@ -1,5 +1,9 @@
 # Validation records
 
+- [2026-10-17 workflow gap and report work](2026-10-17-workflow-checks.md):
+  actual command diagnosis, bounded shared feedback, witnessed review repairs,
+  guarded source-read work counts and separate changed-source/installed gates.
+
 - [2026-10-17 matched multi-stage comparison](2026-10-17-matched-workflow.md): all four conversations and sixteen stages complete; two correctness ties, higher assisted model-process time, Python 4/4 and JavaScript 0/4 owned-runner adoption, sixteen independently reproduced snapshots and twenty focused no-model controls.
 
 - [2026-10-17 runner guidance and owned batches](2026-10-17-check-adoption.md): no-edit advice, independent owned batches, witnessed race repairs, full local/four-cell source qualification and 2/2 new installed acceptances; causal coding benefit remains separate.

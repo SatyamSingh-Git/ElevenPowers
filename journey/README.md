@@ -1,5 +1,10 @@
 # The journey
 
+Latest: [85 — a result needs the right check](85-a-result-needs-the-right-check.md):
+retained-trace diagnosis, bounded generic-verification feedback, reviewed quiet
+boundaries and measured guarded report-read work; qualification stays separate
+from coding benefit.
+
 Latest: [84 — a tie is still a result](84-a-tie-is-still-a-result.md): four completed conversations, sixteen reproduced snapshots, two correctness ties, higher assisted times and mixed native adoption.
 
 Recent: [83 — one entry point, separate receipts](83-one-entry-point-separate-receipts.md).

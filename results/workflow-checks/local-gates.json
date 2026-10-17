@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "producer": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "model_calls": 0,
+  "qualified": true,
+  "gates": [
+    {
+      "label": "audits",
+      "arguments": [
+        "-m",
+        "pytest",
+        "tests/test_audit_probes.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "seconds": 100.834,
+      "output_sha256": "33f58f8a058c74e1c1b03c3096979af80000fd1c2aad46051da1ad6a5c1991e7",
+      "summary": "107 passed in 100.11s (0:01:40)"
+    },
+    {
+      "label": "grader",
+      "arguments": [
+        "-m",
+        "eval.validate"
+      ],
+      "exit_code": 0,
+      "seconds": 4.38,
+      "output_sha256": "50848d486b86b793c2d36ab54dad10a9e8485899ec2ddd6a798a7840ccabc12e"
+    },
+    {
+      "label": "doctor",
+      "arguments": [
+        "plugin/bin/ep_doctor.py",
+        "--host"
+      ],
+      "exit_code": 0,
+      "seconds": 21.482,
+      "output_sha256": "fc6d21b82d17a5c841c0920ba1fa630b1e0fdb16d63f14971ca2ce6845a88fcd"
+    },
+    {
+      "label": "stdlib",
+      "arguments": [
+        "-S",
+        "-c",
+        "import core.hook; import core.check_feedback; import core.report; import core.evidence"
+      ],
+      "exit_code": 0,
+      "seconds": 0.238,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "actual-checks",
+      "arguments": [
+        "-m",
+        "eval.check_adoption",
+        "--output",
+        "NEW_PRIVATE_DIR"
+      ],
+      "exit_code": 0,
+      "seconds": 63.05,
+      "output_sha256": "37ee01b49c1dfd06a08317463879957da12e0c65757647687ae311484bae2927"
+    },
+    {
+      "label": "workflow-rehearsal",
+      "arguments": [
+        "-m",
+        "eval.workflow_rehearsal",
+        "--output",
+        "NEW_PRIVATE_DIR"
+      ],
+      "exit_code": 0,
+      "seconds": 41.551,
+      "output_sha256": "bf2883a76aef4c8eac9d2f9ef51ea484e9c1e5050a01fbe0de420e13401fd59f"
+    }
+  ]
+}

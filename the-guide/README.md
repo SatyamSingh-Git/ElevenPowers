@@ -1,6 +1,9 @@
 # The Guide
 
-[Owned check batches](declared-checks.md): one explicit command, independent property receipts, shared deadline and automatic no-edit verification guidance.
+[Owned check batches and feedback](declared-checks.md): one explicit command,
+independent property receipts, shared deadline and automatic guidance when generic
+verification leaves an exact declaration unqualified. [Report configuration](configuration.md)
+also describes operation-local guarded source reads.
 
 [Installed multi-stage verification](installed-multistage.md): explicit contributor rehearsals, session allowances, independent grading and archived source reproduction.
 

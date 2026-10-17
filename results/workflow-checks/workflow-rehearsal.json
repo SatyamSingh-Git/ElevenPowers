@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "category": "deterministic-four-stage-rehearsal",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "benefit_comparison": false,
+  "scheduled_slots": 4,
+  "observations": [
+    {
+      "slot": "workflow-queue-py-ordinary",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-queue-py-assisted",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    },
+    {
+      "slot": "workflow-orders-js-ordinary",
+      "stage_passes": [
+        4,
+        6,
+        8,
+        10
+      ]
+    }
+  ],
+  "runtime": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "limits": [
+    "Full valid references with actual commands and private source regrades.",
+    "No native agent, installed acceptance or measured coding benefit."
+  ],
+  "reproduction": {
+    "qualified": true,
+    "stages": 16,
+    "issues": [],
+    "grading_only": true,
+    "historical_harness_matches": true
+  },
+  "qualified": true,
+  "seconds": 35.265
+}
