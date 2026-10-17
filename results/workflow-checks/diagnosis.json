@@ -1,0 +1,364 @@
+{
+  "schema": 1,
+  "category": "no-model-diagnosis-before-repair",
+  "model_calls": 0,
+  "runtime": "d8892c8517e9e5b4cffb540f1362c0464765bb6b824bc5e8c8085600e0e879b6",
+  "baseline": "a220b150c95e004c585765abfa5dc70dfc60e3a6",
+  "original_raw_hashes_verified": true,
+  "observations": [
+    {
+      "slot": "workflow-queue-py-assisted",
+      "phases": {
+        "SessionStart": {
+          "processed": 4,
+          "samples_ms": [
+            1212.672,
+            1507.18,
+            2016.254,
+            893.113
+          ]
+        },
+        "UserPromptSubmit": {
+          "processed": 4,
+          "samples_ms": [
+            541.359,
+            835.923,
+            536.198,
+            263.286
+          ]
+        },
+        "PostToolUse": {
+          "processed": 12,
+          "samples_ms": [
+            44.471,
+            208.258,
+            94.285,
+            45.424,
+            2091.496,
+            93.252,
+            132.357,
+            129.901,
+            206.719,
+            172.332,
+            56.382,
+            64.358
+          ]
+        },
+        "PreToolUse": {
+          "processed": 8,
+          "samples_ms": [
+            253.2,
+            108.745,
+            41.197,
+            45.423,
+            73.11,
+            39.338,
+            23.954,
+            31.77
+          ]
+        },
+        "Stop": {
+          "processed": 4,
+          "samples_ms": [
+            13925.333,
+            19121.972,
+            9885.991,
+            4881.047
+          ]
+        }
+      }
+    },
+    {
+      "slot": "workflow-orders-js-assisted",
+      "phases": {
+        "SessionStart": {
+          "processed": 4,
+          "samples_ms": [
+            322.882,
+            339.065,
+            286.187,
+            453.63
+          ]
+        },
+        "UserPromptSubmit": {
+          "processed": 4,
+          "samples_ms": [
+            254.396,
+            215.464,
+            216.908,
+            259.742
+          ]
+        },
+        "PreToolUse": {
+          "processed": 12,
+          "samples_ms": [
+            21.067,
+            35.806,
+            36.311,
+            22.315,
+            24.847,
+            33.21,
+            83.258,
+            14.596,
+            22.783,
+            66.456,
+            17.83,
+            26.741
+          ]
+        },
+        "PostToolUse": {
+          "processed": 12,
+          "samples_ms": [
+            54.805,
+            53.799,
+            193.541,
+            53.947,
+            52.47,
+            214.519,
+            1177.569,
+            198.004,
+            191.354,
+            951.299,
+            208.855,
+            228.378
+          ]
+        },
+        "Stop": {
+          "processed": 4,
+          "samples_ms": [
+            1979.561,
+            2239.456,
+            4509.68,
+            2140.73
+          ]
+        }
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "case": "workflow-queue-py",
+      "seconds": 2.2,
+      "exit_code": 0,
+      "status": "VERIFIED",
+      "selected": [
+        {
+          "file": "stress.py",
+          "line": 172,
+          "function": "stress",
+          "calls": 1,
+          "self_seconds": 9.1e-05,
+          "cumulative_seconds": 0.81615
+        },
+        {
+          "file": "report.py",
+          "line": 23,
+          "function": "_input_message",
+          "calls": 1,
+          "self_seconds": 1.1e-05,
+          "cumulative_seconds": 0.618992
+        },
+        {
+          "file": "report.py",
+          "line": 194,
+          "function": "_end_report",
+          "calls": 1,
+          "self_seconds": 9e-05,
+          "cumulative_seconds": 0.618869
+        },
+        {
+          "file": "evidence.py",
+          "line": 232,
+          "function": "freshness",
+          "calls": 7,
+          "self_seconds": 3.9e-05,
+          "cumulative_seconds": 0.589784
+        },
+        {
+          "file": "evidence.py",
+          "line": 592,
+          "function": "source_snapshot",
+          "calls": 7,
+          "self_seconds": 0.000159,
+          "cumulative_seconds": 0.587153
+        },
+        {
+          "file": "evidence.py",
+          "line": 495,
+          "function": "scan_sources",
+          "calls": 7,
+          "self_seconds": 0.00077,
+          "cumulative_seconds": 0.58375
+        },
+        {
+          "file": "ratchet.py",
+          "line": 46,
+          "function": "_git",
+          "calls": 9,
+          "self_seconds": 0.000533,
+          "cumulative_seconds": 0.465632
+        },
+        {
+          "file": "ledger.py",
+          "line": 530,
+          "function": "verdicts",
+          "calls": 5,
+          "self_seconds": 7.1e-05,
+          "cumulative_seconds": 0.430569
+        },
+        {
+          "file": "stress.py",
+          "line": 78,
+          "function": "_git",
+          "calls": 2,
+          "self_seconds": 3.3e-05,
+          "cumulative_seconds": 0.274015
+        },
+        {
+          "file": "ledger.py",
+          "line": 552,
+          "function": "status",
+          "calls": 3,
+          "self_seconds": 2e-05,
+          "cumulative_seconds": 0.258241
+        },
+        {
+          "file": "surface.py",
+          "line": 54,
+          "function": "_walk",
+          "calls": 4,
+          "self_seconds": 0.00014,
+          "cumulative_seconds": 0.00288
+        },
+        {
+          "file": "surface.py",
+          "line": 69,
+          "function": "detect",
+          "calls": 1,
+          "self_seconds": 1.5e-05,
+          "cumulative_seconds": 0.000801
+        }
+      ]
+    },
+    {
+      "case": "workflow-orders-js",
+      "seconds": 2.149,
+      "exit_code": 0,
+      "status": "VERIFIED",
+      "selected": [
+        {
+          "file": "stress.py",
+          "line": 172,
+          "function": "stress",
+          "calls": 1,
+          "self_seconds": 0.000102,
+          "cumulative_seconds": 0.839159
+        },
+        {
+          "file": "report.py",
+          "line": 23,
+          "function": "_input_message",
+          "calls": 1,
+          "self_seconds": 1.3e-05,
+          "cumulative_seconds": 0.611111
+        },
+        {
+          "file": "report.py",
+          "line": 194,
+          "function": "_end_report",
+          "calls": 1,
+          "self_seconds": 7.1e-05,
+          "cumulative_seconds": 0.610933
+        },
+        {
+          "file": "evidence.py",
+          "line": 232,
+          "function": "freshness",
+          "calls": 7,
+          "self_seconds": 3.8e-05,
+          "cumulative_seconds": 0.59426
+        },
+        {
+          "file": "evidence.py",
+          "line": 592,
+          "function": "source_snapshot",
+          "calls": 7,
+          "self_seconds": 0.000174,
+          "cumulative_seconds": 0.591356
+        },
+        {
+          "file": "evidence.py",
+          "line": 495,
+          "function": "scan_sources",
+          "calls": 7,
+          "self_seconds": 0.00073,
+          "cumulative_seconds": 0.587574
+        },
+        {
+          "file": "ledger.py",
+          "line": 530,
+          "function": "verdicts",
+          "calls": 5,
+          "self_seconds": 6.9e-05,
+          "cumulative_seconds": 0.432114
+        },
+        {
+          "file": "ratchet.py",
+          "line": 46,
+          "function": "_git",
+          "calls": 9,
+          "self_seconds": 0.000613,
+          "cumulative_seconds": 0.429582
+        },
+        {
+          "file": "stress.py",
+          "line": 78,
+          "function": "_git",
+          "calls": 2,
+          "self_seconds": 2.8e-05,
+          "cumulative_seconds": 0.277041
+        },
+        {
+          "file": "ledger.py",
+          "line": 552,
+          "function": "status",
+          "calls": 3,
+          "self_seconds": 2e-05,
+          "cumulative_seconds": 0.263057
+        },
+        {
+          "file": "surface.py",
+          "line": 54,
+          "function": "_walk",
+          "calls": 4,
+          "self_seconds": 0.00013,
+          "cumulative_seconds": 0.002686
+        },
+        {
+          "file": "surface.py",
+          "line": 69,
+          "function": "detect",
+          "calls": 1,
+          "self_seconds": 1.5e-05,
+          "cumulative_seconds": 0.000784
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "JavaScript uses compound source/test-writing commands and tail/grep-filtered verification; no owned calls are present.",
+    "Both language startup responses include readable owned arguments and encoded invocation; emission does not establish consumption.",
+    "Shared post-command capture retains generic evidence without focused declared-check feedback; verified task reports do not expose this exact-check gap.",
+    "Fresh no-model Python/Node Stop profiles with strength disabled each perform seven source snapshots; report rendering costs about 0.61 seconds locally."
+  ],
+  "proposed_repairs": [
+    "Bounded once-per-task/declaration feedback after generic verification leaves the latest exact receipt unqualified; no automatic execution or weaker attribution.",
+    "Share fresh source inspection within human report rendering, with closing source/configuration guards and no persistent cache."
+  ],
+  "limits": [
+    "Historical callbacks exclude host launch/final registry writes and can include actual verification.",
+    "One scoped profile per language identifies work, not a universal latency estimate or a causal explanation of the prior model-process time gap.",
+    "An initial exploratory profile used default optional strength policy; published baselines explicitly disable it to match comparison policy.",
+    "No installed session, adoption repair, model speedup or coding benefit is claimed by these no-model observations."
+  ]
+}
