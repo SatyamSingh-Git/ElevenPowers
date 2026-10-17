@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "source_candidate": "55e64e102af2043e4c53d5c2fd48456290432674",
+  "latest_main_ci": {
+    "run": 38987135492,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 117261117749,
+        "name": "suite (ubuntu-latest, 3.11)",
+        "conclusion": "success"
+      },
+      {
+        "id": 117261117777,
+        "name": "GitHub evidence presentation (disposable acceptance)",
+        "conclusion": "success"
+      },
+      {
+        "id": 117261117837,
+        "name": "suite (windows-latest, 3.13)",
+        "conclusion": "success"
+      },
+      {
+        "id": 117261117881,
+        "name": "suite (ubuntu-latest, 3.13)",
+        "conclusion": "success"
+      },
+      {
+        "id": 117261117991,
+        "name": "suite (windows-latest, 3.11)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "installed_prerequisite": "../check-adoption/qualification.json",
+  "qualified_installed_conversations": 2,
+  "oracle_controls": {
+    "passed": 17,
+    "seconds": 7.09,
+    "model_calls": 0
+  },
+  "older_ci_incident": {
+    "run": 38986190602,
+    "job": 117258105834,
+    "platform": "windows-latest",
+    "python": "3.11",
+    "test": "tests/test_advice_followup.py::test_changed_emission_scope_is_incomplete[generation]",
+    "observed": "Missing emission field after the worker reported timed out or failed.",
+    "failed": 1,
+    "passed": 2555,
+    "skipped": 5,
+    "seconds": 3807.26,
+    "log_sha256": "6e8af6b18f8973c0656cf49ee9a80c30551a11676ec9969a5dab2bd8729fd0c3",
+    "cause": "not_established",
+    "repair_claimed": false
+  },
+  "limits": [
+    "Subsequent successful identical-source runs do not establish the cause or repair of the earlier incident.",
+    "Authored references and installed acceptance do not establish a paired coding-quality advantage."
+  ]
+}
