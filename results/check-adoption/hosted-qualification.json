@@ -2,7 +2,7 @@
   "schema": 1,
   "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
   "hosted_run": 38979692214,
-  "state": "partial",
+  "state": "all_four_cells_passed",
   "cells": [
     {
       "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
@@ -53,12 +53,59 @@
       "retained_legacy_source_grades": 8,
       "exercise_seconds": 4.689,
       "log_sha256": "c1d8a0aaccbf70bc8706fb3b6e1cf255fdade9717da2b69afa105115c53958a9"
+    },
+    {
+      "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+      "hosted_run": 38979692214,
+      "job": 117237378132,
+      "artifact_id": 12083040330,
+      "artifact_sha256": "c09b77c7f956c8c4dfdbd06cc13a2111861bc556432fb3ebacfca8907c4bfd30",
+      "platform": "windows-latest",
+      "python": "3.11",
+      "producer_form": "windows_crlf",
+      "independently_checked_cases": 2,
+      "suite": {
+        "passed": 2556,
+        "skipped": 5,
+        "seconds": 3415.23
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 71.67
+      },
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "exercise_seconds": 48.703,
+      "log_sha256": "9f65ea9db5c66d71cd91e77e00b8d87db3e5498b497069e4c4d71611d5cfb0a7"
+    },
+    {
+      "candidate": "34021fdeda8d897392ed37898f85229da8cd2bbf",
+      "hosted_run": 38979692214,
+      "job": 117237378047,
+      "artifact_id": 12081968547,
+      "artifact_sha256": "b88b0292d4d9e1d51ff79f8b9592dabb9ea5b10dfc3b84042d07e34f8f92d66f",
+      "platform": "windows-latest",
+      "python": "3.13",
+      "producer_form": "windows_crlf",
+      "independently_checked_cases": 2,
+      "suite": {
+        "passed": 2556,
+        "skipped": 5,
+        "seconds": 3390.37
+      },
+      "audits": {
+        "passed": 107,
+        "skipped": 0,
+        "seconds": 50.56
+      },
+      "grader_cases": 4,
+      "retained_legacy_source_grades": 8,
+      "exercise_seconds": 49.018,
+      "log_sha256": "727cd7d1bc91d22b7519839cca1b00996854d30f71cb8103cb6fb91e3accb603"
     }
   ],
-  "pending": [
-    "suite (windows-latest, 3.11)",
-    "suite (windows-latest, 3.13)"
-  ],
+  "pending": [],
   "failed": [],
   "github_presentation": {
     "job": 117237377806,

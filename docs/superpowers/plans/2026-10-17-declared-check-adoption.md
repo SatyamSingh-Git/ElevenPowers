@@ -81,6 +81,11 @@ the unexecuted suffix in that environment, with an exact disjoint node-ID
 denominator. Local coverage across environments is not a fresh single full-suite
 pass. All four hosted cells must still pass complete coherent suites before live
 use. This is an environment repair; shipping and evaluation source stay unchanged.
+After those four complete hosted suites and independently checked artifacts,
+the two live observations may run alongside the remaining local continuation.
+The diagnosed exercise repair and 32 new runner controls must already pass in
+the corrected environment. Final local coverage and documentation delivery
+remain required; no pending or failed invocation becomes a pass by concurrency.
 
 Task1 guidance remains compatible until Task2 supplies batch execution. Task3
 consumes both after tested integration; filtered advice cannot broaden. Task2
