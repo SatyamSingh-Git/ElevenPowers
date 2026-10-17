@@ -119,3 +119,14 @@ See [the retained acceptance](../../results/workflow-checks/installed-acceptance
 [private-original hashes](../../results/workflow-checks/private-retention.json).
 The source archive honestly marks paired comparison incomplete because no ordinary
 arm was scheduled. Source reproduction is a different qualification.
+
+## Main and published delivery
+
+Main `fc859a6` matched remote main, all thirty fetched remote branch heads were
+contained, and both served architecture files returned HTTP 200 with bytes
+identical to their committed Git blobs. See the
+[delivery record](../../results/workflow-checks/delivery.json). The final metadata
+closure preserves these qualified runtime and rendered map bytes; automatic
+documentation/results CI repeats remain separate from the completed exact-source
+four-cell qualification. Private raw observations and the plan audit are retained
+locally; public records contain bounded findings and hashes.

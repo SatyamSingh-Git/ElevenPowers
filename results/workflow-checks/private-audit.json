@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "archive": ".superpowers/audit-archives/workflow-declared-checks-20261017-160208.zip",
+  "sha256": "2971833ea91e4987e958ad78b3c060e60fe7d599a44eb11290f3838bd8663c6a",
+  "files": 669,
+  "input_bytes": 3336362,
+  "zip_bytes": 886579,
+  "private": true,
+  "original_installed_batch_preserved": true,
+  "superseded_preparation_preserved": true,
+  "limits": [
+    "Private plan ledger, process logs, hosted artifacts and new native originals are archived locally; not uploaded to Git.",
+    "Original historical batch is unchanged; only this plan workspace is eligible for cleanup."
+  ]
+}

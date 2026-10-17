@@ -1,1 +1,183 @@
-{"schema": 1, "state": "pending_final_main_and_published_byte_verification"}
+{
+  "schema": 1,
+  "verified_main": "fc859a640598a436b6eee262960a14b3aa5b23b0",
+  "remote_main": "fc859a640598a436b6eee262960a14b3aa5b23b0",
+  "runtime": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "remote_heads": [
+    {
+      "ref": "refs/remotes/origin/codex/advice-delivery-observations",
+      "head": "b835f974fadf30939e922dbc07aece75b3f579e8",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/behavior-preservation",
+      "head": "3103041340fc98864efacd73f190ed5d214c60f5",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/checkpoint-review",
+      "head": "a4879d1a6ec48fd8b7df7cb1888e1e70f189b2a6",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/command-input-scopes",
+      "head": "b3e36aa417d208bafefce80538c7b87cdf6b22ae",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/declared-check-execution",
+      "head": "170839a9b270f7229345322ddc5068b2c912addb",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/external-input-sessions",
+      "head": "38f80eb737c91e246f19b86b9e2b0b725fff54a2",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/external-input-witnesses",
+      "head": "3996ab2435005b9a24b8141c3bf24acb9056e1a4",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/github-evidence",
+      "head": "c44ff231217f8b08e31d22889b67c0eb6bc9e881",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/hard-task-comparison",
+      "head": "81dce91e5c5c4b316b5e60fabb4ac0912d240c63",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/impact-acceptance",
+      "head": "f31f6a2afb7452b4ce246a163569901843afb9b2",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/impact-graph",
+      "head": "995d2d7789505bfd774d6844f49c36d5b9d9bc63",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/impact-relevance",
+      "head": "d4e3497ce16882c4936491bcdccf21de6f3e1a98",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/installed-multistage",
+      "head": "8d2aafe6bd518209a90c9a81995803b60ae1f92a",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/live-onboarding",
+      "head": "02d12869724ae2925cf5dfb7cc9d90a70899b81f",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/milestone-advisories",
+      "head": "884a6480d7a51c8e246b4f752d1ae16abd670127",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/milestone-rechecks",
+      "head": "fd88f60f6a4c50473adeafd58c36bf84a05b52bb",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/milestone-verification",
+      "head": "1009532a7d2c96b77d217e4790c05378ca07dbc3",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/native-command-recognition",
+      "head": "d05b9328fe138d0a5f4a65928cf990aef0f0eff9",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/native-validation",
+      "head": "ec42ff1a481830d7fd91183acdf4f5061469280f",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/ordinary-session-evidence",
+      "head": "01e8eeafe574d3eab7282f3ea7e51c4f0f1390d1",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/patchproof-impact",
+      "head": "6f5faecce0ce45c7144b87f17d609502bcb8c1d6",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/patchproof-openapi",
+      "head": "ad1539c481698c03e30687aa0d0119badc2906f1",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/patchproof-v1",
+      "head": "db96c51488089e6aa4fc1fdb9df690234bc5f683",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/patchproof-verification",
+      "head": "9c713a1505d75a8419cca25e805016393175fd11",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/portable-report",
+      "head": "523d6a91326eda600f36c25afcd92e2973b1442e",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/project-health",
+      "head": "7649a19f356154b284d07a8987722520123548bc",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/proof-of-benefit",
+      "head": "e326fb51dcf7e7c7ef2986b2cf0136b85f1c9f72",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/strength-relevance",
+      "head": "3528589c72b386363dfd17ea45aff2f47d63f388",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/codex/test-strength",
+      "head": "5b245f965c385609940acc3cab5524871dd684e5",
+      "contained": true
+    },
+    {
+      "ref": "refs/remotes/origin/main",
+      "head": "fc859a640598a436b6eee262960a14b3aa5b23b0",
+      "contained": true
+    }
+  ],
+  "all_heads_contained": true,
+  "pages": [
+    {
+      "file": "architecture/index.html",
+      "url": "https://satyamsingh-git.github.io/ElevenPowers/architecture/index.html?v=fc859a640598a436b6eee262960a14b3aa5b23b0",
+      "http_status": 200,
+      "expected_sha256": "c08ffe827916394aecde7f5be151751cb47de50063c3857d4e27b689a8cfa5a4",
+      "served_sha256": "c08ffe827916394aecde7f5be151751cb47de50063c3857d4e27b689a8cfa5a4",
+      "matches": true
+    },
+    {
+      "file": "architecture/graph-data.js",
+      "url": "https://satyamsingh-git.github.io/ElevenPowers/architecture/graph-data.js?v=fc859a640598a436b6eee262960a14b3aa5b23b0",
+      "http_status": 200,
+      "expected_sha256": "a65547c19ffb1d2ebf81b0f38c8917b518deab3d8b8e22e85d90c6c207356650",
+      "served_sha256": "a65547c19ffb1d2ebf81b0f38c8917b518deab3d8b8e22e85d90c6c207356650",
+      "matches": true
+    }
+  ],
+  "state": "verified",
+  "limits": [
+    "This verifies the main commit before this record is committed; closing metadata preserves qualified runtime and map bytes.",
+    "Current-source full qualification is bound separately; automatic docs/results CI repeats may still be running."
+  ]
+}
