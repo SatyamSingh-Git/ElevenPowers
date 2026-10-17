@@ -1,19 +1,16 @@
 # Current delivery status
 
-**2026-10-17 — Runner guidance repaired; owned declared-check batches implemented.**
-Explicit new verification tasks now receive bounded owned-check advice even
-without edits or inferred coding claims. Readable property labels/arguments
-accompany executable commands. The additional `ep_check.py --all` feature holds
-one owner/deadline while retaining independent property receipts, failures,
-unrun selections and drift guards. Advice itself launches nothing; filtered
-rechecks stay narrow and off/continuation behavior remains.
-No-model Python/Node controls reproduce current/stale/failed/recovered evidence,
-independent missing-input refusal and successful-outer-shell masking. A fresh
-review found one frozen-selection race, now covered by three witnessed failures
-and a repair. Full current source and installed qualification are pending;
-all earlier failed native trials remain retained. Standing user authorization
-covers needed Sonnet 5.5 medium subscription sessions without repeated questions.
-No new coding-quality advantage is established.
+**2026-10-17 — Readable runner guidance and owned declared-check batches qualified.**
+Explicit new verification tasks receive bounded advice even without edits or
+inferred coding claims. Readable arguments accompany executable commands.
+`ep_check.py --all` runs declared properties under one owner and deadline while
+retaining independent receipts, failed checks, unrun selections and drift guards.
+Advice launches nothing; filtered rechecks, off and continuation behavior remain.
+
+Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage.
+
+Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
+
 See [plan](superpowers/plans/2026-10-17-declared-check-adoption.md), [validation](validation/2026-10-17-check-adoption.md) and [journey 83](../journey/83-one-entry-point-separate-receipts.md).
 
 **2026-10-17 — Repaired-runtime installed requalification completed; zero of two qualify.**

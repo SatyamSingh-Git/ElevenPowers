@@ -121,3 +121,13 @@ show both owned tests/build instructions in all six startup/resume responses.
 Instruction emission and completed runner use remain separate observations;
 the cause of non-adoption is not established. The [updated delivery record](repaired/requalification-delivery.json)
 binds the rendered map publication and unchanged qualified source.
+
+## Subsequent readable-guidance and batch observations — 2026-10-17
+
+The later [runner-adoption milestone](../check-adoption/README.md) retains two
+new conversations at its own 138-file runtime, without changing the three-task
+prompts or independent correctness checks. Both qualify across all three tasks;
+the four original/repaired-runtime negative trials above remain unchanged.
+The [new aggregate](../check-adoption/installed-acceptance.json) distinguishes
+native adoption from causal coding benefit. A fresh current-producer batch is
+still needed for the separate matched multi-stage outcome experiment.

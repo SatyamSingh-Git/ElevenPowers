@@ -14,12 +14,19 @@ two separately approved requalification conversations also completed but did
 not qualify. Both now have distinct task identities. Python owns initial and
 recovery receipts but leaves the dependency failure stale; JavaScript uses
 ordinary compound commands throughout and retains no qualifying receipts.
-The larger comparison remains blocked. See the [original attempts](../results/installed-multistage/installed-acceptance.json)
+At that earlier producer the larger comparison remained blocked; the current batch/guidance repair has separate installed observations. See the [original attempts](../results/installed-multistage/installed-acceptance.json)
 and [repaired-runtime attempts](../results/installed-multistage/repaired/installed-acceptance.json).
 Both earlier two-conversation allowances were consumed. The subsequent readable
 guidance and owned-batch repair has its own [current qualification record](../results/check-adoption/README.md).
 The user has since given standing authorization for needed Sonnet 5.5 medium
 subscription sessions; no-model qualification still precedes new live use.
+
+Both later conversations now qualify across all three tasks, with owned failure
+and recovery evidence, distinct task identities, preserved protected inputs and
+passing independent correctness checks. See [their retained outcomes](../results/check-adoption/installed-acceptance.json).
+This is acceptance for two authored Claude cases at the recorded runtime. The
+separate coding-outcome comparison needs a fresh batch at that producer; earlier
+prepared batches retain their own source/configuration identities.
 
 ## Rehearse without a model
 

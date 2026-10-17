@@ -32,3 +32,12 @@ batch API nor more complete receipts establish a coding-quality advantage.
 The user has now given standing permission for needed Sonnet 5.5 medium
 subscription sessions. No-model qualification still comes first; permission
 does not change an acceptance result or justify a favorable retry.
+
+The final source qualification and fresh installed observations are retained
+separately. Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage.
+
+Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
+
+See the [retained observations](../results/check-adoption/README.md),
+[runner guide](../the-guide/declared-checks.md) and
+[dated qualification](../docs/validation/2026-10-17-check-adoption.md).

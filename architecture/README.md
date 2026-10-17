@@ -3,12 +3,11 @@
 Readable no-edit verification guidance and explicit owned batches are drawn in
 all five views: one owner/deadline, separate property receipts, complete selected
 outcomes and frozen command/context guards. The rendered map passes with 171
-nodes, 423 edges and seven planes. Current full-source and installed qualification
-are in progress; earlier failed native attempts remain retained. See
+nodes, 423 edges and seven planes. Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage. See
 [journey 83](../journey/83-one-entry-point-separate-receipts.md) and
 [validation](../docs/validation/2026-10-17-check-adoption.md).
 
-Installed Multi-Stage Verification is drawn in all five views. Both initial native trials completed but did not qualify. Shared task/provenance/independent-command repairs pass 2,519 local tests and all four hosted cells. Two separately approved requalification conversations completed but neither qualified: task identities are distinct, while ordinary compound commands still leave receipt gaps. The larger comparison remains blocked. Frozen four-stage source grades stay separate from native readiness and benefit. See [guide](../the-guide/installed-multistage.md) and [validation](../docs/validation/2026-10-16-installed-multistage.md).
+Installed Multi-Stage Verification is drawn in all five views. Both initial native trials completed but did not qualify. Shared task/provenance/independent-command repairs pass 2,519 local tests and all four hosted cells. Two separately approved requalification conversations completed but neither qualified: task identities are distinct, while ordinary compound commands still leave receipt gaps. At that earlier producer the comparison remained blocked; current adoption observations and next work are recorded above. Frozen four-stage source grades stay separate from native readiness and benefit. See [guide](../the-guide/installed-multistage.md) and [validation](../docs/validation/2026-10-16-installed-multistage.md).
 
 Main delivery and exact published HTML/data identities are retained in the [delivery record](../results/installed-multistage/repaired/delivery.json). That first closure preserved rendered source bytes; later requalification status changes are rendered and published separately.
 

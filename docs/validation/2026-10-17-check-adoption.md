@@ -1,11 +1,15 @@
 # Declared-check adoption and batches — validation
 
-Status: generalized guidance and owned batches are implemented and pushed.
-The fresh review found one Important frozen-selection race; its three controls
-failed as expected and the repair passes 75 affected controls in 76.02 seconds. Full
-local/hosted source qualification and fresh installed adoption remain pending.
-The user has given standing authorization for needed Sonnet 5.5 medium
-subscription sessions; no new model session has run in this work yet.
+**2026-10-17 — Readable runner guidance and owned declared-check batches qualified.**
+Explicit new verification tasks receive bounded advice even without edits or
+inferred coding claims. Readable arguments accompany executable commands.
+`ep_check.py --all` runs declared properties under one owner and deadline while
+retaining independent receipts, failed checks, unrun selections and drift guards.
+Advice launches nothing; filtered rechecks, off and continuation behavior remain.
+
+Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage.
+
+Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
 
 ## What changed
 
@@ -89,10 +93,11 @@ The [portable record](../../results/check-adoption/local.json) retains both
 actual Python/Node cases with zero model calls and separate synthetic-native
 qualification. It completed in 52.984 seconds and matches the
 [138-file runtime identity](../../results/check-adoption/runtime-identities.json).
-The later test-import repair changes no runtime or exercise byte. All five
-rendered map views pass with 171 nodes, 423 edges and seven planes in 7.044
-seconds. Full local execution and the current four-cell hosted run remain in
-progress; these records do not establish installed-model adoption.
+The later test-import repair changes no runtime or exercise byte. The first
+five-view render passed with 171 nodes, 423 edges and seven planes in 7.044
+seconds. At that retention checkpoint local execution and four-cell hosted
+qualification were in progress; the no-model records alone establish no
+installed-model adoption.
 
 The checkout-form metadata was corrected after an independent comparison showed
 that `git archive` applies Windows line-ending conversion here. The exporter now
@@ -106,17 +111,17 @@ guards are unchanged, and no installed trial used the erroneous forms.
 eight reproduced historical source grades and eleven passing host-doctor
 controls. The unchanged workflow harness reproduces sixteen staged source
 snapshots in 31.849 seconds, with zero model calls. Process durations and private
-log digests remain distinct from the tools' own reported durations. A running
-full suite is explicitly pending in this record.
+log digests remain distinct from the tools' own reported durations. At the first
+retention checkpoint, the full suite was explicitly pending.
 
-The [current hosted record](../../results/check-adoption/hosted-qualification.json)
-has two completed Linux cells. Python 3.11 passed 2,552 tests with nine skips in
+The first [hosted checkpoint](../../results/check-adoption/hosted-qualification.json)
+had two completed Linux cells. Python 3.11 passed 2,552 tests with nine skips in
 600.70 seconds; Python 3.13 passed the same counts in 589.44 seconds. Their
 105 passing audits each skip two platform-specific probes. Both complete the
 four-case grader, eight source reproductions and remaining workflow gates.
 Downloaded batch artifacts match the API's ZIP digests, canonical producer bytes,
-all expected outcome transitions and independent execution counts. The Windows
-cells remain pending; this is a partial matrix, not four-cell qualification.
+all expected outcome transitions and independent execution counts. At that
+checkpoint Windows remained pending; the final four-cell record supersedes it.
 
 ## Installed history and next observation
 
@@ -142,12 +147,36 @@ inline live handoff stopped at the failed local gate before any model call.
 original/requalification attempts remain unchanged at their own producer
 identities. Distinct tasks and emitted guidance did not establish owned-runner
 adoption or coding-quality benefit. After healthy current source qualification,
-two fresh Sonnet 5.5 medium conversations will use the unchanged three-turn
+two fresh Sonnet 5.5 medium conversations used the unchanged three-turn
 prompts, 240 seconds total each, no API fallback or favorable retries, under
-standing authorization. Retain every failed/incomplete result. The larger
-independent outcome comparison still requires installed acceptance first.
+standing authorization. Both qualified, without replacing earlier negative
+results. This establishes the installed prerequisite for the separate outcome
+comparison at this producer; that comparison has not run.
 
 See [design](../superpowers/specs/2026-10-17-declared-check-adoption-design.md),
 [plan](../superpowers/plans/2026-10-17-declared-check-adoption.md),
 [guide](../../the-guide/declared-checks.md) and
 [journey 83](../../journey/83-one-entry-point-separate-receipts.md).
+
+## Final source and installed qualification
+
+Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage.
+
+Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained.
+
+The [local gate record](../../results/check-adoption/local-gates.json),
+[four-cell hosted record](../../results/check-adoption/hosted-qualification.json)
+and [new installed outcomes](../../results/check-adoption/installed-acceptance.json)
+have separate producer, artifact and timing identities. The two conversations
+use unchanged three-task prompts and independent arithmetic checks, capped at
+240 seconds each, no API fallback and no favorable retries. Per-language records
+retain all turns, scope checks, task identities, owned-call counts and milestone
+snapshots. Earlier pending statements above describe the sequence of qualification;
+the final records supersede them without replacing any original trial.
+
+The continuation passed 1,081 cases with two skips and 1,478 deselections in
+1,803.10 seconds. Together with the 1,476 completed prefix cases and repaired
+two-case module, this covers the exact 2,561-case collection across disjoint
+cohorts. All five final map views render with 171 nodes, 423 edges and seven
+planes in 5.954 seconds. The final documentation target check passed 728 relative
+links before the closing cross-references; no shipping source changed.

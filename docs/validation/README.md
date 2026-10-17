@@ -1,6 +1,6 @@
 # Validation records
 
-- [2026-10-17 runner guidance and owned batches](2026-10-17-check-adoption.md): no-edit advice, readable arguments, independent batch receipts, actual no-model controls and fresh-review race repair; current full/installed qualification pending.
+- [2026-10-17 runner guidance and owned batches](2026-10-17-check-adoption.md): no-edit advice, independent owned batches, witnessed race repairs, full local/four-cell source qualification and 2/2 new installed acceptances; causal coding benefit remains separate.
 
 - [2026-10-16 installed multi-stage verification](2026-10-16-installed-multistage.md): source-qualified repairs and two further completed but unqualified native conversations; distinct task identities now observed, compound-command runner adoption still incomplete, original failures retained; independent four-stage comparison remains blocked.
 

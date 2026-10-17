@@ -66,9 +66,9 @@
 
 **Files:** results/check-adoption/, docs/status.md, PLAN.md, README.md, guides, validation/research, journey83, architecture/.
 
-- [ ] Run affected/full suite, named audits, grader/legacy source reproduction, doctor and imports; inspect four hosted cells for actual candidate.
-- [ ] Under standing user approval run two fresh Sonnet5.5medium conversations,240s each/3turns,noAPI/no retries, only after healthy qualification. Retain every result and original failures.
-- [ ] Update docs, journey and all five architecture views; render and validate links. Clearly distinguish implemented, source-qualified, native acceptance and coding benefit.
+- [x] Run affected/full suite, named audits, grader/legacy source reproduction, doctor and imports; inspect four hosted cells for actual candidate.
+- [x] Under standing user approval run two fresh Sonnet5.5medium conversations,240s each/3turns,noAPI/no retries, only after healthy qualification. Retain every result and original failures.
+- [x] Update docs, journey and all five architecture views; render and validate links. Clearly distinguish implemented, source-qualified, native acceptance and coding benefit.
 - [ ] Push semantic parts, integrate main and verify remote/publication identity. Preserve unfinished measurement state if installed acceptance still fails.
 
 ## Self-review

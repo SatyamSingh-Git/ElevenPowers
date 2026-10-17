@@ -24,6 +24,15 @@ outer success, recovery and refusal of only the missing input's consumer.
 Controlled callbacks and valid references cannot establish installed adoption,
 causal coding benefit, exhaustive dependency coverage or OS attestation.
 
+The two subsequent installed Sonnet 5.5 medium conversations both qualify at the
+new producer: three tasks each, CURRENT/STALE/FAILED/recovered milestones for the
+affected consumer and continuously current independent behavior. Actual owned
+calls and callback receipts qualify separately from the literal batch-flag
+observations. Both independent arithmetic checks pass and protected inputs stay
+unchanged. These successive observations do not estimate the causal effect of
+the guidance repair or a coding-quality advantage. See the
+[retained outcomes](../../results/check-adoption/installed-acceptance.json).
+
 See [design](../superpowers/specs/2026-10-17-declared-check-adoption-design.md),
 [plan](../superpowers/plans/2026-10-17-declared-check-adoption.md) and
 [guide](../../the-guide/declared-checks.md).

@@ -308,3 +308,10 @@ succeeded; independent HTTPS reads match both committed map files byte for byte.
 [Requalification delivery evidence](../../results/installed-multistage/repaired/requalification-delivery.json)
 retains response hashes, render outcome and the unchanged source identity.
 The final evidence/documentation closure preserves those map and runtime bytes.
+
+## Later producer observation — 2026-10-17
+
+The subsequent [readable-guidance and owned-batch milestone](2026-10-17-check-adoption.md)
+records two new qualified Claude conversations. This is a separate producer and
+observation, not a replacement for any negative trial retained here or a causal
+estimate of coding improvement. See the [new retained aggregate](../../results/check-adoption/installed-acceptance.json).
