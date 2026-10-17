@@ -263,8 +263,12 @@ def claims_to_run_tests(command: str) -> bool:
     packages, this module produced nothing for any of them, and nobody could
     have known without reading the parsers.
     """
+    # Known runner names need no separate `tests` positional argument. This
+    # predicate reports silence and offers advice; it does not qualify an exact
+    # declaration or change the parser's command/receipt attribution.
     return bool(WRAPPER.match(_bare(command))
-                or re.search(r"\b(tests?|specs?)\b", command.lower()))
+                or re.search(r"\b(tests?|specs?|pytest|vitest|jest|rspec|phpunit)\b", command.lower())
+                or runs_tap(command))
 
 
 DECLARED_KINDS = {"tests": Kind.SUITE, "typecheck": Kind.TYPECHECK,

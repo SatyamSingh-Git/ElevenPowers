@@ -414,7 +414,7 @@ def _on_post_tool(payload: dict, root: Path) -> int:
             additionalContext=f"recorded: {len(records)} evidence record(s), {len(failures)} failing",
         )
     from .check_feedback import feedback
-    words = feedback(ledger, records, command)
+    words = feedback(ledger, records, command) if not incomplete else ''
     if words:
         _emit('PostToolUse', additionalContext=words)
     return 0

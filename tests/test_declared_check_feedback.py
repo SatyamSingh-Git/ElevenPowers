@@ -120,3 +120,47 @@ def test_failed_verification_keeps_failure_context_with_reminder(tmp_path,capsys
     replay(tmp_path,command+' | tail -15',done.stdout+done.stderr)
     text=capsys.readouterr().out
     assert 'failing' in text and 'Generic verification recorded' in text
+
+
+@pytest.mark.parametrize('pending',[{'session_id':123,'exit_code':None},
+                                   {'timed_out':True},{'timeout':True}])
+def test_unfinished_generic_callback_does_not_reserve_completed_feedback(tmp_path,capsys,pending):
+    from core.check_feedback import NOTE
+    command,done=project(tmp_path,'python')
+    replay(tmp_path,command+' | tail -15',done.stdout+done.stderr,**pending)
+    assert 'Generic verification recorded' not in capsys.readouterr().out
+    assert not any(d.get('what')==NOTE for d in Ledger.load(tmp_path).decisions)
+    replay(tmp_path,command+' | tail -15',done.stdout+done.stderr)
+    assert 'Generic verification recorded' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize('runner',['pytest','vitest'])
+def test_recognized_runner_without_tests_argument_gets_feedback(tmp_path,capsys,runner):
+    command,done=project(tmp_path,'python')
+    if runner=='pytest':
+        command=f'"{sys.executable}" -m pytest -q'
+        done=run(command,cwd=tmp_path,timeout=15,shell=True,
+                 env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'})
+        assert done.returncode==0
+        output=done.stdout+done.stderr
+    else:
+        # Existing parser's Vitest summary fixture; no Vitest installation or model.
+        command='npx vitest run'
+        output=' Tests 1 passed (1)\n'
+    replay(tmp_path,command+' | tail -15',output)
+    assert 'Generic verification recorded' in capsys.readouterr().out
+    assert exact(tmp_path).freshness(tmp_path) is Freshness.STALE
+    assert not any(e.owned_execution for e in Ledger.load(tmp_path).evidence)
+
+
+def test_configuration_movement_with_same_command_allows_new_feedback(tmp_path,capsys):
+    from dataclasses import replace
+    command,done=project(tmp_path,'python')
+    replay(tmp_path,command+' | tail -15',done.stdout+done.stderr)
+    assert 'Generic verification recorded' in capsys.readouterr().out
+    ledger=Ledger.load(tmp_path)
+    save(tmp_path,replace(ledger.config,scan={'max_files':500}))
+    replay(tmp_path,command+' | tail -15',done.stdout+done.stderr)
+    assert 'Generic verification recorded' in capsys.readouterr().out
+    replay(tmp_path,command+' | tail -15',done.stdout+done.stderr)
+    assert 'Generic verification recorded' not in capsys.readouterr().out

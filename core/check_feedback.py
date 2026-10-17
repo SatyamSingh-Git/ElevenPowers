@@ -1,6 +1,7 @@
 """Bounded advice after generic verification; never execution or evidence."""
 import hashlib
 import json
+from dataclasses import asdict
 
 from .evidence import Freshness, Kind
 from .jobs import Busy, Superseded, ledger_write
@@ -65,7 +66,8 @@ def feedback(ledger, records, command):
                     'Owned instructions exceed the feedback bound; inspect ep_check.py --list '
                     'and run the selected property explicitly.')
         subject = hashlib.sha256(ledger.task.encode()).hexdigest()
-        signature = hashlib.sha256(json.dumps(list(zip(selected,commands))).encode()).hexdigest()
+        identity = {'declarations':list(zip(selected,commands)), 'configuration':asdict(configuration)}
+        signature = hashlib.sha256(json.dumps(identity,sort_keys=True).encode()).hexdigest()
         return text if _reserve(ledger, subject+':'+signature, configuration) else ''
     except (OSError, ValueError, Busy, Superseded):
         return ''  # Advice cannot discard the receipt already captured by the hook.

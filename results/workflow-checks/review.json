@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "base": "a220b150c95e004c585765abfa5dc70dfc60e3a6",
+  "reviewed": "7c3e8b2c2c10332efe4363967e31c7d82caa3556",
+  "critical": 0,
+  "important": 2,
+  "minor": 1,
+  "findings": [
+    {
+      "issue": "Common known runner names missed reminder without a separate tests argument",
+      "repair": "Reuse the test-command predicate with existing known runner spellings and TAP harness recognition; no stronger evidence"
+    },
+    {
+      "issue": "Unfinished generic callback could emit and reserve completed feedback",
+      "repair": "Skip optional advice when shared callback already classifies the outcome as incomplete"
+    },
+    {
+      "issue": "Same-command configuration movement did not permit new advice",
+      "repair": "Include stable effective configuration in hashed reservation identity"
+    }
+  ],
+  "witnessed_red": {
+    "failed": 6,
+    "passed": 0,
+    "deselected": 14,
+    "seconds": 10.85
+  },
+  "green": {
+    "command": "python -m pytest tests/test_declared_check_feedback.py tests/test_core.py tests/test_check_adoption.py tests/test_audit_probes.py -q",
+    "final_line": "162 passed in 159.18s (0:02:39)",
+    "exit_code": 0,
+    "seconds": 159.701
+  },
+  "prior_full_run": {
+    "state": "interrupted_for_demonstrated_review_repair",
+    "exit_code": 1,
+    "seconds": 295.723
+  },
+  "malformed_test_command": {
+    "state": "collection_error",
+    "reason": "Nonexistent tests/test_parsers.py; corrected to actual test_core.py",
+    "exit_code": 4,
+    "seconds": 0.44
+  },
+  "model_calls": 0,
+  "limits": [
+    "Fresh whole-result reviewer did not judge pending full/hosted qualification or installed consumption.",
+    "Pytest no-positional control runs the actual producer; Vitest control replays the existing parser summary fixture.",
+    "Generic evidence parsing of unfinished calls is unchanged; this repair only keeps their optional reminder quiet."
+  ]
+}
