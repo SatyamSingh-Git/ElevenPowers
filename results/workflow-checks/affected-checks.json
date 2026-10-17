@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "category": "combined-affected-regression-checks",
+  "model_calls": 0,
+  "command": "python -m pytest tests/test_report_source_scope.py tests/test_portable_report.py tests/test_input_shared.py tests/test_hook.py tests/test_core.py tests/test_declared_commands.py tests/test_command_invocations.py tests/test_invocation_capture.py tests/test_input_native.py tests/test_declared_check_feedback.py tests/test_check_adoption.py -q",
+  "passed": 265,
+  "seconds": 257.60,
+  "exit_code": 0,
+  "scope": "Combined command, hook, input and report controls, including earlier targeted feedback controls; do not add overlapping counts.",
+  "limits": [
+    "This affected-path group is not a full runtime suite or installed adoption acceptance.",
+    "Initial report regressions were witnessed failing before scoped reads; strengthened closing-count and deadline controls exposed and qualified further corrections.",
+    "Source-only report reads are operation-scoped with fresh closing source/configuration checks; external-input behavior remains guarded."
+  ]
+}

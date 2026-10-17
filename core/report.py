@@ -22,19 +22,26 @@ def gate_message(ledger: Ledger) -> str:
 
 def _input_message(ledger,render):
     from .inputs.native import configured
-    if not configured(ledger.root) and not any(e.external_inputs!={} for e in ledger.evidence):
+    source_wide = any(e.scope == 'source' for e in ledger.evidence)
+    if not source_wide and not configured(ledger.root) and not any(e.external_inputs!={} for e in ledger.evidence):
         return render()
     import time
     from .evidence import freshness_view
     from .jobs import current
     session=current()
     deadline=min(time.monotonic()+10,session.budget.deadline if session else float('inf'))
-    with freshness_view(ledger.root,deadline=deadline) as (scan,_):
-        text=render()
+    with freshness_view(ledger.root,deadline=deadline,guard_sources=source_wide) as (scan,_):
+        try:
+            text=render()
+        except TimeoutError:
+            scan.issues.append('report deadline reached during freshness inspection')
+            text='UNVERIFIED\nReport rendering incomplete: inspection deadline reached.'
     if not scan.complete:
         if text.startswith('VERIFIED'): text='UNVERIFIED'+text[len('VERIFIED'):]
         text=text.replace('\nstate     VERIFIED','\nstate     UNVERIFIED')
         text=text.replace('(verified)','(unverified)').replace('    ok      ','    stale   ')
+        text=re.sub(r'(\bevidence: \d+ record\(s\)), \d+ fresh\b',
+                    r'\1, current freshness unavailable',text)
         text+='\nIncomplete current input inspection: '+'; '.join(scan.issues)
     return text
 

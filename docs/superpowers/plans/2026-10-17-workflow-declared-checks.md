@@ -55,8 +55,8 @@ Controls: actual Python/Node generic results after source edits leave exact mile
 
 Controls: a source-backed report shares opening/closing scans across multiple receipts; a late same-size source edit, changed configuration, incomplete scan or deadline cannot leave VERIFIED text; independent report calls re-read current bytes; file-only reports do not acquire a full scan. Compare identical disposable Stop and report workloads with strength explicitly disabled.
 
-- [ ] Pin identified redundant work or unnecessary phase cost with a deterministic behavioral/work-count control watched RED.
-- [ ] Preserve freshness and bounded execution while removing that work; repeat the same no-model workload and report qualified timings/work counts. Push the verified optimization.
+- [x] Pin identified redundant work or unnecessary phase cost with a deterministic behavioral/work-count control watched RED.
+- [x] Preserve freshness and bounded execution while removing that work; repeat the same no-model workload and report qualified timings/work counts. Push the verified optimization.
 
 ### Task 4: Qualify and deliver
 

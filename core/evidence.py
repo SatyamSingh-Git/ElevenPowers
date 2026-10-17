@@ -52,7 +52,7 @@ _FRESHNESS_VIEW = ContextVar('freshness_report_view', default=None)
 
 
 @contextmanager
-def freshness_view(root: Path, *, deadline=None):
+def freshness_view(root: Path, *, deadline=None, guard_sources=False):
     """Fresh source and explicit inputs, scoped to one bounded operation."""
     resolved = root.resolve()
     existing = _FRESHNESS_VIEW.get()
@@ -66,7 +66,7 @@ def freshness_view(root: Path, *, deadline=None):
     inputs = existing.inputs if nested else capture(resolved,input_deadline)
     guarded=inputs['state']!='not_configured'
     configuration_before=None
-    if guarded:
+    if guarded or guard_sources:
         from .inputs.native import configuration
         try:
             configuration_before=configuration(resolved)
@@ -92,7 +92,7 @@ def freshness_view(root: Path, *, deadline=None):
                 if (inputs['state']!=final_inputs['state'] or inputs['fingerprint']!=final_inputs['fingerprint']
                         or final_inputs['state']=='incomplete'):
                     snapshot[0].issues.append('external input coverage changed or is incomplete during freshness inspection')
-            if guarded:
+            if guarded or guard_sources:
                 parent=_FRESHNESS_VIEW.set(None)
                 try:
                     final_digests={}
