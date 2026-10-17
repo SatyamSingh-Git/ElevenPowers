@@ -25,6 +25,23 @@ and names omitted instructions; those properties remain required. Advice itself
 runs nothing, and passive `off` stays quiet. Duplicate prompts and ordinary
 continuations preserve their existing task and do not repeat the advice.
 
+After a completed ordinary verification call, shared host capture also offers
+the owned entry point when the corresponding exact declaration is absent, stale
+or incomplete. For example, a filtered `node --test ... | tail -15` can leave
+fresh generic task evidence while its exact declared milestone remains stale.
+The reminder explains that gap and supplies existing bounded runner guidance.
+It does not execute the command, infer shell equivalence or promote generic
+evidence to an exact or owned receipt.
+
+The reminder is automatic in speaking profiles and bounded by task, selected
+declarations and effective configuration. Repeated callbacks do not repeat it;
+up to sixteen distinct signatures are retained per task. Current exact receipts,
+including failures, need no reminder. Off, owned outer envelopes, unrelated
+commands and unfinished/timeout callbacks remain quiet. Known test runners do
+not need a literal `tests` argument to receive it. This is transport emission,
+not proof that an installed agent reads or follows the advice. See the
+[workflow diagnosis and controls](../results/workflow-checks/README.md).
+
 ## Run every declared property with one command
 
 `--all` selects supported effective declarations in tests/build/typecheck/lint/

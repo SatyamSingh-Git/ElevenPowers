@@ -151,6 +151,15 @@ source selection. Unsafe paths or budget exhaustion make report coverage
 incomplete. The report's separate cooperative time budget is the `--timeout`
 CLI flag, documented in [commands](commands.md#ep_report--evidence-to-share-with-a-reviewer).
 
+Human completion reports with source-wide receipts also share a fresh source
+inspection within that single read-only render, then re-read source and effective
+configuration at closure. Late movement, incomplete coverage or an expired
+deadline prevents green text and removes the earlier fresh-count claim. File-only
+reports do not acquire a full scan. This needs no setting and caches nothing
+across reports, commands, execution phases or tasks. It reduces repeated report
+work, not the checks required to verify a change. See the
+[measured scope and reproducer](../results/workflow-checks/README.md).
+
 [← The Guide](README.md)
 
 Configuration is optional. Supported root manifests supply verification commands automatically; this file overrides those defaults and controls interruption and scanning.

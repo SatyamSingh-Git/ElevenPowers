@@ -35,6 +35,13 @@ tie at 10/10 groups with no observed regressions. Assisted model-process time is
 turns and leaves declared milestones CURRENT; JavaScript qualifies 0/4 and leaves
 them STALE despite a fresh generic passing task receipt. Missing adoption does
 not exclude that graded pair. No coding-quality or speed improvement was observed.
+
+The [workflow repair follow-up](../results/workflow-checks/README.md) diagnoses
+those retained command shapes, adds bounded advice after completed generic
+verification leaves an exact declaration unqualified, and shares guarded reads
+within source-backed human reports. Its no-model controls and any fresh installed
+acceptance belong to the changed producer. They do not reclassify the earlier
+JavaScript result or establish better code or lower model-process time.
 Next diagnose the JavaScript gap and native/hook overhead with no-model controls.
 
 ## Rehearse without a model
