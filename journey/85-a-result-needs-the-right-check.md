@@ -82,7 +82,7 @@ repeated reads; it is not a promise that every report becomes faster.
 
 The repairs change runtime identity. Earlier installed successes cannot qualify
 these bytes, and the earlier JavaScript failure cannot be silently rewritten.
-One fresh JavaScript assisted acceptance is frozen before outcomes, with the
+One fresh JavaScript assisted acceptance was frozen before outcomes, with the
 same four-stage requests and independent checks, Sonnet 5.5 medium and a shared
 720-second cap. It has no ordinary comparison arm. The preparation helper's
 ordinary baseline is explicitly not scheduled or launched.
@@ -94,7 +94,7 @@ oracles, producer, model, schedule and cap stayed fixed. The new seal was pushed
 before outcomes; the launch guard now checks the boundary. No model allowance
 was spent finding this.
 
-Full changed-source qualification precedes that live use. Its actual outcomes,
+Full changed-source qualification preceded that live use. Its actual outcomes,
 including any failure or incomplete stage, belong in the
 [current evidence record](../results/workflow-checks/README.md) and
 [dated validation](../docs/validation/2026-10-17-workflow-checks.md). A later
@@ -104,3 +104,14 @@ prove the repair caused better code or invalidate the earlier tied comparison.
 The remaining product question is still whether independently sampled development
 work benefits enough to justify its cost. These repairs make that question
 cleaner to ask. They do not supply its answer.
+
+## The fresh installed result
+
+One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
+
+4 exported production snapshots independently reproduce.
+All four current-source hosted cells passed full suites and actual acceptance
+artifacts; local named and affected gates remain separately recorded. The new
+trial retains its own producer, protected inputs, tasks, complete/failed history
+and unsigned native observations. It cannot overwrite the earlier JavaScript
+result or turn this acceptance into a matched coding-quality comparison.

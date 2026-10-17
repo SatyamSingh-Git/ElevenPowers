@@ -1,16 +1,14 @@
 # ElevenPowers — living architecture graph
 
-<!-- workflow-checks-progress:start -->
-**2026-10-17 — Workflow repairs implemented; full qualification running.**
-Shared completed-result advice and guarded source-report reads are pushed
-to main. Witnessed affected controls, 107 named audits, actual Python/Node
-checks, the reference rehearsal and both complete Linux CI cells pass.
-Windows full cells are still running. The redundant local full invocation
-is retained as an intentional partial run. One fresh JavaScript acceptance
-is sealed but has made no model
-calls; current-source qualification precedes it. Prior successes and
-comparison ties retain their own producer. See [current evidence](../results/workflow-checks/README.md).
-<!-- workflow-checks-progress:end -->
+The [workflow repair](../results/workflow-checks/README.md) is drawn in all five
+views: completed generic-result advice, bounded task/configuration reservations,
+and human source-report opening/closing guards. All four current-source hosted
+full suites and actual artifacts pass. Five-to-two report scans measure a
+component improvement, not whole-model speedup. One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
+See [journey 85](../journey/85-a-result-needs-the-right-check.md) and
+[validation](../docs/validation/2026-10-17-workflow-checks.md). The map retains
+171 nodes, 423 edges and seven planes. Delivery byte identities are recorded
+with this follow-up; records below retain their earlier producers.
 
 The completed [matched workflow comparison](../results/matched-workflow/README.md)
 is drawn in all five views: four conversations, sixteen reproduced snapshots,

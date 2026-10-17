@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "runtime_candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
+  "producer": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "runtime_files": 139,
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "source_qualified": true,
+  "hosted_record": "hosted-qualification.json",
+  "local_gates": "local-gates.json",
+  "review": "review.json",
+  "local_full": {
+    "exit_code": 1,
+    "seconds": 2904.541,
+    "state": "deliberately_interrupted_as_redundant_while_hosted_qualification_continued",
+    "log_sha256": "ee6f962f9f126e74cc9267833859593544facb0975bf6ac81e76f15a8c9143be"
+  },
+  "stable_test_workflow_dependency_objects": {
+    "tests": "c823b791bbca3207f0900bb552aae236461d9e7c",
+    ".github": "701c6dec6523e8c9444b7c1d9baa5ac82f26f601",
+    "requirements-dev.txt": "caea149009c3b39968040ee1db44f5b71e11a3e3"
+  },
+  "installed_record": "installed-acceptance.json",
+  "installed_adoption_qualified": false,
+  "installed_outcome_qualified": true,
+  "scheduled_sessions": 1,
+  "launched_conversations": 1,
+  "model_turns": 4,
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "model_seconds": 166.43356999999997,
+  "claims": {
+    "component_scan_reduction": true,
+    "universal_report_speedup": false,
+    "whole_workflow_speedup": false,
+    "causal_coding_benefit": false
+  },
+  "limits": [
+    "Current-source full qualification uses all four complete hosted cells; no partial local invocation is a full pass.",
+    "Local affected and named controls overlap and are not summed.",
+    "Single-receipt closing freshness adds a scan; loaded timing samples are separate from the earlier five-receipt medians.",
+    "One authored JavaScript workflow is not the separate ten-cell/twelve-point host matrix or a paired benefit comparison.",
+    "Historical native failures, tied outcomes and unexplained advice CI incident remain unchanged."
+  ]
+}

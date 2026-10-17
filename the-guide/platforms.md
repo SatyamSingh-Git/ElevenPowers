@@ -1,5 +1,10 @@
 # Native platforms
 
+One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
+This is one four-stage Claude JavaScript workflow, not a new full host/language
+matrix claim. See [current evidence](../results/workflow-checks/README.md); other
+hosts and the matrix requirements retain separate acceptance.
+
 Shared startup/new verification-task guidance offers readable arguments and an
 explicit all-declared-check batch, including no-edit tasks. Completed generic
 verification can now receive bounded advice when its exact declaration remains

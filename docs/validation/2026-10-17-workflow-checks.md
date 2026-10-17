@@ -1,8 +1,7 @@
 # Declared workflow gap and report overhead — validation
 
-The shared repairs are implemented and the affected controls pass. Full changed-
-source qualification and the separately frozen installed check are in progress;
-this record does not yet claim installed adoption or a current full-suite pass.
+The shared repairs and all four current-source hosted full suites qualify.
+One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
 See [current evidence](../../results/workflow-checks/README.md),
 [design](../design/workflow-checks.md) and
 [execution plan](../superpowers/plans/2026-10-17-workflow-declared-checks.md).
@@ -82,7 +81,7 @@ independent oracles, Sonnet 5.5 medium, and at most 720 model-process seconds
 shared across four turns. It makes zero model calls and is pushed before live
 outcomes. The reusable preparation helper also creates an ordinary baseline,
 explicitly not scheduled or launched. This acceptance has no comparison arm.
-Current repaired source qualification must precede launch. Every incomplete or
+Current repaired source qualification preceded launch. Every incomplete or
 adverse outcome remains retained; no API fallback, favorable retry or human
 candidate repair is allowed. This does not replace the earlier comparison or
 establish that a repair caused a behavioral difference.
@@ -98,8 +97,25 @@ not an installed failure or a new runtime change.
 
 ## Delivery gates
 
-Full repaired-source regression, four-cell hosted results, named no-model gates,
-all five rendered architecture views, documentation/privacy checks, remote-main
-containment and served byte identities will be recorded here as they complete.
+The [hosted record](../../results/workflow-checks/hosted-qualification.json) binds
+all four complete suites and eight downloaded actual acceptance artifacts to the
+repaired source candidate. [Local gates](../../results/workflow-checks/local-gates.json)
+retain 107 named audits, grader, doctor, stdlib imports, actual Python/Node checks
+and the sixteen-snapshot reference rehearsal. Checkout identities remain metadata;
+runtime freshness still uses strict raw bytes. The repaired local full invocation
+is separately retained in [qualification](../../results/workflow-checks/qualification.json);
+no interrupted invocation is counted as a full pass. All five map views render,
+and documentation/privacy and remote/publication checks have separate records.
 The older Windows advice CI incident remains unexplained; later green runs do
 not establish its cause or repair.
+
+## Actual installed outcome
+
+One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
+
+See [the retained acceptance](../../results/workflow-checks/installed-acceptance.json),
+[source archive](../../results/workflow-checks/source-archive/manifest.json),
+[independent reproduction](../../results/workflow-checks/reproduction.json) and
+[private-original hashes](../../results/workflow-checks/private-retention.json).
+The source archive honestly marks paired comparison incomplete because no ordinary
+arm was scheduled. Source reproduction is a different qualification.

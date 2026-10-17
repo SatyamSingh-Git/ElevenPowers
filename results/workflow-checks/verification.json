@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "runtime": "7388499b03b98d613a059b313f626e4f70dd64e721fd42c7951626ee1263b9bf",
+  "harness": "375a4180fa50994610df4ad619373050cfd5d9525b08271c395c3699002ba998",
+  "source_and_test_workflow_unchanged_since_qualified_candidate": "c5b3ab26314a107ad4d8e33eb8b336c659926bfc",
+  "docs_and_privacy": {
+    "qualified": true,
+    "markdown_targets": 726,
+    "public_json_records": 29,
+    "issues": []
+  },
+  "architecture": {
+    "nodes": 171,
+    "edges": 423,
+    "render": {
+      "exit_code": 0,
+      "seconds": 5.45
+    },
+    "all_five_views": true,
+    "log_sha256": "d0225651847e56c845c244e02aad8efb9290830c267dde5c3a217b75cd3cd874"
+  },
+  "installed": "installed-acceptance.json",
+  "limits": [
+    "Source qualification and partial installed adoption remain separate.",
+    "No additional model, favorable retry or new full regression invocation was run for these documentation-only changes."
+  ]
+}

@@ -1,5 +1,10 @@
 # Installed multi-stage verification
 
+Current workflow-repair producer: One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
+See [its qualified evidence](../results/workflow-checks/README.md). This four-stage
+workflow check does not replace the separate twelve-point host/language matrix.
+Earlier observations below retain their original producers.
+
 This contributor workflow checks two separate questions: whether an installed
 agent uses the declared-check runner across tasks, and whether the combined
 workflow preserves behavior while adding features. Installation launches no

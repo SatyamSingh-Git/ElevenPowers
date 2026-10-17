@@ -38,7 +38,7 @@
 
 ### Task 2: Repair the declared-check boundary
 
-**Files:** `core/hook.py`, `core/checks.py` only if needed for bounded readable narrow instructions; new `tests/test_declared_check_feedback.py`.
+**Files:** `core/hook.py`, `core/check_feedback.py`, `core/parsers.py`; existing `core/checks.py` guidance stays unchanged; new `tests/test_declared_check_feedback.py`.
 
 **Interfaces:** `core.check_feedback.feedback(ledger, records, command)` consumes parsed `Evidence`, actual command and `Ledger`; emits shared transport context only, using `checks.guidance` and atomic bounded task/declaration decisions. No new execution API or receipt schema.
 
@@ -60,6 +60,18 @@ Controls: a source-backed report shares opening/closing scans across multiple re
 
 ### Task 4: Qualify and deliver
 
-- [ ] Run appropriate full runtime/CI qualification, independent controls and one fresh whole-result review; address material findings with witnessed regression checks.
-- [ ] Use capped installed sessions only if needed to assess adoption, preserving prior records and outcome limits.
-- [ ] Update current plan/status/README, guides/research/validation, journey 85 and all five architecture views; render, check targets/privacy, push all work and verify remote main/published bytes.
+- [x] Run appropriate full runtime/CI qualification, independent controls and one fresh whole-result review; address material findings with witnessed regression checks.
+- [x] Use capped installed sessions only if needed to assess adoption, preserving prior records and outcome limits.
+- [x] Update current plan/status/README, guides/research/validation, journey 85 and all five architecture views; render, check targets/privacy, push all work and verify remote main/published bytes.
+
+Delivery: witnessed shared feedback/report repairs, one reviewed fix pass, current-source
+four-cell full qualification and actual no-model artifacts, one frozen installed
+acceptance, docs/journey/all five map views and main. See the
+[qualification](../../../results/workflow-checks/qualification.json) for retained
+partial runs and limits.
+
+Installed outcome: four correctness stages qualify, exact milestones are current
+in three turns but stale in turn 2, and the frozen owned-runner adoption measure
+is 0/4. Procedure completion does not mark installed adoption complete. Next
+close that remaining loop before further benefit experiments; no favorable retry
+is part of this execution.

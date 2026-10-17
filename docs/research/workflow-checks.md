@@ -57,7 +57,12 @@ still gives five-to-two scans. No blanket speed claim is supported.
 Actual Python/Node child controls precede model use. Vitest advice uses an existing
 parser summary fixture and is identified as replay rather than an installed
 Vitest run. The fresh review's two Important and one Minor findings were all
-witnessed by six failing controls before repair. Full qualification and fresh
-installed observations, if run, keep their own identities in the
+witnessed by six failing controls before repair. Full qualification and the fresh
+installed observations keep their own identities in the
 [dated validation](../validation/2026-10-17-workflow-checks.md). Original negative
 trials, tied outcomes and the unexplained earlier advice CI incident remain intact.
+
+The fresh JavaScript trial retains a stale second turn, current exact milestones
+in three turns and no owned-runner adoption. Final-ledger reminder intent does
+not reconstruct earlier task emissions or establish transport consumption. This
+is partial installed qualification, not a causal coding-benefit comparison.

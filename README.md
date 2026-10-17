@@ -652,19 +652,9 @@ For a repeatable local test environment, see [Development and verification](docs
 
 ## Where this actually is
 
-<!-- workflow-checks-progress:start -->
-**2026-10-17 — Workflow repairs implemented; full qualification running.**
-Shared completed-result advice and guarded source-report reads are pushed
-to main. Witnessed affected controls, 107 named audits, actual Python/Node
-checks, the reference rehearsal and both complete Linux CI cells pass.
-Windows full cells are still running. The redundant local full invocation
-is retained as an intentional partial run. One fresh JavaScript acceptance
-is sealed but has made no model
-calls; current-source qualification precedes it. Prior successes and
-comparison ties retain their own producer. See [current evidence](results/workflow-checks/README.md).
-<!-- workflow-checks-progress:end -->
+[The workflow repair](results/workflow-checks/README.md) adds bounded advice when generic verification leaves exact declared checks unqualified and shares guarded source reads within human reports. All four current-source hosted full suites pass; the local report benchmark reduces scans from five to two. One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage. See [validation](docs/validation/2026-10-17-workflow-checks.md) and [journey 85](journey/85-a-result-needs-the-right-check.md).
 
-[The matched four-stage comparison](results/matched-workflow/README.md) completed all four Sonnet 5.5 medium conversations and independently reproduced sixteen source snapshots. Both ordinary/assisted pairs tied at 10/10 groups with no observed regressions. Assisted model-process time was higher: 2.34× Python and 1.90× JavaScript. Python used the owned runner in 4/4 turns and retained current declared milestones; JavaScript qualified 0/4 and left those milestones stale despite a fresh generic passing task receipt. No coding-quality or speed improvement was observed. Next: diagnose that gap and measure native/hook overhead with no-model controls. See [validation](docs/validation/2026-10-17-matched-workflow.md) and [journey 84](journey/84-a-tie-is-still-a-result.md).
+[The matched four-stage comparison](results/matched-workflow/README.md) completed all four Sonnet 5.5 medium conversations and independently reproduced sixteen source snapshots. Both ordinary/assisted pairs tied at 10/10 groups with no observed regressions. Assisted model-process time was higher: 2.34× Python and 1.90× JavaScript. Python used the owned runner in 4/4 turns and retained current declared milestones; JavaScript qualified 0/4 and left those milestones stale despite a fresh generic passing task receipt. No coding-quality or speed improvement was observed. The later workflow repair and its separate producer qualification are recorded above. See [validation](docs/validation/2026-10-17-matched-workflow.md) and [journey 84](journey/84-a-tie-is-still-a-result.md).
 
 [Owned declared-check batches](the-guide/declared-checks.md) run all declared properties with one command, owner and shared deadline while retaining separate receipts. Startup and new no-edit verification tasks expose readable guidance. All four hosted source cells passed, and both new Claude conversations qualified across three tasks each, including dependency failure and recovery. That installed result does not itself establish a coding-quality advantage. See [qualification](docs/validation/2026-10-17-check-adoption.md) and [journey 83](journey/83-one-entry-point-separate-receipts.md).
 

@@ -1,16 +1,29 @@
 # Current delivery status
 
-<!-- workflow-checks-progress:start -->
-**2026-10-17 — Workflow repairs implemented; full qualification running.**
-Shared completed-result advice and guarded source-report reads are pushed
-to main. Witnessed affected controls, 107 named audits, actual Python/Node
-checks, the reference rehearsal and both complete Linux CI cells pass.
-Windows full cells are still running. The redundant local full invocation
-is retained as an intentional partial run. One fresh JavaScript acceptance
-is sealed but has made no model
-calls; current-source qualification precedes it. Prior successes and
-comparison ties retain their own producer. See [current evidence](../results/workflow-checks/README.md).
-<!-- workflow-checks-progress:end -->
+**2026-10-17 — Generalized workflow feedback and guarded report reads delivered.**
+Completed generic verification now offers bounded owned-runner advice when
+the corresponding exact declaration is absent, stale or incomplete. Current
+exact failures and unfinished callbacks retain their existing distinctions;
+advice runs no command and creates no stronger receipt. Human source-backed
+reports share fresh opening/closing inspection, refusing green text after
+late source/configuration movement, incomplete scans or deadline exhaustion.
+
+All four current-source hosted cells pass full suites and actual no-model
+acceptance artifacts. The local affected group passes 162 controls and the
+named audit passes 107; counts overlap. Other named gates, actual Python/Node
+runner exercises, sixteen reference snapshot regrades and all five rendered
+architecture views pass. Five-to-two report scans and about 0.63→0.28–0.29
+second local component medians do not establish whole-workflow speedup. A
+one-receipt report adds a closing scan instead: one becomes two.
+
+One fresh Sonnet 5.5 medium JavaScript conversation completed all four turns, with 4/6/8/10 independently recorded cumulative passing groups and 166.434 model-process seconds. The fresh JavaScript acceptance retains 0/4 qualifying owned turns; installed adoption remains incomplete. Both exact declared milestones were CURRENT after turns 1, 3 and 4, STALE after turn 2, and CURRENT at the end. It has no comparison arm and establishes no coding-quality or model-speed advantage.
+
+The earlier comparison stays two correctness ties with higher assisted
+times, Python 4/4 and JavaScript 0/4 owned adoption at its own producer.
+Next: close the remaining installed declared-check/advice-consumption loop
+before another benefit comparison. Independent longitudinal sampling, total
+overhead and remaining host/language acceptance also stay open. See [results](../results/workflow-checks/README.md), [validation](validation/2026-10-17-workflow-checks.md) and
+[journey 85](../journey/85-a-result-needs-the-right-check.md). Entries below retain their dated producers and next-step context.
 
 **2026-10-17 — Matched four-stage comparison completed: two correctness ties.**
 All four Sonnet 5.5 medium conversations complete sixteen turns and qualify for
