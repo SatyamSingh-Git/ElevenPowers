@@ -39,3 +39,21 @@ def test_completion_rows_keep_exact_current_failed_stale_absent_and_incomplete_d
         "tests": "CURRENT", "lint": "FAILED", "build": "STALE",
         "typecheck": "INCOMPLETE", "benchmark": "ABSENT",
     }
+
+
+def test_end_report_keeps_declared_check_gap_visible_without_changing_task_verdict(tmp_path):
+    from core.report import end_report
+
+    (tmp_path / "module.py").write_text("value = 1\n", encoding="utf8")
+    command = "python -m pytest"
+    save(tmp_path, Config(profile="guide", auto_detect=False, commands={"tests": command}))
+    ledger = Ledger(root=tmp_path, task="visible-gap")
+    ledger.add([_evidence(tmp_path, "module.py", kind=Kind.SUITE,
+                          declaration="tests", command=command)])
+    (tmp_path / "module.py").write_text("value = 2\n", encoding="utf8")
+
+    text = end_report(ledger)
+
+    assert text.startswith("VERIFIED")
+    assert "Declared checks (informational; does not change the task verdict or run commands):" in text
+    assert "STALE     tests (pass, complete, stale)" in text

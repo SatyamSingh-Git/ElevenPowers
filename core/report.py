@@ -200,8 +200,10 @@ def end_report(ledger: Ledger) -> str:
 
 def _end_report(ledger: Ledger) -> str:
     from .jobs import progress
+    from .declared_completion import lines as declared_check_lines
     status = ledger.status()
-    lines = [f"{status.value}", *_coverage_warnings(ledger), *progress(ledger.root, ledger.task)]
+    lines = [f"{status.value}", *declared_check_lines(ledger),
+             *_coverage_warnings(ledger), *progress(ledger.root, ledger.task)]
     for verdict in ledger.verdicts():
         lines.append(f"  {verdict.claim.value} ({verdict.status.value.lower()})")
         for check in verdict.checks:
