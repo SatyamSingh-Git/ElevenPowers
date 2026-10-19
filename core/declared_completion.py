@@ -64,5 +64,5 @@ def lines(ledger) -> list[str]:
         detail = "no exact receipt" if row.state == "ABSENT" else ", ".join(
             part for part in (row.result, row.execution, row.freshness) if part
         )
-        output.append(f"  {row.state:<10}{row.declaration}" + (f" ({detail})" if detail else ""))
+        output.append(f"  {row.state:<11}{row.declaration}" + (f" ({detail})" if detail else ""))
     return output

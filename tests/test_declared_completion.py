@@ -39,6 +39,9 @@ def test_completion_rows_keep_exact_current_failed_stale_absent_and_incomplete_d
         "tests": "CURRENT", "lint": "FAILED", "build": "STALE",
         "typecheck": "INCOMPLETE", "benchmark": "ABSENT",
     }
+    from core.declared_completion import lines
+    assert {tuple(line.split()[:2]) for line in lines(ledger)[1:]} == {
+        (state, declaration) for declaration, state in states.items()}
 
 
 def test_end_report_keeps_declared_check_gap_visible_without_changing_task_verdict(tmp_path):
@@ -56,4 +59,4 @@ def test_end_report_keeps_declared_check_gap_visible_without_changing_task_verdi
 
     assert text.startswith("VERIFIED")
     assert "Declared checks (informational; does not change the task verdict or run commands):" in text
-    assert "STALE     tests (pass, complete, stale)" in text
+    assert "STALE      tests (pass, complete, stale)" in text
