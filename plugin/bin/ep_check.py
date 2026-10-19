@@ -40,6 +40,7 @@ def main():
                 print('Declared check ' + result['property'] + ': ' + result['state'])
                 print('Command: ' + result['command'])
                 print('Child exit: ' + str(result['exit_code']))
+                print('Attempt: ' + result['attempt'])
                 for issue in result['issues']:
                     print('Issue: ' + issue)
         return 0 if args.list else {'passed': 0, 'failed': 1, 'incomplete': 2}[value['state']]

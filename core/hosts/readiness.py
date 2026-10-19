@@ -4,6 +4,7 @@ from contextvars import ContextVar
 import hashlib
 import json
 from pathlib import Path
+import re
 import time
 import uuid
 from .diagnostics import PHASES, read_json, validate
@@ -43,6 +44,13 @@ def record_receipts(records, task):
                     observation['evicted'] += 1
 
 
+def record_owned(output, ledger):
+    """Link the receipts an owned run printed by attempt; its output is never parsed as evidence."""
+    attempts = set(re.findall(r'(?m)(?:^Attempt: |"attempt": ")([0-9a-f]{64})\b', output))
+    if attempts:
+        record_receipts([e for e in ledger.evidence if e.owned_execution.get('attempt') in attempts], ledger.task)
+
+
 def record_edit(task, changed, incomplete=False):
     observation = _OBSERVATION.get()
     if observation is not None:
@@ -54,7 +62,7 @@ def emission_scope():
     observation = _OBSERVATION.get()
     if SOURCE.get() != 'host' or observation is None:
         return None
-    return {key: observation[key] for key in ('host', 'generation', 'session')}
+    return {key: observation[key] for key in ('host', 'generation', 'session', 'event')}
 
 
 @contextmanager
@@ -142,7 +150,7 @@ def callback(platform, root, event, payload=None):
         phase = item.setdefault('phases', {}).setdefault(event, {})
         phase.update(received=min(phase.get('received', 0) + 1, 1_000_000_000))
     observation = {'links': [], 'task': '', 'session': session, 'evicted': 0,
-                   'host': platform, 'generation': generation}
+                   'host': platform, 'generation': generation, 'event': event}
     token = _OBSERVATION.set(observation)
     error = None
     try:

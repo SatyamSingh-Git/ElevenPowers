@@ -14,6 +14,8 @@ def emit(event: str, fields: dict) -> None:
         print(json.dumps(response), flush=True)
         from ..milestones.delivery import emitted
         emitted(response)
+        from ..feedback_delivery import emitted as feedback_emitted
+        feedback_emitted(response)
     else:
         sink.append({"event": event, **fields})
 

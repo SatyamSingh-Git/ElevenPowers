@@ -265,24 +265,26 @@ def on_pre_tool(payload: dict, root: Path) -> int:
 def on_post_tool(payload: dict, root: Path) -> int:
     # Both direct Claude invocation and adapter collectors receive one combined
     # context message. Guidance and native attribution gaps must survive advice.
-    with transport.collect() as messages:
-        from .hosts.readiness import SOURCE, record_task
-        if SOURCE.get() == 'host':
-            # Owned runner output is deliberately not parsed a second time.
-            # Its native callback still belongs to the current task.
-            record_task(Ledger.load(root).task)
-        code = _on_post_tool(payload, root)
-        tool = payload.get('tool_name', '')
-        edited = tool in EDIT_TOOLS or (tool == 'Patch' and payload.get('_ep_platform'))
-        if edited and payload.get('hook_event_name') != 'PostToolUseFailure':
-            from .milestones.automatic import deliver
-            text = deliver(Ledger.load(root))
-            if text:
-                _emit('PostToolUse', additionalContext=text)
-    fields = transport.fields_of(messages)
-    if fields:
-        _emit('PostToolUse', **fields)
-    return code
+    from .feedback_delivery import collect as feedback_delivery
+    with feedback_delivery():
+        with transport.collect() as messages:
+            from .hosts.readiness import SOURCE, record_task
+            if SOURCE.get() == 'host':
+                # Owned runner output is deliberately not parsed a second time.
+                # Its native callback still belongs to the current task.
+                record_task(Ledger.load(root).task)
+            code = _on_post_tool(payload, root)
+            tool = payload.get('tool_name', '')
+            edited = tool in EDIT_TOOLS or (tool == 'Patch' and payload.get('_ep_platform'))
+            if edited and payload.get('hook_event_name') != 'PostToolUseFailure':
+                from .milestones.automatic import deliver
+                text = deliver(Ledger.load(root))
+                if text:
+                    _emit('PostToolUse', additionalContext=text)
+        fields = transport.fields_of(messages)
+        if fields:
+            _emit('PostToolUse', **fields)
+        return code
 
 
 def _on_post_tool(payload: dict, root: Path) -> int:
@@ -355,6 +357,11 @@ def _on_post_tool(payload: dict, root: Path) -> int:
     from .inputs.native import after as input_after
     if not input_after(payload,root,records,terminal=not incomplete): return 0
     written = written_paths(command) if result.ok else []
+    if not records:
+        from .commands import owned_check_envelope
+        if owned_check_envelope(command):
+            from .hosts.readiness import record_owned
+            record_owned(result.output, Ledger.load(root))
 
     # Capture what the command printed BEFORE deciding whether it was evidence.
     #

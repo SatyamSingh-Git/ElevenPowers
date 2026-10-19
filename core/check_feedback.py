@@ -68,6 +68,12 @@ def feedback(ledger, records, command):
         subject = hashlib.sha256(ledger.task.encode()).hexdigest()
         identity = {'declarations':list(zip(selected,commands)), 'configuration':asdict(configuration)}
         signature = hashlib.sha256(json.dumps(identity,sort_keys=True).encode()).hexdigest()
-        return text if _reserve(ledger, subject+':'+signature, configuration) else ''
+        if not _reserve(ledger, subject+':'+signature, configuration):
+            return ''
+        from .feedback_delivery import intent, prepare
+        observed = intent(ledger.root, ledger.task, selected, text)
+        if observed:
+            prepare(ledger.root, ledger.task, observed, selected, text)
+        return text
     except (OSError, ValueError, Busy, Superseded):
         return ''  # Advice cannot discard the receipt already captured by the hook.
