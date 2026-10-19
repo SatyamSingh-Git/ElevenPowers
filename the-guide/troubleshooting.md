@@ -271,6 +271,21 @@ Discovery reads supported manifests at the selected root. Check the working dire
 
 An interruption, timeout, missing runtime or unreadable result is not a passing run or a reproduced test failure. Repair the environment or rerun to completion. Incomplete attempts replace earlier success for that target. The plugin reports missing executables; it does not install the project's dependencies.
 
+## The task is VERIFIED but a declared check says ABSENT or STALE
+
+The verdict and the declared-check section answer different questions. A
+generic run, such as the configured runner filtered through `tail` or `grep`,
+can verify the task without qualifying the exact configured command. Run the
+owned entry point named in the feedback (`ep_check.py PROPERTY` or `--all`); it
+refreshes the exact receipt. Nothing is promoted automatically.
+
+`Feedback delivery … unobserved` with an owned run you can see usually means the
+host returned truncated output, so the printed `Attempt:` line never reached the
+callback, or the run happened in another session or terminal. `intent` without
+emission means no supported launcher flushed the text (replay, an unsupported
+field, or a changed installation). None of these states says whether a model
+read the feedback.
+
 ## Progress is deferred, interrupted, or still running
 
 Run `python plugin/bin/ep_status.py --cwd YOUR_PROJECT`. The progress journal distinguishes work that never started (`deferred`) from work whose result is unavailable (`incomplete`). A source change during execution is `stale`, even when the process exited zero. Completed check results are already saved; they do not depend on later checks finishing.

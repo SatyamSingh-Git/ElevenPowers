@@ -292,6 +292,14 @@ were unavailable. Full versioned native exercises remain acceptance work.
 Host trust/policy and each platform's capability limits still apply.
 See [project-health validation](../docs/validation/2026-10-01-project-health.md).
 
+Declared-check feedback delivery uses the same shared path for every host: the
+direct Claude transport and the adapter launcher both record an emission only
+after flushing a supported context field. Twenty actual pytest/`node --test`
+cases, one per host, language and replay/native mode, keep emission and owned
+follow-ups apart from replay. They are launcher contracts, not installed
+sessions. See [declared checks](declared-checks.md#see-exact-declared-checks-at-completion)
+and [results](../results/declared-check-closure/README.md).
+
 ## Versioned compatibility captures
 
 All five adapters share bounded shipped-code identity, explicit installed-version

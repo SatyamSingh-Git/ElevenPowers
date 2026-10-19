@@ -1,6 +1,11 @@
 # The journey
 
-Latest: [85 — a result needs the right check](85-a-result-needs-the-right-check.md):
+Latest: [86 — a gap is visible at done](86-a-gap-is-visible-at-done.md):
+exact declared-check state beside the verdict, feedback intent/emission/follow-up
+kept apart, and the owned-runner path made observable after the real launcher
+showed it was not.
+
+Recent: [85 — a result needs the right check](85-a-result-needs-the-right-check.md):
 retained-trace diagnosis, bounded generic-verification feedback, reviewed quiet
 boundaries and measured guarded report-read work; qualification stays separate
 from coding benefit.

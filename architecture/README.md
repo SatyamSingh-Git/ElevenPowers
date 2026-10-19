@@ -1,5 +1,12 @@
 # ElevenPowers — living architecture graph
 
+[Declared-check closure](../results/declared-check-closure/README.md) is drawn
+in all five views: exact declared rows beside the unchanged verdict, feedback
+intent → emission → exact follow-up, and owned-run attempt links. The planned
+card now holds only installed-session observation. The rendered map passes with
+173 nodes, 430 edges and seven planes. See
+[journey 86](../journey/86-a-gap-is-visible-at-done.md).
+
 The [workflow repair](../results/workflow-checks/README.md) is drawn in all five
 views: completed generic-result advice, bounded task/configuration reservations,
 and human source-report opening/closing guards. All four current-source hosted

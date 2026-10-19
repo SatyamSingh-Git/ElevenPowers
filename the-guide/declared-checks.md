@@ -109,6 +109,40 @@ mean all required checks passed, the whole task is complete, or a patch is safe.
 Commands are trusted project execution, not a sandbox; witness declarations do
 not discover every dependency or cover unobserved services/environment.
 
+## See exact declared checks at completion
+
+The completion report lists every configured supported declaration under its
+newest exact receipt: `CURRENT`, `FAILED`, `STALE`, `ABSENT` or `INCOMPLETE`.
+Only the configured command for that property counts. A generic passing run,
+such as the same runner piped through `tail`, can make the task `VERIFIED` while
+its declaration stays `ABSENT` or `STALE`, and the report now shows both. The
+section is informational: it does not change the verdict, run a command, add a
+blocker or promote a receipt.
+
+When generic verification leaves an exact gap, the existing feedback names the
+owned runner. The runtime then records up to three separate facts, stored as
+hashes and bounded metadata only:
+
+- **intent** — the feedback was generated;
+- **emitted** — a host launcher flushed it in a supported context field
+  (`additionalContext` or `additional_context`, top level or under
+  `hookSpecificOutput`) while the same installation generation was active;
+- **later exact native receipt** — after that emission, the same host session
+  returned an exact receipt for the declaration, and that receipt is itself
+  newer than the emission.
+
+Replay launchers, other response fields, truncated text, removed, reconfigured
+or reinstalled integrations record intent at most. The report labels the whole
+section `model consumption unproven`: a later receipt is temporal correlation,
+not evidence that a model read or followed the feedback.
+
+Each owned result prints `Attempt: <64 hex>` (JSON already carried `attempt`).
+The owned runner's output is still never parsed as evidence. A host callback
+for an owned envelope only links the ledger receipts already bound to a printed
+attempt, so the recommended path is observable without trusting outer output.
+An echoed attempt from before the emission links an old receipt and is not
+reported as a follow-up.
+
 See [design](../docs/design/declared-check-execution.md),
 [dated qualification](../docs/validation/2026-10-16-declared-check-execution.md)
 and [journey 81](../journey/81-the-check-owns-its-exit.md).
