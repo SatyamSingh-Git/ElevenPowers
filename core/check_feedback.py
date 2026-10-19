@@ -6,6 +6,7 @@ from dataclasses import asdict
 from .evidence import Freshness, Kind
 from .jobs import Busy, Superseded, ledger_write
 from .ledger import DELIVERY, Ledger
+from .redact import scrub
 from .parsers import DECLARED_KINDS, claims_to_run_tests
 
 NOTE = 'declared verification feedback'
@@ -46,7 +47,7 @@ def feedback(ledger, records, command):
             if not command or kind not in kinds:
                 continue
             exact = [e for e in ledger.evidence if e.declaration == property and e.kind is kind
-                     and e.command_identity == command]
+                     and e.command_identity == scrub(command)]
             latest = max(exact, key=lambda e:e.at) if exact else None
             if latest and latest.execution == 'complete' and latest.freshness(ledger.root) is Freshness.FRESH:
                 continue

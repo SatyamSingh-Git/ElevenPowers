@@ -83,14 +83,17 @@ def validate(value):
                 part['edit'] = {'changed': _count(edit['changed']), 'incomplete': edit['incomplete'],
                                 'task': _hash(edit.get('task', '')), 'session': _hash(edit.get('session', ''))}
             data['phases'][name] = part
-        links = item.get('receipt_links', [])
-        if not isinstance(links, list) or len(links) > 64:
-            raise ValueError('invalid native receipt history')
-        data['receipt_links'] = []
-        for link in links:
-            if not isinstance(link, dict) or link.get('result') not in ('pass', 'fail', 'error') or link.get('execution') not in ('complete', 'incomplete'):
-                raise ValueError('invalid native receipt link')
-            data['receipt_links'].append({k: _hash(link.get(k, '')) for k in ('key', 'task', 'session')} |
-                                         {'result': link['result'], 'execution': link['execution'], 'at': _time(link['at'])})
+        for field in ('receipt_links', 'owned_links'):
+            links = item.get(field, [])
+            if not isinstance(links, list) or len(links) > 64:
+                raise ValueError('invalid native receipt history')
+            if field == 'owned_links' and not links:
+                continue
+            data[field] = []
+            for link in links:
+                if not isinstance(link, dict) or link.get('result') not in ('pass', 'fail', 'error') or link.get('execution') not in ('complete', 'incomplete'):
+                    raise ValueError('invalid native receipt link')
+                data[field].append({k: _hash(link.get(k, '')) for k in ('key', 'task', 'session')} |
+                                   {'result': link['result'], 'execution': link['execution'], 'at': _time(link['at'])})
         clean[host] = data
     return clean

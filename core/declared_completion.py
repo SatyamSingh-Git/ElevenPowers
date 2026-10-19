@@ -5,6 +5,7 @@ from dataclasses import dataclass
 
 from .evidence import Freshness, Kind, Result
 from .parsers import DECLARED_KINDS
+from .redact import scrub
 
 
 STATES = ("CURRENT", "FAILED", "STALE", "ABSENT", "INCOMPLETE")
@@ -44,7 +45,7 @@ def rows(ledger) -> list[DeclaredCheck]:
             continue
         matches = [record for record in ledger.evidence
                    if record.declaration == declaration and record.kind is kind
-                   and record.command_identity == command]
+                   and record.command_identity == scrub(command)]
         if not matches:
             value.append(DeclaredCheck(declaration, kind, "ABSENT"))
             continue

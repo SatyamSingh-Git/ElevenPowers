@@ -60,3 +60,26 @@ def test_end_report_keeps_declared_check_gap_visible_without_changing_task_verdi
     assert text.startswith("VERIFIED")
     assert "Declared checks (informational; does not change the task verdict or run commands):" in text
     assert "STALE      tests (pass, complete, stale)" in text
+
+
+def test_exact_receipt_for_a_credential_bearing_command_is_current(tmp_path):
+    from core.declared_completion import rows
+
+    (tmp_path / "module.py").write_text("value = 1\n", encoding="utf8")
+    command = "DB_PASSWORD=hunter2secret python -m pytest -q"
+    save(tmp_path, Config(profile="guide", auto_detect=False, commands={"tests": command}))
+    ledger = Ledger(root=tmp_path, task="scrubbed")
+    ledger.add([_evidence(tmp_path, "module.py", kind=Kind.SUITE, declaration="tests", command=command)])
+
+    assert [row.state for row in rows(ledger)] == ["CURRENT"]
+
+
+def test_receipt_for_a_previous_declared_command_is_absent(tmp_path):
+    from core.declared_completion import rows
+
+    (tmp_path / "module.py").write_text("value = 1\n", encoding="utf8")
+    save(tmp_path, Config(profile="guide", auto_detect=False, commands={"tests": "python -m pytest -q"}))
+    ledger = Ledger(root=tmp_path, task="changed-command")
+    ledger.add([_evidence(tmp_path, "module.py", kind=Kind.SUITE, declaration="tests", command="python -m pytest -x")])
+
+    assert [row.state for row in rows(ledger)] == ["ABSENT"]

@@ -14,10 +14,14 @@ command identity match exactly, then classifies it:
 | State | Meaning |
 |---|---|
 | `INCOMPLETE` | the latest exact attempt did not complete, or a suite counted no tests |
-| `STALE` | source, configuration, selected input or scoped coverage no longer qualifies |
+| `STALE` | source, owned-execution configuration, selected input or scoped coverage no longer qualifies |
 | `FAILED` | a fresh completed exact receipt reports failure |
 | `CURRENT` | a fresh completed exact receipt passes |
 | `ABSENT` | no exact receipt exists |
+
+Changing the declared command itself makes earlier receipts non-exact, so the
+row reads `ABSENT`, not `STALE`. Commands are compared after the same credential
+scrubbing receipts receive, as `verify.py` already does.
 
 `end_report` appends these rows after the verdict line. `ledger.status()` is not
 consulted or changed, and nothing is executed or written.
@@ -52,7 +56,20 @@ the random `attempt` digest already bound to its receipts. For an owned envelope
 the host callback links only ledger receipts carrying a printed attempt. Output
 text still creates no evidence; an echoed attempt can only point at a receipt
 that already exists, and the receipt-age rule keeps an old one from counting as
-a follow-up. The same links serve the milestone-advice observer.
+a follow-up.
+
+These links are kept in a separate `owned_links` history in
+`.elevenpowers/integrations.json`, not in the native `receipt_links`. Owned
+execution is not a native command observation: health's command-capture stage,
+installed acceptance outcomes, paired-evaluation receipt counts and the
+milestone-advice observer read only native links and are unchanged. Only the
+feedback follow-up join reads both. A first version shared the native history;
+review showed one passing owned run then satisfied both the `pass` and
+`incomplete` acceptance outcomes, through its provisional receipt.
+
+The feedback intent note is written with the receipt-delivery marker cleared,
+as `check_feedback` already does for its reservation. Adapter callbacks that
+carry a `tool_use_id` had otherwise skipped the save silently.
 
 ## Limits
 

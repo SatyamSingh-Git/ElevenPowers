@@ -48,13 +48,37 @@ The runner already bound a random attempt digest to its receipts. It now prints
 it, and a host callback for an owned envelope links only ledger receipts that
 carry a printed attempt. Output still creates no evidence. An attempt echoed
 from before the emission links an old receipt, so a follow-up also requires the
-receipt itself to postdate the emission. The same links reach the milestone
-observer.
+receipt itself to postdate the emission.
+
+## The review found what twenty green cases hid
+
+A fresh review of the pushed work reproduced four defects, and the twenty
+qualified launcher cases had passed over two of them.
+
+The first owned-link version put owned receipts in the native receipt history.
+That history also feeds health and installed acceptance, and the project had
+already promised that owned execution is neither. Worse, the provisional
+`started` receipt shares the attempt, so one passing owned run satisfied both
+the `pass` and the `incomplete` acceptance outcome. Owned links now have their
+own history, read only by the feedback follow-up.
+
+On every adapter host, an intent note was silently skipped whenever the payload
+carried a `tool_use_id`, because the save saw the receipt's delivery marker and
+assumed the write had already happened. Real Codex payloads carry one. The
+launcher exercise did not, so its five-host result described a payload no host
+sends. It now sends one, and the four adapter cases failed before the repair.
+
+`ep_check.py` crashed with exit 1, which means failed, when printing a `None`
+attempt for a refused check: an existing CLI test caught it, but it had not been
+in the affected group chosen for the first push. And a declared command carrying
+a credential-like token never matched its own receipt, whose command is
+scrubbed; that bug predated this work in `check_feedback` and was copied twice.
 
 ## What ran
 
 `python -m eval.declared_closure` drives actual pytest and `node --test`
-projects through all five adapters, replay and native: 20 of 20 cases record
+projects through all five adapters, replay and native, with a tool-use identity
+on every tool callback: each case records
 `ABSENT → ABSENT → CURRENT → STALE → FAILED → INCOMPLETE`, emitted follow-ups
 `current / failed / incomplete` natively and no emission under replay. The
 Python acceptance fixture from earlier work could not be reused: it is a bespoke

@@ -23,13 +23,15 @@ PROMPTS = {'claude': 'UserPromptSubmit', 'codex': 'UserPromptSubmit', 'gemini': 
            'cursor': 'beforeSubmitPrompt', 'copilot': 'userPromptSubmitted'}
 
 
-def _callback(root, host, mode, phase, *, command=None, output='', code=0, prompt=None):
+def _callback(root, host, mode, phase, *, command=None, output='', code=0, prompt=None, tool_use_id=None):
     payload = {'cwd': str(root), 'session_id': 'advice-control',
                'tool_name': 'Bash' if command else 'Write',
                'tool_input': {'command': command} if command else {'file_path': str(root / ('app.py' if (root / 'app.py').exists() else 'app.mjs'))},
                'tool_response': {'stdout': output, 'exit_code': code}}
     if prompt is not None:
         payload['prompt'] = prompt
+    if tool_use_id:
+        payload['tool_use_id'] = tool_use_id
     if code is None:
         payload['tool_response'] = {'stdout': output, 'interrupted': True}
     if host == 'gemini':

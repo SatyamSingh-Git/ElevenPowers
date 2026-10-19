@@ -141,7 +141,9 @@ The owned runner's output is still never parsed as evidence. A host callback
 for an owned envelope only links the ledger receipts already bound to a printed
 attempt, so the recommended path is observable without trusting outer output.
 An echoed attempt from before the emission links an old receipt and is not
-reported as a follow-up.
+reported as a follow-up. These owned links are kept apart from native receipt
+history: they do not count toward health's command capture or installed
+acceptance. Refused or unrun checks print no attempt.
 
 See [design](../docs/design/declared-check-execution.md),
 [dated qualification](../docs/validation/2026-10-16-declared-check-execution.md)

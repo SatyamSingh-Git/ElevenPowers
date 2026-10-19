@@ -69,7 +69,8 @@ def case(root, host, language, mode):
     def owned(*extra):
         invocation = f'"{sys.executable}" "{OWNED}" tests --project "{root}"' + ''.join(' ' + arg for arg in extra)
         output, code = _shell(invocation, root)
-        callbacks.append(_callback(root, host, mode, EVENTS[host][1], command=invocation, output=output, code=code))
+        callbacks.append(_callback(root, host, mode, EVENTS[host][1], command=invocation, output=output, code=code,
+                                   tool_use_id=f'owned-{len(callbacks)}'))
         observe()
         return code, inspect(Ledger.load(root))
 
@@ -77,7 +78,7 @@ def case(root, host, language, mode):
     app.write_text(app.read_text().replace('value > 10', 'value >= 10'))
     output, code = _shell(command, root)
     callbacks.append(_callback(root, host, mode, EVENTS[host][1], command=command + ' 2>&1 | tail -15',
-                               output=output, code=code))
+                               output=output, code=code, tool_use_id='generic'))
     observe()
     generic = inspect(Ledger.load(root))
     passed = owned()

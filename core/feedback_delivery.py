@@ -15,8 +15,9 @@ import time
 
 from .hosts import readiness
 from .jobs import Busy, Superseded, ledger_write
-from .ledger import Ledger
+from .ledger import DELIVERY, Ledger
 from .parsers import DECLARED_KINDS
+from .redact import scrub
 
 
 INTENT = "declared verification feedback intent"
@@ -64,7 +65,12 @@ def intent(root, task, properties, text) -> str:
                 if sum(item is not None for item in known) >= 16:
                     return ""
                 saved.note(INTENT, json.dumps(detail, sort_keys=True, separators=(",", ":")))
-                saved._save_locked(expected_task=task)
+                # The receipt's delivery marker is already committed; this note is not a second delivery.
+                token = DELIVERY.set(None)
+                try:
+                    saved._save_locked(expected_task=task)
+                finally:
+                    DELIVERY.reset(token)
     except (OSError, ValueError, TypeError, Busy, Superseded):
         return ""
     return identity
@@ -171,7 +177,7 @@ def _latest(ledger, declaration):
     kind = DECLARED_KINDS[declaration]
     matches = [record for record in ledger.evidence
                if record.declaration == declaration and record.kind is kind
-               and record.command_identity == command]
+               and record.command_identity == scrub(command)]
     return max(matches, key=lambda record: record.at) if matches else None
 
 
@@ -201,7 +207,7 @@ def inspect(ledger):
         try:
             active = readiness.activation(emission["host"], ledger.root)
             record = _latest(ledger, declaration)
-            links = active.get("receipt_links", [])
+            links = active.get("receipt_links", []) + active.get("owned_links", [])
             matched = record.at > emission["at"] and any(link.get("key") == readiness.receipt_key(record)
                           and link.get("task") == readiness.identity(ledger.task)
                           and link.get("session") == emission["session"]

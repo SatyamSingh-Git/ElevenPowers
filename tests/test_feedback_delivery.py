@@ -15,9 +15,8 @@ from core.ledger import Ledger
 from core.parsers import parse
 
 
-def _project(root: Path):
+def _project(root: Path, command="python -m pytest"):
     (root / "value.py").write_text("value = 1\n", encoding="utf8")
-    command = "python -m pytest"
     save(root, Config(profile="guide", auto_detect=False, commands={"tests": command}))
     ledger = Ledger(root=root, task="feedback-delivery-task")
     ledger.save()
@@ -80,6 +79,21 @@ def test_emitted_feedback_and_later_exact_native_receipt_remain_separate_observa
     stored_values = [value for note in notes for value in note.values() if isinstance(value, str)]
     assert len(notes) == 2 and all(text not in value for value in stored_values)
     assert "private-session" not in stored
+
+
+def test_credential_bearing_exact_command_is_matched_for_feedback_and_followup(tmp_path):
+    from core.feedback_delivery import inspect
+
+    _, command = _project(tmp_path, "DB_PASSWORD=hunter2secret python -m pytest")
+    _exact(tmp_path, command)
+    current = parse(command + " | tail -15", "1 passed in 0.01s", 0, tmp_path)
+    assert feedback(Ledger.load(tmp_path), current, command + " | tail -15") == ""
+
+    (tmp_path / "value.py").write_text("value = 2\n", encoding="utf8")
+    _deliver(tmp_path, command)
+    _exact(tmp_path, command)
+
+    assert inspect(Ledger.load(tmp_path))["followups"] == [{"declaration": "tests", "state": "current"}]
 
 
 def test_replayed_feedback_records_intent_without_native_emission(tmp_path):
@@ -265,6 +279,18 @@ def test_owned_run_after_emitted_feedback_is_a_later_exact_native_receipt(tmp_pa
     _host(tmp_path, owned, output)
 
     assert inspect(Ledger.load(tmp_path))["followups"] == [{"declaration": "tests", "state": "current"}]
+
+
+def test_owned_receipts_never_enter_native_receipt_history(tmp_path, capsys):
+    command = _actual_project(tmp_path)
+    _generic(tmp_path, command, capsys)
+    owned, output, code = _owned(tmp_path)
+    _host(tmp_path, owned, output)
+
+    state = readiness.read(tmp_path)["claude"]
+    owned_keys = {readiness.receipt_key(e) for e in Ledger.load(tmp_path).evidence if e.owned_execution}
+    assert owned_keys and not owned_keys & {link["key"] for link in state["receipt_links"]}
+    assert owned_keys & {link["key"] for link in state["owned_links"]}
 
 
 def test_owned_output_from_before_the_emission_is_not_a_followup(tmp_path, capsys):

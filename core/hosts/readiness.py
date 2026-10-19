@@ -45,10 +45,20 @@ def record_receipts(records, task):
 
 
 def record_owned(output, ledger):
-    """Link the receipts an owned run printed by attempt; its output is never parsed as evidence."""
+    """Link the receipts an owned run printed by attempt; its output is never parsed as evidence.
+
+    Kept apart from native receipt links: owned execution is not a native
+    command observation and must not satisfy health or installed acceptance.
+    """
+    observation = _OBSERVATION.get()
     attempts = set(re.findall(r'(?m)(?:^Attempt: |"attempt": ")([0-9a-f]{64})\b', output))
-    if attempts:
-        record_receipts([e for e in ledger.evidence if e.owned_execution.get('attempt') in attempts], ledger.task)
+    if observation is None or not attempts:
+        return
+    record_task(ledger.task)
+    for r in ledger.evidence:
+        if r.declaration and r.owned_execution.get('attempt') in attempts:
+            observation['owned'].append({'key': receipt_key(r), 'result': r.result.value, 'execution': r.execution})
+    del observation['owned'][:-64]
 
 
 def record_edit(task, changed, incomplete=False):
@@ -149,7 +159,7 @@ def callback(platform, root, event, payload=None):
                     received=min(item.get('received', 0) + 1, 1_000_000_000))
         phase = item.setdefault('phases', {}).setdefault(event, {})
         phase.update(received=min(phase.get('received', 0) + 1, 1_000_000_000))
-    observation = {'links': [], 'task': '', 'session': session, 'evicted': 0,
+    observation = {'links': [], 'owned': [], 'task': '', 'session': session, 'evicted': 0,
                    'host': platform, 'generation': generation, 'event': event}
     token = _OBSERVATION.set(observation)
     error = None
@@ -183,6 +193,10 @@ def callback(platform, root, event, payload=None):
                         for link in observation['links']]
                     item['links_evicted'] = min(1_000_000_000, item.get('links_evicted', 0) + max(0, len(links) - 64) + observation['evicted'])
                     item['receipt_links'] = links[-64:]
+                    if observation['owned']:
+                        item['owned_links'] = (item.get('owned_links', []) + [
+                            {**link, 'task': observation['task'], 'session': session, 'at': time.time()}
+                            for link in observation['owned']])[-64:]
                     item.pop('error', None)
                     item.update(processed_at=time.time(), processed=min(item.get('processed', 0) + 1, 1_000_000_000))
                     if event == 'SessionStart':
