@@ -1,5 +1,29 @@
 # Master Plan v0.8
 
+**2026-10-19 — Declared-check completion closure delivered, no-model.**
+The completion report lists every configured exact declaration as `CURRENT`,
+`FAILED`, `STALE`, `ABSENT` or `INCOMPLETE` beside the unchanged verdict; a
+generic filtered pass no longer hides an exact gap. Declared-check feedback
+leaves three separate hashed observations: intent, a native emission recorded
+only after a supported context field was flushed, and a later exact receipt
+from the same session that itself postdates the emission. The report labels
+them *model consumption unproven*. Owned runs print their attempt digest, so the
+path the feedback recommends is observable; those links stay apart from native
+receipt history and never count toward health or installed acceptance.
+
+The no-model launcher exercise qualifies 20/20 cases across five hosts,
+Python/Node and replay/native. The affected groups pass 610 tests. The full local
+suite has 2629 passed and 1 failure caused by a repository-local temporary
+directory. Hosted cells at the repaired commit pass where finished. A fresh review
+found four defects after the first push, including a CLI crash that reached `main`
+for two commits; each was witnessed failing and then fixed. No model was run, and
+no adoption, comprehension or coding benefit is claimed.
+Next: an installed session observing whether the agent takes the owned path after
+feedback arrives, with every non-adoption retained.
+See [results](results/declared-check-closure/README.md),
+[validation](docs/validation/2026-10-19-declared-check-closure.md) and
+[journey 86](journey/86-a-gap-is-visible-at-done.md).
+
 **2026-10-17 — Generalized workflow feedback and guarded report reads delivered.**
 Completed generic verification now offers bounded owned-runner advice when
 the corresponding exact declaration is absent, stale or incomplete. Current
