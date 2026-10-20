@@ -122,7 +122,7 @@ def materialise(repo: Path, sha: str, into: Path) -> None:
 
 
 def run_tests(root: Path, targets: list[str], env: dict[str, str],
-              traceback: str = "no") -> tuple[int, str]:
+              traceback: str = "no", python: str = sys.executable) -> tuple[int, str]:
     """Run a suite and return its exit code with everything it said.
 
     `traceback` defaults to none because the callers that parse node ids do not
@@ -135,7 +135,7 @@ def run_tests(root: Path, targets: list[str], env: dict[str, str],
 
     environment = {**os.environ, **env}
     done = subprocess.run(
-        [sys.executable, "-m", "pytest", *targets, "-q", "--no-header",
+        [python, "-m", "pytest", *targets, "-q", "--no-header",
          f"--tb={traceback}", "-rA", "-p", "no:randomly"],
         cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=TIMEOUT, env=environment,
     )
@@ -174,7 +174,8 @@ def usable_report(subject: str, seen: set[str]) -> bool:
     return subject.strip().lower() not in seen
 
 
-def candidates(repo: Path, limit: int, source_dir: str, test_dir: str) -> list[tuple[str, list[str]]]:
+def candidates(repo: Path, limit: int, source_dir: str, test_dir: str,
+               since: str | None = None) -> list[tuple[str, list[str]]]:
     """Commits that changed source and tests together, newest first.
 
     A fix without a test cannot be verified, and a test without a fix is not a
@@ -185,7 +186,7 @@ def candidates(repo: Path, limit: int, source_dir: str, test_dir: str) -> list[t
     # Windows is most of an hour spent on nothing -- and it was the reason the
     # corpus had never been mined deeper than a couple of hundred commits.
     log = git(repo, "log", "--no-merges", "--name-only",
-              "--format=%x1e%H%x1f%s", f"-{limit}")
+              "--format=%x1e%H%x1f%s", f"-{limit}", *([f"--since={since}"] if since else []))
     out, seen = [], set()
     for chunk in log.split("\x1e")[1:]:
         header, _, listing = chunk.partition("\n")
@@ -254,7 +255,7 @@ def describe(repo: Path, sha: str) -> str:
 
 
 def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
-             work: Path) -> tuple[Instance | None, str]:
+             work: Path, python: str = sys.executable, suite_dir: str = "tests") -> tuple[Instance | None, str]:
     """A usable instance, or the reason there is not one.
 
     The reason matters as much as the instance. Five different rejections used
@@ -279,7 +280,7 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
 
     base = work / "base"
     materialise(repo, parent, base)
-    suite = [d for d in ("tests",) if (base / d).exists()]
+    suite = [d for d in (suite_dir,) if (base / d).exists()]
 
     for rel, body in patch.items():
         target = base / rel
@@ -291,7 +292,7 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     # rejected by checks that only ever needed the commit's own test files. The
     # set of instances kept is unchanged -- these are all conjuncts -- but the
     # depth of history that can be searched in an afternoon is not.
-    code, output = run_tests(base, list(patch), env, traceback="line")
+    code, output = run_tests(base, list(patch), env, traceback="line", python=python)
     if code == 0:
         return None, "the new tests already pass before the fix"
     f2p = failing_nodes(output)
@@ -301,7 +302,7 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
         # with a missing package looked like a repository with no bugs.
         return None, _why_red(output)
 
-    code, output = run_tests(fixed, f2p, env)
+    code, output = run_tests(fixed, f2p, env, python=python)
     if code != 0:
         return None, "the fix does not satisfy its own tests"
 
@@ -310,7 +311,7 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     # already broken. Asked of survivors only.
     green = work / "green"
     materialise(repo, parent, green)
-    code, output = run_tests(green, suite, env, traceback="line")
+    code, output = run_tests(green, suite, env, traceback="line", python=python)
     if code != 0:
         return None, _why_red(output)
 
@@ -318,8 +319,8 @@ def validate(repo: Path, sha: str, test_files: list[str], env: dict[str, str],
     # both before and after the source change. A task without one cannot tell a
     # fix from a patch that also broke something, which is how the grader came
     # to accept exactly that.
-    _, before = run_tests(base, suite, env)
-    _, after = run_tests(fixed, suite, env)
+    _, before = run_tests(base, suite, env, python=python)
+    _, after = run_tests(fixed, suite, env, python=python)
     p2p = sorted((passing_nodes(before) & passing_nodes(after)) - set(f2p))
     if machine_dependent(f2p):
         # The required test itself. There is nothing to fall back on: the task
