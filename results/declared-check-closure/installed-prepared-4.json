@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "category": "installed-feedback-observation-preparation",
+  "host": "claude",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "host_version": "2.1.292 (Claude Code)",
+  "seconds_per_session": 720,
+  "stage_count": 4,
+  "readout_per_turn": [
+    "declared_closure.declared: completion row for the tests declaration",
+    "declared_closure.delivery: state (unobserved/intent/emitted), intents, emitted, follow-up state",
+    "native.native_runner_adoption: completed owned runner call with a fresh owned receipt in the native session",
+    "independent_grade: cumulative passing groups (4/6/8/10 expected for full correctness)"
+  ],
+  "frozen_outcome_definitions": {
+    "feedback_emitted": "some turn reads delivery.state == emitted",
+    "owned_path_after_feedback": "a turn at or after the first emitted turn has native_runner_adoption true, or a delivery follow-up other than unobserved",
+    "non_adoption": "feedback emitted and no owned runner adoption in any turn at or after it",
+    "no_feedback": "no turn reads emitted; the question is then unanswered, not negative"
+  },
+  "retention": "Every outcome is retained, including timeout, non-adoption and missing emission. No favorable retry, case replacement or human candidate repair.",
+  "authorization": "Standing user permission (2026-10-17) for needed Sonnet 5.5 medium subscription sessions; user asked to run this on 2026-10-20. No API fallback.",
+  "purpose": "single-assisted-python-installed-observation-not-a-comparison",
+  "attempt": 4,
+  "model_calls": 0,
+  "prepared_at": "2026-10-20T10:04:55.338357+00:00",
+  "runtime_fingerprint": "6895bf257d82a15ab237e0d929113d8bc30a33e84ca9dcb3cfeb397014811421",
+  "harness_sha256": "48f854f09d05889bfbd43abef710dbce082e08bf739b58a9b733e14580390a73",
+  "protocol_sha256": "510293c87c31a3d83d55d89a9a19f2a3c7a4c2828598c53be07c5d8593acadd9",
+  "cases": [
+    "workflow-queue-py"
+  ],
+  "scheduled": [
+    "workflow-queue-py-assisted"
+  ],
+  "prepared_not_scheduled": [
+    "workflow-queue-py-ordinary"
+  ],
+  "requests_sha256": "475eb1a8031d422c56d100c0c5e2d15ed15c60492549a8fc910352776c4352aa",
+  "oracles": [
+    "5246b9de7477db8b14e80b17c7aac1fc65e6294226235e870e4226e81c81e9f7",
+    "4f9aa4b51b9a688e06ca6bf20646a232ff91caffd8d2aa5bca3ca4fdfe292a64",
+    "ab0f2b6300b02762baa62c9a79c8e7033c000f01b11ef1dd37f3fd602c967251",
+    "ecc3491c453ff50aeb5b942adb85cc8a825f30fd56f8da39296ece2a64140a2d",
+    "4666db94846c3f5253c596538efb585603490a64fb89d5fda76eb39ff7690eee"
+  ],
+  "follows": "installed-attempt-3.json (Python turn 4 recorded scope_violation from a milestone readout defect)",
+  "change_since_attempt_3": "Runtime excludes observed out-of-project edits from milestone impact (addf985); harness labels post-verify errors readout_failed (dd8e4c2).",
+  "launch_prerequisites": {
+    "full_local_suite": "2658 passed, 3 skipped, 0 failed in 4546.29 s at runtime 6895bf25 (default temp directory)",
+    "no_model_exercise": "results/declared-check-closure/no-model-repaired.json: 20/20 at runtime 6895bf25",
+    "hosted_tests": "all four cells green at dd8e4c2 (same runtime). Docs-only 459542d failed windows-3.11 test_advice_delivery_exercise[javascript] ('Latest advice attempt is reserved or incomplete', the recorded Windows advice incident); 1e5170b failed windows-3.13 test_keyboard_interrupt_cleans_tree_before_reraising (recorded intermittent). Neither code path changed this session; both retained, unexplained."
+  },
+  "limits": [
+    "One conversation on one authored Python case: an observation, not a rate.",
+    "A later owned receipt is temporal correlation; it does not establish that the model read the feedback.",
+    "No ordinary arm; no coding-quality or speed comparison.",
+    "Attempt 3's Python slot is a different runtime; the two are not pooled."
+  ]
+}
