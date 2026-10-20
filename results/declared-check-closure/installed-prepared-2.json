@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "category": "installed-feedback-observation-preparation",
+  "purpose": "single-assisted-installed-observation-not-a-comparison",
+  "prepared_at": "2026-10-20T06:32:57.308452+00:00",
+  "model_calls": 0,
+  "host": "claude",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "host_version": "2.1.292 (Claude Code)",
+  "seconds_per_session": 720,
+  "stage_count": 4,
+  "runtime_fingerprint": "8ceec45c0b2251616a3762d94cf6ced5d6db2ab62c681379a6599ddaf4c0a891",
+  "harness_sha256": "311a2c8a2b30b974f29240465dd7bb143fad68aee068e3bf669fd07c54923517",
+  "protocol_sha256": "d7db221a6544d3bd6e3611df68c417521a4d966f92968ff9dd4c66b1aac3ae1d",
+  "case": "workflow-orders-js",
+  "requests_sha256": "9c7f35431d89bf22fe54a31c3115bba49554caeb32bd9703b0db9edcf98977c5",
+  "oracles": [
+    "8ffa73d72ca2e9025571659eb8b0898d48db310e6ae32a86f1b192b6d86ef78b",
+    "4635c51f1bed8bac9e2807c873ab436afbd017ddb8bf4700792ccb3cb3c6efe2",
+    "254b52c72f4b8a3255af2e40c07db604b4aeea64d4002f0a3f3edf1a8599b40f",
+    "6983445d4dc977b5952b6aed8ee02bd55c6a49f2c06ebdfd233c09a584fc9726",
+    "b7123fecd382f30f250ffa57c48ae5e14ee02c0bdc892b7bc5ce027a738c5e91"
+  ],
+  "scheduled": [
+    "workflow-orders-js-assisted"
+  ],
+  "prepared_not_scheduled": [
+    "workflow-orders-js-ordinary"
+  ],
+  "batch_location": "outside every Git ancestor (E: drive root has none); candidates are their own repositories",
+  "authorization": "Standing user permission (2026-10-17) for needed Sonnet 5.5 medium subscription sessions; user asked to run this on 2026-10-20. No API fallback.",
+  "launch_prerequisites": {
+    "hosted_tests": "tests.yml success on all four cells at 3f3e2e7, 361c44f and 4cf14bb (same runtime content)",
+    "no_model_exercise": "results/declared-check-closure/no-model-checkout-bytes.json: 20/20 at runtime 8ceec45c (checkout CRLF bytes of 3f3e2e7)",
+    "harness_tests": "34 passed with the repair (test_workflow_controller, test_preservation, test_workflow_results)"
+  },
+  "readout_per_turn": [
+    "declared_closure.declared: completion row for the tests declaration",
+    "declared_closure.delivery: state (unobserved/intent/emitted), intents, emitted, follow-up state",
+    "native.native_runner_adoption: completed owned runner call with a fresh owned receipt in the native session",
+    "independent_grade: cumulative passing groups (4/6/8/10 expected for full correctness)"
+  ],
+  "frozen_outcome_definitions": {
+    "feedback_emitted": "some turn reads delivery.state == emitted",
+    "owned_path_after_feedback": "a turn at or after the first emitted turn has native_runner_adoption true, or a delivery follow-up other than unobserved",
+    "non_adoption": "feedback emitted and no owned runner adoption in any turn at or after it",
+    "no_feedback": "no turn reads emitted; the question is then unanswered, not negative"
+  },
+  "retention": "Every outcome is retained, including timeout, non-adoption and missing emission. No favorable retry, case replacement or human candidate repair.",
+  "limits": [
+    "One authored JavaScript case and one conversation: an observation, not a rate.",
+    "A later owned receipt is temporal correlation; it does not establish that the model read the feedback.",
+    "Python is not scheduled: a filtered python -m unittest run produces no generic record, so feedback cannot fire there at this runtime.",
+    "No ordinary arm and no coding-quality or speed comparison."
+  ],
+  "attempt": 2,
+  "follows": "installed-attempt-1.json (model_unqualified; retained, not counted)",
+  "repair": "Launch sets ANTHROPIC_DEFAULT_HAIKU_MODEL to the protocol model (commit c5c567c); a real probe showed it removes the host's auxiliary Haiku call. The exact-model rule, case, requests, oracles, schedule, cap and outcome definitions are unchanged."
+}
