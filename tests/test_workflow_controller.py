@@ -100,11 +100,12 @@ def test_agent_cannot_replace_the_frozen_git_head(tmp_path):
     with pytest.raises(ValueError,match='Git'):p.verify(tmp_path/'batch',slot)
 
 
+@pytest.mark.parametrize('name',['workflow-orders-js','workflow-queue-py'])
 @pytest.mark.parametrize('owned',[True,False],ids=['owned-followup','generic-only'])
-def test_each_stage_reads_out_declared_rows_and_feedback_delivery(tmp_path,monkeypatch,owned):
+def test_each_stage_reads_out_declared_rows_and_feedback_delivery(tmp_path,monkeypatch,owned,name):
     import shutil,sys
-    if not shutil.which('node'):pytest.skip('Node unavailable')
-    name='workflow-orders-js';protocol=prepare(tmp_path,name)
+    if name.endswith('js') and not shutil.which('node'):pytest.skip('Node unavailable')
+    protocol=prepare(tmp_path,name)
     slot=next(s for s in protocol['slots'] if s.endswith('assisted'));actual=p.run
     source=Path(p.__file__).resolve().parents[1]
     def hook(root,event,payload):
