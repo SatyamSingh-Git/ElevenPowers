@@ -154,3 +154,13 @@ def test_the_workspace_interpreter_does_not_see_the_base_site(tmp_path, monkeypa
     monkeypatch.setattr(h, "run", _host(tasks, calls))
     result = h.execute(tmp_path / "batch", protocol["slots"][0], "fake-host")
     assert result["state"] != "canary_failed" and len(calls) == 1
+
+
+def test_collect_reports_every_scheduled_slot_including_unlaunched_ones(tmp_path, monkeypatch):
+    from eval.heldout_analyse import analyse
+    protocol, tasks = _prepared(tmp_path, monkeypatch)
+    monkeypatch.setattr(h, "run", _host(tasks, []))
+    h.execute(tmp_path / "batch", protocol["slots"][0], "fake-host")
+    records = h.collect(tmp_path / "batch")
+    assert [(r["slot"], r["state"]) for r in records] == [("t--ordinary--0", "graded"), ("t--assisted--0", "not_launched")]
+    assert analyse(records)["runs"] == {"scheduled": 2, "graded": 1, "incomplete": 1}

@@ -208,6 +208,20 @@ def execute(batch, slot, executable):
     return record
 
 
+def collect(batch):
+    """One record per scheduled slot; a slot never launched is counted, not dropped."""
+    root = Path(batch).resolve(strict=True)
+    records = []
+    for slot in _read(root / 'protocol.json')['slots']:
+        path = root / slot / 'result.json'
+        if path.exists():
+            records.append(_read(path))
+        else:
+            name, arm, _ = slot.split('--')
+            records.append({'slot': slot, 'task': name, 'arm': arm, 'state': 'not_launched'})
+    return records
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='action', required=True)
@@ -220,12 +234,19 @@ def main():
     executed.add_argument('--batch', type=Path, required=True)
     executed.add_argument('--slot', required=True)
     executed.add_argument('--executable', default='claude')
+    collected = commands.add_parser('collect')
+    collected.add_argument('--batch', type=Path, required=True)
+    collected.add_argument('--out', type=Path, required=True, help='the list eval.heldout_analyse reads')
     args = parser.parse_args()
     if args.action == 'prepare':
         value = prepare(args.batch, args.corpus, replicates=args.replicates, seconds=args.seconds)
         print(len(value['slots']), 'slots sealed')
-    else:
+    elif args.action == 'execute':
         print(json.dumps(execute(args.batch, args.slot, args.executable), indent=2))
+    else:
+        records = collect(args.batch)
+        args.out.write_text(json.dumps(records, indent=2) + '\n', encoding='utf-8')
+        print(len(records), 'scheduled;', sum(r['state'] == 'graded' for r in records), 'graded')
 
 
 if __name__ == '__main__':
