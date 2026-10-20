@@ -55,6 +55,8 @@ def test_comparison_reserves_later_turn_allowances(tmp_path,monkeypatch,name):
             root=Path(kwargs['cwd']);value=case(name)
             (root/value['production'][0]).write_text(value['gold'][3],encoding='utf8')
             caps.append(kwargs['timeout'])
+            # The host's auxiliary small model would otherwise make every turn model-unqualified.
+            assert kwargs['env']['ANTHROPIC_DEFAULT_HAIKU_MODEL']==protocol['model']
             identity=protocol['seals'][slot]['session']
             event={'type':'result','session_id':identity,'is_error':False,'modelUsage':{'claude-sonnet-5-5':{}}}
             return SimpleNamespace(returncode=0,stdout=json.dumps(event),stderr='')

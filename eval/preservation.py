@@ -341,8 +341,11 @@ def execute(batch, slot, executable):
             command=(native_command(executable,candidate,prompt,protocol['seals'][slot]['session'],stage,
                                     model=protocol['model'],stages=stage_count) if new else
                      native_command(executable,candidate,prompt,protocol['seals'][slot]['session'],stage))
+            # Claude Code otherwise sends small auxiliary calls (e.g. Bash command checks) to Haiku,
+            # which the exact-model rule correctly refuses; keep every call on the frozen model.
+            environment={**os.environ,'ANTHROPIC_DEFAULT_HAIKU_MODEL':protocol['model']} if new else None
             done = run(command,
-                       cwd=candidate, timeout=allowance, shell=False)
+                       cwd=candidate, timeout=allowance, shell=False, env=environment)
             output, diagnostic, code = done.stdout, done.stderr, done.returncode
             item['state'] = 'returned' if code == 0 else 'host_failed'
         except (OSError, subprocess.SubprocessError) as error:
