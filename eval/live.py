@@ -813,7 +813,7 @@ def _restore_tests(task: Task, root: Path) -> bool:
     archive_path = root.parent / f"{root.name}-tests.zip"
     done = subprocess.run(
         [*GIT, "-C", source["repo"], "archive", "--format=zip", "-o", str(archive_path),
-         source["base"], "--", "tests"], capture_output=True)
+         source["base"], "--", source.get("test_dir", "tests")], capture_output=True)
     if done.returncode != 0:
         return False
     with zipfile.ZipFile(archive_path) as archive:
@@ -836,7 +836,7 @@ def _verify_real(task: Task, root: Path) -> Graded:
 
     try:
         done = subprocess.run(
-            [sys.executable, "-m", "pytest", *_suite(root), "-q", "--no-header",
+            [source.get("python", sys.executable), "-m", "pytest", *_suite(task, root), "-q", "--no-header",
              "--tb=no", "-rA", "-p", "no:randomly"],
             cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=SUITE_TIMEOUT,
             env={**os.environ, **source.get("env", {})},
@@ -882,16 +882,17 @@ def _base_collects(task: Task, root: Path) -> bool:
         if not _restore_tests(task, control):
             return False
         done = subprocess.run(
-            [sys.executable, "-m", "pytest", *_suite(control), "-q", "--no-header",
-             "--collect-only"],
+            [task.source.get("python", sys.executable), "-m", "pytest", *_suite(task, control), "-q",
+             "--no-header", "--collect-only"],
             cwd=control, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=SUITE_TIMEOUT,
             env={**os.environ, **(task.source.get("env") or {})},
         )
     return done.returncode == 0
 
 
-def _suite(root: Path) -> list[str]:
-    return ["tests"] if (root / "tests").exists() else []
+def _suite(task: Task, root: Path) -> list[str]:
+    tests = task.source.get("test_dir", "tests")
+    return [tests] if (root / tests).exists() else []
 
 
 def _verify_seeded(task: Task, root: Path) -> Graded:
