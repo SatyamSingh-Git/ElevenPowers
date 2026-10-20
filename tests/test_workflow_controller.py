@@ -143,3 +143,36 @@ def test_each_stage_reads_out_declared_rows_and_feedback_delivery(tmp_path,monke
     assert first['delivery']['state']=='emitted' and first['delivery']['model_consumption']=='unproven'
     assert first['declared']=={'tests':'CURRENT' if owned else 'STALE'}
     assert first['delivery']['followups']==[{'declaration':'tests','state':'current' if owned else 'unobserved'}]
+
+
+def test_a_failing_post_turn_readout_is_not_called_a_scope_violation(tmp_path,monkeypatch):
+    protocol=prepare(tmp_path);slot=protocol['slots'][0];actual=p.run
+    def external(command,**kwargs):
+        if isinstance(command,list) and command[0]=='fake-host':
+            if command[-1]=='--version':return SimpleNamespace(returncode=0,stdout='fake test host',stderr='')
+            event={'type':'result','session_id':protocol['seals'][slot]['session'],'is_error':False,
+                   'modelUsage':{'claude-sonnet-5-5':{}}}
+            return SimpleNamespace(returncode=0,stdout=json.dumps(event),stderr='')
+        return actual(command,**kwargs)
+    def broken(*a,**k):raise ValueError('unsafe milestone input path')
+    monkeypatch.setattr(p,'run',external);monkeypatch.setattr(p.subscription,'auth',lambda *a:True)
+    monkeypatch.setattr(p,'build',broken)
+    result=p.execute(tmp_path/'batch',slot,'fake-host')
+    item=result['stages'][0]
+    assert item['scope']=='preserved' and item['state']=='readout_failed'
+    assert item['readout_error']=='ValueError' and 'independent_grade' in item
+
+
+def test_an_agent_edit_to_a_sealed_test_is_still_a_scope_violation(tmp_path,monkeypatch):
+    protocol=prepare(tmp_path);slot=protocol['slots'][0];actual=p.run
+    def external(command,**kwargs):
+        if isinstance(command,list) and command[0]=='fake-host':
+            if command[-1]=='--version':return SimpleNamespace(returncode=0,stdout='fake test host',stderr='')
+            (Path(kwargs['cwd'])/'tests/test_core.py').write_text('pass\n')
+            event={'type':'result','session_id':protocol['seals'][slot]['session'],'is_error':False,
+                   'modelUsage':{'claude-sonnet-5-5':{}}}
+            return SimpleNamespace(returncode=0,stdout=json.dumps(event),stderr='')
+        return actual(command,**kwargs)
+    monkeypatch.setattr(p,'run',external);monkeypatch.setattr(p.subscription,'auth',lambda *a:True)
+    item=p.execute(tmp_path/'batch',slot,'fake-host')['stages'][0]
+    assert (item['scope'],item['state'])==('violated','scope_violation') and 'readout_error' not in item

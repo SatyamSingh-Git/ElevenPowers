@@ -397,9 +397,14 @@ def execute(batch, slot, executable):
                 item['native'] = _native(candidate, protocol, since=item['started_at'],
                                          session=protocol['seals'][slot]['session'])
             item['milestones'] = build(candidate, seconds=10, impact=True)
-        except (OSError, ValueError, KeyError, TypeError):
-            item['scope'] = 'violated'
-            item['state'] = 'scope_violation'
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            if item.get('scope') == 'preserved':
+                # Scope was already verified; a later grading/observation error is ours, not the agent's.
+                item['state'] = 'readout_failed'
+                item['readout_error'] = type(error).__name__
+            else:
+                item['scope'] = 'violated'
+                item['state'] = 'scope_violation'
         _write(folder / 'result.json', record)
         if item['state'] != 'completed':
             break
