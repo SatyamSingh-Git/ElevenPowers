@@ -85,3 +85,22 @@ retained uncounted. A real probe reproduced the call and its removal by
 feedback emitted in turn 2, owned runner used next with a `current` follow-up,
 turn 3 timed out at its time share and turn 4 never ran. See the
 [results](../../results/declared-check-closure/README.md#installed-observation-2026-10-20).
+
+## unittest summary and attempt 3 (2026-10-20)
+
+The `unittest` summary shapes were captured from real Python 3.13.2 runs before
+any pattern was written. Nineteen controls on actual runs failed before the
+reader existed (one adversarial control passed throughout); ten mutations were
+killed after a multi-summary control and a declared-wrapper control were added.
+The enforced both-ways table refused the change until `unittest` was added.
+Before the two-case launch, the full local suite passed 2655 with 3 skipped and
+no failure at runtime `f4f0956e`, all four hosted cells passed at `24ace0a` and
+`34ea800`, and the no-model exercise was 20/20.
+
+Attempt 3: both cases emitted feedback in turn 1 and used the owned runner in
+all four turns; JavaScript completed, and Python's turn 4 is recorded
+`scope_violation` from a milestone readout error on a host scratchpad path. That
+was reproduced on a copy of the candidate, witnessed failing, fixed in `addf985`
+(4/4 mutations killed) and the harness label repaired in `dd8e4c2` (both
+directions witnessed). See the
+[results](../../results/declared-check-closure/README.md#attempt-3-both-cases-2026-10-20).

@@ -1,6 +1,10 @@
 # The journey
 
-Latest: [86 — a gap is visible at done](86-a-gap-is-visible-at-done.md):
+Latest: [87 — a scratch file is not a scope violation](87-a-scratch-file-is-not-a-scope-violation.md):
+Python's unittest summary read from real runs, both installed cases follow the
+feedback, and a host scratch file mislabelled as a scope violation.
+
+Recent: [86 — a gap is visible at done](86-a-gap-is-visible-at-done.md):
 exact declared-check state beside the verdict, feedback intent/emission/follow-up
 kept apart, and the owned-runner path made observable after the real launcher
 showed it was not.

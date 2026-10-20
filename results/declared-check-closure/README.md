@@ -89,6 +89,34 @@ guidance also names the runner, and the earlier run on this case (0/4 owned turn
 was a different runtime and a single sample. No adoption rate, causal effect or
 coding benefit is claimed, and four-stage completion is not established.
 
+### Attempt 3: both cases (2026-10-20)
+
+Python's standard `unittest` summary is now read (commit `24ace0a`), so a filtered
+`python -m unittest` run can produce feedback. [Preparation](installed-prepared-3.json)
+froze one batch with both assisted slots after a clean full local suite (2655
+passed, 3 skipped), all four hosted cells and a 20/20 no-model run. See
+[attempt 3](installed-attempt-3.json).
+
+| Case | Run | Model s | Grades | Feedback | Owned runner turns |
+|---|---|---|---|---|---|
+| JavaScript | **completed** | 182.252 | 4/6/8/10 | emitted turn 1, follow-up `current` | 4 of 4 |
+| Python | incomplete (turn 4 recorded `scope_violation`) | 189.27 | 4/6/8/10 | emitted turn 1, follow-up `current` | 4 of 4 |
+
+Python's turn 4 is recorded as the frozen harness wrote it. Its scope was in fact
+verified and graded (10 groups); the error came afterwards, in the milestone
+report. The agent had written a scratch file in the host's own scratchpad, the
+absolute path entered the task's touched paths, and milestone impact advice
+raised on it. Reproduced on a copy of the candidate and fixed in `addf985`; the
+harness now labels such a failure `readout_failed` (`dd8e4c2`). The record is
+not rewritten.
+
+By the frozen definitions, both cases emitted feedback in turn 1 and took the
+owned path afterwards. Every turn of both conversations used the runner, which
+also means the turns after the first could not show feedback: their exact
+declarations were already current. These are two conversations on two authored
+cases, with startup guidance naming the same runner: no rate, cause or coding
+benefit is claimed.
+
 ## Limits
 
 - Native-control is synthetic launcher ingress, not an installed agent session.
@@ -100,8 +128,7 @@ coding benefit is claimed, and four-stage completion is not established.
   relink owned receipts (limited to `owned_links`, guarded by receipt age); a
   stale or failed zero-test receipt reads `INCOMPLETE` because the zero-test
   rule is checked first.
-- A filtered `python -m unittest` run yields no generic record (the standard
-  `Ran N tests … OK` summary is not read), so declared-check feedback cannot
-  fire on that common runner; the Python case was therefore not scheduled.
-- Installed observation has one incomplete conversation; a completed run and a
-  second case remain open.
+- Before `24ace0a`, a filtered `python -m unittest` run produced no generic
+  record, so feedback could not fire on that runner; attempt 2 was JavaScript only.
+- A completed installed Python run is still open: attempt 3's Python turn 4 ended
+  on the readout defect fixed in `addf985`.

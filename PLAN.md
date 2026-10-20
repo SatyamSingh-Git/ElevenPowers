@@ -1,5 +1,22 @@
 # Master Plan v0.8
 
+**2026-10-20 — unittest summary read; both installed cases follow declared-check feedback.**
+Python's standard `unittest` summary is now counted as test evidence (failures,
+errors and unexpected successes fail; skips and expected failures are neither;
+zero tests is not proof), so filtered `python -m unittest` runs can trigger
+declared-check feedback. After a clean full local suite (2655 passed, 3 skipped),
+all four hosted cells and a 20/20 no-model run, one frozen batch ran both authored
+cases with Sonnet 5.5 medium. Each emitted the feedback in turn 1 and used the
+owned runner in all four turns. JavaScript completed at 4/6/8/10 groups. Python
+also graded 4/6/8/10, but its turn 4 is recorded `scope_violation`: a host
+scratchpad edit outside the project made milestone impact advice raise after scope
+had already been verified. That runtime defect and the harness label are fixed;
+the record is kept as written. Two conversations on authored cases with startup
+guidance naming the same runner: no rate, cause or coding benefit is claimed.
+Next: one completed Python run at the repaired runtime.
+See [results](results/declared-check-closure/README.md#attempt-3-both-cases-2026-10-20)
+and [journey 87](journey/87-a-scratch-file-is-not-a-scope-violation.md).
+
 **2026-10-20 — First installed declared-check feedback observation: followed, run incomplete.**
 One frozen Sonnet 5.5 medium conversation on the authored JavaScript four-stage
 case. In turn 2 a generic `node --test` run left the exact check unqualified, the
