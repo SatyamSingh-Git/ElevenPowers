@@ -86,11 +86,14 @@ def verify(batch, slot):
         raise ValueError('sealed corpus changed')
     if protocol['runtime_fingerprint'] != fingerprint() or protocol['harness_sha256'] != _harness():
         raise ValueError('sealed runtime or harness changed')
-    corpus = json.loads(data)
     name, arm, _ = slot.split('--')
+    return protocol, load_task(json.loads(data), name), arm
+
+
+def load_task(corpus, name):
     entry = next(task for task in corpus['tasks'] if task['name'] == name)
     source = {**entry, 'test_dir': corpus['environments'][entry['url']]['test_dir'].rstrip('/')}
-    return protocol, Task(name=name, prompt=entry['prompt'], files={}, hidden='', why='', source=source), arm
+    return Task(name=name, prompt=entry['prompt'], files={}, hidden='', why='', source=source)
 
 
 def _interpreter(python, work):
