@@ -51,6 +51,25 @@ def test_missing_change_observations_and_unsafe_paths_are_explicit(tmp_path):
         build(tmp_path, impact=True, changed=['../escape.py'])
 
 
+def test_observed_edit_outside_the_project_is_reported_not_raised(tmp_path):
+    # A host scratchpad edit lands in `touched` as an absolute path outside the project.
+    (tmp_path / 'project').mkdir()
+    root = consumer_project(tmp_path / 'project')
+    outside = (tmp_path / 'scratchpad' / 'patch.py').as_posix()
+    ledger = Ledger.load(root)
+    ledger.touched = ['provider.py', outside]
+    ledger.save()
+
+    value = build(root, impact=True)
+
+    assert value['impact']['requested'] == ['provider.py']
+    assert value['impact']['leads'] and value['impact']['state'] == 'incomplete'
+    assert any('outside the project' in issue for issue in value['impact']['issues'])
+    assert outside not in json.dumps(value)
+    with pytest.raises(ValueError):
+        build(root, impact=True, changed=['provider.py', outside])
+
+
 def test_direct_impact_leads_are_bounded_even_without_graph_candidates(tmp_path, monkeypatch):
     import core.milestones.impact as bridge
     paths = [f'file{i}.py' for i in range(128)]

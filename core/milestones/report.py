@@ -208,9 +208,21 @@ def build(root, *, seconds=30, changed=None, impact=False):
     if impact:
         from .impact import advise
         impact_started = time.monotonic()
-        value['impact'] = advise(root, definition['milestones'],
-                                 changed if changed is not None else payload.get('touched', []),
-                                 deadline=deadline)
+        excluded = 0
+        if changed is None:
+            # Observed edits can include host scratch files outside the project; they
+            # cannot be milestone inputs. An explicitly requested path still fails.
+            observed, changed = payload.get('touched', []), []
+            for path in observed:
+                try:
+                    safe_path(root, path)
+                    changed.append(path)
+                except ValueError:
+                    excluded += 1
+        value['impact'] = advise(root, definition['milestones'], changed, deadline=deadline)
+        if excluded:
+            value['impact']['issues'].append(f'{excluded} observed edit(s) outside the project were not considered')
+            value['impact']['state'] = 'incomplete'
         issues += value['impact']['issues']
         if (value['impact'].get('evidence_source_fingerprint') is not None and
                 value['impact']['evidence_source_fingerprint'] != fingerprint):
