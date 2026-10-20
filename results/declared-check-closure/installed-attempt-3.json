@@ -1,0 +1,288 @@
+{
+  "schema": 1,
+  "category": "installed-feedback-observation-attempt",
+  "attempt": 3,
+  "preparation": "installed-prepared-3.json",
+  "host_version": "2.1.292 (Claude Code)",
+  "slots": {
+    "workflow-queue-py-assisted": {
+      "run_state": "incomplete",
+      "model_seconds": 189.27,
+      "turns": [
+        {
+          "stage": 1,
+          "state": "completed",
+          "seconds_cap": 180.0,
+          "elapsed_seconds": 45.602,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 4,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "emitted",
+            "intents": 1,
+            "emitted": 1,
+            "followups": [
+              {
+                "declaration": "tests",
+                "state": "current"
+              }
+            ],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 1,
+          "completed_runner_calls": 1
+        },
+        {
+          "stage": 2,
+          "state": "completed",
+          "seconds_cap": 224.799,
+          "elapsed_seconds": 29.443,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 6,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "unobserved",
+            "intents": 0,
+            "emitted": 0,
+            "followups": [],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 1,
+          "completed_runner_calls": 1
+        },
+        {
+          "stage": 3,
+          "state": "completed",
+          "seconds_cap": 322.478,
+          "elapsed_seconds": 31.612,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 8,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "unobserved",
+            "intents": 0,
+            "emitted": 0,
+            "followups": [],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 1,
+          "completed_runner_calls": 1
+        },
+        {
+          "stage": 4,
+          "state": "scope_violation",
+          "seconds_cap": 613.343,
+          "elapsed_seconds": 82.613,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 10,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "unobserved",
+            "intents": 0,
+            "emitted": 0,
+            "followups": [],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 2,
+          "completed_runner_calls": 2
+        }
+      ],
+      "frozen_outcomes": {
+        "feedback_emitted": true,
+        "first_emitted_turn": 1,
+        "owned_path_after_feedback": true,
+        "non_adoption": false
+      },
+      "owned_turns": 4,
+      "private_hashes": {
+        "baseline-output.txt": "4de19abb9e998ca5eafe0499c6af752a4c20e0a73070fcffc7c2f32857c7e0eb",
+        "baseline.json": "b8e21568480ea1f3a381f1b37e04823941e13c59982d1e964a84df304d426169",
+        "diagnostic-1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diagnostic-2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diagnostic-3.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diagnostic-4.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native-1.jsonl": "6e61e229ac050a1ffc75aa5d5fefafa90ca06d50c751a6b42bb045b7dc9b10d5",
+        "native-2.jsonl": "c8657b6e5e4cc51653a5ee3e075b2973acfcb8d532aac76c5bbad74fe78b567c",
+        "native-3.jsonl": "97a117e68ccf844969a35ab3f6ea9be15371712e85097dbd32edcd5ee90b28a1",
+        "native-4.jsonl": "d8504f2342ad138352d63dc5523abc829ac647ce0b465654832db41c4a12d91d",
+        "prompt-1.txt": "c80c2ce598bb6122d85c46a451ad765d137dab516a6d84237b27fe5f6ac69caa",
+        "prompt-2.txt": "52fc4dc7fb7fcdacae4999bd03ee354a3b16da7b0132ad59fbcdaa412236faf7",
+        "prompt-3.txt": "b832b1cf7a43c6eda3dcda72739e02704d03403e4bd7adc10fc27363eb12cf4c",
+        "prompt-4.txt": "6e9cce6d659877d8f32c4e1be8b1a941368cae749239aa21e6a893d2860d8d31",
+        "result.json": "b5552628adaf892ae04abd2bdc2ac46faee35b196c3d7038b7665d8744d9ce2e",
+        "source-1.json": "4a5a694b2162cc6f4c6d1eacff0ae1fd1c234d31ecba8190ae8a1f6fb1b84375",
+        "source-2.json": "d869ff7fea1b2fb87e8f79b061fa3edb9d4cf72312af82a84f5a35b174676ac5",
+        "source-3.json": "cb8231b180808e55a9991ba81761d99ef051218ac5cb4b83ca5a783838b6914c",
+        "source-4.json": "650921a7bd709099ba65fac6569a7cd09f91bd3e126bfb55637bd90485520708"
+      },
+      "diagnosis": "Turn 4 is recorded by the frozen harness as scope_violation. Scope was in fact verified (source_after recorded, grade 10, declared and native readouts written); the exception came from the post-turn milestone build: the agent had written a scratch file in the host's scratchpad, the absolute path reached touched, and milestone impact raised 'unsafe milestone input path'. Reproduced on a copy of the candidate and fixed in dd8e4c2's parent; the harness now labels such cases readout_failed. The recorded state is not rewritten."
+    },
+    "workflow-orders-js-assisted": {
+      "run_state": "completed",
+      "model_seconds": 182.252,
+      "turns": [
+        {
+          "stage": 1,
+          "state": "completed",
+          "seconds_cap": 180.0,
+          "elapsed_seconds": 41.173,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 4,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "emitted",
+            "intents": 1,
+            "emitted": 1,
+            "followups": [
+              {
+                "declaration": "tests",
+                "state": "current"
+              }
+            ],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 1,
+          "completed_runner_calls": 1
+        },
+        {
+          "stage": 2,
+          "state": "completed",
+          "seconds_cap": 226.276,
+          "elapsed_seconds": 45.562,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 6,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "unobserved",
+            "intents": 0,
+            "emitted": 0,
+            "followups": [],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 1,
+          "completed_runner_calls": 1
+        },
+        {
+          "stage": 3,
+          "state": "completed",
+          "seconds_cap": 316.632,
+          "elapsed_seconds": 44.881,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 8,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "unobserved",
+            "intents": 0,
+            "emitted": 0,
+            "followups": [],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 2,
+          "completed_runner_calls": 2
+        },
+        {
+          "stage": 4,
+          "state": "completed",
+          "seconds_cap": 588.384,
+          "elapsed_seconds": 50.636,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "independent_grade_passed": 10,
+          "declared": {
+            "tests": "CURRENT"
+          },
+          "delivery": {
+            "state": "unobserved",
+            "intents": 0,
+            "emitted": 0,
+            "followups": [],
+            "issues": [],
+            "model_consumption": "unproven"
+          },
+          "native_runner_adoption": true,
+          "owned_receipts": 2,
+          "completed_runner_calls": 2
+        }
+      ],
+      "frozen_outcomes": {
+        "feedback_emitted": true,
+        "first_emitted_turn": 1,
+        "owned_path_after_feedback": true,
+        "non_adoption": false
+      },
+      "owned_turns": 4,
+      "private_hashes": {
+        "baseline-output.txt": "bbed731794f68423dd3d218006c2e02b724ef7fe176f8d34f9d2c6e2dc2d4c85",
+        "baseline.json": "f04a613c4ab528f9e40d9f9941b9d61536f294ec6c3055a2882df6f17b023ba9",
+        "diagnostic-1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diagnostic-2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diagnostic-3.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diagnostic-4.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native-1.jsonl": "af11769236148f90896ce3f538530d50b9cb166432a1851604f48033ad481cc1",
+        "native-2.jsonl": "184d2fcc0445cc13c47cec440252397c00444e1b906d2fe8679c31f608d03b00",
+        "native-3.jsonl": "0ac5a0c9caf8e09b48d900ea96bb1fb7160e211e572d0655ec522ccddd2b7e1c",
+        "native-4.jsonl": "40b7cbb7101fa6b81b78daa090331c894888ca10b62469e721c980c39705c0f9",
+        "prompt-1.txt": "edd330fdb5feb302d03b626f9bda8c5429afafe1ce7a1e11e146ab22d03e5caf",
+        "prompt-2.txt": "327fef9ca56988d20e50bc9c0cd6131693f6efa7d294fcd6d68c23577ea693bf",
+        "prompt-3.txt": "28e32895b3f8192744f0cfbfbe55ccf78d661eae8c8f79acb90cb2e1c7e71596",
+        "prompt-4.txt": "f7602a0b28c1a067ce95a1d68b6fbda2350a1dc78381088bea1e6c6ce7af0260",
+        "result.json": "1330a91179978af7c6deb576847d77456c4e0f4070e13366c2c8efe04cc83e16",
+        "source-1.json": "c314f5cc6c76f68001504f436b35daa7b44032fb36762e45ec4c8db5a79e826b",
+        "source-2.json": "c91cf23d4506b0950f8668383c567756372b02c5720f246d13076aedcd7ae95a",
+        "source-3.json": "6b6fa1c5be0b4b6b82a4dd111ab88dd8a641bda2400663520605368e03a54d80",
+        "source-4.json": "6c910bba3f8d58fccb97874c4ee51fa5bd1f6a8a6f25ed1d6a99ab44431ad6d2"
+      }
+    }
+  },
+  "api_fallback": false,
+  "favorable_retries": 0,
+  "limits": [
+    "Two authored cases, one conversation each: observations, not rates.",
+    "Startup guidance also names the owned runner; adoption after feedback is temporal correlation, not causation.",
+    "No ordinary arm; no coding-quality or speed comparison.",
+    "The JavaScript slot repeats attempt 2's case at a different runtime; they are not pooled."
+  ]
+}
