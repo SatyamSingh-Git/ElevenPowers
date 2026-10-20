@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "category": "installed-feedback-observation-attempt",
+  "attempt": 1,
+  "preparation": "installed-prepared.json",
+  "slot": "workflow-orders-js-assisted",
+  "state": "incomplete",
+  "qualified": false,
+  "reason": "Turn 1 ended model_unqualified: the host reported claude-haiku-4-5 beside claude-sonnet-5-5; the frozen rule requires exactly the protocol model, so the controller stopped before turn 2.",
+  "model_attribution": {
+    "assistant_messages_by_model": {
+      "claude-sonnet-5-5": 12
+    },
+    "haiku_usage": {
+      "inputTokens": 1152,
+      "outputTokens": 14,
+      "costUSD": 0.001222
+    },
+    "sonnet_cost_usd": 0.0818702
+  },
+  "model_seconds": 43.547,
+  "host_version": "2.1.292 (Claude Code)",
+  "turns": [
+    {
+      "stage": 1,
+      "state": "model_unqualified",
+      "elapsed_seconds": 43.547,
+      "independent_grade_passed": 4,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "emitted",
+        "intents": 1,
+        "emitted": 1,
+        "followups": [
+          {
+            "declaration": "tests",
+            "state": "current"
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 1,
+      "completed_runner_calls": 1
+    }
+  ],
+  "private_hashes": {
+    "result.json": "28351a20c1ba86e1b86ca31ca46fc2b88164ed32acd3b3cca92a5ae8fa9753f0",
+    "native-1.jsonl": "45b767b295abc4bb99d1be1a09e80961f658db1e4422e85c04fc185253317144",
+    "diagnostic-1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "prompt-1.txt": "edd330fdb5feb302d03b626f9bda8c5429afafe1ce7a1e11e146ab22d03e5caf"
+  },
+  "interpretation": "Unqualified. Its turn-1 observations are reported but count toward no outcome definition.",
+  "api_fallback": false,
+  "favorable_retries": 0
+}
