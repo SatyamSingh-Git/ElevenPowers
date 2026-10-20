@@ -117,6 +117,17 @@ declarations were already current. These are two conversations on two authored
 cases, with startup guidance naming the same runner: no rate, cause or coding
 benefit is claimed.
 
+### Attempt 4: Python completed (2026-10-20)
+
+At the repaired runtime (full local suite 2658 passed, 3 skipped; no-model 20/20)
+one frozen Python conversation [completed](installed-attempt-4.json): 184.809
+model-process seconds, Sonnet 5.5 only, 4/6/8/10 groups, feedback emitted in
+turn 1 with a `current` follow-up, and the owned runner used in all four turns.
+No out-of-project edit occurred, so the `addf985` repair was not exercised live.
+Both authored cases now have one completed installed run each in which the
+feedback was emitted and the owned path followed; that is two conversations,
+not a rate or a cause.
+
 ## Limits
 
 - Native-control is synthetic launcher ingress, not an installed agent session.
@@ -130,5 +141,6 @@ benefit is claimed.
   rule is checked first.
 - Before `24ace0a`, a filtered `python -m unittest` run produced no generic
   record, so feedback could not fire on that runner; attempt 2 was JavaScript only.
-- A completed installed Python run is still open: attempt 3's Python turn 4 ended
-  on the readout defect fixed in `addf985`.
+- Hosted Windows cells on two docs-only commits at an unchanged runtime hit two
+  recorded intermittents (the advice-worker timing incident and the interrupt
+  cleanup test); both remain unexplained and are retained in the attempt-4 preparation.

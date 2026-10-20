@@ -35,3 +35,7 @@ harness caught every error after its scope check under one label. Observed edits
 outside the project are now excluded and reported; an explicitly requested path
 still fails; and a readout error is now called a readout error. The recorded
 turn keeps the label it was given.
+
+A fresh Python conversation at the repaired runtime then completed all four
+turns: the same 4/6/8/10, the feedback in turn 1, the runner in every turn. Two
+cases, one completed run each. Still not a rate, and still not a cause.

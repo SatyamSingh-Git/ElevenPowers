@@ -104,3 +104,15 @@ was reproduced on a copy of the candidate, witnessed failing, fixed in `addf985`
 (4/4 mutations killed) and the harness label repaired in `dd8e4c2` (both
 directions witnessed). See the
 [results](../../results/declared-check-closure/README.md#attempt-3-both-cases-2026-10-20).
+
+## Attempt 4: Python completed (2026-10-20)
+
+After the readout repair: full local suite 2658 passed, 3 skipped at runtime
+`6895bf25`; no-model 20/20. Hosted Windows cells at docs-only `459542d` and
+`1e5170b` (runtime identical to the all-green `dd8e4c2`) failed once each on two
+recorded intermittents: `test_advice_delivery_exercise[javascript]` ("Latest
+advice attempt is reserved or incomplete") and
+`test_keyboard_interrupt_cleans_tree_before_reraising`. Neither code path changed
+in this session; both are retained, unexplained. The frozen Python conversation
+then completed four turns at 4/6/8/10 with feedback emitted in turn 1 and the
+owned runner in every turn ([record](../../results/declared-check-closure/installed-attempt-4.json)).

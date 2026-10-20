@@ -1,5 +1,18 @@
 # Current delivery status
 
+**2026-10-20 — Installed declared-check observation completed on both authored cases.**
+At the repaired runtime (full local suite 2658 passed, 3 skipped; no-model 20/20),
+one frozen Sonnet 5.5 medium Python conversation completed four turns at
+4/6/8/10 groups, emitted the declared-check feedback in turn 1 with a `current`
+follow-up, and used the owned runner in every turn. With attempt 3's completed
+JavaScript run, each authored case now has one completed installed run in which
+feedback was emitted and the owned path followed. Two conversations with startup
+guidance naming the same runner: no adoption rate, causal effect or coding
+benefit is claimed. Hosted Windows cells on two docs-only commits hit two recorded
+intermittents, retained and unexplained. Next: the held-out benefit question,
+with independently sourced cases and an ordinary arm.
+See [results](../results/declared-check-closure/README.md#attempt-4-python-completed-2026-10-20).
+
 **2026-10-20 — unittest summary read; both installed cases follow declared-check feedback.**
 Python's standard `unittest` summary is now counted as test evidence (failures,
 errors and unexpected successes fail; skips and expected failures are neither;
