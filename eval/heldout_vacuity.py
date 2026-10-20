@@ -15,7 +15,7 @@ import shutil
 import subprocess
 
 from core.surface import TEST_NAME
-from .bundle import GIT
+from .bundle import GIT, apply_patch
 
 TIMEOUT = 240
 FAILED = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)", re.MULTILINE)
@@ -53,7 +53,7 @@ def vacuity(base, patch, *, python, env, test_dir, work):
     shutil.copytree(base, root)
     for args in (['init', '-q'], ['add', '-A'], ['-c', 'user.email=e@e', '-c', 'user.name=e', 'commit', '-qm', 'base']):
         _git(root, *args)
-    if _git(root, 'apply', '--whitespace=nowarn', '-', input=patch).returncode:
+    if apply_patch(root, patch):
         return {'vacuous': None, 'reason': 'patch did not apply'}
     changed = _changed_source(root)
     if not changed:

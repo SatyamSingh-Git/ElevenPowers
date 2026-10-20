@@ -4,12 +4,13 @@ import sys
 
 
 def _base(root):
+    # LF, as `git archive` writes a checkout; text mode on Windows hid a newline defect.
     (root / "pkg").mkdir(parents=True)
     (root / "tests").mkdir()
-    (root / "pkg" / "__init__.py").write_text("", encoding="utf8")
-    (root / "pkg" / "mod.py").write_text("def value():\n    return 1\n", encoding="utf8")
+    (root / "pkg" / "__init__.py").write_text("", encoding="utf8", newline="\n")
+    (root / "pkg" / "mod.py").write_text("def value():\n    return 1\n", encoding="utf8", newline="\n")
     (root / "tests" / "test_mod.py").write_text("from pkg.mod import value\n\n\ndef test_int():\n    assert isinstance(value(), int)\n",
-                                                 encoding="utf8")
+                                                 encoding="utf8", newline="\n")
     return root
 
 
@@ -53,7 +54,7 @@ def test_a_pinning_assertion_added_to_an_existing_test_file_is_kept_through_the_
 def test_an_already_red_test_is_deselected_rather_than_counted_as_a_kill(tmp_path):
     from eval.heldout_vacuity import vacuity
     base = _base(tmp_path / "base")
-    (base / "tests" / "test_broken.py").write_text("def test_broken():\n    assert False\n", encoding="utf8")
+    (base / "tests" / "test_broken.py").write_text("def test_broken():\n    assert False\n", encoding="utf8", newline="\n")
     value = vacuity(base, SOURCE, python=sys.executable, env={"PYTHONPATH": "."}, test_dir="tests", work=tmp_path / "work")
     assert value == {"vacuous": True, "reason": "revert survived"}
 
@@ -62,6 +63,6 @@ def test_a_suite_that_notices_a_no_op_edit_is_not_scored(tmp_path):
     from eval.heldout_vacuity import vacuity
     base = _base(tmp_path / "base")
     (base / "tests" / "test_noop.py").write_text(
-        "import pkg.mod\n\n\ndef test_untouched():\n    assert not hasattr(pkg.mod, '_ep_probe_noop')\n", encoding="utf8")
+        "import pkg.mod\n\n\ndef test_untouched():\n    assert not hasattr(pkg.mod, '_ep_probe_noop')\n", encoding="utf8", newline="\n")
     value = vacuity(base, SOURCE, python=sys.executable, env={"PYTHONPATH": "."}, test_dir="tests", work=tmp_path / "work")
     assert value == {"vacuous": None, "reason": "survive control failed"}
