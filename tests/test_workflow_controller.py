@@ -96,3 +96,47 @@ def test_agent_cannot_replace_the_frozen_git_head(tmp_path):
     subprocess.run(['git','-c','user.name=control','-c','user.email=control@example.invalid',
                     'commit','--allow-empty','-qm','unexpected commit'],cwd=candidate,check=True)
     with pytest.raises(ValueError,match='Git'):p.verify(tmp_path/'batch',slot)
+
+
+@pytest.mark.parametrize('owned',[True,False],ids=['owned-followup','generic-only'])
+def test_each_stage_reads_out_declared_rows_and_feedback_delivery(tmp_path,monkeypatch,owned):
+    import shutil,sys
+    if not shutil.which('node'):pytest.skip('Node unavailable')
+    name='workflow-orders-js';protocol=prepare(tmp_path,name)
+    slot=next(s for s in protocol['slots'] if s.endswith('assisted'));actual=p.run
+    source=Path(p.__file__).resolve().parents[1]
+    def hook(root,event,payload):
+        payload={'cwd':str(root),'session_id':protocol['seals'][slot]['session'],**payload}
+        done=subprocess.run([sys.executable,str(source/'plugin/bin/ep_hook.py'),event],input=json.dumps(payload),
+                            capture_output=True,text=True,timeout=120)
+        assert done.returncode==0,done.stderr
+        return done.stdout
+    def bash(root,command,shown,index):
+        done=subprocess.run(command,cwd=root,shell=True,capture_output=True,text=True,timeout=120)
+        return hook(root,'PostToolUse',{'tool_name':'Bash','tool_use_id':f'call-{index}','tool_input':{'command':shown},
+                    'tool_response':{'stdout':done.stdout+done.stderr,'exit_code':done.returncode}})
+    def external(command,**kwargs):
+        if isinstance(command,list) and command[0]=='fake-host':
+            if command[-1]=='--version':return SimpleNamespace(returncode=0,stdout='fake test host',stderr='')
+            root=Path(kwargs['cwd']);value=case(name)
+            hook(root,'SessionStart',{});hook(root,'UserPromptSubmit',{'prompt':'continue the stage'})
+            (root/value['production'][0]).write_text(value['gold'][3],encoding='utf8')
+            hook(root,'PostToolUse',{'tool_name':'Write','tool_input':{'file_path':str(root/value['production'][0])},
+                                     'tool_response':{}})
+            reply=bash(root,value['public_command'],value['public_command']+' 2>&1 | tail -15',1)
+            stages.append(reply)
+            if owned:
+                runner=f'"{sys.executable}" "{source/"plugin/bin/ep_check.py"}" tests --project "{root}"'
+                bash(root,runner,runner,2)
+            identity=protocol['seals'][slot]['session']
+            event={'type':'result','session_id':identity,'is_error':False,'modelUsage':{'claude-sonnet-5-5':{}}}
+            return SimpleNamespace(returncode=0,stdout=json.dumps(event),stderr='')
+        return actual(command,**kwargs)
+    stages=[]
+    monkeypatch.setattr(p,'run',external);monkeypatch.setattr(p.subscription,'auth',lambda *a:True)
+    result=p.execute(tmp_path/'batch',slot,'fake-host')
+    assert 'Owned check arguments' in stages[0]
+    first=result['stages'][0]['declared_closure']
+    assert first['delivery']['state']=='emitted' and first['delivery']['model_consumption']=='unproven'
+    assert first['declared']=={'tests':'CURRENT' if owned else 'STALE'}
+    assert first['delivery']['followups']==[{'declaration':'tests','state':'current' if owned else 'unobserved'}]

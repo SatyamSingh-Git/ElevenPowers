@@ -385,6 +385,11 @@ def execute(batch, slot, executable):
                 native=observe(candidate,folder/f'native-{stage}.jsonl',since=item['started_at'],
                                session=protocol['seals'][slot]['session'],runtime=protocol['runtime_fingerprint'])
                 item['native']={'state':'observed' if native['native_runner_adoption'] else 'incomplete',**native}
+                from core.declared_completion import rows
+                from core.feedback_delivery import inspect
+                ledger=Ledger.load(candidate)
+                item['declared_closure']={'declared':{r.declaration:r.state for r in rows(ledger)},
+                                          'delivery':inspect(ledger)}
             else:
                 item['native'] = _native(candidate, protocol, since=item['started_at'],
                                          session=protocol['seals'][slot]['session'])
