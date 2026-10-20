@@ -25,7 +25,11 @@ def sample(repositories, candidates_for, check, *, seed, want, cap, progress=Non
     for repo in repositories:
         if len(kept) >= want:
             break
-        shas = candidates_for(repo)
+        try:
+            shas = candidates_for(repo)
+        except subprocess.TimeoutExpired:
+            rejections.append({'repo': repo, 'sha': '', 'reason': 'repository preparation timed out'})
+            continue
         if shas is None:
             rejections.append({'repo': repo, 'sha': '', 'reason': 'repository unusable'})
             if progress:
@@ -35,7 +39,12 @@ def sample(repositories, candidates_for, check, *, seed, want, cap, progress=Non
         for _, sha in order([(repo, sha) for sha in shas], seed):
             if taken >= cap or len(kept) >= want:
                 break
-            instance, reason = check(repo, sha)
+            try:
+                instance, reason = check(repo, sha)
+            except subprocess.TimeoutExpired:
+                # The full suite is run for every candidate; one that cannot finish once never will.
+                rejections.append({'repo': repo, 'sha': sha, 'reason': 'suite exceeded the mining timeout; repository skipped'})
+                break
             if instance is None:
                 rejections.append({'repo': repo, 'sha': sha, 'reason': reason})
                 continue

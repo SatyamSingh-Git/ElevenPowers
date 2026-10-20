@@ -86,3 +86,34 @@ def test_no_further_repository_is_prepared_once_want_is_reached():
 
     sample(["a", "b", "c"], candidates_for, lambda repo, sha: ({"name": sha}, "kept"), seed="s", want=1, cap=4)
     assert prepared == ["a"]
+
+
+def test_a_suite_timeout_rejects_the_rest_of_that_repository_and_moves_on():
+    from eval.heldout_sample import sample
+    calls = []
+
+    def check(repo, sha):
+        calls.append(sha)
+        if repo == "slow":
+            raise subprocess.TimeoutExpired(["pytest"], 120)
+        return {"name": sha}, "kept"
+
+    kept, rejections = sample(["slow", "fast"], {"slow": ["s1", "s2", "s3"], "fast": ["f1"]}.get, check,
+                              seed="s", want=40, cap=4)
+    assert [k["name"] for k in kept] == ["f1"]
+    assert len([c for c in calls if c.startswith("s")]) == 1
+    assert {"repo": "slow", "sha": calls[0], "reason": "suite exceeded the mining timeout; repository skipped"} in rejections
+
+
+def test_a_repository_whose_preparation_times_out_is_recorded_and_skipped():
+    from eval.heldout_sample import sample
+
+    def candidates_for(repo):
+        if repo == "slow":
+            raise subprocess.TimeoutExpired(["pip"], 900)
+        return ["f1"]
+
+    kept, rejections = sample(["slow", "fast"], candidates_for, lambda repo, sha: ({"name": sha}, "kept"),
+                              seed="s", want=40, cap=4)
+    assert [k["name"] for k in kept] == ["f1"]
+    assert {"repo": "slow", "sha": "", "reason": "repository preparation timed out"} in rejections
