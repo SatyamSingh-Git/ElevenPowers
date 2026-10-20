@@ -1506,6 +1506,18 @@ BOTH_WAYS = {
 # pass 2
 # fail 0
 """),
+    # Python's stdlib runner, captured from Python 3.13.2: an errors count is a
+    # failure too, and a skip is neither passed nor failed.
+    "unittest": (
+        "python -m unittest discover -s tests -v 2>&1 | tail -15",
+        """Ran 20 tests in 0.004s
+
+FAILED (failures=1, errors=1)
+""",
+        """Ran 20 tests in 0.003s
+
+OK (skipped=1)
+"""),
     "tsc": ("npx tsc --noEmit 2>&1 | tail -20",
             "src/a.ts(3,10): error TS2345: no.\nFound 2 errors.\n", "\n"),
     "go": ("go test ./... 2>&1 | tail -20",

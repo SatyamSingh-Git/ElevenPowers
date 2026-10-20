@@ -57,6 +57,10 @@ RSPEC = re.compile(r"(?P<total>\d+) examples?, (?P<failed>\d+) failures?")
 MIX = re.compile(r"(?P<total>\d+) tests?, (?P<failed>\d+) failures?")
 PHPUNIT = re.compile(r"Tests: (?P<total>\d+), Assertions: \d+(?:, Failures: (?P<failed>\d+))?")
 DOTNET = re.compile(r"Failed:\s*(?P<failed>\d+),\s*Passed:\s*(?P<passed>\d+)", re.I)
+# Python's stdlib runner: `Ran N tests in Xs`, a blank line, then one status line
+# whose parenthesis can carry failures, errors, skips and (unexpected) successes.
+UNITTEST = re.compile(r"^Ran (?P<total>\d+) tests? in [\d.]+s[ \t]*\r?\n(?:[ \t]*\r?\n)*"
+                      r"(?P<status>OK|FAILED|NO TESTS RAN)(?: \((?P<detail>[^)\r\n]*)\))?[ \t]*\r?$", re.MULTILINE)
 
 # The repeat runner's own machine-readable line. Stability is the one obligation
 # that cannot be inferred from an ordinary command, because a single clean run
@@ -409,6 +413,11 @@ def _declared_counts(record: Evidence, output: str) -> None:
             passed += int(groups.get("passed") or 0) if "passed" in groups else max(int(groups.get("total") or 0) - bad, 0)
             failed += bad
             found = True
+    for match in UNITTEST.finditer(clean):
+        good, bad = _unittest_counts(match)
+        passed += good
+        failed += bad
+        found = True
     for status, package in GO_RESULT.findall(clean):
         if package.isdecimal():  # TAP's numbered `ok` lines are not Go packages.
             continue
@@ -434,6 +443,8 @@ def _parse_known(command: str, output: str, exit_code: int, root: Path) -> list[
         return [_record(Kind.BENCHMARK, _scope(cmd), exit_code, cmd, root, output)]
     if "pytest" in low:
         return _pytest(cmd, output, exit_code, root)
+    if re.search(r"\bunittest\b", low):
+        return [_unittest(cmd, output, exit_code, root)]
     if "vitest" in low:
         return [_counted(Kind.SUITE, cmd, output, exit_code, root, VITEST_TESTS)]
     if "jest" in low:
@@ -577,6 +588,23 @@ def _counted(kind: Kind, command: str, output: str, exit_code: int, root: Path,
     total = int(groups.get("total") or 0)
     record.failed = failed
     record.passed = int(groups.get("passed") or 0) or max(total - failed, 0)
+    return _counts_decide(record)
+
+
+def _unittest_counts(match: re.Match) -> tuple[int, int]:
+    detail = {name.strip(): int(n) for name, n in re.findall(r"([a-z ]+)=(\d+)", match.group("detail") or "")}
+    failed = detail.get("failures", 0) + detail.get("errors", 0) + detail.get("unexpected successes", 0)
+    skipped = detail.get("skipped", 0) + detail.get("expected failures", 0)
+    return max(int(match.group("total")) - failed - skipped, 0), failed
+
+
+def _unittest(command: str, output: str, exit_code: int, root: Path) -> Evidence:
+    record = _record(Kind.SUITE, _scope(command), exit_code, command, root, output)
+    record.counted = True
+    for match in UNITTEST.finditer(output):
+        good, bad = _unittest_counts(match)
+        record.passed += good
+        record.failed += bad
     return _counts_decide(record)
 
 
