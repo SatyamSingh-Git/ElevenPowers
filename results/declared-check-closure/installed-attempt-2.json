@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "category": "installed-feedback-observation-attempt",
+  "attempt": 2,
+  "preparation": "installed-prepared-2.json",
+  "slot": "workflow-orders-js-assisted",
+  "run_state": "incomplete",
+  "model_seconds": 410.343,
+  "host_version": "2.1.292 (Claude Code)",
+  "turns": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "seconds_cap": 180.0,
+      "elapsed_seconds": 33.005,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 4,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "unobserved",
+        "intents": 0,
+        "emitted": 0,
+        "followups": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": false,
+      "owned_receipts": 0,
+      "completed_runner_calls": 0
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "seconds_cap": 228.998,
+      "elapsed_seconds": 67.613,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 6,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "emitted",
+        "intents": 1,
+        "emitted": 1,
+        "followups": [
+          {
+            "declaration": "tests",
+            "state": "current"
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 1,
+      "completed_runner_calls": 1
+    },
+    {
+      "stage": 3,
+      "state": "timeout",
+      "seconds_cap": 309.691,
+      "elapsed_seconds": 309.725,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 8,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "unobserved",
+        "intents": 0,
+        "emitted": 0,
+        "followups": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 2,
+      "completed_runner_calls": 2
+    }
+  ],
+  "frozen_outcomes": {
+    "feedback_emitted": true,
+    "owned_path_after_feedback": true,
+    "non_adoption": false,
+    "first_emitted_turn": 2
+  },
+  "observed_sequence_turn_2": "a compound command ran the configured node --test reporter (generic evidence); the hook emitted the declared-check feedback; the next call was ep_check.py --all; the exact receipt is CURRENT and its native follow-up is current",
+  "turn_3": "owned runner piped after node --test inside compound commands: owned failure then pass receipts; the turn then reached its 309.7 s share and timed out; turn 4 was not launched",
+  "private_hashes": {
+    "baseline-output.txt": "1fddfdd552c02feebb1e777918ec92caf35139104213dc77099ffc0159e28139",
+    "baseline.json": "4a2707d0ea63183617329aafe9c25b47292fcdc01cb82ab6515b238b174ae5ab",
+    "diagnostic-1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diagnostic-2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diagnostic-3.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-1.jsonl": "7f5e25a21814d6f3f0e70a0a1624f9c0ec33dc447886f1de24edf1c97edc12e8",
+    "native-2.jsonl": "589dbe708e5ec6efcf3f6d51e2f1f4b689d84128db3d5c1e8cb0d0efd2c3a4fd",
+    "native-3.jsonl": "bf9f51593f445651c4402ac2032e17cb11ed49d1298ea8af34ba1460f03b93fa",
+    "prompt-1.txt": "edd330fdb5feb302d03b626f9bda8c5429afafe1ce7a1e11e146ab22d03e5caf",
+    "prompt-2.txt": "327fef9ca56988d20e50bc9c0cd6131693f6efa7d294fcd6d68c23577ea693bf",
+    "prompt-3.txt": "28e32895b3f8192744f0cfbfbe55ccf78d661eae8c8f79acb90cb2e1c7e71596",
+    "result.json": "d2912c8104fa2d67dc658ae36fdd9d8d062d6ccfcdc4be5098e054cd84518542",
+    "source-1.json": "c0ebea0084fe57df75deae159b6c00912e4f5da679bf92329e0594a4f8f8d116",
+    "source-2.json": "c4cd38c2b1a220bf6cc3a7d8c3b9c43ed4e1b7070a8eec541b2c457cf20cbf75",
+    "source-3.json": "9cb3ae5450ceb3b5ff9fc6e50fe91984d7548f1dd3f200b1d82a849935519bf0"
+  },
+  "api_fallback": false,
+  "favorable_retries": 0,
+  "limits": [
+    "Run incomplete: turn 3 timed out and turn 4 never ran; four-stage completion is not established.",
+    "One conversation on one authored JavaScript case: an observation, not a rate.",
+    "Startup guidance also names the owned runner; the turn-2 order is temporal correlation, not proof the feedback caused the call.",
+    "The earlier workflow-repair run on this case (0/4 owned turns) is a different runtime and a single sample; no improvement is claimed."
+  ]
+}
