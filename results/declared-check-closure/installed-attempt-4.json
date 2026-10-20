@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "category": "installed-feedback-observation-attempt",
+  "attempt": 4,
+  "preparation": "installed-prepared-4.json",
+  "slot": "workflow-queue-py-assisted",
+  "run_state": "completed",
+  "model_seconds": 184.809,
+  "host_version": "2.1.292 (Claude Code)",
+  "turns": [
+    {
+      "stage": 1,
+      "state": "completed",
+      "seconds_cap": 180.0,
+      "elapsed_seconds": 46.583,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 4,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "emitted",
+        "intents": 1,
+        "emitted": 1,
+        "followups": [
+          {
+            "declaration": "tests",
+            "state": "current"
+          }
+        ],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 1,
+      "completed_runner_calls": 1
+    },
+    {
+      "stage": 2,
+      "state": "completed",
+      "seconds_cap": 224.472,
+      "elapsed_seconds": 40.944,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 6,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "unobserved",
+        "intents": 0,
+        "emitted": 0,
+        "followups": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 1,
+      "completed_runner_calls": 1
+    },
+    {
+      "stage": 3,
+      "state": "completed",
+      "seconds_cap": 316.236,
+      "elapsed_seconds": 36.143,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 8,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "unobserved",
+        "intents": 0,
+        "emitted": 0,
+        "followups": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 1,
+      "completed_runner_calls": 1
+    },
+    {
+      "stage": 4,
+      "state": "completed",
+      "seconds_cap": 596.329,
+      "elapsed_seconds": 61.138,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "independent_grade_passed": 10,
+      "declared": {
+        "tests": "CURRENT"
+      },
+      "delivery": {
+        "state": "unobserved",
+        "intents": 0,
+        "emitted": 0,
+        "followups": [],
+        "issues": [],
+        "model_consumption": "unproven"
+      },
+      "native_runner_adoption": true,
+      "owned_receipts": 2,
+      "completed_runner_calls": 2
+    }
+  ],
+  "frozen_outcomes": {
+    "feedback_emitted": true,
+    "first_emitted_turn": 1,
+    "owned_path_after_feedback": true,
+    "non_adoption": false
+  },
+  "owned_turns": 4,
+  "out_of_project_edit_observed": false,
+  "private_hashes": {
+    "baseline-output.txt": "4de19abb9e998ca5eafe0499c6af752a4c20e0a73070fcffc7c2f32857c7e0eb",
+    "baseline.json": "57c8d7c3750523ac54a8a997ce5d30b523410c431ac4d9e992c3c6835dd4d375",
+    "diagnostic-1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diagnostic-2.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diagnostic-3.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diagnostic-4.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-1.jsonl": "ec60385330cb56aeb6ffb55b730a117be5e123f850eb850567676f3ffa4ad6d7",
+    "native-2.jsonl": "21a2d0ec03495b126d235a090382bd9237f0abe7168938380321055aa6cc754c",
+    "native-3.jsonl": "b6d6b0292abcc0c3d01a2641c55e9c2972767b77d21d87a1db994f6109bf4702",
+    "native-4.jsonl": "76d349fa8847ffc7e1311d22a696832928ba218a864041b26323243a8ad3fa4b",
+    "prompt-1.txt": "c80c2ce598bb6122d85c46a451ad765d137dab516a6d84237b27fe5f6ac69caa",
+    "prompt-2.txt": "52fc4dc7fb7fcdacae4999bd03ee354a3b16da7b0132ad59fbcdaa412236faf7",
+    "prompt-3.txt": "b832b1cf7a43c6eda3dcda72739e02704d03403e4bd7adc10fc27363eb12cf4c",
+    "prompt-4.txt": "6e9cce6d659877d8f32c4e1be8b1a941368cae749239aa21e6a893d2860d8d31",
+    "result.json": "e66fcf37a3c8264a6dde31ecb61f4290aa80389f3a469f34316dae0ef25599ce",
+    "source-1.json": "a2d18a1a6852958fb54eb36932c043353e8d09e001fdf500ab523f989bebb920",
+    "source-2.json": "8d75b4dcc6e130c57266fabf168e32880d5b65f692cfd70ab1f7cdfe805b8751",
+    "source-3.json": "a9536d2c8f6f7250fdde694d39afe878e102c184f2e2c3320869c176201f2a44",
+    "source-4.json": "c56967a2d887fecc6091d0e561a4fc1904987d3fd15916db2e398838a6407774"
+  },
+  "api_fallback": false,
+  "favorable_retries": 0,
+  "limits": [
+    "One conversation on one authored Python case: an observation, not a rate.",
+    "Startup guidance also names the owned runner; adoption after feedback is temporal correlation, not causation.",
+    "No out-of-project edit occurred, so the addf985 repair was not exercised live; its controls are unit-level.",
+    "No ordinary arm; no coding-quality or speed comparison."
+  ]
+}
