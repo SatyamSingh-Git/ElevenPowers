@@ -65,6 +65,7 @@
 
 **Interfaces:**
 - Consumes: Task 1 rows, Task 2 `build`/`canary`, `eval.mine.candidates/validate`.
+- **Amended 2026-10-20, before any mining:** repositories are taken in the ranking's order (Task 1 `accepted` rows); within each repository, post-cutoff candidate commits are taken in `order` and validated until 4 are kept or candidates run out; stop at 40. A global hash order across all 290 accepted repositories would require cloning every one before validating any.
 - Produces: `order(items: list[tuple[str, str]], seed: str) -> list[tuple[str, str]]` (sha256(seed‖repo‖sha) ascending); `sample(..., want=40, cap=4)` → `results/heldout/corpus.json` (`Instance` rows plus `python`, `import_names`, `pythonpath`) and `results/heldout/rejections.json`.
 
 - [ ] **Step 1: Failing tests:** ordering is a pure function of seed and ids; the cap stops a fifth task from one repository; an existing caller of `candidates`/`validate` without the new arguments behaves as before (forward) and `since` excludes an older commit (adversarial).

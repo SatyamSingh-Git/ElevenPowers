@@ -1,0 +1,3215 @@
+{
+  "schema": 1,
+  "ranking_sha256": "55fee05ed02b628f05350a51780ec436efae39ea0810df5d5419e15b850c7041",
+  "limit": 400,
+  "excluded": [
+    "attrs",
+    "click",
+    "itsdangerous",
+    "jinja2",
+    "markupsafe"
+  ],
+  "rows": [
+    {
+      "project": "boto3",
+      "rank": 1,
+      "repo": "https://github.com/boto/boto3",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c5b4d3164006a10d7b5f6d45364064216d7c08575767adb4de75716bf4c12054"
+    },
+    {
+      "project": "packaging",
+      "rank": 2,
+      "repo": "https://github.com/pypa/packaging",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "9d7a2885e9e79296598f8c943e0a94c2468e21c800abd26ed13c633465a78835"
+    },
+    {
+      "project": "typing-extensions",
+      "rank": 3,
+      "repo": "https://github.com/python/typing_extensions",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2e567d7ca1b1c70a8e8f23b7204a8bd51b0bacd39e2fe53b33b153cff255ac68"
+    },
+    {
+      "project": "idna",
+      "rank": 4,
+      "repo": "https://github.com/kjd/idna",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "724599748057193c3fa6f98e11c76d7acc14a7b0d005bc2a506fc8e2ec41c117"
+    },
+    {
+      "project": "urllib3",
+      "rank": 5,
+      "repo": "https://github.com/urllib3/urllib3",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "fe033abdf4e116777f2062304b5442660092498d27f55f0ff6968f86d064bb5c"
+    },
+    {
+      "project": "certifi",
+      "rank": 6,
+      "repo": "https://github.com/certifi/python-certifi",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "67319d40406713cece6e5b2177f126b682b02ae8897036c50843a83bdb63767f"
+    },
+    {
+      "project": "requests",
+      "rank": 7,
+      "repo": "https://github.com/psf/requests",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "bcfc6a202592e4e90f5a28ff002694eaa7c58ba741b76077f432b8bee1480111"
+    },
+    {
+      "project": "charset-normalizer",
+      "rank": 8,
+      "repo": "https://github.com/jawah/charset_normalizer",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ebc7ce9a3db6dad867780ed2f9a900635d81cb7f4cd1ab7e2f28a63d1bafe24e"
+    },
+    {
+      "project": "cryptography",
+      "rank": 9,
+      "repo": "https://github.com/pyca/cryptography",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "32975256deff83cfe92bfcb93233debf77ddc6e8222b2227dec5f45094173d66"
+    },
+    {
+      "project": "setuptools",
+      "rank": 10,
+      "repo": "https://github.com/pypa/setuptools",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c878408e596991854c9c6901365776617dc1e7cad4d1c3b5a5580cfce4b119ce"
+    },
+    {
+      "project": "cffi",
+      "rank": 11,
+      "repo": "https://github.com/python-cffi/cffi",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "ea59a663b5779e4e6bca654cfa65fcbae449a08ecd5ed576b6cbbed0c77d90fc"
+    },
+    {
+      "project": "pygments",
+      "rank": 12,
+      "repo": "https://github.com/pygments/pygments",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d48c0f74c08c450aeabfd5e90fc93b01ec127074c0f3e22cfe74a968c4299771"
+    },
+    {
+      "project": "pyyaml",
+      "rank": 13,
+      "repo": "https://github.com/yaml/pyyaml",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "d0c463a86ed24144dd112fd1fe43b7c208e52c7d3903c2f51c84acfb5b10c749"
+    },
+    {
+      "project": "python-dateutil",
+      "rank": 14,
+      "repo": "https://github.com/dateutil/dateutil",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e349319900745aba59298740d979d985441745cd2d0cc111b38c6b2a46880c41"
+    },
+    {
+      "project": "six",
+      "rank": 15,
+      "repo": "https://github.com/benjaminp/six",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "5d33fd0c1128bc0266f96f36ced03c47abefa31a29ed185d24b490e108bd04e8"
+    },
+    {
+      "project": "pluggy",
+      "rank": 16,
+      "repo": "https://github.com/pytest-dev/pluggy",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4aeb2a51e4be102e60682db7e4a56038889d7bf561a167f793f9514e2261f50d"
+    },
+    {
+      "project": "botocore",
+      "rank": 17,
+      "repo": "https://github.com/boto/botocore",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "02448113c6c7221531e04eabd6f9ed910794a5b83a6a961ae8471a0fd9e76e12"
+    },
+    {
+      "project": "pydantic",
+      "rank": 18,
+      "repo": "https://github.com/sponsors/samuelcolvin",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1a4aab1e7e64c5f341717f2d3f3e863dcd7cc53cfe704addd053b738368e6b34"
+    },
+    {
+      "project": "pycparser",
+      "rank": 19,
+      "repo": "https://github.com/eliben/pycparser",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "3b8753cb84fe61309ba716029cd555164704a64884994f197a99b673402947b4"
+    },
+    {
+      "project": "click",
+      "rank": 20,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "excluded",
+      "metadata_sha256": ""
+    },
+    {
+      "project": "pydantic-core",
+      "rank": 21,
+      "repo": "https://github.com/sponsors/samuelcolvin",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "4a8c6976ce05da0e66d02cb39e10c717957fe5d6b91358276f547d2741150d41"
+    },
+    {
+      "project": "anyio",
+      "rank": 22,
+      "repo": "https://github.com/agronholm/anyio",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1e4ec0390d86d4dd7f5c9cf7682ca142b0832b6b467505a0466fdf82ede554ed"
+    },
+    {
+      "project": "numpy",
+      "rank": 23,
+      "repo": "https://github.com/numpy/numpy",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "04d4e3541780ecbe4ba1db99fd3250f11bb69693e0366a134fb59b18237fc69a"
+    },
+    {
+      "project": "pytest",
+      "rank": 24,
+      "repo": "https://github.com/pytest-dev/pytest",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "203f15ce63523ec5dbbf3462328c7e26d9903240a5f7b1782d36b8f9f388bfac"
+    },
+    {
+      "project": "iniconfig",
+      "rank": 25,
+      "repo": "https://github.com/pytest-dev/iniconfig",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1591c5c139ff21feef7aa7bc0dfcec12faf5c1e5ee6107007af4ca500eeae50f"
+    },
+    {
+      "project": "annotated-types",
+      "rank": 26,
+      "repo": "https://github.com/annotated-types/annotated-types",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "bbe701554fc03915c80b90d54d2af7b15fa716679967376e86f222ea7fc80181"
+    },
+    {
+      "project": "h11",
+      "rank": 27,
+      "repo": "https://github.com/python-hyper/h11",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "82edaa88c2cda51615d444a45e725eeaa7693f6821ab1422de1f031753d9556c"
+    },
+    {
+      "project": "typing-inspection",
+      "rank": 28,
+      "repo": "https://github.com/pydantic/typing-inspection",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "01f2c8a64e34ff03f674ac255b8bf5dd43d175d701059d9420cc9509c3c0edf0"
+    },
+    {
+      "project": "attrs",
+      "rank": 29,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "excluded",
+      "metadata_sha256": ""
+    },
+    {
+      "project": "s3transfer",
+      "rank": 30,
+      "repo": "https://github.com/boto/s3transfer",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "925f3f8baadae8a323414afc5a7beeee5fc4be6d02cad2ac77125557b538b094"
+    },
+    {
+      "project": "aiobotocore",
+      "rank": 31,
+      "repo": "https://github.com/aio-libs/aiobotocore",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4601ba18bbe9121007cd873ada0732985fa2b6607672f885321bfcd4add60166"
+    },
+    {
+      "project": "protobuf",
+      "rank": 32,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "3b7cb502426652f06653f744d41489118d80fcf1723d569db2c9f9a17e6668ff"
+    },
+    {
+      "project": "httpx",
+      "rank": 33,
+      "repo": "https://github.com/encode/httpx",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "bb69a37ba295d008ec1ae05b324c4f5e64fba48b7276189ebf2a2920dd2f1fc8"
+    },
+    {
+      "project": "markupsafe",
+      "rank": 34,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "excluded",
+      "metadata_sha256": ""
+    },
+    {
+      "project": "httpcore",
+      "rank": 35,
+      "repo": "https://github.com/encode/httpcore",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d73786f0235ce97aa3239d411456be526320325e3b259b6fd25a0ce93775771c"
+    },
+    {
+      "project": "python-dotenv",
+      "rank": 36,
+      "repo": "https://github.com/theskumar/python-dotenv",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "81740143492657824fa7802bdc67e966220bb18461c997ebc264778c65582359"
+    },
+    {
+      "project": "pyjwt",
+      "rank": 37,
+      "repo": "https://github.com/jpadilla/pyjwt",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f27b70fef1d687acbb556d995f87431a32e6c231b711d4325b7877314a7f3227"
+    },
+    {
+      "project": "platformdirs",
+      "rank": 38,
+      "repo": "https://github.com/tox-dev/platformdirs",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0cae52aa2bf5c735342c07c8b8f19d40c3acbbbe3acc6f61513321bfc09dac41"
+    },
+    {
+      "project": "fsspec",
+      "rank": 39,
+      "repo": "https://github.com/fsspec/filesystem_spec",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "248a373709712c1dd645772cfa5c74b1d26b7e5f6678e0132c8c856109c6cf4d"
+    },
+    {
+      "project": "pandas",
+      "rank": 40,
+      "repo": "https://github.com/pandas-dev/pandas",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "5c86b55b6c5631a3765f6853a4e46dba412b187efbdce71d14d4d14f0dae1a24"
+    },
+    {
+      "project": "jinja2",
+      "rank": 41,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "excluded",
+      "metadata_sha256": ""
+    },
+    {
+      "project": "jmespath",
+      "rank": 42,
+      "repo": "https://github.com/jmespath/jmespath.py",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "71681ffd05727061175915a932239f581fbb5123257b38cde7ee9ff9a603df59"
+    },
+    {
+      "project": "pathspec",
+      "rank": 43,
+      "repo": "https://github.com/cpburnz/python-pathspec",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "df109cf06c88402cc0907de428b352e676ce059ed5eb51c87a8732c0fb9e90a6"
+    },
+    {
+      "project": "filelock",
+      "rank": 44,
+      "repo": "https://github.com/tox-dev/py-filelock",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "06d50620675f2df0c277b4962a3833bbe627f25f73dab466330ada97c43aa1e3"
+    },
+    {
+      "project": "starlette",
+      "rank": 45,
+      "repo": "https://github.com/sponsors/Kludex",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "76514645e5280aba65ea446d01d443d519d0389fa087acfd7e1bfbd767a9ad1e"
+    },
+    {
+      "project": "uvicorn",
+      "rank": 46,
+      "repo": "https://github.com/sponsors/Kludex",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f42e1a8b18d6a39d33ba83271d8de49cdb9ecab9d6f3276dbddf20a12e4b9eb4"
+    },
+    {
+      "project": "multidict",
+      "rank": 47,
+      "repo": "https://github.com/aio-libs/multidict",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b135b9fa50be3c8f965bd4882b1bda57c876d443ee6d4f0f10195cfcca1b71cb"
+    },
+    {
+      "project": "jsonschema",
+      "rank": 48,
+      "repo": "https://github.com/python-jsonschema/jsonschema",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "697a0d4384e479461a5c84357a5d0d495dd1aeec1f42ad13ae7209112faaaec9"
+    },
+    {
+      "project": "rpds-py",
+      "rank": 49,
+      "repo": "https://github.com/sponsors/Julian",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "eb5234052812c626b47a935b584c51e3d8c95823fa5e71b2e908a8ede97633ec"
+    },
+    {
+      "project": "yarl",
+      "rank": 50,
+      "repo": "https://github.com/aio-libs/yarl",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "afd5110b354cf3616db3f70babd69aecb3d5bd4e54e4af46438db6916d2ab89d"
+    },
+    {
+      "project": "aiohttp",
+      "rank": 51,
+      "repo": "https://github.com/aio-libs/aiohttp",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "cfcf228e6b87f966a0c34e2eb65ae8fc372fe22df276ada678c266c6501ad796"
+    },
+    {
+      "project": "rich",
+      "rank": 52,
+      "repo": "https://github.com/Textualize/rich",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f1746d8854449e5787bc506d4f15f3d84bed1dea878a1b5ba171bc3793a0e1bb"
+    },
+    {
+      "project": "tomlkit",
+      "rank": 53,
+      "repo": "https://github.com/python-poetry/tomlkit",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "fd4ba8535b3d4dd4f3f9f29b80aeed0d10f5fa128e626866ef20121bd8d3b2e0"
+    },
+    {
+      "project": "markdown-it-py",
+      "rank": 54,
+      "repo": "https://github.com/executablebooks/markdown-it-py",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "093d54bb83e6c89afa23d4a62bc054a390b94888729f1589c0c0d2e1950db1b8"
+    },
+    {
+      "project": "propcache",
+      "rank": 55,
+      "repo": "https://github.com/aio-libs/propcache",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0fd0f59a6615f7a6bb2cc07b0205840faabd7d93d059aacd65ec13bbe4295197"
+    },
+    {
+      "project": "referencing",
+      "rank": 56,
+      "repo": "https://github.com/sponsors/Julian",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8cade92a4e786c196bbfad784526a6344d77f0d4ff54970e8ed448085c4556d6"
+    },
+    {
+      "project": "jsonschema-specifications",
+      "rank": 57,
+      "repo": "https://github.com/sponsors/Julian",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "325493907e2e79ab6279d22ea3526ff2dd615d6f35e1ac4040619d7d89e35019"
+    },
+    {
+      "project": "mdurl",
+      "rank": 58,
+      "repo": "https://github.com/executablebooks/mdurl",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "94e52e3e2762e1f295ad5fca55265aa255c1f6b859f6efb67dbab77cb438f57d"
+    },
+    {
+      "project": "pillow",
+      "rank": 59,
+      "repo": "https://github.com/python-pillow/Pillow",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "56cd02ba0c8d44417b3f5e6b5bff96861810d89a4f14ba2863a91f619f86a842"
+    },
+    {
+      "project": "opentelemetry-api",
+      "rank": 60,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "52b4f4416b287013ea6b0937b1daffe28b58c310389aad5db618cb83a86fb684"
+    },
+    {
+      "project": "frozenlist",
+      "rank": 61,
+      "repo": "https://github.com/aio-libs/frozenlist",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2748fe0068bba93ad0262a2246bb9c1bd1ddc3e1f1a5cd43dacda2373c9173eb"
+    },
+    {
+      "project": "tqdm",
+      "rank": 62,
+      "repo": "https://github.com/tqdm/tqdm",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "6f17111ebec23f69c0768870ac3132637486e48d1a70ef406ac5376d5c98a563"
+    },
+    {
+      "project": "pip",
+      "rank": 63,
+      "repo": "https://github.com/pypa/pip",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6e11a831a6a7c5aac56ee8634c4041a4d86b19380f43879a76a1903dcde9d814"
+    },
+    {
+      "project": "googleapis-common-protos",
+      "rank": 64,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "20aed7eb3cf8440dae048865a242989e40c55a4e88e6ef96bc7e725be7eae3a0"
+    },
+    {
+      "project": "pyasn1",
+      "rank": 65,
+      "repo": "https://github.com/pyasn1/pyasn1",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b59f8b9f479772a75a4ae6e8f98f85728327305cabb493753ee40f0b339525c5"
+    },
+    {
+      "project": "aiosignal",
+      "rank": 66,
+      "repo": "https://github.com/aio-libs/aiosignal",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4eaec6269f56ef326bf2caa1368d035d7f9b8f364ea8e3274a208aa67ff5a028"
+    },
+    {
+      "project": "aiohappyeyeballs",
+      "rank": 67,
+      "repo": "https://github.com/aio-libs/aiohappyeyeballs",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ac9cfd69ef859eea4633bb00bda590e6d0f20bddd4b9b5080da105840d283f97"
+    },
+    {
+      "project": "websockets",
+      "rank": 68,
+      "repo": "https://github.com/python-websockets/websockets",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "cc42257ea68e96fedbf16d1b7bfad99ca89a269a3a570d76d9589df5b3e5fc11"
+    },
+    {
+      "project": "annotated-doc",
+      "rank": 69,
+      "repo": "https://github.com/fastapi/annotated-doc",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c101949aac4f010748b3dd5171cb7c9bc934363b414cfff6e0089fcdd64966f9"
+    },
+    {
+      "project": "wrapt",
+      "rank": 70,
+      "repo": "https://github.com/GrahamDumpleton/wrapt",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1ee70209f8b6136302f41f0b888c2421f1d1010204ec2aba829d521ab81bfb8b"
+    },
+    {
+      "project": "pytz",
+      "rank": 71,
+      "repo": "https://github.com/stub42/pytz",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e24102613205128697297a95f0eff582f1085d604409bdf59378a4e24eb92265"
+    },
+    {
+      "project": "sniffio",
+      "rank": 72,
+      "repo": "https://github.com/python-trio/sniffio",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e9af8ee27171c4cbf1086c7fef5119e266a219b0cac54fee61609de1eab103d9"
+    },
+    {
+      "project": "tzdata",
+      "rank": 73,
+      "repo": "https://github.com/python/tzdata",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "9786d1e238ebb33aac8d5310c636ff3814574db25c7c35df492aade2d936b58e"
+    },
+    {
+      "project": "fastapi",
+      "rank": 74,
+      "repo": "https://github.com/fastapi/fastapi",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "074bb529d9ece8b3fc13ec8d969c40157b16f8b371538dcfda9ad199da692597"
+    },
+    {
+      "project": "google-auth",
+      "rank": 75,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8d238e7b6d74ad49a532fed6fb8bbb74591e3941854d5023466bb8cd1d3cad3c"
+    },
+    {
+      "project": "zipp",
+      "rank": 76,
+      "repo": "https://github.com/jaraco/zipp",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ba1fdcf59f1f843fb7381dbae48a09c37de1feb2562d8da5c75538d7a9464f9d"
+    },
+    {
+      "project": "greenlet",
+      "rank": 77,
+      "repo": "https://github.com/python-greenlet/greenlet",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "c0abd3ae91981a8ed54e5e968eea63cd068e719662a2d8be6a398c94aa64db5e"
+    },
+    {
+      "project": "importlib-metadata",
+      "rank": 78,
+      "repo": "https://github.com/python/importlib_metadata",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0f3241df42d59d10f53eff90192e27f2ac9329170851404b539f4409c6fef27e"
+    },
+    {
+      "project": "pydantic-settings",
+      "rank": 79,
+      "repo": "https://github.com/pydantic/pydantic-settings",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "196861a4cb12a751abc1c8fc876fc2735f8e6cb5cf07c75f15328149bd0b5228"
+    },
+    {
+      "project": "wheel",
+      "rank": 80,
+      "repo": "https://github.com/pypa/wheel",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "113f8abc907676e530c9dca238f3b2bd26e2b142747d16d7d4775810e1155980"
+    },
+    {
+      "project": "tenacity",
+      "rank": 81,
+      "repo": "https://github.com/jd/tenacity",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "28404408e6eac056124fa63cf78a231e18f38389e664bc63dffc92163b7ae5a2"
+    },
+    {
+      "project": "trove-classifiers",
+      "rank": 82,
+      "repo": "https://github.com/pypa/trove-classifiers",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ad9992ada40f82c466b5b35c9254d71a4c0807604ebaf13237ee55e1ae3739ea"
+    },
+    {
+      "project": "python-multipart",
+      "rank": 83,
+      "repo": "https://github.com/Kludex/python-multipart",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "a7f6641b8d0853fae02fdced22f793760a68b030a26bd05b7574105cd02144af"
+    },
+    {
+      "project": "pyasn1-modules",
+      "rank": 84,
+      "repo": "https://github.com/pyasn1/pyasn1-modules",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "618d353092173845f809c3cb48afd5c2d1c1040607b8a5860d3d61aed9684b77"
+    },
+    {
+      "project": "grpcio-status",
+      "rank": 85,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "e8abec3b1f98b5b0179ed9807786781391f8367ebb878f933c68ebaea63091ee"
+    },
+    {
+      "project": "pyarrow",
+      "rank": 86,
+      "repo": "https://github.com/apache/arrow",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "fb9a0d6949917c7a162a956c36e7516e2c88174c034cf19f65f6c8664113fa87"
+    },
+    {
+      "project": "sqlalchemy",
+      "rank": 87,
+      "repo": "https://github.com/sqlalchemy/sqlalchemy",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8aeff4b2c8309bd7215973e109f2a9b3eba5db840aae8435cf0e4330bd44b304"
+    },
+    {
+      "project": "hatchling",
+      "rank": 88,
+      "repo": "https://github.com/pypa/hatch",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "93b683b72a8c1b921277b57d5d4ca7ecf9c4e4f004c385a73af5c9ade01c6b7d"
+    },
+    {
+      "project": "grpcio",
+      "rank": 89,
+      "repo": "https://github.com/grpc/grpc",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "7a701cf07a973baec22941ffef2bcad460bb6e0236f58c52f0f06ae42db0d41b"
+    },
+    {
+      "project": "pyparsing",
+      "rank": 90,
+      "repo": "https://github.com/pyparsing/pyparsing",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "97fb0a9a70498b2c81fc7f5d8ba1fb0dafee859c136217e5fe93b4940e6ef422"
+    },
+    {
+      "project": "lxml",
+      "rank": 91,
+      "repo": "https://github.com/lxml/lxml",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "30dda8543e22202de5603da9e688a856cec2169ea89bce5a38a5f11705029adf"
+    },
+    {
+      "project": "jiter",
+      "rank": 92,
+      "repo": "https://github.com/pydantic/jiter",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "70fe1c1e39fc4b9ca49d2a37446419b3de3c6e89fa2211d4ac1a457a4271eb92"
+    },
+    {
+      "project": "regex",
+      "rank": 93,
+      "repo": "https://github.com/mrabarnett/mrab-regex",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "f07de6e444572244156264feff0f762afa3c532f6b4cfe6af2efd00b96b8b3a0"
+    },
+    {
+      "project": "watchfiles",
+      "rank": 94,
+      "repo": "https://github.com/samuelcolvin/watchfiles",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "2795db1fe5e9f085874975ce6afd5546e3348a699ea8076d50abd006b636a40c"
+    },
+    {
+      "project": "s3fs",
+      "rank": 95,
+      "repo": "https://github.com/fsspec/s3fs",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6e161fe8ccfa0155bda4397e78978609554ec9260cc6b00f8c8cd8990b0075fd"
+    },
+    {
+      "project": "ruff",
+      "rank": 96,
+      "repo": "https://github.com/astral-sh/ruff",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "e6dc027ec15da9577ba9261d3aebfd5edd0f29a67fd10c03258a9e169d4a794d"
+    },
+    {
+      "project": "scipy",
+      "rank": 97,
+      "repo": "https://github.com/scipy/scipy",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "a9536ee9b16019746a6ae0e47388eb39311914ff676960cc42beb45cbafe4ed5"
+    },
+    {
+      "project": "soupsieve",
+      "rank": 98,
+      "repo": "https://github.com/facelessuser/soupsieve",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e4e32d8f1e227df4726c7d8e2e98d91b35fd1863cd31504c40c196aaa1847463"
+    },
+    {
+      "project": "beautifulsoup4",
+      "rank": 99,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "0434c8678c65c3db2eb58edc7bd4a7c2d81170ba9d6cab9d81718eab19b3dfb5"
+    },
+    {
+      "project": "openai",
+      "rank": 100,
+      "repo": "https://github.com/openai/openai-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "86e0450a11214788df67c8c3a1faa3042ac9246fb525709f0ddb512aeb9d46e2"
+    },
+    {
+      "project": "google-api-core",
+      "rank": 101,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "aa997611d3dd3203cbb76746bbb99a724971bc7d05746aa9dc04708b5b0eb2ca"
+    },
+    {
+      "project": "opentelemetry-semantic-conventions",
+      "rank": 102,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "3549e117438fd885e36b51360024c048cc3c856988aeb5c8f6f59bd624d89cb1"
+    },
+    {
+      "project": "psutil",
+      "rank": 103,
+      "repo": "https://github.com/giampaolo/psutil",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "3afe72fc20f2a965118da21efa973e1ff79fedcb46c6709557d2ee858b7aa015"
+    },
+    {
+      "project": "coverage",
+      "rank": 104,
+      "repo": "https://github.com/coveragepy/coveragepy",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b4b5512adcf1a82ebfa96de7aa75e0b7f6ba96febeea7da63c31a767a96936ad"
+    },
+    {
+      "project": "openpyxl",
+      "rank": 105,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "2bbf01d2a1146e878113777019080e8f8d0b14fd07d431a3f743dd54978718c4"
+    },
+    {
+      "project": "et-xmlfile",
+      "rank": 106,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "4d048bcac405d7e062778d55f44cb956650a77554b51df161219b1a7d435a41e"
+    },
+    {
+      "project": "tomli",
+      "rank": 107,
+      "repo": "https://github.com/hukkin/tomli",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "9d21d688cc7675457f015e2b4f6f8d1e53adad04a26335c6cd45ef584f0a17cd"
+    },
+    {
+      "project": "distro",
+      "rank": 108,
+      "repo": "https://github.com/python-distro/distro",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6d851ddb94a0f56275d3e8ade724cb379758d00b9905b770b5b35024abfd9585"
+    },
+    {
+      "project": "opentelemetry-sdk",
+      "rank": 109,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2e0f520dff5cb9b97c96c0f5f48abbcb329cd28227f4c2fd9de703d8ae873d89"
+    },
+    {
+      "project": "shellingham",
+      "rank": 110,
+      "repo": "https://github.com/sarugaku/shellingham",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "a2178161e3d48f7e3b87be78a12bc8152143d2130b9dff7bb285291e936a6ef7"
+    },
+    {
+      "project": "mypy-extensions",
+      "rank": 111,
+      "repo": "https://github.com/python/mypy_extensions",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "e394391881a011826a60231c472c234cf5a8a767fabb480c4d545fa3f8c1a445"
+    },
+    {
+      "project": "colorama",
+      "rank": 112,
+      "repo": "https://github.com/tartley/colorama",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "91d65e313ddffe647e53485367394d6b784d5631b77a6e68836367ec14ff8cf7"
+    },
+    {
+      "project": "proto-plus",
+      "rank": 113,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "086952855abbfa7a5a4b19f72710d2553a476cda4fe7078216e9b199bdbc972e"
+    },
+    {
+      "project": "typer",
+      "rank": 114,
+      "repo": "https://github.com/fastapi/typer",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f422e73711a0a6381b79bef309d87072990a9be0eefa6bd2d5435fe7e639ceec"
+    },
+    {
+      "project": "requests-oauthlib",
+      "rank": 115,
+      "repo": "https://github.com/requests/requests-oauthlib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7662d04a5588d8e9340421356fd15ee4c26b9528e9cd5e92e133b8bf39cdf4d1"
+    },
+    {
+      "project": "virtualenv",
+      "rank": 116,
+      "repo": "https://github.com/sponsors/gaborbernat",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7752d9e1a256f2248ec75eab667df6e9ac1d810f9bda1ac29faeffab46b6720f"
+    },
+    {
+      "project": "ghapi",
+      "rank": 117,
+      "repo": "https://github.com/fastai/ghapi",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e0ae3a96e0e455eff54415f06215f2457dbc94200bdf9e325fb02c57bb5e1cbb"
+    },
+    {
+      "project": "wcwidth",
+      "rank": 118,
+      "repo": "https://github.com/jquast/wcwidth",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "707435b371f42e6fe42260269269f4e9ac2a9a03595f8ef4d50cc829d964577d"
+    },
+    {
+      "project": "cachetools",
+      "rank": 119,
+      "repo": "https://github.com/tkem/cachetools",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d7ad285cec8bd02ece9a857c74acdae8e495fa002f790e3965c992b01632e227"
+    },
+    {
+      "project": "exceptiongroup",
+      "rank": 120,
+      "repo": "https://github.com/agronholm/exceptiongroup",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ad0242a0606381ae3da3d3f5d47d218b4a120241c7208d654f0c705f00a267b2"
+    },
+    {
+      "project": "mcp",
+      "rank": 121,
+      "repo": "https://github.com/modelcontextprotocol/python-sdk",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "dbf6d84210b202e6bdeecd90e6c386c41c4727d4f4bbafe7807eccf464f5f204"
+    },
+    {
+      "project": "huggingface-hub",
+      "rank": 122,
+      "repo": "https://github.com/huggingface/huggingface_hub",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4c817c60f15b69f4d62eb2900aed7713bc18b296d2fbe147462c94b7cdb4a586"
+    },
+    {
+      "project": "sse-starlette",
+      "rank": 123,
+      "repo": "https://github.com/sysid/sse-starlette",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "3a29492fa6faa3ec0d9c96bbff9449386bf09da8a9cb2f0ce13f5d9c64586544"
+    },
+    {
+      "project": "truststore",
+      "rank": 124,
+      "repo": "https://github.com/sethmlarson/truststore",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "83132cf2db141b3cd0916f0d59385e5c76a1404b08d196bf53c210cee997ff29"
+    },
+    {
+      "project": "more-itertools",
+      "rank": 125,
+      "repo": "https://github.com/more-itertools/more-itertools",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "115b62d6ad80eccda8f6f04cd8f131039e9f4eee8f987b75ce22c9ff2c234a8c"
+    },
+    {
+      "project": "dnspython",
+      "rank": 126,
+      "repo": "https://github.com/rthalley/dnspython",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "644664cbc605a4a33c75586b8018e7dbd172e601d0c54e4f91b3b8d3fa309e29"
+    },
+    {
+      "project": "oauthlib",
+      "rank": 127,
+      "repo": "https://github.com/oauthlib/oauthlib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7a3d2e2882b2f169a806f95efc8418722774fb9f5bb89ee01214fa00b25272d2"
+    },
+    {
+      "project": "pytest-asyncio",
+      "rank": 128,
+      "repo": "https://github.com/pytest-dev/pytest-asyncio",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "32c6b59e92b94b466fc1fecf9b6b5ba44d2054b452d7a9d93618097d77e5a76f"
+    },
+    {
+      "project": "httpx2",
+      "rank": 129,
+      "repo": "https://github.com/pydantic/httpx2",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "37861deb849170048bb3e628c659da2662d20b2531816bfcb257a98f287a3a84"
+    },
+    {
+      "project": "httpcore2",
+      "rank": 130,
+      "repo": "https://github.com/pydantic/httpx2",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f16d9872fa2c2c6405d971d540ba8908e0c27de11c909d9480edd9a470d214fc"
+    },
+    {
+      "project": "distlib",
+      "rank": 131,
+      "repo": "https://github.com/pypa/distlib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "5b86340348c76a9ab56407327240f2dba281f52988dc2fb0e67ccd4c8cbbb14f"
+    },
+    {
+      "project": "editables",
+      "rank": 132,
+      "repo": "https://github.com/pfmoore/editables",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b4ac2adb48972119aa52ec4afcccb478ff916edda5d5ac68fb1556fbf6987472"
+    },
+    {
+      "project": "opentelemetry-proto",
+      "rank": 133,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "70ef1c67c885df15f8b9187849f05a145a2b029ac67027a3847cc3039ca31288"
+    },
+    {
+      "project": "httptools",
+      "rank": 134,
+      "repo": "https://github.com/MagicStack/httptools",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "224380cfdc6a5a1154c38cbbe6043ae3200c18c55007ee600ca46951005742f3"
+    },
+    {
+      "project": "sortedcontainers",
+      "rank": 135,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "7a3dd4add04aa96d28a3ebeb4208ff5ed4868ceffc81c7cf6047f6c5b305b8cb"
+    },
+    {
+      "project": "uvloop",
+      "rank": 136,
+      "repo": "https://github.com/MagicStack/uvloop",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "60471471dd0d9963e9515075824d67daa3f7247ecc1ba5eef93bc3fd3418b3db"
+    },
+    {
+      "project": "docstring-parser",
+      "rank": 137,
+      "repo": "https://github.com/rr-/docstring_parser",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "bfaed1c6df016a2825cac1bc6a72d65565155c5fab9196ee860837f00583238e"
+    },
+    {
+      "project": "psycopg2-binary",
+      "rank": 138,
+      "repo": "https://github.com/psycopg/psycopg2",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "b82539ccb4b7d746c1c25d805fb76019a30ba220e0c9f5d42d2b407ec3a5b741"
+    },
+    {
+      "project": "pytest-cov",
+      "rank": 139,
+      "repo": "https://github.com/pytest-dev/pytest-cov",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "948eef18f1b95bc13a3467c4328bb4246bd698225e42a01107edd1f5d89fae15"
+    },
+    {
+      "project": "redis",
+      "rank": 140,
+      "repo": "https://github.com/redis/redis-py",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0f985f4651fc0f77bd1b2dcc3c2edb74c66ac8d3b8e8d9217be0c00c98a8afe3"
+    },
+    {
+      "project": "networkx",
+      "rank": 141,
+      "repo": "https://github.com/networkx/networkx",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b6eb07ed01755ff0d3a3f983a9fef01bfb7a137bc78d1d4f65aa4ab9111aeb9c"
+    },
+    {
+      "project": "opentelemetry-exporter-otlp-proto-common",
+      "rank": 142,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8298d76d8ed6c8e0bd69347d4bc759b15394c60c04d1abc8185a57f7f6d4e599"
+    },
+    {
+      "project": "defusedxml",
+      "rank": 143,
+      "repo": "https://github.com/tiran/defusedxml",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "77e1fa1122827b5627570913c5a65ff6226b41589dd596a6dbee53a556b5ca9e"
+    },
+    {
+      "project": "requests-toolbelt",
+      "rank": 144,
+      "repo": "https://github.com/requests/toolbelt",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e1c70013d966cf54ca73cc8364d9d9adb2cdbf8167e3cc570d34d4c0954b769c"
+    },
+    {
+      "project": "msgpack",
+      "rank": 145,
+      "repo": "https://github.com/msgpack/msgpack-python",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "4dac7c45b755c195a52280ed5d76987cf6ac1a3fafff0dd08c3c17cb11a8d794"
+    },
+    {
+      "project": "fonttools",
+      "rank": 146,
+      "repo": "https://github.com/fonttools/fonttools",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d4f4e4aafdbf3651445b13cd0a458b51525ceebd64fa9bf62a6eb050682904ea"
+    },
+    {
+      "project": "rsa",
+      "rank": 147,
+      "repo": "https://github.com/sybrenstuvel/python-rsa",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "07ae6716d05751e98d7b7c9ee9b4e243ee7453af5b9c5bb975b3d52684ec4062"
+    },
+    {
+      "project": "hf-xet",
+      "rank": 148,
+      "repo": "https://github.com/huggingface/xet-core",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "e1b3cea8449e73b08f8e047b7144f2ee1898be2a1d4131a45e1ae69550cc5904"
+    },
+    {
+      "project": "werkzeug",
+      "rank": 149,
+      "repo": "https://github.com/pallets/werkzeug",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c8eef9776f47f1ccebe773eed4985be3580ceeacd6c4d3393cc59cc0b2383af2"
+    },
+    {
+      "project": "scikit-learn",
+      "rank": 150,
+      "repo": "https://github.com/scikit-learn/scikit-learn",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "7f2c77f9da0b1765ccd00fe236628488f1645a0e8d14e2f38bdcc85d2ea477dd"
+    },
+    {
+      "project": "prompt-toolkit",
+      "rank": 151,
+      "repo": "https://github.com/prompt-toolkit/python-prompt-toolkit",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "9cc98111c78a1e0637e35302293afc8ad8a7f301b549d0a5d6a171645a570d52"
+    },
+    {
+      "project": "mako",
+      "rank": 152,
+      "repo": "https://github.com/sqlalchemy/mako",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d5d50a3e5eca1c6b5c723efb09085f6482f3e27b5762b5a067a51e59af232a4e"
+    },
+    {
+      "project": "orjson",
+      "rank": 153,
+      "repo": "https://github.com/ijl/orjson",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "2f32024b4f416576a4374cf0d6cad7f23799b571c08167f1af793690d49999d8"
+    },
+    {
+      "project": "alembic",
+      "rank": 154,
+      "repo": "https://github.com/sqlalchemy/alembic",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2fc5722b46ffbfd43ee99311578984392322c44f204b68d3a63b3ca026e898eb"
+    },
+    {
+      "project": "tiktoken",
+      "rank": 155,
+      "repo": "https://github.com/openai/tiktoken",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "fe742a14977a8a72185a3c1788e8db04515e16206d1eb5733910de5ccb03e018"
+    },
+    {
+      "project": "pyopenssl",
+      "rank": 156,
+      "repo": "https://github.com/pyca/pyopenssl",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "bdc93577e91061be36ca632c34e7238be0ca25002758c2a8a96e2bc725758849"
+    },
+    {
+      "project": "opentelemetry-exporter-otlp-proto-http",
+      "rank": 157,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "95a2360e4224e1809b149a544dd9b3d751c2da194c0c6ea556a4720ca959f4e0"
+    },
+    {
+      "project": "nodeenv",
+      "rank": 158,
+      "repo": "https://github.com/ekalinin/nodeenv",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "60e45a8760f7f484a0074f9343d97e75a4b6dbdf49069af21897caed240af3f0"
+    },
+    {
+      "project": "threadpoolctl",
+      "rank": 159,
+      "repo": "https://github.com/joblib/threadpoolctl",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "52247d0f5d40026d87d5f90dbc1cc00522c9d50c99fa736472780442e7f0479b"
+    },
+    {
+      "project": "isodate",
+      "rank": 160,
+      "repo": "https://github.com/gweis/isodate",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "514750f193ad560a44b9d6b1ac19f94b26d0e2dbee418bb0118dfe396d6d93d9"
+    },
+    {
+      "project": "langchain",
+      "rank": 161,
+      "repo": "https://github.com/langchain-ai/langchain",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "33b5b451e5a1551442f7848d1a99077a79f95810950176bbed07603559939ee6"
+    },
+    {
+      "project": "python-discovery",
+      "rank": 162,
+      "repo": "https://github.com/tox-dev/python-discovery",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "504f05a53606269b4ecd9f0fbe15fe4bd9bc89e8e16af2952820bb2809781a93"
+    },
+    {
+      "project": "cloudpickle",
+      "rank": 163,
+      "repo": "https://github.com/cloudpipe/cloudpickle",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7401b3bc694060d6229f4f1f2510881db681fc1e7359f5d9caf4d740aa8f5cac"
+    },
+    {
+      "project": "tokenizers",
+      "rank": 164,
+      "repo": "https://github.com/huggingface/tokenizers",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "f3aa9a290828b5543fb66777a614f8dd9e9282c01e8064b942295111358eb868"
+    },
+    {
+      "project": "pynacl",
+      "rank": 165,
+      "repo": "https://github.com/pyca/pynacl",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "589484e34640e25863ca67f03a6588dd1dec31d16102d77dcfe6330f7daeebe7"
+    },
+    {
+      "project": "chardet",
+      "rank": 166,
+      "repo": "https://github.com/chardet/chardet",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "41a2872954fc14eaac0096ddf7af631faa9900fb599ecee2da1921576647ab11"
+    },
+    {
+      "project": "websocket-client",
+      "rank": 167,
+      "repo": "https://github.com/websocket-client/websocket-client",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "a3c5fb0fe2ef9285c39699838efd1ca502fc175eca4857130f0c2640726a1bd5"
+    },
+    {
+      "project": "joblib",
+      "rank": 168,
+      "repo": "https://github.com/joblib/joblib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d26d73afcf179911d9407c71e89ab9e23a6d43e308e5e6a250515a7b0ebd1cb2"
+    },
+    {
+      "project": "matplotlib",
+      "rank": 169,
+      "repo": "https://github.com/matplotlib/matplotlib",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "6eb1ddeb8f868a44ee9017e2228f2adbf86c55080b43279f38b4b1ffde79891a"
+    },
+    {
+      "project": "tzlocal",
+      "rank": 170,
+      "repo": "https://github.com/regebro/tzlocal",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "416f1143f9e85348af3b59a8ddf93b9f1b0ff98370cf13e3347083eb8dbf4278"
+    },
+    {
+      "project": "email-validator",
+      "rank": 171,
+      "repo": "https://github.com/JoshData/python-email-validator",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "159e51a29a35363042c7fb747a5a80945bc337b4abe0e9e154de6780620d77a8"
+    },
+    {
+      "project": "gitpython",
+      "rank": 172,
+      "repo": "https://github.com/gitpython-developers/GitPython",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0453b40c35d61f4d217f1df9b9054689503d8e238d9a1bda3ee730aa9d78ccdf"
+    },
+    {
+      "project": "azure-core",
+      "rank": 173,
+      "repo": "https://github.com/Azure/azure-sdk-for-python",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "3b4c2e0691b38cb4e92f1f058918b7e88a89b6ce7fe6343ab4e99c47666c7c10"
+    },
+    {
+      "project": "mypy",
+      "rank": 174,
+      "repo": "https://github.com/python/mypy",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "cf63265f0d69012dc57d2efd3d39f45ba00e9ee2e36c70b11a71dd21a5967fea"
+    },
+    {
+      "project": "itsdangerous",
+      "rank": 175,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "excluded",
+      "metadata_sha256": ""
+    },
+    {
+      "project": "google-cloud-core",
+      "rank": 176,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "5d9a43b2f3350e74af848630e2819e30407a5faec10783e23ef58041f682920a"
+    },
+    {
+      "project": "zstandard",
+      "rank": 177,
+      "repo": "https://github.com/indygreg/python-zstandard",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "ca077b19ef0862777f658211d34204b8d380d4cb46488969f85b90a71f166d9e"
+    },
+    {
+      "project": "httpx-sse",
+      "rank": 178,
+      "repo": "https://github.com/florimondmanca/httpx-sse",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2641bcfc876f9c21b7aef45b88ab1de599e63dbfca009a46d65991fe189a1fea"
+    },
+    {
+      "project": "kiwisolver",
+      "rank": 179,
+      "repo": "https://github.com/nucleic/kiwi",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "2e32247a95c355c332a33d01ade591fd698dcc6b0537203aea4b4ea4101900a4"
+    },
+    {
+      "project": "dill",
+      "rank": 180,
+      "repo": "https://github.com/uqfoundation/dill",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "3ebb06e6a7b24096ef253c0966eea296269f84a4cfa4d6ae4f0840940a521417"
+    },
+    {
+      "project": "ruamel-yaml",
+      "rank": 181,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "656c99298b890c967f0ebbe0cb8b1ddbeedda17a5ede1d806fd67ab694eb0184"
+    },
+    {
+      "project": "bcrypt",
+      "rank": 182,
+      "repo": "https://github.com/pyca/bcrypt",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "5e5bd952b7aaa5d57f1e896a67ee518f525181468629025c1633a389ffe51948"
+    },
+    {
+      "project": "identify",
+      "rank": 183,
+      "repo": "https://github.com/pre-commit/identify",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "76acb71f8f7395079db011b735baf0cd98cf06bc9ccef5aa148a935b765d0ed4"
+    },
+    {
+      "project": "tabulate",
+      "rank": 184,
+      "repo": "https://github.com/astanin/python-tabulate",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "5d389e91b80ed1d726a656a4371a0e5a1049d6e567681511b375cc862796ccbe"
+    },
+    {
+      "project": "opentelemetry-instrumentation",
+      "rank": 185,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "70a0fea133bdc6bdd9a982c7889ba90fc410a09bf4aab08cac61cfe4fbc34734"
+    },
+    {
+      "project": "pre-commit",
+      "rank": 186,
+      "repo": "https://github.com/pre-commit/pre-commit",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "a8db99faeecaef1cc0b230e789e4e797058815dd4a0357f54b4b4c4c9558fc5f"
+    },
+    {
+      "project": "smmap",
+      "rank": 187,
+      "repo": "https://github.com/gitpython-developers/smmap",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "986878513e11652c3ca6ce941ecfa51e2cc8c47bb428de54eba4d36348fc4648"
+    },
+    {
+      "project": "msal",
+      "rank": 188,
+      "repo": "https://github.com/AzureAD/microsoft-authentication-library-for-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "90ff3b6c5be9ecd5efd4015a0425b0a8068927e5b0db1d499f4c439bb0ba6653"
+    },
+    {
+      "project": "cfgv",
+      "rank": 189,
+      "repo": "https://github.com/asottile/cfgv",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4dc8543edf0dd357c5744755bcad937117ee20b15b50217b1ec38062e55f5888"
+    },
+    {
+      "project": "google-cloud-storage",
+      "rank": 190,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4694f7f1bf060a97562c4c655a1cc9a2463abdcc45d9ecd29aee7d00d1545b49"
+    },
+    {
+      "project": "keyring",
+      "rank": 191,
+      "repo": "https://github.com/jaraco/keyring",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0d8d29b7e0c1bb1c2ac11d8a3ee4458de148aa6dd2eabf04ed72784ff5698c59"
+    },
+    {
+      "project": "h2",
+      "rank": 192,
+      "repo": "https://github.com/python-hyper/h2",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "786dbed32b2abc9562b2102614806fb4b07664ecfdbd38c7c1771fec258d68f1"
+    },
+    {
+      "project": "hpack",
+      "rank": 193,
+      "repo": "https://github.com/python-hyper/hpack",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "94869474e3a6b0fd3d9ce76343345747a02b70e94eb0b1c38a7a67f2986b78a9"
+    },
+    {
+      "project": "anthropic",
+      "rank": 194,
+      "repo": "https://github.com/anthropics/anthropic-sdk-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b14c797ed2080af2fa4397f7f07642f810fe157c14da1b5c531234190497d122"
+    },
+    {
+      "project": "langchain-core",
+      "rank": 195,
+      "repo": "https://github.com/langchain-ai/langchain",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2c86314748f75817d50ee103c2e47ddd2f403b0d7c664640b34957e62a5a4903"
+    },
+    {
+      "project": "gitdb",
+      "rank": 196,
+      "repo": "https://github.com/gitpython-developers/gitdb",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d3b54cc27c8c441c8ef83c56079ad36ce79991216b7932f828fc2fb5a06b6335"
+    },
+    {
+      "project": "decorator",
+      "rank": 197,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "4ba19daa19ed34454d70151ac56a34572a17c9b0de28cccf0b7c0fa2975c5c68"
+    },
+    {
+      "project": "hyperframe",
+      "rank": 198,
+      "repo": "https://github.com/python-hyper/hyperframe",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "9375b8170124b09db0b36ed6393929252fb9e1728432d508c92e45e5c7a6d57a"
+    },
+    {
+      "project": "jaraco-classes",
+      "rank": 199,
+      "repo": "https://github.com/jaraco/jaraco.classes",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "fb91663c9f9218b5528a4409fe55a688aa7143226ccdd39863a57668c5c104a8"
+    },
+    {
+      "project": "google-cloud-bigquery",
+      "rank": 200,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "ba6573074de04f7039450a9f2c376f41b5e65786f72ca191931b517a1c5576b3"
+    },
+    {
+      "project": "jaraco-functools",
+      "rank": 201,
+      "repo": "https://github.com/jaraco/jaraco.functools",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7cd02083de660b2d4c1f28a074854e6a3e6935a8e17cf978b787f06c5654ce9c"
+    },
+    {
+      "project": "jeepney",
+      "rank": 202,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "b953e3d4f4e3633ca6892676f811787a18beb22af5a7421604d04f500d1e274b"
+    },
+    {
+      "project": "cycler",
+      "rank": 203,
+      "repo": "https://github.com/matplotlib/cycler",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "3353e761561c35e9bb1ab05d1c1d8dd82bdbfe27af2fc2c81f88ad8618eee71d"
+    },
+    {
+      "project": "secretstorage",
+      "rank": 204,
+      "repo": "https://github.com/mitya57/secretstorage",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d5803224a9de92bb46e865247a261cfc09aaa6622a94472ee48fafe8ea32a764"
+    },
+    {
+      "project": "toml",
+      "rank": 205,
+      "repo": "https://github.com/uiri/toml",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "798c995590bf6097e26cb22268f64001a302871c671b8325b0c4529240d3b7cb"
+    },
+    {
+      "project": "jaraco-context",
+      "rank": 206,
+      "repo": "https://github.com/jaraco/jaraco.context",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "488adebab0c48bfd939b9087e75776ad142cdef2ae5742a1034169de2822b89f"
+    },
+    {
+      "project": "google-crc32c",
+      "rank": 207,
+      "repo": "https://github.com/googleapis/python-crc32c",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "09ee2a2882a6d1cec5d23829e22328751b73a1e9d739145fd43e1b21ba2731f9"
+    },
+    {
+      "project": "contourpy",
+      "rank": 208,
+      "repo": "https://github.com/contourpy/contourpy",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "8de299c893361990f77cb338c5fa05c6869b5ba41b4b4802fa2fe947dbaf58db"
+    },
+    {
+      "project": "google-resumable-media",
+      "rank": 209,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c052482c24b0a426db8bd8df2e93e5fc20de15ce632eb05f4c9490c9d2605efe"
+    },
+    {
+      "project": "docutils",
+      "rank": 210,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "69787bfbeb54559a083ee5fcbaac7ddbf9a83fd12681fcbdc5d661d4a665adf7"
+    },
+    {
+      "project": "grpcio-tools",
+      "rank": 211,
+      "repo": "https://github.com/grpc/grpc",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "2e170dc00db9d8b69379fb1a75bcd378c16fd4ad2f884fe994f9d2cacb091a12"
+    },
+    {
+      "project": "google-genai",
+      "rank": 212,
+      "repo": "https://github.com/googleapis/python-genai",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ec54cfeda593339a52f9bf138f88573118e17e77e3ee9e055eab2f0248d6f261"
+    },
+    {
+      "project": "pytest-xdist",
+      "rank": 213,
+      "repo": "https://github.com/pytest-dev/pytest-xdist",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c28c9a15d09e34325c70ed89e833ddb5fe1bd0a2989361544c92239f3efebbf4"
+    },
+    {
+      "project": "execnet",
+      "rank": 214,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "b8bd2a72aa166333940facf5a89dcbfd4e05f9030ac55d48f96d05270b787e05"
+    },
+    {
+      "project": "flask",
+      "rank": 215,
+      "repo": "https://github.com/pallets/flask",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2bebc9ab169de02f525a8460feaedbb6f32960eb9125800d9afb83cd10c25a80"
+    },
+    {
+      "project": "prometheus-client",
+      "rank": 216,
+      "repo": "https://github.com/prometheus/client_python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ab4e1370efe407eab4a4f1450f81e828440593ca10efcde25b57e4d87992ff60"
+    },
+    {
+      "project": "asn1crypto",
+      "rank": 217,
+      "repo": "https://github.com/wbond/asn1crypto",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "22e61eee24d6f03aaa0a991ea29b5de8850e18918f34c04286f5279b82c82dcb"
+    },
+    {
+      "project": "backoff",
+      "rank": 218,
+      "repo": "https://github.com/litl/backoff",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b8732c87cf3e235b8df87a42c93f020ef4dd8b545fe2ea2a8b2b98d2e5d97a38"
+    },
+    {
+      "project": "xxhash",
+      "rank": 219,
+      "repo": "https://github.com/ifduyue/python-xxhash",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "00507e6934e64e3a4b9107d5118bf0d775a8bc24996b91586686494d3bb99ee6"
+    },
+    {
+      "project": "docker",
+      "rank": 220,
+      "repo": "https://github.com/docker/docker-py",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "96e25989d6bd68a2b40a9b5d46c2147b608e91865c93198035465492ad44a16d"
+    },
+    {
+      "project": "psycopg",
+      "rank": 221,
+      "repo": "https://github.com/psycopg/psycopg",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "a4806149d2b8bcfcd0ba7b96f202a79d7e02818dd8e3525105e53417fa120cfd"
+    },
+    {
+      "project": "deprecated",
+      "rank": 222,
+      "repo": "https://github.com/laurent-laporte-pro/deprecated",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "df7782c5d09696bfc90539b8e183f5b1b66c28d14c3b5ade60f6342b8869e5a0"
+    },
+    {
+      "project": "sympy",
+      "rank": 223,
+      "repo": "https://github.com/sympy/sympy",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7822aa781b6a8ffa1bafe5b619b6faf530144c8f21550fe37a0d7fbe5806c295"
+    },
+    {
+      "project": "jsonpointer",
+      "rank": 224,
+      "repo": "https://github.com/stefankoegl/python-json-pointer",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2b98a850d18b420b09d9395aa3e5aafd0f794fccdc578be6eb8f537a6e61a457"
+    },
+    {
+      "project": "uritemplate",
+      "rank": 225,
+      "repo": "https://github.com/python-hyper/uritemplate",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "83957de213412b899b0ea0c0cb051a70070588a340622f9a102323e4cff33b40"
+    },
+    {
+      "project": "uv",
+      "rank": 226,
+      "repo": "https://github.com/astral-sh/uv",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "e2d18cf8310ef7bf57ced5224d27cd338a6bf574e50a2187cd2cf5e58c1a99a4"
+    },
+    {
+      "project": "blinker",
+      "rank": 227,
+      "repo": "https://github.com/pallets-eco/blinker",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "62983e48a3c28402a76bcf7c881a6587a0d3c57a09bbd0a175f3de8162e3cc08"
+    },
+    {
+      "project": "sentry-sdk",
+      "rank": 228,
+      "repo": "https://github.com/getsentry/sentry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7629b3d7f40376309b745b872206ac12f31638282cc88b65aa7706ab53883c4a"
+    },
+    {
+      "project": "ptyprocess",
+      "rank": 229,
+      "repo": "https://github.com/pexpect/ptyprocess",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "6220f68c7a07ca2ddaf1b5f54916e92f040f28dd7e1d1255802fadb9065bf9bc"
+    },
+    {
+      "project": "mpmath",
+      "rank": 230,
+      "repo": "https://github.com/mpmath/mpmath",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0976c3460a0f7e742c74cc4c352fafab55a17c2faec8d077f256518182bf29bb"
+    },
+    {
+      "project": "psycopg-binary",
+      "rank": 231,
+      "repo": "https://github.com/psycopg/psycopg",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "450a8611045aaed67cfa4529f760c97cbecbd3949a7bd1ffe2e20eede0f63120"
+    },
+    {
+      "project": "google-api-python-client",
+      "rank": 232,
+      "repo": "https://github.com/googleapis/google-api-python-client",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "63f5e5b62974e5aafc7e3a5ee71cde4f3bf440951f9379dcdcb03d9e8b1430fa"
+    },
+    {
+      "project": "pypdf",
+      "rank": 233,
+      "repo": "https://github.com/py-pdf/pypdf",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f60d88044beeb3271a5cc12d4a7dbfc05089bcd96ce64026cbb218b673cc30a5"
+    },
+    {
+      "project": "pexpect",
+      "rank": 234,
+      "repo": "https://github.com/pexpect/pexpect",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "c495561b1914d46707dc783199d4f062ff5e0a79492054d061cabff70ba5b8ff"
+    },
+    {
+      "project": "librt",
+      "rank": 235,
+      "repo": "https://github.com/mypyc/librt",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "f315f109f859a8275738740d913b9a4257c9755d36feb44d61ecab51a4d14896"
+    },
+    {
+      "project": "google-auth-httplib2",
+      "rank": 236,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2be2ae88cff0aa8dd7aa2eacefafd9fbc00711fbf84458fa46edb534347df38b"
+    },
+    {
+      "project": "pytest-json-ctrf",
+      "rank": 237,
+      "repo": "https://github.com/infopulse/pytest-common-test-report-json",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "01df435a42f3ad42e5ca8e7c42d791ee0f5fe86152fe4fc8544c52283d5d9a28"
+    },
+    {
+      "project": "asgiref",
+      "rank": 238,
+      "repo": "https://github.com/django/asgiref",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c8af7029c0823334686599603c254338be919eec03d715520c60171bbd41d25a"
+    },
+    {
+      "project": "async-timeout",
+      "rank": 239,
+      "repo": "https://github.com/aio-libs/async-timeout",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "18f65efe7119a7325a63ccff393e44a3fbe26cfe1a94f300c5c1d7f43cbc893f"
+    },
+    {
+      "project": "multiprocess",
+      "rank": 240,
+      "repo": "https://github.com/uqfoundation/multiprocess",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "35d5c9f6f38847a8a140c6f68724b2c1f18dda0026975b070a8d0ebd00d367e0"
+    },
+    {
+      "project": "aiofiles",
+      "rank": 241,
+      "repo": "https://github.com/Tinche/aiofiles",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "490e3de09aa5bf8f407af5a2fc22186c2aca90ec3338bfde5fc4b16c3d30ee9a"
+    },
+    {
+      "project": "rapidfuzz",
+      "rank": 242,
+      "repo": "https://github.com/rapidfuzz/RapidFuzz",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "d02b35c37ee8c4bf0d9c963161b56fe14b4f0a39c9ade62f7c5a2c36ea2b593d"
+    },
+    {
+      "project": "traitlets",
+      "rank": 243,
+      "repo": "https://github.com/ipython/traitlets",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d1dfc88c8779d3ab4121e4f5bbfd38c85807d05865f32b6df83907efb8cb0647"
+    },
+    {
+      "project": "httplib2",
+      "rank": 244,
+      "repo": "https://github.com/httplib2/httplib2",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "488da75c5328f198d4d90eec04063e5a86adebc42dbd4b921a2bb15551949c11"
+    },
+    {
+      "project": "azure-identity",
+      "rank": 245,
+      "repo": "https://github.com/Azure/azure-sdk-for-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6ad6d523accdfa92e54b1162672266fbbf514d7fa4aabbd325d5c465e0d4326e"
+    },
+    {
+      "project": "webencodings",
+      "rank": 246,
+      "repo": "https://github.com/CourtBouillon/webencodings",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "cee1a3591331ae6a7c4a64c9bde03eb6d620b38a98cf730beaba8574b4a20202"
+    },
+    {
+      "project": "narwhals",
+      "rank": 247,
+      "repo": "https://github.com/narwhals-dev/narwhals",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7de9467012ac986d5a8c57e71626f59c40c34b32530b6d40c97819c2feb82291"
+    },
+    {
+      "project": "black",
+      "rank": 248,
+      "repo": "https://github.com/psf/black",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "cbd6a79b1f4cf7df64a3b0fe421feca818395aea8f001a71573f7a908ed8de79"
+    },
+    {
+      "project": "google-auth-oauthlib",
+      "rank": 249,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d5bc11280e43d756b274fb3386abc197bfcffa220dfc1f65ed823a9e55a95809"
+    },
+    {
+      "project": "opentelemetry-util-http",
+      "rank": 250,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "295d654fba9bc63c5cf13b657c48a5bcb14ad81e46329849f37e17cffca892e9"
+    },
+    {
+      "project": "msal-extensions",
+      "rank": 251,
+      "repo": "https://github.com/AzureAD/microsoft-authentication-extensions-for-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4ed3241a803a0bafb65d7e6acf242e6891f2a37e9106440911707364d3b6af77"
+    },
+    {
+      "project": "sqlparse",
+      "rank": 252,
+      "repo": "https://github.com/andialbrecht/sqlparse",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c9d09cffe2f80173e2fff392049327a0c6d277cd62f40ddc26bbbd5653d4d302"
+    },
+    {
+      "project": "authlib",
+      "rank": 253,
+      "repo": "https://github.com/sponsors/lepture",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e9df885731a0b54d09a208fa48e5bb06049512663d5be98241d9eaed4741dbae"
+    },
+    {
+      "project": "fastjsonschema",
+      "rank": 254,
+      "repo": "https://github.com/horejsek/python-fastjsonschema",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6f1c17a77a0db2f9e20760c0851cf50015ebe5bd086dcf9639660bc296434c5c"
+    },
+    {
+      "project": "opentelemetry-exporter-otlp-proto-grpc",
+      "rank": 255,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "73d93649b973bac7ced3cc6c77cda04991c279deafd505c1e059c33cd8b22de3"
+    },
+    {
+      "project": "jsonpatch",
+      "rank": 256,
+      "repo": "https://github.com/stefankoegl/python-json-patch",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0ef97ebbd0da3d63bf0b5763a7353fa2cc3a0cfce731e8ba1a0001c9088cd2c5"
+    },
+    {
+      "project": "asyncpg",
+      "rank": 257,
+      "repo": "https://github.com/MagicStack/asyncpg",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "c8d96208c683048d48d3a542067f400bb37a17e7b9027237927c3c39afcdca32"
+    },
+    {
+      "project": "paramiko",
+      "rank": 258,
+      "repo": "https://github.com/paramiko/paramiko",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "e85fd7e9092fafd6c01737c1be2496048549f3a64a1cdd653160ebfe5fc4e946"
+    },
+    {
+      "project": "executing",
+      "rank": 259,
+      "repo": "https://github.com/alexmojaki/executing",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2095d5c2ac672598fbcd15cd806e218b566bed53e42210dc7439ccd22c188bd8"
+    },
+    {
+      "project": "babel",
+      "rank": 260,
+      "repo": "https://github.com/python-babel/babel",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c4c955b096b4cbe3fbdf7e7448119f1a34d47633b2b44dddf57c1a559221e747"
+    },
+    {
+      "project": "snowflake-connector-python",
+      "rank": 261,
+      "repo": "https://github.com/snowflakedb/drivers",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "26d93f9f85a3a9c7930102d2d95b504ac707cb7572939bcbd081b6dfd3614d6e"
+    },
+    {
+      "project": "tornado",
+      "rank": 262,
+      "repo": "https://github.com/tornadoweb/tornado",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "a64542b32c5c708061eefbc5eded4296bd9164ef0006b4aa9525fb5b80addd81"
+    },
+    {
+      "project": "ipython",
+      "rank": 263,
+      "repo": "https://github.com/ipython/ipython",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "58cc780c4cc4029f672d7f814bfd6dbcb24b3c4e88cbebe61a765cc8bd20c79e"
+    },
+    {
+      "project": "grpc-google-iam-v1",
+      "rank": 264,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ef47db40027a9caec3f6c6563cf2efdf23036a6ed722114ac5340bcdb1a0c416"
+    },
+    {
+      "project": "gunicorn",
+      "rank": 265,
+      "repo": "https://github.com/benoitc/gunicorn",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "4a324f455c54f6c4e9b98cb86b9a752c2da7d289ad6528642837ddf4a7d04b07"
+    },
+    {
+      "project": "joserfc",
+      "rank": 266,
+      "repo": "https://github.com/sponsors/authlib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "74cfaa2e5acac329b8886b246d30751afb5ec9494698268a9d23ac678d021328"
+    },
+    {
+      "project": "parso",
+      "rank": 267,
+      "repo": "https://github.com/davidhalter/parso",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "07d222197e5ca2e9b299ab5b26be964642186454424309b5bd9b5a31ee320c12"
+    },
+    {
+      "project": "jedi",
+      "rank": 268,
+      "repo": "https://github.com/davidhalter/jedi",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "50d10d090e40282c8b449e7fa1a51bf4101b608248e8763431d97127979b820b"
+    },
+    {
+      "project": "structlog",
+      "rank": 269,
+      "repo": "https://github.com/hynek/structlog",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "61a5c8b0c2a133160e902add944776a0d2ffb44ce6641250001866672b4b8494"
+    },
+    {
+      "project": "azure-storage-blob",
+      "rank": 270,
+      "repo": "https://github.com/Azure/azure-sdk-for-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e3a01287632867f118a0901b3436954b064f1032f3fa480ada3739fbc61c3a95"
+    },
+    {
+      "project": "typedload",
+      "rank": 271,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "feeb74aee8aae6a71f427989456c0640312ee75c25103105a1ff63c14a38ab40"
+    },
+    {
+      "project": "asttokens",
+      "rank": 272,
+      "repo": "https://github.com/gristlabs/asttokens",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "b28de1f388b8cbcbf0293419f95f1dc92efa17e4eadd2de1295806f4176bb28d"
+    },
+    {
+      "project": "pyproject-hooks",
+      "rank": 273,
+      "repo": "https://github.com/pypa/pyproject-hooks",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "afc7607e4b9aecb6f18f1e60f964a2d51f3276c61cc77559543ba519266b4ca4"
+    },
+    {
+      "project": "transformers",
+      "rank": 274,
+      "repo": "https://github.com/huggingface/transformers",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "95d2cec05137363962e38bdb82bd04757f779fbae68b98d3f1f86f915b31f981"
+    },
+    {
+      "project": "playwright",
+      "rank": 275,
+      "repo": "https://github.com/microsoft/playwright-python",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "1975f47fe81f72df23a32c7e6d8a27c44d7c109058e74eb4da0532271297a9aa"
+    },
+    {
+      "project": "xmltodict",
+      "rank": 276,
+      "repo": "https://github.com/martinblech/xmltodict",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8adcd0049b220d59abf56667dce9875cf1fb0b10f163c75184e5f1fe45610e72"
+    },
+    {
+      "project": "python-docx",
+      "rank": 277,
+      "repo": "https://github.com/python-openxml/python-docx",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "95eecaefd9734330d53f53a862847578a0deed24a16df2a261fdd828f7e50597"
+    },
+    {
+      "project": "matplotlib-inline",
+      "rank": 278,
+      "repo": "https://github.com/ipython/matplotlib-inline",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "730be9aa61790498bcb706633eece53ff10ecfb36df4c5271c7ec331d8eb47bd"
+    },
+    {
+      "project": "markdown",
+      "rank": 279,
+      "repo": "https://github.com/Python-Markdown/markdown",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0bfb8b9c44c00a7fa061e447bf9bccfd2b7ab64326889cb2db1a6643c678cc46"
+    },
+    {
+      "project": "pure-eval",
+      "rank": 280,
+      "repo": "https://github.com/alexmojaki/pure_eval",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b909745c3adbd611117ca33f9f6d0e5d007d2d2a60ce5cd9554def18b608385c"
+    },
+    {
+      "project": "build",
+      "rank": 281,
+      "repo": "https://github.com/pypa/build",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1f23d3112e2d03277e2cdc3902b216387b30fea87b01f1b2d16877d785feeb44"
+    },
+    {
+      "project": "isort",
+      "rank": 282,
+      "repo": "https://github.com/PyCQA/isort",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "929a9cdee62d5ec2bb994799dc71c95dd90413e0b69cdc465b2f573291d5e1ca"
+    },
+    {
+      "project": "litellm",
+      "rank": 283,
+      "repo": "https://github.com/BerriAI/litellm",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "9289b7cf4b7a40ec1d1eca2b2034c84065e62ff17ac9667cd7be725fcb6f7dd6"
+    },
+    {
+      "project": "pyzmq",
+      "rank": 284,
+      "repo": "https://github.com/zeromq/pyzmq",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "f02891312723185a99b61e4b85ac675981b01faa2c8c61c1dff4c6ca3ab0ad5d"
+    },
+    {
+      "project": "tinycss2",
+      "rank": 285,
+      "repo": "https://github.com/Kozea/tinycss2",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e0640b996a20229a100ae161ecd86d20cd07a10823218112f05feb005272b7dd"
+    },
+    {
+      "project": "xlsxwriter",
+      "rank": 286,
+      "repo": "https://github.com/jmcnamara/XlsxWriter",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1b9953c84a570795ff0b6707ee59667ac794c78723193f97f270be84efcf498a"
+    },
+    {
+      "project": "pyee",
+      "rank": 287,
+      "repo": "https://github.com/jfhbrook/pyee",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7228f4b4a07aaad9a273291d35f1e3cb9b62694fac0c418fee6fce30041e9ec6"
+    },
+    {
+      "project": "google-cloud-aiplatform",
+      "rank": 288,
+      "repo": "https://github.com/googleapis/python-aiplatform",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "87b60e9286bacaa59a7421c36af4536e7eef5ef96e88a1dbb730f688103fa194"
+    },
+    {
+      "project": "stack-data",
+      "rank": 289,
+      "repo": "https://github.com/alexmojaki/stack_data",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8c7d1e85c32f34e216a0b40d8cd1e6a7db6813230183fe3581b574c431153d7d"
+    },
+    {
+      "project": "poetry-core",
+      "rank": 290,
+      "repo": "https://github.com/python-poetry/poetry",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "fe8de672becd4c00b8562dca56cafa72e1f207a86f195538e50d5cc2d0459e3b"
+    },
+    {
+      "project": "python-json-logger",
+      "rank": 291,
+      "repo": "https://github.com/nhairs/python-json-logger",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7642138d6aa75c794814a2859f5fc3a55b845e163fb914c62eaca119c0340db2"
+    },
+    {
+      "project": "awscli",
+      "rank": 292,
+      "repo": "https://github.com/aws/aws-cli",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7f87503ceee1cbd1a5f99182e81891085024b9f782999250987f6926686e110f"
+    },
+    {
+      "project": "aioitertools",
+      "rank": 293,
+      "repo": "https://github.com/omnilib/aioitertools",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ca942e352002547f8045189a64e467f8b2b1e0903f183e407d65ba07d812958e"
+    },
+    {
+      "project": "watchdog",
+      "rank": 294,
+      "repo": "https://github.com/gorakhargosh/watchdog",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "37109f45a8cf049ac0e650ee7c0d7775bf6ecd63aabbb691a12845a83f976b72"
+    },
+    {
+      "project": "marshmallow",
+      "rank": 295,
+      "repo": "https://github.com/marshmallow-code/marshmallow",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "211ba4264e8fcc50e5a5bae1ce43f24b9f7649a1dbb44ee3fac4f321d386f681"
+    },
+    {
+      "project": "pymupdf",
+      "rank": 296,
+      "repo": "https://github.com/pymupdf/pymupdf",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "4be94d1ceacf022a219d00b44052e9046ba6b9b0f742651c5f7ab879d8b4a340"
+    },
+    {
+      "project": "awswrangler",
+      "rank": 297,
+      "repo": "https://github.com/aws/aws-sdk-pandas",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "53394beb492ee4c3061579e725dd72479477675c3e3641a7f4895aee0abf8644"
+    },
+    {
+      "project": "brotli",
+      "rank": 298,
+      "repo": "https://github.com/google/brotli",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "d86a43aaa9f19ecba512c0ade9ab53354959d988675d958a696db7448cb3d480"
+    },
+    {
+      "project": "pytest-mock",
+      "rank": 299,
+      "repo": "https://github.com/pytest-dev/pytest-mock",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ab263879bf327957846747c8609663f7e51ad003121c12ef31aa265c6a94f39f"
+    },
+    {
+      "project": "pytest-timeout",
+      "rank": 300,
+      "repo": "https://github.com/pytest-dev/pytest-timeout",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "145b1c3c92f4b35624b5823101e42fdc88b79344cdf64dd3334c0133bf28b248"
+    },
+    {
+      "project": "setuptools-scm",
+      "rank": 301,
+      "repo": "https://github.com/pypa/setuptools-scm",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b3c56c368d0e0545765742d458c80565a750deedd8fd30ebfd7eee58a5860fed"
+    },
+    {
+      "project": "databricks-sdk",
+      "rank": 302,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "5dcda9333b79361622bfde00bcd962c54c734a7612cafca9ef1b39bb0f020ae0"
+    },
+    {
+      "project": "cachecontrol",
+      "rank": 303,
+      "repo": "https://github.com/psf/cachecontrol",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "561d9a0822c42f798fecd57ae1c8323c4b8a855a1ddb9e17decbd5f1c2c08a3c"
+    },
+    {
+      "project": "nest-asyncio",
+      "rank": 304,
+      "repo": "https://github.com/erdewit/nest_asyncio",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "770f64682f33cdaf0fcd1c042c0143de3e1014faee0660376a144989d5f6c173"
+    },
+    {
+      "project": "debugpy",
+      "rank": 305,
+      "repo": "https://github.com/microsoft/debugpy",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "cebb6539ae8b127605c429fb9bfbccfda6d4a41500a1f29ba8165c34eb2b15ac"
+    },
+    {
+      "project": "cython",
+      "rank": 306,
+      "repo": "https://github.com/cython/cython",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1eebe39b32623b47170a4c59c536475fe43894375ce995065b54785a393571d8"
+    },
+    {
+      "project": "langsmith",
+      "rank": 307,
+      "repo": "https://github.com/langchain-ai/langsmith-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "75c8aadc9423c25407e5347fb510f6be1d493bb62b9c4c1ce58a0fbbccd83b88"
+    },
+    {
+      "project": "flatbuffers",
+      "rank": 308,
+      "repo": "https://github.com/google/flatbuffers",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "26db18491b78eab72f3904f3312b948b77f2b8fd97fec5888a7566c7e83eb94d"
+    },
+    {
+      "project": "griffelib",
+      "rank": 309,
+      "repo": "https://github.com/mkdocstrings/griffe",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e78a30a4ca6c771982df988e793d97058d7666d9d85917bb3b4efea7a6c91bac"
+    },
+    {
+      "project": "ast-serialize",
+      "rank": 310,
+      "repo": "https://github.com/mypyc/ast_serialize",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "b167560d77fc05f39bb06d6dd5eaa5efd10101426dff4258df3a7cfbae5dc726"
+    },
+    {
+      "project": "mcp-types",
+      "rank": 311,
+      "repo": "https://github.com/modelcontextprotocol/python-sdk",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e40365a615d93a83c1754e3a40deee6efb4f3b8dacc8e392e928fd16b28960a4"
+    },
+    {
+      "project": "jupyter-core",
+      "rank": 312,
+      "repo": "https://github.com/jupyter/jupyter_core",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "210367694b5ec2d34044808dc82d68d6cf17fd930d83cb5a4ce54f188064492b"
+    },
+    {
+      "project": "types-requests",
+      "rank": 313,
+      "repo": "https://github.com/typeshed-internal/stub_uploader",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "30dc30d68f85fab953dbc11685aeaf8cf2da62571e95004d6650511c6a9b2401"
+    },
+    {
+      "project": "croniter",
+      "rank": 314,
+      "repo": "https://github.com/pallets-eco/croniter",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "e5f72e60fde1e339533fd6e06e600bc16825b5a83f0286ce4c31b15f41f752e0"
+    },
+    {
+      "project": "vcs-versioning",
+      "rank": 315,
+      "repo": "https://github.com/pypa/setuptools-scm",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c03637e8a3057f35bee8d0acbf30b4d394b83f4f1d548c427215b68c846b9b6b"
+    },
+    {
+      "project": "nbformat",
+      "rank": 316,
+      "repo": "https://github.com/jupyter/nbformat",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "afc29ef1894f98f473bd0864a16984b0a36e3453a03e5cd4326892e15d2d02e2"
+    },
+    {
+      "project": "slack-sdk",
+      "rank": 317,
+      "repo": "https://github.com/slackapi/python-slack-sdk",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b2c7fa5620b11539cf19e0b3aa3cd6e7d26b856d1c0214bbaa1ed576d1fc9c56"
+    },
+    {
+      "project": "lz4",
+      "rank": 318,
+      "repo": "https://github.com/python-lz4/python-lz4",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "210a7d961607d263e9d0d7a775e85840bb3e67fa745c9f1108e9c019439b44d3"
+    },
+    {
+      "project": "pymysql",
+      "rank": 319,
+      "repo": "https://github.com/PyMySQL/PyMySQL",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ac81f36b9cb2d06bbe10c2350bfb4fd18780bef1cb0adaebcf05ddd79cb1a3d4"
+    },
+    {
+      "project": "pyperclip",
+      "rank": 320,
+      "repo": "https://github.com/asweigart/pyperclip",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0bc17deecbf8cdf6e78b32cc889b8b1662b23a7d4b817264bb0fa8c1eed4bfcd"
+    },
+    {
+      "project": "kubernetes",
+      "rank": 321,
+      "repo": "https://github.com/kubernetes-client/python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8a842fc4c1b3c1bd6381893ec64e3647e9aec27fc56702be0ea12bae3c8f25f3"
+    },
+    {
+      "project": "types-pyyaml",
+      "rank": 322,
+      "repo": "https://github.com/typeshed-internal/stub_uploader",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "419a82df6d8094085a31ebabcd497952f60e0d9c14e3f607531e39f5e74c68a9"
+    },
+    {
+      "project": "opentelemetry-instrumentation-requests",
+      "rank": 323,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0b68a4b7f01d5bdb79482e8712fdce755fe2ec7c32ce3d62166e1cbf2c3516d5"
+    },
+    {
+      "project": "pytokens",
+      "rank": 324,
+      "repo": "https://github.com/tusharsadhwani/pytokens",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "05f23feac21babbef5acf4c7b3c36b07154609fc34354d6012e2340a047d64d0"
+    },
+    {
+      "project": "safetensors",
+      "rank": 325,
+      "repo": "https://github.com/huggingface/safetensors",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "0b048ecf815d2e61aae7ed6a9a3f545931b4ffd2a633525706b621ef93d089d3"
+    },
+    {
+      "project": "sqlglot",
+      "rank": 326,
+      "repo": "https://github.com/tobymao/sqlglot",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8d4edd36148c0d813724b834849050f7e1bf90d7e8dfc8b13d4765561d96ffd3"
+    },
+    {
+      "project": "jupyter-client",
+      "rank": 327,
+      "repo": "https://github.com/jupyter/jupyter_client",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "ed622ccf57077f471acc23b486f739e5bb4064e6b93ff4693f00affc9b4a8d59"
+    },
+    {
+      "project": "cbor2",
+      "rank": 328,
+      "repo": "https://github.com/agronholm/cbor2",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "ff0c924ed4fde6742ccbda99a8973e5443474ccb85d9fbbaf96fdf8252c77b4b"
+    },
+    {
+      "project": "uuid-utils",
+      "rank": 329,
+      "repo": "https://github.com/aminalaee/uuid-utils",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "d0e324c374cfcd3aeb0dd682ed5af8636b0321a0aaf339c6394233e704bb592a"
+    },
+    {
+      "project": "jsonref",
+      "rank": 330,
+      "repo": "https://github.com/gazpachoking/jsonref",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2619754ba06097291850814d4abd37cfa02449d6d4cd3f8c7a575cb29e0a55c0"
+    },
+    {
+      "project": "datasets",
+      "rank": 331,
+      "repo": "https://github.com/huggingface/datasets",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "7c098e286be2920b221864c2ac99103cdfb517754e9c98e811da61f4b885a9df"
+    },
+    {
+      "project": "termcolor",
+      "rank": 332,
+      "repo": "https://github.com/termcolor/termcolor",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "501ea5c6002e5f1c0e240f7c016db6a7f7dcf0ad5c94b62879ec10b25f85096c"
+    },
+    {
+      "project": "beartype",
+      "rank": 333,
+      "repo": "https://github.com/beartype/beartype",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c5431b53882d970481db6cf6a0c4a4672a4e5ef6dacd9e5674866ef1213984cb"
+    },
+    {
+      "project": "onnxruntime",
+      "rank": 334,
+      "repo": "https://github.com/microsoft/onnxruntime",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "41c0e4e818f8029758efd42e1ffa898213f10ba9bdd1c527a82c978cbceeaa01"
+    },
+    {
+      "project": "cyclopts",
+      "rank": 335,
+      "repo": "https://github.com/BrianPugh/cyclopts",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "39834e2c0ca9af46e1c7fcaddf1ae7f8052eb7bbb162469b09d25ecfc08f64eb"
+    },
+    {
+      "project": "pycryptodome",
+      "rank": 336,
+      "repo": "https://github.com/Legrandin/pycryptodome",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "ac90a1d5092c7879993f5f07856c76331aebe19a094a3037d54e92dd4091af7e"
+    },
+    {
+      "project": "mccabe",
+      "rank": 337,
+      "repo": "https://github.com/pycqa/mccabe",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "5992e7996516962adaff3b2bc755c631d879204e19e1b92bfd5647ed6346b037"
+    },
+    {
+      "project": "opentelemetry-instrumentation-fastapi",
+      "rank": 338,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "1bac98217a6a3db793c854d20009012b9ef643bd301c8b6e3ca406eb000c1f03"
+    },
+    {
+      "project": "reportlab",
+      "rank": 339,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "a35cf7a095345592f317b8c5c8874dbf295ad1083f87c04819ada1b7d8469f6f"
+    },
+    {
+      "project": "xlrd",
+      "rank": 340,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "65908571f5145477e6c9858e4692abcae819f6955e46b6ec2a70d3c137a4c9d2"
+    },
+    {
+      "project": "mdit-py-plugins",
+      "rank": 341,
+      "repo": "https://github.com/executablebooks/mdit-py-plugins",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d0e103f20eda2f976fed5361c7815d5f78abe3628502d14627ad2746ef193cd8"
+    },
+    {
+      "project": "tomli-w",
+      "rank": 342,
+      "repo": "https://github.com/hukkin/tomli-w",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c8305f215c7fc0f93f870a5005348d74ac7887f1fea8bd8ee37691eed337209e"
+    },
+    {
+      "project": "py4j",
+      "rank": 343,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "0bbbae91dbe554c5093be71ed466d26f420457c1450c4c843c1b25f382f0fbb7"
+    },
+    {
+      "project": "fastuuid",
+      "rank": 344,
+      "repo": "https://github.com/thedrow/fastuuid",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "4b10aa4193834781be207501957a8d14c8296abcf572772c9d3e1d424651157a"
+    },
+    {
+      "project": "pathable",
+      "rank": 345,
+      "repo": "https://github.com/p1c2u/pathable",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "9ffac233d232d66ff547d3d6f4628fb7e731547c05f1d8877a31aa018b2561ad"
+    },
+    {
+      "project": "opentelemetry-instrumentation-asgi",
+      "rank": 346,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python-contrib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "3c7ec4543090980de6fc2ad11b49abc92e977cbdfda4a47bd1e327a92e24555d"
+    },
+    {
+      "project": "loguru",
+      "rank": 347,
+      "repo": "https://github.com/Delgan/loguru",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "bb0e798a971f92da478735747fdbde62a101a4a4b3d72ec4cc3e6877b9ff8a5e"
+    },
+    {
+      "project": "faker",
+      "rank": 348,
+      "repo": "https://github.com/joke2k/faker",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "a3ca4bb6870170390f14df1e42801110becfe241fd0b212a141ff2023909ffb5"
+    },
+    {
+      "project": "jsonschema-path",
+      "rank": 349,
+      "repo": "https://github.com/p1c2u/jsonschema-path",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6b3cfa44e7094b904c92cad154714dbffe373fdadfc83addf0f30cbe716a45ca"
+    },
+    {
+      "project": "importlib-resources",
+      "rank": 350,
+      "repo": "https://github.com/python/importlib_resources",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "217ca31f4bea3045e68814483cabbe006e14e721d2c341d41d46338c442f4b54"
+    },
+    {
+      "project": "text-unidecode",
+      "rank": 351,
+      "repo": "https://github.com/kmike/text-unidecode",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "8e9f410cacda0bbc70dd3b1eb93390b2ab1e054604db04db26a7c34e58ac2a5b"
+    },
+    {
+      "project": "pymongo",
+      "rank": 352,
+      "repo": "https://github.com/mongodb/mongo-python-driver",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "9811eff1c4b51d5aeefa8c6d140c0844a5e360e77b604303b354461d5e81aa0e"
+    },
+    {
+      "project": "types-protobuf",
+      "rank": 353,
+      "repo": "https://github.com/typeshed-internal/stub_uploader",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0c209992230ca3ee8784aaf1db4f705c893e927bbf6c372f2551bbf6bccb6c87"
+    },
+    {
+      "project": "lark",
+      "rank": 354,
+      "repo": "https://github.com/lark-parser/lark",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "c988b34c6890c5a6b2f3ae6913cc12422d16ef0c9c34122c8d9e260a2678c9ca"
+    },
+    {
+      "project": "semver",
+      "rank": 355,
+      "repo": "https://github.com/python-semver/python-semver",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "fe9e86fc29469c65b180c4a1683db85db7f91da09ac699460210877f264253b9"
+    },
+    {
+      "project": "linkify-it-py",
+      "rank": 356,
+      "repo": "https://github.com/tsutsu3/linkify-it-py",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "75dde7835ab169c441bc945e5f71bb937e298e39575d59a433ac689493091763"
+    },
+    {
+      "project": "python-slugify",
+      "rank": 357,
+      "repo": "https://github.com/un33k/python-slugify",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2615ac0fdbc876c9745a02c3874cd98ccd67074d1f591431f810c68fbc4522bc"
+    },
+    {
+      "project": "ruamel-yaml-clib",
+      "rank": 358,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "ab3b76433d122221b4108514f5ddb17f9f9891b27f738852f61c676dfd755c37"
+    },
+    {
+      "project": "wsproto",
+      "rank": 359,
+      "repo": "https://github.com/python-hyper/wsproto",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "0721b5cd74a42ce3c026c8ff5070603c9c092a3e88ee7c6a22c4c1e3c420b720"
+    },
+    {
+      "project": "typing-inspect",
+      "rank": 360,
+      "repo": "https://github.com/ilevkivskyi/typing_inspect",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d7a586da2334a7b3f58eb2d79f467befd9e36d7869023edcfdfa4ef2de78aecf"
+    },
+    {
+      "project": "rich-rst",
+      "rank": 361,
+      "repo": "https://github.com/wasi-master/rich-rst",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d4ec37645e022f0d0b8da8b2d92d766ce81956b1bbab34278a5f7aa2ca1c8a16"
+    },
+    {
+      "project": "psycopg2",
+      "rank": 362,
+      "repo": "https://github.com/psycopg/psycopg2",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "685acf381279ef8526a5ab6149ae7d2349ed344abed799eae2211459f0c524df"
+    },
+    {
+      "project": "py-key-value-aio",
+      "rank": 363,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "3be94a2884cc37db3f0a544bfdc35ad1db76e245c5eca936b6897642b5a6f96a"
+    },
+    {
+      "project": "argon2-cffi-bindings",
+      "rank": 364,
+      "repo": "https://github.com/hynek/argon2-cffi-bindings",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "ba5d09c33a49252be4e7923d02e19fd1286abf72b0a43b5e0f2a495db051b9dc"
+    },
+    {
+      "project": "requests-file",
+      "rank": 365,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "3b376932558539f6b669acabb2de231df72b86899f9b0ada50ea8b9a84a2d07e"
+    },
+    {
+      "project": "torch",
+      "rank": 366,
+      "repo": "https://github.com/pytorch/pytorch",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "cad63dc8aa6714ea2133a44b64985d87b3e4ebea217657f1e02e35481fa33b61"
+    },
+    {
+      "project": "aiosqlite",
+      "rank": 367,
+      "repo": "https://github.com/omnilib/aiosqlite",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "318d51e0c47c3fe1acd3327b0c3ec77825f6b4daad1c0a72d51601f3717f97d6"
+    },
+    {
+      "project": "graphql-core",
+      "rank": 368,
+      "repo": "https://github.com/graphql-python/graphql-core",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "20132283648d3320cbe75656ca17a4dd77535d47ec605956c37da701f6bcad59"
+    },
+    {
+      "project": "deprecation",
+      "rank": 369,
+      "repo": "https://github.com/briancurtin/deprecation",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "86a22cb7d71f391016576b607d359f254b943a9093d273765dd804fcf45b9a27"
+    },
+    {
+      "project": "pypdfium2",
+      "rank": 370,
+      "repo": "https://github.com/pypdfium2-team/pypdfium2",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "e761a338dfa137de8017585ce72085e36d271b5a6c7a5c4159909d63c79dbaca"
+    },
+    {
+      "project": "invoke",
+      "rank": 371,
+      "repo": "https://github.com/pyinvoke/invoke",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "222f0d81cbdb654d20734d6ed87af888004312d3e8b04f80afd5acb379ed1154"
+    },
+    {
+      "project": "mistune",
+      "rank": 372,
+      "repo": "https://github.com/sponsors/lepture",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "55a606186c159a36a103b729f6cbd13166465e4fa066068fdf7ed2c843a6d793"
+    },
+    {
+      "project": "bleach",
+      "rank": 373,
+      "repo": "https://github.com/mozilla/bleach",
+      "verdict": "rejected",
+      "reason": "licence not permissive",
+      "metadata_sha256": "fcc0fb375af179890d8004f092ed91942dd5521f824ff511efe5dc85e2f12da1"
+    },
+    {
+      "project": "scramp",
+      "rank": 374,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "259b15485be483b53f5b0806f1e3616ed7729eda34ed918e437a2aa2509a8eab"
+    },
+    {
+      "project": "argon2-cffi",
+      "rank": 375,
+      "repo": "https://github.com/hynek/argon2-cffi",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "b8d3cfc3dc4dcbfa75e73baee6d9c72d83dde58dc688676d6c436f8cb9645b25"
+    },
+    {
+      "project": "types-toml",
+      "rank": 376,
+      "repo": "https://github.com/typeshed-internal/stub_uploader",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "2113e37c7de4c386fc9497c306fdd57c17f45d9c1be419b4a128e444a8a6d6a6"
+    },
+    {
+      "project": "rfc3339-validator",
+      "rank": 377,
+      "repo": "https://github.com/naimetti/rfc3339-validator",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "53b46a42c4e0bb177deab1379ec08829303a4ed6e6f55d4d95b7471cc9a4bc86"
+    },
+    {
+      "project": "arrow",
+      "rank": 378,
+      "repo": "https://github.com/arrow-py/arrow",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d44303e545910e04b05aa92db81ecc23408b7058071168bd76485e9f1af1e06f"
+    },
+    {
+      "project": "shapely",
+      "rank": 379,
+      "repo": "https://github.com/shapely/shapely",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "55d1cbe996a6615e50bed1eedcbf58d9186d9889f25f3898ff4ecad520d45fe0"
+    },
+    {
+      "project": "grpclib",
+      "rank": 380,
+      "repo": "https://github.com/vmagamedov/grpclib",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "00dcf347d82b055e88335fcc2bc22d6f16e6b7e17a9ee5f7c6a9810fae2f761f"
+    },
+    {
+      "project": "pycodestyle",
+      "rank": 381,
+      "repo": "",
+      "verdict": "rejected",
+      "reason": "no GitHub source",
+      "metadata_sha256": "8bc3d5637f095add93ee5463f0eac062c07dcaf77f9946ac91bbfca1ebbf43c1"
+    },
+    {
+      "project": "smart-open",
+      "rank": 382,
+      "repo": "https://github.com/piskvorky/smart_open",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "420c5b2b05e8e4fde22d7e898520eccfc95c841aed075c0b1626672d78c44ac8"
+    },
+    {
+      "project": "caio",
+      "rank": 383,
+      "repo": "https://github.com/mosquito/caio",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "a9e90a5761410c39998923f5d4e0716169e0cc7063df5c529513a4228cb5ba10"
+    },
+    {
+      "project": "argcomplete",
+      "rank": 384,
+      "repo": "https://github.com/kislyuk/argcomplete",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6ffd093fa51d0f03127830efc4e549dc328a2943fd7481a6590495de2194e540"
+    },
+    {
+      "project": "opentelemetry-exporter-otlp",
+      "rank": 385,
+      "repo": "https://github.com/open-telemetry/opentelemetry-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "39b46758076cdf1a8dc40f18a4ee55d6eefc5f65eb8a236b01e0b2443f9fd410"
+    },
+    {
+      "project": "comm",
+      "rank": 386,
+      "repo": "https://github.com/ipython/comm",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "87a8a60fd4245574e7ea3b32f3513e09adabbf47337974e3ad39492f11820175"
+    },
+    {
+      "project": "google-cloud-secret-manager",
+      "rank": 387,
+      "repo": "https://github.com/googleapis/google-cloud-python",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "174e3cd18cae867a56d4b71151b5833f47342ad11ac891fe30d64cac86510ca9"
+    },
+    {
+      "project": "mmh3",
+      "rank": 388,
+      "repo": "https://github.com/hajimes/mmh3",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "7081b623d717bf2566a5294391a68e47d96028b62199e01aea87908507dfb2de"
+    },
+    {
+      "project": "jsonpath-ng",
+      "rank": 389,
+      "repo": "https://github.com/jsonpath-ng/jsonpath-ng",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6b9d209087d78db372355ef0172ac35d97270510998ad4a4c10819de468a8e89"
+    },
+    {
+      "project": "ipython-pygments-lexers",
+      "rank": 390,
+      "repo": "https://github.com/ipython/ipython-pygments-lexers",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "49c2c4cfd421a30135f38bc06be2ca2968dece8e538f7f63f017fae1f56fecb5"
+    },
+    {
+      "project": "uncalled-for",
+      "rank": 391,
+      "repo": "https://github.com/chrisguidry/uncalled-for",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "34122959d99adcaa84bb1b2d58ae9a76094666fbe97b7393a1f7ae5384aeb669"
+    },
+    {
+      "project": "textual",
+      "rank": 392,
+      "repo": "https://github.com/Textualize/textual",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6f24f7a980c1d67be322e0e198fe57bee223a1dc03fc4090a81436ce3ed7d0a9"
+    },
+    {
+      "project": "markdownify",
+      "rank": 393,
+      "repo": "https://github.com/matthewwithanm/python-markdownify",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "66c2da08d9f0a4ff51182f427dcc44bf5bbd4e0658f14d29a8820e352e34e2f2"
+    },
+    {
+      "project": "ipykernel",
+      "rank": 394,
+      "repo": "https://github.com/ipython/ipykernel",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "8d9aa749a76345a8c612040c62b27cd7e8a3abc0d19deb20cbe198a64415030a"
+    },
+    {
+      "project": "python-pptx",
+      "rank": 395,
+      "repo": "https://github.com/scanny/python-pptx",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "f1822c66f354c5ec9df481c324c93dc02c303375fafbe08f37685f802d07018d"
+    },
+    {
+      "project": "toolz",
+      "rank": 396,
+      "repo": "https://github.com/pytoolz/toolz",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d410994ee9df92f7aa0f517ec540eabbc9d597b014b7882192ba56bda430546c"
+    },
+    {
+      "project": "duckdb",
+      "rank": 397,
+      "repo": "https://github.com/duckdb/duckdb-python",
+      "verdict": "rejected",
+      "reason": "not pure Python",
+      "metadata_sha256": "b30e4d629c23ed538d087fc951f20848890a5439c9f711e0e7cf980f71cb40c0"
+    },
+    {
+      "project": "types-certifi",
+      "rank": 398,
+      "repo": "https://github.com/typeshed-internal/stub_uploader",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "d0002cc3cf50cddf85d4f2ea1aca9dac9637e6a83d7fac4fc57e97f58c995ba8"
+    },
+    {
+      "project": "aiofile",
+      "rank": 399,
+      "repo": "https://github.com/mosquito/aiofile",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "67e110bc8d29566fecb7e1fca0733b384ed61c7792caf9d7efa19badf6a35a4d"
+    },
+    {
+      "project": "fastmcp",
+      "rank": 400,
+      "repo": "https://github.com/PrefectHQ/fastmcp",
+      "verdict": "accepted",
+      "reason": "kept",
+      "metadata_sha256": "6c52ec9da5dfc46a2888abb76dbd6018899dd325c27ffc07bdd1310fb75892ec"
+    }
+  ],
+  "accepted": 290
+}
