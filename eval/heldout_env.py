@@ -13,8 +13,10 @@ from pathlib import Path
 import sys
 import tempfile
 import tomllib
+import zipfile
 
 from core.process import run
+from .bundle import GIT
 
 GROUPS = ('test', 'tests', 'testing', 'dev')
 EXTRAS = ('test', 'tests', 'testing', 'dev', 'all')
@@ -62,6 +64,26 @@ def canary(python, import_names, cwd):
     environment = {k: v for k, v in os.environ.items() if k != 'PYTHONPATH'}
     return all(run([python, '-c', f'import {name}'], cwd=Path(cwd), timeout=60, shell=False,
                    env=environment).returncode != 0 for name in import_names)
+
+
+def importable(python, import_names, repo, pythonpath):
+    """The canary's other direction: with its tracked source on the path, the package must import.
+
+    Tracked files only, because that is all a task tree holds: a build that
+    writes an ignored version module into the clone makes the clone import and
+    every mined tree fail.
+    """
+    with tempfile.TemporaryDirectory() as scratch:
+        tree, archive = Path(scratch) / 'tree', Path(scratch) / 'tree.zip'
+        done = run([*GIT, '-C', str(repo), 'archive', '--format=zip', '-o', str(archive), 'HEAD'],
+                   cwd=Path(scratch), timeout=300, shell=False)
+        if done.returncode:
+            return False
+        with zipfile.ZipFile(archive) as opened:
+            opened.extractall(tree)
+        environment = {**os.environ, 'PYTHONPATH': str(tree / pythonpath)}
+        return all(run([python, '-c', f'import {name}'], cwd=Path(scratch), timeout=60, shell=False,
+                       env=environment).returncode == 0 for name in import_names)
 
 
 def _python(venv):
@@ -133,6 +155,9 @@ def build(repo, venv):
     found = layout(repo, names)
     if not found:
         value['reason'] = 'no recognisable source and test layout'
+        return value
+    if not importable(value['python'], names, repo, found['pythonpath']):
+        value['reason'] = 'package does not import from its source tree'
         return value
     value.update(found, state='ready', reason='ready', distribution=name)
     return value

@@ -70,3 +70,39 @@ def test_the_installed_distribution_is_found_by_its_recorded_source(tmp_path):
     done = run([sys.executable, "-c", DISTRIBUTION, str(repo)], cwd=tmp_path, timeout=60, shell=False,
                env={**os.environ, "PYTHONPATH": str(tmp_path / "site")})
     assert done.stdout.strip() == "my-dist"
+
+
+def _committed(root, files):
+    import subprocess
+    _write(root, files)
+    for args in (["init", "-q"], ["add", "-A"], ["-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", "c"]):
+        subprocess.run(["git", "-C", str(root), *args], check=True, capture_output=True)
+    return root
+
+
+def test_the_package_must_import_from_its_own_tracked_source(tmp_path):
+    from eval.heldout_env import importable
+    good = _committed(tmp_path / "good", {"src/pkg/__init__.py": "VALUE = 1\n"})
+    # The build (hatch-vcs, setuptools-scm) writes an ignored version module into the clone;
+    # a task tree holds tracked files only, so the clone importing proves nothing.
+    built = _committed(tmp_path / "built", {"src/pkg/__init__.py": "from ._version import version\n",
+                                            ".gitignore": "src/pkg/_version.py\n"})
+    _write(built, {"src/pkg/_version.py": "version = '1.0'\n"})
+    assert importable(sys.executable, ["pkg"], good, "src")
+    assert not importable(sys.executable, ["pkg"], built, "src")
+
+
+@pytest.mark.parametrize("imports, expected", [
+    (True, ("ready", "ready")),
+    (False, ("rejected", "package does not import from its source tree")),
+])
+def test_a_repository_whose_source_cannot_import_is_rejected_once(tmp_path, monkeypatch, imports, expected):
+    from types import SimpleNamespace
+    from eval import heldout_env as e
+    repo = _write(tmp_path / "repo", {"src/pkg/__init__.py": "", "tests/test_a.py": ""})
+    monkeypatch.setattr(e, "run", lambda *a, **k: SimpleNamespace(returncode=0, stdout='["pkg"]', stderr=""))
+    monkeypatch.setattr(e, "_distribution", lambda *a: "pkg")
+    monkeypatch.setattr(e, "canary", lambda *a: True)
+    monkeypatch.setattr(e, "importable", lambda *a: imports)
+    value = e.build(repo, tmp_path / "venv")
+    assert (value["state"], value["reason"]) == expected
