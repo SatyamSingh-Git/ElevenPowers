@@ -1,0 +1,1215 @@
+{
+  "schema": 1,
+  "runtime": "8ceec45c0b2251616a3762d94cf6ced5d6db2ab62c681379a6599ddaf4c0a891",
+  "model_calls": 0,
+  "installed_acceptance": false,
+  "observations": [
+    {
+      "host": "claude",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1741,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1301,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.785
+    },
+    {
+      "host": "claude",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1769,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1329,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 12.651
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1737,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1296,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.381
+    },
+    {
+      "host": "codex",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1769,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1328,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 12.762
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1742,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1299,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.927
+    },
+    {
+      "host": "gemini",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1770,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1327,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 12.711
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1686,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1246,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.515
+    },
+    {
+      "host": "cursor",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1714,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1274,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 12.42
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1690,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1250,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.534
+    },
+    {
+      "host": "copilot",
+      "language": "python",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1718,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1278,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 12.952
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1717,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1317,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 10.109
+    },
+    {
+      "host": "claude",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1745,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1345,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 0,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.367
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1713,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1312,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 10.988
+    },
+    {
+      "host": "codex",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1741,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1340,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.447
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1718,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1315,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 10.353
+    },
+    {
+      "host": "gemini",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1746,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1343,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.155
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1662,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1262,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 10.618
+    },
+    {
+      "host": "cursor",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1690,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1290,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 11.238
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "mode": "replay",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "intent",
+      "followups": [
+        "no-emission",
+        "no-emission",
+        "no-emission"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1662,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1262,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 9.915
+    },
+    {
+      "host": "copilot",
+      "language": "javascript",
+      "mode": "native-control",
+      "qualified": true,
+      "requirements": {
+        "generic_command_passed": true,
+        "owned_exits": true,
+        "callbacks_processed": true,
+        "declared_states": true,
+        "delivery_stage": true,
+        "followup_states": true,
+        "report_annex": true,
+        "no_consumption_claim": true
+      },
+      "declared": [
+        "ABSENT",
+        "ABSENT",
+        "CURRENT",
+        "STALE",
+        "FAILED",
+        "INCOMPLETE"
+      ],
+      "delivery_after_generic": "emitted",
+      "followups": [
+        "current",
+        "failed",
+        "incomplete"
+      ],
+      "model_consumption": "unproven",
+      "callbacks": [
+        {
+          "exit": 0,
+          "context_chars": 1694,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 1294,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        },
+        {
+          "exit": 0,
+          "context_chars": 3,
+          "has_advice": false
+        }
+      ],
+      "model_calls": 0,
+      "seconds": 10.91
+    }
+  ],
+  "unavailable": [],
+  "qualified": true,
+  "limits": [
+    "Native-control means synthetic launcher ingress, not an installed agent session.",
+    "The generic command is reported to the launcher with a filter it did not run; its output is the unfiltered actual output.",
+    "A later exact receipt is temporal correlation, never proof that a model read or followed feedback."
+  ]
+}
