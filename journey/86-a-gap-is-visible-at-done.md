@@ -85,6 +85,24 @@ Python acceptance fixture from earlier work could not be reused: it is a bespoke
 TAP script, which the generic predicate does not claim, so it never produces
 feedback. That limit is general and stays.
 
-No model was run. The open question is unchanged and now measurable: in an
+No model was run for any of that. The open question was then measurable: in an
 installed session, does the agent take the owned path after the feedback
 arrives?
+
+## One conversation answered it once
+
+The first frozen attempt never got past turn 1. Claude Code had sent one small
+side call to Haiku, and the exact-model rule stopped the run, as written. A two-call
+probe reproduced it on a single Bash call and showed that pointing the host's
+small model at the protocol model removes it. The rule stayed; the launch changed.
+
+The second attempt reached the moment the work was built for. In turn 2 the agent
+ran `node --test` through a compound command, the hook emitted the feedback, and
+the next call was `ep_check.py --all`. The receipt is current and the follow-up
+says so. In turn 3 it piped its tests into the runner on its own, then ran out of
+its time share. Turn 4 never started.
+
+That is one ordered sequence, not a rate, and not a cause: the startup guidance
+names the same runner. The Python case could not even be asked. A filtered
+`python -m unittest` run produces no generic evidence, because the standard
+summary is not read, so the feedback never fires there.

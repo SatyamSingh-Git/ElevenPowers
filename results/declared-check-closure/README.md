@@ -58,6 +58,37 @@ benefit.
 - Owned links first shared native receipt history, so one passing owned run
   satisfied both `pass` and `incomplete` installed-acceptance outcomes.
 
+## Installed observation (2026-10-20)
+
+One frozen Sonnet 5.5 medium conversation on the authored four-stage JavaScript
+case, assisted arm only, at most 720 model-process seconds. Preparation and
+outcome definitions were pushed before each launch.
+
+- [Attempt 1](installed-attempt-1.json) — **not counted**. Turn 1 ended
+  `model_unqualified`: the host sent one small auxiliary call (1,152 input / 14
+  output tokens) to Haiku 4.5 beside Sonnet 5.5, and the exact-model rule stopped
+  the run. A real probe reproduced it on a single Bash call and showed that
+  `ANTHROPIC_DEFAULT_HAIKU_MODEL` set to the protocol model removes it; launches
+  now set that. The rule itself is unchanged.
+- [Attempt 2](installed-attempt-2.json) — **run incomplete**, 410.343 model-process
+  seconds, Sonnet 5.5 only:
+
+| Turn | State | Grade | Declared `tests` | Feedback | Follow-up | Owned runner |
+|---|---|---|---|---|---|---|
+| 1 | completed | 4 | CURRENT | none (no gap) | — | no |
+| 2 | completed | 6 | CURRENT | emitted | current | yes |
+| 3 | timeout at its 309.7 s share | 8 | CURRENT | none | — | yes, piped after `node --test` |
+| 4 | not launched | — | — | — | — | — |
+
+In turn 2 a compound command ran the configured `node --test` reporter, the hook
+emitted the declared-check feedback, and the agent's next call was
+`ep_check.py --all`; the exact receipt is CURRENT and its native follow-up is
+`current`. By the frozen definitions, feedback was emitted and the owned path was
+taken after it. That is one temporal sequence in one conversation: startup
+guidance also names the runner, and the earlier run on this case (0/4 owned turns)
+was a different runtime and a single sample. No adoption rate, causal effect or
+coding benefit is claimed, and four-stage completion is not established.
+
 ## Limits
 
 - Native-control is synthetic launcher ingress, not an installed agent session.
@@ -69,5 +100,8 @@ benefit.
   relink owned receipts (limited to `owned_links`, guarded by receipt age); a
   stale or failed zero-test receipt reads `INCOMPLETE` because the zero-test
   rule is checked first.
-- Installed observation of intent, emission, owned adoption and exact follow-up
-  in a real model session remains open.
+- A filtered `python -m unittest` run yields no generic record (the standard
+  `Ran N tests … OK` summary is not read), so declared-check feedback cannot
+  fire on that common runner; the Python case was therefore not scheduled.
+- Installed observation has one incomplete conversation; a completed run and a
+  second case remain open.

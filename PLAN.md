@@ -1,5 +1,19 @@
 # Master Plan v0.8
 
+**2026-10-20 — First installed declared-check feedback observation: followed, run incomplete.**
+One frozen Sonnet 5.5 medium conversation on the authored JavaScript four-stage
+case. In turn 2 a generic `node --test` run left the exact check unqualified, the
+hook emitted the feedback, and the agent's next call was `ep_check.py --all`; the
+exact receipt is CURRENT and its native follow-up `current`. Turn 3 used the owned
+runner again, then timed out at its time share; turn 4 never ran (410.343
+model-process seconds). An earlier attempt stopped on a host auxiliary Haiku call
+under the exact-model rule; it is retained uncounted, and launches now pin the
+host's small model to the protocol model. One conversation and one case: temporal
+correlation, not an adoption rate or a causal or coding-benefit claim. Filtered
+`python -m unittest` produces no generic evidence, so Python feedback cannot fire
+yet. Next: read the standard `unittest` summary, then a completed run on both cases.
+See [results](results/declared-check-closure/README.md#installed-observation-2026-10-20).
+
 **2026-10-19 — Declared-check completion closure delivered, no-model.**
 The completion report lists every configured exact declaration as `CURRENT`,
 `FAILED`, `STALE`, `ABSENT` or `INCOMPLETE` beside the unchanged verdict; a

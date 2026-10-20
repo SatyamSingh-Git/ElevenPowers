@@ -62,7 +62,26 @@ why the CLI regression reached `main` at `77e56e0`.
   directory. This is not a clean full pass, and is recorded as such.
 - Hosted `tests.yml`: `77e56e0` and `4638e66` fail one test in every finished
   cell, `test_cli_refuses_invalid_request[args0]` (`assert 1 == 2`), the CLI
-  regression fixed in `3f3e2e7`. At `3f3e2e7`, ubuntu 3.11, ubuntu 3.13 and
-  windows 3.13 pass.
+  regression fixed in `3f3e2e7`. At `3f3e2e7`, `361c44f` and `4cf14bb` all four
+  cells pass.
 - Architecture: `python architecture/check.py --render` passes with 173 nodes,
   430 edges and all five tabs.
+
+## Installed observation (2026-10-20)
+
+Prelaunch: hosted `tests.yml` passed all four cells at `3f3e2e7`, `361c44f` and
+`4cf14bb`. Returning from a stray checkout had rewritten working files with CRLF
+endings, so the raw runtime fingerprint moved from `c0f9f81a…` to `8ceec45c…`
+with identical Git content; the no-model exercise was rerun at the new bytes
+(20/20, [record](../../results/declared-check-closure/no-model-checkout-bytes.json))
+before any launch. A new per-turn readout of declared rows and delivery stages
+was witnessed failing before it existed; a fake host driving the real launcher
+shows owned (`CURRENT`/`current`) and generic-only (`STALE`/`unobserved`) turns.
+
+Attempt 1 stopped `model_unqualified` on a host auxiliary Haiku call and is
+retained uncounted. A real probe reproduced the call and its removal by
+`ANTHROPIC_DEFAULT_HAIKU_MODEL`; the launch control failed before the repair and
+34 harness tests passed after. Attempt 2 was frozen and pushed before launch:
+feedback emitted in turn 2, owned runner used next with a `current` follow-up,
+turn 3 timed out at its time share and turn 4 never ran. See the
+[results](../../results/declared-check-closure/README.md#installed-observation-2026-10-20).
