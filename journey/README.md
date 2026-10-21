@@ -1,6 +1,10 @@
 # The journey
 
-Latest: [87 — a scratch file is not a scope violation](87-a-scratch-file-is-not-a-scope-violation.md):
+Latest: [88 — the harness is checked before it is paid](88-the-harness-is-checked-before-it-is-paid.md):
+held-out sourcing by a fixed rule, and four defects found by running the harness before any paid run:
+a text-pipe patch, a one-way environment check, sponsor links and a disk-full journal loss.
+
+Recent: [87 — a scratch file is not a scope violation](87-a-scratch-file-is-not-a-scope-violation.md):
 Python's unittest summary read from real runs, both installed cases follow the
 feedback, and a host scratch file mislabelled as a scope violation.
 
