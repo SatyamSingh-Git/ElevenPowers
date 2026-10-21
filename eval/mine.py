@@ -175,7 +175,7 @@ def usable_report(subject: str, seen: set[str]) -> bool:
 
 
 def candidates(repo: Path, limit: int, source_dir: str, test_dir: str,
-               since: str | None = None) -> list[tuple[str, list[str]]]:
+               since: str | None = None, until: str | None = None) -> list[tuple[str, list[str]]]:
     """Commits that changed source and tests together, newest first.
 
     A fix without a test cannot be verified, and a test without a fix is not a
@@ -186,7 +186,8 @@ def candidates(repo: Path, limit: int, source_dir: str, test_dir: str,
     # Windows is most of an hour spent on nothing -- and it was the reason the
     # corpus had never been mined deeper than a couple of hundred commits.
     log = git(repo, "log", "--no-merges", "--name-only",
-              "--format=%x1e%H%x1f%s", f"-{limit}", *([f"--since={since}"] if since else []))
+              "--format=%x1e%H%x1f%s", f"-{limit}", *([f"--since={since}"] if since else []),
+              *([f"--until={until}"] if until else []))
     out, seen = [], set()
     for chunk in log.split("\x1e")[1:]:
         header, _, listing = chunk.partition("\n")
