@@ -23,7 +23,8 @@ TUNED = {'click', 'attrs', 'jinja2', 'markupsafe', 'itsdangerous'}
 def _repo(info):
     for url in (info.get('project_urls') or {}).values():
         match = GITHUB.match(url or '')
-        if match:
+        # A Funding link (github.com/sponsors/<user>) has the same shape and names no repository.
+        if match and match.group(1) != 'sponsors':
             owner, name = match.group(1), match.group(2).removesuffix('.git')
             return f'https://github.com/{owner}/{name}'
     return ''

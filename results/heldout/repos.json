@@ -149,7 +149,7 @@
     {
       "project": "pydantic",
       "rank": 18,
-      "repo": "https://github.com/sponsors/samuelcolvin",
+      "repo": "https://github.com/pydantic/pydantic",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "1a4aab1e7e64c5f341717f2d3f3e863dcd7cc53cfe704addd053b738368e6b34"
@@ -173,7 +173,7 @@
     {
       "project": "pydantic-core",
       "rank": 21,
-      "repo": "https://github.com/sponsors/samuelcolvin",
+      "repo": "https://github.com/pydantic/pydantic",
       "verdict": "rejected",
       "reason": "not pure Python",
       "metadata_sha256": "4a8c6976ce05da0e66d02cb39e10c717957fe5d6b91358276f547d2741150d41"
@@ -365,7 +365,7 @@
     {
       "project": "starlette",
       "rank": 45,
-      "repo": "https://github.com/sponsors/Kludex",
+      "repo": "https://github.com/Kludex/starlette",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "76514645e5280aba65ea446d01d443d519d0389fa087acfd7e1bfbd767a9ad1e"
@@ -373,7 +373,7 @@
     {
       "project": "uvicorn",
       "rank": 46,
-      "repo": "https://github.com/sponsors/Kludex",
+      "repo": "https://github.com/Kludex/uvicorn",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "f42e1a8b18d6a39d33ba83271d8de49cdb9ecab9d6f3276dbddf20a12e4b9eb4"
@@ -397,7 +397,7 @@
     {
       "project": "rpds-py",
       "rank": 49,
-      "repo": "https://github.com/sponsors/Julian",
+      "repo": "https://github.com/crate-py/rpds",
       "verdict": "rejected",
       "reason": "not pure Python",
       "metadata_sha256": "eb5234052812c626b47a935b584c51e3d8c95823fa5e71b2e908a8ede97633ec"
@@ -453,7 +453,7 @@
     {
       "project": "referencing",
       "rank": 56,
-      "repo": "https://github.com/sponsors/Julian",
+      "repo": "https://github.com/python-jsonschema/referencing",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "8cade92a4e786c196bbfad784526a6344d77f0d4ff54970e8ed448085c4556d6"
@@ -461,7 +461,7 @@
     {
       "project": "jsonschema-specifications",
       "rank": 57,
-      "repo": "https://github.com/sponsors/Julian",
+      "repo": "https://github.com/python-jsonschema/jsonschema-specifications",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "325493907e2e79ab6279d22ea3526ff2dd615d6f35e1ac4040619d7d89e35019"
@@ -933,7 +933,7 @@
     {
       "project": "virtualenv",
       "rank": 116,
-      "repo": "https://github.com/sponsors/gaborbernat",
+      "repo": "https://github.com/pypa/virtualenv",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "7752d9e1a256f2248ec75eab667df6e9ac1d810f9bda1ac29faeffab46b6720f"
@@ -2029,7 +2029,7 @@
     {
       "project": "authlib",
       "rank": 253,
-      "repo": "https://github.com/sponsors/lepture",
+      "repo": "https://github.com/authlib/authlib",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "e9df885731a0b54d09a208fa48e5bb06049512663d5be98241d9eaed4741dbae"
@@ -2133,7 +2133,7 @@
     {
       "project": "joserfc",
       "rank": 266,
-      "repo": "https://github.com/sponsors/authlib",
+      "repo": "https://github.com/authlib/joserfc",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "74cfaa2e5acac329b8886b246d30751afb5ec9494698268a9d23ac678d021328"
@@ -2981,7 +2981,7 @@
     {
       "project": "mistune",
       "rank": 372,
-      "repo": "https://github.com/sponsors/lepture",
+      "repo": "https://github.com/lepture/mistune",
       "verdict": "accepted",
       "reason": "kept",
       "metadata_sha256": "55a606186c159a36a103b729f6cbd13166465e4fa066068fdf7ed2c843a6d793"
@@ -3211,5 +3211,80 @@
       "metadata_sha256": "6c52ec9da5dfc46a2888abb76dbd6018899dd325c27ffc07bdd1310fb75892ec"
     }
   ],
-  "accepted": 290
+  "accepted": 290,
+  "amendments": [
+    {
+      "date": "2026-10-21",
+      "before_any_outcome": true,
+      "reason": "A Funding link github.com/sponsors/<user> was taken as the repository; only those rows are re-derived, every other row keeps its frozen metadata.",
+      "rows": [
+        {
+          "project": "pydantic",
+          "was": "https://github.com/sponsors/samuelcolvin",
+          "now": "https://github.com/pydantic/pydantic",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "pydantic-core",
+          "was": "https://github.com/sponsors/samuelcolvin",
+          "now": "https://github.com/pydantic/pydantic",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "starlette",
+          "was": "https://github.com/sponsors/Kludex",
+          "now": "https://github.com/Kludex/starlette",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "uvicorn",
+          "was": "https://github.com/sponsors/Kludex",
+          "now": "https://github.com/Kludex/uvicorn",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "rpds-py",
+          "was": "https://github.com/sponsors/Julian",
+          "now": "https://github.com/crate-py/rpds",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "referencing",
+          "was": "https://github.com/sponsors/Julian",
+          "now": "https://github.com/python-jsonschema/referencing",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "jsonschema-specifications",
+          "was": "https://github.com/sponsors/Julian",
+          "now": "https://github.com/python-jsonschema/jsonschema-specifications",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "virtualenv",
+          "was": "https://github.com/sponsors/gaborbernat",
+          "now": "https://github.com/pypa/virtualenv",
+          "metadata_unchanged": false
+        },
+        {
+          "project": "authlib",
+          "was": "https://github.com/sponsors/lepture",
+          "now": "https://github.com/authlib/authlib",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "joserfc",
+          "was": "https://github.com/sponsors/authlib",
+          "now": "https://github.com/authlib/joserfc",
+          "metadata_unchanged": true
+        },
+        {
+          "project": "mistune",
+          "was": "https://github.com/sponsors/lepture",
+          "now": "https://github.com/lepture/mistune",
+          "metadata_unchanged": true
+        }
+      ]
+    }
+  ]
 }

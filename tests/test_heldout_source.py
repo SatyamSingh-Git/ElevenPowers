@@ -65,3 +65,13 @@ def test_a_dual_licence_is_usable_under_its_permissive_option(found, accepted):
     from eval.heldout_source import select
     (row,) = select({"rows": [{"project": "p"}]}, {"p": found}.get, limit=1, exclude=set())
     assert (row["verdict"] == "accepted") is accepted
+
+
+@pytest.mark.parametrize("urls, repo", [
+    ({"Funding": "https://github.com/sponsors/Kludex", "Source": "https://github.com/Kludex/starlette"},
+     "https://github.com/Kludex/starlette"),
+    ({"Funding": "https://github.com/sponsors/Kludex"}, ""),
+])
+def test_a_sponsor_page_is_not_a_repository(urls, repo):
+    from eval.heldout_source import _repo
+    assert _repo({"project_urls": urls}) == repo
