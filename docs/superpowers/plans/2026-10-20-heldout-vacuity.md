@@ -72,6 +72,8 @@
 - [ ] **Step 2–4:** red, implement, green; mutation-check order, cap and `since`.
 - [ ] **Step 5: Real sourcing run** (network, no model): blobless clones into `E:/ep-installed/heldout/repos/`, environments, validation in hash order until 40 or the accepted repositories are exhausted. Retain corpus, rejections and clone heads; commit and push. If fewer than 40 validate, stop and report — the size is not lowered silently.
 
+> **Amended 2026-10-21, before any outcome:** the sourcing run filled the disk and lost its journal; robustness, an end date (`until`) and the remaining path are planned in `2026-10-21-heldout-sourcing-robustness.md`.
+
 ### Task 4: Rehearsal on gold patches
 
 **Files:**
