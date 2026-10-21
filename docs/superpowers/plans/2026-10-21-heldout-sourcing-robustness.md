@@ -61,7 +61,7 @@ On 2026-10-20 at 20:22 the sourcing run filled E: (58 repositories, ~5.4 GB of c
   - `test_a_partial_clone_is_discarded`: a local source repository cloned by path; a pre-existing `name.partial` with junk does not block, and `into` ends up a valid clone.
 - [ ] **Step 2:** Run `python -m pytest tests/test_heldout_sample.py -q -p no:cacheprovider`; expect the new tests to fail for missing names.
 - [ ] **Step 3:** Implement the interfaces above; `main` checks `shutil.disk_usage(args.work).free` against the floor in `room`, prunes inside the journal callback, catches `LowDisk` to write `stopped` and exit 1.
-- [ ] **Step 4:** Green; mutation-check `until`, resume skipping, rule-value refusal, atomic write, the floor, prune's kept-task guard and the read-only handler. Existing tests in the file stay green (callers without the new arguments unchanged).
+- [ ] **Step 4:** Green; mutation-check `until`, resume skipping, rule-value refusal, atomic write, the floor, prune's kept-task guard and the read-only handler. Existing tests stay green; those that pass a `progress` callback are updated to the three-argument form, and `candidates` callers without `until` are unchanged.
 - [ ] **Step 5:** Commit and push.
 
 ### Task 2: Regenerate the corpus (network, no model)
