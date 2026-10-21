@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-10-21 — Held-out sourcing paused at 21 of 40 tasks; no paid run yet.**
+The held-out vacuity comparison has its no-model harness built and tested:
+closed-book per-repository interpreters, a sealed never-retry runner, a gold-patch
+rehearsal and an analysis fixed before outcomes. Running it found four defects
+before any spend (a text-pipe patch that could not apply on Windows, a one-way
+environment check, sponsor links taken as repositories, and a disk-full crash that
+truncated the first sourcing journal). Sourcing now journals atomically, resumes,
+prunes non-contributing repositories and reads history to 2026-10-20. It was
+stopped by request after 57 repositories with 21 tasks (charset_normalizer,
+pycparser, pyjwt, uvicorn, wrapt 4 each; iniconfig 1); the snapshot is
+[corpus-partial-2026-10-21.json](../results/heldout/corpus-partial-2026-10-21.json).
+Rerunning the same `eval.heldout_sample` command resumes after tzdata; fastapi,
+interrupted, is redone. Not a corpus until 40 validate and rehearse.
+See [journey 88](../journey/88-the-harness-is-checked-before-it-is-paid.md).
+
 **2026-10-20 — Installed declared-check observation completed on both authored cases.**
 At the repaired runtime (full local suite 2658 passed, 3 skipped; no-model 20/20),
 one frozen Sonnet 5.5 medium Python conversation completed four turns at
