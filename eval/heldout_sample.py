@@ -106,9 +106,14 @@ def prune(work, processed, kept):
         paths = [Path(work) / kind / name for kind in ('repos', 'venvs')]
         if name in keep or not any(path.exists() for path in paths):
             continue
-        for path in paths:
-            if path.exists():
-                shutil.rmtree(path, onexc=_writable)
+        try:
+            for path in paths:
+                if path.exists():
+                    shutil.rmtree(path, onexc=_writable)
+        except OSError as error:
+            # A file a just-exited test process still holds; every journal retries.
+            print(f'prune deferred for {name}: {error}', file=sys.stderr)
+            continue
         removed.append(name)
     return removed
 
@@ -182,9 +187,9 @@ def main():
     state = {'tasks': [], 'rejections': [], 'processed': []}
 
     def write(kept, rejections, processed):
-        prune(args.work, processed, kept)
         state.update(tasks=kept, rejections=rejections, processed=processed)
         _write(args.out, {'schema': 2, **rule, **state, 'environments': environments})
+        prune(args.work, processed, kept)
 
     def room():
         return shutil.disk_usage(args.work).free >= args.min_free_gb * 2 ** 30

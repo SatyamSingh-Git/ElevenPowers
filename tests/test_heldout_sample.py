@@ -223,6 +223,21 @@ def test_prune_removes_read_only_git_objects(tmp_path):
     assert not (tmp_path / "repos" / "b").exists()
 
 
+def test_a_file_windows_still_holds_defers_pruning_to_the_next_journal(tmp_path, monkeypatch):
+    import shutil
+    from eval import heldout_sample as h
+    _dirs(tmp_path, "b")
+    actual = shutil.rmtree
+
+    def held(path, **kwargs):
+        raise PermissionError(5, "Access is denied", str(path))
+
+    monkeypatch.setattr(h.shutil, "rmtree", held)
+    assert h.prune(tmp_path, ["https://x/b"], []) == []
+    monkeypatch.setattr(h.shutil, "rmtree", actual)
+    assert h.prune(tmp_path, ["https://x/b"], []) == ["b"]
+
+
 def test_a_partial_clone_is_discarded(tmp_path):
     from eval.heldout_sample import clone
     source = _repo(tmp_path)
