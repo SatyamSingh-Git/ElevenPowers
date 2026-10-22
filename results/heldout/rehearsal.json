@@ -6,7 +6,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 21.103
+    "seconds": 23.851
   },
   "charset_normalizer-4b335594": {
     "canary": true,
@@ -15,7 +15,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 20.634
+    "seconds": 24.1
   },
   "charset_normalizer-667b93c9": {
     "canary": true,
@@ -24,7 +24,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 19.28
+    "seconds": 24.381
   },
   "charset_normalizer-f6afd31c": {
     "canary": true,
@@ -33,7 +33,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 22.207
+    "seconds": 26.94
   },
   "pycparser-42db2112": {
     "canary": true,
@@ -42,7 +42,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 13.013
+    "seconds": 15.933
   },
   "pycparser-7e678ac0": {
     "canary": true,
@@ -51,7 +51,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 12.434
+    "seconds": 16.244
   },
   "pycparser-b6319dba": {
     "canary": true,
@@ -60,7 +60,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 9.972
+    "seconds": 11.927
   },
   "pycparser-f93324c1": {
     "canary": true,
@@ -69,7 +69,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 9.654
+    "seconds": 10.671
   },
   "iniconfig-d2dcb728": {
     "canary": true,
@@ -78,7 +78,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 6.471
+    "seconds": 6.537
   },
   "pyjwt-5fde08a6": {
     "canary": true,
@@ -87,7 +87,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 13.652
+    "seconds": 19.82
   },
   "pyjwt-f91ed44d": {
     "canary": true,
@@ -96,7 +96,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 12.964
+    "seconds": 17.76
   },
   "pyjwt-793a3027": {
     "canary": true,
@@ -105,7 +105,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 13.992
+    "seconds": 19.497
   },
   "pyjwt-717668ad": {
     "canary": true,
@@ -114,7 +114,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 12.536
+    "seconds": 16.659
   },
   "uvicorn-31e3e00f": {
     "canary": true,
@@ -123,7 +123,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 232.864
+    "seconds": 259.28
   },
   "uvicorn-5ac6265a": {
     "canary": true,
@@ -132,7 +132,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 261.526
+    "seconds": 271.522
   },
   "uvicorn-cc6fea5b": {
     "canary": true,
@@ -141,7 +141,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 195.639
+    "seconds": 227.897
   },
   "uvicorn-4a959207": {
     "canary": true,
@@ -150,7 +150,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 263.24
+    "seconds": 268.867
   },
   "wrapt-15068aae": {
     "canary": true,
@@ -159,7 +159,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 35.083
+    "seconds": 39.022
   },
   "wrapt-c27d859a": {
     "canary": true,
@@ -168,7 +168,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 33.084
+    "seconds": 37.977
   },
   "wrapt-db45a2ef": {
     "canary": true,
@@ -177,7 +177,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 30.188
+    "seconds": 35.603
   },
   "wrapt-46d10340": {
     "canary": true,
@@ -186,7 +186,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 35.822
+    "seconds": 46.599
   },
   "wheel-986a440c": {
     "canary": true,
@@ -195,7 +195,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 18.504
+    "seconds": 22.375
   },
   "wheel-d7d625d4": {
     "canary": true,
@@ -204,7 +204,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 16.418
+    "seconds": 22.724
   },
   "wheel-0ca6f24e": {
     "canary": true,
@@ -213,7 +213,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 16.359
+    "seconds": 21.8
   },
   "wheel-60cfdda0": {
     "canary": true,
@@ -222,7 +222,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 16.759
+    "seconds": 25.519
   },
   "tenacity-26f719dc": {
     "canary": true,
@@ -231,7 +231,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 26.946
+    "seconds": 34.402
   },
   "tenacity-949dcfa6": {
     "canary": true,
@@ -240,7 +240,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 29.062
+    "seconds": 33.496
   },
   "tenacity-b6201ece": {
     "canary": true,
@@ -249,7 +249,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 28.699
+    "seconds": 33.677
   },
   "tenacity-389aab8b": {
     "canary": true,
@@ -258,7 +258,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 27.922
+    "seconds": 33.197
   },
   "tomli-1e6e869a": {
     "canary": true,
@@ -267,7 +267,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 38.918
+    "seconds": 46.775
   },
   "cachetools-ec0b97b8": {
     "canary": true,
@@ -276,7 +276,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 215.768
+    "seconds": 203.101
   },
   "cachetools-c0fdf6ab": {
     "canary": true,
@@ -285,7 +285,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 44.086
+    "seconds": 45.006
   },
   "cachetools-bcf9e817": {
     "canary": true,
@@ -294,7 +294,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 38.708
+    "seconds": 40.022
   },
   "cachetools-95e6addb": {
     "canary": true,
@@ -303,7 +303,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 10.712
+    "seconds": 12.251
   },
   "more-itertools-0e6acdf9": {
     "canary": true,
@@ -312,7 +312,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 132.504
+    "seconds": 129.602
   },
   "more-itertools-842a2b17": {
     "canary": true,
@@ -321,7 +321,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 132.374
+    "seconds": 145.64
   },
   "more-itertools-d992be0d": {
     "canary": true,
@@ -330,7 +330,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 141.009
+    "seconds": 138.068
   },
   "more-itertools-d64a7d69": {
     "canary": true,
@@ -339,7 +339,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 141.011
+    "seconds": 137.0
   },
   "oauthlib-c951a1d0": {
     "canary": true,
@@ -348,7 +348,7 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 36.467
+    "seconds": 43.356
   },
   "oauthlib-50783cff": {
     "canary": true,
@@ -357,6 +357,6 @@
     "gold_vacuous": false,
     "source_vacuous": true,
     "usable": true,
-    "seconds": 35.537
+    "seconds": 39.645
   }
 }
