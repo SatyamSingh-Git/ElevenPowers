@@ -1,0 +1,362 @@
+{
+  "charset_normalizer-017c75c2": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 21.103
+  },
+  "charset_normalizer-4b335594": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 20.634
+  },
+  "charset_normalizer-667b93c9": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 19.28
+  },
+  "charset_normalizer-f6afd31c": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 22.207
+  },
+  "pycparser-42db2112": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 13.013
+  },
+  "pycparser-7e678ac0": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 12.434
+  },
+  "pycparser-b6319dba": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 9.972
+  },
+  "pycparser-f93324c1": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 9.654
+  },
+  "iniconfig-d2dcb728": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 6.471
+  },
+  "pyjwt-5fde08a6": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 13.652
+  },
+  "pyjwt-f91ed44d": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 12.964
+  },
+  "pyjwt-793a3027": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 13.992
+  },
+  "pyjwt-717668ad": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 12.536
+  },
+  "uvicorn-31e3e00f": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 232.864
+  },
+  "uvicorn-5ac6265a": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 261.526
+  },
+  "uvicorn-cc6fea5b": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 195.639
+  },
+  "uvicorn-4a959207": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 263.24
+  },
+  "wrapt-15068aae": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 35.083
+  },
+  "wrapt-c27d859a": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 33.084
+  },
+  "wrapt-db45a2ef": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 30.188
+  },
+  "wrapt-46d10340": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 35.822
+  },
+  "wheel-986a440c": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 18.504
+  },
+  "wheel-d7d625d4": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 16.418
+  },
+  "wheel-0ca6f24e": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 16.359
+  },
+  "wheel-60cfdda0": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 16.759
+  },
+  "tenacity-26f719dc": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 26.946
+  },
+  "tenacity-949dcfa6": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 29.062
+  },
+  "tenacity-b6201ece": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 28.699
+  },
+  "tenacity-389aab8b": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 27.922
+  },
+  "tomli-1e6e869a": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 38.918
+  },
+  "cachetools-ec0b97b8": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 215.768
+  },
+  "cachetools-c0fdf6ab": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 44.086
+  },
+  "cachetools-bcf9e817": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 38.708
+  },
+  "cachetools-95e6addb": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 10.712
+  },
+  "more-itertools-0e6acdf9": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 132.504
+  },
+  "more-itertools-842a2b17": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 132.374
+  },
+  "more-itertools-d992be0d": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 141.009
+  },
+  "more-itertools-d64a7d69": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 141.011
+  },
+  "oauthlib-c951a1d0": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 36.467
+  },
+  "oauthlib-50783cff": {
+    "canary": true,
+    "base_fails": true,
+    "gold_resolves": true,
+    "gold_vacuous": false,
+    "source_vacuous": true,
+    "usable": true,
+    "seconds": 35.537
+  }
+}
