@@ -168,7 +168,9 @@ def main():
         environment = repos[url]
         tests = dict(candidates(environment['clone'], args.limit, environment['source_dir'], environment['test_dir'],
                                 since=args.since, until=args.until))[sha]
-        with tempfile.TemporaryDirectory() as work:
+        # As in eval.mine: Windows holds handles a moment after pytest exits, and a
+        # strict cleanup ended the 2026-10-22 run on a temporary file.
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as work:
             instance, reason = validate(environment['clone'], sha, tests, {'PYTHONPATH': environment['pythonpath']},
                                         Path(work), python=environment['python'],
                                         suite_dir=environment['test_dir'].rstrip('/'))
