@@ -4,6 +4,8 @@ __pycache__/
 .pytest_cache/
 .venv/
 corpus.json
+# The held-out corpus is a committed result, not a working file.
+!results/heldout/corpus.json
 baseline.json
 baseline.jsonl
 runs/
