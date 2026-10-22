@@ -46,21 +46,27 @@ def sample(repositories, candidates_for, check, *, seed, want, cap, progress=Non
             continue
         if room and not room():
             raise LowDisk(f'free space below the floor before {repo}')
-        _take(repo, candidates_for, check, seed=seed, want=want, cap=cap, kept=kept, rejections=rejections)
+        _take(repo, candidates_for, check, seed=seed, want=want, cap=cap, kept=kept, rejections=rejections, room=room)
         processed.append(repo)
         if progress:
             progress(kept, rejections, processed)
     return kept, rejections
 
 
-def _take(repo, candidates_for, check, *, seed, want, cap, kept, rejections):
+def _take(repo, candidates_for, check, *, seed, want, cap, kept, rejections, room=None):
+    def reject(sha, reason):
+        # A clone, install or suite that failed for want of disk says nothing about the repository.
+        if room and not room():
+            raise LowDisk(f'free space fell below the floor while preparing {repo}')
+        rejections.append({'repo': repo, 'sha': sha, 'reason': reason})
+
     try:
         shas = candidates_for(repo)
     except subprocess.TimeoutExpired:
-        rejections.append({'repo': repo, 'sha': '', 'reason': 'repository preparation timed out'})
+        reject('', 'repository preparation timed out')
         return
     if shas is None:
-        rejections.append({'repo': repo, 'sha': '', 'reason': 'repository unusable'})
+        reject('', 'repository unusable')
         return
     taken = 0
     for _, sha in order([(repo, sha) for sha in shas], seed):
@@ -70,10 +76,10 @@ def _take(repo, candidates_for, check, *, seed, want, cap, kept, rejections):
             instance, reason = check(repo, sha)
         except subprocess.TimeoutExpired:
             # The full suite is run for every candidate; one that cannot finish once never will.
-            rejections.append({'repo': repo, 'sha': sha, 'reason': 'suite exceeded the mining timeout; repository skipped'})
+            reject(sha, 'suite exceeded the mining timeout; repository skipped')
             return
         if instance is None:
-            rejections.append({'repo': repo, 'sha': sha, 'reason': reason})
+            reject(sha, reason)
             continue
         kept.append(instance)
         taken += 1

@@ -197,6 +197,36 @@ def test_low_disk_stops_before_the_next_repository():
     assert prepared == ["a"] and seen == [["a"]]
 
 
+@pytest.mark.parametrize("failure", ["unusable", "rejected"])
+def test_a_failure_while_the_disk_is_full_is_not_recorded_against_the_repository(failure):
+    from eval.heldout_sample import LowDisk, sample
+    seen, full = [], {"now": False}
+
+    def candidates_for(repo):
+        if repo == "b" and failure == "unusable":
+            full["now"] = True
+            return None
+        return [repo + "1"]
+
+    def check(repo, sha):
+        if repo == "b":
+            full["now"] = True
+            return None, "environment step failed"
+        return {"name": sha}, "kept"
+
+    with pytest.raises(LowDisk):
+        sample(["a", "b"], candidates_for, check, seed="s", want=40, cap=4, room=lambda: not full["now"],
+               progress=lambda kept, rejections, processed: seen.append((list(processed), list(rejections))))
+    assert seen == [(["a"], [])]
+
+
+def test_an_ordinary_rejection_with_room_to_spare_is_recorded():
+    from eval.heldout_sample import sample
+    _, rejections = sample(["b"], {"b": ["b1"]}.get, lambda repo, sha: (None, "the fix does not satisfy its own tests"),
+                           seed="s", want=40, cap=4, room=lambda: True)
+    assert rejections == [{"repo": "b", "sha": "b1", "reason": "the fix does not satisfy its own tests"}]
+
+
 def _dirs(work, *names):
     for name in names:
         for kind in ("repos", "venvs"):
