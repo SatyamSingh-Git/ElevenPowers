@@ -18,7 +18,8 @@ from core.surface import TEST_NAME
 from .bundle import GIT, apply_patch
 
 TIMEOUT = 240
-FAILED = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)", re.MULTILINE)
+# pytest 9 prints a test whose subtests failed as PASSED, plus `SUBFAILED(<params>) <node>`.
+FAILED = re.compile(r"^(?:FAILED|ERROR|SUBFAILED\(.*?\))\s+(\S+)", re.MULTILINE)
 
 
 def _suite(root, python, env, test_dir, extra):

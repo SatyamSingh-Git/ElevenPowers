@@ -44,7 +44,9 @@ from .bundle import GIT
 from dataclasses import dataclass, field
 from pathlib import Path
 
-NODE = re.compile(r"^(?P<node>\S+::\S+)\s+(?:FAILED|ERROR)|^(?:FAILED|ERROR)\s+(?P<alt>\S+::\S+)",
+# pytest 9 reports a failed subtest as `SUBFAILED(<params>) <node>` and the
+# test itself as PASSED; the parameters can hold spaces.
+NODE = re.compile(r"^(?P<node>\S+::\S+)\s+(?:FAILED|ERROR)|^(?:FAILED|ERROR|SUBFAILED\(.*?\))\s+(?P<alt>\S+::\S+)",
                   re.MULTILINE)
 # Generous for a suite that runs in seconds, short enough that one hanging
 # commit costs a couple of minutes rather than derailing the run.
@@ -157,8 +159,9 @@ def passing_nodes(output: str) -> set[str]:
     An exit code says the run was green; it does not say the tests anyone cared
     about were collected at all. Grading needs the second thing.
     """
-    return {line.split()[1] for line in output.splitlines()
-            if line.startswith("PASSED ") and "::" in line}
+    passed = {line.split()[1] for line in output.splitlines()
+              if line.startswith("PASSED ") and "::" in line}
+    return passed - set(failing_nodes(output))
 
 
 # A revert's message is not a bug report: it says "this reverts commit <sha>"
