@@ -44,10 +44,12 @@ from .bundle import GIT
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# pytest 9 reports a failed subtest as `SUBFAILED(<params>) <node>` and the
-# test itself as PASSED; the parameters can hold spaces.
-NODE = re.compile(r"^(?P<node>\S+::\S+)\s+(?:FAILED|ERROR)|^(?:FAILED|ERROR|SUBFAILED\(.*?\))\s+(?P<alt>\S+::\S+)",
-                  re.MULTILINE)
+# pytest 9 reports the test itself as PASSED and each failed subtest as
+# `SUBFAILED(<params>) <node>`, `SUBFAILED[<msg>] <node>` or both; the
+# parameters can hold spaces, `) ` and `::`, so the node is the `.py::` token
+# that ends the line or precedes its ` - ` message.
+NODE = re.compile(r"^(?P<node>\S+::\S+)\s+(?:FAILED|ERROR)|^(?:FAILED|ERROR)\s+(?P<alt>\S+::\S+)"
+                  r"|^SUBFAILED[\[(].*?(?<!\S)(?P<sub>\S+?\.py::\S+)(?= - |\s*$)", re.MULTILINE)
 # Generous for a suite that runs in seconds, short enough that one hanging
 # commit costs a couple of minutes rather than derailing the run.
 TIMEOUT = 120
@@ -147,7 +149,7 @@ def run_tests(root: Path, targets: list[str], env: dict[str, str],
 def failing_nodes(output: str) -> list[str]:
     found = []
     for match in NODE.finditer(output):
-        node = match.group("node") or match.group("alt")
+        node = match.group("node") or match.group("alt") or match.group("sub")
         if node and node not in found:
             found.append(node)
     return found

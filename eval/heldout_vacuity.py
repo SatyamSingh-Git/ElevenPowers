@@ -16,10 +16,15 @@ import subprocess
 
 from core.surface import TEST_NAME
 from .bundle import GIT, apply_patch
+from .mine import failing_nodes
 
 TIMEOUT = 240
-# pytest 9 prints a test whose subtests failed as PASSED, plus `SUBFAILED(<params>) <node>`.
-FAILED = re.compile(r"^(?:FAILED|ERROR|SUBFAILED\(.*?\))\s+(\S+)", re.MULTILINE)
+FAILED = re.compile(r"^(?:FAILED|ERROR)\s+(\S+)", re.MULTILINE)
+
+
+def _red(output):
+    # A test whose subtests failed is printed PASSED; eval.mine reads its SUBFAILED lines.
+    return {m.group(1) for m in FAILED.finditer(output)} | set(failing_nodes(output))
 
 
 def _suite(root, python, env, test_dir, extra):
@@ -30,7 +35,7 @@ def _suite(root, python, env, test_dir, extra):
     except subprocess.TimeoutExpired:
         return set(), True, -1
     output = (done.stdout or '') + (done.stderr or '')
-    return {m.group(1) for m in FAILED.finditer(output)}, False, done.returncode
+    return _red(output), False, done.returncode
 
 
 def _git(root, *args, **kwargs):

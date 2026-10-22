@@ -13,16 +13,43 @@ REAL = (
     "PASSED tests/test_c_parser.py::TestCParser_dialects::test_c11_keywords\n"
 )
 PARTIAL = "tests/test_c_parser.py::TestCParser_dialects::test_c23_unsupported_keywords_are_reserved"
+# Every subTest form pytest 9.1.1 printed for a scratch suite on 2026-10-22, including a
+# message, a message with parameters, and parameters that contain ") " and "::".
+FORMS = (
+    "PASSED tests/test_forms.py::T::test_both\n"
+    "PASSED tests/test_forms.py::T::test_msgonly\n"
+    "PASSED tests/test_forms.py::T::test_ok\n"
+    "PASSED tests/test_forms.py::T::test_params\n"
+    "PASSED tests/test_forms.py::T::test_paren\n"
+    "SUBFAILED[a message] (i=1) tests/test_forms.py::T::test_both - AssertionError: b\n"
+    "SUBFAILED[plain] tests/test_forms.py::T::test_msgonly - AssertionError: m\n"
+    "SUBFAILED(source='int x;') tests/test_forms.py::T::test_params - AssertionErr...\n"
+    "SUBFAILED(p='x) y::z') tests/test_forms.py::T::test_paren - AssertionError: q\n"
+    "SUBFAILED[fx] (n=2) tests/test_forms.py::test_fixture - assert False\n"
+    "FAILED tests/test_forms.py::test_fixture - contains 1 failed subtest\n"
+    "PASSED tests/test_dash.py::D::test_dash\n"
+    "SUBFAILED(p='a x::y - z') tests/test_dash.py::D::test_dash - AssertionError: d\n"
+)
+FORM_FAILURES = ["tests/test_forms.py::T::test_both", "tests/test_forms.py::T::test_msgonly",
+                 "tests/test_forms.py::T::test_params", "tests/test_forms.py::T::test_paren",
+                 "tests/test_forms.py::test_fixture", "tests/test_dash.py::D::test_dash"]
 
 
 def test_a_test_with_a_failed_subtest_did_not_pass():
     from eval.mine import passing_nodes
     assert passing_nodes(REAL) == {"tests/test_c_parser.py::TestCParser_dialects::test_c11_keywords"}
+    assert passing_nodes(FORMS) == {"tests/test_forms.py::T::test_ok"}
 
 
 def test_a_test_with_a_failed_subtest_is_named_as_failing():
     from eval.mine import failing_nodes
     assert failing_nodes(REAL) == [PARTIAL]
+    assert failing_nodes(FORMS) == FORM_FAILURES
+
+
+def test_the_vacuity_reader_takes_the_node_and_not_a_parameter():
+    from eval.heldout_vacuity import _red
+    assert _red(FORMS) == set(FORM_FAILURES)
 
 
 SUBTEST = ("import unittest\n\nfrom pkg.mod import value\n\n\nclass TestNew(unittest.TestCase):\n"
