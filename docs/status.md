@@ -13,7 +13,12 @@ from preservation to fail-to-pass), and the rehearsal then passed 40/40 on every
 check. Frame limits, applied before outcomes and to both arms alike: build-
 generated modules, suites reading their own installed metadata, test
 dependencies outside the install order, and candidates rejected only through
-subtest failures (not re-mined). Next: the paid pilot, 8 runs, on approval.
+subtest failures (not re-mined). An independent review then found the message
+forms (`SUBFAILED[<msg>]`) still unread and the runtime itself crediting such tests
+(`core/parsers.py` evidence, `core/stress.py` reproductions); both are fixed, the
+corpus re-validated (no fail-to-pass change; one intermittent uvicorn preservation
+node dropped) and re-rehearsed 40/40. Full local suite: 2759 passed, 3 skipped.
+Next: the paid pilot, 8 runs, on approval.
 See [corpus](../results/heldout/corpus.json), [rehearsal](../results/heldout/rehearsal.json)
 and [journey 88](../journey/88-the-harness-is-checked-before-it-is-paid.md).
 
