@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "slot": "charset_normalizer-017c75c2--ordinary--0",
+  "task": "charset_normalizer-017c75c2",
+  "arm": "ordinary",
+  "state": "graded",
+  "resolved": true,
+  "vacuous": true,
+  "seconds": 13.3,
+  "cost": 0.028000600000000004,
+  "prompt_sha256": "6149184a5d4005b05240314b93fa14f958390a278a62818f06dfbd28922ce231",
+  "host_version": "2.1.292 (Claude Code)",
+  "observation": {
+    "completed": true,
+    "usage": {
+      "input_tokens": 6,
+      "cache_creation_input_tokens": 3905,
+      "cache_read_input_tokens": 21303,
+      "output_tokens": 514
+    },
+    "models": [
+      "claude-sonnet-5-5"
+    ],
+    "completion_language": false,
+    "failure": "unavailable"
+  },
+  "breaches": [],
+  "history_reads": [],
+  "outcome": "resolved",
+  "detail": "",
+  "vacuity_reason": "revert survived"
+}

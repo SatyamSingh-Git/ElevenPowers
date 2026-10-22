@@ -1,0 +1,14 @@
+diff --git a/pycparser/c_lexer.py b/pycparser/c_lexer.py
+index 05fbe97..07e638f 100644
+--- a/pycparser/c_lexer.py
++++ b/pycparser/c_lexer.py
+@@ -495,7 +495,8 @@ _bin_digits = "[01]+"
+ 
+ # integer constants (K&R2: A.2.5.1)
+ _integer_suffix_opt = (
+-    r"(([uU]ll)|([uU]LL)|(ll[uU]?)|(LL[uU]?)|([uU][lL])|([lL][uU]?)|[uU])?"
++    r"(([uU]ll)|([uU]LL)|([uU]wb)|([uU]WB)|(ll[uU]?)|(LL[uU]?)|(wb[uU]?)|(WB[uU]?)"
++    r"|([uU][lL])|([lL][uU]?)|[uU])?"
+ )
+ _decimal_constant = (
+     "(0" + _integer_suffix_opt + ")|([1-9][0-9]*" + _integer_suffix_opt + ")"

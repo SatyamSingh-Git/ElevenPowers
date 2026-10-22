@@ -1,0 +1,256 @@
+[
+  {
+    "schema": 1,
+    "slot": "charset_normalizer-017c75c2--ordinary--0",
+    "task": "charset_normalizer-017c75c2",
+    "arm": "ordinary",
+    "state": "graded",
+    "resolved": true,
+    "vacuous": true,
+    "seconds": 13.3,
+    "cost": 0.028000600000000004,
+    "prompt_sha256": "6149184a5d4005b05240314b93fa14f958390a278a62818f06dfbd28922ce231",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 6,
+        "cache_creation_input_tokens": 3905,
+        "cache_read_input_tokens": 21303,
+        "output_tokens": 514
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "resolved",
+    "detail": "",
+    "vacuity_reason": "revert survived"
+  },
+  {
+    "schema": 1,
+    "slot": "charset_normalizer-017c75c2--assisted--0",
+    "task": "charset_normalizer-017c75c2",
+    "arm": "assisted",
+    "state": "graded",
+    "resolved": true,
+    "vacuous": false,
+    "seconds": 77.292,
+    "cost": 0.062585,
+    "prompt_sha256": "6149184a5d4005b05240314b93fa14f958390a278a62818f06dfbd28922ce231",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 16,
+        "cache_creation_input_tokens": 6736,
+        "cache_read_input_tokens": 74905,
+        "output_tokens": 1767
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "resolved",
+    "detail": "",
+    "vacuity_reason": "revert killed"
+  },
+  {
+    "schema": 1,
+    "slot": "pycparser-42db2112--assisted--0",
+    "task": "pycparser-42db2112",
+    "arm": "assisted",
+    "state": "graded",
+    "resolved": false,
+    "vacuous": null,
+    "seconds": 49.488,
+    "cost": 0.0748676,
+    "prompt_sha256": "9aa414b09c259c68a6141e7c217771f94cf16d3b4c826813f9b7c15d57690fa2",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 12,
+        "cache_creation_input_tokens": 9927,
+        "cache_read_input_tokens": 61988,
+        "output_tokens": 2003
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "unfixed",
+    "detail": "tests/test_c_parser.py::TestCParser_bitint_literals::test_expression_contexts, tests/test_c_parser.py::TestCParser_bitint_literals::test_integer_bases, tests/test_c_parser.py::TestCParser_bitint_literals::test_large_value_and_negation"
+  },
+  {
+    "schema": 1,
+    "slot": "pycparser-42db2112--ordinary--0",
+    "task": "pycparser-42db2112",
+    "arm": "ordinary",
+    "state": "graded",
+    "resolved": false,
+    "vacuous": null,
+    "seconds": 18.386,
+    "cost": 0.042216800000000006,
+    "prompt_sha256": "9aa414b09c259c68a6141e7c217771f94cf16d3b4c826813f9b7c15d57690fa2",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 5241,
+        "cache_read_input_tokens": 29894,
+        "output_tokens": 1255
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "unfixed",
+    "detail": "tests/test_c_parser.py::TestCParser_bitint_literals::test_expression_contexts, tests/test_c_parser.py::TestCParser_bitint_literals::test_integer_bases, tests/test_c_parser.py::TestCParser_bitint_literals::test_large_value_and_negation"
+  },
+  {
+    "schema": 1,
+    "slot": "iniconfig-d2dcb728--ordinary--0",
+    "task": "iniconfig-d2dcb728",
+    "arm": "ordinary",
+    "state": "graded",
+    "resolved": true,
+    "vacuous": false,
+    "seconds": 73.353,
+    "cost": 0.0558568,
+    "prompt_sha256": "b2de06ed21e25a099c4b973a49dc66c0f066338eed92a9e00dcb79abed99a883",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 14,
+        "cache_creation_input_tokens": 6025,
+        "cache_read_input_tokens": 61284,
+        "output_tokens": 1633
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "resolved",
+    "detail": "",
+    "vacuity_reason": "revert killed"
+  },
+  {
+    "schema": 1,
+    "slot": "iniconfig-d2dcb728--assisted--0",
+    "task": "iniconfig-d2dcb728",
+    "arm": "assisted",
+    "state": "graded",
+    "resolved": true,
+    "vacuous": false,
+    "seconds": 35.785,
+    "cost": 0.061444,
+    "prompt_sha256": "b2de06ed21e25a099c4b973a49dc66c0f066338eed92a9e00dcb79abed99a883",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 10,
+        "cache_creation_input_tokens": 7979,
+        "cache_read_input_tokens": 47280,
+        "output_tokens": 1691
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": true,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "resolved",
+    "detail": "",
+    "vacuity_reason": "revert killed"
+  },
+  {
+    "schema": 1,
+    "slot": "pyjwt-5fde08a6--assisted--0",
+    "task": "pyjwt-5fde08a6",
+    "arm": "assisted",
+    "state": "graded",
+    "resolved": true,
+    "vacuous": false,
+    "seconds": 73.52,
+    "cost": 0.09982420000000002,
+    "prompt_sha256": "98e524ec1b74ce43f1273ec784da67caaff5a5b404cb6d314c15ff53efb4efc0",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 16,
+        "cache_creation_input_tokens": 12659,
+        "cache_read_input_tokens": 97421,
+        "output_tokens": 2696
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "resolved",
+    "detail": "",
+    "vacuity_reason": "revert killed"
+  },
+  {
+    "schema": 1,
+    "slot": "pyjwt-5fde08a6--ordinary--0",
+    "task": "pyjwt-5fde08a6",
+    "arm": "ordinary",
+    "state": "graded",
+    "resolved": true,
+    "vacuous": true,
+    "seconds": 16.368,
+    "cost": 0.0344822,
+    "prompt_sha256": "98e524ec1b74ce43f1273ec784da67caaff5a5b404cb6d314c15ff53efb4efc0",
+    "host_version": "2.1.292 (Claude Code)",
+    "observation": {
+      "completed": true,
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 4462,
+        "cache_read_input_tokens": 30231,
+        "output_tokens": 786
+      },
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "completion_language": false,
+      "failure": "unavailable"
+    },
+    "breaches": [],
+    "history_reads": [],
+    "outcome": "resolved",
+    "detail": "",
+    "vacuity_reason": "revert survived"
+  }
+]

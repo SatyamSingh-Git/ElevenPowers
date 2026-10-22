@@ -1,5 +1,17 @@
 # Current delivery status
 
+**2026-10-22 — Held-out pilot: 8 of 8 runs graded; harness qualified for the sweep.**
+Four corpus tasks (the first of each of the first four repositories) × ordinary and
+assisted × one run, Sonnet 5.5 medium on the subscription, sealed and never retried.
+Every run completed on the exact model with no closed-book breach; every assisted
+run fired hooks and wrote a ledger, no ordinary run did. Both arms resolved 3 of 4
+(pycparser-42db2112 unfixed in both). Of resolved runs, ordinary was VACUOUS in 2
+of 3 (charset_normalizer, pyjwt: edit, no test run, no test added) and assisted in
+0 of 3. Model-process time averaged 30 s ordinary and 59 s assisted; total $0.46
+($0.028–$0.100 a run). A pilot of four tasks and one replicate, run to qualify the
+harness and size the sweep: it is not the estimand and supports no effect claim.
+See [pilot records](../results/heldout/pilot-2026-10-22/).
+
 **2026-10-22 — Held-out corpus complete: 40 tasks rehearse clean; no paid run yet.**
 Sourcing finished by the frozen rule: 40 tasks from 12 of 90 repositories tried
 (cachetools, charset_normalizer, more-itertools, pycparser, pyjwt, tenacity,

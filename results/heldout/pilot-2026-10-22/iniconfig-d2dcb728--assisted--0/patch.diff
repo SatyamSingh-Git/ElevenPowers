@@ -1,0 +1,33 @@
+diff --git a/src/iniconfig/_parse.py b/src/iniconfig/_parse.py
+index 178bb45..3757041 100644
+--- a/src/iniconfig/_parse.py
++++ b/src/iniconfig/_parse.py
+@@ -34,6 +34,7 @@ def parse_ini_data(
+         - sections_data: mapping of section -> {name -> value}
+         - sources: mapping of (section, name) -> line number
+     """
++    data = data.removeprefix("\N{BYTE ORDER MARK}")
+     tokens = parse_lines(
+         path,
+         data.splitlines(True),
+diff --git a/testing/test_iniconfig.py b/testing/test_iniconfig.py
+index 089e3d9..a810f6f 100644
+--- a/testing/test_iniconfig.py
++++ b/testing/test_iniconfig.py
+@@ -422,3 +422,16 @@ def test_unicode_whitespace_in_key_names() -> None:
+     )
+     assert "key" in config["section"]
+     assert config["section"]["key"] == "value"
++
++
++def test_iniconfig_strips_utf8_bom(tmp_path: Path) -> None:
++    # Windows editors often write a UTF-8 BOM; it must not break the first section.
++    p = tmp_path / "bom.ini"
++    p.write_bytes(b"\xef\xbb\xbf[section]\nkey = value\n")
++    assert IniConfig(str(p))["section"]["key"] == "value"
++
++
++def test_iniconfig_parse_strips_utf8_bom(tmp_path: Path) -> None:
++    p = tmp_path / "bom.ini"
++    p.write_bytes(b"\xef\xbb\xbf[section]\nkey = value\n")
++    assert IniConfig.parse(str(p))["section"]["key"] == "value"

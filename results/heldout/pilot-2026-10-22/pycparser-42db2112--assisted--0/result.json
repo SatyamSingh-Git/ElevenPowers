@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "slot": "pycparser-42db2112--assisted--0",
+  "task": "pycparser-42db2112",
+  "arm": "assisted",
+  "state": "graded",
+  "resolved": false,
+  "vacuous": null,
+  "seconds": 49.488,
+  "cost": 0.0748676,
+  "prompt_sha256": "9aa414b09c259c68a6141e7c217771f94cf16d3b4c826813f9b7c15d57690fa2",
+  "host_version": "2.1.292 (Claude Code)",
+  "observation": {
+    "completed": true,
+    "usage": {
+      "input_tokens": 12,
+      "cache_creation_input_tokens": 9927,
+      "cache_read_input_tokens": 61988,
+      "output_tokens": 2003
+    },
+    "models": [
+      "claude-sonnet-5-5"
+    ],
+    "completion_language": false,
+    "failure": "unavailable"
+  },
+  "breaches": [],
+  "history_reads": [],
+  "outcome": "unfixed",
+  "detail": "tests/test_c_parser.py::TestCParser_bitint_literals::test_expression_contexts, tests/test_c_parser.py::TestCParser_bitint_literals::test_integer_bases, tests/test_c_parser.py::TestCParser_bitint_literals::test_large_value_and_negation"
+}

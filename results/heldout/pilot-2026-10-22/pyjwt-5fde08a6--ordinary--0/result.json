@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "slot": "pyjwt-5fde08a6--ordinary--0",
+  "task": "pyjwt-5fde08a6",
+  "arm": "ordinary",
+  "state": "graded",
+  "resolved": true,
+  "vacuous": true,
+  "seconds": 16.368,
+  "cost": 0.0344822,
+  "prompt_sha256": "98e524ec1b74ce43f1273ec784da67caaff5a5b404cb6d314c15ff53efb4efc0",
+  "host_version": "2.1.292 (Claude Code)",
+  "observation": {
+    "completed": true,
+    "usage": {
+      "input_tokens": 8,
+      "cache_creation_input_tokens": 4462,
+      "cache_read_input_tokens": 30231,
+      "output_tokens": 786
+    },
+    "models": [
+      "claude-sonnet-5-5"
+    ],
+    "completion_language": false,
+    "failure": "unavailable"
+  },
+  "breaches": [],
+  "history_reads": [],
+  "outcome": "resolved",
+  "detail": "",
+  "vacuity_reason": "revert survived"
+}

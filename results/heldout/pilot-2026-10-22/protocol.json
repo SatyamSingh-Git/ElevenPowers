@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "prepared_at": "2026-10-22T12:34:57.866350+00:00",
+  "host": "claude",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "seconds": 900,
+  "replicates": 1,
+  "runtime_fingerprint": "5134c55b23d245801ff9cfbd29695f3c43120fbfa5366fbd5d95091715762ad8",
+  "harness_sha256": "59289ecc18c85bcde3e569a0990804943f88a2f555468e7a4f715fc3a4711a7c",
+  "corpus_sha256": "07feff79c7459b420e8818f4d9eb5aded95f127f851b09cbec70e03fe7d7f96f",
+  "slots": [
+    "charset_normalizer-017c75c2--ordinary--0",
+    "charset_normalizer-017c75c2--assisted--0",
+    "pycparser-42db2112--assisted--0",
+    "pycparser-42db2112--ordinary--0",
+    "iniconfig-d2dcb728--ordinary--0",
+    "iniconfig-d2dcb728--assisted--0",
+    "pyjwt-5fde08a6--assisted--0",
+    "pyjwt-5fde08a6--ordinary--0"
+  ]
+}

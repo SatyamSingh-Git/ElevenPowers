@@ -1,0 +1,13 @@
+diff --git a/src/charset_normalizer/models.py b/src/charset_normalizer/models.py
+index be0e94b..157a628 100644
+--- a/src/charset_normalizer/models.py
++++ b/src/charset_normalizer/models.py
+@@ -72,6 +72,8 @@ class CharsetMatch:
+ 
+     @property
+     def multi_byte_usage(self) -> float:
++        if len(self.raw) == 0:
++            return 0.0
+         return 1.0 - (len(str(self)) / len(self.raw))
+ 
+     def __str__(self) -> str:

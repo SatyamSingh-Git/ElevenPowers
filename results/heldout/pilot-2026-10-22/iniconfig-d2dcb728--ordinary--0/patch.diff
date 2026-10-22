@@ -1,0 +1,34 @@
+diff --git a/src/iniconfig/_parse.py b/src/iniconfig/_parse.py
+index 178bb45..3757041 100644
+--- a/src/iniconfig/_parse.py
++++ b/src/iniconfig/_parse.py
+@@ -34,6 +34,7 @@ def parse_ini_data(
+         - sections_data: mapping of section -> {name -> value}
+         - sources: mapping of (section, name) -> line number
+     """
++    data = data.removeprefix("\N{BYTE ORDER MARK}")
+     tokens = parse_lines(
+         path,
+         data.splitlines(True),
+diff --git a/testing/test_iniconfig.py b/testing/test_iniconfig.py
+index 089e3d9..5334b3a 100644
+--- a/testing/test_iniconfig.py
++++ b/testing/test_iniconfig.py
+@@ -422,3 +422,17 @@ def test_unicode_whitespace_in_key_names() -> None:
+     )
+     assert "key" in config["section"]
+     assert config["section"]["key"] == "value"
++
++
++def test_iniconfig_strips_utf8_bom_from_file(tmp_path: Path) -> None:
++    path = tmp_path / "bom.ini"
++    path.write_bytes(b"\xef\xbb\xbf[section]\nkey = value\n")
++    config = IniConfig(str(path))
++    assert config["section"]["key"] == "value"
++
++
++def test_iniconfig_parse_strips_utf8_bom(tmp_path: Path) -> None:
++    path = tmp_path / "bom.ini"
++    path.write_bytes(b"\xef\xbb\xbf[section]\nkey = value\n")
++    config = IniConfig.parse(path)
++    assert config["section"]["key"] == "value"
