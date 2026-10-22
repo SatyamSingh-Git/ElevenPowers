@@ -1,8 +1,9 @@
 # The journey
 
 Latest: [88 — the harness is checked before it is paid](88-the-harness-is-checked-before-it-is-paid.md):
-held-out sourcing by a fixed rule, and four defects found by running the harness before any paid run:
-a text-pipe patch, a one-way environment check, sponsor links and a disk-full journal loss.
+held-out sourcing by a fixed rule, and five defects found by running the harness before any paid run:
+a text-pipe patch, a one-way environment check, sponsor links, a disk-full journal loss and
+subtest failures read as passes. 40 tasks sourced; 40/40 rehearse clean.
 
 Recent: [87 — a scratch file is not a scope violation](87-a-scratch-file-is-not-a-scope-violation.md):
 Python's unittest summary read from real runs, both installed cases follow the

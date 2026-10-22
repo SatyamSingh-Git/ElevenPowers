@@ -1,5 +1,22 @@
 # Current delivery status
 
+**2026-10-22 — Held-out corpus complete: 40 tasks rehearse clean; no paid run yet.**
+Sourcing finished by the frozen rule: 40 tasks from 12 of 90 repositories tried
+(cachetools, charset_normalizer, more-itertools, pycparser, pyjwt, tenacity,
+uvicorn, wheel, wrapt 4 each; oauthlib 2; iniconfig, tomli 1), 909 candidates
+rejected with reasons, three resumes after Windows file-handle errors that are now
+handled. Rehearsing the one task that first failed found that pytest 9 prints
+`PASSED` for a test whose subtests failed: grading credited an empty patch on
+such a task, and mining and the vacuity probe misread them too. The readers now
+count `SUBFAILED`; all 40 tasks were re-validated (three moved subtest-only tests
+from preservation to fail-to-pass), and the rehearsal then passed 40/40 on every
+check. Frame limits, applied before outcomes and to both arms alike: build-
+generated modules, suites reading their own installed metadata, test
+dependencies outside the install order, and candidates rejected only through
+subtest failures (not re-mined). Next: the paid pilot, 8 runs, on approval.
+See [corpus](../results/heldout/corpus.json), [rehearsal](../results/heldout/rehearsal.json)
+and [journey 88](../journey/88-the-harness-is-checked-before-it-is-paid.md).
+
 **2026-10-21 — Held-out sourcing paused at 21 of 40 tasks; no paid run yet.**
 The held-out vacuity comparison has its no-model harness built and tested:
 closed-book per-repository interpreters, a sealed never-retry runner, a gold-patch
@@ -9,8 +26,8 @@ environment check, sponsor links taken as repositories, and a disk-full crash th
 truncated the first sourcing journal). Sourcing now journals atomically, resumes,
 prunes non-contributing repositories and reads history to 2026-10-20. It was
 stopped by request after 57 repositories with 21 tasks (charset_normalizer,
-pycparser, pyjwt, uvicorn, wrapt 4 each; iniconfig 1); the snapshot is
-[corpus-partial-2026-10-21.json](../results/heldout/corpus-partial-2026-10-21.json).
+pycparser, pyjwt, uvicorn, wrapt 4 each; iniconfig 1); the snapshot,
+`results/heldout/corpus-partial-2026-10-21.json`, was later superseded by the corpus.
 Rerunning the same `eval.heldout_sample` command resumes after tzdata; fastapi,
 interrupted, is redone. Not a corpus until 40 validate and rehearse.
 See [journey 88](../journey/88-the-harness-is-checked-before-it-is-paid.md).

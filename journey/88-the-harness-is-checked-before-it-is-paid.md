@@ -16,7 +16,7 @@ interpreter: its test dependencies installed, its own distribution removed, and 
 canary that the answer is not importable. The analysis and its power (about 0.8
 at the B9 odds ratio, about 0.44 at 0.5) were committed before any outcome.
 
-## Four things that would have cost a sweep
+## Five things that would have cost a sweep
 
 None of these was found by reading. Each surfaced when the real thing ran.
 
@@ -49,15 +49,26 @@ resumes from what it has processed, deletes a repository that contributed nothin
 stops before the next repository below 2 GB, and reads history only up to
 2026-10-20 so a fresh clone reproduces what a deleted one held.
 
+**A test whose subtests failed was read as passing.** The first full rehearsal
+passed 39 of 40. The one failure, reproduced, was pytest 9 printing `PASSED` for
+a test and then one `SUBFAILED(<params>) <node>` line per failed subtest. Every
+reader here took the `PASSED` line: grading credited an empty patch as resolved
+on such a task, mining missed those tests as fail-to-pass, and the vacuity probe
+never deselected them. All 40 tasks were re-validated with readers that count
+`SUBFAILED` (three moved tests from preservation to fail-to-pass) and the
+rehearsal then passed 40 of 40. It is the format-from-memory defect again, in a
+format that changed under a major version.
+
 ## What the frame cannot contain
 
 Three kinds of project fall out by the rule rather than by chance, and the report
 will name them: those whose package imports a module the build generates; those
 whose tests read their own installed metadata, red at every parent once the
 package is removed (pluggy); and those whose test dependencies sit outside the
-frozen install order (pygments, idna).
+frozen install order (pygments, idna). A fourth was added after the subtest fix: candidates
+rejected only because their new tests failed through subtests were not re-mined.
 
 Nothing has been spent. The rehearsal runs every task on its own fix with no
 model: it must fail at base, resolve with the fix, keep its answer unreachable,
-and calibrate the probe both ways. On the first four tasks it did, in 20–42
-seconds each.
+and calibrate the probe both ways. Sourcing finished at 40 tasks from 12 of 90
+repositories, and all 40 rehearse clean, 2423 seconds in all.
