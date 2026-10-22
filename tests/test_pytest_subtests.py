@@ -73,3 +73,17 @@ def test_the_vacuity_probe_deselects_a_test_red_only_through_subtests(tmp_path):
     (base / "tests" / "test_sub.py").write_text(pinned_old, encoding="utf8", newline="\n")
     value = vacuity(base, SOURCE, python=sys.executable, env={"PYTHONPATH": "."}, test_dir="tests", work=tmp_path / "work")
     assert value == {"vacuous": True, "reason": "revert survived"}
+
+
+def test_the_runtime_records_a_test_whose_subtests_failed_as_failing(tmp_path):
+    from core import parsers
+    from core.evidence import Kind, Result
+    records = parsers.parse("python -m pytest tests -q -rA", FORMS + "6 failed, 1 passed in 0.10s\n", 1, tmp_path)
+    results = {r.identity: r.result for r in records if r.kind == Kind.TEST}
+    assert results["tests/test_forms.py::T::test_ok"] == Result.PASS
+    assert {node: results[node] for node in FORM_FAILURES} == {node: Result.FAIL for node in FORM_FAILURES}
+
+
+def test_a_reproduction_is_not_credited_to_a_test_whose_subtests_failed():
+    from core.stress import _passed
+    assert _passed(FORMS) == {"tests/test_forms.py::T::test_ok"}

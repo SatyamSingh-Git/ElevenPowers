@@ -25,6 +25,11 @@ PYTEST_TAIL = re.compile(
 )
 PYTEST_NODE = re.compile(r"^(?P<status>PASSED|FAILED|ERROR)\s+(?P<node>\S+::\S+)", re.MULTILINE)
 PYTEST_SHORT = re.compile(r"^(?P<node>\S+::\S+)\s+(?P<status>PASSED|FAILED|ERROR)", re.MULTILINE)
+# pytest 9 prints a test whose subtests failed as PASSED, then once per failure as
+# `SUBFAILED(<params>) <node>`, `SUBFAILED[<msg>] <node>` or both; captured from
+# 9.1.1. Parameters can hold `) ` and `::`, so the node is the `.py::` token that
+# ends the line or precedes its ` - ` message.
+PYTEST_SUBFAILED = re.compile(r"^SUBFAILED[\[(].*?(?<!\S)(?P<node>\S+?\.py::\S+)(?= - |\s*$)", re.MULTILINE)
 # `pytest -q` ends with a bare summary and no rule of equals signs around it, so
 # the decorated pattern above recovers no counts from the quiet mode that most
 # agents actually use.
@@ -682,6 +687,7 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
     vcs = vcs_state(root)
 
     seen: set[str] = set()
+    subfailed = {m.group("node") for m in PYTEST_SUBFAILED.finditer(output)}
     for match in list(PYTEST_NODE.finditer(output)) + list(PYTEST_SHORT.finditer(output)):
         node, status = match.group("node"), match.group("status")
         if node in seen:
@@ -690,7 +696,7 @@ def _pytest(command: str, output: str, exit_code: int, root: Path) -> list[Evide
         records.append(
             Evidence(
                 kind=Kind.TEST, identity=node,
-                result=Result.PASS if status == "PASSED" else Result.FAIL,
+                result=Result.PASS if status == "PASSED" and node not in subfailed else Result.FAIL,
                 observed=observed, tree=tree, scope="source", command=command,
                 at=now, vcs=vcs, coverage_issues=scan.issues,
             )

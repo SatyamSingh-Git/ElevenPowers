@@ -515,6 +515,23 @@ def test_a_test_still_red_is_not_a_reproduction(repo):
     assert confirm(led) == []
 
 
+def test_a_test_still_red_through_a_subtest_is_not_a_reproduction(repo):
+    """pytest 9 prints PASSED for this test and SUBFAILED for the subtest that is still red."""
+    from core.ledger import Ledger
+    from core.obligations import Claim
+    from core.stress import confirm
+
+    save_config(repo, Config(profile="guide", commands={"tests": NODES}))
+    (repo / "tests" / "test_app.py").write_text(
+        "import unittest\n\n\nclass T(unittest.TestCase):\n    def test_add(self):\n"
+        "        with self.subTest(case='broken'):\n            self.fail('still red')\n", encoding="utf-8")
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], base=stress.base_commit(repo),
+                 failed_before=["tests/test_app.py::T::test_add"],
+                 touched=["tests/test_app.py"])
+
+    assert confirm(led) == []
+
+
 def test_a_command_naming_a_path_is_narrowed_not_widened(repo):
     """`pytest tests -q` is what the whole corpus declares.
 

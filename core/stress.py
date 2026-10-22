@@ -250,7 +250,7 @@ def stress(ledger) -> tuple[dict[str, str], list[str]]:
         # below is the mirror of this, and having only the red half is what let
         # `assumptions.vacuous_tests` read "absent from the failures" as "passed"
         # - a test that was skipped or never reached is absent too.
-        already_green |= {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)}
+        already_green |= _passed(output)
         # The runtime's own parsers, on the old tree's output. Whatever it can
         # read as a failing test there is a test the change made pass.
         already_red |= {r.identity for r in parse(command, output, 0 if passed_before else 1,
@@ -385,6 +385,13 @@ CONFIRM_LIMIT = 12
 # `pytest -q -rA` on 3.13 rather than remembered; the id is the whole token, so
 # parametrised ids like `test_x[case-1]` come through intact.
 PASSED_LINE = re.compile(r"^PASSED\s+(\S+)", re.MULTILINE)
+
+
+def _passed(output: str) -> set[str]:
+    """Ids pytest named PASSED, less those whose subtests failed (pytest 9 prints both)."""
+    from .parsers import PYTEST_SUBFAILED
+    subfailed = {m.group("node").replace("\\", "/") for m in PYTEST_SUBFAILED.finditer(output)}
+    return {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)} - subfailed
 
 # Stopping early is the right default for a developer and the wrong one for a
 # question about several named tests, so it is dropped for the confirmation run.
@@ -587,7 +594,7 @@ def confirm(ledger) -> list:
     # no node id at all - `SKIPPED [1] tests\test_a.py:9: reason` - so a rule
     # that subtracted non-passes could not have seen them even in principle,
     # while a rule that requires a positive PASSED line is unaffected.
-    passed = {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)}
+    passed = _passed(output)
     green = [i for i in chosen if i.replace("\\", "/") in passed]
     if green and not issues:
         ledger.note(CONFIRMED, f"ran {len(chosen)} test(s) that were red on {ledger.base[:8]}")
