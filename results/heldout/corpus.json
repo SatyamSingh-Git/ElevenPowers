@@ -6592,7 +6592,6 @@
         "tests/protocols/test_websocket.py::test_path_and_raw_path[websockets-sansio-zttp]",
         "tests/protocols/test_websocket.py::test_path_and_raw_path[wsproto-h11]",
         "tests/protocols/test_websocket.py::test_path_and_raw_path[wsproto-httptools]",
-        "tests/protocols/test_websocket.py::test_path_and_raw_path[wsproto-zttp]",
         "tests/protocols/test_websocket.py::test_ping_while_closing[websockets-sansio-h11]",
         "tests/protocols/test_websocket.py::test_ping_while_closing[websockets-sansio-httptools]",
         "tests/protocols/test_websocket.py::test_ping_while_closing[websockets-sansio-zttp]",
@@ -27074,6 +27073,14 @@
         "tenacity-389aab8b",
         "cachetools-ec0b97b8",
         "more-itertools-842a2b17"
+      ]
+    },
+    {
+      "date": "2026-10-22",
+      "before_any_outcome": true,
+      "reason": "Re-validated with readers for every SUBFAILED form (cb2a6ce). No f2p changed; uvicorn-cc6fea5b lost tests/protocols/test_websocket.py::test_path_and_raw_path[wsproto-zttp] from p2p: it passed 5/5 alone and failed inside one full-suite run, so it is intermittent and could only grade a run regressed by chance.",
+      "tasks": [
+        "uvicorn-cc6fea5b"
       ]
     }
   ]
