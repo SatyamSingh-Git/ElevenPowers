@@ -2,8 +2,8 @@
 
 **The twelve projects are published at
 <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>** (commit
-`1d344eb`). Its `manifest.json` hashes match this repository at `5da9adb`, and
-a fresh clone was checked file by file against them. The copy under
+`d081cad`). Its `manifest.json` is the freeze of this repository at `d7bc394`,
+and a fresh clone was checked file by file against the case hashes. The copy under
 `eval/multistage_cases/` stays the one the harness reads.
 
 The comparison designed in
