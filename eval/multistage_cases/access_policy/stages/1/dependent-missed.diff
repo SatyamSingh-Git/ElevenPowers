@@ -1,0 +1,61 @@
+diff --git a/src/warden/audit.py b/src/warden/audit.py
+index a4f3add..7316cdf 100644
+--- a/src/warden/audit.py
++++ b/src/warden/audit.py
+@@ -8,7 +8,7 @@ VERDICTS = {True: "ALLOW", False: "DENY"}
+ 
+ def describe(rule):
+     """A rule as it would be written in policy text."""
+-    text = f"{rule.effect} {','.join(rule.roles)} {','.join(rule.actions)} {rule.pattern.text}"
++    text = f"{rule.effect} {rule.role} {','.join(rule.actions)} {rule.pattern.text}"
+     if rule.condition:
+         text += f" when {rule.condition.text}"
+     return text
+diff --git a/src/warden/lint.py b/src/warden/lint.py
+index ccf564c..ca40d4c 100644
+--- a/src/warden/lint.py
++++ b/src/warden/lint.py
+@@ -16,21 +16,21 @@ class Finding:
+ 
+ 
+ def _key(rule):
+-    return (rule.effect, frozenset(rule.roles), frozenset(rule.actions), rule.pattern,
++    return (rule.effect, rule.role, frozenset(rule.actions), rule.pattern,
+             rule.condition.text if rule.condition else None)
+ 
+ 
+ def _shadows(graph, deny, allow):
+     """Whether `deny` refuses everything `allow` could ever grant."""
+     return (deny.effect == "deny" and deny.condition is None
+-            and all(set(deny.roles) & set(graph.ancestors(role)) for role in allow.roles)
++            and deny.role in graph.ancestors(allow.role)
+             and (ANY_ACTION in deny.actions or set(allow.actions) <= set(deny.actions))
+             and deny.pattern.covers(allow.pattern))
+ 
+ 
+ def _role_findings(policy):
+     graph = policy.roles
+-    named = {role for rule in policy.rules for role in rule.roles}
++    named = {rule.role for rule in policy.rules}
+     inherited = {graph.parent_of(name) for name in graph}
+     for name in graph:
+         if name in named:
+diff --git a/src/warden/loader.py b/src/warden/loader.py
+index 458f51d..23b93b2 100644
+--- a/src/warden/loader.py
++++ b/src/warden/loader.py
+@@ -30,12 +30,10 @@ def load_dict(data):
+         try:
+             if missing:
+                 raise PolicyError(f"missing field: {missing[0]}")
+-            roles, actions = item["role"], item["actions"]
+-            if isinstance(roles, str):
+-                roles = roles.split(",")
++            actions = item["actions"]
+             if isinstance(actions, str):
+                 actions = actions.split(",")
+-            rules.append(make_rule(number, item["effect"], roles, actions,
++            rules.append(make_rule(number, item["effect"], item["role"], actions,
+                                    item["resource"], item.get("when")))
+         except PolicyError as error:
+             raise PolicyError(f"rule {number}: {error}") from None

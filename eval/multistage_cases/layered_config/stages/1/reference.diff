@@ -1,0 +1,154 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4649eeb..f732a97 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Durations are whole milliseconds (`int`) instead of float seconds; a duration finer than a millisecond is rejected.
+ - `dump --format sources` lines up the source column.
+ 
+ ## 1.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index bd230e7..21f0b48 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -61,7 +61,7 @@ Surrounding spaces are removed from every raw value before it is read.
+ | `float` | `finite decimal number` | |
+ | `bool` | `true/false, yes/no, on/off, 1/0` | |
+ | `str` | `text as written` | |
+-| `duration` | `float seconds` | A number with an optional unit, such as `1.5s`. |
++| `duration` | `int milliseconds` | A number with an optional unit, such as `1.5s`. |
+ | `duration.units` | `ms s m h d` | |
+ | `duration.bare` | `seconds` | Unit of a duration written without one. |
+ | `size` | `int bytes` | A whole number with an optional unit; units are powers of 1024. |
+@@ -112,6 +112,7 @@ layers are reported together; a syntax error in the file stops loading.
+ | `msg.min` | `{key}: must be at least {min}` | |
+ | `msg.max` | `{key}: must be at most {max}` | |
+ | `msg.choice` | `{key}: must be one of {choices}` | Choices joined with `, `. |
++| `msg.whole_ms` | `{key}: duration must be a whole number of milliseconds` | |
+ | `msg.unknown_key` | `unknown key '{key}'` | A file key that names no option. |
+ | `msg.unknown_env` | `unknown variable` | |
+ | `msg.syntax` | `expected 'key = value' or '[section]'` | |
+diff --git a/src/layercfg/coerce.py b/src/layercfg/coerce.py
+index 4dac540..1117a79 100644
+--- a/src/layercfg/coerce.py
++++ b/src/layercfg/coerce.py
+@@ -46,7 +46,9 @@ def _duration(option, text):
+     if not match or (match.group(2) or 's') not in DURATION_UNITS:
+         raise _expected('duration', text)
+     milliseconds = Decimal(match.group(1)) * DURATION_UNITS[match.group(2) or 's']
+-    return float(milliseconds / 1000)
++    if milliseconds != milliseconds.to_integral_value():
++        raise CoercionError('duration must be a whole number of milliseconds')
++    return int(milliseconds)
+ 
+ 
+ def _size(option, text):
+diff --git a/src/layercfg/dump.py b/src/layercfg/dump.py
+index 4f94b21..6fc057a 100644
+--- a/src/layercfg/dump.py
++++ b/src/layercfg/dump.py
+@@ -29,7 +29,7 @@ def format_value(option, value):
+     if option.type == 'list':
+         return ', '.join(value)
+     if option.type == 'duration':
+-        return _with_unit(round(value * 1000), DURATION_UNITS)
++        return _with_unit(value, DURATION_UNITS)
+     if option.type == 'size':
+         return _with_unit(value, SIZE_UNITS)
+     if option.type == 'float':
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 78e7148..7b81dcf 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -19,7 +19,7 @@ def write(tmp_path, text, name='app.ini'):
+ def test_get_prints_the_value(tmp_path):
+     path = write(tmp_path, '[server]\ntimeout = 2m\n[db]\npassword = pw\n')
+     assert run('get', 'server.timeout', '--config', path) == (0, '2m\n', '')
+-    assert run('get', 'server.timeout', '--json', '--config', path) == (0, '120.0\n', '')
++    assert run('get', 'server.timeout', '--json', '--config', path) == (0, '120000\n', '')
+     assert run('get', 'db.password', '--config', path) == (0, '***\n', '')
+     assert run('get', 'db.password', '--reveal', '--config', path) == (0, 'pw\n', '')
+     assert run('get', 'log.file') == (0, '\n', '')
+diff --git a/tests/test_coerce.py b/tests/test_coerce.py
+index d62e44f..fb0f30c 100644
+--- a/tests/test_coerce.py
++++ b/tests/test_coerce.py
+@@ -26,16 +26,26 @@ def test_coerces_each_type(key, raw, expected):
+     assert coerce(option(key), raw) == expected
+ 
+ 
+-@pytest.mark.parametrize('raw, seconds', [
+-    ('30s', 30.0),
+-    ('1.5s', 1.5),
+-    ('250ms', 0.25),
+-    ('2', 2.0),
+-    ('5m', 300.0),
+-    ('1h', 3600.0),
++@pytest.mark.parametrize('raw, milliseconds', [
++    ('30s', 30000),
++    ('1.5s', 1500),
++    ('250ms', 250),
++    ('2', 2000),
++    ('0.001', 1),
++    ('5m', 300000),
++    ('1h', 3600000),
+ ])
+-def test_durations_are_seconds(raw, seconds):
+-    assert coerce(option('server.timeout'), raw) == seconds
++def test_durations_are_whole_milliseconds(raw, milliseconds):
++    value = coerce(option('server.timeout'), raw)
++    assert value == milliseconds
++    assert type(value) is int
++
++
++@pytest.mark.parametrize('raw', ['0.5ms', '1.0005s', '0.0001'])
++def test_durations_below_a_millisecond_are_rejected(raw):
++    with pytest.raises(CoercionError) as caught:
++        coerce(option('server.timeout'), raw)
++    assert str(caught.value) == 'duration must be a whole number of milliseconds'
+ 
+ 
+ @pytest.mark.parametrize('key, raw, message', [
+@@ -55,6 +65,6 @@ def test_bad_values_say_what_was_expected(key, raw, message):
+ def test_range_is_checked_in_the_option_unit():
+     assert check_range(option('server.port'), 0) == 'must be at least 1'
+     assert check_range(option('server.port'), 70000) == 'must be at most 65535'
+-    assert check_range(option('server.timeout'), 601.0) == 'must be at most 10m'
+-    assert check_range(option('server.timeout'), 600.0) is None
++    assert check_range(option('server.timeout'), 600001) == 'must be at most 10m'
++    assert check_range(option('server.timeout'), 600000) is None
+     assert check_range(option('server.host'), 'x') is None
+diff --git a/tests/test_dump.py b/tests/test_dump.py
+index 4401673..752c9f5 100644
+--- a/tests/test_dump.py
++++ b/tests/test_dump.py
+@@ -10,9 +10,10 @@ def test_values_are_written_in_the_largest_exact_unit():
+     config = load(FILE)
+     timeout, size = APP_SCHEMA.resolve('server.timeout'), APP_SCHEMA.resolve('cache.max_bytes')
+     assert format_value(timeout, config['server.timeout']) == '90s'
+-    assert format_value(timeout, 0.25) == '250ms'
+-    assert format_value(timeout, 0.0) == '0ms'
+-    assert format_value(APP_SCHEMA.resolve('pool.idle_timeout'), 7200.0) == '2h'
++    assert format_value(timeout, 250) == '250ms'
++    assert format_value(timeout, 1500) == '1500ms'
++    assert format_value(timeout, 0) == '0ms'
++    assert format_value(APP_SCHEMA.resolve('pool.idle_timeout'), 7200000) == '2h'
+     assert format_value(size, config['cache.max_bytes']) == '2mb'
+ 
+ 
+diff --git a/tests/test_loader.py b/tests/test_loader.py
+index 1515d52..e21d066 100644
+--- a/tests/test_loader.py
++++ b/tests/test_loader.py
+@@ -8,7 +8,7 @@ FILE = '[server]\nport = 9000\nhost = 0.0.0.0\n[log]\nverbosity = debug\n'
+ def test_defaults_alone():
+     config = load()
+     assert config['server.port'] == 8080
+-    assert config['server.timeout'] == 30.0
++    assert config['server.timeout'] == 30000
+     assert config['log.file'] is None
+     assert config.source('server.port') == 'default'
+ 

@@ -1,0 +1,199 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 94a2717..a05889d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `load()` takes `files`, a list of `(name, text)` pairs applied in order, instead of `file_text` and `file_name`.
+ - Environment variables use one underscore between section and name (`LAYERCFG_SERVER_PORT`); the double-underscore spelling is now an unknown variable.
+ - Durations are whole milliseconds (`int`) instead of float seconds; a duration finer than a millisecond is rejected.
+ - `dump --format sources` lines up the source column.
+diff --git a/README.md b/README.md
+index bd4b363..d9a0502 100644
+--- a/README.md
++++ b/README.md
+@@ -8,7 +8,8 @@ problem in every layer is reported at once.
+ ```python
+ from layercfg import load
+ 
+-config = load(open('app.ini').read(), env=dict(os.environ), file_name='app.ini')
++files = [(name, open(name).read()) for name in ('site.ini', 'app.ini')]
++config = load(files, env=dict(os.environ))   # later files override earlier ones
+ config['server.port']          # 8080
+ config.source('server.port')   # 'app.ini line 3'
+ ```
+diff --git a/docs/reference.md b/docs/reference.md
+index c4accfa..de84fe4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -73,7 +73,7 @@ Surrounding spaces are removed from every raw value before it is read.
+ 
+ | Fact | Value | Notes |
+ |---|---|---|
+-| `layers` | `defaults < file < env` | A later layer overrides an earlier one. |
++| `layers` | `defaults < files in order < env` | A later layer overrides an earlier one; `load` takes the files as `(name, text)` pairs. |
+ | `source.default` | `default` | What `Config.source` returns for a built-in default. |
+ | `source.file` | `{file} line {line}` | |
+ | `source.env` | `env {name}` | |
+diff --git a/src/layercfg/cli.py b/src/layercfg/cli.py
+index f5c5508..40819aa 100644
+--- a/src/layercfg/cli.py
++++ b/src/layercfg/cli.py
+@@ -52,8 +52,8 @@ def _parser():
+ 
+ 
+ def _load(args, env):
+-    text = Path(args.config).read_text(encoding='utf-8') if args.config else None
+-    return load(text, env, file_name=args.config or 'config.ini', env_prefix=args.env_prefix)
++    files = [(args.config, Path(args.config).read_text(encoding='utf-8'))] if args.config else []
++    return load(files, env, env_prefix=args.env_prefix)
+ 
+ 
+ def _get(args, config, out, err):
+diff --git a/src/layercfg/loader.py b/src/layercfg/loader.py
+index 7167bc6..5ce5fe0 100644
+--- a/src/layercfg/loader.py
++++ b/src/layercfg/loader.py
+@@ -79,16 +79,18 @@ def _apply(schema, entries, values, sources):
+     return issues
+ 
+ 
+-def load(file_text=None, env=None, *, file_name='config.ini', schema=APP_SCHEMA, env_prefix=ENV_PREFIX):
+-    """Defaults, then the file, then the environment; later layers win.
++def load(files=(), env=None, *, schema=APP_SCHEMA, env_prefix=ENV_PREFIX):
++    """Defaults, then each file in order, then the environment; later layers win.
+ 
+-    Every problem in every layer is collected and raised together as one
+-    ValidationError. A file that is not valid INI raises ParseError.
++    `files` is a sequence of `(name, text)` pairs; the name is what sources
++    and messages call the file. Every problem in every layer is collected and
++    raised together as one ValidationError. A file that is not valid INI
++    raises ParseError.
+     """
+     values, sources = _defaults(schema)
+     entries = []
+-    if file_text is not None:
+-        entries += parse(file_text, file_name)
++    for name, text in files:
++        entries += parse(text, name)
+     if env:
+         entries += read_env(env, schema, env_prefix)
+     issues = _apply(schema, entries, values, sources)
+diff --git a/tests/test_dump.py b/tests/test_dump.py
+index 6ae2207..9ec684a 100644
+--- a/tests/test_dump.py
++++ b/tests/test_dump.py
+@@ -6,8 +6,12 @@ from layercfg.dump import explain, format_value, render_ini, render_json, render
+ FILE = '[server]\ntimeout = 90s\nallowed_hosts = a, b\n[cache]\nmax_bytes = 2048kb\n[db]\npassword = hunter2\n'
+ 
+ 
++def loaded(text, env=None):
++    return load([('config.ini', text)], env)
++
++
+ def test_values_are_written_in_the_largest_exact_unit():
+-    config = load(FILE)
++    config = loaded(FILE)
+     timeout, size = APP_SCHEMA.resolve('server.timeout'), APP_SCHEMA.resolve('cache.max_bytes')
+     assert format_value(timeout, config['server.timeout']) == '90s'
+     assert format_value(timeout, 250) == '250ms'
+@@ -18,13 +22,13 @@ def test_values_are_written_in_the_largest_exact_unit():
+ 
+ 
+ def test_ini_view_loads_back_to_the_same_values():
+-    config = load(FILE)
+-    again = load(render_ini(config, reveal=True))
++    config = loaded(FILE)
++    again = loaded(render_ini(config, reveal=True))
+     assert again.as_dict() == config.as_dict()
+ 
+ 
+ def test_secrets_are_masked_unless_revealed():
+-    config = load(FILE)
++    config = loaded(FILE)
+     assert 'password = ***' in render_ini(config)
+     assert json.loads(render_json(config))['db.password'] == '***'
+     assert 'hunter2' not in render_sources(config)
+@@ -36,7 +40,7 @@ def test_unset_options_are_commented_out():
+ 
+ 
+ def test_sources_view_names_each_layer():
+-    lines = render_sources(load(FILE, {'LAYERCFG_SERVER_PORT': '1'})).splitlines()
++    lines = render_sources(loaded(FILE, {'LAYERCFG_SERVER_PORT': '1'})).splitlines()
+     assert lines[0].endswith('(default)')
+     assert lines[1].startswith('server.port = 1 ') and lines[1].endswith('(env LAYERCFG_SERVER_PORT)')
+     assert lines[2].endswith('(config.ini line 2)')
+diff --git a/tests/test_loader.py b/tests/test_loader.py
+index 55ffdbb..0ebd73b 100644
+--- a/tests/test_loader.py
++++ b/tests/test_loader.py
+@@ -11,10 +11,11 @@ def test_defaults_alone():
+     assert config['server.timeout'] == 30000
+     assert config['log.file'] is None
+     assert config.source('server.port') == 'default'
++    assert load([]).as_dict() == config.as_dict()
+ 
+ 
+ def test_env_beats_file_beats_defaults():
+-    config = load(FILE, {'LAYERCFG_SERVER_PORT': '9100'}, file_name='app.ini')
++    config = load([('app.ini', FILE)], {'LAYERCFG_SERVER_PORT': '9100'})
+     assert config['server.port'] == 9100
+     assert config.source('server.port') == 'env LAYERCFG_SERVER_PORT'
+     assert config['server.host'] == '0.0.0.0'
+@@ -22,8 +23,18 @@ def test_env_beats_file_beats_defaults():
+     assert config['pool.max_size'] == 10
+ 
+ 
++def test_later_files_override_earlier_ones():
++    site = ('site.ini', '[server]\nport = 9000\nhost = 10.0.0.1\n[pool]\nmax_size = 4\n')
++    host = ('host.ini', '[server]\nhost = 10.0.0.2\n')
++    config = load(files=[site, host], env={'LAYERCFG_POOL_MAX_SIZE': '5'})
++    assert (config['server.port'], config.source('server.port')) == (9000, 'site.ini line 2')
++    assert (config['server.host'], config.source('server.host')) == ('10.0.0.2', 'host.ini line 2')
++    assert (config['pool.max_size'], config.source('pool.max_size')) == (5, 'env LAYERCFG_POOL_MAX_SIZE')
++    assert load(files=[host, site])['server.host'] == '10.0.0.1'
++
++
+ def test_aliases_set_and_read_the_same_option():
+-    config = load(FILE)
++    config = load([('config.ini', FILE)])
+     assert config['log.level'] == 'debug'
+     assert config['log.verbosity'] == 'debug'
+     assert config.source('log.verbosity') == 'config.ini line 5'
+@@ -39,13 +50,15 @@ def test_get_returns_the_default_for_unknown_keys():
+ 
+ 
+ def test_every_problem_is_reported_together():
+-    text = '[server]\nport = abc\nsurprise = 1\n[pool]\nmax_size = 5000\n'
++    first = ('app.ini', '[server]\nport = abc\nsurprise = 1\n[pool]\nmax_size = 5000\n')
++    second = ('local.ini', '[cache]\nmax_bytes = lots\n')
+     with pytest.raises(ValidationError) as caught:
+-        load(text, {'LAYERCFG_LOG_LEVEL': 'loud', 'LAYERCFG_NOPE': '1'}, file_name='app.ini')
++        load([first, second], {'LAYERCFG_LOG_LEVEL': 'loud', 'LAYERCFG_NOPE': '1'})
+     assert [str(issue) for issue in caught.value.issues] == [
+         "app.ini line 2: server.port: expected int, got 'abc'",
+         "app.ini line 3: unknown key 'server.surprise'",
+         'app.ini line 5: pool.max_size: must be at most 1000',
++        "local.ini line 2: cache.max_bytes: expected size, got 'lots'",
+         'env LAYERCFG_LOG_LEVEL: log.level: must be one of debug, info, warning, error',
+         'env LAYERCFG_NOPE: unknown variable',
+     ]
+@@ -59,13 +72,13 @@ def test_double_underscore_variables_are_unknown():
+ 
+ def test_defaults_are_not_a_floor_for_ranges():
+     with pytest.raises(ValidationError):
+-        load('[server]\nport = 0\n')
+-    assert load('[pool]\nmin_size = 0\n')['pool.min_size'] == 0
++        load([('a.ini', '[server]\nport = 0\n')])
++    assert load([('a.ini', '[pool]\nmin_size = 0\n')])['pool.min_size'] == 0
+ 
+ 
+ def test_custom_schema_and_prefix():
+     schema = Schema([Option('job.retries', 'int', '3', aliases=('job.attempts',))])
+-    config = load('[job]\nattempts = 5\n', {'JOBS_JOB_RETRIES': '6'}, schema=schema, env_prefix='JOBS_')
++    config = load([('job.ini', '[job]\nattempts = 5\n')], {'JOBS_JOB_RETRIES': '6'}, schema=schema, env_prefix='JOBS_')
+     assert config.as_dict() == {'job.retries': 6}
+ 
+ 

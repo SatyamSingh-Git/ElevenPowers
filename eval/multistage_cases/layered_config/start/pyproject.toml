@@ -1,0 +1,12 @@
+[project]
+name = "layercfg"
+version = "1.4.0"
+description = "Layered configuration: defaults, an INI file and environment variables"
+requires-python = ">=3.10"
+
+[project.scripts]
+layercfg = "layercfg.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

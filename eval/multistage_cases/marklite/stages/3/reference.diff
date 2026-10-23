@@ -1,0 +1,120 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5fb5fbf..cd71886 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The table of contents lists heading levels 1 and 2 by default (`toc_max_level` was 3).
+ - Double quotes in text content are no longer written as `&quot;`; attribute values still escape them.
+ - Heading ids and table of contents anchors now start with the `id_prefix` option, `section-` by default.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 469fb97..738d73e 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -8,7 +8,7 @@ Fields of `marklite.Options`, with their defaults.
+ |---|---|---|
+ | `heading_ids` | `True` | Give top-level headings an `id` attribute. |
+ | `id_prefix` | `section-` | Put in front of every heading id and table of contents anchor; `""` for bare slugs. |
+-| `toc_max_level` | `3` | Deepest heading level the table of contents lists (1 to 6). |
++| `toc_max_level` | `2` | Deepest heading level the table of contents lists (1 to 6). |
+ | `code_class_prefix` | `language-` | Prefix of the class on a fenced code block with a language. |
+ | `safe_links` | `True` | Replace link and image URLs whose scheme is not safe. |
+ | `hard_breaks` | `False` | Render every line break inside a paragraph as `<br />`. |
+@@ -69,7 +69,7 @@ When `line` is set, the message starts with `line {line}: `.
+ 
+ | Flag | Default | Meaning |
+ |---|---|---|
+-| `--toc-level` | `3` | Sets `toc_max_level`. |
++| `--toc-level` | `2` | Sets `toc_max_level`. |
+ | `--json-toc` | `off` | Print the table of contents as JSON instead of HTML. |
+ | `--no-ids` | `off` | Sets `heading_ids` to false. |
+ | `--unsafe-links` | `off` | Sets `safe_links` to false. |
+diff --git a/src/marklite/cli.py b/src/marklite/cli.py
+index 2483492..c258ad9 100644
+--- a/src/marklite/cli.py
++++ b/src/marklite/cli.py
+@@ -13,7 +13,7 @@ def main(argv=None):
+     parser = argparse.ArgumentParser(prog="marklite", description="Render a markdown file to HTML.")
+     parser.add_argument("path", help="markdown file to render, or - for standard input")
+     parser.add_argument("-o", "--output", help="write the result here instead of standard output")
+-    parser.add_argument("--toc-level", type=int, default=3,
++    parser.add_argument("--toc-level", type=int, default=Options.toc_max_level,
+                         help="deepest heading level the table of contents lists")
+     parser.add_argument("--json-toc", action="store_true", help="print the table of contents as JSON")
+     parser.add_argument("--no-ids", action="store_true", help="leave id attributes off headings")
+diff --git a/src/marklite/options.py b/src/marklite/options.py
+index 9475490..d8c16ca 100644
+--- a/src/marklite/options.py
++++ b/src/marklite/options.py
+@@ -9,7 +9,7 @@ MAX_HEADING_LEVEL = 6
+ class Options:
+     heading_ids: bool = True
+     id_prefix: str = "section-"
+-    toc_max_level: int = 3
++    toc_max_level: int = 2
+     code_class_prefix: str = "language-"
+     safe_links: bool = True
+     hard_breaks: bool = False
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 90285d5..b567436 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -34,6 +34,14 @@ def test_json_toc(source, capsys):
+     ]
+ 
+ 
++def test_toc_level_defaults_to_two(source, tmp_path):
++    out = tmp_path / "out.html"
++    assert main([str(source), "-o", str(out)]) == 0
++    assert "Detail</a>" not in out.read_text(encoding="utf-8")
++    assert main([str(source), "--toc-level", "3", "-o", str(out)]) == 0
++    assert "Detail</a>" in out.read_text(encoding="utf-8")
++
++
+ def test_missing_file(tmp_path, capsys):
+     assert main([str(tmp_path / "nope.md")]) == 1
+     assert capsys.readouterr().err == f"error: cannot read {tmp_path / 'nope.md'}\n"
+diff --git a/tests/test_outline.py b/tests/test_outline.py
+index abc8e78..ebfc5e9 100644
+--- a/tests/test_outline.py
++++ b/tests/test_outline.py
+@@ -37,8 +37,17 @@ def test_nested_headings_get_no_id():
+     assert render("> # Quoted\n") == "<blockquote>\n<h1>Quoted</h1>\n</blockquote>\n"
+ 
+ 
+-def test_toc_entries():
++def test_toc_lists_two_levels_by_default():
+     assert toc(DOCUMENT) == [
++        TocEntry(1, "Guide", "section-guide"),
++        TocEntry(2, "Install", "section-install"),
++        TocEntry(2, "Usage basics", "section-usage-basics"),
++        TocEntry(2, "Usage basics", "section-usage-basics-1"),
++    ]
++
++
++def test_toc_entries():
++    assert toc(DOCUMENT, Options(toc_max_level=3)) == [
+         TocEntry(1, "Guide", "section-guide"),
+         TocEntry(2, "Install", "section-install"),
+         TocEntry(2, "Usage basics", "section-usage-basics"),
+@@ -57,7 +66,7 @@ def test_toc_max_level_is_validated():
+ 
+ 
+ def test_toc_marker_renders_nested_lists():
+-    html = render(DOCUMENT)
++    html = render(DOCUMENT, Options(toc_max_level=3))
+     assert html.splitlines()[1] == (
+         '<nav class="toc"><ul><li><a href="#section-guide">Guide</a><ul>'
+         '<li><a href="#section-install">Install</a></li>'
+@@ -67,7 +76,7 @@ def test_toc_marker_renders_nested_lists():
+ 
+ 
+ def test_toc_skipped_level_nests_under_closest_lower_entry():
+-    html = render("[TOC]\n\n# A\n### B\n## C\n")
++    html = render("[TOC]\n\n# A\n### B\n## C\n", Options(toc_max_level=3))
+     assert html.splitlines()[0] == (
+         '<nav class="toc"><ul><li><a href="#section-a">A</a><ul>'
+         '<li><a href="#section-b">B</a></li><li><a href="#section-c">C</a></li></ul></li></ul></nav>')

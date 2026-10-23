@@ -1,0 +1,131 @@
+{
+  "id": "stockroom",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/stockroom/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Item costs are written to the data file as decimal strings like \"2.50\", and our finance import can't read them. Please store each item's cost as a whole number of cents in a `cost_cents` field instead of `unit_cost`, and raise the data file's `version` to 2. Files written at version 1 must keep working: they should open as before and come out in the new form the next time they are saved.\n\nPeople still enter and see costs in dollars and cents.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [
+        "base_reports"
+      ]
+    },
+    {
+      "request": "I mistyped a transfer as `stockroom transfer BOLT-M6 5 A1 A1`, and afterwards A1 showed 5 more bolts than it had before; `stockroom check` then reported a mismatch for BOLT-M6 at A1.\n\nA transfer whose source and destination are the same location should be refused with `cannot transfer within one location: A1` (with that location's code) and should change nothing.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "When scripting against the library, `Inventory.on_hand(sku)` only gives me a grand total. Please make it return a dict mapping each location code to the quantity held there, leaving out locations that hold none of the item, and add `Inventory.total(sku)` returning the grand total (0 when nothing is held). Both should refuse an unknown SKU with the usual `unknown item: <sku>` error.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [
+        "base_ledger",
+        "base_reports",
+        "cents_file",
+        "cents_upgrade"
+      ]
+    },
+    {
+      "request": "Our scanner app logs which movement each library call produced. Please make `Inventory.receive`, `issue`, `transfer` and `adjust` return the `seq` of the movement they record instead of a quantity. Nothing else about how stockroom behaves should change.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [
+        "base_ledger"
+      ]
+    },
+    {
+      "request": "Our warehouse system imports the movement log from the data file and needs every line to touch exactly one location. Record each movement as lines carrying a `location` and a signed `delta` (positive for goods coming in, negative for goods going out) in place of `qty`, `from` and `to`. A transfer becomes two lines, out of the source and into the destination, sharing the transfer's `seq`.\n\nRaise the file `version` to 3; version 1 and 2 files must still open and be rewritten in the new form when saved. Nothing else about how stockroom behaves should change.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [
+        "base_ledger",
+        "cents_upgrade",
+        "self_transfer_cli"
+      ]
+    },
+    {
+      "request": "Some of our bins are small. Let locations have an optional capacity: `stockroom add-location C3 --capacity 50` on the command line and a `capacity` argument to `Inventory.add_location`. Without one, a location has no limit.\n\nA receive or transfer that would leave a location holding more units than its capacity, counting every item stored there, must be refused with `location C3 is full: capacity 50, would hold 60` and change nothing. Keep the capacity on the location in the data file as `capacity`, null when there is no limit.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    }
+  ],
+  "groups": [
+    {
+      "id": "base_reports",
+      "since": 0,
+      "until": 6
+    },
+    {
+      "id": "base_ledger",
+      "since": 0,
+      "until": 6
+    },
+    {
+      "id": "cents_file",
+      "since": 1,
+      "until": 6
+    },
+    {
+      "id": "cents_upgrade",
+      "since": 1,
+      "until": 6
+    },
+    {
+      "id": "self_transfer_lib",
+      "since": 2,
+      "until": 6
+    },
+    {
+      "id": "self_transfer_cli",
+      "since": 2,
+      "until": 6
+    },
+    {
+      "id": "on_hand_breakdown",
+      "since": 3,
+      "until": 6
+    },
+    {
+      "id": "total_lib",
+      "since": 3,
+      "until": 6
+    },
+    {
+      "id": "seq_returns",
+      "since": 4,
+      "until": 6
+    },
+    {
+      "id": "seq_history",
+      "since": 4,
+      "until": 6
+    },
+    {
+      "id": "lines_file",
+      "since": 5,
+      "until": 6
+    },
+    {
+      "id": "lines_upgrade",
+      "since": 5,
+      "until": 6
+    },
+    {
+      "id": "capacity_lib",
+      "since": 6,
+      "until": 6
+    },
+    {
+      "id": "capacity_cli",
+      "since": 6,
+      "until": 6
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e2086cb..779bf3b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Audit log records carry `"decision": "allow"` or `"deny"` in place of `"allowed": true/false`. Older logs are not read.
+ - A rule can name several roles separated by commas (`allow viewer,auditor read reports/**`); it applies to anyone holding any of them.
+ 
+ ## 0.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index a42189d..21fa70a 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -81,7 +81,8 @@
+ | --- | --- | --- |
+ | `log.format` | `JSON lines, keys sorted` | one record per decision |
+ | `log.mode` | `append` | writing never truncates the log |
+-| `log.fields` | `action, allowed, reason, resource, rule, user` | keys of each record |
++| `log.fields` | `action, decision, reason, resource, rule, user` | keys of each record |
++| `log.decision` | `allow or deny` | the outcome, worded like a rule effect |
+ | `log.rule` | `rule number or null` | the deciding rule |
+ 
+ ## Report
+diff --git a/src/warden/audit.py b/src/warden/audit.py
+index a4f3add..ae9df32 100644
+--- a/src/warden/audit.py
++++ b/src/warden/audit.py
+@@ -34,7 +34,7 @@ def record(decision):
+         "user": request.user.name,
+         "action": request.action,
+         "resource": normalize(request.resource),
+-        "allowed": decision.allowed,
++        "decision": "allow" if decision.allowed else "deny",
+         "rule": decision.rule.number if decision.rule else None,
+         "reason": decision.reason,
+     }
+diff --git a/src/warden/report.py b/src/warden/report.py
+index c99b191..4f82688 100644
+--- a/src/warden/report.py
++++ b/src/warden/report.py
+@@ -22,7 +22,7 @@ def summarize(records):
+     for item in records:
+         allowed, denied = summary.users.get(item["user"], (0, 0))
+         summary.total += 1
+-        if item["allowed"]:
++        if item["decision"] == "allow":
+             summary.allowed += 1
+             allowed += 1
+         else:
+diff --git a/tests/test_audit.py b/tests/test_audit.py
+index accf698..3dc0d5e 100644
+--- a/tests/test_audit.py
++++ b/tests/test_audit.py
+@@ -34,9 +34,9 @@ def test_log_round_trip(tmp_path):
+     write_log([decide("alice", ["viewer"], "read", "/reports//q1")], log)
+     write_log([decide("bob", ["editor"], "delete", "reports/archive/old")], log)
+     records = read_log(log)
+-    assert records[0] == {"action": "read", "allowed": True, "reason": "allowed by rule 1",
++    assert records[0] == {"action": "read", "decision": "allow", "reason": "allowed by rule 1",
+                           "resource": "reports/q1", "rule": 1, "user": "alice"}
+-    assert records[1]["rule"] == 2 and records[1]["allowed"] is False
++    assert records[1]["rule"] == 2 and records[1]["decision"] == "deny"
+     assert list(json.loads(log.read_text(encoding="utf-8").splitlines()[0])) == sorted(records[0])
+ 
+ 
+@@ -65,3 +65,13 @@ def test_explain_rule_with_several_roles():
+     policy = parse_policy("role viewer\nrole auditor\nallow viewer,auditor read reports/**\n")
+     decision = Evaluator(policy).decide(Request(User("carol", ("auditor",)), "read", "reports/q1"))
+     assert explain(decision).splitlines()[1] == "  rule 1 (line 3): allow viewer,auditor read reports/**"
++
++
++def test_summary_reads_decision_field(tmp_path):
++    log = tmp_path / "audit.jsonl"
++    log.write_text('{"action": "read", "decision": "deny", "reason": "r", "resource": "a", "rule": null, "user": "dan"}\n'
++                   '{"action": "read", "decision": "allow", "reason": "r", "resource": "b", "rule": 1, "user": "dan"}\n',
++                   encoding="utf-8")
++    summary = summarize_file(log)
++    assert summary.users == {"dan": (1, 1)}
++    assert dict(summary.denied_resources) == {"a": 1}

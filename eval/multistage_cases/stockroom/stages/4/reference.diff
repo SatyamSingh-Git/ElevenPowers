@@ -1,0 +1,167 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index be767a0..cdaa2af 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -6,6 +6,7 @@
+ - Store item costs in the data file as whole cents (`cost_cents`), data file version 2. Version 1 files are upgraded when read.
+ - Fix: a transfer from a location to itself added stock there. It is now refused.
+ - `Inventory.on_hand()` now returns the quantity at each location; the new `Inventory.total()` returns the sum.
++- `Inventory.receive()`, `issue()`, `transfer()` and `adjust()` return the `seq` of the movement they record.
+ 
+ ## 1.4.0
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index e9c3e92..feef123 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -51,10 +51,10 @@ One JSON document. Item SKUs and location codes are stored upper-case.
+ | `Inventory.on_hand(sku)` | `quantity by location` | dict of location code to quantity, leaving out locations holding none |
+ | `Inventory.total(sku)` | `total quantity` | sum over every location; 0 when none is held |
+ | `Inventory.at(sku, location)` | `quantity at location` | 0 when none is held there |
+-| `Inventory.receive(sku, qty, location)` | `quantity at location` | after the goods arrive |
+-| `Inventory.issue(sku, qty, location)` | `quantity at location` | what is left there |
+-| `Inventory.transfer(sku, qty, source, dest)` | `quantity at destination` | after the goods arrive |
+-| `Inventory.adjust(sku, location, counted)` | `change applied` | counted minus what was recorded |
++| `Inventory.receive(sku, qty, location)` | `movement seq` | `seq` of the movement recorded |
++| `Inventory.issue(sku, qty, location)` | `movement seq` | `seq` of the movement recorded |
++| `Inventory.transfer(sku, qty, source, dest)` | `movement seq` | `seq` of the movement recorded |
++| `Inventory.adjust(sku, location, counted)` | `movement seq` | `seq` of the movement recorded |
+ 
+ ## Errors
+ 
+diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
+index be030c6..2e14f02 100644
+--- a/src/stockroom/cli.py
++++ b/src/stockroom/cli.py
+@@ -31,27 +31,29 @@ def _warn_if_low(inventory, sku, out):
+ 
+ 
+ def _receive(inventory, args, out):
+-    now = inventory.receive(args.sku, args.qty, args.location, args.note)
++    inventory.receive(args.sku, args.qty, args.location, args.note)
+     sku, code = normalize_sku(args.sku), normalize_code(args.location)
+-    out.write(f'received {args.qty} {sku} at {code} (now {now} there)\n')
++    out.write(f'received {args.qty} {sku} at {code} (now {inventory.at(sku, code)} there)\n')
+ 
+ 
+ def _issue(inventory, args, out):
+-    left = inventory.issue(args.sku, args.qty, args.location, args.note)
++    inventory.issue(args.sku, args.qty, args.location, args.note)
+     sku, code = normalize_sku(args.sku), normalize_code(args.location)
+-    out.write(f'issued {args.qty} {sku} from {code} (now {left} there)\n')
++    out.write(f'issued {args.qty} {sku} from {code} (now {inventory.at(sku, code)} there)\n')
+     _warn_if_low(inventory, sku, out)
+ 
+ 
+ def _transfer(inventory, args, out):
+-    now = inventory.transfer(args.sku, args.qty, args.source, args.dest, args.note)
++    inventory.transfer(args.sku, args.qty, args.source, args.dest, args.note)
+     sku, source, dest = normalize_sku(args.sku), normalize_code(args.source), normalize_code(args.dest)
+-    out.write(f'moved {args.qty} {sku} from {source} to {dest} (now {now} at {dest})\n')
++    out.write(f'moved {args.qty} {sku} from {source} to {dest} (now {inventory.at(sku, dest)} at {dest})\n')
+ 
+ 
+ def _adjust(inventory, args, out):
+-    change = inventory.adjust(args.sku, args.location, args.count, args.note)
++    before = inventory.at(args.sku, args.location)
++    inventory.adjust(args.sku, args.location, args.count, args.note)
+     sku, code = normalize_sku(args.sku), normalize_code(args.location)
++    change = inventory.at(sku, code) - before
+     out.write(f'adjusted {sku} at {code} to {args.count} ({change:+d})\n')
+     _warn_if_low(inventory, sku, out)
+ 
+diff --git a/src/stockroom/inventory.py b/src/stockroom/inventory.py
+index f2851b6..0967b08 100644
+--- a/src/stockroom/inventory.py
++++ b/src/stockroom/inventory.py
+@@ -103,23 +103,19 @@ class Inventory:
+     # Movements
+ 
+     def receive(self, sku, qty, location, note=''):
+-        """Book goods in. Returns the quantity now held at the location."""
++        """Book goods in. Returns the seq of the recorded movement."""
+         sku, code, qty = self._sku(sku), self._code(location), parse_qty(qty)
+-        now = self.at(sku, code) + qty
+-        self._set(sku, code, now)
+-        self._record('receive', sku, qty, None, code, note)
+-        return now
++        self._set(sku, code, self.at(sku, code) + qty)
++        return self._record('receive', sku, qty, None, code, note)
+ 
+     def issue(self, sku, qty, location, note=''):
+-        """Book goods out. Returns the quantity left at the location."""
++        """Book goods out. Returns the seq of the recorded movement."""
+         sku, code, qty = self._sku(sku), self._code(location), parse_qty(qty)
+-        left = self._take(sku, code, qty) - qty
+-        self._set(sku, code, left)
+-        self._record('issue', sku, qty, code, None, note)
+-        return left
++        self._set(sku, code, self._take(sku, code, qty) - qty)
++        return self._record('issue', sku, qty, code, None, note)
+ 
+     def transfer(self, sku, qty, source, dest, note=''):
+-        """Move goods between locations. Returns the quantity now held at the destination."""
++        """Move goods between locations. Returns the seq of the recorded movement."""
+         sku, qty = self._sku(sku), parse_qty(qty)
+         source, dest = self._code(source), self._code(dest)
+         if source == dest:
+@@ -128,16 +124,14 @@ class Inventory:
+         there = self.at(sku, dest)
+         self._set(sku, source, have - qty)
+         self._set(sku, dest, there + qty)
+-        self._record('transfer', sku, qty, source, dest, note)
+-        return there + qty
++        return self._record('transfer', sku, qty, source, dest, note)
+ 
+     def adjust(self, sku, location, counted, note=''):
+-        """Set the quantity at a location to what a count found. Returns the change applied."""
++        """Set the quantity at a location to what a count found. Returns the seq of the recorded movement."""
+         sku, code, counted = self._sku(sku), self._code(location), parse_count(counted)
+         change = counted - self.at(sku, code)
+         self._set(sku, code, counted)
+-        self._record('adjust', sku, change, None, code, note)
+-        return change
++        return self._record('adjust', sku, change, None, code, note)
+ 
+     def history(self, sku):
+         sku = self._sku(sku)
+diff --git a/tests/test_inventory.py b/tests/test_inventory.py
+index 3432d81..6705aa6 100644
+--- a/tests/test_inventory.py
++++ b/tests/test_inventory.py
+@@ -4,9 +4,9 @@ from stockroom import StockError
+ 
+ 
+ def test_receive_issue_and_transfer_move_stock(inventory):
+-    assert inventory.receive('bolt-m6', 100, 'a1') == 100
+-    assert inventory.issue('BOLT-M6', 30, 'A1') == 70
+-    assert inventory.transfer('BOLT-M6', 20, 'A1', 'B2') == 20
++    inventory.receive('bolt-m6', 100, 'a1')
++    inventory.issue('BOLT-M6', 30, 'A1')
++    inventory.transfer('BOLT-M6', 20, 'A1', 'B2')
+     assert inventory.at('BOLT-M6', 'A1') == 50
+     assert inventory.at('BOLT-M6', 'B2') == 20
+     assert inventory.on_hand('BOLT-M6') == {'A1': 50, 'B2': 20}
+@@ -28,10 +28,19 @@ def test_emptied_locations_leave_the_stock_table(inventory):
+     assert inventory.doc['stock'] == {}
+ 
+ 
+-def test_adjust_returns_the_change(inventory):
++def test_movements_return_their_seq(inventory):
++    assert inventory.receive('NUT-M6', 10, 'A1') == 1
++    assert inventory.issue('NUT-M6', 1, 'A1') == 2
++    assert inventory.transfer('NUT-M6', 2, 'A1', 'B2') == 3
++    assert inventory.adjust('NUT-M6', 'A1', 7) == 4
++    assert [m['seq'] for m in inventory.history('NUT-M6')] == [1, 2, 3, 4]
++
++
++def test_adjust_records_the_change(inventory):
+     inventory.receive('NUT-M6', 10, 'A1')
+-    assert inventory.adjust('NUT-M6', 'A1', 7) == -3
+-    assert inventory.adjust('NUT-M6', 'A1', 7) == 0
++    inventory.adjust('NUT-M6', 'A1', 7)
++    inventory.adjust('NUT-M6', 'A1', 7)
++    assert [m['qty'] for m in inventory.history('NUT-M6')] == [10, -3, 0]
+     assert inventory.at('NUT-M6', 'A1') == 7
+ 
+ 

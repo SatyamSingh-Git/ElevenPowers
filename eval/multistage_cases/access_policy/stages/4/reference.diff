@@ -1,0 +1,171 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ef16e7c..51d7b34 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Conditions can name `env` attributes, supplied per request as `Request(..., env={...})` or `warden check --env KEY=VALUE`.
+ - Fixed: comparisons in conditions treated numbers as text, so `user.clearance >= 3` refused a clearance of 10. Numbers, including numeric strings, now compare as numbers.
+ - Audit log records carry `"decision": "allow"` or `"deny"` in place of `"allowed": true/false`. Older logs are not read.
+ - A rule can name several roles separated by commas (`allow viewer,auditor read reports/**`); it applies to anyone holding any of them.
+diff --git a/docs/reference.md b/docs/reference.md
+index ae4a769..e217bd0 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -38,7 +38,7 @@
+ 
+ | key | value | meaning |
+ | --- | --- | --- |
+-| `condition.namespaces` | `user, resource` | where attribute names may come from |
++| `condition.namespaces` | `user, resource, env` | where attribute names may come from; `env` is supplied with the request |
+ | `condition.operators` | `== != < <= > >=` | comparison operators |
+ | `condition.join` | `and` | joins clauses; all must hold |
+ | `condition.literals` | `"text", numbers, true, false` | constants allowed in a clause |
+diff --git a/src/warden/audit.py b/src/warden/audit.py
+index ae9df32..808f154 100644
+--- a/src/warden/audit.py
++++ b/src/warden/audit.py
+@@ -23,7 +23,7 @@ def explain(decision):
+         where = f" (line {rule.line})" if rule.line is not None else ""
+         lines.append(f"  rule {rule.number}{where}: {describe(rule)}")
+     for skipped in decision.near_misses:
+-        unmet = skipped.condition.failing(request.user.attrs, request.resource_attrs)
++        unmet = skipped.condition.failing(request.scope())
+         lines.append(f"  rule {skipped.number} not applied: {' and '.join(unmet)}")
+     return "\n".join(lines)
+ 
+diff --git a/src/warden/cli.py b/src/warden/cli.py
+index 713e80d..861441f 100644
+--- a/src/warden/cli.py
++++ b/src/warden/cli.py
+@@ -24,7 +24,7 @@ def _pairs(items):
+ def _check(args):
+     user = User(args.user, tuple(args.role), _pairs(args.user_attr))
+     decision = Evaluator(load_file(args.policy)).decide(
+-        Request(user, args.action, args.resource, _pairs(args.resource_attr)))
++        Request(user, args.action, args.resource, _pairs(args.resource_attr), _pairs(args.env)))
+     print(explain(decision))
+     if args.log:
+         write_log([decision], args.log)
+@@ -55,6 +55,7 @@ def main(argv=None):
+     check.add_argument("--role", action="append", default=[])
+     check.add_argument("--user-attr", action="append", default=[], metavar="KEY=VALUE")
+     check.add_argument("--resource-attr", action="append", default=[], metavar="KEY=VALUE")
++    check.add_argument("--env", action="append", default=[], metavar="KEY=VALUE")
+     check.add_argument("--log", help="append the decision to this audit log")
+     check.set_defaults(run=_check)
+ 
+diff --git a/src/warden/conditions.py b/src/warden/conditions.py
+index 1c18795..ad92c2f 100644
+--- a/src/warden/conditions.py
++++ b/src/warden/conditions.py
+@@ -1,10 +1,10 @@
+-"""Attribute conditions such as `user.dept == resource.dept and user.level >= 2`."""
++"""Attribute conditions such as `user.dept == resource.dept and env.network == "office"`."""
+ import operator
+ import re
+ 
+ from .errors import ConditionError
+ 
+-NAMESPACES = ("user", "resource")
++NAMESPACES = ("user", "resource", "env")
+ OPERATORS = {
+     "==": operator.eq,
+     "!=": operator.ne,
+@@ -118,10 +118,10 @@ class Condition:
+         self.text = text.strip()
+         self.clauses = _parse(self.text)
+ 
+-    def evaluate(self, user, resource):
+-        return all(clause.holds({"user": user, "resource": resource}) for clause in self.clauses)
++    def evaluate(self, scope):
++        """`scope` maps each namespace to its attributes."""
++        return all(clause.holds(scope) for clause in self.clauses)
+ 
+-    def failing(self, user, resource):
++    def failing(self, scope):
+         """The clauses that do not hold, as written."""
+-        scope = {"user": user, "resource": resource}
+         return [clause.text for clause in self.clauses if not clause.holds(scope)]
+diff --git a/src/warden/evaluator.py b/src/warden/evaluator.py
+index 68d0bd5..0abf43c 100644
+--- a/src/warden/evaluator.py
++++ b/src/warden/evaluator.py
+@@ -23,7 +23,7 @@ class Evaluator:
+                     or not (ANY_ACTION in rule.actions or action in rule.actions)
+                     or not rule.pattern.matches(resource)):
+                 continue
+-            if rule.condition and not rule.condition.evaluate(request.user.attrs, request.resource_attrs):
++            if rule.condition and not rule.condition.evaluate(request.scope()):
+                 skipped.append(rule)
+             elif rule.effect == "deny":
+                 deny = deny or rule
+diff --git a/src/warden/model.py b/src/warden/model.py
+index f58e509..50bdd06 100644
+--- a/src/warden/model.py
++++ b/src/warden/model.py
+@@ -19,6 +19,11 @@ class Request:
+     action: str
+     resource: str
+     resource_attrs: Mapping = field(default_factory=dict)
++    env: Mapping = field(default_factory=dict)
++
++    def scope(self):
++        """Attributes a condition can name, by namespace."""
++        return {"user": self.user.attrs, "resource": self.resource_attrs, "env": self.env}
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/tests/test_audit.py b/tests/test_audit.py
+index 3dc0d5e..5ccfd6b 100644
+--- a/tests/test_audit.py
++++ b/tests/test_audit.py
+@@ -75,3 +75,12 @@ def test_summary_reads_decision_field(tmp_path):
+     summary = summarize_file(log)
+     assert summary.users == {"dan": (1, 1)}
+     assert dict(summary.denied_resources) == {"a": 1}
++
++
++def test_env_condition_and_explanation():
++    policy = parse_policy('role staff\nallow staff read payroll/** when env.network == "office"\n')
++    user = User("erin", ("staff",))
++    evaluator = Evaluator(policy)
++    assert evaluator.decide(Request(user, "read", "payroll/may", env={"network": "office"})).allowed
++    decision = evaluator.decide(Request(user, "read", "payroll/may"))
++    assert explain(decision).splitlines()[1] == '  rule 1 not applied: env.network == "office"'
+diff --git a/tests/test_conditions.py b/tests/test_conditions.py
+index 04dd26f..7b21cc9 100644
+--- a/tests/test_conditions.py
++++ b/tests/test_conditions.py
+@@ -4,8 +4,8 @@ from warden.conditions import Condition
+ from warden.errors import ConditionError
+ 
+ 
+-def holds(text, user=None, resource=None):
+-    return Condition(text).evaluate(user or {}, resource or {})
++def holds(text, user=None, resource=None, env=None):
++    return Condition(text).evaluate({"user": user or {}, "resource": resource or {}, "env": env or {}})
+ 
+ 
+ def test_equality_between_attributes():
+@@ -32,7 +32,7 @@ def test_and_needs_every_clause():
+ 
+ def test_failing_lists_unmet_clauses():
+     condition = Condition('user.dept == resource.dept and resource.stage != "draft"')
+-    assert condition.failing({"dept": "ops"}, {"dept": "hr", "stage": "draft"}) == [
++    assert condition.failing({"user": {"dept": "ops"}, "resource": {"dept": "hr", "stage": "draft"}, "env": {}}) == [
+         "user.dept == resource.dept", 'resource.stage != "draft"']
+ 
+ 
+@@ -59,3 +59,9 @@ def test_non_numbers_still_compare_as_text():
+     assert holds('user.name < "m"', {"name": "alice"})
+     assert not holds('user.name < "m"', {"name": "zed"})
+     assert holds('user.code > 5', {"code": "a1"})
++
++
++def test_env_attributes():
++    assert holds('env.network == "office"', env={"network": "office"})
++    assert not holds('env.network == "office"', env={"network": "home"})
++    assert not holds('env.network == "office"')

@@ -1,0 +1,13 @@
+diff --git a/src/marklite/cli.py b/src/marklite/cli.py
+index c258ad9..2483492 100644
+--- a/src/marklite/cli.py
++++ b/src/marklite/cli.py
+@@ -13,7 +13,7 @@ def main(argv=None):
+     parser = argparse.ArgumentParser(prog="marklite", description="Render a markdown file to HTML.")
+     parser.add_argument("path", help="markdown file to render, or - for standard input")
+     parser.add_argument("-o", "--output", help="write the result here instead of standard output")
+-    parser.add_argument("--toc-level", type=int, default=Options.toc_max_level,
++    parser.add_argument("--toc-level", type=int, default=3,
+                         help="deepest heading level the table of contents lists")
+     parser.add_argument("--json-toc", action="store_true", help="print the table of contents as JSON")
+     parser.add_argument("--no-ids", action="store_true", help="leave id attributes off headings")

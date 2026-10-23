@@ -1,0 +1,115 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e3207bd..50a092b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Added strikethrough: `~~text~~` renders as `<del>text</del>`.
+ - Fixed a `RecursionError` crash on very deeply nested quotes or lists; nesting deeper than 32 levels now raises `MarkliteError`.
+ - The table of contents lists heading levels 1 and 2 by default (`toc_max_level` was 3).
+ - Double quotes in text content are no longer written as `&quot;`; attribute values still escape them.
+diff --git a/docs/reference.md b/docs/reference.md
+index e1ef0d9..752b8de 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -19,6 +19,7 @@ Fields of `marklite.Options`, with their defaults.
+ |---|---|---|
+ | `*text*` | `<em>text</em>` | `_text_` too, but not inside a word. |
+ | `**text**` | `<strong>text</strong>` | `__text__` too. |
++| `~~text~~` | `<del>text</del>` | Exactly two tildes on each side; a single `~` is literal. |
+ | `[text](url)` | `<a href="url">text</a>` | An optional `"title"` follows the URL. |
+ | `![alt](url)` | `<img src="url" alt="alt" />` | The alt text is the plain text of the label. |
+ | `[TOC]` | `<nav class="toc">` | A paragraph holding only the marker becomes the table of contents. |
+diff --git a/src/marklite/inline.py b/src/marklite/inline.py
+index 57bacf3..d3c7d9c 100644
+--- a/src/marklite/inline.py
++++ b/src/marklite/inline.py
+@@ -1,4 +1,4 @@
+-"""Inline markup: code spans, emphasis, links, images, autolinks and entities."""
++"""Inline markup: code spans, emphasis, strikethrough, links, images, autolinks and entities."""
+ from dataclasses import dataclass
+ import re
+ 
+@@ -36,6 +36,11 @@ class Strong:
+     children: list
+ 
+ 
++@dataclass
++class Strikethrough:
++    children: list
++
++
+ @dataclass
+ class Link:
+     url: str
+@@ -96,6 +101,8 @@ def _render(node, options):
+         return f"<em>{render_inline(node.children, options)}</em>"
+     if isinstance(node, Strong):
+         return f"<strong>{render_inline(node.children, options)}</strong>"
++    if isinstance(node, Strikethrough):
++        return f"<del>{render_inline(node.children, options)}</del>"
+     if isinstance(node, Link):
+         href = escape_attr(safe_url(node.url, options))
+         return f'<a href="{href}"{_title(node.title)}>{render_inline(node.children, options)}</a>'
+@@ -116,7 +123,8 @@ class _Scanner:
+ 
+     def parse(self):
+         handlers = {"\\": self.backslash, "`": self.code, "&": self.entity, "<": self.autolink,
+-                    "[": self.link, "!": self.image, "*": self.emphasis, "_": self.emphasis}
++                    "[": self.link, "!": self.image, "*": self.emphasis, "_": self.emphasis,
++                    "~": self.strikethrough}
+         while self.pos < len(self.text):
+             handler = handlers.get(self.text[self.pos])
+             if handler is None or not handler():
+@@ -197,6 +205,14 @@ class _Scanner:
+                 return self.emit(kind(parse_inline(self.text[self.pos + run:end])), end + run)
+         return self.literal(char * run)
+ 
++    def strikethrough(self):
++        run = _run(self.text, self.pos, "~")
++        if run == 2 and _opens(self.text, self.pos, run, "~"):
++            end = _closing(self.text, self.pos + 2, "~~")
++            if end is not None:
++                return self.emit(Strikethrough(parse_inline(self.text[self.pos + 2:end])), end + 2)
++        return self.literal("~" * run)
++
+ 
+ def _run(text, pos, char):
+     end = pos
+diff --git a/tests/test_inline.py b/tests/test_inline.py
+index 6d24cfb..6e76163 100644
+--- a/tests/test_inline.py
++++ b/tests/test_inline.py
+@@ -15,6 +15,15 @@ def test_nested_emphasis():
+     assert inline("**bold *and* more**") == "<strong>bold <em>and</em> more</strong>"
+ 
+ 
++def test_strikethrough():
++    assert inline("~~gone~~ ~~**old**~~ **~~both~~**") == (
++        "<del>gone</del> <del><strong>old</strong></del> <strong><del>both</del></strong>")
++
++
++def test_single_tildes_are_literal():
++    assert inline("~5 km ~~ ~~~x~~~ ~~open") == "~5 km ~~ ~~~x~~~ ~~open"
++
++
+ def test_underscores_inside_words_are_literal():
+     assert inline("snake_case_name") == "snake_case_name"
+ 
+diff --git a/tests/test_outline.py b/tests/test_outline.py
+index ebfc5e9..9d3c3b1 100644
+--- a/tests/test_outline.py
++++ b/tests/test_outline.py
+@@ -82,6 +82,10 @@ def test_toc_skipped_level_nests_under_closest_lower_entry():
+         '<li><a href="#section-b">B</a></li><li><a href="#section-c">C</a></li></ul></li></ul></nav>')
+ 
+ 
++def test_struck_heading_title_is_plain_text():
++    assert toc("# ~~Old~~ New\n")[0] == TocEntry(1, "Old New", "section-old-new")
++
++
+ def test_empty_toc():
+     assert render("[TOC]\n") == '<nav class="toc"></nav>\n'
+ 

@@ -1,0 +1,74 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 779bf3b..ef16e7c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: comparisons in conditions treated numbers as text, so `user.clearance >= 3` refused a clearance of 10. Numbers, including numeric strings, now compare as numbers.
+ - Audit log records carry `"decision": "allow"` or `"deny"` in place of `"allowed": true/false`. Older logs are not read.
+ - A rule can name several roles separated by commas (`allow viewer,auditor read reports/**`); it applies to anyone holding any of them.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 21fa70a..ae4a769 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -42,7 +42,7 @@
+ | `condition.operators` | `== != < <= > >=` | comparison operators |
+ | `condition.join` | `and` | joins clauses; all must hold |
+ | `condition.literals` | `"text", numbers, true, false` | constants allowed in a clause |
+-| `condition.compare` | `as text` | how values are compared |
++| `condition.compare` | `numbers as numbers, otherwise as text` | strings such as `"10"` count as numbers |
+ | `condition.missing` | `false` | a clause naming an absent attribute never holds |
+ 
+ ## Data format (dict or `.json` file)
+diff --git a/src/warden/conditions.py b/src/warden/conditions.py
+index b05687e..1c18795 100644
+--- a/src/warden/conditions.py
++++ b/src/warden/conditions.py
+@@ -48,9 +48,22 @@ class Clause:
+         left, right = self.left.value(scope), self.right.value(scope)
+         if left is MISSING or right is MISSING:
+             return False
++        numbers = _number(left), _number(right)
++        if None not in numbers:
++            return OPERATORS[self.op](*numbers)
+         return OPERATORS[self.op](_text(left), _text(right))
+ 
+ 
++def _number(value):
++    if isinstance(value, bool):
++        return None
++    if isinstance(value, (int, float)):
++        return value
++    if isinstance(value, str) and _NUMBER.fullmatch(value.strip()):
++        return float(value)
++    return None
++
++
+ def _text(value):
+     if isinstance(value, bool):
+         return "true" if value else "false"
+diff --git a/tests/test_conditions.py b/tests/test_conditions.py
+index 41ccfe7..04dd26f 100644
+--- a/tests/test_conditions.py
++++ b/tests/test_conditions.py
+@@ -45,3 +45,17 @@ def test_failing_lists_unmet_clauses():
+ def test_bad_conditions(text, message):
+     with pytest.raises(ConditionError, match=message):
+         Condition(text)
++
++
++def test_numbers_compare_as_numbers():
++    assert holds("user.clearance >= 3", {"clearance": 10})
++    assert holds("user.clearance >= 3", {"clearance": "10"})
++    assert not holds("user.clearance >= 3", {"clearance": 2})
++    assert holds("user.level < resource.level", {"level": 9}, {"level": "10"})
++    assert holds("user.level == 3", {"level": "3.0"})
++
++
++def test_non_numbers_still_compare_as_text():
++    assert holds('user.name < "m"', {"name": "alice"})
++    assert not holds('user.name < "m"', {"name": "zed"})
++    assert holds('user.code > 5', {"code": "a1"})

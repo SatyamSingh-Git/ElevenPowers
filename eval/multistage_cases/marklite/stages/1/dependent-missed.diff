@@ -1,0 +1,13 @@
+diff --git a/src/marklite/outline.py b/src/marklite/outline.py
+index 1918b43..c24e24d 100644
+--- a/src/marklite/outline.py
++++ b/src/marklite/outline.py
+@@ -24,7 +24,7 @@ def build_toc(document, options):
+             continue
+         title = plain_text(parse_inline(node.text))
+         # Every heading takes its slug, listed or not, so duplicates number the same way the ids do.
+-        anchor = options.id_prefix + slugger.slug(title)
++        anchor = slugger.slug(title)
+         if node.level <= options.toc_max_level:
+             entries.append(TocEntry(node.level, title, anchor))
+     return entries

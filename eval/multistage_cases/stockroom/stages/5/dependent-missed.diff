@@ -1,0 +1,72 @@
+diff --git a/src/stockroom/ledger.py b/src/stockroom/ledger.py
+index 6304739..6e57943 100644
+--- a/src/stockroom/ledger.py
++++ b/src/stockroom/ledger.py
+@@ -5,26 +5,31 @@ catch a stock table that was edited by hand or written by a faulty release.
+ """
+ from collections import defaultdict, namedtuple
+ 
+-from .models import MOVEMENT_TYPES, StockError
++from .models import StockError
+ 
+ Mismatch = namedtuple('Mismatch', 'sku location table ledger')
+ 
+ 
+ def replay(movements):
+-    """Stock by item and location as the movement log says it should be.
+-
+-    Each line changes one location; the lines of one transfer share its seq.
+-    """
++    """Stock by item and location as the movement log says it should be."""
+     stock = defaultdict(lambda: defaultdict(int))
+     last = 0
+-    for line in movements:
+-        seq, kind = line['seq'], line['type']
+-        if seq < last:
++    for movement in movements:
++        seq, kind, sku, qty = movement['seq'], movement['type'], movement['sku'], movement['qty']
++        if seq <= last:
+             raise StockError(f'movement out of order: #{seq} after #{last}')
+-        if kind not in MOVEMENT_TYPES:
+-            raise StockError(f'unknown movement type at #{seq}: {kind}')
+         last = seq
+-        stock[line['sku']][line['location']] += line['delta']
++        if kind == 'receive':
++            stock[sku][movement['to']] += qty
++        elif kind == 'issue':
++            stock[sku][movement['from']] -= qty
++        elif kind == 'transfer':
++            stock[sku][movement['from']] -= qty
++            stock[sku][movement['to']] += qty
++        elif kind == 'adjust':
++            stock[sku][movement['to']] += qty
++        else:
++            raise StockError(f'unknown movement type at #{seq}: {kind}')
+     return {sku: {code: qty for code, qty in row.items() if qty}
+             for sku, row in stock.items() if any(row.values())}
+ 
+@@ -43,16 +48,18 @@ def mismatches(doc):
+ 
+ 
+ def movement_count(doc):
+-    return len({line['seq'] for line in doc['movements']})
++    return len(doc['movements'])
+ 
+ 
+ def unknown_references(doc):
+     """Movements naming an item or location the file does not define."""
+     items, locations = doc['items'], doc['locations']
+     problems = []
+-    for line in doc['movements']:
+-        if line['sku'] not in items:
+-            problems.append(f"#{line['seq']} names unknown item {line['sku']}")
+-        if line['location'] not in locations:
+-            problems.append(f"#{line['seq']} names unknown location {line['location']}")
++    for movement in doc['movements']:
++        if movement['sku'] not in items:
++            problems.append(f"#{movement['seq']} names unknown item {movement['sku']}")
++        for end in ('from', 'to'):
++            code = movement[end]
++            if code is not None and code not in locations:
++                problems.append(f"#{movement['seq']} names unknown location {code}")
+     return problems

@@ -1,0 +1,28 @@
+diff --git a/src/marklite/render.py b/src/marklite/render.py
+index 5f5b9e8..e0f7950 100644
+--- a/src/marklite/render.py
++++ b/src/marklite/render.py
+@@ -1,7 +1,7 @@
+ """HTML rendering of a parsed document, and the public entry points."""
+ from .blocks import CodeBlock, Heading, ListBlock, Paragraph, Quote, parse_blocks
+ from .errors import MarkliteError
+-from .escape import escape, escape_attr
++from .escape import escape
+ from .inline import parse_inline, plain_text, render_inline
+ from .options import Options
+ from .outline import TOC_MARKER, build_toc, render_toc
+@@ -60,12 +60,12 @@ class _Renderer:
+         # Only top-level headings get ids; they are the ones the table of contents can list.
+         if top and self.options.heading_ids:
+             slug = self.slugger.slug(plain_text(content))
+-            attributes = f' id="{escape_attr(self.options.id_prefix + slug)}"'
++            attributes = f' id="{escape(self.options.id_prefix + slug)}"'
+         return f"<h{node.level}{attributes}>{render_inline(content, self.options)}</h{node.level}>\n"
+ 
+     def code(self, node):
+         language = node.info.split()[0] if node.info else ""
+-        attributes = f' class="{escape_attr(self.options.code_class_prefix + language)}"' if language else ""
++        attributes = f' class="{escape(self.options.code_class_prefix + language)}"' if language else ""
+         return f"<pre><code{attributes}>{escape(node.code)}</code></pre>\n"
+ 
+     def list(self, node):

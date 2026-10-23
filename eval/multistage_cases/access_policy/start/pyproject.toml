@@ -1,0 +1,12 @@
+[project]
+name = "warden"
+version = "0.4.0"
+description = "Role- and attribute-based access policies"
+requires-python = ">=3.10"
+
+[project.scripts]
+warden = "warden.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

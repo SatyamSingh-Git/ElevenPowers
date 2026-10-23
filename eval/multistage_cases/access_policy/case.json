@@ -1,0 +1,129 @@
+{
+ "id": "access_policy",
+ "pythonpath": "src",
+ "test_dir": "tests",
+ "protected": "src/warden/_generated.py",
+ "docs": "docs/reference.md",
+ "changelog": "CHANGELOG.md",
+ "stages": [
+  {
+   "request": "Rules should be able to name more than one role. The rule line becomes `<effect> <roles> <actions> <pattern> [when <condition>]`, where `<roles>` is one or more role names separated by commas, e.g. `allow viewer,auditor read reports/**`. The rule applies to anyone who holds any of the listed roles, directly or through inheritance, and every role listed has to be defined, just as a single role does today.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [
+    "base_policy",
+    "base_tooling"
+   ]
+  },
+  {
+   "request": "In the audit log, each record should state the outcome as `\"decision\": \"allow\"` or `\"decision\": \"deny\"` instead of `\"allowed\": true` / `\"allowed\": false`, so the log reads the same way the policy does. A record's keys become `action, decision, reason, resource, rule, user`. Logs written in the old shape don't need to stay readable.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [
+    "base_tooling"
+   ]
+  },
+  {
+   "request": "Bug: with `allow staff read payroll/** when user.clearance >= 3`, a user whose clearance is 10 is refused, while a user with clearance 4 gets in. It looks like the comparison is done on text. When both sides of a comparison are numbers, including numbers that arrive as strings like `\"10\"`, they should compare as numbers; anything else keeps comparing as text.",
+   "kind": "self-contained",
+   "bugfix": true,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "Rules should be able to look at the circumstances of a request, not just the user and the resource. Conditions get a third namespace, `env`, alongside `user` and `resource`: for example `allow staff read payroll/** when env.network == \"office\"`. The values come with the request: `Request(user, \"read\", \"payroll/may\", env={\"network\": \"office\"})`. A condition that names an `env` value the request didn't supply doesn't hold, the same as a missing user or resource attribute.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [
+    "base_tooling",
+    "s3_numeric_text"
+   ]
+  },
+  {
+   "request": "The \"most denied\" list in the log summary is too short, and its order is unpredictable when counts tie. Show the ten most denied resources instead of five, highest count first, with ties broken by resource name in alphabetical order. Also end each user's line with their denial rate, the share of their decisions that were denied, rounded to a whole percent: `  alice  3 allowed  1 denied  25%`.",
+   "kind": "self-contained",
+   "bugfix": false,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "A role should be able to inherit from more than one role: `role lead inherits editor, auditor` gives `lead` everything `editor` and `auditor` have, so the role line becomes `role <name> [inherits <parent>, ...]`. In JSON policies a role's parent may likewise be a list, e.g. `\"lead\": [\"editor\", \"auditor\"]`; a single name or `null` still works. A cycle through any of the parents must still be refused.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [
+    "base_tooling",
+    "s1_multi_role_tools"
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "id": "base_policy",
+   "since": 0,
+   "until": 6
+  },
+  {
+   "id": "base_tooling",
+   "since": 0,
+   "until": 6
+  },
+  {
+   "id": "s1_multi_role",
+   "since": 1,
+   "until": 6
+  },
+  {
+   "id": "s1_multi_role_tools",
+   "since": 1,
+   "until": 6
+  },
+  {
+   "id": "s2_log_decision",
+   "since": 2,
+   "until": 6
+  },
+  {
+   "id": "s2_log_summary",
+   "since": 2,
+   "until": 6
+  },
+  {
+   "id": "s3_numeric",
+   "since": 3,
+   "until": 6
+  },
+  {
+   "id": "s3_numeric_text",
+   "since": 3,
+   "until": 6
+  },
+  {
+   "id": "s4_env",
+   "since": 4,
+   "until": 6
+  },
+  {
+   "id": "s4_env_explain",
+   "since": 4,
+   "until": 6
+  },
+  {
+   "id": "s5_report_top",
+   "since": 5,
+   "until": 6
+  },
+  {
+   "id": "s5_report_rate",
+   "since": 5,
+   "until": 6
+  },
+  {
+   "id": "s6_multi_parent",
+   "since": 6,
+   "until": 6
+  },
+  {
+   "id": "s6_multi_parent_lint",
+   "since": 6,
+   "until": 6
+  }
+ ]
+}

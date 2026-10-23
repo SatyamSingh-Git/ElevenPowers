@@ -1,0 +1,259 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 989ff06..51a8846 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - Add `items` and `locations` listings.
++- Store item costs in the data file as whole cents (`cost_cents`), data file version 2. Version 1 files are upgraded when read.
+ 
+ ## 1.4.0
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 3ef8ff5..d385c48 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -18,11 +18,11 @@ One JSON document. Item SKUs and location codes are stored upper-case.
+ 
+ | Field | Type | Meaning |
+ |---|---|---|
+-| `version` | `1` | schema version of the data file |
++| `version` | `2` | schema version of the data file; version 1 files are upgraded when read |
+ | `items.<sku>.name` | `string` | item name |
+ | `items.<sku>.unit` | `string` | unit of measure |
+ | `items.<sku>.reorder_point` | `integer` | the item is low when its total on hand is below this |
+-| `items.<sku>.unit_cost` | `string` | unit cost in dollars with two decimal places, e.g. "2.50" |
++| `items.<sku>.cost_cents` | `integer` | unit cost in whole cents, e.g. 250 for $2.50 |
+ | `locations.<code>.kind` | `string` | one of the location kinds |
+ | `locations.<code>.description` | `string` | free text |
+ | `stock.<sku>.<code>` | `integer` | quantity held; locations holding none are left out |
+diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
+index 31922eb..f4392c3 100644
+--- a/src/stockroom/cli.py
++++ b/src/stockroom/cli.py
+@@ -1,6 +1,5 @@
+ """The `stockroom` command."""
+ import argparse
+-from decimal import Decimal
+ from pathlib import Path
+ import sys
+ 
+@@ -63,7 +62,7 @@ def _show(inventory, args, out):
+     out.write(f"{sku}  {item['name']}\n")
+     out.write(f"unit: {item['unit']}\n")
+     out.write(f"reorder point: {item['reorder_point']}\n")
+-    out.write(f"unit cost: {format_money(Decimal(item['unit_cost']))}\n")
++    out.write(f"unit cost: {format_money(item['cost_cents'])}\n")
+     for row in reports.stock_levels(inventory, sku):
+         out.write(f'  {row.location}  {row.quantity}\n')
+     out.write(f'on hand: {inventory.on_hand(sku)}\n')
+@@ -77,7 +76,7 @@ def _items(inventory, args, out):
+     for sku in inventory.skus():
+         item = inventory.item(sku)
+         rows.append((sku, item['name'], item['unit'], item['reorder_point'],
+-                     format_money(Decimal(item['unit_cost']))))
++                     format_money(item['cost_cents'])))
+     out.write(reports.table(('SKU', 'NAME', 'UNIT', 'REORDER', 'UNIT COST'), rows, right=(3, 4)) + '\n')
+ 
+ 
+diff --git a/src/stockroom/inventory.py b/src/stockroom/inventory.py
+index 88d54f1..7ea2415 100644
+--- a/src/stockroom/inventory.py
++++ b/src/stockroom/inventory.py
+@@ -21,7 +21,7 @@ class Inventory:
+             'name': check_name(name),
+             'unit': check_unit(unit),
+             'reorder_point': parse_reorder_point(reorder_point),
+-            'unit_cost': str(parse_money(cost)),
++            'cost_cents': parse_money(cost),
+         }
+         return sku
+ 
+diff --git a/src/stockroom/models.py b/src/stockroom/models.py
+index 8011eb3..6f3f194 100644
+--- a/src/stockroom/models.py
++++ b/src/stockroom/models.py
+@@ -65,15 +65,15 @@ def parse_reorder_point(value):
+ 
+ 
+ def parse_money(value):
+-    """Dollars and cents such as '2.50', '3' or '$0.12', as a Decimal with two places."""
++    """Dollars and cents such as '2.50', '3' or '$0.12', as a whole number of cents."""
+     text = str(value).strip().removeprefix('$')
+     if not MONEY_PATTERN.fullmatch(text):
+         raise StockError(f'cost must be dollars and cents, like 2.50: {value}')
+-    return Decimal(text).quantize(Decimal('0.01'))
++    return int(Decimal(text) * 100)
+ 
+ 
+-def format_money(amount):
+-    return f'${amount:,.2f}'
++def format_money(cents):
++    return f'${cents // 100:,}.{cents % 100:02d}'
+ 
+ 
+ def check_name(name):
+diff --git a/src/stockroom/reports.py b/src/stockroom/reports.py
+index 6145c52..74b4417 100644
+--- a/src/stockroom/reports.py
++++ b/src/stockroom/reports.py
+@@ -1,10 +1,10 @@
+ """Low-stock, valuation and stock-level reports, as rows and as text tables."""
+ from collections import namedtuple
+-from decimal import Decimal
+ 
+ from .models import format_money, normalize_sku
+ 
+ LowRow = namedtuple('LowRow', 'sku name on_hand reorder_point shortfall')
++# Money in whole cents.
+ ValueRow = namedtuple('ValueRow', 'sku quantity unit_cost value')
+ StockRow = namedtuple('StockRow', 'sku location quantity')
+ 
+@@ -27,9 +27,9 @@ def valuation(inventory):
+     for sku in inventory.skus():
+         held = inventory.on_hand(sku)
+         if held:
+-            cost = Decimal(inventory.item(sku)['unit_cost'])
++            cost = inventory.item(sku)['cost_cents']
+             rows.append(ValueRow(sku, held, cost, cost * held))
+-    return rows, sum((row.value for row in rows), Decimal('0.00'))
++    return rows, sum(row.value for row in rows)
+ 
+ 
+ def stock_levels(inventory, sku=None):
+diff --git a/src/stockroom/store.py b/src/stockroom/store.py
+index f5c241d..811804b 100644
+--- a/src/stockroom/store.py
++++ b/src/stockroom/store.py
+@@ -3,13 +3,14 @@
+ The document is used directly as the in-memory model. Callers change it through
+ `Inventory` and write it back with `save`.
+ """
++from decimal import Decimal
+ import json
+ import os
+ from pathlib import Path
+ 
+ from .models import StockError
+ 
+-SCHEMA_VERSION = 1
++SCHEMA_VERSION = 2
+ DEFAULT_FILE = 'stockroom.json'
+ FILE_ENV = 'STOCKROOM_FILE'
+ SECTIONS = ('items', 'locations', 'stock', 'movements')
+@@ -24,6 +25,17 @@ def new_document():
+     return {'version': SCHEMA_VERSION, 'items': {}, 'locations': {}, 'stock': {}, 'movements': []}
+ 
+ 
++def _from_v1(doc):
++    for item in doc['items'].values():
++        item['cost_cents'] = int(Decimal(item.pop('unit_cost')) * 100)
++    doc['version'] = 2
++    return doc
++
++
++# version: the step that rewrites a document of that version as the next one
++UPGRADES = {1: _from_v1}
++
++
+ def load(path):
+     """The document stored at `path`, or an empty one when the file does not exist yet."""
+     path = Path(path)
+@@ -34,11 +46,13 @@ def load(path):
+     except json.JSONDecodeError as exc:
+         raise StockError(f'data file is not valid JSON: {path} (line {exc.lineno})') from None
+     version = doc.get('version') if isinstance(doc, dict) else None
+-    if version != SCHEMA_VERSION:
++    if version != SCHEMA_VERSION and version not in UPGRADES:
+         raise StockError(f'unsupported data file version: {version}')
+     missing = [name for name in SECTIONS if name not in doc]
+     if missing:
+         raise StockError(f"data file is missing {', '.join(missing)}: {path}")
++    while doc['version'] in UPGRADES:
++        doc = UPGRADES[doc['version']](doc)
+     return doc
+ 
+ 
+diff --git a/tests/test_inventory.py b/tests/test_inventory.py
+index 02f3eb9..e7c8202 100644
+--- a/tests/test_inventory.py
++++ b/tests/test_inventory.py
+@@ -47,4 +47,4 @@ def test_refusals(inventory):
+ 
+ 
+ def test_items_keep_their_cost(inventory):
+-    assert inventory.item('BOLT-M6')['unit_cost'] == '0.12'
++    assert inventory.item('BOLT-M6')['cost_cents'] == 12
+diff --git a/tests/test_models.py b/tests/test_models.py
+index 06af304..6fd9023 100644
+--- a/tests/test_models.py
++++ b/tests/test_models.py
+@@ -1,5 +1,3 @@
+-from decimal import Decimal
+-
+ import pytest
+ 
+ from stockroom.models import (
+@@ -32,9 +30,11 @@ def test_counts_may_be_zero():
+         parse_count('-1')
+ 
+ 
+-def test_money_round_trips():
+-    assert parse_money('2.5') == Decimal('2.50')
+-    assert parse_money('$3') == Decimal('3.00')
+-    assert format_money(Decimal('1234.5')) == '$1,234.50'
++def test_money_is_kept_in_cents():
++    assert parse_money('2.5') == 250
++    assert parse_money('$3') == 300
++    assert parse_money('0.07') == 7
++    assert format_money(123450) == '$1,234.50'
++    assert format_money(5) == '$0.05'
+     with pytest.raises(StockError, match='cost must be dollars and cents, like 2.50: 1.234'):
+         parse_money('1.234')
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 39c1898..567e477 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -1,5 +1,3 @@
+-from decimal import Decimal
+-
+ from stockroom.reports import low_stock, render_low, render_value, stock_levels, valuation
+ 
+ 
+@@ -22,7 +20,7 @@ def test_valuation(inventory):
+     inventory.receive('NUT-M6', 30, 'B2')
+     rows, total = valuation(inventory)
+     assert [(r.sku, r.quantity) for r in rows] == [('BOLT-M6', 100), ('NUT-M6', 30)]
+-    assert total == Decimal('13.50')
++    assert total == 1350
+     assert render_value(rows, total).splitlines()[-1].split() == ['TOTAL', '$13.50']
+ 
+ 
+diff --git a/tests/test_store.py b/tests/test_store.py
+index 17fbe4c..749e86a 100644
+--- a/tests/test_store.py
++++ b/tests/test_store.py
+@@ -15,10 +15,21 @@ def test_save_and_load_round_trip(tmp_path, inventory):
+     path = tmp_path / 'stock.json'
+     save(path, inventory.doc)
+     assert load(path) == inventory.doc
+-    assert json.loads(path.read_text(encoding='utf-8'))['version'] == 1
++    assert json.loads(path.read_text(encoding='utf-8'))['version'] == 2
+     assert not (tmp_path / 'stock.json.tmp').exists()
+ 
+ 
++def test_version_1_files_are_upgraded(tmp_path):
++    path = tmp_path / 'stock.json'
++    old = {'version': 1, 'items': {'BOLT-M6': {'name': 'M6 bolt', 'unit': 'ea', 'reorder_point': 0,
++                                               'unit_cost': '1.10'}},
++           'locations': {}, 'stock': {}, 'movements': []}
++    path.write_text(json.dumps(old), encoding='utf-8')
++    doc = load(path)
++    assert doc['version'] == 2
++    assert doc['items']['BOLT-M6'] == {'name': 'M6 bolt', 'unit': 'ea', 'reorder_point': 0, 'cost_cents': 110}
++
++
+ def test_unknown_versions_are_refused(tmp_path):
+     path = tmp_path / 'stock.json'
+     path.write_text(json.dumps({**new_document(), 'version': 99}), encoding='utf-8')

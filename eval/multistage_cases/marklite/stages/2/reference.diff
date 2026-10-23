@@ -1,0 +1,170 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e747678..5fb5fbf 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Double quotes in text content are no longer written as `&quot;`; attribute values still escape them.
+ - Heading ids and table of contents anchors now start with the `id_prefix` option, `section-` by default.
+ 
+ ## 0.6.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 714c7ed..469fb97 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -32,7 +32,8 @@ setext headings, tables and HTML blocks are not.
+ 
+ | Fact | Value | Meaning |
+ |---|---|---|
+-| `escaped_in_text` | `& < > "` | Characters written as entities in text content. |
++| `escaped_in_text` | `& < >` | Characters written as entities in text content; `"` is left as it is. |
++| `escaped_in_attributes` | `& < > "` | Characters written as entities in attribute values (`href`, `src`, `alt`, `title`, `id`, `class`). |
+ | `safe_schemes` | `http, https, mailto` | URL schemes kept when `safe_links` is on; URLs without a scheme are always kept. |
+ | `unsafe_url` | `#` | What replaces a URL with any other scheme. |
+ 
+diff --git a/src/marklite/escape.py b/src/marklite/escape.py
+index 26dcb5c..bbae296 100644
+--- a/src/marklite/escape.py
++++ b/src/marklite/escape.py
+@@ -5,13 +5,19 @@ from ._generated import ESCAPES
+ SAFE_SCHEMES = ("http", "https", "mailto")
+ UNSAFE_URL = "#"
+ 
+-_TABLE = str.maketrans(ESCAPES)
++_TEXT = str.maketrans({char: entity for char, entity in ESCAPES.items() if char != '"'})
++_ATTRIBUTE = str.maketrans(ESCAPES)
+ # Browsers drop control characters and spaces before deciding on a scheme.
+ _SCHEME = re.compile(r"^[\x00-\x20]*([A-Za-z][A-Za-z0-9+.\-]*)[\x00-\x20]*:")
+ 
+ 
+ def escape(text):
+-    return text.translate(_TABLE)
++    """For text content. Quotes are left alone; use escape_attr inside attribute values."""
++    return text.translate(_TEXT)
++
++
++def escape_attr(text):
++    return text.translate(_ATTRIBUTE)
+ 
+ 
+ def safe_url(url, options):
+diff --git a/src/marklite/inline.py b/src/marklite/inline.py
+index 6ca7c26..57bacf3 100644
+--- a/src/marklite/inline.py
++++ b/src/marklite/inline.py
+@@ -3,7 +3,7 @@ from dataclasses import dataclass
+ import re
+ 
+ from ._generated import NAMED_ENTITIES
+-from .escape import escape, safe_url
++from .escape import escape, escape_attr, safe_url
+ 
+ PUNCTUATION = frozenset("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+ _ENTITY = re.compile(r"&(?:#([0-9]{1,7})|#[xX]([0-9a-fA-F]{1,6})|([A-Za-z][A-Za-z0-9]{1,31}));")
+@@ -97,14 +97,14 @@ def _render(node, options):
+     if isinstance(node, Strong):
+         return f"<strong>{render_inline(node.children, options)}</strong>"
+     if isinstance(node, Link):
+-        href = escape(safe_url(node.url, options))
++        href = escape_attr(safe_url(node.url, options))
+         return f'<a href="{href}"{_title(node.title)}>{render_inline(node.children, options)}</a>'
+-    src = escape(safe_url(node.url, options))
+-    return f'<img src="{src}" alt="{escape(plain_text(node.alt))}"{_title(node.title)} />'
++    src = escape_attr(safe_url(node.url, options))
++    return f'<img src="{src}" alt="{escape_attr(plain_text(node.alt))}"{_title(node.title)} />'
+ 
+ 
+ def _title(title):
+-    return f' title="{escape(title)}"' if title else ""
++    return f' title="{escape_attr(title)}"' if title else ""
+ 
+ 
+ class _Scanner:
+diff --git a/src/marklite/outline.py b/src/marklite/outline.py
+index 1918b43..e0f6450 100644
+--- a/src/marklite/outline.py
++++ b/src/marklite/outline.py
+@@ -2,7 +2,7 @@
+ from typing import NamedTuple
+ 
+ from .blocks import Heading
+-from .escape import escape
++from .escape import escape, escape_attr
+ from .inline import parse_inline, plain_text
+ from .slug import Slugger
+ 
+@@ -44,7 +44,7 @@ def render_toc(entries):
+             if not parent[1]:
+                 parts.append("<ul>")
+                 parent[1] = True
+-        parts.append(f'<li><a href="#{escape(entry.anchor)}">{escape(entry.title)}</a>')
++        parts.append(f'<li><a href="#{escape_attr(entry.anchor)}">{escape(entry.title)}</a>')
+         open_items.append([entry.level, False])
+     while open_items:
+         _close(parts, open_items.pop())
+diff --git a/src/marklite/render.py b/src/marklite/render.py
+index e0f7950..5f5b9e8 100644
+--- a/src/marklite/render.py
++++ b/src/marklite/render.py
+@@ -1,7 +1,7 @@
+ """HTML rendering of a parsed document, and the public entry points."""
+ from .blocks import CodeBlock, Heading, ListBlock, Paragraph, Quote, parse_blocks
+ from .errors import MarkliteError
+-from .escape import escape
++from .escape import escape, escape_attr
+ from .inline import parse_inline, plain_text, render_inline
+ from .options import Options
+ from .outline import TOC_MARKER, build_toc, render_toc
+@@ -60,12 +60,12 @@ class _Renderer:
+         # Only top-level headings get ids; they are the ones the table of contents can list.
+         if top and self.options.heading_ids:
+             slug = self.slugger.slug(plain_text(content))
+-            attributes = f' id="{escape(self.options.id_prefix + slug)}"'
++            attributes = f' id="{escape_attr(self.options.id_prefix + slug)}"'
+         return f"<h{node.level}{attributes}>{render_inline(content, self.options)}</h{node.level}>\n"
+ 
+     def code(self, node):
+         language = node.info.split()[0] if node.info else ""
+-        attributes = f' class="{escape(self.options.code_class_prefix + language)}"' if language else ""
++        attributes = f' class="{escape_attr(self.options.code_class_prefix + language)}"' if language else ""
+         return f"<pre><code{attributes}>{escape(node.code)}</code></pre>\n"
+ 
+     def list(self, node):
+diff --git a/tests/test_blocks.py b/tests/test_blocks.py
+index 2ca2cac..fa50365 100644
+--- a/tests/test_blocks.py
++++ b/tests/test_blocks.py
+@@ -23,6 +23,11 @@ def test_fenced_code_keeps_content_verbatim():
+     assert html == '<pre><code class="language-python">if a &lt; b:\n    pass\n</code></pre>\n'
+ 
+ 
++def test_code_block_keeps_quotes_but_escapes_its_class():
++    html = render('```a"b\nx = "1"\n```\n')
++    assert html == '<pre><code class="language-a&quot;b">x = "1"\n</code></pre>\n'
++
++
+ def test_unclosed_fence_runs_to_the_end():
+     document = parse("~~~\ncode\n")
+     assert document.children == [CodeBlock("", "code\n", 1)]
+diff --git a/tests/test_inline.py b/tests/test_inline.py
+index 9793606..6d24cfb 100644
+--- a/tests/test_inline.py
++++ b/tests/test_inline.py
+@@ -39,6 +39,15 @@ def test_text_is_escaped():
+     assert inline("a < b & c > d") == "a &lt; b &amp; c &gt; d"
+ 
+ 
++def test_quotes_in_text_are_left_alone():
++    assert inline('She said "hi" `x="1"`') == 'She said "hi" <code>x="1"</code>'
++
++
++def test_quotes_in_attributes_are_escaped():
++    assert inline('["a"](http://x.org/"q" "t \\"1\\"") !["b"](p.png)') == (
++        '<a href="http://x.org/&quot;q&quot;" title="t &quot;1&quot;">"a"</a> <img src="p.png" alt="&quot;b&quot;" />')
++
++
+ def test_known_entities_pass_through():
+     assert inline("&copy; &#169; &#xA9; &bogus;") == "&copy; &#169; &#xA9; &amp;bogus;"
+ 

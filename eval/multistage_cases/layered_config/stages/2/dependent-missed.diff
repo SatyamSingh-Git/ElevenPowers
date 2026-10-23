@@ -1,0 +1,21 @@
+diff --git a/src/layercfg/dump.py b/src/layercfg/dump.py
+index 27c66e8..6fc057a 100644
+--- a/src/layercfg/dump.py
++++ b/src/layercfg/dump.py
+@@ -6,7 +6,6 @@ values, apart from secrets, which every view masks unless asked not to.
+ import json
+ 
+ from ._generated import DURATION_UNITS, SIZE_UNITS
+-from .envsource import env_name
+ 
+ MASK = '***'
+ FORMATS = ('ini', 'json', 'sources')
+@@ -88,7 +87,7 @@ def explain(config, option):
+         f'  type: {option.type}',
+         f"  default: {'(unset)' if option.default is None else option.default}",
+         f'  set by: {config.source(option.key)}',
+-        f'  env: {env_name(option.key, config.env_prefix)}',
++        f"  env: {config.env_prefix}{option.key.upper().replace('.', '__')}",
+     ]
+     aliases = config.schema.aliases_of(option.key)
+     if aliases:

@@ -1,0 +1,102 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b146ebe..be767a0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -5,6 +5,7 @@
+ - Add `items` and `locations` listings.
+ - Store item costs in the data file as whole cents (`cost_cents`), data file version 2. Version 1 files are upgraded when read.
+ - Fix: a transfer from a location to itself added stock there. It is now refused.
++- `Inventory.on_hand()` now returns the quantity at each location; the new `Inventory.total()` returns the sum.
+ 
+ ## 1.4.0
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 7d101bd..e9c3e92 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -48,7 +48,8 @@ One JSON document. Item SKUs and location codes are stored upper-case.
+ 
+ | Call | Returns | Meaning |
+ |---|---|---|
+-| `Inventory.on_hand(sku)` | `total quantity` | sum over every location |
++| `Inventory.on_hand(sku)` | `quantity by location` | dict of location code to quantity, leaving out locations holding none |
++| `Inventory.total(sku)` | `total quantity` | sum over every location; 0 when none is held |
+ | `Inventory.at(sku, location)` | `quantity at location` | 0 when none is held there |
+ | `Inventory.receive(sku, qty, location)` | `quantity at location` | after the goods arrive |
+ | `Inventory.issue(sku, qty, location)` | `quantity at location` | what is left there |
+diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
+index f4392c3..be030c6 100644
+--- a/src/stockroom/cli.py
++++ b/src/stockroom/cli.py
+@@ -65,7 +65,7 @@ def _show(inventory, args, out):
+     out.write(f"unit cost: {format_money(item['cost_cents'])}\n")
+     for row in reports.stock_levels(inventory, sku):
+         out.write(f'  {row.location}  {row.quantity}\n')
+-    out.write(f'on hand: {inventory.on_hand(sku)}\n')
++    out.write(f'on hand: {inventory.total(sku)}\n')
+ 
+ 
+ def _items(inventory, args, out):
+diff --git a/src/stockroom/inventory.py b/src/stockroom/inventory.py
+index 4ef201e..f2851b6 100644
+--- a/src/stockroom/inventory.py
++++ b/src/stockroom/inventory.py
+@@ -71,8 +71,12 @@ class Inventory:
+         return self.doc['stock'].get(sku, {}).get(code, 0)
+ 
+     def on_hand(self, sku):
++        """Quantity by location code, for each location holding any of the item."""
++        return dict(sorted(self.doc['stock'].get(self._sku(sku), {}).items()))
++
++    def total(self, sku):
+         """The total quantity of an item across all locations."""
+-        return sum(self.doc['stock'].get(self._sku(sku), {}).values())
++        return sum(self.on_hand(sku).values())
+ 
+     def _set(self, sku, code, qty):
+         row = self.doc['stock'].setdefault(sku, {})
+diff --git a/src/stockroom/reports.py b/src/stockroom/reports.py
+index 74b4417..76fa91e 100644
+--- a/src/stockroom/reports.py
++++ b/src/stockroom/reports.py
+@@ -15,7 +15,7 @@ def low_stock(inventory):
+     for sku in inventory.skus():
+         item = inventory.item(sku)
+         point = item['reorder_point']
+-        held = inventory.on_hand(sku)
++        held = inventory.total(sku)
+         if point and held < point:
+             rows.append(LowRow(sku, item['name'], held, point, point - held))
+     return rows
+@@ -25,7 +25,7 @@ def valuation(inventory):
+     """Value of what is held, per item and in total. Items with nothing on hand are left out."""
+     rows = []
+     for sku in inventory.skus():
+-        held = inventory.on_hand(sku)
++        held = inventory.total(sku)
+         if held:
+             cost = inventory.item(sku)['cost_cents']
+             rows.append(ValueRow(sku, held, cost, cost * held))
+diff --git a/tests/test_inventory.py b/tests/test_inventory.py
+index 5914f20..3432d81 100644
+--- a/tests/test_inventory.py
++++ b/tests/test_inventory.py
+@@ -9,7 +9,17 @@ def test_receive_issue_and_transfer_move_stock(inventory):
+     assert inventory.transfer('BOLT-M6', 20, 'A1', 'B2') == 20
+     assert inventory.at('BOLT-M6', 'A1') == 50
+     assert inventory.at('BOLT-M6', 'B2') == 20
+-    assert inventory.on_hand('BOLT-M6') == 70
++    assert inventory.on_hand('BOLT-M6') == {'A1': 50, 'B2': 20}
++    assert inventory.total('BOLT-M6') == 70
++
++
++def test_on_hand_leaves_out_empty_locations(inventory):
++    inventory.receive('NUT-M6', 4, 'B2')
++    inventory.receive('NUT-M6', 4, 'A1')
++    inventory.issue('NUT-M6', 4, 'B2')
++    assert inventory.on_hand('NUT-M6') == {'A1': 4}
++    assert inventory.on_hand('BOLT-M6') == {}
++    assert inventory.total('BOLT-M6') == 0
+ 
+ 
+ def test_emptied_locations_leave_the_stock_table(inventory):

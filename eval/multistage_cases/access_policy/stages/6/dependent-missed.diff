@@ -1,0 +1,25 @@
+diff --git a/src/warden/lint.py b/src/warden/lint.py
+index cd9ba02..ccf564c 100644
+--- a/src/warden/lint.py
++++ b/src/warden/lint.py
+@@ -31,15 +31,14 @@ def _shadows(graph, deny, allow):
+ def _role_findings(policy):
+     graph = policy.roles
+     named = {role for rule in policy.rules for role in rule.roles}
+-    inherited = {parent for name in graph for parent in graph.parents_of(name)}
++    inherited = {graph.parent_of(name) for name in graph}
+     for name in graph:
+         if name in named:
+             continue
+-        # A role with several parents and no rules of its own still combines them.
+-        parents = graph.parents_of(name)
+-        if len(parents) == 1:
+-            yield Finding("redundant-role", f"role {name} adds nothing to {parents[0]}")
+-        elif not parents and name not in inherited:
++        parent = graph.parent_of(name)
++        if parent is not None:
++            yield Finding("redundant-role", f"role {name} adds nothing to {parent}")
++        elif name not in inherited:
+             yield Finding("unused-role", f"role {name} is never used")
+ 
+ 

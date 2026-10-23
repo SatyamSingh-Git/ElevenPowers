@@ -1,0 +1,203 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 50a092b..b15e047 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `marklite.toc()` now returns a tree: the outermost entries, each with a `children` list.
+ - Added strikethrough: `~~text~~` renders as `<del>text</del>`.
+ - Fixed a `RecursionError` crash on very deeply nested quotes or lists; nesting deeper than 32 levels now raises `MarkliteError`.
+ - The table of contents lists heading levels 1 and 2 by default (`toc_max_level` was 3).
+diff --git a/docs/reference.md b/docs/reference.md
+index 752b8de..0648263 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -46,11 +46,12 @@ setext headings, tables and HTML blocks are not.
+ | `empty_slug` | `heading` | Slug of a heading with no letters or digits. |
+ | `duplicate_slug` | `{slug}-{n}` | Repeated slugs are numbered from 1 in document order. |
+ | `heading_id` | `{id_prefix}{slug}` | The id a heading gets, and the anchor its table of contents entry links to. |
+-| `TocEntry` | `level, title, anchor` | Fields of each entry `marklite.toc()` returns; `title` is plain text and `anchor` is the heading's id. |
++| `TocEntry` | `level, title, anchor, children` | Fields of each entry `marklite.toc()` returns; `title` is plain text, `anchor` is the heading's id and `children` lists the entries beneath it. |
+ 
+ Only top-level headings (not those inside quotes or lists) get ids and appear in
+-the table of contents. An entry is nested under the closest earlier entry with
+-a lower level.
++the table of contents. `marklite.toc()` returns the outermost entries; an entry
++is in the `children` of the closest earlier entry with a lower level. `--json-toc`
++prints the same tree.
+ 
+ ## Limits and errors
+ 
+diff --git a/src/marklite/cli.py b/src/marklite/cli.py
+index c258ad9..775c2ee 100644
+--- a/src/marklite/cli.py
++++ b/src/marklite/cli.py
+@@ -1,4 +1,5 @@
+ import argparse
++from dataclasses import asdict
+ import json
+ from pathlib import Path
+ import sys
+@@ -30,8 +31,7 @@ def main(argv=None):
+         options = Options(toc_max_level=args.toc_level, heading_ids=not args.no_ids,
+                           safe_links=not args.unsafe_links, hard_breaks=args.hard_breaks)
+         if args.json_toc:
+-            entries = [{"level": entry.level, "title": entry.title, "anchor": entry.anchor}
+-                       for entry in toc(text, options)]
++            entries = [asdict(entry) for entry in toc(text, options)]
+             output = json.dumps(entries, indent=2, ensure_ascii=False) + "\n"
+         else:
+             output = render(text, options)
+diff --git a/src/marklite/outline.py b/src/marklite/outline.py
+index e0f6450..1712500 100644
+--- a/src/marklite/outline.py
++++ b/src/marklite/outline.py
+@@ -1,5 +1,5 @@
+ """The table of contents: which headings it lists, their anchors, and its HTML."""
+-from typing import NamedTuple
++from dataclasses import dataclass, field
+ 
+ from .blocks import Heading
+ from .escape import escape, escape_attr
+@@ -9,50 +9,45 @@ from .slug import Slugger
+ TOC_MARKER = "[TOC]"
+ 
+ 
+-class TocEntry(NamedTuple):
++@dataclass
++class TocEntry:
+     level: int
+     title: str
+     anchor: str
++    children: list = field(default_factory=list)
+ 
+ 
+ def build_toc(document, options):
+-    """Entries for the top-level headings down to options.toc_max_level, in document order."""
++    """A tree of the top-level headings down to options.toc_max_level.
++
++    Returns the outermost entries; an entry goes in the `children` of the closest
++    earlier entry with a lower level.
++    """
+     slugger = Slugger()
+-    entries = []
++    roots, open_entries = [], []
+     for node in document.children:
+         if not isinstance(node, Heading):
+             continue
+         title = plain_text(parse_inline(node.text))
+         # Every heading takes its slug, listed or not, so duplicates number the same way the ids do.
+         anchor = options.id_prefix + slugger.slug(title)
+-        if node.level <= options.toc_max_level:
+-            entries.append(TocEntry(node.level, title, anchor))
+-    return entries
++        if node.level > options.toc_max_level:
++            continue
++        entry = TocEntry(node.level, title, anchor)
++        while open_entries and open_entries[-1].level >= entry.level:
++            open_entries.pop()
++        (open_entries[-1].children if open_entries else roots).append(entry)
++        open_entries.append(entry)
++    return roots
+ 
+ 
+ def render_toc(entries):
+-    """Nested <ul> lists: an entry goes under the closest earlier entry with a lower level."""
+-    parts = ['<nav class="toc">']
+-    if entries:
+-        parts.append("<ul>")
+-    open_items = []  # [level, has_child_list] for each <li> not yet closed
+-    for entry in entries:
+-        while open_items and open_items[-1][0] >= entry.level:
+-            _close(parts, open_items.pop())
+-        if open_items:
+-            parent = open_items[-1]
+-            if not parent[1]:
+-                parts.append("<ul>")
+-                parent[1] = True
+-        parts.append(f'<li><a href="#{escape_attr(entry.anchor)}">{escape(entry.title)}</a>')
+-        open_items.append([entry.level, False])
+-    while open_items:
+-        _close(parts, open_items.pop())
+-    if entries:
+-        parts.append("</ul>")
+-    parts.append("</nav>")
+-    return "".join(parts)
+-
+-
+-def _close(parts, item):
+-    parts.append("</ul></li>" if item[1] else "</li>")
++    return f'<nav class="toc">{_list(entries)}</nav>'
++
++
++def _list(entries):
++    if not entries:
++        return ""
++    items = "".join(f'<li><a href="#{escape_attr(entry.anchor)}">{escape(entry.title)}</a>{_list(entry.children)}</li>'
++                    for entry in entries)
++    return f"<ul>{items}</ul>"
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index b567436..94c0cb8 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -29,8 +29,9 @@ def test_renders_to_stdout(source, capsys):
+ def test_json_toc(source, capsys):
+     assert main([str(source), "--json-toc", "--toc-level", "2"]) == 0
+     assert json.loads(capsys.readouterr().out) == [
+-        {"level": 1, "title": "Title", "anchor": "section-title"},
+-        {"level": 2, "title": "Part", "anchor": "section-part"},
++        {"level": 1, "title": "Title", "anchor": "section-title", "children": [
++            {"level": 2, "title": "Part", "anchor": "section-part", "children": []},
++        ]},
+     ]
+ 
+ 
+diff --git a/tests/test_outline.py b/tests/test_outline.py
+index 9d3c3b1..b33fc85 100644
+--- a/tests/test_outline.py
++++ b/tests/test_outline.py
+@@ -39,25 +39,32 @@ def test_nested_headings_get_no_id():
+ 
+ def test_toc_lists_two_levels_by_default():
+     assert toc(DOCUMENT) == [
+-        TocEntry(1, "Guide", "section-guide"),
+-        TocEntry(2, "Install", "section-install"),
+-        TocEntry(2, "Usage basics", "section-usage-basics"),
+-        TocEntry(2, "Usage basics", "section-usage-basics-1"),
++        TocEntry(1, "Guide", "section-guide", [
++            TocEntry(2, "Install", "section-install"),
++            TocEntry(2, "Usage basics", "section-usage-basics"),
++            TocEntry(2, "Usage basics", "section-usage-basics-1"),
++        ]),
+     ]
+ 
+ 
+ def test_toc_entries():
+     assert toc(DOCUMENT, Options(toc_max_level=3)) == [
+-        TocEntry(1, "Guide", "section-guide"),
+-        TocEntry(2, "Install", "section-install"),
+-        TocEntry(2, "Usage basics", "section-usage-basics"),
+-        TocEntry(3, "Flags", "section-flags"),
+-        TocEntry(2, "Usage basics", "section-usage-basics-1"),
++        TocEntry(1, "Guide", "section-guide", [
++            TocEntry(2, "Install", "section-install"),
++            TocEntry(2, "Usage basics", "section-usage-basics", [TocEntry(3, "Flags", "section-flags")]),
++            TocEntry(2, "Usage basics", "section-usage-basics-1"),
++        ]),
+     ]
+ 
+ 
++def test_toc_tree_with_skipped_and_rising_levels():
++    entries = toc("## A\n# B\n### C\n## D\n", Options(toc_max_level=3))
++    assert [(entry.title, [child.title for child in entry.children]) for entry in entries] == [
++        ("A", []), ("B", ["C", "D"])]
++
++
+ def test_toc_max_level():
+-    assert [entry.title for entry in toc(DOCUMENT, Options(toc_max_level=1))] == ["Guide"]
++    assert toc(DOCUMENT, Options(toc_max_level=1)) == [TocEntry(1, "Guide", "section-guide")]
+ 
+ 
+ def test_toc_max_level_is_validated():

@@ -1,0 +1,231 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6aefa33..e2086cb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- A rule can name several roles separated by commas (`allow viewer,auditor read reports/**`); it applies to anyone holding any of them.
++
+ ## 0.4.0
+ 
+ - `warden lint` reports duplicate rules.
+diff --git a/docs/reference.md b/docs/reference.md
+index 4aeb018..a42189d 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -6,7 +6,8 @@
+ | --- | --- | --- |
+ | `syntax.comment` | `#` | a line starting with this is ignored |
+ | `syntax.role` | `role <name> [inherits <parent>]` | defines a role |
+-| `syntax.rule` | `<effect> <role> <actions> <pattern> [when <condition>]` | one rule per line |
++| `syntax.rule` | `<effect> <roles> <actions> <pattern> [when <condition>]` | one rule per line |
++| `syntax.roles_separator` | `,` | between roles in a rule; the rule applies to holders of any of them |
+ | `syntax.default` | `default <effect>` | effect when no rule matches |
+ | `syntax.actions_separator` | `,` | between actions in a rule |
+ | `effects` | `allow, deny` | the two rule effects |
+diff --git a/src/warden/audit.py b/src/warden/audit.py
+index 7316cdf..a4f3add 100644
+--- a/src/warden/audit.py
++++ b/src/warden/audit.py
+@@ -8,7 +8,7 @@ VERDICTS = {True: "ALLOW", False: "DENY"}
+ 
+ def describe(rule):
+     """A rule as it would be written in policy text."""
+-    text = f"{rule.effect} {rule.role} {','.join(rule.actions)} {rule.pattern.text}"
++    text = f"{rule.effect} {','.join(rule.roles)} {','.join(rule.actions)} {rule.pattern.text}"
+     if rule.condition:
+         text += f" when {rule.condition.text}"
+     return text
+diff --git a/src/warden/evaluator.py b/src/warden/evaluator.py
+index 1bc5aea..68d0bd5 100644
+--- a/src/warden/evaluator.py
++++ b/src/warden/evaluator.py
+@@ -19,9 +19,9 @@ class Evaluator:
+         allow = deny = None
+         skipped = []
+         for rule in self.policy.rules:
+-            if not (rule.role in held
+-                    and (ANY_ACTION in rule.actions or action in rule.actions)
+-                    and rule.pattern.matches(resource)):
++            if (held.isdisjoint(rule.roles)
++                    or not (ANY_ACTION in rule.actions or action in rule.actions)
++                    or not rule.pattern.matches(resource)):
+                 continue
+             if rule.condition and not rule.condition.evaluate(request.user.attrs, request.resource_attrs):
+                 skipped.append(rule)
+diff --git a/src/warden/lint.py b/src/warden/lint.py
+index ca40d4c..ccf564c 100644
+--- a/src/warden/lint.py
++++ b/src/warden/lint.py
+@@ -16,21 +16,21 @@ class Finding:
+ 
+ 
+ def _key(rule):
+-    return (rule.effect, rule.role, frozenset(rule.actions), rule.pattern,
++    return (rule.effect, frozenset(rule.roles), frozenset(rule.actions), rule.pattern,
+             rule.condition.text if rule.condition else None)
+ 
+ 
+ def _shadows(graph, deny, allow):
+     """Whether `deny` refuses everything `allow` could ever grant."""
+     return (deny.effect == "deny" and deny.condition is None
+-            and deny.role in graph.ancestors(allow.role)
++            and all(set(deny.roles) & set(graph.ancestors(role)) for role in allow.roles)
+             and (ANY_ACTION in deny.actions or set(allow.actions) <= set(deny.actions))
+             and deny.pattern.covers(allow.pattern))
+ 
+ 
+ def _role_findings(policy):
+     graph = policy.roles
+-    named = {rule.role for rule in policy.rules}
++    named = {role for rule in policy.rules for role in rule.roles}
+     inherited = {graph.parent_of(name) for name in graph}
+     for name in graph:
+         if name in named:
+diff --git a/src/warden/loader.py b/src/warden/loader.py
+index 23b93b2..458f51d 100644
+--- a/src/warden/loader.py
++++ b/src/warden/loader.py
+@@ -30,10 +30,12 @@ def load_dict(data):
+         try:
+             if missing:
+                 raise PolicyError(f"missing field: {missing[0]}")
+-            actions = item["actions"]
++            roles, actions = item["role"], item["actions"]
++            if isinstance(roles, str):
++                roles = roles.split(",")
+             if isinstance(actions, str):
+                 actions = actions.split(",")
+-            rules.append(make_rule(number, item["effect"], item["role"], actions,
++            rules.append(make_rule(number, item["effect"], roles, actions,
+                                    item["resource"], item.get("when")))
+         except PolicyError as error:
+             raise PolicyError(f"rule {number}: {error}") from None
+diff --git a/src/warden/model.py b/src/warden/model.py
+index 2a336ad..f58e509 100644
+--- a/src/warden/model.py
++++ b/src/warden/model.py
+@@ -25,7 +25,7 @@ class Request:
+ class Rule:
+     number: int
+     effect: str
+-    role: str
++    roles: tuple
+     actions: tuple
+     pattern: Pattern
+     condition: Optional[Condition] = None
+diff --git a/src/warden/parser.py b/src/warden/parser.py
+index 2e1d290..44eea53 100644
+--- a/src/warden/parser.py
++++ b/src/warden/parser.py
+@@ -4,7 +4,7 @@
+     role viewer
+     role editor inherits viewer
+     default deny
+-    allow viewer read,list reports/**
++    allow viewer,auditor read,list reports/**
+     deny editor delete reports/archive/**
+     allow editor write reports/* when user.dept == resource.dept
+ """
+@@ -17,17 +17,17 @@ from .roles import RoleGraph
+ 
+ EFFECTS = ("allow", "deny")
+ ROLE_SHAPE = "role <name> [inherits <parent>]"
+-RULE_SHAPE = "<effect> <role> <actions> <pattern> [when <condition>]"
++RULE_SHAPE = "<effect> <roles> <actions> <pattern> [when <condition>]"
+ 
+ 
+-def make_rule(number, effect, role, actions, pattern, when=None, line=None):
++def make_rule(number, effect, roles, actions, pattern, when=None, line=None):
+     if effect not in EFFECTS:
+         raise PolicyError(f"unknown effect: {effect}")
+     canonical = tuple(dict.fromkeys(canonical_action(action) for action in actions))
+     if not canonical:
+         raise PolicyError("rule has no actions")
+     condition = Condition(when) if when else None
+-    return Rule(number, effect, role, canonical, Pattern(pattern), condition, line)
++    return Rule(number, effect, tuple(dict.fromkeys(roles)), canonical, Pattern(pattern), condition, line)
+ 
+ 
+ def finish(graph, rules, default):
+@@ -36,11 +36,12 @@ def finish(graph, rules, default):
+         raise PolicyError(f"unknown effect: {default}")
+     graph.check()
+     for rule in rules:
+-        if rule.role not in graph:
+-            message = f"unknown role: {rule.role}"
+-            if rule.line is not None:
+-                raise PolicySyntaxError(rule.line, message)
+-            raise RoleError(f"rule {rule.number}: {message}")
++        for role in rule.roles:
++            if role not in graph:
++                message = f"unknown role: {role}"
++                if rule.line is not None:
++                    raise PolicySyntaxError(rule.line, message)
++                raise RoleError(f"rule {rule.number}: {message}")
+     return Policy(graph, tuple(rules), default)
+ 
+ 
+@@ -58,8 +59,8 @@ def _rule_line(number, text, line):
+     fields = head.split()
+     if len(fields) != 4:
+         raise PolicyError(f"expected: {RULE_SHAPE}")
+-    effect, role, actions, pattern = fields
+-    return make_rule(number, effect, role, actions.split(","), pattern, when.strip(), line)
++    effect, roles, actions, pattern = fields
++    return make_rule(number, effect, roles.split(","), actions.split(","), pattern, when.strip(), line)
+ 
+ 
+ def parse_policy(text):
+diff --git a/tests/test_audit.py b/tests/test_audit.py
+index 84795c0..accf698 100644
+--- a/tests/test_audit.py
++++ b/tests/test_audit.py
+@@ -59,3 +59,9 @@ def test_summary(tmp_path):
+         "most denied:\n"
+         "  reports/archive/old  2\n"
+         "  reports/q1  1")
++
++
++def test_explain_rule_with_several_roles():
++    policy = parse_policy("role viewer\nrole auditor\nallow viewer,auditor read reports/**\n")
++    decision = Evaluator(policy).decide(Request(User("carol", ("auditor",)), "read", "reports/q1"))
++    assert explain(decision).splitlines()[1] == "  rule 1 (line 3): allow viewer,auditor read reports/**"
+diff --git a/tests/test_lint.py b/tests/test_lint.py
+index 592ef48..c46337b 100644
+--- a/tests/test_lint.py
++++ b/tests/test_lint.py
+@@ -32,3 +32,10 @@ def test_conditional_deny_does_not_shadow():
+ def test_duplicate():
+     text = "role viewer\nallow viewer read,list **\nallow viewer list,read **\n"
+     assert findings(text) == [("duplicate-rule", "rule 2 repeats rule 1")]
++
++
++def test_rules_with_several_roles():
++    text = ("role viewer\nrole auditor\nrole editor inherits viewer\n"
++            "deny viewer,auditor delete reports/**\nallow editor,auditor delete reports/q1\n"
++            "allow auditor,viewer read **\n")
++    assert findings(text) == [("shadowed-rule", "rule 2 can never apply: rule 1 denies it")]
+diff --git a/tests/test_policy.py b/tests/test_policy.py
+index 89abcea..70ae9e4 100644
+--- a/tests/test_policy.py
++++ b/tests/test_policy.py
+@@ -113,3 +113,16 @@ def test_load_file(tmp_path):
+     (tmp_path / "p.json").write_text(json.dumps(AS_DATA), encoding="utf-8")
+     for name in ("p.policy", "p.json"):
+         assert decide(load_file(tmp_path / name), ["viewer"], "list", "reports").allowed
++
++
++def test_rule_with_several_roles():
++    policy = parse_policy("role viewer\nrole auditor\nrole editor inherits viewer\nrole guest\n"
++                          "allow viewer,auditor read reports/**\n")
++    for roles in (["viewer"], ["auditor"], ["editor"]):
++        assert decide(policy, roles, "read", "reports/q1").reason == "allowed by rule 1"
++    assert not decide(policy, ["guest"], "read", "reports/q1").allowed
++
++
++def test_every_listed_role_must_exist():
++    with pytest.raises(PolicySyntaxError, match="line 2: unknown role: ghost"):
++        parse_policy("role viewer\nallow viewer,ghost read x\n")

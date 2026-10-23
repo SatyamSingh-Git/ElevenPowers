@@ -1,0 +1,81 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a05889d..10a737d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: booleans written with capitals (`True`, `YES`) were rejected. A value that is not a boolean now lists the accepted words.
+ - `load()` takes `files`, a list of `(name, text)` pairs applied in order, instead of `file_text` and `file_name`.
+ - Environment variables use one underscore between section and name (`LAYERCFG_SERVER_PORT`); the double-underscore spelling is now an unknown variable.
+ - Durations are whole milliseconds (`int`) instead of float seconds; a duration finer than a millisecond is rejected.
+diff --git a/docs/reference.md b/docs/reference.md
+index de84fe4..3d83c3b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -59,7 +59,7 @@ Surrounding spaces are removed from every raw value before it is read.
+ |---|---|---|
+ | `int` | `decimal integer` | |
+ | `float` | `finite decimal number` | |
+-| `bool` | `true/false, yes/no, on/off, 1/0` | |
++| `bool` | `true/false, yes/no, on/off, 1/0 in any case` | |
+ | `str` | `text as written` | |
+ | `duration` | `int milliseconds` | A number with an optional unit, such as `1.5s`. |
+ | `duration.units` | `ms s m h d` | |
+@@ -109,6 +109,7 @@ layers are reported together; a syntax error in the file stops loading.
+ |---|---|---|
+ | `msg.issue` | `{source}: {message}` | |
+ | `msg.type` | `{key}: expected {type}, got '{raw}'` | |
++| `msg.bool` | `{key}: expected bool (true/false, yes/no, on/off, 1/0), got '{raw}'` | |
+ | `msg.min` | `{key}: must be at least {min}` | |
+ | `msg.max` | `{key}: must be at most {max}` | |
+ | `msg.choice` | `{key}: must be one of {choices}` | Choices joined with `, `. |
+diff --git a/src/layercfg/coerce.py b/src/layercfg/coerce.py
+index 1117a79..54bf8e2 100644
+--- a/src/layercfg/coerce.py
++++ b/src/layercfg/coerce.py
+@@ -31,10 +31,15 @@ def _float(option, text):
+     return value
+ 
+ 
++_BOOL_PAIRS = ', '.join(f'{yes}/{no}' for yes, no in zip(
++    [word for word, value in BOOLEAN_WORDS.items() if value],
++    [word for word, value in BOOLEAN_WORDS.items() if not value]))
++
++
+ def _bool(option, text):
+-    if text not in BOOLEAN_WORDS:
+-        raise _expected('bool', text)
+-    return BOOLEAN_WORDS[text]
++    if text.lower() not in BOOLEAN_WORDS:
++        raise CoercionError(f"expected bool ({_BOOL_PAIRS}), got '{text}'")
++    return BOOLEAN_WORDS[text.lower()]
+ 
+ 
+ def _str(option, text):
+diff --git a/tests/test_coerce.py b/tests/test_coerce.py
+index fb0f30c..784d402 100644
+--- a/tests/test_coerce.py
++++ b/tests/test_coerce.py
+@@ -26,6 +26,11 @@ def test_coerces_each_type(key, raw, expected):
+     assert coerce(option(key), raw) == expected
+ 
+ 
++@pytest.mark.parametrize('raw, expected', [('True', True), ('FALSE', False), ('Yes', True), ('oFF', False)])
++def test_booleans_are_read_in_any_case(raw, expected):
++    assert coerce(option('app.debug'), raw) is expected
++
++
+ @pytest.mark.parametrize('raw, milliseconds', [
+     ('30s', 30000),
+     ('1.5s', 1500),
+@@ -51,7 +56,7 @@ def test_durations_below_a_millisecond_are_rejected(raw):
+ @pytest.mark.parametrize('key, raw, message', [
+     ('server.port', 'abc', "expected int, got 'abc'"),
+     ('cache.evict_ratio', 'nan', "expected float, got 'nan'"),
+-    ('app.debug', 'maybe', "expected bool, got 'maybe'"),
++    ('app.debug', 'maybe', "expected bool (true/false, yes/no, on/off, 1/0), got 'maybe'"),
+     ('server.timeout', '10 parsecs', "expected duration, got '10 parsecs'"),
+     ('cache.max_bytes', '1.5mb', "expected size, got '1.5mb'"),
+     ('log.level', 'loud', 'must be one of debug, info, warning, error'),

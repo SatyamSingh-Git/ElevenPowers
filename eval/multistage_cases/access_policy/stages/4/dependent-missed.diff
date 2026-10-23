@@ -1,0 +1,13 @@
+diff --git a/src/warden/audit.py b/src/warden/audit.py
+index 808f154..ae9df32 100644
+--- a/src/warden/audit.py
++++ b/src/warden/audit.py
+@@ -23,7 +23,7 @@ def explain(decision):
+         where = f" (line {rule.line})" if rule.line is not None else ""
+         lines.append(f"  rule {rule.number}{where}: {describe(rule)}")
+     for skipped in decision.near_misses:
+-        unmet = skipped.condition.failing(request.scope())
++        unmet = skipped.condition.failing(request.user.attrs, request.resource_attrs)
+         lines.append(f"  rule {skipped.number} not applied: {' and '.join(unmet)}")
+     return "\n".join(lines)
+ 

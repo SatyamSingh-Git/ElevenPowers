@@ -1,0 +1,41 @@
+diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
+index 2e14f02..be030c6 100644
+--- a/src/stockroom/cli.py
++++ b/src/stockroom/cli.py
+@@ -31,29 +31,27 @@ def _warn_if_low(inventory, sku, out):
+ 
+ 
+ def _receive(inventory, args, out):
+-    inventory.receive(args.sku, args.qty, args.location, args.note)
++    now = inventory.receive(args.sku, args.qty, args.location, args.note)
+     sku, code = normalize_sku(args.sku), normalize_code(args.location)
+-    out.write(f'received {args.qty} {sku} at {code} (now {inventory.at(sku, code)} there)\n')
++    out.write(f'received {args.qty} {sku} at {code} (now {now} there)\n')
+ 
+ 
+ def _issue(inventory, args, out):
+-    inventory.issue(args.sku, args.qty, args.location, args.note)
++    left = inventory.issue(args.sku, args.qty, args.location, args.note)
+     sku, code = normalize_sku(args.sku), normalize_code(args.location)
+-    out.write(f'issued {args.qty} {sku} from {code} (now {inventory.at(sku, code)} there)\n')
++    out.write(f'issued {args.qty} {sku} from {code} (now {left} there)\n')
+     _warn_if_low(inventory, sku, out)
+ 
+ 
+ def _transfer(inventory, args, out):
+-    inventory.transfer(args.sku, args.qty, args.source, args.dest, args.note)
++    now = inventory.transfer(args.sku, args.qty, args.source, args.dest, args.note)
+     sku, source, dest = normalize_sku(args.sku), normalize_code(args.source), normalize_code(args.dest)
+-    out.write(f'moved {args.qty} {sku} from {source} to {dest} (now {inventory.at(sku, dest)} at {dest})\n')
++    out.write(f'moved {args.qty} {sku} from {source} to {dest} (now {now} at {dest})\n')
+ 
+ 
+ def _adjust(inventory, args, out):
+-    before = inventory.at(args.sku, args.location)
+-    inventory.adjust(args.sku, args.location, args.count, args.note)
++    change = inventory.adjust(args.sku, args.location, args.count, args.note)
+     sku, code = normalize_sku(args.sku), normalize_code(args.location)
+-    change = inventory.at(sku, code) - before
+     out.write(f'adjusted {sku} at {code} to {args.count} ({change:+d})\n')
+     _warn_if_low(inventory, sku, out)
+ 

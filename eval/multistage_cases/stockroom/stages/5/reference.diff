@@ -1,0 +1,341 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index cdaa2af..3528ad0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -7,6 +7,7 @@
+ - Fix: a transfer from a location to itself added stock there. It is now refused.
+ - `Inventory.on_hand()` now returns the quantity at each location; the new `Inventory.total()` returns the sum.
+ - `Inventory.receive()`, `issue()`, `transfer()` and `adjust()` return the `seq` of the movement they record.
++- Log movements in the data file as lines with one `location` and a signed `delta`; a transfer is two lines sharing its `seq`. Data file version 3; older files are upgraded when read.
+ 
+ ## 1.4.0
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index feef123..8cc94f9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -14,11 +14,13 @@
+ 
+ ## Data file
+ 
+-One JSON document. Item SKUs and location codes are stored upper-case.
++One JSON document. Item SKUs and location codes are stored upper-case. Each movement is
++logged as lines that each change one location: one line for a receive, issue
++or adjust, and two for a transfer (out of the source, into the destination).
+ 
+ | Field | Type | Meaning |
+ |---|---|---|
+-| `version` | `2` | schema version of the data file; version 1 files are upgraded when read |
++| `version` | `3` | schema version of the data file; version 1 and 2 files are upgraded when read |
+ | `items.<sku>.name` | `string` | item name |
+ | `items.<sku>.unit` | `string` | unit of measure |
+ | `items.<sku>.reorder_point` | `integer` | the item is low when its total on hand is below this |
+@@ -26,12 +28,11 @@ One JSON document. Item SKUs and location codes are stored upper-case.
+ | `locations.<code>.kind` | `string` | one of the location kinds |
+ | `locations.<code>.description` | `string` | free text |
+ | `stock.<sku>.<code>` | `integer` | quantity held; locations holding none are left out |
+-| `movements[].seq` | `integer` | 1 for the first movement, then one higher for each |
++| `movements[].seq` | `integer` | 1 for the first movement, then one higher for each; both lines of a transfer share it |
+ | `movements[].type` | `string` | `receive`, `issue`, `transfer` or `adjust` |
+ | `movements[].sku` | `string` | item moved |
+-| `movements[].qty` | `integer` | quantity moved; for `adjust`, the signed change |
+-| `movements[].from` | `string or null` | location the goods left; null for `receive` and `adjust` |
+-| `movements[].to` | `string or null` | location the goods reached; null for `issue` |
++| `movements[].location` | `string` | the one location this line changes |
++| `movements[].delta` | `integer` | signed change at that location: positive in, negative out |
+ | `movements[].note` | `string` | free text |
+ 
+ ## Limits
+diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
+index 2e14f02..4c6723c 100644
+--- a/src/stockroom/cli.py
++++ b/src/stockroom/cli.py
+@@ -1,5 +1,6 @@
+ """The `stockroom` command."""
+ import argparse
++from itertools import groupby
+ from pathlib import Path
+ import sys
+ 
+@@ -106,26 +107,29 @@ def _value(inventory, args, out):
+     out.write(reports.render_value(*reports.valuation(inventory)) + '\n')
+ 
+ 
+-def describe(movement):
+-    kind, qty = movement['type'], movement['qty']
++def describe(lines):
++    """One history entry for the lines of one movement."""
++    first = lines[0]
++    kind, delta, code = first['type'], first['delta'], first['location']
+     if kind == 'receive':
+-        text = f"receive {qty} into {movement['to']}"
++        text = f'receive {delta} into {code}'
+     elif kind == 'issue':
+-        text = f"issue {qty} from {movement['from']}"
++        text = f'issue {-delta} from {code}'
+     elif kind == 'transfer':
+-        text = f"transfer {qty} from {movement['from']} to {movement['to']}"
++        source, dest = sorted(lines, key=lambda line: line['delta'])
++        text = f"transfer {dest['delta']} from {source['location']} to {dest['location']}"
+     else:
+-        text = f"adjust {qty:+d} at {movement['to']}"
+-    note = f"  ({movement['note']})" if movement['note'] else ''
+-    return f"#{movement['seq']} {movement['sku']} {text}{note}"
++        text = f'adjust {delta:+d} at {code}'
++    note = f"  ({first['note']})" if first['note'] else ''
++    return f"#{first['seq']} {first['sku']} {text}{note}"
+ 
+ 
+ def _history(inventory, args, out):
+-    movements = inventory.history(args.sku)
+-    if not movements:
++    lines = inventory.history(args.sku)
++    if not lines:
+         out.write(f'no movements for {normalize_sku(args.sku)}\n')
+-    for movement in movements:
+-        out.write(describe(movement) + '\n')
++    for _, movement in groupby(lines, key=lambda line: line['seq']):
++        out.write(describe(list(movement)) + '\n')
+ 
+ 
+ def _check(inventory, args, out):
+diff --git a/src/stockroom/inventory.py b/src/stockroom/inventory.py
+index 0967b08..fd85e4c 100644
+--- a/src/stockroom/inventory.py
++++ b/src/stockroom/inventory.py
+@@ -87,11 +87,13 @@ class Inventory:
+         if not row:
+             del self.doc['stock'][sku]
+ 
+-    def _record(self, kind, sku, qty, source, dest, note):
++    def _record(self, kind, sku, note, *changes):
++        """Log one movement as a line per (location, delta) in `changes`, all sharing one seq."""
+         movements = self.doc['movements']
+         seq = movements[-1]['seq'] + 1 if movements else 1
+-        movements.append({'seq': seq, 'type': kind, 'sku': sku, 'qty': qty,
+-                          'from': source, 'to': dest, 'note': note.strip()})
++        for code, delta in changes:
++            movements.append({'seq': seq, 'type': kind, 'sku': sku, 'location': code,
++                              'delta': delta, 'note': note.strip()})
+         return seq
+ 
+     def _take(self, sku, code, qty):
+@@ -106,13 +108,13 @@ class Inventory:
+         """Book goods in. Returns the seq of the recorded movement."""
+         sku, code, qty = self._sku(sku), self._code(location), parse_qty(qty)
+         self._set(sku, code, self.at(sku, code) + qty)
+-        return self._record('receive', sku, qty, None, code, note)
++        return self._record('receive', sku, note, (code, qty))
+ 
+     def issue(self, sku, qty, location, note=''):
+         """Book goods out. Returns the seq of the recorded movement."""
+         sku, code, qty = self._sku(sku), self._code(location), parse_qty(qty)
+         self._set(sku, code, self._take(sku, code, qty) - qty)
+-        return self._record('issue', sku, qty, code, None, note)
++        return self._record('issue', sku, note, (code, -qty))
+ 
+     def transfer(self, sku, qty, source, dest, note=''):
+         """Move goods between locations. Returns the seq of the recorded movement."""
+@@ -124,14 +126,14 @@ class Inventory:
+         there = self.at(sku, dest)
+         self._set(sku, source, have - qty)
+         self._set(sku, dest, there + qty)
+-        return self._record('transfer', sku, qty, source, dest, note)
++        return self._record('transfer', sku, note, (source, -qty), (dest, qty))
+ 
+     def adjust(self, sku, location, counted, note=''):
+         """Set the quantity at a location to what a count found. Returns the seq of the recorded movement."""
+         sku, code, counted = self._sku(sku), self._code(location), parse_count(counted)
+         change = counted - self.at(sku, code)
+         self._set(sku, code, counted)
+-        return self._record('adjust', sku, change, None, code, note)
++        return self._record('adjust', sku, note, (code, change))
+ 
+     def history(self, sku):
+         sku = self._sku(sku)
+diff --git a/src/stockroom/ledger.py b/src/stockroom/ledger.py
+index 6e57943..6304739 100644
+--- a/src/stockroom/ledger.py
++++ b/src/stockroom/ledger.py
+@@ -5,31 +5,26 @@ catch a stock table that was edited by hand or written by a faulty release.
+ """
+ from collections import defaultdict, namedtuple
+ 
+-from .models import StockError
++from .models import MOVEMENT_TYPES, StockError
+ 
+ Mismatch = namedtuple('Mismatch', 'sku location table ledger')
+ 
+ 
+ def replay(movements):
+-    """Stock by item and location as the movement log says it should be."""
++    """Stock by item and location as the movement log says it should be.
++
++    Each line changes one location; the lines of one transfer share its seq.
++    """
+     stock = defaultdict(lambda: defaultdict(int))
+     last = 0
+-    for movement in movements:
+-        seq, kind, sku, qty = movement['seq'], movement['type'], movement['sku'], movement['qty']
+-        if seq <= last:
++    for line in movements:
++        seq, kind = line['seq'], line['type']
++        if seq < last:
+             raise StockError(f'movement out of order: #{seq} after #{last}')
+-        last = seq
+-        if kind == 'receive':
+-            stock[sku][movement['to']] += qty
+-        elif kind == 'issue':
+-            stock[sku][movement['from']] -= qty
+-        elif kind == 'transfer':
+-            stock[sku][movement['from']] -= qty
+-            stock[sku][movement['to']] += qty
+-        elif kind == 'adjust':
+-            stock[sku][movement['to']] += qty
+-        else:
++        if kind not in MOVEMENT_TYPES:
+             raise StockError(f'unknown movement type at #{seq}: {kind}')
++        last = seq
++        stock[line['sku']][line['location']] += line['delta']
+     return {sku: {code: qty for code, qty in row.items() if qty}
+             for sku, row in stock.items() if any(row.values())}
+ 
+@@ -48,18 +43,16 @@ def mismatches(doc):
+ 
+ 
+ def movement_count(doc):
+-    return len(doc['movements'])
++    return len({line['seq'] for line in doc['movements']})
+ 
+ 
+ def unknown_references(doc):
+     """Movements naming an item or location the file does not define."""
+     items, locations = doc['items'], doc['locations']
+     problems = []
+-    for movement in doc['movements']:
+-        if movement['sku'] not in items:
+-            problems.append(f"#{movement['seq']} names unknown item {movement['sku']}")
+-        for end in ('from', 'to'):
+-            code = movement[end]
+-            if code is not None and code not in locations:
+-                problems.append(f"#{movement['seq']} names unknown location {code}")
++    for line in doc['movements']:
++        if line['sku'] not in items:
++            problems.append(f"#{line['seq']} names unknown item {line['sku']}")
++        if line['location'] not in locations:
++            problems.append(f"#{line['seq']} names unknown location {line['location']}")
+     return problems
+diff --git a/src/stockroom/store.py b/src/stockroom/store.py
+index 811804b..a936515 100644
+--- a/src/stockroom/store.py
++++ b/src/stockroom/store.py
+@@ -10,7 +10,7 @@ from pathlib import Path
+ 
+ from .models import StockError
+ 
+-SCHEMA_VERSION = 2
++SCHEMA_VERSION = 3
+ DEFAULT_FILE = 'stockroom.json'
+ FILE_ENV = 'STOCKROOM_FILE'
+ SECTIONS = ('items', 'locations', 'stock', 'movements')
+@@ -32,8 +32,25 @@ def _from_v1(doc):
+     return doc
+ 
+ 
++def _from_v2(doc):
++    lines = []
++    for movement in doc['movements']:
++        qty, kind = movement['qty'], movement['type']
++        if kind == 'transfer':
++            changes = [(movement['from'], -qty), (movement['to'], qty)]
++        elif kind == 'issue':
++            changes = [(movement['from'], -qty)]
++        else:
++            changes = [(movement['to'], qty)]
++        lines += [{'seq': movement['seq'], 'type': kind, 'sku': movement['sku'], 'location': code,
++                   'delta': delta, 'note': movement['note']} for code, delta in changes]
++    doc['movements'] = lines
++    doc['version'] = 3
++    return doc
++
++
+ # version: the step that rewrites a document of that version as the next one
+-UPGRADES = {1: _from_v1}
++UPGRADES = {1: _from_v1, 2: _from_v2}
+ 
+ 
+ def load(path):
+diff --git a/tests/test_inventory.py b/tests/test_inventory.py
+index 6705aa6..e1d1c76 100644
+--- a/tests/test_inventory.py
++++ b/tests/test_inventory.py
+@@ -33,14 +33,14 @@ def test_movements_return_their_seq(inventory):
+     assert inventory.issue('NUT-M6', 1, 'A1') == 2
+     assert inventory.transfer('NUT-M6', 2, 'A1', 'B2') == 3
+     assert inventory.adjust('NUT-M6', 'A1', 7) == 4
+-    assert [m['seq'] for m in inventory.history('NUT-M6')] == [1, 2, 3, 4]
++    assert [m['seq'] for m in inventory.history('NUT-M6')] == [1, 2, 3, 3, 4]
+ 
+ 
+ def test_adjust_records_the_change(inventory):
+     inventory.receive('NUT-M6', 10, 'A1')
+     inventory.adjust('NUT-M6', 'A1', 7)
+     inventory.adjust('NUT-M6', 'A1', 7)
+-    assert [m['qty'] for m in inventory.history('NUT-M6')] == [10, -3, 0]
++    assert [m['delta'] for m in inventory.history('NUT-M6')] == [10, -3, 0]
+     assert inventory.at('NUT-M6', 'A1') == 7
+ 
+ 
+@@ -48,9 +48,9 @@ def test_movements_are_numbered_in_order(inventory):
+     inventory.receive('BOLT-M6', 10, 'A1', note='PO 7')
+     inventory.transfer('BOLT-M6', 4, 'A1', 'B2')
+     history = inventory.history('BOLT-M6')
+-    assert [m['seq'] for m in history] == [1, 2]
++    assert [m['seq'] for m in history] == [1, 2, 2]
+     assert history[0]['note'] == 'PO 7'
+-    assert history[1]['from'] == 'A1' and history[1]['to'] == 'B2'
++    assert [(m['location'], m['delta']) for m in history] == [('A1', 10), ('A1', -4), ('B2', 4)]
+ 
+ 
+ def test_refusals(inventory):
+diff --git a/tests/test_store.py b/tests/test_store.py
+index 749e86a..edd6da6 100644
+--- a/tests/test_store.py
++++ b/tests/test_store.py
+@@ -15,7 +15,7 @@ def test_save_and_load_round_trip(tmp_path, inventory):
+     path = tmp_path / 'stock.json'
+     save(path, inventory.doc)
+     assert load(path) == inventory.doc
+-    assert json.loads(path.read_text(encoding='utf-8'))['version'] == 2
++    assert json.loads(path.read_text(encoding='utf-8'))['version'] == 3
+     assert not (tmp_path / 'stock.json.tmp').exists()
+ 
+ 
+@@ -26,10 +26,26 @@ def test_version_1_files_are_upgraded(tmp_path):
+            'locations': {}, 'stock': {}, 'movements': []}
+     path.write_text(json.dumps(old), encoding='utf-8')
+     doc = load(path)
+-    assert doc['version'] == 2
++    assert doc['version'] == 3
+     assert doc['items']['BOLT-M6'] == {'name': 'M6 bolt', 'unit': 'ea', 'reorder_point': 0, 'cost_cents': 110}
+ 
+ 
++def test_version_2_movements_become_lines(tmp_path):
++    path = tmp_path / 'stock.json'
++    moves = [{'seq': 1, 'type': 'receive', 'sku': 'X', 'qty': 5, 'from': None, 'to': 'A1', 'note': 'PO'},
++             {'seq': 2, 'type': 'transfer', 'sku': 'X', 'qty': 2, 'from': 'A1', 'to': 'B2', 'note': ''},
++             {'seq': 3, 'type': 'issue', 'sku': 'X', 'qty': 1, 'from': 'B2', 'to': None, 'note': ''},
++             {'seq': 4, 'type': 'adjust', 'sku': 'X', 'qty': -1, 'from': None, 'to': 'A1', 'note': ''}]
++    path.write_text(json.dumps({**new_document(), 'version': 2, 'movements': moves}), encoding='utf-8')
++    doc = load(path)
++    assert doc['version'] == 3
++    assert [(m['seq'], m['type'], m['location'], m['delta']) for m in doc['movements']] == [
++        (1, 'receive', 'A1', 5), (2, 'transfer', 'A1', -2), (2, 'transfer', 'B2', 2),
++        (3, 'issue', 'B2', -1), (4, 'adjust', 'A1', -1)]
++    assert doc['movements'][0]['note'] == 'PO'
++    assert 'qty' not in doc['movements'][0]
++
++
+ def test_unknown_versions_are_refused(tmp_path):
+     path = tmp_path / 'stock.json'
+     path.write_text(json.dumps({**new_document(), 'version': 99}), encoding='utf-8')

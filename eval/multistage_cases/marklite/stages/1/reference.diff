@@ -1,0 +1,152 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d755273..e747678 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Heading ids and table of contents anchors now start with the `id_prefix` option, `section-` by default.
++
+ ## 0.6.0
+ 
+ - Added the `--json-toc` command option.
+diff --git a/docs/reference.md b/docs/reference.md
+index 6772250..714c7ed 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -7,6 +7,7 @@ Fields of `marklite.Options`, with their defaults.
+ | Option | Default | Meaning |
+ |---|---|---|
+ | `heading_ids` | `True` | Give top-level headings an `id` attribute. |
++| `id_prefix` | `section-` | Put in front of every heading id and table of contents anchor; `""` for bare slugs. |
+ | `toc_max_level` | `3` | Deepest heading level the table of contents lists (1 to 6). |
+ | `code_class_prefix` | `language-` | Prefix of the class on a fenced code block with a language. |
+ | `safe_links` | `True` | Replace link and image URLs whose scheme is not safe. |
+@@ -42,6 +43,7 @@ setext headings, tables and HTML blocks are not.
+ | `slug` | `lowercase words joined by -` | Letters and digits are kept; everything else separates words. |
+ | `empty_slug` | `heading` | Slug of a heading with no letters or digits. |
+ | `duplicate_slug` | `{slug}-{n}` | Repeated slugs are numbered from 1 in document order. |
++| `heading_id` | `{id_prefix}{slug}` | The id a heading gets, and the anchor its table of contents entry links to. |
+ | `TocEntry` | `level, title, anchor` | Fields of each entry `marklite.toc()` returns; `title` is plain text and `anchor` is the heading's id. |
+ 
+ Only top-level headings (not those inside quotes or lists) get ids and appear in
+diff --git a/src/marklite/options.py b/src/marklite/options.py
+index 1b2de6d..9475490 100644
+--- a/src/marklite/options.py
++++ b/src/marklite/options.py
+@@ -8,6 +8,7 @@ MAX_HEADING_LEVEL = 6
+ @dataclass(frozen=True)
+ class Options:
+     heading_ids: bool = True
++    id_prefix: str = "section-"
+     toc_max_level: int = 3
+     code_class_prefix: str = "language-"
+     safe_links: bool = True
+diff --git a/src/marklite/outline.py b/src/marklite/outline.py
+index c24e24d..1918b43 100644
+--- a/src/marklite/outline.py
++++ b/src/marklite/outline.py
+@@ -24,7 +24,7 @@ def build_toc(document, options):
+             continue
+         title = plain_text(parse_inline(node.text))
+         # Every heading takes its slug, listed or not, so duplicates number the same way the ids do.
+-        anchor = slugger.slug(title)
++        anchor = options.id_prefix + slugger.slug(title)
+         if node.level <= options.toc_max_level:
+             entries.append(TocEntry(node.level, title, anchor))
+     return entries
+diff --git a/src/marklite/render.py b/src/marklite/render.py
+index fa94aa9..e0f7950 100644
+--- a/src/marklite/render.py
++++ b/src/marklite/render.py
+@@ -59,7 +59,8 @@ class _Renderer:
+         attributes = ""
+         # Only top-level headings get ids; they are the ones the table of contents can list.
+         if top and self.options.heading_ids:
+-            attributes = f' id="{escape(self.slugger.slug(plain_text(content)))}"'
++            slug = self.slugger.slug(plain_text(content))
++            attributes = f' id="{escape(self.options.id_prefix + slug)}"'
+         return f"<h{node.level}{attributes}>{render_inline(content, self.options)}</h{node.level}>\n"
+ 
+     def code(self, node):
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 25edec9..90285d5 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -29,8 +29,8 @@ def test_renders_to_stdout(source, capsys):
+ def test_json_toc(source, capsys):
+     assert main([str(source), "--json-toc", "--toc-level", "2"]) == 0
+     assert json.loads(capsys.readouterr().out) == [
+-        {"level": 1, "title": "Title", "anchor": "title"},
+-        {"level": 2, "title": "Part", "anchor": "part"},
++        {"level": 1, "title": "Title", "anchor": "section-title"},
++        {"level": 2, "title": "Part", "anchor": "section-part"},
+     ]
+ 
+ 
+diff --git a/tests/test_outline.py b/tests/test_outline.py
+index fdb752f..abc8e78 100644
+--- a/tests/test_outline.py
++++ b/tests/test_outline.py
+@@ -25,8 +25,8 @@ def test_slugify():
+ 
+ def test_heading_ids_are_unique():
+     html = render("# A\n# A\n# A-1\n# ???\n")
+-    assert 'id="a"' in html and 'id="a-1"' in html and 'id="a-1-1"' in html
+-    assert 'id="heading"' in html
++    assert 'id="section-a"' in html and 'id="section-a-1"' in html and 'id="section-a-1-1"' in html
++    assert 'id="section-heading"' in html
+ 
+ 
+ def test_heading_ids_can_be_turned_off():
+@@ -39,11 +39,11 @@ def test_nested_headings_get_no_id():
+ 
+ def test_toc_entries():
+     assert toc(DOCUMENT) == [
+-        TocEntry(1, "Guide", "guide"),
+-        TocEntry(2, "Install", "install"),
+-        TocEntry(2, "Usage basics", "usage-basics"),
+-        TocEntry(3, "Flags", "flags"),
+-        TocEntry(2, "Usage basics", "usage-basics-1"),
++        TocEntry(1, "Guide", "section-guide"),
++        TocEntry(2, "Install", "section-install"),
++        TocEntry(2, "Usage basics", "section-usage-basics"),
++        TocEntry(3, "Flags", "section-flags"),
++        TocEntry(2, "Usage basics", "section-usage-basics-1"),
+     ]
+ 
+ 
+@@ -59,19 +59,26 @@ def test_toc_max_level_is_validated():
+ def test_toc_marker_renders_nested_lists():
+     html = render(DOCUMENT)
+     assert html.splitlines()[1] == (
+-        '<nav class="toc"><ul><li><a href="#guide">Guide</a><ul>'
+-        '<li><a href="#install">Install</a></li>'
+-        '<li><a href="#usage-basics">Usage basics</a><ul><li><a href="#flags">Flags</a></li></ul></li>'
+-        '<li><a href="#usage-basics-1">Usage basics</a></li>'
++        '<nav class="toc"><ul><li><a href="#section-guide">Guide</a><ul>'
++        '<li><a href="#section-install">Install</a></li>'
++        '<li><a href="#section-usage-basics">Usage basics</a><ul><li><a href="#section-flags">Flags</a></li></ul></li>'
++        '<li><a href="#section-usage-basics-1">Usage basics</a></li>'
+         "</ul></li></ul></nav>")
+ 
+ 
+ def test_toc_skipped_level_nests_under_closest_lower_entry():
+     html = render("[TOC]\n\n# A\n### B\n## C\n")
+     assert html.splitlines()[0] == (
+-        '<nav class="toc"><ul><li><a href="#a">A</a><ul>'
+-        '<li><a href="#b">B</a></li><li><a href="#c">C</a></li></ul></li></ul></nav>')
++        '<nav class="toc"><ul><li><a href="#section-a">A</a><ul>'
++        '<li><a href="#section-b">B</a></li><li><a href="#section-c">C</a></li></ul></li></ul></nav>')
+ 
+ 
+ def test_empty_toc():
+     assert render("[TOC]\n") == '<nav class="toc"></nav>\n'
++
++
++def test_id_prefix_applies_to_ids_and_toc_links():
++    html = render("[TOC]\n\n# Search\n", Options(id_prefix="doc-"))
++    assert '<a href="#doc-search">Search</a>' in html
++    assert '<h1 id="doc-search">Search</h1>' in html
++    assert toc("# Search\n", Options(id_prefix=""))[0].anchor == "search"

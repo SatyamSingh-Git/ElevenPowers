@@ -1,0 +1,62 @@
+{
+  "id": "layered_config",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/layercfg/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Durations are loaded as float seconds (`timeout = 1.5s` gives `1.5`), so everything that uses them has to multiply and round. Make them whole milliseconds as an int instead: `1.5s` becomes 1500, `250ms` becomes 250, and a bare number still means seconds, so `2` becomes 2000.\n\nA duration that doesn't come to a whole number of milliseconds, like `0.5ms` or `1.0005s`, should be rejected with `duration must be a whole number of milliseconds`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": ["base_cli", "base_roundtrip"]
+    },
+    {
+      "request": "Our deployment platform refuses environment variable names that contain a double underscore, so `LAYERCFG_SERVER__PORT` can't be set there. Switch to a single underscore between the section and the option name: `LAYERCFG_SERVER_PORT`, `LAYERCFG_POOL_MAX_SIZE`, and `LAYERCFG_SERVER_LISTEN_PORT` for the alias. Option names contain underscores themselves, so match each variable against the known option names and aliases instead of splitting it.\n\nThe double-underscore spelling goes away completely: a prefixed variable that matches no option, `LAYERCFG_SERVER__PORT` included, is reported as `unknown variable` like any other.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": ["base_roundtrip"]
+    },
+    {
+      "request": "We want a site-wide configuration file plus a per-host file that overrides it. Change `load()` to take a list of files instead of one: `load(files=[(name, text), ...], env=...)`, each file a `(name, text)` pair. Files apply in order, so a later file overrides an earlier one, and all of them come before the environment.\n\nEach value's source still names the file and line it came from, and problems from every file are reported together. The old `file_text` and `file_name` arguments go away.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": ["base_cli", "base_roundtrip", "s1_duration_ms", "s1_whole_ms", "s2_env_single", "s2_env_double"]
+    },
+    {
+      "request": "Booleans written with capitals are rejected. `debug = True` in a file, or `LAYERCFG_APP_DEBUG=YES` from our deploy script, fails with `app.debug: expected bool, got 'True'`. They should be accepted in any case.\n\nAnd when a value really isn't a boolean, the error should say what is accepted, keeping the value as it was written: `app.debug: expected bool (true/false, yes/no, on/off, 1/0), got 'maybe'`.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "A typo in a key goes unnoticed: `config.get('server.prot')` quietly returns None. Looking up a key that names no option should raise `KeyError` with the message `unknown key 'server.prot' (did you mean 'server.port'?)`, suggesting the closest known key or alias and leaving the suggestion off when nothing is close. `config['server.prot']` and `config.source('server.prot')` should fail the same way.\n\nThe `default` argument of `get` keeps a purpose: it is returned for options that exist but have no value, such as `log.file` when nothing sets it.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": ["base_cli"]
+    },
+    {
+      "request": "Two combinations of settings start the server in a broken state without any complaint. Reject them when loading: `pool.min_size` greater than `pool.max_size` (report `pool.min_size: must not exceed pool.max_size` at the place where `pool.min_size` was set; equal sizes are fine), and only one of `server.tls_cert` and `server.tls_key` being set (report `server.tls_cert and server.tls_key must be set together` at the place the one that is set came from).",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    }
+  ],
+  "groups": [
+    {"id": "base_cli", "since": 0, "until": 6},
+    {"id": "base_roundtrip", "since": 0, "until": 6},
+    {"id": "s1_duration_ms", "since": 1, "until": 6},
+    {"id": "s1_whole_ms", "since": 1, "until": 6},
+    {"id": "s2_env_single", "since": 2, "until": 6},
+    {"id": "s2_env_double", "since": 2, "until": 6},
+    {"id": "s3_load_files", "since": 3, "until": 6},
+    {"id": "s3_load_errors", "since": 3, "until": 6},
+    {"id": "s4_bool_case", "since": 4, "until": 6},
+    {"id": "s4_bool_message", "since": 4, "until": 6},
+    {"id": "s5_lookup_error", "since": 5, "until": 6},
+    {"id": "s5_get_default", "since": 5, "until": 6},
+    {"id": "s6_pool_order", "since": 6, "until": 6},
+    {"id": "s6_tls_pair", "since": 6, "until": 6}
+  ]
+}

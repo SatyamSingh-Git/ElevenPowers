@@ -1,0 +1,245 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f732a97..94a2717 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Environment variables use one underscore between section and name (`LAYERCFG_SERVER_PORT`); the double-underscore spelling is now an unknown variable.
+ - Durations are whole milliseconds (`int`) instead of float seconds; a duration finer than a millisecond is rejected.
+ - `dump --format sources` lines up the source column.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 21f0b48..c4accfa 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -87,8 +87,8 @@ library.
+ | Fact | Value | Notes |
+ |---|---|---|
+ | `env.prefix` | `LAYERCFG_` | Variables without it are ignored. |
+-| `env.separator` | `__` | Stands for the dot between section and name. |
+-| `env.example` | `LAYERCFG_SERVER__PORT` | Sets `server.port`. |
++| `env.separator` | `_` | Stands for the dot between section and name. Names are matched against every option key and alias, not split. |
++| `env.example` | `LAYERCFG_SERVER_PORT` | Sets `server.port`. |
+ | `env.unknown` | `error` | A prefixed variable that names no option is reported. |
+ 
+ ## File format
+diff --git a/src/layercfg/dump.py b/src/layercfg/dump.py
+index 6fc057a..27c66e8 100644
+--- a/src/layercfg/dump.py
++++ b/src/layercfg/dump.py
+@@ -6,6 +6,7 @@ values, apart from secrets, which every view masks unless asked not to.
+ import json
+ 
+ from ._generated import DURATION_UNITS, SIZE_UNITS
++from .envsource import env_name
+ 
+ MASK = '***'
+ FORMATS = ('ini', 'json', 'sources')
+@@ -87,7 +88,7 @@ def explain(config, option):
+         f'  type: {option.type}',
+         f"  default: {'(unset)' if option.default is None else option.default}",
+         f'  set by: {config.source(option.key)}',
+-        f"  env: {config.env_prefix}{option.key.upper().replace('.', '__')}",
++        f'  env: {env_name(option.key, config.env_prefix)}',
+     ]
+     aliases = config.schema.aliases_of(option.key)
+     if aliases:
+diff --git a/src/layercfg/envsource.py b/src/layercfg/envsource.py
+index 976dbf5..594c36c 100644
+--- a/src/layercfg/envsource.py
++++ b/src/layercfg/envsource.py
+@@ -1,21 +1,29 @@
+ """The environment layer.
+ 
+ The caller passes the environment in as a mapping; nothing here reads
+-os.environ. `LAYERCFG_SERVER__PORT` sets `server.port`: the prefix is dropped,
+-the rest is lower-cased and the separator becomes a dot.
++os.environ. `LAYERCFG_SERVER_PORT` sets `server.port`: a variable's name is
++the prefix and then the key upper-cased, with its dot as an underscore.
++Option names contain underscores themselves, so a variable is matched against
++the names the schema knows instead of being split.
+ """
+ from .schema import Entry
+ 
+ ENV_PREFIX = 'LAYERCFG_'
+-SEPARATOR = '__'
+ 
+ 
+-def read_env(env, prefix=ENV_PREFIX):
+-    """Entries for every variable carrying the prefix, sorted by name."""
++def env_name(key, prefix=ENV_PREFIX):
++    """The variable that sets `key`."""
++    return prefix + key.upper().replace('.', '_')
++
++
++def read_env(env, schema, prefix=ENV_PREFIX):
++    """Entries for every variable carrying the prefix, sorted by name.
++
++    A variable that names no option gets an empty key, which no schema resolves.
++    """
++    known = {env_name(name, prefix): name for name in schema.names()}
+     entries = []
+     for name in sorted(env):
+-        if not name.startswith(prefix) or name == prefix:
+-            continue
+-        key = name[len(prefix):].lower().replace(SEPARATOR, '.')
+-        entries.append(Entry(key, env[name], f'env {name}', 'env'))
++        if name.startswith(prefix) and name != prefix:
++            entries.append(Entry(known.get(name, ''), env[name], f'env {name}', 'env'))
+     return entries
+diff --git a/src/layercfg/loader.py b/src/layercfg/loader.py
+index 2534dad..7167bc6 100644
+--- a/src/layercfg/loader.py
++++ b/src/layercfg/loader.py
+@@ -90,7 +90,7 @@ def load(file_text=None, env=None, *, file_name='config.ini', schema=APP_SCHEMA,
+     if file_text is not None:
+         entries += parse(file_text, file_name)
+     if env:
+-        entries += read_env(env, env_prefix)
++        entries += read_env(env, schema, env_prefix)
+     issues = _apply(schema, entries, values, sources)
+     if issues:
+         raise ValidationError(issues)
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 7b81dcf..904dd30 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -40,8 +40,8 @@ def test_check_reports_problems(tmp_path):
+ 
+ 
+ def test_env_is_layered(tmp_path):
+-    assert run('get', 'server.port', env={'LAYERCFG_SERVER__PORT': '9'})[1] == '9\n'
+-    assert run('get', 'server.port', '--env-prefix', 'X_', env={'X_SERVER__PORT': '8'})[1] == '8\n'
++    assert run('get', 'server.port', env={'LAYERCFG_SERVER_PORT': '9'})[1] == '9\n'
++    assert run('get', 'server.port', '--env-prefix', 'X_', env={'X_SERVER_PORT': '8'})[1] == '8\n'
+ 
+ 
+ def test_dump_formats(tmp_path):
+@@ -57,7 +57,7 @@ def test_unreadable_file_and_bad_usage(tmp_path):
+ 
+ 
+ def test_explain_and_keys():
+-    assert '  env: LAYERCFG_SERVER__PORT' in run('explain', 'server.listen_port')[1]
++    assert '  env: LAYERCFG_SERVER_PORT' in run('explain', 'server.listen_port')[1]
+     assert run('explain', 'nope.nope')[0] == 2
+     assert run('keys')[1].splitlines()[0] == 'server.host  (str)  Address to listen on.'
+     assert run('version') == (0, '1.4.0\n', '')
+diff --git a/tests/test_dump.py b/tests/test_dump.py
+index 752c9f5..6ae2207 100644
+--- a/tests/test_dump.py
++++ b/tests/test_dump.py
+@@ -36,15 +36,15 @@ def test_unset_options_are_commented_out():
+ 
+ 
+ def test_sources_view_names_each_layer():
+-    lines = render_sources(load(FILE, {'LAYERCFG_SERVER__PORT': '1'})).splitlines()
++    lines = render_sources(load(FILE, {'LAYERCFG_SERVER_PORT': '1'})).splitlines()
+     assert lines[0].endswith('(default)')
+-    assert lines[1].startswith('server.port = 1 ') and lines[1].endswith('(env LAYERCFG_SERVER__PORT)')
++    assert lines[1].startswith('server.port = 1 ') and lines[1].endswith('(env LAYERCFG_SERVER_PORT)')
+     assert lines[2].endswith('(config.ini line 2)')
+ 
+ 
+ def test_explain_shows_how_to_set_an_option():
+     text = explain(load(), APP_SCHEMA.resolve('log.verbosity'))
+     assert text.splitlines()[0] == 'log.level = info'
+-    assert '  env: LAYERCFG_LOG__LEVEL' in text
++    assert '  env: LAYERCFG_LOG_LEVEL' in text
+     assert '  aliases: log.verbosity' in text
+     assert '  choices: debug, info, warning, error' in text
+diff --git a/tests/test_loader.py b/tests/test_loader.py
+index e21d066..55ffdbb 100644
+--- a/tests/test_loader.py
++++ b/tests/test_loader.py
+@@ -14,9 +14,9 @@ def test_defaults_alone():
+ 
+ 
+ def test_env_beats_file_beats_defaults():
+-    config = load(FILE, {'LAYERCFG_SERVER__PORT': '9100'}, file_name='app.ini')
++    config = load(FILE, {'LAYERCFG_SERVER_PORT': '9100'}, file_name='app.ini')
+     assert config['server.port'] == 9100
+-    assert config.source('server.port') == 'env LAYERCFG_SERVER__PORT'
++    assert config.source('server.port') == 'env LAYERCFG_SERVER_PORT'
+     assert config['server.host'] == '0.0.0.0'
+     assert config.source('server.host') == 'app.ini line 3'
+     assert config['pool.max_size'] == 10
+@@ -41,16 +41,22 @@ def test_get_returns_the_default_for_unknown_keys():
+ def test_every_problem_is_reported_together():
+     text = '[server]\nport = abc\nsurprise = 1\n[pool]\nmax_size = 5000\n'
+     with pytest.raises(ValidationError) as caught:
+-        load(text, {'LAYERCFG_LOG__LEVEL': 'loud', 'LAYERCFG_NOPE': '1'}, file_name='app.ini')
++        load(text, {'LAYERCFG_LOG_LEVEL': 'loud', 'LAYERCFG_NOPE': '1'}, file_name='app.ini')
+     assert [str(issue) for issue in caught.value.issues] == [
+         "app.ini line 2: server.port: expected int, got 'abc'",
+         "app.ini line 3: unknown key 'server.surprise'",
+         'app.ini line 5: pool.max_size: must be at most 1000',
+-        'env LAYERCFG_LOG__LEVEL: log.level: must be one of debug, info, warning, error',
++        'env LAYERCFG_LOG_LEVEL: log.level: must be one of debug, info, warning, error',
+         'env LAYERCFG_NOPE: unknown variable',
+     ]
+ 
+ 
++def test_double_underscore_variables_are_unknown():
++    with pytest.raises(ValidationError) as caught:
++        load(env={'LAYERCFG_SERVER__PORT': '1', 'LAYERCFG_POOL_MAX_SIZE': '4'})
++    assert [str(issue) for issue in caught.value.issues] == ['env LAYERCFG_SERVER__PORT: unknown variable']
++
++
+ def test_defaults_are_not_a_floor_for_ranges():
+     with pytest.raises(ValidationError):
+         load('[server]\nport = 0\n')
+@@ -59,7 +65,7 @@ def test_defaults_are_not_a_floor_for_ranges():
+ 
+ def test_custom_schema_and_prefix():
+     schema = Schema([Option('job.retries', 'int', '3', aliases=('job.attempts',))])
+-    config = load('[job]\nattempts = 5\n', {'JOBS_JOB__RETRIES': '6'}, schema=schema, env_prefix='JOBS_')
++    config = load('[job]\nattempts = 5\n', {'JOBS_JOB_RETRIES': '6'}, schema=schema, env_prefix='JOBS_')
+     assert config.as_dict() == {'job.retries': 6}
+ 
+ 
+diff --git a/tests/test_sources.py b/tests/test_sources.py
+index ea418f7..671645d 100644
+--- a/tests/test_sources.py
++++ b/tests/test_sources.py
+@@ -1,7 +1,7 @@
+ import pytest
+ 
+-from layercfg import ParseError
+-from layercfg.envsource import read_env
++from layercfg import APP_SCHEMA, ParseError
++from layercfg.envsource import env_name, read_env
+ from layercfg.iniparse import parse
+ 
+ 
+@@ -35,14 +35,23 @@ def test_syntax_errors_name_the_line(text, message):
+     assert str(caught.value) == message
+ 
+ 
+-def test_env_variables_map_to_dotted_keys():
+-    env = {'LAYERCFG_SERVER__PORT': '1', 'LAYERCFG_POOL__MAX_SIZE': '2', 'PATH': '/bin', 'LAYERCFG_': 'x'}
+-    entries = read_env(env)
++def test_env_variables_match_option_names_and_aliases():
++    env = {'LAYERCFG_SERVER_PORT': '1', 'LAYERCFG_POOL_MAX_SIZE': '2', 'LAYERCFG_SERVER_LISTEN_PORT': '3',
++           'PATH': '/bin', 'LAYERCFG_': 'x'}
++    entries = read_env(env, APP_SCHEMA)
+     assert [(e.key, e.raw, e.source, e.layer) for e in entries] == [
+-        ('pool.max_size', '2', 'env LAYERCFG_POOL__MAX_SIZE', 'env'),
+-        ('server.port', '1', 'env LAYERCFG_SERVER__PORT', 'env'),
++        ('pool.max_size', '2', 'env LAYERCFG_POOL_MAX_SIZE', 'env'),
++        ('server.listen_port', '3', 'env LAYERCFG_SERVER_LISTEN_PORT', 'env'),
++        ('server.port', '1', 'env LAYERCFG_SERVER_PORT', 'env'),
+     ]
+ 
+ 
++def test_unmatched_variables_name_no_option():
++    entries = read_env({'LAYERCFG_SERVER__PORT': '1', 'LAYERCFG_NOPE': '2'}, APP_SCHEMA)
++    assert [APP_SCHEMA.resolve(e.key) for e in entries] == [None, None]
++
++
+ def test_env_prefix_can_be_changed():
+-    assert [e.key for e in read_env({'MYAPP_LOG__LEVEL': 'debug', 'LAYERCFG_LOG__LEVEL': 'x'}, 'MYAPP_')] == ['log.level']
++    env = {'MYAPP_LOG_LEVEL': 'debug', 'LAYERCFG_LOG_LEVEL': 'x'}
++    assert [e.key for e in read_env(env, APP_SCHEMA, 'MYAPP_')] == ['log.level']
++    assert env_name('pool.max_size', 'MYAPP_') == 'MYAPP_POOL_MAX_SIZE'

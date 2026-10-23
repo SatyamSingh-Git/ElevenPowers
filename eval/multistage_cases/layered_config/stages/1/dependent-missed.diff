@@ -1,0 +1,13 @@
+diff --git a/src/layercfg/dump.py b/src/layercfg/dump.py
+index 6fc057a..4f94b21 100644
+--- a/src/layercfg/dump.py
++++ b/src/layercfg/dump.py
+@@ -29,7 +29,7 @@ def format_value(option, value):
+     if option.type == 'list':
+         return ', '.join(value)
+     if option.type == 'duration':
+-        return _with_unit(value, DURATION_UNITS)
++        return _with_unit(round(value * 1000), DURATION_UNITS)
+     if option.type == 'size':
+         return _with_unit(value, SIZE_UNITS)
+     if option.type == 'float':

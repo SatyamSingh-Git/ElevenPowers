@@ -1,0 +1,48 @@
+diff --git a/src/layercfg/cli.py b/src/layercfg/cli.py
+index 294f463..40819aa 100644
+--- a/src/layercfg/cli.py
++++ b/src/layercfg/cli.py
+@@ -13,10 +13,11 @@ import sys
+ from ._generated import VERSION
+ from .dump import FORMATS, MASK, RENDERERS, explain, shown
+ from .envsource import ENV_PREFIX
+-from .errors import ConfigError, UnknownKeyError
++from .errors import ConfigError
+ from .loader import load
+ 
+ EXIT_OK, EXIT_INVALID, EXIT_USAGE = 0, 1, 2
++_MISSING = object()
+ 
+ 
+ class _Usage(Exception):
+@@ -56,12 +57,11 @@ def _load(args, env):
+ 
+ 
+ def _get(args, config, out, err):
+-    try:
+-        option = config.option(args.key)
+-    except UnknownKeyError as error:
+-        print(error, file=err)
++    value = config.get(args.key, _MISSING)
++    if value is _MISSING:
++        print(f"unknown key '{args.key}'", file=err)
+         return EXIT_USAGE
+-    value = config[option.key]
++    option = config.schema.resolve(args.key)
+     if not args.json:
+         print(shown(option, value, args.reveal), file=out)
+     elif option.secret and value is not None and not args.reveal:
+@@ -82,10 +82,9 @@ def _check(args, config, out, err):
+ 
+ 
+ def _explain(args, config, out, err):
+-    try:
+-        option = config.option(args.key)
+-    except UnknownKeyError as error:
+-        print(error, file=err)
++    option = config.schema.resolve(args.key)
++    if option is None:
++        print(f"unknown key '{args.key}'", file=err)
+         return EXIT_USAGE
+     out.write(explain(config, option))
+     return EXIT_OK

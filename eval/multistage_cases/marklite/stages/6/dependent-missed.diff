@@ -1,0 +1,20 @@
+diff --git a/src/marklite/cli.py b/src/marklite/cli.py
+index 775c2ee..c258ad9 100644
+--- a/src/marklite/cli.py
++++ b/src/marklite/cli.py
+@@ -1,5 +1,4 @@
+ import argparse
+-from dataclasses import asdict
+ import json
+ from pathlib import Path
+ import sys
+@@ -31,7 +30,8 @@ def main(argv=None):
+         options = Options(toc_max_level=args.toc_level, heading_ids=not args.no_ids,
+                           safe_links=not args.unsafe_links, hard_breaks=args.hard_breaks)
+         if args.json_toc:
+-            entries = [asdict(entry) for entry in toc(text, options)]
++            entries = [{"level": entry.level, "title": entry.title, "anchor": entry.anchor}
++                       for entry in toc(text, options)]
+             output = json.dumps(entries, indent=2, ensure_ascii=False) + "\n"
+         else:
+             output = render(text, options)

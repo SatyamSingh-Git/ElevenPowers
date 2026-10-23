@@ -1,0 +1,15 @@
+diff --git a/src/layercfg/cli.py b/src/layercfg/cli.py
+index 40819aa..f5c5508 100644
+--- a/src/layercfg/cli.py
++++ b/src/layercfg/cli.py
+@@ -52,8 +52,8 @@ def _parser():
+ 
+ 
+ def _load(args, env):
+-    files = [(args.config, Path(args.config).read_text(encoding='utf-8'))] if args.config else []
+-    return load(files, env, env_prefix=args.env_prefix)
++    text = Path(args.config).read_text(encoding='utf-8') if args.config else None
++    return load(text, env, file_name=args.config or 'config.ini', env_prefix=args.env_prefix)
+ 
+ 
+ def _get(args, config, out, err):

@@ -1,0 +1,309 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 442f4cd..1d8fb0c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- A role can inherit from several roles: `role lead inherits editor, auditor`, or a list of parents in JSON policies.
+ - `warden report` lists the ten most denied resources (was five), ties broken by resource name, and shows each user's denial rate.
+ - Conditions can name `env` attributes, supplied per request as `Request(..., env={...})` or `warden check --env KEY=VALUE`.
+ - Fixed: comparisons in conditions treated numbers as text, so `user.clearance >= 3` refused a clearance of 10. Numbers, including numeric strings, now compare as numbers.
+diff --git a/docs/reference.md b/docs/reference.md
+index f0b1bfe..eb75b8b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -5,7 +5,7 @@
+ | key | value | meaning |
+ | --- | --- | --- |
+ | `syntax.comment` | `#` | a line starting with this is ignored |
+-| `syntax.role` | `role <name> [inherits <parent>]` | defines a role |
++| `syntax.role` | `role <name> [inherits <parent>, ...]` | defines a role; it holds everything each parent holds |
+ | `syntax.rule` | `<effect> <roles> <actions> <pattern> [when <condition>]` | one rule per line |
+ | `syntax.roles_separator` | `,` | between roles in a rule; the rule applies to holders of any of them |
+ | `syntax.default` | `default <effect>` | effect when no rule matches |
+@@ -50,7 +50,7 @@
+ | key | value | meaning |
+ | --- | --- | --- |
+ | `dict.schema` | `3` | the only accepted `schema` value |
+-| `dict.roles` | `{name: parent or null}` | role definitions |
++| `dict.roles` | `{name: parent, [parents] or null}` | role definitions |
+ | `dict.rule_fields` | `effect, role, actions, resource, when` | keys of one rule |
+ | `dict.required` | `effect, role, actions, resource` | keys a rule must have |
+ | `file.json_suffix` | `.json` | files with this suffix are read as data, others as text |
+@@ -99,7 +99,7 @@
+ | key | value | meaning |
+ | --- | --- | --- |
+ | `lint.unused-role` | `role {role} is never used` | no rule names it and no role inherits it |
+-| `lint.redundant-role` | `role {role} adds nothing to {parent}` | no rule names it |
++| `lint.redundant-role` | `role {role} adds nothing to {parent}` | no rule names it and it has exactly one parent |
+ | `lint.shadowed-rule` | `rule {number} can never apply: rule {other} denies it` | an unconditional deny covers the allow |
+ | `lint.duplicate-rule` | `rule {number} repeats rule {other}` | same effect, roles, actions, pattern, condition |
+ 
+diff --git a/src/warden/lint.py b/src/warden/lint.py
+index ccf564c..cd9ba02 100644
+--- a/src/warden/lint.py
++++ b/src/warden/lint.py
+@@ -31,14 +31,15 @@ def _shadows(graph, deny, allow):
+ def _role_findings(policy):
+     graph = policy.roles
+     named = {role for rule in policy.rules for role in rule.roles}
+-    inherited = {graph.parent_of(name) for name in graph}
++    inherited = {parent for name in graph for parent in graph.parents_of(name)}
+     for name in graph:
+         if name in named:
+             continue
+-        parent = graph.parent_of(name)
+-        if parent is not None:
+-            yield Finding("redundant-role", f"role {name} adds nothing to {parent}")
+-        elif name not in inherited:
++        # A role with several parents and no rules of its own still combines them.
++        parents = graph.parents_of(name)
++        if len(parents) == 1:
++            yield Finding("redundant-role", f"role {name} adds nothing to {parents[0]}")
++        elif not parents and name not in inherited:
+             yield Finding("unused-role", f"role {name} is never used")
+ 
+ 
+diff --git a/src/warden/loader.py b/src/warden/loader.py
+index 458f51d..18f68f4 100644
+--- a/src/warden/loader.py
++++ b/src/warden/loader.py
+@@ -2,7 +2,7 @@
+ 
+     {"schema": 3,
+      "default": "deny",
+-     "roles": {"viewer": null, "editor": "viewer"},
++     "roles": {"viewer": null, "auditor": null, "editor": "viewer", "lead": ["editor", "auditor"]},
+      "rules": [{"effect": "allow", "role": "viewer", "actions": ["read"],
+                 "resource": "reports/**", "when": "user.dept == resource.dept"}]}
+ """
+@@ -22,8 +22,12 @@ def load_dict(data):
+     if schema != SCHEMA_VERSION:
+         raise PolicyError(f"unsupported schema: {schema}")
+     graph = RoleGraph()
+-    for name, parent in data.get("roles", {}).items():
+-        graph.add(name, parent)
++    for name, parents in data.get("roles", {}).items():
++        if parents is None:
++            parents = ()
++        elif isinstance(parents, str):
++            parents = (parents,)
++        graph.add(name, parents)
+     rules = []
+     for number, item in enumerate(data.get("rules", []), 1):
+         missing = [name for name in REQUIRED if name not in item]
+diff --git a/src/warden/parser.py b/src/warden/parser.py
+index 44eea53..54a38f2 100644
+--- a/src/warden/parser.py
++++ b/src/warden/parser.py
+@@ -2,7 +2,9 @@
+ 
+     # comments start with a hash
+     role viewer
++    role auditor
+     role editor inherits viewer
++    role lead inherits editor, auditor
+     default deny
+     allow viewer,auditor read,list reports/**
+     deny editor delete reports/archive/**
+@@ -16,7 +18,7 @@ from .patterns import Pattern
+ from .roles import RoleGraph
+ 
+ EFFECTS = ("allow", "deny")
+-ROLE_SHAPE = "role <name> [inherits <parent>]"
++ROLE_SHAPE = "role <name> [inherits <parent>, ...]"
+ RULE_SHAPE = "<effect> <roles> <actions> <pattern> [when <condition>]"
+ 
+ 
+@@ -48,8 +50,11 @@ def finish(graph, rules, default):
+ def _role_line(graph, words):
+     if len(words) == 2:
+         graph.add(words[1])
+-    elif len(words) == 4 and words[2] == "inherits":
+-        graph.add(words[1], words[3])
++    elif len(words) >= 4 and words[2] == "inherits":
++        parents = [parent.strip() for parent in " ".join(words[3:]).split(",")]
++        if any(not parent or " " in parent for parent in parents):
++            raise PolicyError(f"expected: {ROLE_SHAPE}")
++        graph.add(words[1], parents)
+     else:
+         raise PolicyError(f"expected: {ROLE_SHAPE}")
+ 
+diff --git a/src/warden/roles.py b/src/warden/roles.py
+index 1864a19..76ac533 100644
+--- a/src/warden/roles.py
++++ b/src/warden/roles.py
+@@ -1,4 +1,4 @@
+-"""Roles and the inheritance between them."""
++"""Roles and the inheritance between them. A role may inherit from several others."""
+ import re
+ 
+ from .errors import RoleError
+@@ -9,55 +9,60 @@ MAX_CHAIN = 8
+ 
+ class RoleGraph:
+     def __init__(self):
+-        self._parent = {}
++        self._parents = {}
+ 
+-    def add(self, name, parent=None):
++    def add(self, name, parents=()):
+         if not ROLE_NAME.fullmatch(name):
+             raise RoleError(f"bad role name: {name}")
+-        if name in self._parent:
++        if name in self._parents:
+             raise RoleError(f"role {name} is defined twice")
+-        self._parent[name] = parent
++        self._parents[name] = tuple(dict.fromkeys(parents))
+ 
+     def __contains__(self, name):
+-        return name in self._parent
++        return name in self._parents
+ 
+     def __iter__(self):
+-        return iter(self._parent)
++        return iter(self._parents)
+ 
+     def __len__(self):
+-        return len(self._parent)
++        return len(self._parents)
+ 
+-    def parent_of(self, name):
+-        return self._parent[name]
++    def parents_of(self, name):
++        return self._parents[name]
+ 
+     def ancestors(self, name):
+         """`name` and every role it inherits from, nearest first."""
+-        chain = []
+-        while name is not None:
+-            chain.append(name)
+-            name = self._parent[name]
+-        return chain
++        found, queue = [], [name]
++        while queue:
++            role = queue.pop(0)
++            if role not in found:
++                found.append(role)
++                queue.extend(self._parents[role])
++        return found
+ 
+     def expand(self, names):
+         """Every role held by someone given `names`. Names the policy does not define are ignored."""
+         held = set()
+         for name in names:
+-            if name in self._parent:
++            if name in self._parents:
+                 held.update(self.ancestors(name))
+         return frozenset(held)
+ 
++    def _longest(self, path):
++        """Roles in the longest chain that continues `path`, which must not loop back on itself."""
++        longest = len(path)
++        for parent in self._parents[path[-1]]:
++            if parent in path:
++                cycle = path[path.index(parent):] + [parent]
++                raise RoleError("role cycle: " + " -> ".join(cycle))
++            longest = max(longest, self._longest(path + [parent]))
++        return longest
++
+     def check(self):
+-        for parent in self._parent.values():
+-            if parent is not None and parent not in self._parent:
+-                raise RoleError(f"unknown role: {parent}")
+-        for name in self._parent:
+-            chain = [name]
+-            parent = self._parent[name]
+-            while parent is not None:
+-                if parent in chain:
+-                    cycle = chain[chain.index(parent):] + [parent]
+-                    raise RoleError("role cycle: " + " -> ".join(cycle))
+-                chain.append(parent)
+-                parent = self._parent[parent]
+-            if len(chain) > MAX_CHAIN:
++        for parents in self._parents.values():
++            for parent in parents:
++                if parent not in self._parents:
++                    raise RoleError(f"unknown role: {parent}")
++        for name in self._parents:
++            if self._longest([name]) > MAX_CHAIN:
+                 raise RoleError(f"inheritance chain of {name} is longer than {MAX_CHAIN} roles")
+diff --git a/tests/test_lint.py b/tests/test_lint.py
+index c46337b..c852ea8 100644
+--- a/tests/test_lint.py
++++ b/tests/test_lint.py
+@@ -39,3 +39,9 @@ def test_rules_with_several_roles():
+             "deny viewer,auditor delete reports/**\nallow editor,auditor delete reports/q1\n"
+             "allow auditor,viewer read **\n")
+     assert findings(text) == [("shadowed-rule", "rule 2 can never apply: rule 1 denies it")]
++
++
++def test_role_combining_several_parents_is_not_redundant():
++    text = ("role viewer\nrole auditor\nrole lead inherits viewer, auditor\nrole senior inherits viewer\n"
++            "allow viewer read **\nallow auditor list **\n")
++    assert findings(text) == [("redundant-role", "role senior adds nothing to viewer")]
+diff --git a/tests/test_policy.py b/tests/test_policy.py
+index 70ae9e4..dea49d3 100644
+--- a/tests/test_policy.py
++++ b/tests/test_policy.py
+@@ -85,7 +85,7 @@ def test_allows_shortcut():
+     ("role viewer\npermit viewer read x\n", "line 2: unknown effect: permit"),
+     ("role viewer\nallow viewer read\n", "line 2: expected: "),
+     ("role viewer\nrole viewer\n", "line 2: role viewer is defined twice"),
+-    ("role viewer is cool\n", "line 1: expected: role <name> [inherits <parent>]"),
++    ("role viewer is cool\n", "line 1: expected: role <name> [inherits <parent>, ...]"),
+     ("role viewer\nallow viewer read x when user.dept\n", "line 2: bad condition"),
+ ])
+ def test_syntax_errors(text, message):
+@@ -126,3 +126,20 @@ def test_rule_with_several_roles():
+ def test_every_listed_role_must_exist():
+     with pytest.raises(PolicySyntaxError, match="line 2: unknown role: ghost"):
+         parse_policy("role viewer\nallow viewer,ghost read x\n")
++
++
++def test_role_with_several_parents():
++    text = ("role viewer\nrole auditor\nrole editor inherits viewer\nrole lead inherits editor, auditor\n"
++            "allow viewer read reports/**\nallow auditor list logs/**\n")
++    data = {"roles": {"viewer": None, "auditor": None, "editor": "viewer", "lead": ["editor", "auditor"]},
++            "rules": [{"effect": "allow", "role": "viewer", "actions": "read", "resource": "reports/**"},
++                      {"effect": "allow", "role": "auditor", "actions": "list", "resource": "logs/**"}]}
++    for policy in (parse_policy(text), load_dict(data)):
++        assert decide(policy, ["lead"], "read", "reports/q1").allowed
++        assert decide(policy, ["lead"], "list", "logs/2024").allowed
++        assert not decide(policy, ["editor"], "list", "logs/2024").allowed
++
++
++def test_bad_parent_list():
++    with pytest.raises(PolicySyntaxError, match=r"line 1: expected: role <name> \[inherits <parent>, \.\.\.\]"):
++        parse_policy("role lead inherits editor,\n")
+diff --git a/tests/test_roles.py b/tests/test_roles.py
+index f4d417d..f1f49b6 100644
+--- a/tests/test_roles.py
++++ b/tests/test_roles.py
+@@ -7,7 +7,7 @@ from warden.roles import MAX_CHAIN, RoleGraph
+ def graph(**parents):
+     roles = RoleGraph()
+     for name, parent in parents.items():
+-        roles.add(name, parent)
++        roles.add(name, parent if isinstance(parent, tuple) else () if parent is None else (parent,))
+     return roles
+ 
+ 
+@@ -45,3 +45,15 @@ def test_duplicate_and_bad_names():
+         roles.add("viewer")
+     with pytest.raises(RoleError, match="bad role name: 9lives"):
+         roles.add("9lives")
++
++
++def test_several_parents():
++    roles = graph(viewer=None, auditor=None, editor="viewer", lead=("editor", "auditor"))
++    assert roles.ancestors("lead") == ["lead", "editor", "auditor", "viewer"]
++    assert roles.expand(["lead"]) == {"lead", "editor", "auditor", "viewer"}
++
++
++def test_cycle_through_second_parent():
++    with pytest.raises(RoleError) as caught:
++        graph(a=None, b=("a", "c"), c="b").check()
++    assert str(caught.value) == "role cycle: b -> c -> b"

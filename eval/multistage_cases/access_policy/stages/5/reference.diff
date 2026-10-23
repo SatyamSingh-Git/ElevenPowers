@@ -1,0 +1,93 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 51d7b34..442f4cd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `warden report` lists the ten most denied resources (was five), ties broken by resource name, and shows each user's denial rate.
+ - Conditions can name `env` attributes, supplied per request as `Request(..., env={...})` or `warden check --env KEY=VALUE`.
+ - Fixed: comparisons in conditions treated numbers as text, so `user.clearance >= 3` refused a clearance of 10. Numbers, including numeric strings, now compare as numbers.
+ - Audit log records carry `"decision": "allow"` or `"deny"` in place of `"allowed": true/false`. Older logs are not read.
+diff --git a/docs/reference.md b/docs/reference.md
+index e217bd0..f0b1bfe 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -90,9 +90,9 @@
+ | key | value | meaning |
+ | --- | --- | --- |
+ | `report.header` | `{total} decisions: {allowed} allowed, {denied} denied` | first line |
+-| `report.user_line` | `{user}  {allowed} allowed  {denied} denied` | one line per user, sorted by name |
+-| `report.top` | `5` | resources listed under `most denied` |
+-| `report.order` | `count, then first seen` | order of `most denied` |
++| `report.user_line` | `{user}  {allowed} allowed  {denied} denied  {rate}%` | one line per user, sorted by name; rate is the denied share, rounded to a whole percent |
++| `report.top` | `10` | resources listed under `most denied` |
++| `report.order` | `count, then resource name` | order of `most denied` |
+ 
+ ## Lint
+ 
+diff --git a/src/warden/report.py b/src/warden/report.py
+index 4f82688..9d8c05c 100644
+--- a/src/warden/report.py
++++ b/src/warden/report.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
+ 
+ from .audit import read_log
+ 
+-TOP = 5
++TOP = 10
+ 
+ 
+ @dataclass
+@@ -44,9 +44,11 @@ def format_summary(summary, top=TOP):
+         width = max(len(name) for name in summary.users)
+         for name in sorted(summary.users):
+             allowed, denied = summary.users[name]
+-            lines.append(f"  {name:<{width}}  {allowed} allowed  {denied} denied")
++            rate = round(100 * denied / (allowed + denied))
++            lines.append(f"  {name:<{width}}  {allowed} allowed  {denied} denied  {rate}%")
+     if summary.denied_resources:
+         lines.append("most denied:")
+-        for resource, count in summary.denied_resources.most_common(top):
++        ranked = sorted(summary.denied_resources.items(), key=lambda item: (-item[1], item[0]))
++        for resource, count in ranked[:top]:
+             lines.append(f"  {resource}  {count}")
+     return "\n".join(lines)
+diff --git a/tests/test_audit.py b/tests/test_audit.py
+index 5ccfd6b..39cb793 100644
+--- a/tests/test_audit.py
++++ b/tests/test_audit.py
+@@ -1,6 +1,7 @@
+ import json
+ 
+-from warden import Evaluator, Request, User, explain, format_summary, parse_policy, read_log, summarize_file, write_log
++from warden import (Evaluator, Request, User, explain, format_summary, parse_policy, read_log, summarize,
++                    summarize_file, write_log)
+ 
+ POLICY = """\
+ role viewer
+@@ -54,8 +55,8 @@ def test_summary(tmp_path):
+     assert format_summary(summary) == (
+         "4 decisions: 1 allowed, 3 denied\n"
+         "by user:\n"
+-        "  alice  1 allowed  1 denied\n"
+-        "  bob    0 allowed  2 denied\n"
++        "  alice  1 allowed  1 denied  50%\n"
++        "  bob    0 allowed  2 denied  100%\n"
+         "most denied:\n"
+         "  reports/archive/old  2\n"
+         "  reports/q1  1")
+@@ -84,3 +85,12 @@ def test_env_condition_and_explanation():
+     assert evaluator.decide(Request(user, "read", "payroll/may", env={"network": "office"})).allowed
+     decision = evaluator.decide(Request(user, "read", "payroll/may"))
+     assert explain(decision).splitlines()[1] == '  rule 1 not applied: env.network == "office"'
++
++
++def test_most_denied_keeps_ten_ordered_by_count_then_name():
++    records = [{"user": "u", "decision": "deny", "resource": f"r{i:02d}"} for i in range(12, 0, -1)]
++    records += [{"user": "u", "decision": "deny", "resource": "r12"}, {"user": "u", "decision": "allow", "resource": "x"}]
++    lines = format_summary(summarize(records)).splitlines()
++    assert lines[2] == "  u  1 allowed  13 denied  93%"
++    listed = lines[lines.index("most denied:") + 1:]
++    assert [line.split()[0] for line in listed] == ["r12"] + [f"r{i:02d}" for i in range(1, 10)]

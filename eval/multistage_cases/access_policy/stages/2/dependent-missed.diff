@@ -1,0 +1,13 @@
+diff --git a/src/warden/report.py b/src/warden/report.py
+index 4f82688..c99b191 100644
+--- a/src/warden/report.py
++++ b/src/warden/report.py
+@@ -22,7 +22,7 @@ def summarize(records):
+     for item in records:
+         allowed, denied = summary.users.get(item["user"], (0, 0))
+         summary.total += 1
+-        if item["decision"] == "allow":
++        if item["allowed"]:
+             summary.allowed += 1
+             allowed += 1
+         else:

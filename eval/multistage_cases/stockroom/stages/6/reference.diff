@@ -1,0 +1,175 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3528ad0..f078a19 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -8,6 +8,7 @@
+ - `Inventory.on_hand()` now returns the quantity at each location; the new `Inventory.total()` returns the sum.
+ - `Inventory.receive()`, `issue()`, `transfer()` and `adjust()` return the `seq` of the movement they record.
+ - Log movements in the data file as lines with one `location` and a signed `delta`; a transfer is two lines sharing its `seq`. Data file version 3; older files are upgraded when read.
++- Locations can have a capacity (`add-location --capacity N`); a receive or transfer that would exceed it is refused.
+ 
+ ## 1.4.0
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 8cc94f9..59b1b86 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -10,6 +10,7 @@
+ | `--cost` | `0.00` | unit cost for `add-item`, in dollars and cents |
+ | `--kind` | `shelf` | kind of location for `add-location` |
+ | `--description` | `` | free text for `add-location` |
++| `--capacity` | `none` | most units a location from `add-location` can hold, counting every item; none means no limit |
+ | `--note` | `` | free text stored on a movement |
+ 
+ ## Data file
+@@ -27,6 +28,7 @@ or adjust, and two for a transfer (out of the source, into the destination).
+ | `items.<sku>.cost_cents` | `integer` | unit cost in whole cents, e.g. 250 for $2.50 |
+ | `locations.<code>.kind` | `string` | one of the location kinds |
+ | `locations.<code>.description` | `string` | free text |
++| `locations.<code>.capacity` | `integer or null` | most units the location can hold, all items together; null or absent means no limit |
+ | `stock.<sku>.<code>` | `integer` | quantity held; locations holding none are left out |
+ | `movements[].seq` | `integer` | 1 for the first movement, then one higher for each; both lines of a transfer share it |
+ | `movements[].type` | `string` | `receive`, `issue`, `transfer` or `adjust` |
+@@ -71,6 +73,8 @@ Every refusal raises `StockError`; the command prints `error: <message>` and exi
+ | `same location` | `cannot transfer within one location: <code>` | transfer whose source and destination are the same |
+ | `bad quantity` | `quantity must be a whole number from 1 to 1000000: <text>` | |
+ | `bad count` | `count must be a whole number from 0 to 1000000: <text>` | |
++| `location full` | `location <code> is full: capacity <capacity>, would hold <units>` | receive or transfer that would exceed a location's capacity |
++| `bad capacity` | `capacity must be a whole number from 1 to 1000000: <text>` | |
+ | `bad cost` | `cost must be dollars and cents, like 2.50: <text>` | |
+ | `unsupported version` | `unsupported data file version: <version>` | |
+ | `exit status` | `1` | for any refusal; `check` also exits 1 on a mismatch |
+diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
+index 4c6723c..3afc998 100644
+--- a/src/stockroom/cli.py
++++ b/src/stockroom/cli.py
+@@ -21,7 +21,7 @@ def _set_reorder(inventory, args, out):
+ 
+ 
+ def _add_location(inventory, args, out):
+-    code = inventory.add_location(args.code, kind=args.kind, description=args.description)
++    code = inventory.add_location(args.code, kind=args.kind, description=args.description, capacity=args.capacity)
+     out.write(f'added location {code}\n')
+ 
+ 
+@@ -185,6 +185,7 @@ def build_parser():
+     command.add_argument('code')
+     command.add_argument('--kind', default='shelf')
+     command.add_argument('--description', default='')
++    command.add_argument('--capacity', help='most units the location can hold, of all items together')
+ 
+     for name, where in (('receive', 'location'), ('issue', 'location')):
+         command = commands.add_parser(name, help=f'{name} stock')
+diff --git a/src/stockroom/inventory.py b/src/stockroom/inventory.py
+index fd85e4c..91eb35a 100644
+--- a/src/stockroom/inventory.py
++++ b/src/stockroom/inventory.py
+@@ -1,7 +1,7 @@
+ """Items, locations and the movements that change what is held where."""
+ from .models import (
+     StockError, check_kind, check_name, check_unit, normalize_code, normalize_sku,
+-    parse_count, parse_money, parse_qty, parse_reorder_point,
++    parse_capacity, parse_count, parse_money, parse_qty, parse_reorder_point,
+ )
+ 
+ 
+@@ -38,11 +38,12 @@ class Inventory:
+     def skus(self):
+         return sorted(self.doc['items'])
+ 
+-    def add_location(self, code, kind='shelf', description=''):
++    def add_location(self, code, kind='shelf', description='', capacity=None):
+         code = normalize_code(code)
+         if code in self.doc['locations']:
+             raise StockError(f'location already exists: {code}')
+-        self.doc['locations'][code] = {'kind': check_kind(kind), 'description': description.strip()}
++        self.doc['locations'][code] = {'kind': check_kind(kind), 'description': description.strip(),
++                                       'capacity': parse_capacity(capacity)}
+         return code
+ 
+     def location(self, code):
+@@ -96,6 +97,15 @@ class Inventory:
+                               'delta': delta, 'note': note.strip()})
+         return seq
+ 
++    def _make_room(self, code, qty):
++        # Files written before capacities existed have no capacity field.
++        capacity = self.doc['locations'][code].get('capacity')
++        if capacity is None:
++            return
++        held = sum(row.get(code, 0) for row in self.doc['stock'].values())
++        if held + qty > capacity:
++            raise StockError(f'location {code} is full: capacity {capacity}, would hold {held + qty}')
++
+     def _take(self, sku, code, qty):
+         have = self.at(sku, code)
+         if have < qty:
+@@ -107,6 +117,7 @@ class Inventory:
+     def receive(self, sku, qty, location, note=''):
+         """Book goods in. Returns the seq of the recorded movement."""
+         sku, code, qty = self._sku(sku), self._code(location), parse_qty(qty)
++        self._make_room(code, qty)
+         self._set(sku, code, self.at(sku, code) + qty)
+         return self._record('receive', sku, note, (code, qty))
+ 
+@@ -123,6 +134,7 @@ class Inventory:
+         if source == dest:
+             raise StockError(f'cannot transfer within one location: {source}')
+         have = self._take(sku, source, qty)
++        self._make_room(dest, qty)
+         there = self.at(sku, dest)
+         self._set(sku, source, have - qty)
+         self._set(sku, dest, there + qty)
+diff --git a/src/stockroom/models.py b/src/stockroom/models.py
+index 6f3f194..22e6079 100644
+--- a/src/stockroom/models.py
++++ b/src/stockroom/models.py
+@@ -64,6 +64,16 @@ def parse_reorder_point(value):
+     return point
+ 
+ 
++def parse_capacity(value):
++    """A location's capacity in units of any item, or None for no limit."""
++    if value is None:
++        return None
++    capacity = _whole(value)
++    if capacity is None or not 1 <= capacity <= MAX_QTY:
++        raise StockError(f'capacity must be a whole number from 1 to {MAX_QTY}: {value}')
++    return capacity
++
++
+ def parse_money(value):
+     """Dollars and cents such as '2.50', '3' or '$0.12', as a whole number of cents."""
+     text = str(value).strip().removeprefix('$')
+diff --git a/tests/test_inventory.py b/tests/test_inventory.py
+index e1d1c76..f9d978e 100644
+--- a/tests/test_inventory.py
++++ b/tests/test_inventory.py
+@@ -73,5 +73,27 @@ def test_transfer_within_one_location_is_refused(inventory):
+     assert len(inventory.doc['movements']) == 1
+ 
+ 
++def test_capacity_counts_every_item_at_the_location(inventory):
++    inventory.add_location('C3', capacity=10)
++    inventory.receive('BOLT-M6', 6, 'C3')
++    inventory.receive('NUT-M6', 4, 'C3')
++    with pytest.raises(StockError, match='location C3 is full: capacity 10, would hold 11'):
++        inventory.receive('NUT-M6', 1, 'C3')
++    inventory.receive('BOLT-M6', 3, 'A1')
++    with pytest.raises(StockError, match='location C3 is full: capacity 10, would hold 13'):
++        inventory.transfer('BOLT-M6', 3, 'A1', 'C3')
++    assert inventory.at('BOLT-M6', 'A1') == 3
++    inventory.issue('NUT-M6', 4, 'C3')
++    inventory.transfer('BOLT-M6', 3, 'A1', 'C3')
++    assert inventory.at('BOLT-M6', 'C3') == 9
++
++
++def test_locations_without_capacity_are_unlimited(inventory):
++    assert inventory.location('A1')['capacity'] is None
++    inventory.receive('BOLT-M6', 1_000_000, 'A1')
++    with pytest.raises(StockError, match='capacity must be a whole number from 1 to 1000000: 0'):
++        inventory.add_location('D4', capacity='0')
++
++
+ def test_items_keep_their_cost(inventory):
+     assert inventory.item('BOLT-M6')['cost_cents'] == 12

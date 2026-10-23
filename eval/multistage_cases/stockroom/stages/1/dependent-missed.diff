@@ -1,0 +1,28 @@
+diff --git a/src/stockroom/reports.py b/src/stockroom/reports.py
+index 74b4417..6145c52 100644
+--- a/src/stockroom/reports.py
++++ b/src/stockroom/reports.py
+@@ -1,10 +1,10 @@
+ """Low-stock, valuation and stock-level reports, as rows and as text tables."""
+ from collections import namedtuple
++from decimal import Decimal
+ 
+ from .models import format_money, normalize_sku
+ 
+ LowRow = namedtuple('LowRow', 'sku name on_hand reorder_point shortfall')
+-# Money in whole cents.
+ ValueRow = namedtuple('ValueRow', 'sku quantity unit_cost value')
+ StockRow = namedtuple('StockRow', 'sku location quantity')
+ 
+@@ -27,9 +27,9 @@ def valuation(inventory):
+     for sku in inventory.skus():
+         held = inventory.on_hand(sku)
+         if held:
+-            cost = inventory.item(sku)['cost_cents']
++            cost = Decimal(inventory.item(sku)['unit_cost'])
+             rows.append(ValueRow(sku, held, cost, cost * held))
+-    return rows, sum(row.value for row in rows)
++    return rows, sum((row.value for row in rows), Decimal('0.00'))
+ 
+ 
+ def stock_levels(inventory, sku=None):

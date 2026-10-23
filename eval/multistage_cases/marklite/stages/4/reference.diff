@@ -1,0 +1,109 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index cd71886..e3207bd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed a `RecursionError` crash on very deeply nested quotes or lists; nesting deeper than 32 levels now raises `MarkliteError`.
+ - The table of contents lists heading levels 1 and 2 by default (`toc_max_level` was 3).
+ - Double quotes in text content are no longer written as `&quot;`; attribute values still escape them.
+ - Heading ids and table of contents anchors now start with the `id_prefix` option, `section-` by default.
+diff --git a/docs/reference.md b/docs/reference.md
+index 738d73e..e1ef0d9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -60,7 +60,9 @@ When `line` is set, the message starts with `line {line}: `.
+ |---|---|---|
+ | `max_heading_level` | `6` | `#` to `######`. |
+ | `max_input_chars` | `1000000` | Longest input `parse`, `render` and `toc` accept. |
++| `max_nesting` | `32` | Deepest nesting of block quotes and list items, counted together. |
+ | `input_size_error` | `input exceeds 1000000 characters` | Raised for longer input. |
++| `nesting_error` | `nesting deeper than 32 levels` | Raised with the line of the block that goes too deep. |
+ | `toc_level_error` | `toc_max_level must be between 1 and 6` | Raised by `Options`. |
+ 
+ ## Command line
+diff --git a/src/marklite/blocks.py b/src/marklite/blocks.py
+index 6f76cad..256d7c5 100644
+--- a/src/marklite/blocks.py
++++ b/src/marklite/blocks.py
+@@ -3,6 +3,10 @@ from dataclasses import dataclass
+ import re
+ from typing import NamedTuple
+ 
++from .errors import MarkliteError
++
++MAX_NESTING = 32
++
+ _HEADING = re.compile(r"^ {0,3}(#{1,6})(?=[ \t]|$)(.*)$")
+ _CLOSING_HASHES = re.compile(r"(?:^|[ \t]+)#+[ \t]*$")
+ _FENCE = re.compile(r"^( {0,3})(`{3,}|~{3,})[ \t]*(.*?)[ \t]*$")
+@@ -100,9 +104,10 @@ def _heading_text(raw):
+ 
+ 
+ class _BlockParser:
+-    def __init__(self, lines, first_line):
++    def __init__(self, lines, first_line, depth=0):
+         self.lines = lines
+         self.first_line = first_line
++        self.depth = depth
+         self.i = 0
+ 
+     def blocks(self):
+@@ -158,7 +163,7 @@ class _BlockParser:
+             else:
+                 break
+             self.i += 1
+-        return Quote(_BlockParser(inner, start).blocks(), start)
++        return Quote(self.nested(inner, start), start)
+ 
+     def list(self, first, start):
+         items = []
+@@ -196,7 +201,13 @@ class _BlockParser:
+             else:
+                 break
+             self.i += 1
+-        return _BlockParser(content, start).blocks()
++        return self.nested(content, start)
++
++    def nested(self, lines, start):
++        # Checked here rather than left to the recursion limit, which a pasted line of '>' reaches.
++        if self.depth == MAX_NESTING:
++            raise MarkliteError(f"nesting deeper than {MAX_NESTING} levels", start)
++        return _BlockParser(lines, start, self.depth + 1).blocks()
+ 
+     def paragraph(self, start):
+         lines = []
+diff --git a/tests/test_blocks.py b/tests/test_blocks.py
+index fa50365..da28605 100644
+--- a/tests/test_blocks.py
++++ b/tests/test_blocks.py
+@@ -1,4 +1,6 @@
+-from marklite import parse, render
++import pytest
++
++from marklite import MarkliteError, parse, render
+ from marklite.blocks import CodeBlock, Heading, ListBlock, Paragraph, Quote, Rule
+ 
+ 
+@@ -69,6 +71,19 @@ def test_rules():
+     assert [type(node) for node in parse("***\n- - -\n___\n").children] == [Rule, Rule, Rule]
+ 
+ 
++def test_nesting_up_to_the_limit_is_rendered():
++    assert render(">" * 32 + " deep\n").count("<blockquote>") == 32
++
++
++def test_deep_nesting_is_an_error_not_a_crash():
++    with pytest.raises(MarkliteError) as raised:
++        render("text\n\n" + ">" * 5000 + " deep\n")
++    assert str(raised.value) == "line 3: nesting deeper than 32 levels"
++    lists = "".join("  " * level + "- item\n" for level in range(40))
++    with pytest.raises(MarkliteError, match="nesting deeper than 32 levels"):
++        render(lists)
++
++
+ def test_line_numbers_are_one_based():
+     document = parse("\n# Title\n\ntext\n")
+     assert [node.line for node in document.children] == [2, 4]

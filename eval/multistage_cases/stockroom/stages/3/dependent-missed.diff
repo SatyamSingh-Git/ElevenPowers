@@ -1,0 +1,22 @@
+diff --git a/src/stockroom/reports.py b/src/stockroom/reports.py
+index 76fa91e..74b4417 100644
+--- a/src/stockroom/reports.py
++++ b/src/stockroom/reports.py
+@@ -15,7 +15,7 @@ def low_stock(inventory):
+     for sku in inventory.skus():
+         item = inventory.item(sku)
+         point = item['reorder_point']
+-        held = inventory.total(sku)
++        held = inventory.on_hand(sku)
+         if point and held < point:
+             rows.append(LowRow(sku, item['name'], held, point, point - held))
+     return rows
+@@ -25,7 +25,7 @@ def valuation(inventory):
+     """Value of what is held, per item and in total. Items with nothing on hand are left out."""
+     rows = []
+     for sku in inventory.skus():
+-        held = inventory.total(sku)
++        held = inventory.on_hand(sku)
+         if held:
+             cost = inventory.item(sku)['cost_cents']
+             rows.append(ValueRow(sku, held, cost, cost * held))
