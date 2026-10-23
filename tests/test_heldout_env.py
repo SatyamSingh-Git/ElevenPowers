@@ -106,3 +106,42 @@ def test_a_repository_whose_source_cannot_import_is_rejected_once(tmp_path, monk
     monkeypatch.setattr(e, "importable", lambda *a: imports)
     value = e.build(repo, tmp_path / "venv")
     assert (value["state"], value["reason"]) == expected
+
+
+def test_a_file_still_held_in_the_import_check_folder_does_not_end_the_check(tmp_path, monkeypatch):
+    # Windows keeps a handle a moment after a child exits; a strict cleanup turned that into a crash.
+    from eval import heldout_env as e
+    good = _committed(tmp_path / "good", {"src/pkg/__init__.py": "VALUE = 1\n"})
+    actual, held = e.run, []
+
+    def holding(args, **kwargs):
+        held.append(open(kwargs["cwd"] / "held.txt", "w"))
+        return actual(args, **kwargs)
+
+    monkeypatch.setattr(e, "run", holding)
+    try:
+        assert e.importable(sys.executable, ["pkg"], good, "src")
+    finally:
+        for handle in held:
+            handle.close()
+
+
+def test_a_file_still_held_in_the_canary_folder_does_not_end_the_build(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from eval import heldout_env as e
+    repo = _write(tmp_path / "repo", {"src/pkg/__init__.py": "", "tests/test_a.py": ""})
+    held = []
+
+    def canary(python, names, cwd):
+        held.append(open(e.Path(cwd) / "held.txt", "w"))
+        return True
+
+    monkeypatch.setattr(e, "run", lambda *a, **k: SimpleNamespace(returncode=0, stdout='["pkg"]', stderr=""))
+    monkeypatch.setattr(e, "_distribution", lambda *a: "pkg")
+    monkeypatch.setattr(e, "canary", canary)
+    monkeypatch.setattr(e, "importable", lambda *a: True)
+    try:
+        assert e.build(repo, tmp_path / "venv")["state"] == "ready"
+    finally:
+        for handle in held:
+            handle.close()

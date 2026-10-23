@@ -96,13 +96,27 @@ def resumed(path, rule):
 
 
 def _name(url):
-    return url.rstrip('/').split('/')[-1]
+    # Owner and repository: two owners can publish repositories with the same name.
+    return '__'.join(url.rstrip('/').split('/')[-2:])
 
 
-def _writable(function, path, _):
+def _writable(function, path, excinfo):
     # Git writes its object files read-only, and Windows will not delete them as they are.
+    # Only a removal is worth retrying; a failed scandir or open would fail again.
+    if function not in (os.unlink, os.remove, os.rmdir):
+        raise excinfo[1]
     os.chmod(path, stat.S_IWRITE)
     function(path)
+
+
+def _discard(path):
+    """Remove a directory now if Windows allows it; report and leave it for a later attempt if not."""
+    try:
+        shutil.rmtree(path, onerror=_writable)
+    except OSError as error:
+        print(f'removal deferred for {path}: {error}', file=sys.stderr)
+        return False
+    return True
 
 
 def prune(work, processed, kept):
@@ -112,27 +126,21 @@ def prune(work, processed, kept):
         paths = [Path(work) / kind / name for kind in ('repos', 'venvs')]
         if name in keep or not any(path.exists() for path in paths):
             continue
-        try:
-            for path in paths:
-                if path.exists():
-                    shutil.rmtree(path, onerror=_writable)
-        except OSError as error:
-            # A file a just-exited test process still holds; every journal retries.
-            print(f'prune deferred for {name}: {error}', file=sys.stderr)
-            continue
-        removed.append(name)
+        # A file a just-exited test process still holds defers the rest; every journal retries.
+        if all(_discard(path) for path in paths if path.exists()):
+            removed.append(name)
     return removed
 
 
 def clone(url, into):
-    partial = into.with_name(into.name + '.partial')
-    if partial.exists():
-        shutil.rmtree(partial, onerror=_writable)
     into.parent.mkdir(parents=True, exist_ok=True)
+    for stale in into.parent.glob(into.name + '.partial*'):
+        _discard(stale)
+    # A fresh directory each time, so a stale one Windows still holds cannot block the clone.
+    partial = Path(tempfile.mkdtemp(prefix=into.name + '.partial-', dir=into.parent))
     done = subprocess.run([*GIT, 'clone', '-q', '--filter=blob:none', url, str(partial)], capture_output=True, timeout=900)
     if done.returncode:
-        if partial.exists():
-            shutil.rmtree(partial, onerror=_writable)
+        _discard(partial)
         return False
     partial.rename(into)
     return True
@@ -152,7 +160,7 @@ def main():
     parser.add_argument('--min-free-gb', type=float, default=2)
     args = parser.parse_args()
     rule = {'seed': args.seed, 'since': args.since, 'until': args.until, 'want': args.want, 'cap': args.cap,
-            'limit': args.limit}
+            'limit': args.limit, 'repos_sha256': hashlib.sha256(args.repos.read_bytes()).hexdigest()}
     rows = [r for r in json.loads(args.repos.read_text(encoding='utf8'))['rows'] if r['verdict'] == 'accepted']
     journal = resumed(args.out, rule)
     environments = dict(journal['environments']) if journal else {}

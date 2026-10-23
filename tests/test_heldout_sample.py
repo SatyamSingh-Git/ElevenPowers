@@ -236,27 +236,27 @@ def _dirs(work, *names):
 
 def test_prune_keeps_repositories_with_kept_tasks(tmp_path):
     from eval.heldout_sample import prune
-    _dirs(tmp_path, "a", "b", "c")
+    _dirs(tmp_path, "x__a", "x__b", "x__c")
     removed = prune(tmp_path, ["https://x/a", "https://x/b"], [{"url": "https://x/a"}])
-    assert removed == ["b"]
-    assert sorted(p.name for p in (tmp_path / "repos").iterdir()) == ["a", "c"]
-    assert sorted(p.name for p in (tmp_path / "venvs").iterdir()) == ["a", "c"]
+    assert removed == ["x__b"]
+    assert sorted(p.name for p in (tmp_path / "repos").iterdir()) == ["x__a", "x__c"]
+    assert sorted(p.name for p in (tmp_path / "venvs").iterdir()) == ["x__a", "x__c"]
 
 
 def test_prune_removes_read_only_git_objects(tmp_path):
     import stat
     from eval.heldout_sample import prune
-    _dirs(tmp_path, "b")
-    locked = tmp_path / "repos" / "b" / "f"
+    _dirs(tmp_path, "x__b")
+    locked = tmp_path / "repos" / "x__b" / "f"
     locked.chmod(stat.S_IREAD)
-    assert prune(tmp_path, ["https://x/b"], []) == ["b"]
-    assert not (tmp_path / "repos" / "b").exists()
+    assert prune(tmp_path, ["https://x/b"], []) == ["x__b"]
+    assert not (tmp_path / "repos" / "x__b").exists()
 
 
 def test_a_file_windows_still_holds_defers_pruning_to_the_next_journal(tmp_path, monkeypatch):
     import shutil
     from eval import heldout_sample as h
-    _dirs(tmp_path, "b")
+    _dirs(tmp_path, "x__b")
     actual = shutil.rmtree
 
     def held(path, **kwargs):
@@ -265,7 +265,57 @@ def test_a_file_windows_still_holds_defers_pruning_to_the_next_journal(tmp_path,
     monkeypatch.setattr(h.shutil, "rmtree", held)
     assert h.prune(tmp_path, ["https://x/b"], []) == []
     monkeypatch.setattr(h.shutil, "rmtree", actual)
-    assert h.prune(tmp_path, ["https://x/b"], []) == ["b"]
+    assert h.prune(tmp_path, ["https://x/b"], []) == ["x__b"]
+
+
+def test_a_cleanup_failure_that_is_not_a_removal_is_raised_not_retried(tmp_path):
+    import os
+    from eval.heldout_sample import _writable
+    missing = OSError(13, "Permission denied")
+    with pytest.raises(OSError):
+        _writable(os.scandir, str(tmp_path), (OSError, missing, None))
+
+
+def test_a_stale_partial_clone_that_cannot_be_removed_does_not_block_a_clone(tmp_path, monkeypatch):
+    from eval import heldout_sample as h
+    source = _repo(tmp_path)
+    stale = tmp_path / "clones" / "repo.partial"
+    stale.mkdir(parents=True)
+    actual = h.shutil.rmtree
+
+    def held(path, *args, **kwargs):
+        if "repo.partial" == h.Path(path).name:
+            raise PermissionError(32, "being used by another process", str(path))
+        return actual(path, *args, **kwargs)
+
+    monkeypatch.setattr(h.shutil, "rmtree", held)
+    assert h.clone(str(source), tmp_path / "clones" / "repo")
+    assert (tmp_path / "clones" / "repo" / "src" / "new.py").exists()
+
+
+def test_repositories_that_share_a_name_get_their_own_directories(tmp_path):
+    from eval.heldout_sample import _name, prune
+    first, second = "https://github.com/one/lib", "https://github.com/two/lib"
+    assert _name(first) != _name(second)
+    _dirs(tmp_path, _name(first), _name(second))
+    assert prune(tmp_path, [first, second], [{"url": first}]) == [_name(second)]
+    assert (tmp_path / "repos" / _name(first)).exists()
+
+
+def test_resume_refuses_a_changed_repository_list(tmp_path):
+    import subprocess
+    import sys
+    repos, out = tmp_path / "repos.json", tmp_path / "work" / "corpus.json"
+    rows = {"rows": [{"repo": "https://github.com/one/lib", "verdict": "accepted"}]}
+    repos.write_text(json.dumps(rows), encoding="utf8")
+    command = [sys.executable, "-m", "eval.heldout_sample", "--repos", str(repos), "--work", str(tmp_path / "work"),
+               "--out", str(out), "--min-free-gb", "1000000"]
+    first = subprocess.run(command, capture_output=True, text=True, cwd="E:/ElevenPowers")
+    assert first.returncode == 1 and out.exists()
+    rows["rows"].append({"repo": "https://github.com/two/lib", "verdict": "accepted"})
+    repos.write_text(json.dumps(rows), encoding="utf8")
+    second = subprocess.run(command, capture_output=True, text=True, cwd="E:/ElevenPowers")
+    assert second.returncode != 0 and "different rule values" in second.stderr
 
 
 def test_pruning_and_cloning_run_on_python_311(tmp_path, monkeypatch):
@@ -279,9 +329,9 @@ def test_pruning_and_cloning_run_on_python_311(tmp_path, monkeypatch):
         return actual(path, ignore_errors=ignore_errors, onerror=onerror, dir_fd=dir_fd)
 
     monkeypatch.setattr(h.shutil, "rmtree", python311_rmtree)
-    _dirs(tmp_path, "b")
-    (tmp_path / "repos" / "b" / "f").chmod(stat.S_IREAD)
-    assert h.prune(tmp_path, ["https://x/b"], []) == ["b"]
+    _dirs(tmp_path, "x__b")
+    (tmp_path / "repos" / "x__b" / "f").chmod(stat.S_IREAD)
+    assert h.prune(tmp_path, ["https://x/b"], []) == ["x__b"]
     source = _repo(tmp_path)
     stale = tmp_path / "clones" / "repo.partial"
     stale.mkdir(parents=True)

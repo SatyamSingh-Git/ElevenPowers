@@ -73,7 +73,8 @@ def importable(python, import_names, repo, pythonpath):
     writes an ignored version module into the clone makes the clone import and
     every mined tree fail.
     """
-    with tempfile.TemporaryDirectory() as scratch:
+    # Windows holds a handle a moment after a child exits; a strict cleanup turns that into a crash.
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as scratch:
         tree, archive = Path(scratch) / 'tree', Path(scratch) / 'tree.zip'
         done = run([*GIT, '-C', str(repo), 'archive', '--format=zip', '-o', str(archive), 'HEAD'],
                    cwd=Path(scratch), timeout=300, shell=False)
@@ -148,7 +149,7 @@ def build(repo, venv):
     if done.returncode:
         value['reason'] = 'package could not be uninstalled'
         return value
-    with tempfile.TemporaryDirectory() as neutral:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as neutral:
         if not canary(value['python'], names, neutral):
             value['reason'] = 'package still importable after uninstall'
             return value
