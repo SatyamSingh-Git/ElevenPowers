@@ -119,6 +119,42 @@ documented facts after that stage, `{key: value}`, each exactly as the reference
 map differs from the previous one. A fact removed by a stage is simply absent
 from that stage's map onwards.
 
+## Fairness: grade only what the request makes reproducible
+
+Added after review: an implementation must never fail because it chose
+different words, names or internals than yours.
+
+**Facts.** A fact counts against an implementation only if a careful engineer
+documenting the change would write that exact row. Every key and value in
+`facts.json` must meet both rules:
+- **Key:** either a row the docs already had (at the start, or added by an
+  earlier stage under these rules), or a name the request itself uses verbatim:
+  an option, flag, field, function, setting or error type.
+- **Value:** stated verbatim in the request, such as a default, a number, a
+  quoted message, a unit or a format, or determined by it with no wording
+  choice.
+
+Free-text descriptions ("first value", "most specific first", "read once"),
+invented keys, invented placeholder names and values the request never states
+are not facts. Put that behaviour in the meaning column, which is not graded.
+If a stage is left with no fact, make its request state the documented value
+it changes, for example "raise the default `max_keys` from 1000 to 10000".
+
+**Groups.** A group may require only what the request states or what the
+project's existing behaviour, docs and tests already guarantee.
+- Call new functions with the parameter names the request gives. If the
+  request names no keyword, either call positionally or name it in the
+  request.
+- Do not require a particular helper or internal function to carry a
+  behaviour the request describes at a higher level.
+- Do not require one of several reasonable readings of the request. Either
+  test only what every reasonable reading shares, or make the request
+  specific.
+
+**Leaks.** No sentence may point at the code at risk, including indirectly:
+"nothing else should change", "everything that uses it", "callers". Describe
+why a user wants the change, not what else it touches.
+
 ## Done
 
 Your case is done when this exits 0:
