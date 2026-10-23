@@ -1,0 +1,14 @@
+diff --git a/src/throttle/policy.py b/src/throttle/policy.py
+index 8218527..c04f3c6 100644
+--- a/src/throttle/policy.py
++++ b/src/throttle/policy.py
+@@ -93,8 +93,7 @@ def _period_text(seconds):
+ def build_limiter(policy, clock):
+     """A fresh limiter enforcing ``policy`` against ``clock``."""
+     if policy.algorithm == 'bucket':
+-        # Refilling at limit-per-period, an empty bucket of this capacity is full after:
+-        return TokenBucket(policy.capacity, policy.period * policy.capacity / policy.limit, clock)
++        return TokenBucket(policy.capacity, policy.limit / policy.period, clock)
+     if policy.algorithm == 'sliding':
+         return SlidingWindow(policy.limit, policy.period, clock)
+     return FixedWindow(policy.limit, policy.period, clock)

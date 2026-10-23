@@ -1,0 +1,138 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1d61460..0083dca 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Weekdays are numbered as in ISO 8601: 1 is Monday and 7 is Sunday. 0 is now out of range.
+ - `cronish fields` shows the values each field of an expression selects.
+ 
+ ## 0.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index eb98c68..191876c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -13,7 +13,7 @@ comma-separated list of these.
+ | `hour` | `0-23` | hour of the day, 24-hour clock |
+ | `day` | `1-31` | day of the month |
+ | `month` | `1-12` | month; `jan` to `dec` are accepted too |
+-| `weekday` | `0-6` | day of the week, 0 is Sunday; `sun` to `sat` are accepted too |
++| `weekday` | `1-7` | day of the week as in ISO 8601, 1 is Monday and 7 is Sunday; `mon` to `sun` are accepted too |
+ 
+ ## Shortcuts
+ 
+@@ -23,7 +23,7 @@ An expression may instead be one of these names, in any case.
+ |---|---|---|
+ | `@yearly` | `0 0 1 1 *` | midnight on 1 January |
+ | `@monthly` | `0 0 1 * *` | midnight on the first of every month |
+-| `@weekly` | `0 0 * * 0` | midnight at the start of Sunday |
++| `@weekly` | `0 0 * * 7` | midnight at the start of Sunday |
+ | `@daily` | `0 0 * * *` | every midnight |
+ | `@hourly` | `0 * * * *` | on the hour |
+ 
+diff --git a/src/cronish/describe.py b/src/cronish/describe.py
+index 4731718..6e9ed83 100644
+--- a/src/cronish/describe.py
++++ b/src/cronish/describe.py
+@@ -31,7 +31,7 @@ def _time(schedule):
+ def _days(schedule):
+     every_day = len(schedule.days) == DAY.size
+     every_weekday = len(schedule.weekdays) == WEEKDAY.size
+-    weekdays = "on " + join_words(DAY_TITLES[number] for number in schedule.weekdays)
++    weekdays = "on " + join_words(DAY_TITLES[number % 7] for number in schedule.weekdays)
+     days = f"on {_numbered('day', schedule.days)} of the month"
+     if every_day and every_weekday:
+         return "every day"
+diff --git a/src/cronish/expression.py b/src/cronish/expression.py
+index 5c11db0..98d23ad 100644
+--- a/src/cronish/expression.py
++++ b/src/cronish/expression.py
+@@ -7,7 +7,7 @@ from .fields import FIELDS, parse_field
+ SHORTCUTS = {
+     "@yearly": "0 0 1 1 *",
+     "@monthly": "0 0 1 * *",
+-    "@weekly": "0 0 * * 0",
++    "@weekly": "0 0 * * 7",
+     "@daily": "0 0 * * *",
+     "@hourly": "0 * * * *",
+ }
+diff --git a/src/cronish/fields.py b/src/cronish/fields.py
+index dc1ac17..7f9a7fd 100644
+--- a/src/cronish/fields.py
++++ b/src/cronish/fields.py
+@@ -21,7 +21,8 @@ MINUTE = FieldSpec("minute", 0, 59)
+ HOUR = FieldSpec("hour", 0, 23)
+ DAY = FieldSpec("day", 1, 31)
+ MONTH = FieldSpec("month", 1, 12, {name: number for number, name in enumerate(MONTH_NAMES, 1)})
+-WEEKDAY = FieldSpec("weekday", 0, 6, {name: number for number, name in enumerate(DAY_NAMES)})
++# ISO 8601 numbering: Monday is 1 and Sunday is 7, though the name table starts at Sunday.
++WEEKDAY = FieldSpec("weekday", 1, 7, {name: number or 7 for number, name in enumerate(DAY_NAMES)})
+ 
+ FIELDS = (MINUTE, HOUR, DAY, MONTH, WEEKDAY)
+ 
+diff --git a/src/cronish/planner.py b/src/cronish/planner.py
+index a7174f1..dd1936a 100644
+--- a/src/cronish/planner.py
++++ b/src/cronish/planner.py
+@@ -11,8 +11,8 @@ HORIZON = timedelta(days=round(365.25 * HORIZON_YEARS))
+ 
+ 
+ def weekday_number(day):
+-    """The number a schedule uses for the weekday of `day`; Sunday is 0."""
+-    return day.isoweekday() % 7
++    """The number a schedule uses for the weekday of `day`: ISO 8601, Monday 1 to Sunday 7."""
++    return day.isoweekday()
+ 
+ 
+ def day_matches(schedule, day):
+diff --git a/tests/test_describe.py b/tests/test_describe.py
+index 50f1715..6803c80 100644
+--- a/tests/test_describe.py
++++ b/tests/test_describe.py
+@@ -19,6 +19,7 @@ from cronish import describe, parse
+         ("0 0 13 * fri", "at 00:00, on day 13 of the month or on Friday"),
+         ("0 12 * jan,jul *", "at 12:00, every day, in January and July"),
+         ("@weekly", "at 00:00, on Sunday"),
++        ("0 8 * * 1,7", "at 08:00, on Monday and Sunday"),
+     ],
+ )
+ def test_descriptions(text, words):
+diff --git a/tests/test_expression.py b/tests/test_expression.py
+index cd354f9..53b1eac 100644
+--- a/tests/test_expression.py
++++ b/tests/test_expression.py
+@@ -32,6 +32,17 @@ def test_step_from_a_single_value_runs_to_the_end_of_the_field():
+     assert parse("5/15 * * * *").minutes == (5, 20, 35, 50)
+ 
+ 
++def test_weekdays_are_numbered_monday_1_to_sunday_7():
++    assert parse("* * * * sun").weekdays == (7,)
++    assert parse("* * * * mon-sun").weekdays == (1, 2, 3, 4, 5, 6, 7)
++    assert parse("@weekly").weekdays == (7,)
++
++
++def test_weekday_0_is_out_of_range():
++    with pytest.raises(ScheduleError, match="weekday: value 0 out of range 1-7"):
++        parse("* * * * 0")
++
++
+ def test_month_names_are_numbered_from_one():
+     assert parse_field("dec", MONTH) == (12,)
+ 
+diff --git a/tests/test_planner.py b/tests/test_planner.py
+index 55bceaa..3927cea 100644
+--- a/tests/test_planner.py
++++ b/tests/test_planner.py
+@@ -22,6 +22,10 @@ def test_sunday_runs():
+     ]
+ 
+ 
++def test_weekday_7_is_sunday():
++    assert next_runs(parse("0 8 * * 6,7"), WEDNESDAY, 2) == [datetime(2024, 3, 9, 8, 0), datetime(2024, 3, 10, 8, 0)]
++
++
+ def test_default_count_starts_at_the_next_whole_minute():
+     runs = next_runs(parse("* * * * *"), WEDNESDAY)
+     assert len(runs) == 5

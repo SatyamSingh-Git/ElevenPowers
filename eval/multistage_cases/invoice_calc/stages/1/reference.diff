@@ -1,0 +1,233 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6dc590d..1bd1706 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,9 @@
+ 
+ ## Unreleased
+ 
++- Quantities may be fractional, down to 0.01 with at most two decimal places (hours of services, say).
++  Printed invoices and exported records show them as decimals.
++
+ ## 0.4.0
+ 
+ - Ledger: `summarize` and `render_ledger` add exported records up by region and currency.
+diff --git a/docs/reference.md b/docs/reference.md
+index bfe6d34..d6be244 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -24,7 +24,7 @@ because they cannot hold most cent values exactly.
+ |---|---|---|
+ | `line.sku` | `required` | Stock keeping unit, must not be empty. |
+ | `line.description` | `required` | At most 120 characters. |
+-| `line.quantity` | `required` | Number of units, from 1 to 10000. |
++| `line.quantity` | `required` | Number of units, from 0.01 to 10000 with at most two decimal places, as a string or an integer. |
+ | `line.unit_price` | `required` | Price of one unit, not negative. |
+ | `line.category` | `standard` | One of `standard`, `food`, `books`, `digital`, `services`. |
+ 
+@@ -116,7 +116,8 @@ subtotal, discount, one tax row per rate and the total.
+ 
+ `to_record(invoice)` returns a dict ready for JSON; `write_records` and
+ `read_records` store a list of them as JSON lines. Each record carries its
+-lines as well, with their own amounts and the rate charged.
++lines as well, with their own amounts and the rate charged. A line's
++`quantity` is a decimal string such as `"1.5"`.
+ 
+ | Field | JSON type | Meaning |
+ |---|---|---|
+@@ -149,8 +150,8 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+ | `an invoice may have at most 200 line items` | `InvoiceError` | |
+ | `unknown rounding mode: {name}` | `InvoiceError` | |
+ | `line item missing field: {name}` | `ItemError` | |
+-| `quantity must be a whole number` | `ItemError` | The quantity is not an integer. |
+-| `quantity must be between 1 and 10000` | `ItemError` | |
++| `quantity has more than 2 decimal places` | `ItemError` | |
++| `quantity must be between 0.01 and 10000` | `ItemError` | |
+ | `unit price must not be negative` | `ItemError` | |
+ | `unknown category: {name}` | `ItemError` | |
+ | `description must be at most 120 characters` | `ItemError` | |
+diff --git a/src/invoicekit/export.py b/src/invoicekit/export.py
+index 6831059..02d9feb 100644
+--- a/src/invoicekit/export.py
++++ b/src/invoicekit/export.py
+@@ -1,6 +1,7 @@
+ import json
+ 
+ from .invoice import compute
++from .items import format_quantity
+ from .tax import rate_for
+ 
+ 
+@@ -21,7 +22,7 @@ def to_record(invoice):
+                 "sku": line.item.sku,
+                 "description": line.item.description,
+                 "category": line.item.category,
+-                "quantity": line.item.quantity,
++                "quantity": format_quantity(line.item.quantity),
+                 "unit_price": str(line.item.unit_price),
+                 "rate": str(rate_for(line.item.category, invoice.region)),
+                 "discount": str(line.discount),
+diff --git a/src/invoicekit/items.py b/src/invoicekit/items.py
+index f7dbe10..5da8b40 100644
+--- a/src/invoicekit/items.py
++++ b/src/invoicekit/items.py
+@@ -5,8 +5,9 @@ from .money import MoneyError, to_decimal
+ 
+ CATEGORIES = ("standard", "food", "books", "digital", "services")
+ REQUIRED_FIELDS = ("sku", "description", "quantity", "unit_price")
+-MIN_QUANTITY = 1
++MIN_QUANTITY = Decimal("0.01")
+ MAX_QUANTITY = 10_000
++QUANTITY_PLACES = 2
+ MAX_DESCRIPTION = 120
+ 
+ 
+@@ -18,7 +19,7 @@ class ItemError(ValueError):
+ class LineItem:
+     sku: str
+     description: str
+-    quantity: int
++    quantity: Decimal
+     unit_price: Decimal
+     category: str = "standard"
+ 
+@@ -28,11 +29,20 @@ class LineItem:
+ 
+ 
+ def parse_quantity(value):
+-    if isinstance(value, bool) or not isinstance(value, int):
+-        raise ItemError("quantity must be a whole number")
+-    if not MIN_QUANTITY <= value <= MAX_QUANTITY:
++    try:
++        quantity = to_decimal(value)
++    except MoneyError as error:
++        raise ItemError(f"quantity: {error}") from None
++    if not MIN_QUANTITY <= quantity <= MAX_QUANTITY:
+         raise ItemError(f"quantity must be between {MIN_QUANTITY} and {MAX_QUANTITY}")
+-    return value
++    if quantity != round(quantity, QUANTITY_PLACES):
++        raise ItemError(f"quantity has more than {QUANTITY_PLACES} decimal places")
++    return quantity
++
++
++def format_quantity(quantity):
++    """1.5 rather than 1.50, and 100 rather than 1E+2."""
++    return f"{quantity.normalize():f}"
+ 
+ 
+ def parse_unit_price(value):
+diff --git a/src/invoicekit/render.py b/src/invoicekit/render.py
+index df1df10..c6920aa 100644
+--- a/src/invoicekit/render.py
++++ b/src/invoicekit/render.py
+@@ -1,13 +1,14 @@
+ from decimal import Decimal
+ 
+ from .invoice import compute
++from .items import format_quantity
+ from .money import format_money
+ from .tax import format_rate, rate_for
+ 
+ DEFAULT_WIDTH = 64
+ MIN_WIDTH = 56
+ SKU_COLUMN = 10
+-QUANTITY_COLUMN = 6
++QUANTITY_COLUMN = 8
+ AMOUNT_COLUMN = 13
+ 
+ 
+@@ -51,7 +52,7 @@ def render_text(invoice, width=DEFAULT_WIDTH):
+         out.append(
+             f"{_clip(item.sku, SKU_COLUMN - 1):<{SKU_COLUMN}}"
+             f"{_clip(item.description, description_column - 1):<{description_column}}"
+-            f"{item.quantity:>{QUANTITY_COLUMN}d}"
++            f"{format_quantity(item.quantity):>{QUANTITY_COLUMN}}"
+             f"{money(item.unit_price):>{AMOUNT_COLUMN}}{money(line.gross):>{AMOUNT_COLUMN}}"
+         )
+         if line.discount:
+diff --git a/tests/test_items.py b/tests/test_items.py
+index b53a122..e75e3e6 100644
+--- a/tests/test_items.py
++++ b/tests/test_items.py
+@@ -2,7 +2,7 @@ from decimal import Decimal
+ 
+ import pytest
+ 
+-from invoicekit.items import ItemError, line_from_dict
++from invoicekit.items import ItemError, format_quantity, line_from_dict
+ 
+ WIDGET = {"sku": "W-100", "description": "Widget", "quantity": 3, "unit_price": "19.99"}
+ 
+@@ -22,15 +22,33 @@ def test_missing_field(field):
+         line_from_dict(data)
+ 
+ 
+-@pytest.mark.parametrize("quantity", ["3", 1.5, True])
+-def test_quantity_must_be_a_whole_number(quantity):
+-    with pytest.raises(ItemError, match="quantity must be a whole number"):
++@pytest.mark.parametrize("quantity, expected", [("1.5", "1.5"), ("0.25", "0.25"), ("2.50", "2.5"), (7, "7"),
++                                                ("0.01", "0.01"), ("10000", "10000")])
++def test_fractional_quantities(quantity, expected):
++    item = line_from_dict({**WIDGET, "quantity": quantity})
++    assert item.quantity == Decimal(expected)
++    assert format_quantity(item.quantity) == expected
++
++
++def test_quantity_gross():
++    assert line_from_dict({**WIDGET, "quantity": "1.5"}).gross == Decimal("29.985")
++
++
++@pytest.mark.parametrize("quantity", ["0.125", "1.001"])
++def test_quantity_decimal_places(quantity):
++    with pytest.raises(ItemError, match="quantity has more than 2 decimal places"):
+         line_from_dict({**WIDGET, "quantity": quantity})
+ 
+ 
+-@pytest.mark.parametrize("quantity", [0, 10_001])
++@pytest.mark.parametrize("quantity", [0, "0.001", "10000.01", -1])
+ def test_quantity_range(quantity):
+-    with pytest.raises(ItemError, match="quantity must be between 1 and 10000"):
++    with pytest.raises(ItemError, match="quantity must be between 0.01 and 10000"):
++        line_from_dict({**WIDGET, "quantity": quantity})
++
++
++@pytest.mark.parametrize("quantity", [1.5, True, "two"])
++def test_quantity_must_be_a_number(quantity):
++    with pytest.raises(ItemError, match="quantity: "):
+         line_from_dict({**WIDGET, "quantity": quantity})
+ 
+ 
+diff --git a/tests/test_ledger.py b/tests/test_ledger.py
+index 1a87783..124b43c 100644
+--- a/tests/test_ledger.py
++++ b/tests/test_ledger.py
+@@ -19,6 +19,14 @@ def test_records_round_trip(tmp_path):
+     assert read_records(tmp_path / "out.jsonl") == records
+ 
+ 
++def test_records_carry_quantities_as_text(tmp_path):
++    record = to_record(invoice_from_dict({"number": "Q-1", "issued": "2026-05-01", "region": "US-NY", "lines": [
++        {"sku": "A", "description": "a", "quantity": "0.25", "unit_price": "100"}]}))
++    assert record["lines"][0]["quantity"] == "0.25"
++    write_records(tmp_path / "q.jsonl", [record])
++    assert read_records(tmp_path / "q.jsonl") == [record]
++
++
+ def test_summarize_by_region_and_currency():
+     records = [to_record(invoice("A-1")), to_record(invoice("A-2", discounts=[{"kind": "amount", "amount": "4"}])),
+                to_record(invoice("A-3", region="DE", currency="EUR"))]
+diff --git a/tests/test_render.py b/tests/test_render.py
+index 1010340..e2a4a2b 100644
+--- a/tests/test_render.py
++++ b/tests/test_render.py
+@@ -33,3 +33,10 @@ def test_render_width():
+ def test_render_width_minimum():
+     with pytest.raises(ValueError, match="width must be at least 56"):
+         render_text(invoice_from_dict(INVOICE), width=40)
++
++
++def test_render_fractional_quantity():
++    invoice = invoice_from_dict({**INVOICE, "lines": [{"sku": "SV-2", "description": "Consulting", "quantity": "1.5",
++                                                       "unit_price": "80.00", "category": "services"}]})
++    row = next(line for line in render_text(invoice).splitlines() if line.startswith("SV-2"))
++    assert row.split()[-3:] == ["1.5", "$80.00", "$120.00"]

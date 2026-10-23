@@ -1,0 +1,149 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ef2f3a2..3e2dd3d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `validate()` returns `(field, message)` pairs and reports every problem, not just the first.
+ - A step of 0, such as `*/0`, is reported as `<field>: step must be at least 1` instead of crashing.
+ - Upcoming runs start strictly after now: a run at exactly now is no longer listed first.
+ - Weekdays are numbered as in ISO 8601: 1 is Monday and 7 is Sunday. 0 is now out of range.
+diff --git a/docs/reference.md b/docs/reference.md
+index b0d39af..65a06fc 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -61,8 +61,8 @@ just the problem when no single field is to blame.
+ 
+ | Setting | Value | Meaning |
+ |---|---|---|
+-| `validate.result` | `list of messages` | `validate()` returns one `<field>: <problem>` string per problem, or an empty list |
+-| `validate.reports` | `first problem` | validation stops at the first problem it finds |
++| `validate.result` | `list of (field, message) pairs` | `validate()` returns one pair per problem, or an empty list; `field` is `expression` for a problem with the whole expression |
++| `validate.reports` | `every problem` | every field is checked, and each field with a problem gives one pair |
+ 
+ ## Descriptions
+ 
+diff --git a/src/cronish/cli.py b/src/cronish/cli.py
+index 45feb79..72d1ec2 100644
+--- a/src/cronish/cli.py
++++ b/src/cronish/cli.py
+@@ -120,8 +120,8 @@ def _describe(args):
+ 
+ def _check(args):
+     problems = validate(args.expression)
+-    for problem in problems:
+-        print(problem)
++    for field, message in problems:
++        print(f"{field}: {message}")
+     if problems:
+         return EXIT_INVALID
+     print("ok")
+diff --git a/src/cronish/jobs.py b/src/cronish/jobs.py
+index 4f6adb4..58ca689 100644
+--- a/src/cronish/jobs.py
++++ b/src/cronish/jobs.py
+@@ -33,7 +33,8 @@ def load_jobs(text):
+             raise JobFileError(f"line {number}: invalid job name '{name}'")
+         problems = validate(expression)
+         if problems:
+-            raise JobFileError(f"line {number}: {problems[0]}")
++            field, message = problems[0]
++            raise JobFileError(f"line {number}: {field}: {message}")
+         if name in seen:
+             raise JobFileError(f"line {number}: duplicate job '{name}'")
+         seen.add(name)
+diff --git a/src/cronish/validate.py b/src/cronish/validate.py
+index 6dc9f8d..e5e3cff 100644
+--- a/src/cronish/validate.py
++++ b/src/cronish/validate.py
+@@ -1,17 +1,26 @@
+ """Checking an expression before it is saved or scheduled."""
+ from ._generated import MONTH_LENGTHS
+ from .errors import ScheduleError
+-from .expression import parse
++from .expression import expand, parse
++from .fields import FIELDS, parse_field
+ 
+ 
+ def validate(text):
+-    """Messages describing what is wrong with `text`; empty when it is usable."""
++    """Every problem with `text` as ``(field, message)`` pairs; empty when it is usable."""
+     try:
+-        schedule = parse(text)
++        parts = expand(text)
+     except ScheduleError as error:
+-        return [str(error)]
+-    problem = _impossible_day(schedule)
+-    return [str(problem)] if problem else []
++        return [(error.field, error.problem)]
++    problems = []
++    for part, spec in zip(parts, FIELDS):
++        try:
++            parse_field(part, spec)
++        except ScheduleError as error:
++            problems.append((error.field, error.problem))
++    if problems:
++        return problems
++    problem = _impossible_day(parse(text))
++    return [(problem.field, problem.problem)] if problem else []
+ 
+ 
+ def _impossible_day(schedule):
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index e90dd7d..bd4a7ec 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -47,6 +47,14 @@ def test_check(capsys):
+     assert run(capsys, "check", "61 * * * *") == (1, "minute: value 61 out of range 0-59\n", "")
+ 
+ 
++def test_check_lists_every_problem(capsys):
++    assert run(capsys, "check", "61 25 * * *") == (
++        1,
++        "minute: value 61 out of range 0-59\nhour: value 25 out of range 0-23\n",
++        "",
++    )
++
++
+ def test_check_reports_a_zero_step(capsys):
+     assert run(capsys, "check", "*/0 * * * *") == (1, "minute: step must be at least 1\n", "")
+ 
+diff --git a/tests/test_validate.py b/tests/test_validate.py
+index 48a1c11..7c47123 100644
+--- a/tests/test_validate.py
++++ b/tests/test_validate.py
+@@ -6,17 +6,26 @@ def test_a_usable_expression_has_no_problems():
+     assert validate("@hourly") == []
+ 
+ 
+-def test_a_parse_error_is_reported():
+-    assert validate("61 * * * *") == ["minute: value 61 out of range 0-59"]
++def test_a_parse_error_is_reported_with_its_field():
++    assert validate("61 * * * *") == [("minute", "value 61 out of range 0-59")]
+ 
+ 
+-def test_only_the_first_problem_is_reported():
+-    assert validate("61 25 * * *") == ["minute: value 61 out of range 0-59"]
++def test_every_problem_is_reported():
++    assert validate("61 25 * foo *") == [
++        ("minute", "value 61 out of range 0-59"),
++        ("hour", "value 25 out of range 0-23"),
++        ("month", "unknown name 'foo'"),
++    ]
++
++
++def test_problems_with_the_whole_expression():
++    assert validate("* * *") == [("expression", "expected 5 fields, got 3")]
++    assert validate("@often") == [("expression", "unknown shortcut '@often'")]
+ 
+ 
+ def test_a_day_no_chosen_month_has():
+-    assert validate("0 0 30 2 *") == ["day: no selected month has a day 30"]
+-    assert validate("0 0 31 apr,jun *") == ["day: no selected month has a day 31"]
++    assert validate("0 0 30 2 *") == [("day", "no selected month has a day 30")]
++    assert validate("0 0 31 apr,jun *") == [("day", "no selected month has a day 31")]
+ 
+ 
+ def test_february_29_is_possible():

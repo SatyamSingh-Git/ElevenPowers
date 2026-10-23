@@ -1,0 +1,50 @@
+diff --git a/src/invoicekit/export.py b/src/invoicekit/export.py
+index 02d9feb..6831059 100644
+--- a/src/invoicekit/export.py
++++ b/src/invoicekit/export.py
+@@ -1,7 +1,6 @@
+ import json
+ 
+ from .invoice import compute
+-from .items import format_quantity
+ from .tax import rate_for
+ 
+ 
+@@ -22,7 +21,7 @@ def to_record(invoice):
+                 "sku": line.item.sku,
+                 "description": line.item.description,
+                 "category": line.item.category,
+-                "quantity": format_quantity(line.item.quantity),
++                "quantity": line.item.quantity,
+                 "unit_price": str(line.item.unit_price),
+                 "rate": str(rate_for(line.item.category, invoice.region)),
+                 "discount": str(line.discount),
+diff --git a/src/invoicekit/render.py b/src/invoicekit/render.py
+index c6920aa..df1df10 100644
+--- a/src/invoicekit/render.py
++++ b/src/invoicekit/render.py
+@@ -1,14 +1,13 @@
+ from decimal import Decimal
+ 
+ from .invoice import compute
+-from .items import format_quantity
+ from .money import format_money
+ from .tax import format_rate, rate_for
+ 
+ DEFAULT_WIDTH = 64
+ MIN_WIDTH = 56
+ SKU_COLUMN = 10
+-QUANTITY_COLUMN = 8
++QUANTITY_COLUMN = 6
+ AMOUNT_COLUMN = 13
+ 
+ 
+@@ -52,7 +51,7 @@ def render_text(invoice, width=DEFAULT_WIDTH):
+         out.append(
+             f"{_clip(item.sku, SKU_COLUMN - 1):<{SKU_COLUMN}}"
+             f"{_clip(item.description, description_column - 1):<{description_column}}"
+-            f"{format_quantity(item.quantity):>{QUANTITY_COLUMN}}"
++            f"{item.quantity:>{QUANTITY_COLUMN}d}"
+             f"{money(item.unit_price):>{AMOUNT_COLUMN}}{money(line.gross):>{AMOUNT_COLUMN}}"
+         )
+         if line.discount:

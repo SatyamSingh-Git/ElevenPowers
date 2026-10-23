@@ -1,0 +1,91 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c0f5363..1c5cd26 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fix: a posting of zero was accepted and written to the journal; it is now refused, and a journal holding one fails to load at that line.
+ - Transaction and statement dates are `datetime.date` values; dates may be given as `datetime.date` or `YYYY-MM-DD` text.
+ - Statements take an optional start and end date (`--from`/`--to` on the command line) and open with the balance carried in from before the start.
+ - Journal files write posting amounts as decimal text in the journal currency (format version 2); version 1 journals still load.
+diff --git a/docs/reference.md b/docs/reference.md
+index a74ebf1..25f2d76 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -41,6 +41,7 @@ table lists one documented fact per row: its key, its value, and what it means.
+ | `error.too_few_postings` | `transaction needs at least 2 postings` | `LedgerError` |
+ | `error.too_many_postings` | `transaction has more than 16 postings` | `LedgerError` |
+ | `error.posting_type` | `posting amount must be an integer: {amount!r}` | `LedgerError` for a float, bool or text amount |
++| `error.zero_amount` | `posting amount must not be zero: {account}` | `LedgerError` naming the first posting whose amount is zero |
+ | `error.unbalanced` | `transaction does not balance: off by {difference}` | `UnbalancedError`; the difference is in minor units |
+ | `reversal.description` | `Reversal: {description}` | Default description of `reversal()`, cut to 120 characters |
+ 
+diff --git a/src/ledgerbook/transactions.py b/src/ledgerbook/transactions.py
+index 49a817b..d3fa7bc 100644
+--- a/src/ledgerbook/transactions.py
++++ b/src/ledgerbook/transactions.py
+@@ -56,8 +56,8 @@ def as_date(value):
+ def make_transaction(date, description, postings):
+     """Build a Transaction from (account, amount) pairs or Posting objects.
+ 
+-    Raises LedgerError for a bad date, description or posting count, and
+-    UnbalancedError when the amounts do not sum to zero.
++    Raises LedgerError for a bad date, description, posting count or a zero
++    amount, and UnbalancedError when the amounts do not sum to zero.
+     """
+     date = as_date(date)
+     if not 1 <= len(description) <= MAX_DESCRIPTION:
+@@ -70,6 +70,8 @@ def make_transaction(date, description, postings):
+     for posting in postings:
+         if type(posting.amount) is not int:
+             raise LedgerError(f"posting amount must be an integer: {posting.amount!r}")
++        if not posting.amount:
++            raise LedgerError(f"posting amount must not be zero: {posting.account}")
+     difference = sum(posting.amount for posting in postings)
+     if difference:
+         raise UnbalancedError(f"transaction does not balance: off by {difference}")
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 14ec693..f22bcce 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -54,3 +54,10 @@ def test_statement_range(books, capsys):
+     assert "Start" not in out and "Dinner" not in out
+     assert main([books, "statement", "Assets:Cash", "--from", "January"]) == 1
+     assert "invalid date: January" in capsys.readouterr().err
++
++
++def test_zero_posting_is_not_written(books, capsys):
++    before = open(books, encoding="utf-8").read()
++    assert main([books, "post", "2026-01-02", "Oops", "Expenses:Food=0", "Assets:Cash=0"]) == 1
++    assert capsys.readouterr().err.strip() == "error: posting amount must not be zero: Expenses:Food"
++    assert open(books, encoding="utf-8").read() == before
+diff --git a/tests/test_journal.py b/tests/test_journal.py
+index 8eb6d52..64eab69 100644
+--- a/tests/test_journal.py
++++ b/tests/test_journal.py
+@@ -98,3 +98,10 @@ def test_empty_and_garbled(tmp_path):
+     path.write_text(json.dumps(HEADER) + "\n{oops\n", encoding="utf-8")
+     with pytest.raises(JournalError, match="line 2: not valid JSON"):
+         load_journal(path)
++
++
++def test_zero_posting_in_a_journal(tmp_path):
++    zero = {"type": "txn", "date": "2026-01-01", "description": "Oops",
++            "postings": [{"account": "Assets:Cash", "amount": "0.00"}, {"account": "Assets:Cash", "amount": "0.00"}]}
++    with pytest.raises(JournalError, match="line 3: posting amount must not be zero: Assets:Cash"):
++        load_journal(_journal(tmp_path, HEADER, OPEN_CASH, zero))
+diff --git a/tests/test_transactions.py b/tests/test_transactions.py
+index f971dfc..536c0aa 100644
+--- a/tests/test_transactions.py
++++ b/tests/test_transactions.py
+@@ -47,3 +47,8 @@ def test_reversal_negates_every_posting():
+     undo = reversal(txn, "2026-03-02")
+     assert undo.description == "Reversal: Lunch"
+     assert [p.amount for p in undo.postings] == [-1200, 1200]
++
++
++def test_zero_postings_are_refused():
++    with pytest.raises(LedgerError, match="posting amount must not be zero: Expenses:Food"):
++        make_transaction("2026-03-01", "Oops", [("Expenses:Food", 0), ("Assets:Cash", 0)])

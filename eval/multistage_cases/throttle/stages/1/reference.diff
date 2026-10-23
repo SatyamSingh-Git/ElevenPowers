@@ -1,0 +1,160 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 021e54c..c5d23b0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- `Decision.retry_after` (and a snapshot's `retry_after`) is now whole milliseconds, rounded up, instead of float seconds.
++
+ ## 0.4.0
+ 
+ - Config files: `dump_config()` writes a Throttle's policies back out.
+diff --git a/docs/reference.md b/docs/reference.md
+index d6dd98f..a43833b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -30,7 +30,7 @@ Returned by `hit()` on a limiter or a Throttle.
+ |---|---|---|
+ | `decision.allowed` | `bool` | Whether the hit was let through. |
+ | `decision.remaining` | `int, units left after this hit` | |
+-| `decision.retry_after` | `float seconds, 0 when allowed` | How long until the same hit would be allowed. |
++| `decision.retry_after` | `int milliseconds, rounded up, 0 when allowed` | How long until the same hit would be allowed. |
+ | `decision.limit` | `int` | The limiter's limit (a bucket's capacity). |
+ 
+ ## Limiter state and snapshots
+diff --git a/src/throttle/base.py b/src/throttle/base.py
+index c02443e..5aca271 100644
+--- a/src/throttle/base.py
++++ b/src/throttle/base.py
+@@ -1,5 +1,6 @@
+ """What every limiter shares: the Decision it returns and the hit/peek protocol."""
+ from dataclasses import dataclass
++import math
+ 
+ 
+ @dataclass(frozen=True)
+@@ -7,12 +8,13 @@ class Decision:
+     """The outcome of one hit.
+ 
+     ``remaining`` is what is left after this hit; ``retry_after`` is how long
+-    to wait, in seconds, before the same hit would be allowed (0 when allowed).
++    to wait, in whole milliseconds rounded up, before the same hit would be
++    allowed (0 when allowed).
+     """
+ 
+     allowed: bool
+     remaining: int
+-    retry_after: float
++    retry_after: int
+     limit: int
+ 
+ 
+@@ -38,7 +40,10 @@ class Limiter:
+         return self._take(1, consume=False)
+ 
+     def _decision(self, allowed, remaining, wait):
+-        return Decision(allowed, remaining, wait if not allowed else 0.0, self.limit)
++        if allowed:
++            return Decision(True, remaining, 0, self.limit)
++        # Round away float noise first, so 0.3 s is 300 ms and not 301.
++        return Decision(False, remaining, math.ceil(round(wait * 1000, 6)), self.limit)
+ 
+     def _take(self, cost, consume):
+         raise NotImplementedError
+diff --git a/src/throttle/errors.py b/src/throttle/errors.py
+index b41f3a9..3a805f3 100644
+--- a/src/throttle/errors.py
++++ b/src/throttle/errors.py
+@@ -21,6 +21,7 @@ class RateLimitExceeded(ThrottleError):
+     """Raised by Throttle.check when a hit is denied."""
+ 
+     def __init__(self, key, retry_after):
+-        super().__init__(f'rate limit exceeded for {key}: retry in {format_duration(retry_after)}')
++        """``retry_after`` is in milliseconds, as on Decision."""
++        super().__init__(f'rate limit exceeded for {key}: retry in {format_duration(retry_after / 1000)}')
+         self.key = key
+         self.retry_after = retry_after
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 864f734..0e18cbb 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -32,7 +32,7 @@ def render_table(throttle):
+             entry['key'],
+             entry['policy'],
+             f"{entry['remaining']}/{entry['limit']}",
+-            _wait(entry['retry_after']),
++            _wait(entry['retry_after'] / 1000),
+             _wait(entry['reset_in']),
+         ))
+     widths = [max(len(row[column]) for row in rows) for column in range(len(COLUMNS))]
+diff --git a/tests/test_limiters.py b/tests/test_limiters.py
+index 6a3b5de..ea207e9 100644
+--- a/tests/test_limiters.py
++++ b/tests/test_limiters.py
+@@ -18,7 +18,7 @@ def test_fixed_window_resets_on_boundary():
+     assert window.hit().remaining == 0
+     denied = window.hit()
+     assert not denied.allowed
+-    assert denied.retry_after == 6
++    assert denied.retry_after == 6000
+     clock.advance(6)
+     assert window.hit().allowed
+ 
+@@ -40,8 +40,8 @@ def test_sliding_window_frees_oldest_first():
+     window.hit(2)
+     denied = window.hit(2)
+     assert not denied.allowed
+-    assert denied.retry_after == 10
+-    assert window.hit().retry_after == 6
++    assert denied.retry_after == 10000
++    assert window.hit().retry_after == 6000
+     clock.advance(6)
+     assert window.hit().allowed
+     assert window.state()['reset_in'] == 10
+@@ -52,7 +52,7 @@ def test_bucket_refills_continuously():
+     bucket = TokenBucket(4, 2.0, clock)
+     assert bucket.hit(4).remaining == 0
+     denied = bucket.hit()
+-    assert denied.retry_after == 0.5
++    assert denied.retry_after == 500
+     clock.advance(1)
+     assert bucket.peek().remaining == 2
+     assert bucket.state() == {'kind': 'bucket', 'limit': 4, 'remaining': 2, 'reset_in': 1.0}
+@@ -76,3 +76,13 @@ def test_bucket_rate_must_be_positive():
+ def test_cost_must_be_at_least_one():
+     with pytest.raises(ValueError, match='cost must be at least 1: 0'):
+         FixedWindow(5, 10, ManualClock()).hit(0)
++
++
++def test_wait_is_whole_milliseconds_rounded_up():
++    clock = ManualClock()
++    bucket = TokenBucket(3, 3.0, clock)
++    bucket.hit(3)
++    assert bucket.hit().retry_after == 334
++    window = FixedWindow(1, 0.3, clock)
++    window.hit()
++    assert window.hit().retry_after == 300
+diff --git a/tests/test_registry.py b/tests/test_registry.py
+index 7eae07d..ba196c9 100644
+--- a/tests/test_registry.py
++++ b/tests/test_registry.py
+@@ -77,5 +77,5 @@ def test_snapshot_lists_keys_in_order():
+     clock.advance(20)
+     first, second = throttle.snapshot()
+     assert first == {'key': 'a', 'policy': '3/minute', 'kind': 'fixed', 'limit': 3, 'remaining': 0,
+-                     'reset_in': 40.0, 'retry_after': 40.0}
++                     'reset_in': 40.0, 'retry_after': 40000}
+     assert second['key'] == 'b' and second['remaining'] == 2
+diff --git a/tests/test_report.py b/tests/test_report.py
+index 9e6e8ba..cbe7649 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -35,5 +35,5 @@ def test_nearest_limit():
+ def test_csv():
+     lines = to_csv(busy_throttle()).splitlines()
+     assert lines[0] == 'key,policy,kind,limit,remaining,reset_in,retry_after'
+-    assert lines[2] == 's:1,2/10s; algorithm=sliding,sliding,2,0,7.5,7.5'
++    assert lines[2] == 's:1,2/10s; algorithm=sliding,sliding,2,0,7.5,7500'
+     assert to_csv(Throttle(ManualClock())) == ''

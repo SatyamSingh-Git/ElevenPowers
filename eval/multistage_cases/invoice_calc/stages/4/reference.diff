@@ -1,0 +1,175 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a6da698..7c7dcc5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Exported records carry amounts as integers in the currency's minor units (cents, yen, fils)
++  instead of decimal strings, on the record and on each line.
+ - Tax uses the rates in force on the invoice's issue date, which is now required.
+   Germany's reduced rate (food, books) is 9% from 2027-01-01.
+ - Fixed: UK food and books were charged 20% VAT; both are zero-rated.
+diff --git a/docs/reference.md b/docs/reference.md
+index cd698d1..a1a1e27 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -121,18 +121,21 @@ subtotal, discount, one tax row per rate and the total.
+ 
+ `to_record(invoice)` returns a dict ready for JSON; `write_records` and
+ `read_records` store a list of them as JSON lines. Each record carries its
+-lines as well, with their own amounts and the rate charged. A line's
+-`quantity` is a decimal string such as `"1.5"`.
++lines as well, with their own amounts and the rate charged. Amounts, on the
++record and on each line (`discount`, `net`, `tax`, `total`), are integers in the
++currency's minor units: `1234` is $12.34, ¥1,234 or KD 1.234. A line's
++`quantity` is a decimal string such as `"1.5"`, and its `unit_price` and
++`rate` are decimal strings too.
+ 
+ | Field | JSON type | Meaning |
+ |---|---|---|
+ | `record.number` | `string` | Invoice number. |
+ | `record.region` | `string` | Normalised region code. |
+ | `record.currency` | `string` | ISO 4217 code. |
+-| `record.subtotal` | `string` | Sum of line amounts before discounts, as a decimal. |
+-| `record.discount` | `string` | Total discount, as a decimal. |
+-| `record.tax` | `string` | Total tax, as a decimal. |
+-| `record.total` | `string` | Amount due, as a decimal. |
++| `record.subtotal` | `integer` | Sum of line amounts before discounts, in minor units. |
++| `record.discount` | `integer` | Total discount, in minor units. |
++| `record.tax` | `integer` | Total tax, in minor units. |
++| `record.total` | `integer` | Amount due, in minor units. |
+ | `record.lines` | `array` | One object per line item. |
+ 
+ ## Ledger
+diff --git a/src/invoicekit/export.py b/src/invoicekit/export.py
+index fc933a7..3fd2808 100644
+--- a/src/invoicekit/export.py
++++ b/src/invoicekit/export.py
+@@ -2,21 +2,26 @@ import json
+ 
+ from .invoice import compute
+ from .items import format_quantity
++from .money import to_minor_units
+ from .tax import rate_for
+ 
+ 
+ def to_record(invoice):
+     """The invoice and its totals as a plain dict, ready for JSON."""
+     totals = compute(invoice)
++
++    def units(amount):
++        return to_minor_units(amount, invoice.currency)
++
+     return {
+         "number": invoice.number,
+         "issued": invoice.issued,
+         "region": invoice.region,
+         "currency": invoice.currency,
+-        "subtotal": str(totals.subtotal),
+-        "discount": str(totals.discount),
+-        "tax": str(totals.tax),
+-        "total": str(totals.total),
++        "subtotal": units(totals.subtotal),
++        "discount": units(totals.discount),
++        "tax": units(totals.tax),
++        "total": units(totals.total),
+         "lines": [
+             {
+                 "sku": line.item.sku,
+@@ -25,10 +30,10 @@ def to_record(invoice):
+                 "quantity": format_quantity(line.item.quantity),
+                 "unit_price": str(line.item.unit_price),
+                 "rate": str(rate_for(line.item.category, invoice.region, on=invoice.issued)),
+-                "discount": str(line.discount),
+-                "net": str(line.net),
+-                "tax": str(line.tax),
+-                "total": str(line.total),
++                "discount": units(line.discount),
++                "net": units(line.net),
++                "tax": units(line.tax),
++                "total": units(line.total),
+             }
+             for line in totals.lines
+         ],
+diff --git a/src/invoicekit/ledger.py b/src/invoicekit/ledger.py
+index 5b9be54..52a59e0 100644
+--- a/src/invoicekit/ledger.py
++++ b/src/invoicekit/ledger.py
+@@ -1,7 +1,7 @@
+ from dataclasses import dataclass
+ from decimal import Decimal
+ 
+-from .money import format_money
++from .money import format_money, from_minor_units
+ 
+ AMOUNTS = ("subtotal", "discount", "tax", "total")
+ 
+@@ -25,7 +25,7 @@ def summarize(records):
+         row = rows.setdefault(key, LedgerRow(*key))
+         row.invoices += 1
+         for name in AMOUNTS:
+-            setattr(row, name, getattr(row, name) + Decimal(record[name]))
++            setattr(row, name, getattr(row, name) + from_minor_units(record[name], row.currency))
+     return [rows[key] for key in sorted(rows)]
+ 
+ 
+diff --git a/src/invoicekit/money.py b/src/invoicekit/money.py
+index d2fc86c..8f051cd 100644
+--- a/src/invoicekit/money.py
++++ b/src/invoicekit/money.py
+@@ -61,3 +61,12 @@ def format_money(amount, currency):
+     amount = quantize(amount, currency)
+     sign = "-" if amount < 0 else ""
+     return f"{sign}{symbol}{abs(amount):,.{places}f}"
++
++
++def to_minor_units(amount, currency):
++    """1234 for $12.34; the amount must already be rounded to the currency."""
++    return int(amount.scaleb(minor_units(currency)))
++
++
++def from_minor_units(units, currency):
++    return Decimal(units).scaleb(-minor_units(currency))
+diff --git a/tests/test_ledger.py b/tests/test_ledger.py
+index 124b43c..09819bf 100644
+--- a/tests/test_ledger.py
++++ b/tests/test_ledger.py
+@@ -54,3 +54,11 @@ def test_cli_reports_bad_input(tmp_path, capsys):
+     source.write_text(json.dumps({"number": "A-1", "region": "XX", "lines": []}), encoding="utf-8")
+     assert main(["render", str(source)]) == 1
+     assert capsys.readouterr().err.startswith("invoicekit: ")
++
++
++def test_record_amounts_are_minor_units():
++    record = to_record(invoice("A-1", discounts=[{"kind": "amount", "amount": "4"}]))
++    assert (record["subtotal"], record["discount"], record["tax"], record["total"]) == (2000, 400, 142, 1742)
++    assert [(line["net"], line["tax"], line["total"]) for line in record["lines"]] == [(1600, 142, 1742)]
++    yen = to_record(invoice("Y-1", region="JP", currency="JPY", price="411"))
++    assert (yen["subtotal"], yen["tax"], yen["total"]) == (822, 82, 904)
+diff --git a/tests/test_money.py b/tests/test_money.py
+index 6cc785b..40a94e8 100644
+--- a/tests/test_money.py
++++ b/tests/test_money.py
+@@ -2,7 +2,7 @@ from decimal import Decimal
+ 
+ import pytest
+ 
+-from invoicekit.money import MoneyError, format_money, quantize, to_decimal
++from invoicekit.money import MoneyError, format_money, from_minor_units, quantize, to_decimal, to_minor_units
+ 
+ 
+ def test_format_money_groups_thousands():
+@@ -37,3 +37,11 @@ def test_to_decimal_refuses_text_that_is_not_a_number():
+ def test_unknown_currency():
+     with pytest.raises(MoneyError, match="unknown currency: XXX"):
+         format_money(Decimal(1), "XXX")
++
++
++@pytest.mark.parametrize("amount, currency, units", [
++    ("12.34", "USD", 1234), ("0.00", "EUR", 0), ("1235", "JPY", 1235), ("1.235", "KWD", 1235), ("-4.50", "GBP", -450),
++])
++def test_minor_units(amount, currency, units):
++    assert to_minor_units(Decimal(amount), currency) == units
++    assert from_minor_units(units, currency) == Decimal(amount)

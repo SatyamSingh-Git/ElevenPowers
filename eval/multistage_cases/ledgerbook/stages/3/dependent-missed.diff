@@ -1,0 +1,13 @@
+diff --git a/src/ledgerbook/journal.py b/src/ledgerbook/journal.py
+index fcb1dd1..c8eca92 100644
+--- a/src/ledgerbook/journal.py
++++ b/src/ledgerbook/journal.py
+@@ -29,7 +29,7 @@ def open_record(account):
+ def transaction_record(txn, currency):
+     return {
+         "type": "txn",
+-        "date": txn.date.isoformat(),
++        "date": txn.date,
+         "description": txn.description,
+         "postings": [{"account": p.account, "amount": format_amount(p.amount, currency)} for p in txn.postings],
+     }

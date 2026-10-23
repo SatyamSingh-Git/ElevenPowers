@@ -1,0 +1,144 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c5d23b0..069998f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `TokenBucket` takes `refill_period` (seconds from empty to full) instead of `refill_per_second`.
+ - `Decision.retry_after` (and a snapshot's `retry_after`) is now whole milliseconds, rounded up, instead of float seconds.
+ 
+ ## 0.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index a43833b..b1166b4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -20,7 +20,7 @@
+ | `throttle.eviction` | `least recently used key` | Which key is forgotten when `max_keys` is reached. |
+ | `throttle.pattern` | `exact key, or prefix ending in *; longest pattern wins` | How `set_policy` patterns match keys. |
+ | `clock.read` | `clock.now()` | How limiters read the current time, in seconds, from the clock they are given. |
+-| `bucket.signature` | `TokenBucket(capacity, refill_per_second, clock)` | Constructing a token bucket directly. |
++| `bucket.signature` | `TokenBucket(capacity, refill_period, clock)` | Constructing a token bucket directly; `refill_period` is the seconds an empty bucket takes to refill to capacity. |
+ 
+ ## Decision
+ 
+@@ -79,7 +79,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
+ | `error.unknown_unit` | `unknown unit: {unit}` | ValueError; PolicyError inside a policy. |
+ | `error.limit` | `limit must be positive: {limit}` | ValueError. |
+ | `error.period` | `period must be positive: {value}` | ValueError. |
+-| `error.refill` | `refill_per_second must be positive: {value}` | ValueError from TokenBucket. |
++| `error.refill` | `refill_period must be positive: {value}` | ValueError from TokenBucket. |
+ | `error.cost` | `cost must be at least 1: {cost}` | ValueError from `hit()`. |
+ | `error.max_keys` | `max_keys must be at least 1: {value}` | ValueError from Throttle. |
+ | `error.rate_limited` | `rate limit exceeded for {key}: retry in {wait}` | RateLimitExceeded from `check()`; `{wait}` as in `duration.format`. |
+diff --git a/src/throttle/bucket.py b/src/throttle/bucket.py
+index 2e88add..cf6a902 100644
+--- a/src/throttle/bucket.py
++++ b/src/throttle/bucket.py
+@@ -3,13 +3,15 @@ from .base import Limiter
+ 
+ 
+ class TokenBucket(Limiter):
++    """Holds up to ``capacity`` tokens; an empty bucket is full again after ``refill_period`` seconds."""
++
+     kind = 'bucket'
+ 
+-    def __init__(self, capacity, refill_per_second, clock):
++    def __init__(self, capacity, refill_period, clock):
+         super().__init__(capacity, clock)
+-        if refill_per_second <= 0:
+-            raise ValueError(f'refill_per_second must be positive: {refill_per_second}')
+-        self.rate = refill_per_second
++        if refill_period <= 0:
++            raise ValueError(f'refill_period must be positive: {refill_period}')
++        self.refill_period = refill_period
+         self._tokens = float(capacity)
+         self._updated = clock.now()
+ 
+@@ -17,9 +19,12 @@ class TokenBucket(Limiter):
+     def capacity(self):
+         return self.limit
+ 
++    def _seconds_for(self, tokens):
++        return tokens * self.refill_period / self.limit
++
+     def _refill(self):
+         now = self._clock.now()
+-        self._tokens = min(self.limit, self._tokens + (now - self._updated) * self.rate)
++        self._tokens = min(self.limit, self._tokens + (now - self._updated) * self.limit / self.refill_period)
+         self._updated = now
+ 
+     def _take(self, cost, consume):
+@@ -28,7 +33,7 @@ class TokenBucket(Limiter):
+             if consume:
+                 self._tokens -= cost
+             return self._decision(True, int(self._tokens), 0)
+-        return self._decision(False, int(self._tokens), (cost - self._tokens) / self.rate)
++        return self._decision(False, int(self._tokens), self._seconds_for(cost - self._tokens))
+ 
+     def state(self):
+         self._refill()
+@@ -36,5 +41,5 @@ class TokenBucket(Limiter):
+             'kind': self.kind,
+             'limit': self.limit,
+             'remaining': int(self._tokens),
+-            'reset_in': (self.limit - self._tokens) / self.rate,
++            'reset_in': self._seconds_for(self.limit - self._tokens),
+         }
+diff --git a/src/throttle/policy.py b/src/throttle/policy.py
+index c04f3c6..8218527 100644
+--- a/src/throttle/policy.py
++++ b/src/throttle/policy.py
+@@ -93,7 +93,8 @@ def _period_text(seconds):
+ def build_limiter(policy, clock):
+     """A fresh limiter enforcing ``policy`` against ``clock``."""
+     if policy.algorithm == 'bucket':
+-        return TokenBucket(policy.capacity, policy.limit / policy.period, clock)
++        # Refilling at limit-per-period, an empty bucket of this capacity is full after:
++        return TokenBucket(policy.capacity, policy.period * policy.capacity / policy.limit, clock)
+     if policy.algorithm == 'sliding':
+         return SlidingWindow(policy.limit, policy.period, clock)
+     return FixedWindow(policy.limit, policy.period, clock)
+diff --git a/tests/test_limiters.py b/tests/test_limiters.py
+index ea207e9..a6e0e5d 100644
+--- a/tests/test_limiters.py
++++ b/tests/test_limiters.py
+@@ -58,6 +58,17 @@ def test_bucket_refills_continuously():
+     assert bucket.state() == {'kind': 'bucket', 'limit': 4, 'remaining': 2, 'reset_in': 1.0}
+ 
+ 
++def test_refill_period_is_time_from_empty_to_full():
++    clock = ManualClock()
++    bucket = TokenBucket(10, refill_period=60, clock=clock)
++    bucket.hit(10)
++    assert bucket.hit().retry_after == 6000
++    clock.advance(6)
++    assert bucket.peek().remaining == 1
++    clock.advance(54)
++    assert bucket.peek().remaining == 10
++
++
+ @pytest.mark.parametrize('make', [
+     lambda clock: FixedWindow(0, 10, clock),
+     lambda clock: SlidingWindow(-1, 10, clock),
+@@ -68,8 +79,8 @@ def test_limit_must_be_positive(make):
+         make(ManualClock())
+ 
+ 
+-def test_bucket_rate_must_be_positive():
+-    with pytest.raises(ValueError, match='refill_per_second must be positive: 0'):
++def test_refill_period_must_be_positive():
++    with pytest.raises(ValueError, match='refill_period must be positive: 0'):
+         TokenBucket(5, 0, ManualClock())
+ 
+ 
+@@ -80,7 +91,7 @@ def test_cost_must_be_at_least_one():
+ 
+ def test_wait_is_whole_milliseconds_rounded_up():
+     clock = ManualClock()
+-    bucket = TokenBucket(3, 3.0, clock)
++    bucket = TokenBucket(3, 1.0, clock)
+     bucket.hit(3)
+     assert bucket.hit().retry_after == 334
+     window = FixedWindow(1, 0.3, clock)

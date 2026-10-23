@@ -1,0 +1,13 @@
+diff --git a/src/invoicekit/money.py b/src/invoicekit/money.py
+index 22b4938..a3fa770 100644
+--- a/src/invoicekit/money.py
++++ b/src/invoicekit/money.py
+@@ -56,7 +56,7 @@ def quantize(amount, currency, rounding=DEFAULT_ROUNDING):
+     return amount.quantize(step, rounding=rounding_mode(rounding))
+ 
+ 
+-def format_money(amount, currency, negatives="minus"):
++def format_money(amount, currency, negatives="parentheses"):
+     """Negative amounts as -$12.00, or as ($12.00) with negatives="parentheses"."""
+     symbol, places = currency_info(currency)
+     amount = quantize(amount, currency)

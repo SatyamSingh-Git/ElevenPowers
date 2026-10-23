@@ -1,0 +1,140 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a548b24..239f916 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Invoices take optional `notes`, up to 500 characters, printed under the totals.
+ - Printed invoices show negative amounts in parentheses, ($12.00); `render_text(..., negatives="minus")`
+   keeps the minus sign.
+ - Exported records carry amounts as integers in the currency's minor units (cents, yen, fils)
+diff --git a/docs/reference.md b/docs/reference.md
+index 3850eec..d26e32b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -17,6 +17,7 @@ because they cannot hold most cent values exactly.
+ | `rounding` | `half-up` | Rounding mode for every amount on the invoice. |
+ | `lines` | `required` | Line items, at least one and at most 200. |
+ | `discounts` | `optional` | Discounts, applied in the order given. |
++| `notes` | `optional` | Free text printed under the totals, at most 500 characters. |
+ 
+ ## Line item fields
+ 
+@@ -112,7 +113,8 @@ with `no {category} rate for {region} on {date}`.
+ 
+ `render_text(invoice, width=64, negatives="parentheses")` returns the invoice as plain text: a heading,
+ one row per line item (with its discount underneath when it has one), then
+-subtotal, discount, one tax row per rate and the total.
++subtotal, discount, one tax row per rate and the total. Notes, when the invoice
++has them, follow under a `Notes:` heading, wrapped to the width.
+ 
+ | Option | Default | Meaning |
+ |---|---|---|
+@@ -160,6 +162,7 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+ | `issue date must be YYYY-MM-DD, not {value}` | `InvoiceError` | The issue date does not parse. |
+ | `an invoice needs at least one line item` | `InvoiceError` | |
+ | `an invoice may have at most 200 line items` | `InvoiceError` | |
++| `notes must be at most 500 characters` | `InvoiceError` | |
+ | `unknown rounding mode: {name}` | `InvoiceError` | |
+ | `line item missing field: {name}` | `ItemError` | |
+ | `quantity has more than 2 decimal places` | `ItemError` | |
+diff --git a/src/invoicekit/invoice.py b/src/invoicekit/invoice.py
+index 9bfa297..db268a2 100644
+--- a/src/invoicekit/invoice.py
++++ b/src/invoicekit/invoice.py
+@@ -9,6 +9,7 @@ from .tax import line_tax, normalize_region
+ 
+ DEFAULT_CURRENCY = "USD"
+ MAX_LINE_ITEMS = 200
++MAX_NOTES = 500
+ REQUIRED_FIELDS = ("number", "region", "lines")
+ 
+ 
+@@ -25,6 +26,7 @@ class Invoice:
+     currency: str = DEFAULT_CURRENCY
+     discounts: tuple = ()
+     rounding: str = DEFAULT_ROUNDING
++    notes: str = ""
+ 
+ 
+ @dataclass(frozen=True)
+@@ -78,6 +80,9 @@ def invoice_from_dict(data):
+     rounding = data.get("rounding", DEFAULT_ROUNDING)
+     if rounding not in ROUNDING_MODES:
+         raise InvoiceError(f"unknown rounding mode: {rounding}")
++    notes = str(data.get("notes") or "").strip()
++    if len(notes) > MAX_NOTES:
++        raise InvoiceError(f"notes must be at most {MAX_NOTES} characters")
+     raw_lines = data["lines"]
+     if not raw_lines:
+         raise InvoiceError("an invoice needs at least one line item")
+@@ -97,6 +102,7 @@ def invoice_from_dict(data):
+         issued=_issue_date(data.get("issued")),
+         discounts=tuple(discount_from_dict(raw) for raw in data.get("discounts", ())),
+         rounding=rounding,
++        notes=notes,
+     )
+ 
+ 
+diff --git a/src/invoicekit/render.py b/src/invoicekit/render.py
+index ce1769c..9ee64c9 100644
+--- a/src/invoicekit/render.py
++++ b/src/invoicekit/render.py
+@@ -1,3 +1,4 @@
++import textwrap
+ from decimal import Decimal
+ 
+ from .invoice import compute
+@@ -67,4 +68,8 @@ def render_text(invoice, width=DEFAULT_WIDTH, negatives="parentheses"):
+     for rate, base, tax in _tax_summary(invoice, totals):
+         out.append(_row(f"Tax {format_rate(rate)} on {money(base)}", money(tax), width))
+     out.append(_row("Total", money(totals.total), width))
++    if invoice.notes:
++        out += ["", "Notes:"]
++        for paragraph in invoice.notes.splitlines():
++            out += textwrap.wrap(paragraph, width) or [""]
+     return "\n".join(out) + "\n"
+diff --git a/tests/test_invoice.py b/tests/test_invoice.py
+index bde883e..6a5a9b9 100644
+--- a/tests/test_invoice.py
++++ b/tests/test_invoice.py
+@@ -72,3 +72,14 @@ def test_tax_uses_the_rate_on_the_issue_date():
+     food = {**LINE, "unit_price": "10.00", "category": "food"}
+     assert compute(make(region="DE", currency="EUR", lines=[food], issued="2026-12-31")).tax == Decimal("2.10")
+     assert compute(make(region="DE", currency="EUR", lines=[food], issued="2027-01-01")).tax == Decimal("2.70")
++
++
++def test_notes_are_optional():
++    assert make().notes == ""
++    assert make(notes="  Net 30.  ").notes == "Net 30."
++
++
++def test_notes_limit():
++    assert len(make(notes="x" * 500).notes) == 500
++    with pytest.raises(InvoiceError, match="notes must be at most 500 characters"):
++        make(notes="x" * 501)
+diff --git a/tests/test_render.py b/tests/test_render.py
+index 57f02fc..ff0b9a8 100644
+--- a/tests/test_render.py
++++ b/tests/test_render.py
+@@ -52,3 +52,18 @@ def test_render_negatives_with_a_minus_sign():
+ def test_render_negatives_must_be_known():
+     with pytest.raises(ValueError, match="negatives must be parentheses or minus"):
+         render_text(invoice_from_dict(INVOICE), negatives="red")
++
++
++def test_render_notes_under_the_totals():
++    notes = "Payment due within 30 days. " * 6 + "\nThank you for your business."
++    lines = render_text(invoice_from_dict({**INVOICE, "notes": notes}), width=60).splitlines()
++    start = lines.index("Notes:")
++    assert lines[start - 2].startswith("Total")
++    body = lines[start + 1:]
++    assert all(len(line) <= 60 for line in body)
++    assert " ".join(body).split() == notes.split()
++    assert body[-1] == "Thank you for your business."
++
++
++def test_render_without_notes_ends_with_the_total():
++    assert render_text(invoice_from_dict(INVOICE)).splitlines()[-1].startswith("Total")

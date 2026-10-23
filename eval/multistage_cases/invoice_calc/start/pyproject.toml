@@ -1,0 +1,9 @@
+[project]
+name = "invoicekit"
+version = "0.4.0"
+description = "Invoice arithmetic: line items, discounts, tax by region, totals and printouts"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

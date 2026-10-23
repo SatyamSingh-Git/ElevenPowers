@@ -1,0 +1,38 @@
+diff --git a/src/cronish/describe.py b/src/cronish/describe.py
+index 39e86d4..6e9ed83 100644
+--- a/src/cronish/describe.py
++++ b/src/cronish/describe.py
+@@ -1,7 +1,7 @@
+ """Plain-English descriptions of schedules."""
+ from ._generated import DAY_TITLES, MONTH_TITLES
+ from .fields import DAY, HOUR, MINUTE, MONTH, WEEKDAY
+-from .formatting import join_words, twelve_hour
++from .formatting import clock, join_words
+ 
+ # Up to this many hour-and-minute combinations are spelled out as times of day.
+ EXACT_TIMES = 4
+@@ -20,7 +20,7 @@ def _time(schedule):
+     if every_minute and every_hour:
+         return "every minute"
+     if len(minutes) * len(hours) <= EXACT_TIMES:
+-        return "at " + join_words(twelve_hour(hour, minute) for hour in hours for minute in minutes)
++        return "at " + join_words(clock(hour, minute) for hour in hours for minute in minutes)
+     if every_minute:
+         return "every minute during " + _numbered("hour", hours)
+     if every_hour:
+diff --git a/src/cronish/formatting.py b/src/cronish/formatting.py
+index 9e8efff..98d4848 100644
+--- a/src/cronish/formatting.py
++++ b/src/cronish/formatting.py
+@@ -11,11 +11,6 @@ def join_words(words):
+ 
+ 
+ def clock(hour, minute):
+-    return f"{hour:02d}:{minute:02d}"
+-
+-
+-def twelve_hour(hour, minute):
+-    """``(0, 5)`` -> ``"12:05 AM"``, ``(13, 30)`` -> ``"1:30 PM"``."""
+     return f"{hour % 12 or 12}:{minute:02d} {'AM' if hour < 12 else 'PM'}"
+ 
+ 

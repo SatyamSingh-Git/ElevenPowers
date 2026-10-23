@@ -1,0 +1,132 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 83bf72b..c7f95c5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Clocks are read with `monotonic()` instead of `now()`, so the `time` module can be passed as a clock. `ManualClock.now()` is now `ManualClock.monotonic()`.
+ - Limiter state and snapshots carry `reset_at`, the clock time the limiter is full again, in place of the relative `reset_in`.
+ - Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises `ValueError: cost N exceeds limit M` and spends nothing.
+ - `TokenBucket` takes `refill_period` (seconds from empty to full) instead of `refill_per_second`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 7dcd848..912533f 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -19,7 +19,7 @@
+ | `throttle.max_keys` | `1000` | Keys tracked at once before eviction. |
+ | `throttle.eviction` | `least recently used key` | Which key is forgotten when `max_keys` is reached. |
+ | `throttle.pattern` | `exact key, or prefix ending in *; longest pattern wins` | How `set_policy` patterns match keys. |
+-| `clock.read` | `clock.now()` | How limiters read the current time, in seconds, from the clock they are given. |
++| `clock.read` | `clock.monotonic()` | How limiters and reports read the current time, in seconds, from the clock they are given; the `time` module itself qualifies. |
+ | `bucket.signature` | `TokenBucket(capacity, refill_period, clock)` | Constructing a token bucket directly; `refill_period` is the seconds an empty bucket takes to refill to capacity. |
+ 
+ ## Decision
+diff --git a/src/throttle/bucket.py b/src/throttle/bucket.py
+index 744aa4c..e6fd9ab 100644
+--- a/src/throttle/bucket.py
++++ b/src/throttle/bucket.py
+@@ -13,7 +13,7 @@ class TokenBucket(Limiter):
+             raise ValueError(f'refill_period must be positive: {refill_period}')
+         self.refill_period = refill_period
+         self._tokens = float(capacity)
+-        self._updated = clock.now()
++        self._updated = clock.monotonic()
+ 
+     @property
+     def capacity(self):
+@@ -23,7 +23,7 @@ class TokenBucket(Limiter):
+         return tokens * self.refill_period / self.limit
+ 
+     def _refill(self):
+-        now = self._clock.now()
++        now = self._clock.monotonic()
+         self._tokens = min(self.limit, self._tokens + (now - self._updated) * self.limit / self.refill_period)
+         self._updated = now
+ 
+diff --git a/src/throttle/clock.py b/src/throttle/clock.py
+index 8e7dd09..4f7754e 100644
+--- a/src/throttle/clock.py
++++ b/src/throttle/clock.py
+@@ -1,8 +1,9 @@
+ """Clocks the limiters read time from.
+ 
+-Limiters never look at the system clock themselves: they call ``now()`` on the
+-clock they were given, which returns seconds as a float. ManualClock is the
+-clock for simulations and tests.
++Limiters never look at the system clock themselves: they call ``monotonic()``
++on the clock they were given, which returns seconds as a float. That makes the
++``time`` module a clock as it stands; ManualClock is the clock for simulations
++and tests.
+ """
+ 
+ 
+@@ -12,7 +13,7 @@ class ManualClock:
+     def __init__(self, start=0.0):
+         self._now = float(start)
+ 
+-    def now(self):
++    def monotonic(self):
+         return self._now
+ 
+     def advance(self, seconds):
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 6f9a618..9c384aa 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -27,7 +27,7 @@ def _wait(seconds):
+ def render_table(throttle):
+     """A plain-text table, one row per key, columns padded to line up."""
+     rows = [COLUMNS]
+-    now = throttle.clock.now()
++    now = throttle.clock.monotonic()
+     for entry in throttle.snapshot():
+         rows.append((
+             entry['key'],
+diff --git a/src/throttle/window.py b/src/throttle/window.py
+index 4a287ad..d254ffe 100644
+--- a/src/throttle/window.py
++++ b/src/throttle/window.py
+@@ -18,7 +18,7 @@ class FixedWindow(Limiter):
+         self._used = 0
+ 
+     def _roll(self):
+-        now = self._clock.now()
++        now = self._clock.monotonic()
+         start = now - now % self.period
+         if start != self._start:
+             self._start, self._used = start, 0
+@@ -59,7 +59,7 @@ class SlidingWindow(Limiter):
+         self._hits = deque()
+ 
+     def _expire(self):
+-        now = self._clock.now()
++        now = self._clock.monotonic()
+         while self._hits and self._hits[0] <= now - self.period:
+             self._hits.popleft()
+         return now
+diff --git a/tests/test_limiters.py b/tests/test_limiters.py
+index 5b9df0a..dff41fa 100644
+--- a/tests/test_limiters.py
++++ b/tests/test_limiters.py
+@@ -110,3 +110,19 @@ def test_cost_above_limit_is_refused_without_spending(make):
+     with pytest.raises(ValueError, match='^cost 15 exceeds limit 10$'):
+         limiter.hit(15)
+     assert limiter.hit(7).allowed
++
++
++def test_any_object_with_monotonic_is_a_clock():
++    class Ticks:
++        at = 50.0
++
++        def monotonic(self):
++            return self.at
++
++    ticks = Ticks()
++    window = FixedWindow(1, 10, ticks)
++    window.hit()
++    assert window.hit().retry_after == 10000
++    ticks.at = 60
++    assert window.hit().allowed
++    assert ManualClock(3).monotonic() == 3

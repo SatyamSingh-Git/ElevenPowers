@@ -1,0 +1,26 @@
+diff --git a/src/throttle/errors.py b/src/throttle/errors.py
+index 3a805f3..b41f3a9 100644
+--- a/src/throttle/errors.py
++++ b/src/throttle/errors.py
+@@ -21,7 +21,6 @@ class RateLimitExceeded(ThrottleError):
+     """Raised by Throttle.check when a hit is denied."""
+ 
+     def __init__(self, key, retry_after):
+-        """``retry_after`` is in milliseconds, as on Decision."""
+-        super().__init__(f'rate limit exceeded for {key}: retry in {format_duration(retry_after / 1000)}')
++        super().__init__(f'rate limit exceeded for {key}: retry in {format_duration(retry_after)}')
+         self.key = key
+         self.retry_after = retry_after
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 0e18cbb..864f734 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -32,7 +32,7 @@ def render_table(throttle):
+             entry['key'],
+             entry['policy'],
+             f"{entry['remaining']}/{entry['limit']}",
+-            _wait(entry['retry_after'] / 1000),
++            _wait(entry['retry_after']),
+             _wait(entry['reset_in']),
+         ))
+     widths = [max(len(row[column]) for row in rows) for column in range(len(COLUMNS))]

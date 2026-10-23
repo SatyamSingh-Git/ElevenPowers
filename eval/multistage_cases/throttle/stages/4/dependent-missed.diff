@@ -1,0 +1,20 @@
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 6f9a618..0e18cbb 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -27,14 +27,13 @@ def _wait(seconds):
+ def render_table(throttle):
+     """A plain-text table, one row per key, columns padded to line up."""
+     rows = [COLUMNS]
+-    now = throttle.clock.now()
+     for entry in throttle.snapshot():
+         rows.append((
+             entry['key'],
+             entry['policy'],
+             f"{entry['remaining']}/{entry['limit']}",
+             _wait(entry['retry_after'] / 1000),
+-            _wait(entry['reset_at'] - now),
++            _wait(entry['reset_in']),
+         ))
+     widths = [max(len(row[column]) for row in rows) for column in range(len(COLUMNS))]
+     lines = ['  '.join(cell.ljust(width) for cell, width in zip(row, widths)).rstrip() for row in rows]

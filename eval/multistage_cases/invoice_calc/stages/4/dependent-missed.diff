@@ -1,0 +1,22 @@
+diff --git a/src/invoicekit/ledger.py b/src/invoicekit/ledger.py
+index 52a59e0..5b9be54 100644
+--- a/src/invoicekit/ledger.py
++++ b/src/invoicekit/ledger.py
+@@ -1,7 +1,7 @@
+ from dataclasses import dataclass
+ from decimal import Decimal
+ 
+-from .money import format_money, from_minor_units
++from .money import format_money
+ 
+ AMOUNTS = ("subtotal", "discount", "tax", "total")
+ 
+@@ -25,7 +25,7 @@ def summarize(records):
+         row = rows.setdefault(key, LedgerRow(*key))
+         row.invoices += 1
+         for name in AMOUNTS:
+-            setattr(row, name, getattr(row, name) + from_minor_units(record[name], row.currency))
++            setattr(row, name, getattr(row, name) + Decimal(record[name]))
+     return [rows[key] for key in sorted(rows)]
+ 
+ 

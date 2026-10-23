@@ -1,0 +1,159 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 118598b..8147d99 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Statements take an optional start and end date (`--from`/`--to` on the command line) and open with the balance carried in from before the start.
+ - Journal files write posting amounts as decimal text in the journal currency (format version 2); version 1 journals still load.
+ 
+ ## 0.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index efd8dd7..c1fec5a 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -51,6 +51,8 @@ table lists one documented fact per row: its key, its value, and what it means.
+ | `trial_balance.columns` | `Account, Debit, Credit` | Columns of the rendered trial balance |
+ | `trial_balance.total_label` | `Total` | Label of its last row |
+ | `statement.columns` | `Date, Description, Amount, Balance` | Columns of a rendered statement |
++| `statement.range` | `start and end inclusive` | Dates `statement(ledger, account, start, end)` keeps; either may be omitted |
++| `statement.opening_label` | `Opening balance` | Description of the first line when a start date is given; it has no amount and carries the balance before the start |
+ | `summary.keys` | `assets, liabilities, equity, income, expenses, net_income` | Keys of `summary()`; each is positive for a normal balance |
+ 
+ ## Journal file
+@@ -79,6 +81,7 @@ table lists one documented fact per row: its key, its value, and what it means.
+ | --- | --- | --- |
+ | `cli.usage` | `ledgerbook JOURNAL COMMAND` | Every command names its journal first |
+ | `cli.commands` | `init, open, post, reverse, balances, summary, statement` | Available commands |
++| `cli.statement_options` | `--from DATE, --to DATE` | Date range of the `statement` command |
+ | `cli.posting` | `ACCOUNT=AMOUNT` | Posting argument; one may be a bare `ACCOUNT` that takes the remainder |
+ | `cli.exit_ok` | `0` | Exit status on success |
+ | `cli.exit_error` | `1` | Exit status after printing `error: <message>` to stderr |
+diff --git a/src/ledgerbook/cli.py b/src/ledgerbook/cli.py
+index b373fe5..097f778 100644
+--- a/src/ledgerbook/cli.py
++++ b/src/ledgerbook/cli.py
+@@ -43,6 +43,8 @@ def _parser():
+ 
+     statement = commands.add_parser("statement", help="print one account's postings")
+     statement.add_argument("account")
++    statement.add_argument("--from", dest="start", metavar="DATE", help="first date to show; earlier postings open the balance")
++    statement.add_argument("--to", dest="end", metavar="DATE", help="last date to show")
+     return parser
+ 
+ 
+@@ -88,7 +90,7 @@ def _run(args):
+         return render_trial_balance(ledger)
+     if args.command == "summary":
+         return render_summary(ledger)
+-    return render_statement(ledger, args.account)
++    return render_statement(ledger, args.account, args.start, args.end)
+ 
+ 
+ def main(argv=None):
+diff --git a/src/ledgerbook/reports.py b/src/ledgerbook/reports.py
+index 0b24021..ec55145 100644
+--- a/src/ledgerbook/reports.py
++++ b/src/ledgerbook/reports.py
+@@ -2,8 +2,10 @@
+ from dataclasses import dataclass
+ 
+ from .money import format_amount
++from .transactions import check_date
+ 
+ TOTAL_LABEL = "Total"
++OPENING_LABEL = "Opening balance"
+ SUMMARY_LABELS = {
+     "assets": "Assets",
+     "liabilities": "Liabilities",
+@@ -62,21 +64,32 @@ def render_trial_balance(ledger):
+     return _table(("Account", "Debit", "Credit"), body, "<>>")
+ 
+ 
+-def statement(ledger, account):
+-    """Every posting to `account` with the running balance after it."""
++def statement(ledger, account, start=None, end=None):
++    """Postings to `account` dated `start` to `end` inclusive, with the running balance.
++
++    With a start date the first line is the opening balance carried in from
++    everything before it; that line has no amount.
++    """
++    start = None if start is None else check_date(start)
++    end = None if end is None else check_date(end)
++    postings = ledger.postings(account)
+     lines, running = [], 0
+-    for txn, amount in ledger.postings(account):
+-        running += amount
+-        lines.append(StatementLine(txn.date, txn.description, amount, running))
++    if start is not None:
++        running = sum(amount for txn, amount in postings if txn.date < start)
++        lines.append(StatementLine(start, OPENING_LABEL, None, running))
++    for txn, amount in postings:
++        if (start is None or txn.date >= start) and (end is None or txn.date <= end):
++            running += amount
++            lines.append(StatementLine(txn.date, txn.description, amount, running))
+     return lines
+ 
+ 
+-def render_statement(ledger, account):
++def render_statement(ledger, account, start=None, end=None):
+     currency = ledger.currency
+     body = [
+-        (str(line.date), line.description, format_amount(line.amount, currency),
++        (str(line.date), line.description, "" if line.amount is None else format_amount(line.amount, currency),
+          format_amount(line.balance, currency))
+-        for line in statement(ledger, account)
++        for line in statement(ledger, account, start, end)
+     ]
+     return f"{account}\n" + _table(("Date", "Description", "Amount", "Balance"), body, "<<>>")
+ 
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 3a5c8f4..14ec693 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -42,3 +42,15 @@ def test_statement_and_summary(books, capsys):
+     assert "Start" in capsys.readouterr().out
+     assert main([books, "summary"]) == 0
+     assert "Equity" in capsys.readouterr().out
++
++
++def test_statement_range(books, capsys):
++    assert main([books, "post", "2026-01-05", "Lunch", "Expenses:Food=12.50", "Assets:Cash"]) == 0
++    assert main([books, "post", "2026-01-09", "Dinner", "Expenses:Food=20", "Assets:Cash"]) == 0
++    capsys.readouterr()
++    assert main([books, "statement", "Assets:Cash", "--from", "2026-01-02", "--to", "2026-01-06"]) == 0
++    out = capsys.readouterr().out
++    assert "Opening balance" in out and "Lunch" in out
++    assert "Start" not in out and "Dinner" not in out
++    assert main([books, "statement", "Assets:Cash", "--from", "January"]) == 1
++    assert "invalid date: January" in capsys.readouterr().err
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 2c6b88d..ea1b242 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -33,3 +33,23 @@ def test_summary(household):
+         "assets": 420000, "liabilities": 4250, "equity": 250000,
+         "income": 320000, "expenses": 154250, "net_income": 165750,
+     }
++
++
++def test_statement_range_opens_with_the_carried_balance(household):
++    lines = statement(household, "Assets:Bank", start="2026-01-15", end="2026-01-31")
++    assert [(str(l.date), l.description, l.amount, l.balance) for l in lines] == [
++        ("2026-01-15", "Opening balance", None, 250000),
++        ("2026-01-15", "Salary", 320000, 570000),
++        ("2026-01-31", "Rent", -150000, 420000),
++    ]
++
++
++def test_statement_end_only_has_no_opening_line(household):
++    lines = statement(household, "Assets:Bank", end="2026-01-15")
++    assert [(l.amount, l.balance) for l in lines] == [(250000, 250000), (320000, 570000)]
++
++
++def test_render_statement_range(household):
++    text = render_statement(household, "Assets:Bank", start="2026-02-01")
++    assert text.splitlines()[3].split() == ["2026-02-01", "Opening", "balance", "4200.00"]
++    assert text.splitlines()[-1].split() == ["2026-02-02", "Cash", "withdrawal", "-200.00", "4000.00"]

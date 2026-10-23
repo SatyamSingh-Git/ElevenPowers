@@ -1,0 +1,50 @@
+diff --git a/src/ledgerbook/replay.py b/src/ledgerbook/replay.py
+index ecc2445..c25fac3 100644
+--- a/src/ledgerbook/replay.py
++++ b/src/ledgerbook/replay.py
+@@ -9,10 +9,9 @@ from pathlib import Path
+ 
+ from .errors import JournalError, LedgerError
+ from .ledger import Ledger
+-from .money import parse_amount
+ from .transactions import make_transaction
+ 
+-SUPPORTED_VERSIONS = (1, 2)
++SUPPORTED_VERSIONS = (1,)
+ 
+ 
+ def read_records(path):
+@@ -46,7 +45,7 @@ def load_journal(path):
+         raise JournalError(number, str(exc)) from None
+     for number, record in records:
+         try:
+-            _apply(ledger, record, version)
++            _apply(ledger, record)
+         except LedgerError as exc:
+             raise JournalError(number, str(exc)) from None
+     return ledger
+@@ -59,22 +58,12 @@ def _field(record, name):
+         raise LedgerError(f"missing field: {name}") from None
+ 
+ 
+-def _amount(value, version, currency):
+-    # A version 1 journal that has been appended to since holds decimal text as well.
+-    if version == 1 and type(value) is int:
+-        return value
+-    if not isinstance(value, str):
+-        raise LedgerError(f"amount must be decimal text: {value!r}")
+-    return parse_amount(value, currency)
+-
+-
+-def _apply(ledger, record, version):
++def _apply(ledger, record):
+     kind = _field(record, "type")
+     if kind == "open":
+         ledger.open(_field(record, "account"))
+     elif kind == "txn":
+-        postings = [(_field(p, "account"), _amount(_field(p, "amount"), version, ledger.currency))
+-                    for p in _field(record, "postings")]
++        postings = [(_field(p, "account"), _field(p, "amount")) for p in _field(record, "postings")]
+         ledger.post(make_transaction(_field(record, "date"), _field(record, "description"), postings))
+     else:
+         raise LedgerError(f"unknown record type: {kind}")

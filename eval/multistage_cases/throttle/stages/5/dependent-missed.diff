@@ -1,0 +1,13 @@
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 9c384aa..6f9a618 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -27,7 +27,7 @@ def _wait(seconds):
+ def render_table(throttle):
+     """A plain-text table, one row per key, columns padded to line up."""
+     rows = [COLUMNS]
+-    now = throttle.clock.monotonic()
++    now = throttle.clock.now()
+     for entry in throttle.snapshot():
+         rows.append((
+             entry['key'],

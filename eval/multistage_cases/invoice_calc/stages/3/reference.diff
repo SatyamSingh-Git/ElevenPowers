@@ -1,0 +1,244 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f6852f0..a6da698 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Tax uses the rates in force on the invoice's issue date, which is now required.
++  Germany's reduced rate (food, books) is 9% from 2027-01-01.
+ - Fixed: UK food and books were charged 20% VAT; both are zero-rated.
+ - Quantities may be fractional, down to 0.01 with at most two decimal places (hours of services, say).
+   Printed invoices and exported records show them as decimals.
+diff --git a/docs/reference.md b/docs/reference.md
+index f43d4e0..cd698d1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -11,7 +11,7 @@ because they cannot hold most cent values exactly.
+ | Field | Default | Meaning |
+ |---|---|---|
+ | `number` | `required` | Invoice number, printed in the heading. |
+-| `issued` | `optional` | Issue date, `YYYY-MM-DD`. |
++| `issued` | `required` | Issue date, `YYYY-MM-DD`. Tax is charged at the rates in force on this date. |
+ | `region` | `required` | Tax region code, case-insensitive. See the tax rates below. |
+ | `currency` | `USD` | ISO 4217 code. |
+ | `rounding` | `half-up` | Rounding mode for every amount on the invoice. |
+@@ -72,7 +72,10 @@ Negative amounts are printed with a minus sign before the symbol: `-$12.00`.
+ ## Tax rates
+ 
+ Keyed `rate.<region>.<category>.<date the rate took effect>`. Tax is charged on
+-each line's amount after discounts.
++each line's amount after discounts, at the latest rate that took effect on or
++before the invoice's issue date. `rate_for(category, region, on=date)` returns
++that percent; for a date before the first listed rate it raises `TaxError`
++with `no {category} rate for {region} on {date}`.
+ 
+ | Rate | Percent | Note |
+ |---|---|---|
+@@ -83,7 +86,9 @@ each line's amount after discounts.
+ | `rate.US-NY.services.2009-08-01` | `0%` | |
+ | `rate.DE.standard.2021-01-01` | `19%` | |
+ | `rate.DE.food.2021-01-01` | `7%` | Reduced rate. |
++| `rate.DE.food.2027-01-01` | `9%` | Reduced rate. |
+ | `rate.DE.books.2021-01-01` | `7%` | Reduced rate. |
++| `rate.DE.books.2027-01-01` | `9%` | Reduced rate. |
+ | `rate.DE.digital.2021-01-01` | `19%` | |
+ | `rate.DE.services.2021-01-01` | `19%` | |
+ | `rate.GB.standard.2011-01-04` | `20%` | |
+@@ -145,6 +150,7 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+ | Message | Class | Raised when |
+ |---|---|---|
+ | `invoice missing field: {name}` | `InvoiceError` | A required invoice field is absent. |
++| `invoice issue date is required` | `InvoiceError` | `issued` is absent or null. |
+ | `issue date must be YYYY-MM-DD, not {value}` | `InvoiceError` | The issue date does not parse. |
+ | `an invoice needs at least one line item` | `InvoiceError` | |
+ | `an invoice may have at most 200 line items` | `InvoiceError` | |
+diff --git a/src/invoicekit/export.py b/src/invoicekit/export.py
+index 02d9feb..fc933a7 100644
+--- a/src/invoicekit/export.py
++++ b/src/invoicekit/export.py
+@@ -24,7 +24,7 @@ def to_record(invoice):
+                 "category": line.item.category,
+                 "quantity": format_quantity(line.item.quantity),
+                 "unit_price": str(line.item.unit_price),
+-                "rate": str(rate_for(line.item.category, invoice.region)),
++                "rate": str(rate_for(line.item.category, invoice.region, on=invoice.issued)),
+                 "discount": str(line.discount),
+                 "net": str(line.net),
+                 "tax": str(line.tax),
+diff --git a/src/invoicekit/invoice.py b/src/invoicekit/invoice.py
+index 13d2aac..9bfa297 100644
+--- a/src/invoicekit/invoice.py
++++ b/src/invoicekit/invoice.py
+@@ -21,8 +21,8 @@ class Invoice:
+     number: str
+     region: str
+     lines: tuple[LineItem, ...]
++    issued: str
+     currency: str = DEFAULT_CURRENCY
+-    issued: str | None = None
+     discounts: tuple = ()
+     rounding: str = DEFAULT_ROUNDING
+ 
+@@ -59,7 +59,7 @@ class Totals:
+ 
+ def _issue_date(value):
+     if value is None:
+-        return None
++        raise InvoiceError("invoice issue date is required")
+     try:
+         return date.fromisoformat(str(value)).isoformat()
+     except ValueError:
+@@ -107,7 +107,7 @@ def compute(invoice):
+     lines = []
+     for item, gross, discount in zip(invoice.lines, grosses, discounts):
+         net = gross - discount
+-        tax = line_tax(net, item.category, invoice.region, currency, rounding)
++        tax = line_tax(net, item.category, invoice.region, currency, rounding, on=invoice.issued)
+         lines.append(LineTotal(item, gross, discount, net, tax))
+     return Totals(
+         currency=currency,
+diff --git a/src/invoicekit/render.py b/src/invoicekit/render.py
+index c6920aa..6e2a7f4 100644
+--- a/src/invoicekit/render.py
++++ b/src/invoicekit/render.py
+@@ -24,7 +24,7 @@ def _tax_summary(invoice, totals):
+     """(rate, taxed amount, tax) for each rate on the invoice, highest rate first."""
+     by_rate = {}
+     for line in totals.lines:
+-        rate = rate_for(line.item.category, invoice.region)
++        rate = rate_for(line.item.category, invoice.region, on=invoice.issued)
+         base, tax = by_rate.get(rate, (Decimal(0), Decimal(0)))
+         by_rate[rate] = (base + line.net, tax + line.tax)
+     return [(rate, base, tax) for rate, (base, tax) in sorted(by_rate.items(), reverse=True)]
+@@ -42,7 +42,7 @@ def render_text(invoice, width=DEFAULT_WIDTH):
+     rule = "-" * width
+     out = [
+         f"INVOICE {invoice.number}",
+-        f"Issued: {invoice.issued or '-'}   Region: {invoice.region}   Currency: {invoice.currency}",
++        f"Issued: {invoice.issued}   Region: {invoice.region}   Currency: {invoice.currency}",
+         rule,
+         f"{'SKU':<{SKU_COLUMN}}{'Description':<{description_column}}{'Qty':>{QUANTITY_COLUMN}}"
+         f"{'Unit':>{AMOUNT_COLUMN}}{'Amount':>{AMOUNT_COLUMN}}",
+diff --git a/src/invoicekit/tax.py b/src/invoicekit/tax.py
+index 7a0864d..ea53231 100644
+--- a/src/invoicekit/tax.py
++++ b/src/invoicekit/tax.py
+@@ -18,8 +18,8 @@ RATES = {
+     },
+     "DE": {
+         "standard": [("2021-01-01", "19")],
+-        "food": [("2021-01-01", "7")],
+-        "books": [("2021-01-01", "7")],
++        "food": [("2021-01-01", "7"), ("2027-01-01", "9")],
++        "books": [("2021-01-01", "7"), ("2027-01-01", "9")],
+         "digital": [("2021-01-01", "19")],
+         "services": [("2021-01-01", "19")],
+     },
+@@ -54,15 +54,18 @@ def normalize_region(code):
+     return region
+ 
+ 
+-def rate_for(category, region):
+-    """Percent charged on `category` in `region`: the latest rate listed."""
+-    history = RATES[normalize_region(region)][category]
+-    return Decimal(history[-1][1])
++def rate_for(category, region, *, on):
++    """Percent charged on `category` in `region` on the date `on`, YYYY-MM-DD."""
++    region = normalize_region(region)
++    in_force = [rate for since, rate in RATES[region][category] if since <= on]
++    if not in_force:
++        raise TaxError(f"no {category} rate for {region} on {on}")
++    return Decimal(in_force[-1])
+ 
+ 
+ def format_rate(rate):
+     return f"{rate.normalize():f}%"
+ 
+ 
+-def line_tax(net, category, region, currency, rounding):
+-    return quantize(net * rate_for(category, region) / 100, currency, rounding)
++def line_tax(net, category, region, currency, rounding, *, on):
++    return quantize(net * rate_for(category, region, on=on) / 100, currency, rounding)
+diff --git a/tests/test_invoice.py b/tests/test_invoice.py
+index 1c48a6b..bde883e 100644
+--- a/tests/test_invoice.py
++++ b/tests/test_invoice.py
+@@ -61,3 +61,14 @@ def test_bad_issue_date():
+ def test_unknown_rounding_mode():
+     with pytest.raises(InvoiceError, match="unknown rounding mode: ceiling"):
+         make(rounding="ceiling")
++
++
++def test_issue_date_is_required():
++    with pytest.raises(InvoiceError, match="invoice issue date is required"):
++        invoice_from_dict({"number": "INV-1", "region": "US-NY", "lines": [LINE]})
++
++
++def test_tax_uses_the_rate_on_the_issue_date():
++    food = {**LINE, "unit_price": "10.00", "category": "food"}
++    assert compute(make(region="DE", currency="EUR", lines=[food], issued="2026-12-31")).tax == Decimal("2.10")
++    assert compute(make(region="DE", currency="EUR", lines=[food], issued="2027-01-01")).tax == Decimal("2.70")
+diff --git a/tests/test_tax.py b/tests/test_tax.py
+index 8166ba4..4b4d7b8 100644
+--- a/tests/test_tax.py
++++ b/tests/test_tax.py
+@@ -4,11 +4,13 @@ import pytest
+ 
+ from invoicekit.tax import TaxError, format_rate, line_tax, normalize_region, rate_for
+ 
++ISSUED = "2026-10-23"
++
+ 
+ def test_rates_by_region_and_category():
+-    assert rate_for("standard", "US-NY") == Decimal("8.875")
+-    assert rate_for("food", "DE") == Decimal(7)
+-    assert rate_for("food", "JP") == Decimal(8)
++    assert rate_for("standard", "US-NY", on=ISSUED) == Decimal("8.875")
++    assert rate_for("food", "DE", on=ISSUED) == Decimal(7)
++    assert rate_for("food", "JP", on=ISSUED) == Decimal(8)
+ 
+ 
+ def test_region_codes_are_case_insensitive():
+@@ -17,12 +19,12 @@ def test_region_codes_are_case_insensitive():
+ 
+ def test_unknown_region():
+     with pytest.raises(TaxError, match="unknown region: FR"):
+-        rate_for("standard", "FR")
++        rate_for("standard", "FR", on=ISSUED)
+ 
+ 
+ def test_line_tax_is_rounded_to_the_currency():
+-    assert line_tax(Decimal("59.97"), "standard", "US-NY", "USD", "half-up") == Decimal("5.32")
+-    assert line_tax(Decimal("1233"), "food", "JP", "JPY", "half-up") == Decimal("99")
++    assert line_tax(Decimal("59.97"), "standard", "US-NY", "USD", "half-up", on=ISSUED) == Decimal("5.32")
++    assert line_tax(Decimal("1233"), "food", "JP", "JPY", "half-up", on=ISSUED) == Decimal("99")
+ 
+ 
+ def test_format_rate():
+@@ -31,7 +33,20 @@ def test_format_rate():
+ 
+ 
+ def test_uk_food_and_books_are_zero_rated():
+-    assert rate_for("food", "GB") == Decimal(0)
+-    assert rate_for("books", "GB") == Decimal(0)
+-    assert rate_for("standard", "GB") == Decimal(20)
+-    assert line_tax(Decimal("12.40"), "food", "GB", "GBP", "half-up") == Decimal("0.00")
++    assert rate_for("food", "GB", on=ISSUED) == Decimal(0)
++    assert rate_for("books", "GB", on=ISSUED) == Decimal(0)
++    assert rate_for("standard", "GB", on=ISSUED) == Decimal(20)
++    assert line_tax(Decimal("12.40"), "food", "GB", "GBP", "half-up", on=ISSUED) == Decimal("0.00")
++
++
++def test_rates_follow_the_date():
++    assert rate_for("food", "DE", on="2026-12-31") == Decimal(7)
++    assert rate_for("food", "DE", on="2027-01-01") == Decimal(9)
++    assert rate_for("books", "DE", on="2027-06-30") == Decimal(9)
++    assert rate_for("standard", "DE", on="2027-06-30") == Decimal(19)
++    assert line_tax(Decimal("100.00"), "books", "DE", "EUR", "half-up", on="2027-01-01") == Decimal("9.00")
++
++
++def test_no_rate_before_the_first_listed():
++    with pytest.raises(TaxError, match="no food rate for DE on 2020-12-31"):
++        rate_for("food", "DE", on="2020-12-31")

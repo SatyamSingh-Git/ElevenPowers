@@ -1,0 +1,134 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3e2dd3d..1a63cb2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Descriptions use a 12-hour clock: `at 9:30 AM` rather than `at 09:30`.
+ - `validate()` returns `(field, message)` pairs and reports every problem, not just the first.
+ - A step of 0, such as `*/0`, is reported as `<field>: step must be at least 1` instead of crashing.
+ - Upcoming runs start strictly after now: a run at exactly now is no longer listed first.
+diff --git a/README.md b/README.md
+index 3d16671..7230135 100644
+--- a/README.md
++++ b/README.md
+@@ -8,7 +8,7 @@ $ cronish next "30 9 * * mon-fri" --now 2024-03-06T10:17 -n 2
+ 2024-03-07 09:30 Thu
+ 2024-03-08 09:30 Fri
+ $ cronish describe "0 0 13 * fri"
+-at 00:00, on day 13 of the month or on Friday
++at 12:00 AM, on day 13 of the month or on Friday
+ $ cronish check "61 * * * *"
+ minute: value 61 out of range 0-59
+ ```
+diff --git a/docs/reference.md b/docs/reference.md
+index 65a06fc..366ba4b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -68,7 +68,7 @@ just the problem when no single field is to blame.
+ 
+ | Setting | Value | Meaning |
+ |---|---|---|
+-| `describe.clock` | `24-hour` | times of day are written like `09:30` |
++| `describe.clock` | `12-hour` | times of day are written like `9:30 AM`; midnight is `12:00 AM` and noon `12:00 PM` |
+ | `describe.exact_times` | `4` | up to this many times of day are spelled out one by one |
+ | `describe.steps` | `listed` | a stepped minute or hour field is described by listing its values |
+ 
+diff --git a/src/cronish/describe.py b/src/cronish/describe.py
+index 6e9ed83..39e86d4 100644
+--- a/src/cronish/describe.py
++++ b/src/cronish/describe.py
+@@ -1,7 +1,7 @@
+ """Plain-English descriptions of schedules."""
+ from ._generated import DAY_TITLES, MONTH_TITLES
+ from .fields import DAY, HOUR, MINUTE, MONTH, WEEKDAY
+-from .formatting import clock, join_words
++from .formatting import join_words, twelve_hour
+ 
+ # Up to this many hour-and-minute combinations are spelled out as times of day.
+ EXACT_TIMES = 4
+@@ -20,7 +20,7 @@ def _time(schedule):
+     if every_minute and every_hour:
+         return "every minute"
+     if len(minutes) * len(hours) <= EXACT_TIMES:
+-        return "at " + join_words(clock(hour, minute) for hour in hours for minute in minutes)
++        return "at " + join_words(twelve_hour(hour, minute) for hour in hours for minute in minutes)
+     if every_minute:
+         return "every minute during " + _numbered("hour", hours)
+     if every_hour:
+diff --git a/src/cronish/formatting.py b/src/cronish/formatting.py
+index 3aac0db..9e8efff 100644
+--- a/src/cronish/formatting.py
++++ b/src/cronish/formatting.py
+@@ -14,6 +14,11 @@ def clock(hour, minute):
+     return f"{hour:02d}:{minute:02d}"
+ 
+ 
++def twelve_hour(hour, minute):
++    """``(0, 5)`` -> ``"12:05 AM"``, ``(13, 30)`` -> ``"1:30 PM"``."""
++    return f"{hour % 12 or 12}:{minute:02d} {'AM' if hour < 12 else 'PM'}"
++
++
+ def format_run(moment):
+     # Weekday names come from the generated table so output does not depend on the locale.
+     weekday = DAY_NAMES[moment.isoweekday() % 7].title()
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index bd4a7ec..b9e8c9a 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -39,7 +39,7 @@ def test_last_and_between(capsys):
+ 
+ 
+ def test_describe(capsys):
+-    assert run(capsys, "describe", "0 0 13 * fri")[1] == "at 00:00, on day 13 of the month or on Friday\n"
++    assert run(capsys, "describe", "0 0 13 * fri")[1] == "at 12:00 AM, on day 13 of the month or on Friday\n"
+ 
+ 
+ def test_check(capsys):
+@@ -84,7 +84,7 @@ def jobs_file(tmp_path):
+ 
+ def test_jobs_commands(capsys, jobs_file):
+     assert run(capsys, "list", jobs_file)[1] == (
+-        "backup: at 10:00, on Sunday\nreport: at 09:30, on Monday, Tuesday, Wednesday, Thursday and Friday\n"
++        "backup: at 10:00 AM, on Sunday\nreport: at 9:30 AM, on Monday, Tuesday, Wednesday, Thursday and Friday\n"
+     )
+     assert run(capsys, "due", jobs_file, "--now", "2024-03-10T10:00")[1] == "backup\n"
+     assert run(capsys, "upcoming", jobs_file, "-n", "2", "--now", NOW)[1] == (
+diff --git a/tests/test_describe.py b/tests/test_describe.py
+index 6803c80..55bd673 100644
+--- a/tests/test_describe.py
++++ b/tests/test_describe.py
+@@ -7,19 +7,21 @@ from cronish import describe, parse
+     ("text", "words"),
+     [
+         ("* * * * *", "every minute, every day"),
+-        ("30 9 * * *", "at 09:30, every day"),
+-        ("0 9,17 * * *", "at 09:00 and 17:00, every day"),
+-        ("0 */6 * * *", "at 00:00, 06:00, 12:00 and 18:00, every day"),
++        ("30 9 * * *", "at 9:30 AM, every day"),
++        ("0 9,17 * * *", "at 9:00 AM and 5:00 PM, every day"),
++        ("0 */6 * * *", "at 12:00 AM, 6:00 AM, 12:00 PM and 6:00 PM, every day"),
+         ("*/15 * * * *", "at minutes 0, 15, 30 and 45 past every hour, every day"),
+         ("0,30 9-11 * * *", "at minutes 0 and 30 past hours 9, 10 and 11, every day"),
+         ("* 9 * * *", "every minute during hour 9, every day"),
+-        ("0 10 * * sun", "at 10:00, on Sunday"),
+-        ("30 9 * * mon-fri", "at 09:30, on Monday, Tuesday, Wednesday, Thursday and Friday"),
+-        ("0 0 1,15 * *", "at 00:00, on days 1 and 15 of the month"),
+-        ("0 0 13 * fri", "at 00:00, on day 13 of the month or on Friday"),
+-        ("0 12 * jan,jul *", "at 12:00, every day, in January and July"),
+-        ("@weekly", "at 00:00, on Sunday"),
+-        ("0 8 * * 1,7", "at 08:00, on Monday and Sunday"),
++        ("0 10 * * sun", "at 10:00 AM, on Sunday"),
++        ("30 9 * * mon-fri", "at 9:30 AM, on Monday, Tuesday, Wednesday, Thursday and Friday"),
++        ("0 0 1,15 * *", "at 12:00 AM, on days 1 and 15 of the month"),
++        ("0 0 13 * fri", "at 12:00 AM, on day 13 of the month or on Friday"),
++        ("0 12 * jan,jul *", "at 12:00 PM, every day, in January and July"),
++        ("@weekly", "at 12:00 AM, on Sunday"),
++        ("0 8 * * 1,7", "at 8:00 AM, on Monday and Sunday"),
++        ("45 23 * * *", "at 11:45 PM, every day"),
++        ("5 12 * * *", "at 12:05 PM, every day"),
+     ],
+ )
+ def test_descriptions(text, words):

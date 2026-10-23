@@ -1,0 +1,150 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3ed85c5..83bf72b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Limiter state and snapshots carry `reset_at`, the clock time the limiter is full again, in place of the relative `reset_in`.
+ - Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises `ValueError: cost N exceeds limit M` and spends nothing.
+ - `TokenBucket` takes `refill_period` (seconds from empty to full) instead of `refill_per_second`.
+ - `Decision.retry_after` (and a snapshot's `retry_after`) is now whole milliseconds, rounded up, instead of float seconds.
+diff --git a/docs/reference.md b/docs/reference.md
+index 01aa23f..7dcd848 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -43,7 +43,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
+ | `state.kind` | `fixed, sliding or bucket` | Which algorithm. |
+ | `state.limit` | `int` | Limit, or a bucket's capacity. |
+ | `state.remaining` | `int` | Units available now. |
+-| `state.reset_in` | `float seconds until full again` | 0 when nothing is spent. |
++| `state.reset_at` | `clock time when full again` | The current time when nothing is spent; does not move as time passes. |
+ | `snapshot.key` | `str` | The key. |
+ | `snapshot.policy` | `policy text` | The key's policy, written as `parse_policy` reads it. |
+ | `snapshot.retry_after` | `same unit as decision.retry_after` | What a hit of 1 would be told now. |
+diff --git a/src/throttle/base.py b/src/throttle/base.py
+index b198998..d0dc202 100644
+--- a/src/throttle/base.py
++++ b/src/throttle/base.py
+@@ -52,7 +52,7 @@ class Limiter:
+         raise NotImplementedError
+ 
+     def state(self):
+-        """A plain dict describing the limiter: kind, limit, remaining, reset_in."""
++        """A plain dict describing the limiter: kind, limit, remaining, reset_at (the clock time it is full again)."""
+         raise NotImplementedError
+ 
+     def __repr__(self):
+diff --git a/src/throttle/bucket.py b/src/throttle/bucket.py
+index cf6a902..744aa4c 100644
+--- a/src/throttle/bucket.py
++++ b/src/throttle/bucket.py
+@@ -41,5 +41,5 @@ class TokenBucket(Limiter):
+             'kind': self.kind,
+             'limit': self.limit,
+             'remaining': int(self._tokens),
+-            'reset_in': self._seconds_for(self.limit - self._tokens),
++            'reset_at': self._updated + self._seconds_for(self.limit - self._tokens),
+         }
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 0e18cbb..6f9a618 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -27,13 +27,14 @@ def _wait(seconds):
+ def render_table(throttle):
+     """A plain-text table, one row per key, columns padded to line up."""
+     rows = [COLUMNS]
++    now = throttle.clock.now()
+     for entry in throttle.snapshot():
+         rows.append((
+             entry['key'],
+             entry['policy'],
+             f"{entry['remaining']}/{entry['limit']}",
+             _wait(entry['retry_after'] / 1000),
+-            _wait(entry['reset_in']),
++            _wait(entry['reset_at'] - now),
+         ))
+     widths = [max(len(row[column]) for row in rows) for column in range(len(COLUMNS))]
+     lines = ['  '.join(cell.ljust(width) for cell, width in zip(row, widths)).rstrip() for row in rows]
+diff --git a/src/throttle/window.py b/src/throttle/window.py
+index 89800eb..4a287ad 100644
+--- a/src/throttle/window.py
++++ b/src/throttle/window.py
+@@ -39,7 +39,7 @@ class FixedWindow(Limiter):
+             'kind': self.kind,
+             'limit': self.limit,
+             'remaining': self.limit - self._used,
+-            'reset_in': self._start + self.period - now if self._used else 0.0,
++            'reset_at': self._start + self.period if self._used else now,
+         }
+ 
+ 
+@@ -81,5 +81,5 @@ class SlidingWindow(Limiter):
+             'kind': self.kind,
+             'limit': self.limit,
+             'remaining': self.limit - len(self._hits),
+-            'reset_in': self._hits[-1] + self.period - now if self._hits else 0.0,
++            'reset_at': self._hits[-1] + self.period if self._hits else now,
+         }
+diff --git a/tests/test_limiters.py b/tests/test_limiters.py
+index a3e671d..5b9df0a 100644
+--- a/tests/test_limiters.py
++++ b/tests/test_limiters.py
+@@ -26,10 +26,10 @@ def test_fixed_window_resets_on_boundary():
+ def test_fixed_window_state():
+     clock = ManualClock()
+     window = FixedWindow(5, 60, clock)
+-    assert window.state() == {'kind': 'fixed', 'limit': 5, 'remaining': 5, 'reset_in': 0.0}
++    assert window.state() == {'kind': 'fixed', 'limit': 5, 'remaining': 5, 'reset_at': 0.0}
+     clock.advance(20)
+     window.hit(2)
+-    assert window.state() == {'kind': 'fixed', 'limit': 5, 'remaining': 3, 'reset_in': 40.0}
++    assert window.state() == {'kind': 'fixed', 'limit': 5, 'remaining': 3, 'reset_at': 60.0}
+ 
+ 
+ def test_sliding_window_frees_oldest_first():
+@@ -44,7 +44,7 @@ def test_sliding_window_frees_oldest_first():
+     assert window.hit().retry_after == 6000
+     clock.advance(6)
+     assert window.hit().allowed
+-    assert window.state()['reset_in'] == 10
++    assert window.state()['reset_at'] == 20
+ 
+ 
+ def test_bucket_refills_continuously():
+@@ -55,7 +55,7 @@ def test_bucket_refills_continuously():
+     assert denied.retry_after == 500
+     clock.advance(1)
+     assert bucket.peek().remaining == 2
+-    assert bucket.state() == {'kind': 'bucket', 'limit': 4, 'remaining': 2, 'reset_in': 1.0}
++    assert bucket.state() == {'kind': 'bucket', 'limit': 4, 'remaining': 2, 'reset_at': 2.0}
+ 
+ 
+ def test_refill_period_is_time_from_empty_to_full():
+diff --git a/tests/test_registry.py b/tests/test_registry.py
+index ea2c282..cd321c6 100644
+--- a/tests/test_registry.py
++++ b/tests/test_registry.py
+@@ -77,7 +77,7 @@ def test_snapshot_lists_keys_in_order():
+     clock.advance(20)
+     first, second = throttle.snapshot()
+     assert first == {'key': 'a', 'policy': '3/minute', 'kind': 'fixed', 'limit': 3, 'remaining': 0,
+-                     'reset_in': 40.0, 'retry_after': 40000}
++                     'reset_at': 60.0, 'retry_after': 40000}
+     assert second['key'] == 'b' and second['remaining'] == 2
+ 
+ 
+diff --git a/tests/test_report.py b/tests/test_report.py
+index cbe7649..fd973d4 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -34,6 +34,6 @@ def test_nearest_limit():
+ 
+ def test_csv():
+     lines = to_csv(busy_throttle()).splitlines()
+-    assert lines[0] == 'key,policy,kind,limit,remaining,reset_in,retry_after'
+-    assert lines[2] == 's:1,2/10s; algorithm=sliding,sliding,2,0,7.5,7500'
++    assert lines[0] == 'key,policy,kind,limit,remaining,reset_at,retry_after'
++    assert lines[2] == 's:1,2/10s; algorithm=sliding,sliding,2,0,10.0,7500'
+     assert to_csv(Throttle(ManualClock())) == ''

@@ -1,0 +1,37 @@
+diff --git a/src/ledgerbook/reports.py b/src/ledgerbook/reports.py
+index 9b8c16a..e457f3a 100644
+--- a/src/ledgerbook/reports.py
++++ b/src/ledgerbook/reports.py
+@@ -45,13 +45,12 @@ class StatementLine:
+ 
+ def trial_balance(ledger):
+     """One row per account with a non-zero balance, in its debit or credit column."""
+-    rows = []
+-    for account in ledger.chart:
+-        # Back from the natural sign to debits positive, which decides the column.
+-        balance = ledger.balance(account.name) if account.debit_normal else -ledger.balance(account.name)
+-        if balance:
+-            rows.append(TrialBalanceRow(account.name, max(balance, 0), max(-balance, 0)))
+-    return TrialBalance(tuple(rows), sum(row.debit for row in rows), sum(row.credit for row in rows))
++    rows = tuple(
++        TrialBalanceRow(name, max(balance, 0), max(-balance, 0))
++        for name, balance in ledger.balances().items()
++        if balance
++    )
++    return TrialBalance(rows, sum(row.debit for row in rows), sum(row.credit for row in rows))
+ 
+ 
+ def render_trial_balance(ledger):
+@@ -103,9 +102,9 @@ def summary(ledger):
+     """Totals per account type, each positive when it carries its normal balance."""
+     totals = {
+         "assets": ledger.subtotal("Assets"),
+-        "liabilities": ledger.subtotal("Liabilities"),
+-        "equity": ledger.subtotal("Equity"),
+-        "income": ledger.subtotal("Income"),
++        "liabilities": -ledger.subtotal("Liabilities"),
++        "equity": -ledger.subtotal("Equity"),
++        "income": -ledger.subtotal("Income"),
+         "expenses": ledger.subtotal("Expenses"),
+     }
+     totals["net_income"] = totals["income"] - totals["expenses"]

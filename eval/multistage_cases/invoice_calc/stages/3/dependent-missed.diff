@@ -1,0 +1,35 @@
+diff --git a/src/invoicekit/export.py b/src/invoicekit/export.py
+index fc933a7..02d9feb 100644
+--- a/src/invoicekit/export.py
++++ b/src/invoicekit/export.py
+@@ -24,7 +24,7 @@ def to_record(invoice):
+                 "category": line.item.category,
+                 "quantity": format_quantity(line.item.quantity),
+                 "unit_price": str(line.item.unit_price),
+-                "rate": str(rate_for(line.item.category, invoice.region, on=invoice.issued)),
++                "rate": str(rate_for(line.item.category, invoice.region)),
+                 "discount": str(line.discount),
+                 "net": str(line.net),
+                 "tax": str(line.tax),
+diff --git a/src/invoicekit/render.py b/src/invoicekit/render.py
+index 6e2a7f4..c6920aa 100644
+--- a/src/invoicekit/render.py
++++ b/src/invoicekit/render.py
+@@ -24,7 +24,7 @@ def _tax_summary(invoice, totals):
+     """(rate, taxed amount, tax) for each rate on the invoice, highest rate first."""
+     by_rate = {}
+     for line in totals.lines:
+-        rate = rate_for(line.item.category, invoice.region, on=invoice.issued)
++        rate = rate_for(line.item.category, invoice.region)
+         base, tax = by_rate.get(rate, (Decimal(0), Decimal(0)))
+         by_rate[rate] = (base + line.net, tax + line.tax)
+     return [(rate, base, tax) for rate, (base, tax) in sorted(by_rate.items(), reverse=True)]
+@@ -42,7 +42,7 @@ def render_text(invoice, width=DEFAULT_WIDTH):
+     rule = "-" * width
+     out = [
+         f"INVOICE {invoice.number}",
+-        f"Issued: {invoice.issued}   Region: {invoice.region}   Currency: {invoice.currency}",
++        f"Issued: {invoice.issued or '-'}   Region: {invoice.region}   Currency: {invoice.currency}",
+         rule,
+         f"{'SKU':<{SKU_COLUMN}}{'Description':<{description_column}}{'Qty':>{QUANTITY_COLUMN}}"
+         f"{'Unit':>{AMOUNT_COLUMN}}{'Amount':>{AMOUNT_COLUMN}}",

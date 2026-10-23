@@ -1,0 +1,29 @@
+diff --git a/src/cronish/cli.py b/src/cronish/cli.py
+index 72d1ec2..45feb79 100644
+--- a/src/cronish/cli.py
++++ b/src/cronish/cli.py
+@@ -120,8 +120,8 @@ def _describe(args):
+ 
+ def _check(args):
+     problems = validate(args.expression)
+-    for field, message in problems:
+-        print(f"{field}: {message}")
++    for problem in problems:
++        print(problem)
+     if problems:
+         return EXIT_INVALID
+     print("ok")
+diff --git a/src/cronish/jobs.py b/src/cronish/jobs.py
+index 58ca689..4f6adb4 100644
+--- a/src/cronish/jobs.py
++++ b/src/cronish/jobs.py
+@@ -33,8 +33,7 @@ def load_jobs(text):
+             raise JobFileError(f"line {number}: invalid job name '{name}'")
+         problems = validate(expression)
+         if problems:
+-            field, message = problems[0]
+-            raise JobFileError(f"line {number}: {field}: {message}")
++            raise JobFileError(f"line {number}: {problems[0]}")
+         if name in seen:
+             raise JobFileError(f"line {number}: duplicate job '{name}'")
+         seen.add(name)

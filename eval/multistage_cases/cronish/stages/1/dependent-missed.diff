@@ -1,0 +1,28 @@
+diff --git a/src/cronish/describe.py b/src/cronish/describe.py
+index 6e9ed83..4731718 100644
+--- a/src/cronish/describe.py
++++ b/src/cronish/describe.py
+@@ -31,7 +31,7 @@ def _time(schedule):
+ def _days(schedule):
+     every_day = len(schedule.days) == DAY.size
+     every_weekday = len(schedule.weekdays) == WEEKDAY.size
+-    weekdays = "on " + join_words(DAY_TITLES[number % 7] for number in schedule.weekdays)
++    weekdays = "on " + join_words(DAY_TITLES[number] for number in schedule.weekdays)
+     days = f"on {_numbered('day', schedule.days)} of the month"
+     if every_day and every_weekday:
+         return "every day"
+diff --git a/src/cronish/planner.py b/src/cronish/planner.py
+index dd1936a..a7174f1 100644
+--- a/src/cronish/planner.py
++++ b/src/cronish/planner.py
+@@ -11,8 +11,8 @@ HORIZON = timedelta(days=round(365.25 * HORIZON_YEARS))
+ 
+ 
+ def weekday_number(day):
+-    """The number a schedule uses for the weekday of `day`: ISO 8601, Monday 1 to Sunday 7."""
+-    return day.isoweekday()
++    """The number a schedule uses for the weekday of `day`; Sunday is 0."""
++    return day.isoweekday() % 7
+ 
+ 
+ def day_matches(schedule, day):

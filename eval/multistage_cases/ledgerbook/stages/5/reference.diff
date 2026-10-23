@@ -1,0 +1,131 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1c5cd26..2d55c01 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Amounts in reports and command output are shown with thousands separators (`1,234,567.89`); typed amounts and journal files are unchanged.
+ - Fix: a posting of zero was accepted and written to the journal; it is now refused, and a journal holding one fails to load at that line.
+ - Transaction and statement dates are `datetime.date` values; dates may be given as `datetime.date` or `YYYY-MM-DD` text.
+ - Statements take an optional start and end date (`--from`/`--to` on the command line) and open with the balance carried in from before the start.
+diff --git a/docs/reference.md b/docs/reference.md
+index 25f2d76..c5b2a95 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -10,7 +10,7 @@ table lists one documented fact per row: its key, its value, and what it means.
+ | `default_currency` | `USD` | Currency of a `Ledger()` or `init` without one |
+ | `amount.unit` | `integer minor units` | What every amount passed to or returned by the library counts |
+ | `amount.input` | `-?digits[.digits]` | Decimal text `parse_amount` accepts; no `+`, no separators |
+-| `amount.grouping` | `none` | Separator `format_amount` puts between groups of thousands |
++| `amount.grouping` | `,` | Separator `format_amount` puts between groups of thousands, e.g. `1,234,567.89`; `grouping=False` leaves it out |
+ | `error.bad_amount` | `invalid amount: {text}` | `AmountError` for text that is not a decimal number |
+ | `error.too_precise` | `too many decimal places for {currency}: {text}` | `AmountError` when the text has more decimals than the currency |
+ | `error.unknown_currency` | `unknown currency: {currency}` | `AmountError` for a code missing from the ISO 4217 table |
+@@ -69,6 +69,7 @@ table lists one documented fact per row: its key, its value, and what it means.
+ | `record.txn` | `{"type": "txn", "date", "description", "postings"}` | A transaction; `date` is YYYY-MM-DD |
+ | `record.posting` | `{"account": <name>, "amount": <amount>}` | One element of `postings` |
+ | `record.posting.amount` | `decimal text in the journal currency` | How a posting amount is written, e.g. `"12.50"`, `"-0.07"`, `"500"` for JPY |
++| `record.posting.amount.grouping` | `none` | Journal amounts never carry thousands separators |
+ | `record.posting.amount.v1` | `integer minor units` | How version 1 journals wrote it; still read, alongside decimal text appended later |
+ | `error.journal` | `line {line}: {problem}` | `JournalError`; any `LedgerError` while replaying is wrapped this way |
+ | `error.amount_text` | `amount must be decimal text: {amount!r}` | Problem reported for a non-text amount in a version 2 journal |
+diff --git a/src/ledgerbook/journal.py b/src/ledgerbook/journal.py
+index fcb1dd1..ce019f6 100644
+--- a/src/ledgerbook/journal.py
++++ b/src/ledgerbook/journal.py
+@@ -31,7 +31,7 @@ def transaction_record(txn, currency):
+         "type": "txn",
+         "date": txn.date.isoformat(),
+         "description": txn.description,
+-        "postings": [{"account": p.account, "amount": format_amount(p.amount, currency)} for p in txn.postings],
++        "postings": [{"account": p.account, "amount": format_amount(p.amount, currency, grouping=False)} for p in txn.postings],
+     }
+ 
+ 
+diff --git a/src/ledgerbook/money.py b/src/ledgerbook/money.py
+index de21d1e..944f87b 100644
+--- a/src/ledgerbook/money.py
++++ b/src/ledgerbook/money.py
+@@ -30,11 +30,16 @@ def parse_amount(text, currency=DEFAULT_CURRENCY):
+     return -minor if sign else minor
+ 
+ 
+-def format_amount(minor, currency=DEFAULT_CURRENCY):
+-    """Write integer minor units as decimal text: 1250 -> "12.50" in USD."""
++def format_amount(minor, currency=DEFAULT_CURRENCY, grouping=True):
++    """Write integer minor units as decimal text: 123456 -> "1,234.56" in USD.
++
++    With grouping=False there are no thousands separators, which is the form
++    parse_amount reads back.
++    """
+     digits = currency_digits(currency)
+     sign = "-" if minor < 0 else ""
+     whole, fraction = divmod(abs(minor), 10**digits)
++    whole = f"{whole:,}" if grouping else str(whole)
+     if not digits:
+         return f"{sign}{whole}"
+     return f"{sign}{whole}.{fraction:0{digits}d}"
+diff --git a/tests/test_journal.py b/tests/test_journal.py
+index 64eab69..44aefd4 100644
+--- a/tests/test_journal.py
++++ b/tests/test_journal.py
+@@ -25,7 +25,9 @@ def test_file_layout(household, tmp_path):
+                                        {"account": "Assets:Bank", "amount": "-200.00"}]
+ 
+ 
+-@pytest.mark.parametrize("currency, minor, text", [("JPY", 500, "500"), ("KWD", 1250, "1.250"), ("USD", -7, "-0.07")])
++@pytest.mark.parametrize("currency, minor, text", [
++    ("JPY", 500, "500"), ("KWD", 1250, "1.250"), ("USD", -7, "-0.07"), ("USD", 123456789, "1234567.89"),
++])
+ def test_amounts_are_written_in_the_journal_currency(tmp_path, currency, minor, text):
+     ledger = Ledger(currency)
+     ledger.open("Assets:Cash")
+diff --git a/tests/test_money.py b/tests/test_money.py
+index ff399ae..85c0c78 100644
+--- a/tests/test_money.py
++++ b/tests/test_money.py
+@@ -34,6 +34,9 @@ def test_parse_amount_rejects_extra_precision():
+     (0, "USD", "0.00"),
+     (500, "JPY", "500"),
+     (1250, "KWD", "1.250"),
++    (123456789, "USD", "1,234,567.89"),
++    (-100000, "USD", "-1,000.00"),
++    (1234567, "JPY", "1,234,567"),
+ ])
+ def test_format_amount(minor, currency, text):
+     assert format_amount(minor, currency) == text
+@@ -42,3 +45,8 @@ def test_format_amount(minor, currency, text):
+ def test_unknown_currency():
+     with pytest.raises(AmountError, match="unknown currency: XXX"):
+         format_amount(1, "XXX")
++
++
++def test_format_amount_without_grouping_reads_back():
++    assert format_amount(-123456789, "USD", grouping=False) == "-1234567.89"
++    assert parse_amount(format_amount(-123456789, "USD", grouping=False)) == -123456789
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 5957def..3b0a27c 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -15,7 +15,7 @@ def test_trial_balance(household):
+ def test_render_trial_balance(household):
+     text = render_trial_balance(household)
+     assert "Liabilities:Card" in text
+-    assert text.splitlines()[-1].split() == ["Total", "5742.50", "5742.50"]
++    assert text.splitlines()[-1].split() == ["Total", "5,742.50", "5,742.50"]
+ 
+ 
+ def test_statement_running_balance(household):
+@@ -53,8 +53,8 @@ def test_statement_end_only_has_no_opening_line(household):
+ 
+ def test_render_statement_range(household):
+     text = render_statement(household, "Assets:Bank", start="2026-02-01")
+-    assert text.splitlines()[3].split() == ["2026-02-01", "Opening", "balance", "4200.00"]
+-    assert text.splitlines()[-1].split() == ["2026-02-02", "Cash", "withdrawal", "-200.00", "4000.00"]
++    assert text.splitlines()[3].split() == ["2026-02-01", "Opening", "balance", "4,200.00"]
++    assert text.splitlines()[-1].split() == ["2026-02-02", "Cash", "withdrawal", "-200.00", "4,000.00"]
+ 
+ 
+ def test_statement_dates_are_date_objects(household):

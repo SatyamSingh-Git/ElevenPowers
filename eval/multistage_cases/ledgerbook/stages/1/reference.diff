@@ -1,0 +1,217 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index dab8572..118598b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Journal files write posting amounts as decimal text in the journal currency (format version 2); version 1 journals still load.
++
+ ## 0.4.0
+ 
+ - `reverse` command and `reversal()` for undoing a posted transaction.
+diff --git a/docs/reference.md b/docs/reference.md
+index b2f9bf1..efd8dd7 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -58,13 +58,16 @@ table lists one documented fact per row: its key, its value, and what it means.
+ | Key | Value | Meaning |
+ | --- | --- | --- |
+ | `journal.encoding` | `UTF-8, one JSON object per line` | Blank lines are skipped |
+-| `journal.version` | `1` | Version written in the header |
++| `journal.version` | `2` | Version written in the header |
++| `journal.readable_versions` | `1, 2` | Versions `load_journal` accepts |
+ | `journal.header` | `{"ledgerbook": <version>, "currency": <code>}` | First line of every journal |
+ | `record.open` | `{"type": "open", "account": <name>}` | Opens an account |
+ | `record.txn` | `{"type": "txn", "date", "description", "postings"}` | A transaction; `date` is YYYY-MM-DD |
+ | `record.posting` | `{"account": <name>, "amount": <amount>}` | One element of `postings` |
+-| `record.posting.amount` | `integer minor units` | How a posting amount is written |
++| `record.posting.amount` | `decimal text in the journal currency` | How a posting amount is written, e.g. `"12.50"`, `"-0.07"`, `"500"` for JPY |
++| `record.posting.amount.v1` | `integer minor units` | How version 1 journals wrote it; still read, alongside decimal text appended later |
+ | `error.journal` | `line {line}: {problem}` | `JournalError`; any `LedgerError` while replaying is wrapped this way |
++| `error.amount_text` | `amount must be decimal text: {amount!r}` | Problem reported for a non-text amount in a version 2 journal |
+ | `error.journal_version` | `unsupported journal version: {version}` | Header with a version this release cannot read |
+ | `error.missing_header` | `missing header` | Problem reported for an empty journal |
+ | `error.missing_field` | `missing field: {name}` | Problem reported for a record without a required field |
+diff --git a/src/ledgerbook/journal.py b/src/ledgerbook/journal.py
+index afaf586..c8eca92 100644
+--- a/src/ledgerbook/journal.py
++++ b/src/ledgerbook/journal.py
+@@ -1,16 +1,17 @@
+ """Writing the journal file.
+ 
+ A journal is UTF-8 text with one JSON object per line: a header first, then
+-"open" and "txn" records in the order they happened. replay.load_journal reads
+-it back.
++"open" and "txn" records in the order they happened. Posting amounts are
++decimal text in the journal's currency ("12.50"); version 1 journals wrote
++integer minor units instead. replay.load_journal reads both.
+ """
+ import json
+ from pathlib import Path
+ 
+ from .errors import LedgerError
+-from .money import DEFAULT_CURRENCY, currency_digits
++from .money import DEFAULT_CURRENCY, currency_digits, format_amount
+ 
+-FORMAT_VERSION = 1
++FORMAT_VERSION = 2
+ 
+ 
+ def _line(record):
+@@ -25,12 +26,12 @@ def open_record(account):
+     return {"type": "open", "account": account}
+ 
+ 
+-def transaction_record(txn):
++def transaction_record(txn, currency):
+     return {
+         "type": "txn",
+         "date": txn.date,
+         "description": txn.description,
+-        "postings": [{"account": p.account, "amount": p.amount} for p in txn.postings],
++        "postings": [{"account": p.account, "amount": format_amount(p.amount, currency)} for p in txn.postings],
+     }
+ 
+ 
+@@ -57,7 +58,7 @@ class JournalWriter:
+         self._append(open_record(account))
+ 
+     def append(self, txn):
+-        self._append(transaction_record(txn))
++        self._append(transaction_record(txn, self.currency))
+ 
+     def _append(self, record):
+         with self.path.open("a", encoding="utf-8", newline="\n") as handle:
+@@ -68,5 +69,5 @@ def write_journal(path, ledger):
+     """Write all of `ledger` to `path`, replacing any file already there."""
+     records = [header_record(ledger.currency)]
+     records += [open_record(account.name) for account in ledger.chart]
+-    records += [transaction_record(txn) for txn in ledger.transactions]
++    records += [transaction_record(txn, ledger.currency) for txn in ledger.transactions]
+     Path(path).write_text("".join(_line(record) for record in records), encoding="utf-8", newline="\n")
+diff --git a/src/ledgerbook/replay.py b/src/ledgerbook/replay.py
+index c25fac3..ecc2445 100644
+--- a/src/ledgerbook/replay.py
++++ b/src/ledgerbook/replay.py
+@@ -9,9 +9,10 @@ from pathlib import Path
+ 
+ from .errors import JournalError, LedgerError
+ from .ledger import Ledger
++from .money import parse_amount
+ from .transactions import make_transaction
+ 
+-SUPPORTED_VERSIONS = (1,)
++SUPPORTED_VERSIONS = (1, 2)
+ 
+ 
+ def read_records(path):
+@@ -45,7 +46,7 @@ def load_journal(path):
+         raise JournalError(number, str(exc)) from None
+     for number, record in records:
+         try:
+-            _apply(ledger, record)
++            _apply(ledger, record, version)
+         except LedgerError as exc:
+             raise JournalError(number, str(exc)) from None
+     return ledger
+@@ -58,12 +59,22 @@ def _field(record, name):
+         raise LedgerError(f"missing field: {name}") from None
+ 
+ 
+-def _apply(ledger, record):
++def _amount(value, version, currency):
++    # A version 1 journal that has been appended to since holds decimal text as well.
++    if version == 1 and type(value) is int:
++        return value
++    if not isinstance(value, str):
++        raise LedgerError(f"amount must be decimal text: {value!r}")
++    return parse_amount(value, currency)
++
++
++def _apply(ledger, record, version):
+     kind = _field(record, "type")
+     if kind == "open":
+         ledger.open(_field(record, "account"))
+     elif kind == "txn":
+-        postings = [(_field(p, "account"), _field(p, "amount")) for p in _field(record, "postings")]
++        postings = [(_field(p, "account"), _amount(_field(p, "amount"), version, ledger.currency))
++                    for p in _field(record, "postings")]
+         ledger.post(make_transaction(_field(record, "date"), _field(record, "description"), postings))
+     else:
+         raise LedgerError(f"unknown record type: {kind}")
+diff --git a/tests/test_journal.py b/tests/test_journal.py
+index b88b01f..44b5184 100644
+--- a/tests/test_journal.py
++++ b/tests/test_journal.py
+@@ -2,7 +2,7 @@ import json
+ 
+ import pytest
+ 
+-from ledgerbook import JournalError, JournalWriter, LedgerError, load_journal, make_transaction, write_journal
++from ledgerbook import JournalError, JournalWriter, Ledger, LedgerError, load_journal, make_transaction, write_journal
+ 
+ 
+ def test_round_trip(household, tmp_path):
+@@ -17,10 +17,23 @@ def test_file_layout(household, tmp_path):
+     path = tmp_path / "books.jsonl"
+     write_journal(path, household)
+     records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+-    assert records[0] == {"ledgerbook": 1, "currency": "USD"}
++    assert records[0] == {"ledgerbook": 2, "currency": "USD"}
+     assert records[1] == {"type": "open", "account": "Assets:Bank"}
+-    assert records[-1]["postings"] == [{"account": "Assets:Cash", "amount": 20000},
+-                                       {"account": "Assets:Bank", "amount": -20000}]
++    assert records[-1]["postings"] == [{"account": "Assets:Cash", "amount": "200.00"},
++                                       {"account": "Assets:Bank", "amount": "-200.00"}]
++
++
++@pytest.mark.parametrize("currency, minor, text", [("JPY", 500, "500"), ("KWD", 1250, "1.250"), ("USD", -7, "-0.07")])
++def test_amounts_are_written_in_the_journal_currency(tmp_path, currency, minor, text):
++    ledger = Ledger(currency)
++    ledger.open("Assets:Cash")
++    ledger.open("Equity:Opening")
++    ledger.record("2026-01-01", "Start", [("Assets:Cash", minor), ("Equity:Opening", -minor)])
++    path = tmp_path / "books.jsonl"
++    write_journal(path, ledger)
++    last = json.loads(path.read_text(encoding="utf-8").splitlines()[-1])
++    assert last["postings"][0]["amount"] == text
++    assert load_journal(path).balance("Assets:Cash") == minor
+ 
+ 
+ def test_writer_appends(tmp_path):
+@@ -42,13 +55,31 @@ def _journal(tmp_path, *records):
+     return path
+ 
+ 
+-HEADER = {"ledgerbook": 1, "currency": "USD"}
++HEADER = {"ledgerbook": 2, "currency": "USD"}
+ OPEN_CASH = {"type": "open", "account": "Assets:Cash"}
+ 
+ 
++def test_version_1_journals_still_load(tmp_path):
++    path = _journal(tmp_path, {"ledgerbook": 1, "currency": "USD"}, OPEN_CASH,
++                    {"type": "open", "account": "Equity:Opening"},
++                    {"type": "txn", "date": "2026-01-01", "description": "Start",
++                     "postings": [{"account": "Assets:Cash", "amount": 1250},
++                                  {"account": "Equity:Opening", "amount": -1250}]})
++    assert load_journal(path).balance("Assets:Cash") == 1250
++    JournalWriter(path, "USD").append(make_transaction("2026-01-02", "More", [("Assets:Cash", 50), ("Equity:Opening", -50)]))
++    assert load_journal(path).balance("Assets:Cash") == 1300
++
++
++def test_version_2_amounts_must_be_text(tmp_path):
++    bad = {"type": "txn", "date": "2026-01-01", "description": "x",
++           "postings": [{"account": "Assets:Cash", "amount": 5}, {"account": "Assets:Cash", "amount": -5}]}
++    with pytest.raises(JournalError, match="line 3: amount must be decimal text: 5"):
++        load_journal(_journal(tmp_path, HEADER, OPEN_CASH, bad))
++
++
+ def test_errors_carry_the_line(tmp_path):
+     bad = {"type": "txn", "date": "2026-01-01", "description": "x",
+-           "postings": [{"account": "Assets:Cash", "amount": 5}, {"account": "Assets:Cash", "amount": -4}]}
++           "postings": [{"account": "Assets:Cash", "amount": "0.05"}, {"account": "Assets:Cash", "amount": "-0.04"}]}
+     with pytest.raises(JournalError, match="line 3: transaction does not balance: off by 1"):
+         load_journal(_journal(tmp_path, HEADER, OPEN_CASH, bad))
+     with pytest.raises(JournalError, match="line 2: unknown record type: close"):

@@ -1,0 +1,83 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1a63cb2..3e3a24b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Descriptions give stepped schedules as an interval: `*/15 * * * *` reads `every 15 minutes, every day`.
+ - Descriptions use a 12-hour clock: `at 9:30 AM` rather than `at 09:30`.
+ - `validate()` returns `(field, message)` pairs and reports every problem, not just the first.
+ - A step of 0, such as `*/0`, is reported as `<field>: step must be at least 1` instead of crashing.
+diff --git a/docs/reference.md b/docs/reference.md
+index 366ba4b..e660439 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -70,7 +70,7 @@ just the problem when no single field is to blame.
+ |---|---|---|
+ | `describe.clock` | `12-hour` | times of day are written like `9:30 AM`; midnight is `12:00 AM` and noon `12:00 PM` |
+ | `describe.exact_times` | `4` | up to this many times of day are spelled out one by one |
+-| `describe.steps` | `listed` | a stepped minute or hour field is described by listing its values |
++| `describe.steps` | `as an interval` | a minute or hour field stepping evenly from 0 through the whole field reads `every 15 minutes` or `every 6 hours` |
+ 
+ ## Jobs files
+ 
+diff --git a/src/cronish/describe.py b/src/cronish/describe.py
+index 39e86d4..5698b68 100644
+--- a/src/cronish/describe.py
++++ b/src/cronish/describe.py
+@@ -19,6 +19,13 @@ def _time(schedule):
+     every_minute, every_hour = len(minutes) == MINUTE.size, len(hours) == HOUR.size
+     if every_minute and every_hour:
+         return "every minute"
++    minute_step, hour_step = _step(minutes, MINUTE), _step(hours, HOUR)
++    if minute_step and every_hour:
++        return f"every {minute_step} minutes"
++    if minute_step:
++        return f"every {minute_step} minutes during {_numbered('hour', hours)}"
++    if hour_step and len(minutes) == 1:
++        return f"every {hour_step} hours" + (f" at minute {minutes[0]}" if minutes[0] else "")
+     if len(minutes) * len(hours) <= EXACT_TIMES:
+         return "at " + join_words(twelve_hour(hour, minute) for hour in hours for minute in minutes)
+     if every_minute:
+@@ -43,6 +50,16 @@ def _days(schedule):
+     return days + joiner + weekdays
+ 
+ 
++def _step(values, spec):
++    """The interval of values that step evenly through the whole field from its start, else None."""
++    if len(values) < 2:
++        return None
++    step = values[1] - values[0]
++    if step > 1 and spec.size % step == 0 and values == tuple(range(spec.low, spec.high + 1, step)):
++        return step
++    return None
++
++
+ def _numbered(unit, values):
+     label = unit if len(values) == 1 else unit + "s"
+     return f"{label} {join_words(str(value) for value in values)}"
+diff --git a/tests/test_describe.py b/tests/test_describe.py
+index 55bd673..be5c0f9 100644
+--- a/tests/test_describe.py
++++ b/tests/test_describe.py
+@@ -9,9 +9,15 @@ from cronish import describe, parse
+         ("* * * * *", "every minute, every day"),
+         ("30 9 * * *", "at 9:30 AM, every day"),
+         ("0 9,17 * * *", "at 9:00 AM and 5:00 PM, every day"),
+-        ("0 */6 * * *", "at 12:00 AM, 6:00 AM, 12:00 PM and 6:00 PM, every day"),
+-        ("*/15 * * * *", "at minutes 0, 15, 30 and 45 past every hour, every day"),
+-        ("0,30 9-11 * * *", "at minutes 0 and 30 past hours 9, 10 and 11, every day"),
++        ("0 */6 * * *", "every 6 hours, every day"),
++        ("30 */6 * * *", "every 6 hours at minute 30, every day"),
++        ("*/15 * * * *", "every 15 minutes, every day"),
++        ("0,30 * * * *", "every 30 minutes, every day"),
++        ("*/10 9-11 * * mon", "every 10 minutes during hours 9, 10 and 11, on Monday"),
++        ("*/7 * * * *", "at minutes 0, 7, 14, 21, 28, 35, 42, 49 and 56 past every hour, every day"),
++        ("5/15 * * * *", "at minutes 5, 20, 35 and 50 past every hour, every day"),
++        ("0,30 9-11 * * *", "every 30 minutes during hours 9, 10 and 11, every day"),
++        ("0,20 9-11 * * *", "at minutes 0 and 20 past hours 9, 10 and 11, every day"),
+         ("* 9 * * *", "every minute during hour 9, every day"),
+         ("0 10 * * sun", "at 10:00 AM, on Sunday"),
+         ("30 9 * * mon-fri", "at 9:30 AM, on Monday, Tuesday, Wednesday, Thursday and Friday"),

@@ -1,0 +1,114 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0083dca..720f4eb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Upcoming runs start strictly after now: a run at exactly now is no longer listed first.
+ - Weekdays are numbered as in ISO 8601: 1 is Monday and 7 is Sunday. 0 is now out of range.
+ - `cronish fields` shows the values each field of an expression selects.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 191876c..9117ed4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -34,7 +34,7 @@ An expression may instead be one of these names, in any case.
+ | `count` | `5` | runs listed by `next_runs`, `upcoming` and `--count` when no count is given |
+ | `max_count` | `100` | the most runs one call may ask for |
+ | `horizon_years` | `5` | how far ahead, or back, the planner searches before giving up |
+-| `first_run` | `at or after now` | where `next_runs` and `upcoming` start; a run in the minute `now` falls exactly on is listed |
++| `first_run` | `after now` | where `next_runs` and `upcoming` start; a run in the minute `now` falls exactly on is not listed |
+ | `last_run` | `at or before now` | what `previous_run` and `cronish last` return |
+ | `window` | `start inclusive, end exclusive` | the window `runs_between`, `overlaps` and `cronish between` use |
+ | `day_rule` | `either when both restricted` | when day and weekday are both restricted, a day matching either one runs |
+diff --git a/src/cronish/jobs.py b/src/cronish/jobs.py
+index e9217bf..4f6adb4 100644
+--- a/src/cronish/jobs.py
++++ b/src/cronish/jobs.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass
+ import re
+ 
+ from .expression import Schedule, parse
+-from .planner import DEFAULT_COUNT, next_runs, runs_between
++from .planner import DEFAULT_COUNT, matches, next_runs, runs_between
+ from .validate import validate
+ 
+ COMMENT = "#"
+@@ -43,8 +43,7 @@ def load_jobs(text):
+ 
+ def due_jobs(jobs, now):
+     """Names of the jobs that run in the minute containing `now`, in file order."""
+-    minute = now.replace(second=0, microsecond=0)
+-    return [job.name for job in jobs if next_runs(job.schedule, minute, 1) == [minute]]
++    return [job.name for job in jobs if matches(job.schedule, now)]
+ 
+ 
+ def upcoming(jobs, now, count=DEFAULT_COUNT):
+diff --git a/src/cronish/planner.py b/src/cronish/planner.py
+index dd1936a..9152f7a 100644
+--- a/src/cronish/planner.py
++++ b/src/cronish/planner.py
+@@ -26,13 +26,16 @@ def day_matches(schedule, day):
+     return in_days or in_weekdays
+ 
+ 
++def matches(schedule, moment):
++    """Whether the schedule runs in the minute containing `moment`."""
++    return moment.hour in schedule.hours and moment.minute in schedule.minutes and day_matches(schedule, moment)
++
++
+ def next_runs(schedule, now, count=DEFAULT_COUNT):
+-    """The next `count` runs at or after `now`, earliest first."""
++    """The next `count` runs strictly after `now`, earliest first."""
+     if not 1 <= count <= MAX_COUNT:
+         raise ScheduleError(None, f"count must be between 1 and {MAX_COUNT}")
+-    start = now.replace(second=0, microsecond=0)
+-    if start < now:
+-        start += timedelta(minutes=1)
++    start = now.replace(second=0, microsecond=0) + timedelta(minutes=1)
+     runs = list(islice(_forward(schedule, start), count))
+     if not runs:
+         raise ScheduleError(None, f"no run within {HORIZON_YEARS} years")
+diff --git a/tests/test_jobs.py b/tests/test_jobs.py
+index 0e732d7..30353a6 100644
+--- a/tests/test_jobs.py
++++ b/tests/test_jobs.py
+@@ -44,6 +44,19 @@ def test_due_jobs_in_the_current_minute():
+     assert due_jobs(jobs, datetime(2024, 3, 11, 9, 31)) == ["tick"]
+ 
+ 
++def test_due_jobs_at_exactly_the_scheduled_minute():
++    jobs = load_jobs("daily 0 9 * * *")
++    assert due_jobs(jobs, datetime(2024, 3, 6, 9, 0)) == ["daily"]
++
++
++def test_upcoming_starts_after_now():
++    jobs = load_jobs("a 0 9 * * *\nb 30 9 * * *")
++    assert upcoming(jobs, datetime(2024, 3, 6, 9, 0), 2) == [
++        (datetime(2024, 3, 6, 9, 30), "b"),
++        (datetime(2024, 3, 7, 9, 0), "a"),
++    ]
++
++
+ def test_upcoming_merges_jobs():
+     jobs = load_jobs(JOBS)[:2]
+     assert upcoming(jobs, datetime(2024, 3, 6, 10, 17), 3) == [
+diff --git a/tests/test_planner.py b/tests/test_planner.py
+index 3927cea..577d9ec 100644
+--- a/tests/test_planner.py
++++ b/tests/test_planner.py
+@@ -32,9 +32,10 @@ def test_default_count_starts_at_the_next_whole_minute():
+     assert runs[0] == datetime(2024, 3, 6, 10, 18)
+ 
+ 
+-def test_a_run_exactly_at_now_is_listed():
++def test_a_run_exactly_at_now_is_not_listed():
+     now = datetime(2024, 3, 6, 9, 0)
+-    assert next_runs(parse("0 9 * * *"), now, 1) == [now]
++    assert next_runs(parse("0 9 * * *"), now, 1) == [datetime(2024, 3, 7, 9, 0)]
++    assert next_runs(parse("* * * * *"), now, 1) == [datetime(2024, 3, 6, 9, 1)]
+ 
+ 
+ def test_day_and_weekday_both_restricted_means_either():

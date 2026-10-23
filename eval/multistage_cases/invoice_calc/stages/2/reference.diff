@@ -1,0 +1,57 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1bd1706..f6852f0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: UK food and books were charged 20% VAT; both are zero-rated.
+ - Quantities may be fractional, down to 0.01 with at most two decimal places (hours of services, say).
+   Printed invoices and exported records show them as decimals.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index d6be244..f43d4e0 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -87,8 +87,8 @@ each line's amount after discounts.
+ | `rate.DE.digital.2021-01-01` | `19%` | |
+ | `rate.DE.services.2021-01-01` | `19%` | |
+ | `rate.GB.standard.2011-01-04` | `20%` | |
+-| `rate.GB.food.2011-01-04` | `20%` | |
+-| `rate.GB.books.2011-01-04` | `20%` | |
++| `rate.GB.food.2011-01-04` | `0%` | Zero-rated. |
++| `rate.GB.books.2011-01-04` | `0%` | Zero-rated. |
+ | `rate.GB.digital.2011-01-04` | `20%` | |
+ | `rate.GB.services.2011-01-04` | `20%` | |
+ | `rate.JP.standard.2019-10-01` | `10%` | |
+diff --git a/src/invoicekit/tax.py b/src/invoicekit/tax.py
+index aa67fde..7a0864d 100644
+--- a/src/invoicekit/tax.py
++++ b/src/invoicekit/tax.py
+@@ -25,8 +25,8 @@ RATES = {
+     },
+     "GB": {
+         "standard": [("2011-01-04", "20")],
+-        "food": [("2011-01-04", "20")],
+-        "books": [("2011-01-04", "20")],
++        "food": [("2011-01-04", "0")],
++        "books": [("2011-01-04", "0")],
+         "digital": [("2011-01-04", "20")],
+         "services": [("2011-01-04", "20")],
+     },
+diff --git a/tests/test_tax.py b/tests/test_tax.py
+index fb8101e..8166ba4 100644
+--- a/tests/test_tax.py
++++ b/tests/test_tax.py
+@@ -28,3 +28,10 @@ def test_line_tax_is_rounded_to_the_currency():
+ def test_format_rate():
+     assert format_rate(Decimal("8.875")) == "8.875%"
+     assert format_rate(Decimal("10")) == "10%"
++
++
++def test_uk_food_and_books_are_zero_rated():
++    assert rate_for("food", "GB") == Decimal(0)
++    assert rate_for("books", "GB") == Decimal(0)
++    assert rate_for("standard", "GB") == Decimal(20)
++    assert line_tax(Decimal("12.40"), "food", "GB", "GBP", "half-up") == Decimal("0.00")

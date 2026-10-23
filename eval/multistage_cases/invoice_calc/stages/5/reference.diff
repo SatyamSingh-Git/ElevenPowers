@@ -1,0 +1,152 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7c7dcc5..a548b24 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Printed invoices show negative amounts in parentheses, ($12.00); `render_text(..., negatives="minus")`
++  keeps the minus sign.
+ - Exported records carry amounts as integers in the currency's minor units (cents, yen, fils)
+   instead of decimal strings, on the record and on each line.
+ - Tax uses the rates in force on the invoice's issue date, which is now required.
+diff --git a/docs/reference.md b/docs/reference.md
+index a1a1e27..3850eec 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -67,7 +67,8 @@ Read from `src/invoicekit/_generated.py`. The value is the number of minor units
+ | `KWD` | `3` | KD 1,234.500 |
+ | `USD` | `2` | $1,234.50 |
+ 
+-Negative amounts are printed with a minus sign before the symbol: `-$12.00`.
++Negative amounts are printed with a minus sign before the symbol, `-$12.00`,
++except on the printed invoice, which puts them in parentheses by default: `($12.00)`.
+ 
+ ## Tax rates
+ 
+@@ -109,13 +110,14 @@ with `no {category} rate for {region} on {date}`.
+ 
+ ## Printed invoice
+ 
+-`render_text(invoice, width=64)` returns the invoice as plain text: a heading,
++`render_text(invoice, width=64, negatives="parentheses")` returns the invoice as plain text: a heading,
+ one row per line item (with its discount underneath when it has one), then
+ subtotal, discount, one tax row per rate and the total.
+ 
+ | Option | Default | Meaning |
+ |---|---|---|
+ | `width` | `64` | Characters per row, at least 56. |
++| `negatives` | `parentheses` | How discounts and other negative amounts are shown: `parentheses` for ($12.00), `minus` for -$12.00. |
+ 
+ ## Exported records
+ 
+@@ -143,7 +145,8 @@ currency's minor units: `1234` is $12.34, ¥1,234 or KD 1.234. A line's
+ `summarize(records)` adds exported records up by region and currency and
+ returns one `LedgerRow` per pair (`region`, `currency`, `invoices`,
+ `subtotal`, `discount`, `tax`, `total`), sorted by region then currency.
+-`render_ledger(rows)` prints them as a table, discounts as negative amounts.
++`render_ledger(rows)` prints them as a table, discounts as negative amounts
++with a minus sign.
+ 
+ ## Errors
+ 
+@@ -171,3 +174,4 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+ | `unknown currency: {code}` | `MoneyError` | |
+ | `amounts must be strings or integers, not float` | `MoneyError` | |
+ | `width must be at least 56` | `ValueError` | `render_text` was given a narrower width. |
++| `negatives must be parentheses or minus` | `ValueError` | `render_text` was given another style. |
+diff --git a/src/invoicekit/money.py b/src/invoicekit/money.py
+index 8f051cd..22b4938 100644
+--- a/src/invoicekit/money.py
++++ b/src/invoicekit/money.py
+@@ -56,11 +56,14 @@ def quantize(amount, currency, rounding=DEFAULT_ROUNDING):
+     return amount.quantize(step, rounding=rounding_mode(rounding))
+ 
+ 
+-def format_money(amount, currency):
++def format_money(amount, currency, negatives="minus"):
++    """Negative amounts as -$12.00, or as ($12.00) with negatives="parentheses"."""
+     symbol, places = currency_info(currency)
+     amount = quantize(amount, currency)
+-    sign = "-" if amount < 0 else ""
+-    return f"{sign}{symbol}{abs(amount):,.{places}f}"
++    text = f"{symbol}{abs(amount):,.{places}f}"
++    if amount >= 0:
++        return text
++    return f"({text})" if negatives == "parentheses" else f"-{text}"
+ 
+ 
+ def to_minor_units(amount, currency):
+diff --git a/src/invoicekit/render.py b/src/invoicekit/render.py
+index 6e2a7f4..ce1769c 100644
+--- a/src/invoicekit/render.py
++++ b/src/invoicekit/render.py
+@@ -7,6 +7,7 @@ from .tax import format_rate, rate_for
+ 
+ DEFAULT_WIDTH = 64
+ MIN_WIDTH = 56
++NEGATIVE_STYLES = ("parentheses", "minus")
+ SKU_COLUMN = 10
+ QUANTITY_COLUMN = 8
+ AMOUNT_COLUMN = 13
+@@ -30,13 +31,15 @@ def _tax_summary(invoice, totals):
+     return [(rate, base, tax) for rate, (base, tax) in sorted(by_rate.items(), reverse=True)]
+ 
+ 
+-def render_text(invoice, width=DEFAULT_WIDTH):
++def render_text(invoice, width=DEFAULT_WIDTH, negatives="parentheses"):
+     if width < MIN_WIDTH:
+         raise ValueError(f"width must be at least {MIN_WIDTH}")
++    if negatives not in NEGATIVE_STYLES:
++        raise ValueError("negatives must be parentheses or minus")
+     totals = compute(invoice)
+ 
+     def money(amount):
+-        return format_money(amount, invoice.currency)
++        return format_money(amount, invoice.currency, negatives)
+ 
+     description_column = width - SKU_COLUMN - QUANTITY_COLUMN - 2 * AMOUNT_COLUMN
+     rule = "-" * width
+diff --git a/tests/test_money.py b/tests/test_money.py
+index 40a94e8..8cd0110 100644
+--- a/tests/test_money.py
++++ b/tests/test_money.py
+@@ -45,3 +45,8 @@ def test_unknown_currency():
+ def test_minor_units(amount, currency, units):
+     assert to_minor_units(Decimal(amount), currency) == units
+     assert from_minor_units(units, currency) == Decimal(amount)
++
++
++def test_format_money_in_parentheses():
++    assert format_money(Decimal("-1234.5"), "USD", negatives="parentheses") == "($1,234.50)"
++    assert format_money(Decimal("12"), "USD", negatives="parentheses") == "$12.00"
+diff --git a/tests/test_render.py b/tests/test_render.py
+index e2a4a2b..57f02fc 100644
+--- a/tests/test_render.py
++++ b/tests/test_render.py
+@@ -20,7 +20,8 @@ def test_render_text():
+     assert "Issued: 2026-03-15" in lines[1]
+     assert any(line.startswith("W-100") and line.endswith("$59.97") for line in lines)
+     assert lines[-1].startswith("Total") and lines[-1].endswith("$105.04")
+-    assert any(line.startswith("Discount") and line.endswith("-$5.00") for line in lines)
++    assert any(line.startswith("Discount") and line.endswith("($5.00)") for line in lines)
++    assert "-$" not in text
+     assert any(line.startswith("Tax 8.875% on $57.11") for line in lines)
+     assert all(len(line) <= 64 for line in lines)
+ 
+@@ -40,3 +41,14 @@ def test_render_fractional_quantity():
+                                                        "unit_price": "80.00", "category": "services"}]})
+     row = next(line for line in render_text(invoice).splitlines() if line.startswith("SV-2"))
+     assert row.split()[-3:] == ["1.5", "$80.00", "$120.00"]
++
++
++def test_render_negatives_with_a_minus_sign():
++    text = render_text(invoice_from_dict(INVOICE), negatives="minus")
++    assert any(line.startswith("Discount") and line.endswith("-$5.00") for line in text.splitlines())
++    assert "(" not in text
++
++
++def test_render_negatives_must_be_known():
++    with pytest.raises(ValueError, match="negatives must be parentheses or minus"):
++        render_text(invoice_from_dict(INVOICE), negatives="red")

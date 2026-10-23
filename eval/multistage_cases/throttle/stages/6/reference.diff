@@ -1,0 +1,122 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c7f95c5..018963c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Default `max_keys` raised from 1000 to 10000; `summarise()` reports `evicted`, the number of keys evicted to stay under the cap.
+ - Clocks are read with `monotonic()` instead of `now()`, so the `time` module can be passed as a clock. `ManualClock.now()` is now `ManualClock.monotonic()`.
+ - Limiter state and snapshots carry `reset_at`, the clock time the limiter is full again, in place of the relative `reset_in`.
+ - Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises `ValueError: cost N exceeds limit M` and spends nothing.
+diff --git a/docs/reference.md b/docs/reference.md
+index 912533f..b8fc78c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -16,7 +16,7 @@
+ | Fact | Value | Meaning |
+ |---|---|---|
+ | `throttle.default_policy` | `60/minute` | Policy for keys that match no pattern. |
+-| `throttle.max_keys` | `1000` | Keys tracked at once before eviction. |
++| `throttle.max_keys` | `10000` | Keys tracked at once before eviction. |
+ | `throttle.eviction` | `least recently used key` | Which key is forgotten when `max_keys` is reached. |
+ | `throttle.pattern` | `exact key, or prefix ending in *; longest pattern wins` | How `set_policy` patterns match keys. |
+ | `clock.read` | `clock.monotonic()` | How limiters and reports read the current time, in seconds, from the clock they are given; the `time` module itself qualifies. |
+@@ -54,7 +54,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
+ |---|---|---|
+ | `report.columns` | `key, policy, remaining, retry, resets` | Columns of `render_table`; remaining is shown as `left/limit`. |
+ | `report.empty_wait` | `-` | Shown in `retry` and `resets` when there is nothing to wait for. |
+-| `report.summary` | `keys, exhausted, busiest` | Fields of `summarise()`. |
++| `report.summary` | `keys, exhausted, busiest, evicted` | Fields of `summarise()`; `evicted` counts keys dropped to stay under `max_keys` since the Throttle was made. |
+ | `report.csv` | `one row per snapshot entry, columns in snapshot order` | Output of `to_csv()`; empty when no keys are tracked. |
+ | `duration.format` | `250ms below 1s, 1.5s below 1m, then 1h2m3s` | How waits are written in reports and messages. |
+ 
+diff --git a/src/throttle/registry.py b/src/throttle/registry.py
+index 587e727..42355f8 100644
+--- a/src/throttle/registry.py
++++ b/src/throttle/registry.py
+@@ -25,7 +25,7 @@ class Throttle:
+     recently used key is forgotten.
+     """
+ 
+-    def __init__(self, clock, default='60/minute', max_keys=1000):
++    def __init__(self, clock, default='60/minute', max_keys=10_000):
+         if max_keys < 1:
+             raise ValueError(f'max_keys must be at least 1: {max_keys}')
+         self.clock = clock
+@@ -33,6 +33,7 @@ class Throttle:
+         self.max_keys = max_keys
+         self._patterns = {}
+         self._limiters = OrderedDict()
++        self.evicted = 0
+ 
+     def set_policy(self, pattern, policy):
+         self._patterns[pattern] = _policy(policy)
+@@ -64,6 +65,7 @@ class Throttle:
+             return self._limiters[key][1]
+         if len(self._limiters) >= self.max_keys:
+             self._limiters.popitem(last=False)
++            self.evicted += 1
+         policy = self.policy_for(key)
+         limiter = build_limiter(policy, self.clock)
+         self._limiters[key] = (policy, limiter)
+diff --git a/src/throttle/report.py b/src/throttle/report.py
+index 9c384aa..f9ca726 100644
+--- a/src/throttle/report.py
++++ b/src/throttle/report.py
+@@ -8,7 +8,7 @@ COLUMNS = ('key', 'policy', 'remaining', 'retry', 'resets')
+ 
+ 
+ def summarise(throttle):
+-    """Counts over every tracked key, and the key closest to its limit."""
++    """Counts over every tracked key, the key closest to its limit, and keys evicted so far."""
+     entries = throttle.snapshot()
+     busiest = None
+     if entries:
+@@ -17,6 +17,7 @@ def summarise(throttle):
+         'keys': len(entries),
+         'exhausted': sum(entry['remaining'] == 0 for entry in entries),
+         'busiest': busiest,
++        'evicted': throttle.evicted,
+     }
+ 
+ 
+diff --git a/tests/test_registry.py b/tests/test_registry.py
+index cd321c6..6cdbfc4 100644
+--- a/tests/test_registry.py
++++ b/tests/test_registry.py
+@@ -6,7 +6,7 @@ from throttle import ManualClock, Policy, RateLimitExceeded, Throttle
+ def test_default_policy_applies_to_unknown_keys():
+     throttle = Throttle(ManualClock())
+     assert throttle.policy_for('anyone') == Policy(60, 60.0)
+-    assert throttle.max_keys == 1000
++    assert throttle.max_keys == 10_000
+ 
+ 
+ def test_longest_pattern_wins():
+@@ -86,3 +86,11 @@ def test_check_refuses_cost_above_limit():
+     with pytest.raises(ValueError, match='^cost 11 exceeds limit 10$'):
+         throttle.check('upload', cost=11)
+     assert throttle.check('upload', cost=10).remaining == 0
++
++
++def test_evictions_are_counted():
++    throttle = Throttle(ManualClock(), max_keys=2)
++    for key in 'abcd':
++        throttle.hit(key)
++    throttle.hit('d')
++    assert throttle.evicted == 2
+diff --git a/tests/test_report.py b/tests/test_report.py
+index fd973d4..9653d2d 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -23,7 +23,7 @@ def test_render_table():
+ 
+ 
+ def test_summarise():
+-    assert summarise(busy_throttle()) == {'keys': 3, 'exhausted': 1, 'busiest': 's:1'}
++    assert summarise(busy_throttle()) == {'keys': 3, 'exhausted': 1, 'busiest': 's:1', 'evicted': 0}
+     assert render_summary(busy_throttle()) == '3 keys, 1 exhausted, busiest: s:1'
+     assert render_summary(Throttle(ManualClock())) == 'no keys tracked'
+ 

@@ -1,0 +1,189 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8147d99..c0f5363 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Transaction and statement dates are `datetime.date` values; dates may be given as `datetime.date` or `YYYY-MM-DD` text.
+ - Statements take an optional start and end date (`--from`/`--to` on the command line) and open with the balance carried in from before the start.
+ - Journal files write posting amounts as decimal text in the journal currency (format version 2); version 1 journals still load.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index c1fec5a..a74ebf1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -30,12 +30,13 @@ table lists one documented fact per row: its key, its value, and what it means.
+ 
+ | Key | Value | Meaning |
+ | --- | --- | --- |
+-| `transaction.date` | `YYYY-MM-DD string` | Type of `Transaction.date` and of `StatementLine.date` |
++| `transaction.date` | `datetime.date` | Type of `Transaction.date` and of `StatementLine.date` |
++| `transaction.date_input` | `datetime.date or YYYY-MM-DD string` | Dates `make_transaction`, `Ledger.record` and `statement` accept; a `datetime` is refused |
+ | `posting.sign` | `debit positive, credit negative` | Sign of a posting amount |
+ | `limit.min_postings` | `2` | Fewest postings in one transaction |
+ | `limit.max_postings` | `16` | Most postings in one transaction |
+ | `limit.description_length` | `120` | Longest description, in characters |
+-| `error.bad_date` | `invalid date: {value}` | `LedgerError` for a date that is not a real YYYY-MM-DD date |
++| `error.bad_date` | `invalid date: {value}` | `LedgerError` for anything that is neither a `datetime.date` nor a real YYYY-MM-DD date |
+ | `error.description` | `description must be 1 to 120 characters` | `LedgerError` for an empty or overlong description |
+ | `error.too_few_postings` | `transaction needs at least 2 postings` | `LedgerError` |
+ | `error.too_many_postings` | `transaction has more than 16 postings` | `LedgerError` |
+diff --git a/src/ledgerbook/journal.py b/src/ledgerbook/journal.py
+index c8eca92..fcb1dd1 100644
+--- a/src/ledgerbook/journal.py
++++ b/src/ledgerbook/journal.py
+@@ -29,7 +29,7 @@ def open_record(account):
+ def transaction_record(txn, currency):
+     return {
+         "type": "txn",
+-        "date": txn.date,
++        "date": txn.date.isoformat(),
+         "description": txn.description,
+         "postings": [{"account": p.account, "amount": format_amount(p.amount, currency)} for p in txn.postings],
+     }
+diff --git a/src/ledgerbook/reports.py b/src/ledgerbook/reports.py
+index ec55145..22ea7f5 100644
+--- a/src/ledgerbook/reports.py
++++ b/src/ledgerbook/reports.py
+@@ -1,8 +1,9 @@
+ """Reports over a Ledger: trial balance, account statements and a summary."""
+ from dataclasses import dataclass
++import datetime
+ 
+ from .money import format_amount
+-from .transactions import check_date
++from .transactions import as_date
+ 
+ TOTAL_LABEL = "Total"
+ OPENING_LABEL = "Opening balance"
+@@ -36,7 +37,7 @@ class TrialBalance:
+ 
+ @dataclass(frozen=True)
+ class StatementLine:
+-    date: str
++    date: datetime.date
+     description: str
+     amount: int
+     balance: int
+@@ -70,8 +71,8 @@ def statement(ledger, account, start=None, end=None):
+     With a start date the first line is the opening balance carried in from
+     everything before it; that line has no amount.
+     """
+-    start = None if start is None else check_date(start)
+-    end = None if end is None else check_date(end)
++    start = None if start is None else as_date(start)
++    end = None if end is None else as_date(end)
+     postings = ledger.postings(account)
+     lines, running = [], 0
+     if start is not None:
+diff --git a/src/ledgerbook/transactions.py b/src/ledgerbook/transactions.py
+index 30cb275..49a817b 100644
+--- a/src/ledgerbook/transactions.py
++++ b/src/ledgerbook/transactions.py
+@@ -24,7 +24,7 @@ class Posting:
+ 
+ @dataclass(frozen=True)
+ class Transaction:
+-    date: str
++    date: datetime.date
+     description: str
+     postings: tuple
+ 
+@@ -40,15 +40,17 @@ class Transaction:
+         return sum(posting.amount for posting in self.postings if posting.account == account)
+ 
+ 
+-def check_date(value):
+-    """Return `value` if it is a real calendar date written YYYY-MM-DD."""
++def as_date(value):
++    """`value` as a datetime.date; takes a date or a real calendar date written YYYY-MM-DD."""
++    # datetime is a subclass of date, but a time of day has no place in a ledger.
++    if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
++        return value
+     if not isinstance(value, str) or not _ISO_DATE.fullmatch(value):
+         raise LedgerError(f"invalid date: {value}")
+     try:
+-        datetime.date.fromisoformat(value)
++        return datetime.date.fromisoformat(value)
+     except ValueError:
+         raise LedgerError(f"invalid date: {value}") from None
+-    return value
+ 
+ 
+ def make_transaction(date, description, postings):
+@@ -57,7 +59,7 @@ def make_transaction(date, description, postings):
+     Raises LedgerError for a bad date, description or posting count, and
+     UnbalancedError when the amounts do not sum to zero.
+     """
+-    check_date(date)
++    date = as_date(date)
+     if not 1 <= len(description) <= MAX_DESCRIPTION:
+         raise LedgerError(f"description must be 1 to {MAX_DESCRIPTION} characters")
+     postings = tuple(p if isinstance(p, Posting) else Posting(*p) for p in postings)
+diff --git a/tests/test_journal.py b/tests/test_journal.py
+index 44b5184..8eb6d52 100644
+--- a/tests/test_journal.py
++++ b/tests/test_journal.py
+@@ -1,3 +1,4 @@
++import datetime
+ import json
+ 
+ import pytest
+@@ -11,6 +12,7 @@ def test_round_trip(household, tmp_path):
+     again = load_journal(path)
+     assert again.balances() == household.balances()
+     assert again.transactions == household.transactions
++    assert again.transactions[0].date == datetime.date(2026, 1, 1)
+ 
+ 
+ def test_file_layout(household, tmp_path):
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index ea1b242..5957def 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -1,3 +1,5 @@
++import datetime
++
+ from ledgerbook import render_statement, render_trial_balance, statement, summary, trial_balance
+ 
+ 
+@@ -53,3 +55,12 @@ def test_render_statement_range(household):
+     text = render_statement(household, "Assets:Bank", start="2026-02-01")
+     assert text.splitlines()[3].split() == ["2026-02-01", "Opening", "balance", "4200.00"]
+     assert text.splitlines()[-1].split() == ["2026-02-02", "Cash", "withdrawal", "-200.00", "4000.00"]
++
++
++def test_statement_dates_are_date_objects(household):
++    lines = statement(household, "Assets:Bank", start=datetime.date(2026, 1, 31))
++    assert [(l.date, l.balance) for l in lines] == [
++        (datetime.date(2026, 1, 31), 570000),
++        (datetime.date(2026, 1, 31), 420000),
++        (datetime.date(2026, 2, 2), 400000),
++    ]
+diff --git a/tests/test_transactions.py b/tests/test_transactions.py
+index 5ef1cfe..f971dfc 100644
+--- a/tests/test_transactions.py
++++ b/tests/test_transactions.py
+@@ -1,3 +1,5 @@
++import datetime
++
+ import pytest
+ 
+ from ledgerbook import LedgerError, UnbalancedError, make_transaction, reversal
+@@ -14,7 +16,13 @@ def test_unbalanced():
+         make_transaction("2026-03-01", "Lunch", [("Expenses:Food", 1300), ("Assets:Cash", -1200)])
+ 
+ 
+-@pytest.mark.parametrize("date", ["2026-02-30", "26-03-01", "20260301", None])
++def test_dates_become_date_objects():
++    from_text = make_transaction("2026-03-01", "Lunch", [("Expenses:Food", 1), ("Assets:Cash", -1)])
++    from_date = make_transaction(datetime.date(2026, 3, 1), "Lunch", [("Expenses:Food", 1), ("Assets:Cash", -1)])
++    assert from_text.date == from_date.date == datetime.date(2026, 3, 1)
++
++
++@pytest.mark.parametrize("date", ["2026-02-30", "26-03-01", "20260301", None, datetime.datetime(2026, 3, 1, 9, 30)])
+ def test_bad_dates(date):
+     with pytest.raises(LedgerError, match="invalid date"):
+         make_transaction(date, "Lunch", [("Expenses:Food", 1), ("Assets:Cash", -1)])

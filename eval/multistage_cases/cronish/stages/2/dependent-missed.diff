@@ -1,0 +1,23 @@
+diff --git a/src/cronish/jobs.py b/src/cronish/jobs.py
+index 4f6adb4..e9217bf 100644
+--- a/src/cronish/jobs.py
++++ b/src/cronish/jobs.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass
+ import re
+ 
+ from .expression import Schedule, parse
+-from .planner import DEFAULT_COUNT, matches, next_runs, runs_between
++from .planner import DEFAULT_COUNT, next_runs, runs_between
+ from .validate import validate
+ 
+ COMMENT = "#"
+@@ -43,7 +43,8 @@ def load_jobs(text):
+ 
+ def due_jobs(jobs, now):
+     """Names of the jobs that run in the minute containing `now`, in file order."""
+-    return [job.name for job in jobs if matches(job.schedule, now)]
++    minute = now.replace(second=0, microsecond=0)
++    return [job.name for job in jobs if next_runs(job.schedule, minute, 1) == [minute]]
+ 
+ 
+ def upcoming(jobs, now, count=DEFAULT_COUNT):

@@ -1,0 +1,166 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2d55c01..810e7a2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Balances are reported in each account's natural sign: a liability, equity or income account with more credits than debits is now positive.
+ - Amounts in reports and command output are shown with thousands separators (`1,234,567.89`); typed amounts and journal files are unchanged.
+ - Fix: a posting of zero was accepted and written to the journal; it is now refused, and a journal holding one fails to load at that line.
+ - Transaction and statement dates are `datetime.date` values; dates may be given as `datetime.date` or `YYYY-MM-DD` text.
+diff --git a/docs/reference.md b/docs/reference.md
+index c5b2a95..f72ff97 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -49,10 +49,11 @@ table lists one documented fact per row: its key, its value, and what it means.
+ 
+ | Key | Value | Meaning |
+ | --- | --- | --- |
+-| `balance.sign` | `debit positive` | Sign of `Ledger.balance`, `balances`, `subtotal` and statement balances |
++| `balance.sign` | `natural` | Sign of `Ledger.balance`, `balances`, `subtotal` and statement balances: positive when an account carries its normal balance (debit for assets and expenses, credit for the rest) |
+ | `trial_balance.columns` | `Account, Debit, Credit` | Columns of the rendered trial balance |
+ | `trial_balance.total_label` | `Total` | Label of its last row |
+ | `statement.columns` | `Date, Description, Amount, Balance` | Columns of a rendered statement |
++| `statement.amount_sign` | `debit positive` | Sign of the Amount column; only the Balance column follows `balance.sign` |
+ | `statement.range` | `start and end inclusive` | Dates `statement(ledger, account, start, end)` keeps; either may be omitted |
+ | `statement.opening_label` | `Opening balance` | Description of the first line when a start date is given; it has no amount and carries the balance before the start |
+ | `summary.keys` | `assets, liabilities, equity, income, expenses, net_income` | Keys of `summary()`; each is positive for a normal balance |
+diff --git a/src/ledgerbook/ledger.py b/src/ledgerbook/ledger.py
+index 7cb5069..62bb5a2 100644
+--- a/src/ledgerbook/ledger.py
++++ b/src/ledgerbook/ledger.py
+@@ -7,8 +7,9 @@ from .transactions import make_transaction
+ class Ledger:
+     """Accounts and transactions in a single currency.
+ 
+-    Balances are signed the same way postings are: debits positive, credits
+-    negative. A liability with more credits than debits has a negative balance.
++    Balances are in each account's natural sign: an asset or expense is
++    positive when debits exceed credits, a liability, equity or income account
++    when credits exceed debits. Posting amounts stay debit positive.
+     """
+ 
+     def __init__(self, currency=DEFAULT_CURRENCY):
+@@ -40,16 +41,19 @@ class Ledger:
+         return tuple(self._transactions)
+ 
+     def balance(self, name):
+-        self.chart.get(name)
+-        return self._balances[name]
++        return self._natural(self.chart.get(name))
+ 
+     def balances(self):
+         """Every open account's balance, in account name order."""
+-        return {account.name: self._balances[account.name] for account in self.chart}
++        return {account.name: self._natural(account) for account in self.chart}
+ 
+     def subtotal(self, prefix):
+         """Combined balance of `prefix` and every account below it."""
+-        return sum(self._balances[account.name] for account in self.chart.under(prefix))
++        return sum(self._natural(account) for account in self.chart.under(prefix))
++
++    def _natural(self, account):
++        debits = self._balances[account.name]
++        return debits if account.debit_normal else -debits
+ 
+     def postings(self, name):
+         """(transaction, amount) for each transaction touching `name`, oldest first."""
+diff --git a/src/ledgerbook/reports.py b/src/ledgerbook/reports.py
+index 22ea7f5..9b8c16a 100644
+--- a/src/ledgerbook/reports.py
++++ b/src/ledgerbook/reports.py
+@@ -45,12 +45,13 @@ class StatementLine:
+ 
+ def trial_balance(ledger):
+     """One row per account with a non-zero balance, in its debit or credit column."""
+-    rows = tuple(
+-        TrialBalanceRow(name, max(balance, 0), max(-balance, 0))
+-        for name, balance in ledger.balances().items()
+-        if balance
+-    )
+-    return TrialBalance(rows, sum(row.debit for row in rows), sum(row.credit for row in rows))
++    rows = []
++    for account in ledger.chart:
++        # Back from the natural sign to debits positive, which decides the column.
++        balance = ledger.balance(account.name) if account.debit_normal else -ledger.balance(account.name)
++        if balance:
++            rows.append(TrialBalanceRow(account.name, max(balance, 0), max(-balance, 0)))
++    return TrialBalance(tuple(rows), sum(row.debit for row in rows), sum(row.credit for row in rows))
+ 
+ 
+ def render_trial_balance(ledger):
+@@ -68,19 +69,22 @@ def render_trial_balance(ledger):
+ def statement(ledger, account, start=None, end=None):
+     """Postings to `account` dated `start` to `end` inclusive, with the running balance.
+ 
+-    With a start date the first line is the opening balance carried in from
+-    everything before it; that line has no amount.
++    Amounts keep the posting sign (debits positive); balances are in the
++    account's natural sign, as Ledger.balance reports them. With a start date
++    the first line is the opening balance carried in from everything before
++    it; that line has no amount.
+     """
+     start = None if start is None else as_date(start)
+     end = None if end is None else as_date(end)
++    sign = 1 if ledger.chart.get(account).debit_normal else -1
+     postings = ledger.postings(account)
+     lines, running = [], 0
+     if start is not None:
+-        running = sum(amount for txn, amount in postings if txn.date < start)
++        running = sign * sum(amount for txn, amount in postings if txn.date < start)
+         lines.append(StatementLine(start, OPENING_LABEL, None, running))
+     for txn, amount in postings:
+         if (start is None or txn.date >= start) and (end is None or txn.date <= end):
+-            running += amount
++            running += sign * amount
+             lines.append(StatementLine(txn.date, txn.description, amount, running))
+     return lines
+ 
+@@ -99,9 +103,9 @@ def summary(ledger):
+     """Totals per account type, each positive when it carries its normal balance."""
+     totals = {
+         "assets": ledger.subtotal("Assets"),
+-        "liabilities": -ledger.subtotal("Liabilities"),
+-        "equity": -ledger.subtotal("Equity"),
+-        "income": -ledger.subtotal("Income"),
++        "liabilities": ledger.subtotal("Liabilities"),
++        "equity": ledger.subtotal("Equity"),
++        "income": ledger.subtotal("Income"),
+         "expenses": ledger.subtotal("Expenses"),
+     }
+     totals["net_income"] = totals["income"] - totals["expenses"]
+diff --git a/tests/test_ledger.py b/tests/test_ledger.py
+index f1572a2..35bbd0d 100644
+--- a/tests/test_ledger.py
++++ b/tests/test_ledger.py
+@@ -5,9 +5,10 @@ from ledgerbook import AccountError, Ledger, make_transaction
+ 
+ def test_balances(household):
+     assert household.balance("Assets:Bank") == 400000
+-    assert household.balance("Liabilities:Card") == -4250
++    assert household.balance("Liabilities:Card") == 4250
++    assert household.balance("Income:Salary") == 320000
+     assert household.subtotal("Assets") == 420000
+-    assert sum(household.balances().values()) == 0
++    assert household.subtotal("Expenses") == 154250
+ 
+ 
+ def test_posting_to_an_unopened_account_changes_nothing():
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 3b0a27c..fc53d5d 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -64,3 +64,11 @@ def test_statement_dates_are_date_objects(household):
+         (datetime.date(2026, 1, 31), 420000),
+         (datetime.date(2026, 2, 2), 400000),
+     ]
++
++
++def test_liability_statement_is_in_its_natural_sign(household):
++    household.record("2026-02-10", "Card payment", [("Liabilities:Card", 2000), ("Assets:Bank", -2000)])
++    lines = statement(household, "Liabilities:Card")
++    assert [(l.amount, l.balance) for l in lines] == [(-4250, 4250), (2000, 2250)]
++    opening = statement(household, "Liabilities:Card", start="2026-02-01")[0]
++    assert (opening.description, opening.balance) == ("Opening balance", 4250)

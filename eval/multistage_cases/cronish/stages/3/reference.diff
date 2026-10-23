@@ -1,0 +1,65 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 720f4eb..ef2f3a2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- A step of 0, such as `*/0`, is reported as `<field>: step must be at least 1` instead of crashing.
+ - Upcoming runs start strictly after now: a run at exactly now is no longer listed first.
+ - Weekdays are numbered as in ISO 8601: 1 is Monday and 7 is Sunday. 0 is now out of range.
+ - `cronish fields` shows the values each field of an expression selects.
+diff --git a/docs/reference.md b/docs/reference.md
+index 9117ed4..b0d39af 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -49,6 +49,7 @@ just the problem when no single field is to blame.
+ | `error.fields` | `expression: expected 5 fields, got {count}` | wrong number of fields |
+ | `error.shortcut` | `expression: unknown shortcut '{name}'` | an `@` name that is not a shortcut |
+ | `error.range` | `{field}: value {value} out of range {low}-{high}` | a number outside the field's range |
++| `error.step` | `{field}: step must be at least 1` | a step of 0 |
+ | `error.backwards` | `{field}: range {range} runs backwards` | a range whose start is after its end |
+ | `error.name` | `{field}: unknown name '{name}'` | a word that is not a month or weekday name |
+ | `error.syntax` | `{field}: cannot parse '{text}'` | anything else the field cannot read |
+diff --git a/src/cronish/fields.py b/src/cronish/fields.py
+index 7f9a7fd..8dc094e 100644
+--- a/src/cronish/fields.py
++++ b/src/cronish/fields.py
+@@ -42,6 +42,8 @@ def _expand(part, spec):
+         if not step_text.isdigit():
+             raise ScheduleError(spec.name, f"cannot parse '{part}'")
+         step = int(step_text)
++        if step == 0:
++            raise ScheduleError(spec.name, "step must be at least 1")
+     if body == "*":
+         low, high = spec.low, spec.high
+     elif "-" in body:
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 1796c6d..e90dd7d 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -47,6 +47,10 @@ def test_check(capsys):
+     assert run(capsys, "check", "61 * * * *") == (1, "minute: value 61 out of range 0-59\n", "")
+ 
+ 
++def test_check_reports_a_zero_step(capsys):
++    assert run(capsys, "check", "*/0 * * * *") == (1, "minute: step must be at least 1\n", "")
++
++
+ def test_fields(capsys):
+     assert run(capsys, "fields", "*/30 9 * * mon")[1] == (
+         "minute: 0, 30\nhour: 9\nday: every value\nmonth: every value\nweekday: 1\n"
+diff --git a/tests/test_expression.py b/tests/test_expression.py
+index 53b1eac..c6f05f3 100644
+--- a/tests/test_expression.py
++++ b/tests/test_expression.py
+@@ -69,6 +69,8 @@ def test_shortcuts_ignore_case_and_keep_their_text():
+         ("5-1 * * * *", "minute: range 5-1 runs backwards"),
+         ("* 1x * * *", "hour: cannot parse '1x'"),
+         ("*/x * * * *", "minute: cannot parse '*/x'"),
++        ("*/0 * * * *", "minute: step must be at least 1"),
++        ("0 1-10/0 * * *", "hour: step must be at least 1"),
+     ],
+ )
+ def test_errors_name_the_field(text, message):
