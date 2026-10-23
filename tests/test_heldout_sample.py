@@ -1,6 +1,7 @@
 """Commit sampling is a pure function of the frozen rule; mining gains a cutoff and an interpreter."""
 import json
 import os
+from pathlib import Path
 import subprocess
 import sys
 
@@ -305,16 +306,17 @@ def test_repositories_that_share_a_name_get_their_own_directories(tmp_path):
 def test_resume_refuses_a_changed_repository_list(tmp_path):
     import subprocess
     import sys
+    root = Path(__file__).resolve().parents[1]
     repos, out = tmp_path / "repos.json", tmp_path / "work" / "corpus.json"
     rows = {"rows": [{"repo": "https://github.com/one/lib", "verdict": "accepted"}]}
     repos.write_text(json.dumps(rows), encoding="utf8")
     command = [sys.executable, "-m", "eval.heldout_sample", "--repos", str(repos), "--work", str(tmp_path / "work"),
                "--out", str(out), "--min-free-gb", "1000000"]
-    first = subprocess.run(command, capture_output=True, text=True, cwd="E:/ElevenPowers")
+    first = subprocess.run(command, capture_output=True, text=True, cwd=root)
     assert first.returncode == 1 and out.exists()
     rows["rows"].append({"repo": "https://github.com/two/lib", "verdict": "accepted"})
     repos.write_text(json.dumps(rows), encoding="utf8")
-    second = subprocess.run(command, capture_output=True, text=True, cwd="E:/ElevenPowers")
+    second = subprocess.run(command, capture_output=True, text=True, cwd=root)
     assert second.returncode != 0 and "different rule values" in second.stderr
 
 
