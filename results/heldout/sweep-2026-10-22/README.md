@@ -46,6 +46,11 @@ and 69 of the 70 non-VACUOUS ones did. Resolved ordinary patches added a test in
 
 - One model (Sonnet 5.5, medium), one host (Claude Code), Python only, 12
   repositories, small fixes (median 10 changed lines). Not a population estimate.
+- The ordinary arm is plain Claude Code. The launcher reads project and local
+  settings only, and every run's init event lists Claude Code's built-in plugins and
+  nothing else, so no user plugin such as superpowers was loaded in either arm
+  (checked 2026-10-23). This compares Claude Code with and without ElevenPowers,
+  not superpowers with and without it.
 - VACUOUS is this project's measure of whether the repository's tests pin the
   change; it is not correctness. Resolved is graded against the upstream fix's tests.
 - The frame excludes projects whose packages import build-generated modules, whose

@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**2026-10-23 — Two $0 readings of the held-out sweep; multi-stage v2 designed.**
+The oracle gap is still unsettled (+6.7 ordinary, +4.2 assisted, each from 3-5
+disagreeing tasks), but counting only resolved and tested candidates, best-of-3
+ordinary covers 17.5% of tasks against 47.5% for a blind assisted pick. Replayed
+edit by edit, 1 of 85 runs held a better earlier state than it submitted (P24 does
+not hold on small fixes). The sweep's launcher loaded no user plugins, so it
+compared plain Claude Code with ElevenPowers, not superpowers with and without it.
+Next: the [multi-stage v2 design](docs/superpowers/specs/2026-10-23-multistage-field-claims-design.md)
+tests the field report's two claims (docs kept current, no fix that breaks a
+dependent part) with superpowers in both arms, behind a no-model rehearsal, a
+power simulation and a headroom pilot; nothing runs before the user's go.
+See [journey 90](journey/90-nothing-better-was-left-behind.md).
+
 **2026-10-23 — Held-out vacuity by arm: assisted patches far less often VACUOUS.**
 On 40 independently sourced tasks from 12 Python repositories (Sonnet 5.5 medium,
 240 sealed never-retried runs, analysis committed before any run), resolved

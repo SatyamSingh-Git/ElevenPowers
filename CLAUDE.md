@@ -133,9 +133,12 @@ only by a single test call (`journey/45`):
   (*"version 2.1.280"* required). Check `claude --version` against the model.
 - `--bare` would keep this machine's globally installed plugins out of the
   agents, but it **requires `ANTHROPIC_API_KEY`**, and this machine authenticates
-  by OAuth — every run dies with *"Not logged in"*. So agent runs carry the user's
-  plugins (superpowers included). Both arms get them equally; record it as a
-  condition.
+  by OAuth — every run dies with *"Not logged in"*. So that harness's runs carried
+  the user's plugins (superpowers included). The subscription launcher
+  (`eval/subscription.py`, used by the held-out sweep) passes `--setting-sources
+  project,local` instead, and its agents load **no** user plugins: the sweep's
+  init events list Claude Code's built-ins only (checked 2026-10-23). Either way,
+  read the init event and record the plugins as a condition.
 - The harness caches one repository zip per task in the **parent** directory.
   Two arms of the same task under one parent race for it and die at $0. Give
   each arm its own parent.
@@ -167,7 +170,10 @@ Sonnet 5.5 at medium effort averaged **$0.079 and 85 s wall per run** (240 runs,
 $18.91; assisted runs take about 3x the model time of ordinary ones). That sweep,
 vacuity by arm on held-out tasks, is done
 ([`results/heldout/sweep-2026-10-22/`](results/heldout/sweep-2026-10-22/README.md)).
-The next experiment worth running is planned and
-**not yet run** in [`results/b6-paired/design.md`](results/b6-paired/design.md)
-— read its warning before shrinking it, because the cheap version reintroduces
-an error `PLAN.md` §10 has already withdrawn once.
+The next experiment is designed and **not yet run**:
+[multi-stage v2](docs/superpowers/specs/2026-10-23-multistage-field-claims-design.md),
+testing the field report's docs and dependent-breakage claims with superpowers
+in both arms. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
+is older and was qualified by an audit on 2026-09-19; read its warning before
+shrinking or reviving it, because the cheap version reintroduces an error
+`PLAN.md` §10 has already withdrawn once.
