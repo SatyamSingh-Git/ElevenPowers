@@ -12,16 +12,15 @@ index 6aefa33..e2086cb 100644
  
  - `warden lint` reports duplicate rules.
 diff --git a/docs/reference.md b/docs/reference.md
-index 4aeb018..a42189d 100644
+index e4eba64..f365990 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -6,7 +6,8 @@
+@@ -6,7 +6,7 @@
  | --- | --- | --- |
  | `syntax.comment` | `#` | a line starting with this is ignored |
  | `syntax.role` | `role <name> [inherits <parent>]` | defines a role |
 -| `syntax.rule` | `<effect> <role> <actions> <pattern> [when <condition>]` | one rule per line |
-+| `syntax.rule` | `<effect> <roles> <actions> <pattern> [when <condition>]` | one rule per line |
-+| `syntax.roles_separator` | `,` | between roles in a rule; the rule applies to holders of any of them |
++| `syntax.rule` | `<effect> <roles> <actions> <pattern> [when <condition>]` | one rule per line; `<roles>` is role names separated by commas, and the rule applies to anyone holding any of them |
  | `syntax.default` | `default <effect>` | effect when no rule matches |
  | `syntax.actions_separator` | `,` | between actions in a rule |
  | `effects` | `allow, deny` | the two rule effects |

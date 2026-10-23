@@ -26,9 +26,11 @@ def test_line_amount_is_rounded_to_the_cent():
     assert compute(invoice(line("2.5", "19.99"))).subtotal == Decimal("49.98")
 
 
-@pytest.mark.parametrize("quantity", ["0.01", "10000", 4, "2.50", "7"])
-def test_quantities_in_range_are_accepted(quantity):
-    assert compute(invoice(line(quantity))).lines[0].item.quantity == Decimal(quantity)
+@pytest.mark.parametrize("quantity, subtotal", [
+    ("0.01", "0.10"), ("10000", "100000.00"), (4, "40.00"), ("2.50", "25.00"), ("7", "70.00"),
+])
+def test_quantities_in_range_are_accepted(quantity, subtotal):
+    assert compute(invoice(line(quantity))).subtotal == Decimal(subtotal)
 
 
 @pytest.mark.parametrize("quantity", ["0.125", "1.333", "2.005"])

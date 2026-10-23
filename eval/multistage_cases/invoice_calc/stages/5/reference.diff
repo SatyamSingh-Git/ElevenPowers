@@ -12,7 +12,7 @@ index 7c7dcc5..a548b24 100644
    instead of decimal strings, on the record and on each line.
  - Tax uses the rates in force on the invoice's issue date, which is now required.
 diff --git a/docs/reference.md b/docs/reference.md
-index a1a1e27..3850eec 100644
+index 0c8de4e..b822d5f 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -67,7 +67,8 @@ Read from `src/invoicekit/_generated.py`. The value is the number of minor units
@@ -25,7 +25,7 @@ index a1a1e27..3850eec 100644
  
  ## Tax rates
  
-@@ -109,13 +110,14 @@ with `no {category} rate for {region} on {date}`.
+@@ -107,13 +108,14 @@ with `no {category} rate for {region} on {date}`.
  
  ## Printed invoice
  
@@ -41,7 +41,7 @@ index a1a1e27..3850eec 100644
  
  ## Exported records
  
-@@ -143,7 +145,8 @@ currency's minor units: `1234` is $12.34, ¥1,234 or KD 1.234. A line's
+@@ -141,7 +143,8 @@ currency's minor units: `1234` is $12.34, ¥1,234 or KD 1.234. A line's
  `summarize(records)` adds exported records up by region and currency and
  returns one `LedgerRow` per pair (`region`, `currency`, `invoices`,
  `subtotal`, `discount`, `tax`, `total`), sorted by region then currency.
@@ -51,7 +51,7 @@ index a1a1e27..3850eec 100644
  
  ## Errors
  
-@@ -171,3 +174,4 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+@@ -169,3 +172,4 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
  | `unknown currency: {code}` | `MoneyError` | |
  | `amounts must be strings or integers, not float` | `MoneyError` | |
  | `width must be at least 56` | `ValueError` | `render_text` was given a narrower width. |

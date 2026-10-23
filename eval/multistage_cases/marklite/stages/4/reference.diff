@@ -11,19 +11,17 @@ index cd71886..e3207bd 100644
  - Double quotes in text content are no longer written as `&quot;`; attribute values still escape them.
  - Heading ids and table of contents anchors now start with the `id_prefix` option, `section-` by default.
 diff --git a/docs/reference.md b/docs/reference.md
-index 738d73e..e1ef0d9 100644
+index de0ea0d..bb3b1e6 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -60,7 +60,9 @@ When `line` is set, the message starts with `line {line}: `.
+@@ -60,6 +60,7 @@ When `line` is set, the message starts with `line {line}: `.
  |---|---|---|
  | `max_heading_level` | `6` | `#` to `######`. |
  | `max_input_chars` | `1000000` | Longest input `parse`, `render` and `toc` accept. |
-+| `max_nesting` | `32` | Deepest nesting of block quotes and list items, counted together. |
++| `max_nesting` | `32` | Deepest nesting of block quotes and list items, counted together. Deeper input raises `MarkliteError` with the message `nesting deeper than 32 levels` and the line of the block that goes too deep. |
  | `input_size_error` | `input exceeds 1000000 characters` | Raised for longer input. |
-+| `nesting_error` | `nesting deeper than 32 levels` | Raised with the line of the block that goes too deep. |
  | `toc_level_error` | `toc_max_level must be between 1 and 6` | Raised by `Options`. |
  
- ## Command line
 diff --git a/src/marklite/blocks.py b/src/marklite/blocks.py
 index 6f76cad..256d7c5 100644
 --- a/src/marklite/blocks.py

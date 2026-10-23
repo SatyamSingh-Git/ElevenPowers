@@ -11,10 +11,10 @@ index ef16e7c..51d7b34 100644
  - Audit log records carry `"decision": "allow"` or `"deny"` in place of `"allowed": true/false`. Older logs are not read.
  - A rule can name several roles separated by commas (`allow viewer,auditor read reports/**`); it applies to anyone holding any of them.
 diff --git a/docs/reference.md b/docs/reference.md
-index ae4a769..e217bd0 100644
+index 2dd4aa7..c06dd13 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -38,7 +38,7 @@
+@@ -37,7 +37,7 @@
  
  | key | value | meaning |
  | --- | --- | --- |

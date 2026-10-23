@@ -16,4 +16,4 @@ def test_long_notes_are_refused():
 def test_notes_at_the_limit_are_accepted():
     notes = ("abcd " * 100)[:499] + "z"
     assert len(notes) == 500
-    assert "z" in render_text(invoice_from_dict({**INVOICE, "notes": notes})).split()[-1]
+    assert "abcdz" in render_text(invoice_from_dict({**INVOICE, "notes": notes}))

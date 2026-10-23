@@ -11,7 +11,7 @@ index 5fb5fbf..cd71886 100644
  - Heading ids and table of contents anchors now start with the `id_prefix` option, `section-` by default.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 469fb97..738d73e 100644
+index a73b581..de0ea0d 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -8,7 +8,7 @@ Fields of `marklite.Options`, with their defaults.

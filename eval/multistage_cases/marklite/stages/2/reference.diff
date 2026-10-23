@@ -11,16 +11,15 @@ index e747678..5fb5fbf 100644
  
  ## 0.6.0
 diff --git a/docs/reference.md b/docs/reference.md
-index 714c7ed..469fb97 100644
+index a65035a..a73b581 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -32,7 +32,8 @@ setext headings, tables and HTML blocks are not.
+@@ -32,7 +32,7 @@ setext headings, tables and HTML blocks are not.
  
  | Fact | Value | Meaning |
  |---|---|---|
 -| `escaped_in_text` | `& < > "` | Characters written as entities in text content. |
-+| `escaped_in_text` | `& < >` | Characters written as entities in text content; `"` is left as it is. |
-+| `escaped_in_attributes` | `& < > "` | Characters written as entities in attribute values (`href`, `src`, `alt`, `title`, `id`, `class`). |
++| `escaped_in_text` | `& < >` | Characters written as entities in text content; `"` is left as it is. Attribute values (`href`, `src`, `alt`, `title`, `id`, `class`) escape `"` as `&quot;` too. |
  | `safe_schemes` | `http, https, mailto` | URL schemes kept when `safe_links` is on; URLs without a scheme are always kept. |
  | `unsafe_url` | `#` | What replaces a URL with any other scheme. |
  

@@ -7,56 +7,124 @@
  "changelog": "CHANGELOG.md",
  "stages": [
   {
-   "request": "Services are billed by the hour, so line items need fractional quantities such as 1.5 or 0.25. Please accept quantities with up to two decimal places, given either as a string (\"1.5\") or as an integer; a quantity with more decimal places should be refused with \"quantity has more than 2 decimal places\".\n\nThe smallest allowed quantity becomes 0.01 (the largest stays 10000), so an out-of-range quantity should now say \"quantity must be between 0.01 and 10000\".",
+   "request": "Services are billed by the hour, so line items need fractional quantities such as 1.5 or 0.25; today those are refused with \"quantity must be a whole number\". Please accept quantities with up to two decimal places, given either as a string (\"1.5\") or as an integer. A quantity with more decimal places should raise ItemError(\"quantity has more than 2 decimal places\").\n\nThe smallest allowed quantity becomes 0.01 (the largest stays 10000), so an out-of-range quantity should now raise ItemError(\"quantity must be between 0.01 and 10000\").",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_ledger", "base_render"]
+   "dependent_missed_fails": [
+    "base_ledger",
+    "base_render"
+   ]
   },
   {
-   "request": "Our UK invoices are wrong: food and books lines are charged 20% VAT, but both are zero-rated in the UK, so they should carry no tax at all. The other UK categories are right at 20%.",
+   "request": "Our UK invoices are wrong: food and books lines are charged 20% VAT, but both are zero-rated in the UK, so they should be taxed at 0%. The other UK categories are right at 20%.",
    "kind": "self-contained",
    "bugfix": true,
    "dependent_missed_fails": []
   },
   {
-   "request": "Tax rates change over time, and an invoice must be taxed at the rates in force on its issue date: we re-issue old invoices and they have to come out exactly as before. The first change we need is that from 2027-01-01 Germany's reduced rate for food and books goes up from 7% to 9%; invoices issued before then keep 7%.\n\nSince the rate now depends on it, an invoice without an issue date should be refused with \"invoice issue date is required\".",
+   "request": "Tax rates change over time, and an invoice must be taxed at the rates in force on its issue date: we re-issue old invoices and they have to come out exactly as before. The first change we need is that from 2027-01-01 Germany's reduced rate for food and books goes up from 7% to 9%; invoices issued before then keep 7%.\n\nSince the rate now depends on it, the issue date becomes required: an invoice without one should raise InvoiceError(\"invoice issue date is required\").",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_ledger", "base_render", "s1_fractional_flow"]
+   "dependent_missed_fails": [
+    "base_ledger",
+    "base_render",
+    "s1_fractional_flow"
+   ]
   },
   {
    "request": "Our accounting import rejects exported invoice records because their amounts are strings. Please write every amount in a record as an integer in the currency's minor units instead, so 1234 means $12.34 in dollars, ¥1,234 in yen and KD 1.234 in dinars. That covers the record's subtotal, discount, tax and total, and each line's discount, net, tax and total.",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_ledger", "s1_fractional_flow"]
+   "dependent_missed_fails": [
+    "base_ledger",
+    "s1_fractional_flow"
+   ]
   },
   {
-   "request": "On the printed invoice, negative amounts such as discounts should appear in parentheses, the way our accountants write them: ($12.00) rather than -$12.00.\n\nSome customers still want the minus sign, so render_text should take negatives=\"minus\" to keep the old look. negatives=\"parentheses\" is the default, and any other value should be refused with \"negatives must be parentheses or minus\".",
+   "request": "On the printed invoice, negative amounts such as discounts should appear in parentheses, the way our accountants write them: ($12.00) rather than -$12.00.\n\nSome customers still want the minus sign, so render_text should take negatives=\"minus\" to keep the old look. negatives=\"parentheses\" is the default, and any other value should raise ValueError(\"negatives must be parentheses or minus\").",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_ledger"]
+   "dependent_missed_fails": [
+    "base_ledger"
+   ]
   },
   {
-   "request": "Invoices need an optional free-text notes field (payment terms, a thank-you) printed at the bottom of the text invoice, under the totals and wrapped to the invoice's width. Notes longer than 500 characters should be refused with \"notes must be at most 500 characters\".",
+   "request": "Invoices need an optional free-text notes field (payment terms, a thank-you) printed at the bottom of the text invoice, under the totals and wrapped to the invoice's width. Notes longer than 500 characters should raise InvoiceError(\"notes must be at most 500 characters\").",
    "kind": "self-contained",
    "bugfix": false,
    "dependent_missed_fails": []
   }
  ],
  "groups": [
-  {"id": "base_render", "since": 0, "until": 6},
-  {"id": "base_ledger", "since": 0, "until": 6},
-  {"id": "s1_fractional_quantity", "since": 1, "until": 6},
-  {"id": "s1_fractional_flow", "since": 1, "until": 6},
-  {"id": "s2_gb_zero_rated", "since": 2, "until": 6},
-  {"id": "s2_gb_mixed", "since": 2, "until": 6},
-  {"id": "s3_dated_rates", "since": 3, "until": 6},
-  {"id": "s3_issue_date_required", "since": 3, "until": 6},
-  {"id": "s4_record_totals", "since": 4, "until": 6},
-  {"id": "s4_record_lines", "since": 4, "until": 6},
-  {"id": "s5_negatives_default", "since": 5, "until": 6},
-  {"id": "s5_negatives_minus", "since": 5, "until": 6},
-  {"id": "s6_notes_printed", "since": 6, "until": 6},
-  {"id": "s6_notes_limit", "since": 6, "until": 6}
+  {
+   "id": "base_render",
+   "since": 0,
+   "until": 6
+  },
+  {
+   "id": "base_ledger",
+   "since": 0,
+   "until": 6
+  },
+  {
+   "id": "s1_fractional_quantity",
+   "since": 1,
+   "until": 6
+  },
+  {
+   "id": "s1_fractional_flow",
+   "since": 1,
+   "until": 6
+  },
+  {
+   "id": "s2_gb_zero_rated",
+   "since": 2,
+   "until": 6
+  },
+  {
+   "id": "s2_gb_mixed",
+   "since": 2,
+   "until": 6
+  },
+  {
+   "id": "s3_dated_rates",
+   "since": 3,
+   "until": 6
+  },
+  {
+   "id": "s3_issue_date_required",
+   "since": 3,
+   "until": 6
+  },
+  {
+   "id": "s4_record_totals",
+   "since": 4,
+   "until": 6
+  },
+  {
+   "id": "s4_record_lines",
+   "since": 4,
+   "until": 6
+  },
+  {
+   "id": "s5_negatives_default",
+   "since": 5,
+   "until": 6
+  },
+  {
+   "id": "s5_negatives_minus",
+   "since": 5,
+   "until": 6
+  },
+  {
+   "id": "s6_notes_printed",
+   "since": 6,
+   "until": 6
+  },
+  {
+   "id": "s6_notes_limit",
+   "since": 6,
+   "until": 6
+  }
  ]
 }

@@ -16,7 +16,7 @@
    ]
   },
   {
-   "request": "In the audit log, each record should state the outcome as `\"decision\": \"allow\"` or `\"decision\": \"deny\"` instead of `\"allowed\": true` / `\"allowed\": false`, so the log reads the same way the policy does. A record's keys become `action, decision, reason, resource, rule, user`. Logs written in the old shape don't need to stay readable.",
+   "request": "In the audit log, each record should state the outcome as `\"decision\": \"allow\"` or `\"decision\": \"deny\"` instead of `\"allowed\": true` / `\"allowed\": false`, so the log reads the same way the policy does. A record's keys become `action, decision, reason, resource, rule, user`.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -24,13 +24,13 @@
    ]
   },
   {
-   "request": "Bug: with `allow staff read payroll/** when user.clearance >= 3`, a user whose clearance is 10 is refused, while a user with clearance 4 gets in. It looks like the comparison is done on text. When both sides of a comparison are numbers, including numbers that arrive as strings like `\"10\"`, they should compare as numbers; anything else keeps comparing as text.",
+   "request": "Bug: with `allow staff read payroll/** when user.clearance >= 3`, a user whose clearance is 10 is refused, while a user with clearance 4 gets in. It looks like comparisons are always done on text. The comparison rule should be `numeric when both sides are numbers, otherwise text`, where numbers that arrive as strings, like `\"10\"`, count as numbers.",
    "kind": "self-contained",
    "bugfix": true,
    "dependent_missed_fails": []
   },
   {
-   "request": "Rules should be able to look at the circumstances of a request, not just the user and the resource. Conditions get a third namespace, `env`, alongside `user` and `resource`: for example `allow staff read payroll/** when env.network == \"office\"`. The values come with the request: `Request(user, \"read\", \"payroll/may\", env={\"network\": \"office\"})`. A condition that names an `env` value the request didn't supply doesn't hold, the same as a missing user or resource attribute.",
+   "request": "Rules should be able to look at the circumstances of a request, not just the user and the resource. Conditions get a third namespace, `env`, so the namespaces become `user, resource, env`; for example `allow staff read payroll/** when env.network == \"office\"`. The values come with the request: `Request(user, \"read\", \"payroll/may\", env={\"network\": \"office\"})`. A condition that names an `env` value the request didn't supply doesn't hold, the same as a missing user or resource attribute.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -39,7 +39,7 @@
    ]
   },
   {
-   "request": "The \"most denied\" list in the log summary is too short, and its order is unpredictable when counts tie. Show the ten most denied resources instead of five, highest count first, with ties broken by resource name in alphabetical order. Also end each user's line with their denial rate, the share of their decisions that were denied, rounded to a whole percent: `  alice  3 allowed  1 denied  25%`.",
+   "request": "The \"most denied\" list in the log summary is too short, and its order is unpredictable when counts tie. Show the 10 most denied resources instead of 5, highest count first, with ties broken by resource name in alphabetical order. Also end each user's line with their denial rate, so the line becomes `{user}  {allowed} allowed  {denied} denied  {rate}%`, where `rate` is the share of their decisions that were denied, rounded to a whole percent: `  alice  3 allowed  1 denied  25%`.",
    "kind": "self-contained",
    "bugfix": false,
    "dependent_missed_fails": []

@@ -11,16 +11,15 @@ index e2086cb..779bf3b 100644
  
  ## 0.4.0
 diff --git a/docs/reference.md b/docs/reference.md
-index a42189d..21fa70a 100644
+index f365990..75d99e9 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -81,7 +81,8 @@
+@@ -81,7 +81,7 @@ In `roles`, each role maps to its parent's name, or to `null` when it has none.
  | --- | --- | --- |
  | `log.format` | `JSON lines, keys sorted` | one record per decision |
  | `log.mode` | `append` | writing never truncates the log |
 -| `log.fields` | `action, allowed, reason, resource, rule, user` | keys of each record |
-+| `log.fields` | `action, decision, reason, resource, rule, user` | keys of each record |
-+| `log.decision` | `allow or deny` | the outcome, worded like a rule effect |
++| `log.fields` | `action, decision, reason, resource, rule, user` | keys of each record; `decision` is `allow` or `deny` |
  | `log.rule` | `rule number or null` | the deciding rule |
  
  ## Report

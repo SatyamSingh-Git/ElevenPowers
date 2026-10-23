@@ -11,7 +11,7 @@ index e3207bd..50a092b 100644
  - The table of contents lists heading levels 1 and 2 by default (`toc_max_level` was 3).
  - Double quotes in text content are no longer written as `&quot;`; attribute values still escape them.
 diff --git a/docs/reference.md b/docs/reference.md
-index e1ef0d9..752b8de 100644
+index bb3b1e6..46dcf9b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -19,6 +19,7 @@ Fields of `marklite.Options`, with their defaults.

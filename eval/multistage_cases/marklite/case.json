@@ -7,13 +7,13 @@
   "changelog": "CHANGELOG.md",
   "stages": [
     {
-      "request": "Heading ids clash with other ids on the pages we embed marklite output into: a heading called \"Search\" gets `id=\"search\"`, the same id as our site's search box. Give heading ids a prefix, `section-` by default, so `# Search` becomes `id=\"section-search\"`. Add an `id_prefix` option so callers can choose their own prefix, or pass an empty string to get the bare slugs they get today.",
+      "request": "Heading ids clash with other ids on the pages we embed marklite output into: a heading called \"Search\" gets `id=\"search\"`, the same id as our site's search box. Give heading ids a prefix, `section-` by default, so `# Search` becomes `id=\"section-search\"`. Add an `id_prefix` option so users of the library can choose their own prefix, or pass an empty string to get the bare slugs they get today.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": ["g0_toc"]
     },
     {
-      "request": "Rendered text is full of `&quot;`: `She said \"hi\"` comes out as `She said &quot;hi&quot;`, which makes our HTML diffs noisy and is not needed in text. Leave double quotes as a plain `\"` in text content (paragraphs, headings, list items, code). `&`, `<` and `>` must still be escaped everywhere, and a `\"` inside an attribute value must still come out as `&quot;`.",
+      "request": "Rendered text is full of `&quot;`: `She said \"hi\"` comes out as `She said &quot;hi&quot;`, which makes our HTML diffs noisy and is not needed in text. Leave double quotes as a plain `\"` in text content (paragraphs, headings, list items, code). `&`, `<` and `>` must still be escaped, in text and in attribute values alike, and a `\"` inside an attribute value must still come out as `&quot;`.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": ["g0_render"]
@@ -25,13 +25,13 @@
       "dependent_missed_fails": ["g0_render"]
     },
     {
-      "request": "Rendering a file with very deeply nested block quotes crashes: one of our users pasted a line starting with a few thousand `>` characters and got a Python `RecursionError` traceback, both from `render()` and from the `marklite` command. Limit nesting to 32 levels, counting block quotes and list items together. Anything deeper should raise `MarkliteError` with the message `nesting deeper than 32 levels` and its `line` set to the line where the too-deep block starts, and the command should report it like any other error.",
+      "request": "Rendering a file with very deeply nested block quotes crashes: one of our users pasted a line starting with a few thousand `>` characters and got a Python `RecursionError` traceback, both from `render()` and from the `marklite` command. Cap nesting with a `max_nesting` limit of 32 levels, counting block quotes and list items together. Anything deeper should raise `MarkliteError` with the message `nesting deeper than 32 levels` and its `line` set to the line where the too-deep block starts, and the command should report it like any other error.",
       "kind": "self-contained",
       "bugfix": true,
       "dependent_missed_fails": []
     },
     {
-      "request": "Add strikethrough: `~~gone~~` should render as `<del>gone</del>`. It should combine with the other inline styles the way emphasis does (`~~**old**~~` gives `<del><strong>old</strong></del>`), and a single `~`, or three in a row, stays literal text.",
+      "request": "Add strikethrough: `~~text~~` should render as `<del>text</del>`. It should combine with the other inline styles the way emphasis does (`~~**old**~~` gives `<del><strong>old</strong></del>`), and a single `~`, or three in a row, stays literal text.",
       "kind": "self-contained",
       "bugfix": false,
       "dependent_missed_fails": []

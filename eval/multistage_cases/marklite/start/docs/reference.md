@@ -37,9 +37,11 @@ setext headings, tables and HTML blocks are not.
 
 ## Heading ids and the table of contents
 
+A heading's slug is its plain text in lowercase, letters and digits kept, every
+other run of characters turned into a single `-`.
+
 | Fact | Value | Meaning |
 |---|---|---|
-| `slug` | `lowercase words joined by -` | Letters and digits are kept; everything else separates words. |
 | `empty_slug` | `heading` | Slug of a heading with no letters or digits. |
 | `duplicate_slug` | `{slug}-{n}` | Repeated slugs are numbered from 1 in document order. |
 | `TocEntry` | `level, title, anchor` | Fields of each entry `marklite.toc()` returns; `title` is plain text and `anchor` is the heading's id. |

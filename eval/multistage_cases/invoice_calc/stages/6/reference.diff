@@ -11,7 +11,7 @@ index a548b24..239f916 100644
    keeps the minus sign.
  - Exported records carry amounts as integers in the currency's minor units (cents, yen, fils)
 diff --git a/docs/reference.md b/docs/reference.md
-index 3850eec..d26e32b 100644
+index b822d5f..2e3f208 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -17,6 +17,7 @@ because they cannot hold most cent values exactly.
@@ -22,7 +22,7 @@ index 3850eec..d26e32b 100644
  
  ## Line item fields
  
-@@ -112,7 +113,8 @@ with `no {category} rate for {region} on {date}`.
+@@ -110,7 +111,8 @@ with `no {category} rate for {region} on {date}`.
  
  `render_text(invoice, width=64, negatives="parentheses")` returns the invoice as plain text: a heading,
  one row per line item (with its discount underneath when it has one), then
@@ -32,7 +32,7 @@ index 3850eec..d26e32b 100644
  
  | Option | Default | Meaning |
  |---|---|---|
-@@ -160,6 +162,7 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+@@ -158,6 +160,7 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
  | `issue date must be YYYY-MM-DD, not {value}` | `InvoiceError` | The issue date does not parse. |
  | `an invoice needs at least one line item` | `InvoiceError` | |
  | `an invoice may have at most 200 line items` | `InvoiceError` | |

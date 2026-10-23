@@ -12,10 +12,10 @@ index a6da698..7c7dcc5 100644
    Germany's reduced rate (food, books) is 9% from 2027-01-01.
  - Fixed: UK food and books were charged 20% VAT; both are zero-rated.
 diff --git a/docs/reference.md b/docs/reference.md
-index cd698d1..a1a1e27 100644
+index 5b1bdfc..0c8de4e 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -121,18 +121,21 @@ subtotal, discount, one tax row per rate and the total.
+@@ -119,18 +119,21 @@ subtotal, discount, one tax row per rate and the total.
  
  `to_record(invoice)` returns a dict ready for JSON; `write_records` and
  `read_records` store a list of them as JSON lines. Each record carries its

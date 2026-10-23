@@ -11,19 +11,17 @@ index 51d7b34..442f4cd 100644
  - Fixed: comparisons in conditions treated numbers as text, so `user.clearance >= 3` refused a clearance of 10. Numbers, including numeric strings, now compare as numbers.
  - Audit log records carry `"decision": "allow"` or `"deny"` in place of `"allowed": true/false`. Older logs are not read.
 diff --git a/docs/reference.md b/docs/reference.md
-index e217bd0..f0b1bfe 100644
+index c06dd13..12e2685 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -90,9 +90,9 @@
+@@ -89,8 +89,8 @@ In `roles`, each role maps to its parent's name, or to `null` when it has none.
  | key | value | meaning |
  | --- | --- | --- |
  | `report.header` | `{total} decisions: {allowed} allowed, {denied} denied` | first line |
 -| `report.user_line` | `{user}  {allowed} allowed  {denied} denied` | one line per user, sorted by name |
--| `report.top` | `5` | resources listed under `most denied` |
--| `report.order` | `count, then first seen` | order of `most denied` |
+-| `report.top` | `5` | resources listed under `most denied`, by count; ties keep first-seen order |
 +| `report.user_line` | `{user}  {allowed} allowed  {denied} denied  {rate}%` | one line per user, sorted by name; rate is the denied share, rounded to a whole percent |
-+| `report.top` | `10` | resources listed under `most denied` |
-+| `report.order` | `count, then resource name` | order of `most denied` |
++| `report.top` | `10` | resources listed under `most denied`, by count; ties by resource name |
  
  ## Lint
  

@@ -12,7 +12,7 @@ index f6852f0..a6da698 100644
  - Quantities may be fractional, down to 0.01 with at most two decimal places (hours of services, say).
    Printed invoices and exported records show them as decimals.
 diff --git a/docs/reference.md b/docs/reference.md
-index f43d4e0..cd698d1 100644
+index f43d4e0..5b1bdfc 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -11,7 +11,7 @@ because they cannot hold most cent values exactly.
@@ -36,17 +36,18 @@ index f43d4e0..cd698d1 100644
  
  | Rate | Percent | Note |
  |---|---|---|
-@@ -83,7 +86,9 @@ each line's amount after discounts.
+@@ -82,8 +85,8 @@ each line's amount after discounts.
+ | `rate.US-NY.digital.2009-08-01` | `8.875%` | |
  | `rate.US-NY.services.2009-08-01` | `0%` | |
  | `rate.DE.standard.2021-01-01` | `19%` | |
- | `rate.DE.food.2021-01-01` | `7%` | Reduced rate. |
-+| `rate.DE.food.2027-01-01` | `9%` | Reduced rate. |
- | `rate.DE.books.2021-01-01` | `7%` | Reduced rate. |
-+| `rate.DE.books.2027-01-01` | `9%` | Reduced rate. |
+-| `rate.DE.food.2021-01-01` | `7%` | Reduced rate. |
+-| `rate.DE.books.2021-01-01` | `7%` | Reduced rate. |
++| `rate.DE.food.2021-01-01` | `7%` | Reduced rate, until 2026-12-31. From 2027-01-01 it is 9%. |
++| `rate.DE.books.2021-01-01` | `7%` | Reduced rate, until 2026-12-31. From 2027-01-01 it is 9%. |
  | `rate.DE.digital.2021-01-01` | `19%` | |
  | `rate.DE.services.2021-01-01` | `19%` | |
  | `rate.GB.standard.2011-01-04` | `20%` | |
-@@ -145,6 +150,7 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
+@@ -145,6 +148,7 @@ Line item errors are prefixed with the line number, as in `line 2: unknown categ
  | Message | Class | Raised when |
  |---|---|---|
  | `invoice missing field: {name}` | `InvoiceError` | A required invoice field is absent. |

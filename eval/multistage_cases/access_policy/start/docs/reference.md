@@ -41,7 +41,7 @@
 | `condition.operators` | `== != < <= > >=` | comparison operators |
 | `condition.join` | `and` | joins clauses; all must hold |
 | `condition.literals` | `"text", numbers, true, false` | constants allowed in a clause |
-| `condition.compare` | `as text` | how values are compared |
+| `condition.compare` | `text` | how values are compared |
 | `condition.missing` | `false` | a clause naming an absent attribute never holds |
 
 ## Data format (dict or `.json` file)
@@ -49,10 +49,11 @@
 | key | value | meaning |
 | --- | --- | --- |
 | `dict.schema` | `3` | the only accepted `schema` value |
-| `dict.roles` | `{name: parent or null}` | role definitions |
 | `dict.rule_fields` | `effect, role, actions, resource, when` | keys of one rule |
 | `dict.required` | `effect, role, actions, resource` | keys a rule must have |
 | `file.json_suffix` | `.json` | files with this suffix are read as data, others as text |
+
+In `roles`, each role maps to its parent's name, or to `null` when it has none.
 
 ## Decisions
 
@@ -89,8 +90,7 @@
 | --- | --- | --- |
 | `report.header` | `{total} decisions: {allowed} allowed, {denied} denied` | first line |
 | `report.user_line` | `{user}  {allowed} allowed  {denied} denied` | one line per user, sorted by name |
-| `report.top` | `5` | resources listed under `most denied` |
-| `report.order` | `count, then first seen` | order of `most denied` |
+| `report.top` | `5` | resources listed under `most denied`, by count; ties keep first-seen order |
 
 ## Lint
 

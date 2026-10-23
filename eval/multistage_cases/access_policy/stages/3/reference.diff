@@ -11,15 +11,15 @@ index 779bf3b..ef16e7c 100644
  - A rule can name several roles separated by commas (`allow viewer,auditor read reports/**`); it applies to anyone holding any of them.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 21fa70a..ae4a769 100644
+index 75d99e9..2dd4aa7 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -42,7 +42,7 @@
+@@ -41,7 +41,7 @@
  | `condition.operators` | `== != < <= > >=` | comparison operators |
  | `condition.join` | `and` | joins clauses; all must hold |
  | `condition.literals` | `"text", numbers, true, false` | constants allowed in a clause |
--| `condition.compare` | `as text` | how values are compared |
-+| `condition.compare` | `numbers as numbers, otherwise as text` | strings such as `"10"` count as numbers |
+-| `condition.compare` | `text` | how values are compared |
++| `condition.compare` | `numeric when both sides are numbers, otherwise text` | strings such as `"10"` count as numbers |
  | `condition.missing` | `false` | a clause naming an absent attribute never holds |
  
  ## Data format (dict or `.json` file)

@@ -2,13 +2,24 @@ import pytest
 
 from warden import Evaluator, PolicySyntaxError, Request, User, explain, parse_policy
 
+POLICY = 'role staff\nallow staff read payroll/** when env.network == "office" and user.team == "hr"\n'
+
+
+def explain_for(team, network):
+    request = Request(User("erin", ("staff",), {"team": team}), "read", "payroll/may", env={"network": network})
+    return explain(Evaluator(parse_policy(POLICY)).decide(request))
+
 
 def test_explanation_names_the_unmet_env_clause():
-    policy = parse_policy('role staff\nallow staff read payroll/** when env.network == "office" and user.team == "hr"\n')
-    request = Request(User("erin", ("staff",), {"team": "hr"}), "read", "payroll/may", env={"network": "home"})
-    assert explain(Evaluator(policy).decide(request)) == (
+    assert explain_for("hr", "home") == (
         "DENY erin read payroll/may: no rule matched; default is deny\n"
         '  rule 1 not applied: env.network == "office"')
+
+
+def test_env_clause_that_holds_is_not_listed():
+    assert explain_for("ops", "office") == (
+        "DENY erin read payroll/may: no rule matched; default is deny\n"
+        '  rule 1 not applied: user.team == "hr"')
 
 
 def test_other_namespaces_are_still_refused():

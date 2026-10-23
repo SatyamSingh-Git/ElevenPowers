@@ -11,13 +11,13 @@ index 50a092b..b15e047 100644
  - Fixed a `RecursionError` crash on very deeply nested quotes or lists; nesting deeper than 32 levels now raises `MarkliteError`.
  - The table of contents lists heading levels 1 and 2 by default (`toc_max_level` was 3).
 diff --git a/docs/reference.md b/docs/reference.md
-index 752b8de..0648263 100644
+index 46dcf9b..9b79f7b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -46,11 +46,12 @@ setext headings, tables and HTML blocks are not.
+@@ -46,11 +46,12 @@ other run of characters turned into a single `-`.
+ |---|---|---|
  | `empty_slug` | `heading` | Slug of a heading with no letters or digits. |
  | `duplicate_slug` | `{slug}-{n}` | Repeated slugs are numbered from 1 in document order. |
- | `heading_id` | `{id_prefix}{slug}` | The id a heading gets, and the anchor its table of contents entry links to. |
 -| `TocEntry` | `level, title, anchor` | Fields of each entry `marklite.toc()` returns; `title` is plain text and `anchor` is the heading's id. |
 +| `TocEntry` | `level, title, anchor, children` | Fields of each entry `marklite.toc()` returns; `title` is plain text, `anchor` is the heading's id and `children` lists the entries beneath it. |
  

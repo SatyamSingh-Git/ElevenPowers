@@ -11,7 +11,7 @@ index 442f4cd..1d8fb0c 100644
  - Conditions can name `env` attributes, supplied per request as `Request(..., env={...})` or `warden check --env KEY=VALUE`.
  - Fixed: comparisons in conditions treated numbers as text, so `user.clearance >= 3` refused a clearance of 10. Numbers, including numeric strings, now compare as numbers.
 diff --git a/docs/reference.md b/docs/reference.md
-index f0b1bfe..eb75b8b 100644
+index 12e2685..da40a28 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -5,7 +5,7 @@
@@ -20,19 +20,19 @@ index f0b1bfe..eb75b8b 100644
  | `syntax.comment` | `#` | a line starting with this is ignored |
 -| `syntax.role` | `role <name> [inherits <parent>]` | defines a role |
 +| `syntax.role` | `role <name> [inherits <parent>, ...]` | defines a role; it holds everything each parent holds |
- | `syntax.rule` | `<effect> <roles> <actions> <pattern> [when <condition>]` | one rule per line |
- | `syntax.roles_separator` | `,` | between roles in a rule; the rule applies to holders of any of them |
+ | `syntax.rule` | `<effect> <roles> <actions> <pattern> [when <condition>]` | one rule per line; `<roles>` is role names separated by commas, and the rule applies to anyone holding any of them |
  | `syntax.default` | `default <effect>` | effect when no rule matches |
-@@ -50,7 +50,7 @@
- | key | value | meaning |
- | --- | --- | --- |
- | `dict.schema` | `3` | the only accepted `schema` value |
--| `dict.roles` | `{name: parent or null}` | role definitions |
-+| `dict.roles` | `{name: parent, [parents] or null}` | role definitions |
- | `dict.rule_fields` | `effect, role, actions, resource, when` | keys of one rule |
+ | `syntax.actions_separator` | `,` | between actions in a rule |
+@@ -53,7 +53,7 @@
  | `dict.required` | `effect, role, actions, resource` | keys a rule must have |
  | `file.json_suffix` | `.json` | files with this suffix are read as data, others as text |
-@@ -99,7 +99,7 @@
+ 
+-In `roles`, each role maps to its parent's name, or to `null` when it has none.
++In `roles`, each role maps to its parent's name, a list of parent names, or `null` when it has none.
+ 
+ ## Decisions
+ 
+@@ -97,7 +97,7 @@ In `roles`, each role maps to its parent's name, or to `null` when it has none.
  | key | value | meaning |
  | --- | --- | --- |
  | `lint.unused-role` | `role {role} is never used` | no rule names it and no role inherits it |

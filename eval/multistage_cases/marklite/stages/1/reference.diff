@@ -12,7 +12,7 @@ index d755273..e747678 100644
  
  - Added the `--json-toc` command option.
 diff --git a/docs/reference.md b/docs/reference.md
-index 6772250..714c7ed 100644
+index 4234d61..a65035a 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -7,6 +7,7 @@ Fields of `marklite.Options`, with their defaults.
@@ -23,14 +23,6 @@ index 6772250..714c7ed 100644
  | `toc_max_level` | `3` | Deepest heading level the table of contents lists (1 to 6). |
  | `code_class_prefix` | `language-` | Prefix of the class on a fenced code block with a language. |
  | `safe_links` | `True` | Replace link and image URLs whose scheme is not safe. |
-@@ -42,6 +43,7 @@ setext headings, tables and HTML blocks are not.
- | `slug` | `lowercase words joined by -` | Letters and digits are kept; everything else separates words. |
- | `empty_slug` | `heading` | Slug of a heading with no letters or digits. |
- | `duplicate_slug` | `{slug}-{n}` | Repeated slugs are numbered from 1 in document order. |
-+| `heading_id` | `{id_prefix}{slug}` | The id a heading gets, and the anchor its table of contents entry links to. |
- | `TocEntry` | `level, title, anchor` | Fields of each entry `marklite.toc()` returns; `title` is plain text and `anchor` is the heading's id. |
- 
- Only top-level headings (not those inside quotes or lists) get ids and appear in
 diff --git a/src/marklite/options.py b/src/marklite/options.py
 index 1b2de6d..9475490 100644
 --- a/src/marklite/options.py
