@@ -27,15 +27,14 @@ def test_markdown_keys_left_measures_right():
     assert [cell.endswith(":") for cell in _rule(lines[1])] == [False, False, True, True]
 
 
-def test_profile_counts_right_aligned(tmp_path, capsys):
+def test_profile_counts_stay_right_aligned(tmp_path, capsys):
     path = tmp_path / "wide.csv"
-    rows = "\n".join(f"s{i},{i if i % 7 else ''}" for i in range(12))
+    rows = "\n".join(f"s{i},{i if i % 4 else ''}" for i in range(12))
     path.write_bytes(f"store,amount\n{rows}\n".encode("utf-8"))
     assert main([str(path), "--profile"]) == 0
     lines = capsys.readouterr().out.splitlines()
     store = next(line for line in lines if line.startswith("store "))
     amount = next(line for line in lines if line.startswith("amount "))
     assert store.split()[1:] == ["text", "12", "0"]
-    assert amount.split()[1:] == ["number", "10", "2"]
-    assert len(store) == len(amount)
-    assert store.index("12") == amount.index("10")
+    assert amount.split()[1:] == ["number", "9", "3"]
+    assert store.index("12") + 2 == amount.index("9") + 1

@@ -29,7 +29,7 @@ def test_missing_required_column(tmp_path):
 
 def test_field_count_names_the_line(tmp_path):
     path = _write(tmp_path, "a,b\n1,2\n3\n")
-    with pytest.raises(ReportError, match=r"^line 3: expected 2 fields, got 1$"):
+    with pytest.raises(ReportError, match="^wrong field count: line 3 has 1, expected 2$"):
         list(read_csv(path))
 
 

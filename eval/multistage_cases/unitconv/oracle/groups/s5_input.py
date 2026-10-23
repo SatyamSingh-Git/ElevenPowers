@@ -5,7 +5,7 @@ from unitconv.cli import main
 
 
 def test_new_spelling_is_accepted_as_input():
-    assert float(convert(parse_quantity('9.81 m·s⁻²'), 'm/s^2').value) == pytest.approx(9.81)
+    assert float(convert(parse_quantity('9.81 m/s²'), 'm/s^2').value) == pytest.approx(9.81)
     assert float(convert(parse_quantity('1 kg·m²/s²'), 'J').value) == pytest.approx(1)
     assert float(convert(parse_quantity('2 m²'), 'cm^2').value) == pytest.approx(20000)
     assert parse_unit('kg·m²/s²').dimension == parse_unit('J').dimension

@@ -11,18 +11,18 @@ index b158c2b..08ceb62 100644
  - `convert()` returns the exact converted value and no longer takes `precision` or `rounding`; `format_quantity()` takes them instead, so chained conversions no longer drift.
  - `unitconv dimensions` lists the named dimensions and their formulas.
 diff --git a/docs/reference.md b/docs/reference.md
-index bac9dff..5d6943c 100644
+index cd32e38..586adfd 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -87,7 +87,7 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
- |---|---|---|
+@@ -94,7 +94,7 @@ Command-line options that are not settings, with their defaults:
  | `json.fields` | `input, value, unit, text` | keys of the object |
+ | `json.input` | `string` | the quantity as given |
  | `json.value` | `number` | the converted value, rounded as in `text` |
--| `json.unit` | `symbol` | the target unit's symbol |
-+| `json.unit` | `{symbol, name}` | an object with the target unit's symbol and its singular name, as in `{"symbol": "km", "name": "kilometre"}` |
+-| `json.unit` | `string` | the target unit's symbol |
++| `json.unit` | `object` | the target unit as `{"symbol": ..., "name": ...}`, the name always singular, as in `{"symbol": "km", "name": "kilometre"}` |
+ | `json.text` | `string` | the result as `convert` prints it |
  
  ## Batch files
- 
 diff --git a/src/unitconv/batch.py b/src/unitconv/batch.py
 index 376ca64..0e2a90c 100644
 --- a/src/unitconv/batch.py

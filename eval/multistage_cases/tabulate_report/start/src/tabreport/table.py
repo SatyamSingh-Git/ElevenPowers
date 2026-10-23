@@ -9,11 +9,11 @@ GAP = "  "
 _NUMERIC = re.compile(r"-?(?:[^\d\s-][^\d-]{0,3})?\d[\d,]*(?:\.\d+)?")
 
 
-def render_table(headers, rows, fmt="plain", align=None, totals=None):
+def render_table(headers, rows, fmt="plain", align="auto", totals=None):
     """``rows`` and ``totals`` are lists of cells; None prints as an empty cell.
 
-    ``align`` holds "l" or "r" per column. Without it, a column whose cells all
-    look like numbers is right-aligned and every other column left-aligned.
+    ``align`` holds "l" or "r" per column, or is "auto": a column whose cells
+    all look like numbers is right-aligned and every other column left-aligned.
     """
     if fmt not in FORMATS:
         raise ReportError(f"unknown format: {fmt}")
@@ -24,10 +24,10 @@ def render_table(headers, rows, fmt="plain", align=None, totals=None):
     for row in rows + ([totals] if totals else []):
         if len(row) != len(headers):
             raise ReportError(f"row has {len(row)} cells but the table has {len(headers)} columns")
-    if align is None:
+    if align == "auto":
         align = [_guess([row[i] for row in rows]) for i in range(len(headers))]
     elif len(align) != len(headers) or set(align) - {"l", "r"}:
-        raise ReportError(f"align needs 'l' or 'r' for each of {len(headers)} columns")
+        raise ReportError(f"bad align: {align!r}")
     if fmt == "markdown":
         return _markdown(headers, rows, align, totals)
     return _plain(headers, rows, align, totals)

@@ -78,6 +78,13 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
 | `cli.error` | `error: {message}` | how errors are written to standard error |
 | `batch.summary` | `converted {converted} rows, {failed} failed` | printed after a batch |
 
+Command-line options that are not settings, with their defaults:
+
+| Option | Default | Meaning |
+|---|---|---|
+| `--json` | `off` | `convert` only: print a JSON object instead of text |
+| `--dimension` | `all` | `list` only: show only the units of one named dimension |
+
 ## JSON output
 
 `unitconv convert ... --json` prints one object.
@@ -85,8 +92,10 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
 | Field | Value | Meaning |
 |---|---|---|
 | `json.fields` | `input, value, unit, text` | keys of the object |
+| `json.input` | `string` | the quantity as given |
 | `json.value` | `number` | the converted value, rounded as in `text` |
-| `json.unit` | `symbol` | the target unit's symbol |
+| `json.unit` | `string` | the target unit's symbol |
+| `json.text` | `string` | the result as `convert` prints it |
 
 ## Batch files
 

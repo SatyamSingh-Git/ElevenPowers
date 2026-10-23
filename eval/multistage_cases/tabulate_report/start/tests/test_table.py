@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from tabreport import ReportError, render_table
@@ -35,8 +37,9 @@ def test_none_is_an_empty_cell():
 
 @pytest.mark.parametrize("kwargs, message", [
     ({"fmt": "html"}, "unknown format: html"),
-    ({"align": ["l"]}, "align needs 'l' or 'r' for each of 2 columns"),
-    ({"align": ["l", "c"]}, "align needs 'l' or 'r' for each of 2 columns"),
+    ({"align": ["l"]}, re.escape("bad align: ['l']")),
+    ({"align": ["l", "c"]}, re.escape("bad align: ['l', 'c']")),
+    ({"align": "middle"}, "bad align: 'middle'"),
 ])
 def test_refuses(kwargs, message):
     with pytest.raises(ReportError, match=f"^{message}$"):

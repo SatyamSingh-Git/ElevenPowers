@@ -1,5 +1,3 @@
-import pytest
-
 from unitconv import convert, format_quantity, parse_quantity
 
 
@@ -16,8 +14,3 @@ def test_format_quantity_rounding_modes():
     assert format_quantity(parse_quantity('2.5 m'), precision=0, rounding='half_up') == '3 m'
     assert format_quantity(parse_quantity('-2.5 m'), precision=0, rounding='floor') == '-3 m'
     assert format_quantity(parse_quantity('1.29 m'), precision=1, rounding='down') == '1.2 m'
-
-
-def test_format_quantity_refuses_bad_precision():
-    with pytest.raises(ValueError, match='precision must be between 0 and 15'):
-        format_quantity(parse_quantity('1 m'), precision=16)

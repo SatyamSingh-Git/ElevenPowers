@@ -28,10 +28,10 @@ def read_csv(path, dialect=None, required=()):
                     record = [""] * len(header)
                 if len(record) != len(header):
                     raise ReportError(
-                        f"line {records.line_num}: expected {len(header)} fields, got {len(record)}")
+                        f"wrong field count: line {records.line_num} has {len(record)}, expected {len(header)}")
                 rows.append(dict(zip(header, (cell.strip() for cell in record))))
     except UnicodeDecodeError:
-        raise ReportError(f"cannot decode {path} as {dialect.encoding}") from None
+        raise ReportError(f"cannot decode: {path} is not {dialect.encoding}") from None
     return rows
 
 
@@ -45,7 +45,7 @@ def _header(records):
     seen = set()
     for name in header:
         if not name:
-            raise ReportError(f"line {records.line_num}: empty column name")
+            raise ReportError(f"empty column name: line {records.line_num}")
         if name in seen:
             raise ReportError(f"duplicate column: {name}")
         seen.add(name)

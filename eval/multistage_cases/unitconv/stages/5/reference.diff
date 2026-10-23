@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 75de58e..29bbc8f 100644
+index 7be6ab7..c81a7a2 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -7,11 +7,11 @@ index 75de58e..29bbc8f 100644
  ## Unreleased
  
 +- Compound units in results are written with a middle dot and superscript powers, as in `kg·m²/s²`; both forms are accepted as input.
- - `unitconv list` shows 20 units a page, with `--page N` and a `page N of M` footer.
+ - `unitconv list` shows 20 units a page, with `--page N`, `--per-page N` and a `page N of M` footer.
  - `--json` output gives `unit` as an object with the unit's `symbol` and singular `name`.
  - Fixed: unit symbols in quantities were matched without regard to case, so `3 Mm` was read as millimetres. Symbols now match exactly; a symbol that matches only when case is ignored is refused with the spellings it might mean.
 diff --git a/docs/reference.md b/docs/reference.md
-index 5aae655..366d5f9 100644
+index 41a6aa3..ae9cf9b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -37,9 +37,9 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.

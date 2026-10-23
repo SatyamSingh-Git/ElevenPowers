@@ -18,6 +18,11 @@ def test_markdown_rule_has_no_right_marker_without_align():
     assert "| 7    |" in text
 
 
+def test_auto_still_guesses_when_asked():
+    lines = render_table(["code", "n"], [["7", "1"], ["0042", "22"]], align="auto").splitlines()
+    assert lines[2:] == ["   7   1", "0042  22"]
+
+
 def test_explicit_align_still_right_aligns():
     text = render_table(["code", "n"], [["7", "1"], ["0042", "22"]], "markdown", align=["l", "r"])
     rule = _rule(text)

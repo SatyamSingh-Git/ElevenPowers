@@ -11,7 +11,7 @@ index 56afc30..f4b633c 100644
  
  ## 0.4.0
 diff --git a/docs/reference.md b/docs/reference.md
-index 459ab7b..5a37fd4 100644
+index 7bb116c..bab6aa2 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -23,7 +23,7 @@ command-line options, each overriding the one before.

@@ -1,26 +1,27 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index b45a1a2..80d03a2 100644
+index c379bfb..c5dc726 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
  
  ## Unreleased
  
-+- Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures, and `render_table` left-aligns every column unless given `align`.
- - Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names.
++- Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures. `render_table` defaults to `align="left"`; `align="auto"` keeps the old guessing.
+ - Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names. `KEY_SEPARATOR` is removed.
  - `--profile` describes each column (number or text, filled and blank cells) instead of reporting.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 8f18ade..eeb18c2 100644
+index c32653b..2b1c6fe 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -69,7 +69,8 @@ its value, and what it means.
+@@ -70,8 +70,8 @@ Each grouping column is its own key column, headed by its CSV column name, and
+ |---|---|---|
  | `formats` | `plain, markdown` | accepted by `--format` |
  | `default format` | `plain` | used when `--format` is not given |
- | `plain column gap` | `2 spaces` | between columns in plain output |
--| `render_table align` | `right for numeric columns` | when no `align` is given, a column whose filled cells all look like numbers or money is right-aligned, any other column left-aligned |
-+| `render_table align` | `left` | every column, when no `align` is given |
-+| `report alignment` | `keys left, measures right` | whatever the cells hold; a key such as `2024` or `0042` stays left |
+-| `plain column gap` | `2 spaces` | between columns in plain output |
+-| `render_table align` | `"auto"` | default; a column whose filled cells all look like numbers or money is right-aligned, any other column left-aligned. A list of `"l"` or `"r"`, one per column, sets alignment explicitly |
++| `plain column gap` | `2 spaces` | between columns in plain output; reports left-align key columns and right-align measures, whatever the cells hold |
++| `render_table align` | `"left"` | default; every column left-aligned. `"auto"` right-aligns a column whose filled cells all look like numbers or money; a list of `"l"` or `"r"`, one per column, sets alignment explicitly |
  | `markdown pipe escape` | `\|` | a pipe inside a cell is escaped |
  | `footer` | `N rows` | after a blank line: the number of input rows read, `1 row` for one |
  | `profile columns` | `column, kind, filled, blank` | `--profile` output; kind is `number` or `text` |
@@ -49,51 +50,36 @@ index b60bab0..5a15f74 100644
      return f"{table}\n{report.row_count} {noun}\n"
  
 diff --git a/src/tabreport/table.py b/src/tabreport/table.py
-index 4171b0d..f66009a 100644
+index 06e585b..4acdf2e 100644
 --- a/src/tabreport/table.py
 +++ b/src/tabreport/table.py
-@@ -1,19 +1,14 @@
- """Laying out rows of text as plain-text or markdown tables."""
--import re
--
- from .errors import ReportError
- 
- FORMATS = ("plain", "markdown")
- GAP = "  "
--# 12, -1,234.50, $7.00, -€3.10, CHF 12.00: what a column has to hold to be right-aligned.
--_NUMERIC = re.compile(r"-?(?:[^\d\s-][^\d-]{0,3})?\d[\d,]*(?:\.\d+)?")
+@@ -9,11 +9,12 @@ GAP = "  "
+ _NUMERIC = re.compile(r"-?(?:[^\d\s-][^\d-]{0,3})?\d[\d,]*(?:\.\d+)?")
  
  
- def render_table(headers, rows, fmt="plain", align=None, totals=None):
+-def render_table(headers, rows, fmt="plain", align="auto", totals=None):
++def render_table(headers, rows, fmt="plain", align="left", totals=None):
      """``rows`` and ``totals`` are lists of cells; None prints as an empty cell.
  
--    ``align`` holds "l" or "r" per column. Without it, a column whose cells all
--    look like numbers is right-aligned and every other column left-aligned.
-+    ``align`` holds "l" or "r" per column; without it every column is left-aligned.
+-    ``align`` holds "l" or "r" per column, or is "auto": a column whose cells
+-    all look like numbers is right-aligned and every other column left-aligned.
++    ``align`` holds "l" or "r" per column, or is "left" for every column
++    left-aligned, or "auto": a column whose cells all look like numbers is
++    right-aligned and every other column left-aligned.
      """
      if fmt not in FORMATS:
          raise ReportError(f"unknown format: {fmt}")
-@@ -25,7 +20,7 @@ def render_table(headers, rows, fmt="plain", align=None, totals=None):
+@@ -24,7 +25,9 @@ def render_table(headers, rows, fmt="plain", align="auto", totals=None):
+     for row in rows + ([totals] if totals else []):
          if len(row) != len(headers):
              raise ReportError(f"row has {len(row)} cells but the table has {len(headers)} columns")
-     if align is None:
--        align = [_guess([row[i] for row in rows]) for i in range(len(headers))]
+-    if align == "auto":
++    if align == "left":
 +        align = ["l"] * len(headers)
++    elif align == "auto":
+         align = [_guess([row[i] for row in rows]) for i in range(len(headers))]
      elif len(align) != len(headers) or set(align) - {"l", "r"}:
-         raise ReportError(f"align needs 'l' or 'r' for each of {len(headers)} columns")
-     if fmt == "markdown":
-@@ -37,11 +32,6 @@ def _text(value):
-     return "" if value is None else str(value)
- 
- 
--def _guess(cells):
--    filled = [text for text in cells if text]
--    return "r" if filled and all(_NUMERIC.fullmatch(text) for text in filled) else "l"
--
--
- def _pad(text, width, side):
-     return text.rjust(width) if side == "r" else text.ljust(width)
- 
+         raise ReportError(f"bad align: {align!r}")
 diff --git a/tests/test_report.py b/tests/test_report.py
 index f0fdcb0..dc441d3 100644
 --- a/tests/test_report.py
@@ -114,10 +100,10 @@ index f0fdcb0..dc441d3 100644
      report = build_report(read_csv(sales), ["region"], ["sum:amount"], sort="-sum(amount)")
      assert [row[0] for row in report.rows] == ["East", "North", "West"]
 diff --git a/tests/test_table.py b/tests/test_table.py
-index 496ab4c..dbf6649 100644
+index 5a96676..9ecfba5 100644
 --- a/tests/test_table.py
 +++ b/tests/test_table.py
-@@ -4,7 +4,8 @@ from tabreport import ReportError, render_table
+@@ -6,7 +6,8 @@ from tabreport import ReportError, render_table
  
  
  def test_plain_table():
@@ -127,7 +113,7 @@ index 496ab4c..dbf6649 100644
      assert text == (
          "name    total\n"
          "-----  ------\n"
-@@ -24,6 +25,13 @@ def test_markdown_table_escapes_pipes():
+@@ -26,6 +27,18 @@ def test_markdown_table_escapes_pipes():
      )
  
  
@@ -136,6 +122,11 @@ index 496ab4c..dbf6649 100644
 +    assert text.splitlines()[2:] == ["7     1", "0042  22"]
 +    rule = render_table(["code", "n"], [["7", "1"]], "markdown").splitlines()[1]
 +    assert rule == "| ---- | --- |"
++
++
++def test_auto_alignment_guesses_from_cells():
++    text = render_table(["code", "n"], [["7", "1"], ["0042", "22"]], align="auto")
++    assert text.splitlines()[2:] == ["   7   1", "0042  22"]
 +
 +
  def test_explicit_alignment():

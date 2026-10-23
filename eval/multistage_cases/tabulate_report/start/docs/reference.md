@@ -39,8 +39,7 @@ its value, and what it means.
 
 | Key | Value | Meaning |
 |---|---|---|
-| `group column` | `group` | header of the single key column |
-| `key separator` | ` / ` | joins the values of a multi-column key |
+| `KEY_SEPARATOR` | `" / "` | in `tabreport.aggregate`; joins the values of a multi-column key into the one key column, which is headed `group` and returned by `aggregate` under `"group"` |
 | `group order` | `key, ascending` | order of report rows unless `--sort` is given |
 | `sort descending prefix` | `-` | `--sort=-sum(amount)` puts the largest first; empty results go last |
 | `totals label` | `TOTAL` | first cell of the totals row |
@@ -59,8 +58,8 @@ its value, and what it means.
 | `negative money` | `-$1.00` | the sign goes before the symbol |
 | `rounding` | `half up` | 2.345 prints as 2.35 |
 | `format_number places` | `2` | default decimals for plain numbers |
-| `format_number thousands` | `,` | default grouping separator for plain numbers |
-| `format_money thousands` | `,` | grouping separator for money |
+| `format_number thousands` | `","` | default grouping separator for plain numbers |
+| `format_money thousands` | `","` | grouping separator for money |
 | `count format` | `whole number` | counts never show decimals |
 
 ## Output
@@ -70,7 +69,7 @@ its value, and what it means.
 | `formats` | `plain, markdown` | accepted by `--format` |
 | `default format` | `plain` | used when `--format` is not given |
 | `plain column gap` | `2 spaces` | between columns in plain output |
-| `render_table align` | `right for numeric columns` | when no `align` is given, a column whose filled cells all look like numbers or money is right-aligned, any other column left-aligned |
+| `render_table align` | `"auto"` | default; a column whose filled cells all look like numbers or money is right-aligned, any other column left-aligned. A list of `"l"` or `"r"`, one per column, sets alignment explicitly |
 | `markdown pipe escape` | `\|` | a pipe inside a cell is escaped |
 | `footer` | `N rows` | after a blank line: the number of input rows read, `1 row` for one |
 | `profile columns` | `column, kind, filled, blank` | `--profile` output; kind is `number` or `text` |
@@ -86,18 +85,21 @@ its value, and what it means.
 
 ## Errors
 
+Every message starts with a fixed phrase and a colon. Each error is listed
+under `error: ` followed by that phrase.
+
 | Key | Value | Meaning |
 |---|---|---|
 | `error: not a number` | `not a number: '{text}'` | a cell or filter value is not an amount |
 | `error: missing column` | `missing column: {name}` | a column named by an option is not in the header |
-| `error: field count` | `line {n}: expected {k} fields, got {m}` | a row has the wrong number of cells |
+| `error: wrong field count` | `wrong field count: line {n} has {m}, expected {k}` | a row has the wrong number of cells |
 | `error: empty input` | `empty input: no header row` | the file has no non-blank line |
 | `error: duplicate column` | `duplicate column: {name}` | the header repeats a name |
-| `error: decode` | `cannot decode {path} as {encoding}` | the file is not in the given encoding |
+| `error: cannot decode` | `cannot decode: {path} is not {encoding}` | the file is not in the given encoding |
 | `error: unknown measure` | `unknown measure: {func}` | not one of the measures |
 | `error: unknown currency` | `unknown currency: {code}` | not in the currency table |
 | `error: unknown format` | `unknown format: {name}` | `render_table` was given another format |
 | `error: unknown dialect` | `unknown dialect: {name}` | not one of the dialects |
 | `error: bad filter` | `bad filter: '{text}'` | no operator in a `--where` |
-| `error: align` | `align needs 'l' or 'r' for each of {n} columns` | `render_table` was given a bad `align` |
-| `error: sort` | `unknown sort column: {name}` | `--sort` names no column of the report |
+| `error: bad align` | `bad align: {align}` | `render_table` was given an `align` it cannot use |
+| `error: unknown sort column` | `unknown sort column: {name}` | `--sort` names no column of the report |

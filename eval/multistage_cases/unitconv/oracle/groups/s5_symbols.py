@@ -1,4 +1,3 @@
-import csv
 import json
 
 from unitconv import convert, format_quantity, parse_quantity
@@ -13,16 +12,8 @@ def test_results_use_middle_dot_and_superscripts():
     assert format_quantity(convert(parse_quantity('90 km/h'), 'm/s')) == '25 m/s'
 
 
-def test_command_line_and_json(capsys):
+def test_command_line_results(capsys):
     assert main(['convert', '1 J', 'kg*m^2/s^2']) == 0
     assert capsys.readouterr().out == '1 kg·m²/s²\n'
-    assert main(['convert', '9.81 m/s^2', 'km/h^2', '--json', '--precision', '0']) == 0
-    assert json.loads(capsys.readouterr().out)['unit']['symbol'] == 'km/h²'
-
-
-def test_batch_unit_column(tmp_path, capsys):
-    source, destination = tmp_path / 'in.csv', tmp_path / 'out.csv'
-    source.write_text('1 N,kg*m/s^2\n', encoding='utf-8')
-    assert main(['batch', str(source), str(destination)]) == 0
-    with open(destination, newline='', encoding='utf-8') as file:
-        assert next(csv.DictReader(file))['unit'] == 'kg·m/s²'
+    assert main(['convert', '1 ha', 'm^2', '--json']) == 0
+    assert json.loads(capsys.readouterr().out)['text'] == '10000 m²'

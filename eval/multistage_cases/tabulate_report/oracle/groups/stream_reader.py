@@ -13,7 +13,7 @@ def test_rows_before_a_bad_line_are_handed_out_first(tmp_path):
     rows = read_csv(_write(tmp_path, "a,b\n1,2\n3,4\n\n5\n6,7\n"))
     assert next(rows) == {"a": "1", "b": "2"}
     assert next(rows) == {"a": "3", "b": "4"}
-    with pytest.raises(ReportError, match=r"^line 5: expected 2 fields, got 1$"):
+    with pytest.raises(ReportError, match="^wrong field count: line 5 has 1, expected 2$"):
         next(rows)
 
 
@@ -29,5 +29,5 @@ def test_bad_line_late_in_a_file_does_not_stop_early_rows(tmp_path):
     rows = read_csv(_write(tmp_path, f"k,v\n{lines}oops\n"))
     seen = [next(rows) for _ in range(49)]
     assert seen[-1] == {"k": "49", "v": "49"}
-    with pytest.raises(ReportError, match=r"^line 51: expected 2 fields, got 1$"):
+    with pytest.raises(ReportError, match="^wrong field count: line 51 has 1, expected 2$"):
         next(rows)

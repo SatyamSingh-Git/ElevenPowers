@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 29bbc8f..2bbc915 100644
+index c81a7a2..5552536 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -8,10 +8,10 @@ index 29bbc8f..2bbc915 100644
  
 +- Fixed: conversions used binary floating point, so `0.235 m` in `cm` rounded as 23.499999999999996 and printed `23 cm` at precision 0. Conversions now use exact decimal arithmetic.
  - Compound units in results are written with a middle dot and superscript powers, as in `kg·m²/s²`; both forms are accepted as input.
- - `unitconv list` shows 20 units a page, with `--page N` and a `page N of M` footer.
+ - `unitconv list` shows 20 units a page, with `--page N`, `--per-page N` and a `page N of M` footer.
  - `--json` output gives `unit` as an object with the unit's `symbol` and singular `name`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 366d5f9..5215cda 100644
+index ae9cf9b..6d5141a 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -24,7 +24,7 @@ command-line options, each overriding the one before.
@@ -20,7 +20,7 @@ index 366d5f9..5215cda 100644
  | `convert.result` | `exact` | `convert()` returns the exact value; `format_quantity()` rounds it to `precision` places with the `rounding` mode |
 -| `arithmetic` | `float` | numbers are binary floating point while converting |
 +| `arithmetic` | `decimal` | numbers are exact decimals while converting, so `0.235 m` is `23.5 cm` before rounding |
- | `lookup.case` | `exact` | unit symbols match only as spelled, so `Mm` is megametres and `mm` millimetres |
+ | `lookup.case` | `sensitive` | unit symbols match only as spelled, so `Mm` is megametres and `mm` millimetres |
  | `prefixes` | `G, M, k, h, da, d, c, m, u, n` | SI prefixes accepted before units that take them |
  | `table.version` | `2026.3` | version of the generated unit table |
 diff --git a/src/unitconv/formatting.py b/src/unitconv/formatting.py

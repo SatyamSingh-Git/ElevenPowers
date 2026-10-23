@@ -11,7 +11,7 @@ index f4b633c..b158c2b 100644
  - `unitconv dimensions` lists the named dimensions and their formulas.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 5a37fd4..bac9dff 100644
+index bab6aa2..cd32e38 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -25,7 +25,7 @@ command-line options, each overriding the one before.
@@ -19,15 +19,16 @@ index 5a37fd4..bac9dff 100644
  | `convert.result` | `exact` | `convert()` returns the exact value; `format_quantity()` rounds it to `precision` places with the `rounding` mode |
  | `arithmetic` | `float` | numbers are binary floating point while converting |
 -| `lookup.case` | `insensitive` | unit symbols match regardless of case when there is no exact match |
-+| `lookup.case` | `exact` | unit symbols match only as spelled, so `Mm` is megametres and `mm` millimetres |
++| `lookup.case` | `sensitive` | unit symbols match only as spelled, so `Mm` is megametres and `mm` millimetres |
  | `prefixes` | `G, M, k, h, da, d, c, m, u, n` | SI prefixes accepted before units that take them |
  | `table.version` | `2026.3` | version of the generated unit table |
  | `temperature.offsets` | `degC, degF` | units with an offset; they cannot be part of a compound unit |
-@@ -49,6 +49,7 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+@@ -48,7 +48,7 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+ 
  | Error | Message | When |
  |---|---|---|
- | `error.unknown_unit` | `unknown unit: '{unit}'` | a symbol names no unit |
-+| `error.unknown_unit_case` | `unknown unit: '{unit}' (did you mean {candidates}?)` | a symbol names a unit only when case is ignored; candidates are quoted, as in `'Mm' or 'mm'` |
+-| `error.unknown_unit` | `unknown unit: '{unit}'` | a symbol names no unit |
++| `error.unknown_unit` | `unknown unit: '{unit}'` | a symbol names no unit; when it names one only if case is ignored, a hint follows, as in `unknown unit: 'MM' (did you mean 'Mm' or 'mm'?)` |
  | `error.incompatible` | `cannot convert {source} ({source_dimension}) to {target} ({target_dimension})` | the dimensions differ |
  | `error.parse_quantity` | `cannot parse quantity: '{text}'` | the text is not a number followed by a unit |
  | `error.parse_unit` | `cannot parse unit: '{text}'` | a unit expression is malformed or cancels out |

@@ -7,16 +7,20 @@
   "changelog": "CHANGELOG.md",
   "stages": [
     {
-      "request": "When I group by more than one column, the report squashes the key into a single `group` column like `East / Widget`, which I can't sort or filter on once it's in a spreadsheet. Give each grouping column its own column, headed by the CSV column's name (`region`, `product`); a single grouping column should be headed by its name too, not `group`. In the library, `aggregate()` should likewise return each key value under its column name instead of a joined `group` string. The TOTAL label stays in the first column, with the other key cells left blank.",
+      "request": "When I group by more than one column, the report squashes the key into a single `group` column like `East / Widget`, which I can't sort or filter on once it's in a spreadsheet. Give each grouping column its own column, headed by the CSV column's name (`region`, `product`); a single grouping column should be headed by its name too, not `group`. In the library, `aggregate()` should likewise return each key value under its column name instead of a joined `group` string, and `KEY_SEPARATOR` can go, since nothing is joined any more. The TOTAL label stays in the first column, with the other key cells left blank.",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["base_report"]
+      "dependent_missed_fails": [
+        "base_report"
+      ]
     },
     {
-      "request": "Grouping by a column whose values happen to look like numbers, such as a `year` like 2024 or a store code like `0042`, right-aligns that key column as if it were an amount, and in markdown output its divider becomes `---:`. Key columns should always be left-aligned and measure columns right-aligned, whatever the cells contain. Related: `render_table` decides alignment by guessing from the cell contents; when it is called without `align` it should simply left-align every column instead of guessing.",
+      "request": "Grouping by a column whose values happen to look like numbers, such as a `year` like 2024 or a store code like `0042`, right-aligns that key column as if it were an amount, and in markdown output its divider becomes `---:`. Key columns should always be left-aligned and measure columns right-aligned, whatever the cells contain. Related: `render_table`'s `align` defaults to `\"auto\"`, which guesses from the cell contents. Make the default `\"left\"`, which left-aligns every column, and keep `\"auto\"` available as an option.",
       "kind": "cross-cutting",
       "bugfix": true,
-      "dependent_missed_fails": ["base_report"]
+      "dependent_missed_fails": [
+        "base_report"
+      ]
     },
     {
       "request": "Please add `csv` as an output format: `--format csv` on the command line, and `\"csv\"` for `render_report` and `render_table` in the library. It's for loading reports into a spreadsheet, so write the header row, the group rows and the TOTAL row only, with no rule lines and no row-count footer, and write amounts as bare numbers: no currency symbol and no thousands separators (`1500.50`, `-50.50`), still rounded to the currency's decimals. Counts stay whole numbers.",
@@ -25,38 +29,103 @@
       "dependent_missed_fails": []
     },
     {
-      "request": "`read_csv` loads the whole file into a list before anything else happens, and our 3 GB nightly export runs the machine out of memory. Make it stream: `read_csv` should return an iterator that reads and yields one row at a time, and a report over a big file should only ever hold the current row plus the running group results. I'm fine with one consequence: a malformed line near the end is reported only when the reader reaches it, after the rows before it have been handed out. The report output itself (group rows, TOTAL row and the row count) must stay exactly as it is.",
+      "request": "`read_csv` loads the whole file into a list before anything else happens, and our 3 GB nightly export runs the machine out of memory. Make it stream: `read_csv` should return an iterator of dicts instead of a list of dicts, reading and yielding one row at a time. I'm fine with one consequence: a malformed line near the end is reported only when the reader reaches it, after the rows before it have been handed out.",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["base_report", "csv_cli", "keys_rendered"]
+      "dependent_missed_fails": [
+        "base_report",
+        "csv_cli",
+        "keys_rendered"
+      ]
     },
     {
-      "request": "An export had a typo, `12,34` instead of `12.34`, in the amount column, and the report silently read it as 1234 and inflated our totals: commas are just stripped wherever they appear. A thousands separator should only be accepted between groups of exactly three digits in the whole-number part (`1,234`, `12,345,678.90`, `$1,000`). Anything else, such as `12,34`, `1,2345` or `1.234,5`, should stop with `misplaced thousands separator: '12,34'`, quoting the value as it was written.",
+      "request": "An export had a typo, `12,34` instead of `12.34`, in the amount column, and the report silently read it as 1234 and inflated our totals: `parse_amount` just strips commas wherever they appear. It should only accept a thousands separator between groups of exactly three digits in the whole-number part (`1,234`, `12,345,678.90`, `$1,000`). Anything else, such as `12,34`, `1,2345` or `1.234,5`, should stop with `misplaced thousands separator: '{text}'`, where `{text}` is the value as written, for example `misplaced thousands separator: '12,34'`.",
       "kind": "self-contained",
       "bugfix": true,
       "dependent_missed_fails": []
     },
     {
-      "request": "Plain numbers in our reports carry thousands separators: a count prints as `1,204`, and with `--currency none` a sum prints as `12,500.00`. The warehouse system we paste reports into splits `1,204` into two fields. Plain numbers should have no separator by default (`1204`, `12500.00`). Money amounts keep theirs (`$12,500.00`). In the library, `format_number` should only group digits when the caller passes a separator, such as `thousands=\",\"`.",
+      "request": "Plain numbers in our reports carry thousands separators: a count prints as `1,204`, and with `--currency none` a sum prints as `12,500.00`. The warehouse system we paste reports into splits `1,204` into two fields. Plain numbers should have no separator (`1204`, `12500.00`): change `format_number`'s default `thousands` from `\",\"` to `\"\"`, so it groups digits only when the caller passes a separator. Money amounts keep theirs (`$12,500.00`).",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["base_parsing", "base_report", "keys_rendered", "strict_cli"]
+      "dependent_missed_fails": [
+        "base_parsing",
+        "base_report",
+        "keys_rendered",
+        "strict_cli"
+      ]
     }
   ],
   "groups": [
-    {"id": "base_parsing", "since": 0, "until": 6},
-    {"id": "base_report", "since": 0, "until": 6},
-    {"id": "keys_library", "since": 1, "until": 6},
-    {"id": "keys_rendered", "since": 1, "until": 6},
-    {"id": "align_table_default", "since": 2, "until": 6},
-    {"id": "align_report_keys", "since": 2, "until": 6},
-    {"id": "csv_library", "since": 3, "until": 6},
-    {"id": "csv_cli", "since": 3, "until": 6},
-    {"id": "stream_reader", "since": 4, "until": 6},
-    {"id": "stream_report", "since": 4, "until": 6},
-    {"id": "strict_parse", "since": 5, "until": 6},
-    {"id": "strict_cli", "since": 5, "until": 6},
-    {"id": "plain_numbers_default", "since": 6, "until": 6},
-    {"id": "plain_numbers_report", "since": 6, "until": 6}
+    {
+      "id": "base_parsing",
+      "since": 0,
+      "until": 6
+    },
+    {
+      "id": "base_report",
+      "since": 0,
+      "until": 6
+    },
+    {
+      "id": "keys_library",
+      "since": 1,
+      "until": 6
+    },
+    {
+      "id": "keys_rendered",
+      "since": 1,
+      "until": 6
+    },
+    {
+      "id": "align_table_default",
+      "since": 2,
+      "until": 6
+    },
+    {
+      "id": "align_report_keys",
+      "since": 2,
+      "until": 6
+    },
+    {
+      "id": "csv_library",
+      "since": 3,
+      "until": 6
+    },
+    {
+      "id": "csv_cli",
+      "since": 3,
+      "until": 6
+    },
+    {
+      "id": "stream_reader",
+      "since": 4,
+      "until": 6
+    },
+    {
+      "id": "stream_report",
+      "since": 4,
+      "until": 6
+    },
+    {
+      "id": "strict_parse",
+      "since": 5,
+      "until": 6
+    },
+    {
+      "id": "strict_cli",
+      "since": 5,
+      "until": 6
+    },
+    {
+      "id": "plain_numbers_default",
+      "since": 6,
+      "until": 6
+    },
+    {
+      "id": "plain_numbers_report",
+      "since": 6,
+      "until": 6
+    }
   ]
 }

@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 1cc989b..90eac7a 100644
+index 70174d0..991b580 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -9,12 +9,12 @@ index 1cc989b..90eac7a 100644
 +- Fixed: a thousands separator anywhere in an amount was silently dropped, so a typo like `12,34` was read as 1234. Separators are now accepted only between three-digit groups; anything else stops with `misplaced thousands separator: '12,34'`.
  - `read_csv` streams: it returns an iterator that reads one row at a time instead of a list of the whole file, and reports run in a single pass, so large files no longer need to fit in memory. A malformed line is now reported when it is reached, after the rows before it.
  - `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
- - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures, and `render_table` left-aligns every column unless given `align`.
+ - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures. `render_table` defaults to `align="left"`; `align="auto"` keeps the old guessing.
 diff --git a/docs/reference.md b/docs/reference.md
-index beadf37..e0c14d3 100644
+index a0dc422..a38b1d5 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -21,7 +21,7 @@ its value, and what it means.
+@@ -20,7 +20,7 @@ its value, and what it means.
  
  | Key | Value | Meaning |
  |---|---|---|
@@ -23,13 +23,13 @@ index beadf37..e0c14d3 100644
  | `negative amounts` | `-12.50 or (12.50)` | a leading minus or accounting parentheses |
  | `currency symbols in cells` | `ignored` | a leading symbol from the currency table, such as `$` or `CHF`, is skipped |
  | `blank cells` | `skipped` | sum, mean, min and max ignore them; count still counts the row |
-@@ -92,6 +92,7 @@ its value, and what it means.
+@@ -93,6 +93,7 @@ under `error: ` followed by that phrase.
  | Key | Value | Meaning |
  |---|---|---|
  | `error: not a number` | `not a number: '{text}'` | a cell or filter value is not an amount |
-+| `error: thousands` | `misplaced thousands separator: '{text}'` | a separator outside three-digit groups, such as `12,34` or `1,2345`; the text is the cell as written |
++| `error: misplaced thousands separator` | `misplaced thousands separator: '{text}'` | a separator outside three-digit groups, such as `12,34` or `1,2345`; the text is the cell as written |
  | `error: missing column` | `missing column: {name}` | a column named by an option is not in the header |
- | `error: field count` | `line {n}: expected {k} fields, got {m}` | a row has the wrong number of cells |
+ | `error: wrong field count` | `wrong field count: line {n} has {m}, expected {k}` | a row has the wrong number of cells |
  | `error: empty input` | `empty input: no header row` | the file has no non-blank line |
 diff --git a/src/tabreport/numbers.py b/src/tabreport/numbers.py
 index 816401c..996c838 100644

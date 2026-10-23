@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 3ca8ee7..1cc989b 100644
+index 3fa314a..70174d0 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -8,19 +8,18 @@ index 3ca8ee7..1cc989b 100644
  
 +- `read_csv` streams: it returns an iterator that reads one row at a time instead of a list of the whole file, and reports run in a single pass, so large files no longer need to fit in memory. A malformed line is now reported when it is reached, after the rows before it.
  - `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
- - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures, and `render_table` left-aligns every column unless given `align`.
- - Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names.
+ - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures. `render_table` defaults to `align="left"`; `align="auto"` keeps the old guessing.
+ - Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names. `KEY_SEPARATOR` is removed.
 diff --git a/docs/reference.md b/docs/reference.md
-index 167e546..beadf37 100644
+index af30c5e..a0dc422 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -13,7 +13,8 @@ its value, and what it means.
+@@ -13,7 +13,7 @@ its value, and what it means.
  | `skip_blank` | `true` | blank lines are ignored; when false they become rows of empty cells |
  | `dialects` | `comma, semicolon, tab, pipe` | named presets for `--dialect`; `--delimiter`, `--quotechar` and `--encoding` override them |
  | `default dialect` | `comma` | used when `--dialect` is not given |
 -| `read_csv returns` | `list of dicts` | one dict per data row, keyed by the stripped header names, cells stripped |
-+| `read_csv returns` | `iterator of dicts` | one dict per data row, keyed by the stripped header names, cells stripped; rows are read as they are consumed, so an error in a line is raised only when that line is reached |
-+| `build_report rows` | `read once` | any iterable of dicts; group results, totals and the row count all come from a single pass |
++| `read_csv returns` | `iterator of dicts` | one dict per data row, keyed by the stripped header names, cells stripped; rows are read as they are consumed, so an error in a line is raised only when that line is reached; `build_report` reads its rows once, so it takes any iterable of dicts |
  | `header` | `first non-blank line` | column names must be non-empty and unique |
  
  ## Amounts
@@ -35,7 +34,7 @@ index bf0361c..ae0280e 100644
 -    return [row for row in rows if all(f.matches(row) for f in filters)]
 +    return (row for row in rows if all(f.matches(row) for f in filters))
 diff --git a/src/tabreport/reader.py b/src/tabreport/reader.py
-index 533b391..0d6a733 100644
+index 68d3254..a3b8fc1 100644
 --- a/src/tabreport/reader.py
 +++ b/src/tabreport/reader.py
 @@ -6,14 +6,14 @@ from .errors import ReportError
@@ -61,11 +60,11 @@ index 533b391..0d6a733 100644
 @@ -29,10 +29,9 @@ def read_csv(path, dialect=None, required=()):
                  if len(record) != len(header):
                      raise ReportError(
-                         f"line {records.line_num}: expected {len(header)} fields, got {len(record)}")
+                         f"wrong field count: line {records.line_num} has {len(record)}, expected {len(header)}")
 -                rows.append(dict(zip(header, (cell.strip() for cell in record))))
 +                yield dict(zip(header, (cell.strip() for cell in record)))
      except UnicodeDecodeError:
-         raise ReportError(f"cannot decode {path} as {dialect.encoding}") from None
+         raise ReportError(f"cannot decode: {path} is not {dialect.encoding}") from None
 -    return rows
  
  
@@ -130,7 +129,7 @@ index fadb9ec..1d23aa1 100644
 +    assert list(keep(rows, [parse_filter("v<=5")])) == [{"v": "5"}, {"v": "(20)"}]
 +    assert list(keep(iter(rows), [parse_filter("v=")])) == [{"v": ""}]
 diff --git a/tests/test_reader.py b/tests/test_reader.py
-index cdb4e47..a623435 100644
+index f1f3569..3b730ac 100644
 --- a/tests/test_reader.py
 +++ b/tests/test_reader.py
 @@ -4,54 +4,62 @@ from tabreport import Dialect, ReportError, read_csv
@@ -148,7 +147,7 @@ index cdb4e47..a623435 100644
 +    rows = read_csv(write_csv("a,b\n1,2\n3,4\n5\n6,7\n"))
 +    assert next(rows) == {"a": "1", "b": "2"}
 +    assert next(rows) == {"a": "3", "b": "4"}
-+    with pytest.raises(ReportError, match=r"^line 4: expected 2 fields, got 1$"):
++    with pytest.raises(ReportError, match="^wrong field count: line 4 has 1, expected 2$"):
 +        next(rows)
 +
 +
@@ -180,7 +179,7 @@ index cdb4e47..a623435 100644
  
  def test_wrong_field_count_names_the_line(write_csv):
      path = write_csv("a,b\n1,2\n3\n")
-     with pytest.raises(ReportError, match=r"^line 3: expected 2 fields, got 1$"):
+     with pytest.raises(ReportError, match="^wrong field count: line 3 has 1, expected 2$"):
 -        read_csv(path)
 +        list(read_csv(path))
  
@@ -199,7 +198,7 @@ index cdb4e47..a623435 100644
  
  def test_wrong_encoding(write_csv):
      path = write_csv("name\nJosé\n", encoding="latin-1")
-     with pytest.raises(ReportError, match="cannot decode .* as utf-8"):
+     with pytest.raises(ReportError, match="^cannot decode: .* is not utf-8$"):
 -        read_csv(path)
 -    assert read_csv(path, Dialect(encoding="latin-1")) == [{"name": "José"}]
 +        list(read_csv(path))

@@ -1,26 +1,29 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 4c11777..b45a1a2 100644
+index 4c11777..c379bfb 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
  
  ## Unreleased
  
-+- Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names.
++- Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names. `KEY_SEPARATOR` is removed.
  - `--profile` describes each column (number or text, filled and blank cells) instead of reporting.
  
  ## 0.9.0
 diff --git a/docs/reference.md b/docs/reference.md
-index 50b6908..8f18ade 100644
+index dc8bd10..c32653b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -39,11 +39,10 @@ its value, and what it means.
+@@ -37,12 +37,14 @@ its value, and what it means.
  
+ ## Grouping and totals
+ 
++Each grouping column is its own key column, headed by its CSV column name, and
++`aggregate` returns each key value under that name.
++
  | Key | Value | Meaning |
  |---|---|---|
--| `group column` | `group` | header of the single key column |
--| `key separator` | ` / ` | joins the values of a multi-column key |
-+| `key columns` | `one per grouping column` | each headed by its CSV column name; `aggregate` returns each key value under that name |
+-| `KEY_SEPARATOR` | `" / "` | in `tabreport.aggregate`; joins the values of a multi-column key into the one key column, which is headed `group` and returned by `aggregate` under `"group"` |
  | `group order` | `key, ascending` | order of report rows unless `--sort` is given |
  | `sort descending prefix` | `-` | `--sort=-sum(amount)` puts the largest first; empty results go last |
 -| `totals label` | `TOTAL` | first cell of the totals row |

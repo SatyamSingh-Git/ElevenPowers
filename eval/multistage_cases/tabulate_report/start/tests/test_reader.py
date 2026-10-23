@@ -33,7 +33,7 @@ def test_missing_required_column(sales):
 
 def test_wrong_field_count_names_the_line(write_csv):
     path = write_csv("a,b\n1,2\n3\n")
-    with pytest.raises(ReportError, match=r"^line 3: expected 2 fields, got 1$"):
+    with pytest.raises(ReportError, match="^wrong field count: line 3 has 1, expected 2$"):
         read_csv(path)
 
 
@@ -49,7 +49,7 @@ def test_duplicate_column(write_csv):
 
 def test_wrong_encoding(write_csv):
     path = write_csv("name\nJosé\n", encoding="latin-1")
-    with pytest.raises(ReportError, match="cannot decode .* as utf-8"):
+    with pytest.raises(ReportError, match="^cannot decode: .* is not utf-8$"):
         read_csv(path)
     assert read_csv(path, Dialect(encoding="latin-1")) == [{"name": "José"}]
 

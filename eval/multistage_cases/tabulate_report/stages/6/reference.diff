@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 90eac7a..3c8c3e9 100644
+index 991b580..1ac7a89 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,16 +11,16 @@ index 90eac7a..3c8c3e9 100644
  - `read_csv` streams: it returns an iterator that reads one row at a time instead of a list of the whole file, and reports run in a single pass, so large files no longer need to fit in memory. A malformed line is now reported when it is reached, after the rows before it.
  - `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
 diff --git a/docs/reference.md b/docs/reference.md
-index e0c14d3..038530b 100644
+index a38b1d5..1e5e1ca 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -59,7 +59,7 @@ its value, and what it means.
+@@ -60,7 +60,7 @@ Each grouping column is its own key column, headed by its CSV column name, and
  | `negative money` | `-$1.00` | the sign goes before the symbol |
  | `rounding` | `half up` | 2.345 prints as 2.35 |
  | `format_number places` | `2` | default decimals for plain numbers |
--| `format_number thousands` | `,` | default grouping separator for plain numbers |
-+| `format_number thousands` | `none` | plain numbers, counts and `--currency none` measures included, are not grouped (`1204`, `12500.00`) unless a separator is passed |
- | `format_money thousands` | `,` | grouping separator for money |
+-| `format_number thousands` | `","` | default grouping separator for plain numbers |
++| `format_number thousands` | `""` | default: plain numbers, counts and `--currency none` measures included, are not grouped (`1204`, `12500.00`) unless a separator is passed |
+ | `format_money thousands` | `","` | grouping separator for money |
  | `count format` | `whole number` | counts never show decimals |
  
 diff --git a/src/tabreport/money.py b/src/tabreport/money.py
