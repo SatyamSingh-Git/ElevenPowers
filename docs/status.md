@@ -1,5 +1,15 @@
 # Current delivery status
 
+**2026-10-23 — Multi-stage v2 built and frozen; no model run.**
+Twelve independently authored six-stage cases, oracles for earlier behaviour
+lost, stale documented facts and rules, a no-model rehearsal (12/12 usable from
+a fresh CRLF clone) and a power simulation. Two case-review rounds and a final
+code review; three grading defects fixed test-first, seven minors deferred.
+Twelve cases rather than eight, because eight cannot reach significance unless
+seven differ. Public cases:
+<https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>. The pilot
+and full run wait for the user's go. See [results](../results/multistage/README.md).
+
 **2026-10-23 — Two $0 readings of the held-out sweep.**
 Oracle gap from the sweep's records: +6.7 points ordinary, +4.2 assisted, each from
 3-5 disagreeing tasks, so still unsettled. Counting only resolved and tested
