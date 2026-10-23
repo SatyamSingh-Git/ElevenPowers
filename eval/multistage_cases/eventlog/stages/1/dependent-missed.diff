@@ -1,0 +1,28 @@
+diff --git a/src/eventlog/segment.py b/src/eventlog/segment.py
+index 53a38b5..43b153a 100644
+--- a/src/eventlog/segment.py
++++ b/src/eventlog/segment.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import struct
+ 
+-from .codec import decode_record, read_varint
++from .codec import decode_record
+ from .errors import NotASegment, UnsupportedFormat
+ 
+ MAGIC = b'EVLG'
+@@ -97,11 +97,10 @@ class Segment:
+         position = HEADER.size
+         found = []
+         while position < len(data):
+-            prefix = read_varint(data, position)
+-            if prefix is None:
++            if position + 4 > len(data):
+                 break
+-            length, start = prefix
+-            if start + length > len(data):
++            (length,) = struct.unpack_from('>I', data, position)
++            if position + 4 + length > len(data):
+                 break
+             record, end = decode_record(data, position, self.name)
+             found.append((position, record))

@@ -1,0 +1,13 @@
+diff --git a/src/eventlog/compaction.py b/src/eventlog/compaction.py
+index 730ccfb..70100bc 100644
+--- a/src/eventlog/compaction.py
++++ b/src/eventlog/compaction.py
+@@ -53,7 +53,7 @@ def _rewrite(segment, records, index_interval_bytes):
+     positions = []
+     for record in records:
+         positions.append((record.offset, len(data)))
+-        data += encode_record(record, segment.base_offset)
++        data += encode_record(record)
+ 
+     staged = segment.path.with_name(segment.path.name + '.compacting')
+     staged.write_bytes(data)

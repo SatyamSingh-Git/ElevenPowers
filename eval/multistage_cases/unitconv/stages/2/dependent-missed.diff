@@ -1,0 +1,10 @@
+diff --git a/src/unitconv/quantity.py b/src/unitconv/quantity.py
+index 03714c1..222933e 100644
+--- a/src/unitconv/quantity.py
++++ b/src/unitconv/quantity.py
+@@ -19,4 +19,4 @@ def parse_quantity(text):
+     match = QUANTITY.fullmatch(text)
+     if not match:
+         raise ParseError(f"cannot parse quantity: '{text}'")
+-    return Quantity(float(match.group('number')), parse_unit(match.group('unit')))
++    return Quantity(float(match.group('number')), parse_unit(match.group('unit').lower()))

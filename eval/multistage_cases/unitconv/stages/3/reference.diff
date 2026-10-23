@@ -1,0 +1,80 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b158c2b..08ceb62 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `--json` output gives `unit` as an object with the unit's `symbol` and singular `name`.
+ - Fixed: unit symbols in quantities were matched without regard to case, so `3 Mm` was read as millimetres. Symbols now match exactly; a symbol that matches only when case is ignored is refused with the spellings it might mean.
+ - `convert()` returns the exact converted value and no longer takes `precision` or `rounding`; `format_quantity()` takes them instead, so chained conversions no longer drift.
+ - `unitconv dimensions` lists the named dimensions and their formulas.
+diff --git a/docs/reference.md b/docs/reference.md
+index bac9dff..5d6943c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -87,7 +87,7 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+ |---|---|---|
+ | `json.fields` | `input, value, unit, text` | keys of the object |
+ | `json.value` | `number` | the converted value, rounded as in `text` |
+-| `json.unit` | `symbol` | the target unit's symbol |
++| `json.unit` | `{symbol, name}` | an object with the target unit's symbol and its singular name, as in `{"symbol": "km", "name": "kilometre"}` |
+ 
+ ## Batch files
+ 
+diff --git a/src/unitconv/batch.py b/src/unitconv/batch.py
+index 376ca64..0e2a90c 100644
+--- a/src/unitconv/batch.py
++++ b/src/unitconv/batch.py
+@@ -31,7 +31,7 @@ def convert_file(source, destination, settings):
+                 result = convert(parse_quantity(text), target)
+                 record = result_record(text, result, precision=settings.precision,
+                                        rounding=settings.rounding, style=settings.style)
+-                writer.writerow([text, target, format_number(record['value']), record['unit'], ''])
++                writer.writerow([text, target, format_number(record['value']), record['unit']['symbol'], ''])
+                 converted += 1
+             except UnitError as error:
+                 writer.writerow([*(row + ['', ''])[:2], '', '', str(error)])
+diff --git a/src/unitconv/formatting.py b/src/unitconv/formatting.py
+index 9bef8d4..6bbf1d2 100644
+--- a/src/unitconv/formatting.py
++++ b/src/unitconv/formatting.py
+@@ -28,6 +28,6 @@ def result_record(text, result, *, precision=DEFAULT_PRECISION, rounding=DEFAULT
+     return {
+         'input': text,
+         'value': round_value(result.value, precision, rounding),
+-        'unit': result.unit.symbol,
++        'unit': {'symbol': result.unit.symbol, 'name': result.unit.name()},
+         'text': format_quantity(result, precision=precision, rounding=rounding, style=style),
+     }
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index e1e195d..8b93c61 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -20,7 +20,8 @@ def test_convert(capsys):
+ def test_json(capsys):
+     code, out, _ = run(capsys, 'convert', '1 mi', 'km', '--json')
+     assert code == 0
+-    assert json.loads(out) == {'input': '1 mi', 'value': 1.609344, 'unit': 'km', 'text': '1.609344 km'}
++    assert json.loads(out) == {'input': '1 mi', 'value': 1.609344, 'unit': {'symbol': 'km', 'name': 'kilometre'},
++                               'text': '1.609344 km'}
+ 
+ 
+ def test_settings_file(tmp_path, capsys):
+diff --git a/tests/test_formatting.py b/tests/test_formatting.py
+index 8089a39..80a8911 100644
+--- a/tests/test_formatting.py
++++ b/tests/test_formatting.py
+@@ -36,6 +36,10 @@ def test_output_reads_back():
+ 
+ def test_result_record():
+     record = result_record('1 mi', convert(parse_quantity('1 mi'), 'km'))
+-    assert record == {'input': '1 mi', 'value': 1.609344, 'unit': 'km', 'text': '1.609344 km'}
++    assert record == {'input': '1 mi', 'value': 1.609344, 'unit': {'symbol': 'km', 'name': 'kilometre'},
++                      'text': '1.609344 km'}
++    record = result_record('1 m/s', convert(parse_quantity('1 m/s'), 'km/h'), style='name')
++    assert record['unit'] == {'symbol': 'km/h', 'name': 'kilometre per hour'}
++    assert record['text'] == '3.6 kilometres per hour'
+     record = result_record('1 mi', convert(parse_quantity('1 mi'), 'km'), precision=1, rounding='down')
+     assert (record['value'], record['text']) == (1.6, '1.6 km')

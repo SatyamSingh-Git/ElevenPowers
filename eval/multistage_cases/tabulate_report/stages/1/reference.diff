@@ -1,0 +1,219 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4c11777..b45a1a2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names.
+ - `--profile` describes each column (number or text, filled and blank cells) instead of reporting.
+ 
+ ## 0.9.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 50b6908..8f18ade 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -39,11 +39,10 @@ its value, and what it means.
+ 
+ | Key | Value | Meaning |
+ |---|---|---|
+-| `group column` | `group` | header of the single key column |
+-| `key separator` | ` / ` | joins the values of a multi-column key |
++| `key columns` | `one per grouping column` | each headed by its CSV column name; `aggregate` returns each key value under that name |
+ | `group order` | `key, ascending` | order of report rows unless `--sort` is given |
+ | `sort descending prefix` | `-` | `--sort=-sum(amount)` puts the largest first; empty results go last |
+-| `totals label` | `TOTAL` | first cell of the totals row |
++| `totals label` | `TOTAL` | first cell of the totals row; any other key cells are blank |
+ | `totals` | `on` | `--no-totals` leaves the row out |
+ | `mean total` | `mean of all rows` | not the mean of the group means |
+ | `min and max total` | `over all rows` | smallest and largest single value |
+diff --git a/src/tabreport/aggregate.py b/src/tabreport/aggregate.py
+index 27460e3..037ec9b 100644
+--- a/src/tabreport/aggregate.py
++++ b/src/tabreport/aggregate.py
+@@ -6,7 +6,6 @@ from .errors import ReportError
+ from .numbers import parse_amount
+ 
+ FUNCTIONS = ("sum", "count", "mean", "min", "max")
+-KEY_SEPARATOR = " / "
+ 
+ 
+ @dataclass(frozen=True)
+@@ -83,8 +82,8 @@ class Accumulator:
+ def aggregate(rows, by, measures):
+     """One dict per distinct key of the ``by`` columns, in the order keys first appear.
+ 
+-    The key is under ``"group"``, multi-column keys joined with KEY_SEPARATOR;
+-    each measure is under its label.
++    Each ``by`` column's value is under that column's name, and each measure
++    under its label.
+     """
+     measures = [parse_measure(m) for m in measures]
+     groups = {}
+@@ -93,7 +92,7 @@ def aggregate(rows, by, measures):
+         if key not in groups:
+             groups[key] = Accumulator(measures)
+         groups[key].add(row)
+-    return [{"group": KEY_SEPARATOR.join(key), **totals.results()} for key, totals in groups.items()]
++    return [{**dict(zip(by, key)), **totals.results()} for key, totals in groups.items()]
+ 
+ 
+ def cell(row, name):
+diff --git a/src/tabreport/report.py b/src/tabreport/report.py
+index ee6b79c..b60bab0 100644
+--- a/src/tabreport/report.py
++++ b/src/tabreport/report.py
+@@ -36,11 +36,10 @@ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+         raise ReportError("at least one measure is needed")
+     if currency is not None:
+         check_currency(currency)
+-    keys = ["group"] if by else []
+-    headers = keys + [m.label for m in measures]
++    headers = list(by) + [m.label for m in measures]
+     results = aggregate(rows, by, measures) if by else []
+-    body = [([r["group"]] if by else []) + [r[m.label] for m in measures] for r in results]
+-    body.sort(key=lambda row: row[:len(keys)])
++    body = [[r[name] for name in by] + [r[m.label] for m in measures] for r in results]
++    body.sort(key=lambda row: row[:len(by)])
+     if sort:
+         body = _sorted(body, headers, sort)
+     grand = None
+@@ -48,7 +47,7 @@ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+         overall = Accumulator(measures)
+         for row in rows:
+             overall.add(row)
+-        label = [TOTAL_LABEL] if keys else []
++        label = [TOTAL_LABEL] + [""] * (len(by) - 1) if by else []
+         grand = label + [overall.result(m) for m in measures]
+     return Report(headers, body, grand, measures, currency, len(rows))
+ 
+diff --git a/tests/test_aggregate.py b/tests/test_aggregate.py
+index bab50e8..e8dab06 100644
+--- a/tests/test_aggregate.py
++++ b/tests/test_aggregate.py
+@@ -28,7 +28,7 @@ def test_labels():
+ 
+ def test_aggregate_by_one_column(sales):
+     results = aggregate(read_csv(sales), ["region"], ["sum:amount", "count", "mean:amount"])
+-    assert [r["group"] for r in results] == ["East", "West", "North"]
++    assert [r["region"] for r in results] == ["East", "West", "North"]
+     east = results[0]
+     assert east["sum(amount)"] == Decimal("1500.50")
+     assert east["count"] == 2
+@@ -37,7 +37,7 @@ def test_aggregate_by_one_column(sales):
+ 
+ def test_aggregate_by_two_columns(sales):
+     results = aggregate(read_csv(sales), ["region", "product"], ["min:amount", "max:units"])
+-    assert results[0] == {"group": "East / Widget", "min(amount)": Decimal("1200.50"),
++    assert results[0] == {"region": "East", "product": "Widget", "min(amount)": Decimal("1200.50"),
+                           "max(units)": Decimal("3")}
+     assert len(results) == 5
+ 
+@@ -45,8 +45,8 @@ def test_aggregate_by_two_columns(sales):
+ def test_blank_cells_are_skipped_but_counted():
+     rows = [{"k": "a", "v": "2"}, {"k": "a", "v": ""}, {"k": "b", "v": " "}]
+     results = aggregate(rows, ["k"], ["count", "mean:v", "min:v"])
+-    assert results[0] == {"group": "a", "count": 2, "mean(v)": Decimal("2"), "min(v)": Decimal("2")}
+-    assert results[1] == {"group": "b", "count": 1, "mean(v)": None, "min(v)": None}
++    assert results[0] == {"k": "a", "count": 2, "mean(v)": Decimal("2"), "min(v)": Decimal("2")}
++    assert results[1] == {"k": "b", "count": 1, "mean(v)": None, "min(v)": None}
+ 
+ 
+ def test_bad_number_stops_the_aggregate():
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index b25a20a..51cbae5 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -5,21 +5,21 @@ def test_report_to_file(sales, tmp_path):
+     out = tmp_path / "out.md"
+     assert main([str(sales), "-g", "region", "-m", "sum:amount", "-f", "markdown", "-o", str(out)]) == 0
+     lines = out.read_text(encoding="utf-8").splitlines()
+-    assert lines[2] == "| East  |   $1,500.50 |"
+-    assert lines[5] == "| TOTAL |   $2,450.00 |"
++    assert lines[2] == "| East   |   $1,500.50 |"
++    assert lines[5] == "| TOTAL  |   $2,450.00 |"
+ 
+ 
+ def test_report_to_stdout(sales, capsys):
+     assert main([str(sales), "-g", "region", "--no-totals"]) == 0
+     out = capsys.readouterr().out
+     assert "TOTAL" not in out
+-    assert "North      1" in out
++    assert "North       1" in out
+ 
+ 
+ def test_where_filters_rows(sales, capsys):
+     assert main([str(sales), "-g", "product", "-m", "sum:units", "-w", "amount>=100", "--currency", "none"]) == 0
+     out = capsys.readouterr().out
+-    assert out.splitlines()[2:4] == ["Gadget        2.00", "Widget        8.00"]
++    assert out.splitlines()[2:4] == ["Gadget         2.00", "Widget         8.00"]
+     assert out.endswith("\n3 rows\n")
+ 
+ 
+diff --git a/tests/test_report.py b/tests/test_report.py
+index 7eb8fb4..f0fdcb0 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -9,7 +9,7 @@ MEASURES = ["sum:amount", "count", "mean:amount"]
+ 
+ def test_rows_in_key_order_with_totals(sales):
+     report = build_report(read_csv(sales), ["region"], MEASURES)
+-    assert report.headers == ["group", "sum(amount)", "count", "mean(amount)"]
++    assert report.headers == ["region", "sum(amount)", "count", "mean(amount)"]
+     assert [row[0] for row in report.rows] == ["East", "North", "West"]
+     assert report.rows[2] == ["West", Decimal("-50.50"), 2, Decimal("-25.25")]
+     assert report.totals == ["TOTAL", Decimal("2450.00"), 5, Decimal("490")]
+@@ -19,13 +19,13 @@ def test_rows_in_key_order_with_totals(sales):
+ def test_render_plain(sales):
+     text = render_report(build_report(read_csv(sales), ["region"], MEASURES))
+     assert text == (
+-        "group  sum(amount)  count  mean(amount)\n"
+-        "-----  -----------  -----  ------------\n"
+-        "East     $1,500.50      2       $750.25\n"
+-        "North    $1,000.00      1     $1,000.00\n"
+-        "West       -$50.50      2       -$25.25\n"
+-        "-----  -----------  -----  ------------\n"
+-        "TOTAL    $2,450.00      5       $490.00\n"
++        "region  sum(amount)  count  mean(amount)\n"
++        "------  -----------  -----  ------------\n"
++        "East      $1,500.50      2       $750.25\n"
++        "North     $1,000.00      1     $1,000.00\n"
++        "West        -$50.50      2       -$25.25\n"
++        "------  -----------  -----  ------------\n"
++        "TOTAL     $2,450.00      5       $490.00\n"
+         "\n"
+         "5 rows\n"
+     )
+@@ -34,16 +34,26 @@ def test_render_plain(sales):
+ def test_render_markdown_without_currency(sales):
+     report = build_report(read_csv(sales), ["region"], ["sum:amount"], currency=None, totals=False)
+     assert render_report(report, "markdown") == (
+-        "| group | sum(amount) |\n"
+-        "| ----- | ----------: |\n"
+-        "| East  |    1,500.50 |\n"
+-        "| North |    1,000.00 |\n"
+-        "| West  |      -50.50 |\n"
++        "| region | sum(amount) |\n"
++        "| ------ | ----------: |\n"
++        "| East   |    1,500.50 |\n"
++        "| North  |    1,000.00 |\n"
++        "| West   |      -50.50 |\n"
+         "\n"
+         "5 rows\n"
+     )
+ 
+ 
++def test_each_key_column_is_its_own_column(sales):
++    report = build_report(read_csv(sales), ["region", "product"], ["sum:amount"])
++    assert report.headers == ["region", "product", "sum(amount)"]
++    assert report.rows[:2] == [["East", "Gadget", Decimal("300")], ["East", "Widget", Decimal("1200.50")]]
++    assert report.totals == ["TOTAL", "", Decimal("2450.00")]
++    lines = render_report(report, "markdown").splitlines()
++    assert lines[0] == "| region | product | sum(amount) |"
++    assert lines[7] == "| TOTAL  |         |   $2,450.00 |"
++
++
+ def test_sort_by_measure_descending(sales):
+     report = build_report(read_csv(sales), ["region"], ["sum:amount"], sort="-sum(amount)")
+     assert [row[0] for row in report.rows] == ["East", "North", "West"]

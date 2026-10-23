@@ -1,0 +1,33 @@
+{"id": "unitconv", "pythonpath": "src", "test_dir": "tests",
+ "protected": "src/unitconv/_generated.py", "docs": "docs/reference.md",
+ "changelog": "CHANGELOG.md",
+ "stages": [
+  {"request": "Chained conversions drift because `convert()` rounds what it returns: converting `1 in` to `km` and that result back to `in` gives `0.984252 in`. `convert()` should return the exact converted value and no longer accept `precision` or `rounding`. `format_quantity()` should take those two keyword arguments instead, with the same defaults, so a value is rounded only when it is turned into text. Printed results should look exactly as they do now.",
+   "kind": "cross-cutting", "bugfix": false, "dependent_missed_fails": ["base_frontend"]},
+  {"request": "`unitconv convert '3 Mm' km` prints `0.000003 km`: the megametres are read as millimetres, and `5 MN` comes out as millinewtons. Unit symbols should match exactly as written, case included. A symbol that matches a unit only when case is ignored should be refused with a hint listing the spellings it could mean, for example `unknown unit: 'MM' (did you mean 'Mm' or 'mm'?)` or `unknown unit: 'KM' (did you mean 'km'?)`.",
+   "kind": "cross-cutting", "bugfix": true, "dependent_missed_fails": ["base_frontend", "base_library"]},
+  {"request": "Scripts reading `unitconv convert ... --json` need the unit's name as well as its symbol. In that JSON object, `unit` should become an object with `symbol` and `name`, for example `\"unit\": {\"symbol\": \"km\", \"name\": \"kilometre\"}`. The name is always singular, whatever `--style` says, and compound units get their spoken name, such as `kilometre per hour`.",
+   "kind": "cross-cutting", "bugfix": false, "dependent_missed_fails": ["base_frontend"]},
+  {"request": "`unitconv list` prints all 38 units at once and scrolls off the screen. Show 20 units a page, with a `--page N` option (the first page by default) and a last line such as `page 1 of 2`. A page number below 1 or past the last page should exit with status 2 and print `error: page 3 out of range (1-2)` to standard error.",
+   "kind": "self-contained", "bugfix": false, "dependent_missed_fails": []},
+  {"request": "Compound units in results are hard to read, as in `1 kg*m^2/s^2`. Write them with a middle dot between units and superscript powers instead, as in `1 kg·m²/s²` and `9.81 m/s²`. Quantities typed the old way, with `*` and `^`, must keep working.",
+   "kind": "cross-cutting", "bugfix": false, "dependent_missed_fails": ["base_library"]},
+  {"request": "`unitconv convert '0.235 m' cm --precision 0` prints `23 cm`, although 23.5 rounds to 24 under the default `half_even` mode, and `unitconv convert '0.145 m' cm --precision 0 --rounding half_up` prints `14 cm` instead of `15 cm`. The conversion produces 23.499999999999996 before any rounding happens. Conversions should use exact decimal arithmetic, so that values round the way they are written.",
+   "kind": "cross-cutting", "bugfix": true, "dependent_missed_fails": ["base_frontend", "s3_json", "s3_names", "s5_symbols"]}
+ ],
+ "groups": [
+  {"id": "base_library", "since": 0, "until": 6},
+  {"id": "base_frontend", "since": 0, "until": 6},
+  {"id": "s1_exact", "since": 1, "until": 6},
+  {"id": "s1_display", "since": 1, "until": 6},
+  {"id": "s2_case", "since": 2, "until": 6},
+  {"id": "s2_suggest", "since": 2, "until": 6},
+  {"id": "s3_json", "since": 3, "until": 6},
+  {"id": "s3_names", "since": 3, "until": 6},
+  {"id": "s4_pages", "since": 4, "until": 6},
+  {"id": "s4_errors", "since": 4, "until": 6},
+  {"id": "s5_symbols", "since": 5, "until": 6},
+  {"id": "s5_input", "since": 5, "until": 6},
+  {"id": "s6_exact", "since": 6, "until": 6},
+  {"id": "s6_cli", "since": 6, "until": 6}
+ ]}

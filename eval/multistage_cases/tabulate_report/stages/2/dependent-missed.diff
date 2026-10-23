@@ -1,0 +1,14 @@
+diff --git a/src/tabreport/report.py b/src/tabreport/report.py
+index 5a15f74..b60bab0 100644
+--- a/src/tabreport/report.py
++++ b/src/tabreport/report.py
+@@ -66,8 +66,7 @@ def _sorted(body, headers, sort):
+ def render_report(report, fmt="plain"):
+     rows = [_cells(report, row) for row in report.rows]
+     totals = None if report.totals is None else _cells(report, report.totals)
+-    align = ["l"] * report.key_columns + ["r"] * len(report.measures)
+-    table = render_table(report.headers, rows, fmt, align=align, totals=totals)
++    table = render_table(report.headers, rows, fmt, totals=totals)
+     noun = "row" if report.row_count == 1 else "rows"
+     return f"{table}\n{report.row_count} {noun}\n"
+ 

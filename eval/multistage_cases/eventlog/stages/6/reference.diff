@@ -1,0 +1,320 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d336b3a..9d86762 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Segment format version 3: records store their offset as a 4-byte delta from the segment's base offset instead of the full 8-byte offset. Version 2 segments are refused.
+ - Segment files are named `*.seg` instead of `*.log`, so log shippers stop picking them up. Opening a directory that still holds `*.log` segments raises `LegacySegmentName`.
+ - Fix: segments no longer grow past `segment_bytes`; the log rolls before an append that would cross it, and a record too big for an empty segment raises `RecordTooLarge`.
+ - `format_stats` shows sizes in binary units (`bytes: 1.5 KiB`) and a new `average:` line; `LogStats` gains `average_record_bytes`.
+diff --git a/docs/reference.md b/docs/reference.md
+index cd82260..657df4b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -27,7 +27,7 @@ An append-only log of keyed events, stored as a directory of segment files.
+ |---|---|---|
+ | `segment.name` | `{base_offset:020d}.seg` | One file per segment, named by the offset of its first record. Segments named `{base_offset:020d}.log` (before 0.4) are refused. |
+ | `segment.magic` | `EVLG` | First four bytes of every segment. |
+-| `segment.version` | `2` | Format version byte after the magic. Other versions, including 1, are refused. |
++| `segment.version` | `3` | Format version byte after the magic. Other versions, including 1 and 2, are refused. |
+ | `segment.header` | `magic(4) version(u8) base_offset(u64)` | Fixed header before the first record. |
+ | `segment.header_bytes` | `13` | Size of the header. |
+ | `byte_order` | `big-endian` | Every fixed-width integer in segment and index files. |
+@@ -40,13 +40,13 @@ Records follow the segment header back to back.
+ |---|---|---|
+ | `record.length` | `uvarint` | Number of bytes after the length field, as an unsigned LEB128 varint: seven bits per byte, low-order group first, high bit set on every byte but the last. |
+ | `record.crc` | `CRC-32C` | Checksum (Castagnoli) of every byte after the crc field. |
+-| `record.offset` | `u64` | The record's offset. |
++| `record.offset` | `u32` | The record's offset minus the segment's base offset; readers add the base back. |
+ | `record.timestamp` | `u64` | Milliseconds, from the `timestamp` argument or the clock. |
+ | `record.flags` | `u8` | Bit flags. |
+ | `record.key_length` | `u16` | Length of the key that follows. |
+ | `record.key` | `bytes` | The key. |
+ | `record.value` | `bytes` | The rest of the record. |
+-| `record.body_overhead` | `23` | Bytes after the length field other than key and value. |
++| `record.body_overhead` | `19` | Bytes after the length field other than key and value. |
+ | `flags.tombstone` | `0x01` | Set on records written by `Log.delete`. |
+ 
+ ## Index files
+diff --git a/src/eventlog/codec.py b/src/eventlog/codec.py
+index 2df4617..7012d9a 100644
+--- a/src/eventlog/codec.py
++++ b/src/eventlog/codec.py
+@@ -4,7 +4,7 @@ A record on disk is a length prefix followed by the body it counts:
+ 
+     length     uvarint  bytes that follow the length field
+     crc        u32      CRC-32C of everything after this field
+-    offset     u64
++    offset     u32      offset minus the segment's base offset
+     timestamp  u64      milliseconds
+     flags      u8       bit 0 marks a tombstone
+     key_length u16
+@@ -22,7 +22,7 @@ from .errors import CorruptRecord
+ 
+ TOMBSTONE = 0x01
+ CHECKSUM = struct.Struct('>I')
+-FIELDS = struct.Struct('>QQBH')
++FIELDS = struct.Struct('>IQBH')
+ BODY_OVERHEAD = CHECKSUM.size + FIELDS.size
+ 
+ 
+@@ -64,15 +64,16 @@ def read_varint(buf, position):
+     return None
+ 
+ 
+-def encode_record(record):
++def encode_record(record, base_offset):
++    """Encode `record` for the segment whose first offset is `base_offset`."""
+     flags = TOMBSTONE if record.tombstone else 0
+-    fields = FIELDS.pack(record.offset, record.timestamp, flags, len(record.key))
++    fields = FIELDS.pack(record.offset - base_offset, record.timestamp, flags, len(record.key))
+     checked = fields + record.key + record.value
+     body = CHECKSUM.pack(crc32c(checked)) + checked
+     return encode_varint(len(body)) + body
+ 
+ 
+-def decode_record(buf, position, segment='<buffer>'):
++def decode_record(buf, position, base_offset, segment='<buffer>'):
+     """Decode the record that starts at `position`; return it and the position after it."""
+     prefix = read_varint(buf, position)
+     if prefix is None:
+@@ -84,10 +85,10 @@ def decode_record(buf, position, segment='<buffer>'):
+     (crc,) = CHECKSUM.unpack_from(buf, start)
+     if crc32c(memoryview(buf)[start + CHECKSUM.size:end]) != crc:
+         raise CorruptRecord(segment, position)
+-    offset, timestamp, flags, key_length = FIELDS.unpack_from(buf, start + CHECKSUM.size)
++    delta, timestamp, flags, key_length = FIELDS.unpack_from(buf, start + CHECKSUM.size)
+     key_start = start + BODY_OVERHEAD
+     if key_start + key_length > end:
+         raise CorruptRecord(segment, position)
+     key = bytes(buf[key_start:key_start + key_length])
+     value = bytes(buf[key_start + key_length:end])
+-    return Record(offset, timestamp, key, value, bool(flags & TOMBSTONE)), end
++    return Record(base_offset + delta, timestamp, key, value, bool(flags & TOMBSTONE)), end
+diff --git a/src/eventlog/compaction.py b/src/eventlog/compaction.py
+index 70100bc..730ccfb 100644
+--- a/src/eventlog/compaction.py
++++ b/src/eventlog/compaction.py
+@@ -53,7 +53,7 @@ def _rewrite(segment, records, index_interval_bytes):
+     positions = []
+     for record in records:
+         positions.append((record.offset, len(data)))
+-        data += encode_record(record)
++        data += encode_record(record, segment.base_offset)
+ 
+     staged = segment.path.with_name(segment.path.name + '.compacting')
+     staged.write_bytes(data)
+diff --git a/src/eventlog/log.py b/src/eventlog/log.py
+index 4842015..de866ef 100644
+--- a/src/eventlog/log.py
++++ b/src/eventlog/log.py
+@@ -90,11 +90,13 @@ class Log:
+             raise ValueTooLarge(len(value), self.config.max_value_bytes)
+         record = Record(self._next_offset, self.clock() if timestamp is None else timestamp,
+                         key, value, tombstone)
+-        data = encode_record(record)
++        data = encode_record(record, self._segments[-1].base_offset)
+         if HEADER.size + len(data) > self.config.segment_bytes:
+             raise RecordTooLarge(len(data), self.config.segment_bytes)
+         if self._segments[-1].size + len(data) > self.config.segment_bytes:
+             self._roll()
++            # The offset is stored relative to the segment, which just changed.
++            data = encode_record(record, self._segments[-1].base_offset)
+         position = self._segments[-1].append(data)
+         self._index.add(record.offset, position)
+         self._next_offset += 1
+diff --git a/src/eventlog/segment.py b/src/eventlog/segment.py
+index cafc536..d142240 100644
+--- a/src/eventlog/segment.py
++++ b/src/eventlog/segment.py
+@@ -6,7 +6,7 @@ from .codec import decode_record, read_varint
+ from .errors import NotASegment, UnsupportedFormat
+ 
+ MAGIC = b'EVLG'
+-VERSION = 2
++VERSION = 3
+ HEADER = struct.Struct('>4sBQ')
+ SUFFIX = '.seg'
+ # Segments were named *.log before 0.4; log shippers mistook them for text logs.
+@@ -84,7 +84,7 @@ class Segment:
+         data = self.read()
+         position = HEADER.size if start is None else start
+         while position < len(data):
+-            record, position = decode_record(data, position, self.name)
++            record, position = decode_record(data, position, self.base_offset, self.name)
+             yield record
+ 
+     def scan(self):
+@@ -105,7 +105,7 @@ class Segment:
+             length, start = prefix
+             if start + length > len(data):
+                 break
+-            record, end = decode_record(data, position, self.name)
++            record, end = decode_record(data, position, self.base_offset, self.name)
+             found.append((position, record))
+             position = end
+         return found, position
+diff --git a/src/eventlog/stats.py b/src/eventlog/stats.py
+index 275db72..d287018 100644
+--- a/src/eventlog/stats.py
++++ b/src/eventlog/stats.py
+@@ -42,7 +42,7 @@ def stats(directory):
+         position = HEADER.size
+         while position < len(data):
+             try:
+-                record, position = decode_record(data, position, path.name)
++                record, position = decode_record(data, position, base_offset, path.name)
+             except CorruptRecord:
+                 # The writer may be part-way through a record at the very end.
+                 if number == len(paths) - 1:
+diff --git a/tests/test_codec.py b/tests/test_codec.py
+index c37998f..806e0c5 100644
+--- a/tests/test_codec.py
++++ b/tests/test_codec.py
+@@ -12,22 +12,29 @@ def test_crc32c_matches_the_published_check_value():
+ 
+ def test_round_trip():
+     record = Record(7, 1_700_000_000_000, b'user-1', b'{"name": "Ada"}')
+-    data = encode_record(record)
+-    assert decode_record(data, 0) == (record, len(data))
++    data = encode_record(record, 0)
++    assert decode_record(data, 0, 0) == (record, len(data))
+ 
+ 
+ def test_tombstone_round_trip():
+     record = Record(3, 5, b'user-1', b'', tombstone=True)
+-    assert decode_record(encode_record(record), 0)[0].tombstone
++    assert decode_record(encode_record(record, 0), 0, 0)[0].tombstone
+ 
+ 
+ def test_layout():
+-    data = encode_record(Record(258, 9, b'ab', b'xyz'))
+-    assert data[0] == len(data) - 1 == 23 + 2 + 3
+-    assert struct.unpack_from('>QQBH', data, 5) == (258, 9, 0, 2)
++    data = encode_record(Record(258, 9, b'ab', b'xyz'), 250)
++    assert data[0] == len(data) - 1 == 19 + 2 + 3
++    assert struct.unpack_from('>IQBH', data, 5) == (8, 9, 0, 2)
+     assert data[-5:] == b'abxyz'
+ 
+ 
++def test_offset_is_relative_to_the_segment():
++    record = Record(5_000_000_123, 1, b'k', b'v')
++    data = encode_record(record, 5_000_000_000)
++    assert decode_record(data, 0, 5_000_000_000) == (record, len(data))
++    assert decode_record(data, 0, 0)[0].offset == 123
++
++
+ @pytest.mark.parametrize('value, encoded', [(0, b'\x00'), (127, b'\x7f'), (128, b'\x80\x01'), (300, b'\xac\x02'),
+                                             (16_384, b'\x80\x80\x01')])
+ def test_varint(value, encoded):
+@@ -41,26 +48,26 @@ def test_varint_cut_short():
+ 
+ def test_long_length_prefix():
+     record = Record(1, 2, b'k', b'v' * 200)
+-    data = encode_record(record)
+-    assert data[:2] == encode_varint(23 + 1 + 200)
+-    assert decode_record(data, 0) == (record, len(data))
++    data = encode_record(record, 0)
++    assert data[:2] == encode_varint(19 + 1 + 200)
++    assert decode_record(data, 0, 0) == (record, len(data))
+ 
+ 
+ def test_decode_from_the_middle_of_a_buffer():
+-    first, second = Record(0, 0, b'a', b'1'), Record(1, 0, b'b', b'2')
+-    data = encode_record(first) + encode_record(second)
+-    record, end = decode_record(data, len(encode_record(first)))
++    first, second = Record(10, 0, b'a', b'1'), Record(11, 0, b'b', b'2')
++    data = encode_record(first, 10) + encode_record(second, 10)
++    record, end = decode_record(data, len(encode_record(first, 10)), 10)
+     assert record == second and end == len(data)
+ 
+ 
+ def test_flipped_byte_is_corruption():
+-    data = bytearray(encode_record(Record(0, 0, b'key', b'value')))
++    data = bytearray(encode_record(Record(0, 0, b'key', b'value'), 0))
+     data[-1] ^= 0xFF
+     with pytest.raises(CorruptRecord, match='corrupt record at position 0 in seg'):
+-        decode_record(bytes(data), 0, 'seg')
++        decode_record(bytes(data), 0, 0, 'seg')
+ 
+ 
+ def test_short_buffer_is_corruption():
+-    data = encode_record(Record(0, 0, b'key', b'value'))
++    data = encode_record(Record(0, 0, b'key', b'value'), 0)
+     with pytest.raises(CorruptRecord):
+-        decode_record(data[:-1], 0)
++        decode_record(data[:-1], 0, 0)
+diff --git a/tests/test_log.py b/tests/test_log.py
+index e216ed5..9dec185 100644
+--- a/tests/test_log.py
++++ b/tests/test_log.py
+@@ -72,7 +72,7 @@ def test_segments_never_exceed_segment_bytes(tmp_path):
+ def test_record_too_large_for_any_segment(tmp_path):
+     with Log.open(tmp_path, LogConfig(segment_bytes=64)) as log:
+         log.append('k', 'v')
+-        with pytest.raises(RecordTooLarge, match='^record of 75 bytes exceeds segment_bytes 64$'):
++        with pytest.raises(RecordTooLarge, match='^record of 71 bytes exceeds segment_bytes 64$'):
+             log.append('k', 'v' * 50)
+         assert log.next_offset == 1
+         assert log.append('k', 'w') == 1
+@@ -154,13 +154,34 @@ def test_version_1_segments_are_refused(tmp_path):
+         log.append('k', 'v')
+     path = segment_files(tmp_path)[0]
+     data = bytearray(path.read_bytes())
+-    assert data[4] == 2
++    assert data[4] == 3
+     data[4] = 1
+     path.write_bytes(bytes(data))
+     with pytest.raises(UnsupportedFormat, match=r'^00000000000000000000\.seg: unsupported format version 1$'):
+         Log.open(tmp_path)
+ 
+ 
++def test_version_2_segments_are_refused(tmp_path):
++    with Log.open(tmp_path) as log:
++        log.append('k', 'v')
++    path = segment_files(tmp_path)[0]
++    data = bytearray(path.read_bytes())
++    data[4] = 2
++    path.write_bytes(bytes(data))
++    with pytest.raises(UnsupportedFormat, match='unsupported format version 2$'):
++        Log.open(tmp_path)
++
++
++def test_offsets_after_a_roll_are_relative_to_the_new_segment(tmp_path):
++    with Log.open(tmp_path, LogConfig(segment_bytes=64)) as log:
++        for n in range(5):
++            log.append('k', str(n) * 20)
++        assert len(log.segments) == 5
++        assert [r.offset for r in log.replay()] == [0, 1, 2, 3, 4]
++    for path in segment_files(tmp_path):
++        assert path.read_bytes()[18:22] == bytes(4)
++
++
+ def test_old_segment_names_are_refused(tmp_path):
+     with Log.open(tmp_path, LogConfig(segment_bytes=64)) as log:
+         for n in range(4):
+diff --git a/tests/test_stats.py b/tests/test_stats.py
+index f58c249..a1de3e0 100644
+--- a/tests/test_stats.py
++++ b/tests/test_stats.py
+@@ -49,7 +49,7 @@ def test_format(tmp_path):
+         log.append('a', '1')
+     text = format_stats(stats(tmp_path))
+     assert text.splitlines() == ['segments: 1', 'records: 1', 'keys: 1', 'tombstones: 0',
+-                                 f'bytes: {13 + 24 + 2} B', f'average: {24 + 2}.0 B', 'offsets: 0..1']
++                                 f'bytes: {13 + 20 + 2} B', f'average: {20 + 2}.0 B', 'offsets: 0..1']
+ 
+ 
+ def test_average_skips_segment_headers(tmp_path):
+@@ -59,7 +59,7 @@ def test_average_skips_segment_headers(tmp_path):
+         log.append('k', 'vvvv')
+         summary = stats(tmp_path)
+     assert summary.segments > 1
+-    assert summary.average_record_bytes == round((26 + 27 + 29) / 3, 1)
++    assert summary.average_record_bytes == round((22 + 23 + 25) / 3, 1)
+ 
+ 
+ @pytest.mark.parametrize('size, shown', [(0, '0 B'), (1023, '1023 B'), (1024, '1.0 KiB'), (1536, '1.5 KiB'),

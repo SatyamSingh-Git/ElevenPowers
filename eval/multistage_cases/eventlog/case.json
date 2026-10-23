@@ -1,0 +1,62 @@
+{
+ "id": "eventlog",
+ "pythonpath": "src",
+ "test_dir": "tests",
+ "protected": "src/eventlog/_generated.py",
+ "docs": "docs/reference.md",
+ "changelog": "CHANGELOG.md",
+ "stages": [
+  {
+   "request": "Most of our events are tiny, so the fixed 4-byte length in front of every record is wasted space. Please change the record length prefix to an unsigned LEB128 varint (seven bits per byte, low-order group first, high bit set on every byte except the last). It still counts the bytes that follow it, and the rest of the record stays as it is.\n\nThis changes the on-disk format, so new segments should be written as format version 2. Nobody has version 1 logs yet, so there is no need to read them: opening a log that contains a version 1 segment should fail with the existing UnsupportedFormat error (`<segment file name>: unsupported format version 1`).",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": ["compact_stats", "log_core"]
+  },
+  {
+   "request": "Index files are bigger than they need to be. Each index entry should store the record's offset relative to its segment's base offset, as a 4-byte unsigned integer, so an entry is 8 bytes: relative offset (u32) then position (u32), big-endian as before.\n\nAlso make the index sparse with a new `index_interval_bytes` option on LogConfig, default 4096. The first record of a segment always gets an entry; after that, a record gets an entry only when it starts at least `index_interval_bytes` bytes after the position of the previous entry. With `index_interval_bytes=0` every record gets an entry, as now.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": ["compact_stats", "log_core"]
+  },
+  {
+   "request": "The `format_stats` summary is hard to read for big logs. Show the `bytes:` line in binary units: whole bytes below 1024 (`bytes: 512 B`), otherwise one decimal place in KiB, MiB or GiB (`bytes: 1.5 KiB`, `bytes: 3.2 MiB`).\n\nAlso add an `average_record_bytes` field to LogStats: the total segment bytes minus the segment headers, divided by the number of records, rounded to one decimal place, and 0.0 when there are no records. Print it as an `average: 41.2 B` line directly after the `bytes:` line.",
+   "kind": "self-contained",
+   "bugfix": false,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "Segment files grow past `segment_bytes`. With `segment_bytes=4096` we regularly see segments of 4,150 bytes or more: the log only rolls after an append has already crossed the limit. `segment_bytes` is meant to be a ceiling, so the log should roll to a new segment before an append that would take the active segment past it.\n\nRelated: a single event too big to fit even in an empty segment currently just produces an oversized segment. It should be rejected with RecordTooLarge and the message `record of 4200 bytes exceeds segment_bytes 4096` (the record's encoded size and the configured limit), leaving the log untouched.",
+   "kind": "self-contained",
+   "bugfix": true,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "Our log shipper picks up every `*.log` file on the host and has started ingesting our segment files as if they were text logs. Segment files should use a `.seg` suffix instead, e.g. `00000000000000000000.seg`; index files keep `.idx`.\n\nIf a directory still holds a segment named the old way (twenty digits plus `.log`), opening it should fail with a new LegacySegmentName error whose message is `00000000000000000000.log: segment files now use the .seg suffix`, naming the lowest-offset such file, instead of quietly starting a fresh log beside it. Other `.log` files in the directory are not ours and should be left alone.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": ["compact_stats", "stats_average", "stats_units"]
+  },
+  {
+   "request": "To save more space, store each record's offset as a 4-byte unsigned delta from its segment's base offset instead of the full 8-byte offset; the rest of the record layout stays the same. Records read back must still report their absolute offsets.\n\nThis is format version 3. As before there are no version 2 logs to migrate, so opening a log that contains a version 2 segment should fail with the usual unsupported-version error.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": ["compact_stats", "index_layout", "seg_suffix"]
+  }
+ ],
+ "groups": [
+  {"id": "log_core", "since": 0, "until": 6},
+  {"id": "compact_stats", "since": 0, "until": 6},
+  {"id": "varint_layout", "since": 1, "until": 5},
+  {"id": "v1_refused", "since": 1, "until": 6},
+  {"id": "index_layout", "since": 2, "until": 6},
+  {"id": "index_sparse", "since": 2, "until": 6},
+  {"id": "stats_units", "since": 3, "until": 6},
+  {"id": "stats_average", "since": 3, "until": 6},
+  {"id": "rotation_ceiling", "since": 4, "until": 6},
+  {"id": "record_too_large", "since": 4, "until": 6},
+  {"id": "seg_suffix", "since": 5, "until": 6},
+  {"id": "legacy_names", "since": 5, "until": 6},
+  {"id": "delta_layout", "since": 6, "until": 6},
+  {"id": "v2_refused", "since": 6, "until": 6}
+ ]
+}

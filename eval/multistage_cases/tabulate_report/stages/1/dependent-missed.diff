@@ -1,0 +1,28 @@
+diff --git a/src/tabreport/report.py b/src/tabreport/report.py
+index b60bab0..ee6b79c 100644
+--- a/src/tabreport/report.py
++++ b/src/tabreport/report.py
+@@ -36,10 +36,11 @@ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+         raise ReportError("at least one measure is needed")
+     if currency is not None:
+         check_currency(currency)
+-    headers = list(by) + [m.label for m in measures]
++    keys = ["group"] if by else []
++    headers = keys + [m.label for m in measures]
+     results = aggregate(rows, by, measures) if by else []
+-    body = [[r[name] for name in by] + [r[m.label] for m in measures] for r in results]
+-    body.sort(key=lambda row: row[:len(by)])
++    body = [([r["group"]] if by else []) + [r[m.label] for m in measures] for r in results]
++    body.sort(key=lambda row: row[:len(keys)])
+     if sort:
+         body = _sorted(body, headers, sort)
+     grand = None
+@@ -47,7 +48,7 @@ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+         overall = Accumulator(measures)
+         for row in rows:
+             overall.add(row)
+-        label = [TOTAL_LABEL] + [""] * (len(by) - 1) if by else []
++        label = [TOTAL_LABEL] if keys else []
+         grand = label + [overall.result(m) for m in measures]
+     return Report(headers, body, grand, measures, currency, len(rows))
+ 

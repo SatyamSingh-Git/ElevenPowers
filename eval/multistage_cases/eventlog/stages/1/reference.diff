@@ -1,0 +1,233 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 85e9072..ebd87d1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Segment format version 2: the record length prefix is a varint instead of a 4-byte integer. Version 1 segments are refused.
+ - `eventlog dump --from` defaults to the first offset still in the log.
+ 
+ ## 0.3.0
+diff --git a/docs/reference.md b/docs/reference.md
+index ae58df2..4af786a 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -26,10 +26,10 @@ An append-only log of keyed events, stored as a directory of segment files.
+ |---|---|---|
+ | `segment.name` | `{base_offset:020d}.log` | One file per segment, named by the offset of its first record. |
+ | `segment.magic` | `EVLG` | First four bytes of every segment. |
+-| `segment.version` | `1` | Format version byte after the magic. Other versions are refused. |
++| `segment.version` | `2` | Format version byte after the magic. Other versions, including 1, are refused. |
+ | `segment.header` | `magic(4) version(u8) base_offset(u64)` | Fixed header before the first record. |
+ | `segment.header_bytes` | `13` | Size of the header. |
+-| `byte_order` | `big-endian` | Every integer in segment and index files. |
++| `byte_order` | `big-endian` | Every fixed-width integer in segment and index files. |
+ 
+ ## Records
+ 
+@@ -37,7 +37,7 @@ Records follow the segment header back to back.
+ 
+ | Field | Value | Meaning |
+ |---|---|---|
+-| `record.length` | `u32` | Number of bytes after the length field. |
++| `record.length` | `uvarint` | Number of bytes after the length field, as an unsigned LEB128 varint: seven bits per byte, low-order group first, high bit set on every byte but the last. |
+ | `record.crc` | `CRC-32C` | Checksum (Castagnoli) of every byte after the crc field. |
+ | `record.offset` | `u64` | The record's offset. |
+ | `record.timestamp` | `u64` | Milliseconds, from the `timestamp` argument or the clock. |
+diff --git a/src/eventlog/codec.py b/src/eventlog/codec.py
+index 68b5b3d..2df4617 100644
+--- a/src/eventlog/codec.py
++++ b/src/eventlog/codec.py
+@@ -2,15 +2,17 @@
+ 
+ A record on disk is a length prefix followed by the body it counts:
+ 
+-    length     u32   bytes that follow the length field
+-    crc        u32   CRC-32C of everything after this field
++    length     uvarint  bytes that follow the length field
++    crc        u32      CRC-32C of everything after this field
+     offset     u64
+-    timestamp  u64   milliseconds
+-    flags      u8    bit 0 marks a tombstone
++    timestamp  u64      milliseconds
++    flags      u8       bit 0 marks a tombstone
+     key_length u16
+-    key, value       the value takes whatever the length leaves
++    key, value          the value takes whatever the length leaves
+ 
+-All integers are big-endian.
++The length is an unsigned LEB128 varint: seven bits per byte, low-order group
++first, the high bit set on every byte but the last. Every other integer is
++big-endian.
+ """
+ from dataclasses import dataclass
+ import struct
+@@ -19,7 +21,6 @@ from ._generated import CRC32C_TABLE
+ from .errors import CorruptRecord
+ 
+ TOMBSTONE = 0x01
+-LENGTH = struct.Struct('>I')
+ CHECKSUM = struct.Struct('>I')
+ FIELDS = struct.Struct('>QQBH')
+ BODY_OVERHEAD = CHECKSUM.size + FIELDS.size
+@@ -41,20 +42,42 @@ def crc32c(data, crc=0):
+     return crc ^ 0xFFFFFFFF
+ 
+ 
++def encode_varint(value):
++    out = bytearray()
++    while value >= 0x80:
++        out.append(value & 0x7F | 0x80)
++        value >>= 7
++    out.append(value)
++    return bytes(out)
++
++
++def read_varint(buf, position):
++    """The varint at `position` and the position after it, or None if the buffer ends inside it."""
++    value = shift = 0
++    while position < len(buf):
++        byte = buf[position]
++        position += 1
++        value |= (byte & 0x7F) << shift
++        if not byte & 0x80:
++            return value, position
++        shift += 7
++    return None
++
++
+ def encode_record(record):
+     flags = TOMBSTONE if record.tombstone else 0
+     fields = FIELDS.pack(record.offset, record.timestamp, flags, len(record.key))
+     checked = fields + record.key + record.value
+     body = CHECKSUM.pack(crc32c(checked)) + checked
+-    return LENGTH.pack(len(body)) + body
++    return encode_varint(len(body)) + body
+ 
+ 
+ def decode_record(buf, position, segment='<buffer>'):
+     """Decode the record that starts at `position`; return it and the position after it."""
+-    if position + LENGTH.size > len(buf):
++    prefix = read_varint(buf, position)
++    if prefix is None:
+         raise CorruptRecord(segment, position)
+-    (length,) = LENGTH.unpack_from(buf, position)
+-    start = position + LENGTH.size
++    length, start = prefix
+     end = start + length
+     if length < BODY_OVERHEAD or end > len(buf):
+         raise CorruptRecord(segment, position)
+diff --git a/src/eventlog/segment.py b/src/eventlog/segment.py
+index f7f44c4..53a38b5 100644
+--- a/src/eventlog/segment.py
++++ b/src/eventlog/segment.py
+@@ -2,11 +2,11 @@
+ from pathlib import Path
+ import struct
+ 
+-from .codec import decode_record
++from .codec import decode_record, read_varint
+ from .errors import NotASegment, UnsupportedFormat
+ 
+ MAGIC = b'EVLG'
+-VERSION = 1
++VERSION = 2
+ HEADER = struct.Struct('>4sBQ')
+ SUFFIX = '.log'
+ INDEX_SUFFIX = '.idx'
+@@ -97,10 +97,11 @@ class Segment:
+         position = HEADER.size
+         found = []
+         while position < len(data):
+-            if position + 4 > len(data):
++            prefix = read_varint(data, position)
++            if prefix is None:
+                 break
+-            (length,) = struct.unpack_from('>I', data, position)
+-            if position + 4 + length > len(data):
++            length, start = prefix
++            if start + length > len(data):
+                 break
+             record, end = decode_record(data, position, self.name)
+             found.append((position, record))
+diff --git a/tests/test_codec.py b/tests/test_codec.py
+index 0dffd3e..c37998f 100644
+--- a/tests/test_codec.py
++++ b/tests/test_codec.py
+@@ -2,7 +2,7 @@ import struct
+ 
+ import pytest
+ 
+-from eventlog.codec import Record, crc32c, decode_record, encode_record
++from eventlog.codec import Record, crc32c, decode_record, encode_record, encode_varint, read_varint
+ from eventlog.errors import CorruptRecord
+ 
+ 
+@@ -23,12 +23,29 @@ def test_tombstone_round_trip():
+ 
+ def test_layout():
+     data = encode_record(Record(258, 9, b'ab', b'xyz'))
+-    (length,) = struct.unpack_from('>I', data)
+-    assert length == len(data) - 4 == 23 + 2 + 3
+-    assert struct.unpack_from('>QQBH', data, 8) == (258, 9, 0, 2)
++    assert data[0] == len(data) - 1 == 23 + 2 + 3
++    assert struct.unpack_from('>QQBH', data, 5) == (258, 9, 0, 2)
+     assert data[-5:] == b'abxyz'
+ 
+ 
++@pytest.mark.parametrize('value, encoded', [(0, b'\x00'), (127, b'\x7f'), (128, b'\x80\x01'), (300, b'\xac\x02'),
++                                            (16_384, b'\x80\x80\x01')])
++def test_varint(value, encoded):
++    assert encode_varint(value) == encoded
++    assert read_varint(b'..' + encoded, 2) == (value, 2 + len(encoded))
++
++
++def test_varint_cut_short():
++    assert read_varint(b'\x80\x80', 0) is None
++
++
++def test_long_length_prefix():
++    record = Record(1, 2, b'k', b'v' * 200)
++    data = encode_record(record)
++    assert data[:2] == encode_varint(23 + 1 + 200)
++    assert decode_record(data, 0) == (record, len(data))
++
++
+ def test_decode_from_the_middle_of_a_buffer():
+     first, second = Record(0, 0, b'a', b'1'), Record(1, 0, b'b', b'2')
+     data = encode_record(first) + encode_record(second)
+diff --git a/tests/test_log.py b/tests/test_log.py
+index 22237dd..594d14e 100644
+--- a/tests/test_log.py
++++ b/tests/test_log.py
+@@ -129,6 +129,18 @@ def test_other_versions_are_refused(tmp_path):
+         Log.open(tmp_path)
+ 
+ 
++def test_version_1_segments_are_refused(tmp_path):
++    with Log.open(tmp_path) as log:
++        log.append('k', 'v')
++    path = segment_files(tmp_path)[0]
++    data = bytearray(path.read_bytes())
++    assert data[4] == 2
++    data[4] = 1
++    path.write_bytes(bytes(data))
++    with pytest.raises(UnsupportedFormat, match=r'^00000000000000000000\.log: unsupported format version 1$'):
++        Log.open(tmp_path)
++
++
+ def test_foreign_files_are_refused(tmp_path):
+     (tmp_path / '00000000000000000000.log').write_bytes(b'hello world, not a segment')
+     with pytest.raises(NotASegment):
+diff --git a/tests/test_stats.py b/tests/test_stats.py
+index 14131c4..033351c 100644
+--- a/tests/test_stats.py
++++ b/tests/test_stats.py
+@@ -46,4 +46,4 @@ def test_format(tmp_path):
+         log.append('a', '1')
+     text = format_stats(stats(tmp_path))
+     assert text.splitlines() == ['segments: 1', 'records: 1', 'keys: 1', 'tombstones: 0',
+-                                 f'bytes: {13 + 27 + 2}', 'offsets: 0..1']
++                                 f'bytes: {13 + 24 + 2}', 'offsets: 0..1']

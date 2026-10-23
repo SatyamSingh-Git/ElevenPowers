@@ -1,0 +1,13 @@
+diff --git a/src/tabreport/money.py b/src/tabreport/money.py
+index 95fd267..a8826ee 100644
+--- a/src/tabreport/money.py
++++ b/src/tabreport/money.py
+@@ -15,7 +15,7 @@ def currency(code):
+ def format_money(value, code="USD"):
+     """``-$1,234.50``: the sign goes before the symbol, decimals follow the currency."""
+     symbol, places = currency(code)
+-    text = format_number(value, places, thousands=",")
++    text = format_number(value, places)
+     if text.startswith("-"):
+         return f"-{symbol}{text[1:]}"
+     return f"{symbol}{text}"

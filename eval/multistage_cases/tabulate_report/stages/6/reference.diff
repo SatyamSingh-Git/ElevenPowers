@@ -1,0 +1,111 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 90eac7a..3c8c3e9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Plain numbers are no longer grouped with thousands separators: counts print as `1204` and `--currency none` amounts as `12500.00`. Money keeps its separators (`$12,500.00`). `format_number` groups digits only when given `thousands`.
+ - Fixed: a thousands separator anywhere in an amount was silently dropped, so a typo like `12,34` was read as 1234. Separators are now accepted only between three-digit groups; anything else stops with `misplaced thousands separator: '12,34'`.
+ - `read_csv` streams: it returns an iterator that reads one row at a time instead of a list of the whole file, and reports run in a single pass, so large files no longer need to fit in memory. A malformed line is now reported when it is reached, after the rows before it.
+ - `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
+diff --git a/docs/reference.md b/docs/reference.md
+index e0c14d3..038530b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -59,7 +59,7 @@ its value, and what it means.
+ | `negative money` | `-$1.00` | the sign goes before the symbol |
+ | `rounding` | `half up` | 2.345 prints as 2.35 |
+ | `format_number places` | `2` | default decimals for plain numbers |
+-| `format_number thousands` | `,` | default grouping separator for plain numbers |
++| `format_number thousands` | `none` | plain numbers, counts and `--currency none` measures included, are not grouped (`1204`, `12500.00`) unless a separator is passed |
+ | `format_money thousands` | `,` | grouping separator for money |
+ | `count format` | `whole number` | counts never show decimals |
+ 
+diff --git a/src/tabreport/money.py b/src/tabreport/money.py
+index a8826ee..95fd267 100644
+--- a/src/tabreport/money.py
++++ b/src/tabreport/money.py
+@@ -15,7 +15,7 @@ def currency(code):
+ def format_money(value, code="USD"):
+     """``-$1,234.50``: the sign goes before the symbol, decimals follow the currency."""
+     symbol, places = currency(code)
+-    text = format_number(value, places)
++    text = format_number(value, places, thousands=",")
+     if text.startswith("-"):
+         return f"-{symbol}{text[1:]}"
+     return f"{symbol}{text}"
+diff --git a/src/tabreport/numbers.py b/src/tabreport/numbers.py
+index 996c838..74e970c 100644
+--- a/src/tabreport/numbers.py
++++ b/src/tabreport/numbers.py
+@@ -47,8 +47,8 @@ def _check_grouping(cleaned, thousands, text):
+         raise ReportError(f"misplaced thousands separator: {text!r}")
+ 
+ 
+-def format_number(value, places=2, thousands=","):
+-    """``value`` rounded half up to ``places`` decimals, digits grouped by ``thousands``."""
++def format_number(value, places=2, thousands=""):
++    """``value`` rounded half up to ``places`` decimals; digits are grouped only if ``thousands`` is given."""
+     rounded = Decimal(value).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+     whole, _, fraction = f"{abs(rounded):f}".partition(".")
+     if thousands:
+diff --git a/tests/test_numbers.py b/tests/test_numbers.py
+index 441d6be..6293936 100644
+--- a/tests/test_numbers.py
++++ b/tests/test_numbers.py
+@@ -41,15 +41,21 @@ def test_format_number_rounds_half_up():
+     assert format_number(Decimal("0.5"), 0) == "1"
+ 
+ 
+-def test_format_number_groups_thousands():
+-    assert format_number(Decimal("1234567.891")) == "1,234,567.89"
+-    assert format_number(Decimal("999.999")) == "1,000.00"
++def test_format_number_does_not_group_by_default():
++    assert format_number(Decimal("1234567.891")) == "1234567.89"
++    assert format_number(1204, 0) == "1204"
++
++
++def test_format_number_groups_thousands_when_asked():
++    assert format_number(Decimal("1234567.891"), thousands=",") == "1,234,567.89"
++    assert format_number(Decimal("999.999"), thousands=",") == "1,000.00"
+     assert format_number(1234, 0, thousands=" ") == "1 234"
+     assert format_number(Decimal("-0.001")) == "0.00"
+ 
+ 
+ def test_format_money():
+     assert format_money(Decimal("1234.5")) == "$1,234.50"
++    assert format_money(Decimal("12500")) == "$12,500.00"
+     assert format_money(Decimal("-50.5"), "eur") == "-€50.50"
+     assert format_money(Decimal("1234.5"), "JPY") == "¥1,235"
+     assert format_money(Decimal("1.2345"), "KWD") == "KD 1.235"
+diff --git a/tests/test_report.py b/tests/test_report.py
+index 2b26764..6dc1b31 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -43,8 +43,8 @@ def test_render_markdown_without_currency(sales):
+     assert render_report(report, "markdown") == (
+         "| region | sum(amount) |\n"
+         "| ------ | ----------: |\n"
+-        "| East   |    1,500.50 |\n"
+-        "| North  |    1,000.00 |\n"
++        "| East   |     1500.50 |\n"
++        "| North  |     1000.00 |\n"
+         "| West   |      -50.50 |\n"
+         "\n"
+         "5 rows\n"
+@@ -104,6 +104,13 @@ def test_no_grouping_gives_only_the_total(sales):
+     assert report.totals == [Decimal("2450.00")]
+ 
+ 
++def test_large_counts_are_not_grouped():
++    rows = [{"k": "a", "v": "10"}] * 1204
++    lines = render_report(build_report(rows, ["k"], ["count", "sum:v"])).splitlines()
++    assert lines[2].split() == ["a", "1204", "$12,040.00"]
++    assert lines[-1] == "1204 rows"
++
++
+ def test_one_row_footer():
+     text = render_report(build_report([{"k": "a", "v": "1"}], ["k"], ["count"]))
+     assert text.endswith("\n1 row\n")

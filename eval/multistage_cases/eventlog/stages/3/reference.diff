@@ -1,0 +1,114 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index bb50321..5960f7b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `format_stats` shows sizes in binary units (`bytes: 1.5 KiB`) and a new `average:` line; `LogStats` gains `average_record_bytes`.
+ - Index entries store the offset relative to the segment's base offset in 4 bytes (8-byte entries), and the index is sparse: new `index_interval_bytes` option, default 4096.
+ - Segment format version 2: the record length prefix is a varint instead of a 4-byte integer. Version 1 segments are refused.
+ - `eventlog dump --from` defaults to the first offset still in the log.
+diff --git a/docs/reference.md b/docs/reference.md
+index ec4a651..d120bf4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -71,8 +71,11 @@ Records follow the segment header back to back.
+ 
+ | Field | Value | Meaning |
+ |---|---|---|
+-| `stats.fields` | `segments records keys tombstones bytes first_offset next_offset` | `LogStats` fields, in order. |
++| `stats.fields` | `segments records keys tombstones bytes average_record_bytes first_offset next_offset` | `LogStats` fields, in order. |
+ | `stats.bytes` | `segment files` | Total size of segment files, headers included; index files are not counted. |
++| `stats.average_record_bytes` | `(bytes - 13 * segments) / records` | Mean encoded record size, segment headers excluded, rounded to one decimal; `0.0` for a log with no records. |
++| `stats.bytes_line` | `bytes: {size} {unit}` | Units `B`, `KiB`, `MiB`, `GiB`; sizes under 1024 are whole bytes (`bytes: 512 B`), larger ones have one decimal (`bytes: 1.5 KiB`). |
++| `stats.average_line` | `average: {average_record_bytes:.1f} B` | Printed right after the `bytes:` line. |
+ | `stats.offsets_line` | `offsets: {first_offset}..{next_offset}` | How `format_stats` shows the two offset fields. |
+ 
+ ## Errors
+diff --git a/src/eventlog/stats.py b/src/eventlog/stats.py
+index 7ea4d14..48d0225 100644
+--- a/src/eventlog/stats.py
++++ b/src/eventlog/stats.py
+@@ -22,6 +22,7 @@ class LogStats:
+     keys: int
+     tombstones: int
+     bytes: int
++    average_record_bytes: float
+     first_offset: int
+     next_offset: int
+ 
+@@ -51,8 +52,20 @@ def stats(directory):
+             tombstones += record.tombstone
+             live[record.key] = not record.tombstone
+             next_offset = record.offset + 1
++    payload = size - HEADER.size * len(paths)
+     return LogStats(segments=len(paths), records=records, keys=sum(live.values()), tombstones=tombstones,
+-                    bytes=size, first_offset=first_offset, next_offset=next_offset)
++                    bytes=size, average_record_bytes=round(payload / records, 1) if records else 0.0,
++                    first_offset=first_offset, next_offset=next_offset)
++
++
++def binary_size(size):
++    """`512 B`, `1.5 KiB`, `3.0 MiB`: whole bytes below 1 KiB, one decimal above."""
++    if size < 1024:
++        return f'{size} B'
++    for unit in ('KiB', 'MiB', 'GiB'):
++        size /= 1024
++        if size < 1024 or unit == 'GiB':
++            return f'{size:.1f} {unit}'
+ 
+ 
+ def format_stats(summary):
+@@ -61,6 +74,7 @@ def format_stats(summary):
+         f'records: {summary.records}',
+         f'keys: {summary.keys}',
+         f'tombstones: {summary.tombstones}',
+-        f'bytes: {summary.bytes}',
++        f'bytes: {binary_size(summary.bytes)}',
++        f'average: {summary.average_record_bytes:.1f} B',
+         f'offsets: {summary.first_offset}..{summary.next_offset}',
+     ])
+diff --git a/tests/test_stats.py b/tests/test_stats.py
+index 033351c..f58c249 100644
+--- a/tests/test_stats.py
++++ b/tests/test_stats.py
+@@ -1,10 +1,13 @@
++import pytest
++
+ from eventlog import Log, LogConfig, LogStats, compact, format_stats, stats
++from eventlog.stats import binary_size
+ 
+ 
+ def test_empty_log(tmp_path):
+     Log.open(tmp_path).close()
+     assert stats(tmp_path) == LogStats(segments=1, records=0, keys=0, tombstones=0, bytes=13,
+-                                       first_offset=0, next_offset=0)
++                                       average_record_bytes=0.0, first_offset=0, next_offset=0)
+ 
+ 
+ def test_counts(tmp_path):
+@@ -46,4 +49,21 @@ def test_format(tmp_path):
+         log.append('a', '1')
+     text = format_stats(stats(tmp_path))
+     assert text.splitlines() == ['segments: 1', 'records: 1', 'keys: 1', 'tombstones: 0',
+-                                 f'bytes: {13 + 24 + 2}', 'offsets: 0..1']
++                                 f'bytes: {13 + 24 + 2} B', f'average: {24 + 2}.0 B', 'offsets: 0..1']
++
++
++def test_average_skips_segment_headers(tmp_path):
++    with Log.open(tmp_path, LogConfig(segment_bytes=64)) as log:
++        log.append('k', 'v')
++        log.append('k', 'vv')
++        log.append('k', 'vvvv')
++        summary = stats(tmp_path)
++    assert summary.segments > 1
++    assert summary.average_record_bytes == round((26 + 27 + 29) / 3, 1)
++
++
++@pytest.mark.parametrize('size, shown', [(0, '0 B'), (1023, '1023 B'), (1024, '1.0 KiB'), (1536, '1.5 KiB'),
++                                         (5 * 1024 ** 2, '5.0 MiB'), (3 * 1024 ** 3, '3.0 GiB'),
++                                         (2048 * 1024 ** 3, '2048.0 GiB')])
++def test_binary_size(size, shown):
++    assert binary_size(size) == shown

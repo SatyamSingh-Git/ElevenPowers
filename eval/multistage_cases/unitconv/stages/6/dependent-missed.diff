@@ -1,0 +1,13 @@
+diff --git a/src/unitconv/formatting.py b/src/unitconv/formatting.py
+index ae0f28b..6bbf1d2 100644
+--- a/src/unitconv/formatting.py
++++ b/src/unitconv/formatting.py
+@@ -27,7 +27,7 @@ def format_quantity(quantity, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_R
+ def result_record(text, result, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_ROUNDING, style='symbol'):
+     return {
+         'input': text,
+-        'value': float(round_value(result.value, precision, rounding)),
++        'value': round_value(result.value, precision, rounding),
+         'unit': {'symbol': result.unit.symbol, 'name': result.unit.name()},
+         'text': format_quantity(result, precision=precision, rounding=rounding, style=style),
+     }

@@ -1,0 +1,271 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 56afc30..f4b633c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `convert()` returns the exact converted value and no longer takes `precision` or `rounding`; `format_quantity()` takes them instead, so chained conversions no longer drift.
+ - `unitconv dimensions` lists the named dimensions and their formulas.
+ 
+ ## 0.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 459ab7b..5a37fd4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -23,7 +23,7 @@ command-line options, each overriding the one before.
+ 
+ | Fact | Value | Meaning |
+ |---|---|---|
+-| `convert.result` | `rounded` | `convert()` returns its value rounded to `precision` places with the `rounding` mode |
++| `convert.result` | `exact` | `convert()` returns the exact value; `format_quantity()` rounds it to `precision` places with the `rounding` mode |
+ | `arithmetic` | `float` | numbers are binary floating point while converting |
+ | `lookup.case` | `insensitive` | unit symbols match regardless of case when there is no exact match |
+ | `prefixes` | `G, M, k, h, da, d, c, m, u, n` | SI prefixes accepted before units that take them |
+diff --git a/src/unitconv/batch.py b/src/unitconv/batch.py
+index 311a797..376ca64 100644
+--- a/src/unitconv/batch.py
++++ b/src/unitconv/batch.py
+@@ -28,9 +28,9 @@ def convert_file(source, destination, settings):
+                 if len(row) != 2:
+                     raise UnitError(f'expected 2 columns, got {len(row)}')
+                 text, target = row
+-                result = convert(parse_quantity(text), target,
+-                                 precision=settings.precision, rounding=settings.rounding)
+-                record = result_record(text, result, style=settings.style)
++                result = convert(parse_quantity(text), target)
++                record = result_record(text, result, precision=settings.precision,
++                                       rounding=settings.rounding, style=settings.style)
+                 writer.writerow([text, target, format_number(record['value']), record['unit'], ''])
+                 converted += 1
+             except UnitError as error:
+diff --git a/src/unitconv/cli.py b/src/unitconv/cli.py
+index 57d30d3..09d2678 100644
+--- a/src/unitconv/cli.py
++++ b/src/unitconv/cli.py
+@@ -60,13 +60,14 @@ def _convert(args):
+             raise UnitError('JSON output needs a single target unit')
+         parts = split_quantity(quantity, args.target.split('+'),
+                                precision=settings.precision, rounding=settings.rounding)
+-        print(format_mixed(parts, style=settings.style))
++        print(format_mixed(parts, precision=settings.precision, rounding=settings.rounding, style=settings.style))
+         return 0
+-    result = convert(quantity, args.target, precision=settings.precision, rounding=settings.rounding)
++    result = convert(quantity, args.target)
++    display = {'precision': settings.precision, 'rounding': settings.rounding, 'style': settings.style}
+     if args.json:
+-        print(json.dumps(result_record(args.quantity, result, style=settings.style)))
++        print(json.dumps(result_record(args.quantity, result, **display)))
+     else:
+-        print(format_quantity(result, style=settings.style))
++        print(format_quantity(result, **display))
+     return 0
+ 
+ 
+diff --git a/src/unitconv/convert.py b/src/unitconv/convert.py
+index a84e918..32126e3 100644
+--- a/src/unitconv/convert.py
++++ b/src/unitconv/convert.py
+@@ -1,19 +1,15 @@
+ from .compound import parse_unit
+ from .errors import IncompatibleUnitsError
+ from .quantity import Quantity
+-from .rounding import round_value
+-from .settings import DEFAULT_PRECISION, DEFAULT_ROUNDING, check_precision
+ 
+ 
+-def convert(quantity, target, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_ROUNDING):
+-    """Convert `quantity` to `target` (a unit expression or CompoundUnit), rounded to `precision` places."""
++def convert(quantity, target):
++    """Convert `quantity` to `target` (a unit expression or CompoundUnit), exactly; rounding is for display."""
+     if isinstance(target, str):
+         target = parse_unit(target)
+     source = quantity.unit
+     if source.dimension != target.dimension:
+         raise IncompatibleUnitsError(
+             f'cannot convert {source.symbol} ({source.dimension.name}) to {target.symbol} ({target.dimension.name})')
+-    check_precision(precision)
+     base = (quantity.value + source.offset) * source.factor
+-    value = base / target.factor - target.offset
+-    return Quantity(round_value(value, precision, rounding), target)
++    return Quantity(base / target.factor - target.offset, target)
+diff --git a/src/unitconv/formatting.py b/src/unitconv/formatting.py
+index acd6722..9bef8d4 100644
+--- a/src/unitconv/formatting.py
++++ b/src/unitconv/formatting.py
+@@ -2,7 +2,8 @@
+ from decimal import Decimal
+ 
+ from .errors import UnitError
+-from .settings import STYLES
++from .rounding import round_value
++from .settings import DEFAULT_PRECISION, DEFAULT_ROUNDING, STYLES, check_precision
+ 
+ 
+ def format_number(value):
+@@ -13,19 +14,20 @@ def format_number(value):
+     return '0' if text == '-0' else text
+ 
+ 
+-def format_quantity(quantity, *, style='symbol'):
++def format_quantity(quantity, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_ROUNDING, style='symbol'):
+     if style not in STYLES:
+         raise UnitError(f"unknown style: '{style}'")
+-    number = format_number(quantity.value)
++    check_precision(precision)
++    number = format_number(round_value(quantity.value, precision, rounding))
+     if style == 'name':
+         return f'{number} {quantity.unit.name(plural=number != "1")}'
+     return f'{number} {quantity.unit.symbol}'
+ 
+ 
+-def result_record(text, result, *, style='symbol'):
++def result_record(text, result, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_ROUNDING, style='symbol'):
+     return {
+         'input': text,
+-        'value': result.value,
++        'value': round_value(result.value, precision, rounding),
+         'unit': result.unit.symbol,
+-        'text': format_quantity(result, style=style),
++        'text': format_quantity(result, precision=precision, rounding=rounding, style=style),
+     }
+diff --git a/src/unitconv/mixed.py b/src/unitconv/mixed.py
+index e03ef9c..20108f2 100644
+--- a/src/unitconv/mixed.py
++++ b/src/unitconv/mixed.py
+@@ -7,11 +7,14 @@ from .errors import UnitError
+ from .formatting import format_quantity
+ from .quantity import Quantity
+ from .rounding import round_value
+-from .settings import DEFAULT_PRECISION, DEFAULT_ROUNDING, MAX_PRECISION
++from .settings import DEFAULT_PRECISION, DEFAULT_ROUNDING
+ 
+ 
+ def split_quantity(quantity, targets, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_ROUNDING):
+-    """Split `quantity` over the `targets` unit expressions, largest first; returns a list of Quantity."""
++    """Split `quantity` over the `targets` unit expressions, largest first; returns a list of Quantity.
++
++    The last part is rounded, because whether it carries into the part before depends on it.
++    """
+     units = [parse_unit(target) for target in targets]
+     if len(units) < 2:
+         raise UnitError('a mixed result needs at least two units')
+@@ -23,13 +26,13 @@ def split_quantity(quantity, targets, *, precision=DEFAULT_PRECISION, rounding=D
+     remaining = quantity
+     parts = []
+     for unit in units[:-1]:
+-        exact = convert(remaining, unit, precision=MAX_PRECISION).value
++        exact = convert(remaining, unit).value
+         whole = math.floor(exact)
+         parts.append(Quantity(whole, unit))
+         remaining = Quantity(exact - whole, unit)
+-    last = convert(remaining, units[-1], precision=precision, rounding=rounding).value
++    last = round_value(convert(remaining, units[-1]).value, precision, rounding)
+     # Rounding can lift the remainder to a whole unit of the one before it: 5 ft 12 in is 6 ft 0 in.
+-    carry = convert(Quantity(1, units[-2]), units[-1], precision=precision, rounding=rounding).value
++    carry = round_value(convert(Quantity(1, units[-2]), units[-1]).value, precision, rounding)
+     if last >= carry:
+         parts[-1] = Quantity(parts[-1].value + 1, units[-2])
+         last = round_value(last - carry, precision, rounding)
+@@ -37,5 +40,5 @@ def split_quantity(quantity, targets, *, precision=DEFAULT_PRECISION, rounding=D
+     return parts
+ 
+ 
+-def format_mixed(parts, *, style='symbol'):
+-    return ' '.join(format_quantity(part, style=style) for part in parts)
++def format_mixed(parts, *, precision=DEFAULT_PRECISION, rounding=DEFAULT_ROUNDING, style='symbol'):
++    return ' '.join(format_quantity(part, precision=precision, rounding=rounding, style=style) for part in parts)
+diff --git a/tests/test_convert.py b/tests/test_convert.py
+index 5b699c5..f0174e2 100644
+--- a/tests/test_convert.py
++++ b/tests/test_convert.py
+@@ -1,6 +1,6 @@
+ import pytest
+ 
+-from unitconv import IncompatibleUnitsError, SettingsError, convert, parse_quantity
++from unitconv import IncompatibleUnitsError, convert, parse_quantity
+ 
+ 
+ def converted(text, target, **options):
+@@ -24,19 +24,13 @@ def test_temperatures(text, target, expected):
+     assert converted(text, target) == pytest.approx(expected)
+ 
+ 
+-def test_rounds_to_precision():
+-    assert converted('1 in', 'km') == 0.000025
+-    assert converted('1 mi', 'km', precision=2) == 1.61
+-    assert converted('2.5 m', 'm', precision=0) == 2
+-    assert converted('2.5 m', 'm', precision=0, rounding='half_up') == 3
+-    assert converted('1.29 m', 'm', precision=1, rounding='floor') == 1.2
++def test_result_is_not_rounded():
++    assert converted('1 in', 'km') == pytest.approx(2.54e-5, rel=1e-12)
++    there = convert(parse_quantity('1 in'), 'km')
++    assert convert(there, 'in').value == pytest.approx(1, rel=1e-12)
+ 
+ 
+ def test_incompatible_dimensions():
+     with pytest.raises(IncompatibleUnitsError, match=r'cannot convert mi \(length\) to s \(time\)'):
+         converted('1 mi', 's')
+ 
+-
+-def test_precision_limit():
+-    with pytest.raises(SettingsError, match='precision must be between 0 and 15'):
+-        converted('1 m', 'ft', precision=16)
+diff --git a/tests/test_formatting.py b/tests/test_formatting.py
+index 5099914..8089a39 100644
+--- a/tests/test_formatting.py
++++ b/tests/test_formatting.py
+@@ -1,6 +1,6 @@
+ import pytest
+ 
+-from unitconv import UnitError, convert, format_number, format_quantity, parse_quantity, result_record
++from unitconv import SettingsError, UnitError, convert, format_number, format_quantity, parse_quantity, result_record
+ 
+ 
+ @pytest.mark.parametrize('value, text', [(1.5, '1.5'), (2.0, '2'), (1e-05, '0.00001'), (1e20, '100000000000000000000'),
+@@ -18,13 +18,24 @@ def test_symbol_and_name_styles():
+         format_quantity(quantity, style='long')
+ 
+ 
++def test_rounds_for_display():
++    quantity = convert(parse_quantity('1 mi'), 'km')
++    assert format_quantity(quantity, precision=2) == '1.61 km'
++    assert format_quantity(parse_quantity('2.5 m'), precision=0) == '2 m'
++    assert format_quantity(parse_quantity('2.5 m'), precision=0, rounding='half_up') == '3 m'
++    assert format_quantity(parse_quantity('1.29 m'), precision=1, rounding='floor') == '1.2 m'
++    assert format_quantity(convert(parse_quantity('1 in'), 'km')) == '0.000025 km'
++    with pytest.raises(SettingsError, match='precision must be between 0 and 15'):
++        format_quantity(quantity, precision=16)
++
++
+ def test_output_reads_back():
+-    quantity = convert(parse_quantity('1 N'), 'g*cm/s^2')
+-    again = parse_quantity(format_quantity(quantity))
+-    assert again.value == quantity.value
+-    assert again.unit.symbol == quantity.unit.symbol
++    text = format_quantity(convert(parse_quantity('1 N'), 'g*cm/s^2'))
++    assert format_quantity(parse_quantity(text)) == text
+ 
+ 
+ def test_result_record():
+     record = result_record('1 mi', convert(parse_quantity('1 mi'), 'km'))
+     assert record == {'input': '1 mi', 'value': 1.609344, 'unit': 'km', 'text': '1.609344 km'}
++    record = result_record('1 mi', convert(parse_quantity('1 mi'), 'km'), precision=1, rounding='down')
++    assert (record['value'], record['text']) == (1.6, '1.6 km')
+diff --git a/tests/test_mixed.py b/tests/test_mixed.py
+index 6ee2d18..ab11fc6 100644
+--- a/tests/test_mixed.py
++++ b/tests/test_mixed.py
+@@ -19,6 +19,11 @@ def test_names():
+     assert format_mixed(parts, style='name') == '1 hour 40 minutes'
+ 
+ 
++def test_precision_applies_to_the_last_part():
++    parts = split_quantity(parse_quantity('1.8 m'), ['ft', 'in'], precision=9)
++    assert format_mixed(parts, precision=9) == '5 ft 10.866141732 in'
++
++
+ @pytest.mark.parametrize('text, targets, message', [
+     ('1 m', ['ft'], 'at least two units'),
+     ('-1 m', ['ft', 'in'], 'zero or more'),

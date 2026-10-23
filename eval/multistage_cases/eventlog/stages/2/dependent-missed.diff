@@ -1,0 +1,13 @@
+diff --git a/src/eventlog/reader.py b/src/eventlog/reader.py
+index 41240ea..2c95496 100644
+--- a/src/eventlog/reader.py
++++ b/src/eventlog/reader.py
+@@ -23,7 +23,7 @@ def _records(segments, from_offset):
+             continue
+         start = None
+         if from_offset > segment.base_offset:
+-            start = index.lookup(index.read_entries(segment.index_path, segment.base_offset), from_offset)
++            start = index.lookup(index.read_entries(segment.index_path), from_offset)
+         for record in segment.records(start):
+             if record.offset >= from_offset:
+                 yield record

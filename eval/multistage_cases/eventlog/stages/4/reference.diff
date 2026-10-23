@@ -1,0 +1,158 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5960f7b..a709b0a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fix: segments no longer grow past `segment_bytes`; the log rolls before an append that would cross it, and a record too big for an empty segment raises `RecordTooLarge`.
+ - `format_stats` shows sizes in binary units (`bytes: 1.5 KiB`) and a new `average:` line; `LogStats` gains `average_record_bytes`.
+ - Index entries store the offset relative to the segment's base offset in 4 bytes (8-byte entries), and the index is sparse: new `index_interval_bytes` option, default 4096.
+ - Segment format version 2: the record length prefix is a varint instead of a 4-byte integer. Version 1 segments are refused.
+diff --git a/docs/reference.md b/docs/reference.md
+index d120bf4..21a03a7 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -8,7 +8,7 @@ An append-only log of keyed events, stored as a directory of segment files.
+ 
+ | Option | Default | Meaning |
+ |---|---|---|
+-| `segment_bytes` | `1048576` | The active segment is sealed and a new one started once it reaches this size. |
++| `segment_bytes` | `1048576` | Ceiling on a segment file's size: the active segment is sealed and a new one started before an append that would take it past this size. |
+ | `max_key_bytes` | `1024` | Longest key accepted, in bytes after UTF-8 encoding. |
+ | `max_value_bytes` | `65536` | Longest value accepted, in bytes. |
+ | `index_interval_bytes` | `4096` | Minimum distance in bytes between the positions of consecutive index entries; `0` indexes every record. |
+@@ -88,6 +88,7 @@ Every error derives from `EventLogError`. Messages:
+ | `EmptyKey` | `key must not be empty` | Appending with an empty key. |
+ | `KeyTooLarge` | `key of {size} bytes exceeds max_key_bytes {limit}` | Key longer than `max_key_bytes`. |
+ | `ValueTooLarge` | `value of {size} bytes exceeds max_value_bytes {limit}` | Value longer than `max_value_bytes`. |
++| `RecordTooLarge` | `record of {size} bytes exceeds segment_bytes {limit}` | An encoded record that would not fit even in an empty segment; nothing is written. |
+ | `OffsetOutOfRange` | `offset {offset} is outside {first}..{next}` | Replaying from before the first offset or past the next one. |
+ | `UnsupportedFormat` | `{segment}: unsupported format version {version}` | Opening a segment with another format version. |
+ | `NotASegment` | `{segment}: not an event log segment` | Bad magic or a file shorter than the header. |
+diff --git a/src/eventlog/__init__.py b/src/eventlog/__init__.py
+index e1c6210..0076666 100644
+--- a/src/eventlog/__init__.py
++++ b/src/eventlog/__init__.py
+@@ -3,7 +3,7 @@ from .codec import Record
+ from .compaction import CompactionResult, compact
+ from .config import LogConfig
+ from .errors import (ConfigError, CorruptRecord, EmptyKey, EventLogError, KeyTooLarge, LogClosed, NotASegment,
+-                     OffsetOutOfRange, UnsupportedFormat, ValueTooLarge)
++                     OffsetOutOfRange, RecordTooLarge, UnsupportedFormat, ValueTooLarge)
+ from .log import Log
+ from .reader import replay, snapshot, tail
+ from .stats import LogStats, format_stats, stats
+@@ -11,5 +11,6 @@ from .stats import LogStats, format_stats, stats
+ __all__ = [
+     'CompactionResult', 'ConfigError', 'CorruptRecord', 'EmptyKey', 'EventLogError', 'KeyTooLarge', 'Log',
+     'LogClosed', 'LogConfig', 'LogStats', 'ManualClock', 'NotASegment', 'OffsetOutOfRange', 'Record',
+-    'UnsupportedFormat', 'ValueTooLarge', 'compact', 'format_stats', 'replay', 'snapshot', 'stats', 'tail',
++    'RecordTooLarge', 'UnsupportedFormat', 'ValueTooLarge', 'compact', 'format_stats', 'replay', 'snapshot',
++    'stats', 'tail',
+ ]
+diff --git a/src/eventlog/errors.py b/src/eventlog/errors.py
+index 67060e0..bcf2aa3 100644
+--- a/src/eventlog/errors.py
++++ b/src/eventlog/errors.py
+@@ -47,6 +47,11 @@ class ValueTooLarge(EventLogError, ValueError):
+         super().__init__(f'value of {size} bytes exceeds max_value_bytes {limit}')
+ 
+ 
++class RecordTooLarge(EventLogError, ValueError):
++    def __init__(self, size, limit):
++        super().__init__(f'record of {size} bytes exceeds segment_bytes {limit}')
++
++
+ class EmptyKey(EventLogError, ValueError):
+     def __init__(self):
+         super().__init__('key must not be empty')
+diff --git a/src/eventlog/log.py b/src/eventlog/log.py
+index 8789969..a63c299 100644
+--- a/src/eventlog/log.py
++++ b/src/eventlog/log.py
+@@ -4,9 +4,9 @@ from . import index, reader
+ from .clock import ManualClock
+ from .codec import Record, encode_record
+ from .config import LogConfig
+-from .errors import EmptyKey, KeyTooLarge, LogClosed, ValueTooLarge
++from .errors import EmptyKey, KeyTooLarge, LogClosed, RecordTooLarge, ValueTooLarge
+ from .index import IndexWriter
+-from .segment import SUFFIX, Segment
++from .segment import HEADER, SUFFIX, Segment
+ 
+ 
+ def _as_bytes(data):
+@@ -16,9 +16,9 @@ def _as_bytes(data):
+ class Log:
+     """An append-only log of keyed events, kept as a run of segment files.
+ 
+-    Only the newest segment is written to. Once it reaches
+-    `config.segment_bytes` it is sealed and a new one starts at the next
+-    offset. Use `Log.open` rather than constructing one directly.
++    Only the newest segment is written to. When the next record would take
++    it past `config.segment_bytes` it is sealed and a new one starts at that
++    record's offset. Use `Log.open` rather than constructing one directly.
+     """
+ 
+     def __init__(self, directory, segments, config, clock):
+@@ -86,12 +86,14 @@ class Log:
+             raise ValueTooLarge(len(value), self.config.max_value_bytes)
+         record = Record(self._next_offset, self.clock() if timestamp is None else timestamp,
+                         key, value, tombstone)
+-        active = self._segments[-1]
+-        position = active.append(encode_record(record))
++        data = encode_record(record)
++        if HEADER.size + len(data) > self.config.segment_bytes:
++            raise RecordTooLarge(len(data), self.config.segment_bytes)
++        if self._segments[-1].size + len(data) > self.config.segment_bytes:
++            self._roll()
++        position = self._segments[-1].append(data)
+         self._index.add(record.offset, position)
+         self._next_offset += 1
+-        if active.size >= self.config.segment_bytes:
+-            self._roll()
+         return record.offset
+ 
+     def _roll(self):
+diff --git a/tests/test_log.py b/tests/test_log.py
+index 594d14e..901b1a6 100644
+--- a/tests/test_log.py
++++ b/tests/test_log.py
+@@ -1,7 +1,7 @@
+ import pytest
+ 
+ from eventlog import (ConfigError, EmptyKey, KeyTooLarge, Log, LogClosed, LogConfig, ManualClock, NotASegment,
+-                      OffsetOutOfRange, UnsupportedFormat, ValueTooLarge)
++                      OffsetOutOfRange, RecordTooLarge, UnsupportedFormat, ValueTooLarge)
+ 
+ 
+ def segment_files(directory):
+@@ -59,6 +59,26 @@ def test_rolls_to_a_new_segment(tmp_path):
+     assert names[0] == '00000000000000000000.log'
+ 
+ 
++def test_segments_never_exceed_segment_bytes(tmp_path):
++    with Log.open(tmp_path, LogConfig(segment_bytes=100)) as log:
++        for n in range(30):
++            log.append(f'k{n}', 'v' * (n % 9))
++        assert [r.offset for r in log.replay()] == list(range(30))
++    sizes = [path.stat().st_size for path in segment_files(tmp_path)]
++    assert len(sizes) > 3
++    assert max(sizes) <= 100
++
++
++def test_record_too_large_for_any_segment(tmp_path):
++    with Log.open(tmp_path, LogConfig(segment_bytes=64)) as log:
++        log.append('k', 'v')
++        with pytest.raises(RecordTooLarge, match='^record of 75 bytes exceeds segment_bytes 64$'):
++            log.append('k', 'v' * 50)
++        assert log.next_offset == 1
++        assert log.append('k', 'w') == 1
++    assert max(path.stat().st_size for path in segment_files(tmp_path)) <= 64
++
++
+ def test_reopen_carries_on(tmp_path):
+     config = LogConfig(segment_bytes=100)
+     with Log.open(tmp_path, config) as log:

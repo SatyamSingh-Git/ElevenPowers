@@ -1,0 +1,13 @@
+diff --git a/src/eventlog/stats.py b/src/eventlog/stats.py
+index 275db72..48d0225 100644
+--- a/src/eventlog/stats.py
++++ b/src/eventlog/stats.py
+@@ -12,7 +12,7 @@ from .errors import CorruptRecord
+ from .segment import HEADER, decode_header
+ 
+ # Matches only finished segment files, not the staging copies compaction writes.
+-SEGMENT_FILE = re.compile(r'^\d{20}\.seg$')
++SEGMENT_FILE = re.compile(r'^\d{20}\.log$')
+ 
+ 
+ @dataclass(frozen=True)

@@ -1,0 +1,17 @@
+diff --git a/src/unitconv/batch.py b/src/unitconv/batch.py
+index 376ca64..311a797 100644
+--- a/src/unitconv/batch.py
++++ b/src/unitconv/batch.py
+@@ -28,9 +28,9 @@ def convert_file(source, destination, settings):
+                 if len(row) != 2:
+                     raise UnitError(f'expected 2 columns, got {len(row)}')
+                 text, target = row
+-                result = convert(parse_quantity(text), target)
+-                record = result_record(text, result, precision=settings.precision,
+-                                       rounding=settings.rounding, style=settings.style)
++                result = convert(parse_quantity(text), target,
++                                 precision=settings.precision, rounding=settings.rounding)
++                record = result_record(text, result, style=settings.style)
+                 writer.writerow([text, target, format_number(record['value']), record['unit'], ''])
+                 converted += 1
+             except UnitError as error:

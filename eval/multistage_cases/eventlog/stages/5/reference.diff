@@ -1,0 +1,198 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a709b0a..d336b3a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Segment files are named `*.seg` instead of `*.log`, so log shippers stop picking them up. Opening a directory that still holds `*.log` segments raises `LegacySegmentName`.
+ - Fix: segments no longer grow past `segment_bytes`; the log rolls before an append that would cross it, and a record too big for an empty segment raises `RecordTooLarge`.
+ - `format_stats` shows sizes in binary units (`bytes: 1.5 KiB`) and a new `average:` line; `LogStats` gains `average_record_bytes`.
+ - Index entries store the offset relative to the segment's base offset in 4 bytes (8-byte entries), and the index is sparse: new `index_interval_bytes` option, default 4096.
+diff --git a/docs/reference.md b/docs/reference.md
+index 21a03a7..cd82260 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -25,7 +25,7 @@ An append-only log of keyed events, stored as a directory of segment files.
+ 
+ | Field | Value | Meaning |
+ |---|---|---|
+-| `segment.name` | `{base_offset:020d}.log` | One file per segment, named by the offset of its first record. |
++| `segment.name` | `{base_offset:020d}.seg` | One file per segment, named by the offset of its first record. Segments named `{base_offset:020d}.log` (before 0.4) are refused. |
+ | `segment.magic` | `EVLG` | First four bytes of every segment. |
+ | `segment.version` | `2` | Format version byte after the magic. Other versions, including 1, are refused. |
+ | `segment.header` | `magic(4) version(u8) base_offset(u64)` | Fixed header before the first record. |
+@@ -90,6 +90,7 @@ Every error derives from `EventLogError`. Messages:
+ | `ValueTooLarge` | `value of {size} bytes exceeds max_value_bytes {limit}` | Value longer than `max_value_bytes`. |
+ | `RecordTooLarge` | `record of {size} bytes exceeds segment_bytes {limit}` | An encoded record that would not fit even in an empty segment; nothing is written. |
+ | `OffsetOutOfRange` | `offset {offset} is outside {first}..{next}` | Replaying from before the first offset or past the next one. |
++| `LegacySegmentName` | `{segment}: segment files now use the .seg suffix` | Opening a directory holding a segment named with the old `.log` suffix; names the lowest-offset one. |
+ | `UnsupportedFormat` | `{segment}: unsupported format version {version}` | Opening a segment with another format version. |
+ | `NotASegment` | `{segment}: not an event log segment` | Bad magic or a file shorter than the header. |
+ | `CorruptRecord` | `corrupt record at position {position} in {segment}` | Checksum or framing failure. |
+diff --git a/src/eventlog/__init__.py b/src/eventlog/__init__.py
+index 0076666..975245a 100644
+--- a/src/eventlog/__init__.py
++++ b/src/eventlog/__init__.py
+@@ -2,15 +2,15 @@ from .clock import ManualClock
+ from .codec import Record
+ from .compaction import CompactionResult, compact
+ from .config import LogConfig
+-from .errors import (ConfigError, CorruptRecord, EmptyKey, EventLogError, KeyTooLarge, LogClosed, NotASegment,
+-                     OffsetOutOfRange, RecordTooLarge, UnsupportedFormat, ValueTooLarge)
++from .errors import (ConfigError, CorruptRecord, EmptyKey, EventLogError, KeyTooLarge, LegacySegmentName, LogClosed,
++                     NotASegment, OffsetOutOfRange, RecordTooLarge, UnsupportedFormat, ValueTooLarge)
+ from .log import Log
+ from .reader import replay, snapshot, tail
+ from .stats import LogStats, format_stats, stats
+ 
+ __all__ = [
+-    'CompactionResult', 'ConfigError', 'CorruptRecord', 'EmptyKey', 'EventLogError', 'KeyTooLarge', 'Log',
+-    'LogClosed', 'LogConfig', 'LogStats', 'ManualClock', 'NotASegment', 'OffsetOutOfRange', 'Record',
+-    'RecordTooLarge', 'UnsupportedFormat', 'ValueTooLarge', 'compact', 'format_stats', 'replay', 'snapshot',
+-    'stats', 'tail',
++    'CompactionResult', 'ConfigError', 'CorruptRecord', 'EmptyKey', 'EventLogError', 'KeyTooLarge',
++    'LegacySegmentName', 'Log', 'LogClosed', 'LogConfig', 'LogStats', 'ManualClock', 'NotASegment',
++    'OffsetOutOfRange', 'Record', 'RecordTooLarge', 'UnsupportedFormat', 'ValueTooLarge', 'compact',
++    'format_stats', 'replay', 'snapshot', 'stats', 'tail',
+ ]
+diff --git a/src/eventlog/errors.py b/src/eventlog/errors.py
+index bcf2aa3..924d184 100644
+--- a/src/eventlog/errors.py
++++ b/src/eventlog/errors.py
+@@ -17,6 +17,12 @@ class NotASegment(EventLogError):
+         self.segment = segment
+ 
+ 
++class LegacySegmentName(EventLogError):
++    def __init__(self, segment):
++        super().__init__(f'{segment}: segment files now use the .seg suffix')
++        self.segment = segment
++
++
+ class UnsupportedFormat(EventLogError):
+     def __init__(self, segment, version):
+         super().__init__(f'{segment}: unsupported format version {version}')
+diff --git a/src/eventlog/log.py b/src/eventlog/log.py
+index a63c299..4842015 100644
+--- a/src/eventlog/log.py
++++ b/src/eventlog/log.py
+@@ -4,9 +4,9 @@ from . import index, reader
+ from .clock import ManualClock
+ from .codec import Record, encode_record
+ from .config import LogConfig
+-from .errors import EmptyKey, KeyTooLarge, LogClosed, RecordTooLarge, ValueTooLarge
++from .errors import EmptyKey, KeyTooLarge, LegacySegmentName, LogClosed, RecordTooLarge, ValueTooLarge
+ from .index import IndexWriter
+-from .segment import HEADER, SUFFIX, Segment
++from .segment import HEADER, LEGACY_SUFFIX, SUFFIX, Segment
+ 
+ 
+ def _as_bytes(data):
+@@ -34,6 +34,10 @@ class Log:
+     def open(cls, directory, config=None, clock=None):
+         directory = Path(directory)
+         directory.mkdir(parents=True, exist_ok=True)
++        legacy = sorted(path.name for path in directory.glob(f'*{LEGACY_SUFFIX}')
++                        if path.stem.isdigit() and len(path.stem) == 20)
++        if legacy:
++            raise LegacySegmentName(legacy[0])
+         segments = [Segment.open(path) for path in directory.glob(f'*{SUFFIX}')]
+         segments.sort(key=lambda segment: segment.base_offset)
+         if not segments:
+diff --git a/src/eventlog/segment.py b/src/eventlog/segment.py
+index 53a38b5..cafc536 100644
+--- a/src/eventlog/segment.py
++++ b/src/eventlog/segment.py
+@@ -8,7 +8,9 @@ from .errors import NotASegment, UnsupportedFormat
+ MAGIC = b'EVLG'
+ VERSION = 2
+ HEADER = struct.Struct('>4sBQ')
+-SUFFIX = '.log'
++SUFFIX = '.seg'
++# Segments were named *.log before 0.4; log shippers mistook them for text logs.
++LEGACY_SUFFIX = '.log'
+ INDEX_SUFFIX = '.idx'
+ 
+ 
+diff --git a/src/eventlog/stats.py b/src/eventlog/stats.py
+index 48d0225..275db72 100644
+--- a/src/eventlog/stats.py
++++ b/src/eventlog/stats.py
+@@ -12,7 +12,7 @@ from .errors import CorruptRecord
+ from .segment import HEADER, decode_header
+ 
+ # Matches only finished segment files, not the staging copies compaction writes.
+-SEGMENT_FILE = re.compile(r'^\d{20}\.log$')
++SEGMENT_FILE = re.compile(r'^\d{20}\.seg$')
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/tests/test_log.py b/tests/test_log.py
+index 901b1a6..e216ed5 100644
+--- a/tests/test_log.py
++++ b/tests/test_log.py
+@@ -1,11 +1,11 @@
+ import pytest
+ 
+-from eventlog import (ConfigError, EmptyKey, KeyTooLarge, Log, LogClosed, LogConfig, ManualClock, NotASegment,
++from eventlog import (ConfigError, EmptyKey, KeyTooLarge, LegacySegmentName, Log, LogClosed, LogConfig, ManualClock, NotASegment,
+                       OffsetOutOfRange, RecordTooLarge, UnsupportedFormat, ValueTooLarge)
+ 
+ 
+ def segment_files(directory):
+-    return sorted(path for path in directory.iterdir() if path.suffix == '.log')
++    return sorted(path for path in directory.iterdir() if path.suffix == '.seg')
+ 
+ 
+ def test_offsets_count_up_from_zero(tmp_path):
+@@ -56,7 +56,7 @@ def test_rolls_to_a_new_segment(tmp_path):
+         assert len(log.segments) > 1
+         assert [s.base_offset for s in log.segments] == sorted(s.base_offset for s in log.segments)
+     names = [path.name for path in segment_files(tmp_path)]
+-    assert names[0] == '00000000000000000000.log'
++    assert names[0] == '00000000000000000000.seg'
+ 
+ 
+ def test_segments_never_exceed_segment_bytes(tmp_path):
+@@ -145,7 +145,7 @@ def test_other_versions_are_refused(tmp_path):
+     data = bytearray(path.read_bytes())
+     data[4] = 9
+     path.write_bytes(bytes(data))
+-    with pytest.raises(UnsupportedFormat, match=r'^00000000000000000000\.log: unsupported format version 9$'):
++    with pytest.raises(UnsupportedFormat, match=r'^00000000000000000000\.seg: unsupported format version 9$'):
+         Log.open(tmp_path)
+ 
+ 
+@@ -157,11 +157,28 @@ def test_version_1_segments_are_refused(tmp_path):
+     assert data[4] == 2
+     data[4] = 1
+     path.write_bytes(bytes(data))
+-    with pytest.raises(UnsupportedFormat, match=r'^00000000000000000000\.log: unsupported format version 1$'):
++    with pytest.raises(UnsupportedFormat, match=r'^00000000000000000000\.seg: unsupported format version 1$'):
+         Log.open(tmp_path)
+ 
+ 
++def test_old_segment_names_are_refused(tmp_path):
++    with Log.open(tmp_path, LogConfig(segment_bytes=64)) as log:
++        for n in range(4):
++            log.append('k', str(n))
++    for path in segment_files(tmp_path)[1:]:
++        path.rename(path.with_suffix('.log'))
++    first = sorted(tmp_path.glob('*.log'))[0].name
++    with pytest.raises(LegacySegmentName, match=f'^{first}: segment files now use the .seg suffix$'):
++        Log.open(tmp_path)
++
++
++def test_other_log_files_are_left_alone(tmp_path):
++    (tmp_path / 'service.log').write_text('not ours')
++    with Log.open(tmp_path) as log:
++        assert log.append('k', 'v') == 0
++
++
+ def test_foreign_files_are_refused(tmp_path):
+-    (tmp_path / '00000000000000000000.log').write_bytes(b'hello world, not a segment')
++    (tmp_path / '00000000000000000000.seg').write_bytes(b'hello world, not a segment')
+     with pytest.raises(NotASegment):
+         Log.open(tmp_path)

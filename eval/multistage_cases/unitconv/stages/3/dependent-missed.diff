@@ -1,0 +1,13 @@
+diff --git a/src/unitconv/batch.py b/src/unitconv/batch.py
+index 0e2a90c..376ca64 100644
+--- a/src/unitconv/batch.py
++++ b/src/unitconv/batch.py
+@@ -31,7 +31,7 @@ def convert_file(source, destination, settings):
+                 result = convert(parse_quantity(text), target)
+                 record = result_record(text, result, precision=settings.precision,
+                                        rounding=settings.rounding, style=settings.style)
+-                writer.writerow([text, target, format_number(record['value']), record['unit']['symbol'], ''])
++                writer.writerow([text, target, format_number(record['value']), record['unit'], ''])
+                 converted += 1
+             except UnitError as error:
+                 writer.writerow([*(row + ['', ''])[:2], '', '', str(error)])

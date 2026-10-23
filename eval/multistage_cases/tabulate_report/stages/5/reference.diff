@@ -1,0 +1,111 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1cc989b..90eac7a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: a thousands separator anywhere in an amount was silently dropped, so a typo like `12,34` was read as 1234. Separators are now accepted only between three-digit groups; anything else stops with `misplaced thousands separator: '12,34'`.
+ - `read_csv` streams: it returns an iterator that reads one row at a time instead of a list of the whole file, and reports run in a single pass, so large files no longer need to fit in memory. A malformed line is now reported when it is reached, after the rows before it.
+ - `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
+ - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures, and `render_table` left-aligns every column unless given `align`.
+diff --git a/docs/reference.md b/docs/reference.md
+index beadf37..e0c14d3 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -21,7 +21,7 @@ its value, and what it means.
+ 
+ | Key | Value | Meaning |
+ |---|---|---|
+-| `thousands separator` | `,` | removed from amounts before parsing |
++| `thousands separator` | `,` | allowed only between groups of three digits in the whole part (`1,234`, `12,345,678.90`), then removed |
+ | `negative amounts` | `-12.50 or (12.50)` | a leading minus or accounting parentheses |
+ | `currency symbols in cells` | `ignored` | a leading symbol from the currency table, such as `$` or `CHF`, is skipped |
+ | `blank cells` | `skipped` | sum, mean, min and max ignore them; count still counts the row |
+@@ -92,6 +92,7 @@ its value, and what it means.
+ | Key | Value | Meaning |
+ |---|---|---|
+ | `error: not a number` | `not a number: '{text}'` | a cell or filter value is not an amount |
++| `error: thousands` | `misplaced thousands separator: '{text}'` | a separator outside three-digit groups, such as `12,34` or `1,2345`; the text is the cell as written |
+ | `error: missing column` | `missing column: {name}` | a column named by an option is not in the header |
+ | `error: field count` | `line {n}: expected {k} fields, got {m}` | a row has the wrong number of cells |
+ | `error: empty input` | `empty input: no header row` | the file has no non-blank line |
+diff --git a/src/tabreport/numbers.py b/src/tabreport/numbers.py
+index 816401c..996c838 100644
+--- a/src/tabreport/numbers.py
++++ b/src/tabreport/numbers.py
+@@ -12,6 +12,8 @@ def parse_amount(text, thousands=","):
+     """The Decimal in a cell such as ``1,234.50``, ``-$12``, ``(7.25)`` or ``CHF 3``.
+ 
+     Parentheses mean a negative amount, as accounting exports write them.
++    A ``thousands`` separator is accepted only between groups of three digits
++    of the whole part, so a typo such as ``12,34`` is refused, not read as 1234.
+     """
+     cleaned = text.strip()
+     sign = 1
+@@ -25,7 +27,8 @@ def parse_amount(text, thousands=","):
+         if cleaned.startswith(symbol):
+             cleaned = cleaned[len(symbol):].lstrip()
+             break
+-    if thousands:
++    if thousands and thousands in cleaned:
++        _check_grouping(cleaned, thousands, text)
+         cleaned = cleaned.replace(thousands, "")
+     try:
+         value = Decimal(cleaned)
+@@ -36,6 +39,14 @@ def parse_amount(text, thousands=","):
+     return sign * value
+ 
+ 
++def _check_grouping(cleaned, thousands, text):
++    whole = cleaned if thousands == "." else cleaned.partition(".")[0]
++    groups = whole.split(thousands)
++    if (thousands in cleaned[len(whole):] or not 1 <= len(groups[0]) <= 3
++            or any(len(group) != 3 for group in groups[1:])):
++        raise ReportError(f"misplaced thousands separator: {text!r}")
++
++
+ def format_number(value, places=2, thousands=","):
+     """``value`` rounded half up to ``places`` decimals, digits grouped by ``thousands``."""
+     rounded = Decimal(value).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index f8b6196..96af8df 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -49,6 +49,12 @@ def test_errors_exit_2(sales, tmp_path, capsys):
+     assert capsys.readouterr().err == "tabreport: error: not a number: 'lots'\n"
+ 
+ 
++def test_typo_in_an_amount_stops_the_report(write_csv, capsys):
++    path = write_csv("k,v\na,1\na,\"12,34\"\n")
++    assert main([str(path), "-g", "k", "-m", "sum:v"]) == 2
++    assert capsys.readouterr().err == "tabreport: error: misplaced thousands separator: '12,34'\n"
++
++
+ def test_profile(sales, capsys):
+     assert main([str(sales), "--profile"]) == 0
+     lines = capsys.readouterr().out.splitlines()
+diff --git a/tests/test_numbers.py b/tests/test_numbers.py
+index 8041809..441d6be 100644
+--- a/tests/test_numbers.py
++++ b/tests/test_numbers.py
+@@ -1,4 +1,5 @@
+ from decimal import Decimal
++import re
+ 
+ import pytest
+ 
+@@ -24,6 +25,12 @@ def test_parse_amount_refuses(text):
+         parse_amount(text)
+ 
+ 
++@pytest.mark.parametrize("text", ["12,34", "1,2345", ",123", "1234,567", "1.234,5", "$1,00"])
++def test_parse_amount_refuses_misplaced_separator(text):
++    with pytest.raises(ReportError, match=f"^misplaced thousands separator: '{re.escape(text)}'$"):
++        parse_amount(text)
++
++
+ def test_parse_amount_other_separator():
+     assert parse_amount("1.234", thousands=".") == Decimal("1234")
+ 

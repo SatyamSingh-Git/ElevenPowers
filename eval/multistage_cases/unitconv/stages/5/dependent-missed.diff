@@ -1,0 +1,63 @@
+diff --git a/src/unitconv/compound.py b/src/unitconv/compound.py
+index cce99a0..338e325 100644
+--- a/src/unitconv/compound.py
++++ b/src/unitconv/compound.py
+@@ -1,4 +1,4 @@
+-"""Compound unit expressions such as kg·m/s² (or, as typed, kg*m/s^2)."""
++"""Compound unit expressions such as kg*m/s^2."""
+ from dataclasses import dataclass
+ import re
+ 
+@@ -6,10 +6,9 @@ from .dimensions import Dimension
+ from .errors import ParseError, UnitError
+ from .registry import REGISTRY
+ 
+-TERM = re.compile(r'([A-Za-z_]+)(?:\^(-?\d+)|(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))?')
++TERM = re.compile(r'([A-Za-z_]+)(?:\^(-?\d+))?')
+ SPOKEN_POWERS = {2: 'squared', 3: 'cubed'}
+ SUPERSCRIPT = str.maketrans('-0123456789', '⁻⁰¹²³⁴⁵⁶⁷⁸⁹')
+-PLAIN = str.maketrans('⁻⁰¹²³⁴⁵⁶⁷⁸⁹', '-0123456789')
+ 
+ 
+ def _power(symbol, exponent):
+@@ -60,8 +59,8 @@ class CompoundUnit:
+ 
+ 
+ def parse_unit(text):
+-    """Parse `kg·m/s²` or `kg*m/s^2`; each `/` divides by the one term that follows it."""
+-    pieces = re.split(r'([*·/])', text.replace(' ', ''))
++    """Parse `kg*m/s^2`; each `/` divides by the one term that follows it."""
++    pieces = re.split(r'([*/])', text.replace(' ', ''))
+     if len(pieces) > 1 and pieces[:2] == ['1', '/']:
+         pieces = pieces[2:]
+         sign = -1
+@@ -70,14 +69,13 @@ def parse_unit(text):
+     powers = {}
+     for i, piece in enumerate(pieces):
+         if i % 2:
+-            sign = -1 if piece == '/' else 1
++            sign = 1 if piece == '*' else -1
+             continue
+         match = TERM.fullmatch(piece)
+         if not match:
+             raise ParseError(f"cannot parse unit: '{text}'")
+         unit = REGISTRY.lookup(match.group(1))
+-        exponent = match.group(2) or (match.group(3) or '1').translate(PLAIN)
+-        powers[unit] = powers.get(unit, 0) + sign * int(exponent)
++        powers[unit] = powers.get(unit, 0) + sign * int(match.group(2) or 1)
+     terms = tuple((unit, exponent) for unit, exponent in powers.items() if exponent)
+     if not terms:
+         raise ParseError(f"cannot parse unit: '{text}'")
+diff --git a/src/unitconv/quantity.py b/src/unitconv/quantity.py
+index 8fdd540..03714c1 100644
+--- a/src/unitconv/quantity.py
++++ b/src/unitconv/quantity.py
+@@ -6,7 +6,7 @@ from .compound import CompoundUnit, parse_unit
+ from .errors import ParseError
+ 
+ QUANTITY = re.compile(r'\s*(?P<number>[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)\s*'
+-                      r'(?P<unit>[A-Za-z_][A-Za-z0-9_*·/^⁻⁰¹²³⁴⁵⁶⁷⁸⁹-]*|1/[A-Za-z0-9_*·/^⁻⁰¹²³⁴⁵⁶⁷⁸⁹-]+)\s*')
++                      r'(?P<unit>[A-Za-z_][A-Za-z0-9_*/^-]*|1/[A-Za-z0-9_*/^-]+)\s*')
+ 
+ 
+ @dataclass(frozen=True)

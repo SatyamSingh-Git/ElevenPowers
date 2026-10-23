@@ -1,0 +1,293 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ebd87d1..bb50321 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Index entries store the offset relative to the segment's base offset in 4 bytes (8-byte entries), and the index is sparse: new `index_interval_bytes` option, default 4096.
+ - Segment format version 2: the record length prefix is a varint instead of a 4-byte integer. Version 1 segments are refused.
+ - `eventlog dump --from` defaults to the first offset still in the log.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 4af786a..ec4a651 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -11,6 +11,7 @@ An append-only log of keyed events, stored as a directory of segment files.
+ | `segment_bytes` | `1048576` | The active segment is sealed and a new one started once it reaches this size. |
+ | `max_key_bytes` | `1024` | Longest key accepted, in bytes after UTF-8 encoding. |
+ | `max_value_bytes` | `65536` | Longest value accepted, in bytes. |
++| `index_interval_bytes` | `4096` | Minimum distance in bytes between the positions of consecutive index entries; `0` indexes every record. |
+ | `clock` | `ManualClock(0)` | Not a `LogConfig` field but a `Log.open` argument: a callable returning milliseconds, used when `append` gets no `timestamp`. |
+ 
+ ## Limits
+@@ -53,8 +54,9 @@ Records follow the segment header back to back.
+ | Field | Value | Meaning |
+ |---|---|---|
+ | `index.name` | `{base_offset:020d}.idx` | One per segment, beside it. |
+-| `index.entry` | `offset(u64) position(u32)` | One entry per record; position is the byte position in the segment file. |
+-| `index.entry_bytes` | `12` | Size of one entry. |
++| `index.entry` | `relative_offset(u32) position(u32)` | Relative offset is the record's offset minus the segment's base offset; position is the record's byte position in the segment file. |
++| `index.entry_bytes` | `8` | Size of one entry. |
++| `index.sparse` | `first record, then every index_interval_bytes` | The first record of a segment always gets an entry; a later record gets one only when it starts at least `index_interval_bytes` after the previous entry's position. |
+ 
+ ## Recovery
+ 
+@@ -79,7 +81,7 @@ Every error derives from `EventLogError`. Messages:
+ 
+ | Error | Message | Raised when |
+ |---|---|---|
+-| `ConfigError` | `segment_bytes must be at least 64` | `segment_bytes` below the minimum. |
++| `ConfigError` | `segment_bytes must be at least 64` | `segment_bytes` below the minimum; `index_interval_bytes must not be negative` for a negative interval. |
+ | `EmptyKey` | `key must not be empty` | Appending with an empty key. |
+ | `KeyTooLarge` | `key of {size} bytes exceeds max_key_bytes {limit}` | Key longer than `max_key_bytes`. |
+ | `ValueTooLarge` | `value of {size} bytes exceeds max_value_bytes {limit}` | Value longer than `max_value_bytes`. |
+diff --git a/src/eventlog/compaction.py b/src/eventlog/compaction.py
+index a4d5389..70100bc 100644
+--- a/src/eventlog/compaction.py
++++ b/src/eventlog/compaction.py
+@@ -36,7 +36,7 @@ def compact(log):
+         if len(keep) == len(records):
+             sealed.append(segment)
+         elif keep:
+-            sealed.append(_rewrite(segment, keep))
++            sealed.append(_rewrite(segment, keep, log.config.index_interval_bytes))
+             rewritten += 1
+         else:
+             segment.path.unlink()
+@@ -47,7 +47,7 @@ def compact(log):
+     return CompactionResult(rewritten, removed, dropped, bytes_before, sum(segment.size for segment in sealed))
+ 
+ 
+-def _rewrite(segment, records):
++def _rewrite(segment, records, index_interval_bytes):
+     """Write `records` as a new copy of `segment` and swap it in atomically."""
+     data = bytearray(encode_header(segment.base_offset))
+     positions = []
+@@ -59,7 +59,7 @@ def _rewrite(segment, records):
+     staged.write_bytes(data)
+     staged_index = segment.index_path.with_name(segment.index_path.name + '.compacting')
+     staged_index.unlink(missing_ok=True)
+-    writer = IndexWriter(staged_index)
++    writer = IndexWriter(staged_index, segment.base_offset, index_interval_bytes)
+     for offset, position in positions:
+         writer.add(offset, position)
+     writer.close()
+diff --git a/src/eventlog/config.py b/src/eventlog/config.py
+index de49451..cbdccb5 100644
+--- a/src/eventlog/config.py
++++ b/src/eventlog/config.py
+@@ -11,6 +11,7 @@ class LogConfig:
+     segment_bytes: int = 1_048_576
+     max_key_bytes: int = 1024
+     max_value_bytes: int = 65_536
++    index_interval_bytes: int = 4096
+ 
+     def __post_init__(self):
+         if self.segment_bytes < MIN_SEGMENT_BYTES:
+@@ -19,3 +20,5 @@ class LogConfig:
+             raise ConfigError(f'max_key_bytes must be between 1 and {MAX_KEY_BYTES}')
+         if self.max_value_bytes < 0:
+             raise ConfigError('max_value_bytes must not be negative')
++        if self.index_interval_bytes < 0:
++            raise ConfigError('index_interval_bytes must not be negative')
+diff --git a/src/eventlog/index.py b/src/eventlog/index.py
+index 37486a5..f270625 100644
+--- a/src/eventlog/index.py
++++ b/src/eventlog/index.py
+@@ -1,35 +1,47 @@
+-"""Offset index: one fixed-size entry per record, mapping offset to file position.
++"""Sparse offset index: fixed-size entries mapping offset to file position.
+ 
+-    offset    u64
+-    position  u32   byte position of the record in its segment file
++    relative_offset  u32   offset minus the segment's base offset
++    position         u32   byte position of the record in its segment file
++
++The first record of a segment always gets an entry; after that a record gets
++one only when it starts at least `index_interval_bytes` after the previous
++entry's position. Readers seek to the nearest entry and scan forward.
+ """
+ from bisect import bisect_right
+ from pathlib import Path
+ import struct
+ 
+-ENTRY = struct.Struct('>QI')
++ENTRY = struct.Struct('>II')
+ 
+ 
+ class IndexWriter:
+-    def __init__(self, path):
++    def __init__(self, path, base_offset, interval_bytes):
+         self.path = Path(path)
++        self.base_offset = base_offset
++        self.interval_bytes = interval_bytes
++        entries = read_entries(self.path, base_offset)
++        self._last_position = entries[-1][1] if entries else None
+         self._file = open(self.path, 'ab')
+ 
+     def add(self, offset, position):
+-        self._file.write(ENTRY.pack(offset, position))
++        if self._last_position is not None and position - self._last_position < self.interval_bytes:
++            return
++        self._file.write(ENTRY.pack(offset - self.base_offset, position))
+         self._file.flush()
++        self._last_position = position
+ 
+     def close(self):
+         self._file.close()
+ 
+ 
+-def read_entries(path):
+-    """The (offset, position) pairs in an index file, oldest first."""
++def read_entries(path, base_offset):
++    """The (offset, position) pairs in an index file, oldest first, with absolute offsets."""
+     path = Path(path)
+     data = path.read_bytes() if path.exists() else b''
+     # A crash can leave half an entry at the end; it describes nothing yet.
+     usable = len(data) - len(data) % ENTRY.size
+-    return [ENTRY.unpack_from(data, at) for at in range(0, usable, ENTRY.size)]
++    return [(base_offset + relative, position)
++            for relative, position in (ENTRY.unpack_from(data, at) for at in range(0, usable, ENTRY.size))]
+ 
+ 
+ def lookup(entries, offset):
+@@ -38,6 +50,10 @@ def lookup(entries, offset):
+     return entries[at - 1][1] if at else None
+ 
+ 
+-def rebuild(segment, found):
++def rebuild(segment, found, interval_bytes):
+     """Rewrite a segment's index from the (position, record) pairs a scan found."""
+-    segment.index_path.write_bytes(b''.join(ENTRY.pack(record.offset, position) for position, record in found))
++    segment.index_path.write_bytes(b'')
++    writer = IndexWriter(segment.index_path, segment.base_offset, interval_bytes)
++    for position, record in found:
++        writer.add(record.offset, position)
++    writer.close()
+diff --git a/src/eventlog/log.py b/src/eventlog/log.py
+index ee55823..8789969 100644
+--- a/src/eventlog/log.py
++++ b/src/eventlog/log.py
+@@ -47,9 +47,9 @@ class Log:
+         found, end = active.scan()
+         if end < active.size:
+             active.truncate(end)
+-        index.rebuild(active, found)
++        index.rebuild(active, found, self.config.index_interval_bytes)
+         self._next_offset = found[-1][1].offset + 1 if found else active.base_offset
+-        self._index = IndexWriter(active.index_path)
++        self._index = IndexWriter(active.index_path, active.base_offset, self.config.index_interval_bytes)
+ 
+     @property
+     def segments(self):
+@@ -99,7 +99,7 @@ class Log:
+         self._index.close()
+         segment = Segment.create(self.directory, self._next_offset)
+         self._segments.append(segment)
+-        self._index = IndexWriter(segment.index_path)
++        self._index = IndexWriter(segment.index_path, segment.base_offset, self.config.index_interval_bytes)
+ 
+     def _replace_sealed(self, sealed):
+         """Swap in rewritten sealed segments; compaction is the only caller."""
+diff --git a/src/eventlog/reader.py b/src/eventlog/reader.py
+index 2c95496..41240ea 100644
+--- a/src/eventlog/reader.py
++++ b/src/eventlog/reader.py
+@@ -23,7 +23,7 @@ def _records(segments, from_offset):
+             continue
+         start = None
+         if from_offset > segment.base_offset:
+-            start = index.lookup(index.read_entries(segment.index_path), from_offset)
++            start = index.lookup(index.read_entries(segment.index_path, segment.base_offset), from_offset)
+         for record in segment.records(start):
+             if record.offset >= from_offset:
+                 yield record
+diff --git a/tests/test_index.py b/tests/test_index.py
+index f798a9e..3963f66 100644
+--- a/tests/test_index.py
++++ b/tests/test_index.py
+@@ -1,16 +1,52 @@
+-from eventlog import Log, LogConfig
++import struct
++
++import pytest
++
++from eventlog import ConfigError, Log, LogConfig
+ from eventlog.index import lookup, read_entries
+ 
++DENSE = LogConfig(index_interval_bytes=0)
+ 
+-def test_one_entry_per_record(tmp_path):
+-    with Log.open(tmp_path) as log:
++
++def test_one_entry_per_record_when_dense(tmp_path):
++    with Log.open(tmp_path, DENSE) as log:
+         for n in range(5):
+             log.append('k', str(n))
+         segment = log.segments[0]
+-        entries = read_entries(segment.index_path)
++        entries = read_entries(segment.index_path, segment.base_offset)
+     assert [offset for offset, _ in entries] == [0, 1, 2, 3, 4]
+     assert entries[0][1] == 13
+-    assert (tmp_path / '00000000000000000000.idx').stat().st_size == 5 * 12
++    assert (tmp_path / '00000000000000000000.idx').stat().st_size == 5 * 8
++
++
++def test_offsets_are_stored_relative_to_the_segment(tmp_path):
++    with Log.open(tmp_path, LogConfig(segment_bytes=100, index_interval_bytes=0)) as log:
++        for n in range(10):
++            log.append('k', str(n))
++        segment = log.segments[-1]
++    assert segment.base_offset > 0
++    raw = segment.index_path.read_bytes()
++    assert struct.unpack_from('>II', raw) == (0, 13)
++    assert read_entries(segment.index_path, segment.base_offset)[0] == (segment.base_offset, 13)
++
++
++def test_sparse_by_default(tmp_path):
++    with Log.open(tmp_path) as log:
++        for n in range(100):
++            log.append(f'key{n}', 'v' * 100)
++        segment = log.segments[0]
++        entries = read_entries(segment.index_path, segment.base_offset)
++        assert entries[0] == (0, 13)
++        assert 1 < len(entries) < 10
++        gaps = [later[1] - earlier[1] for earlier, later in zip(entries, entries[1:])]
++        assert all(gap >= 4096 for gap in gaps)
++        for start in range(0, 101, 7):
++            assert [r.offset for r in log.replay(start)] == list(range(start, 100))
++
++
++def test_interval_must_not_be_negative():
++    with pytest.raises(ConfigError, match='^index_interval_bytes must not be negative$'):
++        LogConfig(index_interval_bytes=-1)
+ 
+ 
+ def test_lookup_finds_the_entry_at_or_before():
+@@ -23,16 +59,17 @@ def test_lookup_finds_the_entry_at_or_before():
+ 
+ def test_half_written_entry_is_ignored(tmp_path):
+     path = tmp_path / 'x.idx'
+-    path.write_bytes(bytes(12) + b'\x00\x01')
+-    assert read_entries(path) == [(0, 0)]
++    path.write_bytes(bytes(8) + b'\x00\x01')
++    assert read_entries(path, 50) == [(50, 0)]
+ 
+ 
+ def test_index_is_rebuilt_on_open(tmp_path):
+-    with Log.open(tmp_path, LogConfig(segment_bytes=1000)) as log:
++    config = LogConfig(segment_bytes=1000, index_interval_bytes=0)
++    with Log.open(tmp_path, config) as log:
+         for n in range(4):
+             log.append('k', str(n))
+-        index_path = log.segments[-1].index_path
+-    index_path.write_bytes(b'')
+-    with Log.open(tmp_path) as log:
+-        assert [offset for offset, _ in read_entries(index_path)] == [0, 1, 2, 3]
++        segment = log.segments[-1]
++    segment.index_path.write_bytes(b'')
++    with Log.open(tmp_path, config) as log:
++        assert [offset for offset, _ in read_entries(segment.index_path, segment.base_offset)] == [0, 1, 2, 3]
+         assert [r.value for r in log.replay(2)] == [b'2', b'3']

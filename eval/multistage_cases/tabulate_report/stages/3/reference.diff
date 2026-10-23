@@ -1,0 +1,183 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 80d03a2..3ca8ee7 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
+ - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures, and `render_table` left-aligns every column unless given `align`.
+ - Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names.
+ - `--profile` describes each column (number or text, filled and blank cells) instead of reporting.
+diff --git a/docs/reference.md b/docs/reference.md
+index eeb18c2..167e546 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -66,13 +66,15 @@ its value, and what it means.
+ 
+ | Key | Value | Meaning |
+ |---|---|---|
+-| `formats` | `plain, markdown` | accepted by `--format` |
++| `formats` | `plain, markdown, csv` | accepted by `--format`, `render_report` and `render_table` |
++| `csv numbers` | `bare` | no currency symbol and no thousands separator, rounded to the currency's decimals: `1500.50`, `-50.50`; counts are whole numbers |
++| `csv layout` | `header, groups, TOTAL` | no rule lines and no row-count footer |
+ | `default format` | `plain` | used when `--format` is not given |
+ | `plain column gap` | `2 spaces` | between columns in plain output |
+ | `render_table align` | `left` | every column, when no `align` is given |
+ | `report alignment` | `keys left, measures right` | whatever the cells hold; a key such as `2024` or `0042` stays left |
+ | `markdown pipe escape` | `\|` | a pipe inside a cell is escaped |
+-| `footer` | `N rows` | after a blank line: the number of input rows read, `1 row` for one |
++| `footer` | `N rows` | after a blank line: the number of input rows read, `1 row` for one; not in csv |
+ | `profile columns` | `column, kind, filled, blank` | `--profile` output; kind is `number` or `text` |
+ 
+ ## Command line
+diff --git a/src/tabreport/report.py b/src/tabreport/report.py
+index 5a15f74..6259075 100644
+--- a/src/tabreport/report.py
++++ b/src/tabreport/report.py
+@@ -64,23 +64,33 @@ def _sorted(body, headers, sort):
+ 
+ 
+ def render_report(report, fmt="plain"):
+-    rows = [_cells(report, row) for row in report.rows]
+-    totals = None if report.totals is None else _cells(report, report.totals)
++    """The report as text. CSV is for spreadsheets: bare numbers and no footer."""
++    bare = fmt == "csv"
++    rows = [_cells(report, row, bare) for row in report.rows]
++    totals = None if report.totals is None else _cells(report, report.totals, bare)
+     align = ["l"] * report.key_columns + ["r"] * len(report.measures)
+     table = render_table(report.headers, rows, fmt, align=align, totals=totals)
++    if bare:
++        return table
+     noun = "row" if report.row_count == 1 else "rows"
+     return f"{table}\n{report.row_count} {noun}\n"
+ 
+ 
+-def _cells(report, row):
++def _cells(report, row, bare):
+     keys = report.key_columns
+     measured = zip(report.measures, row[keys:])
+-    return list(row[:keys]) + [_measure_cell(m, value, report.currency) for m, value in measured]
++    return list(row[:keys]) + [_measure_cell(m, value, report.currency, bare) for m, value in measured]
+ 
+ 
+-def _measure_cell(measure, value, currency):
++def _measure_cell(measure, value, currency, bare):
+     if value is None:
+         return ""
++    if bare:
++        if measure.func == "count":
++            places = 0
++        else:
++            places = check_currency(currency)[1] if currency else 2
++        return format_number(value, places, thousands="")
+     if measure.func == "count":
+         return format_number(value, 0)
+     if currency is None:
+diff --git a/src/tabreport/table.py b/src/tabreport/table.py
+index f66009a..db06049 100644
+--- a/src/tabreport/table.py
++++ b/src/tabreport/table.py
+@@ -1,7 +1,10 @@
+-"""Laying out rows of text as plain-text or markdown tables."""
++"""Laying out rows of text as plain-text, markdown or CSV tables."""
++import csv
++import io
++
+ from .errors import ReportError
+ 
+-FORMATS = ("plain", "markdown")
++FORMATS = ("plain", "markdown", "csv")
+ GAP = "  "
+ 
+ 
+@@ -9,6 +12,7 @@ def render_table(headers, rows, fmt="plain", align=None, totals=None):
+     """``rows`` and ``totals`` are lists of cells; None prints as an empty cell.
+ 
+     ``align`` holds "l" or "r" per column; without it every column is left-aligned.
++    CSV has no alignment and no rule lines.
+     """
+     if fmt not in FORMATS:
+         raise ReportError(f"unknown format: {fmt}")
+@@ -25,6 +29,8 @@ def render_table(headers, rows, fmt="plain", align=None, totals=None):
+         raise ReportError(f"align needs 'l' or 'r' for each of {len(headers)} columns")
+     if fmt == "markdown":
+         return _markdown(headers, rows, align, totals)
++    if fmt == "csv":
++        return _csv(headers, rows, totals)
+     return _plain(headers, rows, align, totals)
+ 
+ 
+@@ -66,5 +72,12 @@ def _markdown(headers, rows, align, totals):
+     return "\n".join([line(headers), rule, *(line(row) for row in body)]) + "\n"
+ 
+ 
++def _csv(headers, rows, totals):
++    out = io.StringIO()
++    writer = csv.writer(out, lineterminator="\n")
++    writer.writerows([headers, *rows, *([totals] if totals else [])])
++    return out.getvalue()
++
++
+ def _escape(text):
+     return text.replace("|", "\\|")
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 51cbae5..f8b6196 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -9,6 +9,11 @@ def test_report_to_file(sales, tmp_path):
+     assert lines[5] == "| TOTAL  |   $2,450.00 |"
+ 
+ 
++def test_csv_format(sales, capsys):
++    assert main([str(sales), "-g", "region", "-m", "sum:amount", "-f", "csv", "--no-totals"]) == 0
++    assert capsys.readouterr().out == "region,sum(amount)\nEast,1500.50\nNorth,1000.00\nWest,-50.50\n"
++
++
+ def test_report_to_stdout(sales, capsys):
+     assert main([str(sales), "-g", "region", "--no-totals"]) == 0
+     out = capsys.readouterr().out
+diff --git a/tests/test_report.py b/tests/test_report.py
+index dc441d3..5cc79a3 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -54,6 +54,22 @@ def test_each_key_column_is_its_own_column(sales):
+     assert lines[7] == "| TOTAL  |         |   $2,450.00 |"
+ 
+ 
++def test_render_csv_has_bare_numbers_and_no_footer(sales):
++    report = build_report(read_csv(sales), ["region"], MEASURES)
++    assert render_report(report, "csv") == (
++        "region,sum(amount),count,mean(amount)\n"
++        "East,1500.50,2,750.25\n"
++        "North,1000.00,1,1000.00\n"
++        "West,-50.50,2,-25.25\n"
++        "TOTAL,2450.00,5,490.00\n"
++    )
++
++
++def test_render_csv_uses_currency_decimals(sales):
++    report = build_report(read_csv(sales), ["region"], ["sum:amount"], currency="JPY", totals=False)
++    assert render_report(report, "csv").splitlines()[1:] == ["East,1501", "North,1000", "West,-51"]
++
++
+ def test_numeric_keys_stay_left_aligned():
+     rows = [{"store": "7", "v": "1"}, {"store": "0042", "v": "2"}, {"store": "123", "v": "3"}]
+     lines = render_report(build_report(rows, ["store"], ["sum:v"], totals=False)).splitlines()
+diff --git a/tests/test_table.py b/tests/test_table.py
+index dbf6649..7da8b7a 100644
+--- a/tests/test_table.py
++++ b/tests/test_table.py
+@@ -32,6 +32,11 @@ def test_numbers_are_left_aligned_unless_asked():
+     assert rule == "| ---- | --- |"
+ 
+ 
++def test_csv_quotes_and_keeps_totals():
++    text = render_table(["name", "note"], [["a,b", 'say "hi"'], [None, "x"]], "csv", totals=["TOTAL", ""])
++    assert text == 'name,note\n"a,b","say ""hi"""\n,x\nTOTAL,\n'
++
++
+ def test_explicit_alignment():
+     text = render_table(["a", "b"], [["1", "x"]], align=["l", "r"])
+     assert text.splitlines()[2] == "1  x"

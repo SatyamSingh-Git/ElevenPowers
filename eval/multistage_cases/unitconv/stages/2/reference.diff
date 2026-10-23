@@ -1,0 +1,127 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f4b633c..b158c2b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: unit symbols in quantities were matched without regard to case, so `3 Mm` was read as millimetres. Symbols now match exactly; a symbol that matches only when case is ignored is refused with the spellings it might mean.
+ - `convert()` returns the exact converted value and no longer takes `precision` or `rounding`; `format_quantity()` takes them instead, so chained conversions no longer drift.
+ - `unitconv dimensions` lists the named dimensions and their formulas.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 5a37fd4..bac9dff 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -25,7 +25,7 @@ command-line options, each overriding the one before.
+ |---|---|---|
+ | `convert.result` | `exact` | `convert()` returns the exact value; `format_quantity()` rounds it to `precision` places with the `rounding` mode |
+ | `arithmetic` | `float` | numbers are binary floating point while converting |
+-| `lookup.case` | `insensitive` | unit symbols match regardless of case when there is no exact match |
++| `lookup.case` | `exact` | unit symbols match only as spelled, so `Mm` is megametres and `mm` millimetres |
+ | `prefixes` | `G, M, k, h, da, d, c, m, u, n` | SI prefixes accepted before units that take them |
+ | `table.version` | `2026.3` | version of the generated unit table |
+ | `temperature.offsets` | `degC, degF` | units with an offset; they cannot be part of a compound unit |
+@@ -49,6 +49,7 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+ | Error | Message | When |
+ |---|---|---|
+ | `error.unknown_unit` | `unknown unit: '{unit}'` | a symbol names no unit |
++| `error.unknown_unit_case` | `unknown unit: '{unit}' (did you mean {candidates}?)` | a symbol names a unit only when case is ignored; candidates are quoted, as in `'Mm' or 'mm'` |
+ | `error.incompatible` | `cannot convert {source} ({source_dimension}) to {target} ({target_dimension})` | the dimensions differ |
+ | `error.parse_quantity` | `cannot parse quantity: '{text}'` | the text is not a number followed by a unit |
+ | `error.parse_unit` | `cannot parse unit: '{text}'` | a unit expression is malformed or cancels out |
+diff --git a/src/unitconv/errors.py b/src/unitconv/errors.py
+index 93891bc..0900bd3 100644
+--- a/src/unitconv/errors.py
++++ b/src/unitconv/errors.py
+@@ -3,9 +3,15 @@ class UnitError(ValueError):
+ 
+ 
+ class UnknownUnitError(UnitError):
+-    def __init__(self, symbol):
+-        super().__init__(f"unknown unit: '{symbol}'")
++    def __init__(self, symbol, candidates=()):
++        message = f"unknown unit: '{symbol}'"
++        if candidates:
++            quoted = [f"'{candidate}'" for candidate in candidates]
++            listed = quoted[0] if len(quoted) == 1 else ', '.join(quoted[:-1]) + ' or ' + quoted[-1]
++            message += f' (did you mean {listed}?)'
++        super().__init__(message)
+         self.symbol = symbol
++        self.candidates = tuple(candidates)
+ 
+ 
+ class IncompatibleUnitsError(UnitError):
+diff --git a/src/unitconv/quantity.py b/src/unitconv/quantity.py
+index c23ebdc..03714c1 100644
+--- a/src/unitconv/quantity.py
++++ b/src/unitconv/quantity.py
+@@ -19,5 +19,4 @@ def parse_quantity(text):
+     match = QUANTITY.fullmatch(text)
+     if not match:
+         raise ParseError(f"cannot parse quantity: '{text}'")
+-    # Unit lookup ignores case, so input is normalised before it is resolved.
+-    return Quantity(float(match.group('number')), parse_unit(match.group('unit').lower()))
++    return Quantity(float(match.group('number')), parse_unit(match.group('unit')))
+diff --git a/src/unitconv/registry.py b/src/unitconv/registry.py
+index 91a55fe..3806940 100644
+--- a/src/unitconv/registry.py
++++ b/src/unitconv/registry.py
+@@ -38,15 +38,13 @@ class Registry:
+                     self._spellings.setdefault(prefix + unit.symbol, Unit(
+                         prefix + unit.symbol, prefix_name + unit.name, prefix_name + unit.plural,
+                         unit.dimension, _number(prefix_factor) * unit.factor))
+-        # On a clash between spellings that differ only in case, the one registered first wins.
+-        self._folded = {}
+-        for spelling, unit in self._spellings.items():
+-            self._folded.setdefault(spelling.lower(), unit)
+ 
+     def lookup(self, symbol):
+-        unit = self._spellings.get(symbol) or self._folded.get(symbol.lower())
++        """The unit spelled exactly `symbol`; case matters, since `Mm` and `mm` are different units."""
++        unit = self._spellings.get(symbol)
+         if unit is None:
+-            raise UnknownUnitError(symbol)
++            raise UnknownUnitError(symbol, sorted(
++                spelling for spelling in self._spellings if spelling.lower() == symbol.lower()))
+         return unit
+ 
+     def units(self, dimension=None):
+diff --git a/tests/test_parsing.py b/tests/test_parsing.py
+index c1aa8f3..1ecd504 100644
+--- a/tests/test_parsing.py
++++ b/tests/test_parsing.py
+@@ -17,6 +17,11 @@ def test_parse_quantity(text, value, symbol):
+     assert quantity.unit.symbol == symbol
+ 
+ 
++@pytest.mark.parametrize('text, name', [('3 Mm', 'megametre'), ('3 mm', 'millimetre'), ('5 MN', 'meganewton')])
++def test_quantity_units_keep_their_case(text, name):
++    assert parse_quantity(text).unit.name() == name
++
++
+ @pytest.mark.parametrize('text', ['km', '12', '1,5 m', '5 m 3'])
+ def test_unparseable_quantity(text):
+     with pytest.raises(ParseError, match=f"cannot parse quantity: '{text}'"):
+diff --git a/tests/test_registry.py b/tests/test_registry.py
+index de6541b..4024587 100644
+--- a/tests/test_registry.py
++++ b/tests/test_registry.py
+@@ -16,9 +16,13 @@ def test_exact_spelling_wins_over_prefix():
+     assert REGISTRY.lookup('ha').name == 'hectare'
+ 
+ 
+-def test_lookup_ignores_case():
+-    assert REGISTRY.lookup('PA').name == 'pascal'
+-    assert REGISTRY.lookup('btu').name == 'British thermal unit'
++def test_lookup_respects_case():
++    assert REGISTRY.lookup('Mm').name == 'megametre'
++    assert REGISTRY.lookup('mm').name == 'millimetre'
++    with pytest.raises(UnknownUnitError, match=r"unknown unit: 'PA' \(did you mean 'Pa'\?\)"):
++        REGISTRY.lookup('PA')
++    with pytest.raises(UnknownUnitError, match=r"unknown unit: 'MM' \(did you mean 'Mm' or 'mm'\?\)"):
++        REGISTRY.lookup('MM')
+ 
+ 
+ def test_unknown_unit():

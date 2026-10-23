@@ -1,0 +1,156 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 75de58e..29bbc8f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Compound units in results are written with a middle dot and superscript powers, as in `kg·m²/s²`; both forms are accepted as input.
+ - `unitconv list` shows 20 units a page, with `--page N` and a `page N of M` footer.
+ - `--json` output gives `unit` as an object with the unit's `symbol` and singular `name`.
+ - Fixed: unit symbols in quantities were matched without regard to case, so `3 Mm` was read as millimetres. Symbols now match exactly; a symbol that matches only when case is ignored is refused with the spellings it might mean.
+diff --git a/docs/reference.md b/docs/reference.md
+index 5aae655..366d5f9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -37,9 +37,9 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+ 
+ | Fact | Value | Meaning |
+ |---|---|---|
+-| `unit.multiply` | `*` | joins units that multiply, as in `kg*m` |
++| `unit.multiply` | `·` | joins units that multiply in results, as in `kg·m`; input may also use `*` |
+ | `unit.divide` | `/` | divides by the next unit, as in `m/s` |
+-| `unit.power` | `^n` | raises a unit to an integer power, as in `s^2` or `s^-2` |
++| `unit.power` | `superscript` | integer powers are written as superscripts in results, as in `s²`; input may use them or `^`, as in `s^2` or `s^-2` |
+ | `unit.reciprocal` | `1/` | a unit with nothing above the line, as in `1/s` |
+ | `output.round_trip` | `yes` | every quantity unitconv prints is accepted back as input |
+ | `mixed.separator` | `+` | a target such as `ft+in` gives whole feet and the remaining inches |
+diff --git a/src/unitconv/compound.py b/src/unitconv/compound.py
+index c88c2a3..cce99a0 100644
+--- a/src/unitconv/compound.py
++++ b/src/unitconv/compound.py
+@@ -1,4 +1,4 @@
+-"""Compound unit expressions such as kg*m/s^2."""
++"""Compound unit expressions such as kg·m/s² (or, as typed, kg*m/s^2)."""
+ from dataclasses import dataclass
+ import re
+ 
+@@ -6,12 +6,14 @@ from .dimensions import Dimension
+ from .errors import ParseError, UnitError
+ from .registry import REGISTRY
+ 
+-TERM = re.compile(r'([A-Za-z_]+)(?:\^(-?\d+))?')
++TERM = re.compile(r'([A-Za-z_]+)(?:\^(-?\d+)|(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))?')
+ SPOKEN_POWERS = {2: 'squared', 3: 'cubed'}
++SUPERSCRIPT = str.maketrans('-0123456789', '⁻⁰¹²³⁴⁵⁶⁷⁸⁹')
++PLAIN = str.maketrans('⁻⁰¹²³⁴⁵⁶⁷⁸⁹', '-0123456789')
+ 
+ 
+ def _power(symbol, exponent):
+-    return symbol if exponent == 1 else f'{symbol}^{exponent}'
++    return symbol if exponent == 1 else symbol + str(exponent).translate(SUPERSCRIPT)
+ 
+ 
+ def _spoken(name, exponent):
+@@ -46,7 +48,7 @@ class CompoundUnit:
+     def symbol(self):
+         above = [_power(unit.symbol, exponent) for unit, exponent in self.terms if exponent > 0]
+         below = [_power(unit.symbol, -exponent) for unit, exponent in self.terms if exponent < 0]
+-        return ('*'.join(above) or '1') + ''.join('/' + term for term in below)
++        return ('·'.join(above) or '1') + ''.join('/' + term for term in below)
+ 
+     def name(self, plural=False):
+         above = [(unit, exponent) for unit, exponent in self.terms if exponent > 0]
+@@ -58,8 +60,8 @@ class CompoundUnit:
+ 
+ 
+ def parse_unit(text):
+-    """Parse `kg*m/s^2`; each `/` divides by the one term that follows it."""
+-    pieces = re.split(r'([*/])', text.replace(' ', ''))
++    """Parse `kg·m/s²` or `kg*m/s^2`; each `/` divides by the one term that follows it."""
++    pieces = re.split(r'([*·/])', text.replace(' ', ''))
+     if len(pieces) > 1 and pieces[:2] == ['1', '/']:
+         pieces = pieces[2:]
+         sign = -1
+@@ -68,13 +70,14 @@ def parse_unit(text):
+     powers = {}
+     for i, piece in enumerate(pieces):
+         if i % 2:
+-            sign = 1 if piece == '*' else -1
++            sign = -1 if piece == '/' else 1
+             continue
+         match = TERM.fullmatch(piece)
+         if not match:
+             raise ParseError(f"cannot parse unit: '{text}'")
+         unit = REGISTRY.lookup(match.group(1))
+-        powers[unit] = powers.get(unit, 0) + sign * int(match.group(2) or 1)
++        exponent = match.group(2) or (match.group(3) or '1').translate(PLAIN)
++        powers[unit] = powers.get(unit, 0) + sign * int(exponent)
+     terms = tuple((unit, exponent) for unit, exponent in powers.items() if exponent)
+     if not terms:
+         raise ParseError(f"cannot parse unit: '{text}'")
+diff --git a/src/unitconv/quantity.py b/src/unitconv/quantity.py
+index 03714c1..8fdd540 100644
+--- a/src/unitconv/quantity.py
++++ b/src/unitconv/quantity.py
+@@ -6,7 +6,7 @@ from .compound import CompoundUnit, parse_unit
+ from .errors import ParseError
+ 
+ QUANTITY = re.compile(r'\s*(?P<number>[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)\s*'
+-                      r'(?P<unit>[A-Za-z_][A-Za-z0-9_*/^-]*|1/[A-Za-z0-9_*/^-]+)\s*')
++                      r'(?P<unit>[A-Za-z_][A-Za-z0-9_*·/^⁻⁰¹²³⁴⁵⁶⁷⁸⁹-]*|1/[A-Za-z0-9_*·/^⁻⁰¹²³⁴⁵⁶⁷⁸⁹-]+)\s*')
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/tests/test_formatting.py b/tests/test_formatting.py
+index 80a8911..b63652c 100644
+--- a/tests/test_formatting.py
++++ b/tests/test_formatting.py
+@@ -31,6 +31,7 @@ def test_rounds_for_display():
+ 
+ def test_output_reads_back():
+     text = format_quantity(convert(parse_quantity('1 N'), 'g*cm/s^2'))
++    assert text == '100000 g·cm/s²'
+     assert format_quantity(parse_quantity(text)) == text
+ 
+ 
+diff --git a/tests/test_parsing.py b/tests/test_parsing.py
+index 1ecd504..5756694 100644
+--- a/tests/test_parsing.py
++++ b/tests/test_parsing.py
+@@ -8,7 +8,9 @@ from unitconv import ParseError, UnitError, parse_quantity, parse_unit
+     ('-40 degF', -40, 'degF'),
+     ('3e3 m', 3000, 'm'),
+     ('.5 lb', 0.5, 'lb'),
+-    ('9.81 m*s^-2', 9.81, 'm/s^2'),
++    ('9.81 m*s^-2', 9.81, 'm/s²'),
++    ('9.81 m·s⁻²', 9.81, 'm/s²'),
++    ('1 kg·m²/s²', 1, 'kg·m²/s²'),
+     ('2 1/s', 2, '1/s'),
+ ])
+ def test_parse_quantity(text, value, symbol):
+@@ -29,7 +31,7 @@ def test_unparseable_quantity(text):
+ 
+ 
+ def test_repeated_units_merge():
+-    assert parse_unit('m*m').symbol == 'm^2'
++    assert parse_unit('m*m').symbol == 'm²'
+     with pytest.raises(ParseError, match="cannot parse unit: 'm/m'"):
+         parse_unit('m/m')
+ 
+diff --git a/tests/test_registry.py b/tests/test_registry.py
+index 4024587..1eb08e7 100644
+--- a/tests/test_registry.py
++++ b/tests/test_registry.py
+@@ -38,7 +38,9 @@ def test_units_by_dimension():
+ def test_compound_dimension_and_symbol():
+     unit = parse_unit('kg*m/s^2')
+     assert unit.dimension.name == 'force'
+-    assert unit.symbol == 'kg*m/s^2'
++    assert unit.symbol == 'kg·m/s²'
++    assert parse_unit('m^-3').symbol == '1/m³'
++    assert parse_unit('m^12').symbol == 'm¹²'
+     assert unit.factor == pytest.approx(1)
+     assert parse_unit('W/m^2/K').dimension.formula == 'M/T^3/K'
+     assert parse_unit('1/s').dimension.name == 'frequency'

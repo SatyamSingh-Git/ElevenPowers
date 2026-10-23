@@ -1,0 +1,227 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3ca8ee7..1cc989b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `read_csv` streams: it returns an iterator that reads one row at a time instead of a list of the whole file, and reports run in a single pass, so large files no longer need to fit in memory. A malformed line is now reported when it is reached, after the rows before it.
+ - `--format csv` (and `"csv"` in `render_report` and `render_table`) writes the report for spreadsheets: header, group rows and TOTAL, amounts as bare numbers, no footer.
+ - Fixed: key columns whose values look like numbers (`2024`, `0042`) were right-aligned like amounts. Reports now always left-align key columns and right-align measures, and `render_table` left-aligns every column unless given `align`.
+ - Grouping by several columns gives each its own column, headed by the CSV column name, instead of one `group` column joined with ` / `. A single key column is headed by its name too, and `aggregate` returns key values under their column names.
+diff --git a/docs/reference.md b/docs/reference.md
+index 167e546..beadf37 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -13,7 +13,8 @@ its value, and what it means.
+ | `skip_blank` | `true` | blank lines are ignored; when false they become rows of empty cells |
+ | `dialects` | `comma, semicolon, tab, pipe` | named presets for `--dialect`; `--delimiter`, `--quotechar` and `--encoding` override them |
+ | `default dialect` | `comma` | used when `--dialect` is not given |
+-| `read_csv returns` | `list of dicts` | one dict per data row, keyed by the stripped header names, cells stripped |
++| `read_csv returns` | `iterator of dicts` | one dict per data row, keyed by the stripped header names, cells stripped; rows are read as they are consumed, so an error in a line is raised only when that line is reached |
++| `build_report rows` | `read once` | any iterable of dicts; group results, totals and the row count all come from a single pass |
+ | `header` | `first non-blank line` | column names must be non-empty and unique |
+ 
+ ## Amounts
+diff --git a/src/tabreport/filters.py b/src/tabreport/filters.py
+index bf0361c..ae0280e 100644
+--- a/src/tabreport/filters.py
++++ b/src/tabreport/filters.py
+@@ -41,4 +41,4 @@ def parse_filter(text):
+ 
+ 
+ def keep(rows, filters):
+-    return [row for row in rows if all(f.matches(row) for f in filters)]
++    return (row for row in rows if all(f.matches(row) for f in filters))
+diff --git a/src/tabreport/reader.py b/src/tabreport/reader.py
+index 533b391..0d6a733 100644
+--- a/src/tabreport/reader.py
++++ b/src/tabreport/reader.py
+@@ -6,14 +6,14 @@ from .errors import ReportError
+ 
+ 
+ def read_csv(path, dialect=None, required=()):
+-    """Every data row of ``path`` as a dict keyed by the header row.
++    """Yield every data row of ``path`` as a dict keyed by the header row.
+ 
+-    Cells keep their text, stripped of surrounding whitespace; numbers are
+-    parsed later by the measures that need them. ``required`` names columns
+-    the header must have.
++    Rows are read one at a time as they are consumed, so a problem in a line
++    is raised only when that line is reached. Cells keep their text, stripped
++    of surrounding whitespace; numbers are parsed later by the measures that
++    need them. ``required`` names columns the header must have.
+     """
+     dialect = dialect or Dialect()
+-    rows = []
+     try:
+         with open(path, newline="", encoding=dialect.encoding) as handle:
+             records = csv.reader(handle, delimiter=dialect.delimiter, quotechar=dialect.quotechar)
+@@ -29,10 +29,9 @@ def read_csv(path, dialect=None, required=()):
+                 if len(record) != len(header):
+                     raise ReportError(
+                         f"line {records.line_num}: expected {len(header)} fields, got {len(record)}")
+-                rows.append(dict(zip(header, (cell.strip() for cell in record))))
++                yield dict(zip(header, (cell.strip() for cell in record)))
+     except UnicodeDecodeError:
+         raise ReportError(f"cannot decode {path} as {dialect.encoding}") from None
+-    return rows
+ 
+ 
+ def _header(records):
+diff --git a/src/tabreport/report.py b/src/tabreport/report.py
+index 6259075..336749a 100644
+--- a/src/tabreport/report.py
++++ b/src/tabreport/report.py
+@@ -25,7 +25,9 @@ class Report:
+ 
+ 
+ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+-    """Group ``rows``, a list of dicts as read_csv returns them, by the ``by`` columns.
++    """Group ``rows``, dicts as read_csv yields them, by the ``by`` columns.
++
++    ``rows`` is read once, so it can be a stream far larger than memory.
+ 
+     Every measure except count is money in ``currency``; None prints plain numbers.
+     ``sort`` names a column to order by, descending when it starts with "-";
+@@ -37,19 +39,23 @@ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+     if currency is not None:
+         check_currency(currency)
+     headers = list(by) + [m.label for m in measures]
+-    results = aggregate(rows, by, measures) if by else []
+-    body = [[r[name] for name in by] + [r[m.label] for m in measures] for r in results]
++    overall = Accumulator(measures)
++    results = aggregate(_tally(rows, overall), by, measures)
++    body = [[r[name] for name in by] + [r[m.label] for m in measures] for r in results] if by else []
+     body.sort(key=lambda row: row[:len(by)])
+     if sort:
+         body = _sorted(body, headers, sort)
+     grand = None
+     if totals:
+-        overall = Accumulator(measures)
+-        for row in rows:
+-            overall.add(row)
+         label = [TOTAL_LABEL] + [""] * (len(by) - 1) if by else []
+         grand = label + [overall.result(m) for m in measures]
+-    return Report(headers, body, grand, measures, currency, len(rows))
++    return Report(headers, body, grand, measures, currency, overall.rows)
++
++
++def _tally(rows, overall):
++    for row in rows:
++        overall.add(row)
++        yield row
+ 
+ 
+ def _sorted(body, headers, sort):
+diff --git a/tests/test_filters.py b/tests/test_filters.py
+index fadb9ec..1d23aa1 100644
+--- a/tests/test_filters.py
++++ b/tests/test_filters.py
+@@ -19,6 +19,6 @@ def test_bad_filters():
+ 
+ def test_keep():
+     rows = [{"v": "5"}, {"v": "(20)"}, {"v": ""}, {"v": "$1,500"}]
+-    assert keep(rows, [parse_filter("v>0")]) == [{"v": "5"}, {"v": "$1,500"}]
+-    assert keep(rows, [parse_filter("v<=5")]) == [{"v": "5"}, {"v": "(20)"}]
+-    assert keep(rows, [parse_filter("v=")]) == [{"v": ""}]
++    assert list(keep(rows, [parse_filter("v>0")])) == [{"v": "5"}, {"v": "$1,500"}]
++    assert list(keep(rows, [parse_filter("v<=5")])) == [{"v": "5"}, {"v": "(20)"}]
++    assert list(keep(iter(rows), [parse_filter("v=")])) == [{"v": ""}]
+diff --git a/tests/test_reader.py b/tests/test_reader.py
+index cdb4e47..a623435 100644
+--- a/tests/test_reader.py
++++ b/tests/test_reader.py
+@@ -4,54 +4,62 @@ from tabreport import Dialect, ReportError, read_csv
+ 
+ 
+ def test_reads_rows_keyed_by_header(sales):
+-    rows = read_csv(sales)
++    rows = list(read_csv(sales))
+     assert len(rows) == 5
+     assert rows[0] == {"region": "East", "product": "Widget", "units": "3", "amount": "1200.50"}
+     assert rows[3]["amount"] == "1,000.00"
+ 
+ 
++def test_rows_stream_until_a_bad_line(write_csv):
++    rows = read_csv(write_csv("a,b\n1,2\n3,4\n5\n6,7\n"))
++    assert next(rows) == {"a": "1", "b": "2"}
++    assert next(rows) == {"a": "3", "b": "4"}
++    with pytest.raises(ReportError, match=r"^line 4: expected 2 fields, got 1$"):
++        next(rows)
++
++
+ def test_semicolon_dialect_with_quoted_delimiter(write_csv):
+     path = write_csv('name;note\n"Smith; J";late\n')
+-    assert read_csv(path, Dialect(delimiter=";")) == [{"name": "Smith; J", "note": "late"}]
++    assert list(read_csv(path, Dialect(delimiter=";"))) == [{"name": "Smith; J", "note": "late"}]
+ 
+ 
+ def test_header_and_cells_are_stripped(write_csv):
+     path = write_csv(" a , b \n 1 , x \n")
+-    assert read_csv(path) == [{"a": "1", "b": "x"}]
++    assert list(read_csv(path)) == [{"a": "1", "b": "x"}]
+ 
+ 
+ def test_blank_lines_kept_when_asked(write_csv):
+     path = write_csv("a,b\n1,2\n\n3,4\n")
+-    assert len(read_csv(path)) == 2
+-    assert read_csv(path, Dialect(skip_blank=False))[1] == {"a": "", "b": ""}
++    assert len(list(read_csv(path))) == 2
++    assert list(read_csv(path, Dialect(skip_blank=False)))[1] == {"a": "", "b": ""}
+ 
+ 
+ def test_missing_required_column(sales):
+     with pytest.raises(ReportError, match="^missing column: price$"):
+-        read_csv(sales, required=["region", "price"])
++        list(read_csv(sales, required=["region", "price"]))
+ 
+ 
+ def test_wrong_field_count_names_the_line(write_csv):
+     path = write_csv("a,b\n1,2\n3\n")
+     with pytest.raises(ReportError, match=r"^line 3: expected 2 fields, got 1$"):
+-        read_csv(path)
++        list(read_csv(path))
+ 
+ 
+ def test_empty_file(write_csv):
+     with pytest.raises(ReportError, match="^empty input: no header row$"):
+-        read_csv(write_csv("\n\n"))
++        list(read_csv(write_csv("\n\n")))
+ 
+ 
+ def test_duplicate_column(write_csv):
+     with pytest.raises(ReportError, match="^duplicate column: a$"):
+-        read_csv(write_csv("a,b,a\n1,2,3\n"))
++        list(read_csv(write_csv("a,b,a\n1,2,3\n")))
+ 
+ 
+ def test_wrong_encoding(write_csv):
+     path = write_csv("name\nJosé\n", encoding="latin-1")
+     with pytest.raises(ReportError, match="cannot decode .* as utf-8"):
+-        read_csv(path)
+-    assert read_csv(path, Dialect(encoding="latin-1")) == [{"name": "José"}]
++        list(read_csv(path))
++    assert list(read_csv(path, Dialect(encoding="latin-1"))) == [{"name": "José"}]
+ 
+ 
+ def test_dialect_checks_its_characters():
+diff --git a/tests/test_report.py b/tests/test_report.py
+index 5cc79a3..2b26764 100644
+--- a/tests/test_report.py
++++ b/tests/test_report.py
+@@ -16,6 +16,13 @@ def test_rows_in_key_order_with_totals(sales):
+     assert report.row_count == 5
+ 
+ 
++def test_rows_are_read_once(sales):
++    report = build_report((row for row in read_csv(sales)), ["region"], MEASURES)
++    assert report.rows[0] == ["East", Decimal("1500.50"), 2, Decimal("750.25")]
++    assert report.totals == ["TOTAL", Decimal("2450.00"), 5, Decimal("490")]
++    assert report.row_count == 5
++
++
+ def test_render_plain(sales):
+     text = render_report(build_report(read_csv(sales), ["region"], MEASURES))
+     assert text == (

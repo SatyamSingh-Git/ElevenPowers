@@ -1,0 +1,45 @@
+diff --git a/src/tabreport/report.py b/src/tabreport/report.py
+index 336749a..6259075 100644
+--- a/src/tabreport/report.py
++++ b/src/tabreport/report.py
+@@ -25,9 +25,7 @@ class Report:
+ 
+ 
+ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+-    """Group ``rows``, dicts as read_csv yields them, by the ``by`` columns.
+-
+-    ``rows`` is read once, so it can be a stream far larger than memory.
++    """Group ``rows``, a list of dicts as read_csv returns them, by the ``by`` columns.
+ 
+     Every measure except count is money in ``currency``; None prints plain numbers.
+     ``sort`` names a column to order by, descending when it starts with "-";
+@@ -39,23 +37,19 @@ def build_report(rows, by, measures, currency="USD", totals=True, sort=None):
+     if currency is not None:
+         check_currency(currency)
+     headers = list(by) + [m.label for m in measures]
+-    overall = Accumulator(measures)
+-    results = aggregate(_tally(rows, overall), by, measures)
+-    body = [[r[name] for name in by] + [r[m.label] for m in measures] for r in results] if by else []
++    results = aggregate(rows, by, measures) if by else []
++    body = [[r[name] for name in by] + [r[m.label] for m in measures] for r in results]
+     body.sort(key=lambda row: row[:len(by)])
+     if sort:
+         body = _sorted(body, headers, sort)
+     grand = None
+     if totals:
++        overall = Accumulator(measures)
++        for row in rows:
++            overall.add(row)
+         label = [TOTAL_LABEL] + [""] * (len(by) - 1) if by else []
+         grand = label + [overall.result(m) for m in measures]
+-    return Report(headers, body, grand, measures, currency, overall.rows)
+-
+-
+-def _tally(rows, overall):
+-    for row in rows:
+-        overall.add(row)
+-        yield row
++    return Report(headers, body, grand, measures, currency, len(rows))
+ 
+ 
+ def _sorted(body, headers, sort):

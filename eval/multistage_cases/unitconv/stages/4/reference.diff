@@ -1,0 +1,108 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 08ceb62..75de58e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `unitconv list` shows 20 units a page, with `--page N` and a `page N of M` footer.
+ - `--json` output gives `unit` as an object with the unit's `symbol` and singular `name`.
+ - Fixed: unit symbols in quantities were matched without regard to case, so `3 Mm` was read as millimetres. Symbols now match exactly; a symbol that matches only when case is ignored is refused with the spellings it might mean.
+ - `convert()` returns the exact converted value and no longer takes `precision` or `rounding`; `format_quantity()` takes them instead, so chained conversions no longer drift.
+diff --git a/docs/reference.md b/docs/reference.md
+index 5d6943c..5aae655 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -63,6 +63,7 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+ | `error.mixed_units` | `a mixed result needs at least two units` | a mixed target with one unit |
+ | `error.mixed_negative` | `a mixed result needs a quantity of zero or more` | a negative quantity with a mixed target |
+ | `error.mixed_json` | `JSON output needs a single target unit` | `--json` with a mixed target |
++| `error.page` | `page {page} out of range (1-{pages})` | `list --page` past the last page or below 1; exits with status 2 |
+ | `error.batch_columns` | `expected 2 columns, got {count}` | a batch row without exactly two cells |
+ 
+ ## Command line
+@@ -77,6 +78,8 @@ term that follows it, so `W/m^2/K` is watts per square metre per kelvin.
+ | `exit.error` | `1` | a conversion or settings error, or a batch with failed rows |
+ | `exit.usage` | `2` | the command line itself is wrong |
+ | `cli.error` | `error: {message}` | how errors are written to standard error |
++| `list.page_size` | `20` | units per page of `unitconv list`; `--page N` picks a page, the first by default |
++| `list.footer` | `page {page} of {pages}` | last line of `unitconv list` |
+ | `batch.summary` | `converted {converted} rows, {failed} failed` | printed after a batch |
+ 
+ ## JSON output
+diff --git a/src/unitconv/cli.py b/src/unitconv/cli.py
+index 09d2678..068f890 100644
+--- a/src/unitconv/cli.py
++++ b/src/unitconv/cli.py
+@@ -1,6 +1,7 @@
+ """Command-line front end: `unitconv convert|list|info|batch`."""
+ import argparse
+ import json
++import math
+ import sys
+ 
+ from . import _generated
+@@ -15,6 +16,8 @@ from .registry import REGISTRY
+ from .rounding import MODES
+ from .settings import STYLES, Settings, load_settings, overridden
+ 
++PAGE_SIZE = 20
++
+ 
+ def _parser():
+     parser = argparse.ArgumentParser(prog='unitconv', description='Convert between units of measurement.')
+@@ -35,6 +38,7 @@ def _parser():
+ 
+     list_command = commands.add_parser('list', help='list the known units')
+     list_command.add_argument('--dimension', help='only units of this dimension, such as length')
++    list_command.add_argument('--page', type=int, default=1, help=f'page to show, {PAGE_SIZE} units a page')
+ 
+     commands.add_parser('dimensions', help='list the named dimensions')
+ 
+@@ -73,8 +77,14 @@ def _convert(args):
+ 
+ def _list(args):
+     dimension = Dimension.named(args.dimension) if args.dimension else None
+-    for unit in REGISTRY.units(dimension):
++    units = REGISTRY.units(dimension)
++    pages = max(1, math.ceil(len(units) / PAGE_SIZE))
++    if not 1 <= args.page <= pages:
++        print(f'error: page {args.page} out of range (1-{pages})', file=sys.stderr)
++        return 2
++    for unit in units[(args.page - 1) * PAGE_SIZE:args.page * PAGE_SIZE]:
+         print(f'{unit.symbol:<6} {unit.name:<24} {unit.dimension.name}')
++    print(f'page {args.page} of {pages}')
+     return 0
+ 
+ 
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 8b93c61..a1ef0c9 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -41,12 +41,24 @@ def test_errors(capsys):
+ 
+ def test_list_and_info(capsys):
+     _, out, _ = run(capsys, 'list', '--dimension', 'volume')
+-    assert [line.split()[0] for line in out.splitlines()] == ['L', 'gal', 'qt']
++    assert out.splitlines()[-1] == 'page 1 of 1'
++    assert [line.split()[0] for line in out.splitlines()[:-1]] == ['L', 'gal', 'qt']
+     _, out, _ = run(capsys, 'info', 'km')
+     assert 'factor     1000\n' in out
+     assert run(capsys, 'list', '--dimension', 'smell') == (1, '', "error: unknown dimension: 'smell'\n")
+ 
+ 
++def test_list_pages(capsys):
++    _, first, _ = run(capsys, 'list')
++    _, second, _ = run(capsys, 'list', '--page', '2')
++    assert len(first.splitlines()) == 21
++    assert first.splitlines()[-1] == 'page 1 of 2'
++    assert second.splitlines()[0].startswith('L ')
++    assert second.splitlines()[-1] == 'page 2 of 2'
++    assert run(capsys, 'list', '--page', '3') == (2, '', 'error: page 3 out of range (1-2)\n')
++    assert run(capsys, 'list', '--page', '0')[0] == 2
++
++
+ def test_batch(tmp_path, capsys):
+     source, destination = tmp_path / 'in.csv', tmp_path / 'out.csv'
+     source.write_text('1 mi,km\n1 mi,s\n', encoding='utf-8')
