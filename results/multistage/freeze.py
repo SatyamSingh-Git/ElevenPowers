@@ -14,14 +14,21 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[2]
 SEED = 'multistage-v2-pilot'
 MODULES = ['eval/multistage_cases.py', 'eval/multistage_oracles.py', 'eval/multistage_rehearse.py',
-           'eval/multistage_power.py', 'eval/multistage_cases/AUTHORING.md']
+           'eval/multistage_power.py', 'eval/multistage_cases/AUTHORING.md', 'eval/multistage_cases/conftest.py',
+           'results/multistage/power.json', 'results/multistage/freeze.py']
 
 
 def _sha(path):
-    return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+    # The committed blob, not the checkout: a CRLF clone must reproduce the same hashes.
+    blob = subprocess.run(['git', '-C', str(ROOT), 'cat-file', 'blob', f'HEAD:{path}'], capture_output=True, check=True)
+    return hashlib.sha256(blob.stdout).hexdigest()
 
 
 def main():
+    dirty = subprocess.run(['git', '-C', str(ROOT), 'status', '--porcelain'], capture_output=True, text=True,
+                           check=True).stdout
+    if dirty:
+        raise SystemExit(f'refusing to freeze a working tree with uncommitted changes:\n{dirty}')
     tracked = subprocess.run(['git', '-C', str(ROOT), 'ls-files', 'eval/multistage_cases'], capture_output=True,
                              text=True, check=True).stdout.split()
     ids = sorted({Path(p).parts[2] for p in tracked if p.endswith('/case.json')})

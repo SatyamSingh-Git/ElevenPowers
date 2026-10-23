@@ -14,6 +14,8 @@ import random
 
 def exact_signed_rank(differences):
     """Two-sided, exact over every sign flip; tied magnitudes share their average rank."""
+    # Rounded, because means over replicates are thirds: 1 - 2/3 and 1/3 differ in the last bit.
+    differences = [round(d, 9) for d in differences]
     values = sorted(abs(d) for d in differences if d)
     if not values:
         return 1.0

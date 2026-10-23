@@ -20,6 +20,13 @@ def test_tied_magnitudes_share_their_rank():
     assert exact_signed_rank([2, 2, 5]) == pytest.approx(2 / 8)
 
 
+def test_equal_means_of_thirds_tie_despite_float_rounding():
+    # 1 - 2/3 is 0.33333333333333337 and 1/3 is 0.3333333333333333: the same mean difference.
+    assert exact_signed_rank([-(1 / 3), 1 - 2 / 3, 0.5, 0.7]) == pytest.approx(
+        exact_signed_rank([-(1 / 3), 1 / 3, 0.5, 0.7]))
+    assert exact_signed_rank([-(1 / 3), 1 / 3, 0.5, 0.7]) == pytest.approx(3 / 8)
+
+
 def test_no_effect_rejects_at_about_alpha_or_less():
     got = power(cases=8, replicates=3, rate=0.5, ratio=1.0, heterogeneity=0.5, simulations=400, seed=1)
     assert got["rejection_rate"] <= 0.05

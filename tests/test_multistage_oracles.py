@@ -60,6 +60,15 @@ def test_a_candidate_that_breaks_the_runner_passes_nothing(case, tmp_path):
     assert set(groups(case, 1, root).values()) == {"failed"}
 
 
+def test_a_candidate_that_prints_a_lot_is_still_graded(case, tmp_path):
+    root = tree(case, 1, tmp_path / "t")
+    # Well past the 8 MiB the process runner allows, echoed by pytest for a failing test.
+    loud = "from pkg import core\n\n\ndef apply(x):\n    for i in range(200000):\n        print('progress' * 8, i)\n    return -1\n"
+    (root / "src" / "pkg" / "use.py").write_text(loud, encoding="utf-8")
+    got = groups(case, 1, root)
+    assert (got["use"], got["generated"]) == ("failed", "passed")
+
+
 def test_a_hanging_candidate_times_out(case, tmp_path):
     root = tree(case, 1, tmp_path / "t")
     (root / "src" / "pkg" / "use.py").write_text("while True:\n    pass\n", encoding="utf-8")
@@ -87,7 +96,16 @@ def test_stale_facts(case, tmp_path):
 
 def test_facts_reads_backticked_rows_only():
     text = "| Name | Value |\r\n|---|---|\r\n| `a` | `1` | why |\r\n| b | 2 |\r\n|`c`|``|\r\n"
-    assert facts(text) == {"a": "1", "c": ""}
+    assert facts(text) == {"a": ["1"], "c": [""]}
+
+
+@pytest.mark.parametrize("rows", [("`1`", "`3`"), ("`3`", "`1`")])
+def test_a_stale_row_left_beside_the_new_one_is_stale_in_either_order(case, tmp_path, rows):
+    root = tree(case, 3, tmp_path / "t")
+    doc = root / "docs" / "reference.md"
+    text = doc.read_text(encoding="utf-8").replace("| `default` | `3` |\n", "")
+    doc.write_text(text + "".join(f"| `default` | {value} |\n" for value in rows), encoding="utf-8")
+    assert stale(case, 3, root) == ["default"]
 
 
 def test_rules_count_changelog_entries_and_guard_the_protected_file(case, tmp_path):

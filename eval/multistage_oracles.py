@@ -1,8 +1,9 @@
 """Multi-stage v2 oracles: behaviour groups, documented facts and project rules.
 
-Each group runs alone in a private folder that is pytest's rootdir, with the
-candidate only on PYTHONPATH, so a conftest the candidate left in its own tree
-cannot collect, skip or rewrite the group.
+A stage's groups run in one pytest session in a private folder that is pytest's
+rootdir, with the candidate only on PYTHONPATH, so a conftest the candidate left
+in its own tree cannot collect, skip or rewrite them. Verdicts are read from
+JUnit XML, and a session that times out is rerun one group at a time.
 """
 from collections import defaultdict
 import os
@@ -33,7 +34,9 @@ def _run(case, names, tree, python, seconds):
             shutil.copyfile(Path(case['root']) / 'oracle' / 'groups' / f'{name}.py', Path(private) / f'test_{name}.py')
         report = Path(private) / 'report.xml'
         # Without the flag one group the candidate cannot import ends the session for all of them.
+        # Verdicts come from the XML; echoing a candidate's captured output can exceed the runner's cap.
         run([python, '-m', 'pytest', '-q', '-p', 'no:cacheprovider', '--continue-on-collection-errors',
+             '--tb=no', '--show-capture=no',
              '--rootdir', private, f'--junitxml={report}', *[f'test_{name}.py' for name in names]],
             cwd=Path(private), timeout=seconds, shell=False, env=environment)
         outcomes = defaultdict(list)
@@ -62,7 +65,11 @@ def groups(case, stage, tree, *, python=sys.executable, seconds=120):
 
 
 def facts(text):
-    return dict(ROW.findall(text))
+    """Every value documented for each key; a key documented twice keeps both."""
+    found = defaultdict(list)
+    for key, value in ROW.findall(text):
+        found[key].append(value)
+    return dict(found)
 
 
 def stale(case, stage, tree):
@@ -71,7 +78,8 @@ def stale(case, stage, tree):
     documented = facts(path.read_text(encoding='utf-8', errors='replace')) if path.is_file() else {}
     expected = case['facts'][stage]
     removed = set().union(*(case['facts'][n] for n in range(stage))) - set(expected)
-    return sorted({key for key, value in expected.items() if documented.get(key) != value}
+    # Current only when the expected value is the one value documented: an old row left beside it is stale.
+    return sorted({key for key, value in expected.items() if set(documented.get(key, [])) != {value}}
                   | {key for key in removed if key in documented})
 
 
