@@ -1,0 +1,2823 @@
+{
+  "access_policy": {
+    "id": "access_policy",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_policy",
+            "base_tooling"
+          ],
+          "docs_forgotten": [
+            "syntax.rule"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_tooling"
+          ],
+          "docs_forgotten": [
+            "log.fields"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "condition.compare"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_tooling",
+            "s3_numeric_text"
+          ],
+          "docs_forgotten": [
+            "condition.namespaces"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed",
+            "s5_report_top": "passed",
+            "s5_report_rate": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "report.top",
+            "report.user_line"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed",
+            "s5_report_top": "passed",
+            "s5_report_rate": "passed",
+            "s6_multi_parent": "passed",
+            "s6_multi_parent_lint": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_tooling",
+            "s1_multi_role_tools"
+          ],
+          "docs_forgotten": [
+            "syntax.role"
+          ]
+        }
+      }
+    ]
+  },
+  "cronish": {
+    "id": "cronish",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed",
+            "iso_numbers": "passed",
+            "iso_runs": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "scheduling"
+          ],
+          "docs_forgotten": [
+            "weekday"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed",
+            "iso_numbers": "passed",
+            "iso_runs": "passed",
+            "after_now": "passed",
+            "upcoming_after": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "scheduling"
+          ],
+          "docs_forgotten": [
+            "first_run"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed",
+            "iso_numbers": "passed",
+            "iso_runs": "passed",
+            "after_now": "passed",
+            "upcoming_after": "passed",
+            "zero_step": "passed",
+            "zero_step_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "error.step"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed",
+            "iso_numbers": "passed",
+            "iso_runs": "passed",
+            "after_now": "passed",
+            "upcoming_after": "passed",
+            "zero_step": "passed",
+            "zero_step_cli": "passed",
+            "problems": "passed",
+            "check_all": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "iso_numbers",
+            "parsing",
+            "zero_step_cli"
+          ],
+          "docs_forgotten": [
+            "validate.reports",
+            "validate.result"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed",
+            "iso_numbers": "passed",
+            "iso_runs": "passed",
+            "after_now": "passed",
+            "upcoming_after": "passed",
+            "zero_step": "passed",
+            "zero_step_cli": "passed",
+            "problems": "passed",
+            "check_all": "passed",
+            "clock12": "passed",
+            "clock12_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "after_now",
+            "upcoming_after"
+          ],
+          "docs_forgotten": [
+            "describe.clock"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "parsing": "passed",
+            "scheduling": "passed",
+            "iso_numbers": "passed",
+            "iso_runs": "passed",
+            "after_now": "passed",
+            "upcoming_after": "passed",
+            "zero_step": "passed",
+            "zero_step_cli": "passed",
+            "problems": "passed",
+            "check_all": "passed",
+            "clock12": "passed",
+            "clock12_cli": "passed",
+            "step_minutes": "passed",
+            "step_hours": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "describe.steps"
+          ]
+        }
+      }
+    ]
+  },
+  "eventlog": {
+    "id": "eventlog",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed",
+            "varint_layout": "passed",
+            "v1_refused": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "compact_stats",
+            "log_core"
+          ],
+          "docs_forgotten": [
+            "record.length",
+            "segment.version"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed",
+            "varint_layout": "passed",
+            "v1_refused": "passed",
+            "index_layout": "passed",
+            "index_sparse": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "compact_stats",
+            "log_core"
+          ],
+          "docs_forgotten": [
+            "index.entry",
+            "index.entry_bytes",
+            "index_interval_bytes"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed",
+            "varint_layout": "passed",
+            "v1_refused": "passed",
+            "index_layout": "passed",
+            "index_sparse": "passed",
+            "stats_units": "passed",
+            "stats_average": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "stats.fields"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed",
+            "varint_layout": "passed",
+            "v1_refused": "passed",
+            "index_layout": "passed",
+            "index_sparse": "passed",
+            "stats_units": "passed",
+            "stats_average": "passed",
+            "rotation_ceiling": "passed",
+            "record_too_large": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "RecordTooLarge"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed",
+            "varint_layout": "passed",
+            "v1_refused": "passed",
+            "index_layout": "passed",
+            "index_sparse": "passed",
+            "stats_units": "passed",
+            "stats_average": "passed",
+            "rotation_ceiling": "passed",
+            "record_too_large": "passed",
+            "seg_suffix": "passed",
+            "legacy_names": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "compact_stats",
+            "stats_average",
+            "stats_units"
+          ],
+          "docs_forgotten": [
+            "LegacySegmentName",
+            "segment.name"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "log_core": "passed",
+            "compact_stats": "passed",
+            "v1_refused": "passed",
+            "index_layout": "passed",
+            "index_sparse": "passed",
+            "stats_units": "passed",
+            "stats_average": "passed",
+            "rotation_ceiling": "passed",
+            "record_too_large": "passed",
+            "seg_suffix": "passed",
+            "legacy_names": "passed",
+            "delta_layout": "passed",
+            "v2_refused": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "compact_stats",
+            "index_layout",
+            "seg_suffix"
+          ],
+          "docs_forgotten": [
+            "record.body_overhead",
+            "record.offset",
+            "segment.version"
+          ]
+        }
+      }
+    ]
+  },
+  "invoice_calc": {
+    "id": "invoice_calc",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed",
+            "s1_fractional_quantity": "passed",
+            "s1_fractional_flow": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger",
+            "base_render"
+          ],
+          "docs_forgotten": [
+            "quantity has more than 2 decimal places",
+            "quantity must be a whole number",
+            "quantity must be between 0.01 and 10000",
+            "quantity must be between 1 and 10000"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed",
+            "s1_fractional_quantity": "passed",
+            "s1_fractional_flow": "passed",
+            "s2_gb_zero_rated": "passed",
+            "s2_gb_mixed": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "rate.GB.books.2011-01-04",
+            "rate.GB.food.2011-01-04"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed",
+            "s1_fractional_quantity": "passed",
+            "s1_fractional_flow": "passed",
+            "s2_gb_zero_rated": "passed",
+            "s2_gb_mixed": "passed",
+            "s3_dated_rates": "passed",
+            "s3_issue_date_required": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger",
+            "base_render",
+            "s1_fractional_flow"
+          ],
+          "docs_forgotten": [
+            "invoice issue date is required",
+            "issued"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed",
+            "s1_fractional_quantity": "passed",
+            "s1_fractional_flow": "passed",
+            "s2_gb_zero_rated": "passed",
+            "s2_gb_mixed": "passed",
+            "s3_dated_rates": "passed",
+            "s3_issue_date_required": "passed",
+            "s4_record_totals": "passed",
+            "s4_record_lines": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger",
+            "s1_fractional_flow"
+          ],
+          "docs_forgotten": [
+            "record.discount",
+            "record.subtotal",
+            "record.tax",
+            "record.total"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed",
+            "s1_fractional_quantity": "passed",
+            "s1_fractional_flow": "passed",
+            "s2_gb_zero_rated": "passed",
+            "s2_gb_mixed": "passed",
+            "s3_dated_rates": "passed",
+            "s3_issue_date_required": "passed",
+            "s4_record_totals": "passed",
+            "s4_record_lines": "passed",
+            "s5_negatives_default": "passed",
+            "s5_negatives_minus": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger"
+          ],
+          "docs_forgotten": [
+            "negatives",
+            "negatives must be parentheses or minus"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_render": "passed",
+            "base_ledger": "passed",
+            "s1_fractional_quantity": "passed",
+            "s1_fractional_flow": "passed",
+            "s2_gb_zero_rated": "passed",
+            "s2_gb_mixed": "passed",
+            "s3_dated_rates": "passed",
+            "s3_issue_date_required": "passed",
+            "s4_record_totals": "passed",
+            "s4_record_lines": "passed",
+            "s5_negatives_default": "passed",
+            "s5_negatives_minus": "passed",
+            "s6_notes_printed": "passed",
+            "s6_notes_limit": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "notes",
+            "notes must be at most 500 characters"
+          ]
+        }
+      }
+    ]
+  },
+  "layered_config": {
+    "id": "layered_config",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_cli",
+            "base_roundtrip"
+          ],
+          "docs_forgotten": [
+            "duration"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_roundtrip"
+          ],
+          "docs_forgotten": [
+            "env.example",
+            "env.separator"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_cli",
+            "base_roundtrip",
+            "s1_duration_ms",
+            "s1_whole_ms",
+            "s2_env_double",
+            "s2_env_single"
+          ],
+          "docs_forgotten": [
+            "layers"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "bool"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed",
+            "s5_lookup_error": "passed",
+            "s5_get_default": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_cli"
+          ],
+          "docs_forgotten": [
+            "msg.lookup"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed",
+            "s5_lookup_error": "passed",
+            "s5_get_default": "passed",
+            "s6_pool_order": "passed",
+            "s6_tls_pair": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 2,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "pool.max_size"
+          ]
+        }
+      }
+    ]
+  },
+  "ledgerbook": {
+    "id": "ledgerbook",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed",
+            "decimal_amounts": "passed",
+            "legacy_journal": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_journal"
+          ],
+          "docs_forgotten": [
+            "journal.version",
+            "record.posting.amount"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed",
+            "decimal_amounts": "passed",
+            "legacy_journal": "passed",
+            "statement_range": "passed",
+            "statement_range_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "statement.opening_label"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed",
+            "decimal_amounts": "passed",
+            "legacy_journal": "passed",
+            "statement_range": "passed",
+            "statement_range_cli": "passed",
+            "date_values": "passed",
+            "date_roundtrip": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_journal",
+            "decimal_amounts",
+            "legacy_journal",
+            "statement_range_cli"
+          ],
+          "docs_forgotten": [
+            "transaction.date"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed",
+            "decimal_amounts": "passed",
+            "legacy_journal": "passed",
+            "statement_range": "passed",
+            "statement_range_cli": "passed",
+            "date_values": "passed",
+            "date_roundtrip": "passed",
+            "zero_refused": "passed",
+            "zero_in_journal": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "error.zero_amount"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed",
+            "decimal_amounts": "passed",
+            "legacy_journal": "passed",
+            "statement_range": "passed",
+            "statement_range_cli": "passed",
+            "date_values": "passed",
+            "date_roundtrip": "passed",
+            "zero_refused": "passed",
+            "zero_in_journal": "passed",
+            "grouped_amounts": "passed",
+            "grouped_reports": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_journal",
+            "decimal_amounts"
+          ],
+          "docs_forgotten": [
+            "amount.grouping"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_journal": "passed",
+            "base_reports": "passed",
+            "decimal_amounts": "passed",
+            "legacy_journal": "passed",
+            "statement_range": "passed",
+            "statement_range_cli": "passed",
+            "date_values": "passed",
+            "date_roundtrip": "passed",
+            "zero_refused": "passed",
+            "zero_in_journal": "passed",
+            "grouped_amounts": "passed",
+            "grouped_reports": "passed",
+            "natural_balance": "passed",
+            "natural_statement": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_reports",
+            "grouped_reports"
+          ],
+          "docs_forgotten": [
+            "balance.sign"
+          ]
+        }
+      }
+    ]
+  },
+  "marklite": {
+    "id": "marklite",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed",
+            "g1_prefix_default": "passed",
+            "g1_prefix_option": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "g0_toc"
+          ],
+          "docs_forgotten": [
+            "id_prefix"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed",
+            "g1_prefix_default": "passed",
+            "g1_prefix_option": "passed",
+            "g2_text_quotes": "passed",
+            "g2_attr_quotes": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "g0_render"
+          ],
+          "docs_forgotten": [
+            "escaped_in_text"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed",
+            "g1_prefix_default": "passed",
+            "g1_prefix_option": "passed",
+            "g2_text_quotes": "passed",
+            "g2_attr_quotes": "passed",
+            "g3_toc_depth": "passed",
+            "g3_cli_depth": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "g0_render"
+          ],
+          "docs_forgotten": [
+            "--toc-level",
+            "toc_max_level"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed",
+            "g1_prefix_default": "passed",
+            "g1_prefix_option": "passed",
+            "g2_text_quotes": "passed",
+            "g2_attr_quotes": "passed",
+            "g3_toc_depth": "passed",
+            "g3_cli_depth": "passed",
+            "g4_nesting_limit": "passed",
+            "g4_nesting_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "max_nesting"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed",
+            "g1_prefix_default": "passed",
+            "g1_prefix_option": "passed",
+            "g2_text_quotes": "passed",
+            "g2_attr_quotes": "passed",
+            "g3_toc_depth": "passed",
+            "g3_cli_depth": "passed",
+            "g4_nesting_limit": "passed",
+            "g4_nesting_cli": "passed",
+            "g5_strike": "passed",
+            "g5_strike_toc": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "~~text~~"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "g0_toc": "passed",
+            "g0_render": "passed",
+            "g1_prefix_default": "passed",
+            "g1_prefix_option": "passed",
+            "g2_text_quotes": "passed",
+            "g2_attr_quotes": "passed",
+            "g3_toc_depth": "passed",
+            "g3_cli_depth": "passed",
+            "g4_nesting_limit": "passed",
+            "g4_nesting_cli": "passed",
+            "g5_strike": "passed",
+            "g5_strike_toc": "passed",
+            "g6_toc_tree": "passed",
+            "g6_toc_tree_edges": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "g0_toc",
+            "g3_cli_depth"
+          ],
+          "docs_forgotten": [
+            "TocEntry"
+          ]
+        }
+      }
+    ]
+  },
+  "stockroom": {
+    "id": "stockroom",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed",
+            "cents_file": "passed",
+            "cents_upgrade": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_reports"
+          ],
+          "docs_forgotten": [
+            "items.<sku>.cost_cents",
+            "items.<sku>.unit_cost",
+            "version"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed",
+            "cents_file": "passed",
+            "cents_upgrade": "passed",
+            "self_transfer_lib": "passed",
+            "self_transfer_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "same location"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed",
+            "cents_file": "passed",
+            "cents_upgrade": "passed",
+            "self_transfer_lib": "passed",
+            "self_transfer_cli": "passed",
+            "on_hand_breakdown": "passed",
+            "total_lib": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger",
+            "base_reports",
+            "cents_file",
+            "cents_upgrade"
+          ],
+          "docs_forgotten": [
+            "Inventory.on_hand(sku)",
+            "Inventory.total(sku)"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed",
+            "cents_file": "passed",
+            "cents_upgrade": "passed",
+            "self_transfer_lib": "passed",
+            "self_transfer_cli": "passed",
+            "on_hand_breakdown": "passed",
+            "total_lib": "passed",
+            "seq_returns": "passed",
+            "seq_history": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger"
+          ],
+          "docs_forgotten": [
+            "Inventory.adjust(sku, location, counted)",
+            "Inventory.issue(sku, qty, location)",
+            "Inventory.receive(sku, qty, location)",
+            "Inventory.transfer(sku, qty, source, dest)"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed",
+            "cents_file": "passed",
+            "cents_upgrade": "passed",
+            "self_transfer_lib": "passed",
+            "self_transfer_cli": "passed",
+            "on_hand_breakdown": "passed",
+            "total_lib": "passed",
+            "seq_returns": "passed",
+            "seq_history": "passed",
+            "lines_file": "passed",
+            "lines_upgrade": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_ledger",
+            "cents_upgrade",
+            "self_transfer_cli"
+          ],
+          "docs_forgotten": [
+            "movements[].delta",
+            "movements[].from",
+            "movements[].location",
+            "movements[].qty",
+            "movements[].to",
+            "version"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_reports": "passed",
+            "base_ledger": "passed",
+            "cents_file": "passed",
+            "cents_upgrade": "passed",
+            "self_transfer_lib": "passed",
+            "self_transfer_cli": "passed",
+            "on_hand_breakdown": "passed",
+            "total_lib": "passed",
+            "seq_returns": "passed",
+            "seq_history": "passed",
+            "lines_file": "passed",
+            "lines_upgrade": "passed",
+            "capacity_lib": "passed",
+            "capacity_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "location full"
+          ]
+        }
+      }
+    ]
+  },
+  "tabulate_report": {
+    "id": "tabulate_report",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed",
+            "keys_library": "passed",
+            "keys_rendered": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_report"
+          ],
+          "docs_forgotten": [
+            "KEY_SEPARATOR"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed",
+            "keys_library": "passed",
+            "keys_rendered": "passed",
+            "align_table_default": "passed",
+            "align_report_keys": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "dependent_missed": [
+            "base_report"
+          ],
+          "docs_forgotten": [
+            "render_table align"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed",
+            "keys_library": "passed",
+            "keys_rendered": "passed",
+            "align_table_default": "passed",
+            "align_report_keys": "passed",
+            "csv_library": "passed",
+            "csv_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "formats"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed",
+            "keys_library": "passed",
+            "keys_rendered": "passed",
+            "align_table_default": "passed",
+            "align_report_keys": "passed",
+            "csv_library": "passed",
+            "csv_cli": "passed",
+            "stream_reader": "passed",
+            "stream_report": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_report",
+            "csv_cli",
+            "keys_rendered"
+          ],
+          "docs_forgotten": [
+            "read_csv returns"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed",
+            "keys_library": "passed",
+            "keys_rendered": "passed",
+            "align_table_default": "passed",
+            "align_report_keys": "passed",
+            "csv_library": "passed",
+            "csv_cli": "passed",
+            "stream_reader": "passed",
+            "stream_report": "passed",
+            "strict_parse": "passed",
+            "strict_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "error: misplaced thousands separator"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_parsing": "passed",
+            "base_report": "passed",
+            "keys_library": "passed",
+            "keys_rendered": "passed",
+            "align_table_default": "passed",
+            "align_report_keys": "passed",
+            "csv_library": "passed",
+            "csv_cli": "passed",
+            "stream_reader": "passed",
+            "stream_report": "passed",
+            "strict_parse": "passed",
+            "strict_cli": "passed",
+            "plain_numbers_default": "passed",
+            "plain_numbers_report": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_parsing",
+            "base_report",
+            "keys_rendered",
+            "strict_cli"
+          ],
+          "docs_forgotten": [
+            "format_number thousands"
+          ]
+        }
+      }
+    ]
+  },
+  "throttle": {
+    "id": "throttle",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed",
+            "s1_retry_ms": "passed",
+            "s1_retry_rounding": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_limits",
+            "base_report"
+          ],
+          "docs_forgotten": [
+            "decision.retry_after"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed",
+            "s1_retry_ms": "passed",
+            "s1_retry_rounding": "passed",
+            "s2_bucket_period": "passed",
+            "s2_bucket_errors": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_limits",
+            "base_report",
+            "s1_retry_ms",
+            "s1_retry_rounding"
+          ],
+          "docs_forgotten": [
+            "bucket.signature",
+            "error.refill"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed",
+            "s1_retry_ms": "passed",
+            "s1_retry_rounding": "passed",
+            "s2_bucket_period": "passed",
+            "s2_bucket_errors": "passed",
+            "s3_cost_refused": "passed",
+            "s3_cost_check": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "error.cost"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed",
+            "s1_retry_ms": "passed",
+            "s1_retry_rounding": "passed",
+            "s2_bucket_period": "passed",
+            "s2_bucket_errors": "passed",
+            "s3_cost_refused": "passed",
+            "s3_cost_check": "passed",
+            "s4_reset_at_windows": "passed",
+            "s4_reset_at_bucket": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_report"
+          ],
+          "docs_forgotten": [
+            "state.reset_in"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed",
+            "s1_retry_ms": "passed",
+            "s1_retry_rounding": "passed",
+            "s2_bucket_period": "passed",
+            "s2_bucket_errors": "passed",
+            "s3_cost_refused": "passed",
+            "s3_cost_check": "passed",
+            "s4_reset_at_windows": "passed",
+            "s4_reset_at_bucket": "passed",
+            "s5_monotonic_clock": "passed",
+            "s5_monotonic_report": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_report",
+            "s4_reset_at_bucket"
+          ],
+          "docs_forgotten": [
+            "clock.read"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_limits": "passed",
+            "base_report": "passed",
+            "s1_retry_ms": "passed",
+            "s1_retry_rounding": "passed",
+            "s2_bucket_period": "passed",
+            "s2_bucket_errors": "passed",
+            "s3_cost_refused": "passed",
+            "s3_cost_check": "passed",
+            "s4_reset_at_windows": "passed",
+            "s4_reset_at_bucket": "passed",
+            "s5_monotonic_clock": "passed",
+            "s5_monotonic_report": "passed",
+            "s6_evicted": "passed",
+            "s6_max_keys": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "throttle.max_keys"
+          ]
+        }
+      }
+    ]
+  },
+  "tinyroute": {
+    "id": "tinyroute",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed",
+            "error_codes": "passed",
+            "custom_error_codes": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "client_middleware"
+          ],
+          "docs_forgotten": [
+            "HTTPError.code",
+            "error_body"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed",
+            "error_codes": "passed",
+            "custom_error_codes": "passed",
+            "repeated_headers": "passed",
+            "header_access": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "client_middleware"
+          ],
+          "docs_forgotten": [
+            "Response.headers"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed",
+            "error_codes": "passed",
+            "custom_error_codes": "passed",
+            "repeated_headers": "passed",
+            "header_access": "passed",
+            "uuid_match": "passed",
+            "uuid_build": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "uuid"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed",
+            "error_codes": "passed",
+            "custom_error_codes": "passed",
+            "repeated_headers": "passed",
+            "header_access": "passed",
+            "uuid_match": "passed",
+            "uuid_build": "passed",
+            "strict_build": "passed",
+            "build_query": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "routing"
+          ],
+          "docs_forgotten": [
+            "unknown_parameter"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed",
+            "error_codes": "passed",
+            "custom_error_codes": "passed",
+            "repeated_headers": "passed",
+            "header_access": "passed",
+            "uuid_match": "passed",
+            "uuid_build": "passed",
+            "strict_build": "passed",
+            "build_query": "passed",
+            "query_lists": "passed",
+            "query_arg": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "routing"
+          ],
+          "docs_forgotten": [
+            "Request.query"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "routing": "passed",
+            "client_middleware": "passed",
+            "error_codes": "passed",
+            "custom_error_codes": "passed",
+            "repeated_headers": "passed",
+            "header_access": "passed",
+            "uuid_match": "passed",
+            "uuid_build": "passed",
+            "strict_build": "passed",
+            "build_query": "passed",
+            "query_lists": "passed",
+            "query_arg": "passed",
+            "literal_priority": "passed",
+            "path_priority": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "match_order"
+          ]
+        }
+      }
+    ]
+  },
+  "unitconv": {
+    "id": "unitconv",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed",
+            "s1_exact": "passed",
+            "s1_display": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_frontend"
+          ],
+          "docs_forgotten": [
+            "convert.result"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed",
+            "s1_exact": "passed",
+            "s1_display": "passed",
+            "s2_case": "passed",
+            "s2_suggest": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "dependent_missed": [
+            "base_frontend",
+            "base_library"
+          ],
+          "docs_forgotten": [
+            "lookup.case"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed",
+            "s1_exact": "passed",
+            "s1_display": "passed",
+            "s2_case": "passed",
+            "s2_suggest": "passed",
+            "s3_json": "passed",
+            "s3_names": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_frontend"
+          ],
+          "docs_forgotten": [
+            "json.unit"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed",
+            "s1_exact": "passed",
+            "s1_display": "passed",
+            "s2_case": "passed",
+            "s2_suggest": "passed",
+            "s3_json": "passed",
+            "s3_names": "passed",
+            "s4_pages": "passed",
+            "s4_errors": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "--page",
+            "--per-page"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed",
+            "s1_exact": "passed",
+            "s1_display": "passed",
+            "s2_case": "passed",
+            "s2_suggest": "passed",
+            "s3_json": "passed",
+            "s3_names": "passed",
+            "s4_pages": "passed",
+            "s4_errors": "passed",
+            "s5_symbols": "passed",
+            "s5_input": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "dependent_missed": [
+            "base_library"
+          ],
+          "docs_forgotten": [
+            "unit.multiply"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "dependent_missed": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_library": "passed",
+            "base_frontend": "passed",
+            "s1_exact": "passed",
+            "s1_display": "passed",
+            "s2_case": "passed",
+            "s2_suggest": "passed",
+            "s3_json": "passed",
+            "s3_names": "passed",
+            "s4_pages": "passed",
+            "s4_errors": "passed",
+            "s5_symbols": "passed",
+            "s5_input": "passed",
+            "s6_exact": "passed",
+            "s6_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "dependent_missed": [
+            "base_frontend",
+            "s3_json",
+            "s3_names",
+            "s5_symbols"
+          ],
+          "docs_forgotten": [
+            "arithmetic"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+ "schema": 1,
+ "what": "Independent review of the twelve multi-stage v2 cases before freezing. Two reviewers, six cases each, read only the authoring brief and their cases. Full reports were returned in the controlling session; this records each finding class and how it was resolved.",
+ "reviewers": {
+  "A": ["tinyroute", "cronish", "ledgerbook", "throttle", "invoice_calc", "layered_config"],
+  "B": ["marklite", "stockroom", "access_policy", "tabulate_report", "unitconv", "eventlog"]
+ },
+ "round_1": {
+  "blocking": [
+   {"case": "eventlog", "stage": 4, "finding": "rotation_ceiling failed a correct alternative (roll-when-full kept plus the requested pre-append roll); verified by the reviewer on the stage-4 tree", "resolution": "check() tolerates an empty trailing segment; exact-fit test dropped; the reviewer's alternative re-run and passing in round 2"},
+   {"case": "access_policy", "stage": 6, "finding": "a group required lint behaviour the request never stated, against the documented meaning of lint.redundant-role", "resolution": "test dropped"},
+   {"case": "stockroom", "stage": 6, "finding": "fact `bad capacity` quoted a message no request states", "resolution": "fact dropped"},
+   {"case": "ledgerbook", "stage": 2, "finding": "groups called start=/end= keywords the request never named", "resolution": "request names `start` and `end`"},
+   {"case": "ledgerbook", "stage": 5, "finding": "group required format_amount itself to group digits; the request asked only for grouped output", "resolution": "request states format_amount groups by default; decimal_amounts checks exact text only where every reading agrees"},
+   {"case": "layered_config", "stage": 3, "finding": "later groups called load() with no files although the request gave no default", "resolution": "groups pass files=[]"}
+  ],
+  "systemic": "Both reviewers independently found facts with invented keys or free-text values in 10 of 12 cases, which would score careful documentation as stale. AUTHORING.md gained a Fairness section (fact keys must be existing rows or names the request uses; values stated in or fully determined by the request; groups require only stated or existing behaviour, request-given parameter names, no single reading; no indirect leaks such as 'nothing else should change'), and every case was revised against it by its author.",
+  "leaks": "marklite 'everywhere' and 'callers'; stockroom and others 'nothing else ... should change'; layered_config 'everything that uses them'; tabulate_report 'and the row count' — all removed."
+ },
+ "round_2": {
+  "A": {"passed": ["cronish", "throttle", "invoice_calc", "layered_config"], "remaining": [
+   {"case": "tinyroute", "stage": 4, "finding": "key unknown_parameter not named by the request", "resolution": "request names it"},
+   {"case": "ledgerbook", "stage": 2, "finding": "key statement.opening_label not named", "resolution": "request names it"},
+   {"case": "ledgerbook", "stage": 4, "finding": "key error.zero_amount not named", "resolution": "request names it"},
+   {"case": "ledgerbook", "stage": 6, "finding": "value `natural` a wording choice", "resolution": "request states `balance.sign` becomes `natural`"}
+  ]},
+  "B": {"passed": ["marklite", "stockroom", "access_policy", "unitconv", "eventlog"], "remaining": [
+   {"case": "tabulate_report", "stage": 1, "finding": "'KEY_SEPARATOR can go' made the graded removal optional", "resolution": "request says remove it"},
+   {"case": "tabulate_report", "stage": 6, "finding": "'when the caller passes a separator' hinted at the dependent", "resolution": "reworded to 'when it is given a separator'"}
+  ]},
+  "after": "All round-2 findings were wording in requests and were applied by the controller (ff3b5ed, 92ec5fd); no group, diff or fact changed, so no third round was run."
+ }
+}

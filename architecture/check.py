@@ -42,16 +42,19 @@ def uncovered(g: dict) -> list[str]:
 
     Every `.py` under core/, eval/ and plugin/bin must appear in some node's
     `files`. A new module that nothing draws is exactly how a graph goes stale
-    while still validating.
+    while still validating. An entry ending in `/` draws a data folder, such as
+    the authored case projects under eval/, and covers everything inside it.
     """
-    covered = {f.replace("\\", "/").rstrip("/") for n in g["nodes"] for f in n["files"]}
+    entries = [f.replace("\\", "/") for n in g["nodes"] for f in n["files"]]
+    covered = {f.rstrip("/") for f in entries}
+    folders = tuple(f for f in entries if f.endswith("/"))
     out = []
     for folder in ("core", "eval", "plugin/bin"):
         for path in sorted((HERE.parent / folder).rglob("*.py")):
             rel = path.relative_to(HERE.parent).as_posix()
             if path.name == "__init__.py":
                 continue
-            if not any(rel == c or rel in c for c in covered):
+            if not rel.startswith(folders) and not any(rel == c or rel in c for c in covered):
                 out.append(f"{rel} is not on the graph")
     return out
 
