@@ -1,6 +1,7 @@
 """Is a selector worth building, or would one do more harm than good?
 
     python -m eval.pool --from-bundles results/chunks results/bundles-A
+    python -m eval.pool --from-bundles results/heldout/sweep-2026-10-22/collected.json [--pinned]
 
 PLAN §5.1: for a pool of N candidates, *pool coverage* is the fraction of tasks
 where at least one candidate is correct, *selected success* is the fraction
@@ -115,6 +116,25 @@ def attempts(root: Path) -> list[tuple[str, str, str, str, int]]:
         stamp = STAMP.search(bundle.name)
         out.append((root.name, task, arm, outcome, int(stamp.group(1)) if stamp else 0,
                     condition(man)))
+    return out
+
+
+def records(path: Path, pinned: bool = False) -> list[tuple[str, str, str, str, int, str]]:
+    """Graded runs of a held-out sweep's `collected.json`, in the rows `attempts` returns.
+
+    A breach of the closed book and a run the session cut off are not graded
+    attempts, so neither joins a pool. With `pinned`, a resolution its own tests
+    would not miss if the change were reverted counts as no success: the
+    question becomes whether a selector could find a candidate that is both
+    correct and tested.
+    """
+    out = []
+    for record in json.loads(path.read_text(encoding="utf-8")):
+        if record["state"] != "graded":
+            continue
+        outcome = "vacuous" if pinned and record["vacuous"] else record["outcome"]
+        out.append((path.parent.name, record["task"], record["arm"], outcome,
+                    int(record["slot"].rsplit("--", 1)[1]), f"host={record['host_version']}"))
     return out
 
 
@@ -291,13 +311,13 @@ def verdict_conditions(m: dict) -> None:
           f"mixture and not a pool. Compare per condition instead.")
 
 
-def report(roots: list[Path]) -> int:
+def report(roots: list[Path], pinned: bool = False) -> int:
     rows = []
     for root in roots:
         if not root.exists():
             print(f"missing: {root}")
             return 1
-        found = attempts(root)
+        found = records(root, pinned) if root.is_file() else attempts(root)
         print(f"{root}: {len(found)} graded attempts")
         rows += found
     if not rows:
@@ -336,8 +356,9 @@ def report(roots: list[Path]) -> int:
                   f"`results/closedbook` agrees on all three and is a different experiment. "
                   f"Runs written from now on record it; these cannot be checked.")
 
-    print("\nCoverage is measured with answer access on most of this corpus (PLAN §4.1);")
-    print("it is an upper bound. `python -m eval.exposure` reports the floor.")
+    if any(root.is_dir() for root in roots):
+        print("\nCoverage is measured with answer access on most of this corpus (PLAN §4.1);")
+        print("it is an upper bound. `python -m eval.exposure` reports the floor.")
     return 0
 
 
@@ -348,7 +369,7 @@ def main(argv: list[str]) -> int:
     if "--from-bundles" not in argv or not rest:
         print(__doc__)
         return 1
-    return report([Path(r) for r in rest])
+    return report([Path(r) for r in rest], pinned="--pinned" in argv)
 
 
 if __name__ == "__main__":

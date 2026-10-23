@@ -1,0 +1,24 @@
+results\heldout\sweep-2026-10-22\collected.json: 238 graded attempts
+
+sweep                  arm       tasks   2+  mixed  runs  coverage   random    last      gap
+--------------------------------------------------------------------------------------------
+sweep-2026-10-22       assisted     40   40      3   118    80.0%    75.8%   77.5%    +4.2p
+sweep-2026-10-22       ordinary     40   40      5   120    80.0%    73.3%   75.0%    +6.7p
+
+sweep-2026-10-22 / assisted: coverage 80.0%, a random pick 75.8% — selection regret +4.2 points.
+  The whole gap comes from 3 task(s) whose attempts disagree — a task that always passes, or always fails, contributes nothing to it. At this corpus size that makes the figure a statement about per-run flakiness on a handful of tasks, not about a stable property of the pool.
+  Above the 4-point line: 4.2 points a selector could in principle recover. Measure correct-candidate survival through every filter before believing it (PLAN §6).
+
+sweep-2026-10-22 / ordinary: coverage 80.0%, a random pick 73.3% — selection regret +6.7 points.
+  The whole gap comes from 5 task(s) whose attempts disagree — a task that always passes, or always fails, contributes nothing to it. At this corpus size that makes the figure a statement about per-run flakiness on a handful of tasks, not about a stable property of the pool.
+  Above the 4-point line: 6.7 points a selector could in principle recover. Measure correct-candidate survival through every filter before believing it (PLAN §6).
+
+========================================================================
+Pooled across sweeps — NOT a figure to quote. `closedbook` is a different
+condition by construction, so pooling lends its tasks attempts the others
+never had. Shown only so the per-sweep rows above can be checked against it.
+========================================================================
+sweep                  arm       tasks   2+  mixed  runs  coverage   random    last      gap
+--------------------------------------------------------------------------------------------
+ALL POOLED             assisted     40   40      3   118    80.0%    75.8%   77.5%    +4.2p
+ALL POOLED             ordinary     40   40      5   120    80.0%    73.3%   75.0%    +6.7p

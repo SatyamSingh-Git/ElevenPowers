@@ -62,9 +62,33 @@ and 69 of the 70 non-VACUOUS ones did. Resolved ordinary patches added a test in
   runs, after a guard stopped the resumed driver; nothing was changed in response,
   and the result above is the analysis of the complete record.
 
+## Selection over the same runs (added afterwards, not pre-registered)
+
+PLAN §8's oracle gap, read from the same 238 graded runs at no cost:
+coverage is the share of tasks where any of an arm's three runs succeeded,
+the random pick the expected success of choosing one of them blindly.
+
+| arm | success means | coverage | random pick | gap | tasks whose runs disagree |
+|---|---|---|---|---|---|
+| ordinary | resolved | 80.0% | 73.3% | +6.7 | 5 |
+| assisted | resolved | 80.0% | 75.8% | +4.2 | 3 |
+| ordinary | resolved and not VACUOUS | 17.5% | 11.7% | +5.8 | 4 |
+| assisted | resolved and not VACUOUS | 55.0% | 47.5% | +7.5 | 6 |
+
+The resolve gap sits near the 4-point reference line and, as in journey 31, comes
+entirely from three to five tasks whose runs disagree, so it describes per-run
+variation on a handful of tasks rather than a stable property of either pool. The
+second pair is the sharper reading: a perfect selector over three ordinary runs
+would find a resolved, tested candidate on 17.5% of tasks, well under a blind pick
+from the assisted runs (47.5%). On these tasks, choosing among more ordinary
+attempts does not recover what the assisted arm produced. Three runs per arm,
+descriptive, no test. `oracle-gap.txt` and `oracle-gap-pinned.txt`; reproduce with
+`python -m eval.pool --from-bundles results/heldout/sweep-2026-10-22/collected.json [--pinned]`.
+
 ## Files
 
 `protocol.json` and `protocol-seal.json` (the frozen schedule), `collected.json`
 (one record per scheduled slot), `analysis.json` (the primary and secondary
 output), `runs/<slot>/` (each run's result, exported patch and host transcript),
-`sweep.log`, and `harness/` (the driver and the quota guard that ran it).
+`sweep.log`, `harness/` (the driver and the quota guard that ran it), and the
+`oracle-gap*.txt` outputs above.
