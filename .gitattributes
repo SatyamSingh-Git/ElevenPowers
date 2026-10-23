@@ -8,3 +8,7 @@
 # re-grades to the same answer on any machine.
 results/** -text
 eval/corpus.lock -text
+
+# Multi-stage cases: the stage diffs apply to these start trees byte for byte,
+# and a CRLF checkout of the trees would make every diff fail on Windows.
+eval/multistage_cases/** -text
