@@ -1,5 +1,14 @@
 # Current delivery status
 
+**2026-10-23 — Field report: three developers on a real project.**
+Recorded as told, not measured: moving from Claude Code alone, to superpowers, to
+superpowers with ElevenPowers, docs were kept current about 95% of the time
+(rarely before, often forgotten with superpowers alone), and fixes that broke a
+dependent part of the code, met once or twice with superpowers, were not met
+with ElevenPowers, which they attribute to its blast-radius check. It was
+slightly slower and used very slightly more tokens. Project details and
+incidents are still to be added. See [field report](field/2026-10-real-project.md).
+
 **2026-10-23 — Held-out vacuity by arm: assisted patches far less often VACUOUS.**
 On 40 independently sourced tasks from 12 Python repositories (Sonnet 5.5 medium,
 240 sealed never-retried runs, analysis committed before any run), resolved
