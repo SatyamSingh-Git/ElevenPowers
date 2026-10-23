@@ -30,7 +30,9 @@ added on top of superpowers rather than in place of it.
 - **superpowers:** better; docs were usually updated, but often still forgotten.
 - **superpowers + ElevenPowers:** in their estimate about 95% of the time. When
   they asked "have you updated the docs?", the answer was always yes; they did not
-  meet a case where the agent said it had forgotten.
+  meet a case where the agent said it had forgotten. This rests on more than the
+  agent's word: the author often checked the docs themselves, though not every
+  time, and reports that the docs had been updated when checked.
 
 ### A fix that causes another bug
 
