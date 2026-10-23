@@ -268,6 +268,26 @@ def test_a_file_windows_still_holds_defers_pruning_to_the_next_journal(tmp_path,
     assert h.prune(tmp_path, ["https://x/b"], []) == ["b"]
 
 
+def test_pruning_and_cloning_run_on_python_311(tmp_path, monkeypatch):
+    # shutil.rmtree gained onexc= in 3.12; CI runs 3.11, where only onerror= exists.
+    import shutil
+    import stat
+    from eval import heldout_sample as h
+    actual = shutil.rmtree
+
+    def python311_rmtree(path, ignore_errors=False, onerror=None, *, dir_fd=None):
+        return actual(path, ignore_errors=ignore_errors, onerror=onerror, dir_fd=dir_fd)
+
+    monkeypatch.setattr(h.shutil, "rmtree", python311_rmtree)
+    _dirs(tmp_path, "b")
+    (tmp_path / "repos" / "b" / "f").chmod(stat.S_IREAD)
+    assert h.prune(tmp_path, ["https://x/b"], []) == ["b"]
+    source = _repo(tmp_path)
+    stale = tmp_path / "clones" / "repo.partial"
+    stale.mkdir(parents=True)
+    assert h.clone(str(source), tmp_path / "clones" / "repo")
+
+
 def test_a_partial_clone_is_discarded(tmp_path):
     from eval.heldout_sample import clone
     source = _repo(tmp_path)

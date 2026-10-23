@@ -115,7 +115,7 @@ def prune(work, processed, kept):
         try:
             for path in paths:
                 if path.exists():
-                    shutil.rmtree(path, onexc=_writable)
+                    shutil.rmtree(path, onerror=_writable)
         except OSError as error:
             # A file a just-exited test process still holds; every journal retries.
             print(f'prune deferred for {name}: {error}', file=sys.stderr)
@@ -127,12 +127,12 @@ def prune(work, processed, kept):
 def clone(url, into):
     partial = into.with_name(into.name + '.partial')
     if partial.exists():
-        shutil.rmtree(partial, onexc=_writable)
+        shutil.rmtree(partial, onerror=_writable)
     into.parent.mkdir(parents=True, exist_ok=True)
     done = subprocess.run([*GIT, 'clone', '-q', '--filter=blob:none', url, str(partial)], capture_output=True, timeout=900)
     if done.returncode:
         if partial.exists():
-            shutil.rmtree(partial, onexc=_writable)
+            shutil.rmtree(partial, onerror=_writable)
         return False
     partial.rename(into)
     return True
