@@ -29,7 +29,7 @@
    "dependent_missed_fails": []
   },
   {
-   "request": "`url_for` quietly turns any keyword it doesn't recognise into a query string, so a typo like `url_for('user', id=3, tba='posts')` hands out `/users/3?tba=posts` and nobody notices. Make it strict: every keyword must be a path parameter of the route, otherwise raise `BuildError` with the message `unknown parameter '{name}' for route '{route}'`, so that typo gives `unknown parameter 'tba' for route 'user'`.\n\nQuery strings are passed explicitly as a mapping in a new `_query` keyword: `url_for('user', id=3, _query={'tab': 'posts'})` gives `/users/3?tab=posts`, a list value repeats the name (`{'tag': ['a', 'b']}` gives `tag=a&tag=b`), and an empty or absent `_query` adds no `?`.",
+   "request": "`url_for` quietly turns any keyword it doesn't recognise into a query string, so a typo like `url_for('user', id=3, tba='posts')` hands out `/users/3?tba=posts` and nobody notices. Make it strict: every keyword must be a path parameter of the route, otherwise raise `BuildError` with a new `unknown_parameter` message, `unknown parameter '{name}' for route '{route}'`, so that typo gives `unknown parameter 'tba' for route 'user'`.\n\nQuery strings are passed explicitly as a mapping in a new `_query` keyword: `url_for('user', id=3, _query={'tab': 'posts'})` gives `/users/3?tab=posts`, a list value repeats the name (`{'tag': ['a', 'b']}` gives `tag=a&tag=b`), and an empty or absent `_query` adds no `?`.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
