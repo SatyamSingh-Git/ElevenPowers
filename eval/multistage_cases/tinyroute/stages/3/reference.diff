@@ -1,0 +1,93 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f380365..dc01b27 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- `uuid` path parameter type: `<uuid:id>` matches a canonical lower-case
++  UUID and gives a `uuid.UUID`.
+ - Responses can repeat a header: `Response.headers` is now a list of
+   `(name, value)` pairs, with `add_header()`, `set_header()` and
+   `header_values()`. Setting several cookies keeps every `Set-Cookie`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 3916597..52e3e42 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -10,6 +10,7 @@ pattern column is what the raw, still percent-encoded segment must match.
+ | `str` | `[^/]+` | `str`, percent-decoded |
+ | `int` | `[0-9]+` | `int` |
+ | `slug` | `[a-z0-9]+(?:-[a-z0-9]+)*` | `str` |
++| `uuid` | `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}` | `uuid.UUID`; URLs are built in this form from a `UUID` or any string `uuid.UUID()` accepts |
+ | `path` | `.+` | `str`, slashes included |
+ | `default_type` | `str` | type used by `<name>` |
+ 
+diff --git a/src/tinyroute/converters.py b/src/tinyroute/converters.py
+index 6441bd0..cb019f2 100644
+--- a/src/tinyroute/converters.py
++++ b/src/tinyroute/converters.py
+@@ -7,6 +7,7 @@ would not match, so ``url_for`` never builds a URL that leads nowhere.
+ """
+ import re
+ from urllib.parse import quote
++import uuid
+ 
+ from .errors import RouteError
+ 
+@@ -48,6 +49,18 @@ class SlugConverter(Converter):
+     regex = '[a-z0-9]+(?:-[a-z0-9]+)*'
+ 
+ 
++class UUIDConverter(Converter):
++    """A UUID in canonical form; ``to_url`` also takes any form ``uuid.UUID`` accepts."""
++
++    regex = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
++
++    def to_python(self, text):
++        return uuid.UUID(text)
++
++    def format(self, value):
++        return str(value if isinstance(value, uuid.UUID) else uuid.UUID(str(value)))
++
++
+ class PathConverter(Converter):
+     """The rest of the path, slashes included."""
+ 
+@@ -59,6 +72,7 @@ CONVERTERS = {
+     'str': Converter(),
+     'int': IntConverter(),
+     'slug': SlugConverter(),
++    'uuid': UUIDConverter(),
+     'path': PathConverter(),
+ }
+ 
+diff --git a/tests/test_patterns.py b/tests/test_patterns.py
+index 8e341f8..3e320ac 100644
+--- a/tests/test_patterns.py
++++ b/tests/test_patterns.py
+@@ -1,3 +1,5 @@
++import uuid
++
+ import pytest
+ 
+ from tinyroute import BuildError, RouteError, register_converter
+@@ -29,6 +31,18 @@ def test_slug_and_path_parameters():
+     assert Pattern('/files/<path:name>').match('/files/a/b.txt') == {'name': 'a/b.txt'}
+ 
+ 
++def test_uuid_parameter():
++    pattern = Pattern('/things/<uuid:id>')
++    text = '12345678-90ab-cdef-1234-567890abcdef'
++    assert pattern.match('/things/' + text) == {'id': uuid.UUID(text)}
++    assert pattern.match('/things/' + text.upper()) is None
++    assert pattern.match('/things/' + text.replace('-', '')) is None
++    assert pattern.build({'id': uuid.UUID(text)}, 't') == '/things/' + text
++    assert pattern.build({'id': '{' + text.upper() + '}'}, 't') == '/things/' + text
++    with pytest.raises(BuildError):
++        pattern.build({'id': 'not-a-uuid'}, 't')
++
++
+ def test_parameters_are_percent_decoded():
+     assert Pattern('/files/<name>').match('/files/a%20b') == {'name': 'a b'}
+ 

@@ -1,0 +1,205 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6bdaa12..f380365 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,9 @@
+ 
+ ## Unreleased
+ 
++- Responses can repeat a header: `Response.headers` is now a list of
++  `(name, value)` pairs, with `add_header()`, `set_header()` and
++  `header_values()`. Setting several cookies keeps every `Set-Cookie`.
+ - Error responses carry a stable code: the body is now
+   `{"error": {"code": ..., "message": ...}, "status": ...}`. `HTTPError`
+   subclasses set `code`, defaulting to `http_<status>`. `ClientError.message`
+diff --git a/docs/reference.md b/docs/reference.md
+index bafa99c..3916597 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -64,13 +64,15 @@ pattern column is what the raw, still percent-encoded segment must match.
+ |---|---|---|
+ | `Request.query` | `dict of str` | one value per name; blank values kept; a repeated name keeps its last value |
+ | `Request.headers` | `lower-case names` | look up with `request.header(name)` |
+-| `Response.headers` | `dict` | header name to value |
++| `Response.headers` | `list of (name, value) pairs` | in the order added; a name may repeat |
++| `Response.header()` | `first value` | case-insensitive; `header_values()` returns all of them |
+ | `Response.content_type` | `text/plain; charset=utf-8` | default content type |
+ | `json_response.content_type` | `application/json` | content type of JSON responses |
+ | `None` | `204` | status when a handler returns None |
+ | `redirect.status` | `302` | default status of `redirect()` |
+ | `set_cookie.path` | `/` | default cookie path |
+ | `set_cookie.http_only` | `True` | cookies are HttpOnly by default |
++| `Set-Cookie` | `one header per cookie` | `set_cookie()` and `delete_cookie()` add a header, never replace one |
+ 
+ ## Pagination
+ 
+diff --git a/src/tinyroute/http.py b/src/tinyroute/http.py
+index 4788418..7ef47b8 100644
+--- a/src/tinyroute/http.py
++++ b/src/tinyroute/http.py
+@@ -1,4 +1,5 @@
+ """Request and response objects, and the conversions between them and handler results."""
++from collections.abc import Mapping
+ import json
+ from urllib.parse import parse_qsl, urlsplit
+ 
+@@ -52,11 +53,25 @@ class Request:
+ 
+ 
+ class Response:
++    """A status, a body and headers.
++
++    ``headers`` is a list of ``(name, value)`` pairs in the order they were
++    added, so a name such as ``Set-Cookie`` can appear more than once. The
++    constructor takes a mapping or a list of pairs; a ``Content-Type`` among
++    them replaces ``content_type``.
++    """
++
+     def __init__(self, body=b'', status=200, headers=None, content_type=TEXT):
+         self.body = body.encode('utf-8') if isinstance(body, str) else bytes(body)
+         self.status = status
+-        self.headers = {'Content-Type': content_type}
+-        self.headers.update(headers or {})
++        self.headers = [('Content-Type', content_type)]
++        if isinstance(headers, Mapping):
++            headers = headers.items()
++        for name, value in headers or ():
++            if name.lower() == 'content-type':
++                self.set_header(name, value)
++            else:
++                self.add_header(name, value)
+ 
+     @property
+     def reason(self):
+@@ -78,12 +93,21 @@ class Response:
+         return json.loads(self.body)
+ 
+     def header(self, name, default=None):
+-        """A header's value, whatever the case of ``name``."""
++        """The first value of a header, whatever the case of ``name``."""
++        values = self.header_values(name)
++        return values[0] if values else default
++
++    def header_values(self, name):
+         name = name.lower()
+-        for key, value in self.headers.items():
+-            if key.lower() == name:
+-                return value
+-        return default
++        return [value for key, value in self.headers if key.lower() == name]
++
++    def add_header(self, name, value):
++        self.headers.append((name, value))
++
++    def set_header(self, name, value):
++        """Replace every value of ``name`` with this one."""
++        self.headers = [(key, old) for key, old in self.headers if key.lower() != name.lower()]
++        self.headers.append((name, value))
+ 
+     def set_cookie(self, name, value, max_age=None, path='/', http_only=True):
+         attributes = [f'{name}={value}', f'Path={path}']
+@@ -91,7 +115,7 @@ class Response:
+             attributes.append(f'Max-Age={max_age}')
+         if http_only:
+             attributes.append('HttpOnly')
+-        self.headers['Set-Cookie'] = '; '.join(attributes)
++        self.add_header('Set-Cookie', '; '.join(attributes))
+ 
+     def delete_cookie(self, name, path='/'):
+         self.set_cookie(name, '', max_age=0, path=path)
+diff --git a/src/tinyroute/middleware.py b/src/tinyroute/middleware.py
+index 4070ba9..db3f99e 100644
+--- a/src/tinyroute/middleware.py
++++ b/src/tinyroute/middleware.py
+@@ -22,13 +22,13 @@ def cors(origins, methods=CORS_METHODS, max_age=CORS_MAX_AGE):
+         permitted = origin is not None and ('*' in allowed or origin in allowed)
+         if permitted and request.method == 'OPTIONS' and request.header('Access-Control-Request-Method'):
+             response = Response(status=204)
+-            response.headers['Access-Control-Allow-Methods'] = ', '.join(methods)
+-            response.headers['Access-Control-Max-Age'] = str(max_age)
++            response.set_header('Access-Control-Allow-Methods', ', '.join(methods))
++            response.set_header('Access-Control-Max-Age', str(max_age))
+         else:
+             response = call_next(request)
+         if permitted:
+-            response.headers['Access-Control-Allow-Origin'] = origin
+-            response.headers['Vary'] = 'Origin'
++            response.set_header('Access-Control-Allow-Origin', origin)
++            response.add_header('Vary', 'Origin')
+         return response
+ 
+     return middleware
+@@ -42,7 +42,7 @@ def request_id(header=REQUEST_ID_HEADER, start=1):
+         value = request.header(header) or str(next(numbers))
+         request.id = value
+         response = call_next(request)
+-        response.headers[header] = value
++        response.set_header(header, value)
+         return response
+ 
+     return middleware
+diff --git a/tests/test_http.py b/tests/test_http.py
+index ec122e5..aea057a 100644
+--- a/tests/test_http.py
++++ b/tests/test_http.py
+@@ -44,8 +44,29 @@ def test_set_cookie():
+     response = Response()
+     response.set_cookie('session', 'abc', max_age=60)
+     assert response.header('Set-Cookie') == 'session=abc; Path=/; Max-Age=60; HttpOnly'
+-    response.delete_cookie('session')
+-    assert response.header('Set-Cookie') == 'session=; Path=/; Max-Age=0; HttpOnly'
++
++
++def test_each_cookie_gets_its_own_header():
++    response = Response()
++    response.set_cookie('session', 'abc')
++    response.delete_cookie('old')
++    assert response.header_values('set-cookie') == [
++        'session=abc; Path=/; HttpOnly', 'old=; Path=/; Max-Age=0; HttpOnly']
++
++
++def test_headers_are_ordered_pairs():
++    response = Response(headers=[('Link', '<a>'), ('Link', '<b>')])
++    response.add_header('X-One', '1')
++    assert response.headers == [
++        ('Content-Type', 'text/plain; charset=utf-8'), ('Link', '<a>'), ('Link', '<b>'), ('X-One', '1')]
++    response.set_header('link', '<c>')
++    assert response.header_values('Link') == ['<c>']
++    assert response.header('LINK') == '<c>'
++
++
++def test_content_type_in_headers_replaces_the_default():
++    response = Response(headers={'content-type': 'text/html'})
++    assert response.header_values('Content-Type') == ['text/html']
+ 
+ 
+ def test_json_response_and_redirect():
+diff --git a/tests/test_middleware.py b/tests/test_middleware.py
+index d0749b9..4949014 100644
+--- a/tests/test_middleware.py
++++ b/tests/test_middleware.py
+@@ -1,4 +1,4 @@
+-from tinyroute import App, Client
++from tinyroute import App, Client, Response
+ from tinyroute.middleware import access_log, cors, request_id
+ 
+ 
+@@ -20,6 +20,18 @@ def test_cors_allows_listed_origin():
+     assert response.header('Vary') == 'Origin'
+ 
+ 
++def test_cors_adds_to_an_existing_vary():
++    app = App()
++
++    @app.route('/v')
++    def varied(request):
++        return Response('v', headers={'Vary': 'Accept'})
++
++    app.use(cors(['*']))
++    response = Client(app).get('/v', headers={'Origin': 'https://a.example'})
++    assert response.header_values('Vary') == ['Accept', 'Origin']
++
++
+ def test_cors_ignores_other_origins():
+     app = make_app()
+     app.use(cors(['https://a.example']))

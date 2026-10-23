@@ -1,0 +1,15 @@
+diff --git a/src/tinyroute/client.py b/src/tinyroute/client.py
+index 6873b1e..8cdcff8 100644
+--- a/src/tinyroute/client.py
++++ b/src/tinyroute/client.py
+@@ -25,8 +25,8 @@ def error_message(response):
+     """The message of an error response: from the JSON error body, else the whole text."""
+     if response.content_type == JSON:
+         body = response.json()
+-        if isinstance(body, dict) and isinstance(body.get('error'), dict):
+-            return body['error']['message']
++        if isinstance(body, dict) and 'error' in body:
++            return body['error']
+     return response.text
+ 
+ 

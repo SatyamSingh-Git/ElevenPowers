@@ -1,0 +1,103 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index dc01b27..b312188 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,9 @@
+ 
+ ## Unreleased
+ 
++- `url_for` is strict: a keyword that is not a path parameter raises
++  `BuildError` instead of landing in the query string. Pass query values
++  as a mapping in `_query`.
+ - `uuid` path parameter type: `<uuid:id>` matches a canonical lower-case
+   UUID and gives a `uuid.UUID`.
+ - Responses can repeat a header: `Response.headers` is now a list of
+diff --git a/docs/reference.md b/docs/reference.md
+index 52e3e42..41980bc 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -21,7 +21,8 @@ pattern column is what the raw, still percent-encoded segment must match.
+ | `default_methods` | `GET` | methods of a route added without `methods` |
+ | `route_name` | `handler.__name__` | name of a route added without `name`; lambdas get none |
+ | `match_order` | `registration order` | the first route that matches path and method wins |
+-| `url_for_extra_values` | `query string` | values that are not path parameters are appended as `?key=value` |
++| `url_for_extra_values` | `BuildError` | every keyword of `url_for` must be a path parameter of the route |
++| `url_for._query` | `mapping` | query string of the URL; a list value repeats its name; empty adds no `?` |
+ 
+ ## Errors
+ 
+@@ -53,6 +54,7 @@ pattern column is what the raw, still percent-encoded segment must match.
+ | `unknown_type` | `unknown parameter type '{type}'` | `RouteError` |
+ | `duplicate_name` | `duplicate route name '{name}'` | `RouteError` |
+ | `unknown_route` | `no route named '{name}'` | `BuildError` |
++| `unknown_parameter` | `unknown parameter '{name}' for route '{route}'` | `BuildError` |
+ | `missing_parameter` | `missing parameter '{name}' for route '{route}'` | `BuildError` |
+ | `invalid_value` | `invalid value {value!r} for parameter '{name}' of route '{route}'` | `BuildError` |
+ | `bad_page` | `{name} must be a positive integer` | `paginate()`, as `BadRequest` |
+diff --git a/src/tinyroute/pagination.py b/src/tinyroute/pagination.py
+index ec892d0..334598d 100644
+--- a/src/tinyroute/pagination.py
++++ b/src/tinyroute/pagination.py
+@@ -22,7 +22,7 @@ def _link(request, page, size, default_size):
+     query = {PAGE_PARAM: page}
+     if size != default_size:
+         query[PER_PAGE_PARAM] = size
+-    return request.app.url_for(request.route.name, **request.params, **query)
++    return request.app.url_for(request.route.name, _query=query, **request.params)
+ 
+ 
+ def paginate(request, items, per_page=PER_PAGE):
+diff --git a/src/tinyroute/router.py b/src/tinyroute/router.py
+index 4d3c41b..9598105 100644
+--- a/src/tinyroute/router.py
++++ b/src/tinyroute/router.py
+@@ -69,13 +69,19 @@ class Router:
+             raise MethodNotAllowed(method, path, allowed)
+         raise NotFound(path)
+ 
+-    def url_for(self, name, **values):
+-        """The path of route ``name``; values that are not parameters go in the query string."""
++    def url_for(self, name, _query=None, **values):
++        """The path of route ``name`` filled in with ``values``, then ``_query`` as a query string.
++
++        Every keyword in ``values`` must be a path parameter of the route. A
++        list in ``_query`` repeats its name once per item.
++        """
+         route = self.named.get(name)
+         if route is None:
+             raise BuildError(f"no route named '{name}'")
++        for key in values:
++            if key not in route.pattern.names:
++                raise BuildError(f"unknown parameter '{key}' for route '{name}'")
+         path = route.pattern.build(values, name)
+-        extra = {key: value for key, value in values.items() if key not in route.pattern.names}
+-        if extra:
+-            path += '?' + urlencode(extra, doseq=True)
++        if _query:
++            path += '?' + urlencode(_query, doseq=True)
+         return path
+diff --git a/tests/test_router.py b/tests/test_router.py
+index 914dfb3..e36275d 100644
+--- a/tests/test_router.py
++++ b/tests/test_router.py
+@@ -59,8 +59,18 @@ def test_names_default_to_the_handler_name():
+     assert router.url_for('index') == '/'
+ 
+ 
+-def test_url_for_puts_extra_values_in_the_query_string():
+-    assert make_router().url_for('show', id=5, tab='posts') == '/users/5?tab=posts'
++def test_url_for_refuses_unknown_keywords():
++    with pytest.raises(BuildError, match="unknown parameter 'tba' for route 'show'"):
++        make_router().url_for('show', id=5, tba='posts')
++    with pytest.raises(BuildError, match="unknown parameter 'page' for route 'index'"):
++        make_router().url_for('index', page=2)
++
++
++def test_url_for_query_mapping():
++    router = make_router()
++    assert router.url_for('show', id=5, _query={'tab': 'posts'}) == '/users/5?tab=posts'
++    assert router.url_for('index', _query={'tag': ['a', 'b'], 'q': 'x y'}) == '/?tag=a&tag=b&q=x+y'
++    assert router.url_for('index', _query={}) == '/'
+ 
+ 
+ def test_url_for_unknown_name():

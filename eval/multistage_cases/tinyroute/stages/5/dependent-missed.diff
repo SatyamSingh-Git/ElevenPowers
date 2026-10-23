@@ -1,0 +1,13 @@
+diff --git a/src/tinyroute/pagination.py b/src/tinyroute/pagination.py
+index 8d3a577..334598d 100644
+--- a/src/tinyroute/pagination.py
++++ b/src/tinyroute/pagination.py
+@@ -10,7 +10,7 @@ PER_PAGE_PARAM = 'per_page'
+ 
+ 
+ def _positive(request, name, default):
+-    text = request.arg(name)
++    text = request.query.get(name)
+     if text is None:
+         return default
+     if not re.fullmatch('[0-9]+', text) or int(text) < 1:

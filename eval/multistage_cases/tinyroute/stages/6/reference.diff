@@ -1,0 +1,151 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a9f010a..fa30a16 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Fixed: a route added earlier with a parameter, such as `/users/<name>`,
++  no longer hides a more specific one added later, such as `/users/me`.
+ - `Request.query` keeps repeated names: each name maps to the list of its
+   values. `Request.arg(name, default=None)` gives the first one.
+ - `url_for` is strict: a keyword that is not a path parameter raises
+diff --git a/docs/reference.md b/docs/reference.md
+index 7e3c238..6cabad2 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -20,7 +20,7 @@ pattern column is what the raw, still percent-encoded segment must match.
+ |---|---|---|
+ | `default_methods` | `GET` | methods of a route added without `methods` |
+ | `route_name` | `handler.__name__` | name of a route added without `name`; lambdas get none |
+-| `match_order` | `registration order` | the first route that matches path and method wins |
++| `match_order` | `most specific first` | per segment from the left, fixed text beats a parameter, which beats a `path` parameter; ties keep registration order |
+ | `url_for_extra_values` | `BuildError` | every keyword of `url_for` must be a path parameter of the route |
+ | `url_for._query` | `mapping` | query string of the URL; a list value repeats its name; empty adds no `?` |
+ 
+diff --git a/src/tinyroute/converters.py b/src/tinyroute/converters.py
+index cb019f2..c104547 100644
+--- a/src/tinyroute/converters.py
++++ b/src/tinyroute/converters.py
+@@ -19,6 +19,7 @@ class Converter:
+ 
+     regex = '[^/]+'
+     safe = ''
++    spans_slashes = False
+ 
+     def to_python(self, text):
+         return text
+@@ -66,6 +67,7 @@ class PathConverter(Converter):
+ 
+     regex = '.+'
+     safe = '/'
++    spans_slashes = True
+ 
+ 
+ CONVERTERS = {
+diff --git a/src/tinyroute/patterns.py b/src/tinyroute/patterns.py
+index d04ab34..1dc7d69 100644
+--- a/src/tinyroute/patterns.py
++++ b/src/tinyroute/patterns.py
+@@ -52,6 +52,26 @@ class Pattern:
+     def names(self):
+         return [part.name for part in self.parameters]
+ 
++    @property
++    def specificity(self):
++        """A sort key, lower for more specific patterns.
++
++        One rank per path segment from the left: 0 for fixed text, 1 for a
++        segment holding a parameter, 2 for one holding a parameter that can
++        span slashes.
++        """
++        by_name = {part.name: part for part in self.parameters}
++        ranks = []
++        for segment in self.text.split('/')[1:]:
++            names = [found['name'] for found in PARAMETER.finditer(segment)]
++            if not names:
++                ranks.append(0)
++            elif any(by_name[name].converter.spans_slashes for name in names):
++                ranks.append(2)
++            else:
++                ranks.append(1)
++        return tuple(ranks)
++
+     def match(self, path):
+         """The converted parameters if ``path`` matches, otherwise None."""
+         found = self.regex.fullmatch(path)
+diff --git a/src/tinyroute/router.py b/src/tinyroute/router.py
+index 9598105..76a6bad 100644
+--- a/src/tinyroute/router.py
++++ b/src/tinyroute/router.py
+@@ -26,6 +26,9 @@ class Router:
+     def __init__(self):
+         self.routes = []
+         self.named = {}
++        # The routes in the order match() tries them; sorted() is stable, so
++        # equally specific routes keep the order they were added in.
++        self._by_specificity = []
+ 
+     def add(self, pattern, handler, methods=DEFAULT_METHODS, name=None):
+         route = Route(pattern, handler, methods, name)
+@@ -34,6 +37,7 @@ class Router:
+                 raise RouteError(f"duplicate route name '{route.name}'")
+             self.named[route.name] = route
+         self.routes.append(route)
++        self._by_specificity = sorted(self.routes, key=lambda each: each.pattern.specificity)
+         return route
+ 
+     def route(self, pattern, methods=DEFAULT_METHODS, name=None):
+@@ -51,14 +55,14 @@ class Router:
+             self.add(prefix + route.pattern.text, route.handler, route.methods, route.name)
+ 
+     def match(self, method, path):
+-        """The first route that matches ``path`` and accepts ``method``, with its parameters.
++        """The most specific route that matches ``path`` and accepts ``method``, with its parameters.
+ 
+         Raises NotFound when no route matches the path and MethodNotAllowed
+         when some do but none of them accepts the method.
+         """
+         method = method.upper()
+         allowed = set()
+-        for route in self.routes:
++        for route in self._by_specificity:
+             params = route.pattern.match(path)
+             if params is None:
+                 continue
+diff --git a/tests/test_router.py b/tests/test_router.py
+index e36275d..6a175ab 100644
+--- a/tests/test_router.py
++++ b/tests/test_router.py
+@@ -46,11 +46,28 @@ def test_wrong_method_lists_allowed_methods():
+     assert caught.value.message == "method 'DELETE' not allowed for '/users/7'"
+ 
+ 
+-def test_routes_are_tried_in_registration_order():
++def test_fixed_text_beats_a_parameter_added_earlier():
+     router = Router()
+     router.add('/users/<name>', show, name='by_name')
+     router.add('/users/me', index, name='me')
+-    assert router.match('GET', '/users/me')[0].name == 'by_name'
++    assert router.match('GET', '/users/me')[0].name == 'me'
++    assert router.match('GET', '/users/ada')[0].name == 'by_name'
++
++
++def test_a_parameter_beats_a_path_parameter_added_earlier():
++    router = Router()
++    router.add('/files/<path:rest>', show, name='any')
++    router.add('/files/<name>/raw', index, name='raw')
++    assert router.match('GET', '/files/a/raw')[0].name == 'raw'
++    assert router.match('GET', '/files/a/b/raw')[0].name == 'any'
++
++
++def test_equally_specific_routes_keep_their_order():
++    router = Router()
++    router.add('/n/<int:id>', show, name='first')
++    router.add('/n/<name>', index, name='second')
++    assert router.match('GET', '/n/1')[0].name == 'first'
++    assert router.match('GET', '/n/x')[0].name == 'second'
+ 
+ 
+ def test_names_default_to_the_handler_name():

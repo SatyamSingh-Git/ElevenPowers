@@ -1,0 +1,180 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 06eb2ea..6bdaa12 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,10 @@
+ 
+ ## Unreleased
+ 
++- Error responses carry a stable code: the body is now
++  `{"error": {"code": ..., "message": ...}, "status": ...}`. `HTTPError`
++  subclasses set `code`, defaulting to `http_<status>`. `ClientError.message`
++  reads the message from the new body.
+ - `Client.options()` for sending preflight requests.
+ 
+ ## 0.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 4a4b9a0..bafa99c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -31,7 +31,12 @@ pattern column is what the raw, still percent-encoded segment must match.
+ | `MethodNotAllowed` | `405` | status; the response carries an `Allow` header |
+ | `InternalError` | `500` | status of any unexpected exception when `debug` is off |
+ | `HTTPError.message` | `status reason in lower case` | default message, e.g. `gone` for 410 |
+-| `error_body` | `{"error": message, "status": status}` | JSON body of every error response |
++| `HTTPError.code` | `http_{status}` | default code of a subclass that sets none, e.g. `http_410` |
++| `error_body` | `{"error": {"code": code, "message": message}, "status": status}` | JSON body of every error response |
++| `code.BadRequest` | `bad_request` | error code |
++| `code.NotFound` | `not_found` | error code |
++| `code.MethodNotAllowed` | `method_not_allowed` | error code |
++| `code.InternalError` | `internal_error` | error code |
+ | `Allow` | `sorted, comma-separated` | methods listed on a 405 |
+ | `debug` | `False` | when true, unexpected exceptions propagate from `App.handle` |
+ 
+diff --git a/src/tinyroute/client.py b/src/tinyroute/client.py
+index 8cdcff8..6873b1e 100644
+--- a/src/tinyroute/client.py
++++ b/src/tinyroute/client.py
+@@ -25,8 +25,8 @@ def error_message(response):
+     """The message of an error response: from the JSON error body, else the whole text."""
+     if response.content_type == JSON:
+         body = response.json()
+-        if isinstance(body, dict) and 'error' in body:
+-            return body['error']
++        if isinstance(body, dict) and isinstance(body.get('error'), dict):
++            return body['error']['message']
+     return response.text
+ 
+ 
+diff --git a/src/tinyroute/errors.py b/src/tinyroute/errors.py
+index a24139e..fdb1123 100644
+--- a/src/tinyroute/errors.py
++++ b/src/tinyroute/errors.py
+@@ -13,15 +13,19 @@ class BuildError(RouteError):
+ class HTTPError(Exception):
+     """An error the application answers with a status code instead of crashing.
+ 
+-    Subclasses set ``status``; the message defaults to the status reason in
+-    lower case, so ``status = 410`` reads ``gone``.
++    Subclasses set ``status`` and usually ``code``, the stable name clients
++    can rely on. The code defaults to ``http_<status>`` and the message to the
++    status reason in lower case, so ``status = 410`` gives ``http_410`` and ``gone``.
+     """
+ 
+     status = 500
++    code = None
+ 
+     def __init__(self, message=None, headers=None):
+         if message is None:
+             message = STATUS_REASONS.get(self.status, 'error').lower()
++        if self.code is None:
++            self.code = f'http_{self.status}'
+         self.message = message
+         self.headers = dict(headers or {})
+         super().__init__(message)
+@@ -29,10 +33,12 @@ class HTTPError(Exception):
+ 
+ class BadRequest(HTTPError):
+     status = 400
++    code = 'bad_request'
+ 
+ 
+ class NotFound(HTTPError):
+     status = 404
++    code = 'not_found'
+ 
+     def __init__(self, path):
+         self.path = path
+@@ -41,6 +47,7 @@ class NotFound(HTTPError):
+ 
+ class MethodNotAllowed(HTTPError):
+     status = 405
++    code = 'method_not_allowed'
+ 
+     def __init__(self, method, path, allowed):
+         self.allowed = sorted(allowed)
+@@ -50,3 +57,4 @@ class MethodNotAllowed(HTTPError):
+ 
+ class InternalError(HTTPError):
+     status = 500
++    code = 'internal_error'
+diff --git a/src/tinyroute/http.py b/src/tinyroute/http.py
+index 160bb30..4788418 100644
+--- a/src/tinyroute/http.py
++++ b/src/tinyroute/http.py
+@@ -110,7 +110,8 @@ def redirect(location, status=302):
+ 
+ def error_response(error):
+     """The response for an ``HTTPError``: its status, its headers and a JSON body."""
+-    return json_response({'error': error.message, 'status': error.status}, error.status, error.headers)
++    body = {'error': {'code': error.code, 'message': error.message}, 'status': error.status}
++    return json_response(body, error.status, error.headers)
+ 
+ 
+ def to_response(value):
+diff --git a/tests/test_app.py b/tests/test_app.py
+index aa390c2..d405dcb 100644
+--- a/tests/test_app.py
++++ b/tests/test_app.py
+@@ -46,14 +46,38 @@ def test_not_found_and_method_not_allowed():
+ 
+ def test_http_errors_become_json_responses():
+     client = Client(make_app())
+-    assert client.get('/refuse').json() == {'error': 'no thanks', 'status': 400}
+-    assert client.get('/gone').json() == {'error': 'gone', 'status': 410}
+-    assert client.post('/echo', body='{').json()['error'] == 'invalid JSON body'
++    assert client.get('/refuse').json() == {
++        'error': {'code': 'bad_request', 'message': 'no thanks'}, 'status': 400}
++    assert client.get('/gone').json() == {'error': {'code': 'http_410', 'message': 'gone'}, 'status': 410}
++    assert client.post('/echo', body='{').json()['error'] == {
++        'code': 'bad_request', 'message': 'invalid JSON body'}
++
++
++def test_error_codes():
++    client = Client(make_app())
++    assert client.get('/nope').json()['error']['code'] == 'not_found'
++    assert client.delete('/users/1').json()['error']['code'] == 'method_not_allowed'
++
++
++def test_subclass_sets_its_own_code():
++    app = App()
++
++    class Teapot(HTTPError):
++        status = 418
++        code = 'teapot'
++
++    @app.route('/tea')
++    def tea(request):
++        raise Teapot('short and stout')
++
++    assert Client(app).get('/tea').json() == {
++        'error': {'code': 'teapot', 'message': 'short and stout'}, 'status': 418}
+ 
+ 
+ def test_unexpected_exception_is_a_500():
+     response = Client(make_app()).get('/boom')
+-    assert response.json() == {'error': 'internal server error', 'status': 500}
++    assert response.json() == {'error': {'code': 'internal_error', 'message': 'internal server error'},
++                               'status': 500}
+ 
+ 
+ def test_debug_mode_lets_exceptions_through():
+diff --git a/tests/test_http.py b/tests/test_http.py
+index cc78de2..ec122e5 100644
+--- a/tests/test_http.py
++++ b/tests/test_http.py
+@@ -58,9 +58,12 @@ def test_json_response_and_redirect():
+ def test_error_response_body_and_allow_header():
+     response = error_response(MethodNotAllowed('POST', '/x', {'GET', 'HEAD'}))
+     assert response.status == 405
+-    assert response.json() == {'error': "method 'POST' not allowed for '/x'", 'status': 405}
++    assert response.json() == {
++        'error': {'code': 'method_not_allowed', 'message': "method 'POST' not allowed for '/x'"},
++        'status': 405}
+     assert response.header('Allow') == 'GET, HEAD'
+-    assert error_response(NotFound('/y')).json()['error'] == "no route matches '/y'"
++    assert error_response(NotFound('/y')).json()['error'] == {
++        'code': 'not_found', 'message': "no route matches '/y'"}
+ 
+ 
+ def test_to_response():

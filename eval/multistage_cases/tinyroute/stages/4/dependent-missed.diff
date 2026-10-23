@@ -1,0 +1,13 @@
+diff --git a/src/tinyroute/pagination.py b/src/tinyroute/pagination.py
+index 334598d..ec892d0 100644
+--- a/src/tinyroute/pagination.py
++++ b/src/tinyroute/pagination.py
+@@ -22,7 +22,7 @@ def _link(request, page, size, default_size):
+     query = {PAGE_PARAM: page}
+     if size != default_size:
+         query[PER_PAGE_PARAM] = size
+-    return request.app.url_for(request.route.name, _query=query, **request.params)
++    return request.app.url_for(request.route.name, **request.params, **query)
+ 
+ 
+ def paginate(request, items, per_page=PER_PAGE):

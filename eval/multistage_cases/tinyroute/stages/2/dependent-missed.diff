@@ -1,0 +1,31 @@
+diff --git a/src/tinyroute/middleware.py b/src/tinyroute/middleware.py
+index db3f99e..4070ba9 100644
+--- a/src/tinyroute/middleware.py
++++ b/src/tinyroute/middleware.py
+@@ -22,13 +22,13 @@ def cors(origins, methods=CORS_METHODS, max_age=CORS_MAX_AGE):
+         permitted = origin is not None and ('*' in allowed or origin in allowed)
+         if permitted and request.method == 'OPTIONS' and request.header('Access-Control-Request-Method'):
+             response = Response(status=204)
+-            response.set_header('Access-Control-Allow-Methods', ', '.join(methods))
+-            response.set_header('Access-Control-Max-Age', str(max_age))
++            response.headers['Access-Control-Allow-Methods'] = ', '.join(methods)
++            response.headers['Access-Control-Max-Age'] = str(max_age)
+         else:
+             response = call_next(request)
+         if permitted:
+-            response.set_header('Access-Control-Allow-Origin', origin)
+-            response.add_header('Vary', 'Origin')
++            response.headers['Access-Control-Allow-Origin'] = origin
++            response.headers['Vary'] = 'Origin'
+         return response
+ 
+     return middleware
+@@ -42,7 +42,7 @@ def request_id(header=REQUEST_ID_HEADER, start=1):
+         value = request.header(header) or str(next(numbers))
+         request.id = value
+         response = call_next(request)
+-        response.set_header(header, value)
++        response.headers[header] = value
+         return response
+ 
+     return middleware

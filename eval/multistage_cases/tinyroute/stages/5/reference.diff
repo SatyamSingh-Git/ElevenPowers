@@ -1,0 +1,94 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b312188..a9f010a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- `Request.query` keeps repeated names: each name maps to the list of its
++  values. `Request.arg(name, default=None)` gives the first one.
+ - `url_for` is strict: a keyword that is not a path parameter raises
+   `BuildError` instead of landing in the query string. Pass query values
+   as a mapping in `_query`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 41980bc..7e3c238 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -65,7 +65,8 @@ pattern column is what the raw, still percent-encoded segment must match.
+ 
+ | Field | Value | Meaning |
+ |---|---|---|
+-| `Request.query` | `dict of str` | one value per name; blank values kept; a repeated name keeps its last value |
++| `Request.query` | `dict of list of str` | every value of each name, in order; a name without a value has `['']` |
++| `Request.arg()` | `first value` | of a query name, or the given default when absent |
+ | `Request.headers` | `lower-case names` | look up with `request.header(name)` |
+ | `Response.headers` | `list of (name, value) pairs` | in the order added; a name may repeat |
+ | `Response.header()` | `first value` | case-insensitive; `header_values()` returns all of them |
+diff --git a/src/tinyroute/http.py b/src/tinyroute/http.py
+index 7ef47b8..4277475 100644
+--- a/src/tinyroute/http.py
++++ b/src/tinyroute/http.py
+@@ -11,8 +11,11 @@ JSON = 'application/json'
+ 
+ 
+ def parse_query(text):
+-    """``a=1&b=&a=2`` -> ``{'a': '2', 'b': ''}``: blank values kept, the last repeat wins."""
+-    return dict(parse_qsl(text, keep_blank_values=True))
++    """``a=1&b=&a=2`` -> ``{'a': ['1', '2'], 'b': ['']}``: every value in order, blanks kept."""
++    query = {}
++    for name, value in parse_qsl(text, keep_blank_values=True):
++        query.setdefault(name, []).append(value)
++    return query
+ 
+ 
+ class Request:
+@@ -35,6 +38,11 @@ class Request:
+     def header(self, name, default=None):
+         return self.headers.get(name.lower(), default)
+ 
++    def arg(self, name, default=None):
++        """The first query value of ``name``."""
++        values = self.query.get(name)
++        return values[0] if values else default
++
+     @property
+     def text(self):
+         try:
+diff --git a/src/tinyroute/pagination.py b/src/tinyroute/pagination.py
+index 334598d..8d3a577 100644
+--- a/src/tinyroute/pagination.py
++++ b/src/tinyroute/pagination.py
+@@ -10,7 +10,7 @@ PER_PAGE_PARAM = 'per_page'
+ 
+ 
+ def _positive(request, name, default):
+-    text = request.query.get(name)
++    text = request.arg(name)
+     if text is None:
+         return default
+     if not re.fullmatch('[0-9]+', text) or int(text) < 1:
+diff --git a/tests/test_http.py b/tests/test_http.py
+index aea057a..c372e29 100644
+--- a/tests/test_http.py
++++ b/tests/test_http.py
+@@ -8,11 +8,16 @@ def test_request_from_url_splits_query():
+     request = Request.from_url('get', '/search?q=tiny&page=2&flag=')
+     assert request.method == 'GET'
+     assert request.path == '/search'
+-    assert request.query == {'q': 'tiny', 'page': '2', 'flag': ''}
++    assert request.query == {'q': ['tiny'], 'page': ['2'], 'flag': ['']}
+ 
+ 
+-def test_repeated_query_value_keeps_the_last():
+-    assert Request.from_url('GET', '/s?tag=a&tag=b').query == {'tag': 'b'}
++def test_repeated_query_values_are_all_kept():
++    request = Request.from_url('GET', '/s?tag=a&flag&tag=b')
++    assert request.query == {'tag': ['a', 'b'], 'flag': ['']}
++    assert request.arg('tag') == 'a'
++    assert request.arg('flag') == ''
++    assert request.arg('missing') is None
++    assert request.arg('missing', '1') == '1'
+ 
+ 
+ def test_request_headers_are_case_insensitive():
