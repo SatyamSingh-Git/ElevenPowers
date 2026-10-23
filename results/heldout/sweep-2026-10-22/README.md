@@ -85,6 +85,30 @@ attempts does not recover what the assisted arm produced. Three runs per arm,
 descriptive, no test. `oracle-gap.txt` and `oracle-gap-pinned.txt`; reproduce with
 `python -m eval.pool --from-bundles results/heldout/sweep-2026-10-22/collected.json [--pinned]`.
 
+## Every state a run passed through (added afterwards, not pre-registered)
+
+PLAN §7's B2.3, at edit granularity for the first time. Each run's transcript
+records every Edit and Write, so `eval/heldout_checkpoints.py` rebuilds the tree
+after each edit from the base commit, keeps the replay only when its last state
+reproduces the submitted patch (exactly, or up to the line endings a
+`git stash`/`stash pop` under autocrlf rewrites), and grades every earlier distinct
+state as the final one was graded.
+
+| arm | graded | replayed | with an earlier state | better earlier state | tested runs that resolved untested first |
+|---|---|---|---|---|---|
+| ordinary | 120 | 79 | 36 | 1 | 4 |
+| assisted | 118 | 69 (5 up to line endings) | 49 | 0 | 34 |
+
+The one better state: `cachetools-bcf9e817--ordinary--1` resolved (VACUOUS) and then
+submitted a patch that regressed. So on these tasks a ratchet back to the best
+earlier state has almost nothing to recover. The last column shows how the assisted
+arm reaches a tested fix: the fix lands first and resolves untested, and the test is
+written after. Limits: 90 of 238 runs changed files through the shell (`sed -i`,
+`cat >`, scripts) and cannot be replayed, so the replayable runs are a selected
+subset; small fixes, one model, descriptive only. `checkpoints.json` (per run) and
+`checkpoints.txt`; reproduce with `python -m eval.heldout_checkpoints --sweep
+results/heldout/sweep-2026-10-22 --corpus results/heldout/corpus.json --out <journal>`.
+
 ## Files
 
 `protocol.json` and `protocol-seal.json` (the frozen schedule), `collected.json`

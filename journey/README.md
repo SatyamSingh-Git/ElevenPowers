@@ -1,6 +1,11 @@
 # The journey
 
-Latest: [89 — the gap held on code nobody here picked](89-the-gap-held-on-code-nobody-here-picked.md):
+Latest: [90 — nothing better was left behind](90-nothing-better-was-left-behind.md):
+two $0 readings of the held-out sweep: the oracle gap is still unsettled (+6.7 / +4.2), but best-of-3
+ordinary finds a tested fix on 17.5% of tasks against 47.5% for a blind assisted pick; replayed edit by
+edit, 1 of 85 runs held a better state than it submitted.
+
+Recent: [89 — the gap held on code nobody here picked](89-the-gap-held-on-code-nobody-here-picked.md):
 240 sealed runs on 40 held-out tasks: VACUOUS among resolved 84% ordinary vs 37% with ElevenPowers
 (p = 0.00016), resolve rate unchanged, and the interruptions, guard stop and exclusions on the way.
 

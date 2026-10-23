@@ -1,0 +1,2950 @@
+{
+  "cachetools-95e6addb--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "line endings"
+  },
+  "cachetools-95e6addb--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-95e6addb--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "regressed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-95e6addb--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-95e6addb--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "regressed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-95e6addb--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "regressed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-bcf9e817--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ],
+      [
+        "regressed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-bcf9e817--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-bcf9e817--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ],
+      [
+        "regressed",
+        null
+      ],
+      [
+        "regressed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-bcf9e817--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "cachetools-bcf9e817--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "regressed",
+      null
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-bcf9e817--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ],
+      [
+        "regressed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-c0fdf6ab--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-c0fdf6ab--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-c0fdf6ab--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "cachetools-c0fdf6ab--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "cachetools-c0fdf6ab--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "cachetools-c0fdf6ab--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "cachetools-ec0b97b8--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-ec0b97b8--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-ec0b97b8--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-ec0b97b8--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-ec0b97b8--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "cachetools-ec0b97b8--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "charset_normalizer-017c75c2--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-017c75c2--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-017c75c2--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-017c75c2--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-017c75c2--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-017c75c2--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-4b335594--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        false
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-4b335594--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-4b335594--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "charset_normalizer-4b335594--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "charset_normalizer-4b335594--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "charset_normalizer-4b335594--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "charset_normalizer-667b93c9--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-667b93c9--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "charset_normalizer-667b93c9--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "charset_normalizer-667b93c9--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-667b93c9--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-667b93c9--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-f6afd31c--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-f6afd31c--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-f6afd31c--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-f6afd31c--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-f6afd31c--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "charset_normalizer-f6afd31c--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "iniconfig-d2dcb728--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "iniconfig-d2dcb728--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "iniconfig-d2dcb728--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "iniconfig-d2dcb728--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "iniconfig-d2dcb728--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "iniconfig-d2dcb728--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-0e6acdf9--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "more-itertools-0e6acdf9--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "more-itertools-0e6acdf9--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "more-itertools-0e6acdf9--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-0e6acdf9--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-0e6acdf9--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-842a2b17--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "more-itertools-842a2b17--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-842a2b17--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        false
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "more-itertools-842a2b17--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-842a2b17--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-842a2b17--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-d64a7d69--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-d64a7d69--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-d64a7d69--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-d64a7d69--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-d64a7d69--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-d64a7d69--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "more-itertools-d992be0d--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-d992be0d--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-d992be0d--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-d992be0d--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "more-itertools-d992be0d--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-50783cff--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-50783cff--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-50783cff--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        false
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "oauthlib-50783cff--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "oauthlib-50783cff--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "oauthlib-50783cff--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-c951a1d0--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "oauthlib-c951a1d0--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-c951a1d0--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-c951a1d0--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "oauthlib-c951a1d0--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "oauthlib-c951a1d0--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-42db2112--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-42db2112--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-42db2112--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-42db2112--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-42db2112--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-42db2112--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-7e678ac0--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-7e678ac0--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pycparser-7e678ac0--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pycparser-7e678ac0--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pycparser-7e678ac0--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-7e678ac0--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pycparser-b6319dba--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-b6319dba--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-b6319dba--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-b6319dba--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-b6319dba--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-b6319dba--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-f93324c1--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-f93324c1--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-f93324c1--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pycparser-f93324c1--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-f93324c1--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pycparser-f93324c1--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-5fde08a6--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "line endings"
+  },
+  "pyjwt-5fde08a6--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "line endings"
+  },
+  "pyjwt-5fde08a6--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "line endings"
+  },
+  "pyjwt-5fde08a6--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-5fde08a6--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-5fde08a6--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-717668ad--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pyjwt-717668ad--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pyjwt-717668ad--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pyjwt-717668ad--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-717668ad--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-717668ad--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-793a3027--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-793a3027--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-793a3027--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-793a3027--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-793a3027--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-793a3027--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-f91ed44d--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pyjwt-f91ed44d--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "pyjwt-f91ed44d--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "pyjwt-f91ed44d--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-f91ed44d--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "pyjwt-f91ed44d--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-26f719dc--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        false
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-26f719dc--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        false
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-26f719dc--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        false
+      ],
+      [
+        "resolved",
+        false
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-26f719dc--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-26f719dc--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-26f719dc--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-389aab8b--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "regressed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "regressed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-389aab8b--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-389aab8b--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-389aab8b--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "regressed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-389aab8b--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-389aab8b--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-949dcfa6--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-949dcfa6--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-949dcfa6--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-949dcfa6--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-949dcfa6--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-949dcfa6--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-b6201ece--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-b6201ece--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-b6201ece--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-b6201ece--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tenacity-b6201ece--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tenacity-b6201ece--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "regressed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "tomli-1e6e869a--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tomli-1e6e869a--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tomli-1e6e869a--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tomli-1e6e869a--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "tomli-1e6e869a--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "tomli-1e6e869a--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "uvicorn-31e3e00f--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "uvicorn-31e3e00f--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "uvicorn-31e3e00f--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-31e3e00f--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "uvicorn-31e3e00f--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-31e3e00f--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-4a959207--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-4a959207--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-4a959207--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-4a959207--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-4a959207--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-4a959207--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-5ac6265a--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-5ac6265a--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-5ac6265a--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-5ac6265a--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-5ac6265a--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-5ac6265a--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "uvicorn-cc6fea5b--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-cc6fea5b--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-cc6fea5b--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-cc6fea5b--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "uvicorn-cc6fea5b--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "uvicorn-cc6fea5b--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wheel-0ca6f24e--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-0ca6f24e--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-0ca6f24e--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-0ca6f24e--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-0ca6f24e--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-0ca6f24e--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "reason": "src/wheel/_commands/pack.py: the recorded edit does not match the replayed file",
+    "faithful": null
+  },
+  "wheel-60cfdda0--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wheel-60cfdda0--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wheel-60cfdda0--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wheel-60cfdda0--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wheel-60cfdda0--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-60cfdda0--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wheel-986a440c--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-986a440c--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-986a440c--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-986a440c--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-986a440c--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wheel-986a440c--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wheel-d7d625d4--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wheel-d7d625d4--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-d7d625d4--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wheel-d7d625d4--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wheel-d7d625d4--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wheel-d7d625d4--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": "exact"
+  },
+  "wrapt-15068aae--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-15068aae--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-15068aae--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-15068aae--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-15068aae--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-46d10340--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-46d10340--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-46d10340--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-46d10340--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-46d10340--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "unfixed",
+      null
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-46d10340--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-c27d859a--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "line endings"
+  },
+  "wrapt-c27d859a--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-c27d859a--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-c27d859a--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-c27d859a--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-c27d859a--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      true
+    ],
+    "states": [
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "unfixed",
+        null
+      ],
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-db45a2ef--assisted--0": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-db45a2ef--assisted--1": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-db45a2ef--assisted--2": {
+    "arm": "assisted",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  },
+  "wrapt-db45a2ef--ordinary--0": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-db45a2ef--ordinary--1": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [
+      [
+        "resolved",
+        true
+      ]
+    ],
+    "faithful": "exact"
+  },
+  "wrapt-db45a2ef--ordinary--2": {
+    "arm": "ordinary",
+    "final": [
+      "resolved",
+      false
+    ],
+    "states": [],
+    "faithful": null
+  }
+}

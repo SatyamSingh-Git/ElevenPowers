@@ -171,7 +171,9 @@ def summary(journal):
         found = [e for e in earlier if better(e['states'], tuple(e['final']))]
         moved = Counter(f"{_rank(max(e['states'], key=_rank))}->{_rank(tuple(e['final']))}" for e in found)
         fixed_first = sum(1 for e in earlier if _rank(tuple(e['final'])) == 2 and any(_rank(s) == 1 for s in e['states']))
-        lines.append(f'{arm}: {len(runs)} graded runs, {len(faithful)} replayed exactly, {len(earlier)} with an '
+        endings = sum(1 for e in faithful if e['faithful'] == 'line endings')
+        lines.append(f'{arm}: {len(runs)} graded runs, {len(faithful)} replayed ({endings} up to line endings), '
+                     f'{len(earlier)} with an '
                      f'earlier distinct state; a better earlier state in {len(found)} '
                      f'(best earlier -> submitted, 0 failing, 1 resolved VACUOUS, 2 resolved and pinned: '
                      f'{dict(moved)}); {fixed_first} pinned runs passed through a resolved VACUOUS state first')

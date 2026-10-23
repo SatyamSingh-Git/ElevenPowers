@@ -1,0 +1,2 @@
+ordinary: 120 graded runs, 79 replayed (0 up to line endings), 36 with an earlier distinct state; a better earlier state in 1 (best earlier -> submitted, 0 failing, 1 resolved VACUOUS, 2 resolved and pinned: {'1->0': 1}); 4 pinned runs passed through a resolved VACUOUS state first
+assisted: 118 graded runs, 69 replayed (5 up to line endings), 49 with an earlier distinct state; a better earlier state in 0 (best earlier -> submitted, 0 failing, 1 resolved VACUOUS, 2 resolved and pinned: {}); 34 pinned runs passed through a resolved VACUOUS state first

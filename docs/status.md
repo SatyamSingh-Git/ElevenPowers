@@ -1,5 +1,15 @@
 # Current delivery status
 
+**2026-10-23 — Two $0 readings of the held-out sweep.**
+Oracle gap from the sweep's records: +6.7 points ordinary, +4.2 assisted, each from
+3-5 disagreeing tasks, so still unsettled. Counting only resolved and tested
+candidates, best-of-3 ordinary covers 17.5% of tasks against 47.5% for a blind
+assisted pick. Replaying each transcript's edits from the base commit (148 of 238
+runs replay; 90 edited through the shell), 1 of 85 runs with an earlier state held
+a better one than it submitted. Descriptive, not pre-registered. See
+[results](../results/heldout/sweep-2026-10-22/README.md) and
+[journey 90](../journey/90-nothing-better-was-left-behind.md).
+
 **2026-10-23 — Field report: three developers on a real project.**
 Recorded as told, not measured: moving from Claude Code alone, to superpowers, to
 superpowers with ElevenPowers, docs were kept current about 95% of the time
