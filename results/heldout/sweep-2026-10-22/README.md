@@ -38,6 +38,10 @@ Assisted had the lower VACUOUS fraction on 17 tasks, ordinary on 1
 on 1, 36 tied; sign test p = 0.625). Assisted runs took about 3.1× the
 model-process time and 1.4× the cost.
 
+**Mechanism, descriptive:** 106 of the 107 VACUOUS patches contained no test file,
+and 69 of the 70 non-VACUOUS ones did. Resolved ordinary patches added a test in
+14 of 88 runs, assisted in 56 of 89: the difference is whether a test is written at all.
+
 ## What this does and does not show
 
 - One model (Sonnet 5.5, medium), one host (Claude Code), Python only, 12

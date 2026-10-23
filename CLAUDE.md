@@ -162,7 +162,12 @@ which produces no evidence at all.
 Size a sweep against **remaining capacity**, not against what the question
 deserves: a 64-run, four-hour comparison was launched on 2026-09-17 with about
 1% of the week left and had to be killed. State the estimated runs, wall time
-and cost before starting. The next experiment worth running is planned and
+and cost before starting. Calibration from the held-out sweep of 2026-10-22/23:
+Sonnet 5.5 at medium effort averaged **$0.079 and 85 s wall per run** (240 runs,
+$18.91; assisted runs take about 3x the model time of ordinary ones). That sweep,
+vacuity by arm on held-out tasks, is done
+([`results/heldout/sweep-2026-10-22/`](results/heldout/sweep-2026-10-22/README.md)).
+The next experiment worth running is planned and
 **not yet run** in [`results/b6-paired/design.md`](results/b6-paired/design.md)
 — read its warning before shrinking it, because the cheap version reintroduces
 an error `PLAN.md` §10 has already withdrawn once.

@@ -1,5 +1,7 @@
 # Held-out Sourcing Robustness and Remaining Path — Implementation Plan
 
+> **Executed 2026-10-23.** 240 sealed runs on 40 held-out tasks: VACUOUS among resolved 84% ordinary vs 37% assisted, per-task p = 0.00016, resolve rate unchanged. See [results](../../../results/heldout/sweep-2026-10-22/README.md) and [validation](../../validation/2026-10-23-heldout-vacuity.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Make held-out sourcing survive a long run on a small disk, regenerate the corpus by the frozen rule, then carry it through rehearsal, pilot and sweep.

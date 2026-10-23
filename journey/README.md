@@ -1,6 +1,10 @@
 # The journey
 
-Latest: [88 — the harness is checked before it is paid](88-the-harness-is-checked-before-it-is-paid.md):
+Latest: [89 — the gap held on code nobody here picked](89-the-gap-held-on-code-nobody-here-picked.md):
+240 sealed runs on 40 held-out tasks: VACUOUS among resolved 84% ordinary vs 37% with ElevenPowers
+(p = 0.00016), resolve rate unchanged, and the interruptions, guard stop and exclusions on the way.
+
+Recent: [88 — the harness is checked before it is paid](88-the-harness-is-checked-before-it-is-paid.md):
 held-out sourcing by a fixed rule, and five defects found by running the harness before any paid run:
 a text-pipe patch, a one-way environment check, sponsor links, a disk-full journal loss and
 subtest failures read as passes. 40 tasks sourced; 40/40 rehearse clean.

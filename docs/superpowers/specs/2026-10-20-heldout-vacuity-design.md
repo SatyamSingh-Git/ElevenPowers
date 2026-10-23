@@ -1,5 +1,7 @@
 # Held-out vacuity by arm — design
 
+> **Executed 2026-10-23.** 240 sealed runs on 40 held-out tasks: VACUOUS among resolved 84% ordinary vs 37% assisted, per-task p = 0.00016, resolve rate unchanged. See [results](../../../results/heldout/sweep-2026-10-22/README.md) and [validation](../../validation/2026-10-23-heldout-vacuity.md).
+
 ## Intent
 
 The one benefit signal this project has seen came from a secondary metric of a

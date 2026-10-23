@@ -1,5 +1,9 @@
 # Validation records
 
+- [2026-10-23 held-out vacuity by arm](2026-10-23-heldout-vacuity.md): independent 40-task corpus by a frozen rule, defects found before spend (including pytest 9 subtest failures read as passes), 40/40 rehearsal, a qualified pilot and 240 sealed runs: VACUOUS among resolved 84% ordinary vs 37% assisted, p = 0.00016, resolve unchanged.
+
+- [2026-10-19 declared-check completion closure](2026-10-19-declared-check-closure.md): exact declared-check rows beside the unchanged verdict, separate feedback intent, emission and follow-up, witnessed launcher controls and a fix pass; no model.
+
 - [2026-10-17 workflow gap and report work](2026-10-17-workflow-checks.md):
   actual command diagnosis, bounded shared feedback, witnessed review repairs,
   guarded source-read work counts and separate changed-source/installed gates.
