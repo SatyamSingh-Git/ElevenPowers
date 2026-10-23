@@ -4,6 +4,7 @@ Each group runs alone in a private folder that is pytest's rootdir, with the
 candidate only on PYTHONPATH, so a conftest the candidate left in its own tree
 cannot collect, skip or rewrite the group.
 """
+from collections import defaultdict
 import os
 from pathlib import Path
 import re
@@ -11,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from xml.etree import ElementTree
 
 from core.process import run
 from .bundle import GIT, export_patch
@@ -24,20 +26,39 @@ def _active(case, stage):
     return [group for group in case['groups'] if group['since'] <= stage <= group['until']]
 
 
-def groups(case, stage, tree, *, python=sys.executable, seconds=120):
+def _run(case, names, tree, python, seconds):
     environment = {**os.environ, 'PYTHONPATH': str(Path(tree) / case['pythonpath']), 'PYTHONDONTWRITEBYTECODE': '1'}
-    results = {}
-    for group in _active(case, stage):
-        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as private:
-            target = Path(private) / f"test_{group['id']}.py"
-            shutil.copyfile(Path(case['root']) / 'oracle' / 'groups' / f"{group['id']}.py", target)
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as private:
+        for name in names:
+            shutil.copyfile(Path(case['root']) / 'oracle' / 'groups' / f'{name}.py', Path(private) / f'test_{name}.py')
+        report = Path(private) / 'report.xml'
+        # Without the flag one group the candidate cannot import ends the session for all of them.
+        run([python, '-m', 'pytest', '-q', '-p', 'no:cacheprovider', '--continue-on-collection-errors',
+             '--rootdir', private, f'--junitxml={report}', *[f'test_{name}.py' for name in names]],
+            cwd=Path(private), timeout=seconds, shell=False, env=environment)
+        outcomes = defaultdict(list)
+        if report.is_file():
+            for item in ElementTree.parse(report).iter('testcase'):
+                # A passing or failing test names its module as classname; a collection error, as name.
+                module = (item.get('classname') or item.get('name') or '').split('.')[0]
+                outcomes[module].append(not any(child.tag in ('failure', 'error', 'skipped') for child in item))
+    return {name: 'passed' if outcomes[f'test_{name}'] and all(outcomes[f'test_{name}']) else 'failed'
+            for name in names}
+
+
+def groups(case, stage, tree, *, python=sys.executable, seconds=120):
+    names = [group['id'] for group in _active(case, stage)]
+    try:
+        return _run(case, names, tree, python, seconds)
+    except subprocess.TimeoutExpired:
+        results = {}
+        # One run per group again, so the hang is charged to the groups that hang.
+        for name in names:
             try:
-                done = run([python, '-m', 'pytest', '-q', '-p', 'no:cacheprovider', '--rootdir', private, str(target)],
-                           cwd=Path(private), timeout=seconds, shell=False, env=environment)
-                results[group['id']] = 'passed' if done.returncode == 0 else 'failed'
+                results.update(_run(case, [name], tree, python, seconds))
             except subprocess.TimeoutExpired:
-                results[group['id']] = 'timeout'
-    return results
+                results[name] = 'timeout'
+        return results
 
 
 def facts(text):

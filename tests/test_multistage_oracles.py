@@ -39,6 +39,27 @@ def test_a_conftest_in_the_tree_does_not_pass_a_failing_group(case, tmp_path):
     assert groups(case, 2, missed)["use"] == "failed"
 
 
+def test_a_group_that_cannot_import_does_not_stop_the_others(case, tmp_path):
+    root = tree(case, 1, tmp_path / "t")
+    (root / "src" / "pkg" / "use.py").write_text("def apply(:\n", encoding="utf-8")
+    got = groups(case, 1, root)
+    assert got["use"] == "failed"
+    assert (got["generated"], got["default_1"], got["name_1"]) == ("passed", "passed", "passed")
+
+
+def test_a_group_whose_tests_are_all_skipped_is_not_a_pass(case, tmp_path):
+    root = tree(case, 1, tmp_path / "t")
+    (root / "src" / "pkg" / "_generated.py").write_text("import pytest\npytest.skip('no', allow_module_level=True)\n",
+                                                         encoding="utf-8")
+    assert groups(case, 1, root)["generated"] == "failed"
+
+
+def test_a_candidate_that_breaks_the_runner_passes_nothing(case, tmp_path):
+    root = tree(case, 1, tmp_path / "t")
+    (root / "src" / "pytest.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+    assert set(groups(case, 1, root).values()) == {"failed"}
+
+
 def test_a_hanging_candidate_times_out(case, tmp_path):
     root = tree(case, 1, tmp_path / "t")
     (root / "src" / "pkg" / "use.py").write_text("while True:\n    pass\n", encoding="utf-8")
