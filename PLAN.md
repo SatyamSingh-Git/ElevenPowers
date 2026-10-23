@@ -1,5 +1,16 @@
 # Master Plan v0.8
 
+**2026-10-23 — Held-out vacuity by arm: assisted patches far less often VACUOUS.**
+On 40 independently sourced tasks from 12 Python repositories (Sonnet 5.5 medium,
+240 sealed never-retried runs, analysis committed before any run), resolved
+patches were VACUOUS in 74 of 88 ordinary runs (84%) and 33 of 89 assisted runs
+(37%). Primary: per-task Wilcoxon signed-rank, p = 0.00016; assisted lower on 17
+tasks, ordinary on 1, 13 tied, 9 dropped. Resolve rates did not differ (p = 0.625);
+assisted took about 3.1x the model time and 1.4x the cost. One model, one host,
+Python only, small fixes and stated frame limits: not a population estimate, and
+VACUOUS measures test pinning, not correctness.
+See [results](results/heldout/sweep-2026-10-22/README.md).
+
 **2026-10-20 — Installed declared-check observation completed on both authored cases.**
 At the repaired runtime (full local suite 2658 passed, 3 skipped; no-model 20/20),
 one frozen Sonnet 5.5 medium Python conversation completed four turns at

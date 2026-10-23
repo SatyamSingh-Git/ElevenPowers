@@ -1,0 +1,246 @@
+  1/240 charset_normalizer-017c75c2--ordinary--0           exit=0 graded resolved=True vacuous=True 10s $0.027 wall=27s
+  2/240 charset_normalizer-017c75c2--assisted--0           exit=0 graded resolved=True vacuous=False 85s $0.069 wall=101s
+  3/240 charset_normalizer-4b335594--assisted--0           exit=0 graded resolved=True vacuous=False 72s $0.089 wall=87s
+  4/240 charset_normalizer-4b335594--ordinary--0           exit=0 graded resolved=True vacuous=False 24s $0.068 wall=37s
+  5/240 charset_normalizer-667b93c9--ordinary--0           exit=0 graded resolved=True vacuous=True 10s $0.031 wall=23s
+  6/240 charset_normalizer-667b93c9--assisted--0           exit=0 graded resolved=True vacuous=False 99s $0.070 wall=112s
+  7/240 charset_normalizer-f6afd31c--assisted--0           exit=0 graded resolved=True vacuous=True 61s $0.061 wall=79s
+  8/240 charset_normalizer-f6afd31c--ordinary--0           exit=0 graded resolved=True vacuous=True 28s $0.046 wall=44s
+  9/240 pycparser-42db2112--ordinary--0                    exit=0 graded resolved=False vacuous=None 18s $0.040 wall=23s
+ 10/240 pycparser-42db2112--assisted--0                    exit=0 graded resolved=False vacuous=None 53s $0.092 wall=58s
+ 11/240 pycparser-7e678ac0--assisted--0                    exit=0 graded resolved=False vacuous=None 71s $0.137 wall=76s
+ 12/240 pycparser-7e678ac0--ordinary--0                    exit=0 graded resolved=False vacuous=None 24s $0.056 wall=30s
+ 13/240 pycparser-b6319dba--ordinary--0                    exit=0 graded resolved=True vacuous=True 18s $0.041 wall=28s
+ 14/240 pycparser-b6319dba--assisted--0                    exit=0 graded resolved=True vacuous=True 60s $0.057 wall=68s
+ 15/240 pycparser-f93324c1--assisted--0                    exit=0 graded resolved=True vacuous=False 55s $0.069 wall=63s
+ 16/240 pycparser-f93324c1--ordinary--0                    exit=0 graded resolved=True vacuous=True 18s $0.037 wall=25s
+ 17/240 iniconfig-d2dcb728--ordinary--0                    exit=0 graded resolved=True vacuous=False 42s $0.063 wall=47s
+ 18/240 iniconfig-d2dcb728--assisted--0                    exit=0 graded resolved=True vacuous=False 49s $0.079 wall=54s
+ 19/240 pyjwt-5fde08a6--assisted--0                        exit=0 graded resolved=True vacuous=False 74s $0.070 wall=83s
+ 20/240 pyjwt-5fde08a6--ordinary--0                        exit=0 graded resolved=True vacuous=True 11s $0.035 wall=20s
+ 21/240 pyjwt-f91ed44d--ordinary--0                        exit=0 graded resolved=True vacuous=True 22s $0.084 wall=31s
+ 22/240 pyjwt-f91ed44d--assisted--0                        exit=0 graded resolved=False vacuous=None 83s $0.125 wall=87s
+ 23/240 pyjwt-793a3027--assisted--0                        exit=0 graded resolved=True vacuous=True 64s $0.052 wall=74s
+ 24/240 pyjwt-793a3027--ordinary--0                        exit=0 graded resolved=True vacuous=True 12s $0.036 wall=23s
+ 25/240 pyjwt-717668ad--ordinary--0                        exit=0 graded resolved=True vacuous=True 38s $0.065 wall=47s
+ 26/240 pyjwt-717668ad--assisted--0                        exit=0 graded resolved=True vacuous=False 112s $0.131 wall=121s
+ 27/240 uvicorn-31e3e00f--assisted--0                      exit=0 graded resolved=True vacuous=True 153s $0.122 wall=303s
+ 28/240 uvicorn-31e3e00f--ordinary--0                      exit=0 graded resolved=True vacuous=True 41s $0.087 wall=198s
+ 29/240 uvicorn-5ac6265a--ordinary--0                      exit=0 graded resolved=True vacuous=True 15s $0.033 wall=160s
+ 30/240 uvicorn-5ac6265a--assisted--0                      exit=0 graded resolved=True vacuous=True 101s $0.036 wall=224s
+ 31/240 uvicorn-cc6fea5b--assisted--0                      exit=0 graded resolved=True vacuous=True 123s $0.046 wall=234s
+ 32/240 uvicorn-cc6fea5b--ordinary--0                      exit=0 graded resolved=True vacuous=True 9s $0.026 wall=133s
+ 33/240 uvicorn-4a959207--ordinary--0                      exit=0 graded resolved=True vacuous=True 22s $0.035 wall=152s
+ 34/240 uvicorn-4a959207--assisted--0                      exit=0 graded resolved=True vacuous=True 153s $0.053 wall=285s
+ 35/240 wrapt-15068aae--assisted--0                        exit=0 graded resolved=True vacuous=False 121s $0.187 wall=138s
+ 36/240 wrapt-15068aae--ordinary--0                        exit=0 graded resolved=False vacuous=None 48s $0.142 wall=55s
+ 37/240 wrapt-c27d859a--ordinary--0                        exit=0 graded resolved=True vacuous=True 19s $0.053 wall=40s
+ 38/240 wrapt-c27d859a--assisted--0                        exit=0 graded resolved=True vacuous=False 138s $0.113 wall=156s
+ 39/240 wrapt-db45a2ef--assisted--0                        exit=0 graded resolved=True vacuous=False 107s $0.163 wall=128s
+ 40/240 wrapt-db45a2ef--ordinary--0                        exit=0 graded resolved=True vacuous=False 29s $0.087 wall=48s
+ 41/240 wrapt-46d10340--ordinary--0                        exit=0 graded resolved=True vacuous=False 48s $0.142 wall=69s
+ 42/240 wrapt-46d10340--assisted--0                        exit=0 graded resolved=False vacuous=None 139s $0.253 wall=147s
+ 43/240 wheel-986a440c--assisted--0                        exit=0 graded resolved=True vacuous=False 120s $0.153 wall=132s
+ 44/240 wheel-986a440c--ordinary--0                        exit=0 graded resolved=True vacuous=False 41s $0.097 wall=53s
+ 45/240 wheel-d7d625d4--ordinary--0                        exit=0 graded resolved=False vacuous=None 19s $0.068 wall=23s
+ 46/240 wheel-d7d625d4--assisted--0                        exit=0 graded resolved=False vacuous=None 73s $0.085 wall=78s
+ 47/240 wheel-0ca6f24e--assisted--0                        exit=0 graded resolved=False vacuous=None 63s $0.083 wall=68s
+ 48/240 wheel-0ca6f24e--ordinary--0                        exit=0 graded resolved=False vacuous=None 33s $0.081 wall=38s
+ 49/240 wheel-60cfdda0--ordinary--0                        exit=0 graded resolved=True vacuous=True 11s $0.033 wall=21s
+ 50/240 wheel-60cfdda0--assisted--0                        exit=0 graded resolved=True vacuous=True 41s $0.037 wall=53s
+ 51/240 tenacity-26f719dc--assisted--0                     exit=0 graded resolved=True vacuous=False 116s $0.131 wall=130s
+ 52/240 tenacity-26f719dc--ordinary--0                     exit=0 graded resolved=True vacuous=True 25s $0.063 wall=41s
+ 53/240 tenacity-949dcfa6--ordinary--0                     exit=0 graded resolved=True vacuous=True 19s $0.037 wall=35s
+ 54/240 tenacity-949dcfa6--assisted--0                     exit=0 graded resolved=True vacuous=True 46s $0.052 wall=63s
+ 55/240 tenacity-b6201ece--assisted--0                     exit=0 graded resolved=True vacuous=False 79s $0.096 wall=96s
+ 56/240 tenacity-b6201ece--ordinary--0                     exit=0 graded resolved=True vacuous=True 24s $0.062 wall=41s
+ 57/240 tenacity-389aab8b--ordinary--0                     exit=0 graded resolved=False vacuous=None 53s $0.102 wall=60s
+ 58/240 tenacity-389aab8b--assisted--0                     exit=0 graded resolved=False vacuous=None 83s $0.133 wall=90s
+ 59/240 tomli-1e6e869a--assisted--0                        exit=0 graded resolved=False vacuous=None 67s $0.081 wall=78s
+ 60/240 tomli-1e6e869a--ordinary--0                        exit=0 graded resolved=False vacuous=None 23s $0.053 wall=34s
+ 61/240 cachetools-ec0b97b8--ordinary--0                   exit=0 graded resolved=False vacuous=None 68s $0.104 wall=75s
+ 62/240 cachetools-ec0b97b8--assisted--0                   exit=0 graded resolved=False vacuous=None 96s $0.121 wall=104s
+ 63/240 cachetools-c0fdf6ab--assisted--0                   exit=0 graded resolved=True vacuous=False 114s $0.094 wall=136s
+ 64/240 cachetools-c0fdf6ab--ordinary--0                   exit=0 graded resolved=True vacuous=True 21s $0.053 wall=44s
+ 65/240 cachetools-bcf9e817--ordinary--0                   exit=0 graded resolved=True vacuous=True 16s $0.032 wall=39s
+ 66/240 cachetools-bcf9e817--assisted--0                   exit=0 graded resolved=True vacuous=False 140s $0.100 wall=158s
+ 67/240 cachetools-95e6addb--assisted--0                   exit=0 graded resolved=False vacuous=None 82s $0.153 wall=86s
+ 68/240 cachetools-95e6addb--ordinary--0                   exit=0 graded resolved=False vacuous=None 35s $0.102 wall=38s
+ 69/240 more-itertools-0e6acdf9--ordinary--0               exit=0 graded resolved=True vacuous=True 22s $0.036 wall=86s
+ 70/240 more-itertools-0e6acdf9--assisted--0               exit=0 graded resolved=True vacuous=False 146s $0.070 wall=202s
+ 71/240 more-itertools-842a2b17--assisted--0               exit=0 graded resolved=True vacuous=False 139s $0.134 wall=198s
+ 72/240 more-itertools-842a2b17--ordinary--0               exit=0 graded resolved=True vacuous=True 41s $0.088 wall=105s
+ 73/240 more-itertools-d992be0d--ordinary--0               exit=0 graded resolved=True vacuous=True 25s $0.068 wall=98s
+ 74/240 more-itertools-d992be0d--assisted--0               exit=0 graded resolved=True vacuous=True 112s $0.070 wall=187s
+ 75/240 more-itertools-d64a7d69--assisted--0               exit=0 graded resolved=True vacuous=True 92s $0.045 wall=166s
+ 76/240 more-itertools-d64a7d69--ordinary--0               exit=0 graded resolved=True vacuous=True 13s $0.034 wall=88s
+ 77/240 oauthlib-c951a1d0--ordinary--0                     exit=0 graded resolved=False vacuous=None 27s $0.084 wall=35s
+ 78/240 oauthlib-c951a1d0--assisted--0                     exit=0 graded resolved=False vacuous=None 72s $0.140 wall=79s
+ 79/240 oauthlib-50783cff--assisted--0                     exit=0 graded resolved=True vacuous=False 71s $0.136 wall=90s
+ 80/240 oauthlib-50783cff--ordinary--0                     exit=0 graded resolved=True vacuous=True 28s $0.084 wall=48s
+ 81/240 charset_normalizer-017c75c2--assisted--1           exit=0 graded resolved=True vacuous=False 55s $0.064 wall=65s
+ 82/240 charset_normalizer-017c75c2--ordinary--1           exit=0 graded resolved=True vacuous=True 10s $0.031 wall=22s
+ 83/240 charset_normalizer-4b335594--ordinary--1           exit=0 graded resolved=True vacuous=False 49s $0.085 wall=60s
+ 84/240 charset_normalizer-4b335594--assisted--1           exit=0 graded resolved=True vacuous=False 55s $0.110 wall=66s
+ 85/240 charset_normalizer-667b93c9--assisted--1           exit=0 graded resolved=True vacuous=False 54s $0.066 wall=65s
+ 86/240 charset_normalizer-667b93c9--ordinary--1           exit=0 graded resolved=True vacuous=True 14s $0.030 wall=25s
+ 87/240 charset_normalizer-f6afd31c--ordinary--1           exit=0 graded resolved=True vacuous=True 20s $0.047 wall=32s
+ 88/240 charset_normalizer-f6afd31c--assisted--1           exit=0 graded resolved=True vacuous=True 38s $0.060 wall=50s
+ 89/240 pycparser-42db2112--assisted--1                    exit=0 graded resolved=False vacuous=None 41s $0.062 wall=45s
+ 90/240 pycparser-42db2112--ordinary--1                    exit=0 graded resolved=False vacuous=None 20s $0.041 wall=24s
+ 91/240 pycparser-7e678ac0--ordinary--1                    exit=0 graded resolved=False vacuous=None 84s $0.174 wall=88s
+ 92/240 pycparser-7e678ac0--assisted--1                    exit=0 graded resolved=False vacuous=None 53s $0.127 wall=57s
+ 93/240 pycparser-b6319dba--assisted--1                    exit=0 graded resolved=True vacuous=True 52s $0.055 wall=59s
+ 94/240 pycparser-b6319dba--ordinary--1                    exit=0 graded resolved=True vacuous=True 24s $0.039 wall=31s
+ 95/240 pycparser-f93324c1--ordinary--1                    exit=0 graded resolved=True vacuous=True 33s $0.037 wall=40s
+ 96/240 pycparser-f93324c1--assisted--1                    exit=0 graded resolved=True vacuous=False 61s $0.070 wall=68s
+ 97/240 iniconfig-d2dcb728--assisted--1                    exit=0 graded resolved=True vacuous=False 53s $0.062 wall=58s
+ 98/240 iniconfig-d2dcb728--ordinary--1                    exit=0 graded resolved=True vacuous=False 39s $0.067 wall=44s
+ 99/240 pyjwt-5fde08a6--ordinary--1                        exit=0 graded resolved=True vacuous=True 14s $0.036 wall=23s
+100/240 pyjwt-5fde08a6--assisted--1                        exit=0 graded resolved=True vacuous=False 59s $0.079 wall=67s
+101/240 pyjwt-f91ed44d--assisted--1                        exit=0 graded resolved=False vacuous=None 69s $0.120 wall=73s
+102/240 pyjwt-f91ed44d--ordinary--1                        exit=0 graded resolved=False vacuous=None 21s $0.063 wall=25s
+103/240 pyjwt-793a3027--ordinary--1                        exit=0 graded resolved=True vacuous=True 18s $0.035 wall=27s
+104/240 pyjwt-793a3027--assisted--1                        exit=0 graded resolved=True vacuous=True 61s $0.049 wall=69s
+105/240 pyjwt-717668ad--assisted--1                        exit=0 graded resolved=True vacuous=False 111s $0.118 wall=118s
+106/240 pyjwt-717668ad--ordinary--1                        exit=0 graded resolved=True vacuous=True 21s $0.053 wall=29s
+107/240 uvicorn-31e3e00f--ordinary--1                      exit=0 graded resolved=True vacuous=True 21s $0.111 wall=147s
+108/240 uvicorn-31e3e00f--assisted--1                      exit=0 graded resolved=True vacuous=True 111s $0.077 wall=236s
+109/240 uvicorn-5ac6265a--assisted--1                      exit=0 graded resolved=True vacuous=True 124s $0.048 wall=232s
+110/240 uvicorn-5ac6265a--ordinary--1                      exit=0 graded resolved=True vacuous=True 13s $0.031 wall=136s
+111/240 uvicorn-cc6fea5b--ordinary--1                      exit=0 graded resolved=True vacuous=True 18s $0.036 wall=120s
+112/240 uvicorn-cc6fea5b--assisted--1                      exit=0 graded resolved=True vacuous=True 108s $0.044 wall=214s
+113/240 uvicorn-4a959207--assisted--1                      exit=0 graded resolved=True vacuous=True 115s $0.052 wall=243s
+114/240 uvicorn-4a959207--ordinary--1                      exit=0 graded resolved=True vacuous=True 20s $0.035 wall=149s
+115/240 wrapt-15068aae--ordinary--1                        exit=0 graded resolved=True vacuous=True 53s $0.155 wall=73s
+116/240 wrapt-15068aae--assisted--1                        exit=0 graded resolved=True vacuous=False 157s $0.230 wall=175s
+117/240 wrapt-c27d859a--assisted--1                        exit=0 graded resolved=True vacuous=False 115s $0.103 wall=132s
+118/240 wrapt-c27d859a--ordinary--1                        exit=0 graded resolved=True vacuous=True 16s $0.064 wall=35s
+119/240 wrapt-db45a2ef--ordinary--1                        exit=0 graded resolved=True vacuous=False 29s $0.098 wall=47s
+120/240 wrapt-db45a2ef--assisted--1                        exit=0 graded resolved=True vacuous=False 79s $0.134 wall=95s
+121/240 wrapt-46d10340--assisted--1                        exit=0 graded resolved=True vacuous=False 90s $0.186 wall=108s
+122/240 wrapt-46d10340--ordinary--1                        exit=0 graded resolved=False vacuous=None 68s $0.176 wall=74s
+123/240 wheel-986a440c--ordinary--1                        exit=0 graded resolved=True vacuous=True 19s $0.054 wall=31s
+124/240 wheel-986a440c--assisted--1                        exit=0 graded resolved=True vacuous=False 82s $0.109 wall=92s
+125/240 wheel-d7d625d4--assisted--1                        exit=0 graded resolved=False vacuous=None 65s $0.093 wall=70s
+126/240 wheel-d7d625d4--ordinary--1                        exit=0 graded resolved=False vacuous=None 29s $0.068 wall=33s
+127/240 wheel-0ca6f24e--ordinary--1                        exit=0 graded resolved=False vacuous=None 26s $0.072 wall=30s
+128/240 wheel-0ca6f24e--assisted--1                        exit=0 graded resolved=False vacuous=None 86s $0.109 wall=90s
+129/240 wheel-60cfdda0--assisted--1                        exit=0 graded resolved=True vacuous=True 44s $0.037 wall=54s
+130/240 wheel-60cfdda0--ordinary--1                        exit=0 graded resolved=True vacuous=True 26s $0.032 wall=36s
+131/240 tenacity-26f719dc--ordinary--1                     exit=0 graded resolved=True vacuous=True 20s $0.064 wall=38s
+132/240 tenacity-26f719dc--assisted--1                     exit=0 graded resolved=True vacuous=False 84s $0.118 wall=99s
+133/240 tenacity-949dcfa6--assisted--1                     exit=0 graded resolved=True vacuous=False 49s $0.057 wall=67s
+134/240 tenacity-949dcfa6--ordinary--1                     exit=0 graded resolved=True vacuous=True 19s $0.043 wall=36s
+135/240 tenacity-b6201ece--ordinary--1                     exit=0 graded resolved=True vacuous=True 21s $0.064 wall=39s
+136/240 tenacity-b6201ece--assisted--1                     exit=0 graded resolved=True vacuous=True 53s $0.072 wall=69s
+137/240 tenacity-389aab8b--assisted--1                     exit=0 graded resolved=False vacuous=None 64s $0.145 wall=70s
+138/240 tenacity-389aab8b--ordinary--1                     exit=0 graded resolved=False vacuous=None 38s $0.097 wall=44s
+139/240 tomli-1e6e869a--ordinary--1                        exit=0 graded resolved=False vacuous=None 26s $0.054 wall=37s
+140/240 tomli-1e6e869a--assisted--1                        exit=0 graded resolved=False vacuous=None 66s $0.072 wall=77s
+141/240 cachetools-ec0b97b8--assisted--1                   exit=0 graded resolved=True vacuous=False 87s $0.133 wall=105s
+142/240 cachetools-ec0b97b8--ordinary--1                   exit=0 graded resolved=False vacuous=None 48s $0.104 wall=55s
+143/240 cachetools-c0fdf6ab--ordinary--1                   exit=0 graded resolved=True vacuous=True 20s $0.044 wall=42s
+144/240 cachetools-c0fdf6ab--assisted--1                   exit=0 graded resolved=True vacuous=False 109s $0.079 wall=131s
+145/240 cachetools-bcf9e817--assisted--1                   exit=0 graded resolved=True vacuous=False 100s $0.055 wall=118s
+146/240 cachetools-bcf9e817--ordinary--1                   exit=0 graded resolved=False vacuous=None 12s $0.038 wall=19s
+147/240 cachetools-95e6addb--ordinary--1                   exit=0 graded resolved=False vacuous=None 30s $0.079 wall=33s
+148/240 cachetools-95e6addb--assisted--1                   exit=0 graded resolved=False vacuous=None 67s $0.125 wall=70s
+149/240 more-itertools-0e6acdf9--assisted--1               exit=0 graded resolved=True vacuous=False 109s $0.064 wall=158s
+150/240 more-itertools-0e6acdf9--ordinary--1               exit=0 graded resolved=True vacuous=True 16s $0.033 wall=74s
+151/240 more-itertools-842a2b17--ordinary--1               exit=0 graded resolved=True vacuous=False 76s $0.126 wall=125s
+152/240 more-itertools-842a2b17--assisted--1               exit=0 graded resolved=True vacuous=False 116s $0.090 wall=174s
+153/240 more-itertools-d992be0d--assisted--1               exit=0 graded resolved=True vacuous=True 107s $0.062 wall=165s
+154/240 more-itertools-d992be0d--ordinary--1               exit=0 graded resolved=True vacuous=True 35s $0.068 wall=94s
+155/240 more-itertools-d64a7d69--ordinary--1               exit=0 graded resolved=True vacuous=True 11s $0.036 wall=70s
+156/240 more-itertools-d64a7d69--assisted--1               exit=0 graded resolved=True vacuous=True 93s $0.045 wall=155s
+157/240 oauthlib-c951a1d0--assisted--1                     exit=0 graded resolved=False vacuous=None 68s $0.138 wall=75s
+158/240 oauthlib-c951a1d0--ordinary--1                     exit=0 graded resolved=False vacuous=None 38s $0.084 wall=44s
+159/240 oauthlib-50783cff--ordinary--1                     exit=0 graded resolved=True vacuous=True 31s $0.072 wall=50s
+160/240 oauthlib-50783cff--assisted--1                     exit=0 graded resolved=True vacuous=False 87s $0.139 wall=104s
+161/240 charset_normalizer-017c75c2--ordinary--2           exit=0 graded resolved=True vacuous=True 9s $0.031 wall=22s
+162/240 charset_normalizer-017c75c2--assisted--2           exit=0 graded resolved=True vacuous=False 43s $0.060 wall=53s
+163/240 charset_normalizer-4b335594--assisted--2           exit=0 graded resolved=True vacuous=False 73s $0.131 wall=84s
+164/240 charset_normalizer-4b335594--ordinary--2           exit=0 graded resolved=True vacuous=False 19s $0.056 wall=30s
+165/240 charset_normalizer-667b93c9--ordinary--2           exit=0 graded resolved=True vacuous=True 24s $0.031 wall=36s
+166/240 charset_normalizer-667b93c9--assisted--2           exit=0 graded resolved=True vacuous=False 35s $0.056 wall=46s
+167/240 charset_normalizer-f6afd31c--assisted--2           exit=0 graded resolved=True vacuous=True 68s $0.086 wall=80s
+168/240 charset_normalizer-f6afd31c--ordinary--2           exit=0 graded resolved=True vacuous=True 17s $0.038 wall=28s
+169/240 pycparser-42db2112--ordinary--2                    exit=0 graded resolved=False vacuous=None 32s $0.112 wall=36s
+170/240 pycparser-42db2112--assisted--2                    exit=0 graded resolved=False vacuous=None 34s $0.052 wall=38s
+171/240 pycparser-7e678ac0--assisted--2                    exit=0 graded resolved=False vacuous=None 69s $0.143 wall=73s
+172/240 pycparser-7e678ac0--ordinary--2                    exit=0 graded resolved=False vacuous=None 73s $0.111 wall=77s
+173/240 pycparser-b6319dba--ordinary--2                    exit=0 graded resolved=True vacuous=True 13s $0.039 wall=20s
+174/240 pycparser-b6319dba--assisted--2                    exit=0 graded resolved=True vacuous=True 56s $0.049 wall=63s
+175/240 pycparser-f93324c1--assisted--2                    exit=0 graded resolved=True vacuous=False 51s $0.072 wall=58s
+176/240 pycparser-f93324c1--ordinary--2                    exit=0 graded resolved=True vacuous=True 19s $0.038 wall=26s
+177/240 iniconfig-d2dcb728--ordinary--2                    exit=0 graded resolved=True vacuous=False 17s $0.047 wall=22s
+178/240 iniconfig-d2dcb728--assisted--2                    exit=0 graded resolved=True vacuous=False 32s $0.062 wall=36s
+179/240 pyjwt-5fde08a6--assisted--2                        exit=0 graded resolved=True vacuous=False 76s $0.083 wall=84s
+180/240 pyjwt-5fde08a6--ordinary--2                        exit=0 graded resolved=True vacuous=True 12s $0.035 wall=20s
+181/240 pyjwt-f91ed44d--ordinary--2                        exit=0 graded resolved=False vacuous=None 43s $0.094 wall=47s
+182/240 pyjwt-f91ed44d--assisted--2                        exit=0 graded resolved=False vacuous=None 85s $0.114 wall=89s
+183/240 pyjwt-793a3027--assisted--2                        exit=0 graded resolved=True vacuous=True 61s $0.051 wall=69s
+184/240 pyjwt-793a3027--ordinary--2                        exit=0 graded resolved=True vacuous=True 18s $0.036 wall=27s
+185/240 pyjwt-717668ad--ordinary--2                        exit=0 graded resolved=True vacuous=True 19s $0.086 wall=27s
+186/240 pyjwt-717668ad--assisted--2                        exit=0 graded resolved=True vacuous=False 103s $0.124 wall=110s
+187/240 uvicorn-31e3e00f--assisted--2                      exit=0 graded resolved=True vacuous=True 70s $0.093 wall=193s
+188/240 uvicorn-31e3e00f--ordinary--2                      exit=0 graded resolved=True vacuous=None 14s $0.075 wall=361s
+189/240 uvicorn-5ac6265a--ordinary--2                      exit=0 graded resolved=True vacuous=True 18s $0.034 wall=140s
+190/240 uvicorn-5ac6265a--assisted--2                      exit=0 graded resolved=True vacuous=True 134s $0.049 wall=256s
+191/240 uvicorn-cc6fea5b--assisted--2                      exit=0 graded resolved=True vacuous=True 116s $0.046 wall=220s
+192/240 uvicorn-cc6fea5b--ordinary--2                      exit=0 graded resolved=True vacuous=True 19s $0.034 wall=120s
+193/240 uvicorn-4a959207--ordinary--2                      exit=0 graded resolved=True vacuous=True 13s $0.035 wall=136s
+194/240 uvicorn-4a959207--assisted--2                      exit=0 graded resolved=True vacuous=True 145s $0.051 wall=272s
+195/240 wrapt-15068aae--assisted--2                        exit=0 closed_book_breach resolved=True vacuous=False 164s $0.212 wall=180s
+196/240 wrapt-15068aae--ordinary--2                        exit=0 graded resolved=False vacuous=None 35s $0.108 wall=41s
+197/240 wrapt-c27d859a--ordinary--2                        exit=0 graded resolved=True vacuous=True 24s $0.057 wall=42s
+198/240 wrapt-c27d859a--assisted--2                        exit=0 graded resolved=True vacuous=True 122s $0.077 wall=140s
+199/240 wrapt-db45a2ef--assisted--2                        exit=0 graded resolved=True vacuous=False 95s $0.161 wall=113s
+200/240 wrapt-db45a2ef--ordinary--2                        exit=0 graded resolved=True vacuous=False 30s $0.085 wall=47s
+201/240 wrapt-46d10340--ordinary--2                        exit=0 graded resolved=True vacuous=False 41s $0.126 wall=60s
+202/240 wrapt-46d10340--assisted--2                        exit=0 graded resolved=True vacuous=False 129s $0.244 wall=147s
+203/240 wheel-986a440c--assisted--2                        exit=0 graded resolved=True vacuous=False 100s $0.095 wall=111s
+204/240 wheel-986a440c--ordinary--2                        exit=0 graded resolved=True vacuous=True 16s $0.048 wall=26s
+205/240 wheel-d7d625d4--ordinary--2                        exit=0 graded resolved=False vacuous=None 20s $0.066 wall=24s
+206/240 wheel-d7d625d4--assisted--2                        exit=0 graded resolved=False vacuous=None 60s $0.073 wall=64s
+207/240 wheel-0ca6f24e--assisted--2                        exit=0 graded resolved=False vacuous=None 70s $0.076 wall=74s
+208/240 wheel-0ca6f24e--ordinary--2                        exit=0 graded resolved=False vacuous=None 83s $0.161 wall=87s
+209/240 wheel-60cfdda0--ordinary--2                        exit=0 graded resolved=True vacuous=True 10s $0.029 wall=20s
+210/240 wheel-60cfdda0--assisted--2                        exit=0 graded resolved=True vacuous=True 51s $0.037 wall=63s
+211/240 tenacity-26f719dc--assisted--2                     exit=0 graded resolved=True vacuous=False 96s $0.132 wall=111s
+212/240 tenacity-26f719dc--ordinary--2                     exit=0 graded resolved=True vacuous=True 16s $0.065 wall=34s
+213/240 tenacity-949dcfa6--ordinary--2                     exit=0 graded resolved=True vacuous=True 14s $0.036 wall=31s
+214/240 tenacity-949dcfa6--assisted--2                     exit=0 graded resolved=True vacuous=False 75s $0.082 wall=93s
+215/240 tenacity-b6201ece--assisted--2                     exit=0 graded resolved=True vacuous=True 47s $0.069 wall=65s
+216/240 tenacity-b6201ece--ordinary--2                     exit=0 graded resolved=True vacuous=True 42s $0.066 wall=60s
+217/240 tenacity-389aab8b--ordinary--2                     exit=0 graded resolved=True vacuous=True 38s $0.087 wall=56s
+218/240 tenacity-389aab8b--assisted--2                     exit=0 graded resolved=True vacuous=False 80s $0.114 wall=98s
+219/240 tomli-1e6e869a--assisted--2                        exit=0 graded resolved=False vacuous=None 66s $0.055 wall=80s
+220/240 tomli-1e6e869a--ordinary--2                        exit=0 graded resolved=False vacuous=None 28s $0.061 wall=39s
+221/240 cachetools-ec0b97b8--ordinary--2                   exit=0 graded resolved=False vacuous=None 66s $0.093 wall=74s
+222/240 cachetools-ec0b97b8--assisted--2                   exit=0 graded resolved=False vacuous=None 65s $0.095 wall=73s
+223/240 cachetools-c0fdf6ab--assisted--2                   exit=0 graded resolved=True vacuous=False 121s $0.092 wall=143s
+224/240 cachetools-c0fdf6ab--ordinary--2                   exit=0 graded resolved=True vacuous=True 19s $0.049 wall=41s
+225/240 cachetools-bcf9e817--ordinary--2                   exit=0 graded resolved=True vacuous=True 25s $0.048 wall=48s
+226/240 cachetools-bcf9e817--assisted--2                   exit=0 graded resolved=True vacuous=False 125s $0.092 wall=144s
+227/240 cachetools-95e6addb--assisted--2                   exit=0 graded resolved=False vacuous=None 57s $0.134 wall=60s
+228/240 cachetools-95e6addb--ordinary--2                   exit=0 graded resolved=False vacuous=None 32s $0.088 wall=35s
+229/240 more-itertools-0e6acdf9--ordinary--2               exit=0 graded resolved=True vacuous=True 13s $0.033 wall=76s
+230/240 more-itertools-0e6acdf9--assisted--2               exit=0 graded resolved=True vacuous=False 97s $0.067 wall=145s
+231/240 more-itertools-842a2b17--assisted--2               exit=0 graded resolved=True vacuous=False 132s $0.104 wall=186s
+232/240 more-itertools-842a2b17--ordinary--2               exit=0 graded resolved=True vacuous=True 44s $0.106 wall=105s
+233/240 more-itertools-d992be0d--ordinary--2               exit=0 graded resolved=True vacuous=True 28s $0.057 wall=90s
+234/240 more-itertools-d992be0d--assisted--2               exit=1073807364 running resolved=None vacuous=None 0s $0.000 wall=28s
+235/240 more-itertools-d64a7d69--assisted--2               exit=3221226091 None resolved=None vacuous=None 0s $0.000 wall=0s
+236/240 more-itertools-d64a7d69--ordinary--2               exit=3221226091 None resolved=None vacuous=None 0s $0.000 wall=0s
+237/240 oauthlib-c951a1d0--ordinary--2                     exit=3221226091 None resolved=None vacuous=None 0s $0.000 wall=0s
+238/240 oauthlib-c951a1d0--assisted--2                     exit=3221226091 None resolved=None vacuous=None 0s $0.000 wall=0s
+--- resumed 2026-10-23T02:14:10Z
+--- resumed 2026-10-23T02:14:47Z
+235/240 more-itertools-d64a7d69--assisted--2               exit=0 graded resolved=True vacuous=True 119s $0.047 wall=193s
+236/240 more-itertools-d64a7d69--ordinary--2               exit=0 graded resolved=True vacuous=True 17s $0.034 wall=98s
+237/240 oauthlib-c951a1d0--ordinary--2                     exit=0 graded resolved=False vacuous=None 38s $0.126 wall=54s
+238/240 oauthlib-c951a1d0--assisted--2                     exit=0 graded resolved=False vacuous=None 99s $0.146 wall=120s
+239/240 oauthlib-50783cff--assisted--2                     exit=0 graded resolved=True vacuous=False 80s $0.146 wall=101s
+240/240 oauthlib-50783cff--ordinary--2                     exit=0 graded resolved=True vacuous=True 20s $0.049 wall=42s

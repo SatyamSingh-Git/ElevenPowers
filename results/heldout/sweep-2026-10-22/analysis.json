@@ -1,0 +1,50 @@
+{
+  "runs": {
+    "scheduled": 240,
+    "graded": 238,
+    "incomplete": 2
+  },
+  "tasks": 40,
+  "primary": {
+    "test": "two-sided Wilcoxon signed-rank over tasks, ordinary - assisted vacuous fraction",
+    "differences": {
+      "cachetools-bcf9e817": 1.0,
+      "cachetools-c0fdf6ab": 1.0,
+      "charset_normalizer-017c75c2": 1.0,
+      "charset_normalizer-667b93c9": 1.0,
+      "more-itertools-0e6acdf9": 1.0,
+      "more-itertools-842a2b17": 0.6666666666666666,
+      "oauthlib-50783cff": 1.0,
+      "pycparser-f93324c1": 1.0,
+      "pyjwt-5fde08a6": 1.0,
+      "pyjwt-717668ad": 1.0,
+      "tenacity-26f719dc": 1.0,
+      "tenacity-389aab8b": 1.0,
+      "tenacity-949dcfa6": 0.6666666666666667,
+      "tenacity-b6201ece": 0.33333333333333337,
+      "uvicorn-31e3e00f": -0.33333333333333337,
+      "wheel-986a440c": 0.6666666666666666,
+      "wrapt-15068aae": 1.0,
+      "wrapt-c27d859a": 0.6666666666666667
+    },
+    "tied": 13,
+    "dropped_unresolved": 9,
+    "p": 0.0001646776133882139
+  },
+  "secondary": {
+    "resolve": {
+      "assisted_better": 3,
+      "ordinary_better": 1,
+      "tied": 36,
+      "p": 0.625
+    },
+    "mean_seconds": {
+      "ordinary": 27.26928333333333,
+      "assisted": 85.21246610169491
+    },
+    "total_cost": {
+      "ordinary": 7.7973,
+      "assisted": 11.1081
+    }
+  }
+}
