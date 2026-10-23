@@ -7,7 +7,7 @@
   "changelog": "CHANGELOG.md",
   "stages": [
     {
-      "request": "When I group by more than one column, the report squashes the key into a single `group` column like `East / Widget`, which I can't sort or filter on once it's in a spreadsheet. Give each grouping column its own column, headed by the CSV column's name (`region`, `product`); a single grouping column should be headed by its name too, not `group`. In the library, `aggregate()` should likewise return each key value under its column name instead of a joined `group` string, and `KEY_SEPARATOR` can go, since nothing is joined any more. The TOTAL label stays in the first column, with the other key cells left blank.",
+      "request": "When I group by more than one column, the report squashes the key into a single `group` column like `East / Widget`, which I can't sort or filter on once it's in a spreadsheet. Give each grouping column its own column, headed by the CSV column's name (`region`, `product`); a single grouping column should be headed by its name too, not `group`. In the library, `aggregate()` should likewise return each key value under its column name instead of a joined `group` string, and remove `KEY_SEPARATOR`, since nothing is joined any more. The TOTAL label stays in the first column, with the other key cells left blank.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": [
@@ -45,7 +45,7 @@
       "dependent_missed_fails": []
     },
     {
-      "request": "Plain numbers in our reports carry thousands separators: a count prints as `1,204`, and with `--currency none` a sum prints as `12,500.00`. The warehouse system we paste reports into splits `1,204` into two fields. Plain numbers should have no separator (`1204`, `12500.00`): change `format_number`'s default `thousands` from `\",\"` to `\"\"`, so it groups digits only when the caller passes a separator. Money amounts keep theirs (`$12,500.00`).",
+      "request": "Plain numbers in our reports carry thousands separators: a count prints as `1,204`, and with `--currency none` a sum prints as `12,500.00`. The warehouse system we paste reports into splits `1,204` into two fields. Plain numbers should have no separator (`1204`, `12500.00`): change `format_number`'s default `thousands` from `\",\"` to `\"\"`, so it groups digits only when it is given a separator. Money amounts keep theirs (`$12,500.00`).",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": [
