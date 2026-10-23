@@ -1,7 +1,12 @@
 # Multi-stage comparison v2: do earlier work and docs survive later steps?
 
-**Status: designed 2026-10-23, nothing built or run.** Every paid step below
-waits for the user's go, under the standing Sonnet 5.5 medium authorization.
+**Status: designed 2026-10-23; the $0 phase is built and frozen, nothing run.**
+Every paid step below waits for the user's go, under the standing Sonnet 5.5
+medium authorization. Twelve cases were written instead of eight, because the
+power simulation showed eight cannot reach significance unless seven differ. The
+cases are published at
+<https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>; the build
+record is [results/multistage](../../../results/multistage/README.md).
 
 ## Intent
 

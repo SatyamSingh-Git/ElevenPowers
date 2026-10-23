@@ -69,6 +69,8 @@ added on top of superpowers rather than in place of it.
   mechanically, is the planned test of exactly these two effects:
   [multi-stage v2](../superpowers/specs/2026-10-23-multistage-field-claims-design.md),
   designed 2026-10-23 with superpowers in both arms, as in this report, and not yet run.
+  Its twelve test projects are public at
+  <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>.
 - The held-out sweep's launcher loaded no user plugins, so its ordinary arm was
   plain Claude Code, not the superpowers setup this report compares against.
 

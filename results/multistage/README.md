@@ -1,5 +1,11 @@
 # Multi-stage v2 — frozen, no model run yet
 
+**The twelve projects are published at
+<https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>** (commit
+`1d344eb`). Its `manifest.json` hashes match this repository at `5da9adb`, and
+a fresh clone was checked file by file against them. The copy under
+`eval/multistage_cases/` stays the one the harness reads.
+
 The comparison designed in
 [`2026-10-23-multistage-field-claims-design.md`](../../docs/superpowers/specs/2026-10-23-multistage-field-claims-design.md)
 tests the two effects in the [field report](../../docs/field/2026-10-real-project.md):
