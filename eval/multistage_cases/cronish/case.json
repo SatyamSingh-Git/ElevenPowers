@@ -10,53 +10,120 @@
       "request": "Weekday numbers should follow ISO 8601: 1 is Monday through 7 is Sunday. At the moment 0 means Sunday and 7 is rejected. After this change `0 9 * * 7` should run on Sundays at 9:00, and a weekday of 0 should be rejected as out of range like any other bad number. Weekday names (`sun`, `mon-fri` and so on) keep meaning the same days as before.",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["scheduling"]
+      "dependent_missed_fails": [
+        "scheduling"
+      ]
     },
     {
-      "request": "When now falls exactly on a scheduled minute, `next_runs` returns that same minute as the first upcoming run, so `cronish next '0 9 * * *' --now 2024-03-06T09:00` starts with 2024-03-06 09:00. Upcoming runs should start strictly after now: in that example the first run should be 09:00 the next day.",
+      "request": "When now falls exactly on a scheduled minute, `next_runs` returns that same minute as the first upcoming run, so `cronish next '0 9 * * *' --now 2024-03-06T09:00` starts with 2024-03-06 09:00, a run that is already under way. The first run should be `after now`, not `at or after now`: in that example it should be 09:00 the next day.",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["scheduling"]
+      "dependent_missed_fails": [
+        "scheduling"
+      ]
     },
     {
-      "request": "`cronish next '*/0 * * * *'` crashes with a Python traceback ending in `ValueError: range() arg 3 must not be zero`, and `cronish check '*/0 * * * *'` crashes the same way instead of reporting a problem. A step of 0 in any field should be rejected like any other bad input, with the message `<field>: step must be at least 1`, for example `minute: step must be at least 1`.",
+      "request": "`cronish next '*/0 * * * *'` crashes with a Python traceback ending in `ValueError: range() arg 3 must not be zero`, and `cronish check '*/0 * * * *'` crashes the same way instead of reporting a problem. A step of 0 in any field should be rejected like any other bad input, as a new `error.step` error whose message is `{field}: step must be at least 1`, for example `minute: step must be at least 1`.",
       "kind": "self-contained",
       "bugfix": true,
       "dependent_missed_fails": []
     },
     {
-      "request": "`validate()` returns plain strings, which makes it awkward for an editor to highlight the field at fault, and it stops at the first problem. Change it to return a list of `(field, message)` pairs where the message no longer repeats the field name, and report every field that has a problem rather than only the first: `validate('61 25 * * *')` should give `[('minute', 'value 61 out of range 0-59'), ('hour', 'value 25 out of range 0-23')]`. A problem with the expression as a whole, such as the wrong number of fields, uses `'expression'` as the field.",
+      "request": "`validate()` returns plain strings, which makes it awkward for an editor to highlight the field at fault, and it stops at the first problem. It should return a `list of (field, message) pairs`, where the message no longer repeats the field name, and report `every problem` instead of only the `first problem`, one pair for each field that has a problem: `validate('61 25 * * *')` should give `[('minute', 'value 61 out of range 0-59'), ('hour', 'value 25 out of range 0-23')]`. A problem with the expression as a whole, such as the wrong number of fields, uses `'expression'` as the field.",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["iso_numbers", "parsing", "zero_step_cli"]
+      "dependent_missed_fails": [
+        "iso_numbers",
+        "parsing",
+        "zero_step_cli"
+      ]
     },
     {
       "request": "Descriptions should use a 12-hour clock. `cronish describe '30 9 * * *'` should say `at 9:30 AM, every day` instead of `at 09:30, every day`. Midnight is `12:00 AM`, noon is `12:00 PM`, and the hour has no leading zero.",
       "kind": "cross-cutting",
       "bugfix": false,
-      "dependent_missed_fails": ["after_now", "upcoming_after"]
+      "dependent_missed_fails": [
+        "after_now",
+        "upcoming_after"
+      ]
     },
     {
-      "request": "A stepped schedule is described by listing every value it hits: `*/15 * * * *` reads `at minutes 0, 15, 30 and 45 past every hour, every day`. Describe it as an interval instead, `every 15 minutes, every day`, and `0 */6 * * *` as `every 6 hours, every day`. This applies when the minutes or hours step evenly from 0 through the whole hour or day; anything else, like `5/15` or `*/7` in the minute field, keeps the current wording. With a fixed minute other than 0 an hour interval reads `every 6 hours at minute 30`, and a minute interval limited to some hours reads `every 10 minutes during hours 9, 10 and 11`.",
+      "request": "A stepped schedule is `listed` value by value in its description: `*/15 * * * *` reads `at minutes 0, 15, 30 and 45 past every hour, every day`. Describe it `as an interval` instead: `every 15 minutes, every day`, and `0 */6 * * *` as `every 6 hours, every day`. This applies when the minutes or hours step evenly from 0 through the whole hour or day; anything else, like `5/15` or `*/7` in the minute field, keeps the current wording. With a fixed minute other than 0 an hour interval reads `every 6 hours at minute 30`, and a minute interval limited to some hours, like `*/10 9-11 * * *`, reads `every 10 minutes during hours 9, 10 and 11, every day`.",
       "kind": "self-contained",
       "bugfix": false,
       "dependent_missed_fails": []
     }
   ],
   "groups": [
-    {"id": "parsing", "since": 0, "until": 6},
-    {"id": "scheduling", "since": 0, "until": 6},
-    {"id": "iso_numbers", "since": 1, "until": 6},
-    {"id": "iso_runs", "since": 1, "until": 6},
-    {"id": "after_now", "since": 2, "until": 6},
-    {"id": "upcoming_after", "since": 2, "until": 6},
-    {"id": "zero_step", "since": 3, "until": 6},
-    {"id": "zero_step_cli", "since": 3, "until": 6},
-    {"id": "problems", "since": 4, "until": 6},
-    {"id": "check_all", "since": 4, "until": 6},
-    {"id": "clock12", "since": 5, "until": 6},
-    {"id": "clock12_cli", "since": 5, "until": 6},
-    {"id": "step_minutes", "since": 6, "until": 6},
-    {"id": "step_hours", "since": 6, "until": 6}
+    {
+      "id": "parsing",
+      "since": 0,
+      "until": 6
+    },
+    {
+      "id": "scheduling",
+      "since": 0,
+      "until": 6
+    },
+    {
+      "id": "iso_numbers",
+      "since": 1,
+      "until": 6
+    },
+    {
+      "id": "iso_runs",
+      "since": 1,
+      "until": 6
+    },
+    {
+      "id": "after_now",
+      "since": 2,
+      "until": 6
+    },
+    {
+      "id": "upcoming_after",
+      "since": 2,
+      "until": 6
+    },
+    {
+      "id": "zero_step",
+      "since": 3,
+      "until": 6
+    },
+    {
+      "id": "zero_step_cli",
+      "since": 3,
+      "until": 6
+    },
+    {
+      "id": "problems",
+      "since": 4,
+      "until": 6
+    },
+    {
+      "id": "check_all",
+      "since": 4,
+      "until": 6
+    },
+    {
+      "id": "clock12",
+      "since": 5,
+      "until": 6
+    },
+    {
+      "id": "clock12_cli",
+      "since": 5,
+      "until": 6
+    },
+    {
+      "id": "step_minutes",
+      "since": 6,
+      "until": 6
+    },
+    {
+      "id": "step_hours",
+      "since": 6,
+      "until": 6
+    }
   ]
 }

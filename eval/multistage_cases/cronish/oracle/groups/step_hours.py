@@ -9,7 +9,7 @@ from cronish.cli import main
     [
         ("0 */6 * * *", "every 6 hours, every day"),
         ("0 */2 * * sat", "every 2 hours, on Saturday"),
-        ("0 0,12 * * *", "every 12 hours, every day"),
+        ("30 */6 * * *", "every 6 hours at minute 30, every day"),
     ],
 )
 def test_hour_intervals(text, words):
