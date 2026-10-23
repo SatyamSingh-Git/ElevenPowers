@@ -24,7 +24,7 @@ def test_certificate_without_key(tmp_path):
 
 def test_key_without_certificate():
     with pytest.raises(ValidationError) as caught:
-        load(env={'LAYERCFG_SERVER_TLS_KEY': '/etc/key.pem'})
+        load(files=[], env={'LAYERCFG_SERVER_TLS_KEY': '/etc/key.pem'})
     assert str(caught.value) == f'env LAYERCFG_SERVER_TLS_KEY: {MESSAGE}'
 
 
@@ -32,4 +32,4 @@ def test_both_or_neither_is_fine():
     config = load(files=[('app.ini', '[server]\ntls_cert = /etc/cert.pem\n')],
                   env={'LAYERCFG_SERVER_TLS_KEY': '/etc/key.pem'})
     assert config['server.tls_cert'] == '/etc/cert.pem'
-    assert load()['server.tls_cert'] is None
+    assert load(files=[])['server.tls_cert'] is None

@@ -11,10 +11,10 @@ index c0f5363..1c5cd26 100644
  - Statements take an optional start and end date (`--from`/`--to` on the command line) and open with the balance carried in from before the start.
  - Journal files write posting amounts as decimal text in the journal currency (format version 2); version 1 journals still load.
 diff --git a/docs/reference.md b/docs/reference.md
-index a74ebf1..25f2d76 100644
+index b89519e..f9c5fcc 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -41,6 +41,7 @@ table lists one documented fact per row: its key, its value, and what it means.
+@@ -40,6 +40,7 @@ table lists one documented fact per row: its key, its value, and what it means.
  | `error.too_few_postings` | `transaction needs at least 2 postings` | `LedgerError` |
  | `error.too_many_postings` | `transaction has more than 16 postings` | `LedgerError` |
  | `error.posting_type` | `posting amount must be an integer: {amount!r}` | `LedgerError` for a float, bool or text amount |

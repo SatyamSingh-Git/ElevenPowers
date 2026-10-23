@@ -11,14 +11,14 @@ index 3528ad0..f078a19 100644
  ## 1.4.0
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 8cc94f9..59b1b86 100644
+index 9ebe07c..e4b5e10 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -10,6 +10,7 @@
  | `--cost` | `0.00` | unit cost for `add-item`, in dollars and cents |
  | `--kind` | `shelf` | kind of location for `add-location` |
  | `--description` | `` | free text for `add-location` |
-+| `--capacity` | `none` | most units a location from `add-location` can hold, counting every item; none means no limit |
++| `--capacity` | no limit | most units a location from `add-location` can hold, counting every item |
  | `--note` | `` | free text stored on a movement |
  
  ## Data file
@@ -26,16 +26,15 @@ index 8cc94f9..59b1b86 100644
  | `items.<sku>.cost_cents` | `integer` | unit cost in whole cents, e.g. 250 for $2.50 |
  | `locations.<code>.kind` | `string` | one of the location kinds |
  | `locations.<code>.description` | `string` | free text |
-+| `locations.<code>.capacity` | `integer or null` | most units the location can hold, all items together; null or absent means no limit |
++| `locations.<code>.capacity` | integer or null | most units the location can hold, all items together, from 1 to 1000000; null or absent means no limit |
  | `stock.<sku>.<code>` | `integer` | quantity held; locations holding none are left out |
  | `movements[].seq` | `integer` | 1 for the first movement, then one higher for each; both lines of a transfer share it |
  | `movements[].type` | `string` | `receive`, `issue`, `transfer` or `adjust` |
-@@ -71,6 +73,8 @@ Every refusal raises `StockError`; the command prints `error: <message>` and exi
+@@ -71,6 +73,7 @@ Every refusal raises `StockError`; the command prints `error: <message>` and exi
  | `same location` | `cannot transfer within one location: <code>` | transfer whose source and destination are the same |
  | `bad quantity` | `quantity must be a whole number from 1 to 1000000: <text>` | |
  | `bad count` | `count must be a whole number from 0 to 1000000: <text>` | |
 +| `location full` | `location <code> is full: capacity <capacity>, would hold <units>` | receive or transfer that would exceed a location's capacity |
-+| `bad capacity` | `capacity must be a whole number from 1 to 1000000: <text>` | |
  | `bad cost` | `cost must be dollars and cents, like 2.50: <text>` | |
  | `unsupported version` | `unsupported data file version: <version>` | |
  | `exit status` | `1` | for any refusal; `check` also exits 1 on a mismatch |

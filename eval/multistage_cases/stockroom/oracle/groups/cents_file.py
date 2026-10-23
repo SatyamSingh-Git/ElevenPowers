@@ -1,7 +1,7 @@
 import io
 import json
 
-from stockroom import Inventory, new_document
+from stockroom import Inventory, new_document, save
 from stockroom.cli import main
 
 
@@ -25,11 +25,14 @@ def test_costs_are_written_as_whole_cents(tmp_path):
     assert not [item for item in data['items'].values() if 'unit_cost' in item]
 
 
-def test_library_items_carry_cents():
+def test_library_saves_cents(tmp_path):
     inventory = Inventory(new_document())
     inventory.add_item('GEAR', 'Gear', cost='19.9')
-    assert inventory.item('GEAR')['cost_cents'] == 1990
-    assert 'unit_cost' not in inventory.item('GEAR')
+    path = tmp_path / 'stock.json'
+    save(path, inventory.doc)
+    item = json.loads(path.read_text(encoding='utf-8'))['items']['GEAR']
+    assert item['cost_cents'] == 1990
+    assert 'unit_cost' not in item
 
 
 def test_dollars_still_go_in_and_come_out(tmp_path):

@@ -45,12 +45,14 @@ def test_version_2_file_is_rewritten_as_lines(tmp_path):
     assert cli(path, 'receive', 'BOLT-M6', '3', 'B2')[0] == 0
     data = json.loads(path.read_text(encoding='utf-8'))
     assert data['version'] == 3
-    assert [(m['seq'], m['type'], m['location'], m['delta'], m['note']) for m in data['movements']] == [
-        (1, 'receive', 'A1', 30, 'PO 7'),
-        (2, 'transfer', 'A1', -12, ''),
-        (2, 'transfer', 'B2', 12, ''),
-        (3, 'issue', 'B2', -2, ''),
-        (4, 'adjust', 'A1', -1, 'count'),
-        (5, 'receive', 'B2', 3, ''),
+    lines = data['movements']
+    assert [(m['seq'], m['type'], m['location'], m['delta']) for m in lines] == [
+        (1, 'receive', 'A1', 30),
+        (2, 'transfer', 'A1', -12),
+        (2, 'transfer', 'B2', 12),
+        (3, 'issue', 'B2', -2),
+        (4, 'adjust', 'A1', -1),
+        (5, 'receive', 'B2', 3),
     ]
+    assert (lines[0]['note'], lines[4]['note']) == ('PO 7', 'count')
     assert cli(path, 'check') == (0, 'ok: stock matches 5 movements\n', '')

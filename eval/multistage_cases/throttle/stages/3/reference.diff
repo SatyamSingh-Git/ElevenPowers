@@ -1,45 +1,57 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 069998f..3ed85c5 100644
+index 069998f..d99d101 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
  
  ## Unreleased
  
-+- Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises `ValueError: cost N exceeds limit M` and spends nothing.
++- Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises the same ValueError as a cost below 1, whose message becomes `cost must be between 1 and {limit}: {cost}`, and spends nothing.
  - `TokenBucket` takes `refill_period` (seconds from empty to full) instead of `refill_per_second`.
  - `Decision.retry_after` (and a snapshot's `retry_after`) is now whole milliseconds, rounded up, instead of float seconds.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index b1166b4..01aa23f 100644
+index 0ee9bd2..1dfc8f5 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -81,6 +81,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
+@@ -81,7 +81,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
+ | `error.limit` | `limit must be positive: {limit}` | ValueError. |
  | `error.period` | `period must be positive: {value}` | ValueError. |
  | `error.refill` | `refill_period must be positive: {value}` | ValueError from TokenBucket. |
- | `error.cost` | `cost must be at least 1: {cost}` | ValueError from `hit()`. |
-+| `error.cost_limit` | `cost {cost} exceeds limit {limit}` | ValueError from `hit()` and `check()`; `{limit}` is a bucket's capacity. Nothing is spent. |
+-| `error.cost` | `cost must be at least 1: {cost}` | ValueError from `hit()`. |
++| `error.cost` | `cost must be between 1 and {limit}: {cost}` | ValueError from `hit()` and `check()`; `{limit}` is a bucket's capacity. Nothing is spent. |
  | `error.max_keys` | `max_keys must be at least 1: {value}` | ValueError from Throttle. |
  | `error.rate_limited` | `rate limit exceeded for {key}: retry in {wait}` | RateLimitExceeded from `check()`; `{wait}` as in `duration.format`. |
  | `error.config` | `config line {n}: {problem}` | ConfigError; `{problem}` may be any policy error. |
 diff --git a/src/throttle/base.py b/src/throttle/base.py
-index 5aca271..b198998 100644
+index 5aca271..3981f08 100644
 --- a/src/throttle/base.py
 +++ b/src/throttle/base.py
-@@ -33,6 +33,9 @@ class Limiter:
+@@ -31,8 +31,9 @@ class Limiter:
+ 
+     def hit(self, cost=1):
          """Spend ``cost`` units if they are available."""
-         if cost < 1:
-             raise ValueError(f'cost must be at least 1: {cost}')
-+        # Waiting would never help, so refuse outright rather than hand out a retry time.
-+        if cost > self.limit:
-+            raise ValueError(f'cost {cost} exceeds limit {self.limit}')
+-        if cost < 1:
+-            raise ValueError(f'cost must be at least 1: {cost}')
++        # A cost above the limit could never be allowed: refuse it rather than hand out a retry time.
++        if not 1 <= cost <= self.limit:
++            raise ValueError(f'cost must be between 1 and {self.limit}: {cost}')
          return self._take(cost, consume=True)
  
      def peek(self):
 diff --git a/tests/test_limiters.py b/tests/test_limiters.py
-index a6e0e5d..a3e671d 100644
+index a6e0e5d..0c7fa0c 100644
 --- a/tests/test_limiters.py
 +++ b/tests/test_limiters.py
+@@ -85,7 +85,7 @@ def test_refill_period_must_be_positive():
+ 
+ 
+ def test_cost_must_be_at_least_one():
+-    with pytest.raises(ValueError, match='cost must be at least 1: 0'):
++    with pytest.raises(ValueError, match='^cost must be between 1 and 5: 0$'):
+         FixedWindow(5, 10, ManualClock()).hit(0)
+ 
+ 
 @@ -97,3 +97,16 @@ def test_wait_is_whole_milliseconds_rounded_up():
      window = FixedWindow(1, 0.3, clock)
      window.hit()
@@ -54,11 +66,11 @@ index a6e0e5d..a3e671d 100644
 +def test_cost_above_limit_is_refused_without_spending(make):
 +    limiter = make(ManualClock())
 +    limiter.hit(3)
-+    with pytest.raises(ValueError, match='^cost 15 exceeds limit 10$'):
++    with pytest.raises(ValueError, match='^cost must be between 1 and 10: 15$'):
 +        limiter.hit(15)
 +    assert limiter.hit(7).allowed
 diff --git a/tests/test_registry.py b/tests/test_registry.py
-index ba196c9..ea2c282 100644
+index ba196c9..5b5b4e7 100644
 --- a/tests/test_registry.py
 +++ b/tests/test_registry.py
 @@ -79,3 +79,10 @@ def test_snapshot_lists_keys_in_order():
@@ -69,6 +81,6 @@ index ba196c9..ea2c282 100644
 +
 +def test_check_refuses_cost_above_limit():
 +    throttle = Throttle(ManualClock(), default='10/minute; algorithm=sliding')
-+    with pytest.raises(ValueError, match='^cost 11 exceeds limit 10$'):
++    with pytest.raises(ValueError, match='^cost must be between 1 and 10: 11$'):
 +        throttle.check('upload', cost=11)
 +    assert throttle.check('upload', cost=10).remaining == 0

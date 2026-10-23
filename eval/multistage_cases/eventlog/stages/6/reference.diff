@@ -11,7 +11,7 @@ index d336b3a..9d86762 100644
  - Fix: segments no longer grow past `segment_bytes`; the log rolls before an append that would cross it, and a record too big for an empty segment raises `RecordTooLarge`.
  - `format_stats` shows sizes in binary units (`bytes: 1.5 KiB`) and a new `average:` line; `LogStats` gains `average_record_bytes`.
 diff --git a/docs/reference.md b/docs/reference.md
-index cd82260..657df4b 100644
+index 0c6c846..3b6663e 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -27,7 +27,7 @@ An append-only log of keyed events, stored as a directory of segment files.

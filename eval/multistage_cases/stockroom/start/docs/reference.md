@@ -48,12 +48,12 @@ One JSON document. Item SKUs and location codes are stored upper-case.
 
 | Call | Returns | Meaning |
 |---|---|---|
-| `Inventory.on_hand(sku)` | `total quantity` | sum over every location |
-| `Inventory.at(sku, location)` | `quantity at location` | 0 when none is held there |
-| `Inventory.receive(sku, qty, location)` | `quantity at location` | after the goods arrive |
-| `Inventory.issue(sku, qty, location)` | `quantity at location` | what is left there |
-| `Inventory.transfer(sku, qty, source, dest)` | `quantity at destination` | after the goods arrive |
-| `Inventory.adjust(sku, location, counted)` | `change applied` | counted minus what was recorded |
+| `Inventory.on_hand(sku)` | `int` | total quantity across every location |
+| `Inventory.at(sku, location)` | `int` | quantity held at one location; 0 when none is held there |
+| `Inventory.receive(sku, qty, location)` | `quantity` | quantity now held at the location |
+| `Inventory.issue(sku, qty, location)` | `quantity` | quantity left at the location |
+| `Inventory.transfer(sku, qty, source, dest)` | `quantity` | quantity now held at the destination |
+| `Inventory.adjust(sku, location, counted)` | `change` | counted minus what was recorded |
 
 ## Errors
 

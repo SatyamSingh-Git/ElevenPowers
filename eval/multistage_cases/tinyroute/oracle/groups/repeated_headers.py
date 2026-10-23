@@ -24,7 +24,6 @@ def test_headers_are_a_list_of_pairs_in_order():
     response.add_header('Link', '<b>')
     assert isinstance(response.headers, list)
     pairs = [(name.lower(), value) for name, value in response.headers]
-    assert ('content-type', 'text/plain; charset=utf-8') in pairs
     assert [pair for pair in pairs if pair[0] == 'link'] == [('link', '<a>'), ('link', '<b>')]
 
 

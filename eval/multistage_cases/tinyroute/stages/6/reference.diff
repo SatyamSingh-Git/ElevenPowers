@@ -12,17 +12,17 @@ index a9f010a..fa30a16 100644
    values. `Request.arg(name, default=None)` gives the first one.
  - `url_for` is strict: a keyword that is not a path parameter raises
 diff --git a/docs/reference.md b/docs/reference.md
-index 7e3c238..6cabad2 100644
+index 189c125..6cf3cca 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -20,7 +20,7 @@ pattern column is what the raw, still percent-encoded segment must match.
+@@ -22,7 +22,7 @@ pattern column is what the raw, still percent-encoded segment must match.
  |---|---|---|
  | `default_methods` | `GET` | methods of a route added without `methods` |
  | `route_name` | `handler.__name__` | name of a route added without `name`; lambdas get none |
 -| `match_order` | `registration order` | the first route that matches path and method wins |
 +| `match_order` | `most specific first` | per segment from the left, fixed text beats a parameter, which beats a `path` parameter; ties keep registration order |
- | `url_for_extra_values` | `BuildError` | every keyword of `url_for` must be a path parameter of the route |
- | `url_for._query` | `mapping` | query string of the URL; a list value repeats its name; empty adds no `?` |
+ 
+ ## Errors
  
 diff --git a/src/tinyroute/converters.py b/src/tinyroute/converters.py
 index cb019f2..c104547 100644

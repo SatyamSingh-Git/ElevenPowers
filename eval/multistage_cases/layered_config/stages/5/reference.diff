@@ -11,24 +11,15 @@ index 10a737d..4231e9d 100644
  - `load()` takes `files`, a list of `(name, text)` pairs applied in order, instead of `file_text` and `file_name`.
  - Environment variables use one underscore between section and name (`LAYERCFG_SERVER_PORT`); the double-underscore spelling is now an unknown variable.
 diff --git a/docs/reference.md b/docs/reference.md
-index 3d83c3b..684915d 100644
+index f7654f6..d7265fc 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -77,7 +77,7 @@ Surrounding spaces are removed from every raw value before it is read.
- | `source.default` | `default` | What `Config.source` returns for a built-in default. |
- | `source.file` | `{file} line {line}` | |
- | `source.env` | `env {name}` | |
--| `get.default` | `returned for unknown keys` | The second argument of `Config.get`. |
-+| `get.default` | `returned for unset options` | The second argument of `Config.get`. An unknown key raises instead. |
- 
- ## Environment
- 
-@@ -119,7 +119,7 @@ layers are reported together; a syntax error in the file stops loading.
+@@ -116,7 +116,7 @@ layers are reported together; a syntax error in the file stops loading.
  | `msg.syntax` | `expected 'key = value' or '[section]'` | |
  | `msg.no_section` | `key outside of a section` | |
  | `msg.bad_section` | `bad section name '{name}'` | |
 -| `msg.lookup` | `unknown key '{key}'` | `get` and `explain` on the command line. |
-+| `msg.lookup` | `unknown key '{key}' (did you mean '{match}'?)` | Raised as `KeyError` by `Config.get`, `Config[key]` and `Config.source`, and printed by `get` and `explain` on the command line. The suggestion is the closest key or alias and is left off when none is close. |
++| `msg.lookup` | `unknown key '{key}' (did you mean '{match}'?)` | Raised as `KeyError` by `Config.get`, `Config[key]` and `Config.source`, and printed by `get` and `explain` on the command line. The suggestion is the closest key or alias and is left off when none is close. The second argument of `Config.get` is returned for an option that has no value. |
  | `msg.unreadable` | `cannot read {path}: {reason}` | |
  
  ## Views and command line

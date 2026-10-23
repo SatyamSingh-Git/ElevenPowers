@@ -11,16 +11,15 @@ index 8147d99..c0f5363 100644
  - Journal files write posting amounts as decimal text in the journal currency (format version 2); version 1 journals still load.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index c1fec5a..a74ebf1 100644
+index 01b9f08..b89519e 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -30,12 +30,13 @@ table lists one documented fact per row: its key, its value, and what it means.
+@@ -30,12 +30,12 @@ table lists one documented fact per row: its key, its value, and what it means.
  
  | Key | Value | Meaning |
  | --- | --- | --- |
 -| `transaction.date` | `YYYY-MM-DD string` | Type of `Transaction.date` and of `StatementLine.date` |
-+| `transaction.date` | `datetime.date` | Type of `Transaction.date` and of `StatementLine.date` |
-+| `transaction.date_input` | `datetime.date or YYYY-MM-DD string` | Dates `make_transaction`, `Ledger.record` and `statement` accept; a `datetime` is refused |
++| `transaction.date` | `datetime.date` | Type of `Transaction.date` and of `StatementLine.date`; `make_transaction`, `Ledger.record` and `statement` take a `datetime.date` or YYYY-MM-DD text (a `datetime` is refused) |
  | `posting.sign` | `debit positive, credit negative` | Sign of a posting amount |
  | `limit.min_postings` | `2` | Fewest postings in one transaction |
  | `limit.max_postings` | `16` | Most postings in one transaction |

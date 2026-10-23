@@ -11,26 +11,17 @@ index 118598b..8147d99 100644
  
  ## 0.4.0
 diff --git a/docs/reference.md b/docs/reference.md
-index efd8dd7..c1fec5a 100644
+index 74d14f0..01b9f08 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -51,6 +51,8 @@ table lists one documented fact per row: its key, its value, and what it means.
+@@ -51,6 +51,7 @@ table lists one documented fact per row: its key, its value, and what it means.
  | `trial_balance.columns` | `Account, Debit, Credit` | Columns of the rendered trial balance |
  | `trial_balance.total_label` | `Total` | Label of its last row |
  | `statement.columns` | `Date, Description, Amount, Balance` | Columns of a rendered statement |
-+| `statement.range` | `start and end inclusive` | Dates `statement(ledger, account, start, end)` keeps; either may be omitted |
-+| `statement.opening_label` | `Opening balance` | Description of the first line when a start date is given; it has no amount and carries the balance before the start |
++| `statement.opening_label` | `Opening balance` | `statement(ledger, account, start, end)` keeps postings dated start to end inclusive, either bound optional (`--from DATE`, `--to DATE` on the command line). With a start date the first line has this description, no amount, and the balance carried in from before it |
  | `summary.keys` | `assets, liabilities, equity, income, expenses, net_income` | Keys of `summary()`; each is positive for a normal balance |
  
  ## Journal file
-@@ -79,6 +81,7 @@ table lists one documented fact per row: its key, its value, and what it means.
- | --- | --- | --- |
- | `cli.usage` | `ledgerbook JOURNAL COMMAND` | Every command names its journal first |
- | `cli.commands` | `init, open, post, reverse, balances, summary, statement` | Available commands |
-+| `cli.statement_options` | `--from DATE, --to DATE` | Date range of the `statement` command |
- | `cli.posting` | `ACCOUNT=AMOUNT` | Posting argument; one may be a bare `ACCOUNT` that takes the remainder |
- | `cli.exit_ok` | `0` | Exit status on success |
- | `cli.exit_error` | `1` | Exit status after printing `error: <message>` to stderr |
 diff --git a/src/ledgerbook/cli.py b/src/ledgerbook/cli.py
 index b373fe5..097f778 100644
 --- a/src/ledgerbook/cli.py

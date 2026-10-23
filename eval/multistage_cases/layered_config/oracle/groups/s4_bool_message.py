@@ -22,6 +22,6 @@ def test_message_lists_the_accepted_words(tmp_path):
 
 def test_message_keeps_the_value_as_written():
     with pytest.raises(ValidationError) as caught:
-        load(env={'LAYERCFG_APP_DEBUG': 'Perhaps'})
+        load(files=[], env={'LAYERCFG_APP_DEBUG': 'Perhaps'})
     assert str(caught.value) == (
         "env LAYERCFG_APP_DEBUG: app.debug: expected bool (true/false, yes/no, on/off, 1/0), got 'Perhaps'")

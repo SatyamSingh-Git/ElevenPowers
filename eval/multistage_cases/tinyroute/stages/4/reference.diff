@@ -13,20 +13,19 @@ index dc01b27..b312188 100644
    UUID and gives a `uuid.UUID`.
  - Responses can repeat a header: `Response.headers` is now a list of
 diff --git a/docs/reference.md b/docs/reference.md
-index 52e3e42..41980bc 100644
+index 905301c..ad345f6 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -21,7 +21,8 @@ pattern column is what the raw, still percent-encoded segment must match.
- | `default_methods` | `GET` | methods of a route added without `methods` |
- | `route_name` | `handler.__name__` | name of a route added without `name`; lambdas get none |
- | `match_order` | `registration order` | the first route that matches path and method wins |
--| `url_for_extra_values` | `query string` | values that are not path parameters are appended as `?key=value` |
-+| `url_for_extra_values` | `BuildError` | every keyword of `url_for` must be a path parameter of the route |
-+| `url_for._query` | `mapping` | query string of the URL; a list value repeats its name; empty adds no `?` |
+@@ -16,7 +16,7 @@ pattern column is what the raw, still percent-encoded segment must match.
  
- ## Errors
+ ## Routing
  
-@@ -53,6 +54,7 @@ pattern column is what the raw, still percent-encoded segment must match.
+-`url_for(name, **values)` fills in the route's path parameters; any other value is appended as a query string.
++`url_for(name, _query=None, **values)` fills in the route's path parameters, and every keyword must be one of them. `_query` is a mapping for the query string; a list value repeats its name, and an empty one adds no `?`.
+ 
+ | Setting | Value | Meaning |
+ |---|---|---|
+@@ -50,6 +50,7 @@ pattern column is what the raw, still percent-encoded segment must match.
  | `unknown_type` | `unknown parameter type '{type}'` | `RouteError` |
  | `duplicate_name` | `duplicate route name '{name}'` | `RouteError` |
  | `unknown_route` | `no route named '{name}'` | `BuildError` |

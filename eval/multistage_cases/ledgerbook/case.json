@@ -7,13 +7,15 @@
  "changelog": "CHANGELOG.md",
  "stages": [
   {
-   "request": "Journal files store posting amounts as whole numbers of minor units (`\"amount\": 1250` for $12.50), so nobody can make sense of a journal when they open it to check something. Write posting amounts in the journal as decimal text in the journal's currency instead: `\"12.50\"`, `\"-0.07\"`, `\"500\"` in a JPY journal, `\"1.250\"` in a KWD one. Journals written by earlier versions, with whole-number amounts, must keep working.",
+   "request": "Journal files store posting amounts as whole numbers of minor units (`\"amount\": 1250` for $12.50), so nobody can make sense of a journal when they open it to check something. Write posting amounts in the journal as decimal text in the journal's currency instead: `\"12.50\"`, `\"-0.07\"`, `\"500\"` in a JPY journal, `\"1.250\"` in a KWD one, and mark journals written this way as version 2 in the header (`\"ledgerbook\": 2`). Journals written by earlier versions, with whole-number amounts, must still load, and posting new transactions to one of them must keep working.",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_journal"]
+   "dependent_missed_fails": [
+    "base_journal"
+   ]
   },
   {
-   "request": "Statements always run from the very first transaction, which is no use for reconciling one month at a time. Let `statement` and `render_statement` take an optional start date and end date, both inclusive, and give the `statement` command `--from DATE` and `--to DATE`. When a start date is given, the statement opens with a line dated on the start date, described `Opening balance`, with no amount and the balance carried in from everything before that date.",
+   "request": "Statements always run from the very first transaction, which is no use for reconciling one month at a time. Give `statement` and `render_statement` two optional parameters, `start` and `end`, both inclusive dates, and give the `statement` command `--from DATE` and `--to DATE`. When a start date is given, the statement opens with a line dated on the start date, described `Opening balance`, with no amount and the balance carried in from everything before that date.",
    "kind": "self-contained",
    "bugfix": false,
    "dependent_missed_fails": []
@@ -22,41 +24,108 @@
    "request": "Transaction dates come back as `YYYY-MM-DD` strings, so code built on the library has to parse `txn.date` before it can compare two dates or count the days between them. Make dates real `datetime.date` values: `make_transaction` and `Ledger.record` should accept either a `datetime.date` or a `YYYY-MM-DD` string and always store a `datetime.date`, and statement lines should carry `datetime.date` values too, with start and end dates accepted in either form. Anything else is still refused with `invalid date: ...`.",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_journal", "decimal_amounts", "legacy_journal", "statement_range_cli"]
+   "dependent_missed_fails": [
+    "base_journal",
+    "decimal_amounts",
+    "legacy_journal",
+    "statement_range_cli"
+   ]
   },
   {
-   "request": "I mistyped a command and posted `Expenses:Food=0 Assets:Cash=0`. It was accepted and written to the journal, and now a 0.00 line shows up in both accounts' statements. A posting of zero is never meaningful. Refuse it with `posting amount must not be zero: <account>`, naming the first zero posting, and a journal that already contains one should fail to load with that message and the line it is on.",
+   "request": "I mistyped a command and posted `Expenses:Food=0 Assets:Cash=0`. It was accepted and written to the journal, and now a 0.00 line shows up in both accounts' statements. A posting of zero is never meaningful. Refuse it with `posting amount must not be zero: {account}`, naming the first zero posting, and a journal that already contains one should fail to load with that message and the line it is on.",
    "kind": "self-contained",
    "bugfix": true,
    "dependent_missed_fails": []
   },
   {
-   "request": "Amounts in the trial balance, statements, summary and command output are hard to read once they pass a thousand. Show them with a comma between each group of three digits: `1,234,567.89`, `-1,000.00`, and `1,234,567` for JPY. Amounts people type in stay as they are; `1,234.50` is still not a valid amount.",
+   "request": "Amounts in the trial balance, statements, summary and command output are hard to read once they pass a thousand. Make `format_amount` separate each group of three digits with `,` by default: `1,234,567.89`, `-1,000.00`, and `1,234,567` for JPY. Amounts people type in stay as they are; `1,234.50` is still not a valid amount.",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_journal", "decimal_amounts"]
+   "dependent_missed_fails": [
+    "base_journal",
+    "decimal_amounts"
+   ]
   },
   {
    "request": "Balances of liability, equity and income accounts come out negative: after a $42.50 card purchase `ledger.balance(\"Liabilities:Card\")` is -4250 and the card's statement shows a balance of -42.50, although we owe 42.50. Report balances in each account's natural sign instead: an asset or expense account is positive when its debits exceed its credits, and a liability, equity or income account is positive when its credits exceed its debits. That goes for `Ledger.balance`, `Ledger.balances`, `Ledger.subtotal` and the running and opening balances on statements. Posting amounts keep their sign, debits positive and credits negative.",
    "kind": "cross-cutting",
    "bugfix": false,
-   "dependent_missed_fails": ["base_reports", "grouped_reports"]
+   "dependent_missed_fails": [
+    "base_reports",
+    "grouped_reports"
+   ]
   }
  ],
  "groups": [
-  {"id": "base_journal", "since": 0, "until": 6},
-  {"id": "base_reports", "since": 0, "until": 6},
-  {"id": "decimal_amounts", "since": 1, "until": 6},
-  {"id": "legacy_journal", "since": 1, "until": 6},
-  {"id": "statement_range", "since": 2, "until": 6},
-  {"id": "statement_range_cli", "since": 2, "until": 6},
-  {"id": "date_values", "since": 3, "until": 6},
-  {"id": "date_roundtrip", "since": 3, "until": 6},
-  {"id": "zero_refused", "since": 4, "until": 6},
-  {"id": "zero_in_journal", "since": 4, "until": 6},
-  {"id": "grouped_amounts", "since": 5, "until": 6},
-  {"id": "grouped_reports", "since": 5, "until": 6},
-  {"id": "natural_balance", "since": 6, "until": 6},
-  {"id": "natural_statement", "since": 6, "until": 6}
+  {
+   "id": "base_journal",
+   "since": 0,
+   "until": 6
+  },
+  {
+   "id": "base_reports",
+   "since": 0,
+   "until": 6
+  },
+  {
+   "id": "decimal_amounts",
+   "since": 1,
+   "until": 6
+  },
+  {
+   "id": "legacy_journal",
+   "since": 1,
+   "until": 6
+  },
+  {
+   "id": "statement_range",
+   "since": 2,
+   "until": 6
+  },
+  {
+   "id": "statement_range_cli",
+   "since": 2,
+   "until": 6
+  },
+  {
+   "id": "date_values",
+   "since": 3,
+   "until": 6
+  },
+  {
+   "id": "date_roundtrip",
+   "since": 3,
+   "until": 6
+  },
+  {
+   "id": "zero_refused",
+   "since": 4,
+   "until": 6
+  },
+  {
+   "id": "zero_in_journal",
+   "since": 4,
+   "until": 6
+  },
+  {
+   "id": "grouped_amounts",
+   "since": 5,
+   "until": 6
+  },
+  {
+   "id": "grouped_reports",
+   "since": 5,
+   "until": 6
+  },
+  {
+   "id": "natural_balance",
+   "since": 6,
+   "until": 6
+  },
+  {
+   "id": "natural_statement",
+   "since": 6,
+   "until": 6
+  }
  ]
 }

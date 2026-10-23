@@ -11,22 +11,22 @@ index bb50321..5960f7b 100644
  - Segment format version 2: the record length prefix is a varint instead of a 4-byte integer. Version 1 segments are refused.
  - `eventlog dump --from` defaults to the first offset still in the log.
 diff --git a/docs/reference.md b/docs/reference.md
-index ec4a651..d120bf4 100644
+index 63412b1..992b5ab 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -71,8 +71,11 @@ Records follow the segment header back to back.
+@@ -68,9 +68,11 @@ Records follow the segment header back to back.
  
+ `stats(directory)` reads the files without opening the log. `format_stats` prints one `name: value` line per field.
+ 
++`average_record_bytes` is the mean encoded record size: segment bytes minus the segment headers, divided by the record count, rounded to one decimal place, and `0.0` with no records. `format_stats` shows `bytes` in binary units, whole bytes below 1024 (`bytes: 512 B`) and one decimal place in KiB, MiB or GiB above (`bytes: 1.5 KiB`), followed directly by an `average: 41.2 B` line.
++
  | Field | Value | Meaning |
  |---|---|---|
 -| `stats.fields` | `segments records keys tombstones bytes first_offset next_offset` | `LogStats` fields, in order. |
 +| `stats.fields` | `segments records keys tombstones bytes average_record_bytes first_offset next_offset` | `LogStats` fields, in order. |
  | `stats.bytes` | `segment files` | Total size of segment files, headers included; index files are not counted. |
-+| `stats.average_record_bytes` | `(bytes - 13 * segments) / records` | Mean encoded record size, segment headers excluded, rounded to one decimal; `0.0` for a log with no records. |
-+| `stats.bytes_line` | `bytes: {size} {unit}` | Units `B`, `KiB`, `MiB`, `GiB`; sizes under 1024 are whole bytes (`bytes: 512 B`), larger ones have one decimal (`bytes: 1.5 KiB`). |
-+| `stats.average_line` | `average: {average_record_bytes:.1f} B` | Printed right after the `bytes:` line. |
  | `stats.offsets_line` | `offsets: {first_offset}..{next_offset}` | How `format_stats` shows the two offset fields. |
  
- ## Errors
 diff --git a/src/eventlog/stats.py b/src/eventlog/stats.py
 index 7ea4d14..48d0225 100644
 --- a/src/eventlog/stats.py

@@ -11,7 +11,7 @@ index 5960f7b..a709b0a 100644
  - Index entries store the offset relative to the segment's base offset in 4 bytes (8-byte entries), and the index is sparse: new `index_interval_bytes` option, default 4096.
  - Segment format version 2: the record length prefix is a varint instead of a 4-byte integer. Version 1 segments are refused.
 diff --git a/docs/reference.md b/docs/reference.md
-index d120bf4..21a03a7 100644
+index 992b5ab..8a9848f 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -8,7 +8,7 @@ An append-only log of keyed events, stored as a directory of segment files.
@@ -22,8 +22,8 @@ index d120bf4..21a03a7 100644
 +| `segment_bytes` | `1048576` | Ceiling on a segment file's size: the active segment is sealed and a new one started before an append that would take it past this size. |
  | `max_key_bytes` | `1024` | Longest key accepted, in bytes after UTF-8 encoding. |
  | `max_value_bytes` | `65536` | Longest value accepted, in bytes. |
- | `index_interval_bytes` | `4096` | Minimum distance in bytes between the positions of consecutive index entries; `0` indexes every record. |
-@@ -88,6 +88,7 @@ Every error derives from `EventLogError`. Messages:
+ | `index_interval_bytes` | `4096` | The index is sparse: the first record of a segment always gets an entry, and a later record gets one only when it starts at least this many bytes after the previous entry's position. `0` indexes every record. |
+@@ -86,6 +86,7 @@ Every error derives from `EventLogError`. Messages:
  | `EmptyKey` | `key must not be empty` | Appending with an empty key. |
  | `KeyTooLarge` | `key of {size} bytes exceeds max_key_bytes {limit}` | Key longer than `max_key_bytes`. |
  | `ValueTooLarge` | `value of {size} bytes exceeds max_value_bytes {limit}` | Value longer than `max_value_bytes`. |

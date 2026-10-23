@@ -11,22 +11,18 @@ index 2d55c01..810e7a2 100644
  - Fix: a posting of zero was accepted and written to the journal; it is now refused, and a journal holding one fails to load at that line.
  - Transaction and statement dates are `datetime.date` values; dates may be given as `datetime.date` or `YYYY-MM-DD` text.
 diff --git a/docs/reference.md b/docs/reference.md
-index c5b2a95..f72ff97 100644
+index d777ebd..1c8ab9a 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -49,10 +49,11 @@ table lists one documented fact per row: its key, its value, and what it means.
+@@ -48,7 +48,7 @@ table lists one documented fact per row: its key, its value, and what it means.
  
  | Key | Value | Meaning |
  | --- | --- | --- |
 -| `balance.sign` | `debit positive` | Sign of `Ledger.balance`, `balances`, `subtotal` and statement balances |
-+| `balance.sign` | `natural` | Sign of `Ledger.balance`, `balances`, `subtotal` and statement balances: positive when an account carries its normal balance (debit for assets and expenses, credit for the rest) |
++| `balance.sign` | `natural` | Sign of `Ledger.balance`, `balances`, `subtotal` and statement balances: positive when an account carries its normal balance (debit for assets and expenses, credit for the rest). The statement Amount column keeps the posting sign, debit positive |
  | `trial_balance.columns` | `Account, Debit, Credit` | Columns of the rendered trial balance |
  | `trial_balance.total_label` | `Total` | Label of its last row |
  | `statement.columns` | `Date, Description, Amount, Balance` | Columns of a rendered statement |
-+| `statement.amount_sign` | `debit positive` | Sign of the Amount column; only the Balance column follows `balance.sign` |
- | `statement.range` | `start and end inclusive` | Dates `statement(ledger, account, start, end)` keeps; either may be omitted |
- | `statement.opening_label` | `Opening balance` | Description of the first line when a start date is given; it has no amount and carries the balance before the start |
- | `summary.keys` | `assets, liabilities, equity, income, expenses, net_income` | Keys of `summary()`; each is positive for a normal balance |
 diff --git a/src/ledgerbook/ledger.py b/src/ledgerbook/ledger.py
 index 7cb5069..62bb5a2 100644
 --- a/src/ledgerbook/ledger.py

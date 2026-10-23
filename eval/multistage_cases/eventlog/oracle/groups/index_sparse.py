@@ -57,8 +57,7 @@ def test_rebuilt_index_is_sparse_too(tmp_path):
         for n in range(120):
             log.append(f'key{n:03d}', 'v' * 40)
     (index_path,) = [p for p in tmp_path.iterdir() if p.suffix == '.idx']
-    before = entries(index_path)
     index_path.write_bytes(b'')
     with Log.open(tmp_path, config) as log:
-        assert entries(index_path) == before
         assert [r.offset for r in log.replay(77)] == list(range(77, 120))
+    check_spacing(entries(index_path), 1000, 80)

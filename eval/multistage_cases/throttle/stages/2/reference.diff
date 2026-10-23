@@ -11,7 +11,7 @@ index c5d23b0..069998f 100644
  
  ## 0.4.0
 diff --git a/docs/reference.md b/docs/reference.md
-index a43833b..b1166b4 100644
+index 502f4c5..0ee9bd2 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -20,7 +20,7 @@
@@ -23,7 +23,7 @@ index a43833b..b1166b4 100644
  
  ## Decision
  
-@@ -79,7 +79,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
+@@ -80,7 +80,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
  | `error.unknown_unit` | `unknown unit: {unit}` | ValueError; PolicyError inside a policy. |
  | `error.limit` | `limit must be positive: {limit}` | ValueError. |
  | `error.period` | `period must be positive: {value}` | ValueError. |

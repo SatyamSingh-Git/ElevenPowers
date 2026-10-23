@@ -12,7 +12,7 @@ index f380365..dc01b27 100644
    `(name, value)` pairs, with `add_header()`, `set_header()` and
    `header_values()`. Setting several cookies keeps every `Set-Cookie`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 3916597..52e3e42 100644
+index 5ba8b02..905301c 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -10,6 +10,7 @@ pattern column is what the raw, still percent-encoded segment must match.

@@ -12,28 +12,24 @@ index dab8572..118598b 100644
  
  - `reverse` command and `reversal()` for undoing a posted transaction.
 diff --git a/docs/reference.md b/docs/reference.md
-index b2f9bf1..efd8dd7 100644
+index b2f9bf1..74d14f0 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -58,13 +58,16 @@ table lists one documented fact per row: its key, its value, and what it means.
+@@ -58,12 +58,12 @@ table lists one documented fact per row: its key, its value, and what it means.
  | Key | Value | Meaning |
  | --- | --- | --- |
  | `journal.encoding` | `UTF-8, one JSON object per line` | Blank lines are skipped |
 -| `journal.version` | `1` | Version written in the header |
-+| `journal.version` | `2` | Version written in the header |
-+| `journal.readable_versions` | `1, 2` | Versions `load_journal` accepts |
++| `journal.version` | `2` | Version written in the header; `load_journal` still reads version 1 |
  | `journal.header` | `{"ledgerbook": <version>, "currency": <code>}` | First line of every journal |
  | `record.open` | `{"type": "open", "account": <name>}` | Opens an account |
  | `record.txn` | `{"type": "txn", "date", "description", "postings"}` | A transaction; `date` is YYYY-MM-DD |
  | `record.posting` | `{"account": <name>, "amount": <amount>}` | One element of `postings` |
 -| `record.posting.amount` | `integer minor units` | How a posting amount is written |
-+| `record.posting.amount` | `decimal text in the journal currency` | How a posting amount is written, e.g. `"12.50"`, `"-0.07"`, `"500"` for JPY |
-+| `record.posting.amount.v1` | `integer minor units` | How version 1 journals wrote it; still read, alongside decimal text appended later |
++| `record.posting.amount` | `decimal text in the journal's currency` | How a posting amount is written, e.g. `"12.50"`, `"-0.07"`, `"500"` for JPY, never with thousands separators. Version 1 journals wrote integer minor units; they still load, also after decimal text has been appended to them. A non-text amount in a version 2 journal is refused with `amount must be decimal text: <amount>` |
  | `error.journal` | `line {line}: {problem}` | `JournalError`; any `LedgerError` while replaying is wrapped this way |
-+| `error.amount_text` | `amount must be decimal text: {amount!r}` | Problem reported for a non-text amount in a version 2 journal |
  | `error.journal_version` | `unsupported journal version: {version}` | Header with a version this release cannot read |
  | `error.missing_header` | `missing header` | Problem reported for an empty journal |
- | `error.missing_field` | `missing field: {name}` | Problem reported for a record without a required field |
 diff --git a/src/ledgerbook/journal.py b/src/ledgerbook/journal.py
 index afaf586..c8eca92 100644
 --- a/src/ledgerbook/journal.py

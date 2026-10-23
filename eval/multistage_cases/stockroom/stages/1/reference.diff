@@ -11,7 +11,7 @@ index 989ff06..51a8846 100644
  ## 1.4.0
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 3ef8ff5..d385c48 100644
+index 2f5e8b9..62511eb 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -18,11 +18,11 @@ One JSON document. Item SKUs and location codes are stored upper-case.

@@ -11,7 +11,7 @@ index 1c5cd26..2d55c01 100644
  - Transaction and statement dates are `datetime.date` values; dates may be given as `datetime.date` or `YYYY-MM-DD` text.
  - Statements take an optional start and end date (`--from`/`--to` on the command line) and open with the balance carried in from before the start.
 diff --git a/docs/reference.md b/docs/reference.md
-index 25f2d76..c5b2a95 100644
+index f9c5fcc..d777ebd 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -10,7 +10,7 @@ table lists one documented fact per row: its key, its value, and what it means.
@@ -23,14 +23,6 @@ index 25f2d76..c5b2a95 100644
  | `error.bad_amount` | `invalid amount: {text}` | `AmountError` for text that is not a decimal number |
  | `error.too_precise` | `too many decimal places for {currency}: {text}` | `AmountError` when the text has more decimals than the currency |
  | `error.unknown_currency` | `unknown currency: {currency}` | `AmountError` for a code missing from the ISO 4217 table |
-@@ -69,6 +69,7 @@ table lists one documented fact per row: its key, its value, and what it means.
- | `record.txn` | `{"type": "txn", "date", "description", "postings"}` | A transaction; `date` is YYYY-MM-DD |
- | `record.posting` | `{"account": <name>, "amount": <amount>}` | One element of `postings` |
- | `record.posting.amount` | `decimal text in the journal currency` | How a posting amount is written, e.g. `"12.50"`, `"-0.07"`, `"500"` for JPY |
-+| `record.posting.amount.grouping` | `none` | Journal amounts never carry thousands separators |
- | `record.posting.amount.v1` | `integer minor units` | How version 1 journals wrote it; still read, alongside decimal text appended later |
- | `error.journal` | `line {line}: {problem}` | `JournalError`; any `LedgerError` while replaying is wrapped this way |
- | `error.amount_text` | `amount must be decimal text: {amount!r}` | Problem reported for a non-text amount in a version 2 journal |
 diff --git a/src/ledgerbook/journal.py b/src/ledgerbook/journal.py
 index fcb1dd1..ce019f6 100644
 --- a/src/ledgerbook/journal.py

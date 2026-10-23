@@ -11,19 +11,19 @@ index b146ebe..be767a0 100644
  ## 1.4.0
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 7d101bd..e9c3e92 100644
+index 5b5a970..3cde9f1 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -48,7 +48,8 @@ One JSON document. Item SKUs and location codes are stored upper-case.
  
  | Call | Returns | Meaning |
  |---|---|---|
--| `Inventory.on_hand(sku)` | `total quantity` | sum over every location |
-+| `Inventory.on_hand(sku)` | `quantity by location` | dict of location code to quantity, leaving out locations holding none |
-+| `Inventory.total(sku)` | `total quantity` | sum over every location; 0 when none is held |
- | `Inventory.at(sku, location)` | `quantity at location` | 0 when none is held there |
- | `Inventory.receive(sku, qty, location)` | `quantity at location` | after the goods arrive |
- | `Inventory.issue(sku, qty, location)` | `quantity at location` | what is left there |
+-| `Inventory.on_hand(sku)` | `int` | total quantity across every location |
++| `Inventory.on_hand(sku)` | `dict` | location code to quantity held there, leaving out locations holding none |
++| `Inventory.total(sku)` | `int` | total quantity across every location; 0 when none is held |
+ | `Inventory.at(sku, location)` | `int` | quantity held at one location; 0 when none is held there |
+ | `Inventory.receive(sku, qty, location)` | `quantity` | quantity now held at the location |
+ | `Inventory.issue(sku, qty, location)` | `quantity` | quantity left at the location |
 diff --git a/src/stockroom/cli.py b/src/stockroom/cli.py
 index f4392c3..be030c6 100644
 --- a/src/stockroom/cli.py

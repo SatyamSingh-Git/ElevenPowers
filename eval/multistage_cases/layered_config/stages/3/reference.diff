@@ -25,7 +25,7 @@ index bd4b363..d9a0502 100644
  config.source('server.port')   # 'app.ini line 3'
  ```
 diff --git a/docs/reference.md b/docs/reference.md
-index c4accfa..de84fe4 100644
+index a11f374..52bd21c 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -73,7 +73,7 @@ Surrounding spaces are removed from every raw value before it is read.

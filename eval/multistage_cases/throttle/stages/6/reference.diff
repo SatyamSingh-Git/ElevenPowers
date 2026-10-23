@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index c7f95c5..018963c 100644
+index 42965a7..d5da0ed 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -9,9 +9,9 @@ index c7f95c5..018963c 100644
 +- Default `max_keys` raised from 1000 to 10000; `summarise()` reports `evicted`, the number of keys evicted to stay under the cap.
  - Clocks are read with `monotonic()` instead of `now()`, so the `time` module can be passed as a clock. `ManualClock.now()` is now `ManualClock.monotonic()`.
  - Limiter state and snapshots carry `reset_at`, the clock time the limiter is full again, in place of the relative `reset_in`.
- - Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises `ValueError: cost N exceeds limit M` and spends nothing.
+ - Fixed: a hit costing more than the limit (a bucket's capacity) was told to retry later although it could never succeed, and crashed with IndexError on a sliding window. It now raises the same ValueError as a cost below 1, whose message becomes `cost must be between 1 and {limit}: {cost}`, and spends nothing.
 diff --git a/docs/reference.md b/docs/reference.md
-index 912533f..b8fc78c 100644
+index 6631f9d..0757c14 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -16,7 +16,7 @@
@@ -23,14 +23,15 @@ index 912533f..b8fc78c 100644
  | `throttle.eviction` | `least recently used key` | Which key is forgotten when `max_keys` is reached. |
  | `throttle.pattern` | `exact key, or prefix ending in *; longest pattern wins` | How `set_policy` patterns match keys. |
  | `clock.read` | `clock.monotonic()` | How limiters and reports read the current time, in seconds, from the clock they are given; the `time` module itself qualifies. |
-@@ -54,7 +54,7 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
- |---|---|---|
- | `report.columns` | `key, policy, remaining, retry, resets` | Columns of `render_table`; remaining is shown as `left/limit`. |
- | `report.empty_wait` | `-` | Shown in `retry` and `resets` when there is nothing to wait for. |
--| `report.summary` | `keys, exhausted, busiest` | Fields of `summarise()`. |
-+| `report.summary` | `keys, exhausted, busiest, evicted` | Fields of `summarise()`; `evicted` counts keys dropped to stay under `max_keys` since the Throttle was made. |
+@@ -57,7 +57,8 @@ which the limiter is full again, or the current time if it already is.
  | `report.csv` | `one row per snapshot entry, columns in snapshot order` | Output of `to_csv()`; empty when no keys are tracked. |
  | `duration.format` | `250ms below 1s, 1.5s below 1m, then 1h2m3s` | How waits are written in reports and messages. |
+ 
+-`summarise()` returns `keys`, `exhausted` and `busiest`.
++`summarise()` returns `keys`, `exhausted`, `busiest` and `evicted`, the number of keys
++evicted to stay under `max_keys` since the Throttle was made.
+ 
+ ## Config files
  
 diff --git a/src/throttle/registry.py b/src/throttle/registry.py
 index 587e727..42355f8 100644
@@ -83,7 +84,7 @@ index 9c384aa..f9ca726 100644
  
  
 diff --git a/tests/test_registry.py b/tests/test_registry.py
-index cd321c6..6cdbfc4 100644
+index 1f2f36a..21e67ed 100644
 --- a/tests/test_registry.py
 +++ b/tests/test_registry.py
 @@ -6,7 +6,7 @@ from throttle import ManualClock, Policy, RateLimitExceeded, Throttle
@@ -96,7 +97,7 @@ index cd321c6..6cdbfc4 100644
  
  def test_longest_pattern_wins():
 @@ -86,3 +86,11 @@ def test_check_refuses_cost_above_limit():
-     with pytest.raises(ValueError, match='^cost 11 exceeds limit 10$'):
+     with pytest.raises(ValueError, match='^cost must be between 1 and 10: 11$'):
          throttle.check('upload', cost=11)
      assert throttle.check('upload', cost=10).remaining == 0
 +

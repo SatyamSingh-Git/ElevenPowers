@@ -7,7 +7,7 @@
  "changelog": "CHANGELOG.md",
  "stages": [
   {
-   "request": "`Decision.retry_after` is a float number of seconds, and our dashboards end up showing values like 0.30000000000000004. Please make it a whole number of milliseconds instead, rounded up so a client that waits that long is never early: a wait of a third of a second should come back as 334. It stays 0 when the hit is allowed.",
+   "request": "`Decision.retry_after` is a float number of seconds, and our clients end up showing values like 0.30000000000000004. Please make it an integer number of milliseconds instead, rounded up so a client that waits that long is never early: a wait of a third of a second should come back as 334. It stays 0 when the hit is allowed.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -16,7 +16,7 @@
    ]
   },
   {
-   "request": "Building a `TokenBucket` by hand means working out tokens per second, which nobody gets right for slow rates. Change the constructor to `TokenBucket(capacity, refill_period, clock)`, where `refill_period` is the number of seconds an empty bucket takes to refill to full capacity, so `TokenBucket(10, 60, clock)` gains one token every 6 seconds. A `refill_period` of zero or less should raise `ValueError: refill_period must be positive: <value>`.",
+   "request": "Building a `TokenBucket` by hand means working out tokens per second, which nobody gets right for slow rates. Change the constructor to `TokenBucket(capacity, refill_period, clock)`, where `refill_period` is the number of seconds an empty bucket takes to refill to full capacity, so `TokenBucket(10, 60, clock)` gains one token every 6 seconds. A `refill_period` of zero or less should raise ValueError with the message `refill_period must be positive: {value}`.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -27,7 +27,7 @@
    ]
   },
   {
-   "request": "Bug: on a key whose policy is `10/minute`, `throttle.check('upload', cost=15)` raises RateLimitExceeded telling the client to retry in under a minute, and a token bucket hands out a wait as well, but that hit can never succeed, so our clients retry forever. On a sliding window the same call crashes with IndexError. A hit costing more than the limit (a bucket's capacity) should be refused straight away with `ValueError: cost 15 exceeds limit 10`, from both `hit()` and `check()`, without spending anything.",
+   "request": "Bug: on a key whose policy is `10/minute`, `throttle.check('upload', cost=15)` raises RateLimitExceeded telling the client to retry in under a minute, and a token bucket hands out a wait as well, but that hit can never succeed, so our clients retry forever. On a sliding window the same call crashes with IndexError. A hit costing more than the limit (a bucket's capacity) should be refused straight away, from both `hit()` and `check()`, with the same ValueError a cost of 0 gets and without spending anything. Make that one message cover both ends: `cost must be between 1 and {limit}: {cost}`, so the call above raises `ValueError: cost must be between 1 and 10: 15`.",
    "kind": "self-contained",
    "bugfix": true,
    "dependent_missed_fails": []
@@ -50,7 +50,7 @@
    ]
   },
   {
-   "request": "Busy services hit the 1000-key cap and lose the limits of keys that are still active. Raise the default `max_keys` to 10000, and have `summarise()` also report `evicted`: how many keys the throttle has evicted to stay under its cap since it was created.",
+   "request": "Busy services hit the 1000-key cap and lose the limits of keys that are still active. Raise the default `max_keys` from 1000 to 10000, and have `summarise()` also report `evicted`: how many keys the throttle has evicted to stay under its cap since it was created.",
    "kind": "self-contained",
    "bugfix": false,
    "dependent_missed_fails": []

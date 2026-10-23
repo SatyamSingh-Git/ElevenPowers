@@ -11,7 +11,7 @@ index 4649eeb..f732a97 100644
  
  ## 1.4.0
 diff --git a/docs/reference.md b/docs/reference.md
-index bd230e7..21f0b48 100644
+index d46cc54..641eba3 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -61,7 +61,7 @@ Surrounding spaces are removed from every raw value before it is read.
@@ -19,18 +19,10 @@ index bd230e7..21f0b48 100644
  | `bool` | `true/false, yes/no, on/off, 1/0` | |
  | `str` | `text as written` | |
 -| `duration` | `float seconds` | A number with an optional unit, such as `1.5s`. |
-+| `duration` | `int milliseconds` | A number with an optional unit, such as `1.5s`. |
++| `duration` | `int milliseconds` | A number with an optional unit, such as `1.5s`. A duration finer than a whole millisecond is rejected: `{key}: duration must be a whole number of milliseconds`. |
  | `duration.units` | `ms s m h d` | |
  | `duration.bare` | `seconds` | Unit of a duration written without one. |
  | `size` | `int bytes` | A whole number with an optional unit; units are powers of 1024. |
-@@ -112,6 +112,7 @@ layers are reported together; a syntax error in the file stops loading.
- | `msg.min` | `{key}: must be at least {min}` | |
- | `msg.max` | `{key}: must be at most {max}` | |
- | `msg.choice` | `{key}: must be one of {choices}` | Choices joined with `, `. |
-+| `msg.whole_ms` | `{key}: duration must be a whole number of milliseconds` | |
- | `msg.unknown_key` | `unknown key '{key}'` | A file key that names no option. |
- | `msg.unknown_env` | `unknown variable` | |
- | `msg.syntax` | `expected 'key = value' or '[section]'` | |
 diff --git a/src/layercfg/coerce.py b/src/layercfg/coerce.py
 index 4dac540..1117a79 100644
 --- a/src/layercfg/coerce.py

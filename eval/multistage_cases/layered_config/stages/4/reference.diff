@@ -11,7 +11,7 @@ index a05889d..10a737d 100644
  - Environment variables use one underscore between section and name (`LAYERCFG_SERVER_PORT`); the double-underscore spelling is now an unknown variable.
  - Durations are whole milliseconds (`int`) instead of float seconds; a duration finer than a millisecond is rejected.
 diff --git a/docs/reference.md b/docs/reference.md
-index de84fe4..3d83c3b 100644
+index 52bd21c..f7654f6 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -59,7 +59,7 @@ Surrounding spaces are removed from every raw value before it is read.
@@ -19,18 +19,10 @@ index de84fe4..3d83c3b 100644
  | `int` | `decimal integer` | |
  | `float` | `finite decimal number` | |
 -| `bool` | `true/false, yes/no, on/off, 1/0` | |
-+| `bool` | `true/false, yes/no, on/off, 1/0 in any case` | |
++| `bool` | `true/false, yes/no, on/off, 1/0 in any case` | Anything else is reported as `{key}: expected bool (true/false, yes/no, on/off, 1/0), got '{raw}'`. |
  | `str` | `text as written` | |
- | `duration` | `int milliseconds` | A number with an optional unit, such as `1.5s`. |
+ | `duration` | `int milliseconds` | A number with an optional unit, such as `1.5s`. A duration finer than a whole millisecond is rejected: `{key}: duration must be a whole number of milliseconds`. |
  | `duration.units` | `ms s m h d` | |
-@@ -109,6 +109,7 @@ layers are reported together; a syntax error in the file stops loading.
- |---|---|---|
- | `msg.issue` | `{source}: {message}` | |
- | `msg.type` | `{key}: expected {type}, got '{raw}'` | |
-+| `msg.bool` | `{key}: expected bool (true/false, yes/no, on/off, 1/0), got '{raw}'` | |
- | `msg.min` | `{key}: must be at least {min}` | |
- | `msg.max` | `{key}: must be at most {max}` | |
- | `msg.choice` | `{key}: must be one of {choices}` | Choices joined with `, `. |
 diff --git a/src/layercfg/coerce.py b/src/layercfg/coerce.py
 index 1117a79..54bf8e2 100644
 --- a/src/layercfg/coerce.py

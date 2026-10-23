@@ -11,7 +11,7 @@ index a709b0a..d336b3a 100644
  - `format_stats` shows sizes in binary units (`bytes: 1.5 KiB`) and a new `average:` line; `LogStats` gains `average_record_bytes`.
  - Index entries store the offset relative to the segment's base offset in 4 bytes (8-byte entries), and the index is sparse: new `index_interval_bytes` option, default 4096.
 diff --git a/docs/reference.md b/docs/reference.md
-index 21a03a7..cd82260 100644
+index 8a9848f..0c6c846 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -25,7 +25,7 @@ An append-only log of keyed events, stored as a directory of segment files.
@@ -23,7 +23,7 @@ index 21a03a7..cd82260 100644
  | `segment.magic` | `EVLG` | First four bytes of every segment. |
  | `segment.version` | `2` | Format version byte after the magic. Other versions, including 1, are refused. |
  | `segment.header` | `magic(4) version(u8) base_offset(u64)` | Fixed header before the first record. |
-@@ -90,6 +90,7 @@ Every error derives from `EventLogError`. Messages:
+@@ -88,6 +88,7 @@ Every error derives from `EventLogError`. Messages:
  | `ValueTooLarge` | `value of {size} bytes exceeds max_value_bytes {limit}` | Value longer than `max_value_bytes`. |
  | `RecordTooLarge` | `record of {size} bytes exceeds segment_bytes {limit}` | An encoded record that would not fit even in an empty segment; nothing is written. |
  | `OffsetOutOfRange` | `offset {offset} is outside {first}..{next}` | Replaying from before the first offset or past the next one. |

@@ -14,20 +14,25 @@ index 06eb2ea..6bdaa12 100644
  
  ## 0.4.0
 diff --git a/docs/reference.md b/docs/reference.md
-index 4a4b9a0..bafa99c 100644
+index 794f2c4..1553bce 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -31,7 +31,12 @@ pattern column is what the raw, still percent-encoded segment must match.
- | `MethodNotAllowed` | `405` | status; the response carries an `Allow` header |
- | `InternalError` | `500` | status of any unexpected exception when `debug` is off |
+@@ -27,12 +27,13 @@ pattern column is what the raw, still percent-encoded segment must match.
+ 
+ | Error | Value | Meaning |
+ |---|---|---|
+-| `BadRequest` | `400` | status |
+-| `NotFound` | `404` | status |
+-| `MethodNotAllowed` | `405` | status; the response carries an `Allow` header |
+-| `InternalError` | `500` | status of any unexpected exception when `debug` is off |
++| `BadRequest` | `400` | status; code `bad_request` |
++| `NotFound` | `404` | status; code `not_found` |
++| `MethodNotAllowed` | `405` | status; the response carries an `Allow` header; code `method_not_allowed` |
++| `InternalError` | `500` | status of any unexpected exception when `debug` is off; code `internal_error` |
  | `HTTPError.message` | `status reason in lower case` | default message, e.g. `gone` for 410 |
 -| `error_body` | `{"error": message, "status": status}` | JSON body of every error response |
-+| `HTTPError.code` | `http_{status}` | default code of a subclass that sets none, e.g. `http_410` |
++| `HTTPError.code` | `http_<status>` | default code of a subclass that sets none, e.g. `http_410` |
 +| `error_body` | `{"error": {"code": code, "message": message}, "status": status}` | JSON body of every error response |
-+| `code.BadRequest` | `bad_request` | error code |
-+| `code.NotFound` | `not_found` | error code |
-+| `code.MethodNotAllowed` | `method_not_allowed` | error code |
-+| `code.InternalError` | `internal_error` | error code |
  | `Allow` | `sorted, comma-separated` | methods listed on a 405 |
  | `debug` | `False` | when true, unexpected exceptions propagate from `App.handle` |
  

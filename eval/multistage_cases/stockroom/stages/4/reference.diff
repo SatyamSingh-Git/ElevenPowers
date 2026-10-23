@@ -11,21 +11,21 @@ index be767a0..cdaa2af 100644
  ## 1.4.0
  
 diff --git a/docs/reference.md b/docs/reference.md
-index e9c3e92..feef123 100644
+index 3cde9f1..e85f36a 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -51,10 +51,10 @@ One JSON document. Item SKUs and location codes are stored upper-case.
- | `Inventory.on_hand(sku)` | `quantity by location` | dict of location code to quantity, leaving out locations holding none |
- | `Inventory.total(sku)` | `total quantity` | sum over every location; 0 when none is held |
- | `Inventory.at(sku, location)` | `quantity at location` | 0 when none is held there |
--| `Inventory.receive(sku, qty, location)` | `quantity at location` | after the goods arrive |
--| `Inventory.issue(sku, qty, location)` | `quantity at location` | what is left there |
--| `Inventory.transfer(sku, qty, source, dest)` | `quantity at destination` | after the goods arrive |
--| `Inventory.adjust(sku, location, counted)` | `change applied` | counted minus what was recorded |
-+| `Inventory.receive(sku, qty, location)` | `movement seq` | `seq` of the movement recorded |
-+| `Inventory.issue(sku, qty, location)` | `movement seq` | `seq` of the movement recorded |
-+| `Inventory.transfer(sku, qty, source, dest)` | `movement seq` | `seq` of the movement recorded |
-+| `Inventory.adjust(sku, location, counted)` | `movement seq` | `seq` of the movement recorded |
+ | `Inventory.on_hand(sku)` | `dict` | location code to quantity held there, leaving out locations holding none |
+ | `Inventory.total(sku)` | `int` | total quantity across every location; 0 when none is held |
+ | `Inventory.at(sku, location)` | `int` | quantity held at one location; 0 when none is held there |
+-| `Inventory.receive(sku, qty, location)` | `quantity` | quantity now held at the location |
+-| `Inventory.issue(sku, qty, location)` | `quantity` | quantity left at the location |
+-| `Inventory.transfer(sku, qty, source, dest)` | `quantity` | quantity now held at the destination |
+-| `Inventory.adjust(sku, location, counted)` | `change` | counted minus what was recorded |
++| `Inventory.receive(sku, qty, location)` | `seq` | of the movement recorded |
++| `Inventory.issue(sku, qty, location)` | `seq` | of the movement recorded |
++| `Inventory.transfer(sku, qty, source, dest)` | `seq` | of the movement recorded |
++| `Inventory.adjust(sku, location, counted)` | `seq` | of the movement recorded |
  
  ## Errors
  

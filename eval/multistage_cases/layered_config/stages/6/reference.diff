@@ -1,31 +1,41 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 4231e9d..abc86b1 100644
+index 4231e9d..f3508c3 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
-@@ -2,6 +2,7 @@
+@@ -2,6 +2,8 @@
  
  ## Unreleased
  
++- The default `pool.max_size` is 20, up from 10.
 +- Loading rejects `pool.min_size` above `pool.max_size`, and a TLS certificate without its key or the other way round.
  - Looking up an unknown key raises `UnknownKeyError` (a `KeyError`) naming the closest key; `Config.get`'s default now stands in for unset options only.
  - Fixed: booleans written with capitals (`True`, `YES`) were rejected. A value that is not a boolean now lists the accepted words.
  - `load()` takes `files`, a list of `(name, text)` pairs applied in order, instead of `file_text` and `file_name`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 684915d..7173b65 100644
+index d7265fc..aa5d5af 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -121,6 +121,11 @@ layers are reported together; a syntax error in the file stops loading.
- | `msg.bad_section` | `bad section name '{name}'` | |
- | `msg.lookup` | `unknown key '{key}' (did you mean '{match}'?)` | Raised as `KeyError` by `Config.get`, `Config[key]` and `Config.source`, and printed by `get` and `explain` on the command line. The suggestion is the closest key or alias and is left off when none is close. |
+@@ -14,7 +14,7 @@ exact.
+ | `server.tls_cert` | `(unset)` | str. Path to the TLS certificate. |
+ | `server.tls_key` | `(unset)` | str. Path to the TLS private key. |
+ | `pool.min_size` | `1` | int. Connections kept open when idle. |
+-| `pool.max_size` | `10` | int. Most connections open at once. |
++| `pool.max_size` | `20` | int. Most connections open at once. |
+ | `pool.idle_timeout` | `5m` | duration. Idle connections are closed after this long. |
+ | `cache.max_bytes` | `64mb` | size. Memory the response cache may use. |
+ | `cache.evict_ratio` | `0.75` | float. Share of the cache kept when it is full. |
+@@ -119,6 +119,11 @@ layers are reported together; a syntax error in the file stops loading.
+ | `msg.lookup` | `unknown key '{key}' (did you mean '{match}'?)` | Raised as `KeyError` by `Config.get`, `Config[key]` and `Config.source`, and printed by `get` and `explain` on the command line. The suggestion is the closest key or alias and is left off when none is close. The second argument of `Config.get` is returned for an option that has no value. |
  | `msg.unreadable` | `cannot read {path}: {reason}` | |
-+| `msg.pool_order` | `pool.min_size: must not exceed pool.max_size` | Reported where `pool.min_size` was set. Equal sizes are allowed. |
-+| `msg.tls_pair` | `server.tls_cert and server.tls_key must be set together` | Reported where the one that is set came from. |
-+
-+The two rules across options are checked only when every value is valid on its
-+own.
  
++Two rules across options are checked once every value is valid on its own:
++`pool.min_size: must not exceed pool.max_size`, reported where `pool.min_size`
++was set (equal sizes are allowed), and `server.tls_cert and server.tls_key must
++be set together`, reported where the one that is set came from.
++
  ## Views and command line
  
+ | Fact | Value | Notes |
 diff --git a/src/layercfg/loader.py b/src/layercfg/loader.py
 index c069664..bddc7a8 100644
 --- a/src/layercfg/loader.py
@@ -41,7 +51,7 @@ index c069664..bddc7a8 100644
          raise ValidationError(issues)
      return Config(schema, values, sources, env_prefix)
 diff --git a/src/layercfg/options.py b/src/layercfg/options.py
-index 0d2ecb1..b8eb7e2 100644
+index 0d2ecb1..6cf55c9 100644
 --- a/src/layercfg/options.py
 +++ b/src/layercfg/options.py
 @@ -1,6 +1,19 @@
@@ -64,6 +74,15 @@ index 0d2ecb1..b8eb7e2 100644
  APP_SCHEMA = Schema([
      Option('server.host', 'str', '127.0.0.1', 'Address to listen on.', aliases=('server.bind',)),
      Option('server.port', 'int', '8080', 'TCP port to listen on.', aliases=('server.listen_port',),
+@@ -10,7 +23,7 @@ APP_SCHEMA = Schema([
+     Option('server.tls_cert', 'str', None, 'Path to the TLS certificate.'),
+     Option('server.tls_key', 'str', None, 'Path to the TLS private key.'),
+     Option('pool.min_size', 'int', '1', 'Connections kept open when idle.', minimum='0', maximum='1000'),
+-    Option('pool.max_size', 'int', '10', 'Most connections open at once.', minimum='1', maximum='1000'),
++    Option('pool.max_size', 'int', '20', 'Most connections open at once.', minimum='1', maximum='1000'),
+     Option('pool.idle_timeout', 'duration', '5m', 'Idle connections are closed after this long.',
+            minimum='0s', maximum='1d'),
+     Option('cache.max_bytes', 'size', '64mb', 'Memory the response cache may use.', minimum='0b', maximum='4gb'),
 @@ -23,4 +36,4 @@ APP_SCHEMA = Schema([
      Option('app.debug', 'bool', 'false', 'Turn on debug pages.', aliases=('app.dev_mode',)),
      Option('db.url', 'str', 'sqlite:///app.db', 'Database connection URL.'),
@@ -87,9 +106,18 @@ index 111da0e..fc70120 100644
          self._aliases = {}
          for option in options:
 diff --git a/tests/test_loader.py b/tests/test_loader.py
-index b424897..caad273 100644
+index b424897..39c0d27 100644
 --- a/tests/test_loader.py
 +++ b/tests/test_loader.py
+@@ -20,7 +20,7 @@ def test_env_beats_file_beats_defaults():
+     assert config.source('server.port') == 'env LAYERCFG_SERVER_PORT'
+     assert config['server.host'] == '0.0.0.0'
+     assert config.source('server.host') == 'app.ini line 3'
+-    assert config['pool.max_size'] == 10
++    assert config['pool.max_size'] == 20
+ 
+ 
+ def test_later_files_override_earlier_ones():
 @@ -94,6 +94,30 @@ def test_custom_schema_and_prefix():
      assert config.as_dict() == {'job.retries': 6}
  

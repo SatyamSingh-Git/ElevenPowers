@@ -12,7 +12,7 @@ def test_hit_costing_more_than_the_limit_is_refused(policy, cost, limit):
     throttle = Throttle(ManualClock(), default=policy)
     with pytest.raises(ValueError) as caught:
         throttle.hit('k', cost)
-    assert str(caught.value) == f'cost {cost} exceeds limit {limit}'
+    assert str(caught.value) == f'cost must be between 1 and {limit}: {cost}'
 
 
 @pytest.mark.parametrize('policy, limit', [

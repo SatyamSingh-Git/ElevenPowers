@@ -7,7 +7,7 @@
   "changelog": "CHANGELOG.md",
   "stages": [
     {
-      "request": "Durations are loaded as float seconds (`timeout = 1.5s` gives `1.5`), so everything that uses them has to multiply and round. Make them whole milliseconds as an int instead: `1.5s` becomes 1500, `250ms` becomes 250, and a bare number still means seconds, so `2` becomes 2000.\n\nA duration that doesn't come to a whole number of milliseconds, like `0.5ms` or `1.0005s`, should be rejected with `duration must be a whole number of milliseconds`.",
+      "request": "Durations are loaded as `float seconds` (`timeout = 1.5s` gives `1.5`), so our services have to multiply and round before they can use them. Make them `int milliseconds` instead: `1.5s` becomes 1500, `250ms` becomes 250, and a bare number still means seconds, so `2` becomes 2000.\n\nA duration that doesn't come to a whole number of milliseconds, like `0.5ms` or `1.0005s`, should be rejected with `duration must be a whole number of milliseconds`.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": ["base_cli", "base_roundtrip"]
@@ -19,25 +19,25 @@
       "dependent_missed_fails": ["base_roundtrip"]
     },
     {
-      "request": "We want a site-wide configuration file plus a per-host file that overrides it. Change `load()` to take a list of files instead of one: `load(files=[(name, text), ...], env=...)`, each file a `(name, text)` pair. Files apply in order, so a later file overrides an earlier one, and all of them come before the environment.\n\nEach value's source still names the file and line it came from, and problems from every file are reported together. The old `file_text` and `file_name` arguments go away.",
+      "request": "We want a site-wide configuration file plus a per-host file that overrides it. Change `load()` to take a list of files instead of one: `load(files=[(name, text), ...], env=...)`, each file a `(name, text)` pair. Files apply in order, so a later file overrides an earlier one, and all of them come before the environment: the layer order becomes `defaults < files in order < env`.\n\nEach value's source still names the file and line it came from, and problems from every file are reported together. The old `file_text` and `file_name` arguments go away.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": ["base_cli", "base_roundtrip", "s1_duration_ms", "s1_whole_ms", "s2_env_single", "s2_env_double"]
     },
     {
-      "request": "Booleans written with capitals are rejected. `debug = True` in a file, or `LAYERCFG_APP_DEBUG=YES` from our deploy script, fails with `app.debug: expected bool, got 'True'`. They should be accepted in any case.\n\nAnd when a value really isn't a boolean, the error should say what is accepted, keeping the value as it was written: `app.debug: expected bool (true/false, yes/no, on/off, 1/0), got 'maybe'`.",
+      "request": "Booleans written with capitals are rejected. `debug = True` in a file, or `LAYERCFG_APP_DEBUG=YES` from our deploy script, fails with `app.debug: expected bool, got 'True'`. They should be accepted in any case, so the accepted spellings become `true/false, yes/no, on/off, 1/0 in any case`.\n\nAnd when a value really isn't a boolean, the error should say what is accepted, keeping the value as it was written: `app.debug: expected bool (true/false, yes/no, on/off, 1/0), got 'maybe'`.",
       "kind": "self-contained",
       "bugfix": true,
       "dependent_missed_fails": []
     },
     {
-      "request": "A typo in a key goes unnoticed: `config.get('server.prot')` quietly returns None. Looking up a key that names no option should raise `KeyError` with the message `unknown key 'server.prot' (did you mean 'server.port'?)`, suggesting the closest known key or alias and leaving the suggestion off when nothing is close. `config['server.prot']` and `config.source('server.prot')` should fail the same way.\n\nThe `default` argument of `get` keeps a purpose: it is returned for options that exist but have no value, such as `log.file` when nothing sets it.",
+      "request": "A typo in a key goes unnoticed: `config.get('server.prot')` quietly returns None. Looking up a key that names no option should raise `KeyError`, even when a default is passed, with a message of the form `unknown key '{key}' (did you mean '{match}'?)`, for example `unknown key 'server.prot' (did you mean 'server.port'?)`. The suggestion is the closest known key or alias; when nothing is close, leave it off and the message is just `unknown key 'zzz'`. `config['server.prot']` and `config.source('server.prot')` should fail the same way.\n\nThe `default` argument of `get` keeps a purpose: it is returned for options that exist but have no value, such as `log.file` when nothing sets it.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": ["base_cli"]
     },
     {
-      "request": "Two combinations of settings start the server in a broken state without any complaint. Reject them when loading: `pool.min_size` greater than `pool.max_size` (report `pool.min_size: must not exceed pool.max_size` at the place where `pool.min_size` was set; equal sizes are fine), and only one of `server.tls_cert` and `server.tls_key` being set (report `server.tls_cert and server.tls_key must be set together` at the place the one that is set came from).",
+      "request": "Two combinations of settings start the server in a broken state without any complaint. Reject them when loading: `pool.min_size` greater than `pool.max_size` (report `pool.min_size: must not exceed pool.max_size` at the place where `pool.min_size` was set; equal sizes are fine), and only one of `server.tls_cert` and `server.tls_key` being set (report `server.tls_cert and server.tls_key must be set together` at the place the one that is set came from).\n\nSome of our hosts raise `pool.min_size` to 15, which the new check would reject against the default maximum, so raise the default `pool.max_size` from 10 to 20.",
       "kind": "self-contained",
       "bugfix": false,
       "dependent_missed_fails": []

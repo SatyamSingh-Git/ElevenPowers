@@ -77,7 +77,6 @@ Surrounding spaces are removed from every raw value before it is read.
 | `source.default` | `default` | What `Config.source` returns for a built-in default. |
 | `source.file` | `{file} line {line}` | |
 | `source.env` | `env {name}` | |
-| `get.default` | `returned for unknown keys` | The second argument of `Config.get`. |
 
 ## Environment
 

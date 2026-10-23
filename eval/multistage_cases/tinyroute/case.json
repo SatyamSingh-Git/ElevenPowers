@@ -7,7 +7,7 @@
  "changelog": "CHANGELOG.md",
  "stages": [
   {
-   "request": "Error responses only carry a free-text message, so API consumers end up matching on its wording. Give every error a stable code. The JSON body of an error response should become `{\"error\": {\"code\": \"not_found\", \"message\": \"no route matches '/x'\"}, \"status\": 404}`.\n\nThe codes are `bad_request` (400), `not_found` (404), `method_not_allowed` (405) and `internal_error` (500, including unexpected exceptions). An `HTTPError` subclass picks its code with a `code` class attribute; one that doesn't set it gets `http_<status>`, for example `http_410`.",
+   "request": "Error responses only carry a free-text message, so API consumers end up matching on its wording. Give every error a stable code. The JSON body of an error response should change from `{\"error\": message, \"status\": status}` to `{\"error\": {\"code\": code, \"message\": message}, \"status\": status}`, so a 404 reads `{\"error\": {\"code\": \"not_found\", \"message\": \"no route matches '/x'\"}, \"status\": 404}`.\n\nThe codes are `bad_request` (400), `not_found` (404), `method_not_allowed` (405) and `internal_error` (500, including unexpected exceptions). An `HTTPError` subclass picks its code with a `code` class attribute; when a subclass doesn't set one, `HTTPError.code` defaults to `http_<status>`, for example `http_410`.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -15,7 +15,7 @@
    ]
   },
   {
-   "request": "Setting two cookies on one response keeps only the last `Set-Cookie`, because a response holds each header name once. Responses need to carry repeated headers. Make `Response.headers` a list of `(name, value)` pairs in the order they were added, and add `response.add_header(name, value)` to append a value, `response.set_header(name, value)` to replace every value of that name, and `response.header_values(name)` returning all values of a name as a list.\n\nLike `response.header(name)`, which keeps returning the first value or None, these ignore the case of the name. `set_cookie` and `delete_cookie` add a `Set-Cookie` header instead of replacing the previous one, and `Response(headers=...)` accepts either a mapping or a list of pairs.",
+   "request": "Setting two cookies on one response keeps only the last `Set-Cookie`, because a response holds each header name once. Responses need to carry repeated headers. Make `Response.headers` a `list[tuple[str, str]]` of (name, value) pairs in the order they were added, and add `response.add_header(name, value)` to append a value, `response.set_header(name, value)` to replace every value of that name, and `response.header_values(name)` returning all values of a name as a list.\n\nLike `response.header(name)`, which keeps returning the first value or None, these ignore the case of the name. `set_cookie` and `delete_cookie` add a `Set-Cookie` header instead of replacing the previous one, and `Response(headers=...)` accepts either a mapping or a list of pairs.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -23,13 +23,13 @@
    ]
   },
   {
-   "request": "Add a `uuid` path parameter type. `<uuid:id>` matches a UUID written canonically (lower-case hex digits in groups of 8-4-4-4-12 joined by hyphens) and passes the handler a `uuid.UUID`; upper-case, braced or unhyphenated forms don't match. When building a URL it accepts a `uuid.UUID` or any string `uuid.UUID()` accepts and always writes the canonical lower-case form; like the other types, it refuses anything that isn't a UUID.",
+   "request": "Add a `uuid` path parameter type. `<uuid:id>` matches `[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`, a UUID written canonically in lower case, and passes the handler a `uuid.UUID`; upper-case, braced or unhyphenated forms don't match. When building a URL it accepts a `uuid.UUID` or any string `uuid.UUID()` accepts and always writes the canonical lower-case form; like the other types, it refuses anything that isn't a UUID.",
    "kind": "self-contained",
    "bugfix": false,
    "dependent_missed_fails": []
   },
   {
-   "request": "`url_for` quietly turns any keyword it doesn't recognise into a query string, so a typo like `url_for('user', id=3, tba='posts')` hands out `/users/3?tba=posts` and nobody notices. Make it strict: every keyword must be a path parameter of the route, otherwise raise `BuildError` with the message `unknown parameter 'tba' for route 'user'`.\n\nQuery strings are passed explicitly as a mapping in a new `_query` keyword: `url_for('user', id=3, _query={'tab': 'posts'})` gives `/users/3?tab=posts`, a list value repeats the name (`{'tag': ['a', 'b']}` gives `tag=a&tag=b`), and an empty or absent `_query` adds no `?`.",
+   "request": "`url_for` quietly turns any keyword it doesn't recognise into a query string, so a typo like `url_for('user', id=3, tba='posts')` hands out `/users/3?tba=posts` and nobody notices. Make it strict: every keyword must be a path parameter of the route, otherwise raise `BuildError` with the message `unknown parameter '{name}' for route '{route}'`, so that typo gives `unknown parameter 'tba' for route 'user'`.\n\nQuery strings are passed explicitly as a mapping in a new `_query` keyword: `url_for('user', id=3, _query={'tab': 'posts'})` gives `/users/3?tab=posts`, a list value repeats the name (`{'tag': ['a', 'b']}` gives `tag=a&tag=b`), and an empty or absent `_query` adds no `?`.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -37,7 +37,7 @@
    ]
   },
   {
-   "request": "Repeated query parameters are lost: for `/search?tag=a&tag=b`, `request.query` is `{'tag': 'b'}`. `request.query` should map every name to the list of all its values in the order they appear, so that's `{'tag': ['a', 'b']}`; a name given without a value (`?flag` or `?flag=`) maps to `['']`.\n\nSince most handlers want one value, add `request.arg(name, default=None)`, which returns the first value of a name (`''` for a name given without a value) or `default` when the name is absent.",
+   "request": "Repeated query parameters are lost: for `/search?tag=a&tag=b`, `request.query` is `{'tag': 'b'}`. `request.query` should become a `dict[str, list[str]]` mapping every name to all its values in the order they appear, so that's `{'tag': ['a', 'b']}`; a name given without a value (`?flag` or `?flag=`) maps to `['']`.\n\nSince most handlers want one value, add `request.arg(name, default=None)`, which returns the first value of a name (`''` for a name given without a value) or `default` when the name is absent.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [
@@ -45,7 +45,7 @@
    ]
   },
   {
-   "request": "Routes are tried strictly in the order they were added, so with `/users/<name>` added before `/users/me`, a GET to `/users/me` lands in the `<name>` handler and the `me` route can never be reached. Likewise `/files/<path:rest>` added before `/files/<name>/raw` swallows `/files/a/raw`.\n\nThe more specific route should win whatever the order: comparing segment by segment from the left, fixed text beats a parameter, and any other parameter beats a `path` parameter. Equally specific routes keep the order they were added in, and as before a route that doesn't accept the request's method is passed over for the next one that matches.",
+   "request": "Routes are tried strictly in the order they were added, so with `/users/<name>` added before `/users/me`, a GET to `/users/me` lands in the `<name>` handler and the `me` route can never be reached. Likewise `/files/<path:rest>` added before `/files/<name>/raw` swallows `/files/a/raw`.\n\nRoutes should be matched most specific first instead of in registration order: comparing segment by segment from the left, fixed text beats a parameter, and any other parameter beats a `path` parameter. Equally specific routes keep the order they were added in, and as before a route that doesn't accept the request's method is passed over for the next one that matches.",
    "kind": "self-contained",
    "bugfix": true,
    "dependent_missed_fails": []

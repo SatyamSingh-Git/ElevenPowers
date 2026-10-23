@@ -15,12 +15,13 @@ pattern column is what the raw, still percent-encoded segment must match.
 
 ## Routing
 
+`url_for(name, **values)` fills in the route's path parameters; any other value is appended as a query string.
+
 | Setting | Value | Meaning |
 |---|---|---|
 | `default_methods` | `GET` | methods of a route added without `methods` |
 | `route_name` | `handler.__name__` | name of a route added without `name`; lambdas get none |
 | `match_order` | `registration order` | the first route that matches path and method wins |
-| `url_for_extra_values` | `query string` | values that are not path parameters are appended as `?key=value` |
 
 ## Errors
 
@@ -57,9 +58,9 @@ pattern column is what the raw, still percent-encoded segment must match.
 
 | Field | Value | Meaning |
 |---|---|---|
-| `Request.query` | `dict of str` | one value per name; blank values kept; a repeated name keeps its last value |
+| `Request.query` | `dict[str, str]` | one value per name; blank values kept; a repeated name keeps its last value |
 | `Request.headers` | `lower-case names` | look up with `request.header(name)` |
-| `Response.headers` | `dict` | header name to value |
+| `Response.headers` | `dict[str, str]` | header name to value |
 | `Response.content_type` | `text/plain; charset=utf-8` | default content type |
 | `json_response.content_type` | `application/json` | content type of JSON responses |
 | `None` | `204` | status when a handler returns None |

@@ -1,7 +1,7 @@
 import io
 import json
 
-from stockroom import load
+from stockroom import load, save
 from stockroom.cli import main
 
 VERSION_1 = {
@@ -55,7 +55,10 @@ def test_version_1_file_is_rewritten_in_cents(tmp_path):
     assert data['stock'] == {'BOLT-M6': {'A1': 20}, 'PUMP': {'A1': 2}}
 
 
-def test_library_load_upgrades(tmp_path):
-    doc = load(old_file(tmp_path))
-    assert doc['items']['BOLT-M6']['cost_cents'] == 12
-    assert doc['version'] >= 2
+def test_library_load_then_save_upgrades(tmp_path):
+    path = old_file(tmp_path)
+    save(path, load(path))
+    data = json.loads(path.read_text(encoding='utf-8'))
+    assert data['version'] >= 2
+    assert data['items']['BOLT-M6']['cost_cents'] == 12
+    assert 'unit_cost' not in data['items']['BOLT-M6']

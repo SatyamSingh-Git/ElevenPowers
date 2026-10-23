@@ -17,9 +17,10 @@ def test_from_and_to(tmp_path, capsys):
     capsys.readouterr()
     assert main([path, "statement", "Assets:Cash", "--from", "2026-03-04", "--to", "2026-03-09"]) == 0
     out = capsys.readouterr().out
-    rows = [line.split() for line in out.splitlines() if line[:4] == "2026"]
-    assert rows == [
-        ["2026-03-04", "Opening", "balance", "300.00"],
+    rows = [line for line in out.splitlines() if line[:4] == "2026"]
+    assert len(rows) == 3
+    assert rows[0].startswith("2026-03-04") and "Opening balance" in rows[0] and rows[0].rstrip().endswith("300.00")
+    assert [row.split() for row in rows[1:]] == [
         ["2026-03-04", "Bakery", "-4.20", "295.80"],
         ["2026-03-09", "Market", "-31.75", "264.05"],
     ]

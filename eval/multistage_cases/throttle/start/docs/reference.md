@@ -30,7 +30,7 @@ Returned by `hit()` on a limiter or a Throttle.
 |---|---|---|
 | `decision.allowed` | `bool` | Whether the hit was let through. |
 | `decision.remaining` | `int, units left after this hit` | |
-| `decision.retry_after` | `float seconds, 0 when allowed` | How long until the same hit would be allowed. |
+| `decision.retry_after` | `seconds` | How long until the same hit would be allowed: a float, 0 when allowed. |
 | `decision.limit` | `int` | The limiter's limit (a bucket's capacity). |
 
 ## Limiter state and snapshots
@@ -54,9 +54,10 @@ dict per key, sorted by key, with `key`, `policy` and `retry_after` added.
 |---|---|---|
 | `report.columns` | `key, policy, remaining, retry, resets` | Columns of `render_table`; remaining is shown as `left/limit`. |
 | `report.empty_wait` | `-` | Shown in `retry` and `resets` when there is nothing to wait for. |
-| `report.summary` | `keys, exhausted, busiest` | Fields of `summarise()`. |
 | `report.csv` | `one row per snapshot entry, columns in snapshot order` | Output of `to_csv()`; empty when no keys are tracked. |
 | `duration.format` | `250ms below 1s, 1.5s below 1m, then 1h2m3s` | How waits are written in reports and messages. |
+
+`summarise()` returns `keys`, `exhausted` and `busiest`.
 
 ## Config files
 

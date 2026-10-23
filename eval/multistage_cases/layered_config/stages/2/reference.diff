@@ -11,10 +11,10 @@ index f732a97..94a2717 100644
  - `dump --format sources` lines up the source column.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 21f0b48..c4accfa 100644
+index 641eba3..a11f374 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -87,8 +87,8 @@ library.
+@@ -86,8 +86,8 @@ library.
  | Fact | Value | Notes |
  |---|---|---|
  | `env.prefix` | `LAYERCFG_` | Variables without it are ignored. |

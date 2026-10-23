@@ -12,19 +12,18 @@ index b312188..a9f010a 100644
    `BuildError` instead of landing in the query string. Pass query values
    as a mapping in `_query`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 41980bc..7e3c238 100644
+index ad345f6..189c125 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -65,7 +65,8 @@ pattern column is what the raw, still percent-encoded segment must match.
+@@ -61,7 +61,7 @@ pattern column is what the raw, still percent-encoded segment must match.
  
  | Field | Value | Meaning |
  |---|---|---|
--| `Request.query` | `dict of str` | one value per name; blank values kept; a repeated name keeps its last value |
-+| `Request.query` | `dict of list of str` | every value of each name, in order; a name without a value has `['']` |
-+| `Request.arg()` | `first value` | of a query name, or the given default when absent |
+-| `Request.query` | `dict[str, str]` | one value per name; blank values kept; a repeated name keeps its last value |
++| `Request.query` | `dict[str, list[str]]` | every value of each name, in order; a name without a value has `['']`; `request.arg(name, default=None)` gives the first value |
  | `Request.headers` | `lower-case names` | look up with `request.header(name)` |
- | `Response.headers` | `list of (name, value) pairs` | in the order added; a name may repeat |
- | `Response.header()` | `first value` | case-insensitive; `header_values()` returns all of them |
+ | `Response.headers` | `list[tuple[str, str]]` | (name, value) pairs in the order added; a name may repeat; `header()` gives the first value and `header_values()` all of them, ignoring case |
+ | `Response.content_type` | `text/plain; charset=utf-8` | default content type |
 diff --git a/src/tinyroute/http.py b/src/tinyroute/http.py
 index 7ef47b8..4277475 100644
 --- a/src/tinyroute/http.py

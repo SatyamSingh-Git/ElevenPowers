@@ -11,30 +11,29 @@ index ebd87d1..bb50321 100644
  - `eventlog dump --from` defaults to the first offset still in the log.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 4af786a..ec4a651 100644
+index 4af786a..63412b1 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -11,6 +11,7 @@ An append-only log of keyed events, stored as a directory of segment files.
  | `segment_bytes` | `1048576` | The active segment is sealed and a new one started once it reaches this size. |
  | `max_key_bytes` | `1024` | Longest key accepted, in bytes after UTF-8 encoding. |
  | `max_value_bytes` | `65536` | Longest value accepted, in bytes. |
-+| `index_interval_bytes` | `4096` | Minimum distance in bytes between the positions of consecutive index entries; `0` indexes every record. |
++| `index_interval_bytes` | `4096` | The index is sparse: the first record of a segment always gets an entry, and a later record gets one only when it starts at least this many bytes after the previous entry's position. `0` indexes every record. |
  | `clock` | `ManualClock(0)` | Not a `LogConfig` field but a `Log.open` argument: a callable returning milliseconds, used when `append` gets no `timestamp`. |
  
  ## Limits
-@@ -53,8 +54,9 @@ Records follow the segment header back to back.
+@@ -53,8 +54,8 @@ Records follow the segment header back to back.
  | Field | Value | Meaning |
  |---|---|---|
  | `index.name` | `{base_offset:020d}.idx` | One per segment, beside it. |
 -| `index.entry` | `offset(u64) position(u32)` | One entry per record; position is the byte position in the segment file. |
 -| `index.entry_bytes` | `12` | Size of one entry. |
-+| `index.entry` | `relative_offset(u32) position(u32)` | Relative offset is the record's offset minus the segment's base offset; position is the record's byte position in the segment file. |
++| `index.entry` | `offset(u32) position(u32)` | The offset is stored relative to the segment's base offset; position is the record's byte position in the segment file. |
 +| `index.entry_bytes` | `8` | Size of one entry. |
-+| `index.sparse` | `first record, then every index_interval_bytes` | The first record of a segment always gets an entry; a later record gets one only when it starts at least `index_interval_bytes` after the previous entry's position. |
  
  ## Recovery
  
-@@ -79,7 +81,7 @@ Every error derives from `EventLogError`. Messages:
+@@ -79,7 +80,7 @@ Every error derives from `EventLogError`. Messages:
  
  | Error | Message | Raised when |
  |---|---|---|

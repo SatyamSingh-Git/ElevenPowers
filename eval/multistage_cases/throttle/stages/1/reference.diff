@@ -12,15 +12,15 @@ index 021e54c..c5d23b0 100644
  
  - Config files: `dump_config()` writes a Throttle's policies back out.
 diff --git a/docs/reference.md b/docs/reference.md
-index d6dd98f..a43833b 100644
+index e088bc0..502f4c5 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -30,7 +30,7 @@ Returned by `hit()` on a limiter or a Throttle.
  |---|---|---|
  | `decision.allowed` | `bool` | Whether the hit was let through. |
  | `decision.remaining` | `int, units left after this hit` | |
--| `decision.retry_after` | `float seconds, 0 when allowed` | How long until the same hit would be allowed. |
-+| `decision.retry_after` | `int milliseconds, rounded up, 0 when allowed` | How long until the same hit would be allowed. |
+-| `decision.retry_after` | `seconds` | How long until the same hit would be allowed: a float, 0 when allowed. |
++| `decision.retry_after` | `milliseconds` | How long until the same hit would be allowed: an integer, rounded up, 0 when allowed. |
  | `decision.limit` | `int` | The limiter's limit (a bucket's capacity). |
  
  ## Limiter state and snapshots

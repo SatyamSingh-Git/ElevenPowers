@@ -13,26 +13,24 @@ index 6bdaa12..f380365 100644
    `{"error": {"code": ..., "message": ...}, "status": ...}`. `HTTPError`
    subclasses set `code`, defaulting to `http_<status>`. `ClientError.message`
 diff --git a/docs/reference.md b/docs/reference.md
-index bafa99c..3916597 100644
+index 1553bce..5ba8b02 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -64,13 +64,15 @@ pattern column is what the raw, still percent-encoded segment must match.
+@@ -61,12 +61,12 @@ pattern column is what the raw, still percent-encoded segment must match.
  |---|---|---|
- | `Request.query` | `dict of str` | one value per name; blank values kept; a repeated name keeps its last value |
+ | `Request.query` | `dict[str, str]` | one value per name; blank values kept; a repeated name keeps its last value |
  | `Request.headers` | `lower-case names` | look up with `request.header(name)` |
--| `Response.headers` | `dict` | header name to value |
-+| `Response.headers` | `list of (name, value) pairs` | in the order added; a name may repeat |
-+| `Response.header()` | `first value` | case-insensitive; `header_values()` returns all of them |
+-| `Response.headers` | `dict[str, str]` | header name to value |
++| `Response.headers` | `list[tuple[str, str]]` | (name, value) pairs in the order added; a name may repeat; `header()` gives the first value and `header_values()` all of them, ignoring case |
  | `Response.content_type` | `text/plain; charset=utf-8` | default content type |
  | `json_response.content_type` | `application/json` | content type of JSON responses |
  | `None` | `204` | status when a handler returns None |
  | `redirect.status` | `302` | default status of `redirect()` |
- | `set_cookie.path` | `/` | default cookie path |
+-| `set_cookie.path` | `/` | default cookie path |
++| `set_cookie.path` | `/` | default cookie path; each cookie adds its own `Set-Cookie` header |
  | `set_cookie.http_only` | `True` | cookies are HttpOnly by default |
-+| `Set-Cookie` | `one header per cookie` | `set_cookie()` and `delete_cookie()` add a header, never replace one |
  
  ## Pagination
- 
 diff --git a/src/tinyroute/http.py b/src/tinyroute/http.py
 index 4788418..7ef47b8 100644
 --- a/src/tinyroute/http.py

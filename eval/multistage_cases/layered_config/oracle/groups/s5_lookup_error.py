@@ -6,7 +6,7 @@ SUGGESTED = "unknown key 'server.prot' (did you mean 'server.port'?)"
 
 
 def test_get_raises_for_unknown_keys():
-    config = load()
+    config = load(files=[])
     with pytest.raises(KeyError) as caught:
         config.get('server.prot')
     assert SUGGESTED in str(caught.value)
@@ -16,7 +16,7 @@ def test_get_raises_for_unknown_keys():
 
 
 def test_indexing_and_source_raise_the_same_way():
-    config = load()
+    config = load(files=[])
     with pytest.raises(KeyError) as caught:
         config['pool.max_sise']
     assert "unknown key 'pool.max_sise' (did you mean 'pool.max_size'?)" in str(caught.value)
@@ -26,7 +26,7 @@ def test_indexing_and_source_raise_the_same_way():
 
 
 def test_no_suggestion_when_nothing_is_close():
-    config = load()
+    config = load(files=[])
     with pytest.raises(KeyError) as caught:
         config.get('zzz')
     assert "unknown key 'zzz'" in str(caught.value)
@@ -34,6 +34,6 @@ def test_no_suggestion_when_nothing_is_close():
 
 
 def test_aliases_are_still_found():
-    config = load(env={'LAYERCFG_SERVER_PORT': '9000'})
+    config = load(files=[], env={'LAYERCFG_SERVER_PORT': '9000'})
     assert config.get('server.listen_port') == 9000
     assert config['log.verbosity'] == 'info'
