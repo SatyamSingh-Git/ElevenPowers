@@ -6,7 +6,14 @@ Oracle gap from the sweep's records: +6.7 points ordinary, +4.2 assisted, each f
 candidates, best-of-3 ordinary covers 17.5% of tasks against 47.5% for a blind
 assisted pick. Replaying each transcript's edits from the base commit (148 of 238
 runs replay; 90 edited through the shell), 1 of 85 runs with an earlier state held
-a better one than it submitted. Descriptive, not pre-registered. See
+a better one than it submitted. Descriptive, not pre-registered. Hosted CI:
+`4fc2f61` passed all five jobs. Two intermittents were met on the way and are
+retained, unexplained: the recorded `test_keyboard_interrupt_cleans_tree_before_reraising`
+(`cb03a60` one Windows cell, `e8bbe8f` one Ubuntu cell), and a newly recorded
+one, `test_actual_encoded_runner_envelope_does_not_become_a_typecheck` timing out
+at 30 s with no output on hosted Windows (`c0909a1` one cell, `94f5bbc` both).
+It passes locally in about 2 s on Python 3.11 and 3.13, did not recur on the next
+two commits, and no commit since `c0909a1` touched its code path. See
 [results](../results/heldout/sweep-2026-10-22/README.md) and
 [journey 90](../journey/90-nothing-better-was-left-behind.md).
 
