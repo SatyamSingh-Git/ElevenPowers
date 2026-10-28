@@ -1,0 +1,901 @@
+[
+  {
+    "slot": "gradebook--superpowers--0",
+    "case": "gradebook",
+    "arm": "superpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 1,
+    "stale": 0,
+    "stages": 8,
+    "cost": 0.98278,
+    "seconds": 230.276,
+    "grade": {
+      "base": {
+        "base_grading": "passed",
+        "base_reports": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "passed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_cli_export",
+            "s1_grades_semicolon"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "passed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_total_points",
+            "s2_unknown_policy"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "passed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_drop_by_percent",
+            "s3_drop_total_points"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed"
+          },
+          "lost": [
+            "base_reports"
+          ],
+          "stale": [],
+          "new": [
+            "s4_report_decimals",
+            "s4_two_decimals"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s5_sheet_cli",
+            "s5_sheet_names"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed",
+            "s6_sort_grade": "passed",
+            "s6_sort_name": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s6_sort_grade",
+            "s6_sort_name"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 7,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed",
+            "s6_sort_grade": "passed",
+            "s6_sort_name": "passed",
+            "s7_flat_default": "passed",
+            "s7_flat_setting": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s7_flat_default",
+            "s7_flat_setting"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 8,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed",
+            "s6_sort_grade": "passed",
+            "s6_sort_name": "passed",
+            "s7_flat_default": "passed",
+            "s7_flat_setting": "passed",
+            "s8_ng_grade": "passed",
+            "s8_ng_outputs": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s8_ng_grade",
+            "s8_ng_outputs"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 1,
+      "stale": 0
+    }
+  },
+  {
+    "slot": "gradebook--elevenpowers--0",
+    "case": "gradebook",
+    "arm": "elevenpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 1,
+    "stale": 0,
+    "stages": 8,
+    "cost": 0.940405,
+    "seconds": 366.873,
+    "grade": {
+      "base": {
+        "base_grading": "passed",
+        "base_reports": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "passed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_cli_export",
+            "s1_grades_semicolon"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "passed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_total_points",
+            "s2_unknown_policy"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "passed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_drop_by_percent",
+            "s3_drop_total_points"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed"
+          },
+          "lost": [
+            "base_reports"
+          ],
+          "stale": [],
+          "new": [
+            "s4_report_decimals",
+            "s4_two_decimals"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s5_sheet_cli",
+            "s5_sheet_names"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed",
+            "s6_sort_grade": "passed",
+            "s6_sort_name": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s6_sort_grade",
+            "s6_sort_name"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 7,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed",
+            "s6_sort_grade": "passed",
+            "s6_sort_name": "passed",
+            "s7_flat_default": "passed",
+            "s7_flat_setting": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s7_flat_default",
+            "s7_flat_setting"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 8,
+          "groups": {
+            "base_grading": "passed",
+            "base_reports": "failed",
+            "s1_grades_semicolon": "passed",
+            "s1_cli_export": "passed",
+            "s2_total_points": "passed",
+            "s2_unknown_policy": "passed",
+            "s3_drop_by_percent": "passed",
+            "s3_drop_total_points": "passed",
+            "s4_two_decimals": "passed",
+            "s4_report_decimals": "passed",
+            "s5_sheet_names": "passed",
+            "s5_sheet_cli": "passed",
+            "s6_sort_grade": "passed",
+            "s6_sort_name": "passed",
+            "s7_flat_default": "passed",
+            "s7_flat_setting": "passed",
+            "s8_ng_grade": "passed",
+            "s8_ng_outputs": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s8_ng_grade",
+            "s8_ng_outputs"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 1,
+      "stale": 0
+    }
+  },
+  {
+    "slot": "parcelpost--elevenpowers--0",
+    "case": "parcelpost",
+    "arm": "elevenpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 0,
+    "stale": 0,
+    "stages": 8,
+    "cost": 1.330991,
+    "seconds": 398.328,
+    "grade": {
+      "base": {
+        "base_shipping_day": "passed",
+        "base_cli_day": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_manifest_charge_api",
+            "s1_manifest_charge_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_out_for_delivery_api",
+            "s2_out_for_delivery_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_weight_limit_api",
+            "s3_weight_limit_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s4_check_digit_api",
+            "s4_check_digit_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s5_manifest_order_api",
+            "s5_manifest_order_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed",
+            "s6_stale_default_api": "passed",
+            "s6_stale_default_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s6_stale_default_api",
+            "s6_stale_default_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 7,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed",
+            "s6_stale_default_api": "passed",
+            "s6_stale_default_cli": "passed",
+            "s7_overweight_api": "passed",
+            "s7_overweight_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s7_overweight_api",
+            "s7_overweight_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 8,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed",
+            "s6_stale_default_api": "passed",
+            "s6_stale_default_cli": "passed",
+            "s7_overweight_api": "passed",
+            "s7_overweight_cli": "passed",
+            "s8_declared_value_api": "passed",
+            "s8_declared_value_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s8_declared_value_api",
+            "s8_declared_value_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 0,
+      "stale": 0
+    }
+  },
+  {
+    "slot": "parcelpost--superpowers--0",
+    "case": "parcelpost",
+    "arm": "superpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 2,
+    "stale": 0,
+    "stages": 8,
+    "cost": 0.835395,
+    "seconds": 291.479,
+    "grade": {
+      "base": {
+        "base_shipping_day": "passed",
+        "base_cli_day": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_manifest_charge_api",
+            "s1_manifest_charge_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_out_for_delivery_api",
+            "s2_out_for_delivery_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_weight_limit_api",
+            "s3_weight_limit_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_shipping_day": "passed",
+            "base_cli_day": "passed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s4_check_digit_api",
+            "s4_check_digit_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_shipping_day": "failed",
+            "base_cli_day": "failed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed"
+          },
+          "lost": [
+            "base_cli_day",
+            "base_shipping_day"
+          ],
+          "stale": [],
+          "new": [
+            "s5_manifest_order_api",
+            "s5_manifest_order_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_shipping_day": "failed",
+            "base_cli_day": "failed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed",
+            "s6_stale_default_api": "passed",
+            "s6_stale_default_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s6_stale_default_api",
+            "s6_stale_default_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 7,
+          "groups": {
+            "base_shipping_day": "failed",
+            "base_cli_day": "failed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed",
+            "s6_stale_default_api": "passed",
+            "s6_stale_default_cli": "passed",
+            "s7_overweight_api": "passed",
+            "s7_overweight_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s7_overweight_api",
+            "s7_overweight_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 8,
+          "groups": {
+            "base_shipping_day": "failed",
+            "base_cli_day": "failed",
+            "s1_manifest_charge_api": "passed",
+            "s1_manifest_charge_cli": "passed",
+            "s2_out_for_delivery_api": "passed",
+            "s2_out_for_delivery_cli": "passed",
+            "s3_weight_limit_api": "passed",
+            "s3_weight_limit_cli": "passed",
+            "s4_check_digit_api": "passed",
+            "s4_check_digit_cli": "passed",
+            "s5_manifest_order_api": "passed",
+            "s5_manifest_order_cli": "passed",
+            "s6_stale_default_api": "passed",
+            "s6_stale_default_cli": "passed",
+            "s7_overweight_api": "passed",
+            "s7_overweight_cli": "passed",
+            "s8_declared_value_api": "passed",
+            "s8_declared_value_cli": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s8_declared_value_api",
+            "s8_declared_value_cli"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 2,
+      "stale": 0
+    }
+  }
+]
