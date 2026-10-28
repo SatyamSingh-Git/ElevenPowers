@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-28",
+  "host": "Claude Code 2.1.292, subscription OAuth",
+  "model": "claude-sonnet-5-5, effort medium",
+  "probes": [
+    {
+      "name": "superpowers at project scope, arm A",
+      "how": "one turn; .claude/settings.json enables superpowers@claude-plugins-official and declares its marketplace; launcher reads project,local settings only",
+      "seen": "init plugins list superpowers 7.0.0 and Claude Code built-ins only (the user's other plugin absent); one SessionStart context beginning 'You have superpowers'; modelUsage claude-sonnet-5-5 only",
+      "cost_usd": 0.0248
+    },
+    {
+      "name": "superpowers plus ElevenPowers, arm B",
+      "how": "as arm A, plus core.hosts.setup.install and Config(profile='guide'); ElevenPowers writes settings.local.json and leaves the project file alone",
+      "seen": "superpowers 7.0.0 in init plugins; two SessionStart contexts, the second beginning 'ElevenPowers active (profile: guide)'; modelUsage claude-sonnet-5-5 only",
+      "cost_usd": 0.0286
+    },
+    {
+      "name": "Skill tool and resume, arm B",
+      "how": "two turns with Skill added to --tools, --session-id then --resume",
+      "seen": "the held-out launcher's tool list has no Skill tool, so superpowers' 37 skills were listed but could not be invoked; with Skill added, superpowers:verification-before-completion loaded. On resume only ElevenPowers' SessionStart hook fires (superpowers' matcher excludes resume). total_cost_usd and modelUsage are cumulative over the session",
+      "cost_usd": 0.0814
+    },
+    {
+      "name": "user CLAUDE.md, before the fix",
+      "how": "one turn asking which CLAUDE.md files the agent was given",
+      "seen": "named C:\\Users\\<user>\\.claude\\CLAUDE.md: --setting-sources does not keep the user's own instructions out",
+      "cost_usd": 0.0202
+    },
+    {
+      "name": "user CLAUDE.md, excluded",
+      "how": "same question with claudeMdExcludes in project settings, then in --settings, then neither, on a project whose CLAUDE.md holds a codeword",
+      "seen": "with the exclusion (either place): user file absent, project codeword present, superpowers still loaded; without it: user file present",
+      "cost_usd": 0.0707
+    }
+  ],
+  "total_cost_usd": 0.2257,
+  "verdict": "qualified, with two harness changes made before any paid stage: Skill is allowed in both arms (Agent stays denied, as in every earlier controller), and the user's CLAUDE.md is excluded from every subscription run"
+}
