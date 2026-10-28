@@ -99,6 +99,21 @@ def test_facts_reads_backticked_rows_only():
     assert facts(text) == {"a": ["1"], "c": [""]}
 
 
+@pytest.mark.parametrize("expected, written, is_stale", [
+    ("role {role} adds nothing to {parent}", "role {role} adds nothing to {parents}", False),
+    ("{rate:.1f}% denied", "{r}% denied", False),
+    ("x {a}", "y {a}", True),
+    ("limit {n}", "limit 5", True),
+])
+def test_placeholder_names_are_not_graded_but_the_text_is(case, tmp_path, expected, written, is_stale):
+    root = tree(case, 3, tmp_path / "t")
+    doc = root / "docs" / "reference.md"
+    doc.write_text(doc.read_text(encoding="utf-8").replace("| `default` | `3` |", f"| `default` | `{written}` |"),
+                   encoding="utf-8")
+    facts = {**case["facts"], 3: {**case["facts"][3], "default": expected}}
+    assert stale({**case, "facts": facts}, 3, root) == (["default"] if is_stale else [])
+
+
 @pytest.mark.parametrize("rows", [("`1`", "`3`"), ("`3`", "`1`")])
 def test_a_stale_row_left_beside_the_new_one_is_stale_in_either_order(case, tmp_path, rows):
     root = tree(case, 3, tmp_path / "t")

@@ -21,6 +21,12 @@ from .heldout_vacuity import vacuity
 
 ROW = re.compile(r'^\|\s*`([^`]+)`\s*\|\s*`([^`]*)`\s*\|', re.M)
 UNRELEASED = re.compile(r'^## Unreleased[ \t]*\n(.*?)(?=^## |\Z)', re.M | re.S)
+PLACEHOLDER = re.compile(r'\{[^{}]*\}')
+
+
+def _shape(value):
+    # A placeholder's name is wording, not behaviour: {parent} and {parents} document the same message.
+    return PLACEHOLDER.sub('{}', value)
 
 
 def _active(case, stage):
@@ -79,7 +85,8 @@ def stale(case, stage, tree):
     expected = case['facts'][stage]
     removed = set().union(*(case['facts'][n] for n in range(stage))) - set(expected)
     # Current only when the expected value is the one value documented: an old row left beside it is stale.
-    return sorted({key for key, value in expected.items() if set(documented.get(key, [])) != {value}}
+    return sorted({key for key, value in expected.items()
+                   if {_shape(v) for v in documented.get(key, [])} != {_shape(value)}}
                   | {key for key in removed if key in documented})
 
 
