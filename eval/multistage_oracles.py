@@ -21,12 +21,13 @@ from .heldout_vacuity import vacuity
 
 ROW = re.compile(r'^\|\s*`([^`]+)`\s*\|\s*`([^`]*)`\s*\|', re.M)
 UNRELEASED = re.compile(r'^## Unreleased[ \t]*\n(.*?)(?=^## |\Z)', re.M | re.S)
-PLACEHOLDER = re.compile(r'\{[^{}]*\}')
+PLACEHOLDER = re.compile(r'\{\w*(?=[:!}])')
 
 
 def _shape(value):
     # A placeholder's name is wording, not behaviour: {parent} and {parents} document the same message.
-    return PLACEHOLDER.sub('{}', value)
+    # Its format spec is behaviour, so {rate:.1f} and {rate:.2f} stay different.
+    return PLACEHOLDER.sub('{', value)
 
 
 def _active(case, stage):

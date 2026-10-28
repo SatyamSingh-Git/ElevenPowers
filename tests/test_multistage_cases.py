@@ -100,6 +100,7 @@ V3_BREAKS = {
     "fails": _quiet(2, lambda q: q.update(fails=["default_3"])),
     "no fails": _quiet(2, lambda q: q.update(fails=[])),
     "diff": lambda case: (case / "stages" / "3" / "quiet-0.diff").unlink(),
+    "touches": _quiet(2, lambda q: q.update(file="src/pkg/core.py")),
 }
 
 

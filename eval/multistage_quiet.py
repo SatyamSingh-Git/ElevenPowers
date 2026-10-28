@@ -55,18 +55,36 @@ def _files(diff):
     return files
 
 
+def _name(text):
+    return not keyword.iskeyword(text) and not hasattr(builtins, text)
+
+
+def _fstring(text):
+    """Field names and literal text of an f-string, as 3.12's tokenizer yields them; 3.11 gives one token."""
+    try:
+        tree = ast.parse(text, mode='eval')
+    except SyntaxError:
+        return set()
+    return ({node.id for node in ast.walk(tree) if isinstance(node, ast.Name) and _name(node.id)}
+            | {node.value for node in ast.walk(tree) if isinstance(node, ast.Constant)
+               and isinstance(node.value, str) and len(node.value) >= SHORTEST_LITERAL})
+
+
 def _tokens(lines):
     found = set()
     for line in lines:
         try:
             for token in tokenize.generate_tokens(io.StringIO(line + '\n').readline):
-                if (token.type == tokenize.NAME and not keyword.iskeyword(token.string)
-                        and not hasattr(builtins, token.string)):
+                if token.type == tokenize.NAME and _name(token.string):
                     found.add(token.string)
+                elif token.type == getattr(tokenize, 'FSTRING_MIDDLE', None):
+                    if len(token.string) >= SHORTEST_LITERAL:
+                        found.add(token.string)
                 elif token.type == tokenize.STRING:
                     try:
                         value = ast.literal_eval(token.string)
                     except (ValueError, SyntaxError):
+                        found |= _fstring(token.string)
                         continue
                     if isinstance(value, str) and len(value) >= SHORTEST_LITERAL:
                         found.add(value)

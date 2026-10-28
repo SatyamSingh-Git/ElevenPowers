@@ -77,8 +77,13 @@ def load(root):
             for entry in stage['quiet']:
                 if entry['kind'] not in KINDS:
                     _refuse(name, f"stage {n} quiet dependent kind {entry['kind']!r} is not one of {KINDS}")
-                if not (root / 'stages' / str(n) / entry['diff']).is_file():
+                diff = root / 'stages' / str(n) / entry['diff']
+                if not diff.is_file():
                     _refuse(name, f"stage {n} quiet dependent diff {entry['diff']} is missing")
+                # The name check reads the declared file, so the diff may leave behind nothing else.
+                touched = set(re.findall(r'^diff --git a/(\S+) b/', diff.read_text(encoding='utf-8'), re.M))
+                if touched != {entry['file']}:
+                    _refuse(name, f"stage {n} quiet diff touches {sorted(touched)}, not only {entry['file']}")
                 if not entry['fails']:
                     _refuse(name, f'stage {n} quiet dependent has no fails')
                 earlier(n, entry['fails'], 'quiet dependent fails')

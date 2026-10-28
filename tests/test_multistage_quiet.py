@@ -75,6 +75,12 @@ def test_short_literals_are_ignored_and_long_ones_kept(tmp_path):
     assert "format_money" in names and "," not in names
 
 
+def test_an_f_string_gives_the_same_names_on_every_python(tmp_path):
+    before, diff = _diff(tmp_path, {"m.py": 'print(f"{old_total:.2f} via card")\n'},
+                         {"m.py": 'print(f"{new_total:.2f} by card")\n'})
+    assert changed_names(diff, before, exclude="dep.py") == {"old_total", " via card"}
+
+
 def test_a_module_constant_changed_is_a_changed_name(tmp_path):
     before, diff = _diff(tmp_path, {"m.py": "SEP = ','\nOTHER = 1\n"}, {"m.py": "SEP = ';'\nOTHER = 1\n"})
     names = changed_names(diff, before, exclude="dep.py")

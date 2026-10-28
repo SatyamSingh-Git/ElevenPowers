@@ -101,7 +101,9 @@ def test_facts_reads_backticked_rows_only():
 
 @pytest.mark.parametrize("expected, written, is_stale", [
     ("role {role} adds nothing to {parent}", "role {role} adds nothing to {parents}", False),
-    ("{rate:.1f}% denied", "{r}% denied", False),
+    ("{rate:.1f}% denied", "{r:.1f}% denied", False),
+    ("{rate:.1f}% denied", "{rate:.2f}% denied", True),
+    ("{a}_{b}.csv", "{x}_{y}.csv", False),
     ("x {a}", "y {a}", True),
     ("limit {n}", "limit 5", True),
 ])
