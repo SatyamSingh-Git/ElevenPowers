@@ -13,6 +13,7 @@ import tempfile
 
 from .multistage_cases import PROFILES, load, tree
 from .multistage_oracles import groups, rules, stale
+from .multistage_quiet import changed_names, named, suite_passes
 from .preservation import _write
 
 
@@ -39,6 +40,25 @@ def rehearse(root, work):
             earlier = {group['id'] for group in case['groups'] if group['since'] < n}
             detail['dependent_missed'] = sorted(g for g, state in missed.items() if state != 'passed' and g in earlier)
             checks['dependent_missed'] = detail['dependent_missed'] == sorted(stage['dependent_missed_fails'])
+        if stage['kind'] == 'cross-cutting' and PROFILES[case['profile']]['quiet']:
+            diff = (Path(case['root']) / 'stages' / str(n) / 'reference.diff').read_text(encoding='utf-8')
+            earlier = {group['id'] for group in case['groups'] if group['since'] < n}
+            detail['quiet'] = []
+            for k, entry in enumerate(stage['quiet']):
+                try:
+                    left = tree(case, n, work / f'{n}-quiet-{k}', 'quiet', which=k)
+                except ValueError as error:
+                    checks[f'quiet_fails_{k}'] = False
+                    detail['quiet'].append({'error': str(error)})
+                    continue
+                failing = sorted(g for g, state in groups(case, n, left).items() if state != 'passed' and g in earlier)
+                dependent = previous / entry['file']
+                found = (named(changed_names(diff, previous, entry['file']), dependent) if dependent.is_file()
+                         else ['(the dependent does not exist before the stage)'])
+                checks[f'quiet_fails_{k}'] = failing == sorted(entry['fails'])
+                checks[f'quiet_suite_green_{k}'] = suite_passes(left, case)
+                checks[f'quiet_unnamed_{k}'] = found == []
+                detail['quiet'].append({'failing': failing, 'named': found})
         before, after = case['facts'][n - 1], case['facts'][n]
         changed = sorted({key for key in after if before.get(key) != after[key]} | (set(before) - set(after)))
         detail['docs_forgotten'] = stale(case, n, tree(case, n, work / f'{n}-forgotten', 'docs-forgotten'))

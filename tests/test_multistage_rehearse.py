@@ -5,7 +5,7 @@ import shutil
 import pytest
 
 from eval.multistage_rehearse import main, rehearse
-from tests.multistage_fixture import make_case
+from tests.multistage_fixture import make_case, make_v3_case
 
 
 @pytest.fixture(scope="module")
@@ -78,3 +78,50 @@ def test_the_command_writes_its_report_and_fails_on_an_unusable_case(built, tmp_
     assert json.loads(out.read_text(encoding="utf-8"))["fixture"]["usable"] is True
     _new_group_already_passes(cases / "fixture")
     assert main(["--cases", str(cases), "--case", "fixture", "--out", str(out)]) == 1
+
+
+@pytest.fixture(scope="module")
+def built3(tmp_path_factory):
+    return make_v3_case(tmp_path_factory.mktemp("multistage3"))
+
+
+def test_the_v3_fixture_rehearses_usable_with_its_quiet_checks(built3, tmp_path):
+    report = rehearse(shutil.copytree(built3, tmp_path / "fixture3"), tmp_path / "work")
+    assert report["usable"], [s for s in report["stages"] if not all(s["checks"].values())]
+    assert [s["stage"] for s in report["stages"]] == list(range(9))
+    assert {"quiet_fails_0", "quiet_suite_green_0", "quiet_unnamed_0"} <= set(report["stages"][2]["checks"])
+    assert "quiet_fails_0" not in report["stages"][6]["checks"]
+
+
+def _suite_catches_it(case):
+    (case / "start" / "tests" / "test_parse.py").write_text(
+        "from pkg import core, parse\n\n\ndef test_parse():\n    assert parse.read(core.record(5)) == 5\n", encoding="utf-8")
+
+
+def _dependent_names_the_change(case):
+    with (case / "start" / "src" / "pkg" / "parse.py").open("a", encoding="utf-8") as handle:
+        handle.write("# the separator mirrors core.SEP\n")
+
+
+def _diff_does_not_apply(case):
+    (case / "stages" / "2" / "quiet-0.diff").write_text(
+        "diff --git a/src/pkg/parse.py b/src/pkg/parse.py\n--- a/src/pkg/parse.py\n+++ b/src/pkg/parse.py\n"
+        "@@ -1 +1 @@\n-nothing like this\n+SEP_IN = 'x'\n", encoding="utf-8")
+
+
+def _declares_the_wrong_group(case):
+    _edit_json(case / "case.json", lambda v: v["stages"][1]["quiet"][0].update(fails=["generated"]))
+
+
+@pytest.mark.parametrize("breaks, stage, check", [
+    (_declares_the_wrong_group, 2, "quiet_fails_0"),
+    (_suite_catches_it, 2, "quiet_suite_green_0"),
+    (_dependent_names_the_change, 3, "quiet_unnamed_0"),
+    (_diff_does_not_apply, 2, "quiet_fails_0"),
+])
+def test_a_quiet_dependent_that_is_not_quiet_is_unusable(built3, tmp_path, breaks, stage, check):
+    case = shutil.copytree(built3, tmp_path / "fixture3")
+    breaks(case)
+    report = rehearse(case, tmp_path / "work")
+    assert not report["usable"]
+    assert report["stages"][stage]["checks"][check] is False
