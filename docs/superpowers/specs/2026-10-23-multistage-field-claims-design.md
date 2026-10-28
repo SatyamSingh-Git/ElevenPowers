@@ -1,8 +1,10 @@
 # Multi-stage comparison v2: do earlier work and docs survive later steps?
 
-**Status: designed 2026-10-23; the $0 phase is built and frozen, nothing run.**
-Every paid step below waits for the user's go, under the standing Sonnet 5.5
-medium authorization. Twelve cases were written instead of eight, because the
+**Status: pilot run 2026-10-28; no real headroom.** Neither arm lost any earlier
+behaviour, and every stale fact was an oracle defect. The stage rules are to be
+redesigned before the full run ([journey 92](../../../journey/92-the-pilot-found-nothing-to-prevent.md)).
+The runner allows the Skill tool in both arms and keeps the operator's own
+CLAUDE.md out; both were fixed at qualification. Twelve cases were written instead of eight, because the
 power simulation showed eight cannot reach significance unless seven differ. The
 cases are published at
 <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>; the build

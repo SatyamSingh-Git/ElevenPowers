@@ -1,12 +1,18 @@
 # The journey
 
-Latest: [91 — a fair test is built before it is run](91-a-fair-test-is-built-before-it-is-run.md):
+Latest: [92 — the pilot found nothing to prevent](92-the-pilot-found-nothing-to-prevent.md):
+multi-stage v2 pilot, 4 conversations, $3.39: neither arm lost any earlier behaviour, and all five
+stale facts were the oracle refusing correct docs for choices no request stated. The qualification
+found superpowers' skills could not load through the launcher and every subscription run carried
+the operator's own CLAUDE.md; both fixed. No real headroom, so the stages are redesigned before more is spent.
+
+Recent: [91 — a fair test is built before it is run](91-a-fair-test-is-built-before-it-is-run.md):
 multi-stage v2 built and frozen with no model: twelve independently authored cases, rehearsed and
 reviewed twice; a pytest collection abort, an 8-case design that could not win, a CRLF checkout,
 ten cases grading wording rather than docs, and three grading defects found and fixed. Published at
 github.com/SatyamSingh-Git/elevenpowers-multistage-cases.
 
-Recent: [90 — nothing better was left behind](90-nothing-better-was-left-behind.md):
+Earlier: [90 — nothing better was left behind](90-nothing-better-was-left-behind.md):
 two $0 readings of the held-out sweep: the oracle gap is still unsettled (+6.7 / +4.2), but best-of-3
 ordinary finds a tested fix on 17.5% of tasks against 47.5% for a blind assisted pick; replayed edit by
 edit, 1 of 85 runs held a better state than it submitted.

@@ -175,10 +175,12 @@ Sonnet 5.5 at medium effort averaged **$0.079 and 85 s wall per run** (240 runs,
 $18.91; assisted runs take about 3x the model time of ordinary ones). That sweep,
 vacuity by arm on held-out tasks, is done
 ([`results/heldout/sweep-2026-10-22/`](results/heldout/sweep-2026-10-22/README.md)).
-The next experiment is designed and **not yet run**:
+The next experiment,
 [multi-stage v2](docs/superpowers/specs/2026-10-23-multistage-field-claims-design.md),
-testing the field report's docs and dependent-breakage claims with superpowers
-in both arms. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
+tests the field report's docs and dependent-breakage claims with superpowers in
+both arms (`eval/multistage_run.py`). Its pilot (2026-10-28, $3.39) found no real
+headroom: superpowers alone lost nothing and kept the docs current, so the
+stages are redesigned before the full run. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
 is older and was qualified by an audit on 2026-09-19; read its warning before
 shrinking or reviving it, because the cheap version reintroduces an error
 `PLAN.md` §10 has already withdrawn once.

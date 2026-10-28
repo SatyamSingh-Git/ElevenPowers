@@ -1,5 +1,19 @@
 # Current delivery status
 
+**2026-10-28 — Multi-stage v2 pilot: no real headroom.**
+Four sealed six-request conversations (`access_policy`, `layered_config`;
+superpowers vs superpowers plus ElevenPowers; Sonnet 5.5 medium; $3.39). Every
+stage completed and qualified. Neither arm lost an earlier group. The five stale
+facts recorded (2 superpowers, 3 ElevenPowers) are all oracle defects: correct
+docs for choices no request stated. Changelog, protected file and test-with-fix
+were kept at every stage in both arms. ElevenPowers cost 19% more and took 1.8
+times the model time. The frozen go rule is met only mechanically, so the
+stages are redesigned and the oracle defects fixed by a general rule before
+anything more is spent. The runner allows the Skill tool, which the old tool
+list lacked, so superpowers can load its skills; it was used once in 24 turns.
+See [results](../results/multistage/README.md) and
+[journey 92](../journey/92-the-pilot-found-nothing-to-prevent.md).
+
 **2026-10-28 — The subscription launcher carried the user's own CLAUDE.md.**
 `--setting-sources project,local` keeps user plugins out, but not
 `~/.claude/CLAUDE.md`: a one-turn probe named the file, and every subscription

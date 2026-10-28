@@ -1,4 +1,33 @@
-# Multi-stage v2 — frozen, no model run yet
+# Multi-stage v2 — pilot run; no real headroom
+
+**Pilot, 2026-10-28** ([`pilot-collected.json`](pilot-collected.json), sealed
+[`pilot-protocol.json`](pilot-protocol.json), [qualification](qualification.json),
+[journey 92](../../journey/92-the-pilot-found-nothing-to-prevent.md)). Four
+conversations, 24 stages, all completed and qualified, $3.39, Sonnet 5.5 medium,
+superpowers 7.0.0 in both arms.
+
+| | lost earlier groups | stale facts (mechanical) | cost | model time |
+|---|---|---|---|---|
+| superpowers, `access_policy` | 0 | 0 | $0.59 | 185 s |
+| superpowers, `layered_config` | 0 | 2 | $0.96 | 332 s |
+| + ElevenPowers, `access_policy` | 0 | 1 | $0.85 | 471 s |
+| + ElevenPowers, `layered_config` | 0 | 2 | $1.00 | 457 s |
+
+Every stale fact is an oracle defect: the agents documented their code
+accurately, but chose behaviour no request stated and no group required.
+`msg.lookup` assumes the reference also changed the command line, and
+`lint.redundant-role` matches a placeholder's spelling. The frozen go rule is met
+mechanically, not in substance. The superpowers arm made no mistake the
+experiment counts, so per the design the stages are redesigned before any
+further spending, and the oracle defects are fixed by a general rule. Pilot runs
+are excluded from any analysis.
+
+Two harness changes were made at qualification, before any paid stage. The Skill
+tool is allowed in both arms; the held-out launcher's list left it out, so
+superpowers' skills could not load. The user's own `~/.claude/CLAUDE.md` is now
+excluded from every subscription run.
+
+## The $0 phase
 
 **The twelve projects are published at
 <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>** (commit
@@ -12,8 +41,8 @@ tests the two effects in the [field report](../../docs/field/2026-10-real-projec
 whether later steps break work done in earlier ones, and whether docs are kept
 current under a `CLAUDE.md` rule. It compares superpowers alone with superpowers
 plus ElevenPowers, on projects that evolve through six requests in one
-conversation. **Everything here was built and checked without a model.** The
-one-cent qualification, the pilot and the full run each wait for the user's go.
+conversation. Everything in this section was built and checked without a model,
+before the pilot.
 
 ## The twelve cases
 
@@ -88,7 +117,8 @@ from the analysis, and no case is dropped or replaced on its pilot result.
 
 ## What this does not show
 
-Nothing about either arm: no model has run. The cases are authored to contain
+The pilot is four conversations on two cases, excluded from analysis by design,
+and supports no comparison between the arms. The cases are authored to contain
 dependents and documented facts, which is what the claims are about. A
 result will say whether the effect appears where it should, not how often such
 stages occur in real work.

@@ -1,5 +1,18 @@
 # Master Plan v0.8
 
+**2026-10-28 — Multi-stage v2 pilot: nothing to prevent.**
+The qualification fixed two harness faults before any paid stage. Superpowers'
+skills could not load, because the launcher's tool list lacked the Skill tool.
+Every subscription run carried the operator's own `~/.claude/CLAUDE.md`, the
+held-out sweep included. The pilot then ran four conversations, $3.39. Neither
+arm lost any earlier behaviour, and all five stale facts were oracle defects that
+two reviews and the rehearsal missed. Sonnet 5.5 with superpowers alone found
+its dependents and kept the docs current on both cases. Next: redesign the stage
+rules so that a dependent is hard to find, fix the oracle defects by a general
+rule, re-rehearse and refreeze, at $0. See
+[results](results/multistage/README.md) and
+[journey 92](journey/92-the-pilot-found-nothing-to-prevent.md).
+
 **2026-10-23 — Multi-stage v2 built and frozen; no model run.**
 The test of the field report's claims (docs kept current, no fix that breaks a
 dependent part, superpowers against superpowers plus ElevenPowers) has its $0
@@ -1695,7 +1708,7 @@ Reordered by measured effect size, with the free ones first.
 | **Mutant feedback to an agent (B8)** *(RUN 2026-09-24)* | generic "tests are weak" vs the exact mutant list, 9 tasks x 2 reps, Opus 5.5 | **list kills 54/54 vs 38/54, but largely through white-box tests aimed at the mutation** — never hand raw mutants to an agent. `results/b8-feedback/` | $22.14+ |
 | **Gate vs vanilla test quality (B9)** *(RUN 2026-09-24)* | every resolved patch of the paired chunks sweep through the probe | **no difference in how well tests pin the change (p = 1.0); fewer VACUOUS patches under the gate, 4/49 vs 10/46 (p = 0.06)** — all 14 vacuous patches had no test at all. `results/b9-gate-tests/` | $0 |
 | **Vacuity by arm, one method** *(RUN 2026-10-23)* | 40 held-out tasks from 12 repositories, ordinary vs installed at `guide`, 3 replicates, B7/B9's revert probe | **VACUOUS among resolved 74/88 ordinary (84%) vs 33/89 assisted (37%); per task lower under ElevenPowers on 17, higher on 1, 13 tied, p = 0.00016; resolve rate unchanged (p = 0.625)**; 106/107 vacuous patches had no test file. `results/heldout/sweep-2026-10-22/` | ~$19 |
-| **Multi-stage v2, field claims** *(BUILT 2026-10-23, not run)* | superpowers vs superpowers + ElevenPowers over 12 independently authored six-stage cases | do earlier behaviour and docs survive later requests? Frozen with rehearsal, two review rounds and power; pilot `access_policy`, `layered_config`. `results/multistage/` | $0 so far; pilot about $4–7, full run sized after it |
+| **Multi-stage v2, field claims** *(PILOT 2026-10-28: no real headroom)* | superpowers vs superpowers + ElevenPowers over 12 independently authored six-stage cases | do earlier behaviour and docs survive later requests? Frozen with rehearsal, two review rounds and power; pilot `access_policy`, `layered_config`. `results/multistage/` | pilot $3.39: 0 lost in either arm, all stale facts oracle defects; stages to be redesigned |
 | **Discrimination rate** *(RUN 2026-10-10)* | agents' recorded passing pytest checks, forward on base+patch and on base+carried tests | **101 checks from 68 bundles: 40 discriminate, 8 vacuous, 53 do not reproduce today.** 7 of the 8 vacuous come from patches with no test; 1 of 41 where the patch carried tests. All runs predate toolchain recording. `results/reverted/` | **$0**, ~20 min |
 | **Oracle gap** *(re-RUN 2026-10-23 on held-out)* | pool coverage vs selected success on saved attempts | is a selector worth building, or under the 4pp harm line? — **still unsettled: +6.7 ordinary, +4.2 assisted on 40 held-out tasks, each from 3-5 disagreeing tasks. Counting only resolved and tested candidates, best-of-3 ordinary covers 17.5% against a blind assisted pick of 47.5%: selection does not substitute for the treatment.** `results/heldout/sweep-2026-10-22/` | **$0** |
 | **Checkpoint density** *(RUN 2026-10-23, edit granularity)* | best intermediate candidate vs submitted | is there a better state to ratchet back to? — **almost never on held-out small fixes: 1 of 85 replayable runs with an earlier state (148 of 238 replay; the rest edited through the shell).** Assisted runs reach a tested fix by fixing first and testing after (34 passed through a resolved VACUOUS state). `results/heldout/sweep-2026-10-22/` | **$0** |

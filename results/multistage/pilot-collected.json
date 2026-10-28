@@ -1,0 +1,656 @@
+[
+  {
+    "slot": "access_policy--superpowers--0",
+    "case": "access_policy",
+    "arm": "superpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 0,
+    "stale": 0,
+    "stages": 6,
+    "cost": 0.58635,
+    "seconds": 185.141,
+    "grade": {
+      "base": {
+        "base_policy": "passed",
+        "base_tooling": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_multi_role",
+            "s1_multi_role_tools"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_log_decision",
+            "s2_log_summary"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_numeric",
+            "s3_numeric_text"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s4_env",
+            "s4_env_explain"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed",
+            "s5_report_top": "passed",
+            "s5_report_rate": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s5_report_rate",
+            "s5_report_top"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed",
+            "s5_report_top": "passed",
+            "s5_report_rate": "passed",
+            "s6_multi_parent": "passed",
+            "s6_multi_parent_lint": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s6_multi_parent",
+            "s6_multi_parent_lint"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 0,
+      "stale": 0
+    }
+  },
+  {
+    "slot": "access_policy--elevenpowers--0",
+    "case": "access_policy",
+    "arm": "elevenpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 0,
+    "stale": 1,
+    "stages": 6,
+    "cost": 0.845668,
+    "seconds": 471.037,
+    "grade": {
+      "base": {
+        "base_policy": "passed",
+        "base_tooling": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_multi_role",
+            "s1_multi_role_tools"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_log_decision",
+            "s2_log_summary"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_numeric",
+            "s3_numeric_text"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s4_env",
+            "s4_env_explain"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed",
+            "s5_report_top": "passed",
+            "s5_report_rate": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s5_report_rate",
+            "s5_report_top"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_policy": "passed",
+            "base_tooling": "passed",
+            "s1_multi_role": "passed",
+            "s1_multi_role_tools": "passed",
+            "s2_log_decision": "passed",
+            "s2_log_summary": "passed",
+            "s3_numeric": "passed",
+            "s3_numeric_text": "passed",
+            "s4_env": "passed",
+            "s4_env_explain": "passed",
+            "s5_report_top": "passed",
+            "s5_report_rate": "passed",
+            "s6_multi_parent": "passed",
+            "s6_multi_parent_lint": "passed"
+          },
+          "lost": [],
+          "stale": [
+            "lint.redundant-role"
+          ],
+          "new": [
+            "s6_multi_parent",
+            "s6_multi_parent_lint"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 0,
+      "stale": 1
+    }
+  },
+  {
+    "slot": "layered_config--elevenpowers--0",
+    "case": "layered_config",
+    "arm": "elevenpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 0,
+    "stale": 2,
+    "stages": 6,
+    "cost": 0.998076,
+    "seconds": 456.823,
+    "grade": {
+      "base": {
+        "base_cli": "passed",
+        "base_roundtrip": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_duration_ms",
+            "s1_whole_ms"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_env_double",
+            "s2_env_single"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_load_errors",
+            "s3_load_files"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s4_bool_case",
+            "s4_bool_message"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed",
+            "s5_lookup_error": "passed",
+            "s5_get_default": "passed"
+          },
+          "lost": [],
+          "stale": [
+            "msg.lookup"
+          ],
+          "new": [
+            "s5_get_default",
+            "s5_lookup_error"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed",
+            "s5_lookup_error": "passed",
+            "s5_get_default": "passed",
+            "s6_pool_order": "passed",
+            "s6_tls_pair": "passed"
+          },
+          "lost": [],
+          "stale": [
+            "msg.lookup"
+          ],
+          "new": [
+            "s6_pool_order",
+            "s6_tls_pair"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 0,
+      "stale": 2
+    }
+  },
+  {
+    "slot": "layered_config--superpowers--0",
+    "case": "layered_config",
+    "arm": "superpowers",
+    "replicate": 0,
+    "state": "completed",
+    "comparable": true,
+    "lost": 0,
+    "stale": 2,
+    "stages": 6,
+    "cost": 0.962512,
+    "seconds": 332.008,
+    "grade": {
+      "base": {
+        "base_cli": "passed",
+        "base_roundtrip": "passed"
+      },
+      "stages": [
+        {
+          "stage": 1,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s1_duration_ms",
+            "s1_whole_ms"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 2,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s2_env_double",
+            "s2_env_single"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 3,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s3_load_errors",
+            "s3_load_files"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 4,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed"
+          },
+          "lost": [],
+          "stale": [],
+          "new": [
+            "s4_bool_case",
+            "s4_bool_message"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": true
+        },
+        {
+          "stage": 5,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed",
+            "s5_lookup_error": "passed",
+            "s5_get_default": "passed"
+          },
+          "lost": [],
+          "stale": [
+            "msg.lookup"
+          ],
+          "new": [
+            "s5_get_default",
+            "s5_lookup_error"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        },
+        {
+          "stage": 6,
+          "groups": {
+            "base_cli": "passed",
+            "base_roundtrip": "passed",
+            "s1_duration_ms": "passed",
+            "s1_whole_ms": "passed",
+            "s2_env_single": "passed",
+            "s2_env_double": "passed",
+            "s3_load_files": "passed",
+            "s3_load_errors": "passed",
+            "s4_bool_case": "passed",
+            "s4_bool_message": "passed",
+            "s5_lookup_error": "passed",
+            "s5_get_default": "passed",
+            "s6_pool_order": "passed",
+            "s6_tls_pair": "passed"
+          },
+          "lost": [],
+          "stale": [
+            "msg.lookup"
+          ],
+          "new": [
+            "s6_pool_order",
+            "s6_tls_pair"
+          ],
+          "changelog": 1,
+          "protected": true,
+          "test_with_fix": null
+        }
+      ],
+      "lost": 0,
+      "stale": 2
+    }
+  }
+]
