@@ -51,6 +51,10 @@ and 69 of the 70 non-VACUOUS ones did. Resolved ordinary patches added a test in
   nothing else, so no user plugin such as superpowers was loaded in either arm
   (checked 2026-10-23). This compares Claude Code with and without ElevenPowers,
   not superpowers with and without it.
+- Both arms also carried the operator's own `~/.claude/CLAUDE.md`, which
+  `--setting-sources` does not exclude (found 2026-10-28 by a one-turn probe that
+  named the file). It holds general working preferences and nothing about these
+  tasks, and it was the same in both arms. The launcher now excludes it.
 - VACUOUS is this project's measure of whether the repository's tests pin the
   change; it is not correctness. Resolved is graded against the upstream fix's tests.
 - The frame excludes projects whose packages import build-generated modules, whose

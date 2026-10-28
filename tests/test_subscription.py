@@ -17,6 +17,20 @@ def test_exact_models_and_equal_effort_no_bypass(tmp_path):
     assert 'project,local' in subscription.command('claude', 'host.exe', tmp_path, 'PROMPT')
 
 
+def test_the_users_own_claude_md_is_excluded_wherever_the_config_lives(monkeypatch, tmp_path):
+    monkeypatch.delenv('CLAUDE_CONFIG_DIR', raising=False)
+    monkeypatch.setattr(subscription.Path, 'home', lambda: tmp_path / 'home')
+    args = subscription.command('claude', 'host.exe', tmp_path, 'PROMPT')
+    excluded = json.loads(args[args.index('--settings') + 1])['claudeMdExcludes']
+    assert str(tmp_path / 'home' / '.claude' / 'CLAUDE.md') in excluded
+    assert args.index('--settings') < args.index('--allowedTools')
+    monkeypatch.setenv('CLAUDE_CONFIG_DIR', str(tmp_path / 'elsewhere'))
+    args = subscription.command('claude', 'host.exe', tmp_path, 'PROMPT')
+    excluded = json.loads(args[args.index('--settings') + 1])['claudeMdExcludes']
+    assert str(tmp_path / 'elsewhere' / 'CLAUDE.md') in excluded
+    assert not any('home' in path for path in excluded)
+
+
 def test_subscription_auth_and_api_refusal(monkeypatch, tmp_path):
     monkeypatch.setattr(subscription, 'run', lambda *a, **k: SimpleNamespace(returncode=0, stdout='Logged in using ChatGPT', stderr=''))
     monkeypatch.setattr(subscription.os, 'environ', {})

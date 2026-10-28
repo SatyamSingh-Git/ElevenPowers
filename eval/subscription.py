@@ -1,6 +1,7 @@
 """Explicit subscription-authenticated CLIs; no API fallback or secret exports."""
 import json
 import os
+from pathlib import Path
 import re
 
 from core.process import run
@@ -39,10 +40,15 @@ def command(host, executable, root, prompt, *, model=None):
                 '-c', 'model_reasoning_effort="medium"',
                 '--approve-for-me', '--ephemeral', '--json', '-C', str(root), prompt]
     if host == 'claude':
+        # --setting-sources keeps user settings out but not the user's own CLAUDE.md, which every
+        # subscription run carried until 2026-10-28; the agent gets the project's instructions only.
+        memory = str(Path(os.environ.get('CLAUDE_CONFIG_DIR') or Path.home() / '.claude') / 'CLAUDE.md')
+        excluded = sorted({memory, memory.replace(os.sep, '/')})
         # Prompt precedes variadic tool flags; --bare skips subscription OAuth.
         return [executable, '-p', prompt, '--model', selected, '--effort', 'medium',
                 '--output-format', 'json', '--no-session-persistence', '--no-chrome',
                 '--setting-sources', 'project,local', '--permission-mode', 'acceptEdits',
+                '--settings', json.dumps({'claudeMdExcludes': excluded}),
                 '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}',
                 '--tools', 'Bash,Read,Edit,Write,Glob,Grep',
                 '--allowedTools', 'Bash', 'Read', 'Edit', 'Write', 'Glob', 'Grep']

@@ -1,5 +1,22 @@
 # Current delivery status
 
+**2026-10-28 — The subscription launcher carried the user's own CLAUDE.md.**
+`--setting-sources project,local` keeps user plugins out, but not
+`~/.claude/CLAUDE.md`: a one-turn probe named the file, and every subscription
+run until now carried it in both arms, the held-out sweep included. It holds
+general working preferences, nothing task-specific. The launcher now passes
+`claudeMdExcludes` through `--settings`; probes with and without it flipped,
+and the project's own CLAUDE.md still arrives. Hosted CI on `9d1c4d7` (a README
+change) failed one cell with a newly recorded intermittent,
+`test_actual_producer_keeps_replay_and_native_ingress_distinct[javascript]` on
+Windows 3.11: the replay row's advice state read `incomplete` where `generated`
+was expected, and every other requirement held. The other four cells and the
+previous commit passed, it passes 5/5 locally on 3.13, and its code path is
+unchanged since `3f3e2e7`. Retained, unexplained. Separately, this machine's
+Microsoft Store Python 3.11 fails that test locally, because
+`Path.resolve(strict=True)` cannot open the app-execution alias; that is the
+local interpreter, not the code.
+
 **2026-10-23 — Multi-stage v2 built and frozen; no model run.**
 Twelve independently authored six-stage cases, oracles for earlier behaviour
 lost, stale documented facts and rules, a no-model rehearsal (12/12 usable from

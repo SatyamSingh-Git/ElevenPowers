@@ -137,8 +137,13 @@ only by a single test call (`journey/45`):
   the user's plugins (superpowers included). The subscription launcher
   (`eval/subscription.py`, used by the held-out sweep) passes `--setting-sources
   project,local` instead, and its agents load **no** user plugins: the sweep's
-  init events list Claude Code's built-ins only (checked 2026-10-23). Either way,
-  read the init event and record the plugins as a condition.
+  init events list Claude Code's built-ins only (checked 2026-10-23). But
+  `--setting-sources` does **not** keep out the user's own `~/.claude/CLAUDE.md`:
+  every subscription run until 2026-10-28, the held-out sweep included, carried it
+  in both arms. The launcher now excludes it with `claudeMdExcludes` passed as
+  `--settings`; a one-turn probe was watched flipping both ways. Either way, read
+  the init event and record the plugins as a condition. The init event does not
+  list memory files, so instructions need their own probe.
 - The harness caches one repository zip per task in the **parent** directory.
   Two arms of the same task under one parent race for it and die at $0. Give
   each arm its own parent.
