@@ -26,7 +26,7 @@ from . import multistage_oracles as oracles
 from . import subscription
 from .heldout_run import NETWORK, REACHING_TOOLS, _interpreter, _tool_calls
 from .live import CLOSED_BOOK, _sandboxed, _seed_git
-from .multistage_cases import STAGES, load
+from .multistage_cases import load
 from .preservation import _read, _write
 
 TOOL_ROOT = Path(__file__).resolve().parents[1]
@@ -201,7 +201,7 @@ def execute(batch, slot, executable):
     # Claude Code otherwise sends small auxiliary calls to Haiku, which the exact-model rule refuses.
     environment = {**_sandboxed(folder), 'ANTHROPIC_DEFAULT_HAIKU_MODEL': protocol['model']}
     spent = 0.0
-    for stage in range(1, STAGES + 1):
+    for stage in range(1, len(case['stages']) + 1):
         verify(root, slot)
         prompt = case['stages'][stage - 1]['request'] + '\n\n' + UNATTENDED
         item = {'stage': stage, 'state': 'running', 'prompt_sha256': _hash(prompt.encode())}
@@ -254,7 +254,7 @@ def execute(batch, slot, executable):
         _write(folder / 'result.json', record)
         if state != 'completed':
             break
-    record['state'] = ('completed' if len(record['stages']) == STAGES
+    record['state'] = ('completed' if len(record['stages']) == len(case['stages'])
                        and all(s['state'] == 'completed' for s in record['stages']) else 'incomplete')
     record['grade'] = grade(case, folder / 'snapshots')
     _write(folder / 'result.json', record)
@@ -273,11 +273,13 @@ def collect(batch, *, regrade=False):
         path = root / slot / 'result.json'
         if path.exists():
             record = _read(path)
-            graded = (grade(load(Path(protocol['cases_root']) / name), root / slot / 'snapshots')
+            case = load(Path(protocol['cases_root']) / name)
+            graded = (grade(case, root / slot / 'snapshots')
                       if regrade and (root / slot / 'snapshots').is_dir() else record.get('grade'))
             row.update(state=record['state'], stages=len(record['stages']), cost=record['cost'],
                        seconds=record['seconds'], grade=graded,
-                       comparable=record['state'] == 'completed' and bool(graded) and len(graded['stages']) == STAGES,
+                       comparable=record['state'] == 'completed' and bool(graded)
+                       and len(graded['stages']) == len(case['stages']),
                        lost=graded['lost'] if graded else None, stale=graded['stale'] if graded else None)
         rows.append(row)
     return rows

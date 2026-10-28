@@ -11,7 +11,7 @@ from pathlib import Path
 import sys
 import tempfile
 
-from .multistage_cases import load, tree
+from .multistage_cases import PROFILES, load, tree
 from .multistage_oracles import groups, rules, stale
 from .preservation import _write
 
@@ -34,7 +34,7 @@ def rehearse(root, work):
                   'reference_rules': kept['changelog'] >= 1 and kept['protected']
                   and (kept['test_with_fix'] is True or not stage['bugfix'])}
         detail = {'groups': found, 'stale': docs, 'rules': kept}
-        if stage['kind'] == 'cross-cutting':
+        if stage['kind'] == 'cross-cutting' and not PROFILES[case['profile']]['quiet']:
             missed = groups(case, n, tree(case, n, work / f'{n}-missed', 'dependent-missed'))
             earlier = {group['id'] for group in case['groups'] if group['since'] < n}
             detail['dependent_missed'] = sorted(g for g, state in missed.items() if state != 'passed' and g in earlier)
