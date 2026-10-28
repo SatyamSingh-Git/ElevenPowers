@@ -62,8 +62,14 @@ def _harness():
 
 def _files(cases, name):
     folder = Path(cases) / name
-    return {f'eval/multistage_cases/{name}/{p.relative_to(folder).as_posix()}': _hash(p.read_bytes())
+    return {p.relative_to(folder).as_posix(): _hash(p.read_bytes())
             for p in sorted(folder.rglob('*')) if p.is_file() and '__pycache__' not in p.parts}
+
+
+def _frozen(frozen, name):
+    # The manifest keys each file by its repository path; compare from the case folder down.
+    return {key.split(f'/{name}/', 1)[1]: sha
+            for key, sha in frozen['cases'].get(name, {}).get('file_sha256', {}).items()}
 
 
 def prepare(batch, names, *, replicates, seconds=900, model='claude-sonnet-5-5', cases=CASES, manifest=MANIFEST):
@@ -72,13 +78,16 @@ def prepare(batch, names, *, replicates, seconds=900, model='claude-sonnet-5-5',
     root = Path(batch).absolute()
     if root.exists():
         raise ValueError('new batch required')
+    for withheld in (Path(cases).absolute(), Path(manifest).absolute().parent):
+        if withheld == root or withheld in root.parents:
+            raise ValueError(f'{withheld} is withheld from the agent; the batch cannot live inside it')
     for parent in root.parents:
         for name in ('CLAUDE.md', 'CLAUDE.local.md'):
             if (parent / name).exists():
                 raise ValueError(f'{parent / name} is a CLAUDE.md the agent would read; put the batch elsewhere')
     frozen = json.loads(Path(manifest).read_text(encoding='utf-8'))
     for name in names:
-        if _files(cases, name) != frozen['cases'].get(name, {}).get('file_sha256'):
+        if _files(cases, name) != _frozen(frozen, name):
             raise ValueError(f'{name} differs from the frozen manifest')
         load(Path(cases) / name)
     slots = []
@@ -89,9 +98,9 @@ def prepare(batch, names, *, replicates, seconds=900, model='claude-sonnet-5-5',
     protocol = {'schema': 1, 'prepared_at': datetime.now(timezone.utc).isoformat(), 'host': 'claude',
                 'model': model, 'effort': 'medium', 'seconds': seconds, 'replicates': replicates,
                 'tools': TOOLS, 'unattended': UNATTENDED, 'cases_root': str(Path(cases).absolute()),
-                'manifest_commit': frozen.get('commit'),
+                'manifest': str(Path(manifest).absolute()), 'manifest_commit': frozen.get('commit'),
                 'case_sha256': {name: frozen['cases'][name]['sha256'] for name in names},
-                'files': {name: frozen['cases'][name]['file_sha256'] for name in names},
+                'files': {name: _frozen(frozen, name) for name in names},
                 'runtime_fingerprint': fingerprint(), 'harness_sha256': _harness(), 'slots': slots,
                 'sessions': {slot: str(uuid.uuid4()) for slot in slots}}
     _write(root / 'protocol.json', protocol)
@@ -150,8 +159,8 @@ def _events(output):
     return events
 
 
-def _breaches(calls, cases_root):
-    hidden = (Path(cases_root).as_posix().lower(), (TOOL_ROOT / 'results' / 'multistage').as_posix().lower(),
+def _breaches(calls, cases_root, manifest):
+    hidden = (Path(cases_root).as_posix().lower(), Path(manifest).parent.as_posix().lower(),
               'elevenpowers-multistage-cases')
     found = []
     for call in calls:
@@ -236,7 +245,7 @@ def execute(batch, slot, executable):
             SUPERPOWERS in [p.get('source') for p in e.get('plugins', [])] for e in inits)
         item['elevenpowers'] = any(e.get('subtype') == 'hook_response' and MARK in str(e.get('output', ''))
                                    for e in events)
-        item['breaches'] = _breaches(calls, protocol['cases_root'])
+        item['breaches'] = _breaches(calls, protocol['cases_root'], protocol.get('manifest', MANIFEST))
         if state == 'returned':
             state = 'completed' if item['observation']['completed'] else 'host_incomplete'
             if item['observation']['models'] != [protocol['model']]:
@@ -298,6 +307,8 @@ def main(argv=None):
     chosen = prepared.add_mutually_exclusive_group(required=True)
     chosen.add_argument('--cases', nargs='+')
     chosen.add_argument('--pilot', action='store_true', help="the manifest's pilot cases")
+    prepared.add_argument('--cases-root', type=Path, default=CASES)
+    prepared.add_argument('--manifest', type=Path, default=MANIFEST)
     prepared.add_argument('--replicates', type=int, default=1)
     prepared.add_argument('--seconds', type=int, default=900)
     executed = commands.add_parser('execute')
@@ -310,8 +321,9 @@ def main(argv=None):
     collected.add_argument('--regrade', action='store_true', help='grade again from the kept snapshots')
     args = parser.parse_args(argv)
     if args.action == 'prepare':
-        names = json.loads(MANIFEST.read_text(encoding='utf-8'))['pilot']['cases'] if args.pilot else args.cases
-        value = prepare(args.batch, names, replicates=args.replicates, seconds=args.seconds)
+        names = json.loads(args.manifest.read_text(encoding='utf-8'))['pilot']['cases'] if args.pilot else args.cases
+        value = prepare(args.batch, names, replicates=args.replicates, seconds=args.seconds,
+                        cases=args.cases_root, manifest=args.manifest)
         print(len(value['slots']), 'slots sealed:', ' '.join(value['slots']))
     elif args.action == 'execute':
         record = execute(args.batch, args.slot, args.executable)

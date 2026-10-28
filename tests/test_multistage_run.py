@@ -14,7 +14,7 @@ import pytest
 
 from eval import multistage_run as m
 from eval.bundle import apply_patch
-from tests.multistage_fixture import make_case
+from tests.multistage_fixture import make_case, make_v3_case
 
 
 def _manifest(cases, path):
@@ -34,7 +34,8 @@ def setup(tmp_path, monkeypatch):
     cases.mkdir()
     make_case(tmp_path / 'built')
     shutil.copytree(tmp_path / 'built' / 'fixture', cases / 'fixture')
-    manifest = _manifest(cases, tmp_path / 'manifest.json')
+    (tmp_path / 'frozen').mkdir()
+    manifest = _manifest(cases, tmp_path / 'frozen' / 'manifest.json')
     monkeypatch.setattr(m.subscription, 'auth', lambda *a: True)
     protocol = m.prepare(tmp_path / 'batch', ['fixture'], replicates=1, seconds=60, cases=cases, manifest=manifest)
     return SimpleNamespace(root=tmp_path, cases=cases, manifest=manifest, protocol=protocol, batch=tmp_path / 'batch')
@@ -95,7 +96,8 @@ def test_slots_pair_the_arms_and_the_first_arm_alternates(tmp_path):
     make_case(tmp_path / 'built')
     for name in ('one', 'two'):
         shutil.copytree(tmp_path / 'built' / 'fixture', cases / name)
-    manifest = _manifest(cases, tmp_path / 'manifest.json')
+    (tmp_path / 'frozen').mkdir()
+    manifest = _manifest(cases, tmp_path / 'frozen' / 'manifest.json')
     protocol = m.prepare(tmp_path / 'batch', ['one', 'two'], replicates=2, seconds=60, cases=cases, manifest=manifest)
     assert protocol['slots'][:4] == ['one--superpowers--0', 'one--elevenpowers--0',
                                      'two--elevenpowers--0', 'two--superpowers--0']
@@ -244,3 +246,33 @@ def test_headroom_is_read_from_complete_superpowers_conversations_only():
             {'arm': 'superpowers', 'comparable': False, 'lost': 2, 'stale': 5}]
     assert m.headroom(rows) is False
     assert m.headroom(rows + [{'arm': 'superpowers', 'comparable': True, 'lost': 0, 'stale': 1}]) is True
+
+
+def test_a_v3_case_runs_all_eight_stages(tmp_path, monkeypatch):
+    cases = tmp_path / 'v3'
+    cases.mkdir()
+    make_v3_case(tmp_path / 'built')
+    shutil.copytree(tmp_path / 'built' / 'fixture3', cases / 'fixture3')
+    (tmp_path / 'frozen').mkdir()
+    manifest = _manifest(cases, tmp_path / 'frozen' / 'manifest.json')
+    monkeypatch.setattr(m.subscription, 'auth', lambda *a: True)
+    protocol = m.prepare(tmp_path / 'batch', ['fixture3'], replicates=1, seconds=60, cases=cases, manifest=manifest)
+    monkeypatch.setattr(m, 'run', _host(cases / 'fixture3'))
+    slot = protocol['slots'][0]
+    record = m.execute(tmp_path / 'batch', slot, 'fake-host')
+    assert record['state'] == 'completed' and len(record['stages']) == 8
+    assert record['grade']['lost'] == 0 and record['grade']['stale'] == 0
+    assert next(r for r in m.collect(tmp_path / 'batch') if r['slot'] == slot)['comparable']
+
+
+def test_reading_the_manifests_folder_is_a_breach(setup, monkeypatch):
+    peek = [('Read', {'file_path': str(setup.manifest.parent / 'review.json')})]
+    monkeypatch.setattr(m, 'run', _host(setup.cases / 'fixture', tools=peek))
+    record = m.execute(setup.batch, _slot(setup, 'superpowers'), 'fake-host')
+    assert [s['state'] for s in record['stages']] == ['closed_book_breach']
+
+
+def test_a_batch_inside_the_withheld_folders_is_refused(setup):
+    for inside in (setup.manifest.parent / 'batch', setup.cases / 'batch'):
+        with pytest.raises(ValueError, match='withheld'):
+            m.prepare(inside, ['fixture'], replicates=1, cases=setup.cases, manifest=setup.manifest)
