@@ -1,0 +1,12 @@
+diff --git a/src/gradebook/storage/grades_csv.py b/src/gradebook/storage/grades_csv.py
+index eaf7b01..81bb874 100644
+--- a/src/gradebook/storage/grades_csv.py
++++ b/src/gradebook/storage/grades_csv.py
+@@ -18,6 +18,6 @@ def export_grades(book, path, as_of=None):
+ 
+ 
+ def _grade_row(course, student, grade):
+-    percent = "" if grade.percent is None else f"{grade.percent:.{course.grade_decimals}f}"
++    percent = "" if grade.percent is None else f"{grade.percent:.1f}"
+     return [student.student_id, student.display_name, course.code, f"{course.credits:g}",
+             percent, grade.letter or ""]

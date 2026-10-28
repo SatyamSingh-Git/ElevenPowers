@@ -1,0 +1,117 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 39acfb3..db5204c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- New `flat` late rule: late work loses `late.flat` percent (default 20) of the assignment's points, however late it is.
+ - `gradebook report --sort grade` lists the highest percent first and students with no grade last; `--sort name` stays the default.
+ - Score sheets have a `name` column after `student_id`, written as `Last, First`.
+ - Courses that do not set `grade_decimals` now round final percents to two decimals instead of one.
+diff --git a/docs/reference.md b/docs/reference.md
+index 2f61cf9..e26b302 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -15,9 +15,10 @@ required; everything below falls back to the value shown.
+ | `credits` | `1.0` | course file: credits the course carries on a transcript |
+ | `policy` | `weighted` | course file: scoring policy, `weighted` or `total_points`; `points`, its old name, still loads as `total_points` |
+ | `scale` | `standard` | course file: letter scale, `standard` or `pass_fail` |
+-| `late_rule` | `none` | course file: late rule, `none` or `per_day` |
++| `late_rule` | `none` | course file: late rule, `none`, `per_day` or `flat` |
+ | `late.per_day` | `10` | course file: percent of an assignment's points lost per day late under `per_day` |
+-| `late.cap` | `50` | course file: most percent of an assignment's points a late penalty takes |
++| `late.cap` | `50` | course file: most percent of an assignment's points a late penalty takes under `per_day` |
++| `late.flat` | `20` | course file: percent of an assignment's points late work loses under `flat`, however late it is |
+ | `grade_decimals` | `2` | course file: decimals final and category percents are rounded to |
+ | `weight` | `0` | course file, per category: weight in percent, used by the `weighted` policy |
+ | `drop_lowest` | `0` | course file, per category: how many of a student's lowest scores are dropped |
+diff --git a/src/gradebook/grading/late.py b/src/gradebook/grading/late.py
+index a0c3e5e..affe3a8 100644
+--- a/src/gradebook/grading/late.py
++++ b/src/gradebook/grading/late.py
+@@ -43,3 +43,10 @@ def per_day(points, max_points, days, settings):
+         return points
+     percent = min(exact(settings.per_day) * days, exact(settings.cap))
+     return max(Fraction(0), points - max_points * percent / 100)
++
++
++@late_rule("flat")
++def flat(points, max_points, days, settings):
++    if days == 0:
++        return points
++    return max(Fraction(0), points - max_points * exact(settings.flat) / 100)
+diff --git a/src/gradebook/model/course.py b/src/gradebook/model/course.py
+index 6892517..0630f57 100644
+--- a/src/gradebook/model/course.py
++++ b/src/gradebook/model/course.py
+@@ -26,6 +26,7 @@ class LateSettings:
+ 
+     per_day: float
+     cap: float
++    flat: float
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/src/gradebook/storage/course_config.py b/src/gradebook/storage/course_config.py
+index 7cc57e8..4c7519f 100644
+--- a/src/gradebook/storage/course_config.py
++++ b/src/gradebook/storage/course_config.py
+@@ -22,7 +22,7 @@ DEFAULTS = {
+     "late_rule": "none",
+     "grade_decimals": 2,
+ }
+-LATE_DEFAULTS = {"per_day": 10, "cap": 50}
++LATE_DEFAULTS = {"per_day": 10, "cap": 50, "flat": 20}
+ REQUIRED = ("code", "title", "categories", "assignments")
+ WEIGHT_TOTAL = 100
+ MAX_DROP_LOWEST = 3
+diff --git a/tests/test_calculator.py b/tests/test_calculator.py
+index bfd7ce9..500a2fa 100644
+--- a/tests/test_calculator.py
++++ b/tests/test_calculator.py
+@@ -68,6 +68,18 @@ def test_late_penalty_is_capped(empty_book):
+     assert empty_book.grade("s1", as_of=3).category("homework").percent == 50.0
+ 
+ 
++def test_flat_late_rule(course_data):
++    course_data["late_rule"] = "flat"
++    course_data["late"] = {"flat": 25}
++    book = Gradebook(course_from_dict(course_data))
++    book.add_student(Student("s1", "Lovelace", "Ada"))
++    book.record_score("s1", "hw1", 10, submitted_day=9)
++    book.record_score("s1", "q1", 4, submitted_day=5)
++    grade = book.grade("s1", as_of=5)
++    assert grade.category("homework").percent == 75.0
++    assert grade.category("quizzes").percent == 80.0
++
++
+ def test_points_policy_totals_every_category(course_data):
+     course_data["policy"] = "total_points"
+     course = course_from_dict(course_data)
+diff --git a/tests/test_course_config.py b/tests/test_course_config.py
+index f23db02..240615e 100644
+--- a/tests/test_course_config.py
++++ b/tests/test_course_config.py
+@@ -18,6 +18,7 @@ def test_defaults_fill_in_missing_options(course_data):
+     assert course.grade_decimals == 2
+     assert course.late.per_day == 10
+     assert course.late.cap == 50
++    assert course.late.flat == 20
+ 
+ 
+ def test_load_course_reads_json(tmp_path, course_data):
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 2e64b3d..4479563 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -96,7 +96,7 @@ def test_course_outline(course):
+     table = course_outline(course)
+     assert table.column("assignment_id") == ["hw1", "q1", "hw2", "hw3", "q2", "ex1"]
+     assert "Category homework: weight 40%, lowest 1 dropped, 3 assignments" in table.notes
+-    assert "Late rule: per_day (per_day 10, cap 50)" in table.notes
++    assert "Late rule: per_day (per_day 10, cap 50, flat 20)" in table.notes
+ 
+ 
+ def test_explain_grade(book):

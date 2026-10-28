@@ -1,0 +1,16 @@
+diff --git a/src/gradebook/services/transcript.py b/src/gradebook/services/transcript.py
+index b6d9138..9ebc46d 100644
+--- a/src/gradebook/services/transcript.py
++++ b/src/gradebook/services/transcript.py
+@@ -54,10 +54,7 @@ class Transcript:
+ def read_posted_grades(path):
+     path = Path(path)
+     with path.open(newline="", encoding="utf-8") as handle:
+-        # Files posted before the registrar asked for semicolons are comma-separated.
+-        delimiter = ";" if ";" in handle.readline() else ","
+-        handle.seek(0)
+-        reader = csv.DictReader(handle, delimiter=delimiter)
++        reader = csv.DictReader(handle)
+         for column in POSTED_COLUMNS:
+             if column not in (reader.fieldnames or []):
+                 raise ImportFailed(f"{path.name}: missing column {column}")

@@ -1,0 +1,29 @@
+diff --git a/src/gradebook/storage/sheet_csv.py b/src/gradebook/storage/sheet_csv.py
+index ea3de37..8de070a 100644
+--- a/src/gradebook/storage/sheet_csv.py
++++ b/src/gradebook/storage/sheet_csv.py
+@@ -1,21 +1,19 @@
+ """Filled-in score sheets: one row per student, one column per assignment.
+ 
+-Cells use the same values as score files: blank, EX or points. The `name`
+-column is there for the teacher filling the sheet in and is not read. A sheet
+-carries no submission days, so a score that was already on record keeps its day.
++Cells use the same values as score files: blank, EX or points. A sheet carries
++no submission days, so a score that was already on record keeps its day.
+ """
+ from ..errors import ImportFailed
+ from .csv_util import parse_cell, read_table
+ from .importers import ImportSummary, at_line, importer
+ 
+ ID_COLUMN = "student_id"
+-NAME_COLUMN = "name"
+ 
+ 
+ @importer("sheet")
+ def import_sheet(book, path):
+     header, rows = read_table(path, (ID_COLUMN,))
+-    assignment_ids = [column for column in header if column not in (ID_COLUMN, NAME_COLUMN)]
++    assignment_ids = [column for column in header if column != ID_COLUMN]
+     for assignment_id in assignment_ids:
+         if not book.course.has_assignment(assignment_id):
+             raise ImportFailed(f"{path.name}: unknown assignment {assignment_id}")

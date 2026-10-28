@@ -1,0 +1,19 @@
+diff --git a/src/gradebook/reports/progress.py b/src/gradebook/reports/progress.py
+index bc3ddee..3d39e0f 100644
+--- a/src/gradebook/reports/progress.py
++++ b/src/gradebook/reports/progress.py
+@@ -104,12 +104,12 @@ def _category_progress(course, category, sheet, student_id, as_of):
+ 
+ 
+ def _lowest(lines, count):
+-    """The lines drop_lowest removes: the lowest scores by percent, always keeping at least one."""
++    """The lines drop_lowest removes: the lowest scores, always keeping at least one."""
+     counted = [line for line in lines if line.status in COUNTED]
+     count = min(count, len(counted) - 1)
+     if count <= 0:
+         return []
+-    return sorted(counted, key=lambda line: line.earned / line.possible)[:count]
++    return sorted(counted, key=lambda line: line.earned)[:count]
+ 
+ 
+ def _weighted_basis(course, categories):

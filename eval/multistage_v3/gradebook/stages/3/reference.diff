@@ -1,0 +1,82 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 64163d1..3af007c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: drop_lowest ranks scores by percent of possible points, so a 4/5 is no longer dropped ahead of a 6/10.
+ - The `points` scoring policy is now called `total_points`; course files that say `points` still load.
+ - The term grades file written by `export-grades` separates fields with `;`, as the registrar's import tool requires.
+ - `gradebook what-if` shows the class's grades under different category weights.
+diff --git a/docs/reference.md b/docs/reference.md
+index d3443d4..68a310c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -28,7 +28,7 @@ required; everything below falls back to the value shown.
+ | name | value | meaning |
+ |---|---|---|
+ | `rounding` | `half up` | course grade: how final and category percents are rounded |
+-| `drop_lowest.rank` | `points earned` | course grade: how drop_lowest ranks scores to find the lowest |
++| `drop_lowest.rank` | `percent of possible points` | course grade: how drop_lowest ranks scores to find the lowest |
+ | `drop_lowest.keep` | `1` | course grade: drop_lowest always keeps at least this many scores in a category |
+ | `missing` | `0` | course grade: points counted for work past due with no score |
+ | `excused.counts` | `no` | course grade: whether excused work counts toward a category |
+diff --git a/src/gradebook/grading/calculator.py b/src/gradebook/grading/calculator.py
+index 586ae01..6ea8843 100644
+--- a/src/gradebook/grading/calculator.py
++++ b/src/gradebook/grading/calculator.py
+@@ -60,9 +60,9 @@ def _counted_items(course, category, sheet, student_id, as_of):
+ 
+ 
+ def _drop_lowest(items, count):
+-    """Drop up to `count` of the lowest scores, always keeping at least one."""
++    """Drop up to `count` of the lowest scores by percent, always keeping at least one."""
+     count = min(count, len(items) - 1)
+     if count <= 0:
+         return items
+-    ranked = sorted(items, key=lambda item: item.earned)
++    ranked = sorted(items, key=lambda item: item.earned / item.possible)
+     return ranked[count:]
+diff --git a/src/gradebook/reports/progress.py b/src/gradebook/reports/progress.py
+index 3d39e0f..bc3ddee 100644
+--- a/src/gradebook/reports/progress.py
++++ b/src/gradebook/reports/progress.py
+@@ -104,12 +104,12 @@ def _category_progress(course, category, sheet, student_id, as_of):
+ 
+ 
+ def _lowest(lines, count):
+-    """The lines drop_lowest removes: the lowest scores, always keeping at least one."""
++    """The lines drop_lowest removes: the lowest scores by percent, always keeping at least one."""
+     counted = [line for line in lines if line.status in COUNTED]
+     count = min(count, len(counted) - 1)
+     if count <= 0:
+         return []
+-    return sorted(counted, key=lambda line: line.earned)[:count]
++    return sorted(counted, key=lambda line: line.earned / line.possible)[:count]
+ 
+ 
+ def _weighted_basis(course, categories):
+diff --git a/tests/test_calculator.py b/tests/test_calculator.py
+index 400f2a4..bfd7ce9 100644
+--- a/tests/test_calculator.py
++++ b/tests/test_calculator.py
+@@ -30,6 +30,17 @@ def test_drop_lowest_never_drops_the_only_score(empty_book):
+     assert grade.category("homework").percent == 40.0
+ 
+ 
++def test_drop_lowest_ranks_by_percent_not_points(course_data):
++    course_data["assignments"][2]["max_points"] = 5
++    course = course_from_dict(course_data)
++    book = Gradebook(course)
++    book.add_student(Student("s1", "Lovelace", "Ada"))
++    book.record_score("s1", "hw1", 6)
++    book.record_score("s1", "hw2", 4)
++    book.record_score("s1", "hw3", 9)
++    assert book.grade("s1", as_of=10).category("homework").percent == 86.7
++
++
+ def test_excused_work_is_left_out(book):
+     book.excuse("s3", "q2")
+     assert book.grade("s3").category("quizzes").percent == 60.0

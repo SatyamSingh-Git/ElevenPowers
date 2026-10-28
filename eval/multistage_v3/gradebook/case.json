@@ -1,0 +1,135 @@
+{
+  "id": "gradebook",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/gradebook/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "The registrar's office has a new import tool, and it rejects our term grades files because it expects fields separated by semicolons. Please make the term grades file that `gradebook export-grades` writes use `;` as its delimiter instead of `,`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/gradebook/services/transcript.py",
+          "kind": "data",
+          "path": "Following where the term grades file goes leads to `gradebook transcript`, whose `read_posted_grades` parses posted term grades files with a comma-separated reader.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_reports"]
+        }
+      ]
+    },
+    {
+      "request": "Teachers keep confusing the `points` scoring policy with the points a student scored on an assignment. Rename the policy to `total_points`. Course files that still say `\"policy\": \"points\"` must keep loading and grading exactly as before. When a course file names a policy that doesn't exist, loading it should now say `unknown scoring policy {name}; choose weighted or total_points`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/gradebook/reports/progress.py",
+          "kind": "key",
+          "path": "Searching for the policy name as a string finds the progress report's `_BASES` table, which looks up how to explain a grade by the course's policy name.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_reports"]
+        }
+      ]
+    },
+    {
+      "request": "Drop-lowest drops the wrong score when a category's assignments are worth different amounts. A student with 4/5 on one quiz and 6/10 on another has the 4/5 dropped, because 4 points is fewer than 6, even though 60% is the worse result. Course grades should rank scores for drop-lowest by percent of possible points, not by points earned.",
+      "kind": "cross-cutting",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/gradebook/reports/progress.py",
+          "kind": "copy",
+          "path": "Looking for everything that applies drop_lowest finds the progress report, which marks dropped scores and totals categories with its own ranking in `_lowest`.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_reports"]
+        }
+      ]
+    },
+    {
+      "request": "With one decimal place, too many students land right on a letter cutoff and we get grade disputes. Change the default of the course file option `grade_decimals` from `1` to `2`, so a course that doesn't set it rounds its percents to two decimals. Courses that set it keep their own value.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/gradebook/storage/grades_csv.py",
+          "kind": "contract",
+          "path": "Reading every place a course grade percent is formatted shows the term grades export writes it with a fixed one decimal, relying on the old default rounding.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_reports"]
+        }
+      ]
+    },
+    {
+      "request": "Teachers fill in the score sheet from `gradebook sheet` by hand, and with only student ids on each row they keep typing scores on the wrong line. Add a `name` column right after `student_id`, with each student's name written as `Last, First`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/gradebook/storage/sheet_csv.py",
+          "kind": "data",
+          "path": "The score sheet module says sheets come back through `import sheet`; that importer treats every column except `student_id` as an assignment id.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_grading"]
+        }
+      ]
+    },
+    {
+      "request": "Add a `--sort` option to `gradebook report`. `--sort name` keeps today's order (last name, then first name) and stays the default; `--sort grade` lists the highest percent first, with students who have no grade yet at the end.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Add a `flat` late rule for course files: any late submission loses a fixed percent of the assignment's points, however many days late it is. The percent comes from the course file option `late.flat`, default `20`. Work handed in on time keeps every point, and a late penalty never takes a score below zero.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "When a student has no graded work yet, their course grade has no letter, and the class report and the term grades file leave the letter blank, which looks like a data-entry mistake. Give them the letter `NG` (no grade) in all three places instead. Their percent stays empty.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/gradebook/services/transcript.py",
+          "kind": "contract",
+          "path": "Following the term grades file into transcripts shows `_credit_totals` treats a blank letter as no grade yet, the sentinel the new NG replaces.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_reports"]
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {"id": "base_grading", "since": 0, "until": 8},
+    {"id": "base_reports", "since": 0, "until": 8},
+    {"id": "s1_grades_semicolon", "since": 1, "until": 8},
+    {"id": "s1_cli_export", "since": 1, "until": 8},
+    {"id": "s2_total_points", "since": 2, "until": 8},
+    {"id": "s2_unknown_policy", "since": 2, "until": 8},
+    {"id": "s3_drop_by_percent", "since": 3, "until": 8},
+    {"id": "s3_drop_total_points", "since": 3, "until": 8},
+    {"id": "s4_two_decimals", "since": 4, "until": 8},
+    {"id": "s4_report_decimals", "since": 4, "until": 8},
+    {"id": "s5_sheet_names", "since": 5, "until": 8},
+    {"id": "s5_sheet_cli", "since": 5, "until": 8},
+    {"id": "s6_sort_grade", "since": 6, "until": 8},
+    {"id": "s6_sort_name", "since": 6, "until": 8},
+    {"id": "s7_flat_default", "since": 7, "until": 8},
+    {"id": "s7_flat_setting", "since": 7, "until": 8},
+    {"id": "s8_ng_grade", "since": 8, "until": 8},
+    {"id": "s8_ng_outputs", "since": 8, "until": 8}
+  ]
+}

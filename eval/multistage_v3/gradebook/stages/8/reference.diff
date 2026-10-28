@@ -1,0 +1,200 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index db5204c..27c5802 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Students with no graded work yet get the letter `NG` in their course grade, the class report and the term grades file, instead of a blank.
+ - New `flat` late rule: late work loses `late.flat` percent (default 20) of the assignment's points, however late it is.
+ - `gradebook report --sort grade` lists the highest percent first and students with no grade last; `--sort name` stays the default.
+ - Score sheets have a `name` column after `student_id`, written as `Last, First`.
+diff --git a/docs/reference.md b/docs/reference.md
+index e26b302..d8bf7b1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -34,7 +34,7 @@ required; everything below falls back to the value shown.
+ | `missing` | `0` | course grade: points counted for work past due with no score |
+ | `excused.counts` | `no` | course grade: whether excused work counts toward a category |
+ | `weight_total` | `100` | course file: what category weights must add up to under `weighted` |
+-| `no_grade` | `blank` | course grade, class report and term grades file: letter for a student with no graded work |
++| `no_grade` | `NG` | course grade, class report and term grades file: letter for a student with no graded work |
+ | `gpa_decimals` | `2` | transcript: decimals the GPA is rounded to, half up |
+ 
+ ## Limits
+@@ -101,8 +101,8 @@ minimum it reaches.
+ | `gradebook.format` | `1` | gradebook file: format version |
+ 
+ Transcripts (`transcript`, `build_transcript`) are built from posted term
+-grades files. A course whose letter is blank is listed but counts toward
+-neither credits nor the GPA.
++grades files. A course whose letter is NG, or blank in a file posted before NG
++was used, is listed but counts toward neither credits nor the GPA.
+ 
+ ## Command line
+ 
+diff --git a/src/gradebook/grading/calculator.py b/src/gradebook/grading/calculator.py
+index 6ea8843..15c349a 100644
+--- a/src/gradebook/grading/calculator.py
++++ b/src/gradebook/grading/calculator.py
+@@ -5,6 +5,7 @@ is None). Excused work is left out, missing work counts as zero, late work goes
+ through the course's late rule, and then the category's `drop_lowest` scores
+ are dropped. The scoring policy combines the categories, the result is rounded
+ half up to `grade_decimals`, and the letter comes from the course's scale.
++A student with nothing graded yet has no percent and the letter NG.
+ """
+ from dataclasses import dataclass
+ from fractions import Fraction
+@@ -15,6 +16,7 @@ from .results import CategoryResult, CourseGrade
+ from .rounding import exact, round_half_up
+ from .scales import get_scale
+ 
++NO_GRADE = "NG"
+ 
+ @dataclass(frozen=True)
+ class _Counted:
+@@ -28,7 +30,7 @@ def compute_grade(course, sheet, student_id, as_of=None):
+                     for category in course.categories)
+     combined = get_policy(course.policy)(results)
+     if combined is None:
+-        return CourseGrade(student_id, None, None, results)
++        return CourseGrade(student_id, None, NO_GRADE, results)
+     percent = round_half_up(combined, course.grade_decimals)
+     return CourseGrade(student_id, percent, get_scale(course.scale).letter_for(percent), results)
+ 
+diff --git a/src/gradebook/grading/results.py b/src/gradebook/grading/results.py
+index 948fff3..2c7e2de 100644
+--- a/src/gradebook/grading/results.py
++++ b/src/gradebook/grading/results.py
+@@ -24,7 +24,7 @@ class CategoryResult:
+ class CourseGrade:
+     student_id: str
+     percent: float | None
+-    letter: str | None
++    letter: str  # NG when nothing is graded yet
+     categories: tuple
+ 
+     @property
+diff --git a/src/gradebook/reports/summary.py b/src/gradebook/reports/summary.py
+index ec84276..883c2f4 100644
+--- a/src/gradebook/reports/summary.py
++++ b/src/gradebook/reports/summary.py
+@@ -35,7 +35,7 @@ def class_summary(book, as_of=None, sort="name"):
+ 
+ def _summary_row(student, grade, decimals):
+     percent = "" if grade.percent is None else f"{grade.percent:.{decimals}f}"
+-    return [student.student_id, student.display_name, percent, grade.letter or ""]
++    return [student.student_id, student.display_name, percent, grade.letter]
+ 
+ 
+ def _notes(stats, decimals):
+diff --git a/src/gradebook/services/transcript.py b/src/gradebook/services/transcript.py
+index b6d9138..51b81d7 100644
+--- a/src/gradebook/services/transcript.py
++++ b/src/gradebook/services/transcript.py
+@@ -1,8 +1,8 @@
+ """Transcripts, built from the term grades files each course posts.
+ 
+-A course whose posted letter is blank has no grade yet: it is listed but
+-counts toward neither credits nor the GPA. P and NP earn or fail credits
+-without counting toward the GPA.
++A course posted with the letter NG has no grade yet: it is listed but counts
++toward neither credits nor the GPA. Files posted before NG was used leave such
++a letter blank. P and NP earn or fail credits without counting toward the GPA.
+ """
+ import csv
+ from dataclasses import dataclass
+@@ -10,10 +10,12 @@ from pathlib import Path
+ 
+ from .._generated import GRADE_POINTS
+ from ..errors import ImportFailed, NotOnTranscript
++from ..grading.calculator import NO_GRADE
+ from ..grading.rounding import exact, round_half_up
+ 
+ POSTED_COLUMNS = ("student_id", "name", "course", "credits", "percent", "letter")
+ NO_CREDIT = {"F", "NP"}
++UNGRADED = {"", NO_GRADE}
+ GPA_DECIMALS = 2
+ 
+ 
+@@ -92,7 +94,7 @@ def build_transcript(student_id, paths):
+ def _credit_totals(lines):
+     attempted = earned = gpa_credits = quality = exact(0)
+     for line in lines:
+-        if not line.letter:
++        if line.letter in UNGRADED:
+             continue
+         credits = exact(line.credits)
+         attempted += credits
+diff --git a/src/gradebook/storage/grades_csv.py b/src/gradebook/storage/grades_csv.py
+index eaf7b01..a308712 100644
+--- a/src/gradebook/storage/grades_csv.py
++++ b/src/gradebook/storage/grades_csv.py
+@@ -20,4 +20,4 @@ def export_grades(book, path, as_of=None):
+ def _grade_row(course, student, grade):
+     percent = "" if grade.percent is None else f"{grade.percent:.{course.grade_decimals}f}"
+     return [student.student_id, student.display_name, course.code, f"{course.credits:g}",
+-            percent, grade.letter or ""]
++            percent, grade.letter]
+diff --git a/tests/test_calculator.py b/tests/test_calculator.py
+index 500a2fa..b2ca325 100644
+--- a/tests/test_calculator.py
++++ b/tests/test_calculator.py
+@@ -52,10 +52,10 @@ def test_upcoming_work_does_not_count(book):
+     assert grade.category("homework").percent == 100.0
+ 
+ 
+-def test_no_graded_work_has_no_percent_or_letter(empty_book):
++def test_no_graded_work_has_no_percent_and_letter_ng(empty_book):
+     grade = empty_book.grade("s1", as_of=2)
+     assert grade.percent is None
+-    assert grade.letter is None
++    assert grade.letter == "NG"
+ 
+ 
+ def test_late_work_loses_points_per_day(empty_book):
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index c3c176b..9b38381 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -25,7 +25,7 @@ def test_new_import_score_report(tmp_path, capsys):
+     lines = capsys.readouterr().out.splitlines()
+     assert lines[0] == "student_id,name,percent,letter"
+     assert lines[1] == "s1,Ada Lovelace,90.0,A-"
+-    assert lines[2] == "s2,Alan Turing,,"
++    assert lines[2] == "s2,Alan Turing,,NG"
+ 
+ 
+ def test_report_sorted_by_grade(tmp_path, capsys):
+diff --git a/tests/test_files.py b/tests/test_files.py
+index 7cd78e7..dd96073 100644
+--- a/tests/test_files.py
++++ b/tests/test_files.py
+@@ -50,11 +50,11 @@ def test_export_grades_separates_fields_with_semicolons(tmp_path, book):
+     assert path.read_text(encoding="utf-8").splitlines()[0] == "student_id;name;course;credits;percent;letter"
+ 
+ 
+-def test_export_grades_leaves_ungraded_blank(tmp_path, book):
++def test_export_grades_marks_ungraded_ng(tmp_path, book):
+     path = tmp_path / "grades.csv"
+     export_grades(book, path, as_of=2)
+     rows = list(csv.reader(path.open(encoding="utf-8"), delimiter=";"))
+-    assert rows[1][4:] == ["", ""]
++    assert rows[1][4:] == ["", "NG"]
+ 
+ 
+ def test_export_scores_reads_back(tmp_path, book):
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 4479563..cdbb070 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -29,7 +29,7 @@ def test_class_summary_by_grade(book):
+ 
+ def test_class_summary_marks_ungraded_students(book):
+     table = class_summary(book, as_of=2)
+-    assert table.column("letter") == ["", "", ""]
++    assert table.column("letter") == ["NG", "NG", "NG"]
+     assert table.notes == ["Students: 3, none graded yet"]
+ 
+ 

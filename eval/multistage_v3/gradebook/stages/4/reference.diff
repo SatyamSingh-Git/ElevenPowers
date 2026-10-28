@@ -1,0 +1,89 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3af007c..84df0c9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Courses that do not set `grade_decimals` now round final percents to two decimals instead of one.
+ - Fixed: drop_lowest ranks scores by percent of possible points, so a 4/5 is no longer dropped ahead of a 6/10.
+ - The `points` scoring policy is now called `total_points`; course files that say `points` still load.
+ - The term grades file written by `export-grades` separates fields with `;`, as the registrar's import tool requires.
+diff --git a/docs/reference.md b/docs/reference.md
+index 68a310c..df2437f 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -18,7 +18,7 @@ required; everything below falls back to the value shown.
+ | `late_rule` | `none` | course file: late rule, `none` or `per_day` |
+ | `late.per_day` | `10` | course file: percent of an assignment's points lost per day late under `per_day` |
+ | `late.cap` | `50` | course file: most percent of an assignment's points a late penalty takes |
+-| `grade_decimals` | `1` | course file: decimals final and category percents are rounded to |
++| `grade_decimals` | `2` | course file: decimals final and category percents are rounded to |
+ | `weight` | `0` | course file, per category: weight in percent, used by the `weighted` policy |
+ | `drop_lowest` | `0` | course file, per category: how many of a student's lowest scores are dropped |
+ | `title` | `{id}` | course file, per assignment: shown in reports; defaults to the assignment id |
+diff --git a/src/gradebook/storage/course_config.py b/src/gradebook/storage/course_config.py
+index bc63bd5..7cc57e8 100644
+--- a/src/gradebook/storage/course_config.py
++++ b/src/gradebook/storage/course_config.py
+@@ -20,7 +20,7 @@ DEFAULTS = {
+     "policy": "weighted",
+     "scale": "standard",
+     "late_rule": "none",
+-    "grade_decimals": 1,
++    "grade_decimals": 2,
+ }
+ LATE_DEFAULTS = {"per_day": 10, "cap": 50}
+ REQUIRED = ("code", "title", "categories", "assignments")
+diff --git a/src/gradebook/storage/grades_csv.py b/src/gradebook/storage/grades_csv.py
+index 81bb874..eaf7b01 100644
+--- a/src/gradebook/storage/grades_csv.py
++++ b/src/gradebook/storage/grades_csv.py
+@@ -18,6 +18,6 @@ def export_grades(book, path, as_of=None):
+ 
+ 
+ def _grade_row(course, student, grade):
+-    percent = "" if grade.percent is None else f"{grade.percent:.1f}"
++    percent = "" if grade.percent is None else f"{grade.percent:.{course.grade_decimals}f}"
+     return [student.student_id, student.display_name, course.code, f"{course.credits:g}",
+             percent, grade.letter or ""]
+diff --git a/tests/test_course_config.py b/tests/test_course_config.py
+index aca71f3..f23db02 100644
+--- a/tests/test_course_config.py
++++ b/tests/test_course_config.py
+@@ -3,6 +3,8 @@ import json
+ import pytest
+ 
+ from gradebook.errors import ConfigError
++from gradebook.model.student import Student
++from gradebook.services.gradebook import Gradebook
+ from gradebook.storage.course_config import course_from_dict, course_to_dict, load_course
+ 
+ 
+@@ -13,7 +15,7 @@ def test_defaults_fill_in_missing_options(course_data):
+     assert course.policy == "weighted"
+     assert course.scale == "standard"
+     assert course.late_rule == "none"
+-    assert course.grade_decimals == 1
++    assert course.grade_decimals == 2
+     assert course.late.per_day == 10
+     assert course.late.cap == 50
+ 
+@@ -24,6 +26,16 @@ def test_load_course_reads_json(tmp_path, course_data):
+     assert load_course(path).code == "ALG1"
+ 
+ 
++def test_default_rounds_to_two_decimals(course_data):
++    del course_data["grade_decimals"]
++    course_data["categories"] = [{"name": "work", "weight": 100}]
++    course_data["assignments"] = [{"id": "a", "category": "work", "max_points": 3, "due_day": 1}]
++    book = Gradebook(course_from_dict(course_data))
++    book.add_student(Student("s1", "Lovelace", "Ada"))
++    book.record_score("s1", "a", 2)
++    assert book.grade("s1").percent == 66.67
++
++
+ def test_round_trip_through_dict(course):
+     assert course_from_dict(course_to_dict(course)) == course
+ 

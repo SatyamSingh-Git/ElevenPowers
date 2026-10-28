@@ -1,0 +1,13 @@
+diff --git a/src/gradebook/reports/progress.py b/src/gradebook/reports/progress.py
+index 3d39e0f..bad8fea 100644
+--- a/src/gradebook/reports/progress.py
++++ b/src/gradebook/reports/progress.py
+@@ -127,7 +127,7 @@ def _points_basis(course, categories):
+ # How each scoring policy's grade is explained at the top of the report.
+ _BASES = {
+     "weighted": _weighted_basis,
+-    "total_points": _points_basis,
++    "points": _points_basis,
+ }
+ 
+ 

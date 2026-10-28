@@ -1,0 +1,117 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 53b78c3..39acfb3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `gradebook report --sort grade` lists the highest percent first and students with no grade last; `--sort name` stays the default.
+ - Score sheets have a `name` column after `student_id`, written as `Last, First`.
+ - Courses that do not set `grade_decimals` now round final percents to two decimals instead of one.
+ - Fixed: drop_lowest ranks scores by percent of possible points, so a 4/5 is no longer dropped ahead of a 6/10.
+diff --git a/docs/reference.md b/docs/reference.md
+index 7726949..2f61cf9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -108,6 +108,7 @@ neither credits nor the GPA.
+ | name | default | meaning |
+ |---|---|---|
+ | `--book` | `gradebook.json` | CLI: the gradebook file a command reads and writes |
++| `--sort` | `name` | CLI `report`: row order, `name` (last name, then first name) or `grade` (highest percent first, no grade last) |
+ | `--format` | `text` | CLI `report` and other table commands: `text`, `csv` or `markdown` |
+ | `--as-of` | `every assignment` | CLI: term day grades are computed as of; work due later does not count |
+ | `--below` | `70` | CLI `at-risk`: percent to flag students under |
+diff --git a/src/gradebook/cli/commands.py b/src/gradebook/cli/commands.py
+index 6ca9931..aa3115b 100644
+--- a/src/gradebook/cli/commands.py
++++ b/src/gradebook/cli/commands.py
+@@ -123,7 +123,7 @@ def cmd_curve(args, out):
+ 
+ def cmd_report(args, out):
+     book = load_gradebook(args.book)
+-    out.write(render(class_summary(book, args.as_of), args.format))
++    out.write(render(class_summary(book, args.as_of, args.sort), args.format))
+     return 0
+ 
+ 
+diff --git a/src/gradebook/cli/main.py b/src/gradebook/cli/main.py
+index 12f372b..b856e7f 100644
+--- a/src/gradebook/cli/main.py
++++ b/src/gradebook/cli/main.py
+@@ -66,6 +66,8 @@ def build_parser():
+     _book_option(curve)
+ 
+     report = sub.add_parser("report", help="the class report")
++    report.add_argument("--sort", default="name", choices=("name", "grade"),
++                        help="name (default) or grade, highest first")
+     _format_option(report)
+     _as_of_option(report)
+     _book_option(report)
+diff --git a/src/gradebook/reports/summary.py b/src/gradebook/reports/summary.py
+index 7f21c67..ec84276 100644
+--- a/src/gradebook/reports/summary.py
++++ b/src/gradebook/reports/summary.py
+@@ -6,9 +6,22 @@ from .tables import Table
+ COLUMNS = ("student_id", "name", "percent", "letter")
+ 
+ 
+-def class_summary(book, as_of=None):
++def _by_name(pair):
++    return pair[0].sort_key()
++
++
++def _by_grade(pair):
++    student, grade = pair
++    # Highest percent first; students with no grade yet go last.
++    return (grade.percent is None, -(grade.percent or 0), student.sort_key())
++
++
++SORTS = {"name": _by_name, "grade": _by_grade}
++
++
++def class_summary(book, as_of=None, sort="name"):
+     course = book.course
+-    graded = sorted(book.grades(as_of), key=lambda pair: pair[0].sort_key())
++    graded = sorted(book.grades(as_of), key=SORTS[sort])
+     rows = [_summary_row(student, grade, course.grade_decimals) for student, grade in graded]
+     stats = class_statistics([grade for _, grade in graded], get_scale(course.scale), course.grade_decimals)
+     return Table(
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 214b1d9..c3c176b 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -28,6 +28,15 @@ def test_new_import_score_report(tmp_path, capsys):
+     assert lines[2] == "s2,Alan Turing,,"
+ 
+ 
++def test_report_sorted_by_grade(tmp_path, capsys):
++    book = start(tmp_path)
++    main(["score", "s1", "hw1", "6", "--book", str(book)])
++    main(["score", "s2", "hw1", "9", "--book", str(book)])
++    capsys.readouterr()
++    assert main(["report", "--sort", "grade", "--format", "csv", "--as-of", "3", "--book", str(book)]) == 0
++    assert [line.split(",")[0] for line in capsys.readouterr().out.splitlines()[1:]] == ["s2", "s1"]
++
++
+ def test_errors_exit_with_one(tmp_path, capsys):
+     book = start(tmp_path)
+     assert main(["score", "s9", "hw1", "5", "--book", str(book)]) == 1
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index a7aeffd..2e64b3d 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -20,6 +20,13 @@ def test_class_summary_rows_by_name(book):
+     assert "Class average: 77.2" in table.notes
+ 
+ 
++def test_class_summary_by_grade(book):
++    book.excuse("s3", "hw1")
++    table = class_summary(book, as_of=3, sort="grade")
++    assert table.column("student_id") == ["s1", "s2", "s3"]
++    assert table.column("percent")[2] == ""
++
++
+ def test_class_summary_marks_ungraded_students(book):
+     table = class_summary(book, as_of=2)
+     assert table.column("letter") == ["", "", ""]

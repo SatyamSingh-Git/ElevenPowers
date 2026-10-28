@@ -1,0 +1,147 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3899480..64163d1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The `points` scoring policy is now called `total_points`; course files that say `points` still load.
+ - The term grades file written by `export-grades` separates fields with `;`, as the registrar's import tool requires.
+ - `gradebook what-if` shows the class's grades under different category weights.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 74f9abd..d3443d4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -13,7 +13,7 @@ required; everything below falls back to the value shown.
+ | name | default | meaning |
+ |---|---|---|
+ | `credits` | `1.0` | course file: credits the course carries on a transcript |
+-| `policy` | `weighted` | course file: scoring policy, `weighted` or `points` |
++| `policy` | `weighted` | course file: scoring policy, `weighted` or `total_points`; `points`, its old name, still loads as `total_points` |
+ | `scale` | `standard` | course file: letter scale, `standard` or `pass_fail` |
+ | `late_rule` | `none` | course file: late rule, `none` or `per_day` |
+ | `late.per_day` | `10` | course file: percent of an assignment's points lost per day late under `per_day` |
+@@ -118,7 +118,7 @@ neither credits nor the GPA.
+ 
+ | name | message | meaning |
+ |---|---|---|
+-| `unknown_policy` | `unknown scoring policy {name}; choose weighted or points` | course file: loading a course file that names an unknown policy |
++| `unknown_policy` | `unknown scoring policy {name}; choose weighted or total_points` | course file: loading a course file that names an unknown policy |
+ | `unknown_scale` | `unknown letter scale {name}` | course file: unknown `scale` |
+ | `unknown_late_rule` | `unknown late rule {name}` | course file: unknown `late_rule` |
+ | `unknown_late_setting` | `unknown late setting {key}` | course file: unknown key under `late` |
+diff --git a/src/gradebook/grading/policies.py b/src/gradebook/grading/policies.py
+index ba96a03..f8469f3 100644
+--- a/src/gradebook/grading/policies.py
++++ b/src/gradebook/grading/policies.py
+@@ -23,12 +23,18 @@ def points_total(results):
+ 
+ POLICIES = {
+     "weighted": weighted,
+-    "points": points_total,
++    "total_points": points_total,
+ }
++# Old policy names that course files may still use.
++RENAMED = {"points": "total_points"}
++
++
++def canonical_policy(name):
++    name = RENAMED.get(name, name)
++    if name not in POLICIES:
++        raise UnknownPolicy(name, list(POLICIES))
++    return name
+ 
+ 
+ def get_policy(name):
+-    try:
+-        return POLICIES[name]
+-    except KeyError:
+-        raise UnknownPolicy(name, list(POLICIES)) from None
++    return POLICIES[canonical_policy(name)]
+diff --git a/src/gradebook/reports/progress.py b/src/gradebook/reports/progress.py
+index bad8fea..3d39e0f 100644
+--- a/src/gradebook/reports/progress.py
++++ b/src/gradebook/reports/progress.py
+@@ -127,7 +127,7 @@ def _points_basis(course, categories):
+ # How each scoring policy's grade is explained at the top of the report.
+ _BASES = {
+     "weighted": _weighted_basis,
+-    "points": _points_basis,
++    "total_points": _points_basis,
+ }
+ 
+ 
+diff --git a/src/gradebook/storage/course_config.py b/src/gradebook/storage/course_config.py
+index af6c218..bc63bd5 100644
+--- a/src/gradebook/storage/course_config.py
++++ b/src/gradebook/storage/course_config.py
+@@ -3,13 +3,14 @@
+ Options left out of a course file take the values in DEFAULTS and
+ LATE_DEFAULTS. Every name a course file gives for a policy, scale or late rule
+ is checked against its registry when the file is loaded, not when grading.
++A policy's old name is replaced by its current one as the file is loaded.
+ """
+ import json
+ from pathlib import Path
+ 
+ from ..errors import ConfigError
+ from ..grading.late import get_late_rule
+-from ..grading.policies import get_policy
++from ..grading.policies import canonical_policy
+ from ..grading.scales import get_scale
+ from ..model.course import Assignment, Category, Course, LateSettings
+ 
+@@ -42,7 +43,7 @@ def course_from_dict(raw):
+         if field not in raw:
+             raise ConfigError(f"course file is missing {field}")
+     settings = {key: raw.get(key, default) for key, default in DEFAULTS.items()}
+-    get_policy(settings["policy"])
++    settings["policy"] = canonical_policy(settings["policy"])
+     get_scale(settings["scale"])
+     get_late_rule(settings["late_rule"])
+     decimals = settings["grade_decimals"]
+diff --git a/tests/test_calculator.py b/tests/test_calculator.py
+index f43f38f..400f2a4 100644
+--- a/tests/test_calculator.py
++++ b/tests/test_calculator.py
+@@ -58,7 +58,7 @@ def test_late_penalty_is_capped(empty_book):
+ 
+ 
+ def test_points_policy_totals_every_category(course_data):
+-    course_data["policy"] = "points"
++    course_data["policy"] = "total_points"
+     course = course_from_dict(course_data)
+     book = Gradebook(course)
+     book.add_student(Student("s1", "Lovelace", "Ada"))
+diff --git a/tests/test_course_config.py b/tests/test_course_config.py
+index e945889..aca71f3 100644
+--- a/tests/test_course_config.py
++++ b/tests/test_course_config.py
+@@ -35,17 +35,22 @@ def test_weights_must_add_up(course_data):
+ 
+ 
+ def test_points_policy_ignores_weights(course_data):
+-    course_data["policy"] = "points"
++    course_data["policy"] = "total_points"
+     for category in course_data["categories"]:
+         category["weight"] = 0
+-    assert course_from_dict(course_data).policy == "points"
++    assert course_from_dict(course_data).policy == "total_points"
++
++
++def test_old_points_policy_name_still_loads(course_data):
++    course_data["policy"] = "points"
++    assert course_from_dict(course_data).policy == "total_points"
+ 
+ 
+ def test_unknown_policy(course_data):
+     course_data["policy"] = "average"
+     with pytest.raises(ConfigError) as error:
+         course_from_dict(course_data)
+-    assert str(error.value) == "unknown scoring policy average; choose weighted or points"
++    assert str(error.value) == "unknown scoring policy average; choose weighted or total_points"
+ 
+ 
+ def test_unknown_scale_and_late_rule(course_data):

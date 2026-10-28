@@ -1,0 +1,85 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b18e563..3899480 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The term grades file written by `export-grades` separates fields with `;`, as the registrar's import tool requires.
+ - `gradebook what-if` shows the class's grades under different category weights.
+ 
+ ## 0.9.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 88b4663..74f9abd 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -95,7 +95,7 @@ minimum it reaches.
+ | `sheet.columns` | `student_id,{assignments}` | score sheet file (`sheet`, `write_score_sheet`): header, assignments in due order |
+ | `lms.points_possible` | `Points Possible` | LMS export file (`import lms`): row whose points must match the course |
+ | `grades.columns` | `student_id,name,course,credits,percent,letter` | term grades file (`export-grades`, `export_grades`): header; `percent` is the course grade percent |
+-| `grades.delimiter` | `,` | term grades file: field delimiter |
++| `grades.delimiter` | `;` | term grades file: field delimiter, as the registrar's import tool requires |
+ | `report.columns` | `student_id,name,percent,letter` | class report (`report`, `class_summary`): columns |
+ | `gradebook.format` | `1` | gradebook file: format version |
+ 
+diff --git a/src/gradebook/services/transcript.py b/src/gradebook/services/transcript.py
+index 9ebc46d..b6d9138 100644
+--- a/src/gradebook/services/transcript.py
++++ b/src/gradebook/services/transcript.py
+@@ -54,7 +54,10 @@ class Transcript:
+ def read_posted_grades(path):
+     path = Path(path)
+     with path.open(newline="", encoding="utf-8") as handle:
+-        reader = csv.DictReader(handle)
++        # Files posted before the registrar asked for semicolons are comma-separated.
++        delimiter = ";" if ";" in handle.readline() else ","
++        handle.seek(0)
++        reader = csv.DictReader(handle, delimiter=delimiter)
+         for column in POSTED_COLUMNS:
+             if column not in (reader.fieldnames or []):
+                 raise ImportFailed(f"{path.name}: missing column {column}")
+diff --git a/src/gradebook/storage/grades_csv.py b/src/gradebook/storage/grades_csv.py
+index debb529..81bb874 100644
+--- a/src/gradebook/storage/grades_csv.py
++++ b/src/gradebook/storage/grades_csv.py
+@@ -3,7 +3,7 @@ import csv
+ from pathlib import Path
+ 
+ COLUMNS = ("student_id", "name", "course", "credits", "percent", "letter")
+-DELIMITER = ","
++DELIMITER = ";"  # the registrar's import tool requires semicolons
+ 
+ 
+ def export_grades(book, path, as_of=None):
+diff --git a/tests/test_files.py b/tests/test_files.py
+index e1be68f..2b7bd48 100644
+--- a/tests/test_files.py
++++ b/tests/test_files.py
+@@ -36,7 +36,7 @@ def test_gradebook_file_format_is_checked(tmp_path, book):
+ def test_export_grades(tmp_path, book):
+     path = tmp_path / "grades.csv"
+     assert export_grades(book, path) == 3
+-    rows = list(csv.reader(path.open(encoding="utf-8")))
++    rows = list(csv.reader(path.open(encoding="utf-8"), delimiter=";"))
+     assert rows[0] == ["student_id", "name", "course", "credits", "percent", "letter"]
+     first = rows[1]
+     assert first[:4] == ["s1", "Ada Lovelace", "ALG1", "1"]
+@@ -44,10 +44,16 @@ def test_export_grades(tmp_path, book):
+     assert first[5] == "A"
+ 
+ 
++def test_export_grades_separates_fields_with_semicolons(tmp_path, book):
++    path = tmp_path / "grades.csv"
++    export_grades(book, path)
++    assert path.read_text(encoding="utf-8").splitlines()[0] == "student_id;name;course;credits;percent;letter"
++
++
+ def test_export_grades_leaves_ungraded_blank(tmp_path, book):
+     path = tmp_path / "grades.csv"
+     export_grades(book, path, as_of=2)
+-    rows = list(csv.reader(path.open(encoding="utf-8")))
++    rows = list(csv.reader(path.open(encoding="utf-8"), delimiter=";"))
+     assert rows[1][4:] == ["", ""]
+ 
+ 

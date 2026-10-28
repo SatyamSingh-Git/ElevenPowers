@@ -1,0 +1,95 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 84df0c9..53b78c3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Score sheets have a `name` column after `student_id`, written as `Last, First`.
+ - Courses that do not set `grade_decimals` now round final percents to two decimals instead of one.
+ - Fixed: drop_lowest ranks scores by percent of possible points, so a 4/5 is no longer dropped ahead of a 6/10.
+ - The `points` scoring policy is now called `total_points`; course files that say `points` still load.
+diff --git a/docs/reference.md b/docs/reference.md
+index df2437f..7726949 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -92,7 +92,7 @@ minimum it reaches.
+ | `roster.columns` | `student_id,last_name,first_name` | roster file (`import roster`): required columns |
+ | `scores.columns` | `student_id,assignment_id,points,submitted_day` | score file (`import scores`, `export-scores`); `submitted_day` is optional |
+ | `cell.excused` | `EX` | score files, score sheets and LMS exports: cell value that excuses the work |
+-| `sheet.columns` | `student_id,{assignments}` | score sheet file (`sheet`, `write_score_sheet`): header, assignments in due order |
++| `sheet.columns` | `student_id,name,{assignments}` | score sheet file (`sheet`, `write_score_sheet`): header, assignments in due order; `name` is `Last, First` |
+ | `lms.points_possible` | `Points Possible` | LMS export file (`import lms`): row whose points must match the course |
+ | `grades.columns` | `student_id,name,course,credits,percent,letter` | term grades file (`export-grades`, `export_grades`): header; `percent` is the course grade percent |
+ | `grades.delimiter` | `;` | term grades file: field delimiter, as the registrar's import tool requires |
+diff --git a/src/gradebook/reports/score_sheet.py b/src/gradebook/reports/score_sheet.py
+index 956708c..b27782d 100644
+--- a/src/gradebook/reports/score_sheet.py
++++ b/src/gradebook/reports/score_sheet.py
+@@ -1,6 +1,7 @@
+ """Score sheets: a CSV for a teacher to fill in by hand and import with `import sheet`.
+ 
+-One row per student, one column per assignment in due order. Scores already on
++One row per student, with the student's name as `Last, First` so the right row
++is easy to find, then one column per assignment in due order. Scores already on
+ record are filled in, so a sheet can be printed, corrected and imported again.
+ """
+ import csv
+@@ -15,10 +16,10 @@ def write_score_sheet(book, path):
+     students = book.students
+     with Path(path).open("w", newline="", encoding="utf-8") as handle:
+         writer = csv.writer(handle, lineterminator="\n")
+-        writer.writerow(["student_id"] + [a.assignment_id for a in assignments])
++        writer.writerow(["student_id", "name"] + [a.assignment_id for a in assignments])
+         for student in students:
+             cells = [_cell(book.sheet.get(student.student_id, a.assignment_id)) for a in assignments]
+-            writer.writerow([student.student_id] + cells)
++            writer.writerow([student.student_id, student.sort_name] + cells)
+     return len(students)
+ 
+ 
+diff --git a/src/gradebook/storage/sheet_csv.py b/src/gradebook/storage/sheet_csv.py
+index 8de070a..ea3de37 100644
+--- a/src/gradebook/storage/sheet_csv.py
++++ b/src/gradebook/storage/sheet_csv.py
+@@ -1,19 +1,21 @@
+ """Filled-in score sheets: one row per student, one column per assignment.
+ 
+-Cells use the same values as score files: blank, EX or points. A sheet carries
+-no submission days, so a score that was already on record keeps its day.
++Cells use the same values as score files: blank, EX or points. The `name`
++column is there for the teacher filling the sheet in and is not read. A sheet
++carries no submission days, so a score that was already on record keeps its day.
+ """
+ from ..errors import ImportFailed
+ from .csv_util import parse_cell, read_table
+ from .importers import ImportSummary, at_line, importer
+ 
+ ID_COLUMN = "student_id"
++NAME_COLUMN = "name"
+ 
+ 
+ @importer("sheet")
+ def import_sheet(book, path):
+     header, rows = read_table(path, (ID_COLUMN,))
+-    assignment_ids = [column for column in header if column != ID_COLUMN]
++    assignment_ids = [column for column in header if column not in (ID_COLUMN, NAME_COLUMN)]
+     for assignment_id in assignment_ids:
+         if not book.course.has_assignment(assignment_id):
+             raise ImportFailed(f"{path.name}: unknown assignment {assignment_id}")
+diff --git a/tests/test_files.py b/tests/test_files.py
+index 2b7bd48..7cd78e7 100644
+--- a/tests/test_files.py
++++ b/tests/test_files.py
+@@ -73,8 +73,8 @@ def test_score_sheet(tmp_path, book):
+     path = tmp_path / "sheet.csv"
+     assert write_score_sheet(book, path) == 3
+     rows = list(csv.reader(path.open(encoding="utf-8")))
+-    assert rows[0] == ["student_id", "hw1", "q1", "hw2", "hw3", "q2", "ex1"]
+-    assert rows[3] == ["s3", "9", "3", "9", "", "", "85"]
++    assert rows[0] == ["student_id", "name", "hw1", "q1", "hw2", "hw3", "q2", "ex1"]
++    assert rows[3] == ["s3", "Hopper, Grace", "9", "3", "9", "", "", "85"]
+ 
+ 
+ def test_archive_is_repeatable(tmp_path, book):

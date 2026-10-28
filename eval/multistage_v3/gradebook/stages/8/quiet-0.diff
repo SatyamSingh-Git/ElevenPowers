@@ -1,0 +1,38 @@
+diff --git a/src/gradebook/services/transcript.py b/src/gradebook/services/transcript.py
+index 51b81d7..b6d9138 100644
+--- a/src/gradebook/services/transcript.py
++++ b/src/gradebook/services/transcript.py
+@@ -1,8 +1,8 @@
+ """Transcripts, built from the term grades files each course posts.
+ 
+-A course posted with the letter NG has no grade yet: it is listed but counts
+-toward neither credits nor the GPA. Files posted before NG was used leave such
+-a letter blank. P and NP earn or fail credits without counting toward the GPA.
++A course whose posted letter is blank has no grade yet: it is listed but
++counts toward neither credits nor the GPA. P and NP earn or fail credits
++without counting toward the GPA.
+ """
+ import csv
+ from dataclasses import dataclass
+@@ -10,12 +10,10 @@ from pathlib import Path
+ 
+ from .._generated import GRADE_POINTS
+ from ..errors import ImportFailed, NotOnTranscript
+-from ..grading.calculator import NO_GRADE
+ from ..grading.rounding import exact, round_half_up
+ 
+ POSTED_COLUMNS = ("student_id", "name", "course", "credits", "percent", "letter")
+ NO_CREDIT = {"F", "NP"}
+-UNGRADED = {"", NO_GRADE}
+ GPA_DECIMALS = 2
+ 
+ 
+@@ -94,7 +92,7 @@ def build_transcript(student_id, paths):
+ def _credit_totals(lines):
+     attempted = earned = gpa_credits = quality = exact(0)
+     for line in lines:
+-        if line.letter in UNGRADED:
++        if not line.letter:
+             continue
+         credits = exact(line.credits)
+         attempted += credits
