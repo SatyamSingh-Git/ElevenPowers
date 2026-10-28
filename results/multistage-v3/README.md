@@ -12,7 +12,14 @@ proves that mechanically
 ## Pilot, 2026-10-28
 
 Four sealed conversations on `gradebook` and `parcelpost`, frozen at `ecee720`
-([`manifest.json`](manifest.json), [`pilot-protocol.json`](pilot-protocol.json)).
+([`pilot-manifest.json`](pilot-manifest.json), [`pilot-protocol.json`](pilot-protocol.json)).
+After the pilot, a final code review fixed three checks, and [`manifest.json`](manifest.json)
+is refrozen with the cases byte-identical:
+- format specs in documented values are graded;
+- f-strings read the same on every Python version;
+- a quiet diff may touch only its declared file.
+
+The pilot regrades identically under the fixed checks.
 Superpowers 7.0.0 was in both arms, with Sonnet 5.5 at medium. All 32 stages
 completed and qualified, for $4.09.
 

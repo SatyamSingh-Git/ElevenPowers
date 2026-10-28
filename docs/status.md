@@ -12,6 +12,9 @@ give roughly 0.45–0.6 power, so the full run needs more replicates or a
 descriptive label. Next: ten more cases from the same brief. See
 [results](../results/multistage-v3/README.md) and
 [journey 93](../journey/93-a-dependent-the-search-does-not-find.md).
+The hosted intermittent recorded this morning,
+`test_actual_producer_keeps_replay_and_native_ingress_distinct[javascript]`, recurred
+on `0251191` (a plan document), on Windows 3.13 this time, with the other four cells green.
 
 **2026-10-28 — Multi-stage v2 pilot: no real headroom.**
 Four sealed six-request conversations (`access_policy`, `layered_config`;
