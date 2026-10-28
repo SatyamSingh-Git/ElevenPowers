@@ -1,5 +1,18 @@
 # Current delivery status
 
+**2026-10-28 — Multi-stage v3 pilot: a go.**
+Two new cases (`gradebook`, `parcelpost`) were built with declared quiet
+dependents that the rehearsal proves quiet: no changed name in the dependent's
+file, and the public suite still green. Four sealed conversations, $4.09, 32/32
+stages qualified. Superpowers alone broke earlier behaviour on both cases, and a
+blind classifier called both misses genuine. With ElevenPowers, the gradebook
+miss repeated and the parcelpost one did not; the pilot is excluded from
+analysis. No docs fact went stale in any arm. At the pilot's rate, twelve cases
+give roughly 0.45–0.6 power, so the full run needs more replicates or a
+descriptive label. Next: ten more cases from the same brief. See
+[results](../results/multistage-v3/README.md) and
+[journey 93](../journey/93-a-dependent-the-search-does-not-find.md).
+
 **2026-10-28 — Multi-stage v2 pilot: no real headroom.**
 Four sealed six-request conversations (`access_policy`, `layered_config`;
 superpowers vs superpowers plus ElevenPowers; Sonnet 5.5 medium; $3.39). Every

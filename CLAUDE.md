@@ -178,9 +178,11 @@ vacuity by arm on held-out tasks, is done
 The next experiment,
 [multi-stage v2](docs/superpowers/specs/2026-10-23-multistage-field-claims-design.md),
 tests the field report's docs and dependent-breakage claims with superpowers in
-both arms (`eval/multistage_run.py`). Its pilot (2026-10-28, $3.39) found no real
-headroom: superpowers alone lost nothing and kept the docs current, so the
-stages are redesigned before the full run. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
+both arms (`eval/multistage_run.py`). Its v2 pilot found no headroom, so
+[v3](docs/superpowers/specs/2026-10-28-multistage-v3-harder-cases-design.md)
+rebuilt the cases with quiet dependents (`eval/multistage_quiet.py`). The v3 pilot
+(2026-10-28, $4.09) is a go: superpowers alone broke earlier behaviour on both
+cases. Next come ten more cases, then a full run that waits for the user. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
 is older and was qualified by an audit on 2026-09-19; read its warning before
 shrinking or reviving it, because the cheap version reintroduces an error
 `PLAN.md` §10 has already withdrawn once.

@@ -1,12 +1,17 @@
 # The journey
 
-Latest: [92 — the pilot found nothing to prevent](92-the-pilot-found-nothing-to-prevent.md):
+Latest: [93 — a dependent the search does not find](93-a-dependent-the-search-does-not-find.md):
+multi-stage v3, bigger cases with declared quiet dependents proved quiet by the rehearsal. Pilot $4.09:
+superpowers alone broke earlier behaviour on both cases (a hard-coded precision, an order-dependent
+invoice grouping), both called genuine by a blind classifier; no docs fact went stale in any arm. Go.
+
+Recent: [92 — the pilot found nothing to prevent](92-the-pilot-found-nothing-to-prevent.md):
 multi-stage v2 pilot, 4 conversations, $3.39: neither arm lost any earlier behaviour, and all five
 stale facts were the oracle refusing correct docs for choices no request stated. The qualification
 found superpowers' skills could not load through the launcher and every subscription run carried
 the operator's own CLAUDE.md; both fixed. No real headroom, so the stages are redesigned before more is spent.
 
-Recent: [91 — a fair test is built before it is run](91-a-fair-test-is-built-before-it-is-run.md):
+Earlier: [91 — a fair test is built before it is run](91-a-fair-test-is-built-before-it-is-run.md):
 multi-stage v2 built and frozen with no model: twelve independently authored cases, rehearsed and
 reviewed twice; a pytest collection abort, an 8-case design that could not win, a CRLF checkout,
 ten cases grading wording rather than docs, and three grading defects found and fixed. Published at

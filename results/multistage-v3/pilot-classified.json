@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-28",
+  "how": "one fresh agent per superpowers-arm miss, blind to the arm: it saw only the request, the agent's stage diff with neutral paths, the project before the stage, the hidden group's source and its real failure output (packets scanned for arm names before dispatch)",
+  "misses": [
+    {
+      "case": "gradebook", "stage": 4, "groups": ["base_reports"],
+      "verdict": "GENUINE MISS",
+      "why": "the stage changed the default grade_decimals from 1 to 2; the grades export hard-codes .1f, so the posted percent no longer equals the course grade, which docs/reference.md promises ('percent is the course grade percent') and every other formatter honours through course.grade_decimals",
+      "findable_by": "searching for the old precision (':.1f' has exactly one hit), or following the grades.columns row to the export, or one end-to-end export and transcript"
+    },
+    {
+      "case": "parcelpost", "stage": 5, "groups": ["base_cli_day", "base_shipping_day"],
+      "verdict": "GENUINE MISS",
+      "why": "the stage put the manifest in booking order; billing groups the manifest's charges with itertools.groupby, which needs each account's rows adjacent, so one account got two invoices with the same number and the second invoice file overwrote the first",
+      "findable_by": "looking for the manifest's readers (manifest_filename or read_charges lead to billing.py, which imports groupby)"
+    }
+  ],
+  "gate": "GO: at least one genuine miss in a complete superpowers-only conversation (both qualify)"
+}

@@ -1,7 +1,9 @@
 # Multi-stage v3: test projects where a dependent is hard to find
 
-**Status: designed 2026-10-28, chosen by the user after the v2 pilot; nothing
-built.** It replaces v2's cases. It keeps v2's runner, arms, oracles and analysis
+**Status: pilot run 2026-10-28; GO.** Two cases were built, reviewed and
+frozen. Superpowers alone broke earlier behaviour on both, and a blind
+classifier called both misses genuine
+([results](../../../results/multistage-v3/README.md)). Next: ten more cases. It replaces v2's cases. It keeps v2's runner, arms, oracles and analysis
 ([v2 design](2026-10-23-multistage-field-claims-design.md)).
 
 ## Intent
