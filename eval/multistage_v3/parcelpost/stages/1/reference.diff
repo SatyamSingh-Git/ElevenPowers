@@ -11,15 +11,15 @@ index 3fc3f29..1004856 100644
  ## 1.4.0 - 2026-09-30
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 115aaa2..15547c1 100644
+index 6ced193..a56e9c4 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -118,6 +118,6 @@ All paths are relative to the data directory.
  | column or rule | value | meaning |
  |---|---|---|
  | `manifest columns` | `tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges` | manifest file: header row |
--| `charge` | `integer pence` | manifest file: the shipment's total charge |
-+| `charge` | `0.00` | manifest file: the shipment's total charge, in pounds |
+-| `charge` | `1250` | manifest file: the shipment's total charge, in whole pence |
++| `charge` | `12.50` | manifest file: the shipment's total charge, in pounds with two decimals |
  | `surcharges` | `joined with +` | manifest file: surcharge codes on the shipment's quote |
  | `manifest order` | `account, tracking number` | manifest file: order of the shipment lines |
 diff --git a/src/parcelpost/formats/manifest.py b/src/parcelpost/formats/manifest.py

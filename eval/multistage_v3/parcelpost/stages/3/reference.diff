@@ -12,7 +12,7 @@ index 34318b4..cd492ac 100644
  ## 1.4.0 - 2026-09-30
  
 diff --git a/docs/reference.md b/docs/reference.md
-index d7a2b83..1ed3fa4 100644
+index d119c4f..2e2bc4b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -38,7 +38,7 @@ missing file or section means every default applies.

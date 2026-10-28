@@ -60,7 +60,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "integer pence",
+    "charge": "1250",
     "surcharges": "joined with +",
     "manifest order": "account, tracking number"
   },
@@ -125,7 +125,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "account, tracking number"
   },
@@ -190,7 +190,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "account, tracking number"
   },
@@ -255,7 +255,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "account, tracking number"
   },
@@ -320,7 +320,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "account, tracking number"
   },
@@ -385,7 +385,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "booking order"
   },
@@ -450,7 +450,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "booking order"
   },
@@ -516,7 +516,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "booking order"
   },
@@ -582,7 +582,7 @@
     "label file": "labels/{number}.txt",
     "invoice number": "INV-{account}-{yyyymmdd}",
     "manifest columns": "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
-    "charge": "0.00",
+    "charge": "12.50",
     "surcharges": "joined with +",
     "manifest order": "booking order"
   }

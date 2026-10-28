@@ -11,7 +11,7 @@ index 1004856..34318b4 100644
  ## 1.4.0 - 2026-09-30
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 15547c1..d7a2b83 100644
+index a56e9c4..d119c4f 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -89,7 +89,7 @@ scan.

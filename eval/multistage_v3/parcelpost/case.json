@@ -8,7 +8,7 @@
   "changelog": "CHANGELOG.md",
   "stages": [
     {
-      "request": "The carrier's upload portal has started rejecting our manifest files. The `charge` column holds whole pence, like `1250`, and the portal expects pounds. Please write the charge in the manifest as pounds with two decimal places, in the format `0.00`, so `1250` becomes `12.50`.",
+      "request": "The carrier's upload portal has started rejecting our manifest files. The `charge` column holds whole pence, so a charge of 12.50 pounds is written as `1250`, and the portal expects pounds with two decimal places. Please write the charge in the manifest in pounds, so `1250` becomes `12.50`.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": [],
@@ -59,7 +59,7 @@
       ]
     },
     {
-      "request": "The carrier's driver loads the van straight from our manifest, top to bottom, and the cage at the depot is filled in the order parcels are booked. The manifest is currently sorted by account and then tracking number, which has the driver hunting for parcels. List the shipments in the manifest in booking order instead.",
+      "request": "The carrier's driver loads the van straight from our manifest, top to bottom, and the cage at the depot is filled in the order parcels are booked. The manifest is currently sorted by account and then tracking number, which has the driver hunting for parcels. List the shipments in the manifest in `booking order` instead.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": [],

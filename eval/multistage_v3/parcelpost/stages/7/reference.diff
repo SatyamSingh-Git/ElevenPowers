@@ -12,7 +12,7 @@ index 5ae8828..fbc2884 100644
  ## 1.4.0 - 2026-09-30
  
 diff --git a/docs/reference.md b/docs/reference.md
-index 05a2b0d..3cdecc0 100644
+index ab037c0..85bbe5f 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -57,7 +57,8 @@ the total of base postage and surcharges.

@@ -118,6 +118,6 @@ All paths are relative to the data directory.
 | column or rule | value | meaning |
 |---|---|---|
 | `manifest columns` | `tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges` | manifest file: header row |
-| `charge` | `integer pence` | manifest file: the shipment's total charge |
+| `charge` | `1250` | manifest file: the shipment's total charge, in whole pence |
 | `surcharges` | `joined with +` | manifest file: surcharge codes on the shipment's quote |
 | `manifest order` | `account, tracking number` | manifest file: order of the shipment lines |

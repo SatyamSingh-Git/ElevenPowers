@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-28",
+  "how": "one fresh reviewer per case, told the brief, the two v2 pilot defect kinds, and to test each quiet dependent against a plain search for the request's own words; reviewers modified nothing",
+  "cases": {
+    "gradebook": {
+      "blocking": 0,
+      "quiet": {"declared": 6, "kinds": ["data", "key", "copy", "contract"], "weak": 5,
+                "weak_means": "a search for the request's own words finds it, through ordinary docstrings or docs prose",
+                "not_weak": ["stage 4 storage/grades_csv.py (hard-coded .1f; only the generic word 'percent' reaches it)"]},
+      "rulings": [
+        "weak quiet dependents kept as written: removing ordinary prose to make them quieter would be hiding, which the design forbids; the pilot measures whether such dependents are missed",
+        "stage 1 and 5 groups use the export_grades / write_score_sheet API while the requests name the CLI commands: kept, because the requests change the file format and those functions are its documented writers"
+      ]
+    },
+    "parcelpost": {
+      "blocking": 2,
+      "blocking_findings": [
+        "stage 1 fact `charge`: old value `integer pence` named a unit, so the new value `0.00` was one wording among several accurate ones",
+        "stage 5 fact `manifest order`: `booking order` appeared only as prose in the request, and `sequence` would be as natural"
+      ],
+      "fix": "returned to the author: the start row becomes a format example (`1250` -> `12.50`, stated verbatim in the request), and `booking order` becomes a marked literal; nothing else changes",
+      "quiet": {"declared": 5, "kinds": ["data", "key", "copy", "contract"], "weak": 5,
+                "weak_means": "a search for the request's own words (`charge`, `check digit`, `oversize`, case-insensitive `in_transit`, `manifest`) finds it"},
+      "rulings": ["weak quiet dependents kept, as for gradebook"]
+    }
+  },
+  "disclosed": "Ten of eleven declared quiet dependents pass the mechanical check (no changed name, suite green) but are reachable by searching the request's own vocabulary. The v3 pilot therefore tests dependents that a search on the request's words can reach but a search on the change's names cannot."
+}

@@ -11,12 +11,12 @@ index 688c111..fa7a5e1 100644
  ## 1.4.0 - 2026-09-30
  
 diff --git a/docs/reference.md b/docs/reference.md
-index d9e5c4f..5fa4ea1 100644
+index 73d4969..059633c 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -120,4 +120,4 @@ All paths are relative to the data directory.
  | `manifest columns` | `tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges` | manifest file: header row |
- | `charge` | `0.00` | manifest file: the shipment's total charge, in pounds |
+ | `charge` | `12.50` | manifest file: the shipment's total charge, in pounds with two decimals |
  | `surcharges` | `joined with +` | manifest file: surcharge codes on the shipment's quote |
 -| `manifest order` | `account, tracking number` | manifest file: order of the shipment lines |
 +| `manifest order` | `booking order` | manifest file: order of the shipment lines |
