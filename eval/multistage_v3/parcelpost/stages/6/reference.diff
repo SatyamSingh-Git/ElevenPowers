@@ -1,0 +1,64 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index fa7a5e1..5ae8828 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -10,6 +10,7 @@
+ - Tracking numbers carry the S10 check digit (mod 11, weights 8 6 4 2 3 5 9 7), which the carrier's
+   scanners now validate.
+ - Manifest lines are in booking order, the order parcels are loaded, instead of by account.
++- The `stale_hours` setting defaults to 24 hours instead of 48.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 5fa4ea1..05a2b0d 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -12,7 +12,7 @@ missing file or section means every default applies.
+ |---|---|---|
+ | `fuel_percent` | `7.5` | settings file: fuel levy, as a percent of base postage plus surcharges |
+ | `vat_percent` | `20` | settings file: VAT percent added to invoices and statements |
+-| `stale_hours` | `48` | settings file: hours without a scan before an undelivered shipment is reported stalled |
++| `stale_hours` | `24` | settings file: hours without a scan before an undelivered shipment is reported stalled |
+ | `cutoff` | `17:00` | settings file: bookings at or after this time ship the next business day |
+ | `default_service` | `ground` | settings file: service used when a booking names none |
+ | `depot` | `BHX` | settings file: depot code on collection requests |
+diff --git a/src/parcelpost/config.py b/src/parcelpost/config.py
+index fd19004..aa29450 100644
+--- a/src/parcelpost/config.py
++++ b/src/parcelpost/config.py
+@@ -17,7 +17,7 @@ class Settings:
+     data_dir: Path
+     fuel_percent: Decimal = Decimal("7.5")
+     vat_percent: Decimal = Decimal("20")
+-    stale_hours: int = 48
++    stale_hours: int = 24
+     cutoff: time = time(17, 0)
+     default_service: str = "ground"
+     depot: str = "BHX"
+diff --git a/tests/test_services.py b/tests/test_services.py
+index 18d9bac..c9e6c5f 100644
+--- a/tests/test_services.py
++++ b/tests/test_services.py
+@@ -34,7 +34,7 @@ def test_settings_file_overrides_defaults(tmp_path):
+     settings = load_settings(tmp_path)
+     assert str(settings.fuel_percent) == "9"
+     assert settings.cutoff.hour == 15
+-    assert settings.stale_hours == 48
++    assert settings.stale_hours == 24
+ 
+ 
+ @pytest.mark.parametrize("line, message", [
+diff --git a/tests/test_tracking.py b/tests/test_tracking.py
+index d907471..ec618b2 100644
+--- a/tests/test_tracking.py
++++ b/tests/test_tracking.py
+@@ -81,6 +81,8 @@ def test_stalled_after_stale_hours(settings, clock, make_order):
+     stalled = find_stalled(settings, datetime(2026, 3, 5, 12, 0))
+     assert [row.tracking_number for row in stalled] == [quiet.tracking_number]
+     assert stalled[0].hours == 66
++    later = find_stalled(settings, datetime(2026, 3, 5, 19, 0))
++    assert [row.tracking_number for row in later] == [quiet.tracking_number, busy.tracking_number]
+     assert find_stalled(replace(settings, stale_hours=72), datetime(2026, 3, 5, 12, 0)) == []
+ 
+ 

@@ -1,0 +1,124 @@
+{
+  "id": "parcelpost",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/parcelpost/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "The carrier's upload portal has started rejecting our manifest files. The `charge` column holds whole pence, like `1250`, and the portal expects pounds. Please write the charge in the manifest as pounds with two decimal places, in the format `0.00`, so `1250` becomes `12.50`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/parcelpost/services/billing.py",
+          "kind": "data",
+          "path": "Following where the manifest file goes leads to billing, which reads the manifest back in read_charges and turns the charge column into pence with int(), so it must parse the new pounds format.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_cli_day", "base_shipping_day"]
+        }
+      ]
+    },
+    {
+      "request": "When the carrier scans a parcel with `OFD` it is on the van and will be delivered today, but we still show it as `in_transit`, so when a customer rings we can't tell it apart from a parcel sitting in a hub. Give it a status of its own: an `OFD` scan should set the shipment to `out_for_delivery`, and `parcelpost track` and `parcelpost list --status` should show and accept that status.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/parcelpost/reports/daily.py",
+          "kind": "key",
+          "path": "Reading what consumes a shipment's status finds the daily report, which counts shipments into a dict keyed by its own STATUS_COLUMNS table; a status missing from that table raises KeyError, so the new status needs a row.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_cli_day", "base_shipping_day"]
+        }
+      ]
+    },
+    {
+      "request": "Bug: a parcel weighing exactly 30 kg is refused, both when quoting and when booking, with `parcel too heavy: 30 kg (max 30 kg)`. The carrier's limit is 30 kg inclusive, so 30 kg must be accepted and only heavier parcels refused. The message also confuses people, so for a parcel over the limit make it read `parcel over the 30 kg limit: {weight} kg`, for example `parcel over the 30 kg limit: 30.5 kg`.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "The carrier is moving to S10 tracking numbers and has started rejecting ours, because our check digit doesn't follow their rule. Compute the check digit of the tracking numbers we issue as `mod 11, weights 8 6 4 2 3 5 9 7`: multiply the eight serial digits by 8, 6, 4, 2, 3, 5, 9 and 7, add them up, and take 11 minus the remainder of that sum divided by 11; a result of 10 becomes 0, and 11 becomes 5. The rest of the number stays as it is.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/parcelpost/services/scans.py",
+          "kind": "copy",
+          "path": "Looking for every place that knows the tracking number layout finds the scan import, whose _plausible_number repeats the check digit calculation to refuse misread numbers; left on the old rule it refuses every number now issued.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_cli_day", "base_shipping_day", "s2_out_for_delivery_api", "s2_out_for_delivery_cli"]
+        }
+      ]
+    },
+    {
+      "request": "The carrier's driver loads the van straight from our manifest, top to bottom, and the cage at the depot is filled in the order parcels are booked. The manifest is currently sorted by account and then tracking number, which has the driver hunting for parcels. List the shipments in the manifest in booking order instead.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/parcelpost/services/billing.py",
+          "kind": "contract",
+          "path": "Reading who consumes the manifest's line order finds billing, which groups the manifest's charges by account with itertools.groupby and so relies on lines of one account being adjacent; in booking order one account is split over several invoices.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_cli_day", "base_shipping_day"]
+        }
+      ]
+    },
+    {
+      "request": "Forty-eight hours is too long to notice a parcel that has stopped moving; customers chase us before the stalled report picks it up. Change the default of the `stale_hours` setting in the settings file to `24`. Depots that set `stale_hours` themselves keep their own value.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "The carrier now charges heavy parcels separately from long ones. Today a parcel pays the `12.00` `oversize` surcharge if it is over 25 kg or has a side longer than 100 cm. From now on, `oversize` applies only to parcels with a side longer than 100 cm, and parcels over 25 kg pay a new `overweight` surcharge of `18.00` instead. A parcel that is both heavy and long pays both.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/parcelpost/cli/output.py",
+          "kind": "key",
+          "path": "Reading where surcharge codes from the registry are shown finds the command line's quote output, which looks up each line's title in LINE_TITLES by code; a new code without a title makes `parcelpost quote` fail for heavy parcels.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_cli_day", "s3_weight_limit_cli"]
+        }
+      ]
+    },
+    {
+      "request": "Customers shipping electronics want to declare more than 2500.00. The carrier now covers declared values up to `5000.00`, so raise the highest declared value we accept from `2500.00` to `5000.00`. Insurance is still charged the same way.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    }
+  ],
+  "groups": [
+    {"id": "base_shipping_day", "since": 0, "until": 8},
+    {"id": "base_cli_day", "since": 0, "until": 8},
+    {"id": "s1_manifest_charge_api", "since": 1, "until": 8},
+    {"id": "s1_manifest_charge_cli", "since": 1, "until": 8},
+    {"id": "s2_out_for_delivery_api", "since": 2, "until": 8},
+    {"id": "s2_out_for_delivery_cli", "since": 2, "until": 8},
+    {"id": "s3_weight_limit_api", "since": 3, "until": 8},
+    {"id": "s3_weight_limit_cli", "since": 3, "until": 8},
+    {"id": "s4_check_digit_api", "since": 4, "until": 8},
+    {"id": "s4_check_digit_cli", "since": 4, "until": 8},
+    {"id": "s5_manifest_order_api", "since": 5, "until": 8},
+    {"id": "s5_manifest_order_cli", "since": 5, "until": 8},
+    {"id": "s6_stale_default_api", "since": 6, "until": 8},
+    {"id": "s6_stale_default_cli", "since": 6, "until": 8},
+    {"id": "s7_overweight_api", "since": 7, "until": 8},
+    {"id": "s7_overweight_cli", "since": 7, "until": 8},
+    {"id": "s8_declared_value_api", "since": 8, "until": 8},
+    {"id": "s8_declared_value_cli", "since": 8, "until": 8}
+  ]
+}

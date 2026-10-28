@@ -1,0 +1,90 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5ae8828..fbc2884 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -11,6 +11,8 @@
+   scanners now validate.
+ - Manifest lines are in booking order, the order parcels are loaded, instead of by account.
+ - The `stale_hours` setting defaults to 24 hours instead of 48.
++- Parcels over 25 kg pay the new `overweight` surcharge (18.00) instead of `oversize`, which now
++  covers only parcels with a side longer than 100 cm.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 05a2b0d..3cdecc0 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -57,7 +57,8 @@ the total of base postage and surcharges.
+ |---|---|---|
+ | `residential` | `3.50` | delivery to a home address |
+ | `signature` | `2.00` | signature required on delivery |
+-| `oversize` | `12.00` | parcels over 25 kg, or with a side longer than 100 cm |
++| `oversize` | `12.00` | parcels with a side longer than 100 cm |
++| `overweight` | `18.00` | parcels over 25 kg |
+ | `insurance` | `1.5%` | of the declared value, at least 2.00, when the declared value is over 100.00 |
+ 
+ ## Errors
+diff --git a/src/parcelpost/cli/output.py b/src/parcelpost/cli/output.py
+index 510b30b..21e3a52 100644
+--- a/src/parcelpost/cli/output.py
++++ b/src/parcelpost/cli/output.py
+@@ -11,6 +11,7 @@ LINE_TITLES = {
+     "residential": "Residential delivery",
+     "signature": "Signature on delivery",
+     "oversize": "Oversize parcel",
++    "overweight": "Overweight parcel",
+     "insurance": "Declared value cover",
+     "fuel": "Fuel levy",
+ }
+diff --git a/src/parcelpost/rating/surcharges.py b/src/parcelpost/rating/surcharges.py
+index d85cf4f..d9e0766 100644
+--- a/src/parcelpost/rating/surcharges.py
++++ b/src/parcelpost/rating/surcharges.py
+@@ -13,6 +13,7 @@ from ..core.money import percent_of
+ RESIDENTIAL_PENCE = 350
+ SIGNATURE_PENCE = 200
+ OVERSIZE_PENCE = 1200
++OVERWEIGHT_PENCE = 1800
+ HEAVY_GRAMS = 25_000
+ LONG_CM = 100
+ INSURED_ABOVE_PENCE = 10_000
+@@ -50,10 +51,12 @@ def _signature_on_delivery(context):
+ 
+ @rule("oversize")
+ def _large_parcel(context):
+-    parcel = context.parcel
+-    if parcel.weight_grams > HEAVY_GRAMS or parcel.longest_side > LONG_CM:
+-        return OVERSIZE_PENCE
+-    return 0
++    return OVERSIZE_PENCE if context.parcel.longest_side > LONG_CM else 0
++
++
++@rule("overweight")
++def _heavy_parcel(context):
++    return OVERWEIGHT_PENCE if context.parcel.weight_grams > HEAVY_GRAMS else 0
+ 
+ 
+ @rule("insurance")
+diff --git a/tests/test_rating.py b/tests/test_rating.py
+index 184b728..f9e3330 100644
+--- a/tests/test_rating.py
++++ b/tests/test_rating.py
+@@ -60,9 +60,15 @@ def test_surcharges():
+     assert found.amount("insurance") == 450
+ 
+ 
+-def test_heavy_parcels_pay_oversize():
++def test_heavy_parcels_pay_overweight():
+     found = quote(Parcel(26_000, 40, 30, 30), "B1 1AA", "ground", fuel_percent=FUEL)
+-    assert found.amount("oversize") == 1200
++    assert found.surcharge_codes == ["overweight"]
++    assert found.amount("overweight") == 1800
++
++
++def test_heavy_long_parcels_pay_both():
++    found = quote(Parcel(26_000, 110, 30, 30), "B1 1AA", "ground", fuel_percent=FUEL)
++    assert found.surcharge_codes == ["oversize", "overweight"]
+ 
+ 
+ def test_insurance_has_a_minimum():

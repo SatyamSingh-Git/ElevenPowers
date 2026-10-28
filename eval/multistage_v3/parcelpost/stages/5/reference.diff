@@ -1,0 +1,62 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 688c111..fa7a5e1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -9,6 +9,7 @@
+   `parcel over the 30 kg limit: {weight} kg`.
+ - Tracking numbers carry the S10 check digit (mod 11, weights 8 6 4 2 3 5 9 7), which the carrier's
+   scanners now validate.
++- Manifest lines are in booking order, the order parcels are loaded, instead of by account.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index d9e5c4f..5fa4ea1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -120,4 +120,4 @@ All paths are relative to the data directory.
+ | `manifest columns` | `tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges` | manifest file: header row |
+ | `charge` | `0.00` | manifest file: the shipment's total charge, in pounds |
+ | `surcharges` | `joined with +` | manifest file: surcharge codes on the shipment's quote |
+-| `manifest order` | `account, tracking number` | manifest file: order of the shipment lines |
++| `manifest order` | `booking order` | manifest file: order of the shipment lines |
+diff --git a/src/parcelpost/formats/manifest.py b/src/parcelpost/formats/manifest.py
+index 087dda1..6ecfbfe 100644
+--- a/src/parcelpost/formats/manifest.py
++++ b/src/parcelpost/formats/manifest.py
+@@ -23,7 +23,7 @@ def write_manifest(path, shipments):
+ 
+ 
+ def _manifest_order(shipments):
+-    return sorted(shipments, key=lambda shipment: (shipment.account, shipment.tracking_number))
++    return sorted(shipments, key=lambda shipment: shipment.sequence)
+ 
+ 
+ def _manifest_row(shipment):
+diff --git a/src/parcelpost/services/billing.py b/src/parcelpost/services/billing.py
+index 2385934..17810cc 100644
+--- a/src/parcelpost/services/billing.py
++++ b/src/parcelpost/services/billing.py
+@@ -59,7 +59,7 @@ def read_charges(path):
+ def make_invoices(day, charges, vat_percent, accounts):
+     """Charges from one manifest into invoices; an unregistered account is billed under its code."""
+     invoices = []
+-    for code, group in groupby(charges, key=attrgetter("account")):
++    for code, group in groupby(sorted(charges, key=attrgetter("account")), key=attrgetter("account")):
+         account = accounts.find(code)
+         days = account.payment_days if account else DEFAULT_PAYMENT_DAYS
+         invoices.append(Invoice(invoice_number(code, day), code, account.name if account else code, day,
+diff --git a/tests/test_manifest_billing.py b/tests/test_manifest_billing.py
+index 8480ca8..2a27d54 100644
+--- a/tests/test_manifest_billing.py
++++ b/tests/test_manifest_billing.py
+@@ -23,8 +23,8 @@ def test_close_day_writes_the_manifest(settings, clock, make_order):
+     lines = closed.path.read_text(encoding="utf-8").splitlines()
+     assert lines == [
+         "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
+-        "PP000000028GB,ACME,ground,4,2500,2500,11.40,residential",
+         "PP000000014GB,BOLT,ground,4,2500,2500,7.63,",
++        "PP000000028GB,ACME,ground,4,2500,2500,11.40,residential",
+     ]
+     statuses = {shipment.status for shipment in ShipmentStore(settings.store_path).find()}
+     assert statuses == {MANIFESTED}

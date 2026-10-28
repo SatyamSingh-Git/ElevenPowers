@@ -1,0 +1,12 @@
+diff --git a/src/parcelpost/cli/output.py b/src/parcelpost/cli/output.py
+index 21e3a52..510b30b 100644
+--- a/src/parcelpost/cli/output.py
++++ b/src/parcelpost/cli/output.py
+@@ -11,7 +11,6 @@ LINE_TITLES = {
+     "residential": "Residential delivery",
+     "signature": "Signature on delivery",
+     "oversize": "Oversize parcel",
+-    "overweight": "Overweight parcel",
+     "insurance": "Declared value cover",
+     "fuel": "Fuel levy",
+ }

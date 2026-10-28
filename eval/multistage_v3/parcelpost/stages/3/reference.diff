@@ -1,0 +1,73 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 34318b4..cd492ac 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -5,6 +5,8 @@
+ - `parcelpost settings` prints the settings in effect.
+ - The manifest's `charge` column is in pounds with two decimals (`12.50`), not whole pence.
+ - An `OFD` scan sets the new status `out_for_delivery` instead of `in_transit`.
++- Fixed: a parcel of exactly 30 kg was refused. The message for heavier parcels now reads
++  `parcel over the 30 kg limit: {weight} kg`.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index d7a2b83..1ed3fa4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -38,7 +38,7 @@ missing file or section means every default applies.
+ 
+ | limit | value | meaning |
+ |---|---|---|
+-| `max weight` | `30 kg` | heaviest parcel accepted |
++| `max weight` | `30 kg` | heaviest parcel accepted; exactly 30 kg is accepted |
+ | `max side` | `150 cm` | longest side accepted |
+ | `max declared value` | `2500.00` | highest declared value accepted, in pounds |
+ | `volumetric divisor` | `5000` | cubic centimetres per kilogram of volumetric weight |
+@@ -64,7 +64,7 @@ the total of base postage and surcharges.
+ 
+ | error | message | meaning |
+ |---|---|---|
+-| `too heavy` | `parcel too heavy: {weight} kg (max 30 kg)` | a parcel over the weight limit |
++| `too heavy` | `parcel over the 30 kg limit: {weight} kg` | a parcel over the weight limit |
+ | `too long` | `parcel too long: {length} cm (max 150 cm)` | a parcel with a side over the limit |
+ | `declared value too high` | `declared value {value} is over the limit of {limit}` | a declared value over the limit |
+ | `invalid postcode` | `invalid postcode: {postcode}` | a postcode that is not UK style |
+diff --git a/src/parcelpost/core/parcel.py b/src/parcelpost/core/parcel.py
+index fc46c4d..6b761d4 100644
+--- a/src/parcelpost/core/parcel.py
++++ b/src/parcelpost/core/parcel.py
+@@ -34,9 +34,9 @@ class Parcel:
+ def validate_parcel(parcel):
+     if parcel.weight_grams <= 0:
+         raise ValidationError("parcel weight must be positive")
+-    if parcel.weight_grams >= MAX_WEIGHT_GRAMS:
++    if parcel.weight_grams > MAX_WEIGHT_GRAMS:
+         raise ValidationError(
+-            f"parcel too heavy: {format_kg(parcel.weight_grams)} kg (max {format_kg(MAX_WEIGHT_GRAMS)} kg)")
++            f"parcel over the {format_kg(MAX_WEIGHT_GRAMS)} kg limit: {format_kg(parcel.weight_grams)} kg")
+     if min(parcel.sides) <= 0:
+         raise ValidationError("parcel dimensions must be positive")
+     if parcel.longest_side > MAX_SIDE_CM:
+diff --git a/tests/test_core.py b/tests/test_core.py
+index 19fe571..f28d152 100644
+--- a/tests/test_core.py
++++ b/tests/test_core.py
+@@ -73,10 +73,16 @@ def test_parcel_limits():
+         validate_parcel(Parcel(1000, 151, 10, 10))
+     with pytest.raises(ValidationError, match="declared value 2600.00 is over the limit of 2500.00"):
+         validate_parcel(Parcel(1000, 10, 10, 10, declared_pence=260_000))
+-    with pytest.raises(ValidationError, match="too heavy"):
++    with pytest.raises(ValidationError, match="parcel over the 30 kg limit: 31 kg"):
+         validate_parcel(Parcel(31_000, 10, 10, 10))
+ 
+ 
++def test_the_weight_limit_is_inclusive():
++    assert validate_parcel(Parcel(30_000, 10, 10, 10))
++    with pytest.raises(ValidationError, match="parcel over the 30 kg limit: 30.001 kg"):
++        validate_parcel(Parcel(30_001, 10, 10, 10))
++
++
+ def test_ship_date_respects_cutoff_and_weekends():
+     cutoff = time(17, 0)
+     assert ship_date(datetime(2026, 3, 2, 16, 59), cutoff) == date(2026, 3, 2)

@@ -1,0 +1,22 @@
+diff --git a/src/parcelpost/services/billing.py b/src/parcelpost/services/billing.py
+index 2385934..7c23cd4 100644
+--- a/src/parcelpost/services/billing.py
++++ b/src/parcelpost/services/billing.py
+@@ -8,7 +8,7 @@ from operator import attrgetter
+ 
+ from ..core.accounts import DEFAULT_PAYMENT_DAYS
+ from ..core.errors import ManifestError
+-from ..core.money import parse_amount, percent_of
++from ..core.money import percent_of
+ from ..formats.manifest import manifest_filename
+ from ..reports.invoices import render_invoice
+ from ..storage.accounts import AccountBook
+@@ -52,7 +52,7 @@ def invoice_number(account, day):
+ 
+ def read_charges(path):
+     with open(path, newline="", encoding="utf-8") as handle:
+-        return [Charge(row["tracking_number"], row["account"], row["service"], parse_amount(row["charge"]))
++        return [Charge(row["tracking_number"], row["account"], row["service"], int(row["charge"]))
+                 for row in csv.DictReader(handle)]
+ 
+ 

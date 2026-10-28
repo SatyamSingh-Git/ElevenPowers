@@ -1,0 +1,13 @@
+diff --git a/src/parcelpost/services/scans.py b/src/parcelpost/services/scans.py
+index 4d680b3..2d94722 100644
+--- a/src/parcelpost/services/scans.py
++++ b/src/parcelpost/services/scans.py
+@@ -54,6 +54,5 @@ def _plausible_number(number):
+     if not NUMBER.match(number):
+         return False
+     serial, check = number[2:10], int(number[10])
+-    total = sum(int(digit) * weight for digit, weight in zip(serial, (8, 6, 4, 2, 3, 5, 9, 7)))
+-    expected = 11 - total % 11
+-    return {10: 0, 11: 5}.get(expected, expected) == check
++    total = sum(int(digit) * (3 if position % 2 == 0 else 1) for position, digit in enumerate(serial))
++    return (10 - total % 10) % 10 == check

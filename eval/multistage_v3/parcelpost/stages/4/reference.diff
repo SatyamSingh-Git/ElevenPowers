@@ -1,0 +1,138 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index cd492ac..688c111 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -7,6 +7,8 @@
+ - An `OFD` scan sets the new status `out_for_delivery` instead of `in_transit`.
+ - Fixed: a parcel of exactly 30 kg was refused. The message for heavier parcels now reads
+   `parcel over the 30 kg limit: {weight} kg`.
++- Tracking numbers carry the S10 check digit (mod 11, weights 8 6 4 2 3 5 9 7), which the carrier's
++  scanners now validate.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 1ed3fa4..d9e5c4f 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -99,7 +99,7 @@ scan.
+ | fact | value | meaning |
+ |---|---|---|
+ | `tracking number` | `PP{serial}{check}GB` | eight-digit serial from the booking sequence, then one check digit |
+-| `check digit` | `mod 10, weights 3 1` | how the check digit is computed from the eight serial digits |
++| `check digit` | `mod 11, weights 8 6 4 2 3 5 9 7` | how the check digit is computed from the eight serial digits: 11 minus the weighted sum mod 11, with 10 written as 0 and 11 as 5 |
+ 
+ ## Files
+ 
+diff --git a/src/parcelpost/core/ids.py b/src/parcelpost/core/ids.py
+index b209277..a145790 100644
+--- a/src/parcelpost/core/ids.py
++++ b/src/parcelpost/core/ids.py
+@@ -1,9 +1,9 @@
+-"""Tracking numbers: PP, an eight-digit serial, one check digit, GB."""
+-from itertools import cycle
++"""Tracking numbers: PP, an eight-digit serial, one check digit, GB (the UPU S10 layout)."""
+ 
+ PREFIX = "PP"
+ COUNTRY = "GB"
+ SERIAL_DIGITS = 8
++WEIGHTS = (8, 6, 4, 2, 3, 5, 9, 7)
+ 
+ 
+ def new_tracking_number(sequence):
+@@ -14,5 +14,6 @@ def new_tracking_number(sequence):
+ 
+ 
+ def _check_digit(serial):
+-    total = sum(int(digit) * weight for digit, weight in zip(serial, cycle((3, 1))))
+-    return (10 - total % 10) % 10
++    total = sum(int(digit) * weight for digit, weight in zip(serial, WEIGHTS))
++    check = 11 - total % 11
++    return {10: 0, 11: 5}.get(check, check)
+diff --git a/src/parcelpost/services/scans.py b/src/parcelpost/services/scans.py
+index 2d94722..4d680b3 100644
+--- a/src/parcelpost/services/scans.py
++++ b/src/parcelpost/services/scans.py
+@@ -54,5 +54,6 @@ def _plausible_number(number):
+     if not NUMBER.match(number):
+         return False
+     serial, check = number[2:10], int(number[10])
+-    total = sum(int(digit) * (3 if position % 2 == 0 else 1) for position, digit in enumerate(serial))
+-    return (10 - total % 10) % 10 == check
++    total = sum(int(digit) * weight for digit, weight in zip(serial, (8, 6, 4, 2, 3, 5, 9, 7)))
++    expected = 11 - total % 11
++    return {10: 0, 11: 5}.get(expected, expected) == check
+diff --git a/tests/test_booking.py b/tests/test_booking.py
+index d3ae5ab..f265dea 100644
+--- a/tests/test_booking.py
++++ b/tests/test_booking.py
+@@ -11,15 +11,15 @@ from parcelpost.storage.shipments import ShipmentStore
+ 
+ def test_booking_stores_the_shipment_and_writes_a_label(settings, clock, make_order):
+     shipment = book(settings, make_order(), clock=clock)
+-    assert shipment.tracking_number == "PP000000019GB"
++    assert shipment.tracking_number == "PP000000014GB"
+     assert shipment.service == "ground"
+     assert shipment.ship_date == date(2026, 3, 2)
+     assert shipment.expected_delivery == date(2026, 3, 5)
+     stored = ShipmentStore(settings.store_path).get(shipment.tracking_number)
+     assert stored == shipment
+-    label = (settings.labels_dir / "PP000000019GB.txt").read_text(encoding="utf-8")
++    label = (settings.labels_dir / "PP000000014GB.txt").read_text(encoding="utf-8")
+     assert "SW1A 1AA" in label
+-    assert "PP000000019GB" in label
++    assert "PP000000014GB" in label
+ 
+ 
+ def test_sequence_continues_across_bookings(settings, clock, make_order):
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 693d776..74bb685 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -32,12 +32,12 @@ def test_quote_every_service(run):
+ def test_book_list_and_track(run):
+     code, out, _ = run("book", "--account", "acme", *RECIPIENT, "--weight", "2.5")
+     assert code == 0
+-    assert out.splitlines()[0] == "booked PP000000019GB ground 7.63"
++    assert out.splitlines()[0] == "booked PP000000014GB ground 7.63"
+     _, out, _ = run("list", "--account", "ACME")
+-    assert "PP000000019GB" in out and "booked" in out
+-    code, out, _ = run("track", "pp000000019gb")
++    assert "PP000000014GB" in out and "booked" in out
++    code, out, _ = run("track", "pp000000014gb")
+     assert code == 0
+-    assert out.splitlines()[0] == "PP000000019GB  booked"
++    assert out.splitlines()[0] == "PP000000014GB  booked"
+     assert "No scans yet." in out
+ 
+ 
+diff --git a/tests/test_ids.py b/tests/test_ids.py
+index 7761a41..c5edb4d 100644
+--- a/tests/test_ids.py
++++ b/tests/test_ids.py
+@@ -11,9 +11,10 @@ def test_tracking_number_layout():
+ 
+ 
+ @pytest.mark.parametrize("sequence, number", [
+-    (1, "PP000000019GB"),
++    (1, "PP000000014GB"),
+     (2, "PP000000028GB"),
+-    (12345678, "PP123456782GB"),
++    (3, "PP000000031GB"),
++    (12345678, "PP123456785GB"),
+ ])
+ def test_known_tracking_numbers(sequence, number):
+     assert new_tracking_number(sequence) == number
+diff --git a/tests/test_manifest_billing.py b/tests/test_manifest_billing.py
+index 0b47772..8480ca8 100644
+--- a/tests/test_manifest_billing.py
++++ b/tests/test_manifest_billing.py
+@@ -24,7 +24,7 @@ def test_close_day_writes_the_manifest(settings, clock, make_order):
+     assert lines == [
+         "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
+         "PP000000028GB,ACME,ground,4,2500,2500,11.40,residential",
+-        "PP000000019GB,BOLT,ground,4,2500,2500,7.63,",
++        "PP000000014GB,BOLT,ground,4,2500,2500,7.63,",
+     ]
+     statuses = {shipment.status for shipment in ShipmentStore(settings.store_path).find()}
+     assert statuses == {MANIFESTED}

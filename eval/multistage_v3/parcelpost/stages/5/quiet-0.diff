@@ -1,0 +1,13 @@
+diff --git a/src/parcelpost/services/billing.py b/src/parcelpost/services/billing.py
+index 17810cc..2385934 100644
+--- a/src/parcelpost/services/billing.py
++++ b/src/parcelpost/services/billing.py
+@@ -59,7 +59,7 @@ def read_charges(path):
+ def make_invoices(day, charges, vat_percent, accounts):
+     """Charges from one manifest into invoices; an unregistered account is billed under its code."""
+     invoices = []
+-    for code, group in groupby(sorted(charges, key=attrgetter("account")), key=attrgetter("account")):
++    for code, group in groupby(charges, key=attrgetter("account")):
+         account = accounts.find(code)
+         days = account.payment_days if account else DEFAULT_PAYMENT_DAYS
+         invoices.append(Invoice(invoice_number(code, day), code, account.name if account else code, day,

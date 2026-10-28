@@ -1,0 +1,22 @@
+diff --git a/src/parcelpost/reports/daily.py b/src/parcelpost/reports/daily.py
+index 8d25f9b..2860e45 100644
+--- a/src/parcelpost/reports/daily.py
++++ b/src/parcelpost/reports/daily.py
+@@ -3,8 +3,7 @@ from dataclasses import dataclass
+ from datetime import date
+ 
+ from ..core.money import format_amount
+-from ..core.shipment import (BOOKED, DELIVERED, EXCEPTION, IN_TRANSIT, MANIFESTED, OUT_FOR_DELIVERY,
+-                             RETURNED)
++from ..core.shipment import BOOKED, DELIVERED, EXCEPTION, IN_TRANSIT, MANIFESTED, RETURNED
+ from ..core.units import format_kg
+ from ..rating.tariff import service_name, services
+ from ..storage.shipments import ShipmentStore
+@@ -14,7 +13,6 @@ STATUS_COLUMNS = (
+     (BOOKED, "Booked"),
+     (MANIFESTED, "Manifested"),
+     (IN_TRANSIT, "In transit"),
+-    (OUT_FOR_DELIVERY, "Out for delivery"),
+     (DELIVERED, "Delivered"),
+     (EXCEPTION, "Exception"),
+     (RETURNED, "Returned"),

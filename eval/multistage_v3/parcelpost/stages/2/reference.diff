@@ -1,0 +1,129 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1004856..34318b4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,7 @@
+ 
+ - `parcelpost settings` prints the settings in effect.
+ - The manifest's `charge` column is in pounds with two decimals (`12.50`), not whole pence.
++- An `OFD` scan sets the new status `out_for_delivery` instead of `in_transit`.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 15547c1..d7a2b83 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -89,7 +89,7 @@ scan.
+ | `PU` | `in_transit` | collected from the depot |
+ | `AR` | `in_transit` | arrived at a hub |
+ | `DP` | `in_transit` | left a hub |
+-| `OFD` | `in_transit` | on the van for delivery today |
++| `OFD` | `out_for_delivery` | on the van for delivery today |
+ | `DL` | `delivered` | delivered |
+ | `EX` | `exception` | delivery problem |
+ | `RT` | `returned` | on its way back to the depot |
+diff --git a/src/parcelpost/core/shipment.py b/src/parcelpost/core/shipment.py
+index 4b198d8..d3ed889 100644
+--- a/src/parcelpost/core/shipment.py
++++ b/src/parcelpost/core/shipment.py
+@@ -9,11 +9,12 @@ from .parcel import Parcel
+ BOOKED = "booked"
+ MANIFESTED = "manifested"
+ IN_TRANSIT = "in_transit"
++OUT_FOR_DELIVERY = "out_for_delivery"
+ DELIVERED = "delivered"
+ EXCEPTION = "exception"
+ RETURNED = "returned"
+ 
+-STATUSES = (BOOKED, MANIFESTED, IN_TRANSIT, DELIVERED, EXCEPTION, RETURNED)
++STATUSES = (BOOKED, MANIFESTED, IN_TRANSIT, OUT_FOR_DELIVERY, DELIVERED, EXCEPTION, RETURNED)
+ FINAL_STATUSES = frozenset({DELIVERED, RETURNED})
+ 
+ 
+diff --git a/src/parcelpost/reports/daily.py b/src/parcelpost/reports/daily.py
+index 2860e45..8d25f9b 100644
+--- a/src/parcelpost/reports/daily.py
++++ b/src/parcelpost/reports/daily.py
+@@ -3,7 +3,8 @@ from dataclasses import dataclass
+ from datetime import date
+ 
+ from ..core.money import format_amount
+-from ..core.shipment import BOOKED, DELIVERED, EXCEPTION, IN_TRANSIT, MANIFESTED, RETURNED
++from ..core.shipment import (BOOKED, DELIVERED, EXCEPTION, IN_TRANSIT, MANIFESTED, OUT_FOR_DELIVERY,
++                             RETURNED)
+ from ..core.units import format_kg
+ from ..rating.tariff import service_name, services
+ from ..storage.shipments import ShipmentStore
+@@ -13,6 +14,7 @@ STATUS_COLUMNS = (
+     (BOOKED, "Booked"),
+     (MANIFESTED, "Manifested"),
+     (IN_TRANSIT, "In transit"),
++    (OUT_FOR_DELIVERY, "Out for delivery"),
+     (DELIVERED, "Delivered"),
+     (EXCEPTION, "Exception"),
+     (RETURNED, "Returned"),
+diff --git a/src/parcelpost/services/scans.py b/src/parcelpost/services/scans.py
+index fe503b5..2d94722 100644
+--- a/src/parcelpost/services/scans.py
++++ b/src/parcelpost/services/scans.py
+@@ -3,7 +3,7 @@ from dataclasses import dataclass
+ import re
+ 
+ from ..core.errors import ScanError
+-from ..core.shipment import DELIVERED, EXCEPTION, IN_TRANSIT, RETURNED
++from ..core.shipment import DELIVERED, EXCEPTION, IN_TRANSIT, OUT_FOR_DELIVERY, RETURNED
+ from ..formats.events import Event, append_events, latest_by_number, read_events
+ from ..formats.scanfile import parse_scan_file
+ from ..storage.shipments import ShipmentStore
+@@ -13,7 +13,7 @@ SCAN_CODES = {
+     "PU": IN_TRANSIT,   # collected from the depot
+     "AR": IN_TRANSIT,   # arrived at a hub
+     "DP": IN_TRANSIT,   # left a hub
+-    "OFD": IN_TRANSIT,  # on the van for delivery today
++    "OFD": OUT_FOR_DELIVERY,  # on the van for delivery today
+     "DL": DELIVERED,
+     "EX": EXCEPTION,    # delivery problem; the carrier's note is on their portal
+     "RT": RETURNED,
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 1de7db5..693d776 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -54,6 +54,12 @@ def test_book_needs_a_recipient(run):
+     assert "give --recipient" in err
+ 
+ 
++def test_list_accepts_every_status(run):
++    code, out, _ = run("list", "--status", "out_for_delivery")
++    assert code == 0
++    assert out.strip() == "No shipments."
++
++
+ def test_manifest_and_daily_report(run):
+     run("book", "--account", "ACME", *RECIPIENT, "--weight", "2.5")
+     code, out, _ = run("manifest")
+diff --git a/tests/test_tracking.py b/tests/test_tracking.py
+index 49705ee..d907471 100644
+--- a/tests/test_tracking.py
++++ b/tests/test_tracking.py
+@@ -9,7 +9,7 @@ from parcelpost.formats.scanfile import parse_scan_file
+ from parcelpost.reports.daily import daily_summary, render_daily
+ from parcelpost.reports.stalled import find_stalled
+ from parcelpost.services.booking import book
+-from parcelpost.services.scans import import_scans
++from parcelpost.services.scans import SCAN_CODES, import_scans
+ from parcelpost.services.tracking import track
+ from parcelpost.storage.shipments import ShipmentStore
+ 
+@@ -42,6 +42,11 @@ def test_malformed_numbers_are_refused(settings, clock, make_order):
+     assert read_events(settings.events_path) == []
+ 
+ 
++def test_out_for_delivery_has_its_own_status():
++    assert SCAN_CODES["OFD"] == "out_for_delivery"
++    assert SCAN_CODES["AR"] == "in_transit"
++
++
+ def _record(settings, shipment, *scans):
+     append_events(settings.events_path,
+                   [Event(shipment.tracking_number, code, at, "BHX") for code, at in scans])

@@ -1,0 +1,81 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3fc3f29..1004856 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `parcelpost settings` prints the settings in effect.
++- The manifest's `charge` column is in pounds with two decimals (`12.50`), not whole pence.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 115aaa2..15547c1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -118,6 +118,6 @@ All paths are relative to the data directory.
+ | column or rule | value | meaning |
+ |---|---|---|
+ | `manifest columns` | `tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges` | manifest file: header row |
+-| `charge` | `integer pence` | manifest file: the shipment's total charge |
++| `charge` | `0.00` | manifest file: the shipment's total charge, in pounds |
+ | `surcharges` | `joined with +` | manifest file: surcharge codes on the shipment's quote |
+ | `manifest order` | `account, tracking number` | manifest file: order of the shipment lines |
+diff --git a/src/parcelpost/formats/manifest.py b/src/parcelpost/formats/manifest.py
+index 36a818f..087dda1 100644
+--- a/src/parcelpost/formats/manifest.py
++++ b/src/parcelpost/formats/manifest.py
+@@ -2,6 +2,7 @@
+ import csv
+ import io
+ 
++from ..core.money import format_amount
+ from ..storage.files import write_atomic
+ 
+ COLUMNS = ("tracking_number", "account", "service", "zone", "weight_g", "billable_g", "charge",
+@@ -34,6 +35,6 @@ def _manifest_row(shipment):
+         "zone": quote.zone,
+         "weight_g": shipment.parcel.weight_grams,
+         "billable_g": quote.billable_grams,
+-        "charge": quote.total,
++        "charge": format_amount(quote.total),
+         "surcharges": "+".join(quote.surcharge_codes),
+     }
+diff --git a/src/parcelpost/services/billing.py b/src/parcelpost/services/billing.py
+index 7c23cd4..2385934 100644
+--- a/src/parcelpost/services/billing.py
++++ b/src/parcelpost/services/billing.py
+@@ -8,7 +8,7 @@ from operator import attrgetter
+ 
+ from ..core.accounts import DEFAULT_PAYMENT_DAYS
+ from ..core.errors import ManifestError
+-from ..core.money import percent_of
++from ..core.money import parse_amount, percent_of
+ from ..formats.manifest import manifest_filename
+ from ..reports.invoices import render_invoice
+ from ..storage.accounts import AccountBook
+@@ -52,7 +52,7 @@ def invoice_number(account, day):
+ 
+ def read_charges(path):
+     with open(path, newline="", encoding="utf-8") as handle:
+-        return [Charge(row["tracking_number"], row["account"], row["service"], int(row["charge"]))
++        return [Charge(row["tracking_number"], row["account"], row["service"], parse_amount(row["charge"]))
+                 for row in csv.DictReader(handle)]
+ 
+ 
+diff --git a/tests/test_manifest_billing.py b/tests/test_manifest_billing.py
+index 9e5777d..0b47772 100644
+--- a/tests/test_manifest_billing.py
++++ b/tests/test_manifest_billing.py
+@@ -23,8 +23,8 @@ def test_close_day_writes_the_manifest(settings, clock, make_order):
+     lines = closed.path.read_text(encoding="utf-8").splitlines()
+     assert lines == [
+         "tracking_number,account,service,zone,weight_g,billable_g,charge,surcharges",
+-        "PP000000028GB,ACME,ground,4,2500,2500,1140,residential",
+-        "PP000000019GB,BOLT,ground,4,2500,2500,763,",
++        "PP000000028GB,ACME,ground,4,2500,2500,11.40,residential",
++        "PP000000019GB,BOLT,ground,4,2500,2500,7.63,",
+     ]
+     statuses = {shipment.status for shipment in ShipmentStore(settings.store_path).find()}
+     assert statuses == {MANIFESTED}

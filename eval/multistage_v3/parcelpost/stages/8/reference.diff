@@ -1,0 +1,54 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index fbc2884..5924a6e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -13,6 +13,7 @@
+ - The `stale_hours` setting defaults to 24 hours instead of 48.
+ - Parcels over 25 kg pay the new `overweight` surcharge (18.00) instead of `oversize`, which now
+   covers only parcels with a side longer than 100 cm.
++- Declared values up to 5000.00 are accepted, up from 2500.00.
+ 
+ ## 1.4.0 - 2026-09-30
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 3cdecc0..b32d2af 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -40,7 +40,7 @@ missing file or section means every default applies.
+ |---|---|---|
+ | `max weight` | `30 kg` | heaviest parcel accepted; exactly 30 kg is accepted |
+ | `max side` | `150 cm` | longest side accepted |
+-| `max declared value` | `2500.00` | highest declared value accepted, in pounds |
++| `max declared value` | `5000.00` | highest declared value accepted, in pounds |
+ | `volumetric divisor` | `5000` | cubic centimetres per kilogram of volumetric weight |
+ | `weight step` | `0.5 kg` | billable weight is rounded up to a multiple of this |
+ | `address field length` | `35` | most characters in a recipient's name, first line or town |
+diff --git a/src/parcelpost/core/parcel.py b/src/parcelpost/core/parcel.py
+index 6b761d4..ebacf4f 100644
+--- a/src/parcelpost/core/parcel.py
++++ b/src/parcelpost/core/parcel.py
+@@ -7,7 +7,7 @@ from .units import GRAMS_PER_KG, format_kg
+ 
+ MAX_WEIGHT_GRAMS = 30 * GRAMS_PER_KG
+ MAX_SIDE_CM = 150
+-MAX_DECLARED_PENCE = 250_000
++MAX_DECLARED_PENCE = 500_000
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/tests/test_core.py b/tests/test_core.py
+index f28d152..f3593a7 100644
+--- a/tests/test_core.py
++++ b/tests/test_core.py
+@@ -71,8 +71,9 @@ def test_parcel_limits():
+     validate_parcel(Parcel(29_999, 150, 10, 10))
+     with pytest.raises(ValidationError, match="parcel too long: 151 cm"):
+         validate_parcel(Parcel(1000, 151, 10, 10))
+-    with pytest.raises(ValidationError, match="declared value 2600.00 is over the limit of 2500.00"):
+-        validate_parcel(Parcel(1000, 10, 10, 10, declared_pence=260_000))
++    validate_parcel(Parcel(1000, 10, 10, 10, declared_pence=500_000))
++    with pytest.raises(ValidationError, match="declared value 5000.01 is over the limit of 5000.00"):
++        validate_parcel(Parcel(1000, 10, 10, 10, declared_pence=500_001))
+     with pytest.raises(ValidationError, match="parcel over the 30 kg limit: 31 kg"):
+         validate_parcel(Parcel(31_000, 10, 10, 10))
+ 
