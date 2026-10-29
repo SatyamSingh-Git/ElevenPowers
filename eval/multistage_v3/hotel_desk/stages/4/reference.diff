@@ -1,0 +1,98 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8259c7d..7a53acd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Nightly room charges are posted under the code `ROOM` instead of `RM`; `post` still accepts `RM`.
+ - Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
+ - Stays of up to 45 nights are accepted by default (`max_stay_nights`).
+ - The audit journal writes amounts as `0.00` instead of whole cents.
+diff --git a/docs/reference.md b/docs/reference.md
+index b5fc71c..40e61d0 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -74,7 +74,7 @@ Codes are case-insensitive on the way in and stored upper case.
+ 
+ | Key | Code | Meaning |
+ |---|---|---|
+-| `charge.room` | `RM` | Folio and CLI `post`: code of the nightly room charge the night audit posts |
++| `charge.room` | `ROOM` | Folio and CLI `post`: code of the nightly room charge the night audit posts; `post` still accepts the old code `RM` |
+ | `charge.tax` | `TAX` | Folio: tax posted alongside a taxable charge |
+ | `charge.late_checkout` | `LCO` | Folio: late check-out fee |
+ | `charge.food` | `FB` | Folio: food and beverage |
+diff --git a/src/hoteldesk/model/charges.py b/src/hoteldesk/model/charges.py
+index 83f1e07..05a6171 100644
+--- a/src/hoteldesk/model/charges.py
++++ b/src/hoteldesk/model/charges.py
+@@ -12,7 +12,7 @@ class ChargeCode:
+     tax_category: str
+ 
+ 
+-ROOM = "RM"
++ROOM = "ROOM"
+ TAX = "TAX"
+ LATE_CHECKOUT = "LCO"
+ 
+@@ -28,11 +28,14 @@ CHARGE_CODES = {
+         ChargeCode(LATE_CHECKOUT, "Late check-out", "lodging"),
+     )
+ }
++# Codes retired from posting that the desk still accepts on the way in.
++ALIASES = {"RM": ROOM}
+ 
+ 
+ def lookup(code):
++    wanted = code.upper()
+     try:
+-        return CHARGE_CODES[code.upper()]
++        return CHARGE_CODES[ALIASES.get(wanted, wanted)]
+     except KeyError:
+         raise ValidationError(f"Unknown charge code: {code}") from None
+ 
+diff --git a/src/hoteldesk/reports/folio_print.py b/src/hoteldesk/reports/folio_print.py
+index b3eb14c..e2dae90 100644
+--- a/src/hoteldesk/reports/folio_print.py
++++ b/src/hoteldesk/reports/folio_print.py
+@@ -1,9 +1,10 @@
+ """The folio as the guest sees it at check-out."""
++from ..model.charges import ROOM, TAX
+ from ..money import format_money
+ from .tables import amount_line
+ 
+ # Charges are grouped by code; anything not listed here prints under Extras.
+-SECTIONS = {"RM": "Accommodation", "TAX": "Taxes"}
++SECTIONS = {ROOM: "Accommodation", TAX: "Taxes"}
+ SECTION_ORDER = ("Accommodation", "Taxes", "Extras")
+ 
+ 
+diff --git a/tests/test_billing.py b/tests/test_billing.py
+index 52caa1c..adb52e0 100644
+--- a/tests/test_billing.py
++++ b/tests/test_billing.py
+@@ -35,6 +35,11 @@ def test_exempt_charge_has_no_tax(hotel, guest):
+     assert [(c.code, c.description) for c in posted] == [("PH", "Call to Lisbon")]
+ 
+ 
++def test_old_room_code_is_still_accepted(hotel, guest):
++    posted = billing.post_charge(hotel, guest.id, "rm", 5000, "Day use")
++    assert [c.code for c in posted] == ["ROOM", "TAX"]
++
++
+ def test_unknown_code(hotel, guest):
+     with pytest.raises(ValidationError, match="Unknown charge code: ZZ"):
+         billing.post_charge(hotel, guest.id, "ZZ", 100)
+diff --git a/tests/test_night_audit.py b/tests/test_night_audit.py
+index 876d9bf..acd92b9 100644
+--- a/tests/test_night_audit.py
++++ b/tests/test_night_audit.py
+@@ -15,6 +15,7 @@ def test_audit_posts_room_and_tax_and_rolls_the_date(hotel, settings, clock):
+     charges = hotel.folio(reservation.id).charges
+     assert [(c.day, c.amount) for c in charges] == [(MONDAY, 12000), (MONDAY, 1410)]
+     assert charges[0].description == "Room 101 night of 2026-03-02"
++    assert [c.code for c in charges] == ["ROOM", "TAX"]
+     assert result.room_revenue == 12000 and result.tax_revenue == 1410
+     assert hotel.business_date == date(2026, 3, 3)
+ 

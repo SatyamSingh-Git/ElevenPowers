@@ -1,0 +1,124 @@
+{
+  "id": "hotel_desk",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/hoteldesk/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Our accountants load `audit_journal.csv` into their spreadsheet at month end, and its money columns arrive in whole cents (`41325` for 413.25), so they divide every figure by hand. Have the night audit write the journal's money columns in the `0.00` format instead, like `413.25`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/hoteldesk/reports/revenue.py",
+          "kind": "data",
+          "path": "The journal module's docstring says the revenue report reads the file back; following who opens audit_journal.csv leads to revenue_summary, which turns each money column into cents with int().",
+          "diff": "quiet-0.diff",
+          "fails": ["base_audit"]
+        }
+      ]
+    },
+    {
+      "request": "Contractors on long jobs keep asking us for six-week stays, and anything over 30 nights is refused. Raise the default of the `max_stay_nights` setting to `45`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "Tax on the folio comes out a cent short on some charges. A 12.50 minibar charge shows 0.90 tax, but 7.25% of 12.50 is 0.90625 and the county's table says 0.91; a 150.00 room night shows 17.62 where the table says 17.63. The county rounds the tax on each charge `half-up` to the cent, and we are cutting the fraction off. Please fix it.",
+      "kind": "cross-cutting",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/hoteldesk/services/pricing.py",
+          "kind": "copy",
+          "path": "Looking for every place lodging tax is worked out (TAX_RATES is read in two modules) finds quote(), which taxes each night itself, truncating, with a comment saying it does so the way the night audit posts it; the reference says a quote's tax equals the tax posted.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_stays"]
+        }
+      ]
+    },
+    {
+      "request": "Our new accounting package reads the folio export and wants nightly room charges under the code `ROOM`; it rejects `RM`. Make `ROOM` the code for room charges on the folio in place of `RM`. The desk staff are used to typing `RM` with the `post` command, so the command line should keep accepting `RM` and record it as `ROOM`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/hoteldesk/reports/folio_print.py",
+          "kind": "key",
+          "path": "Searching for the code string \"RM\" finds the printed folio's SECTIONS registry, which files charges under Accommodation by code and sends any code it does not list to Extras.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_stays"]
+        }
+      ]
+    },
+    {
+      "request": "When an agent tries to check a guest into a room housekeeping hasn't finished, `check_in` refuses with `Room 102 is not available` and the command line prints the same, so the agent has to go and find out why. Make the message give the room's housekeeping status: `Room {room} is not ready: {status}`, for example `Room 102 is not ready: dirty`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "`day_statistics()` returns occupancy as a fraction (`0.4` when two of five rooms are sold), and `report occupancy --format json` on the command line passes the same number on to our owner's dashboard, which expects a percentage. Make occupancy a `percent` instead, rounded to two decimal places: `40.0` for two of five rooms, `33.33` for one of three.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/hoteldesk/reports/audit_report.py",
+          "kind": "data",
+          "path": "run_audit stores day_statistics() in AuditResult.statistics; following that field to its reader finds the audit report, which multiplies the occupancy value by 100 before printing it as a percentage.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_audit"]
+        }
+      ]
+    },
+    {
+      "request": "The state file keeps every cancelled reservation forever and is getting slow to load. Have the night audit remove a cancelled reservation once its departure date is more than `cancelled_retention_days` days before the business date the audit is closing. Add `cancelled_retention_days` as a setting with a default of `30`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/hoteldesk/services/booking.py",
+          "kind": "contract",
+          "path": "Asking what relies on hotel.reservations only ever growing finds _next_id in booking, which numbers a new reservation len(hotel.reservations) + 1; the reference promises numbers are never reused, so removing records makes it hand out a number already in use.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_stays"]
+        }
+      ]
+    },
+    {
+      "request": "Our late check-out charge goes up next month. Change the default of the `late_checkout_fee` setting from 25.00 to `40.00`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    }
+  ],
+  "groups": [
+    {"id": "base_stays", "since": 0, "until": 8},
+    {"id": "base_audit", "since": 0, "until": 8},
+    {"id": "s1_journal_format", "since": 1, "until": 8},
+    {"id": "s1_revenue_reads_money", "since": 1, "until": 8},
+    {"id": "s2_long_stays", "since": 2, "until": 8},
+    {"id": "s2_long_stay_paths", "since": 2, "until": 8},
+    {"id": "s3_tax_half_up", "since": 3, "until": 8},
+    {"id": "s3_quote_half_up", "since": 3, "until": 8},
+    {"id": "s4_room_code", "since": 4, "until": 8},
+    {"id": "s4_old_code_accepted", "since": 4, "until": 8},
+    {"id": "s5_not_ready_api", "since": 5, "until": 8},
+    {"id": "s5_not_ready_cli", "since": 5, "until": 8},
+    {"id": "s6_statistics_percent", "since": 6, "until": 8},
+    {"id": "s6_occupancy_report", "since": 6, "until": 8},
+    {"id": "s7_purge_cancelled", "since": 7, "until": 8},
+    {"id": "s7_retention_setting", "since": 7, "until": 8},
+    {"id": "s8_late_fee", "since": 8, "until": 8},
+    {"id": "s8_late_fee_setting", "since": 8, "until": 8}
+  ]
+}

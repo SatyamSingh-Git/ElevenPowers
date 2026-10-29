@@ -1,0 +1,115 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4ffbda5..8259c7d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
+ - Stays of up to 45 nights are accepted by default (`max_stay_nights`).
+ - The audit journal writes amounts as `0.00` instead of whole cents.
+ - `hk-sheets` splits the day's housekeeping between attendants, floor by floor.
+diff --git a/docs/reference.md b/docs/reference.md
+index 3699f17..b5fc71c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -83,7 +83,7 @@ Codes are case-insensitive on the way in and stored upper case.
+ | `charge.phone` | `PH` | Folio: telephone, tax exempt |
+ | `tax.lodging` | `11.75%` | Folio: tax on `RM` and `LCO` charges |
+ | `tax.sales` | `7.25%` | Folio: tax on `FB`, `MB` and `PK` charges |
+-| `tax.rounding` | `down` | Folio: how the tax on each charge is rounded to a whole cent |
++| `tax.rounding` | `half-up` | Folio: how the tax on each charge is rounded to a whole cent |
+ | `quote.tax` | `same as posted` | API `quote` and CLI `quote`: the tax quoted equals the tax the night audit will post for the stay |
+ 
+ ## Records and files
+diff --git a/src/hoteldesk/money.py b/src/hoteldesk/money.py
+index b33c8f2..f817be7 100644
+--- a/src/hoteldesk/money.py
++++ b/src/hoteldesk/money.py
+@@ -1,5 +1,5 @@
+ """Money is held as integer cents; these helpers convert at the edges."""
+-from decimal import Decimal, InvalidOperation, ROUND_DOWN, ROUND_HALF_UP
++from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+ 
+ from .errors import ValidationError
+ 
+@@ -39,4 +39,5 @@ def per(cents, count):
+ 
+ 
+ def tax_on(cents, rate):
+-    return int((Decimal(cents) * rate).quantize(Decimal(1), rounding=ROUND_DOWN))
++    """Tax on an amount, rounded half up to the cent as the county's table requires."""
++    return int((Decimal(cents) * rate).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+diff --git a/src/hoteldesk/services/pricing.py b/src/hoteldesk/services/pricing.py
+index 1799b6b..79e11a0 100644
+--- a/src/hoteldesk/services/pricing.py
++++ b/src/hoteldesk/services/pricing.py
+@@ -1,11 +1,10 @@
+ """Nightly rates for a stay, and the quote the desk reads out to the guest."""
+ from dataclasses import dataclass
+ from datetime import date
+-from decimal import Decimal
+ 
+ from .._generated import TAX_RATES
+ from ..dates import nights
+-from ..money import adjust
++from ..money import adjust, tax_on
+ from .stay_rules import check_stay
+ 
+ # Friday and Saturday nights carry the weekend uplift.
+@@ -47,5 +46,5 @@ def quote(hotel, settings, room_type, plan_code, arrival, departure, adults=1):
+     rates = nightly_rates(hotel, settings, room_type, plan_code, arrival, departure)
+     # Each night is taxed on its own, the way the night audit posts it.
+     lodging = TAX_RATES["lodging"]
+-    tax = sum(int(Decimal(rate) * lodging) for rate in rates)
++    tax = sum(tax_on(rate, lodging) for rate in rates)
+     return Quote(room_type, plan_code, arrival, departure, rates, tax)
+diff --git a/tests/test_billing.py b/tests/test_billing.py
+index 3dbe624..52caa1c 100644
+--- a/tests/test_billing.py
++++ b/tests/test_billing.py
+@@ -25,6 +25,11 @@ def test_charge_carries_its_tax(hotel, guest):
+     assert hotel.folio(guest.id).balance == 4290
+ 
+ 
++def test_minibar_tax_rounds_half_up(hotel, guest):
++    posted = billing.post_charge(hotel, guest.id, "MB", 1250)
++    assert posted[1].amount == 91
++
++
+ def test_exempt_charge_has_no_tax(hotel, guest):
+     posted = billing.post_charge(hotel, guest.id, "ph", 250, "Call to Lisbon")
+     assert [(c.code, c.description) for c in posted] == [("PH", "Call to Lisbon")]
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 0672d66..e755575 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -46,8 +46,8 @@ def test_post_and_pay(desk, capsys):
+     assert desk("post", "R0001", "fb", "10.00") == 0
+     assert desk("pay", "R0001", "10.00") == 0
+     out = capsys.readouterr().out
+-    assert "Posted FB 10.00 to R0001" in out and "Posted TAX 0.72 to R0001" in out
+-    assert "Paid 10.00 by card; balance 0.72" in out
++    assert "Posted FB 10.00 to R0001" in out and "Posted TAX 0.73 to R0001" in out
++    assert "Paid 10.00 by card; balance 0.73" in out
+ 
+ 
+ def test_audit_command(desk, capsys):
+diff --git a/tests/test_money.py b/tests/test_money.py
+index d5e42ef..c953fc3 100644
+--- a/tests/test_money.py
++++ b/tests/test_money.py
+@@ -35,6 +35,12 @@ def test_per():
+     assert per(500, 0) == 0
+ 
+ 
++def test_tax_rounds_half_up():
++    assert tax_on(1250, Decimal("0.0725")) == 91
++    assert tax_on(15000, Decimal("0.1175")) == 1763
++    assert tax_on(1000, Decimal("0.0725")) == 73
++
++
+ def test_tax_on_whole_cents():
+     assert tax_on(12000, Decimal("0.1175")) == 1410
+     assert tax_on(10000, Decimal("0")) == 0

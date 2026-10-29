@@ -1,0 +1,60 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b4462a8..6fa421f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The late check-out fee is 40.00 by default (`late_checkout_fee`).
+ - The night audit removes cancelled reservations older than `cancelled_retention_days` (default 30).
+ - Occupancy is a percentage in `day_statistics()` and `report occupancy --format json`.
+ - Checking in to a room that is not ready names its housekeeping status.
+diff --git a/docs/reference.md b/docs/reference.md
+index 30f2cdd..221165a 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -14,7 +14,7 @@ its default.
+ | `check_out_time` | `11:00` | Setting: checking out after this time on the business date posts the late check-out fee |
+ | `max_stay_nights` | `45` | Setting: the longest stay a booking, quote, extension or channel import accepts |
+ | `weekend_uplift_percent` | `10` | Setting: added to the rate of Friday and Saturday nights |
+-| `late_checkout_fee` | `25.00` | Setting: the amount posted as `LCO` on a late check-out |
++| `late_checkout_fee` | `40.00` | Setting: the amount posted as `LCO` on a late check-out |
+ | `journal_file` | `audit_journal.csv` | Setting: name of the audit journal file, kept beside the state file |
+ | `currency` | `USD` | Setting: the currency every amount is in |
+ | `cancelled_retention_days` | `30` | Setting: the night audit removes a cancelled reservation once its departure date is more than this many days before the business date being closed |
+diff --git a/src/hoteldesk/config.py b/src/hoteldesk/config.py
+index bc3ebf1..a8c51d3 100644
+--- a/src/hoteldesk/config.py
++++ b/src/hoteldesk/config.py
+@@ -19,7 +19,7 @@ class Settings:
+     check_out_time: time = time(11, 0)
+     max_stay_nights: int = 45
+     weekend_uplift_percent: int = 10
+-    late_checkout_fee: int = 2500
++    late_checkout_fee: int = 4000
+     journal_file: str = "audit_journal.csv"
+     currency: str = "USD"
+     cancelled_retention_days: int = 30
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index e755575..e6ee1a3 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -62,4 +62,4 @@ def test_audit_command(desk, capsys):
+ def test_settings_command(desk, capsys):
+     assert desk("settings") == 0
+     out = capsys.readouterr().out
+-    assert "check_out_time: 11:00" in out and "late_checkout_fee: 25.00" in out
++    assert "check_out_time: 11:00" in out and "late_checkout_fee: 40.00" in out
+diff --git a/tests/test_stays.py b/tests/test_stays.py
+index 723de43..7206120 100644
+--- a/tests/test_stays.py
++++ b/tests/test_stays.py
+@@ -87,6 +87,7 @@ def test_late_check_out_is_charged_once(hotel, settings, clock):
+         stays.check_out(hotel, settings, clock, one_night.id)
+     late = [c for c in hotel.folio(one_night.id).charges if c.code == "LCO"]
+     assert len(late) == 1 and late[0].description == "Late check-out"
++    assert late[0].amount == 4000
+ 
+ 
+ def test_extend_stay(hotel, settings, clock, reservation):

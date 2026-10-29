@@ -1,0 +1,81 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a0ad709..d996498 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Free-text answers may be up to 2000 characters long unless the survey file sets `max_length` (was 500).
+ - Respondent ids are case-insensitive: response files are read with ids in upper case, so `ab12` and `AB12` are one respondent.
+ - Frequency tables list choice options in questionnaire order rather than from most to least chosen, so questions sharing an answer list line up.
+ - Scale questions are called `rating` in survey files, as form builders name them; files that say `scale` still load.
+diff --git a/docs/reference.md b/docs/reference.md
+index ee82529..f4f19ed 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -37,7 +37,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ | `scale_low` | `1` | lowest point of a scale question in a survey file that sets neither `low` nor `preset` |
+ | `scale_high` | `5` | highest point of a scale question in a survey file that sets neither `high` nor `preset` |
+ | `scale_presets` | `agree5, satisfied5, frequency5, quality4, likely11` | names a scale question's `preset` may take in a survey file |
+-| `text_max_length` | `500` | longest answer accepted for a `text` question in a survey file that sets no `max_length` |
++| `text_max_length` | `2000` | longest answer accepted for a `text` question in a survey file that sets no `max_length` |
+ | `score_rules` | `sum, mean, top_box, nps` | names a score's `rule` may take in a survey file |
+ 
+ ## Response files
+diff --git a/src/surveytally/model/questions.py b/src/surveytally/model/questions.py
+index f6ad009..3eb1c8a 100644
+--- a/src/surveytally/model/questions.py
++++ b/src/surveytally/model/questions.py
+@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
+ 
+ from .errors import SurveyError
+ 
+-DEFAULT_TEXT_LIMIT = 500
++DEFAULT_TEXT_LIMIT = 2000
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/tests/test_extras.py b/tests/test_extras.py
+index e2153dd..18e1fc8 100644
+--- a/tests/test_extras.py
++++ b/tests/test_extras.py
+@@ -41,7 +41,7 @@ def test_codebook_lists_every_code(tmp_path, customer_survey):
+     rows = codebook_rows(customer_survey)
+     assert ['contact', 'single', 'email', 'Email'] in rows
+     assert ['recommend', 'rating', '10', 'Extremely likely'] in rows
+-    assert ['comments', 'text', '', '(free text, up to 500 characters)'] in rows
++    assert ['comments', 'text', '', '(free text, up to 2000 characters)'] in rows
+     path = tmp_path / 'codebook.csv'
+     write_codebook(customer_survey, path)
+     with path.open(newline='', encoding='utf-8') as handle:
+diff --git a/tests/test_validation.py b/tests/test_validation.py
+index 743bd18..270fb73 100644
+--- a/tests/test_validation.py
++++ b/tests/test_validation.py
+@@ -1,3 +1,4 @@
++from surveytally.files.survey_file import survey_from_dict
+ from surveytally.model.responses import Response
+ from surveytally.services.validation import validate
+ 
+@@ -23,8 +24,8 @@ def test_scale_range(customer_survey):
+ 
+ 
+ def test_free_text_limit(customer_survey):
+-    assert messages(customer_survey, {'comments': 'x' * 500}) == []
+-    assert messages(customer_survey, {'comments': 'x' * 501}) == ['comments: answer longer than 500 characters']
++    assert messages(customer_survey, {'comments': 'x' * 2000}) == []
++    assert messages(customer_survey, {'comments': 'x' * 2001}) == ['comments: answer longer than 2000 characters']
+ 
+ 
+ def test_required_questions(poll_survey):
+@@ -37,3 +38,9 @@ def test_invalid_responses_are_kept_apart(poll_survey):
+     valid, issues = validate(poll_survey, [good, bad])
+     assert valid == [good]
+     assert [str(issue) for issue in issues] == ['R2: region: unknown option mars']
++
++
++def test_a_survey_file_can_set_its_own_text_limit():
++    survey = survey_from_dict({'id': 's', 'title': 'S', 'questions': [
++        {'id': 'note', 'type': 'text', 'max_length': 20}]})
++    assert messages(survey, {'note': 'x' * 21}) == ['note: answer longer than 20 characters']

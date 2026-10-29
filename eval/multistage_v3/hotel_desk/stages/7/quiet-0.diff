@@ -1,0 +1,14 @@
+diff --git a/src/hoteldesk/services/booking.py b/src/hoteldesk/services/booking.py
+index f400df1..b1666fc 100644
+--- a/src/hoteldesk/services/booking.py
++++ b/src/hoteldesk/services/booking.py
+@@ -8,8 +8,7 @@ DEFAULT_PLAN = "BAR"
+ 
+ 
+ def _next_id(hotel):
+-    hotel.last_reservation_number += 1
+-    return f"R{hotel.last_reservation_number:04d}"
++    return f"R{len(hotel.reservations) + 1:04d}"
+ 
+ 
+ def _check_free(hotel, room_type, arrival, departure, excluding=None):

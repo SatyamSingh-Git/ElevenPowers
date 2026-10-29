@@ -1,0 +1,206 @@
+{
+  "id": "survey_tally",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/surveytally/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Some of our offices open response CSV files in spreadsheets set up to use `;` as the column delimiter, so a multiple-choice cell such as `email;phone` gets split across two columns and the file is ruined when they save it. In response CSV files, separate the options picked in a multiple-choice answer with `/` instead of `;`, as in `email/phone`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/surveytally/reports/responses_export.py",
+          "kind": "copy",
+          "path": "Response CSV files are also written by write_responses for export-responses, and its round trip with read_responses only holds if its own CHOICE_SEPARATOR matches the new separator.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_io"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Exported frequency tables only show raw counts, so when results are weighted nobody can see how many people a row stands for. In the CSV export of frequency tables (from `export_frequencies` and `surveytally export`), add a `weighted` column right after `count` holding the weighted count rounded to one decimal; without weights it is the same as the count. The columns become `question, option, count, weighted, percent`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/surveytally/reports/compare.py",
+          "kind": "data",
+          "path": "compare reads the CSV files export_frequencies writes, and read_percentages unpacks each row into exactly four positional columns, so a fifth column breaks wave comparison.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Percentages in exported tables don't round the way anyone expects. One person out of 8 choosing an option shows as `12` with `--decimals 0` where it should be `13`, and one out of 16 shows as `6.2` at one decimal instead of `6.3`. Halves should round up (`half-up`) in exported tables, frequency tables and cross-tabulations alike.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "We now build questionnaires in a form builder whose survey files call scale questions `rating`. Make `rating` the question type name for scale questions: survey files that say `rating` should load as scale questions, and saving a survey should write `rating`. We have years of older survey files that say `scale`, and those must keep loading. The question types in a survey file are then `single, multi, rating, text`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/surveytally/services/tally.py",
+          "kind": "key",
+          "path": "Tally.table picks its handler with getattr by question.type, so the _tally_scale method has to be renamed for questions whose type is now rating.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Frequency tables list the options from most to least chosen, which makes questions that share an answer list hard to read side by side. List the options of choice questions in the order the questionnaire defines them (`questionnaire` order), both in the tables `frequencies` returns and in exported tables.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/surveytally/reports/summary.py",
+          "kind": "contract",
+          "path": "The summary headline takes table.rows[0] as the most chosen option, relying on the count order the frequency tables used to provide.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Our panel sends respondent ids in mixed case, and the same person turns up as `ab12` in one response file and `AB12` in the next, so a repeat submission isn't recognised as the same respondent. Respondent ids should be case-insensitive: when reading response files, keep them in `upper case`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/surveytally/files/weights_file.py",
+          "kind": "copy",
+          "path": "Weights are looked up by response.respondent (weight_for), so read_weights must normalise the ids in a weights file the same way the response readers now do.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Open-ended answers in our customer surveys often run past 500 characters and get rejected. Raise the limit to `2000` characters for text questions in a survey file that don't set their own `max_length`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "Weights are trimmed at 5.0, which still lets a handful of respondents dominate a small subgroup. Lower the cap to `3.0` in both `compute_weights` and `surveytally weight`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    }
+  ],
+  "groups": [
+    {
+      "id": "base_io",
+      "since": 0,
+      "until": 8
+    },
+    {
+      "id": "base_analysis",
+      "since": 0,
+      "until": 8
+    },
+    {
+      "id": "s1_slash_import",
+      "since": 1,
+      "until": 8
+    },
+    {
+      "id": "s1_slash_export",
+      "since": 1,
+      "until": 8
+    },
+    {
+      "id": "s2_weighted_column",
+      "since": 2,
+      "until": 8
+    },
+    {
+      "id": "s2_weighted_values",
+      "since": 2,
+      "until": 8
+    },
+    {
+      "id": "s3_half_up_frequencies",
+      "since": 3,
+      "until": 8
+    },
+    {
+      "id": "s3_half_up_crosstab",
+      "since": 3,
+      "until": 8
+    },
+    {
+      "id": "s4_rating_files",
+      "since": 4,
+      "until": 8
+    },
+    {
+      "id": "s4_rating_save",
+      "since": 4,
+      "until": 8
+    },
+    {
+      "id": "s5_frequency_order",
+      "since": 5,
+      "until": 8
+    },
+    {
+      "id": "s5_export_order",
+      "since": 5,
+      "until": 8
+    },
+    {
+      "id": "s6_upper_ids",
+      "since": 6,
+      "until": 8
+    },
+    {
+      "id": "s6_mixed_case_duplicates",
+      "since": 6,
+      "until": 8
+    },
+    {
+      "id": "s7_text_limit",
+      "since": 7,
+      "until": 8
+    },
+    {
+      "id": "s7_text_import",
+      "since": 7,
+      "until": 8
+    },
+    {
+      "id": "s8_weight_cap",
+      "since": 8,
+      "until": 8
+    },
+    {
+      "id": "s8_weight_cli",
+      "since": 8,
+      "until": 8
+    }
+  ]
+}

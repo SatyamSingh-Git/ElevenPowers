@@ -1,0 +1,107 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a64b496..a0ad709 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Respondent ids are case-insensitive: response files are read with ids in upper case, so `ab12` and `AB12` are one respondent.
+ - Frequency tables list choice options in questionnaire order rather than from most to least chosen, so questions sharing an answer list line up.
+ - Scale questions are called `rating` in survey files, as form builders name them; files that say `scale` still load.
+ - Fixed: percentages in exported tables rounded halves to the even digit (1 of 8 showed as 12%); they now round half up.
+diff --git a/docs/reference.md b/docs/reference.md
+index d11ffab..ee82529 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -49,7 +49,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ | `duration_column` | `duration` | optional column of a response CSV file holding the whole seconds taken |
+ | `missing_values` | `NA` | cell that, like an empty cell, means no answer in a response CSV file |
+ | `multi_separator` | `/` | separator between the options picked in a multiple-choice cell of a response CSV file |
+-| `respondent_case` | `as given` | how respondent ids read from response files (CSV or JSON lines) are kept |
++| `respondent_case` | `upper case` | how respondent ids read from response files (CSV or JSON lines) are kept |
+ | `encoding` | `utf-8` | encoding of response CSV files; a byte order mark is allowed |
+ 
+ ## Weights and targets files
+diff --git a/src/surveytally/files/csv_responses.py b/src/surveytally/files/csv_responses.py
+index 6670cc2..537174b 100644
+--- a/src/surveytally/files/csv_responses.py
++++ b/src/surveytally/files/csv_responses.py
+@@ -45,7 +45,7 @@ def _check_header(survey, columns):
+ def _response(survey, row, number):
+     if None in row:
+         raise ResponseFileError(number, 'more cells than columns')
+-    respondent = row[RESPONDENT_COLUMN].strip()
++    respondent = row[RESPONDENT_COLUMN].strip().upper()
+     if not respondent:
+         raise ResponseFileError(number, 'no respondent id')
+     answers = {}
+diff --git a/src/surveytally/files/json_responses.py b/src/surveytally/files/json_responses.py
+index 41cedbe..0d6e4c8 100644
+--- a/src/surveytally/files/json_responses.py
++++ b/src/surveytally/files/json_responses.py
+@@ -37,7 +37,7 @@ def _record(survey, record, number):
+     for key in record:
+         if key not in RECORD_KEYS:
+             raise ResponseFileError(number, f'unknown key {key}')
+-    respondent = str(record.get('respondent') or '').strip()
++    respondent = str(record.get('respondent') or '').strip().upper()
+     if not respondent:
+         raise ResponseFileError(number, 'no respondent id')
+     raw = record.get('answers') or {}
+diff --git a/src/surveytally/files/weights_file.py b/src/surveytally/files/weights_file.py
+index 460dd31..1e15312 100644
+--- a/src/surveytally/files/weights_file.py
++++ b/src/surveytally/files/weights_file.py
+@@ -20,7 +20,8 @@ def read_weights(path):
+         if missing:
+             raise WeightingError(f'{path.name}: missing column {missing[0]}')
+         for number, row in enumerate(reader, start=2):
+-            respondent = row['respondent'].strip()
++            # Respondent ids are case-insensitive and response files keep them in upper case.
++            respondent = row['respondent'].strip().upper()
+             try:
+                 weight = float(row['weight'])
+             except ValueError:
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index b3834cf..0fda261 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -77,3 +77,11 @@ def test_validate_does_not_need_a_project(write_file, capsys):
+     path = write_file('responses.csv', 'respondent,region\nR1,north\n')
+     assert main(['validate', str(survey), str(path)]) == 0
+     assert '1 of 1 responses are valid' in capsys.readouterr().out
++
++
++def test_ids_differing_only_in_case_are_one_respondent(project, write_file):
++    first = write_file('first.csv', 'respondent,submitted,region\nab12,2026-03-01,north\n')
++    second = write_file('second.csv', 'respondent,submitted,region\nAB12,2026-03-04,south\n')
++    main(['import', str(project), str(first)])
++    main(['import', str(project), str(second)])
++    assert [(r.respondent, r.answers) for r in Project(project).responses()] == [('AB12', {'region': 'south'})]
+diff --git a/tests/test_csv_responses.py b/tests/test_csv_responses.py
+index f3892dd..b4316bc 100644
+--- a/tests/test_csv_responses.py
++++ b/tests/test_csv_responses.py
+@@ -52,3 +52,8 @@ def test_multiple_choice_options_are_separated_by_slashes(customer_survey, write
+     first, second = read_responses(customer_survey, path)
+     assert first.answers['channels'] == ('web', 'app', 'store')
+     assert second.answers['channels'] == ('phone',)
++
++
++def test_respondent_ids_are_kept_in_upper_case(customer_survey, write_file):
++    path = write_file('responses.csv', 'respondent,contact\n ab12 ,email\nCd34,post\n')
++    assert [response.respondent for response in read_responses(customer_survey, path)] == ['AB12', 'CD34']
+diff --git a/tests/test_json_responses.py b/tests/test_json_responses.py
+index 8180550..6c6d51f 100644
+--- a/tests/test_json_responses.py
++++ b/tests/test_json_responses.py
+@@ -26,3 +26,8 @@ def test_unknown_questions_are_refused(customer_survey, write_file):
+     path = write_file('responses.jsonl', '{"respondent": "R1", "answers": {"colour": "blue"}}\n')
+     with pytest.raises(ResponseFileError, match='unknown question colour'):
+         read_json_responses(customer_survey, path)
++
++
++def test_respondent_ids_are_kept_in_upper_case(customer_survey, write_file):
++    path = write_file('responses.jsonl', '{"respondent": "ab12", "answers": {}}\n')
++    assert [response.respondent for response in read_json_responses(customer_survey, path)] == ['AB12']

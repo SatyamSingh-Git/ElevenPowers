@@ -1,0 +1,14 @@
+diff --git a/src/surveytally/files/weights_file.py b/src/surveytally/files/weights_file.py
+index 1e15312..460dd31 100644
+--- a/src/surveytally/files/weights_file.py
++++ b/src/surveytally/files/weights_file.py
+@@ -20,8 +20,7 @@ def read_weights(path):
+         if missing:
+             raise WeightingError(f'{path.name}: missing column {missing[0]}')
+         for number, row in enumerate(reader, start=2):
+-            # Respondent ids are case-insensitive and response files keep them in upper case.
+-            respondent = row['respondent'].strip().upper()
++            respondent = row['respondent'].strip()
+             try:
+                 weight = float(row['weight'])
+             except ValueError:

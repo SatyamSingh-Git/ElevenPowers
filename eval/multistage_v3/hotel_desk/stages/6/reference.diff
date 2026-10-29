@@ -1,0 +1,89 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ab60287..7a7f35a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Occupancy is a percentage in `day_statistics()` and `report occupancy --format json`.
+ - Checking in to a room that is not ready names its housekeeping status.
+ - Nightly room charges are posted under the code `ROOM` instead of `RM`; `post` still accepts `RM`.
+ - Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
+diff --git a/docs/reference.md b/docs/reference.md
+index c7bf00f..59c5556 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -100,7 +100,7 @@ Codes are case-insensitive on the way in and stored upper case.
+ | `journal.amounts` | `0.00` | File `audit_journal.csv`: how the four money columns are written |
+ | `folio_export.columns` | `reservation,guest,date,code,description,amount` | File written by `export-folios`: header line |
+ | `channel_import.columns` | `channel_ref,guest,room_type,arrival,departure,adults,rate_plan` | File read by `import`: required header columns |
+-| `statistics.occupancy` | `fraction` | API `day_statistics()` and CLI `report occupancy --format json`: occupancy as a share of available rooms, `0.5` for half |
++| `statistics.occupancy` | `percent` | API `day_statistics()` and CLI `report occupancy --format json`: occupancy as a percentage of available rooms to two decimals, `50.0` for half |
+ | `occupancy.days` | `7` | CLI `report occupancy`: days shown from the report date |
+ | `availability.days` | `14` | CLI `report availability`: days shown |
+ | `forecast.days` | `30` | CLI `report forecast`: days shown |
+diff --git a/src/hoteldesk/reports/audit_report.py b/src/hoteldesk/reports/audit_report.py
+index d5af40c..a2ebe9e 100644
+--- a/src/hoteldesk/reports/audit_report.py
++++ b/src/hoteldesk/reports/audit_report.py
+@@ -10,7 +10,7 @@ def audit_report_text(hotel, result):
+         f"Night audit for {result.business_date.isoformat()}",
+         "",
+         f"Rooms sold: {stats['sold']} of {stats['available']}",
+-        f"Occupancy: {stats['occupancy'] * 100:.1f}%",
++        f"Occupancy: {stats['occupancy']:.1f}%",
+         amount_line("ADR", format_money(stats["adr"]), 32),
+         amount_line("RevPAR", format_money(stats["revpar"]), 32),
+         "",
+diff --git a/src/hoteldesk/reports/occupancy.py b/src/hoteldesk/reports/occupancy.py
+index d9b99f8..a59edda 100644
+--- a/src/hoteldesk/reports/occupancy.py
++++ b/src/hoteldesk/reports/occupancy.py
+@@ -27,7 +27,7 @@ def occupancy_rows(hotel, day):
+ 
+ 
+ def occupancy_text(rows):
+-    shown = [{**row, "occupancy": f"{row['occupancy'] * 100:.1f}%"} for row in rows]
++    shown = [{**row, "occupancy": f"{row['occupancy']:.1f}%"} for row in rows]
+     body = table(COLUMNS, [[row[column] for column in COLUMNS] for row in shown],
+                  right=("rooms", "out_of_order", "available", "sold", "occupancy", "adr", "revpar"))
+     return f"Occupancy from {rows[0]['date']}\n{body}"
+diff --git a/src/hoteldesk/services/inventory.py b/src/hoteldesk/services/inventory.py
+index 2885959..68b6232 100644
+--- a/src/hoteldesk/services/inventory.py
++++ b/src/hoteldesk/services/inventory.py
+@@ -40,7 +40,7 @@ def availability(hotel, start, days):
+ 
+ 
+ def day_statistics(hotel, day):
+-    """Rooms, rooms sold and room revenue for one night, with occupancy, ADR and RevPAR."""
++    """Rooms, rooms sold and room revenue for one night, with occupancy (a percentage), ADR and RevPAR."""
+     rooms = len(hotel.rooms)
+     out_of_order = sum(1 for room in hotel.rooms.values() if not room.sellable)
+     available = rooms - out_of_order
+@@ -52,7 +52,7 @@ def day_statistics(hotel, day):
+         "out_of_order": out_of_order,
+         "available": available,
+         "sold": len(staying),
+-        "occupancy": round(len(staying) / available, 4) if available else 0.0,
++        "occupancy": round(len(staying) * 100 / available, 2) if available else 0.0,
+         "room_revenue": revenue,
+         "adr": per(revenue, len(staying)),
+         "revpar": per(revenue, available),
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 2c971b3..afff9c3 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -54,3 +54,11 @@ def test_payments_report(hotel, settings, clock):
+     billing.post_payment(hotel, reservation.id, 450, "cash")
+     assert json.loads(render_report("payments", hotel, MONDAY, "json")) == [
+         {"reservation": "R0001", "guest": "Ann Lee", "method": "cash", "amount": "4.50"}]
++
++
++def test_occupancy_is_a_percentage(hotel, settings):
++    booking.book(hotel, settings, guest="Bo Chen", room_type="KG", arrival=MONDAY, departure=date(2026, 3, 3))
++    booking.book(hotel, settings, guest="Cy Diaz", room_type="QN", arrival=MONDAY, departure=date(2026, 3, 3))
++    rows = json.loads(render_report("occupancy", hotel, MONDAY, "json"))
++    assert rows[0]["occupancy"] == 40.0 and rows[1]["occupancy"] == 0.0
++    assert "40.0%" in render_report("occupancy", hotel, MONDAY)

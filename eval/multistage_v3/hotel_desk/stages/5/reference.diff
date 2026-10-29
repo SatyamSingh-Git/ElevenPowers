@@ -1,0 +1,55 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7a53acd..ab60287 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Checking in to a room that is not ready names its housekeeping status.
+ - Nightly room charges are posted under the code `ROOM` instead of `RM`; `post` still accepts `RM`.
+ - Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
+ - Stays of up to 45 nights are accepted by default (`max_stay_nights`).
+diff --git a/docs/reference.md b/docs/reference.md
+index 40e61d0..c7bf00f 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -58,7 +58,7 @@ in the `error.format` above.
+ | `error.cannot_cancel` | `Reservation {id} is {status} and cannot be cancelled` | API `cancel` and the CLI |
+ | `error.not_arriving` | `Reservation {id} arrives on {arrival}` | API `check_in` and the CLI: check-in before the arrival date |
+ | `error.room_occupied` | `Room {room} is occupied` | API `check_in` and the CLI: the chosen room has a guest in it |
+-| `error.room_not_ready` | `Room {room} is not available` | API `check_in` and the CLI: the chosen room is not clean or inspected |
++| `error.room_not_ready` | `Room {room} is not ready: {status}` | API `check_in` and the CLI: the chosen room is not clean or inspected |
+ | `error.no_ready_room` | `No {type} room is ready` | API `check_in` and the CLI: no room was chosen and none of the type is ready |
+ | `error.not_in_house` | `Reservation {id} is not in house` | API `post_charge`/`check_out` and the CLI |
+ | `error.balance_due` | `Balance due: {balance}` | API `check_out` and the CLI: the folio is not settled |
+diff --git a/src/hoteldesk/services/stays.py b/src/hoteldesk/services/stays.py
+index a3dc300..3fef3b1 100644
+--- a/src/hoteldesk/services/stays.py
++++ b/src/hoteldesk/services/stays.py
+@@ -22,7 +22,7 @@ def _choose_room(hotel, reservation, room_number):
+     if room.occupied:
+         raise RoomNotReady(f"Room {room.number} is occupied")
+     if not room.ready:
+-        raise RoomNotReady(f"Room {room.number} is not available")
++        raise RoomNotReady(f"Room {room.number} is not ready: {room.status}")
+     return room
+ 
+ 
+diff --git a/tests/test_stays.py b/tests/test_stays.py
+index 005b88e..723de43 100644
+--- a/tests/test_stays.py
++++ b/tests/test_stays.py
+@@ -36,6 +36,12 @@ def test_check_in_refuses_an_occupied_room(hotel, settings, clock, reservation):
+         stays.check_in(hotel, clock, reservation.id, "101")
+ 
+ 
++def test_check_in_names_the_status_of_a_room_not_ready(hotel, clock, reservation):
++    housekeeping.set_status(hotel, "102", "dirty")
++    with pytest.raises(RoomNotReady, match="^Room 102 is not ready: dirty$"):
++        stays.check_in(hotel, clock, reservation.id, "102")
++
++
+ def test_no_ready_room(hotel, clock, reservation):
+     housekeeping.set_status(hotel, "101", "dirty")
+     housekeeping.set_status(hotel, "102", "out_of_order")

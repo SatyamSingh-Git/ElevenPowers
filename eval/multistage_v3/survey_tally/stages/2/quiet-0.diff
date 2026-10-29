@@ -1,0 +1,19 @@
+diff --git a/src/surveytally/reports/compare.py b/src/surveytally/reports/compare.py
+index b2655fb..99b7e8c 100644
+--- a/src/surveytally/reports/compare.py
++++ b/src/surveytally/reports/compare.py
+@@ -29,9 +29,11 @@ def read_percentages(path):
+     """Percentages by (question, option code); rows without a percentage are skipped."""
+     percentages = {}
+     with Path(path).open(newline='', encoding='utf-8') as handle:
+-        for row in csv.DictReader(handle):
+-            if row['percent']:
+-                percentages[(row['question'], row['option'])] = float(row['percent'])
++        rows = csv.reader(handle)
++        next(rows, None)
++        for question, option, _count, percent in rows:
++            if percent:
++                percentages[(question, option)] = float(percent)
+     return percentages
+ 
+ 

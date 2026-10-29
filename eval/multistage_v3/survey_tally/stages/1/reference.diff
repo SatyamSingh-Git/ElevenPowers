@@ -1,0 +1,66 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e508294..3facbcd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Multiple-choice cells in response CSV files separate the chosen options with `/` instead of `;`, which spreadsheets set to semicolon-delimited CSV split into columns.
+ - `surveytally status` shows what a project folder holds.
+ 
+ ## 0.9.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 9e27ca2..5c96db5 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -48,7 +48,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ | `submitted_column` | `submitted` | optional column of a response CSV file holding the date, YYYY-MM-DD |
+ | `duration_column` | `duration` | optional column of a response CSV file holding the whole seconds taken |
+ | `missing_values` | `NA` | cell that, like an empty cell, means no answer in a response CSV file |
+-| `multi_separator` | `;` | separator between the options picked in a multiple-choice cell of a response CSV file |
++| `multi_separator` | `/` | separator between the options picked in a multiple-choice cell of a response CSV file |
+ | `respondent_case` | `as given` | how respondent ids read from response files (CSV or JSON lines) are kept |
+ | `encoding` | `utf-8` | encoding of response CSV files; a byte order mark is allowed |
+ 
+diff --git a/src/surveytally/files/csv_responses.py b/src/surveytally/files/csv_responses.py
+index 3176e81..dad60c3 100644
+--- a/src/surveytally/files/csv_responses.py
++++ b/src/surveytally/files/csv_responses.py
+@@ -17,7 +17,7 @@ SUBMITTED_COLUMN = 'submitted'
+ DURATION_COLUMN = 'duration'
+ FIXED_COLUMNS = (RESPONDENT_COLUMN, SUBMITTED_COLUMN, DURATION_COLUMN)
+ MISSING = ('', 'NA')
+-MULTI_SEPARATOR = ';'
++MULTI_SEPARATOR = '/'
+ 
+ 
+ def read_responses(survey, path):
+diff --git a/src/surveytally/reports/responses_export.py b/src/surveytally/reports/responses_export.py
+index 76ef34d..05ee6a5 100644
+--- a/src/surveytally/reports/responses_export.py
++++ b/src/surveytally/reports/responses_export.py
+@@ -8,7 +8,7 @@ import csv
+ import json
+ from pathlib import Path
+ 
+-CHOICE_SEPARATOR = ';'
++CHOICE_SEPARATOR = '/'
+ LEADING_COLUMNS = ('respondent', 'submitted', 'duration')
+ 
+ 
+diff --git a/tests/test_csv_responses.py b/tests/test_csv_responses.py
+index 8d4666a..f3892dd 100644
+--- a/tests/test_csv_responses.py
++++ b/tests/test_csv_responses.py
+@@ -45,3 +45,10 @@ def test_respondent_column_is_required(customer_survey, write_file):
+     path = write_file('responses.csv', 'contact\nemail\n')
+     with pytest.raises(ResponseFileError, match='missing column respondent'):
+         read_responses(customer_survey, path)
++
++
++def test_multiple_choice_options_are_separated_by_slashes(customer_survey, write_file):
++    path = write_file('responses.csv', 'respondent,channels\nR1,web/app/store\nR2,phone\n')
++    first, second = read_responses(customer_survey, path)
++    assert first.answers['channels'] == ('web', 'app', 'store')
++    assert second.answers['channels'] == ('phone',)

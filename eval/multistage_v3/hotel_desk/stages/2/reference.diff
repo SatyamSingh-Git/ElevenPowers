@@ -1,0 +1,64 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a4cfe82..4ffbda5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Stays of up to 45 nights are accepted by default (`max_stay_nights`).
+ - The audit journal writes amounts as `0.00` instead of whole cents.
+ - `hk-sheets` splits the day's housekeeping between attendants, floor by floor.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index ccba286..3699f17 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -12,7 +12,7 @@ its default.
+ |---|---|---|
+ | `check_in_time` | `15:00` | Setting: the time rooms are promised from |
+ | `check_out_time` | `11:00` | Setting: checking out after this time on the business date posts the late check-out fee |
+-| `max_stay_nights` | `30` | Setting: the longest stay a booking, quote, extension or channel import accepts |
++| `max_stay_nights` | `45` | Setting: the longest stay a booking, quote, extension or channel import accepts |
+ | `weekend_uplift_percent` | `10` | Setting: added to the rate of Friday and Saturday nights |
+ | `late_checkout_fee` | `25.00` | Setting: the amount posted as `LCO` on a late check-out |
+ | `journal_file` | `audit_journal.csv` | Setting: name of the audit journal file, kept beside the state file |
+diff --git a/src/hoteldesk/config.py b/src/hoteldesk/config.py
+index fb0a312..f869a07 100644
+--- a/src/hoteldesk/config.py
++++ b/src/hoteldesk/config.py
+@@ -17,7 +17,7 @@ from .money import parse_money
+ class Settings:
+     check_in_time: time = time(15, 0)
+     check_out_time: time = time(11, 0)
+-    max_stay_nights: int = 30
++    max_stay_nights: int = 45
+     weekend_uplift_percent: int = 10
+     late_checkout_fee: int = 2500
+     journal_file: str = "audit_journal.csv"
+diff --git a/tests/test_booking.py b/tests/test_booking.py
+index a053d05..e4f4265 100644
+--- a/tests/test_booking.py
++++ b/tests/test_booking.py
+@@ -40,7 +40,7 @@ def test_reservation_numbers_follow_booking_order(hotel, settings):
+     ({"rate_plan": "NOPE"}, "Unknown rate plan: NOPE"),
+     ({"departure": MONDAY}, "Departure must be after arrival"),
+     ({"arrival": date(2026, 3, 1)}, "Arrival 2026-03-01 is before the business date 2026-03-02"),
+-    ({"departure": MONDAY + timedelta(days=31)}, "Stays are limited to 30 nights"),
++    ({"departure": MONDAY + timedelta(days=46)}, "Stays are limited to 45 nights"),
+     ({"rate_plan": "WEEK"}, "Rate plan WEEK requires at least 7 nights"),
+     ({"adults": 3}, "Room type QN holds at most 2 adults"),
+ ])
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index 299b580..3920bd9 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -51,7 +51,7 @@ def test_settings_file(tmp_path):
+     path.write_text(json.dumps({"check_out_time": "12:00", "late_checkout_fee": "30.00"}))
+     settings = load_settings(path)
+     assert settings.check_out_time.hour == 12 and settings.late_checkout_fee == 3000
+-    assert load_settings(tmp_path / "absent.json").max_stay_nights == 30
++    assert load_settings(tmp_path / "absent.json").max_stay_nights == 45
+ 
+ 
+ def test_unknown_setting(tmp_path):

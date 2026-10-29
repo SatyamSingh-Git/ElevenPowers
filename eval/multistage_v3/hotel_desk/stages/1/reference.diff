@@ -1,0 +1,97 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 47b567b..a4cfe82 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The audit journal writes amounts as `0.00` instead of whole cents.
+ - `hk-sheets` splits the day's housekeeping between attendants, floor by floor.
+ 
+ ## 1.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index da564c8..ccba286 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -97,7 +97,7 @@ Codes are case-insensitive on the way in and stored upper case.
+ | `checkin.room_choice` | `lowest-numbered ready room` | API `check_in` and CLI `checkin`: the room given when none is chosen |
+ | `state.format` | `1` | State file: the `format` field |
+ | `journal.columns` | `business_date,rooms_sold,rooms_available,room_revenue,tax_revenue,other_revenue,payments` | File `audit_journal.csv`: header line; one line per audited business date |
+-| `journal.amounts` | `cents` | File `audit_journal.csv`: how the four money columns are written |
++| `journal.amounts` | `0.00` | File `audit_journal.csv`: how the four money columns are written |
+ | `folio_export.columns` | `reservation,guest,date,code,description,amount` | File written by `export-folios`: header line |
+ | `channel_import.columns` | `channel_ref,guest,room_type,arrival,departure,adults,rate_plan` | File read by `import`: required header columns |
+ | `statistics.occupancy` | `fraction` | API `day_statistics()` and CLI `report occupancy --format json`: occupancy as a share of available rooms, `0.5` for half |
+diff --git a/src/hoteldesk/reports/revenue.py b/src/hoteldesk/reports/revenue.py
+index 6d6ed93..edbac74 100644
+--- a/src/hoteldesk/reports/revenue.py
++++ b/src/hoteldesk/reports/revenue.py
+@@ -4,7 +4,7 @@ from pathlib import Path
+ 
+ from ..dates import parse_date
+ from ..errors import NotFound
+-from ..money import format_money, per
++from ..money import format_money, parse_money, per
+ from .tables import table
+ 
+ AMOUNTS = ("room_revenue", "tax_revenue", "other_revenue", "payments")
+@@ -25,7 +25,7 @@ def revenue_summary(journal_path, start=None, end=None):
+                 "date": day,
+                 "rooms_sold": int(row["rooms_sold"]),
+                 "rooms_available": int(row["rooms_available"]),
+-                **{name: int(row[name]) for name in AMOUNTS},
++                **{name: parse_money(row[name]) for name in AMOUNTS},
+             })
+     totals = {name: sum(day[name] for day in days) for name in ("rooms_sold", "rooms_available") + AMOUNTS}
+     totals["adr"] = per(totals["room_revenue"], totals["rooms_sold"])
+diff --git a/src/hoteldesk/storage/journal.py b/src/hoteldesk/storage/journal.py
+index 8eab38a..d059d00 100644
+--- a/src/hoteldesk/storage/journal.py
++++ b/src/hoteldesk/storage/journal.py
+@@ -5,6 +5,8 @@ Accounting collects the file at month end, and the revenue report reads it back.
+ import csv
+ from pathlib import Path
+ 
++from ..money import format_money
++
+ JOURNAL_FIELDS = (
+     "business_date",
+     "rooms_sold",
+@@ -14,6 +16,7 @@ JOURNAL_FIELDS = (
+     "other_revenue",
+     "payments",
+ )
++MONEY_FIELDS = ("room_revenue", "tax_revenue", "other_revenue", "payments")
+ 
+ 
+ def append_entry(path, entry):
+@@ -23,4 +26,7 @@ def append_entry(path, entry):
+         writer = csv.DictWriter(handle, fieldnames=JOURNAL_FIELDS, lineterminator="\n")
+         if is_new:
+             writer.writeheader()
+-        writer.writerow({**entry, "business_date": entry["business_date"].isoformat()})
++        row = {**entry, "business_date": entry["business_date"].isoformat()}
++        for name in MONEY_FIELDS:
++            row[name] = format_money(entry[name])
++        writer.writerow(row)
+diff --git a/tests/test_night_audit.py b/tests/test_night_audit.py
+index be2bf53..876d9bf 100644
+--- a/tests/test_night_audit.py
++++ b/tests/test_night_audit.py
+@@ -61,3 +61,15 @@ def test_audit_report_lists_revenue(hotel, settings, clock):
+ def test_open_items(hotel, settings, clock):
+     booking.book(hotel, settings, guest="Bo Chen", room_type="KG", arrival=MONDAY, departure=date(2026, 3, 3))
+     assert night_audit.open_items(hotel) == ["R0001 Bo Chen has not arrived and will be a no-show"]
++
++
++def test_journal_amounts_are_written_as_money(hotel, settings, clock, tmp_path):
++    reservation = booking.book(hotel, settings, guest="Ann Lee", room_type="QN", arrival=MONDAY,
++                               departure=date(2026, 3, 4))
++    stays.check_in(hotel, clock, reservation.id)
++    journal = tmp_path / "audit_journal.csv"
++    night_audit.run_audit(hotel, settings, journal)
++    with journal.open(newline="") as handle:
++        row = next(csv.DictReader(handle))
++    assert (row["room_revenue"], row["tax_revenue"], row["other_revenue"], row["payments"]) == (
++        "120.00", "14.10", "0.00", "0.00")

@@ -1,0 +1,22 @@
+diff --git a/src/hoteldesk/reports/revenue.py b/src/hoteldesk/reports/revenue.py
+index edbac74..6d6ed93 100644
+--- a/src/hoteldesk/reports/revenue.py
++++ b/src/hoteldesk/reports/revenue.py
+@@ -4,7 +4,7 @@ from pathlib import Path
+ 
+ from ..dates import parse_date
+ from ..errors import NotFound
+-from ..money import format_money, parse_money, per
++from ..money import format_money, per
+ from .tables import table
+ 
+ AMOUNTS = ("room_revenue", "tax_revenue", "other_revenue", "payments")
+@@ -25,7 +25,7 @@ def revenue_summary(journal_path, start=None, end=None):
+                 "date": day,
+                 "rooms_sold": int(row["rooms_sold"]),
+                 "rooms_available": int(row["rooms_available"]),
+-                **{name: parse_money(row[name]) for name in AMOUNTS},
++                **{name: int(row[name]) for name in AMOUNTS},
+             })
+     totals = {name: sum(day[name] for day in days) for name in ("rooms_sold", "rooms_available") + AMOUNTS}
+     totals["adr"] = per(totals["room_revenue"], totals["rooms_sold"])

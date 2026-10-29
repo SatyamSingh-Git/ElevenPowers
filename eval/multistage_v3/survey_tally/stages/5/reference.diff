@@ -1,0 +1,90 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 88e3665..a64b496 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Frequency tables list choice options in questionnaire order rather than from most to least chosen, so questions sharing an answer list line up.
+ - Scale questions are called `rating` in survey files, as form builders name them; files that say `scale` still load.
+ - Fixed: percentages in exported tables rounded halves to the even digit (1 of 8 showed as 12%); they now round half up.
+ - CSV exports of frequency tables have a `weighted` column after `count`: the weighted count, to one decimal.
+diff --git a/docs/reference.md b/docs/reference.md
+index 9bc8951..d11ffab 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -74,7 +74,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ | Fact | Value | Meaning |
+ |---|---|---|
+ | `frequency_columns` | `question, option, count, weighted, percent` | columns of frequency tables in a CSV file from `export_frequencies` (API) or the CLI `export` |
+-| `frequency_order` | `count` | order of choice options in frequency tables from `frequencies` (API) and in exported files; `count` puts the most chosen first |
++| `frequency_order` | `questionnaire` | order of choice options in frequency tables from `frequencies` (API) and in exported files; `questionnaire` keeps the order the survey defines |
+ | `missing_label` | `(no answer)` | label of the row counting respondents without an answer, in exported table files |
+ | `total_label` | `Total` | heading of a cross-tabulation's total column, in exported table files |
+ | `base_label` | `n` | label of a cross-tabulation's row of column bases, in exported table files |
+diff --git a/src/surveytally/reports/summary.py b/src/surveytally/reports/summary.py
+index 7a35078..38b51d4 100644
+--- a/src/surveytally/reports/summary.py
++++ b/src/surveytally/reports/summary.py
+@@ -24,5 +24,5 @@ def _headline(table, decimals):
+         return f'mean {format_number(table.mean, MEAN_DECIMALS)} (n={table.base})'
+     if not table.rows:
+         return f'{table.base} answers'
+-    top = table.rows[0]
++    top = max(table.rows, key=lambda row: row.weighted)
+     return f'most chosen: {top.label} ({format_percent(top.percent, decimals)}%, n={table.base})'
+diff --git a/src/surveytally/services/tally.py b/src/surveytally/services/tally.py
+index 50c4fec..07dfd2c 100644
+--- a/src/surveytally/services/tally.py
++++ b/src/surveytally/services/tally.py
+@@ -20,9 +20,9 @@ class FrequencyTable:
+ 
+     `base` counts the respondents who answered and `missing` those who did not.
+     Percentages are of the weighted base, so they add up to more than 100 for
+-    multiple-choice questions. Choice questions list their options from most to
+-    least chosen, scale questions their points from lowest to highest, and
+-    free-text questions have no rows.
++    multiple-choice questions. Choice questions list their options in
++    questionnaire order, so the most chosen need not come first; scale questions
++    list their points from lowest to highest, and free-text questions have no rows.
+     """
+ 
+     question_id: str
+@@ -53,7 +53,7 @@ class Tally:
+     def _tally_single(self, question):
+         counts, weighted, base, weighted_base = self._count(question)
+         rows = [self._row(code, question.label_for(code), counts, weighted, weighted_base) for code in question.codes()]
+-        return self._choice_table(question, rows, base, weighted_base)
++        return FrequencyTable(question.id, question.text, rows, base, weighted_base, len(self.responses) - base)
+ 
+     _tally_multi = _tally_single
+ 
+@@ -68,10 +68,6 @@ class Tally:
+         _, _, base, weighted_base = self._count(question)
+         return FrequencyTable(question.id, question.text, [], base, weighted_base, len(self.responses) - base)
+ 
+-    def _choice_table(self, question, rows, base, weighted_base):
+-        rows.sort(key=lambda row: row.weighted, reverse=True)
+-        return FrequencyTable(question.id, question.text, rows, base, weighted_base, len(self.responses) - base)
+-
+     def _count(self, question):
+         counts, weighted = Counter(), Counter()
+         base, weighted_base = 0, 0.0
+diff --git a/tests/test_tally.py b/tests/test_tally.py
+index 6619f27..51ec8d1 100644
+--- a/tests/test_tally.py
++++ b/tests/test_tally.py
+@@ -41,3 +41,12 @@ def test_free_text_counts_answers_only(poll_survey, responses):
+     table = frequencies(poll_survey, responses)['comments']
+     assert table.rows == []
+     assert table.base == 1
++
++
++def test_options_keep_questionnaire_order(poll_survey):
++    responses = [Response('R1', {'region': 'west', 'channels': ('store',)}),
++                 Response('R2', {'region': 'west', 'channels': ('store', 'app')}),
++                 Response('R3', {'region': 'east'})]
++    tables = frequencies(poll_survey, responses)
++    assert [row.code for row in tables['region'].rows] == ['north', 'south', 'east', 'west']
++    assert [row.code for row in tables['channels'].rows] == ['web', 'app', 'store']

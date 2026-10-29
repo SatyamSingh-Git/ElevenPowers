@@ -1,0 +1,144 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 3facbcd..d14c662 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- CSV exports of frequency tables have a `weighted` column after `count`: the weighted count, to one decimal.
+ - Multiple-choice cells in response CSV files separate the chosen options with `/` instead of `;`, which spreadsheets set to semicolon-delimited CSV split into columns.
+ - `surveytally status` shows what a project folder holds.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 5c96db5..8a8f282 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -73,7 +73,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ 
+ | Fact | Value | Meaning |
+ |---|---|---|
+-| `frequency_columns` | `question, option, count, percent` | columns of frequency tables in a CSV file from `export_frequencies` (API) or the CLI `export` |
++| `frequency_columns` | `question, option, count, weighted, percent` | columns of frequency tables in a CSV file from `export_frequencies` (API) or the CLI `export` |
+ | `frequency_order` | `count` | order of choice options in frequency tables from `frequencies` (API) and in exported files; `count` puts the most chosen first |
+ | `missing_label` | `(no answer)` | label of the row counting respondents without an answer, in exported table files |
+ | `total_label` | `Total` | heading of a cross-tabulation's total column, in exported table files |
+diff --git a/src/surveytally/reports/compare.py b/src/surveytally/reports/compare.py
+index 99b7e8c..b2655fb 100644
+--- a/src/surveytally/reports/compare.py
++++ b/src/surveytally/reports/compare.py
+@@ -29,11 +29,9 @@ def read_percentages(path):
+     """Percentages by (question, option code); rows without a percentage are skipped."""
+     percentages = {}
+     with Path(path).open(newline='', encoding='utf-8') as handle:
+-        rows = csv.reader(handle)
+-        next(rows, None)
+-        for question, option, _count, percent in rows:
+-            if percent:
+-                percentages[(question, option)] = float(percent)
++        for row in csv.DictReader(handle):
++            if row['percent']:
++                percentages[(row['question'], row['option'])] = float(row['percent'])
+     return percentages
+ 
+ 
+diff --git a/src/surveytally/reports/export.py b/src/surveytally/reports/export.py
+index eb9a23b..9332272 100644
+--- a/src/surveytally/reports/export.py
++++ b/src/surveytally/reports/export.py
+@@ -10,7 +10,7 @@ from .formatting import format_percent
+ from .render import RENDERERS
+ from .tables import MISSING_LABEL, crosstab_table, frequency_table, scores_table
+ 
+-FREQUENCY_COLUMNS = ('question', 'option', 'count', 'percent')
++FREQUENCY_COLUMNS = ('question', 'option', 'count', 'weighted', 'percent')
+ EXPORT_FORMATS = ('csv', 'markdown', 'text')
+ 
+ 
+@@ -23,15 +23,19 @@ def export_frequencies(tables, path, format='csv', decimals=1):
+ 
+ 
+ def frequency_rows(tables, decimals=1):
+-    """CSV rows for every question that has answer options; free-text questions have none."""
++    """CSV rows for every question that has answer options; free-text questions have none.
++
++    The weighted count has one decimal; without weights it equals the count.
++    """
+     rows = []
+     for table in tables.values():
+         if not table.rows:
+             continue
+         for row in table.rows:
+-            rows.append([table.question_id, row.code, row.count, format_percent(row.percent, decimals)])
++            rows.append([table.question_id, row.code, row.count, f'{row.weighted:.1f}',
++                         format_percent(row.percent, decimals)])
+         if table.missing:
+-            rows.append([table.question_id, MISSING_LABEL, table.missing, ''])
++            rows.append([table.question_id, MISSING_LABEL, table.missing, '', ''])
+     return rows
+ 
+ 
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 38ca369..b3834cf 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -52,7 +52,7 @@ def test_export_writes_csv_by_default(project, write_file, tmp_path):
+     assert main(['export', str(project), str(out)]) == 0
+     with out.open(newline='', encoding='utf-8') as handle:
+         rows = list(csv.reader(handle))
+-    assert ['region', 'north', '2', '66.7'] in rows
++    assert ['region', 'north', '2', '2.0', '66.7'] in rows
+ 
+ 
+ def test_settings_change_the_default_decimals(project, write_file, tmp_path):
+@@ -61,7 +61,7 @@ def test_settings_change_the_default_decimals(project, write_file, tmp_path):
+     main(['import', str(project), str(path)])
+     out = tmp_path / 'tables.csv'
+     main(['export', str(project), str(out)])
+-    assert 'region,north,2,67' in out.read_text(encoding='utf-8').splitlines()
++    assert 'region,north,2,2.0,67' in out.read_text(encoding='utf-8').splitlines()
+ 
+ 
+ def test_where_narrows_the_responses(project, write_file, capsys):
+diff --git a/tests/test_export.py b/tests/test_export.py
+index 2f96919..bf3d999 100644
+--- a/tests/test_export.py
++++ b/tests/test_export.py
+@@ -28,17 +28,17 @@ def test_csv_export_is_long_format(tmp_path, tables):
+     path = tmp_path / 'tables.csv'
+     export_frequencies(tables, path)
+     header, *rows = read_csv(path)
+-    assert header == ['question', 'option', 'count', 'percent']
+-    assert ['region', 'north', '2', '66.7'] in rows
+-    assert ['region', 'west', '0', '0.0'] in rows
+-    assert ['region', '(no answer)', '1', ''] in rows
++    assert header == ['question', 'option', 'count', 'weighted', 'percent']
++    assert ['region', 'north', '2', '2.0', '66.7'] in rows
++    assert ['region', 'west', '0', '0.0', '0.0'] in rows
++    assert ['region', '(no answer)', '1', '', ''] in rows
+     assert not any(row[0] == 'comments' for row in rows)
+ 
+ 
+ def test_csv_export_decimals(tmp_path, tables):
+     path = tmp_path / 'tables.csv'
+     export_frequencies(tables, path, decimals=0)
+-    assert ['contact', 'email', '3', '75'] in read_csv(path)
++    assert ['contact', 'email', '3', '3.0', '75'] in read_csv(path)
+ 
+ 
+ def test_markdown_export_uses_labels(tmp_path, tables):
+@@ -63,3 +63,14 @@ def test_crosstab_csv_uses_codes(tmp_path, poll_survey):
+     header, north, *_ = read_csv(path)
+     assert header == ['region', 'phone', 'email', 'Total']
+     assert north == ['north', '50.0', '0.0', '50.0']
++
++
++def test_csv_export_shows_weighted_counts(tmp_path, poll_survey):
++    responses = [Response('R1', {'region': 'north'}), Response('R2', {'region': 'north'}),
++                 Response('R3', {'region': 'south'})]
++    weights = {'R1': 0.25, 'R2': 1.5, 'R3': 1.25}
++    path = tmp_path / 'tables.csv'
++    export_frequencies(frequencies(poll_survey, responses, weights), path)
++    rows = {(row[0], row[1]): row for row in read_csv(path)[1:]}
++    assert rows[('region', 'north')] == ['region', 'north', '2', '1.8', '58.3']
++    assert rows[('region', 'south')][2:4] == ['1', '1.2']

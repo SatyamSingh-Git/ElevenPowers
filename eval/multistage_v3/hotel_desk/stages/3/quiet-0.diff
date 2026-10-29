@@ -1,0 +1,24 @@
+diff --git a/src/hoteldesk/services/pricing.py b/src/hoteldesk/services/pricing.py
+index 79e11a0..1799b6b 100644
+--- a/src/hoteldesk/services/pricing.py
++++ b/src/hoteldesk/services/pricing.py
+@@ -1,10 +1,11 @@
+ """Nightly rates for a stay, and the quote the desk reads out to the guest."""
+ from dataclasses import dataclass
+ from datetime import date
++from decimal import Decimal
+ 
+ from .._generated import TAX_RATES
+ from ..dates import nights
+-from ..money import adjust, tax_on
++from ..money import adjust
+ from .stay_rules import check_stay
+ 
+ # Friday and Saturday nights carry the weekend uplift.
+@@ -46,5 +47,5 @@ def quote(hotel, settings, room_type, plan_code, arrival, departure, adults=1):
+     rates = nightly_rates(hotel, settings, room_type, plan_code, arrival, departure)
+     # Each night is taxed on its own, the way the night audit posts it.
+     lodging = TAX_RATES["lodging"]
+-    tax = sum(tax_on(rate, lodging) for rate in rates)
++    tax = sum(int(Decimal(rate) * lodging) for rate in rates)
+     return Quote(room_type, plan_code, arrival, departure, rates, tax)

@@ -1,0 +1,13 @@
+diff --git a/src/surveytally/services/tally.py b/src/surveytally/services/tally.py
+index 50c4fec..9d20e59 100644
+--- a/src/surveytally/services/tally.py
++++ b/src/surveytally/services/tally.py
+@@ -57,7 +57,7 @@ class Tally:
+ 
+     _tally_multi = _tally_single
+ 
+-    def _tally_rating(self, question):
++    def _tally_scale(self, question):
+         counts, weighted, base, weighted_base = self._count(question)
+         points = question.points()
+         rows = [self._row(point, question.label_for(point), counts, weighted, weighted_base) for point in points]

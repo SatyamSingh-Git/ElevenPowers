@@ -1,0 +1,11 @@
+diff --git a/src/surveytally/reports/summary.py b/src/surveytally/reports/summary.py
+index 38b51d4..7a35078 100644
+--- a/src/surveytally/reports/summary.py
++++ b/src/surveytally/reports/summary.py
+@@ -24,5 +24,5 @@ def _headline(table, decimals):
+         return f'mean {format_number(table.mean, MEAN_DECIMALS)} (n={table.base})'
+     if not table.rows:
+         return f'{table.base} answers'
+-    top = max(table.rows, key=lambda row: row.weighted)
++    top = table.rows[0]
+     return f'most chosen: {top.label} ({format_percent(top.percent, decimals)}%, n={table.base})'

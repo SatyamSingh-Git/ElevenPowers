@@ -1,0 +1,12 @@
+[project]
+name = "hoteldesk"
+version = "1.4.0"
+description = "Front desk tools for a small hotel"
+requires-python = ">=3.11"
+
+[project.scripts]
+hoteldesk = "hoteldesk.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

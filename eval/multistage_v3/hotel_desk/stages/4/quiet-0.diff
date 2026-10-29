@@ -1,0 +1,16 @@
+diff --git a/src/hoteldesk/reports/folio_print.py b/src/hoteldesk/reports/folio_print.py
+index e2dae90..b3eb14c 100644
+--- a/src/hoteldesk/reports/folio_print.py
++++ b/src/hoteldesk/reports/folio_print.py
+@@ -1,10 +1,9 @@
+ """The folio as the guest sees it at check-out."""
+-from ..model.charges import ROOM, TAX
+ from ..money import format_money
+ from .tables import amount_line
+ 
+ # Charges are grouped by code; anything not listed here prints under Extras.
+-SECTIONS = {ROOM: "Accommodation", TAX: "Taxes"}
++SECTIONS = {"RM": "Accommodation", "TAX": "Taxes"}
+ SECTION_ORDER = ("Accommodation", "Taxes", "Extras")
+ 
+ 

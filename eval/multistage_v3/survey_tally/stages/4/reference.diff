@@ -1,0 +1,137 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7b6b141..88e3665 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Scale questions are called `rating` in survey files, as form builders name them; files that say `scale` still load.
+ - Fixed: percentages in exported tables rounded halves to the even digit (1 of 8 showed as 12%); they now round half up.
+ - CSV exports of frequency tables have a `weighted` column after `count`: the weighted count, to one decimal.
+ - Multiple-choice cells in response CSV files separate the chosen options with `/` instead of `;`, which spreadsheets set to semicolon-delimited CSV split into columns.
+diff --git a/docs/reference.md b/docs/reference.md
+index 1c86cae..9bc8951 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -33,7 +33,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ | Fact | Value | Meaning |
+ |---|---|---|
+ | `schema` | `2` | newest survey file schema this release reads, and the one it writes |
+-| `question_types` | `single, multi, scale, text` | values of a question's `type` in a survey file |
++| `question_types` | `single, multi, rating, text` | values of a question's `type` in a survey file; `scale` is still read as `rating` |
+ | `scale_low` | `1` | lowest point of a scale question in a survey file that sets neither `low` nor `preset` |
+ | `scale_high` | `5` | highest point of a scale question in a survey file that sets neither `high` nor `preset` |
+ | `scale_presets` | `agree5, satisfied5, frequency5, quality4, likely11` | names a scale question's `preset` may take in a survey file |
+diff --git a/src/surveytally/files/csv_responses.py b/src/surveytally/files/csv_responses.py
+index dad60c3..6670cc2 100644
+--- a/src/surveytally/files/csv_responses.py
++++ b/src/surveytally/files/csv_responses.py
+@@ -98,6 +98,6 @@ def _parse_text(question, cell, number):
+ PARSERS = {
+     'single': _parse_code,
+     'multi': _parse_codes,
+-    'scale': _parse_point,
++    'rating': _parse_point,
+     'text': _parse_text,
+ }
+diff --git a/src/surveytally/files/survey_file.py b/src/surveytally/files/survey_file.py
+index c9396cf..20646dc 100644
+--- a/src/surveytally/files/survey_file.py
++++ b/src/surveytally/files/survey_file.py
+@@ -10,9 +10,11 @@ from ..model.survey import ScoreDefinition, Survey
+ QUESTION_TYPES = {
+     'single': SingleChoice,
+     'multi': MultipleChoice,
+-    'scale': Scale,
++    'rating': Scale,
+     'text': FreeText,
+ }
++# Older survey files call rating questions `scale`.
++LEGACY_TYPES = {'scale': 'rating'}
+ 
+ 
+ def load_survey(path):
+@@ -61,7 +63,7 @@ def survey_from_dict(data, source='survey'):
+ def question_from_dict(item):
+     if 'id' not in item:
+         raise SurveyError('a question has no id')
+-    kind = item.get('type')
++    kind = LEGACY_TYPES.get(item.get('type'), item.get('type'))
+     if kind not in QUESTION_TYPES:
+         raise SurveyError(f'question {item["id"]} has unknown type {kind}')
+     cls = QUESTION_TYPES[kind]
+diff --git a/src/surveytally/model/questions.py b/src/surveytally/model/questions.py
+index 34b7447..f6ad009 100644
+--- a/src/surveytally/model/questions.py
++++ b/src/surveytally/model/questions.py
+@@ -100,7 +100,7 @@ class Scale(Question):
+     high: int = 5
+     labels: tuple = ()
+ 
+-    type = 'scale'
++    type = 'rating'
+ 
+     def __post_init__(self):
+         if self.low >= self.high:
+diff --git a/src/surveytally/services/tally.py b/src/surveytally/services/tally.py
+index 9d20e59..50c4fec 100644
+--- a/src/surveytally/services/tally.py
++++ b/src/surveytally/services/tally.py
+@@ -57,7 +57,7 @@ class Tally:
+ 
+     _tally_multi = _tally_single
+ 
+-    def _tally_scale(self, question):
++    def _tally_rating(self, question):
+         counts, weighted, base, weighted_base = self._count(question)
+         points = question.points()
+         rows = [self._row(point, question.label_for(point), counts, weighted, weighted_base) for point in points]
+diff --git a/src/surveytally/services/validation.py b/src/surveytally/services/validation.py
+index 4e00964..d57e958 100644
+--- a/src/surveytally/services/validation.py
++++ b/src/surveytally/services/validation.py
+@@ -38,7 +38,7 @@ class Validator:
+             return f'{question.id}: more than {question.max_choices} options chosen'
+         return None
+ 
+-    def _check_scale(self, question, value):
++    def _check_rating(self, question, value):
+         if not question.low <= value <= question.high:
+             return f'{question.id}: {value} is outside {question.low}..{question.high}'
+         return None
+diff --git a/tests/test_extras.py b/tests/test_extras.py
+index 16ceec0..e2153dd 100644
+--- a/tests/test_extras.py
++++ b/tests/test_extras.py
+@@ -40,7 +40,7 @@ def test_codeframe_codes_answers(write_file, customer_survey):
+ def test_codebook_lists_every_code(tmp_path, customer_survey):
+     rows = codebook_rows(customer_survey)
+     assert ['contact', 'single', 'email', 'Email'] in rows
+-    assert ['recommend', 'scale', '10', 'Extremely likely'] in rows
++    assert ['recommend', 'rating', '10', 'Extremely likely'] in rows
+     assert ['comments', 'text', '', '(free text, up to 500 characters)'] in rows
+     path = tmp_path / 'codebook.csv'
+     write_codebook(customer_survey, path)
+diff --git a/tests/test_survey_file.py b/tests/test_survey_file.py
+index 7b3faaf..fe6d6c9 100644
+--- a/tests/test_survey_file.py
++++ b/tests/test_survey_file.py
+@@ -43,3 +43,17 @@ def test_invalid_json_names_the_line(write_file):
+     path = write_file('bad.json', '{\n  "id": "s",\n  oops\n}')
+     with pytest.raises(SurveyFileError, match='line 3'):
+         load_survey(path)
++
++
++def test_rating_questions_load_and_save_as_rating(tmp_path):
++    data = {'id': 's', 'title': 'S', 'questions': [
++        {'id': 'new', 'type': 'rating', 'low': 0, 'high': 10},
++        {'id': 'old', 'type': 'scale', 'preset': 'quality4'},
++    ]}
++    survey = survey_from_dict(data)
++    assert survey.question('new').points() == list(range(11))
++    assert survey.question('old').label_for(4) == 'Excellent'
++    path = tmp_path / 'saved.json'
++    save_survey(survey, path)
++    assert [question['type'] for question in json.loads(path.read_text(encoding='utf-8'))['questions']] == [
++        'rating', 'rating']

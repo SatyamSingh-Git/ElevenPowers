@@ -1,0 +1,171 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7a7f35a..b4462a8 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The night audit removes cancelled reservations older than `cancelled_retention_days` (default 30).
+ - Occupancy is a percentage in `day_statistics()` and `report occupancy --format json`.
+ - Checking in to a room that is not ready names its housekeeping status.
+ - Nightly room charges are posted under the code `ROOM` instead of `RM`; `post` still accepts `RM`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 59c5556..30f2cdd 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -17,6 +17,7 @@ its default.
+ | `late_checkout_fee` | `25.00` | Setting: the amount posted as `LCO` on a late check-out |
+ | `journal_file` | `audit_journal.csv` | Setting: name of the audit journal file, kept beside the state file |
+ | `currency` | `USD` | Setting: the currency every amount is in |
++| `cancelled_retention_days` | `30` | Setting: the night audit removes a cancelled reservation once its departure date is more than this many days before the business date being closed |
+ 
+ ## Command line
+ 
+diff --git a/src/hoteldesk/config.py b/src/hoteldesk/config.py
+index f869a07..bc3ebf1 100644
+--- a/src/hoteldesk/config.py
++++ b/src/hoteldesk/config.py
+@@ -22,6 +22,7 @@ class Settings:
+     late_checkout_fee: int = 2500
+     journal_file: str = "audit_journal.csv"
+     currency: str = "USD"
++    cancelled_retention_days: int = 30
+ 
+ 
+ def _count(value):
+@@ -44,6 +45,7 @@ _READERS = {
+     "late_checkout_fee": parse_money,
+     "journal_file": _text,
+     "currency": _text,
++    "cancelled_retention_days": _count,
+ }
+ 
+ 
+diff --git a/src/hoteldesk/model/hotel.py b/src/hoteldesk/model/hotel.py
+index 6965aa0..aaffbb9 100644
+--- a/src/hoteldesk/model/hotel.py
++++ b/src/hoteldesk/model/hotel.py
+@@ -17,6 +17,9 @@ class Hotel:
+     guests: dict = field(default_factory=dict)
+     wake_up_calls: list = field(default_factory=list)
+     lost_items: list = field(default_factory=list)
++    # The number given to the latest reservation; the night audit removes old cancellations,
++    # so the reservations held are no guide to the next number.
++    last_reservation_number: int = 0
+ 
+     def room_type(self, code):
+         try:
+diff --git a/src/hoteldesk/services/booking.py b/src/hoteldesk/services/booking.py
+index b1666fc..f400df1 100644
+--- a/src/hoteldesk/services/booking.py
++++ b/src/hoteldesk/services/booking.py
+@@ -8,7 +8,8 @@ DEFAULT_PLAN = "BAR"
+ 
+ 
+ def _next_id(hotel):
+-    return f"R{len(hotel.reservations) + 1:04d}"
++    hotel.last_reservation_number += 1
++    return f"R{hotel.last_reservation_number:04d}"
+ 
+ 
+ def _check_free(hotel, room_type, arrival, departure, excluding=None):
+diff --git a/src/hoteldesk/services/night_audit.py b/src/hoteldesk/services/night_audit.py
+index a4b28a1..33142f3 100644
+--- a/src/hoteldesk/services/night_audit.py
++++ b/src/hoteldesk/services/night_audit.py
+@@ -2,13 +2,14 @@
+ 
+ It posts each in-house guest's room charge for the night, marks guests who never
+ arrived as no-shows, writes the day's line to the audit journal and moves the
+-business date on by one day.
++business date on by one day. Cancelled reservations are removed once they are past
++the retention period.
+ """
+ from dataclasses import dataclass, field
+ from datetime import date, timedelta
+ 
+ from ..model.charges import ROOM, TAX
+-from ..model.reservations import BOOKED, IN_HOUSE, NO_SHOW
++from ..model.reservations import BOOKED, CANCELLED, IN_HOUSE, NO_SHOW
+ from ..model.rooms import DIRTY
+ from ..storage import journal
+ from . import billing, inventory, pricing
+@@ -20,6 +21,7 @@ class AuditResult:
+     room_charges: list = field(default_factory=list)
+     no_shows: list = field(default_factory=list)
+     extended: list = field(default_factory=list)
++    purged: list = field(default_factory=list)
+     statistics: dict = field(default_factory=dict)
+     room_revenue: int = 0
+     tax_revenue: int = 0
+@@ -67,6 +69,13 @@ def _mark_no_shows(hotel, day, result):
+             result.no_shows.append(reservation.id)
+ 
+ 
++def _purge_cancelled(hotel, settings, day, result):
++    for reservation in hotel.reservations_with(CANCELLED):
++        if (day - reservation.departure).days > settings.cancelled_retention_days:
++            del hotel.reservations[reservation.id]
++            result.purged.append(reservation.id)
++
++
+ def _total_the_day(hotel, day, result):
+     for folio in hotel.folios.values():
+         for charge in folio.charges_on(day):
+@@ -84,6 +93,7 @@ def run_audit(hotel, settings, journal_path=None):
+     result = AuditResult(day)
+     _post_room_charges(hotel, settings, day, result)
+     _mark_no_shows(hotel, day, result)
++    _purge_cancelled(hotel, settings, day, result)
+     result.statistics = inventory.day_statistics(hotel, day)
+     _total_the_day(hotel, day, result)
+     if journal_path is not None:
+diff --git a/src/hoteldesk/storage/state.py b/src/hoteldesk/storage/state.py
+index e4314ef..c38ca6c 100644
+--- a/src/hoteldesk/storage/state.py
++++ b/src/hoteldesk/storage/state.py
+@@ -69,6 +69,7 @@ def hotel_to_dict(hotel):
+         "guests": [asdict(guest) for guest in hotel.guests.values()],
+         "wake_up_calls": [{**asdict(call), "at": call.at.isoformat()} for call in hotel.wake_up_calls],
+         "lost_items": [{**asdict(item), "found_on": item.found_on.isoformat()} for item in hotel.lost_items],
++        "last_reservation_number": hotel.last_reservation_number,
+     }
+ 
+ 
+@@ -77,6 +78,9 @@ def hotel_from_dict(data):
+         raise ValidationError(f"Unsupported state format: {data.get('format')}")
+     reservations = [_reservation_from_dict(item) for item in data["reservations"]]
+     folios = [_folio_from_dict(item) for item in data["folios"]]
++    # Files saved before the number was kept still hold every reservation they ever had.
++    last_number = data.get("last_reservation_number",
++                           max((int(reservation.id[1:]) for reservation in reservations), default=0))
+     return Hotel(
+         name=data["name"],
+         business_date=date.fromisoformat(data["business_date"]),
+@@ -90,6 +94,7 @@ def hotel_from_dict(data):
+                        for item in data["wake_up_calls"]],
+         lost_items=[LostItem(**{**item, "found_on": date.fromisoformat(item["found_on"])})
+                     for item in data["lost_items"]],
++        last_reservation_number=last_number,
+     )
+ 
+ 
+diff --git a/tests/test_night_audit.py b/tests/test_night_audit.py
+index acd92b9..1179a98 100644
+--- a/tests/test_night_audit.py
++++ b/tests/test_night_audit.py
+@@ -74,3 +74,13 @@ def test_journal_amounts_are_written_as_money(hotel, settings, clock, tmp_path):
+         row = next(csv.DictReader(handle))
+     assert (row["room_revenue"], row["tax_revenue"], row["other_revenue"], row["payments"]) == (
+         "120.00", "14.10", "0.00", "0.00")
++
++
++def test_old_cancellations_are_removed(hotel, settings):
++    reservation = booking.book(hotel, settings, guest="Bo Chen", room_type="KG", arrival=MONDAY,
++                               departure=date(2026, 3, 4))
++    booking.cancel(hotel, reservation.id)
++    hotel.business_date = date(2026, 4, 3)
++    assert night_audit.run_audit(hotel, settings).purged == []
++    assert night_audit.run_audit(hotel, settings).purged == [reservation.id]
++    assert reservation.id not in hotel.reservations

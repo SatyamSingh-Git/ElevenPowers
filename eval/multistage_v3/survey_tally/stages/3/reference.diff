@@ -1,0 +1,68 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d14c662..7b6b141 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: percentages in exported tables rounded halves to the even digit (1 of 8 showed as 12%); they now round half up.
+ - CSV exports of frequency tables have a `weighted` column after `count`: the weighted count, to one decimal.
+ - Multiple-choice cells in response CSV files separate the chosen options with `/` instead of `;`, which spreadsheets set to semicolon-delimited CSV split into columns.
+ - `surveytally status` shows what a project folder holds.
+diff --git a/docs/reference.md b/docs/reference.md
+index 8a8f282..1c86cae 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -78,7 +78,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ | `missing_label` | `(no answer)` | label of the row counting respondents without an answer, in exported table files |
+ | `total_label` | `Total` | heading of a cross-tabulation's total column, in exported table files |
+ | `base_label` | `n` | label of a cross-tabulation's row of column bases, in exported table files |
+-| `percent_rounding` | `half-even` | how percentages in exported table files round: a half goes to the even digit |
++| `percent_rounding` | `half-up` | how percentages in exported table files round: a half rounds up |
+ | `mean_decimals` | `2` | decimals of scale means and mean scores in exported and printed tables |
+ | `codebook_columns` | `question, type, code, label` | columns of a codebook CSV file |
+ 
+diff --git a/src/surveytally/reports/formatting.py b/src/surveytally/reports/formatting.py
+index 45cd414..97cead6 100644
+--- a/src/surveytally/reports/formatting.py
++++ b/src/surveytally/reports/formatting.py
+@@ -1,4 +1,5 @@
+ """How numbers look in tables, exports and reports."""
++from decimal import ROUND_HALF_UP, Decimal
+ 
+ MEAN_DECIMALS = 2
+ 
+@@ -10,7 +11,13 @@ SCORE_STYLES = {
+ 
+ 
+ def format_percent(value, decimals=1):
+-    return f'{value:.{decimals}f}'
++    """Rounded half up, as spreadsheets do: 12.5 shows as 13 with no decimals.
++
++    Formatting the float directly would round half to even, so the shortest
++    decimal form of the value is rounded instead.
++    """
++    step = Decimal(1).scaleb(-decimals)
++    return str(Decimal(repr(value)).quantize(step, rounding=ROUND_HALF_UP))
+ 
+ 
+ def format_number(value, decimals=1):
+diff --git a/tests/test_export.py b/tests/test_export.py
+index bf3d999..6bc9fae 100644
+--- a/tests/test_export.py
++++ b/tests/test_export.py
+@@ -74,3 +74,13 @@ def test_csv_export_shows_weighted_counts(tmp_path, poll_survey):
+     rows = {(row[0], row[1]): row for row in read_csv(path)[1:]}
+     assert rows[('region', 'north')] == ['region', 'north', '2', '1.8', '58.3']
+     assert rows[('region', 'south')][2:4] == ['1', '1.2']
++
++
++def test_percentages_round_half_up(tmp_path, poll_survey):
++    responses = [Response(f'R{n}', {'region': 'north' if n == 1 else 'south'}) for n in range(1, 17)]
++    tables = frequencies(poll_survey, responses[:8])
++    path = tmp_path / 'tables.csv'
++    export_frequencies(tables, path, decimals=0)
++    assert ['region', 'north', '1', '1.0', '13'] in read_csv(path)
++    export_frequencies(frequencies(poll_survey, responses), path)
++    assert ['region', 'north', '1', '1.0', '6.3'] in read_csv(path)

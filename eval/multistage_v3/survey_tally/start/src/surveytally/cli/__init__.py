@@ -1,0 +1,1 @@
+"""The surveytally command line."""

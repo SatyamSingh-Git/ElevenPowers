@@ -1,0 +1,54 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d996498..779987a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Weights are trimmed at 3.0 instead of 5.0, so a few respondents cannot dominate a small subgroup.
+ - Free-text answers may be up to 2000 characters long unless the survey file sets `max_length` (was 500).
+ - Respondent ids are case-insensitive: response files are read with ids in upper case, so `ab12` and `AB12` are one respondent.
+ - Frequency tables list choice options in questionnaire order rather than from most to least chosen, so questions sharing an answer list line up.
+diff --git a/docs/reference.md b/docs/reference.md
+index f4f19ed..f5a376e 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -65,7 +65,7 @@ what it means and which surface it belongs to: the CLI, an API call or a file.
+ 
+ | Fact | Value | Meaning |
+ |---|---|---|
+-| `weight_cap` | `5.0` | largest weight `compute_weights` (API) and the CLI `weight` command keep after trimming |
++| `weight_cap` | `3.0` | largest weight `compute_weights` (API) and the CLI `weight` command keep after trimming |
+ | `weight_floor` | `0.2` | smallest weight `compute_weights` (API) keeps after trimming |
+ | `max_iterations` | `50` | most raking passes `compute_weights` (API) makes |
+ 
+diff --git a/src/surveytally/services/weighting.py b/src/surveytally/services/weighting.py
+index e990a8f..c7c4279 100644
+--- a/src/surveytally/services/weighting.py
++++ b/src/surveytally/services/weighting.py
+@@ -10,7 +10,7 @@ from dataclasses import dataclass
+ from ..model.errors import WeightingError
+ from ..model.questions import SingleChoice
+ 
+-DEFAULT_CAP = 5.0
++DEFAULT_CAP = 3.0
+ DEFAULT_FLOOR = 0.2
+ MAX_ITERATIONS = 50
+ TOLERANCE = 1e-6
+diff --git a/tests/test_weighting.py b/tests/test_weighting.py
+index 089e41b..bff2357 100644
+--- a/tests/test_weighting.py
++++ b/tests/test_weighting.py
+@@ -52,3 +52,11 @@ def test_efficiency_and_summary():
+     found = describe(weights)
+     assert (found.smallest, found.largest, found.trimmed) == (1.0, 2.0, 0)
+     assert found.effective_size == pytest.approx(16 / 6)
++
++
++def test_large_weights_are_trimmed_to_the_cap(poll_survey):
++    responses = regions('north', *['south'] * 7)
++    weights = compute_weights(poll_survey, responses, {'region': {'north': 0.5, 'south': 0.5}})
++    assert weights['R1'] == 3.0
++    assert describe(weights).trimmed == 1
++    assert compute_weights(poll_survey, responses, {'region': {'north': 0.5, 'south': 0.5}}, cap=5.0)['R1'] == 4.0

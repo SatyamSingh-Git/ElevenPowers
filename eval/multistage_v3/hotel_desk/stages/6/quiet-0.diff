@@ -1,0 +1,13 @@
+diff --git a/src/hoteldesk/reports/audit_report.py b/src/hoteldesk/reports/audit_report.py
+index a2ebe9e..d5af40c 100644
+--- a/src/hoteldesk/reports/audit_report.py
++++ b/src/hoteldesk/reports/audit_report.py
+@@ -10,7 +10,7 @@ def audit_report_text(hotel, result):
+         f"Night audit for {result.business_date.isoformat()}",
+         "",
+         f"Rooms sold: {stats['sold']} of {stats['available']}",
+-        f"Occupancy: {stats['occupancy']:.1f}%",
++        f"Occupancy: {stats['occupancy'] * 100:.1f}%",
+         amount_line("ADR", format_money(stats["adr"]), 32),
+         amount_line("RevPAR", format_money(stats["revpar"]), 32),
+         "",
