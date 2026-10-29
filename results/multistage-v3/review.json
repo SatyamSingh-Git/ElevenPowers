@@ -1,12 +1,23 @@
 {
-  "date": "2026-10-28",
-  "how": "one fresh reviewer per case, told the brief, the two v2 pilot defect kinds, and to test each quiet dependent against a plain search for the request's own words; reviewers modified nothing",
+  "date": "2026-10-28/29",
+  "how": "one fresh reviewer per case, told the brief, the two v2 pilot defect kinds, and to test each quiet dependent against a plain search for the request's own words; reviewers modified nothing; findings that could grade correct work as wrong were returned to the case author, fixed, and the case rehearsed again",
   "cases": {
     "gradebook": {
       "blocking": 0,
-      "quiet": {"declared": 6, "kinds": ["data", "key", "copy", "contract"], "weak": 5,
-                "weak_means": "a search for the request's own words finds it, through ordinary docstrings or docs prose",
-                "not_weak": ["stage 4 storage/grades_csv.py (hard-coded .1f; only the generic word 'percent' reaches it)"]},
+      "quiet": {
+        "declared": 6,
+        "kinds": [
+          "data",
+          "key",
+          "copy",
+          "contract"
+        ],
+        "weak": 5,
+        "weak_means": "a search for the request's own words finds it, through ordinary docstrings or docs prose",
+        "not_weak": [
+          "stage 4 storage/grades_csv.py (hard-coded .1f; only the generic word 'percent' reaches it)"
+        ]
+      },
       "rulings": [
         "weak quiet dependents kept as written: removing ordinary prose to make them quieter would be hiding, which the design forbids; the pilot measures whether such dependents are missed",
         "stage 1 and 5 groups use the export_grades / write_score_sheet API while the requests name the CLI commands: kept, because the requests change the file format and those functions are its documented writers"
@@ -19,10 +30,137 @@
         "stage 5 fact `manifest order`: `booking order` appeared only as prose in the request, and `sequence` would be as natural"
       ],
       "fix": "returned to the author: the start row becomes a format example (`1250` -> `12.50`, stated verbatim in the request), and `booking order` becomes a marked literal; nothing else changes",
-      "quiet": {"declared": 5, "kinds": ["data", "key", "copy", "contract"], "weak": 5,
-                "weak_means": "a search for the request's own words (`charge`, `check digit`, `oversize`, case-insensitive `in_transit`, `manifest`) finds it"},
-      "rulings": ["weak quiet dependents kept, as for gradebook"]
+      "quiet": {
+        "declared": 5,
+        "kinds": [
+          "data",
+          "key",
+          "copy",
+          "contract"
+        ],
+        "weak": 5,
+        "weak_means": "a search for the request's own words (`charge`, `check digit`, `oversize`, case-insensitive `in_transit`, `manifest`) finds it"
+      },
+      "rulings": [
+        "weak quiet dependents kept, as for gradebook"
+      ]
+    },
+    "household_budget": {
+      "blocking": 0,
+      "fixed_after_review": [
+        "`duplicate rule` never graded: after stage 1 an accurate rewording would have been stale"
+      ],
+      "quiet": {
+        "declared": 6,
+        "weak": 2,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "survey_tally": {
+      "blocking": 0,
+      "fixed_after_review": [],
+      "quiet": {
+        "declared": 5,
+        "weak": 5,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "hotel_desk": {
+      "blocking": 2,
+      "fixed_after_review": [
+        "stage 6 occupancy was a unit word; now a format example (0.4 -> 40.0) stated in the request",
+        "stage 3: the reference spells the rounding rule `half-up` everywhere, matching the request"
+      ],
+      "quiet": {
+        "declared": 5,
+        "weak": 4,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "ticket_office": {
+      "blocking": 0,
+      "fixed_after_review": [
+        "stage 6 check could fail a max+1 id allocator; setup now keeps a live hold",
+        "stage 5 reference no longer weakens an exact public test"
+      ],
+      "quiet": {
+        "declared": 5,
+        "weak": 5,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "recipe_box": {
+      "blocking": 2,
+      "fixed_after_review": [
+        "stage 8 pins `version` 1 in the request (a bump would have been graded stale)",
+        "stage 8 old-file check writes a genuine pre-change file",
+        "plan-file copy no longer imports the module it copies"
+      ],
+      "quiet": {
+        "declared": 6,
+        "weak": 6,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "clinic_booking": {
+      "blocking": 2,
+      "fixed_after_review": [
+        "stage 4 order is the `id` column (old value used column names)",
+        "stage 8 checks accept a zero-amount charge row",
+        "file order checked through behaviour, not through which helper sorts"
+      ],
+      "quiet": {
+        "declared": 6,
+        "weak": 6,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "greenhouse_monitor": {
+      "blocking": 0,
+      "fixed_after_review": [],
+      "quiet": {
+        "declared": 6,
+        "weak": 3,
+        "weak_means": "a search for the request's own words finds it"
+      },
+      "notes": [
+        "Reading.raw is unused at start (sets up stage 1)",
+        "stage 2 manual.py also fails the stage own groups; stage 2 has a second, quiet dependent"
+      ]
+    },
+    "payroll_lite": {
+      "blocking": 1,
+      "fixed_after_review": [
+        "stage 2 check required a fractional setting the request never allowed; removed"
+      ],
+      "quiet": {
+        "declared": 6,
+        "weak": 4,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "fleet_service": {
+      "blocking": 1,
+      "fixed_after_review": [
+        "`workorders.json` never graded (storing the supplies charge is a reasonable reading)",
+        "stage 4 layout.py was the requested site, not a dependent; replaced by a summary that reads fuel rows by position",
+        "markdown checks allow tables without outer pipes"
+      ],
+      "quiet": {
+        "declared": 6,
+        "weak": 6,
+        "weak_means": "a search for the request's own words finds it"
+      }
+    },
+    "library_loans": {
+      "blocking": 0,
+      "fixed_after_review": [],
+      "quiet": {
+        "declared": 6,
+        "weak": 4,
+        "weak_means": "a search for the request's own words finds it"
+      }
     }
   },
-  "disclosed": "Ten of eleven declared quiet dependents pass the mechanical check (no changed name, suite green) but are reachable by searching the request's own vocabulary. The v3 pilot therefore tests dependents that a search on the request's words can reach but a search on the change's names cannot."
+  "disclosed": "55 of 68 declared quiet dependents pass the mechanical check (no changed name, suite green) but can be reached by searching the request's own words, usually through ordinary docstrings or docs prose. They were kept: making them quieter would mean hiding, which the design forbids. Also disclosed: every expected fact is graded at every stage, so an agent that extends a documented list beyond what its request asks would be graded stale on that row; and the name check reads changed docstring lines word by word, so some authors kept old docstring wording."
 }
