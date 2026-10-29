@@ -1,0 +1,124 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 13461fa..f1b7876 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Add the `critical_margin` setting: readings past a limit by more than it raise `critical_high` or `critical_low`.
+ - Fix `calibrate` accepting negative offsets beyond `max_offset`; the error now reads `offset out of range: {offset} (limit {limit})`.
+ - Sensor ids are case-insensitive and written to the readings log in upper case.
+ - The readings log keeps the uncalibrated value in a new `raw` column after `value`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 08dcb98..2e9a854 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -38,6 +38,7 @@ a site changes.
+ | key | value | meaning |
+ |---|---|---|
+ | `stale_minutes` | `30` | settings.json: a sensor silent for longer raises `stale` |
++| `critical_margin` | `5.0` | settings.json: a reading past its limit by more than this raises `critical_high` or `critical_low` |
+ | `minutes_per_point` | `2.0` | settings.json: irrigation minutes per point of moisture below target |
+ | `max_irrigation_minutes` | `30` | settings.json: longest irrigation suggested for one zone |
+ | `dry_margin` | `2.0` | settings.json: points below target tolerated without watering |
+@@ -83,7 +84,7 @@ a site changes.
+ | `readings.csv sensor` | `upper case` | file: the readings log's sensor ids; ids are case-insensitive, so `gh3-t01` is logged as `GH3-T01` |
+ | `controller export columns` | `time,zone,sensor,kind,value,unit` | file: what `ingest` reads; column order free, extra columns ignored |
+ | `alerts.jsonl fields` | `at,zone,sensor,kind,code,value,limit,unit` | file: one JSON object per alert in the alerts log |
+-| `alerts.jsonl code` | `high, low, stale` | file: the alert codes the alerts log holds |
++| `alerts.jsonl code` | `high, low, critical_high, critical_low, stale` | file: the alert codes the alerts log holds |
+ | `irrigation.csv columns` | `zone,minutes,reason` | file: the irrigation plan `irrigate` writes and `schedule` reads |
+ | `valves.txt line` | `{start} {valve} {zone} {minutes}` | file: one line per watered zone, start as HH:MM |
+ | `calibration.json` | `{"<sensor>": <offset>}` | file: offsets in the kind's canonical unit |
+diff --git a/src/greenhouse/config/settings.py b/src/greenhouse/config/settings.py
+index 8582dd3..90a7a96 100644
+--- a/src/greenhouse/config/settings.py
++++ b/src/greenhouse/config/settings.py
+@@ -13,6 +13,7 @@ from .jsonfile import number, read_json
+ @dataclass(frozen=True)
+ class Settings:
+     stale_minutes: int = 30
++    critical_margin: float = 5.0
+     minutes_per_point: float = 2.0
+     max_irrigation_minutes: int = 30
+     dry_margin: float = 2.0
+diff --git a/src/greenhouse/reports/messages.py b/src/greenhouse/reports/messages.py
+index 409bc3c..9d6b353 100644
+--- a/src/greenhouse/reports/messages.py
++++ b/src/greenhouse/reports/messages.py
+@@ -5,6 +5,8 @@ from .formatting import label
+ MESSAGES = {
+     "high": "{zone} {kind} at {value} {unit} is above {limit} {unit}",
+     "low": "{zone} {kind} at {value} {unit} is below {limit} {unit}",
++    "critical_high": "{zone} {kind} at {value} {unit} is far above {limit} {unit}",
++    "critical_low": "{zone} {kind} at {value} {unit} is far below {limit} {unit}",
+     "stale": "{zone} sensor {sensor} has not reported for {limit} minutes",
+ }
+ 
+diff --git a/src/greenhouse/services/alerts.py b/src/greenhouse/services/alerts.py
+index 5e17a02..db03144 100644
+--- a/src/greenhouse/services/alerts.py
++++ b/src/greenhouse/services/alerts.py
+@@ -9,6 +9,8 @@ def evaluate(latest, thresholds, settings, now):
+ 
+     A sensor that has not reported for more than ``stale_minutes`` raises
+     ``stale`` and is not checked against its limits: its value is old news.
++    A reading past a limit by more than ``critical_margin`` raises
++    ``critical_high`` or ``critical_low`` instead of ``high`` or ``low``.
+     """
+     alerts = []
+     stale_after = timedelta(minutes=settings.stale_minutes)
+@@ -17,17 +19,20 @@ def evaluate(latest, thresholds, settings, now):
+         if now - reading.at > stale_after:
+             alerts.append(_alert(reading, now, "stale", settings.stale_minutes))
+             continue
+-        alert = _limit_alert(reading, thresholds.limits(reading.zone, reading.kind), now)
++        limits = thresholds.limits(reading.zone, reading.kind)
++        alert = _limit_alert(reading, limits, now, settings.critical_margin)
+         if alert is not None:
+             alerts.append(alert)
+     return alerts
+ 
+ 
+-def _limit_alert(reading, limits, now):
++def _limit_alert(reading, limits, now, margin):
+     if limits.high is not None and reading.value > limits.high:
+-        return _alert(reading, now, "high", limits.high)
++        code = "critical_high" if reading.value - limits.high > margin else "high"
++        return _alert(reading, now, code, limits.high)
+     if limits.low is not None and reading.value < limits.low:
+-        return _alert(reading, now, "low", limits.low)
++        code = "critical_low" if limits.low - reading.value > margin else "low"
++        return _alert(reading, now, code, limits.low)
+     return None
+ 
+ 
+diff --git a/tests/test_services.py b/tests/test_services.py
+index 38c22a7..24c3688 100644
+--- a/tests/test_services.py
++++ b/tests/test_services.py
+@@ -67,6 +67,23 @@ def test_limit_and_stale_alerts():
+     ]
+ 
+ 
++def test_readings_far_past_a_limit_are_critical():
++    thresholds = Thresholds({"gh1": {"temperature": Limits(low=10.0, high=30.0)}})
++    latest = {
++        "GH1-T01": reading("GH1-T01", "temperature", 35.0),
++        "GH1-T02": reading("GH1-T02", "temperature", 35.5),
++        "GH1-T03": reading("GH1-T03", "temperature", 4.0),
++    }
++    alerts = evaluate(latest, thresholds, Settings(), NOON)
++    assert [(a.sensor, a.code) for a in alerts] == [
++        ("GH1-T01", "high"),
++        ("GH1-T02", "critical_high"),
++        ("GH1-T03", "critical_low"),
++    ]
++    wide = evaluate(latest, thresholds, Settings(critical_margin=10.0), NOON)
++    assert [a.code for a in wide] == ["high", "high", "low"]
++
++
+ def test_alerts_already_logged_today_are_not_repeated():
+     thresholds = Thresholds({"gh1": {"temperature": Limits(high=30.0)}})
+     alerts = evaluate({"GH1-T01": reading("GH1-T01", "temperature", 31.0)}, thresholds, Settings(), NOON)

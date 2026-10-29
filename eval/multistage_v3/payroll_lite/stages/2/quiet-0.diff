@@ -1,0 +1,22 @@
+diff --git a/src/payroll/reports/hours.py b/src/payroll/reports/hours.py
+index de36bd3..2dcf2b8 100644
+--- a/src/payroll/reports/hours.py
++++ b/src/payroll/reports/hours.py
+@@ -21,16 +21,12 @@ def hours_rows(entries, settings):
+     rows = []
+     for employee_id in sorted(set(worked) | set(sick)):
+         ordinary = overtime = holiday = Decimal(0)
+-        weekly = defaultdict(Decimal)
+         for day, hours in worked[employee_id].items():
+             if day in HOLIDAYS:
+                 holiday += hours
+             else:
+-                weekly[day.isocalendar()[:2]] += min(hours, settings.daily_threshold)
++                ordinary += min(hours, settings.daily_threshold)
+                 overtime += max(hours - settings.daily_threshold, Decimal(0))
+-        for hours in weekly.values():
+-            ordinary += min(hours, settings.weekly_threshold)
+-            overtime += max(hours - settings.weekly_threshold, Decimal(0))
+         off_sick = sick[employee_id]
+         rows.append((employee_id, ordinary, overtime, holiday, off_sick, ordinary + overtime + holiday + off_sick))
+     return rows

@@ -1,0 +1,1 @@
+"""The ``greenhouse`` command line."""

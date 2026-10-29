@@ -1,0 +1,72 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 93622fa..4e1c357 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Bank files follow the bank's new layout: `account, reference, amount, name`.
+ - Fixed: `payroll hours` showed one decimal place, so quarter hours such as 7.25 showed as 7.2; it now shows two.
+ - Stored timesheets keep rows in upload order, with rows from `payroll timesheet add` at the end, so `payroll timesheet show` matches the sheet that was sent in.
+ - `per_shift` allowances are reimbursements: left out of gross pay and tax, and added to net pay.
+diff --git a/docs/reference.md b/docs/reference.md
+index 4f32bf1..436ab37 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -131,7 +131,7 @@ Line kinds are `basic`, `overtime`, `holiday`, `sick`, `allowance`,
+ | field | value | meaning |
+ |---|---|---|
+ | `bank.path` | `bank/{period}.csv` | bank file: default place `payroll bank-file` writes to |
+-| `bank.columns` | `account, name, amount, reference` | bank file: columns of each row |
++| `bank.columns` | `account, reference, amount, name` | bank file: columns of each row |
+ | `bank.header` | `none` | bank file: the bank's format has no header row |
+ | `bank.reference` | `PAY {period}` | bank file: payment reference |
+ | `bank.name_length` | `20` | bank file: names are cut to this many characters |
+diff --git a/src/payroll/reports/bank_file.py b/src/payroll/reports/bank_file.py
+index 62fc744..38ab072 100644
+--- a/src/payroll/reports/bank_file.py
++++ b/src/payroll/reports/bank_file.py
+@@ -22,14 +22,14 @@ def bank_rows(run, employees):
+         employee = employees.get(slip.employee_id)
+         if employee is None:
+             raise PayrollError(f"unknown employee {slip.employee_id}")
+-        rows.append([employee.bank_account, slip.name[:NAME_LENGTH], plain_money(slip.net), reference(run.period)])
++        rows.append([employee.bank_account, reference(run.period), plain_money(slip.net), slip.name[:NAME_LENGTH]])
+     return rows
+ 
+ 
+ def check_rows(rows):
+     """The bank rejects a whole file that pays one account twice, so that is caught before writing."""
+     seen = set()
+-    for account, name, *_ in rows:
++    for account, *_, name in rows:
+         if account in seen:
+             raise PayrollError(f"two payments to account {account}; check the bank details of {name}")
+         seen.add(account)
+diff --git a/src/payroll/services/reconcile.py b/src/payroll/services/reconcile.py
+index dd9e54f..525b089 100644
+--- a/src/payroll/services/reconcile.py
++++ b/src/payroll/services/reconcile.py
+@@ -25,7 +25,7 @@ def load_payments(path):
+     with path.open(newline="", encoding="utf-8") as handle:
+         return [
+             Payment(account, name, Decimal(amount), reference)
+-            for account, name, amount, reference in csv.reader(handle)
++            for account, reference, amount, name in csv.reader(handle)
+         ]
+ 
+ 
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 4319801..737318d 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -71,7 +71,7 @@ def test_year_end_summary_formats():
+ def test_bank_rows_skip_nothing_to_pay():
+     run = PayRun(PERIOD, (slip("E001"), slip("E002", "0.00")))
+     employees = {"E001": Employee("E001", "Ana Lima", "hourly", Decimal("25"), "11-1111-0000001-00")}
+-    assert bank_rows(run, employees) == [["11-1111-0000001-00", "Ana Lima", "822.54", "PAY 2026-W01"]]
++    assert bank_rows(run, employees) == [["11-1111-0000001-00", "PAY 2026-W01", "822.54", "Ana Lima"]]
+ 
+ 
+ def test_journal_balances():

@@ -1,0 +1,292 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f1b7876..297e4c4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `ingest` keeps `ERR` rows in the readings log as gaps with an empty value, and counts them separately.
+ - Add the `critical_margin` setting: readings past a limit by more than it raise `critical_high` or `critical_low`.
+ - Fix `calibrate` accepting negative offsets beyond `max_offset`; the error now reads `offset out of range: {offset} (limit {limit})`.
+ - Sensor ids are case-insensitive and written to the readings log in upper case.
+diff --git a/docs/reference.md b/docs/reference.md
+index 2e9a854..a495fff 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -19,7 +19,7 @@ fact shows: the command line (CLI), a file in the data directory, or an API call
+ | `alert-stats --days` | `7` | CLI: days counted, ending on `--date` |
+ | `archive --days` | `archive_after_days` | CLI: days kept in the readings log; defaults to the setting |
+ | `export --format` | `csv` | CLI: `csv` or `json` |
+-| `ingest output` | `imported {imported} rows, rejected {rejected}` | CLI: the line `ingest` prints, totalled over all files |
++| `ingest output` | `imported {imported} rows, {gaps} gaps, rejected {rejected}` | CLI: the line `ingest` prints, totalled over all files; a gap is an `ERR` row, logged without a value |
+ | `ingest problem` | `line {line}: {problem}` | CLI: printed to stderr for each rejected row, prefixed with the file name when several files are given |
+ | `record output` | `recorded {sensor} {kind} {value} {unit}` | CLI: the line `record` prints, value calibrated |
+ | `calibrate output` | `calibrated {sensor}: {offset:+.2f}` | CLI: the line `calibrate SENSOR OFFSET` prints |
+diff --git a/src/greenhouse/cli/commands.py b/src/greenhouse/cli/commands.py
+index 28545a4..34d35ae 100644
+--- a/src/greenhouse/cli/commands.py
++++ b/src/greenhouse/cli/commands.py
+@@ -34,14 +34,15 @@ def cmd_ingest(args, context):
+     log = ReadingsLog(context.data.readings)
+     layout = context.layout()
+     calibration = load_calibration(context.data.calibration)
+-    imported = rejected = 0
++    imported = gaps = rejected = 0
+     for name in args.files:
+         result = ingest_file(name, log, layout, calibration)
+         for problem in result.problems:
+             print(f"{name}: {problem}" if len(args.files) > 1 else problem, file=sys.stderr)
+         imported += result.imported
++        gaps += result.gaps
+         rejected += result.rejected
+-    context.say(f"imported {imported} rows, rejected {rejected}")
++    context.say(f"imported {imported} rows, {gaps} gaps, rejected {rejected}")
+     return 0
+ 
+ 
+diff --git a/src/greenhouse/core/model.py b/src/greenhouse/core/model.py
+index 47b1d7c..c9a6daf 100644
+--- a/src/greenhouse/core/model.py
++++ b/src/greenhouse/core/model.py
+@@ -16,13 +16,17 @@ class Zone:
+ 
+ @dataclass(frozen=True)
+ class Reading:
+-    """One sensor value in its kind's canonical unit, calibration applied."""
++    """One sensor value in its kind's canonical unit, calibration applied.
++
++    ``value`` and ``raw`` are None for a gap: a probe the controller reported
++    as failed.
++    """
+ 
+     at: datetime
+     zone: str
+     sensor: str
+     kind: str
+-    value: float
++    value: float | None
+     unit: str
+     raw: float | None = None
+ 
+diff --git a/src/greenhouse/services/ingest.py b/src/greenhouse/services/ingest.py
+index f837807..fb809c3 100644
+--- a/src/greenhouse/services/ingest.py
++++ b/src/greenhouse/services/ingest.py
+@@ -3,8 +3,10 @@
+ A controller export is a CSV file with the columns
+ ``time,zone,sensor,kind,value,unit`` (in any order, extra columns ignored).
+ Each row is checked, converted to its kind's canonical unit and calibrated.
+-Sensor ids are case-insensitive and logged in upper case. Rows that fail are
+-reported by line number; the rest are logged together.
++Sensor ids are case-insensitive and logged in upper case. A row whose value
++is ``ERR`` is the controller reporting a failed probe: it is logged without a
++value, as a gap. Rows that fail are reported by line number; the rest are
++logged together.
+ """
+ import csv
+ from dataclasses import dataclass, field
+@@ -16,11 +18,13 @@ from ..core.model import Reading
+ from ..core.units import canonical_unit, check_kind, check_range, round_for, to_canonical
+ 
+ CONTROLLER_COLUMNS = ("time", "zone", "sensor", "kind", "value", "unit")
++PROBE_FAILED = "ERR"
+ 
+ 
+ @dataclass
+ class IngestResult:
+     imported: int = 0
++    gaps: int = 0
+     rejected: int = 0
+     problems: list[str] = field(default_factory=list)
+ 
+@@ -47,18 +51,21 @@ def ingest_file(path, log, layout, calibration):
+             else:
+                 seen.add((reading.sensor, reading.at))
+                 readings.append(reading)
+-    result.imported = log.write_many(readings)
++    result.gaps = sum(1 for reading in readings if reading.value is None)
++    result.imported = log.write_many(readings) - result.gaps
+     return result
+ 
+ 
+ def parse_row(row, layout, calibration):
+-    """One controller row as a calibrated Reading."""
++    """One controller row as a calibrated Reading, or a Reading without a value for a gap."""
+     at = parse_timestamp(row["time"] or "")
+     zone = layout.zone((row["zone"] or "").strip()).id
+     sensor = (row["sensor"] or "").strip().upper()
+     if not sensor:
+         raise ValidationError("missing sensor")
+     kind = check_kind(row["kind"] or "")
++    if (row["value"] or "").strip() == PROBE_FAILED:
++        return Reading(at=at, zone=zone, sensor=sensor, kind=kind, value=None, unit=canonical_unit(kind))
+     raw = to_canonical(kind, _number(row["value"] or ""), row["unit"] or "")
+     value = check_range(kind, raw + calibration.offset_for(sensor))
+     return Reading(
+diff --git a/src/greenhouse/services/summary.py b/src/greenhouse/services/summary.py
+index efbb6f1..139cf7f 100644
+--- a/src/greenhouse/services/summary.py
++++ b/src/greenhouse/services/summary.py
+@@ -7,10 +7,15 @@ from ..core.units import round_for
+ 
+ 
+ def summarize(readings):
+-    """Count, lowest, highest and mean value for each zone and kind, sorted by zone then kind."""
++    """Count, lowest, highest and mean value for each zone and kind, sorted by zone then kind.
++
++    Gaps, readings without a value, are left out.
++    """
+     values = defaultdict(list)
+     units = {}
+     for item in readings:
++        if item.value is None:
++            continue
+         values[(item.zone, item.kind)].append(item.value)
+         units[(item.zone, item.kind)] = item.unit
+     return [
+@@ -28,9 +33,11 @@ def summarize(readings):
+ 
+ 
+ def hourly_means(readings):
+-    """Mean value per (zone, kind, hour), the hour as a datetime on the hour."""
++    """Mean value per (zone, kind, hour), the hour as a datetime on the hour; gaps are left out."""
+     values = defaultdict(list)
+     for item in readings:
++        if item.value is None:
++            continue
+         hour = item.at.replace(minute=0, second=0)
+         values[(item.zone, item.kind, hour)].append(item.value)
+     return {key: fmean(numbers) for key, numbers in sorted(values.items())}
+diff --git a/src/greenhouse/services/trends.py b/src/greenhouse/services/trends.py
+index 9320d04..2d64610 100644
+--- a/src/greenhouse/services/trends.py
++++ b/src/greenhouse/services/trends.py
+@@ -41,7 +41,7 @@ def trends(readings, now, hours):
+     since = now - timedelta(hours=hours)
+     by_sensor = {}
+     for reading in readings:
+-        if since <= reading.at <= now:
++        if since <= reading.at <= now and reading.value is not None:
+             by_sensor.setdefault(reading.sensor, []).append(reading)
+     found = []
+     for sensor, items in sorted(by_sensor.items()):
+diff --git a/src/greenhouse/storage/history.py b/src/greenhouse/storage/history.py
+index e3205d3..19d1f22 100644
+--- a/src/greenhouse/storage/history.py
++++ b/src/greenhouse/storage/history.py
+@@ -10,7 +10,7 @@ def load_readings(path, *, day=None, zone=None):
+     """Readings from the log, in log order, optionally only one day or zone.
+ 
+     Columns are found by name. Logs from before the ``raw`` column still load;
+-    their readings have no raw value.
++    their readings have no raw value. A gap row loads with neither value nor raw.
+     """
+     path = Path(path)
+     if not path.exists():
+@@ -29,7 +29,7 @@ def load_readings(path, *, day=None, zone=None):
+                 zone=row["zone"],
+                 sensor=row["sensor"],
+                 kind=row["kind"],
+-                value=float(row["value"]),
++                value=float(row["value"]) if row["value"] else None,
+                 unit=row["unit"],
+                 raw=float(raw) if raw else None,
+             ))
+@@ -37,9 +37,11 @@ def load_readings(path, *, day=None, zone=None):
+ 
+ 
+ def latest_by_sensor(readings):
+-    """Each sensor's most recent reading; a later row wins a tie."""
++    """Each sensor's most recent reading with a value; a later row wins a tie."""
+     latest = {}
+     for reading in readings:
++        if reading.value is None:
++            continue
+         current = latest.get(reading.sensor)
+         if current is None or reading.at >= current.at:
+             latest[reading.sensor] = reading
+diff --git a/src/greenhouse/storage/readings_log.py b/src/greenhouse/storage/readings_log.py
+index 6cb15e7..e31ba3a 100644
+--- a/src/greenhouse/storage/readings_log.py
++++ b/src/greenhouse/storage/readings_log.py
+@@ -1,7 +1,8 @@
+ """The readings log, ``readings.csv``: every accepted reading, in arrival order.
+ 
+ Values are written in their kind's canonical unit with the catalog's number of
+-decimals; ``raw`` is the value before calibration. The log is only ever
++decimals; ``raw`` is the value before calibration. Both are empty for a gap,
++a row the controller reported as a failed probe. The log is only ever
+ appended to.
+ """
+ import csv
+@@ -40,7 +41,11 @@ def _log_row(reading):
+         reading.zone,
+         reading.sensor,
+         reading.kind,
+-        format_value(reading.kind, reading.value),
+-        format_value(reading.kind, reading.raw),
++        _number(reading.kind, reading.value),
++        _number(reading.kind, reading.raw),
+         reading.unit,
+     ]
++
++
++def _number(kind, value):
++    return "" if value is None else format_value(kind, value)
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 599d9c4..f2b16fb 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -31,7 +31,7 @@ def test_ingest_reports_counts_and_problems(cli, export_file):
+     ])
+     code, out, err = cli("ingest", str(path))
+     assert code == 0
+-    assert out.strip() == "imported 1 rows, rejected 1"
++    assert out.strip() == "imported 1 rows, 0 gaps, rejected 1"
+     assert err.strip() == "line 3: bad value: hot"
+ 
+ 
+diff --git a/tests/test_ingest.py b/tests/test_ingest.py
+index 0e27097..3f1c42d 100644
+--- a/tests/test_ingest.py
++++ b/tests/test_ingest.py
+@@ -52,6 +52,16 @@ def test_sensor_ids_are_logged_in_upper_case(export_file, log, layout, tmp_path)
+     ]
+ 
+ 
++def test_failed_probes_are_logged_as_gaps(export_file, log, layout, tmp_path):
++    path = export_file([
++        ("2026-05-01T08:00:00", "gh1", "GH1-T01", "temperature", "21.0", "C"),
++        ("2026-05-01T08:10:00", "gh1", "GH1-T01", "temperature", "ERR", "C"),
++    ])
++    result = ingest_file(path, log, layout, CalibrationStore(tmp_path / "calibration.json"))
++    assert (result.imported, result.gaps, result.rejected) == (1, 1, 0)
++    assert logged(log)[1] == "2026-05-01T08:10:00,gh1,GH1-T01,temperature,,,C"
++
++
+ def test_bad_rows_are_reported_by_line_and_the_rest_logged(export_file, log, layout, tmp_path):
+     path = export_file([
+         ("2026-05-01T08:00:00", "gh1", "GH1-T01", "temperature", "21.0", "C"),
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index dabd625..a1d917c 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -57,6 +57,17 @@ def test_history_filters_by_day_and_zone(tmp_path):
+     assert [r.value for r in zone] == [19.0, 21.5]
+ 
+ 
++def test_gaps_load_without_a_value_and_are_never_the_latest(tmp_path):
++    (tmp_path / "readings.csv").write_text(
++        "timestamp,zone,sensor,kind,value,raw,unit\n"
++        "2026-05-01T08:00:00,gh1,GH1-T01,temperature,20.5,20.0,C\n"
++        "2026-05-01T08:10:00,gh1,GH1-T01,temperature,,,C\n"
++    )
++    readings = load_readings(tmp_path / "readings.csv")
++    assert [(r.value, r.raw) for r in readings] == [(20.5, 20.0), (None, None)]
++    assert latest_by_sensor(readings)["GH1-T01"].value == 20.5
++
++
+ def test_history_of_a_missing_log_is_empty(tmp_path):
+     assert load_readings(tmp_path / "readings.csv") == []
+ 

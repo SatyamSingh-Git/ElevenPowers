@@ -1,0 +1,111 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index dcd0cd9..713167a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Stored timesheets keep rows in upload order, with rows from `payroll timesheet add` at the end, so `payroll timesheet show` matches the sheet that was sent in.
+ - `per_shift` allowances are reimbursements: left out of gross pay and tax, and added to net pay.
+ - Deduction kind `percent_over` takes `rate` percent of gross pay above `threshold`, for student loan repayments.
+ - Ordinary hours beyond `overtime.weekly_threshold` (default 40) in a Monday-to-Sunday week are paid as overtime.
+diff --git a/docs/reference.md b/docs/reference.md
+index cd385f2..c543c24 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -104,7 +104,7 @@ reported and nothing is stored.
+ |---|---|---|
+ | `timesheet.stored_path` | `timesheets/{period}.csv` | stored timesheet file: where the accepted hours for a period are kept |
+ | `timesheet.stored_columns` | `employee_id, date, hours, kind` | stored timesheet file: columns, with a header row |
+-| `timesheet.row_order` | `employee_id, date, kind` | stored timesheet file: order of the rows, which `payroll timesheet show` prints as stored |
++| `timesheet.row_order` | `upload order` | stored timesheet file: rows keep the order of the uploaded file, and rows from `payroll timesheet add` go at the end; `payroll timesheet show` prints them as stored |
+ 
+ ### Pay-run files
+ 
+diff --git a/src/payroll/services/payrun.py b/src/payroll/services/payrun.py
+index 08deb04..83c2569 100644
+--- a/src/payroll/services/payrun.py
++++ b/src/payroll/services/payrun.py
+@@ -1,6 +1,5 @@
+ """A pay run: a payslip for every active employee for one period, saved to runs/<period>.json."""
+-from itertools import groupby
+-from operator import attrgetter
++from collections import defaultdict
+ 
+ from payroll.errors import PayrollError
+ from payroll.model.money import round_money, total
+@@ -22,7 +21,10 @@ def run_payroll(data, settings, period_id, replace=False):
+         raise PayrollError(f"pay run {period.id} already exists; use --replace")
+     employees = load_employees(data)
+     entries = read_timesheet(data, period.id)
+-    by_employee = {employee_id: list(rows) for employee_id, rows in groupby(entries, attrgetter("employee_id"))}
++    # Stored rows are in upload order, so one person's rows can be anywhere in the timesheet.
++    by_employee = defaultdict(list)
++    for entry in entries:
++        by_employee[entry.employee_id].append(entry)
+     unknown = sorted(set(by_employee) - set(employees))
+     if unknown:
+         raise PayrollError(f"timesheet for {period.id} names unknown employee {unknown[0]}")
+diff --git a/src/payroll/storage/timesheet_store.py b/src/payroll/storage/timesheet_store.py
+index 933e311..e581e17 100644
+--- a/src/payroll/storage/timesheet_store.py
++++ b/src/payroll/storage/timesheet_store.py
+@@ -11,19 +11,16 @@ COLUMNS = ("employee_id", "date", "hours", "kind")
+ 
+ 
+ def write_timesheet(data, period_id, entries):
+-    """Replaces the stored timesheet, rows sorted by employee, then date, then kind."""
++    """Replaces the stored timesheet, keeping the rows in the order given: as they were uploaded,
++    with rows added one at a time after them."""
+     out = io.StringIO()
+     writer = csv.writer(out, lineterminator="\n")
+     writer.writerow(COLUMNS)
+-    for entry in sorted(entries, key=_order):
++    for entry in entries:
+         writer.writerow([entry.employee_id, entry.day.isoformat(), format_hours(entry.hours), entry.kind])
+     write_text_atomic(data.timesheet(period_id), out.getvalue())
+ 
+ 
+-def _order(entry):
+-    return entry.employee_id, entry.day, entry.kind
+-
+-
+ def read_timesheet(data, period_id):
+     """The stored rows in file order; an empty list when nothing has been imported."""
+     path = data.timesheet(period_id)
+diff --git a/tests/test_timesheets.py b/tests/test_timesheets.py
+index c21ae2c..61e1a5c 100644
+--- a/tests/test_timesheets.py
++++ b/tests/test_timesheets.py
+@@ -2,10 +2,10 @@ from decimal import Decimal
+ 
+ import pytest
+ 
+-from helpers import entry, hourly, write_employees
++from helpers import hourly, write_employees
+ from payroll.errors import ImportRejected, PayrollError
+ from payroll.services.timesheets import add_entry, blank_sheet, import_timesheet, remove_entries
+-from payroll.storage.timesheet_store import read_timesheet, write_timesheet
++from payroll.storage.timesheet_store import read_timesheet
+ 
+ 
+ @pytest.fixture
+@@ -62,12 +62,13 @@ def test_rows_without_hours_are_skipped(staffed, settings, tmp_path):
+     assert len(import_timesheet(staffed, settings, "2026-W01", path)) == 1
+ 
+ 
+-def test_stored_rows_are_sorted(staffed):
+-    write_timesheet(staffed, "2026-W01", [entry("E002", "2026-01-05", "8"), entry("E001", "2026-01-06", "8"),
+-                                         entry("E001", "2026-01-05", "8")])
++def test_stored_rows_keep_upload_order(staffed, settings, tmp_path):
++    path = upload(tmp_path, "employee_id,date,hours\nE002,2026-01-06,8\nE001,2026-01-06,8\nE002,2026-01-05,8\n")
++    import_timesheet(staffed, settings, "2026-W01", path)
++    add_entry(staffed, settings, "2026-W01", "E001", "2026-01-05", "6")
+     rows = read_timesheet(staffed, "2026-W01")
+     assert [(row.employee_id, row.day.isoformat()) for row in rows] == [
+-        ("E001", "2026-01-05"), ("E001", "2026-01-06"), ("E002", "2026-01-05")]
++        ("E002", "2026-01-06"), ("E001", "2026-01-06"), ("E002", "2026-01-05"), ("E001", "2026-01-05")]
+ 
+ 
+ def test_add_and_remove_single_rows(staffed, settings):

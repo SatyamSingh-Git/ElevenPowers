@@ -1,0 +1,49 @@
+diff --git a/src/greenhouse/storage/history.py b/src/greenhouse/storage/history.py
+index e3205d3..7a3c903 100644
+--- a/src/greenhouse/storage/history.py
++++ b/src/greenhouse/storage/history.py
+@@ -7,32 +7,26 @@ from ..core.model import Reading
+ 
+ 
+ def load_readings(path, *, day=None, zone=None):
+-    """Readings from the log, in log order, optionally only one day or zone.
+-
+-    Columns are found by name. Logs from before the ``raw`` column still load;
+-    their readings have no raw value.
+-    """
++    """Readings from the log, in log order, optionally only one day or zone."""
+     path = Path(path)
+     if not path.exists():
+         return []
+     readings = []
+     with path.open(newline="", encoding="utf-8") as handle:
+-        for row in csv.DictReader(handle):
+-            at = parse_timestamp(row["timestamp"])
++        rows = csv.reader(handle)
++        next(rows, None)
++        for row in rows:
++            if not row:
++                continue
++            stamp, zone_id, sensor, kind, value, unit = row
++            at = parse_timestamp(stamp)
+             if day is not None and at.date() != day:
+                 continue
+-            if zone is not None and row["zone"] != zone:
++            if zone is not None and zone_id != zone:
+                 continue
+-            raw = row.get("raw")
+-            readings.append(Reading(
+-                at=at,
+-                zone=row["zone"],
+-                sensor=row["sensor"],
+-                kind=row["kind"],
+-                value=float(row["value"]),
+-                unit=row["unit"],
+-                raw=float(raw) if raw else None,
+-            ))
++            readings.append(
++                Reading(at=at, zone=zone_id, sensor=sensor, kind=kind, value=float(value), unit=unit)
++            )
+     return readings
+ 
+ 

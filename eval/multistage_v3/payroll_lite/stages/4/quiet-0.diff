@@ -1,0 +1,20 @@
+diff --git a/src/payroll/reports/payslip.py b/src/payroll/reports/payslip.py
+index 19a0abd..0d9a19e 100644
+--- a/src/payroll/reports/payslip.py
++++ b/src/payroll/reports/payslip.py
+@@ -11,7 +11,6 @@ SECTIONS = {
+     "sick": "Earnings",
+     "allowance": "Earnings",
+     "deduction": "Deductions",
+-    "reimbursement": "Reimbursements",
+ }
+ 
+ 
+@@ -29,7 +28,6 @@ def render_payslip(company, period, slip, year_to_date=None):
+     out.append(_row("Gross pay", slip.gross))
+     out.append(_row("Tax", slip.tax))
+     out += _section("Deductions", sections)
+-    out += _section("Reimbursements", sections)
+     out.append(_row("Net pay", slip.net))
+     if year_to_date:
+         sums = ", ".join(f"{name} {format_money(amount)}" for name, amount in year_to_date.items())

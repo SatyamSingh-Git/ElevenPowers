@@ -1,0 +1,159 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 868cab3..63f6932 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Ordinary hours beyond `overtime.weekly_threshold` (default 40) in a Monday-to-Sunday week are paid as overtime.
+ - Pay-run files write money as integer cents (`101250` for 1,012.50) and carry `schema` 2; schema 1 files still read.
+ - `payroll journal` prints the ledger entry for a pay run, as text or CSV.
+ - `payroll compare` defaults to the period before when `--against` is left out.
+diff --git a/docs/reference.md b/docs/reference.md
+index 43bb350..05ba687 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -16,6 +16,7 @@ uses the default below.
+ | `company.first_period_start` | `2026-01-05` | `payroll.ini` file: start date of the first pay period |
+ | `company.pay_delay_days` | `3` | `payroll.ini` file: days from the end of a period to its pay date |
+ | `overtime.daily_threshold` | `8` | `payroll.ini` file: hours in one day paid at the ordinary rate before overtime starts |
++| `overtime.weekly_threshold` | `40` | `payroll.ini` file: ordinary hours in a Monday-to-Sunday week before the rest of the week's ordinary hours are overtime |
+ | `overtime.multiplier` | `1.5` | `payroll.ini` file: overtime rate as a multiple of the hourly rate |
+ | `overtime.holiday_multiplier` | `2.0` | `payroll.ini` file: rate for work on a public holiday, as a multiple of the hourly rate |
+ | `timesheet.max_hours_per_day` | `24` | `payroll.ini` file: most hours one timesheet row may hold |
+@@ -31,8 +32,10 @@ by the periods in a year, whatever their timesheet says.
+ 
+ A day's work on a public holiday is all paid at the holiday rate and is never
+ ordinary or overtime. On other days, work beyond `overtime.daily_threshold`
+-hours is overtime. Sick hours are paid at the ordinary rate and never count as
+-overtime.
++hours is overtime. What is left is ordinary, up to `overtime.weekly_threshold`
++hours in a Monday-to-Sunday week; ordinary hours beyond that are overtime too.
++Daily overtime, holiday hours and sick hours do not count toward the weekly
++threshold. Sick hours are paid at the ordinary rate and never count as overtime.
+ 
+ Gross pay is wages plus the allowances counted in gross. Tax is worked out on
+ gross pay. Deductions come off after tax. Net pay is gross pay less tax and
+diff --git a/src/payroll/config.py b/src/payroll/config.py
+index 3f2109e..85252de 100644
+--- a/src/payroll/config.py
++++ b/src/payroll/config.py
+@@ -19,6 +19,7 @@ DEFAULTS = {
+     },
+     "overtime": {
+         "daily_threshold": "8",
++        "weekly_threshold": "40",
+         "multiplier": "1.5",
+         "holiday_multiplier": "2.0",
+     },
+@@ -35,6 +36,7 @@ class Settings:
+     first_period_start: date
+     pay_delay_days: int
+     daily_threshold: Decimal
++    weekly_threshold: Decimal
+     overtime_multiplier: Decimal
+     holiday_multiplier: Decimal
+     max_hours_per_day: Decimal
+@@ -59,6 +61,7 @@ def load_settings(data_dir):
+         first_period_start=_date(parser, "company", "first_period_start"),
+         pay_delay_days=_whole(parser, "company", "pay_delay_days"),
+         daily_threshold=_positive(parser, "overtime", "daily_threshold"),
++        weekly_threshold=_positive(parser, "overtime", "weekly_threshold"),
+         overtime_multiplier=_multiplier(parser, "overtime", "multiplier"),
+         holiday_multiplier=_multiplier(parser, "overtime", "holiday_multiplier"),
+         max_hours_per_day=_positive(parser, "timesheet", "max_hours_per_day"),
+diff --git a/src/payroll/reports/hours.py b/src/payroll/reports/hours.py
+index 2dcf2b8..de36bd3 100644
+--- a/src/payroll/reports/hours.py
++++ b/src/payroll/reports/hours.py
+@@ -21,12 +21,16 @@ def hours_rows(entries, settings):
+     rows = []
+     for employee_id in sorted(set(worked) | set(sick)):
+         ordinary = overtime = holiday = Decimal(0)
++        weekly = defaultdict(Decimal)
+         for day, hours in worked[employee_id].items():
+             if day in HOLIDAYS:
+                 holiday += hours
+             else:
+-                ordinary += min(hours, settings.daily_threshold)
++                weekly[day.isocalendar()[:2]] += min(hours, settings.daily_threshold)
+                 overtime += max(hours - settings.daily_threshold, Decimal(0))
++        for hours in weekly.values():
++            ordinary += min(hours, settings.weekly_threshold)
++            overtime += max(hours - settings.weekly_threshold, Decimal(0))
+         off_sick = sick[employee_id]
+         rows.append((employee_id, ordinary, overtime, holiday, off_sick, ordinary + overtime + holiday + off_sick))
+     return rows
+diff --git a/src/payroll/rules/overtime.py b/src/payroll/rules/overtime.py
+index ace3536..7f4a7dd 100644
+--- a/src/payroll/rules/overtime.py
++++ b/src/payroll/rules/overtime.py
+@@ -20,7 +20,8 @@ class Hours:
+ 
+ def split_hours(entries, settings):
+     """Work on a public holiday is all holiday hours; otherwise a day's work beyond the
+-    daily threshold is overtime. Sick hours are kept apart and never become overtime."""
++    daily threshold is overtime, and so are ordinary hours beyond the weekly threshold in a
++    Monday-to-Sunday week. Sick hours are kept apart and never become overtime."""
+     worked = defaultdict(Decimal)
+     sick = NO_HOURS
+     for entry in entries:
+@@ -29,11 +30,15 @@ def split_hours(entries, settings):
+         else:
+             worked[entry.day] += entry.hours
+     ordinary = overtime = holiday = NO_HOURS
++    weekly = defaultdict(Decimal)
+     for day, hours in worked.items():
+         if day in HOLIDAYS:
+             holiday += hours
+         else:
+-            ordinary += min(hours, settings.daily_threshold)
++            weekly[day.isocalendar()[:2]] += min(hours, settings.daily_threshold)
+             overtime += max(hours - settings.daily_threshold, NO_HOURS)
++    for hours in weekly.values():
++        ordinary += min(hours, settings.weekly_threshold)
++        overtime += max(hours - settings.weekly_threshold, NO_HOURS)
+     shifts = sum(1 for hours in worked.values() if hours > 0)
+     return Hours(ordinary, overtime, holiday, sick, shifts)
+diff --git a/tests/test_config.py b/tests/test_config.py
+index 340c79e..124a2de 100644
+--- a/tests/test_config.py
++++ b/tests/test_config.py
+@@ -13,6 +13,7 @@ def test_defaults_apply_without_a_settings_file(tmp_path):
+     assert settings.pay_frequency == "weekly"
+     assert settings.first_period_start == date(2026, 1, 5)
+     assert settings.daily_threshold == Decimal("8")
++    assert settings.weekly_threshold == Decimal("40")
+     assert settings.overtime_multiplier == Decimal("1.5")
+     assert settings.max_hours_per_day == Decimal("24")
+ 
+diff --git a/tests/test_rules.py b/tests/test_rules.py
+index 5cdd018..0b4e51b 100644
+--- a/tests/test_rules.py
++++ b/tests/test_rules.py
+@@ -21,6 +21,24 @@ def test_rows_on_the_same_day_are_added_before_the_threshold(settings):
+     assert (hours.ordinary, hours.overtime, hours.shifts) == (Decimal("8"), Decimal("2"), 1)
+ 
+ 
++def test_ordinary_hours_beyond_the_weekly_threshold_are_overtime(settings):
++    days = [entry("E001", f"2026-01-{day:02d}", "8") for day in range(5, 11)]
++    hours = split_hours(days, settings)
++    assert (hours.ordinary, hours.overtime) == (Decimal("40"), Decimal("8"))
++
++
++def test_daily_overtime_does_not_count_toward_the_week(settings):
++    days = [entry("E001", "2026-01-05", "10")] + [entry("E001", f"2026-01-{day:02d}", "8") for day in range(6, 10)]
++    hours = split_hours(days, settings)
++    assert (hours.ordinary, hours.overtime) == (Decimal("40"), Decimal("2"))
++
++
++def test_weeks_are_counted_monday_to_sunday(settings):
++    days = [entry("E001", f"2026-01-{day:02d}", "8") for day in range(7, 14)]
++    hours = split_hours(days, settings)
++    assert (hours.ordinary, hours.overtime) == (Decimal("56"), 0)
++
++
+ def test_public_holiday_hours_are_never_ordinary_or_overtime(settings):
+     hours = split_hours([entry("E001", "2026-01-16", "10")], settings)
+     assert (hours.ordinary, hours.overtime, hours.holiday) == (0, 0, Decimal("10"))

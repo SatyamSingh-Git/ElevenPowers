@@ -1,0 +1,134 @@
+{
+  "id": "payroll_lite",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/payroll/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "The bookkeeping tool we load pay-run files into (`runs/{period}.json`) keeps tripping over money written as decimal strings like \"1012.50\". Please write money in pay-run files as `integer cents` instead, so 1,012.50 becomes `101250`. That covers every money field in the file: each payslip's totals, the run's `totals`, and each line's `amount` and `rate`. Line hours stay as they are. Since the layout changes, pay-run files written from now on should carry `\"schema\": 2`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/payroll/services/yearend.py",
+          "kind": "data",
+          "path": "The year-end summary reads the saved runs/*.json files itself with json.loads and turns each payslip's gross, tax, deductions and net into Decimals, so anyone who looks for every reader of the pay-run files finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_consistency", "base_values"]
+        }
+      ]
+    },
+    {
+      "request": "Overtime is only worked out per day at the moment, so someone who works six 8-hour days gets no overtime at all. Ordinary hours beyond `40` in a week should be paid as overtime too. A week runs Monday to Sunday. Hours already paid as daily overtime, public holiday hours and sick hours don't count toward the 40. Please make the limit a setting, `overtime.weekly_threshold` in `payroll.ini`, defaulting to `40`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/payroll/reports/hours.py",
+          "kind": "copy",
+          "path": "The `payroll hours` report splits ordinary and overtime hours with its own copy of the daily rule, reading settings.daily_threshold, and both its docstring and the hours.columns row promise it splits hours the way the pay run pays them, so searching for uses of the overtime threshold finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_consistency"]
+        }
+      ]
+    },
+    {
+      "request": "We need to take student loan repayments out of some people's pay. Please add a deduction kind `percent_over`: it takes `rate` percent of the period's gross pay above `threshold`, and nothing when gross pay is at or below the threshold. In `employees.json` it looks like `{\"kind\": \"percent_over\", \"label\": \"Student loan\", \"rate\": \"12\", \"threshold\": \"400.00\"}`. The deduction kinds then are `fixed, percent, percent_over`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Meal money paid per shift is a reimbursement, not income, so it shouldn't be taxed. Please leave `per_shift` allowances out of gross pay, so neither tax nor percentage deductions apply to them, and add them to net pay instead. `fixed` allowances stay as they are, so the only allowance kind counted in gross pay becomes `fixed`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/payroll/reports/payslip.py",
+          "kind": "key",
+          "path": "The payslip looks up each line's kind in its SECTIONS registry to pick a heading, so a careful engineer who gives meal money its own line kind, or otherwise moves it out of the earnings, checks where line kinds are consumed and finds that dict.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_consistency"]
+        },
+        {
+          "file": "src/payroll/reports/journal.py",
+          "kind": "copy",
+          "path": "`payroll journal` debits gross pay and credits tax, deductions and net pay, repeating the rule that net is gross less tax and deductions, as its docstring says; changing how net pay is made from gross means checking every place that sums those totals.",
+          "diff": "quiet-1.diff",
+          "fails": ["base_consistency"]
+        }
+      ]
+    },
+    {
+      "request": "`payroll timesheet show` lists the rows sorted by employee and date, which makes it hard for supervisors to check what was stored against the sheet they sent in, line by line. Please keep the stored timesheet (`timesheets/{period}.csv`) in `upload order`: rows stay in the order they had in the imported file, and a row added with `payroll timesheet add` goes at the end.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/payroll/services/payrun.py",
+          "kind": "contract",
+          "path": "run_payroll groups the stored rows by employee with itertools.groupby, which only works while the stored timesheet is sorted by employee; reading the callers of read_timesheet turns it up.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_consistency", "base_values"]
+        }
+      ]
+    },
+    {
+      "request": "`payroll hours` rounds hours to one decimal place, so a 7.25-hour shift shows as 7.2 and the totals don't add up to what people are actually paid for. Hours in that report should be shown with `2` decimal places, like `7.25`.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Our bank is switching to a new payment file layout next month. The rows in the file written by `payroll bank-file` need their columns in this order: `account, reference, amount, name`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/payroll/services/reconcile.py",
+          "kind": "data",
+          "path": "`payroll reconcile` reads the bank file back by column position (account, name, amount, reference); looking for whatever reads bank/{period}.csv, or for the bank file in docstrings, finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_consistency"]
+        }
+      ]
+    },
+    {
+      "request": "The accountant wants to see how many pay runs each person was paid in during the year. Please add a `periods` column to `payroll year-end`, right after the name, in both the text and CSV formats, so the columns are `employee_id, name, periods, gross, tax, deductions, net`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    }
+  ],
+  "groups": [
+    {"id": "base_consistency", "since": 0, "until": 8},
+    {"id": "base_values", "since": 0, "until": 8},
+    {"id": "s1_cents_totals", "since": 1, "until": 8},
+    {"id": "s1_cents_lines", "since": 1, "until": 8},
+    {"id": "s2_weekly_overtime", "since": 2, "until": 8},
+    {"id": "s2_weekly_setting", "since": 2, "until": 8},
+    {"id": "s3_percent_over", "since": 3, "until": 8},
+    {"id": "s3_percent_over_below", "since": 3, "until": 8},
+    {"id": "s4_meal_untaxed", "since": 4, "until": 8},
+    {"id": "s4_meal_percent", "since": 4, "until": 8},
+    {"id": "s5_stored_order", "since": 5, "until": 8},
+    {"id": "s5_add_appends", "since": 5, "until": 8},
+    {"id": "s6_quarter_hours", "since": 6, "until": 8},
+    {"id": "s6_two_decimals", "since": 6, "until": 8},
+    {"id": "s7_bank_layout", "since": 7, "until": 8},
+    {"id": "s7_bank_out", "since": 7, "until": 8},
+    {"id": "s8_year_end_csv", "since": 8, "until": 8},
+    {"id": "s8_year_end_text", "since": 8, "until": 8}
+  ]
+}

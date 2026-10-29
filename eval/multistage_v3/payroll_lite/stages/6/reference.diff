@@ -1,0 +1,54 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 713167a..93622fa 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: `payroll hours` showed one decimal place, so quarter hours such as 7.25 showed as 7.2; it now shows two.
+ - Stored timesheets keep rows in upload order, with rows from `payroll timesheet add` at the end, so `payroll timesheet show` matches the sheet that was sent in.
+ - `per_shift` allowances are reimbursements: left out of gross pay and tax, and added to net pay.
+ - Deduction kind `percent_over` takes `rate` percent of gross pay above `threshold`, for student loan repayments.
+diff --git a/docs/reference.md b/docs/reference.md
+index c543c24..4f32bf1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -167,7 +167,7 @@ Every command takes `--data DIR`. Errors are printed to standard error as
+ | `payslip.net_label` | `Net pay` | command line: `payroll payslip` line with net pay |
+ | `payslip.year_to_date` | `Year to date: gross {gross}, tax {tax}, deductions {deductions}, net {net}` | command line: last line of `payroll payslip` |
+ | `hours.columns` | `employee, ordinary, overtime, holiday, sick, total` | command line: columns of `payroll hours`; each shows the hours the pay run pays that way |
+-| `hours.decimals` | `1` | command line: decimal places of hours in `payroll hours` |
++| `hours.decimals` | `2` | command line: decimal places of hours in `payroll hours` |
+ | `year-end.columns` | `employee_id, name, gross, tax, deductions, net` | command line: columns of `payroll year-end`, in both formats |
+ | `year-end.formats` | `text, csv` | command line: values of `payroll year-end --format` |
+ | `year-end --format` | `text` | command line: default format of `payroll year-end` |
+diff --git a/src/payroll/reports/hours.py b/src/payroll/reports/hours.py
+index de36bd3..57e2335 100644
+--- a/src/payroll/reports/hours.py
++++ b/src/payroll/reports/hours.py
+@@ -45,4 +45,4 @@ def render_hours(period, rows):
+ 
+ 
+ def _hours(value):
+-    return f"{value:.1f}"
++    return f"{value:.2f}"
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index d6500f4..4319801 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -50,7 +50,13 @@ def test_hours_report_splits_overtime_and_holidays(settings):
+ 
+ def test_hours_report_text(settings):
+     text = render_hours(PERIOD, hours_rows([entry("E001", "2026-01-05", "9.5")], settings))
+-    assert text.splitlines()[3].split() == ["E001", "8.0", "1.5", "0.0", "0.0", "9.5"]
++    assert text.splitlines()[3].split() == ["E001", "8.00", "1.50", "0.00", "0.00", "9.50"]
++
++
++def test_hours_report_keeps_quarter_hours(settings):
++    entries = [entry("E001", "2026-01-05", "7.25"), entry("E001", "2026-01-06", "8.25")]
++    text = render_hours(PERIOD, hours_rows(entries, settings))
++    assert text.splitlines()[3].split() == ["E001", "15.25", "0.25", "0.00", "0.00", "15.50"]
+ 
+ 
+ def test_year_end_summary_formats():

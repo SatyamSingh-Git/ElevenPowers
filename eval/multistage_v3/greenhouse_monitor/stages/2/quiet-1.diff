@@ -1,0 +1,13 @@
+diff --git a/src/greenhouse/services/manual.py b/src/greenhouse/services/manual.py
+index 0c70041..b114237 100644
+--- a/src/greenhouse/services/manual.py
++++ b/src/greenhouse/services/manual.py
+@@ -14,7 +14,7 @@ HANDHELD_KINDS = ("temperature", "humidity", "soil_moisture")
+ def record_manual(log, layout, calibration, *, zone, sensor, kind, value, unit, at):
+     """Log one hand-entered reading taken at ``at`` and return it."""
+     zone = layout.zone(zone.strip()).id
+-    sensor = sensor.strip().upper()
++    sensor = sensor.strip()
+     if not sensor:
+         raise ValidationError("missing sensor")
+     kind = check_kind(kind)

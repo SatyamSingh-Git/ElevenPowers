@@ -1,0 +1,42 @@
+diff --git a/src/payroll/services/yearend.py b/src/payroll/services/yearend.py
+index d822e6e..def1702 100644
+--- a/src/payroll/services/yearend.py
++++ b/src/payroll/services/yearend.py
+@@ -1,9 +1,10 @@
+ """Year-end totals per employee, from the pay runs paid during the year."""
+ from dataclasses import dataclass
++from datetime import date
+ from decimal import Decimal
++import json
+ 
+ from payroll.model.money import ZERO
+-from payroll.services.payrun import list_runs
+ 
+ 
+ @dataclass
+@@ -19,15 +20,16 @@ class YearTotals:
+ def year_totals(data, year):
+     """One row per employee paid in `year`, counting a run by its pay date, not its period."""
+     totals = {}
+-    for run in list_runs(data):
+-        if run.period.pay_date.year != year:
++    for path in sorted(data.runs.glob("*.json")):
++        document = json.loads(path.read_text(encoding="utf-8"))
++        if date.fromisoformat(document["pay_date"]).year != year:
+             continue
+-        for slip in run.payslips:
+-            row = totals.setdefault(slip.employee_id, YearTotals(slip.employee_id, slip.name))
++        for slip in document["payslips"]:
++            row = totals.setdefault(slip["employee_id"], YearTotals(slip["employee_id"], slip["name"]))
+             # Runs are read in period order, so the name kept is the latest one paid.
+-            row.name = slip.name
+-            row.gross += slip.gross
+-            row.tax += slip.tax
+-            row.deductions += slip.deductions
+-            row.net += slip.net
++            row.name = slip["name"]
++            row.gross += Decimal(slip["gross"])
++            row.tax += Decimal(slip["tax"])
++            row.deductions += Decimal(slip["deductions"])
++            row.net += Decimal(slip["net"])
+     return [totals[employee_id] for employee_id in sorted(totals)]

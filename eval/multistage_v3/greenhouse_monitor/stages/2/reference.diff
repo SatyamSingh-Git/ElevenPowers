@@ -1,0 +1,134 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 957bde2..2abeb03 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Sensor ids are case-insensitive and written to the readings log in upper case.
+ - The readings log keeps the uncalibrated value in a new `raw` column after `value`.
+ 
+ ## 1.4.0 - 2026-04-02
+diff --git a/docs/reference.md b/docs/reference.md
+index 6dfb2f3..92f56f1 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -80,7 +80,7 @@ a site changes.
+ |---|---|---|
+ | `readings.csv columns` | `timestamp,zone,sensor,kind,value,raw,unit` | file: the readings log; values in the kind's canonical unit, `value` with calibration applied and `raw` without |
+ | `readings.csv timestamp` | `YYYY-MM-DDTHH:MM:SS` | file: the readings log's time format, greenhouse local time |
+-| `readings.csv sensor` | `as received` | file: the readings log's sensor ids, spelled as the controller or `record` gave them |
++| `readings.csv sensor` | `upper case` | file: the readings log's sensor ids; ids are case-insensitive, so `gh3-t01` is logged as `GH3-T01` |
+ | `controller export columns` | `time,zone,sensor,kind,value,unit` | file: what `ingest` reads; column order free, extra columns ignored |
+ | `alerts.jsonl fields` | `at,zone,sensor,kind,code,value,limit,unit` | file: one JSON object per alert in the alerts log |
+ | `alerts.jsonl code` | `high, low, stale` | file: the alert codes the alerts log holds |
+diff --git a/src/greenhouse/cli/commands.py b/src/greenhouse/cli/commands.py
+index 37400d2..28545a4 100644
+--- a/src/greenhouse/cli/commands.py
++++ b/src/greenhouse/cli/commands.py
+@@ -70,7 +70,7 @@ def cmd_calibrate(args, context):
+         store.save()
+         context.say(f"cleared {args.sensor}")
+     elif args.offset is None:
+-        context.say(f"{args.sensor}: {store.offset_for(args.sensor):+.2f}")
++        context.say(f"{args.sensor}: {store.offset_for(args.sensor.upper()):+.2f}")
+     else:
+         store.set_offset(args.sensor, args.offset, context.settings().max_offset)
+         store.save()
+diff --git a/src/greenhouse/services/ingest.py b/src/greenhouse/services/ingest.py
+index e5ca359..f837807 100644
+--- a/src/greenhouse/services/ingest.py
++++ b/src/greenhouse/services/ingest.py
+@@ -3,7 +3,8 @@
+ A controller export is a CSV file with the columns
+ ``time,zone,sensor,kind,value,unit`` (in any order, extra columns ignored).
+ Each row is checked, converted to its kind's canonical unit and calibrated.
+-Rows that fail are reported by line number; the rest are logged together.
++Sensor ids are case-insensitive and logged in upper case. Rows that fail are
++reported by line number; the rest are logged together.
+ """
+ import csv
+ from dataclasses import dataclass, field
+@@ -54,7 +55,7 @@ def parse_row(row, layout, calibration):
+     """One controller row as a calibrated Reading."""
+     at = parse_timestamp(row["time"] or "")
+     zone = layout.zone((row["zone"] or "").strip()).id
+-    sensor = (row["sensor"] or "").strip()
++    sensor = (row["sensor"] or "").strip().upper()
+     if not sensor:
+         raise ValidationError("missing sensor")
+     kind = check_kind(row["kind"] or "")
+diff --git a/src/greenhouse/services/manual.py b/src/greenhouse/services/manual.py
+index b114237..0c70041 100644
+--- a/src/greenhouse/services/manual.py
++++ b/src/greenhouse/services/manual.py
+@@ -14,7 +14,7 @@ HANDHELD_KINDS = ("temperature", "humidity", "soil_moisture")
+ def record_manual(log, layout, calibration, *, zone, sensor, kind, value, unit, at):
+     """Log one hand-entered reading taken at ``at`` and return it."""
+     zone = layout.zone(zone.strip()).id
+-    sensor = sensor.strip()
++    sensor = sensor.strip().upper()
+     if not sensor:
+         raise ValidationError("missing sensor")
+     kind = check_kind(kind)
+diff --git a/src/greenhouse/storage/calibration.py b/src/greenhouse/storage/calibration.py
+index 6fb2844..ac9ccaf 100644
+--- a/src/greenhouse/storage/calibration.py
++++ b/src/greenhouse/storage/calibration.py
+@@ -4,6 +4,7 @@
+ 
+ An offset is added after a reading is converted to its kind's canonical unit,
+ so it is always in canonical units. Sensors without an entry read as-is.
++Sensor ids are kept in upper case, the way the readings log spells them.
+ """
+ import json
+ from pathlib import Path
+@@ -15,7 +16,7 @@ from ..core.errors import ValidationError
+ class CalibrationStore:
+     def __init__(self, path, offsets=None):
+         self.path = Path(path)
+-        self._offsets = dict(offsets or {})
++        self._offsets = {sensor.upper(): offset for sensor, offset in (offsets or {}).items()}
+ 
+     def offset_for(self, sensor):
+         return self._offsets.get(sensor, 0.0)
+@@ -24,11 +25,11 @@ class CalibrationStore:
+         """Set a sensor's offset; ``limit`` is the largest offset a site accepts."""
+         if offset > limit:
+             raise ValidationError(f"offset too large: {offset}")
+-        self._offsets[sensor] = offset
++        self._offsets[sensor.upper()] = offset
+ 
+     def clear(self, sensor):
+         """Forget a sensor's offset; False if it had none."""
+-        return self._offsets.pop(sensor, None) is not None
++        return self._offsets.pop(sensor.upper(), None) is not None
+ 
+     def items(self):
+         return sorted(self._offsets.items())
+diff --git a/tests/test_ingest.py b/tests/test_ingest.py
+index 0571a32..0e27097 100644
+--- a/tests/test_ingest.py
++++ b/tests/test_ingest.py
+@@ -38,6 +38,20 @@ def test_rows_are_converted_calibrated_and_logged(export_file, log, layout, tmp_
+     ]
+ 
+ 
++def test_sensor_ids_are_logged_in_upper_case(export_file, log, layout, tmp_path):
++    path = export_file([
++        ("2026-05-01T08:00:00", "gh1", "gh1-t01", "temperature", "21.0", "C"),
++        ("2026-05-01T09:00:00", "gh1", "Gh1-T01", "temperature", "21.5", "C"),
++        ("2026-05-01T09:00:00", "gh1", "GH1-T01", "temperature", "21.5", "C"),
++    ])
++    result = ingest_file(path, log, layout, CalibrationStore(tmp_path / "calibration.json"))
++    assert result.problems == ["line 4: duplicate reading for GH1-T01"]
++    assert logged(log) == [
++        "2026-05-01T08:00:00,gh1,GH1-T01,temperature,21.0,21.0,C",
++        "2026-05-01T09:00:00,gh1,GH1-T01,temperature,21.5,21.5,C",
++    ]
++
++
+ def test_bad_rows_are_reported_by_line_and_the_rest_logged(export_file, log, layout, tmp_path):
+     path = export_file([
+         ("2026-05-01T08:00:00", "gh1", "GH1-T01", "temperature", "21.0", "C"),

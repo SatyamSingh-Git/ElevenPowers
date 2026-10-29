@@ -1,0 +1,24 @@
+diff --git a/src/payroll/services/payrun.py b/src/payroll/services/payrun.py
+index 83c2569..08deb04 100644
+--- a/src/payroll/services/payrun.py
++++ b/src/payroll/services/payrun.py
+@@ -1,5 +1,6 @@
+ """A pay run: a payslip for every active employee for one period, saved to runs/<period>.json."""
+-from collections import defaultdict
++from itertools import groupby
++from operator import attrgetter
+ 
+ from payroll.errors import PayrollError
+ from payroll.model.money import round_money, total
+@@ -21,10 +22,7 @@ def run_payroll(data, settings, period_id, replace=False):
+         raise PayrollError(f"pay run {period.id} already exists; use --replace")
+     employees = load_employees(data)
+     entries = read_timesheet(data, period.id)
+-    # Stored rows are in upload order, so one person's rows can be anywhere in the timesheet.
+-    by_employee = defaultdict(list)
+-    for entry in entries:
+-        by_employee[entry.employee_id].append(entry)
++    by_employee = {employee_id: list(rows) for employee_id, rows in groupby(entries, attrgetter("employee_id"))}
+     unknown = sorted(set(by_employee) - set(employees))
+     if unknown:
+         raise PayrollError(f"timesheet for {period.id} names unknown employee {unknown[0]}")

@@ -1,0 +1,13 @@
+diff --git a/src/payroll/services/reconcile.py b/src/payroll/services/reconcile.py
+index 525b089..dd9e54f 100644
+--- a/src/payroll/services/reconcile.py
++++ b/src/payroll/services/reconcile.py
+@@ -25,7 +25,7 @@ def load_payments(path):
+     with path.open(newline="", encoding="utf-8") as handle:
+         return [
+             Payment(account, name, Decimal(amount), reference)
+-            for account, reference, amount, name in csv.reader(handle)
++            for account, name, amount, reference in csv.reader(handle)
+         ]
+ 
+ 

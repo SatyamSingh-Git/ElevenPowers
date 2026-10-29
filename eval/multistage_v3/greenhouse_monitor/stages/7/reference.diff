@@ -1,0 +1,141 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1d77698..252ca53 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `irrigation.csv` keeps every day's plan, with the plan's date as a new first column.
+ - Irrigation suggestions round up to a multiple of the new `timer_step_minutes` setting (default 5).
+ - `ingest` keeps `ERR` rows in the readings log as gaps with an empty value, and counts them separately.
+ - Add the `critical_margin` setting: readings past a limit by more than it raise `critical_high` or `critical_low`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 6f25786..0038d44 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -86,7 +86,7 @@ a site changes.
+ | `controller export columns` | `time,zone,sensor,kind,value,unit` | file: what `ingest` reads; column order free, extra columns ignored |
+ | `alerts.jsonl fields` | `at,zone,sensor,kind,code,value,limit,unit` | file: one JSON object per alert in the alerts log |
+ | `alerts.jsonl code` | `high, low, critical_high, critical_low, stale` | file: the alert codes the alerts log holds |
+-| `irrigation.csv columns` | `zone,minutes,reason` | file: the irrigation plan `irrigate` writes and `schedule` reads |
++| `irrigation.csv columns` | `date,zone,minutes,reason` | file: every day's irrigation plan; `irrigate` replaces only its own day's rows and `schedule` reads the most recent day |
+ | `valves.txt line` | `{start} {valve} {zone} {minutes}` | file: one line per watered zone, start as HH:MM |
+ | `calibration.json` | `{"<sensor>": <offset>}` | file: offsets in the kind's canonical unit |
+ | `layout.json zone fields` | `id,name,crop,valve,target_moisture,area_m2,flow_lpm` | file: the first four are required |
+diff --git a/src/greenhouse/cli/commands.py b/src/greenhouse/cli/commands.py
+index 34d35ae..4e8b120 100644
+--- a/src/greenhouse/cli/commands.py
++++ b/src/greenhouse/cli/commands.py
+@@ -119,7 +119,7 @@ def cmd_status(args, context):
+ def cmd_irrigate(args, context):
+     latest = latest_by_sensor(load_readings(context.data.readings))
+     suggestions = suggest(context.layout(), latest, context.settings())
+-    write_plan(context.data.plan, suggestions)
++    write_plan(context.data.plan, suggestions, context.clock.now().date())
+     for suggestion in suggestions:
+         context.say(f"{suggestion.zone}: {suggestion.minutes} min ({suggestion.reason})")
+     context.say(f"total {total_minutes(suggestions)} min")
+diff --git a/src/greenhouse/services/valves.py b/src/greenhouse/services/valves.py
+index eb0db6e..c4ab40d 100644
+--- a/src/greenhouse/services/valves.py
++++ b/src/greenhouse/services/valves.py
+@@ -1,4 +1,4 @@
+-"""The valve schedule for the irrigation controller, built from the irrigation plan.
++"""The valve schedule for the irrigation controller, built from the latest irrigation plan.
+ 
+ The pump feeds one valve at a time, so zones run back to back from the start
+ time in the order the plan lists them. Each line of ``valves.txt`` reads
+@@ -14,18 +14,18 @@ LINE = "{start} {valve} {zone} {minutes}"
+ 
+ 
+ def planned_minutes(path):
+-    """(zone, minutes) for each zone the plan waters, in plan order."""
++    """(zone, minutes) for each zone the most recent day's plan waters, in plan order."""
+     path = Path(path)
+     if not path.exists():
+         raise ValidationError(f"no irrigation plan: {path.name}")
+-    planned = []
+     with path.open(newline="", encoding="utf-8") as handle:
+-        rows = csv.reader(handle)
+-        next(rows, None)
+-        for zone, minutes, _reason in rows:
+-            if int(minutes) > 0:
+-                planned.append((zone, int(minutes)))
+-    return planned
++        rows = list(csv.DictReader(handle))
++    latest = max((row["date"] for row in rows), default=None)
++    return [
++        (row["zone"], int(row["minutes"]))
++        for row in rows
++        if row["date"] == latest and int(row["minutes"]) > 0
++    ]
+ 
+ 
+ def build_schedule(planned, layout, start):
+diff --git a/src/greenhouse/storage/plans.py b/src/greenhouse/storage/plans.py
+index 88468e6..7e14600 100644
+--- a/src/greenhouse/storage/plans.py
++++ b/src/greenhouse/storage/plans.py
+@@ -1,14 +1,26 @@
+-"""The irrigation plan, ``irrigation.csv``: the latest suggestion for each zone."""
++"""The irrigation plans, ``irrigation.csv``: each day's suggestions, oldest day first.
++
++A file from before plans were dated holds only the last plan and is started
++afresh.
++"""
+ import csv
+ from pathlib import Path
+ 
+-PLAN_COLUMNS = ["zone", "minutes", "reason"]
++PLAN_COLUMNS = ["date", "zone", "minutes", "reason"]
+ 
+ 
+-def write_plan(path, suggestions):
+-    """Replace the plan with these suggestions, in the order given."""
+-    with Path(path).open("w", newline="", encoding="utf-8") as handle:
++def write_plan(path, suggestions, day):
++    """Store ``day``'s plan, replacing any plan already written for that day."""
++    path = Path(path)
++    kept = []
++    if path.exists():
++        with path.open(newline="", encoding="utf-8") as handle:
++            rows = list(csv.reader(handle))
++        if rows and rows[0] == PLAN_COLUMNS:
++            kept = [row for row in rows[1:] if row and row[0] != day.isoformat()]
++    with path.open("w", newline="", encoding="utf-8") as handle:
+         writer = csv.writer(handle, lineterminator="\n")
+         writer.writerow(PLAN_COLUMNS)
++        writer.writerows(kept)
+         for suggestion in suggestions:
+-            writer.writerow([suggestion.zone, suggestion.minutes, suggestion.reason])
++            writer.writerow([day.isoformat(), suggestion.zone, suggestion.minutes, suggestion.reason])
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 0598c23..b10588f 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -78,12 +78,21 @@ def test_irrigate_writes_the_plan(cli, logged):
+     assert code == 0
+     assert out.splitlines()[0] == "gh1: 15 min (moisture 34.0% below target 40.0%)"
+     assert (logged / "irrigation.csv").read_text().splitlines() == [
+-        "zone,minutes,reason",
+-        "gh1,15,moisture 34.0% below target 40.0%",
+-        "gh2,0,moisture 34.0% near target 35.0%",
++        "date,zone,minutes,reason",
++        "2026-05-01,gh1,15,moisture 34.0% below target 40.0%",
++        "2026-05-01,gh2,0,moisture 34.0% near target 35.0%",
+     ]
+ 
+ 
++def test_irrigate_keeps_earlier_days(cli, logged):
++    assert cli("irrigate", now="2026-04-30T06:00:00")[0] == 0
++    assert cli("irrigate", now="2026-05-01T06:00:00")[0] == 0
++    assert cli("irrigate", now="2026-05-01T07:00:00")[0] == 0
++    lines = (logged / "irrigation.csv").read_text().splitlines()
++    assert lines[0] == "date,zone,minutes,reason"
++    assert [line[:14] for line in lines[1:]] == ["2026-04-30,gh1", "2026-04-30,gh2", "2026-05-01,gh1", "2026-05-01,gh2"]
++
++
+ def test_record_for_an_unknown_zone_is_an_error(cli):
+     code, _, err = cli("record", "GH7-T01", "temperature", "21", "C", "--zone", "gh7")
+     assert code == 1

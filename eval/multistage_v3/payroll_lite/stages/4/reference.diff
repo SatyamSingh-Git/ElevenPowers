@@ -1,0 +1,151 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2aacb9a..dcd0cd9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `per_shift` allowances are reimbursements: left out of gross pay and tax, and added to net pay.
+ - Deduction kind `percent_over` takes `rate` percent of gross pay above `threshold`, for student loan repayments.
+ - Ordinary hours beyond `overtime.weekly_threshold` (default 40) in a Monday-to-Sunday week are paid as overtime.
+ - Pay-run files write money as integer cents (`101250` for 1,012.50) and carry `schema` 2; schema 1 files still read.
+diff --git a/docs/reference.md b/docs/reference.md
+index e5b80a2..cd385f2 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -39,7 +39,9 @@ threshold. Sick hours are paid at the ordinary rate and never count as overtime.
+ 
+ Gross pay is wages plus the allowances counted in gross. Tax is worked out on
+ gross pay. Deductions come off after tax. Net pay is gross pay less tax and
+-deductions.
++deductions, plus reimbursements: `per_shift` allowances are meal money paid back,
++so they are left out of gross pay, never taxed and not subject to percentage
++deductions, and are added to net pay instead.
+ 
+ | rule | value | meaning |
+ |---|---|---|
+@@ -49,7 +51,7 @@ deductions.
+ | `money.rounding` | `half-up to the cent` | pay rules: every amount, each line rounded on its own |
+ | `employee.pay_types` | `hourly, salaried` | pay rules: the pay types an employee can have |
+ | `allowance.kinds` | `fixed, per_shift` | pay rules: `fixed` is paid each period, `per_shift` for each day with work |
+-| `allowance.taxable_kinds` | `fixed, per_shift` | pay rules: allowance kinds counted in gross pay, and so taxed |
++| `allowance.taxable_kinds` | `fixed` | pay rules: allowance kinds counted in gross pay, and so taxed |
+ | `deduction.kinds` | `fixed, percent, percent_over` | pay rules: `fixed` takes `amount`, `percent` takes `rate` percent of gross pay, `percent_over` takes `rate` percent of the gross pay above `threshold` |
+ | `tax.method` | `annualised bands` | pay rules: the period's gross times the periods in a year, taxed on the yearly bands, divided back |
+ 
+@@ -121,8 +123,8 @@ the year-end summary are all made from these files. Files written with `schema`
+ | `payrun.line_fields` | `kind, label, hours, rate, amount` | pay-run file: fields of each payslip line; `hours` and `rate` may be null |
+ | `payrun.totals_fields` | `gross, tax, deductions, net` | pay-run file: fields of `totals` |
+ 
+-Line kinds are `basic`, `overtime`, `holiday`, `sick`, `allowance` and
+-`deduction`.
++Line kinds are `basic`, `overtime`, `holiday`, `sick`, `allowance`,
++`reimbursement` and `deduction`. `reimbursement` lines are not part of `gross`.
+ 
+ ### Bank files
+ 
+diff --git a/src/payroll/reports/journal.py b/src/payroll/reports/journal.py
+index c0d2cf0..e7910b7 100644
+--- a/src/payroll/reports/journal.py
++++ b/src/payroll/reports/journal.py
+@@ -9,10 +9,14 @@ COLUMNS = ("account", "debit", "credit")
+ 
+ 
+ def journal_lines(run):
+-    """(account, debit, credit) lines. The wage expense is the gross pay, which is paid out as
+-    tax, deductions and net pay, so the debits and credits always balance."""
+-    return [
+-        ("Wages expense", run.total("gross"), ZERO),
++    """(account, debit, credit) lines. The wage expense is the gross pay and money paid back to
++    staff is an expense of its own; together they are paid out as tax, deductions and net pay, so
++    the debits and credits always balance."""
++    reimbursed = total(line.amount for slip in run.payslips for line in slip.lines if line.kind == "reimbursement")
++    lines = [("Wages expense", run.total("gross"), ZERO)]
++    if reimbursed:
++        lines.append(("Reimbursements expense", reimbursed, ZERO))
++    return lines + [
+         ("Tax payable", ZERO, run.total("tax")),
+         ("Deductions payable", ZERO, run.total("deductions")),
+         ("Net wages payable", ZERO, run.total("net")),
+diff --git a/src/payroll/reports/payslip.py b/src/payroll/reports/payslip.py
+index 0d9a19e..19a0abd 100644
+--- a/src/payroll/reports/payslip.py
++++ b/src/payroll/reports/payslip.py
+@@ -11,6 +11,7 @@ SECTIONS = {
+     "sick": "Earnings",
+     "allowance": "Earnings",
+     "deduction": "Deductions",
++    "reimbursement": "Reimbursements",
+ }
+ 
+ 
+@@ -28,6 +29,7 @@ def render_payslip(company, period, slip, year_to_date=None):
+     out.append(_row("Gross pay", slip.gross))
+     out.append(_row("Tax", slip.tax))
+     out += _section("Deductions", sections)
++    out += _section("Reimbursements", sections)
+     out.append(_row("Net pay", slip.net))
+     if year_to_date:
+         sums = ", ".join(f"{name} {format_money(amount)}" for name, amount in year_to_date.items())
+diff --git a/src/payroll/rules/allowances.py b/src/payroll/rules/allowances.py
+index ac154eb..a9f45cc 100644
+--- a/src/payroll/rules/allowances.py
++++ b/src/payroll/rules/allowances.py
+@@ -9,10 +9,11 @@ def _fixed(allowance, hours):
+ 
+ 
+ def _per_shift(allowance, hours):
++    # Money paid per shift is a reimbursement: it is paid with net pay and never taxed.
+     if not hours.shifts:
+         return None
+     amount = round_money(allowance.amount * hours.shifts)
+-    return Line("allowance", f"{allowance.label} x {hours.shifts}", amount, rate=allowance.amount)
++    return Line("reimbursement", f"{allowance.label} x {hours.shifts}", amount, rate=allowance.amount)
+ 
+ 
+ ALLOWANCES = {
+diff --git a/src/payroll/services/payrun.py b/src/payroll/services/payrun.py
+index 470c88d..08deb04 100644
+--- a/src/payroll/services/payrun.py
++++ b/src/payroll/services/payrun.py
+@@ -42,7 +42,8 @@ def run_payroll(data, settings, period_id, replace=False):
+ def build_payslip(employee, hours, settings, periods_per_year):
+     lines = _wage_lines(employee, hours, settings, periods_per_year)
+     lines += allowance_lines(employee.allowances, hours)
+-    gross = total(line.amount for line in lines)
++    reimbursed = total(line.amount for line in lines if line.kind == "reimbursement")
++    gross = total(line.amount for line in lines) - reimbursed
+     tax = period_tax(gross, periods_per_year)
+     deductions = deduction_lines(employee.deductions, gross)
+     deducted = total(line.amount for line in deductions)
+@@ -53,7 +54,7 @@ def build_payslip(employee, hours, settings, periods_per_year):
+         gross=gross,
+         tax=tax,
+         deductions=deducted,
+-        net=gross - tax - deducted,
++        net=gross - tax - deducted + reimbursed,
+     )
+ 
+ 
+diff --git a/tests/test_payrun.py b/tests/test_payrun.py
+index 4297b33..3ab5db7 100644
+--- a/tests/test_payrun.py
++++ b/tests/test_payrun.py
+@@ -21,6 +21,16 @@ def test_hourly_pay_with_overtime_and_a_deduction(data, settings):
+         Decimal("437.50"), Decimal("31.01"), Decimal("21.88"), Decimal("384.61"))
+ 
+ 
++def test_per_shift_allowance_is_paid_untaxed_on_top_of_net(data, settings):
++    meal = {"kind": "per_shift", "label": "Meal", "amount": "8.00"}
++    write_employees(data, hourly("E001", "30.00", allowances=[meal],
++                                 deductions=[{"kind": "percent", "label": "Pension", "rate": "5"}]))
++    write_timesheet(data, "2026-W01", [entry("E001", f"2026-01-{day:02d}", "8") for day in range(5, 10)])
++    slip = run_payroll(data, settings, "2026-W01").payslip_for("E001")
++    assert (slip.gross, slip.tax, slip.deductions) == (Decimal("1200.00"), Decimal("195.58"), Decimal("60.00"))
++    assert slip.net == Decimal("1200.00") - Decimal("195.58") - Decimal("60.00") + Decimal("40.00")
++
++
+ def test_salaried_pay_ignores_hours(data, settings):
+     write_employees(data, salaried("S001", "52000.00"))
+     write_timesheet(data, "2026-W01", [entry("S001", "2026-01-05", "12")])

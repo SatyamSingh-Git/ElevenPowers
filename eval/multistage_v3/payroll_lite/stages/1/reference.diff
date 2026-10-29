@@ -1,0 +1,226 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 19eb526..868cab3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Pay-run files write money as integer cents (`101250` for 1,012.50) and carry `schema` 2; schema 1 files still read.
+ - `payroll journal` prints the ledger entry for a pay run, as text or CSV.
+ - `payroll compare` defaults to the period before when `--against` is left out.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index e650cc5..43bb350 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -104,13 +104,14 @@ reported and nothing is stored.
+ ### Pay-run files
+ 
+ `payroll run` saves each pay run as JSON. Payslips, bank files, statements and
+-the year-end summary are all made from these files.
++the year-end summary are all made from these files. Files written with `schema`
++1, which held money as decimal strings such as `"1012.50"`, can still be read.
+ 
+ | field | value | meaning |
+ |---|---|---|
+ | `payrun.path` | `runs/{period}.json` | pay-run file: where a period's pay run is saved |
+-| `payrun.schema` | `1` | pay-run file: value of `schema` |
+-| `payrun.money` | `decimal string` | pay-run file: how money amounts are written, for example `"1012.50"` |
++| `payrun.schema` | `2` | pay-run file: value of `schema` |
++| `payrun.money` | `integer cents` | pay-run file: how money amounts (totals, line `amount` and `rate`) are written, for example `101250` for 1,012.50 |
+ | `payrun.hours` | `decimal string` | pay-run file: how line hours are written, for example `"39.00"` |
+ | `payrun.fields` | `schema, period, start, end, pay_date, payslips, totals` | pay-run file: top-level fields |
+ | `payrun.payslip_fields` | `employee_id, name, gross, tax, deductions, net, lines` | pay-run file: fields of each payslip |
+diff --git a/src/payroll/services/yearend.py b/src/payroll/services/yearend.py
+index def1702..d822e6e 100644
+--- a/src/payroll/services/yearend.py
++++ b/src/payroll/services/yearend.py
+@@ -1,10 +1,9 @@
+ """Year-end totals per employee, from the pay runs paid during the year."""
+ from dataclasses import dataclass
+-from datetime import date
+ from decimal import Decimal
+-import json
+ 
+ from payroll.model.money import ZERO
++from payroll.services.payrun import list_runs
+ 
+ 
+ @dataclass
+@@ -20,16 +19,15 @@ class YearTotals:
+ def year_totals(data, year):
+     """One row per employee paid in `year`, counting a run by its pay date, not its period."""
+     totals = {}
+-    for path in sorted(data.runs.glob("*.json")):
+-        document = json.loads(path.read_text(encoding="utf-8"))
+-        if date.fromisoformat(document["pay_date"]).year != year:
++    for run in list_runs(data):
++        if run.period.pay_date.year != year:
+             continue
+-        for slip in document["payslips"]:
+-            row = totals.setdefault(slip["employee_id"], YearTotals(slip["employee_id"], slip["name"]))
++        for slip in run.payslips:
++            row = totals.setdefault(slip.employee_id, YearTotals(slip.employee_id, slip.name))
+             # Runs are read in period order, so the name kept is the latest one paid.
+-            row.name = slip["name"]
+-            row.gross += Decimal(slip["gross"])
+-            row.tax += Decimal(slip["tax"])
+-            row.deductions += Decimal(slip["deductions"])
+-            row.net += Decimal(slip["net"])
++            row.name = slip.name
++            row.gross += slip.gross
++            row.tax += slip.tax
++            row.deductions += slip.deductions
++            row.net += slip.net
+     return [totals[employee_id] for employee_id in sorted(totals)]
+diff --git a/src/payroll/storage/payrun_file.py b/src/payroll/storage/payrun_file.py
+index dd87c92..de8d480 100644
+--- a/src/payroll/storage/payrun_file.py
++++ b/src/payroll/storage/payrun_file.py
+@@ -4,13 +4,15 @@ from decimal import Decimal
+ import json
+ 
+ from payroll.errors import PayrollError
+-from payroll.model.money import plain_money
++from payroll.model.money import round_money
+ from payroll.model.payslip import TOTALS, Line, PayRun, Payslip
+ from payroll.model.period import PayPeriod
+ from payroll.model.timesheet import format_hours
+ from payroll.storage.files import write_text_atomic
+ 
+-SCHEMA = 1
++# Schema 1 wrote money as decimal strings; schema 2 writes whole cents. Both can be read.
++SCHEMA = 2
++READABLE = (1, 2)
+ 
+ 
+ def write_payrun(path, run):
+@@ -21,7 +23,7 @@ def write_payrun(path, run):
+         "end": run.period.end.isoformat(),
+         "pay_date": run.period.pay_date.isoformat(),
+         "payslips": [_slip_record(slip) for slip in run.payslips],
+-        "totals": {name: plain_money(run.total(name)) for name in TOTALS},
++        "totals": {name: _cents(run.total(name)) for name in TOTALS},
+     }
+     write_text_atomic(path, json.dumps(document, indent=2) + "\n")
+ 
+@@ -30,20 +32,29 @@ def read_payrun(path):
+     if not path.exists():
+         raise PayrollError(f"no pay run for {path.stem}")
+     document = json.loads(path.read_text(encoding="utf-8"))
+-    if document.get("schema") != SCHEMA:
+-        raise PayrollError(f"{path.name}: unsupported pay-run schema {document.get('schema')}")
++    schema = document.get("schema")
++    if schema not in READABLE:
++        raise PayrollError(f"{path.name}: unsupported pay-run schema {schema}")
+     period = PayPeriod(
+         document["period"],
+         date.fromisoformat(document["start"]),
+         date.fromisoformat(document["end"]),
+         date.fromisoformat(document["pay_date"]),
+     )
+-    return PayRun(period, tuple(_slip(record) for record in document["payslips"]))
++    return PayRun(period, tuple(_slip(record, schema) for record in document["payslips"]))
++
++
++def _cents(amount):
++    return int(round_money(amount) * 100)
++
++
++def _money(value, schema):
++    return Decimal(value) if schema == 1 else Decimal(value).scaleb(-2)
+ 
+ 
+ def _slip_record(slip):
+     record = {"employee_id": slip.employee_id, "name": slip.name}
+-    record.update({name: plain_money(getattr(slip, name)) for name in TOTALS})
++    record.update({name: _cents(getattr(slip, name)) for name in TOTALS})
+     record["lines"] = [_line_record(line) for line in slip.lines]
+     return record
+ 
+@@ -53,21 +64,22 @@ def _line_record(line):
+         "kind": line.kind,
+         "label": line.label,
+         "hours": None if line.hours is None else format_hours(line.hours),
+-        "rate": None if line.rate is None else plain_money(line.rate),
+-        "amount": plain_money(line.amount),
++        "rate": None if line.rate is None else _cents(line.rate),
++        "amount": _cents(line.amount),
+     }
+ 
+ 
+-def _slip(record):
+-    lines = tuple(_line(item) for item in record["lines"])
+-    return Payslip(record["employee_id"], record["name"], lines, *(Decimal(record[name]) for name in TOTALS))
++def _slip(record, schema):
++    lines = tuple(_line(item, schema) for item in record["lines"])
++    amounts = (_money(record[name], schema) for name in TOTALS)
++    return Payslip(record["employee_id"], record["name"], lines, *amounts)
+ 
+ 
+-def _line(record):
++def _line(record, schema):
+     return Line(
+         record["kind"],
+         record["label"],
+-        Decimal(record["amount"]),
++        _money(record["amount"], schema),
+         hours=None if record["hours"] is None else Decimal(record["hours"]),
+-        rate=None if record["rate"] is None else Decimal(record["rate"]),
++        rate=None if record["rate"] is None else _money(record["rate"], schema),
+     )
+diff --git a/tests/test_payrun_file.py b/tests/test_payrun_file.py
+new file mode 100644
+index 0000000..e12c913
+--- /dev/null
++++ b/tests/test_payrun_file.py
+@@ -0,0 +1,48 @@
++from datetime import date
++from decimal import Decimal
++import json
++
++from payroll.model.payslip import Line, PayRun, Payslip
++from payroll.model.period import PayPeriod
++from payroll.storage.payrun_file import read_payrun, write_payrun
++
++PERIOD = PayPeriod("2026-W01", date(2026, 1, 5), date(2026, 1, 11), date(2026, 1, 14))
++SLIP = Payslip(
++    "E001", "Ana Lima",
++    (Line("basic", "Ordinary hours", Decimal("975.00"), Decimal("39.00"), Decimal("25.00")),
++     Line("deduction", "Pension", Decimal("50.63"))),
++    Decimal("975.00"), Decimal("132.12"), Decimal("50.63"), Decimal("792.25"),
++)
++
++
++def test_money_is_written_as_whole_cents(tmp_path):
++    path = tmp_path / "run.json"
++    write_payrun(path, PayRun(PERIOD, (SLIP,)))
++    document = json.loads(path.read_text(encoding="utf-8"))
++    assert document["schema"] == 2
++    slip = document["payslips"][0]
++    assert (slip["gross"], slip["tax"], slip["deductions"], slip["net"]) == (97500, 13212, 5063, 79225)
++    assert slip["lines"][0] == {"kind": "basic", "label": "Ordinary hours", "hours": "39.00", "rate": 2500,
++                                "amount": 97500}
++    assert document["totals"]["net"] == 79225
++
++
++def test_written_run_reads_back(tmp_path):
++    path = tmp_path / "run.json"
++    write_payrun(path, PayRun(PERIOD, (SLIP,)))
++    assert read_payrun(path) == PayRun(PERIOD, (SLIP,))
++
++
++def test_schema_1_files_still_read(tmp_path):
++    path = tmp_path / "2026-W01.json"
++    path.write_text(json.dumps({
++        "schema": 1, "period": "2026-W01", "start": "2026-01-05", "end": "2026-01-11", "pay_date": "2026-01-14",
++        "payslips": [{"employee_id": "E001", "name": "Ana Lima", "gross": "975.00", "tax": "132.12",
++                      "deductions": "50.63", "net": "792.25",
++                      "lines": [{"kind": "basic", "label": "Ordinary hours", "hours": "39.00", "rate": "25.00",
++                                 "amount": "975.00"},
++                                {"kind": "deduction", "label": "Pension", "hours": None, "rate": None,
++                                 "amount": "50.63"}]}],
++        "totals": {"gross": "975.00", "tax": "132.12", "deductions": "50.63", "net": "792.25"},
++    }), encoding="utf-8")
++    assert read_payrun(path) == PayRun(PERIOD, (SLIP,))

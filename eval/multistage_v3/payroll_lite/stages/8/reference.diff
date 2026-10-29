@@ -1,0 +1,98 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4e1c357..3a07659 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `payroll year-end` has a `periods` column: how many pay runs paid each employee in the year.
+ - Bank files follow the bank's new layout: `account, reference, amount, name`.
+ - Fixed: `payroll hours` showed one decimal place, so quarter hours such as 7.25 showed as 7.2; it now shows two.
+ - Stored timesheets keep rows in upload order, with rows from `payroll timesheet add` at the end, so `payroll timesheet show` matches the sheet that was sent in.
+diff --git a/docs/reference.md b/docs/reference.md
+index 436ab37..fc09b10 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -168,7 +168,7 @@ Every command takes `--data DIR`. Errors are printed to standard error as
+ | `payslip.year_to_date` | `Year to date: gross {gross}, tax {tax}, deductions {deductions}, net {net}` | command line: last line of `payroll payslip` |
+ | `hours.columns` | `employee, ordinary, overtime, holiday, sick, total` | command line: columns of `payroll hours`; each shows the hours the pay run pays that way |
+ | `hours.decimals` | `2` | command line: decimal places of hours in `payroll hours` |
+-| `year-end.columns` | `employee_id, name, gross, tax, deductions, net` | command line: columns of `payroll year-end`, in both formats |
++| `year-end.columns` | `employee_id, name, periods, gross, tax, deductions, net` | command line: columns of `payroll year-end`, in both formats; `periods` is the number of pay runs that paid the employee in the year |
+ | `year-end.formats` | `text, csv` | command line: values of `payroll year-end --format` |
+ | `year-end --format` | `text` | command line: default format of `payroll year-end` |
+ | `year-end.counts_by` | `pay date` | command line: `payroll year-end` counts a pay run in the year it is paid |
+diff --git a/src/payroll/reports/summary.py b/src/payroll/reports/summary.py
+index bb2e4fe..54944b6 100644
+--- a/src/payroll/reports/summary.py
++++ b/src/payroll/reports/summary.py
+@@ -5,15 +5,18 @@ import io
+ from payroll.model.money import format_money, plain_money, total
+ from payroll.reports.formatting import table
+ 
+-COLUMNS = ("employee_id", "name", "gross", "tax", "deductions", "net")
++COLUMNS = ("employee_id", "name", "periods", "gross", "tax", "deductions", "net")
+ AMOUNTS = ("gross", "tax", "deductions", "net")
+ 
+ 
+ def render_text(year, rows):
+     if not rows:
+         return f"No pay runs were paid in {year}.\n"
+-    body = [[row.employee_id, row.name] + [format_money(getattr(row, name)) for name in AMOUNTS] for row in rows]
+-    body.append(["total", ""] + [format_money(total(getattr(row, name) for row in rows)) for name in AMOUNTS])
++    body = [
++        [row.employee_id, row.name, row.periods] + [format_money(getattr(row, name)) for name in AMOUNTS]
++        for row in rows
++    ]
++    body.append(["total", "", ""] + [format_money(total(getattr(row, name) for row in rows)) for name in AMOUNTS])
+     return f"Year-end summary {year}\n\n" + table(COLUMNS, body, numeric=range(2, len(COLUMNS)))
+ 
+ 
+@@ -22,7 +25,7 @@ def render_csv(year, rows):
+     writer = csv.writer(out, lineterminator="\n")
+     writer.writerow(COLUMNS)
+     for row in rows:
+-        writer.writerow([row.employee_id, row.name] + [plain_money(getattr(row, name)) for name in AMOUNTS])
++        writer.writerow([row.employee_id, row.name, row.periods] + [plain_money(getattr(row, name)) for name in AMOUNTS])
+     return out.getvalue()
+ 
+ 
+diff --git a/src/payroll/services/yearend.py b/src/payroll/services/yearend.py
+index d822e6e..9b0e9f0 100644
+--- a/src/payroll/services/yearend.py
++++ b/src/payroll/services/yearend.py
+@@ -10,6 +10,8 @@ from payroll.services.payrun import list_runs
+ class YearTotals:
+     employee_id: str
+     name: str
++    # how many pay runs in the year paid this employee
++    periods: int = 0
+     gross: Decimal = ZERO
+     tax: Decimal = ZERO
+     deductions: Decimal = ZERO
+@@ -26,6 +28,7 @@ def year_totals(data, year):
+             row = totals.setdefault(slip.employee_id, YearTotals(slip.employee_id, slip.name))
+             # Runs are read in period order, so the name kept is the latest one paid.
+             row.name = slip.name
++            row.periods += 1
+             row.gross += slip.gross
+             row.tax += slip.tax
+             row.deductions += slip.deductions
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 737318d..d65b02e 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -60,10 +60,10 @@ def test_hours_report_keeps_quarter_hours(settings):
+ 
+ 
+ def test_year_end_summary_formats():
+-    rows = [YearTotals("E001", "Ana Lima", Decimal("1912.50"), Decimal("244.91"), Decimal("95.63"),
++    rows = [YearTotals("E001", "Ana Lima", 2, Decimal("1912.50"), Decimal("244.91"), Decimal("95.63"),
+                        Decimal("1571.96"))]
+     assert render_csv(2026, rows) == (
+-        "employee_id,name,gross,tax,deductions,net\nE001,Ana Lima,1912.50,244.91,95.63,1571.96\n")
++        "employee_id,name,periods,gross,tax,deductions,net\nE001,Ana Lima,2,1912.50,244.91,95.63,1571.96\n")
+     assert "1,912.50" in render_text(2026, rows)
+     assert render_text(2026, []) == "No pay runs were paid in 2026.\n"
+ 

@@ -1,0 +1,131 @@
+{
+  "id": "greenhouse_monitor",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/greenhouse/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "After a sensor is recalibrated we want to re-derive its old readings, but the readings log only keeps the calibrated value. Add the uncalibrated value to every row of the readings log as a new column `raw`, placed right after `value`, in the same unit and with the same decimals as `value`. The log's columns become `timestamp,zone,sensor,kind,value,raw,unit`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/greenhouse/storage/history.py",
+          "kind": "data",
+          "path": "readings.csv is written by storage/readings_log.py and read back by storage/history.py, which unpacks each row by position; asking who reads the readings log finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_operations", "base_pipeline"]
+        }
+      ]
+    },
+    {
+      "request": "The new controllers in house 3 send sensor ids in capitals (`GH3-T01`) while the older ones send lower case (`gh3-t01`), so one probe shows up as two sensors in `greenhouse status`. Sensor ids should be case-insensitive: write them to the readings log in `upper case`, so `gh3-t01`, `Gh3-T01` and `GH3-T01` are all logged as `GH3-T01`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/greenhouse/storage/calibration.py",
+          "kind": "key",
+          "path": "Offsets are looked up by the sensor id string exactly as calibration.json and calibrate stored it; tracing where a row's offset comes from once its id is upper-cased leads to CalibrationStore's keys.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_pipeline"]
+        },
+        {
+          "file": "src/greenhouse/services/manual.py",
+          "kind": "copy",
+          "path": "record_manual (the record command) writes to the same readings log with its own copy of the row checks, sensor id clean-up included; listing every caller of ReadingsLog finds it.",
+          "diff": "quiet-1.diff",
+          "fails": ["base_operations"]
+        }
+      ]
+    },
+    {
+      "request": "`greenhouse calibrate GH1-T01 -12` is accepted and saved, although offsets must stay within `max_offset` (5.0 by default): only positive offsets are checked. A negative offset beyond the limit must be refused as well. For an offset outside the limit in either direction, `calibrate` should fail with `offset out of range: {offset} (limit {limit})`, for example `offset out of range: -12.0 (limit 5.0)`.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "Today a reading one degree over its limit raises the same alert as one fifteen degrees over, and the night crew can't tell which to act on first. Add a `critical_margin` setting to `settings.json`, default `5.0`: when a reading is past its high or low limit by more than that margin, its alert's code is `critical_high` or `critical_low` instead of `high` or `low`. The alerts log (`alerts.jsonl`) then holds the codes `high, low, critical_high, critical_low, stale`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/greenhouse/reports/messages.py",
+          "kind": "key",
+          "path": "Every alert line that check, alerts and report print comes from a template looked up by the record's code string in reports/messages.py; following where an alert's code is read finds the table.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_operations"]
+        }
+      ]
+    },
+    {
+      "request": "When a probe fails, the controller writes `ERR` in the value column. `greenhouse ingest` rejects those rows today, so probe outages leave no trace in the readings log. Keep them instead: log each ERR row with an empty `value` and `raw`, and count it as a gap, neither imported nor rejected. The line `ingest` prints becomes `imported {imported} rows, {gaps} gaps, rejected {rejected}`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/greenhouse/services/summary.py",
+          "kind": "contract",
+          "path": "summarize and hourly_means take min, max and mean over every loaded reading, relying on each having a number; following the readings that storage/history.py loads into the daily summary finds them.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_pipeline"]
+        }
+      ]
+    },
+    {
+      "request": "The valve timers only take whole multiples of five minutes, so a suggestion like `gh1: 12 min` can't be keyed in as it is. Add a `timer_step_minutes` setting to `settings.json`, default `5`, and round every irrigation suggestion up to a whole multiple of it: 12 minutes becomes 15, 10 stays 10, and a zone that needs no water still gets 0.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    },
+    {
+      "request": "Growers want to look back at what irrigation was suggested on earlier days, but `greenhouse irrigate` replaces `irrigation.csv` every time. Keep every day's plan in the file instead: add the plan's date (`YYYY-MM-DD`, the day `irrigate` runs) as a new first column, so the columns are `date,zone,minutes,reason`, and keep earlier days' rows when writing a new plan. Running `irrigate` again on the same day replaces that day's rows.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/greenhouse/services/valves.py",
+          "kind": "data",
+          "path": "irrigation.csv is written by storage/plans.py and read by services/valves.py, which unpacks each row by position to build the valve schedule; asking who reads the plan file finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_operations", "timer_step_default"]
+        }
+      ]
+    },
+    {
+      "request": "`greenhouse summary` always lists every zone, which is a lot to scroll through on a phone in the houses. Add a `summary --zone` option that limits the summary to one zone; its default, `all`, keeps listing every zone. A zone that isn't in the layout should fail with the usual `unknown zone: {zone}` error.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": []
+    }
+  ],
+  "groups": [
+    {"id": "base_pipeline", "since": 0, "until": 8},
+    {"id": "base_operations", "since": 0, "until": 8},
+    {"id": "raw_log_columns", "since": 1, "until": 8},
+    {"id": "raw_log_values", "since": 1, "until": 8},
+    {"id": "ids_logged_upper", "since": 2, "until": 8},
+    {"id": "ids_one_sensor", "since": 2, "until": 8},
+    {"id": "offset_negative_refused", "since": 3, "until": 8},
+    {"id": "offset_limit_message", "since": 3, "until": 8},
+    {"id": "critical_codes", "since": 4, "until": 8},
+    {"id": "critical_margin_setting", "since": 4, "until": 8},
+    {"id": "err_rows_logged", "since": 5, "until": 8},
+    {"id": "ingest_gap_count", "since": 5, "until": 8},
+    {"id": "timer_step_default", "since": 6, "until": 8},
+    {"id": "timer_step_setting", "since": 6, "until": 8},
+    {"id": "plan_dated_columns", "since": 7, "until": 8},
+    {"id": "plan_history_kept", "since": 7, "until": 8},
+    {"id": "summary_zone_filter", "since": 8, "until": 8},
+    {"id": "summary_zone_unknown", "since": 8, "until": 8}
+  ]
+}

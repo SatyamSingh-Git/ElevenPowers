@@ -1,0 +1,149 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e671956..957bde2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- The readings log keeps the uncalibrated value in a new `raw` column after `value`.
++
+ ## 1.4.0 - 2026-04-02
+ 
+ - Add `schedule`, which turns the irrigation plan into the valve controller's schedule.
+diff --git a/docs/reference.md b/docs/reference.md
+index 8620675..6dfb2f3 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -78,7 +78,7 @@ a site changes.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `readings.csv columns` | `timestamp,zone,sensor,kind,value,unit` | file: the readings log; values in the kind's canonical unit, calibration applied |
++| `readings.csv columns` | `timestamp,zone,sensor,kind,value,raw,unit` | file: the readings log; values in the kind's canonical unit, `value` with calibration applied and `raw` without |
+ | `readings.csv timestamp` | `YYYY-MM-DDTHH:MM:SS` | file: the readings log's time format, greenhouse local time |
+ | `readings.csv sensor` | `as received` | file: the readings log's sensor ids, spelled as the controller or `record` gave them |
+ | `controller export columns` | `time,zone,sensor,kind,value,unit` | file: what `ingest` reads; column order free, extra columns ignored |
+diff --git a/src/greenhouse/storage/history.py b/src/greenhouse/storage/history.py
+index 7a3c903..e3205d3 100644
+--- a/src/greenhouse/storage/history.py
++++ b/src/greenhouse/storage/history.py
+@@ -7,26 +7,32 @@ from ..core.model import Reading
+ 
+ 
+ def load_readings(path, *, day=None, zone=None):
+-    """Readings from the log, in log order, optionally only one day or zone."""
++    """Readings from the log, in log order, optionally only one day or zone.
++
++    Columns are found by name. Logs from before the ``raw`` column still load;
++    their readings have no raw value.
++    """
+     path = Path(path)
+     if not path.exists():
+         return []
+     readings = []
+     with path.open(newline="", encoding="utf-8") as handle:
+-        rows = csv.reader(handle)
+-        next(rows, None)
+-        for row in rows:
+-            if not row:
+-                continue
+-            stamp, zone_id, sensor, kind, value, unit = row
+-            at = parse_timestamp(stamp)
++        for row in csv.DictReader(handle):
++            at = parse_timestamp(row["timestamp"])
+             if day is not None and at.date() != day:
+                 continue
+-            if zone is not None and zone_id != zone:
++            if zone is not None and row["zone"] != zone:
+                 continue
+-            readings.append(
+-                Reading(at=at, zone=zone_id, sensor=sensor, kind=kind, value=float(value), unit=unit)
+-            )
++            raw = row.get("raw")
++            readings.append(Reading(
++                at=at,
++                zone=row["zone"],
++                sensor=row["sensor"],
++                kind=row["kind"],
++                value=float(row["value"]),
++                unit=row["unit"],
++                raw=float(raw) if raw else None,
++            ))
+     return readings
+ 
+ 
+diff --git a/src/greenhouse/storage/readings_log.py b/src/greenhouse/storage/readings_log.py
+index c5e291a..6cb15e7 100644
+--- a/src/greenhouse/storage/readings_log.py
++++ b/src/greenhouse/storage/readings_log.py
+@@ -1,7 +1,8 @@
+ """The readings log, ``readings.csv``: every accepted reading, in arrival order.
+ 
+ Values are written in their kind's canonical unit with the catalog's number of
+-decimals. The log is only ever appended to.
++decimals; ``raw`` is the value before calibration. The log is only ever
++appended to.
+ """
+ import csv
+ from pathlib import Path
+@@ -9,7 +10,7 @@ from pathlib import Path
+ from ..core.clock import format_timestamp
+ from ..core.units import format_value
+ 
+-LOG_COLUMNS = ["timestamp", "zone", "sensor", "kind", "value", "unit"]
++LOG_COLUMNS = ["timestamp", "zone", "sensor", "kind", "value", "raw", "unit"]
+ 
+ 
+ class ReadingsLog:
+@@ -40,5 +41,6 @@ def _log_row(reading):
+         reading.sensor,
+         reading.kind,
+         format_value(reading.kind, reading.value),
++        format_value(reading.kind, reading.raw),
+         reading.unit,
+     ]
+diff --git a/tests/test_ingest.py b/tests/test_ingest.py
+index ce79999..0571a32 100644
+--- a/tests/test_ingest.py
++++ b/tests/test_ingest.py
+@@ -33,8 +33,8 @@ def test_rows_are_converted_calibrated_and_logged(export_file, log, layout, tmp_
+     result = ingest_file(path, log, layout, calibration)
+     assert (result.imported, result.rejected) == (2, 0)
+     assert logged(log) == [
+-        "2026-05-01T08:00:00,gh1,GH1-T01,temperature,20.5,C",
+-        "2026-05-01T08:00:00,gh1,GH1-L01,light,21500,lux",
++        "2026-05-01T08:00:00,gh1,GH1-T01,temperature,20.5,20.0,C",
++        "2026-05-01T08:00:00,gh1,GH1-L01,light,21500,21500,lux",
+     ]
+ 
+ 
+@@ -75,7 +75,7 @@ def test_manual_reading_is_calibrated_and_logged(log, layout, tmp_path):
+     reading = record_manual(log, layout, calibration, zone="gh2", sensor="GH2-S01", kind="soil_moisture",
+                             value=31.0, unit="%", at=datetime(2026, 5, 1, 10, 30))
+     assert reading.value == 30.0
+-    assert logged(log) == ["2026-05-01T10:30:00,gh2,GH2-S01,soil_moisture,30.0,%"]
++    assert logged(log) == ["2026-05-01T10:30:00,gh2,GH2-S01,soil_moisture,30.0,31.0,%"]
+ 
+ 
+ def test_light_cannot_be_entered_by_hand(log, layout, tmp_path):
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index 7483386..ebda6a6 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -25,11 +25,11 @@ def reading(**changes):
+ 
+ def test_log_starts_with_column_names_and_rounds_values(tmp_path):
+     log = ReadingsLog(tmp_path / "readings.csv")
+-    assert log.write_many([reading(), reading(kind="humidity", value=70.6, unit="%")]) == 2
++    assert log.write_many([reading(), reading(kind="humidity", value=70.6, raw=69.6, unit="%")]) == 2
+     assert (tmp_path / "readings.csv").read_text().splitlines() == [
+-        "timestamp,zone,sensor,kind,value,unit",
+-        "2026-05-01T08:00:00,gh1,GH1-T01,temperature,21.0,C",
+-        "2026-05-01T08:00:00,gh1,GH1-T01,humidity,71,%",
++        "timestamp,zone,sensor,kind,value,raw,unit",
++        "2026-05-01T08:00:00,gh1,GH1-T01,temperature,21.0,20.5,C",
++        "2026-05-01T08:00:00,gh1,GH1-T01,humidity,71,70,%",
+     ]
+ 
+ 

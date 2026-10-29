@@ -1,0 +1,37 @@
+diff --git a/src/greenhouse/services/valves.py b/src/greenhouse/services/valves.py
+index c4ab40d..eb0db6e 100644
+--- a/src/greenhouse/services/valves.py
++++ b/src/greenhouse/services/valves.py
+@@ -1,4 +1,4 @@
+-"""The valve schedule for the irrigation controller, built from the latest irrigation plan.
++"""The valve schedule for the irrigation controller, built from the irrigation plan.
+ 
+ The pump feeds one valve at a time, so zones run back to back from the start
+ time in the order the plan lists them. Each line of ``valves.txt`` reads
+@@ -14,18 +14,18 @@ LINE = "{start} {valve} {zone} {minutes}"
+ 
+ 
+ def planned_minutes(path):
+-    """(zone, minutes) for each zone the most recent day's plan waters, in plan order."""
++    """(zone, minutes) for each zone the plan waters, in plan order."""
+     path = Path(path)
+     if not path.exists():
+         raise ValidationError(f"no irrigation plan: {path.name}")
++    planned = []
+     with path.open(newline="", encoding="utf-8") as handle:
+-        rows = list(csv.DictReader(handle))
+-    latest = max((row["date"] for row in rows), default=None)
+-    return [
+-        (row["zone"], int(row["minutes"]))
+-        for row in rows
+-        if row["date"] == latest and int(row["minutes"]) > 0
+-    ]
++        rows = csv.reader(handle)
++        next(rows, None)
++        for zone, minutes, _reason in rows:
++            if int(minutes) > 0:
++                planned.append((zone, int(minutes)))
++    return planned
+ 
+ 
+ def build_schedule(planned, layout, start):

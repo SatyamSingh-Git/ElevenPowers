@@ -1,0 +1,83 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2abeb03..13461fa 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fix `calibrate` accepting negative offsets beyond `max_offset`; the error now reads `offset out of range: {offset} (limit {limit})`.
+ - Sensor ids are case-insensitive and written to the readings log in upper case.
+ - The readings log keeps the uncalibrated value in a new `raw` column after `value`.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 92f56f1..08dcb98 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -64,7 +64,7 @@ a site changes.
+ | `missing sensor` | `missing sensor` | an ingest row or `record` without a sensor id |
+ | `out of range` | `out of range: {value} {unit}` | a calibrated value outside the catalog range |
+ | `duplicate reading` | `duplicate reading for {sensor}` | an ingest row repeating a sensor and time from the same file |
+-| `offset limit` | `offset too large: {offset}` | CLI: `calibrate` refusing an offset beyond `max_offset` |
++| `offset limit` | `offset out of range: {offset} (limit {limit})` | CLI: `calibrate` refusing an offset beyond `max_offset` in either direction |
+ | `no offset` | `no offset for {sensor}` | CLI: `calibrate --clear` for a sensor without an offset |
+ | `hand-held kind` | `{kind} cannot be entered by hand` | CLI: `record` with a kind the hand-held meters cannot read |
+ | `unknown setting` | `unknown setting: {name}` | settings.json naming a setting that does not exist |
+diff --git a/src/greenhouse/storage/calibration.py b/src/greenhouse/storage/calibration.py
+index ac9ccaf..e9f1d2f 100644
+--- a/src/greenhouse/storage/calibration.py
++++ b/src/greenhouse/storage/calibration.py
+@@ -22,9 +22,9 @@ class CalibrationStore:
+         return self._offsets.get(sensor, 0.0)
+ 
+     def set_offset(self, sensor, offset, limit):
+-        """Set a sensor's offset; ``limit`` is the largest offset a site accepts."""
+-        if offset > limit:
+-            raise ValidationError(f"offset too large: {offset}")
++        """Set a sensor's offset; ``limit`` bounds its size in either direction."""
++        if abs(offset) > limit:
++            raise ValidationError(f"offset out of range: {offset} (limit {limit})")
+         self._offsets[sensor.upper()] = offset
+ 
+     def clear(self, sensor):
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 060f7fd..599d9c4 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -49,7 +49,11 @@ def test_calibrate_respects_max_offset(cli, data_dir):
+     (data_dir / "settings.json").write_text(json.dumps({"max_offset": 2.0}))
+     code, _, err = cli("calibrate", "GH1-T01", "3")
+     assert code == 1
+-    assert err.strip() == "error: offset too large: 3.0"
++    assert err.strip() == "error: offset out of range: 3.0 (limit 2.0)"
++    code, _, err = cli("calibrate", "GH1-T01", "-3")
++    assert code == 1
++    assert err.strip() == "error: offset out of range: -3.0 (limit 2.0)"
++    assert not (data_dir / "calibration.json").exists()
+ 
+ 
+ def test_summary_as_json(cli, logged):
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index ebda6a6..dabd625 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -81,10 +81,18 @@ def test_offsets_survive_a_save(tmp_path):
+ 
+ def test_offset_above_the_limit_is_refused(tmp_path):
+     store = CalibrationStore(tmp_path / "calibration.json")
+-    with pytest.raises(ValidationError, match="offset too large: 6.5"):
++    with pytest.raises(ValidationError, match=r"offset out of range: 6\.5 \(limit 5\.0\)"):
+         store.set_offset("GH1-T01", 6.5, 5.0)
+ 
+ 
++def test_negative_offset_beyond_the_limit_is_refused(tmp_path):
++    store = CalibrationStore(tmp_path / "calibration.json")
++    with pytest.raises(ValidationError, match=r"offset out of range: -12\.0 \(limit 5\.0\)"):
++        store.set_offset("GH1-T01", -12.0, 5.0)
++    store.set_offset("GH1-T01", -5.0, 5.0)
++    assert store.items() == [("GH1-T01", -5.0)]
++
++
+ def test_clearing_an_offset(tmp_path):
+     store = CalibrationStore(tmp_path / "calibration.json", {"GH1-T01": 0.5})
+     assert store.clear("GH1-T01")

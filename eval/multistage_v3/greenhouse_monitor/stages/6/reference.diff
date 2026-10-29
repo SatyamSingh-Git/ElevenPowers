@@ -1,0 +1,144 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 297e4c4..1d77698 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Irrigation suggestions round up to a multiple of the new `timer_step_minutes` setting (default 5).
+ - `ingest` keeps `ERR` rows in the readings log as gaps with an empty value, and counts them separately.
+ - Add the `critical_margin` setting: readings past a limit by more than it raise `critical_high` or `critical_low`.
+ - Fix `calibrate` accepting negative offsets beyond `max_offset`; the error now reads `offset out of range: {offset} (limit {limit})`.
+diff --git a/docs/reference.md b/docs/reference.md
+index a495fff..6f25786 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -41,6 +41,7 @@ a site changes.
+ | `critical_margin` | `5.0` | settings.json: a reading past its limit by more than this raises `critical_high` or `critical_low` |
+ | `minutes_per_point` | `2.0` | settings.json: irrigation minutes per point of moisture below target |
+ | `max_irrigation_minutes` | `30` | settings.json: longest irrigation suggested for one zone |
++| `timer_step_minutes` | `5` | settings.json: suggestions are rounded up to a whole multiple of this, for the valve timers |
+ | `dry_margin` | `2.0` | settings.json: points below target tolerated without watering |
+ | `max_offset` | `5.0` | settings.json: largest calibration offset accepted |
+ | `report_format` | `text` | settings.json: default `summary --format` |
+diff --git a/src/greenhouse/config/settings.py b/src/greenhouse/config/settings.py
+index 90a7a96..128d45f 100644
+--- a/src/greenhouse/config/settings.py
++++ b/src/greenhouse/config/settings.py
+@@ -9,6 +9,8 @@ from pathlib import Path
+ from ..core.errors import ConfigError
+ from .jsonfile import number, read_json
+ 
++AT_LEAST_ONE = {"timer_step_minutes"}
++
+ 
+ @dataclass(frozen=True)
+ class Settings:
+@@ -16,6 +18,7 @@ class Settings:
+     critical_margin: float = 5.0
+     minutes_per_point: float = 2.0
+     max_irrigation_minutes: int = 30
++    timer_step_minutes: int = 5
+     dry_margin: float = 2.0
+     max_offset: float = 5.0
+     report_format: str = "text"
+@@ -50,6 +53,8 @@ def _coerce(name, value, expected):
+     value = number(value, f"setting {name}")
+     if value < 0:
+         raise ConfigError(f"setting {name} must not be negative")
++    if name in AT_LEAST_ONE and value < 1:
++        raise ConfigError(f"setting {name} must be at least 1")
+     if expected is int:
+         if value != int(value):
+             raise ConfigError(f"setting {name} must be a whole number")
+diff --git a/src/greenhouse/services/irrigation.py b/src/greenhouse/services/irrigation.py
+index 45e9e2c..f988fb5 100644
+--- a/src/greenhouse/services/irrigation.py
++++ b/src/greenhouse/services/irrigation.py
+@@ -2,7 +2,9 @@
+ 
+ A zone is watered when its driest soil probe is more than ``dry_margin``
+ points below the zone's target. Each missing point asks for
+-``minutes_per_point`` minutes, up to ``max_irrigation_minutes``.
++``minutes_per_point`` minutes, up to ``max_irrigation_minutes``. The valve
++timers take whole multiples of ``timer_step_minutes``, so suggestions are
++rounded up to one.
+ """
+ from math import ceil
+ 
+@@ -33,9 +35,16 @@ def _suggestion(zone, moisture, settings):
+     deficit = target - moisture
+     if deficit <= settings.dry_margin:
+         return Suggestion(zone.id, 0, f"moisture {moisture:.1f}% near target {target:.1f}%")
+-    minutes = min(ceil(deficit * settings.minutes_per_point), settings.max_irrigation_minutes)
++    minutes = _on_timer(ceil(deficit * settings.minutes_per_point), settings)
+     return Suggestion(zone.id, minutes, f"moisture {moisture:.1f}% below target {target:.1f}%")
+ 
+ 
++def _on_timer(minutes, settings):
++    """Round up to whole timer steps, never past the longest run allowed."""
++    step = settings.timer_step_minutes
++    longest = settings.max_irrigation_minutes // step * step
++    return min(ceil(minutes / step) * step, longest)
++
++
+ def total_minutes(suggestions):
+     return sum(suggestion.minutes for suggestion in suggestions)
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index f2b16fb..0598c23 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -76,10 +76,10 @@ def test_check_logs_each_alert_once(cli, logged):
+ def test_irrigate_writes_the_plan(cli, logged):
+     code, out, _ = cli("irrigate")
+     assert code == 0
+-    assert out.splitlines()[0] == "gh1: 12 min (moisture 34.0% below target 40.0%)"
++    assert out.splitlines()[0] == "gh1: 15 min (moisture 34.0% below target 40.0%)"
+     assert (logged / "irrigation.csv").read_text().splitlines() == [
+         "zone,minutes,reason",
+-        "gh1,12,moisture 34.0% below target 40.0%",
++        "gh1,15,moisture 34.0% below target 40.0%",
+         "gh2,0,moisture 34.0% near target 35.0%",
+     ]
+ 
+diff --git a/tests/test_config.py b/tests/test_config.py
+index 222afb4..e89decb 100644
+--- a/tests/test_config.py
++++ b/tests/test_config.py
+@@ -34,6 +34,11 @@ def test_setting_must_be_a_number(tmp_path):
+         load_settings(write(tmp_path / "settings.json", {"max_offset": "5"}))
+ 
+ 
++def test_timer_step_must_be_at_least_a_minute(tmp_path):
++    with pytest.raises(ConfigError, match="setting timer_step_minutes must be at least 1"):
++        load_settings(write(tmp_path / "settings.json", {"timer_step_minutes": 0}))
++
++
+ def test_whole_number_settings_refuse_fractions(tmp_path):
+     with pytest.raises(ConfigError, match="setting stale_minutes must be a whole number"):
+         load_settings(write(tmp_path / "settings.json", {"stale_minutes": 7.5}))
+diff --git a/tests/test_services.py b/tests/test_services.py
+index 24c3688..8e9b18b 100644
+--- a/tests/test_services.py
++++ b/tests/test_services.py
+@@ -103,10 +103,18 @@ def test_irrigation_follows_the_driest_probe(layout):
+         "GH2-S01": reading("GH2-S01", "soil_moisture", 34.0, zone="gh2"),
+     }
+     suggestions = suggest(layout, latest, Settings())
+-    assert [(s.zone, s.minutes) for s in suggestions] == [("gh1", 12), ("gh2", 0)]
++    assert [(s.zone, s.minutes) for s in suggestions] == [("gh1", 15), ("gh2", 0)]
+     assert suggestions[0].reason == "moisture 34.0% below target 40.0%"
+ 
+ 
++def test_irrigation_rounds_up_to_the_timer_step(layout):
++    latest = {"GH1-S01": reading("GH1-S01", "soil_moisture", 34.0)}
++    assert suggest(layout, latest, Settings(timer_step_minutes=10))[0].minutes == 20
++    assert suggest(layout, latest, Settings(timer_step_minutes=1))[0].minutes == 12
++    latest = {"GH1-S01": reading("GH1-S01", "soil_moisture", 35.0)}
++    assert suggest(layout, latest, Settings())[0].minutes == 10
++
++
+ def test_irrigation_is_capped(layout):
+     latest = {"GH1-S01": reading("GH1-S01", "soil_moisture", 10.0)}
+     assert suggest(layout, latest, Settings())[0].minutes == 30

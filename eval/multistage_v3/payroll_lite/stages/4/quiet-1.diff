@@ -1,0 +1,23 @@
+diff --git a/src/payroll/reports/journal.py b/src/payroll/reports/journal.py
+index e7910b7..c0d2cf0 100644
+--- a/src/payroll/reports/journal.py
++++ b/src/payroll/reports/journal.py
+@@ -9,14 +9,10 @@ COLUMNS = ("account", "debit", "credit")
+ 
+ 
+ def journal_lines(run):
+-    """(account, debit, credit) lines. The wage expense is the gross pay and money paid back to
+-    staff is an expense of its own; together they are paid out as tax, deductions and net pay, so
+-    the debits and credits always balance."""
+-    reimbursed = total(line.amount for slip in run.payslips for line in slip.lines if line.kind == "reimbursement")
+-    lines = [("Wages expense", run.total("gross"), ZERO)]
+-    if reimbursed:
+-        lines.append(("Reimbursements expense", reimbursed, ZERO))
+-    return lines + [
++    """(account, debit, credit) lines. The wage expense is the gross pay, which is paid out as
++    tax, deductions and net pay, so the debits and credits always balance."""
++    return [
++        ("Wages expense", run.total("gross"), ZERO),
+         ("Tax payable", ZERO, run.total("tax")),
+         ("Deductions payable", ZERO, run.total("deductions")),
+         ("Net wages payable", ZERO, run.total("net")),

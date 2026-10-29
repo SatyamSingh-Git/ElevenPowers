@@ -1,0 +1,88 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 63f6932..2aacb9a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Deduction kind `percent_over` takes `rate` percent of gross pay above `threshold`, for student loan repayments.
+ - Ordinary hours beyond `overtime.weekly_threshold` (default 40) in a Monday-to-Sunday week are paid as overtime.
+ - Pay-run files write money as integer cents (`101250` for 1,012.50) and carry `schema` 2; schema 1 files still read.
+ - `payroll journal` prints the ledger entry for a pay run, as text or CSV.
+diff --git a/docs/reference.md b/docs/reference.md
+index 05ba687..e5b80a2 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -50,7 +50,7 @@ deductions.
+ | `employee.pay_types` | `hourly, salaried` | pay rules: the pay types an employee can have |
+ | `allowance.kinds` | `fixed, per_shift` | pay rules: `fixed` is paid each period, `per_shift` for each day with work |
+ | `allowance.taxable_kinds` | `fixed, per_shift` | pay rules: allowance kinds counted in gross pay, and so taxed |
+-| `deduction.kinds` | `fixed, percent` | pay rules: `fixed` takes `amount`, `percent` takes `rate` percent of gross pay |
++| `deduction.kinds` | `fixed, percent, percent_over` | pay rules: `fixed` takes `amount`, `percent` takes `rate` percent of gross pay, `percent_over` takes `rate` percent of the gross pay above `threshold` |
+ | `tax.method` | `annualised bands` | pay rules: the period's gross times the periods in a year, taxed on the yearly bands, divided back |
+ 
+ ## Files in the data directory
+diff --git a/src/payroll/cli.py b/src/payroll/cli.py
+index 038d235..be20ad4 100644
+--- a/src/payroll/cli.py
++++ b/src/payroll/cli.py
+@@ -108,6 +108,7 @@ def build_parser():
+     deduction.add_argument("--label")
+     deduction.add_argument("--amount")
+     deduction.add_argument("--rate")
++    deduction.add_argument("--threshold")
+     deduction.set_defaults(handler=employees_deduction)
+     drop = employees.add_parser("drop", help="remove an allowance or deduction by its label")
+     drop.add_argument("employee")
+@@ -312,7 +313,7 @@ def employees_allowance(args, data):
+ 
+ 
+ def employees_deduction(args, data):
+-    values = {"amount": args.amount, "rate": args.rate}
++    values = {"amount": args.amount, "rate": args.rate, "threshold": args.threshold}
+     deduction = staff.add_deduction(data, args.employee, args.kind, args.label, values)
+     print(f"Added deduction {deduction.label} to {args.employee}.")
+     return 0
+diff --git a/src/payroll/rules/deductions.py b/src/payroll/rules/deductions.py
+index 20d2837..0656d5b 100644
+--- a/src/payroll/rules/deductions.py
++++ b/src/payroll/rules/deductions.py
+@@ -22,9 +22,14 @@ def _percent(params, gross):
+     return percent_of(gross, params["rate"])
+ 
+ 
++def _percent_over(params, gross):
++    return percent_of(max(gross - params["threshold"], 0), params["rate"])
++
++
+ DEDUCTIONS = {
+     "fixed": DeductionRule({"amount": parse_money}, _fixed),
+     "percent": DeductionRule({"rate": parse_rate}, _percent),
++    "percent_over": DeductionRule({"rate": parse_rate, "threshold": parse_money}, _percent_over),
+ }
+ 
+ 
+diff --git a/tests/test_rules.py b/tests/test_rules.py
+index 0b4e51b..2d3dec0 100644
+--- a/tests/test_rules.py
++++ b/tests/test_rules.py
+@@ -69,9 +69,18 @@ def test_deductions_by_kind():
+     assert [(line.label, line.amount) for line in lines] == [("Pension", Decimal("50.00")), ("Union", Decimal("12.00"))]
+ 
+ 
++def test_percent_over_deducts_only_above_the_threshold():
++    loan = Deduction("percent_over", "Student loan", {"rate": Decimal("12"), "threshold": Decimal("400.00")})
++    assert [line.amount for line in deduction_lines([loan], Decimal("1000.00"))] == [Decimal("72.00")]
++    assert deduction_lines([loan], Decimal("400.00")) == []
++    assert deduction_lines([loan], Decimal("250.00")) == []
++
++
+ def test_deduction_params_are_checked():
+     with pytest.raises(PayrollError, match="a percent deduction needs rate"):
+         parse_params("percent", {"amount": "5"})
++    with pytest.raises(PayrollError, match="a percent_over deduction needs threshold"):
++        parse_params("percent_over", {"rate": "12"})
+     with pytest.raises(PayrollError, match="unknown deduction kind levy"):
+         parse_params("levy", {})
+ 

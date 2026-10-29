@@ -1,0 +1,35 @@
+diff --git a/src/greenhouse/storage/calibration.py b/src/greenhouse/storage/calibration.py
+index ac9ccaf..6fb2844 100644
+--- a/src/greenhouse/storage/calibration.py
++++ b/src/greenhouse/storage/calibration.py
+@@ -4,7 +4,6 @@
+ 
+ An offset is added after a reading is converted to its kind's canonical unit,
+ so it is always in canonical units. Sensors without an entry read as-is.
+-Sensor ids are kept in upper case, the way the readings log spells them.
+ """
+ import json
+ from pathlib import Path
+@@ -16,7 +15,7 @@ from ..core.errors import ValidationError
+ class CalibrationStore:
+     def __init__(self, path, offsets=None):
+         self.path = Path(path)
+-        self._offsets = {sensor.upper(): offset for sensor, offset in (offsets or {}).items()}
++        self._offsets = dict(offsets or {})
+ 
+     def offset_for(self, sensor):
+         return self._offsets.get(sensor, 0.0)
+@@ -25,11 +24,11 @@ class CalibrationStore:
+         """Set a sensor's offset; ``limit`` is the largest offset a site accepts."""
+         if offset > limit:
+             raise ValidationError(f"offset too large: {offset}")
+-        self._offsets[sensor.upper()] = offset
++        self._offsets[sensor] = offset
+ 
+     def clear(self, sensor):
+         """Forget a sensor's offset; False if it had none."""
+-        return self._offsets.pop(sensor.upper(), None) is not None
++        return self._offsets.pop(sensor, None) is not None
+ 
+     def items(self):
+         return sorted(self._offsets.items())

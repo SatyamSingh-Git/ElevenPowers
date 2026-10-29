@@ -1,0 +1,13 @@
+diff --git a/src/greenhouse/reports/messages.py b/src/greenhouse/reports/messages.py
+index 9d6b353..409bc3c 100644
+--- a/src/greenhouse/reports/messages.py
++++ b/src/greenhouse/reports/messages.py
+@@ -5,8 +5,6 @@ from .formatting import label
+ MESSAGES = {
+     "high": "{zone} {kind} at {value} {unit} is above {limit} {unit}",
+     "low": "{zone} {kind} at {value} {unit} is below {limit} {unit}",
+-    "critical_high": "{zone} {kind} at {value} {unit} is far above {limit} {unit}",
+-    "critical_low": "{zone} {kind} at {value} {unit} is far below {limit} {unit}",
+     "stale": "{zone} sensor {sensor} has not reported for {limit} minutes",
+ }
+ 

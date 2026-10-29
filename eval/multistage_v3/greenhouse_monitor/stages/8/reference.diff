@@ -1,0 +1,88 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 252ca53..686f438 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Add `summary --zone` to summarise one zone.
+ - `irrigation.csv` keeps every day's plan, with the plan's date as a new first column.
+ - Irrigation suggestions round up to a multiple of the new `timer_step_minutes` setting (default 5).
+ - `ingest` keeps `ERR` rows in the readings log as gaps with an empty value, and counts them separately.
+diff --git a/docs/reference.md b/docs/reference.md
+index 0038d44..91c4c32 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -12,6 +12,7 @@ fact shows: the command line (CLI), a file in the data directory, or an API call
+ | `--data` | `.` | CLI: the data directory holding every file below |
+ | `--now` | `YYYY-MM-DDTHH:MM:SS` | CLI: the time the command runs at; required, there is no wall-clock default |
+ | `summary --date` | `today` | CLI: the day `summary` covers; `alerts`, `report`, `light`, `climate`, `weekly`, `uptime` and `digest` take the same option |
++| `summary --zone` | `all` | CLI: limits `summary` to one zone; `all` lists every zone |
+ | `summary --format` | `text` | CLI: `text`, `csv` or `json`; the `report_format` setting changes the default |
+ | `status --format` | `text` | CLI: `text` or `json` |
+ | `schedule --start` | `06:00` | CLI: when the first valve opens; zones then run back to back |
+diff --git a/src/greenhouse/cli/commands.py b/src/greenhouse/cli/commands.py
+index 4e8b120..7c6775b 100644
+--- a/src/greenhouse/cli/commands.py
++++ b/src/greenhouse/cli/commands.py
+@@ -29,6 +29,8 @@ from ..storage.history import latest_by_sensor, load_readings
+ from ..storage.plans import write_plan
+ from ..storage.readings_log import ReadingsLog
+ 
++ALL_ZONES = "all"
++
+ 
+ def cmd_ingest(args, context):
+     log = ReadingsLog(context.data.readings)
+@@ -81,7 +83,8 @@ def cmd_calibrate(args, context):
+ 
+ def cmd_summary(args, context):
+     day = context.day(args.date)
+-    stats = summarize(load_readings(context.data.readings, day=day))
++    zone = None if args.zone == ALL_ZONES else context.layout().zone(args.zone).id
++    stats = summarize(load_readings(context.data.readings, day=day, zone=zone))
+     context.say(render_summary(args.format or context.settings().report_format, day, stats))
+     return 0
+ 
+diff --git a/src/greenhouse/cli/main.py b/src/greenhouse/cli/main.py
+index 01cc067..67d675d 100644
+--- a/src/greenhouse/cli/main.py
++++ b/src/greenhouse/cli/main.py
+@@ -9,7 +9,7 @@ import sys
+ from ..core.clock import FixedClock, parse_timestamp
+ from ..core.errors import GreenhouseError
+ from ..storage.paths import DataDir
+-from .commands import COMMANDS
++from .commands import ALL_ZONES, COMMANDS
+ from .context import Context
+ from .views import VIEWS
+ 
+@@ -41,6 +41,7 @@ def build_parser():
+     summary = commands.add_parser("summary", help="daily statistics per zone and kind")
+     summary.add_argument("--date", help="YYYY-MM-DD (default: today)")
+     summary.add_argument("--format", help="text, csv or json (default: the report_format setting)")
++    summary.add_argument("--zone", default=ALL_ZONES, help="one zone, or all (default: all)")
+ 
+     check = commands.add_parser("check", help="check latest readings and log new alerts")
+     check.add_argument("--dry-run", action="store_true", help="print new alerts without logging them")
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index b10588f..da640f2 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -64,6 +64,15 @@ def test_summary_as_json(cli, logged):
+     assert rows[("gh2", "soil_moisture")]["count"] == 1
+ 
+ 
++def test_summary_of_one_zone(cli, logged):
++    code, out, _ = cli("summary", "--date", "2026-05-01", "--format", "json", "--zone", "gh2")
++    assert code == 0
++    assert {row["zone"] for row in json.loads(out)["rows"]} == {"gh2"}
++    code, _, err = cli("summary", "--zone", "gh7")
++    assert code == 1
++    assert err.strip() == "error: unknown zone: gh7"
++
++
+ def test_check_logs_each_alert_once(cli, logged):
+     (logged / "thresholds.json").write_text(json.dumps({"gh1": {"temperature": {"high": 30}}}))
+     code, out, _ = cli("check")
