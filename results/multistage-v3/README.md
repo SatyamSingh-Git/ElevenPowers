@@ -1,4 +1,7 @@
-# Multi-stage v3: pilot is a go
+# Multi-stage v3: twelve cases frozen; the full run waits
+
+The pilot was a go, all twelve cases are frozen at `8c3d7b1`, and the full run
+is proposed but not started ([below](#the-full-run-proposed-and-not-started)).
 
 v3 replaces v2's cases after the v2 pilot found nothing to prevent
 ([journey 92](../../journey/92-the-pilot-found-nothing-to-prevent.md)). Its
@@ -55,7 +58,7 @@ stale. The docs claim still shows no headroom on these cases.
   the pilot; an estimate from v2's table had said 0.45–0.6). The full-run
   proposal below therefore adds replicates.
 
-## How the cases were checked
+## How the two pilot cases were checked
 
 - **Rehearsal:** both cases rehearse usable from a fresh CRLF clone
   ([`rehearsal.json`](rehearsal.json)). Every quiet dependent fails exactly its

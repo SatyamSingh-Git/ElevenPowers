@@ -1,5 +1,8 @@
 # Multi-stage v2 — pilot run; no real headroom
 
+Superseded by [v3](../multistage-v3/README.md), whose cases are built so a
+dependent is hard to find.
+
 **Pilot, 2026-10-28** ([`pilot-collected.json`](pilot-collected.json), sealed
 [`pilot-protocol.json`](pilot-protocol.json), [qualification](qualification.json),
 [journey 92](../../journey/92-the-pilot-found-nothing-to-prevent.md)). Four

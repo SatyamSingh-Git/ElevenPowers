@@ -1,9 +1,11 @@
 # Multi-stage v3: test projects where a dependent is hard to find
 
-**Status: pilot run 2026-10-28; GO.** Two cases were built, reviewed and
-frozen. Superpowers alone broke earlier behaviour on both, and a blind
-classifier called both misses genuine
-([results](../../../results/multistage-v3/README.md)). Next: ten more cases. It replaces v2's cases. It keeps v2's runner, arms, oracles and analysis
+**Status: twelve cases frozen 2026-10-29; full run proposed, not started.**
+The pilot (2026-10-28) was a go: superpowers alone broke earlier behaviour on
+both of the first two cases, and a blind classifier called both misses genuine.
+Ten more cases followed from the same brief, were reviewed and fixed, and all
+twelve are frozen at `8c3d7b1`
+([results](../../../results/multistage-v3/README.md)). It replaces v2's cases. It keeps v2's runner, arms, oracles and analysis
 ([v2 design](2026-10-23-multistage-field-claims-design.md)).
 
 ## Intent
