@@ -8,7 +8,12 @@ searching the request's own words; that is disclosed. All twelve rehearse
 usable from a fresh CRLF clone. Frozen at `8c3d7b1` (1,220 case files) and
 published in the public cases repository's `v3/` folder. Proposed full run:
 twelve cases, two arms, five replicates, 120 conversations, about $123, power
-0.88 at the pilot rate. It waits for the user's go. See
+0.88 at the pilot rate. It waits for the user's go. Hosted CI during this work met
+the two recorded intermittents again (`test_actual_encoded_runner_envelope...`,
+`test_keyboard_interrupt_cleans_tree_before_reraising`). It also met a newly
+seen one: `test_sigterm_cleans_tree_in_main_thread` exited 1 rather than 143 on
+Ubuntu 3.13, on `7faf9d5`, a case-loader change with no process code. It passes
+3/3 locally; retained, unexplained. See
 [results](../results/multistage-v3/README.md) and
 [journey 94](../journey/94-twelve-cases-and-ten-findings.md).
 
