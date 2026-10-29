@@ -1,0 +1,33 @@
+diff --git a/src/lending/storage/member_import.py b/src/lending/storage/member_import.py
+index cad9245..0e7a53f 100644
+--- a/src/lending/storage/member_import.py
++++ b/src/lending/storage/member_import.py
+@@ -1,13 +1,11 @@
+ """Reading members from CSV: the council's sign-up sheet, or a file `lend export` wrote.
+ 
+ The file needs a header row naming at least the columns card, name, email,
+-type, born and joined; other columns are ignored. Dates may be YYYY-MM-DD, as
+-the council writes them, or DD/MM/YYYY, as `lend export` does. Rows are
+-checked as they are read and the first bad row stops the import, so nothing is
+-half-loaded.
++type, born and joined; other columns are ignored. Rows are checked as they are
++read and the first bad row stops the import, so nothing is half-loaded.
+ """
+ import csv
+-from datetime import date, datetime
++from datetime import date
+ 
+ from ..errors import refuse
+ from ..model.members import Member, normalise_card, problems
+@@ -33,10 +31,7 @@ def read_members_csv(path):
+ 
+ 
+ def _day(text, number):
+-    text = text.strip()
+     try:
+-        if '/' in text:
+-            return datetime.strptime(text, '%d/%m/%Y').date()
+-        return date.fromisoformat(text)
++        return date.fromisoformat(text.strip())
+     except ValueError:
+         raise refuse('bad_import', row=number, problem=f'not a date: {text}') from None

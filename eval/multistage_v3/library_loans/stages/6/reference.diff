@@ -1,0 +1,117 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 04aef12..27b7cd9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The members export writes the born and joined dates as DD/MM/YYYY for the mailing house.
+ - Fixed: a payment larger than the balance was taken and left the member in credit; it is now refused (`overpayment`).
+ - `lend cancel-hold CARD TITLE` cancels a hold; a copy already set aside goes to the next member waiting.
+ - A loan cannot be renewed while another member has a hold waiting on the title (`holds_waiting`).
+diff --git a/docs/reference.md b/docs/reference.md
+index d2dcc79..e334552 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -124,13 +124,14 @@ v1 ledgers `return` amounts) less payments and waivers.
+ ## Members CSV
+ 
+ `lend export FILE` writes every member; `lend import FILE` reads the same
+-columns, in any order, with extra columns ignored.
++columns, in any order, with extra columns ignored. Import takes dates as
++DD/MM/YYYY, as the export writes them, or YYYY-MM-DD.
+ 
+ | key | value | meaning |
+ |---|---|---|
+ | `export.columns` | `card,name,email,type,born,joined` | header row of the members CSV file `lend export` writes |
+-| `export.born` | `YYYY-MM-DD` | how the born column is written in the members CSV file `lend export` writes |
+-| `export.joined` | `YYYY-MM-DD` | how the joined column is written in the members CSV file `lend export` writes |
++| `export.born` | `DD/MM/YYYY` | how the born column is written in the members CSV file `lend export` writes |
++| `export.joined` | `DD/MM/YYYY` | how the joined column is written in the members CSV file `lend export` writes |
+ 
+ ## Command line
+ 
+diff --git a/src/lending/model/dates.py b/src/lending/model/dates.py
+index d02df7f..fc32173 100644
+--- a/src/lending/model/dates.py
++++ b/src/lending/model/dates.py
+@@ -36,3 +36,8 @@ def days_late(due, day):
+ 
+ def month_of(day):
+     return f'{day.year:04d}-{day.month:02d}'
++
++
++def format_day_first(day):
++    """DD/MM/YYYY, for people and programs that expect British dates."""
++    return day.strftime('%d/%m/%Y')
+diff --git a/src/lending/storage/member_export.py b/src/lending/storage/member_export.py
+index 4aa0e0c..687243e 100644
+--- a/src/lending/storage/member_export.py
++++ b/src/lending/storage/member_export.py
+@@ -1,7 +1,10 @@
+-"""The members CSV file `lend export` writes, for the mailing house and for backups."""
++"""The members CSV file `lend export` writes, for the mailing house and for backups.
++
++Dates are written day first, DD/MM/YYYY, which is what the mailing house loads.
++"""
+ import csv
+ 
+-from ..model.dates import format_date
++from ..model.dates import format_day_first
+ 
+ COLUMNS = ('card', 'name', 'email', 'type', 'born', 'joined')
+ 
+@@ -14,5 +17,5 @@ def write_members_csv(path, members):
+         writer.writerow(COLUMNS)
+         for member in rows:
+             writer.writerow([member.card, member.name, member.email, member.kind,
+-                             format_date(member.born), format_date(member.joined)])
++                             format_day_first(member.born), format_day_first(member.joined)])
+     return len(rows)
+diff --git a/src/lending/storage/member_import.py b/src/lending/storage/member_import.py
+index 0e7a53f..cad9245 100644
+--- a/src/lending/storage/member_import.py
++++ b/src/lending/storage/member_import.py
+@@ -1,11 +1,13 @@
+ """Reading members from CSV: the council's sign-up sheet, or a file `lend export` wrote.
+ 
+ The file needs a header row naming at least the columns card, name, email,
+-type, born and joined; other columns are ignored. Rows are checked as they are
+-read and the first bad row stops the import, so nothing is half-loaded.
++type, born and joined; other columns are ignored. Dates may be YYYY-MM-DD, as
++the council writes them, or DD/MM/YYYY, as `lend export` does. Rows are
++checked as they are read and the first bad row stops the import, so nothing is
++half-loaded.
+ """
+ import csv
+-from datetime import date
++from datetime import date, datetime
+ 
+ from ..errors import refuse
+ from ..model.members import Member, normalise_card, problems
+@@ -31,7 +33,10 @@ def read_members_csv(path):
+ 
+ 
+ def _day(text, number):
++    text = text.strip()
+     try:
+-        return date.fromisoformat(text.strip())
++        if '/' in text:
++            return datetime.strptime(text, '%d/%m/%Y').date()
++        return date.fromisoformat(text)
+     except ValueError:
+         raise refuse('bad_import', row=number, problem=f'not a date: {text}') from None
+diff --git a/tests/test_members_and_notices.py b/tests/test_members_and_notices.py
+index 132eb81..b33ee7c 100644
+--- a/tests/test_members_and_notices.py
++++ b/tests/test_members_and_notices.py
+@@ -58,7 +58,7 @@ def test_export(at, tmp_path):
+     assert membership.export_members(at(), target) == 3
+     lines = target.read_text(encoding='utf-8').splitlines()
+     assert lines[0] == 'card,name,email,type,born,joined'
+-    assert lines[2] == 'M1001,Ada Lovelace,ada@example.org,adult,1990-04-02,2020-01-15'
++    assert lines[2] == 'M1001,Ada Lovelace,ada@example.org,adult,02/04/1990,15/01/2020'
+ 
+ 
+ def test_children_become_adults_at_eighteen(at):

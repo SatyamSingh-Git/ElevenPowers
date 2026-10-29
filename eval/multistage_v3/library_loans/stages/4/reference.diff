@@ -1,0 +1,131 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 715c6bb..76c26dc 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `lend cancel-hold CARD TITLE` cancels a hold; a copy already set aside goes to the next member waiting.
+ - A loan cannot be renewed while another member has a hold waiting on the title (`holds_waiting`).
+ - The loans ledger writes each fine on a `fine` line of its own after the return; new ledgers start `#lending-ledger v2`, and v1 ledgers are still read.
+ - Returns up to `fine_grace_days` (default 2) days late are not fined; later returns pay from the due date as before.
+diff --git a/docs/reference.md b/docs/reference.md
+index ed6e523..85d0839 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -79,6 +79,7 @@ Every refusal has a stable code and a message.
+ | `holds_waiting` | `cannot renew {barcode}: another member is waiting for it` | renewing a loan while another member has a hold waiting on the title |
+ | `hold_limit` | `{card} already has {limit} holds` | placing a hold past `max_holds` |
+ | `duplicate_hold` | `{card} already has a hold on {title}` | placing a second hold on one title |
++| `no_hold` | `{card} has no hold on {title}` | cancelling a hold the member does not have |
+ | `bad_waiver` | `cannot waive {amount}: {card} owes {owed}` | waiving nothing, or more than is owed |
+ | `bad_note` | `note not added: {problem}` | an empty or overlong note |
+ | `bad_amount` | `not an amount of money: {text}` | money that cannot be read, or a payment of nothing |
+@@ -132,6 +133,10 @@ columns, in any order, with extra columns ignored.
+ 
+ ## Command line
+ 
++`lend cancel-hold CARD TITLE` drops a member's hold and prints
++`hold on TITLE for CARD cancelled`. A copy already set aside for them goes to
++the next member waiting, or back on the shelf.
++
+ | key | value | meaning |
+ |---|---|---|
+ | `--library` | `.` | the library directory (CLI) |
+diff --git a/src/lending/cli/commands.py b/src/lending/cli/commands.py
+index 96eefe4..b300c75 100644
+--- a/src/lending/cli/commands.py
++++ b/src/lending/cli/commands.py
+@@ -67,6 +67,12 @@ def shelf(library, args, out):
+     return 0
+ 
+ 
++def cancel_hold(library, args, out):
++    dropped = holds.cancel_hold(library, args.card, args.title)
++    print(f'hold on {dropped.title_id} for {dropped.card} cancelled', file=out)
++    return 0
++
++
+ def expire(library, args, out):
+     lapsed = holds.expire_holds(library)
+     print(f'{len(lapsed)} holds lapsed', file=out)
+diff --git a/src/lending/cli/main.py b/src/lending/cli/main.py
+index bca2392..9454125 100644
+--- a/src/lending/cli/main.py
++++ b/src/lending/cli/main.py
+@@ -44,6 +44,9 @@ def build_parser():
+     found.add_argument('title')
+     _with_format(command('queue', commands.queue, 'show the holds on a title')).add_argument('title')
+     _with_format(command('shelf', commands.shelf, 'list copies set aside for members'))
++    found = command('cancel-hold', commands.cancel_hold, "cancel a member's hold")
++    found.add_argument('card')
++    found.add_argument('title')
+     command('expire-holds', commands.expire, 'drop holds not collected in time')
+ 
+     found = command('pay', commands.pay, 'take a payment towards fines')
+diff --git a/src/lending/errors.py b/src/lending/errors.py
+index c247ef0..e3dbe85 100644
+--- a/src/lending/errors.py
++++ b/src/lending/errors.py
+@@ -22,6 +22,7 @@ MESSAGES = {
+     'holds_waiting': 'cannot renew {barcode}: another member is waiting for it',
+     'hold_limit': '{card} already has {limit} holds',
+     'duplicate_hold': '{card} already has a hold on {title}',
++    'no_hold': '{card} has no hold on {title}',
+     'bad_waiver': 'cannot waive {amount}: {card} owes {owed}',
+     'bad_note': 'note not added: {problem}',
+     'bad_amount': 'not an amount of money: {text}',
+diff --git a/src/lending/services/holds.py b/src/lending/services/holds.py
+index ae9a219..1e3c437 100644
+--- a/src/lending/services/holds.py
++++ b/src/lending/services/holds.py
+@@ -63,6 +63,22 @@ def collected(library, hold):
+     library.save_holds()
+ 
+ 
++def cancel_hold(library, card, title_id):
++    """Drop a member's hold; a copy set aside for them goes to the next member waiting."""
++    member = library.member(card)
++    title_id = title_id.strip()
++    hold = next((hold for hold in library.holds_of(member.card) if hold.title_id == title_id), None)
++    if hold is None:
++        raise refuse('no_hold', card=member.card, title=title_id)
++    library.holds.remove(hold)
++    if hold.status == READY:
++        queue = waiting(library, hold.title_id)
++        if queue:
++            _put_aside(library, queue[0], hold.barcode)
++    library.save_holds()
++    return hold
++
++
+ def expire_holds(library):
+     """Drop ready holds nobody collected in time; their copies go to the next in line."""
+     today = library.today()
+diff --git a/tests/test_holds_and_fines.py b/tests/test_holds_and_fines.py
+index 0392c3d..8d1c3dc 100644
+--- a/tests/test_holds_and_fines.py
++++ b/tests/test_holds_and_fines.py
+@@ -40,6 +40,21 @@ def test_duplicate_hold(at):
+     assert raised.value.message == 'M1001 already has a hold on T0002'
+ 
+ 
++def test_cancelling_a_ready_hold_passes_the_copy_on(at):
++    library = at()
++    holds.place_hold(library, 'M1001', 'T0002')
++    holds.place_hold(library, 'C2001', 'T0002')
++    holds.cancel_hold(at(), 'M1001', 'T0002')
++    [left] = at().holds
++    assert (left.card, left.status, left.barcode) == ('C2001', READY, '31000003')
++
++
++def test_cancelling_a_hold_that_is_not_there(at):
++    with pytest.raises(LendingError) as raised:
++        holds.cancel_hold(at(), 'M1001', 'T0002')
++    assert raised.value.message == 'M1001 has no hold on T0002'
++
++
+ def test_uncollected_hold_lapses_to_the_next_member(at):
+     library = at()
+     holds.place_hold(library, 'M1001', 'T0002')

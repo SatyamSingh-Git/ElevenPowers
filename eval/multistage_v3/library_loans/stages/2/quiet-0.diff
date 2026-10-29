@@ -1,0 +1,22 @@
+diff --git a/src/lending/services/fines.py b/src/lending/services/fines.py
+index 8c656f5..7914e8f 100644
+--- a/src/lending/services/fines.py
++++ b/src/lending/services/fines.py
+@@ -2,8 +2,6 @@
+ 
+ What a member owes is never stored: it is read off the ledger, charges less
+ payments, so the ledger stays the single record finance reconciles against.
+-Fines have their own ledger lines; ledgers from before that carry the fine on
+-the return line, so return amounts still count as charges.
+ """
+ from dataclasses import dataclass
+ from datetime import date
+@@ -36,7 +34,7 @@ def fine_for(settings, loan, material, price, returned_on):
+     return min(late * daily_fine(settings, material), settings.max_fine, price)
+ 
+ 
+-CHARGES = {'return': 'fine on', 'fine': 'fine on', 'lost': 'replacing'}
++CHARGES = {'return': 'fine on', 'lost': 'replacing'}
+ CREDITS = {'payment': 'payment', 'waive': 'waived'}
+ 
+ 

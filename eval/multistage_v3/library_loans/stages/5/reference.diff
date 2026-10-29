@@ -1,0 +1,92 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 76c26dc..04aef12 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: a payment larger than the balance was taken and left the member in credit; it is now refused (`overpayment`).
+ - `lend cancel-hold CARD TITLE` cancels a hold; a copy already set aside goes to the next member waiting.
+ - A loan cannot be renewed while another member has a hold waiting on the title (`holds_waiting`).
+ - The loans ledger writes each fine on a `fine` line of its own after the return; new ledgers start `#lending-ledger v2`, and v1 ledgers are still read.
+diff --git a/docs/reference.md b/docs/reference.md
+index 85d0839..d2dcc79 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -80,6 +80,7 @@ Every refusal has a stable code and a message.
+ | `hold_limit` | `{card} already has {limit} holds` | placing a hold past `max_holds` |
+ | `duplicate_hold` | `{card} already has a hold on {title}` | placing a second hold on one title |
+ | `no_hold` | `{card} has no hold on {title}` | cancelling a hold the member does not have |
++| `overpayment` | `payment of {amount} is more than the balance of {balance}` | taking a payment larger than what the member owes |
+ | `bad_waiver` | `cannot waive {amount}: {card} owes {owed}` | waiving nothing, or more than is owed |
+ | `bad_note` | `note not added: {problem}` | an empty or overlong note |
+ | `bad_amount` | `not an amount of money: {text}` | money that cannot be read, or a payment of nothing |
+diff --git a/src/lending/errors.py b/src/lending/errors.py
+index e3dbe85..a002d38 100644
+--- a/src/lending/errors.py
++++ b/src/lending/errors.py
+@@ -23,6 +23,7 @@ MESSAGES = {
+     'hold_limit': '{card} already has {limit} holds',
+     'duplicate_hold': '{card} already has a hold on {title}',
+     'no_hold': '{card} has no hold on {title}',
++    'overpayment': 'payment of {amount} is more than the balance of {balance}',
+     'bad_waiver': 'cannot waive {amount}: {card} owes {owed}',
+     'bad_note': 'note not added: {problem}',
+     'bad_amount': 'not an amount of money: {text}',
+diff --git a/src/lending/services/fines.py b/src/lending/services/fines.py
+index 8c656f5..fca1522 100644
+--- a/src/lending/services/fines.py
++++ b/src/lending/services/fines.py
+@@ -75,6 +75,9 @@ def pay(library, card, amount):
+     member = library.member(card)
+     if amount <= 0:
+         raise refuse('bad_amount', text=format_money(amount))
++    owed = balance(library, member.card)
++    if amount > owed:
++        raise refuse('overpayment', amount=format_money(amount), balance=format_money(owed))
+     library.record(Entry(library.today(), 'payment', None, member.card, None, amount))
+     return balance(library, member.card)
+ 
+diff --git a/tests/test_holds_and_fines.py b/tests/test_holds_and_fines.py
+index 8d1c3dc..48c084a 100644
+--- a/tests/test_holds_and_fines.py
++++ b/tests/test_holds_and_fines.py
+@@ -108,6 +108,16 @@ def test_payment_is_recorded(at, ledger):
+     assert fines.balance(at(), 'M1001') == 0
+ 
+ 
++def test_payment_larger_than_balance_is_refused(at):
++    checkout(at(), 'M1001', '31000003')
++    checkin(at(date(2026, 3, 30)), '31000003')
++    with pytest.raises(LendingError) as raised:
++        fines.pay(at(date(2026, 3, 30)), 'M1001', 500)
++    assert raised.value.code == 'overpayment'
++    assert raised.value.message == 'payment of £5.00 is more than the balance of £1.75'
++    assert fines.balance(at(date(2026, 3, 30)), 'M1001') == 175
++
++
+ def test_payment_must_be_positive(at):
+     with pytest.raises(LendingError) as raised:
+         fines.pay(at(), 'M1001', 0)
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 08b0792..59ed70f 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -23,6 +23,7 @@ def test_overdue_report(at):
+ 
+ def test_activity_by_month(at, ledger):
+     ledger('2026-02-01 checkout 31000003 M1001 2026-02-22 0.00',
++           '2026-02-25 return 31000003 M1001 2026-02-22 0.75',
+            '2026-03-01 payment - M1002 - 1.00')
+     library = at()
+     checkout(library, 'M1001', '31000001')
+@@ -31,7 +32,7 @@ def test_activity_by_month(at, ledger):
+     pay(at(date(2026, 3, 20)), 'M1001', 50)
+     rows = activity_rows(at(date(2026, 3, 21)).ledger.entries(), 2026)
+     assert rows == [
+-        {'month': '2026-02', 'issues': 1, 'renewals': 0, 'returns': 0, 'lost': 0, 'payments': 0, 'waivers': 0,
++        {'month': '2026-02', 'issues': 1, 'renewals': 0, 'returns': 1, 'lost': 0, 'payments': 0, 'waivers': 0,
+          'taken': '£0.00'},
+         {'month': '2026-03', 'issues': 1, 'renewals': 1, 'returns': 1, 'lost': 0, 'payments': 2, 'waivers': 0,
+          'taken': '£1.50'},

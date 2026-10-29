@@ -1,0 +1,28 @@
+diff --git a/src/lending/services/accounts.py b/src/lending/services/accounts.py
+index a02fa77..20b7146 100644
+--- a/src/lending/services/accounts.py
++++ b/src/lending/services/accounts.py
+@@ -3,7 +3,6 @@ from dataclasses import dataclass
+ 
+ from ..model.holds import READY
+ from .fines import balance
+-from .policy import counts_towards_limit
+ 
+ LOAN_LIMITS = {'adult': 20, 'child': 10}
+ 
+@@ -31,8 +30,6 @@ def summary(library, card):
+     loans = library.loans_of(member.card)
+     held = library.holds_of(member.card)
+     ready = sum(hold.status == READY for hold in held)
+-    counted = sum(counts_towards_limit(library.settings, library.catalogue.material_of(loan.barcode))
+-                  for loan in loans)
+     return Summary(
+         card=member.card,
+         name=member.name,
+@@ -42,5 +39,5 @@ def summary(library, card):
+         holds_waiting=len(held) - ready,
+         holds_ready=ready,
+         owed=balance(library, member.card),
+-        can_borrow=max(0, loan_limit(member.kind) - counted),
++        can_borrow=max(0, loan_limit(member.kind) - len(loans)),
+     )

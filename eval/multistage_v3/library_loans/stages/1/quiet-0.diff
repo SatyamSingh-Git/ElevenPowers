@@ -1,0 +1,15 @@
+diff --git a/src/lending/reports/overdue.py b/src/lending/reports/overdue.py
+index c0f4c18..b33f945 100644
+--- a/src/lending/reports/overdue.py
++++ b/src/lending/reports/overdue.py
+@@ -20,9 +20,7 @@ def overdue_rows(library):
+             continue
+         copy = library.catalogue.copy(loan.barcode)
+         title = library.catalogue.title(copy.title_id)
+-        accrued = 0
+-        if days > settings.fine_grace_days:
+-            accrued = min(days * daily_fine(settings, title.material), settings.max_fine, copy.price)
++        accrued = min(days * daily_fine(settings, title.material), settings.max_fine, copy.price)
+         rows.append({'barcode': loan.barcode, 'title': title.title, 'card': loan.card,
+                      'due': format_date(loan.due), 'days': days, 'accrued': format_money(accrued)})
+     rows.sort(key=lambda row: (-row['days'], row['barcode']))

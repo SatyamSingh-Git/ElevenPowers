@@ -1,0 +1,95 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a0172e4..8074017 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Members may have up to 15 holds by default (`max_holds`), and the refusal says how many they have.
+ - Loans of the materials in the new `limit_exempt` option (default `MAG`) no longer count towards the loan limit.
+ - The members export writes the born and joined dates as DD/MM/YYYY for the mailing house.
+ - Fixed: a payment larger than the balance was taken and left the member in credit; it is now refused (`overpayment`).
+diff --git a/docs/reference.md b/docs/reference.md
+index fc67783..46942c3 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -39,7 +39,7 @@ pounds. Per-material options carry the material code after a dot.
+ | `block_at` | `5.00` | a member owing this much or more cannot borrow (lending.ini option) |
+ | `limit_exempt` | `MAG` | material codes, comma-separated, whose loans do not count towards a member's loan limit; empty makes every loan count (lending.ini option) |
+ | `max_renewals` | `2` | renewals allowed per loan (lending.ini option) |
+-| `max_holds` | `10` | holds one member may have open at once (lending.ini option) |
++| `max_holds` | `15` | holds one member may have open at once (lending.ini option) |
+ | `hold_pickup_days` | `7` | days a member has to collect a copy set aside for them (lending.ini option) |
+ | `notice_days` | `7,21` | days past the due date on which overdue reminders go out (lending.ini option) |
+ | `courtesy_days` | `2` | days before the due date a courtesy reminder goes out; 0 turns it off (lending.ini option) |
+@@ -80,7 +80,7 @@ Every refusal has a stable code and a message.
+ | `member_blocked` | `{card} owes {owed} and cannot borrow until it is paid` | lending to a member owing `block_at` or more |
+ | `renew_limit` | `{barcode} has already been renewed {limit} times` | renewing past `max_renewals` |
+ | `holds_waiting` | `cannot renew {barcode}: another member is waiting for it` | renewing a loan while another member has a hold waiting on the title |
+-| `hold_limit` | `{card} already has {limit} holds` | placing a hold past `max_holds` |
++| `hold_limit` | `{card} already has {count} holds; the limit is {limit}` | placing a hold past `max_holds` |
+ | `duplicate_hold` | `{card} already has a hold on {title}` | placing a second hold on one title |
+ | `no_hold` | `{card} has no hold on {title}` | cancelling a hold the member does not have |
+ | `overpayment` | `payment of {amount} is more than the balance of {balance}` | taking a payment larger than what the member owes |
+diff --git a/src/lending/config.py b/src/lending/config.py
+index 09c8184..ddc2e5b 100644
+--- a/src/lending/config.py
++++ b/src/lending/config.py
+@@ -25,7 +25,7 @@ class Settings:
+     block_at: int = 500
+     limit_exempt: tuple = ('MAG',)
+     max_renewals: int = 2
+-    max_holds: int = 10
++    max_holds: int = 15
+     hold_pickup_days: int = 7
+     notice_days: tuple = (7, 21)
+     courtesy_days: int = 2
+diff --git a/src/lending/errors.py b/src/lending/errors.py
+index a002d38..6a0b824 100644
+--- a/src/lending/errors.py
++++ b/src/lending/errors.py
+@@ -20,7 +20,7 @@ MESSAGES = {
+     'member_blocked': '{card} owes {owed} and cannot borrow until it is paid',
+     'renew_limit': '{barcode} has already been renewed {limit} times',
+     'holds_waiting': 'cannot renew {barcode}: another member is waiting for it',
+-    'hold_limit': '{card} already has {limit} holds',
++    'hold_limit': '{card} already has {count} holds; the limit is {limit}',
+     'duplicate_hold': '{card} already has a hold on {title}',
+     'no_hold': '{card} has no hold on {title}',
+     'overpayment': 'payment of {amount} is more than the balance of {balance}',
+diff --git a/src/lending/services/holds.py b/src/lending/services/holds.py
+index 1e3c437..ba2cf04 100644
+--- a/src/lending/services/holds.py
++++ b/src/lending/services/holds.py
+@@ -26,7 +26,7 @@ def place_hold(library, card, title_id):
+     if any(hold.title_id == title.id for hold in mine):
+         raise refuse('duplicate_hold', card=member.card, title=title.id)
+     if len(mine) >= library.settings.max_holds:
+-        raise refuse('hold_limit', card=member.card, limit=library.settings.max_holds)
++        raise refuse('hold_limit', card=member.card, count=len(mine), limit=library.settings.max_holds)
+     hold = Hold(title.id, member.card, library.today())
+     library.holds.append(hold)
+     spare = _spare_copy(library, title)
+diff --git a/tests/test_holds_and_fines.py b/tests/test_holds_and_fines.py
+index 48c084a..69de352 100644
+--- a/tests/test_holds_and_fines.py
++++ b/tests/test_holds_and_fines.py
+@@ -40,6 +40,17 @@ def test_duplicate_hold(at):
+     assert raised.value.message == 'M1001 already has a hold on T0002'
+ 
+ 
++def test_hold_limit(at, home):
++    (home / 'lending.ini').write_text('[lending]\nmax_holds = 2\n', encoding='utf-8')
++    library = at()
++    holds.place_hold(library, 'M1001', 'T0001')
++    holds.place_hold(library, 'M1001', 'T0002')
++    with pytest.raises(LendingError) as raised:
++        holds.place_hold(library, 'M1001', 'T0003')
++    assert raised.value.message == 'M1001 already has 2 holds; the limit is 2'
++    assert at().settings.max_holds == 2
++
++
+ def test_cancelling_a_ready_hold_passes_the_copy_on(at):
+     library = at()
+     holds.place_hold(library, 'M1001', 'T0002')

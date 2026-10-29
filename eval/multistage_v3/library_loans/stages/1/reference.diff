@@ -1,0 +1,115 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2f60211..0c4787a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Returns up to `fine_grace_days` (default 2) days late are not fined; later returns pay from the due date as before.
++
+ ## 1.4.0 - 2026-02-20
+ 
+ - Copies returned at another branch go into transit; `lend receive` takes them off the van.
+diff --git a/docs/reference.md b/docs/reference.md
+index e45c586..7abf825 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -34,6 +34,7 @@ pounds. Per-material options carry the material code after a dot.
+ | `fine_per_day.AB` | `0.25` | fine per day late for audiobooks (lending.ini option) |
+ | `fine_per_day.DVD` | `1.00` | fine per day late for DVDs (lending.ini option) |
+ | `fine_per_day.MAG` | `0.10` | fine per day late for magazines (lending.ini option) |
++| `fine_grace_days` | `2` | a return at most this many days late is not fined; past it the fine counts from the due date (lending.ini option) |
+ | `max_fine` | `10.00` | most one late return can be fined; never more than the copy's price either (lending.ini option) |
+ | `block_at` | `5.00` | a member owing this much or more cannot borrow (lending.ini option) |
+ | `max_renewals` | `2` | renewals allowed per loan (lending.ini option) |
+@@ -43,7 +44,8 @@ pounds. Per-material options carry the material code after a dot.
+ | `courtesy_days` | `2` | days before the due date a courtesy reminder goes out; 0 turns it off (lending.ini option) |
+ | `closed_days` | `(none)` | weekdays the library is closed, such as `sun`; a due date falling on one moves to the next open day (lending.ini option) |
+ 
+-A fine is the daily rate for every day past the due date. A renewal runs a
++A return no more than `fine_grace_days` late is not fined. Past that, the fine
++is the daily rate for every day since the due date. A renewal runs a
+ fresh loan period from the day it is made.
+ 
+ ## Loan limits
+diff --git a/src/lending/config.py b/src/lending/config.py
+index 7fca647..f47e0d2 100644
+--- a/src/lending/config.py
++++ b/src/lending/config.py
+@@ -21,6 +21,7 @@ class Settings:
+     loan_days: dict = field(default_factory=lambda: {'AB': 14, 'BK': 21, 'DVD': 7, 'MAG': 7})
+     fine_per_day: dict = field(default_factory=lambda: {'AB': 25, 'BK': 25, 'DVD': 100, 'MAG': 10})
+     max_fine: int = 1000
++    fine_grace_days: int = 2
+     block_at: int = 500
+     max_renewals: int = 2
+     max_holds: int = 10
+@@ -53,6 +54,7 @@ CONVERTERS = {
+     'loan_days': _count,
+     'fine_per_day': parse_money,
+     'max_fine': parse_money,
++    'fine_grace_days': _count,
+     'block_at': parse_money,
+     'max_renewals': _count,
+     'max_holds': _count,
+diff --git a/src/lending/reports/overdue.py b/src/lending/reports/overdue.py
+index b33f945..c0f4c18 100644
+--- a/src/lending/reports/overdue.py
++++ b/src/lending/reports/overdue.py
+@@ -20,7 +20,9 @@ def overdue_rows(library):
+             continue
+         copy = library.catalogue.copy(loan.barcode)
+         title = library.catalogue.title(copy.title_id)
+-        accrued = min(days * daily_fine(settings, title.material), settings.max_fine, copy.price)
++        accrued = 0
++        if days > settings.fine_grace_days:
++            accrued = min(days * daily_fine(settings, title.material), settings.max_fine, copy.price)
+         rows.append({'barcode': loan.barcode, 'title': title.title, 'card': loan.card,
+                      'due': format_date(loan.due), 'days': days, 'accrued': format_money(accrued)})
+     rows.sort(key=lambda row: (-row['days'], row['barcode']))
+diff --git a/src/lending/services/fines.py b/src/lending/services/fines.py
+index cf588e2..7914e8f 100644
+--- a/src/lending/services/fines.py
++++ b/src/lending/services/fines.py
+@@ -24,11 +24,12 @@ class Line:
+ def fine_for(settings, loan, material, price, returned_on):
+     """The charge for returning `loan` on `returned_on`.
+ 
+-    A daily rate for every day past the due date, capped at `max_fine` and at
+-    the price of the copy, since nobody should owe more than a replacement.
++    Nothing within `fine_grace_days` of the due date. Beyond that, a daily rate
++    for every day past the due date, capped at `max_fine` and at the price of
++    the copy, since nobody should owe more than a replacement.
+     """
+     late = days_late(loan.due, returned_on)
+-    if late <= 0:
++    if late <= settings.fine_grace_days:
+         return 0
+     return min(late * daily_fine(settings, material), settings.max_fine, price)
+ 
+diff --git a/tests/test_holds_and_fines.py b/tests/test_holds_and_fines.py
+index f02ec6b..0392c3d 100644
+--- a/tests/test_holds_and_fines.py
++++ b/tests/test_holds_and_fines.py
+@@ -60,6 +60,20 @@ def test_fine_for_is_capped(at):
+     assert fines.fine_for(library.settings, loan, 'DVD', 450, date(2026, 4, 30)) == 450
+ 
+ 
++@pytest.mark.parametrize('returned, fine', [(date(2026, 3, 10), 0), (date(2026, 3, 11), 0), (date(2026, 3, 12), 300)])
++def test_grace_period(at, returned, fine):
++    library = at()
++    loan = checkout(library, 'M1001', '31000004')
++    assert fines.fine_for(library.settings, loan, 'DVD', 1999, returned) == fine
++
++
++def test_grace_period_can_be_turned_off(at, home):
++    (home / 'lending.ini').write_text('[lending]\nfine_grace_days = 0\n', encoding='utf-8')
++    library = at()
++    loan = checkout(library, 'M1001', '31000004')
++    assert fines.fine_for(library.settings, loan, 'DVD', 1999, date(2026, 3, 10)) == 100
++
++
+ def test_balance_and_statement_come_from_the_ledger(at, ledger):
+     ledger('2026-02-01 checkout 31000003 M1001 2026-02-22 0.00',
+            '2026-03-01 return 31000003 M1001 2026-02-22 1.75',

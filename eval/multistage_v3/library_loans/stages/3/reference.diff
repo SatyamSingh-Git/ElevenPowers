@@ -1,0 +1,121 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ca59fa2..715c6bb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- A loan cannot be renewed while another member has a hold waiting on the title (`holds_waiting`).
+ - The loans ledger writes each fine on a `fine` line of its own after the return; new ledgers start `#lending-ledger v2`, and v1 ledgers are still read.
+ - Returns up to `fine_grace_days` (default 2) days late are not fined; later returns pay from the due date as before.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 51b7e4e..ed6e523 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -46,7 +46,8 @@ pounds. Per-material options carry the material code after a dot.
+ 
+ A return no more than `fine_grace_days` late is not fined. Past that, the fine
+ is the daily rate for every day since the due date. A renewal runs a
+-fresh loan period from the day it is made.
++fresh loan period from the day it is made, and is refused while another member
++has a hold waiting on the title.
+ 
+ ## Loan limits
+ 
+@@ -75,6 +76,7 @@ Every refusal has a stable code and a message.
+ | `loan_limit` | `{card} has reached the loan limit of {limit}` | lending past the member's loan limit |
+ | `member_blocked` | `{card} owes {owed} and cannot borrow until it is paid` | lending to a member owing `block_at` or more |
+ | `renew_limit` | `{barcode} has already been renewed {limit} times` | renewing past `max_renewals` |
++| `holds_waiting` | `cannot renew {barcode}: another member is waiting for it` | renewing a loan while another member has a hold waiting on the title |
+ | `hold_limit` | `{card} already has {limit} holds` | placing a hold past `max_holds` |
+ | `duplicate_hold` | `{card} already has a hold on {title}` | placing a second hold on one title |
+ | `bad_waiver` | `cannot waive {amount}: {card} owes {owed}` | waiving nothing, or more than is owed |
+diff --git a/src/lending/errors.py b/src/lending/errors.py
+index 5c547a6..c247ef0 100644
+--- a/src/lending/errors.py
++++ b/src/lending/errors.py
+@@ -19,6 +19,7 @@ MESSAGES = {
+     'loan_limit': '{card} has reached the loan limit of {limit}',
+     'member_blocked': '{card} owes {owed} and cannot borrow until it is paid',
+     'renew_limit': '{barcode} has already been renewed {limit} times',
++    'holds_waiting': 'cannot renew {barcode}: another member is waiting for it',
+     'hold_limit': '{card} already has {limit} holds',
+     'duplicate_hold': '{card} already has a hold on {title}',
+     'bad_waiver': 'cannot waive {amount}: {card} owes {owed}',
+diff --git a/src/lending/reports/loans.py b/src/lending/reports/loans.py
+index 95c8eab..2d04500 100644
+--- a/src/lending/reports/loans.py
++++ b/src/lending/reports/loans.py
+@@ -1,5 +1,6 @@
+ """A member's loans, as the desk reads them out: what is due when, and what can be extended."""
+ from ..model.dates import format_date
++from ..services.holds import waiting
+ 
+ COLUMNS = ('barcode', 'title', 'due', 'overdue', 'renewals_left', 'renewable')
+ 
+@@ -9,8 +10,10 @@ def member_loans(library, card):
+     today = library.today()
+     rows = []
+     for loan in library.loans_of(member.card):
++        title = library.catalogue.title_of(loan.barcode)
+         left = library.settings.max_renewals - loan.renewals
+-        rows.append({'barcode': loan.barcode, 'title': library.catalogue.title_of(loan.barcode).title,
++        wanted = any(hold.card != loan.card for hold in waiting(library, title.id))
++        rows.append({'barcode': loan.barcode, 'title': title.title,
+                      'due': format_date(loan.due), 'overdue': loan.days_overdue(today),
+-                     'renewals_left': max(0, left), 'renewable': 'yes' if left > 0 else 'no'})
++                     'renewals_left': max(0, left), 'renewable': 'yes' if left > 0 and not wanted else 'no'})
+     return rows
+diff --git a/src/lending/services/circulation.py b/src/lending/services/circulation.py
+index 327dfb7..3168b3b 100644
+--- a/src/lending/services/circulation.py
++++ b/src/lending/services/circulation.py
+@@ -47,12 +47,18 @@ def checkout(library, card, barcode):
+ 
+ 
+ def renew(library, barcode):
+-    """Renewing runs a fresh loan period from today, not from the old due date."""
++    """Renewing runs a fresh loan period from today, not from the old due date.
++
++    Nobody may renew a title another member is waiting for.
++    """
+     today = library.today()
+     loan = library.loan(barcode.strip())
+     limit = library.settings.max_renewals
+     if loan.renewals >= limit:
+         raise refuse('renew_limit', barcode=loan.barcode, limit=limit)
++    title_id = library.copy(loan.barcode).title_id
++    if any(hold.card != loan.card for hold in holds.waiting(library, title_id)):
++        raise refuse('holds_waiting', barcode=loan.barcode)
+     material = library.catalogue.material_of(loan.barcode)
+     loan.due = due_date(library, material, today)
+     loan.renewals += 1
+diff --git a/tests/test_circulation.py b/tests/test_circulation.py
+index 60816ca..26f3d04 100644
+--- a/tests/test_circulation.py
++++ b/tests/test_circulation.py
+@@ -4,6 +4,7 @@ import json
+ import pytest
+ 
+ from lending.errors import LendingError
++from lending.services import holds
+ from lending.services.circulation import checkin, checkout, renew, write_off
+ 
+ 
+@@ -67,6 +68,14 @@ def test_renewal_limit(at):
+     assert message == '31000004 has already been renewed 2 times'
+ 
+ 
++def test_no_renewal_while_another_member_waits(at):
++    checkout(at(), 'M1001', '31000003')
++    holds.place_hold(at(), 'M1002', 'T0002')
++    message = refused('holds_waiting', renew, at(date(2026, 3, 10)), '31000003')
++    assert message == 'cannot renew 31000003: another member is waiting for it'
++    assert at(date(2026, 3, 10)).loans['31000003'].due == date(2026, 3, 23)
++
++
+ def test_return_on_time_costs_nothing(at):
+     checkout(at(), 'M1001', '31000001')
+     result = checkin(at(date(2026, 3, 23)), '31000001')

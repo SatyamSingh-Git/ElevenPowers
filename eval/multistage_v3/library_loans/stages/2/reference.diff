@@ -1,0 +1,197 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0c4787a..ca59fa2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The loans ledger writes each fine on a `fine` line of its own after the return; new ledgers start `#lending-ledger v2`, and v1 ledgers are still read.
+ - Returns up to `fine_grace_days` (default 2) days late are not fined; later returns pay from the due date as before.
+ 
+ ## 1.4.0 - 2026-02-20
+diff --git a/docs/reference.md b/docs/reference.md
+index 7abf825..51b7e4e 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -91,10 +91,12 @@ Every refusal has a stable code and a message.
+ 
+ `loans.ledger` is plain text. The first line names the format; every other
+ line is one event, with tab-separated fields. Lines are only ever appended.
++Ledgers started with the `#lending-ledger v1` header keep it and are still read;
++in those, a fine was carried on the return line.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `ledger_header` | `#lending-ledger v1` | first line of the loans ledger file |
++| `ledger_header` | `#lending-ledger v2` | first line of the loans ledger file |
+ | `ledger.fields` | `date event barcode card due amount` | the fields of each ledger line, in order (file) |
+ | `ledger.separator` | `tab` | what separates the fields of a ledger line (file) |
+ | `ledger.empty` | `-` | written in a ledger field that has no value (file) |
+@@ -106,13 +108,14 @@ The events:
+ |---|---|
+ | `checkout` | a copy lent; `due` is its due date; amount 0.00 |
+ | `renew` | a loan renewed; `due` is the new due date; amount 0.00 |
+-| `return` | a copy taken back; `due` is the date it was due; amount is the fine charged, 0.00 if none |
++| `return` | a copy taken back; `due` is the date it was due; amount 0.00 |
++| `fine` | the fine for a late return, on the line after that return, with the same date, barcode, card and due date |
+ | `lost` | a loan written off; amount is the copy's price, charged to the member |
+ | `payment` | money taken from a member; no barcode or due date |
+ | `waive` | money owed written off by staff; no barcode or due date |
+ 
+-What a member owes is never stored: it is the charges (`return` and `lost`
+-amounts) less payments and waivers.
++What a member owes is never stored: it is the charges (`fine`, `lost`, and in
++v1 ledgers `return` amounts) less payments and waivers.
+ 
+ ## Members CSV
+ 
+diff --git a/src/lending/reports/activity.py b/src/lending/reports/activity.py
+index 92d5e8b..e7e8a8b 100644
+--- a/src/lending/reports/activity.py
++++ b/src/lending/reports/activity.py
+@@ -1,4 +1,7 @@
+-"""Desk activity by month, counted from the ledger, for the monthly return to the council."""
++"""Desk activity by month, counted from the ledger, for the monthly return to the council.
++
++Fine lines are not desk transactions (the return they follow is), so they are not counted.
++"""
+ from ..model.dates import month_of
+ from ..model.money import format_money
+ 
+@@ -13,8 +16,11 @@ def activity_rows(entries, year=None):
+     for entry in entries:
+         if year is not None and entry.date.year != year:
+             continue
++        column = COUNTED.get(entry.event)
++        if column is None:
++            continue
+         row = months.setdefault(month_of(entry.date), dict.fromkeys(COLUMNS[1:], 0))
+-        row[COUNTED[entry.event]] += 1
++        row[column] += 1
+         if entry.event == 'payment':
+             row['taken'] += entry.amount
+     return [{'month': month, **counts, 'taken': format_money(counts['taken'])}
+diff --git a/src/lending/services/circulation.py b/src/lending/services/circulation.py
+index c865e09..327dfb7 100644
+--- a/src/lending/services/circulation.py
++++ b/src/lending/services/circulation.py
+@@ -66,7 +66,9 @@ def checkin(library, barcode):
+     copy = library.copy(loan.barcode)
+     material = library.catalogue.material_of(copy.barcode)
+     fine = fine_for(library.settings, loan, material, copy.price, today)
+-    library.record(Entry(today, 'return', loan.barcode, loan.card, loan.due, fine))
++    library.record(Entry(today, 'return', loan.barcode, loan.card, loan.due, 0))
++    if fine:
++        library.record(Entry(today, 'fine', loan.barcode, loan.card, loan.due, fine))
+     del library.loans[loan.barcode]
+     hold = holds.copy_returned(library, copy.barcode)
+     travelling = hold is None and transit.send_home(library, copy.barcode)
+diff --git a/src/lending/services/fines.py b/src/lending/services/fines.py
+index 7914e8f..8c656f5 100644
+--- a/src/lending/services/fines.py
++++ b/src/lending/services/fines.py
+@@ -2,6 +2,8 @@
+ 
+ What a member owes is never stored: it is read off the ledger, charges less
+ payments, so the ledger stays the single record finance reconciles against.
++Fines have their own ledger lines; ledgers from before that carry the fine on
++the return line, so return amounts still count as charges.
+ """
+ from dataclasses import dataclass
+ from datetime import date
+@@ -34,7 +36,7 @@ def fine_for(settings, loan, material, price, returned_on):
+     return min(late * daily_fine(settings, material), settings.max_fine, price)
+ 
+ 
+-CHARGES = {'return': 'fine on', 'lost': 'replacing'}
++CHARGES = {'return': 'fine on', 'fine': 'fine on', 'lost': 'replacing'}
+ CREDITS = {'payment': 'payment', 'waive': 'waived'}
+ 
+ 
+diff --git a/src/lending/storage/ledger.py b/src/lending/storage/ledger.py
+index 334ef7c..1927d00 100644
+--- a/src/lending/storage/ledger.py
++++ b/src/lending/storage/ledger.py
+@@ -8,6 +8,9 @@ names the format; every other line is one event, with tab-separated fields
+ An empty field is written as '-'. Amounts are pounds with two decimals.
+ Nothing in the ledger is ever rewritten; current loans are worked out by
+ reading it from the top.
++
++Version 2 writes a fine on a line of its own after the return it belongs to.
++Ledgers started under version 1 keep their header and are still read.
+ """
+ from dataclasses import dataclass
+ from datetime import date
+@@ -19,9 +22,10 @@ from ..model.dates import format_date, parse_date
+ from ..model.money import parse_money, plain_amount
+ 
+ FILE = 'loans.ledger'
+-HEADER = '#lending-ledger v1'
++HEADER = '#lending-ledger v2'
++READABLE = ('#lending-ledger v1', HEADER)
+ FIELDS = ('date', 'event', 'barcode', 'card', 'due', 'amount')
+-EVENTS = ('checkout', 'renew', 'return', 'lost', 'payment', 'waive')
++EVENTS = ('checkout', 'renew', 'return', 'fine', 'lost', 'payment', 'waive')
+ EMPTY = '-'
+ SEPARATOR = '\t'
+ 
+@@ -57,7 +61,7 @@ class Ledger:
+ 
+ 
+ def _check_header(path, line):
+-    if line != HEADER:
++    if line not in READABLE:
+         raise refuse('bad_ledger', path=path.name, line=1, problem=f'expected {HEADER}')
+ 
+ 
+diff --git a/tests/test_circulation.py b/tests/test_circulation.py
+index 5cda743..60816ca 100644
+--- a/tests/test_circulation.py
++++ b/tests/test_circulation.py
+@@ -79,6 +79,14 @@ def test_late_return_is_fined_per_day(at):
+     assert checkin(at(date(2026, 3, 14)), '31000004').fine == 500
+ 
+ 
++def test_fine_has_a_ledger_line_of_its_own(at):
++    checkout(at(), 'M1001', '31000004')
++    checkin(at(date(2026, 3, 14)), '31000004')
++    entries = at(date(2026, 3, 14)).ledger.entries()
++    assert [(entry.event, entry.amount) for entry in entries[-2:]] == [('return', 0), ('fine', 500)]
++    assert entries[-1].due == date(2026, 3, 9)
++
++
+ def test_returning_what_is_not_out(at):
+     assert refused('not_on_loan', checkin, at(), '31000001') == '31000001 is not on loan'
+ 
+diff --git a/tests/test_ledger.py b/tests/test_ledger.py
+index 735196f..25a3dda 100644
+--- a/tests/test_ledger.py
++++ b/tests/test_ledger.py
+@@ -22,7 +22,16 @@ def test_file_layout(tmp_path):
+     ledger = Ledger(tmp_path / 'loans.ledger')
+     ledger.append(Entry(date(2026, 3, 30), 'payment', None, 'M1001', None, 250))
+     assert (tmp_path / 'loans.ledger').read_text(encoding='utf-8') == (
+-        '#lending-ledger v1\n2026-03-30\tpayment\t-\tM1001\t-\t2.50\n')
++        '#lending-ledger v2\n2026-03-30\tpayment\t-\tM1001\t-\t2.50\n')
++
++
++def test_version_1_ledgers_are_still_read(tmp_path):
++    (tmp_path / 'loans.ledger').write_text(
++        '#lending-ledger v1\n2026-03-30\treturn\t31000001\tM1001\t2026-03-23\t1.75\n', encoding='utf-8')
++    ledger = Ledger(tmp_path / 'loans.ledger')
++    ledger.append(Entry(date(2026, 3, 31), 'payment', None, 'M1001', None, 175))
++    assert [entry.amount for entry in ledger.entries()] == [175, 175]
++    assert (tmp_path / 'loans.ledger').read_text(encoding='utf-8').startswith('#lending-ledger v1\n')
+ 
+ 
+ def test_no_file_means_no_entries(tmp_path):
+@@ -30,7 +39,7 @@ def test_no_file_means_no_entries(tmp_path):
+ 
+ 
+ @pytest.mark.parametrize('text, problem', [
+-    ('something else\n', 'line 1: expected #lending-ledger v1'),
++    ('something else\n', 'line 1: expected #lending-ledger v2'),
+     ('#lending-ledger v1\n2026-03-02\tcheckout\t31000001\n', 'line 2: 3 fields, not 6'),
+     ('#lending-ledger v1\n2026-03-02\tborrow\t31000001\tM1001\t-\t0.00\n', 'line 2: unknown event borrow'),
+     ('#lending-ledger v1\n2026-03-02\tpayment\t-\tM1001\t-\tfree\n', 'line 2: not an amount of money: free'),

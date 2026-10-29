@@ -1,0 +1,215 @@
+{
+ "id": "library_loans",
+ "profile": "v3",
+ "pythonpath": "src",
+ "test_dir": "tests",
+ "protected": "src/lending/_generated.py",
+ "docs": "docs/reference.md",
+ "changelog": "CHANGELOG.md",
+ "stages": [
+  {
+   "request": "Members keep bringing books back a day or two late and then arguing about the small fines. Please add a grace period: a copy returned no more than `fine_grace_days` days after its due date is not fined at all. Make it a `lending.ini` option named `fine_grace_days`, default `2`. Past the grace period the fine still counts from the due date, so a book returned 3 days late pays for 3 days, as it does now.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/lending/reports/overdue.py",
+     "kind": "copy",
+     "path": "The overdue report's `accrued` column is documented as what the member would be charged if the copy came back today, and it works that charge out itself from `daily_fine`, `max_fine` and the copy price; looking up who else calls `daily_fine` or reads `max_fine` lands on it next to `fine_for`.",
+     "fails": [
+      "base_money"
+     ],
+     "diff": "quiet-0.diff"
+    }
+   ]
+  },
+  {
+   "request": "Finance reconciles fines against the loans ledger and wants every charge on a line of its own. When a late return is fined, the `return` line should have amount `0.00` and be followed by a `fine` line with the same date, barcode, card and due date, carrying the fine as its amount. Returns without a fine get no `fine` line. Because older copies of the program would misread these files, new loans ledger files should start with `#lending-ledger v2` instead of `#lending-ledger v1`. Ledgers that already exist keep their `#lending-ledger v1` first line and must still open.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/lending/services/fines.py",
+     "kind": "data",
+     "path": "Balances are never stored: fines.py reads them off the ledger, counting the event names in its `CHARGES` table (`return`, `lost`) as charges, as the ledger section of the reference also says; checking what reads ledger amounts after a fine moves off the return line finds it.",
+     "fails": [
+      "base_money"
+     ],
+     "diff": "quiet-0.diff"
+    },
+    {
+     "file": "src/lending/reports/activity.py",
+     "kind": "key",
+     "path": "The monthly activity report maps each ledger event name to a column through its `COUNTED` dict and indexes it directly, so an event name it has no entry for raises KeyError; going through everything that iterates `ledger.entries()` finds it.",
+     "fails": [
+      "base_desk"
+     ],
+     "diff": "quiet-1.diff"
+    }
+   ]
+  },
+  {
+   "request": "Members renew popular titles over and over while others wait for weeks. A loan must not be renewed while another member has a hold waiting on the same title. Refuse with code `holds_waiting` and the message `cannot renew {barcode}: another member is waiting for it`, both at the desk (`lend renew`) and when calling `renew` in `lending.services.circulation`.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/lending/reports/loans.py",
+     "kind": "copy",
+     "path": "`lend loans` has a `renewable` column, documented as whether a renewal would be accepted today, and it re-applies the renewal rule itself from `max_renewals`; searching for `max_renewals` shows it beside the check in `renew`.",
+     "fails": [
+      "base_desk"
+     ],
+     "diff": "quiet-0.diff"
+    }
+   ]
+  },
+  {
+   "request": "Members phone in to cancel holds they no longer want. Add `lend cancel-hold CARD TITLE`, where TITLE is the title id as `lend hold` takes it, which removes that member's hold on the title and prints `hold on {title} for {card} cancelled`. If a copy had already been set aside for them, it goes to the next member waiting for the title, or back on the shelf if nobody is. If the member has no hold on that title, refuse with code `no_hold` and the message `{card} has no hold on {title}`.",
+   "kind": "self-contained",
+   "bugfix": false,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "Bug: `lend pay` takes any amount. A member who owed £1.75 handed over a £5 note, the desk typed `5`, and now the system says they owe -£3.25. A payment larger than what the member owes must be refused with code `overpayment` and the message `payment of {amount} is more than the balance of {balance}`, amounts written like `£5.00`, and nothing recorded. The same goes for `pay` in `lending.services.fines`. Paying the whole balance or part of it works as before.",
+   "kind": "self-contained",
+   "bugfix": true,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "Our mailing house loads the file `lend export` writes into software that expects British dates. Write the `born` and `joined` columns of the members export as `DD/MM/YYYY`, for example `02/04/1990`.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/lending/storage/member_import.py",
+     "kind": "data",
+     "path": "The importer's docstring, and the members CSV section of the reference, say `lend import` reads the files `lend export` writes; it parses the date columns with `date.fromisoformat`, so following where the export file goes finds it.",
+     "fails": [
+      "base_desk"
+     ],
+     "diff": "quiet-0.diff"
+    }
+   ]
+  },
+  {
+   "request": "Magazines are cheap and we want people to take more of them. Add a `lending.ini` option `limit_exempt`: a comma-separated list of material codes whose loans no longer count towards a member's loan limit, default `MAG`. Setting it empty makes every loan count again.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/lending/services/accounts.py",
+     "kind": "copy",
+     "path": "`lend status` prints `can borrow`, documented as how many more items the member may borrow now; `accounts.summary` computes it from `loan_limit` and the number of loans, repeating the limit check in `checkout`, and searching for `loan_limit` shows both.",
+     "fails": [
+      "base_desk"
+     ],
+     "diff": "quiet-0.diff"
+    }
+   ]
+  },
+  {
+   "request": "Our book group members hit the holds limit all the time. Raise the default of the `lending.ini` option `max_holds` to `15`, and when a member reaches the limit, tell them how many holds they have: refuse with the message `{card} already has {count} holds; the limit is {limit}`.",
+   "kind": "self-contained",
+   "bugfix": false,
+   "dependent_missed_fails": []
+  }
+ ],
+ "groups": [
+  {
+   "id": "base_desk",
+   "since": 0,
+   "until": 8
+  },
+  {
+   "id": "base_money",
+   "since": 0,
+   "until": 8
+  },
+  {
+   "id": "grace_fines",
+   "since": 1,
+   "until": 8
+  },
+  {
+   "id": "grace_report",
+   "since": 1,
+   "until": 8
+  },
+  {
+   "id": "fine_line",
+   "since": 2,
+   "until": 8
+  },
+  {
+   "id": "ledger_v2",
+   "since": 2,
+   "until": 8
+  },
+  {
+   "id": "renew_blocked",
+   "since": 3,
+   "until": 8
+  },
+  {
+   "id": "renew_blocked_cli",
+   "since": 3,
+   "until": 8
+  },
+  {
+   "id": "cancel_hold",
+   "since": 4,
+   "until": 8
+  },
+  {
+   "id": "cancel_ready_hold",
+   "since": 4,
+   "until": 8
+  },
+  {
+   "id": "overpay_api",
+   "since": 5,
+   "until": 8
+  },
+  {
+   "id": "overpay_cli",
+   "since": 5,
+   "until": 8
+  },
+  {
+   "id": "export_uk",
+   "since": 6,
+   "until": 8
+  },
+  {
+   "id": "export_uk_join",
+   "since": 6,
+   "until": 8
+  },
+  {
+   "id": "exempt_default",
+   "since": 7,
+   "until": 8
+  },
+  {
+   "id": "exempt_option",
+   "since": 7,
+   "until": 8
+  },
+  {
+   "id": "holds_fifteen",
+   "since": 8,
+   "until": 8
+  },
+  {
+   "id": "holds_limit_message",
+   "since": 8,
+   "until": 8
+  }
+ ]
+}

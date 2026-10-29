@@ -1,0 +1,26 @@
+diff --git a/src/lending/reports/activity.py b/src/lending/reports/activity.py
+index e7e8a8b..92d5e8b 100644
+--- a/src/lending/reports/activity.py
++++ b/src/lending/reports/activity.py
+@@ -1,7 +1,4 @@
+-"""Desk activity by month, counted from the ledger, for the monthly return to the council.
+-
+-Fine lines are not desk transactions (the return they follow is), so they are not counted.
+-"""
++"""Desk activity by month, counted from the ledger, for the monthly return to the council."""
+ from ..model.dates import month_of
+ from ..model.money import format_money
+ 
+@@ -16,11 +13,8 @@ def activity_rows(entries, year=None):
+     for entry in entries:
+         if year is not None and entry.date.year != year:
+             continue
+-        column = COUNTED.get(entry.event)
+-        if column is None:
+-            continue
+         row = months.setdefault(month_of(entry.date), dict.fromkeys(COLUMNS[1:], 0))
+-        row[column] += 1
++        row[COUNTED[entry.event]] += 1
+         if entry.event == 'payment':
+             row['taken'] += entry.amount
+     return [{'month': month, **counts, 'taken': format_money(counts['taken'])}
