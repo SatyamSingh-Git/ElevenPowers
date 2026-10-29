@@ -1,0 +1,27 @@
+diff --git a/src/budgetbook/reports/annual.py b/src/budgetbook/reports/annual.py
+index a296fe6..36ee43d 100644
+--- a/src/budgetbook/reports/annual.py
++++ b/src/budgetbook/reports/annual.py
+@@ -3,7 +3,6 @@
+ Only closed months appear: an open month's figures can still change.
+ """
+ from ..model.dates import months_of_year
+-from ..model.money import parse_amount
+ from ..storage.workspace import read_json
+ from .render import Report, Section
+ 
+@@ -14,12 +13,10 @@ def year_report(workspace, year, currency):
+         closed = read_json(workspace.closed_month_path(month), None)
+         if closed is None:
+             continue
+-        # Files closed before format 2 hold integer cents; later ones hold decimal text.
+-        cents = parse_amount if closed.get("format", 1) >= 2 else int
+-        income, spending = cents(closed["income"]), cents(closed["spending"])
++        income, spending = closed["income"], closed["spending"]
+         months.append((str(month), income, spending, income - spending))
+         for entry in closed["categories"]:
+-            spent[entry["name"]] = spent.get(entry["name"], 0) + cents(entry["spent"])
++            spent[entry["name"]] = spent.get(entry["name"], 0) + entry["spent"]
+     total = ("Total", sum(row[1] for row in months), sum(row[2] for row in months),
+              sum(row[3] for row in months))
+     return Report(f"Year {year} ({currency})", [

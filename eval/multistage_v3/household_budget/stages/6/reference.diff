@@ -1,0 +1,111 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b3a326d..1bca99e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- New transactions are appended to the transactions file instead of rewriting it sorted
++  by date; the file is now kept in the order transactions were added.
+ - Fixed amounts such as `19.99` being stored a cent short; an amount with more than two
+   decimal places is now refused with `invalid amount` instead of being cut short.
+ - Month files are written as format 2: every amount is a decimal string such as `"382.10"`
+diff --git a/docs/reference.md b/docs/reference.md
+index 52a7d05..d04083d 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -36,7 +36,7 @@ line (CLI), a file in the budget folder, or the Python API.
+ | `transaction amount` | `-1234.56` | the amount column: plain decimal, negative is money out (transactions file) |
+ | `payee column` | `upper case, single spaces` | how the payee column is written (transactions file) |
+ | `uncategorised` | `(empty)` | the category column of an uncategorised transaction (transactions file) |
+-| `transactions file order` | `by date, then id` | order of the rows (transactions file) |
++| `transactions file order` | `order added` | order of the rows (transactions file) |
+ | `source of add` | `manual` | source column of a transaction recorded with `add` (transactions file) |
+ | `source of import` | `import:{layout}` | source column of an imported transaction (transactions file) |
+ | `source of recurring` | `recurring:{name}` | source column of a posted recurring item (transactions file) |
+diff --git a/src/budgetbook/reports/register.py b/src/budgetbook/reports/register.py
+index 8f007af..dfcb020 100644
+--- a/src/budgetbook/reports/register.py
++++ b/src/budgetbook/reports/register.py
+@@ -10,7 +10,7 @@ def account_register(account, transactions, month=None):
+     """
+     balance = account.opening
+     rows = []
+-    for transaction in transactions:
++    for transaction in sorted(transactions, key=lambda t: (t.date, t.id)):
+         if transaction.account != account.name:
+             continue
+         balance += transaction.amount
+diff --git a/src/budgetbook/storage/journal.py b/src/budgetbook/storage/journal.py
+index 7fa56e7..56e422f 100644
+--- a/src/budgetbook/storage/journal.py
++++ b/src/budgetbook/storage/journal.py
+@@ -1,4 +1,8 @@
+-"""The transactions file: one CSV row per transaction, kept sorted by date."""
++"""The transactions file: one CSV row per transaction, in the order they were added.
++
++New transactions are appended, so a large file is never rewritten just to add
++a few rows. Code that needs date order sorts for itself.
++"""
+ import csv
+ from dataclasses import replace
+ 
+@@ -24,21 +28,25 @@ def load_transactions(path):
+ 
+ 
+ def append_transactions(path, new):
+-    """Store `new` under fresh ids and return them as stored."""
++    """Add `new` to the end of the file under fresh ids and return them as stored."""
+     existing = load_transactions(path)
+     first = max((t.id for t in existing), default=0) + 1
+     stored = [replace(transaction, id=first + offset) for offset, transaction in enumerate(new)]
+-    save_transactions(path, existing + stored)
++    starting = not path.is_file() or path.stat().st_size == 0
++    with path.open("a", newline="", encoding="utf-8") as handle:
++        writer = csv.writer(handle, lineterminator="\n")
++        if starting:
++            writer.writerow(COLUMNS)
++        writer.writerows(_encode(transaction) for transaction in stored)
+     return stored
+ 
+ 
+ def save_transactions(path, transactions):
+-    """Rewrite the whole file with `transactions`."""
+-    ordered = sorted(transactions, key=lambda t: (t.date, t.id))
++    """Rewrite the whole file with `transactions`, keeping the order given."""
+     with path.open("w", newline="", encoding="utf-8") as handle:
+         writer = csv.writer(handle, lineterminator="\n")
+         writer.writerow(COLUMNS)
+-        writer.writerows(_encode(transaction) for transaction in ordered)
++        writer.writerows(_encode(transaction) for transaction in transactions)
+ 
+ 
+ def tidy_payee(payee):
+diff --git a/tests/test_journal.py b/tests/test_journal.py
+index f7ea937..61a199d 100644
+--- a/tests/test_journal.py
++++ b/tests/test_journal.py
+@@ -29,11 +29,20 @@ def test_ids_continue_from_the_highest(tmp_path):
+     assert added[0].id == 3
+ 
+ 
+-def test_file_is_sorted_by_date(tmp_path):
++def test_file_keeps_the_order_added(tmp_path):
+     path = tmp_path / "transactions.csv"
+     journal.append_transactions(path, [_txn("2026-03-05", "LATER", -100)])
+     journal.append_transactions(path, [_txn("2026-03-01", "EARLIER", -100)])
+-    assert [t.payee for t in journal.load_transactions(path)] == ["EARLIER", "LATER"]
++    assert [t.payee for t in journal.load_transactions(path)] == ["LATER", "EARLIER"]
++    journal.save_transactions(path, journal.load_transactions(path))
++    assert [t.payee for t in journal.load_transactions(path)] == ["LATER", "EARLIER"]
++
++
++def test_appending_to_an_empty_file_writes_the_header(tmp_path):
++    path = tmp_path / "transactions.csv"
++    path.write_text("", encoding="utf-8")
++    journal.append_transactions(path, [_txn("2026-03-05", "SHOP", -100)])
++    assert path.read_text(encoding="utf-8").splitlines()[0] == ",".join(journal.COLUMNS)
+ 
+ 
+ def test_header_is_checked(tmp_path):

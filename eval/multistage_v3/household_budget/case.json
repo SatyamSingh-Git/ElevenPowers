@@ -1,0 +1,134 @@
+{
+  "id": "household_budget",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/budgetbook/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Payees in the transactions file are stored just as the statement or the `add` command gave them, only trimmed at the ends (`as given, trimmed`). So `Tesco  Stores`, `TESCO STORES` and `tesco stores` count as three different payees, and the month-end report splits their spending three ways under top payees. Store every payee in the transactions file as `upper case, single spaces`: upper-cased, with each run of spaces inside it collapsed to a single space. This goes for payees from `add` and from imported statements alike.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/budgetbook/services/importing.py",
+          "kind": "copy",
+          "path": "Import skips statement rows already in the account by comparing each row's payee with the payees read back from the transactions file, so the row's payee has to be tidied the same way the file now stores it.",
+          "diff": "quiet-0.diff",
+          "fails": ["ledger_flow"]
+        }
+      ]
+    },
+    {
+      "request": "In the rules file, a rule with `\"match\": \"contains\"` matches its pattern anywhere inside the payee (`substring, any case`), so my `BP` rule for Fuel also files `EBPAY ONLINE` and `BPAY BILLER` as fuel. Change `contains` to match `whole words, any case`: the pattern has to start and end at word boundaries in the payee, so `BP` still matches `BP 1234 LONDON` and `CARD PAYMENT BP` but no longer `EBPAY ONLINE`. For rules that relied on the old behaviour, add a new match kind, `anywhere`, that works exactly the way `contains` works today: `substring, any case`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/budgetbook/services/search.py",
+          "kind": "key",
+          "path": "`search --payee` takes its comparison from the rule-matcher registry under the string \"contains\" rather than calling the changed function, while the reference promises search finds `text anywhere in the payee, any case`; reading who else looks up MATCHERS finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["ledger_flow"]
+        }
+      ]
+    },
+    {
+      "request": "My savings bank exports statements with the columns `Date, Description, Paid in, Paid out`, plus a `Balance` column that can be ignored. Dates are day first, like `03/04/2026`, and each row fills in exactly one of `Paid in` and `Paid out`, both written as positive numbers; `Paid out` is money leaving the account. Add a statement layout for these exports named `paid_in_out`, and make `import` recognise them from their header so `--layout` isn't needed.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Closed month files (`closed/{month}.json`) store every amount as `integer cents`, so March's grocery spending shows up as `38250`. People open these files in spreadsheets and read them from scripts, and the cents keep tripping them up. Write every amount in a month file as `decimal strings` with two places instead, e.g. `\"382.50\"` and `\"-12.50\"`, and set the file's `format` field to `2` so a script can tell which kind of file it is reading.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/budgetbook/services/budgets.py",
+          "kind": "data",
+          "path": "Budget status reads the previous month's month file itself to carry each rollover category's `remaining` forward and adds it to integer cents; following who reads `closed/{month}.json` finds it.",
+          "diff": "quiet-0.diff",
+          "fails": ["month_flow"]
+        },
+        {
+          "file": "src/budgetbook/reports/annual.py",
+          "kind": "data",
+          "path": "The year report is built from the month files, reading `income`, `spending` and each category's `spent` as cents; its module docstring says it reads the files `close` writes.",
+          "diff": "quiet-1.diff",
+          "fails": ["month_flow"]
+        }
+      ]
+    },
+    {
+      "request": "Some amounts are stored a cent short. `add 2026-05-02 Current \"Corner shop\" -19.99` records `-19.98`, and a statement row of `4.35` is imported as `4.34`. Amounts typed into `add` or read from statements should be stored exactly as written. Also, an amount with more than two decimal places, such as `10.005`, is quietly cut down to `10.00`; refuse it instead with the usual `invalid amount: 10.005` error, so amounts take `at most 2` decimal places. On a statement, such a row should be skipped and reported like any other unreadable row.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Importing has become slow now that my transactions file holds a few years of history: every import or `add` rewrites the whole file sorted by date. Append new transactions to the end of the file instead, and don't re-sort the file when it is rewritten either (for example after `categorize` or `file`). The transactions file is then kept in `order added` rather than `by date, then id`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/budgetbook/reports/register.py",
+          "kind": "contract",
+          "path": "The register runs its balance over transactions in the order the transactions file returns them, relying on the file being sorted by date; its docstring and the reference's `register order` both promise date order.",
+          "diff": "quiet-0.diff",
+          "fails": ["ledger_flow"]
+        }
+      ]
+    },
+    {
+      "request": "`budget status` ignores refunds (`ignored`). I spent 80.00 on Clothing in March and got 30.00 back for a returned jacket, entered as a positive amount filed under Clothing, but Clothing still shows 80.00 spent. Money coming back into a spending category should count against that category's spending, so Clothing should show 50.00 spent and 50.00 remaining. The rule for refunds becomes `reduce spending`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/budgetbook/reports/month_end.py",
+          "kind": "copy",
+          "path": "The month-end report totals spending per category with its own copy of the rule budget status uses, and the reference says its category spending is `same as budget status`.",
+          "diff": "quiet-0.diff",
+          "fails": ["month_flow"]
+        }
+      ]
+    },
+    {
+      "request": "The month-end report lists only the top 5 payees, which hides most of a busy month. List the top `10` by default, and add a `--top` option to `report month` to choose another number, e.g. `--top 3`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    }
+  ],
+  "groups": [
+    {"id": "ledger_flow", "since": 0, "until": 8},
+    {"id": "month_flow", "since": 0, "until": 8},
+    {"id": "tidy_payees_file", "since": 1, "until": 8},
+    {"id": "tidy_payees_report", "since": 1, "until": 8},
+    {"id": "contains_whole_words", "since": 2, "until": 8},
+    {"id": "anywhere_kind", "since": 2, "until": 8},
+    {"id": "paid_in_out_explicit", "since": 3, "until": 8},
+    {"id": "paid_in_out_detected", "since": 3, "until": 8},
+    {"id": "month_file_totals", "since": 4, "until": 8},
+    {"id": "month_file_categories", "since": 4, "until": 8},
+    {"id": "amount_exact", "since": 5, "until": 8},
+    {"id": "amount_places", "since": 5, "until": 8},
+    {"id": "file_order_import", "since": 6, "until": 8},
+    {"id": "file_order_rewrite", "since": 6, "until": 8},
+    {"id": "refund_spent", "since": 7, "until": 8},
+    {"id": "refund_carried", "since": 7, "until": 8},
+    {"id": "top_default", "since": 8, "until": 8},
+    {"id": "top_option", "since": 8, "until": 8}
+  ]
+}

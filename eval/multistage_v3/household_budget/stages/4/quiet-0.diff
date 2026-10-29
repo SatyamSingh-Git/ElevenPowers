@@ -1,0 +1,21 @@
+diff --git a/src/budgetbook/services/budgets.py b/src/budgetbook/services/budgets.py
+index fc9bdd1..3eaff22 100644
+--- a/src/budgetbook/services/budgets.py
++++ b/src/budgetbook/services/budgets.py
+@@ -6,7 +6,7 @@ previous month was closed; an overspend is carried as a negative amount.
+ from dataclasses import dataclass
+ 
+ from ..errors import NotFound, ValidationError
+-from ..model.money import decimal_text, parse_amount
++from ..model.money import decimal_text
+ from ..model.records import BudgetLine
+ from ..storage import files, journal
+ from ..storage.workspace import read_json
+@@ -89,6 +89,4 @@ def _carried_into(workspace, month):
+     closed = read_json(workspace.closed_month_path(month.previous()), None)
+     if closed is None:
+         return {}
+-    # Files closed before format 2 hold integer cents; later ones hold decimal text.
+-    cents = parse_amount if closed.get("format", 1) >= 2 else int
+-    return {entry["name"]: cents(entry["remaining"]) for entry in closed["categories"]}
++    return {entry["name"]: entry["remaining"] for entry in closed["categories"]}

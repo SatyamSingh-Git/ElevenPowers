@@ -1,0 +1,95 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1bca99e..2cbeeb3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Refunds (money back into a spending category) now reduce that category's spending in
++  `budget status` and the month-end report instead of being ignored.
+ - New transactions are appended to the transactions file instead of rewriting it sorted
+   by date; the file is now kept in the order transactions were added.
+ - Fixed amounts such as `19.99` being stored a cent short; an amount with more than two
+diff --git a/docs/reference.md b/docs/reference.md
+index d04083d..6733d76 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -86,7 +86,7 @@ line (CLI), a file in the budget folder, or the Python API.
+ | `income groups` | `income` | groups whose money in counts as income (CLI reports) |
+ | `ignored groups` | `transfers` | groups left out of income and spending (CLI reports) |
+ | `uncategorised spending` | `Uncategorised` | name under which uncategorised money out is reported (CLI `report month`) |
+-| `refunds` | `ignored` | how a positive amount in a spending category counts towards its spent amount (CLI `budget status`) |
++| `refunds` | `reduce spending` | how a positive amount in a spending category counts towards its spent amount (CLI `budget status`) |
+ | `report category spending` | `same as budget status` | spending per category in the month-end report (CLI `report month`) |
+ | `budget set --rollover` | `off` | default; with it, a category starts each month with what it had left (CLI) |
+ | `carried` | `remaining in the previous month file` | what a rollover category starts the month with (CLI `budget status`) |
+diff --git a/src/budgetbook/reports/month_end.py b/src/budgetbook/reports/month_end.py
+index d7f1f2e..a0ff4f8 100644
+--- a/src/budgetbook/reports/month_end.py
++++ b/src/budgetbook/reports/month_end.py
+@@ -20,18 +20,24 @@ class MonthSummary:
+ 
+ 
+ def summarise(transactions, catalog):
+-    """Income and spending of `transactions`; categories and payees biggest first."""
++    """Income and spending of `transactions`; categories and payees biggest first.
++
++    A refund, money back into a spending category, reduces that category's
++    spending the same way it does in budget status.
++    """
+     income = 0
+     by_category, by_payee = {}, {}
+     for transaction in transactions:
++        refund = transaction.amount > 0 and transaction.category
+         if catalog.is_income(transaction.category):
+             income += transaction.amount
+-        elif transaction.amount < 0 and catalog.is_spending(transaction.category):
++        elif (transaction.amount < 0 or refund) and catalog.is_spending(transaction.category):
+             name = transaction.category or UNCATEGORISED
+             by_category[name] = by_category.get(name, 0) - transaction.amount
+             by_payee[transaction.payee] = by_payee.get(transaction.payee, 0) - transaction.amount
++    payees = {payee: amount for payee, amount in by_payee.items() if amount > 0}
+     return MonthSummary(income, sum(by_category.values()), _biggest_first(by_category),
+-                        _biggest_first(by_payee))
++                        _biggest_first(payees))
+ 
+ 
+ def _biggest_first(totals):
+diff --git a/src/budgetbook/services/budgets.py b/src/budgetbook/services/budgets.py
+index fc9bdd1..baf0848 100644
+--- a/src/budgetbook/services/budgets.py
++++ b/src/budgetbook/services/budgets.py
+@@ -77,9 +77,11 @@ def budget_status(workspace, month):
+ 
+ 
+ def _spent_by_category(transactions, catalog):
++    """Money out per spending category, less refunds: money back into the same category."""
+     spent = {}
+     for transaction in transactions:
+-        if transaction.amount < 0 and catalog.is_spending(transaction.category):
++        refund = transaction.amount > 0 and transaction.category
++        if (transaction.amount < 0 or refund) and catalog.is_spending(transaction.category):
+             spent[transaction.category] = spent.get(transaction.category, 0) - transaction.amount
+     return spent
+ 
+diff --git a/tests/test_budgets.py b/tests/test_budgets.py
+index 67a0abc..660a25f 100644
+--- a/tests/test_budgets.py
++++ b/tests/test_budgets.py
+@@ -23,11 +23,13 @@ def test_status_counts_spending_in_the_month(book):
+     assert (line.budget, line.carried, line.spent, line.remaining) == (40000, 0, 17050, 22950)
+ 
+ 
+-def test_refunds_do_not_count(book):
++def test_refunds_reduce_spending(book):
+     budgets.set_budget(book, "Clothing", 10000)
+     add_transaction(book, day("2026-03-02"), "Current", "ZARA", -8000, "Clothing")
+     add_transaction(book, day("2026-03-09"), "Current", "ZARA", 3000, "Clothing")
+-    assert _status(book, "2026-03")["Clothing"].spent == 8000
++    add_transaction(book, day("2026-03-10"), "Current", "MYSTERY", 1500)
++    line = _status(book, "2026-03")["Clothing"]
++    assert (line.spent, line.remaining) == (5000, 5000)
+ 
+ 
+ def test_rollover_carries_what_was_left(book):

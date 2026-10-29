@@ -1,0 +1,13 @@
+diff --git a/src/budgetbook/reports/register.py b/src/budgetbook/reports/register.py
+index dfcb020..8f007af 100644
+--- a/src/budgetbook/reports/register.py
++++ b/src/budgetbook/reports/register.py
+@@ -10,7 +10,7 @@ def account_register(account, transactions, month=None):
+     """
+     balance = account.opening
+     rows = []
+-    for transaction in sorted(transactions, key=lambda t: (t.date, t.id)):
++    for transaction in transactions:
+         if transaction.account != account.name:
+             continue
+         balance += transaction.amount

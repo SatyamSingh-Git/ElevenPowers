@@ -1,0 +1,13 @@
+diff --git a/src/budgetbook/services/search.py b/src/budgetbook/services/search.py
+index 1ec4318..6511c5c 100644
+--- a/src/budgetbook/services/search.py
++++ b/src/budgetbook/services/search.py
+@@ -7,7 +7,7 @@ def find_transactions(transactions, payee="", category=None, account="", month=N
+ 
+     `category` "" finds uncategorised transactions; None does not filter.
+     """
+-    payee_matches = MATCHERS["anywhere"]
++    payee_matches = MATCHERS["contains"]
+     found = [
+         transaction for transaction in transactions
+         if (not payee or payee_matches(payee, transaction.payee))

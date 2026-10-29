@@ -1,0 +1,86 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f509fbf..b3a326d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Fixed amounts such as `19.99` being stored a cent short; an amount with more than two
++  decimal places is now refused with `invalid amount` instead of being cut short.
+ - Month files are written as format 2: every amount is a decimal string such as `"382.10"`
+   instead of integer cents. Format 1 files from earlier closes are still read.
+ - New `paid_in_out` statement layout for exports with `Paid in` and `Paid out` columns.
+diff --git a/docs/reference.md b/docs/reference.md
+index a87bbd9..52a7d05 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -128,9 +128,9 @@ line (CLI), a file in the budget folder, or the Python API.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `amount decimal places` | `any, truncated` | decimal places accepted in an amount (CLI `add` and statements) |
++| `amount decimal places` | `at most 2` | decimal places accepted in an amount (CLI `add` and statements) |
+ | `amount thousands separator` | `,` | accepted and ignored in an amount (CLI and statements) |
+-| `invalid amount` | `invalid amount: {text}` | error (CLI and statements) |
++| `invalid amount` | `invalid amount: {text}` | error, also for more than two decimal places (CLI and statements) |
+ | `invalid date` | `invalid date: {text}` | error (CLI and statements) |
+ | `invalid month` | `invalid month: {text}` | error (CLI) |
+ | `unknown account` | `unknown account: {name}` | error (CLI) |
+diff --git a/src/budgetbook/model/money.py b/src/budgetbook/model/money.py
+index 0b3516d..357a461 100644
+--- a/src/budgetbook/model/money.py
++++ b/src/budgetbook/model/money.py
+@@ -3,22 +3,25 @@
+ Text only becomes cents at the edges: the command line, statements and the
+ files in a workspace.
+ """
+-import math
++from decimal import Decimal, InvalidOperation
+ 
+ from ..errors import ValidationError
+ 
+ 
+ def parse_amount(text):
+-    """Read amount text such as ``-12.50``, ``1,204.00`` or ``(3.20)`` as cents."""
++    """Read amount text such as ``-12.50``, ``1,204.00`` or ``(3.20)`` as cents.
++
++    Read as a decimal, never a float: ``19.99`` as a float is a hair under 1999 cents.
++    """
+     cleaned = text.strip().replace(",", "")
+     negative = cleaned.startswith("(") and cleaned.endswith(")")
+     if negative:
+         cleaned = cleaned[1:-1].strip()
+     try:
+-        value = float(cleaned)
+-    except ValueError:
++        value = Decimal(cleaned)
++    except InvalidOperation:
+         raise ValidationError(f"invalid amount: {text}") from None
+-    if not math.isfinite(value):
++    if not value.is_finite() or value.as_tuple().exponent < -2:
+         raise ValidationError(f"invalid amount: {text}")
+     cents = int(value * 100)
+     return -cents if negative else cents
+diff --git a/tests/test_money.py b/tests/test_money.py
+index 840dfe0..d762973 100644
+--- a/tests/test_money.py
++++ b/tests/test_money.py
+@@ -22,6 +22,17 @@ def test_parse_amount_refuses_nonsense(text):
+         parse_amount(text)
+ 
+ 
++@pytest.mark.parametrize("text, cents", [("19.99", 1999), ("-19.99", -1999), ("4.35", 435), ("0.29", 29)])
++def test_parse_amount_is_exact(text, cents):
++    assert parse_amount(text) == cents
++
++
++@pytest.mark.parametrize("text", ["10.005", "-0.001", "1.999"])
++def test_parse_amount_refuses_more_than_two_places(text):
++    with pytest.raises(ValidationError, match=f"invalid amount: {text}"):
++        parse_amount(text)
++
++
+ def test_format_amount_groups_thousands():
+     assert format_amount(-123456) == "-1,234.56"
+     assert format_amount(5) == "0.05"

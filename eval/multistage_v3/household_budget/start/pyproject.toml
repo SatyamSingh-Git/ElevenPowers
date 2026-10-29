@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "budgetbook"
+version = "0.6.0"
+description = "Household budgeting in plain files"
+requires-python = ">=3.11"
+
+[project.scripts]
+budgetbook = "budgetbook.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

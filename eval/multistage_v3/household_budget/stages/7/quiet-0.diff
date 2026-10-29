@@ -1,0 +1,32 @@
+diff --git a/src/budgetbook/reports/month_end.py b/src/budgetbook/reports/month_end.py
+index a0ff4f8..d7f1f2e 100644
+--- a/src/budgetbook/reports/month_end.py
++++ b/src/budgetbook/reports/month_end.py
+@@ -20,24 +20,18 @@ class MonthSummary:
+ 
+ 
+ def summarise(transactions, catalog):
+-    """Income and spending of `transactions`; categories and payees biggest first.
+-
+-    A refund, money back into a spending category, reduces that category's
+-    spending the same way it does in budget status.
+-    """
++    """Income and spending of `transactions`; categories and payees biggest first."""
+     income = 0
+     by_category, by_payee = {}, {}
+     for transaction in transactions:
+-        refund = transaction.amount > 0 and transaction.category
+         if catalog.is_income(transaction.category):
+             income += transaction.amount
+-        elif (transaction.amount < 0 or refund) and catalog.is_spending(transaction.category):
++        elif transaction.amount < 0 and catalog.is_spending(transaction.category):
+             name = transaction.category or UNCATEGORISED
+             by_category[name] = by_category.get(name, 0) - transaction.amount
+             by_payee[transaction.payee] = by_payee.get(transaction.payee, 0) - transaction.amount
+-    payees = {payee: amount for payee, amount in by_payee.items() if amount > 0}
+     return MonthSummary(income, sum(by_category.values()), _biggest_first(by_category),
+-                        _biggest_first(payees))
++                        _biggest_first(by_payee))
+ 
+ 
+ def _biggest_first(totals):

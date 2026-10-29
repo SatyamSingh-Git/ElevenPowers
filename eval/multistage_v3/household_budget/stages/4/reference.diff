@@ -1,0 +1,144 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 838b282..f509fbf 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Month files are written as format 2: every amount is a decimal string such as `"382.10"`
++  instead of integer cents. Format 1 files from earlier closes are still read.
+ - New `paid_in_out` statement layout for exports with `Paid in` and `Paid out` columns.
+ - `contains` rules match whole words only; the new `anywhere` match kind keeps the old
+   behaviour of matching inside words.
+diff --git a/docs/reference.md b/docs/reference.md
+index e08af34..a87bbd9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -98,8 +98,8 @@ line (CLI), a file in the budget folder, or the Python API.
+ |---|---|---|
+ | `month file fields` | `format, month, currency, income, spending, categories` | top-level fields (month file) |
+ | `month file category fields` | `name, group, budget, carried, spent, remaining` | fields of each `categories` entry (month file) |
+-| `month file format` | `1` | the `format` field (month file) |
+-| `month file amounts` | `integer cents` | how every amount is written (month file) |
++| `month file format` | `2` | the `format` field; files closed by earlier versions have `1` and integer cents (month file) |
++| `month file amounts` | `decimal strings` | how every amount is written, with two places, e.g. `"-12.50"` (month file) |
+ | `month file spending` | `as in the month-end report` | `income` and `spending` (month file) |
+ | `month file spent` | `as in budget status` | each category's `spent` (month file) |
+ 
+diff --git a/src/budgetbook/reports/annual.py b/src/budgetbook/reports/annual.py
+index 36ee43d..a296fe6 100644
+--- a/src/budgetbook/reports/annual.py
++++ b/src/budgetbook/reports/annual.py
+@@ -3,6 +3,7 @@
+ Only closed months appear: an open month's figures can still change.
+ """
+ from ..model.dates import months_of_year
++from ..model.money import parse_amount
+ from ..storage.workspace import read_json
+ from .render import Report, Section
+ 
+@@ -13,10 +14,12 @@ def year_report(workspace, year, currency):
+         closed = read_json(workspace.closed_month_path(month), None)
+         if closed is None:
+             continue
+-        income, spending = closed["income"], closed["spending"]
++        # Files closed before format 2 hold integer cents; later ones hold decimal text.
++        cents = parse_amount if closed.get("format", 1) >= 2 else int
++        income, spending = cents(closed["income"]), cents(closed["spending"])
+         months.append((str(month), income, spending, income - spending))
+         for entry in closed["categories"]:
+-            spent[entry["name"]] = spent.get(entry["name"], 0) + entry["spent"]
++            spent[entry["name"]] = spent.get(entry["name"], 0) + cents(entry["spent"])
+     total = ("Total", sum(row[1] for row in months), sum(row[2] for row in months),
+              sum(row[3] for row in months))
+     return Report(f"Year {year} ({currency})", [
+diff --git a/src/budgetbook/services/budgets.py b/src/budgetbook/services/budgets.py
+index 3eaff22..fc9bdd1 100644
+--- a/src/budgetbook/services/budgets.py
++++ b/src/budgetbook/services/budgets.py
+@@ -6,7 +6,7 @@ previous month was closed; an overspend is carried as a negative amount.
+ from dataclasses import dataclass
+ 
+ from ..errors import NotFound, ValidationError
+-from ..model.money import decimal_text
++from ..model.money import decimal_text, parse_amount
+ from ..model.records import BudgetLine
+ from ..storage import files, journal
+ from ..storage.workspace import read_json
+@@ -89,4 +89,6 @@ def _carried_into(workspace, month):
+     closed = read_json(workspace.closed_month_path(month.previous()), None)
+     if closed is None:
+         return {}
+-    return {entry["name"]: entry["remaining"] for entry in closed["categories"]}
++    # Files closed before format 2 hold integer cents; later ones hold decimal text.
++    cents = parse_amount if closed.get("format", 1) >= 2 else int
++    return {entry["name"]: cents(entry["remaining"]) for entry in closed["categories"]}
+diff --git a/src/budgetbook/services/closing.py b/src/budgetbook/services/closing.py
+index 867f927..ae357c8 100644
+--- a/src/budgetbook/services/closing.py
++++ b/src/budgetbook/services/closing.py
+@@ -4,13 +4,14 @@ The month file is the record other tools read later, so its fields are
+ described in the reference and change only on purpose.
+ """
+ from ..errors import ValidationError
++from ..model.money import decimal_text
+ from ..reports.month_end import summarise
+ from ..storage import journal
+ from ..storage.workspace import write_json
+ from .budgets import budget_status
+ from .catalog import Catalog
+ 
+-MONTH_FILE_FORMAT = 1
++MONTH_FILE_FORMAT = 2
+ 
+ 
+ def close_month(workspace, month):
+@@ -23,8 +24,8 @@ def close_month(workspace, month):
+         "format": MONTH_FILE_FORMAT,
+         "month": str(month),
+         "currency": workspace.settings()["currency"],
+-        "income": summary.income,
+-        "spending": summary.spending,
++        "income": decimal_text(summary.income),
++        "spending": decimal_text(summary.spending),
+         "categories": [_category_entry(line, catalog) for line in budget_status(workspace, month)],
+     }
+     workspace.closed_dir.mkdir(exist_ok=True)
+@@ -44,8 +45,8 @@ def _category_entry(line, catalog):
+     return {
+         "name": line.category,
+         "group": catalog.group_of(line.category),
+-        "budget": line.budget,
+-        "carried": line.carried,
+-        "spent": line.spent,
+-        "remaining": line.remaining,
++        "budget": decimal_text(line.budget),
++        "carried": decimal_text(line.carried),
++        "spent": decimal_text(line.spent),
++        "remaining": decimal_text(line.remaining),
+     }
+diff --git a/tests/test_closing.py b/tests/test_closing.py
+index 79ef5f3..95a0d06 100644
+--- a/tests/test_closing.py
++++ b/tests/test_closing.py
+@@ -22,14 +22,14 @@ def test_close_writes_the_month_file(book):
+     closing.close_month(book, Month(2026, 3))
+     data = json.loads(book.closed_month_path("2026-03").read_text(encoding="utf-8"))
+     assert data == {
+-        "format": 1,
++        "format": 2,
+         "month": "2026-03",
+         "currency": "GBP",
+-        "income": 250000,
+-        "spending": 14450,
++        "income": "2500.00",
++        "spending": "144.50",
+         "categories": [
+-            {"name": "Groceries", "group": "essentials", "budget": 40000, "carried": 0, "spent": 12050,
+-             "remaining": 27950},
++            {"name": "Groceries", "group": "essentials", "budget": "400.00", "carried": "0.00",
++             "spent": "120.50", "remaining": "279.50"},
+         ],
+     }
+ 

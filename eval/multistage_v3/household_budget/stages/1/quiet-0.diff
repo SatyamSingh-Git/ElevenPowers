@@ -1,0 +1,11 @@
+diff --git a/src/budgetbook/services/importing.py b/src/budgetbook/services/importing.py
+index 5ab5311..b692911 100644
+--- a/src/budgetbook/services/importing.py
++++ b/src/budgetbook/services/importing.py
+@@ -58,5 +58,4 @@ def import_statement(workspace, account, text, layout=None, dry_run=False):
+ 
+ 
+ def _identity(day, amount, payee):
+-    # Stored payees are tidied, so a statement's own spelling has to be tidied the same way to match.
+-    return day, amount, journal.tidy_payee(payee)
++    return day, amount, payee.casefold()

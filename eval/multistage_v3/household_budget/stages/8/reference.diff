@@ -1,0 +1,106 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2cbeeb3..75adfbb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- The month-end report lists the top 10 payees instead of 5; `report month --top N`
++  chooses another number.
+ - Refunds (money back into a spending category) now reduce that category's spending in
+   `budget status` and the month-end report instead of being ignored.
+ - New transactions are appended to the transactions file instead of rewriting it sorted
+diff --git a/docs/reference.md b/docs/reference.md
+index 6733d76..9b6b2e7 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -112,7 +112,7 @@ line (CLI), a file in the budget folder, or the Python API.
+ | `csv amounts` | `-1234.56` | amounts in csv output (CLI) |
+ | `csv rows` | `section, then the section's columns` | every csv row starts with its section's title; each section has a header row starting `section` (CLI) |
+ | `month report sections` | `Summary, Spending by category, Top payees` | (CLI `report month`) |
+-| `top payees` | `5` | payees listed in the month-end report (CLI `report month`) |
++| `top payees` | `10` | payees listed in the month-end report; `--top N` lists N instead (CLI `report month`) |
+ | `year report months` | `closed months only` | (CLI `report year`) |
+ 
+ ## Recurring items
+diff --git a/src/budgetbook/cli.py b/src/budgetbook/cli.py
+index c003b01..c78f197 100644
+--- a/src/budgetbook/cli.py
++++ b/src/budgetbook/cli.py
+@@ -17,7 +17,7 @@ from .model.money import format_amount, parse_amount
+ from .model.records import ACCOUNT_KINDS, FREQUENCIES, Goal, RecurringItem, Rule
+ from .reports.annual import year_report
+ from .reports.export import export_month
+-from .reports.month_end import month_report
++from .reports.month_end import TOP_PAYEES, month_report
+ from .reports.net_worth import net_worth_report
+ from .reports.payees import payee_report
+ from .reports.register import account_register
+@@ -332,8 +332,11 @@ def cmd_reopen(workspace, args):
+ 
+ 
+ def cmd_report_month(workspace, args):
++    if args.top < 1:
++        raise ValidationError("--top must be at least 1")
+     transactions = journal.load_transactions(workspace.transactions_path)
+-    report = month_report(args.month, transactions, Catalog.for_workspace(workspace), _currency(workspace))
++    report = month_report(args.month, transactions, Catalog.for_workspace(workspace), _currency(workspace),
++                          args.top)
+     _print_report(workspace, report, args.format)
+ 
+ 
+@@ -586,6 +589,7 @@ def build_parser():
+         dest="action", required=True)
+     month = _with_format(report.add_parser("month"))
+     month.add_argument("month", type=Month.parse)
++    month.add_argument("--top", type=int, default=TOP_PAYEES, help=f"payees to list (default: {TOP_PAYEES})")
+     month.set_defaults(handler=cmd_report_month)
+     year = _with_format(report.add_parser("year"))
+     year.add_argument("year", type=int)
+diff --git a/src/budgetbook/reports/month_end.py b/src/budgetbook/reports/month_end.py
+index a0ff4f8..01b0608 100644
+--- a/src/budgetbook/reports/month_end.py
++++ b/src/budgetbook/reports/month_end.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass
+ from ..services.catalog import UNCATEGORISED
+ from .render import Report, Section
+ 
+-TOP_PAYEES = 5
++TOP_PAYEES = 10
+ 
+ 
+ @dataclass(frozen=True)
+@@ -44,12 +44,12 @@ def _biggest_first(totals):
+     return sorted(totals.items(), key=lambda item: (-item[1], item[0]))
+ 
+ 
+-def month_report(month, transactions, catalog, currency):
++def month_report(month, transactions, catalog, currency, top=TOP_PAYEES):
+     summary = summarise([t for t in transactions if t.date in month], catalog)
+     return Report(f"Month end {month} ({currency})", [
+         Section("Summary", ("Item", "Amount"),
+                 [("Income", summary.income), ("Spending", summary.spending), ("Net", summary.net)],
+                 amounts=("Amount",)),
+         Section("Spending by category", ("Category", "Amount"), summary.categories, amounts=("Amount",)),
+-        Section("Top payees", ("Payee", "Amount"), summary.payees[:TOP_PAYEES], amounts=("Amount",)),
++        Section("Top payees", ("Payee", "Amount"), summary.payees[:top], amounts=("Amount",)),
+     ])
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 40e922e..ea84775 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -40,6 +40,13 @@ def test_month_report_sections():
+     assert [s.title for s in report.sections] == ["Summary", "Spending by category", "Top payees"]
+ 
+ 
++def test_month_report_lists_top_payees():
++    many = [_txn(number, "2026-03-10", f"SHOP {number:02d}", -100 * number, "Gifts") for number in range(1, 13)]
++    payees = month_report(Month(2026, 3), many, Catalog(), "GBP").sections[2].rows
++    assert [payee for payee, _ in payees] == [f"SHOP {number:02d}" for number in range(12, 2, -1)]
++    assert len(month_report(Month(2026, 3), many, Catalog(), "GBP", top=3).sections[2].rows) == 3
++
++
+ def test_render_formats():
+     report = Report("T", [Section("S", ("Name", "Amount"), [("Rent", -95000)], amounts=("Amount",))])
+     assert "Rent  -950.00" in render_text(report)

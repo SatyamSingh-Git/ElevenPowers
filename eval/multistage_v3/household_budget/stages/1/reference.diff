@@ -1,0 +1,87 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b17a64c..69835fb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Payees are stored in upper case with runs of spaces collapsed, so differently spelt
++  statements group under one payee.
+ - `import --dry-run` shows what a statement would add without storing anything.
+ 
+ ## 0.6.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 6a6af8b..a5937ac 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -34,7 +34,7 @@ line (CLI), a file in the budget folder, or the Python API.
+ | `transactions columns` | `id,date,account,payee,amount,category,memo,source` | header row (transactions file) |
+ | `transaction date` | `YYYY-MM-DD` | the date column (transactions file) |
+ | `transaction amount` | `-1234.56` | the amount column: plain decimal, negative is money out (transactions file) |
+-| `payee column` | `as given, trimmed` | how the payee column is written (transactions file) |
++| `payee column` | `upper case, single spaces` | how the payee column is written (transactions file) |
+ | `uncategorised` | `(empty)` | the category column of an uncategorised transaction (transactions file) |
+ | `transactions file order` | `by date, then id` | order of the rows (transactions file) |
+ | `source of add` | `manual` | source column of a transaction recorded with `add` (transactions file) |
+diff --git a/src/budgetbook/services/importing.py b/src/budgetbook/services/importing.py
+index b692911..5ab5311 100644
+--- a/src/budgetbook/services/importing.py
++++ b/src/budgetbook/services/importing.py
+@@ -58,4 +58,5 @@ def import_statement(workspace, account, text, layout=None, dry_run=False):
+ 
+ 
+ def _identity(day, amount, payee):
+-    return day, amount, payee.casefold()
++    # Stored payees are tidied, so a statement's own spelling has to be tidied the same way to match.
++    return day, amount, journal.tidy_payee(payee)
+diff --git a/src/budgetbook/storage/journal.py b/src/budgetbook/storage/journal.py
+index d680640..7fa56e7 100644
+--- a/src/budgetbook/storage/journal.py
++++ b/src/budgetbook/storage/journal.py
+@@ -41,12 +41,17 @@ def save_transactions(path, transactions):
+         writer.writerows(_encode(transaction) for transaction in ordered)
+ 
+ 
++def tidy_payee(payee):
++    """``Tesco  Stores`` and ``TESCO STORES`` are one payee: upper case, single spaces."""
++    return " ".join(payee.split()).upper()
++
++
+ def _encode(transaction):
+     return [
+         str(transaction.id),
+         transaction.date.isoformat(),
+         transaction.account,
+-        transaction.payee,
++        tidy_payee(transaction.payee),
+         decimal_text(transaction.amount),
+         transaction.category,
+         transaction.memo,
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 6bbe6fb..dd12627 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -20,7 +20,7 @@ def test_init_then_add_and_search(tmp_path, capsys):
+     assert out == "Added #1: 2026-03-02 Corner Shop -4.50\n"
+     code, out, _ = run(capsys, folder, "search", "--payee", "corner", "--format", "csv")
+     rows = list(csv.reader(io.StringIO(out)))
+-    assert rows[1] == ["Results", "1", "2026-03-02", "Current", "Corner Shop", "Groceries", "-4.50"]
++    assert rows[1] == ["Results", "1", "2026-03-02", "Current", "CORNER SHOP", "Groceries", "-4.50"]
+ 
+ 
+ def test_errors_exit_with_status_1(tmp_path, capsys):
+diff --git a/tests/test_journal.py b/tests/test_journal.py
+index 2b80f2f..f7ea937 100644
+--- a/tests/test_journal.py
++++ b/tests/test_journal.py
+@@ -52,3 +52,9 @@ def test_bad_line_names_its_number(tmp_path):
+ 
+ def test_missing_file_is_empty(tmp_path):
+     assert journal.load_transactions(tmp_path / "nothing.csv") == []
++
++
++def test_payees_are_stored_tidy(tmp_path):
++    path = tmp_path / "transactions.csv"
++    journal.append_transactions(path, [_txn("2026-03-01", "  Tesco   Stores 3297 ", -100)])
++    assert journal.load_transactions(path)[0].payee == "TESCO STORES 3297"

@@ -1,0 +1,82 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 69835fb..e76355b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- `contains` rules match whole words only; the new `anywhere` match kind keeps the old
++  behaviour of matching inside words.
+ - Payees are stored in upper case with runs of spaces collapsed, so differently spelt
+   statements group under one payee.
+ - `import --dry-run` shows what a statement would add without storing anything.
+diff --git a/docs/reference.md b/docs/reference.md
+index a5937ac..83d0a40 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -61,7 +61,8 @@ line (CLI), a file in the budget folder, or the Python API.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `contains` | `substring, any case` | match kind: the pattern appears in the payee (rules file) |
++| `contains` | `whole words, any case` | match kind: the pattern appears in the payee as whole words (rules file) |
++| `anywhere` | `substring, any case` | match kind: the pattern appears anywhere in the payee, even inside a word (rules file) |
+ | `prefix` | `start of the payee, any case` | match kind (rules file) |
+ | `exact` | `whole payee, any case` | match kind (rules file) |
+ | `regex` | `regular expression search, any case` | match kind (rules file) |
+diff --git a/src/budgetbook/rules/matchers.py b/src/budgetbook/rules/matchers.py
+index ca84d53..7cb0205 100644
+--- a/src/budgetbook/rules/matchers.py
++++ b/src/budgetbook/rules/matchers.py
+@@ -5,6 +5,12 @@ from ..errors import ValidationError
+ 
+ 
+ def _contains(pattern, payee):
++    # Whole words only, so a rule for BP does not also catch EBPAY.
++    words = re.escape(pattern.strip())
++    return re.search(rf"(?<!\w){words}(?!\w)", payee, re.IGNORECASE) is not None
++
++
++def _anywhere(pattern, payee):
+     return pattern.casefold() in payee.casefold()
+ 
+ 
+@@ -25,6 +31,7 @@ MATCHERS = {
+     "prefix": _prefix,
+     "exact": _exact,
+     "regex": _regex,
++    "anywhere": _anywhere,
+ }
+ 
+ 
+diff --git a/src/budgetbook/services/search.py b/src/budgetbook/services/search.py
+index 6511c5c..1ec4318 100644
+--- a/src/budgetbook/services/search.py
++++ b/src/budgetbook/services/search.py
+@@ -7,7 +7,7 @@ def find_transactions(transactions, payee="", category=None, account="", month=N
+ 
+     `category` "" finds uncategorised transactions; None does not filter.
+     """
+-    payee_matches = MATCHERS["contains"]
++    payee_matches = MATCHERS["anywhere"]
+     found = [
+         transaction for transaction in transactions
+         if (not payee or payee_matches(payee, transaction.payee))
+diff --git a/tests/test_rules.py b/tests/test_rules.py
+index f573557..2c7d851 100644
+--- a/tests/test_rules.py
++++ b/tests/test_rules.py
+@@ -8,7 +8,11 @@ from budgetbook.rules.matchers import check_pattern, matcher_for
+ 
+ @pytest.mark.parametrize("kind, pattern, payee, expected", [
+     ("contains", "tesco", "CARD PAYMENT TESCO STORES", True),
+-    ("contains", "TES", "TESCO STORES", True),
++    ("contains", "TES", "TESCO STORES", False),
++    ("contains", "BP", "BP 1234 LONDON", True),
++    ("contains", "BP", "EBPAY ONLINE", False),
++    ("contains", "tesco stores", "CARD PAYMENT TESCO STORES 3297", True),
++    ("anywhere", "TES", "TESCO STORES", True),
+     ("contains", "ASDA", "TESCO STORES", False),
+     ("prefix", "tesco", "TESCO STORES", True),
+     ("prefix", "STORES", "TESCO STORES", False),

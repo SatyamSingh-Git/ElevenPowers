@@ -1,0 +1,106 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e76355b..838b282 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- New `paid_in_out` statement layout for exports with `Paid in` and `Paid out` columns.
+ - `contains` rules match whole words only; the new `anywhere` match kind keeps the old
+   behaviour of matching inside words.
+ - Payees are stored in upper case with runs of spaces collapsed, so differently spelt
+diff --git a/docs/reference.md b/docs/reference.md
+index 83d0a40..e08af34 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -48,6 +48,7 @@ line (CLI), a file in the budget folder, or the Python API.
+ |---|---|---|
+ | `standard` | `Date, Description, Amount` | columns; dates `YYYY-MM-DD`; money out negative (CLI `import --layout`) |
+ | `debit_credit` | `Date, Description, Debit, Credit` | columns; dates `DD/MM/YYYY`; exactly one of Debit and Credit per row (CLI `import --layout`) |
++| `paid_in_out` | `Date, Description, Paid in, Paid out` | columns; dates `DD/MM/YYYY`; exactly one of Paid in and Paid out per row; other columns such as Balance are ignored (CLI `import --layout`) |
+ | `card` | `Transaction Date, Merchant, Amount` | columns; dates `MM/DD/YYYY`; charges positive (CLI `import --layout`) |
+ | `app_export` | `Type, Started Date, Description, Amount, Fee` | columns; Fee is taken off the amount (CLI `import --layout`) |
+ | `import --layout` | `recognised from the header` | default when `--layout` is not given (CLI) |
+diff --git a/src/budgetbook/importers/layouts.py b/src/budgetbook/importers/layouts.py
+index cfbdf6c..34b0e0c 100644
+--- a/src/budgetbook/importers/layouts.py
++++ b/src/budgetbook/importers/layouts.py
+@@ -9,11 +9,14 @@ def _signed_amount(values):
+     return parse_amount(values["Amount"])
+ 
+ 
+-def _debit_credit_amount(values):
+-    debit, credit = values["Debit"], values["Credit"]
+-    if bool(debit) == bool(credit):
+-        raise ValidationError("exactly one of Debit and Credit must be filled in")
+-    return -parse_amount(debit) if debit else parse_amount(credit)
++def _out_or_in(out_column, in_column):
++    """Amounts split over a money-out and a money-in column, both written as positive numbers."""
++    def amount(values):
++        money_out, money_in = values[out_column], values[in_column]
++        if bool(money_out) == bool(money_in):
++            raise ValidationError(f"exactly one of {out_column} and {in_column} must be filled in")
++        return -parse_amount(money_out) if money_out else parse_amount(money_in)
++    return amount
+ 
+ 
+ def _amount_less_fee(values):
+@@ -42,7 +45,16 @@ register(Layout(
+     date_column="Date",
+     date_style="dmy",
+     payee_column="Description",
+-    amount=_debit_credit_amount,
++    amount=_out_or_in("Debit", "Credit"),
++))
++
++register(Layout(
++    name="paid_in_out",
++    columns=("Date", "Description", "Paid in", "Paid out"),
++    date_column="Date",
++    date_style="dmy",
++    payee_column="Description",
++    amount=_out_or_in("Paid out", "Paid in"),
+ ))
+ 
+ register(Layout(
+diff --git a/tests/test_importers.py b/tests/test_importers.py
+index 6cc6007..02c9ff0 100644
+--- a/tests/test_importers.py
++++ b/tests/test_importers.py
+@@ -8,6 +8,8 @@ from conftest import day
+ STANDARD = "Date,Description,Amount\n2026-03-02,BAKERY,-4.50\n2026-03-03,ACME LTD,2500.00\n"
+ DEBIT_CREDIT = "Date,Description,Debit,Credit\n02/03/2026,BAKERY,4.50,\n03/03/2026,ACME LTD,,2500.00\n"
+ CARD = "Transaction Date,Merchant,Amount,Reference\n03/02/2026,BAKERY,4.50,R1\n03/04/2026,REFUND SHOP,-10.00,R2\n"
++PAID_IN_OUT = ("Date,Description,Paid in,Paid out,Balance\n"
++               "02/03/2026,BAKERY,,4.50,95.50\n03/03/2026,ACME LTD,2500.00,,2595.50\n")
+ APP = ("Type,Product,Started Date,Completed Date,Description,Amount,Fee,Currency,State,Balance\n"
+        "CARD_PAYMENT,Current,2026-03-02 09:15:00,2026-03-03 10:00:00,BAKERY,-4.50,0.25,GBP,COMPLETED,95.25\n")
+ 
+@@ -24,6 +26,16 @@ def test_debit_credit_layout():
+     assert [(r.date, r.amount) for r in rows] == [(day("2026-03-02"), -450), (day("2026-03-03"), 250000)]
+ 
+ 
++def test_paid_in_out_layout():
++    rows, _ = get_layout("paid_in_out").read(PAID_IN_OUT)
++    assert [(r.date, r.amount) for r in rows] == [(day("2026-03-02"), -450), (day("2026-03-03"), 250000)]
++
++
++def test_paid_in_out_needs_exactly_one_amount():
++    _, problems = get_layout("paid_in_out").read("Date,Description,Paid in,Paid out\n02/03/2026,X,1.00,2.00\n")
++    assert [str(p) for p in problems] == ["line 2: exactly one of Paid out and Paid in must be filled in"]
++
++
+ def test_card_charges_are_money_out():
+     rows, _ = get_layout("card").read(CARD)
+     assert [(r.date, r.amount, r.memo) for r in rows] == [
+@@ -48,7 +60,8 @@ def test_missing_column():
+ 
+ 
+ @pytest.mark.parametrize("text, name", [
+-    (STANDARD, "standard"), (DEBIT_CREDIT, "debit_credit"), (CARD, "card"), (APP, "app_export")])
++    (STANDARD, "standard"), (DEBIT_CREDIT, "debit_credit"), (CARD, "card"), (APP, "app_export"),
++    (PAID_IN_OUT, "paid_in_out")])
+ def test_detect_layout(text, name):
+     assert detect_layout(text).name == name
+ 
