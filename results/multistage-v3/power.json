@@ -1,0 +1,434 @@
+[
+ {
+  "rejection_rate": 0.0175,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0135,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.284,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.304,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.017,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.016,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.419,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.475,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.022,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0195,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.569,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.625,
+  "cases": 12,
+  "replicates": 2,
+  "conversations": 48,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.015,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0215,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.4405,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.481,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.0135,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0145,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.644,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.666,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.0165,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.023,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.7785,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.8015,
+  "cases": 12,
+  "replicates": 3,
+  "conversations": 72,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.0165,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0165,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.5885,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.624,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.021,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0185,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.7785,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.7905,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.022,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.017,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.892,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.881,
+  "cases": 12,
+  "replicates": 4,
+  "conversations": 96,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.0275,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0135,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.686,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.721,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.022,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0225,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.5,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.876,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.875,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 1.5,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.02,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.0195,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 2.0,
+  "ratio": 1.0,
+  "heterogeneity": 1.0
+ },
+ {
+  "rejection_rate": 0.9525,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 0.5
+ },
+ {
+  "rejection_rate": 0.929,
+  "cases": 12,
+  "replicates": 5,
+  "conversations": 120,
+  "rate": 2.0,
+  "ratio": 0.5,
+  "heterogeneity": 1.0
+ }
+]

@@ -17,12 +17,12 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[2]
 SEED = 'multistage-v2-pilot'
 SETS = {
-    'v2': {'cases': 'eval/multistage_cases', 'pilot': None,
+    'v2': {'cases': 'eval/multistage_cases', 'pilot': None, 'power': 'results/multistage/power.json',
            'modules': ['eval/multistage_cases.py', 'eval/multistage_oracles.py', 'eval/multistage_rehearse.py',
                        'eval/multistage_power.py', 'eval/multistage_cases/AUTHORING.md',
                        'eval/multistage_cases/conftest.py', 'results/multistage/power.json',
                        'results/multistage/freeze.py']},
-    'v3': {'cases': 'eval/multistage_v3', 'pilot': ['gradebook', 'parcelpost'],
+    'v3': {'cases': 'eval/multistage_v3', 'pilot': ['gradebook', 'parcelpost'], 'power': 'results/multistage-v3/power.json',
            'modules': ['eval/multistage_cases.py', 'eval/multistage_oracles.py', 'eval/multistage_quiet.py',
                        'eval/multistage_rehearse.py', 'eval/multistage_run.py', 'eval/multistage_power.py',
                        'eval/subscription.py', 'eval/multistage_v3/AUTHORING.md', 'eval/multistage_v3/conftest.py',
@@ -67,7 +67,7 @@ def main(argv=None):
                     'zero differences dropped and counted; Holm across the two co-primaries',
             'comparable': 'a conversation counts only if every stage was attempted and graded; others stay in the '
                           'scheduled denominator, reported missing, never zero',
-            'layout': 'chosen after the pilot from results/multistage/power.json: the largest affordable layout with '
+            'layout': f"chosen after the pilot from {chosen['power']}: the largest affordable layout with "
                       'power >= 0.8 at ratio 0.5 at the pilot arm-A rate, else the cheapest, run as descriptive',
             'pilot_runs': 'excluded from the analysis; no case is dropped or replaced on its pilot result',
         },
