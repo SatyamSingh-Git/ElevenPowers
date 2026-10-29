@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index b4462a8..6fa421f 100644
+index 2b7b2f9..ea256b2 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,7 +11,7 @@ index b4462a8..6fa421f 100644
  - Occupancy is a percentage in `day_statistics()` and `report occupancy --format json`.
  - Checking in to a room that is not ready names its housekeeping status.
 diff --git a/docs/reference.md b/docs/reference.md
-index 30f2cdd..221165a 100644
+index 1946d95..4c46cea 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -14,7 +14,7 @@ its default.

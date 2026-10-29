@@ -1,17 +1,17 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 4ffbda5..8259c7d 100644
+index 4ffbda5..1f26edc 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
  
  ## Unreleased
  
-+- Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
++- Fixed: tax on each charge is rounded `half-up` to the cent; it was rounded down.
  - Stays of up to 45 nights are accepted by default (`max_stay_nights`).
  - The audit journal writes amounts as `0.00` instead of whole cents.
  - `hk-sheets` splits the day's housekeeping between attendants, floor by floor.
 diff --git a/docs/reference.md b/docs/reference.md
-index 3699f17..b5fc71c 100644
+index 019b657..cdfa028 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -83,7 +83,7 @@ Codes are case-insensitive on the way in and stored upper case.
@@ -24,7 +24,7 @@ index 3699f17..b5fc71c 100644
  
  ## Records and files
 diff --git a/src/hoteldesk/money.py b/src/hoteldesk/money.py
-index b33c8f2..f817be7 100644
+index b33c8f2..f29602e 100644
 --- a/src/hoteldesk/money.py
 +++ b/src/hoteldesk/money.py
 @@ -1,5 +1,5 @@
@@ -39,7 +39,7 @@ index b33c8f2..f817be7 100644
  
  def tax_on(cents, rate):
 -    return int((Decimal(cents) * rate).quantize(Decimal(1), rounding=ROUND_DOWN))
-+    """Tax on an amount, rounded half up to the cent as the county's table requires."""
++    """Tax on an amount, rounded `half-up` to the cent, as the county's table requires."""
 +    return int((Decimal(cents) * rate).quantize(Decimal(1), rounding=ROUND_HALF_UP))
 diff --git a/src/hoteldesk/services/pricing.py b/src/hoteldesk/services/pricing.py
 index 1799b6b..79e11a0 100644

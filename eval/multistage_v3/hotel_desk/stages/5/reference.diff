@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 7a53acd..ab60287 100644
+index b15585f..aa690f3 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -8,10 +8,10 @@ index 7a53acd..ab60287 100644
  
 +- Checking in to a room that is not ready names its housekeeping status.
  - Nightly room charges are posted under the code `ROOM` instead of `RM`; `post` still accepts `RM`.
- - Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
+ - Fixed: tax on each charge is rounded `half-up` to the cent; it was rounded down.
  - Stays of up to 45 nights are accepted by default (`max_stay_nights`).
 diff --git a/docs/reference.md b/docs/reference.md
-index 40e61d0..c7bf00f 100644
+index b9f0c3a..2b5b875 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -58,7 +58,7 @@ in the `error.format` above.

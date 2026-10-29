@@ -11,7 +11,7 @@ index a4cfe82..4ffbda5 100644
  - `hk-sheets` splits the day's housekeeping between attendants, floor by floor.
  
 diff --git a/docs/reference.md b/docs/reference.md
-index ccba286..3699f17 100644
+index 60f06fc..019b657 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -12,7 +12,7 @@ its default.

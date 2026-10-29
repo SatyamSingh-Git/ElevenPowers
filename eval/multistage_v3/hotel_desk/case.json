@@ -65,7 +65,7 @@
       "dependent_missed_fails": []
     },
     {
-      "request": "`day_statistics()` returns occupancy as a fraction (`0.4` when two of five rooms are sold), and `report occupancy --format json` on the command line passes the same number on to our owner's dashboard, which expects a percentage. Make occupancy a `percent` instead, rounded to two decimal places: `40.0` for two of five rooms, `33.33` for one of three.",
+      "request": "`day_statistics()` returns occupancy as a fraction, and `report occupancy --format json` on the command line passes the same number on to our owner's dashboard, which expects a percentage. Return occupancy as a percentage rounded to two decimal places, so two of five rooms sold reads `40.0` instead of `0.4`, and one of three reads `33.33`.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": [],

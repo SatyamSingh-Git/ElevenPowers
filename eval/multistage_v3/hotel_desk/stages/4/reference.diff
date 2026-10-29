@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 8259c7d..7a53acd 100644
+index 1f26edc..b15585f 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -7,11 +7,11 @@ index 8259c7d..7a53acd 100644
  ## Unreleased
  
 +- Nightly room charges are posted under the code `ROOM` instead of `RM`; `post` still accepts `RM`.
- - Fixed: tax on each charge is rounded half up to the cent; it was rounded down.
+ - Fixed: tax on each charge is rounded `half-up` to the cent; it was rounded down.
  - Stays of up to 45 nights are accepted by default (`max_stay_nights`).
  - The audit journal writes amounts as `0.00` instead of whole cents.
 diff --git a/docs/reference.md b/docs/reference.md
-index b5fc71c..40e61d0 100644
+index cdfa028..b9f0c3a 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -74,7 +74,7 @@ Codes are case-insensitive on the way in and stored upper case.

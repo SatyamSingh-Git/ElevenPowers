@@ -100,7 +100,7 @@ Codes are case-insensitive on the way in and stored upper case.
 | `journal.amounts` | `cents` | File `audit_journal.csv`: how the four money columns are written |
 | `folio_export.columns` | `reservation,guest,date,code,description,amount` | File written by `export-folios`: header line |
 | `channel_import.columns` | `channel_ref,guest,room_type,arrival,departure,adults,rate_plan` | File read by `import`: required header columns |
-| `statistics.occupancy` | `fraction` | API `day_statistics()` and CLI `report occupancy --format json`: occupancy as a share of available rooms, `0.5` for half |
+| `statistics.occupancy` | `0.4` | API `day_statistics()` and CLI `report occupancy --format json`: the occupancy value when two of five rooms are sold, written as a fraction of available rooms |
 | `occupancy.days` | `7` | CLI `report occupancy`: days shown from the report date |
 | `availability.days` | `14` | CLI `report availability`: days shown |
 | `forecast.days` | `30` | CLI `report forecast`: days shown |
