@@ -1,0 +1,152 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 323808c..5c3b6a6 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `library.json` saves ingredient amounts as JSON numbers (`1.5`) instead of text (`"1 1/2"`); older libraries still open, and bundles are read either way.
+ - `search` prints up to 25 matches by default, and `--limit 0` prints every match.
+ - Eggs have their own aisle, `eggs`, straight after `dairy`.
+ - `build_shopping_list()`, and so the `shop --csv` file, lists items alphabetically by name instead of by aisle.
+diff --git a/docs/reference.md b/docs/reference.md
+index 52754fc..da783d4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -116,7 +116,7 @@ line to the pantry.
+ | `library.file` | `library.json` | the library, in the home (file) |
+ | `library.version` | `1` | `version` field of `library.json` (file) |
+ | `library.backup` | `library.json.bak` | the previous library, kept on every save (file) |
+-| `ingredients[].amount` | `string` | JSON type of an ingredient amount in `library.json`, such as `"1 1/2"`; null when the ingredient has none (file) |
++| `ingredients[].amount` | `number` | JSON type of an ingredient amount in `library.json`, such as `1.5`; null when the ingredient has none. Text such as `"1 1/2"` from older files is still read (file) |
+ | `ingredients[].unit` | `unit symbol` | an ingredient's unit in `library.json`; empty for a plain count (file) |
+ | `pantry.csv.columns` | `item,amount,unit` | header of `pantry.csv`; a blank amount marks a staple (file) |
+ | `bundle.marker` | `recipebox` | key holding the bundle version in an export bundle; its recipes are in the `library.json` form (file) |
+diff --git a/src/recipebox/core/quantity.py b/src/recipebox/core/quantity.py
+index 15e6e48..6317485 100644
+--- a/src/recipebox/core/quantity.py
++++ b/src/recipebox/core/quantity.py
+@@ -105,6 +105,18 @@ def format_amount(amount):
+     return f"{whole} {fraction}" if whole else fraction
+ 
+ 
++def amount_as_number(amount):
++    """An amount for JSON: an int when whole, otherwise a float."""
++    return amount.numerator if amount.denominator == 1 else float(amount)
++
++
++def amount_from_number(value):
++    """Read a JSON number back as an amount; floats are taken to the nearest fraction over at most 1000."""
++    if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
++        raise AmountError(f"cannot read amount {value}")
++    return Fraction(value).limit_denominator(1000)
++
++
+ def _nearest(amount):
+     whole = amount.numerator // amount.denominator
+     rest = amount - whole
+diff --git a/src/recipebox/services/importer.py b/src/recipebox/services/importer.py
+index c0c511a..80d6937 100644
+--- a/src/recipebox/services/importer.py
++++ b/src/recipebox/services/importer.py
+@@ -9,7 +9,7 @@ from pathlib import Path
+ 
+ from ..core import units
+ from ..core.ingredients import Ingredient, canonical_name
+-from ..core.quantity import Quantity, parse_amount
++from ..core.quantity import Quantity, amount_from_number, parse_amount
+ from ..core.recipe import Recipe, normalise_tags, validate
+ from ..errors import BundleError, RecipeBoxError
+ 
+@@ -39,10 +39,9 @@ def _read_ingredient(entry, where):
+     raw = entry.get("amount")
+     quantity = None
+     if raw is not None:
+-        if not isinstance(raw, str):
+-            raise BundleError(f"{where}: cannot read amount {raw!r}")
++        # Bundles hold a number; ones exported before amounts were numbers hold text.
+         try:
+-            amount = parse_amount(raw)
++            amount = parse_amount(raw) if isinstance(raw, str) else amount_from_number(raw)
+         except RecipeBoxError as error:
+             raise BundleError(f"{where}: {error}") from error
+         symbol = entry.get("unit", "")
+diff --git a/src/recipebox/storage/library.py b/src/recipebox/storage/library.py
+index 77175b4..c045526 100644
+--- a/src/recipebox/storage/library.py
++++ b/src/recipebox/storage/library.py
+@@ -3,7 +3,7 @@ import json
+ from pathlib import Path
+ 
+ from ..core.ingredients import Ingredient
+-from ..core.quantity import Quantity, format_amount, parse_amount
++from ..core.quantity import Quantity, amount_as_number, amount_from_number, parse_amount
+ from ..core.recipe import Recipe
+ from ..errors import DuplicateRecipe, RecipeBoxError, RecipeNotFound
+ 
+@@ -14,7 +14,7 @@ def _ingredient_to_dict(ingredient):
+     quantity = ingredient.quantity
+     return {
+         "item": ingredient.name,
+-        "amount": None if quantity is None else format_amount(quantity.amount),
++        "amount": None if quantity is None else amount_as_number(quantity.amount),
+         "unit": "" if quantity is None else quantity.unit,
+         "note": ingredient.note,
+     }
+@@ -22,8 +22,12 @@ def _ingredient_to_dict(ingredient):
+ 
+ def _ingredient_from_dict(data):
+     quantity = None
+-    if data["amount"] is not None:
+-        quantity = Quantity(parse_amount(data["amount"]), data["unit"])
++    amount = data["amount"]
++    if isinstance(amount, str):
++        # Libraries saved before amounts were numbers hold text such as "1 1/2".
++        quantity = Quantity(parse_amount(amount), data["unit"])
++    elif amount is not None:
++        quantity = Quantity(amount_from_number(amount), data["unit"])
+     return Ingredient(data["item"], quantity, data.get("note", ""))
+ 
+ 
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index 3d6f9cf..875db28 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -3,8 +3,10 @@ import json
+ 
+ import pytest
+ 
++from recipebox.core.ingredients import Ingredient
+ from recipebox.core.pantry import Pantry
+ from recipebox.core.quantity import Quantity
++from recipebox.core.recipe import Recipe
+ from recipebox.errors import DuplicateRecipe, PantryError, PlanError, RecipeNotFound
+ from recipebox.storage.library import Library
+ from recipebox.storage.pantry_file import load_pantry, read_purchases, save_pantry
+@@ -24,7 +26,24 @@ def test_library_file_fields(tmp_path, pancakes):
+     data = json.loads((tmp_path / "library.json").read_text(encoding="utf-8"))
+     assert data["version"] == 1
+     flour = data["recipes"][0]["ingredients"][0]
+-    assert flour == {"item": "flour", "amount": "1 1/2", "unit": "cup", "note": ""}
++    assert flour == {"item": "flour", "amount": 1.5, "unit": "cup", "note": ""}
++    eggs = data["recipes"][0]["ingredients"][2]
++    assert eggs["amount"] == 2 and isinstance(eggs["amount"], int)
++    assert data["recipes"][0]["ingredients"][5]["amount"] is None
++
++
++def test_library_reads_amounts_saved_as_text(tmp_path, pancakes):
++    Library(tmp_path / "library.json", [pancakes]).save()
++    data = json.loads((tmp_path / "library.json").read_text(encoding="utf-8"))
++    data["recipes"][0]["ingredients"][0]["amount"] = "1 1/2"
++    (tmp_path / "library.json").write_text(json.dumps(data), encoding="utf-8")
++    assert Library.load(tmp_path / "library.json").get("fluffy-pancakes") == pancakes
++
++
++def test_library_round_trips_thirds(tmp_path):
++    recipe = Recipe("Mug Cake", 1, (Ingredient("sugar", Quantity(Fraction(1, 3), "cup")),))
++    Library(tmp_path / "library.json", [recipe]).save()
++    assert Library.load(tmp_path / "library.json").get("mug-cake") == recipe
+ 
+ 
+ def test_library_keeps_a_backup(tmp_path, pancakes, soup):

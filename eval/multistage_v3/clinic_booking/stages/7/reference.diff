@@ -1,0 +1,72 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index cd8c4f5..31fb242 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- The charges file writes amounts in whole pence, in an `amount_pence` column, for the card terminal.
+ - Fixed: phone numbers typed with spaces, like `07700 900123`, were refused; spaces are now dropped. The error shows the number as typed.
+ - New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
+ - The bookings file is written in booking reference order, so new bookings land at the bottom.
+diff --git a/docs/reference.md b/docs/reference.md
+index c5b4d52..634b982 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -72,7 +72,7 @@ Written by `clinic fees --out FILE`. The `statement` command reads it back.
+ | key | value | meaning |
+ |---|---|---|
+ | `charges_file.name` | `charges.csv` | charges file the CLI `statement` command reads unless `--charges` names another |
+-| `charges_file.columns` | `booking,patient,phone,day,reason,amount` | header row of the charges file; amount is pounds and pence, e.g. 25.00 |
++| `charges_file.columns` | `booking,patient,phone,day,reason,amount_pence` | header row of the charges file; amount_pence is whole pence, e.g. 2500 for 25.00 |
+ | `charges.reason` | `no-show` | reason column of the charges file for a no-show |
+ 
+ ## Reminders and the outbox
+diff --git a/src/clinicbook/reports/statement.py b/src/clinicbook/reports/statement.py
+index d0c8aff..4b8e8f4 100644
+--- a/src/clinicbook/reports/statement.py
++++ b/src/clinicbook/reports/statement.py
+@@ -29,7 +29,8 @@ class Statement:
+ 
+ def _line(row, where):
+     try:
+-        return StatementLine(date.fromisoformat(row["day"]), row["booking"], row["reason"], Decimal(row["amount"]))
++        amount = Decimal(row["amount_pence"]).scaleb(-2)
++        return StatementLine(date.fromisoformat(row["day"]), row["booking"], row["reason"], amount)
+     except (ValueError, InvalidOperation):
+         raise StorageError(f"{where}: not a charge row") from None
+ 
+diff --git a/src/clinicbook/services/fees.py b/src/clinicbook/services/fees.py
+index 1e5667c..9a093f3 100644
+--- a/src/clinicbook/services/fees.py
++++ b/src/clinicbook/services/fees.py
+@@ -9,7 +9,7 @@ from ..model.booking import NO_SHOW
+ 
+ DEFAULT_NAME = "charges.csv"
+ NO_SHOW_REASON = "no-show"
+-COLUMNS = ("booking", "patient", "phone", "day", "reason", "amount")
++COLUMNS = ("booking", "patient", "phone", "day", "reason", "amount_pence")
+ 
+ 
+ @dataclass(frozen=True)
+@@ -55,5 +55,5 @@ def write_charges(owed, path=DEFAULT_NAME):
+                 charge.phone,
+                 charge.day.isoformat(),
+                 charge.reason,
+-                f"{charge.amount:.2f}",
++                str(int(charge.amount * 100)),
+             ])
+diff --git a/tests/test_fees.py b/tests/test_fees.py
+index dd272a0..ef1b8a9 100644
+--- a/tests/test_fees.py
++++ b/tests/test_fees.py
+@@ -30,6 +30,6 @@ def test_charges_file(desk, clock, clinic, tmp_path):
+     with path.open(newline="", encoding="utf-8") as handle:
+         rows = list(csv.reader(handle))
+     assert rows == [
+-        ["booking", "patient", "phone", "day", "reason", "amount"],
+-        ["B0001", "Ann Lee", "07700900001", "2026-03-02", "no-show", "25.00"],
++        ["booking", "patient", "phone", "day", "reason", "amount_pence"],
++        ["B0001", "Ann Lee", "07700900001", "2026-03-02", "no-show", "2500"],
+     ]

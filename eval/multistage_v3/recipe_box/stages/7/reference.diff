@@ -1,0 +1,109 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d99d9d8..323808c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `search` prints up to 25 matches by default, and `--limit 0` prints every match.
+ - Eggs have their own aisle, `eggs`, straight after `dairy`.
+ - `build_shopping_list()`, and so the `shop --csv` file, lists items alphabetically by name instead of by aisle.
+ - Recipe ids use only `a-z 0-9 -`: accents are dropped and any other character separates words, so `Mac & Cheese` is `mac-cheese`.
+diff --git a/docs/reference.md b/docs/reference.md
+index a29c957..52754fc 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -16,7 +16,7 @@ every error as `error: {message}` on stderr.
+ | `exit.error` | `1` | exit status after an error (CLI) |
+ | `exit.usage` | `2` | exit status after a usage mistake (CLI) |
+ | `show --servings` | `as written` | default for `show --servings`: the recipe's own servings (CLI) |
+-| `search --limit` | `10` | default number of matches `search` prints (CLI) |
++| `search --limit` | `25` | default number of matches `search` prints; `--limit 0` prints them all (CLI) |
+ | `search.more` | `showing {shown} of {total} matches` | printed after the matches when some were left out (CLI) |
+ | `search.none` | `no recipes match` | printed when nothing matches (CLI) |
+ | `search.weights` | `title 3, tag 2, ingredient 1` | score a query word earns for each place it is found; best score first, then title (API and CLI) |
+@@ -46,7 +46,7 @@ every error as `error: {message}` on stderr.
+ | `error.pantry_missing` | `{item} is not in the pantry` | using or removing what the pantry lacks (API, CLI) |
+ | `error.bundle` | `{file}: not a recipebox bundle` | importing a file that is not a bundle (API, CLI) |
+ | `error.bundle_amount` | `recipe {number}, ingredient {number}: cannot read amount {amount}` | bundle ingredient with an amount that cannot be read (API, CLI) |
+-| `error.search_limit` | `--limit must be at least 1` | `search --limit` below the allowed range (CLI) |
++| `error.search_limit` | `--limit must be 0 or more` | `search --limit` below the allowed range (CLI) |
+ 
+ ## Limits
+ 
+diff --git a/src/recipebox/cli/commands.py b/src/recipebox/cli/commands.py
+index 4d648db..0cc4ee1 100644
+--- a/src/recipebox/cli/commands.py
++++ b/src/recipebox/cli/commands.py
+@@ -134,13 +134,13 @@ def remove(args, home):
+ 
+ 
+ def find(args, home):
+-    if args.limit < 1:
+-        raise RecipeBoxError("--limit must be at least 1")
++    if args.limit < 0:
++        raise RecipeBoxError("--limit must be 0 or more")
+     matches = search(Library.load(home.library), " ".join(args.words), tag=args.tag, max_minutes=args.max_time)
+     if not matches:
+         print("no recipes match")
+         return 0
+-    shown = matches[:args.limit]
++    shown = matches[:args.limit] if args.limit else matches
+     print(render_listing(match.recipe for match in shown), end="")
+     if len(shown) < len(matches):
+         print(f"showing {len(shown)} of {len(matches)} matches")
+diff --git a/src/recipebox/cli/main.py b/src/recipebox/cli/main.py
+index 1643a5e..daf787b 100644
+--- a/src/recipebox/cli/main.py
++++ b/src/recipebox/cli/main.py
+@@ -9,7 +9,7 @@ from ..core.catalog import AISLE_ORDER
+ from ..core.plan import DAYS, MEALS
+ from . import commands
+ 
+-SEARCH_LIMIT = 10
++SEARCH_LIMIT = 25
+ 
+ 
+ def _positive(text):
+@@ -67,7 +67,7 @@ def build_parser():
+     find.add_argument("words", nargs="*")
+     find.add_argument("--tag")
+     find.add_argument("--max-time", type=_positive, metavar="MINUTES")
+-    find.add_argument("--limit", type=int, default=SEARCH_LIMIT, help=f"most matches to show (default {SEARCH_LIMIT})")
++    find.add_argument("--limit", type=int, default=SEARCH_LIMIT, help=f"most matches to show, 0 for all (default {SEARCH_LIMIT})")
+     find.set_defaults(handler=commands.find)
+ 
+     nutrition = sub.add_parser("nutrition", help="nutrition per serving")
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index 3203913..4e02538 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -28,19 +28,21 @@ def test_add_twice(home, recipe_files, capsys):
+ 
+ 
+ def test_search_limit(home, tmp_path, capsys):
+-    for number in range(12):
++    for number in range(30):
+         path = tmp_path / f"r{number}.recipe"
+         path.write_text(f"title: Soup {number:02}\nservings: 2\n\ningredients:\n- 1 onion\n", encoding="utf-8")
+         run(home, "add", str(path))
+     capsys.readouterr()
+     run(home, "search", "soup")
+     out = capsys.readouterr().out.splitlines()
+-    assert len(out) == 11
+-    assert out[-1] == "showing 10 of 12 matches"
++    assert len(out) == 26
++    assert out[-1] == "showing 25 of 30 matches"
+     run(home, "search", "soup", "--limit", "3")
+-    assert capsys.readouterr().out.splitlines()[-1] == "showing 3 of 12 matches"
+-    assert run(home, "search", "soup", "--limit", "0") == 1
+-    assert capsys.readouterr().err == "error: --limit must be at least 1\n"
++    assert capsys.readouterr().out.splitlines()[-1] == "showing 3 of 30 matches"
++    run(home, "search", "soup", "--limit", "0")
++    assert len(capsys.readouterr().out.splitlines()) == 30
++    assert run(home, "search", "soup", "--limit", "-1") == 1
++    assert capsys.readouterr().err == "error: --limit must be 0 or more\n"
+ 
+ 
+ def test_pantry_commands(home, capsys):

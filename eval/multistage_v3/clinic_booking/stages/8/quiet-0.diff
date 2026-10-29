@@ -1,0 +1,22 @@
+diff --git a/src/clinicbook/reports/summary.py b/src/clinicbook/reports/summary.py
+index cbaf9f1..4897b06 100644
+--- a/src/clinicbook/reports/summary.py
++++ b/src/clinicbook/reports/summary.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass
+ from datetime import date
+ from decimal import Decimal
+ 
+-from ..services.fees import charges, total
++from ..model.booking import NO_SHOW
+ 
+ 
+ @dataclass(frozen=True)
+@@ -24,7 +24,7 @@ def day_summary(bookings, clinic, day):
+     todays = [booking for booking in bookings if booking.day == day]
+     counts = Counter(booking.status for booking in todays)
+     seen_by = Counter(clinic.practitioner_name(booking.practitioner) for booking in todays if booking.active)
+-    fees_due = total(charge for charge in charges(bookings, clinic.settings) if charge.day == day)
++    fees_due = clinic.settings.no_show_fee * counts[NO_SHOW]
+     return DaySummary(day, dict(counts), fees_due, dict(seen_by))
+ 
+ 

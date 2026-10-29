@@ -1,0 +1,12 @@
+diff --git a/src/clinicbook/reports/day_schedule.py b/src/clinicbook/reports/day_schedule.py
+index 6b0d77f..62c9aa2 100644
+--- a/src/clinicbook/reports/day_schedule.py
++++ b/src/clinicbook/reports/day_schedule.py
+@@ -11,7 +11,6 @@ STATUS_TEXT = {
+     "attended": "Attended",
+     "no_show": "No-show",
+     "cancelled": "Cancelled",
+-    "late_cancelled": "Late cancel",
+ }
+ 
+ 

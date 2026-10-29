@@ -1,0 +1,13 @@
+diff --git a/src/boxoffice/reports/daily.py b/src/boxoffice/reports/daily.py
+index 4bb1e75..704a0aa 100644
+--- a/src/boxoffice/reports/daily.py
++++ b/src/boxoffice/reports/daily.py
+@@ -41,7 +41,7 @@ def daily_takings(entries, day=None):
+     """One row per day that has entries, oldest first; only `day` (YYYY-MM-DD) when given."""
+     days = {}
+     for entry in entries:
+-        when = entry["date"][:10]
++        when = entry["date"]
+         if day is not None and when != day:
+             continue
+         if when not in days:

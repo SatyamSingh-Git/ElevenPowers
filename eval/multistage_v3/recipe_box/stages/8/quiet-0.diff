@@ -1,0 +1,26 @@
+diff --git a/src/recipebox/services/importer.py b/src/recipebox/services/importer.py
+index 80d6937..c0c511a 100644
+--- a/src/recipebox/services/importer.py
++++ b/src/recipebox/services/importer.py
+@@ -9,7 +9,7 @@ from pathlib import Path
+ 
+ from ..core import units
+ from ..core.ingredients import Ingredient, canonical_name
+-from ..core.quantity import Quantity, amount_from_number, parse_amount
++from ..core.quantity import Quantity, parse_amount
+ from ..core.recipe import Recipe, normalise_tags, validate
+ from ..errors import BundleError, RecipeBoxError
+ 
+@@ -39,9 +39,10 @@ def _read_ingredient(entry, where):
+     raw = entry.get("amount")
+     quantity = None
+     if raw is not None:
+-        # Bundles hold a number; ones exported before amounts were numbers hold text.
++        if not isinstance(raw, str):
++            raise BundleError(f"{where}: cannot read amount {raw!r}")
+         try:
+-            amount = parse_amount(raw) if isinstance(raw, str) else amount_from_number(raw)
++            amount = parse_amount(raw)
+         except RecipeBoxError as error:
+             raise BundleError(f"{where}: {error}") from error
+         symbol = entry.get("unit", "")

@@ -1,0 +1,32 @@
+diff --git a/src/recipebox/storage/plan_file.py b/src/recipebox/storage/plan_file.py
+index a51dfdb..22e5586 100644
+--- a/src/recipebox/storage/plan_file.py
++++ b/src/recipebox/storage/plan_file.py
+@@ -12,12 +12,17 @@ from pathlib import Path
+ import re
+ 
+ from ..core.plan import DAYS, MEALS, MealEntry, Plan
+-from ..core.recipe import check_servings, recipe_id
++from ..core.recipe import check_servings
+ from ..errors import PlanError, RecipeBoxError
+ 
+ _LINE = re.compile(r"(\w+)\s+(\w+)\s*:\s*(.+?)(?:\s+x(\d+))?")
+ 
+ 
++def _title_key(title):
++    # The library knows recipes by id, and an id is the title lower-cased with spaces as dashes.
++    return "-".join(title.lower().split())
++
++
+ def parse_plan(text, library):
+     plan = Plan()
+     for number, raw in enumerate(text.splitlines(), 1):
+@@ -33,7 +38,7 @@ def parse_plan(text, library):
+             raise PlanError(f"plan line {number}: unknown day {day}")
+         if meal not in MEALS:
+             raise PlanError(f"plan line {number}: unknown meal {meal}")
+-        recipe = library.find(recipe_id(title))
++        recipe = library.find(_title_key(title))
+         if recipe is None:
+             raise PlanError(f"plan line {number}: no recipe titled {title}")
+         if servings is not None:

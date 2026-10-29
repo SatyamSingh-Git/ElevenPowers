@@ -1,0 +1,29 @@
+diff --git a/src/clinicbook/reports/utilisation.py b/src/clinicbook/reports/utilisation.py
+index 2ab46de..b0f8036 100644
+--- a/src/clinicbook/reports/utilisation.py
++++ b/src/clinicbook/reports/utilisation.py
+@@ -6,12 +6,11 @@ printed, and schedules exported in the past can be measured too.
+ """
+ import csv
+ from dataclasses import dataclass
+-from datetime import date, datetime, time
++from datetime import date, time
+ from pathlib import Path
+ 
+ from ..errors import StorageError
+ from ..model.times import minutes_between
+-from .day_schedule import TIME_FORMAT
+ from .textfmt import percent, table
+ 
+ # Status labels for which the room was set aside, whether or not the patient came.
+@@ -52,8 +51,8 @@ def read_schedule(path):
+             try:
+                 rows.append(ExportedRow(
+                     day=date.fromisoformat(row["date"]),
+-                    start=datetime.strptime(row["start"], TIME_FORMAT).time(),
+-                    end=datetime.strptime(row["end"], TIME_FORMAT).time(),
++                    start=time.fromisoformat(row["start"]),
++                    end=time.fromisoformat(row["end"]),
+                     room=row["room"],
+                     status=row["status"],
+                 ))

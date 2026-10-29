@@ -1,0 +1,19 @@
+[project]
+name = "clinicbook"
+version = "1.4.0"
+description = "Appointment booking for a small clinic"
+requires-python = ">=3.11"
+
+[project.scripts]
+clinic = "clinicbook.cli.main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

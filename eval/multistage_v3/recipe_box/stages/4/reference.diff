@@ -1,0 +1,99 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6ae5f90..d519b85 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Recipe ids use only `a-z 0-9 -`: accents are dropped and any other character separates words, so `Mac & Cheese` is `mac-cheese`.
+ - `nutrition_for()` reports dietary fibre per serving as `fibre_g`, after `carbs_g`.
+ - Fixed: thirds were shown as eighths (`1/3 cup` came out as `3/8 cup`). Amounts are now shown in halves, thirds, quarters or eighths.
+ - `shop --csv` writes each line's aisle code in a new second column: `item,aisle,quantity,unit`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 2462837..a05c5f4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -80,7 +80,7 @@ every error as `error: {message}` on stderr.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `recipe.id.characters` | `any except space` | characters a recipe id, made from its title, may contain (CLI) |
++| `recipe.id.characters` | `a-z 0-9 -` | characters a recipe id, made from its title, may contain (CLI) |
+ | `recipe.id.separator` | `-` | what stands between the words of a title in its id (CLI) |
+ | `recipe.id.case` | `lower` | case of a recipe id (CLI) |
+ 
+diff --git a/src/recipebox/core/recipe.py b/src/recipebox/core/recipe.py
+index 6a5b77e..06af088 100644
+--- a/src/recipebox/core/recipe.py
++++ b/src/recipebox/core/recipe.py
+@@ -1,5 +1,7 @@
+ """The recipe model, its id and its limits."""
+ from dataclasses import dataclass, field, replace
++import re
++import unicodedata
+ 
+ from ..errors import RecipeError
+ 
+@@ -11,8 +13,13 @@ MAX_MINUTES = 24 * 60
+ 
+ 
+ def recipe_id(title):
+-    """The id a recipe is known by in the library and on the command line."""
+-    return "-".join(title.lower().split())
++    """The id a recipe is known by in the library and on the command line.
++
++    Only a-z, 0-9 and dashes: accents are dropped, and any other character
++    separates words.
++    """
++    plain = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode("ascii")
++    return "-".join(re.sub(r"[^a-z0-9]+", " ", plain.lower()).split())
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/src/recipebox/storage/plan_file.py b/src/recipebox/storage/plan_file.py
+index 22e5586..a51dfdb 100644
+--- a/src/recipebox/storage/plan_file.py
++++ b/src/recipebox/storage/plan_file.py
+@@ -12,17 +12,12 @@ from pathlib import Path
+ import re
+ 
+ from ..core.plan import DAYS, MEALS, MealEntry, Plan
+-from ..core.recipe import check_servings
++from ..core.recipe import check_servings, recipe_id
+ from ..errors import PlanError, RecipeBoxError
+ 
+ _LINE = re.compile(r"(\w+)\s+(\w+)\s*:\s*(.+?)(?:\s+x(\d+))?")
+ 
+ 
+-def _title_key(title):
+-    # The library knows recipes by id, and an id is the title lower-cased with spaces as dashes.
+-    return "-".join(title.lower().split())
+-
+-
+ def parse_plan(text, library):
+     plan = Plan()
+     for number, raw in enumerate(text.splitlines(), 1):
+@@ -38,7 +33,7 @@ def parse_plan(text, library):
+             raise PlanError(f"plan line {number}: unknown day {day}")
+         if meal not in MEALS:
+             raise PlanError(f"plan line {number}: unknown meal {meal}")
+-        recipe = library.find(_title_key(title))
++        recipe = library.find(recipe_id(title))
+         if recipe is None:
+             raise PlanError(f"plan line {number}: no recipe titled {title}")
+         if servings is not None:
+diff --git a/tests/test_recipes.py b/tests/test_recipes.py
+index a95623e..63760ed 100644
+--- a/tests/test_recipes.py
++++ b/tests/test_recipes.py
+@@ -44,6 +44,9 @@ def test_format_ingredient_reads_back():
+ def test_recipe_id():
+     assert recipe_id("Fluffy Pancakes") == "fluffy-pancakes"
+     assert recipe_id("  Tomato   Soup ") == "tomato-soup"
++    assert recipe_id("Mac & Cheese") == "mac-cheese"
++    assert recipe_id("Crème Brûlée!") == "creme-brulee"
++    assert recipe_id("15-Minute Soup") == "15-minute-soup"
+ 
+ 
+ def test_parse_recipe(pancakes):

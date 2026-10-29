@@ -1,0 +1,114 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 50a223a..4435471 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Holds that expired more than `hold_keep_minutes` (default 60) ago are dropped when holds are
++  saved, so the list of holds no longer grows for ever.
+ - Best available no longer picks wheelchair spaces, and `seat_states` reports an open one as
+   `wheelchair`. They can still be held, sold and exchanged into by name.
+ - Concession prices (all but adult) are rounded to the nearest 50 pence, halves up.
+diff --git a/docs/reference.md b/docs/reference.md
+index 3f0f107..4067178 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -16,6 +16,7 @@ error, so a typo is not silently ignored.
+ | `currency` | `GBP` | setting: currency named on receipts |
+ | `booking_fee` | `150` | setting: pence charged once per order, whatever the number of seats; never refunded unless the performance is cancelled |
+ | `hold_minutes` | `15` | setting: how long a hold keeps its seats |
++| `hold_keep_minutes` | `60` | setting: a hold expired longer ago than this is dropped the next time holds are saved |
+ | `max_tickets_per_order` | `10` | setting: most seats in one hold, and so in one order |
+ | `refund_cutoff_hours` | `48` | setting: refunds and exchanges close this many hours before the performance starts |
+ | `exchange_fee` | `100` | setting: pence added to what the customer pays for an exchange |
+diff --git a/src/boxoffice/config.py b/src/boxoffice/config.py
+index 7202544..f5ac649 100644
+--- a/src/boxoffice/config.py
++++ b/src/boxoffice/config.py
+@@ -13,6 +13,7 @@ class Settings:
+     currency: str = "GBP"
+     booking_fee: int = 150
+     hold_minutes: int = 15
++    hold_keep_minutes: int = 60
+     max_tickets_per_order: int = 10
+     refund_cutoff_hours: int = 48
+     exchange_fee: int = 100
+diff --git a/src/boxoffice/services/holds.py b/src/boxoffice/services/holds.py
+index 80436ad..53ec02a 100644
+--- a/src/boxoffice/services/holds.py
++++ b/src/boxoffice/services/holds.py
+@@ -1,4 +1,8 @@
+-"""Holding seats for a customer while they decide, for `hold_minutes` at most."""
++"""Holding seats for a customer while they decide, for `hold_minutes` at most.
++
++Holds are dropped once they have been expired for `hold_keep_minutes`, so the
++list stays short however long the season runs.
++"""
+ from datetime import timedelta
+ 
+ from ..errors import BoxOfficeError
+@@ -41,7 +45,7 @@ class HoldService:
+         hold = Hold(self.store.new_hold_id(holds), code, sorted(seats, key=order.__getitem__), now,
+                     now + timedelta(minutes=self.settings.hold_minutes))
+         holds[hold.id] = hold
+-        self.store.save_holds(holds)
++        self._save(holds)
+         return hold
+ 
+     def place_best(self, code, count, section=None):
+@@ -67,11 +71,17 @@ class HoldService:
+         self.active(hold_id)
+         holds = self.store.load_holds()
+         holds[hold_id].status = "released"
+-        self.store.save_holds(holds)
++        self._save(holds)
+         return holds[hold_id]
+ 
+     def mark_sold(self, hold_id, order_id):
+         holds = self.store.load_holds()
+         holds[hold_id].status = "sold"
+         holds[hold_id].order = order_id
++        self._save(holds)
++
++    def _save(self, holds):
++        cutoff = self.clock.now() - timedelta(minutes=self.settings.hold_keep_minutes)
++        for hold_id in [key for key, hold in holds.items() if hold.expires < cutoff]:
++            del holds[hold_id]
+         self.store.save_holds(holds)
+diff --git a/src/boxoffice/storage/jsonstore.py b/src/boxoffice/storage/jsonstore.py
+index 2721baa..4c90a5b 100644
+--- a/src/boxoffice/storage/jsonstore.py
++++ b/src/boxoffice/storage/jsonstore.py
+@@ -54,7 +54,8 @@ class Store:
+         self._write(HOLDS_FILE, {key: hold.to_dict() for key, hold in holds.items()})
+ 
+     def new_hold_id(self, holds):
+-        return f"H{len(holds) + 1:04d}"
++        # Old holds are dropped, so counting the ones left could reissue a live hold's id.
++        return f"H{max((int(key[1:]) for key in holds), default=0) + 1:04d}"
+ 
+     def load_orders(self):
+         return {key: Order.from_dict(key, data) for key, data in self._read(ORDERS_FILE, {}).items()}
+diff --git a/tests/test_holds.py b/tests/test_holds.py
+index 59160a6..31e2311 100644
+--- a/tests/test_holds.py
++++ b/tests/test_holds.py
+@@ -88,6 +88,16 @@ def test_no_holds_once_started(office, clock):
+     assert raised.value.code == "performance-started"
+ 
+ 
++def test_long_expired_holds_are_dropped(office, clock):
++    office.holds.place("TEMP-0520", ["A1"])
++    clock.set(datetime(2026, 5, 1, 11, 10))
++    office.holds.place("TEMP-0520", ["A2"])
++    assert len(office.store.load_holds()) == 2
++    clock.set(datetime(2026, 5, 1, 11, 16))
++    office.holds.place("TEMP-0520", ["A3"])
++    assert sorted(hold.seats[0] for hold in office.store.load_holds().values()) == ["A2", "A3"]
++
++
+ def test_hold_ids_follow_on(office):
+     first = office.holds.place("TEMP-0520", ["A1"])
+     office.holds.release(first.id)

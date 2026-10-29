@@ -1,0 +1,64 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ba21536..20ae3e1 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: thirds were shown as eighths (`1/3 cup` came out as `3/8 cup`). Amounts are now shown in halves, thirds, quarters or eighths.
+ - `shop --csv` writes each line's aisle code in a new second column: `item,aisle,quantity,unit`.
+ - `plan check` points out repeated recipes, empty days and long weekday dinners.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index deef249..c906253 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -71,7 +71,7 @@ every error as `error: {message}` on stderr.
+ | `unit.oz` | `28.3495 g` | one ounce (API, CLI) |
+ | `unit.lb` | `453.592 g` | one pound (API, CLI) |
+ | `unit.count` | `clove, can, slice` | count units besides a plain count; each only adds up with itself (API, CLI) |
+-| `display.denominators` | `2, 4, 8` | fractions a non-metric amount is rounded to when shown (CLI) |
++| `display.denominators` | `2, 3, 4, 8` | fractions a non-metric amount is rounded to when shown (CLI) |
+ | `display.smallest` | `1/8` | shown instead of a non-metric amount that rounds to nothing (CLI) |
+ | `display.g_ml` | `whole numbers` | how g and ml amounts are shown (CLI) |
+ | `display.kg_l` | `2 decimal places` | most decimals shown for kg and l, trailing zeros dropped (CLI) |
+diff --git a/src/recipebox/core/quantity.py b/src/recipebox/core/quantity.py
+index d76d3e5..15e6e48 100644
+--- a/src/recipebox/core/quantity.py
++++ b/src/recipebox/core/quantity.py
+@@ -12,7 +12,7 @@ from ..errors import AmountError
+ from . import units
+ 
+ # Fractions a cook is shown for non-metric units.
+-DENOMINATORS = (2, 4, 8)
++DENOMINATORS = (2, 3, 4, 8)
+ # Shown instead of zero, so a small amount never disappears.
+ SMALLEST = Fraction(1, 8)
+ 
+diff --git a/tests/test_units_and_quantities.py b/tests/test_units_and_quantities.py
+index 119dd49..416ae97 100644
+--- a/tests/test_units_and_quantities.py
++++ b/tests/test_units_and_quantities.py
+@@ -60,12 +60,19 @@ def test_format_amount_is_exact():
+     assert format_amount(Fraction(4)) == "4"
+ 
+ 
+-def test_display_rounds_to_eighths_for_cooks():
++def test_display_rounds_for_cooks():
+     assert display_amount(Fraction(3, 4), "cup") == "3/4"
+-    assert display_amount(Fraction(13, 10), "cup") == "1 1/4"
++    assert display_amount(Fraction(6, 5), "cup") == "1 1/4"
+     assert display_amount(Fraction(1, 100), "tsp") == "1/8"
+ 
+ 
++def test_display_shows_thirds():
++    # 1/3 cup used to come out as 3/8 cup.
++    assert display_amount(Fraction(1, 3), "cup") == "1/3"
++    assert display_amount(Fraction(2, 3), "tbsp") == "2/3"
++    assert display_amount(Fraction(4, 3), "cup") == "1 1/3"
++
++
+ def test_display_metric():
+     assert display_amount(Fraction(2501, 10), "g") == "250"
+     assert display_amount(Fraction(1, 3), "ml") == "1"

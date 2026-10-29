@@ -1,0 +1,175 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 31fb242..a81a240 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- New `first_no_show_free` setting, default true: a patient's first no-show carries no charge.
+ - The charges file writes amounts in whole pence, in an `amount_pence` column, for the card terminal.
+ - Fixed: phone numbers typed with spaces, like `07700 900123`, were refused; spaces are now dropped. The error shows the number as typed.
+ - New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
+diff --git a/docs/reference.md b/docs/reference.md
+index 634b982..a042a9c 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -15,7 +15,8 @@ default shown here.
+ | `buffer_minutes` | `5` | setting in the clinic file: gap left after every appointment; slots start every `slot_minutes` + `buffer_minutes` from opening time |
+ | `cancellation_notice_hours` | `24` | setting in the clinic file: a booking cancelled with less than this many hours to go is recorded as `late_cancelled` |
+ | `max_daily_bookings` | `2` | setting in the clinic file: most bookings one phone number may hold on one day, cancelled ones not counted; `Desk.book` and the CLI `book` command refuse more with "{patient} already has {limit} bookings on {day}" |
+-| `no_show_fee` | `25.00` | setting in the clinic file: amount charged for each no-show |
++| `no_show_fee` | `25.00` | setting in the clinic file: amount charged for each no-show that is not let off |
++| `first_no_show_free` | `true` | setting in the clinic file: when true, each phone number's earliest no-show carries no charge; when false, every no-show is charged |
+ | `reminder_lead_hours` | `24` | setting in the clinic file: a booking's reminder is due this many hours before it starts |
+ | `booking_horizon_days` | `60` | setting in the clinic file: how many days ahead bookings open |
+ | `currency` | `GBP` | setting in the clinic file: one of GBP, EUR or USD; amounts are shown with its symbol |
+@@ -40,7 +41,7 @@ The `status` column of the bookings file holds one of these.
+ |---|---|---|
+ | `booked` | `booked` | status in the bookings file: the appointment is still to come, or not yet marked |
+ | `attended` | `attended` | status in the bookings file: the patient came |
+-| `no_show` | `no_show` | status in the bookings file: the patient did not come; charged `no_show_fee` |
++| `no_show` | `no_show` | status in the bookings file: the patient did not come; charged `no_show_fee` unless `first_no_show_free` lets it off |
+ | `cancelled` | `cancelled` | status in the bookings file: cancelled with at least `cancellation_notice_hours` to go; the slot is free again and nothing is charged |
+ | `late_cancelled` | `late_cancelled` | status in the bookings file: cancelled with less notice; the slot is free again and nothing is charged |
+ 
+diff --git a/src/clinicbook/config.py b/src/clinicbook/config.py
+index 0118e36..2bf5a9d 100644
+--- a/src/clinicbook/config.py
++++ b/src/clinicbook/config.py
+@@ -19,6 +19,7 @@ class Settings:
+     cancellation_notice_hours: int = 24
+     max_daily_bookings: int = 2
+     no_show_fee: Decimal = Decimal("25.00")
++    first_no_show_free: bool = True
+     reminder_lead_hours: int = 24
+     booking_horizon_days: int = 60
+     currency: str = "GBP"
+@@ -32,6 +33,10 @@ class Settings:
+ 
+ 
+ def _convert(name, value, default):
++    if isinstance(default, bool):
++        if not isinstance(value, bool):
++            raise ConfigError(f"setting {name} must be true or false")
++        return value
+     if isinstance(default, int):
+         # JSON true and false are ints to Python; a count of minutes is never one.
+         if isinstance(value, bool) or not isinstance(value, int):
+diff --git a/src/clinicbook/reports/summary.py b/src/clinicbook/reports/summary.py
+index 4897b06..cbaf9f1 100644
+--- a/src/clinicbook/reports/summary.py
++++ b/src/clinicbook/reports/summary.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass
+ from datetime import date
+ from decimal import Decimal
+ 
+-from ..model.booking import NO_SHOW
++from ..services.fees import charges, total
+ 
+ 
+ @dataclass(frozen=True)
+@@ -24,7 +24,7 @@ def day_summary(bookings, clinic, day):
+     todays = [booking for booking in bookings if booking.day == day]
+     counts = Counter(booking.status for booking in todays)
+     seen_by = Counter(clinic.practitioner_name(booking.practitioner) for booking in todays if booking.active)
+-    fees_due = clinic.settings.no_show_fee * counts[NO_SHOW]
++    fees_due = total(charge for charge in charges(bookings, clinic.settings) if charge.day == day)
+     return DaySummary(day, dict(counts), fees_due, dict(seen_by))
+ 
+ 
+diff --git a/src/clinicbook/services/fees.py b/src/clinicbook/services/fees.py
+index 9a093f3..9c6af1d 100644
+--- a/src/clinicbook/services/fees.py
++++ b/src/clinicbook/services/fees.py
+@@ -23,12 +23,19 @@ class Charge:
+ 
+ 
+ def charges(bookings, settings):
+-    """What patients owe: one charge per no-show, by day and booking reference."""
+-    owed = [
+-        Charge(booking.id, booking.patient, booking.phone, booking.day, NO_SHOW_REASON, settings.no_show_fee)
+-        for booking in bookings
+-        if booking.status == NO_SHOW
+-    ]
++    """What patients owe: one charge per no-show, by day and booking reference.
++
++    With `first_no_show_free` on, each phone number's earliest no-show is let off.
++    """
++    missed = sorted((b for b in bookings if b.status == NO_SHOW), key=lambda b: (b.starts_at, b.id))
++    owed, seen = [], set()
++    for booking in missed:
++        first = booking.phone not in seen
++        seen.add(booking.phone)
++        if first and settings.first_no_show_free:
++            continue
++        owed.append(Charge(booking.id, booking.patient, booking.phone, booking.day, NO_SHOW_REASON,
++                           settings.no_show_fee))
+     return sorted(owed, key=lambda charge: (charge.day, charge.booking))
+ 
+ 
+diff --git a/tests/test_config.py b/tests/test_config.py
+index ae00304..1ca6755 100644
+--- a/tests/test_config.py
++++ b/tests/test_config.py
+@@ -11,6 +11,8 @@ def test_defaults_fill_in_what_the_file_leaves_out():
+     assert settings.slot_minutes == 30
+     assert settings.no_show_fee == Decimal("25.00")
+     assert settings.currency == "GBP"
++    assert settings.first_no_show_free is True
++    assert settings_from_dict({"first_no_show_free": False}).first_no_show_free is False
+ 
+ 
+ def test_amounts_are_kept_to_the_penny():
+@@ -25,6 +27,7 @@ def test_amounts_are_kept_to_the_penny():
+     ({"slot_minutes": 2}, "setting slot_minutes must be at least 5"),
+     ({"no_show_fee": "lots"}, "setting no_show_fee must be an amount like 25.00"),
+     ({"currency": "JPY"}, "unsupported currency: JPY"),
++    ({"first_no_show_free": "no"}, "setting first_no_show_free must be true or false"),
+ ])
+ def test_bad_settings_are_refused(raw, message):
+     with pytest.raises(ConfigError) as caught:
+diff --git a/tests/test_fees.py b/tests/test_fees.py
+index ef1b8a9..3e9e346 100644
+--- a/tests/test_fees.py
++++ b/tests/test_fees.py
+@@ -1,5 +1,6 @@
+ import csv
+-from datetime import datetime
++from dataclasses import replace
++from datetime import date, datetime
+ from decimal import Decimal
+ 
+ from clinicbook.services.fees import by_patient, charges, total, write_charges
+@@ -14,19 +15,29 @@ def test_each_no_show_is_charged_the_fee(desk, clock, clinic):
+     desk.mark_no_show(first.id)
+     desk.mark_no_show(second.id)
+     desk.mark_attended(came.id)
+-    owed = charges(desk.bookings, clinic.settings)
++    owed = charges(desk.bookings, replace(clinic.settings, first_no_show_free=False))
+     assert [charge.booking for charge in owed] == ["B0001", "B0002"]
+     assert {charge.amount for charge in owed} == {Decimal("25.00")}
+     assert total(owed) == Decimal("50.00")
+     assert set(by_patient(owed)) == {"07700900001", "07700900002"}
+ 
+ 
++def test_first_no_show_is_free(desk, clock, clinic):
++    later = desk.book("amy", date(2026, 3, 3), at("09:00"), "Ann Lee", "07700900001")
++    earlier = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700900001")
++    once = desk.book("ben", MONDAY, at("09:00"), "Bob Ray", "07700900002")
++    clock.moment = datetime(2026, 3, 3, 18, 0)
++    for booking in (later, earlier, once):
++        desk.mark_no_show(booking.id)
++    assert [charge.booking for charge in charges(desk.bookings, clinic.settings)] == [later.id]
++
++
+ def test_charges_file(desk, clock, clinic, tmp_path):
+     booking = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700900001")
+     clock.moment = datetime(2026, 3, 2, 18, 0)
+     desk.mark_no_show(booking.id)
+     path = tmp_path / "charges.csv"
+-    write_charges(charges(desk.bookings, clinic.settings), path)
++    write_charges(charges(desk.bookings, replace(clinic.settings, first_no_show_free=False)), path)
+     with path.open(newline="", encoding="utf-8") as handle:
+         rows = list(csv.reader(handle))
+     assert rows == [

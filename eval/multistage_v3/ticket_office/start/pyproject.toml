@@ -1,0 +1,12 @@
+[project]
+name = "boxoffice"
+version = "1.4.0"
+description = "Box-office ticketing for a small theatre"
+requires-python = ">=3.11"
+
+[project.scripts]
+boxoffice = "boxoffice.cli.main:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

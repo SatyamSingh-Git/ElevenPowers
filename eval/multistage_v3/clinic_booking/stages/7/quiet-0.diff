@@ -1,0 +1,14 @@
+diff --git a/src/clinicbook/reports/statement.py b/src/clinicbook/reports/statement.py
+index 4b8e8f4..d0c8aff 100644
+--- a/src/clinicbook/reports/statement.py
++++ b/src/clinicbook/reports/statement.py
+@@ -29,8 +29,7 @@ class Statement:
+ 
+ def _line(row, where):
+     try:
+-        amount = Decimal(row["amount_pence"]).scaleb(-2)
+-        return StatementLine(date.fromisoformat(row["day"]), row["booking"], row["reason"], amount)
++        return StatementLine(date.fromisoformat(row["day"]), row["booking"], row["reason"], Decimal(row["amount"]))
+     except (ValueError, InvalidOperation):
+         raise StorageError(f"{where}: not a charge row") from None
+ 

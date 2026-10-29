@@ -1,0 +1,18 @@
+diff --git a/src/boxoffice/reports/daily.py b/src/boxoffice/reports/daily.py
+index ec33225..4bb1e75 100644
+--- a/src/boxoffice/reports/daily.py
++++ b/src/boxoffice/reports/daily.py
+@@ -32,13 +32,6 @@ class _Day:
+         self.returned += entry["tickets"]
+         self.refunds -= entry["amount"]
+ 
+-    def _on_exchange(self, entry):
+-        # The seats change but the count does not; only the money settled counts.
+-        if entry["amount"] >= 0:
+-            self.sales += entry["amount"]
+-        else:
+-            self.refunds -= entry["amount"]
+-
+     def row(self):
+         return {"day": self.day, "sold": self.sold, "returned": self.returned,
+                 "sales": self.sales, "refunds": self.refunds, "net": self.sales - self.refunds}

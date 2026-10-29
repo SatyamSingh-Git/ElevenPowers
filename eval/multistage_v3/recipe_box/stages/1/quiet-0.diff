@@ -1,0 +1,20 @@
+diff --git a/src/recipebox/storage/pantry_file.py b/src/recipebox/storage/pantry_file.py
+index 0411722..a903958 100644
+--- a/src/recipebox/storage/pantry_file.py
++++ b/src/recipebox/storage/pantry_file.py
+@@ -56,9 +56,10 @@ def read_purchases(path):
+     path = Path(path)
+     purchases = []
+     with path.open(newline="", encoding="utf-8") as handle:
+-        # By column name: lists saved by older versions have no aisle column.
+-        reader = csv.DictReader(handle)
+-        for row in reader:
+-            where = f"{path.name} line {reader.line_num}"
+-            purchases.append((row["item"], _quantity(row["quantity"], row["unit"], where)))
++        rows = list(csv.reader(handle))
++    for number, row in enumerate(rows[1:], 2):
++        if not row:
++            continue
++        name, amount, unit = row
++        purchases.append((name, _quantity(amount, unit, f"{path.name} line {number}")))
+     return purchases

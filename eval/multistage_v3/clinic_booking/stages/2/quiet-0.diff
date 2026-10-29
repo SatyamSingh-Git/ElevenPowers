@@ -1,0 +1,15 @@
+diff --git a/src/clinicbook/services/desk.py b/src/clinicbook/services/desk.py
+index dcfe5d5..2eea81d 100644
+--- a/src/clinicbook/services/desk.py
++++ b/src/clinicbook/services/desk.py
+@@ -66,8 +66,8 @@ class Desk:
+         offset = minutes_between(opens, start)
+         if offset < 0 or offset + rules.slot_minutes > minutes_between(opens, closes):
+             raise BookingError(f"{start:%H:%M} is outside opening hours")
+-        # Slots start every slot length plus buffer from opening time, so a booking has to start on one.
+-        if offset % (rules.slot_minutes + rules.buffer_minutes):
++        # Slots run back to back from opening time, so a booking has to start on one.
++        if offset % rules.slot_minutes:
+             raise BookingError(f"{start:%H:%M} is not a slot start")
+ 
+     def _still_booked(self, booking_id):

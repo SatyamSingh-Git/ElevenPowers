@@ -1,0 +1,72 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 4435471..db7985f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The default `max_tickets_per_order` is now 12, up from 10.
+ - Holds that expired more than `hold_keep_minutes` (default 60) ago are dropped when holds are
+   saved, so the list of holds no longer grows for ever.
+ - Best available no longer picks wheelchair spaces, and `seat_states` reports an open one as
+diff --git a/docs/reference.md b/docs/reference.md
+index 4067178..60335c9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -17,7 +17,7 @@ error, so a typo is not silently ignored.
+ | `booking_fee` | `150` | setting: pence charged once per order, whatever the number of seats; never refunded unless the performance is cancelled |
+ | `hold_minutes` | `15` | setting: how long a hold keeps its seats |
+ | `hold_keep_minutes` | `60` | setting: a hold expired longer ago than this is dropped the next time holds are saved |
+-| `max_tickets_per_order` | `10` | setting: most seats in one hold, and so in one order |
++| `max_tickets_per_order` | `12` | setting: most seats in one hold, and so in one order |
+ | `refund_cutoff_hours` | `48` | setting: refunds and exchanges close this many hours before the performance starts |
+ | `exchange_fee` | `100` | setting: pence added to what the customer pays for an exchange |
+ 
+diff --git a/src/boxoffice/config.py b/src/boxoffice/config.py
+index f5ac649..f9fdffd 100644
+--- a/src/boxoffice/config.py
++++ b/src/boxoffice/config.py
+@@ -14,7 +14,7 @@ class Settings:
+     booking_fee: int = 150
+     hold_minutes: int = 15
+     hold_keep_minutes: int = 60
+-    max_tickets_per_order: int = 10
++    max_tickets_per_order: int = 12
+     refund_cutoff_hours: int = 48
+     exchange_fee: int = 100
+ 
+diff --git a/tests/test_holds.py b/tests/test_holds.py
+index 31e2311..1ac5260 100644
+--- a/tests/test_holds.py
++++ b/tests/test_holds.py
+@@ -3,6 +3,7 @@ from datetime import datetime
+ import pytest
+ 
+ from boxoffice.errors import BoxOfficeError
++from boxoffice.services.boxoffice import BoxOffice
+ 
+ 
+ def test_hold_puts_seats_in_plan_order(office):
+@@ -39,10 +40,18 @@ def test_release(office):
+ 
+ 
+ def test_too_many_seats(office):
+-    seats = [f"A{n}" for n in range(1, 7)] + [f"C{n}" for n in range(1, 5)] + ["B1"]
++    seats = [f"A{n}" for n in range(1, 7)] + [f"C{n}" for n in range(1, 5)] + ["B1", "B2"]
++    assert len(office.holds.place("TEMP-0520", seats).seats) == 12
+     with pytest.raises(BoxOfficeError) as raised:
+-        office.holds.place("TEMP-0520", seats)
+-    assert str(raised.value) == "at most 10 tickets per order"
++        office.holds.place("TEMP-0520", [f"B{n}" for n in range(1, 7)] + seats[:7])
++    assert str(raised.value) == "at most 12 tickets per order"
++
++
++def test_venue_sets_its_own_limit(office):
++    (office.root / "boxoffice.ini").write_text("[boxoffice]\nmax_tickets_per_order = 4\n")
++    with pytest.raises(BoxOfficeError) as raised:
++        BoxOffice(office.root, office.clock).holds.place("TEMP-0520", ["A1", "A2", "A3", "A4", "A5"])
++    assert str(raised.value) == "at most 4 tickets per order"
+ 
+ 
+ def test_unknown_seat(office):

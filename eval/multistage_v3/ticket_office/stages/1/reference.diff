@@ -1,0 +1,104 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 474fe3e..7d55ea9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- The ledger's `date` now records the minute as well as the day (`YYYY-MM-DDTHH:MM`).
+ - Markdown output for reports (`--format markdown`), for pasting into the wiki.
+ 
+ ## 1.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index e185b65..aeb8f2a 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -106,7 +106,7 @@ followed by a `sale` of the new ones. Each entry also names its `order`,
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `date` | `YYYY-MM-DD` | ledger file: when the entry was recorded |
++| `date` | `YYYY-MM-DDTHH:MM` | ledger file: when the entry was recorded, to the minute; older entries carry the day only |
+ | `amount` | `pence` | ledger file: money taken is positive, money paid back negative |
+ | `tickets` | `count` | ledger file: how many seats the entry covers |
+ 
+diff --git a/src/boxoffice/reports/daily.py b/src/boxoffice/reports/daily.py
+index 704a0aa..4bb1e75 100644
+--- a/src/boxoffice/reports/daily.py
++++ b/src/boxoffice/reports/daily.py
+@@ -41,7 +41,7 @@ def daily_takings(entries, day=None):
+     """One row per day that has entries, oldest first; only `day` (YYYY-MM-DD) when given."""
+     days = {}
+     for entry in entries:
+-        when = entry["date"]
++        when = entry["date"][:10]
+         if day is not None and when != day:
+             continue
+         if when not in days:
+diff --git a/src/boxoffice/storage/ledger.py b/src/boxoffice/storage/ledger.py
+index 9ad2f4b..577f666 100644
+--- a/src/boxoffice/storage/ledger.py
++++ b/src/boxoffice/storage/ledger.py
+@@ -1,6 +1,6 @@
+ """The ledger: every movement of money, appended one JSON object per line.
+ 
+-An entry records its `kind`, the `date` it happened, the `order` and
++An entry records its `kind`, the `date` and minute it happened, the `order` and
+ `performance` it belongs to, how many `tickets` moved, the `amount` in pence and
+ the `payment` method. Money taken is positive and money paid back is negative,
+ so the amounts for any stretch of time add up to what the box office kept.
+@@ -8,6 +8,8 @@ so the amounts for any stretch of time add up to what the box office kept.
+ import json
+ from pathlib import Path
+ 
++from ..clock import format_time
++
+ LEDGER_FILE = "ledger.jsonl"
+ 
+ 
+@@ -16,7 +18,7 @@ class Ledger:
+         self.path = Path(root) / LEDGER_FILE
+ 
+     def record_entry(self, kind, *, at, order, performance, tickets, amount, payment):
+-        entry = {"kind": kind, "date": at.date().isoformat(), "order": order,
++        entry = {"kind": kind, "date": format_time(at), "order": order,
+                  "performance": performance, "tickets": tickets, "amount": amount,
+                  "payment": payment}
+         self.path.parent.mkdir(parents=True, exist_ok=True)
+@@ -31,4 +33,5 @@ class Ledger:
+             return [json.loads(line) for line in handle if line.strip()]
+ 
+     def entries_on(self, day):
+-        return [entry for entry in self.read_entries() if entry["date"] == day]
++        """Entries recorded on `day`, YYYY-MM-DD. Older entries, which carry only the day, still match."""
++        return [entry for entry in self.read_entries() if entry["date"][:10] == day]
+diff --git a/tests/test_ledger.py b/tests/test_ledger.py
+index 8755680..b1727d5 100644
+--- a/tests/test_ledger.py
++++ b/tests/test_ledger.py
+@@ -15,9 +15,9 @@ def test_entries_are_appended_in_order(tmp_path):
+     assert [entry["amount"] for entry in ledger.read_entries()] == [100, 200]
+ 
+ 
+-def test_entry_date(tmp_path):
++def test_entry_date_has_the_minute(tmp_path):
+     entry = record(Ledger(tmp_path), datetime(2026, 5, 1, 10, 5), 100)
+-    assert entry["date"] == "2026-05-01"
++    assert entry["date"] == "2026-05-01T10:05"
+ 
+ 
+ def test_entries_on_a_day(tmp_path):
+@@ -27,5 +27,12 @@ def test_entries_on_a_day(tmp_path):
+     assert [entry["amount"] for entry in ledger.entries_on("2026-05-02")] == [200]
+ 
+ 
++def test_entries_on_reads_older_day_only_dates(tmp_path):
++    ledger = Ledger(tmp_path)
++    ledger.path.write_text('{"kind": "sale", "date": "2026-05-02", "amount": 300}\n', encoding="utf-8")
++    record(ledger, datetime(2026, 5, 2, 9, 0), 200)
++    assert [entry["amount"] for entry in ledger.entries_on("2026-05-02")] == [300, 200]
++
++
+ def test_empty_ledger(tmp_path):
+     assert Ledger(tmp_path).read_entries() == []

@@ -1,0 +1,71 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index e558045..d99d9d8 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Eggs have their own aisle, `eggs`, straight after `dairy`.
+ - `build_shopping_list()`, and so the `shop --csv` file, lists items alphabetically by name instead of by aisle.
+ - Recipe ids use only `a-z 0-9 -`: accents are dropped and any other character separates words, so `Mac & Cheese` is `mac-cheese`.
+ - `nutrition_for()` reports dietary fibre per serving as `fibre_g`, after `carbs_g`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 524f806..a29c957 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -89,7 +89,7 @@ every error as `error: {message}` on stderr.
+ | key | value | meaning |
+ |---|---|---|
+ | `shopping.order` | `name` | order of the lines `build_shopping_list()` returns (API), and so of the rows `shop --csv` writes (file) |
+-| `aisles` | `produce, bakery, dairy, meat, pantry, frozen, other` | aisle codes in the order the shop is walked; the `aisle` of each `build_shopping_list()` line (API) and the `aisle` column of `shop --csv` (file) |
++| `aisles` | `produce, bakery, dairy, eggs, meat, pantry, frozen, other` | aisle codes in the order the shop is walked; the `aisle` of each `build_shopping_list()` line (API) and the `aisle` column of `shop --csv` (file) |
+ | `shopping.metric_upgrade` | `1000` | g or ml at which a line is given in kg or l (API, CLI) |
+ | `shopping.empty` | `Nothing to buy.` | printed for an empty list (CLI) |
+ | `shopping.title` | `Shopping list: {count} items` | first line of the printed list (CLI) |
+diff --git a/src/recipebox/core/catalog.py b/src/recipebox/core/catalog.py
+index 8f59194..55b469c 100644
+--- a/src/recipebox/core/catalog.py
++++ b/src/recipebox/core/catalog.py
+@@ -4,14 +4,15 @@ Aisle codes are listed in the order the shop is walked; an ingredient the
+ catalog does not know is in `other`.
+ """
+ 
+-AISLE_ORDER = ("produce", "bakery", "dairy", "meat", "pantry", "frozen", "other")
++AISLE_ORDER = ("produce", "bakery", "dairy", "eggs", "meat", "pantry", "frozen", "other")
+ 
+ INGREDIENT_AISLES = {
+     "produce": (
+         "banana", "carrot", "garlic", "green onion", "lemon", "onion", "potato", "spinach", "tomato",
+     ),
+     "bakery": ("bread",),
+-    "dairy": ("butter", "cheddar", "cream", "egg", "milk", "parmesan", "yogurt"),
++    "dairy": ("butter", "cheddar", "cream", "milk", "parmesan", "yogurt"),
++    "eggs": ("egg",),
+     "meat": ("bacon", "chicken breast", "minced beef"),
+     "pantry": (
+         "baking powder", "black pepper", "flour", "honey", "lentils", "macaroni", "oats",
+diff --git a/src/recipebox/reports/shopping_text.py b/src/recipebox/reports/shopping_text.py
+index 0aec719..f71d807 100644
+--- a/src/recipebox/reports/shopping_text.py
++++ b/src/recipebox/reports/shopping_text.py
+@@ -8,6 +8,7 @@ HEADINGS = {
+     "produce": "Produce",
+     "bakery": "Bakery",
+     "dairy": "Dairy",
++    "eggs": "Eggs",
+     "meat": "Meat",
+     "pantry": "Pantry",
+     "frozen": "Frozen",
+diff --git a/tests/test_shopping.py b/tests/test_shopping.py
+index dfe1abd..e74ea64 100644
+--- a/tests/test_shopping.py
++++ b/tests/test_shopping.py
+@@ -58,6 +58,7 @@ def test_aisles(pancakes, soup):
+     lines = _lines(Plan([MealEntry("monday", "breakfast", pancakes), MealEntry("monday", "lunch", soup)]))
+     assert lines["tomato"].aisle == "produce"
+     assert lines["milk"].aisle == "dairy"
++    assert lines["egg"].aisle == "eggs"
+     assert lines["flour"].aisle == "pantry"
+ 
+ 

@@ -1,0 +1,130 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6bbe697..c850f37 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
+ - New `buffer_minutes` setting, default 5: free slots leave that gap after every appointment.
+ - The exported day schedule writes start and end times on a 12-hour clock (`%I:%M %p`, e.g. `02:00 PM`).
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 2bf91d7..bdc02c2 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -13,6 +13,7 @@ default shown here.
+ |---|---|---|
+ | `slot_minutes` | `20` | setting in the clinic file: length of every appointment, in minutes |
+ | `buffer_minutes` | `5` | setting in the clinic file: gap left after every appointment; slots start every `slot_minutes` + `buffer_minutes` from opening time |
++| `cancellation_notice_hours` | `24` | setting in the clinic file: a booking cancelled with less than this many hours to go is recorded as `late_cancelled` |
+ | `no_show_fee` | `25.00` | setting in the clinic file: amount charged for each no-show |
+ | `reminder_lead_hours` | `24` | setting in the clinic file: a booking's reminder is due this many hours before it starts |
+ | `booking_horizon_days` | `60` | setting in the clinic file: how many days ahead bookings open |
+@@ -39,7 +40,8 @@ The `status` column of the bookings file holds one of these.
+ | `booked` | `booked` | status in the bookings file: the appointment is still to come, or not yet marked |
+ | `attended` | `attended` | status in the bookings file: the patient came |
+ | `no_show` | `no_show` | status in the bookings file: the patient did not come; charged `no_show_fee` |
+-| `cancelled` | `cancelled` | status in the bookings file: cancelled; the slot is free again and nothing is charged |
++| `cancelled` | `cancelled` | status in the bookings file: cancelled with at least `cancellation_notice_hours` to go; the slot is free again and nothing is charged |
++| `late_cancelled` | `late_cancelled` | status in the bookings file: cancelled with less notice; the slot is free again and nothing is charged |
+ 
+ ## Bookings file
+ 
+diff --git a/src/clinicbook/config.py b/src/clinicbook/config.py
+index f1f32ef..640bf1a 100644
+--- a/src/clinicbook/config.py
++++ b/src/clinicbook/config.py
+@@ -16,6 +16,7 @@ SHORTEST_SLOT = 5
+ class Settings:
+     slot_minutes: int = 20
+     buffer_minutes: int = 5
++    cancellation_notice_hours: int = 24
+     no_show_fee: Decimal = Decimal("25.00")
+     reminder_lead_hours: int = 24
+     booking_horizon_days: int = 60
+diff --git a/src/clinicbook/model/booking.py b/src/clinicbook/model/booking.py
+index 84b0b47..9632ede 100644
+--- a/src/clinicbook/model/booking.py
++++ b/src/clinicbook/model/booking.py
+@@ -8,7 +8,8 @@ BOOKED = "booked"
+ ATTENDED = "attended"
+ NO_SHOW = "no_show"
+ CANCELLED = "cancelled"
+-STATUSES = (BOOKED, ATTENDED, NO_SHOW, CANCELLED)
++LATE_CANCELLED = "late_cancelled"
++STATUSES = (BOOKED, ATTENDED, NO_SHOW, CANCELLED, LATE_CANCELLED)
+ 
+ 
+ @dataclass
+@@ -39,7 +40,7 @@ class Booking:
+     @property
+     def active(self):
+         """Whether the booking still holds its time with the practitioner and the room."""
+-        return self.status != CANCELLED
++        return self.status not in (CANCELLED, LATE_CANCELLED)
+ 
+     def overlaps(self, day, start, minutes):
+         """Whether this booking, if still active, shares any minute with the given span."""
+diff --git a/src/clinicbook/reports/day_schedule.py b/src/clinicbook/reports/day_schedule.py
+index 62c9aa2..6b0d77f 100644
+--- a/src/clinicbook/reports/day_schedule.py
++++ b/src/clinicbook/reports/day_schedule.py
+@@ -11,6 +11,7 @@ STATUS_TEXT = {
+     "attended": "Attended",
+     "no_show": "No-show",
+     "cancelled": "Cancelled",
++    "late_cancelled": "Late cancel",
+ }
+ 
+ 
+diff --git a/src/clinicbook/services/desk.py b/src/clinicbook/services/desk.py
+index dcfe5d5..60a3e63 100644
+--- a/src/clinicbook/services/desk.py
++++ b/src/clinicbook/services/desk.py
+@@ -1,8 +1,8 @@
+ """The front desk: taking bookings and recording what happened to them."""
+-from datetime import datetime
++from datetime import datetime, timedelta
+ 
+ from ..errors import BookingError, NotFound
+-from ..model.booking import ATTENDED, BOOKED, CANCELLED, NO_SHOW, Booking
++from ..model.booking import ATTENDED, BOOKED, CANCELLED, LATE_CANCELLED, NO_SHOW, Booking
+ from ..model.times import minutes_between
+ from ..storage.ids import next_booking_id
+ from .validation import check_name, check_phone
+@@ -81,8 +81,11 @@ class Desk:
+             raise BookingError(f"booking {booking.id} has not started yet")
+ 
+     def cancel(self, booking_id):
++        """Cancel a booking; with less than the notice period to go it is kept as a late cancellation."""
+         booking = self._still_booked(booking_id)
+-        booking.status = CANCELLED
++        notice = timedelta(hours=self.clinic.settings.cancellation_notice_hours)
++        late = booking.starts_at - self.clock.now() < notice
++        booking.status = LATE_CANCELLED if late else CANCELLED
+         return booking
+ 
+     def mark_attended(self, booking_id):
+diff --git a/tests/test_desk.py b/tests/test_desk.py
+index 790ffee..3aeeed3 100644
+--- a/tests/test_desk.py
++++ b/tests/test_desk.py
+@@ -44,6 +44,16 @@ def test_cancelled_booking_frees_the_slot(desk):
+     assert second.id == "B0002"
+ 
+ 
++def test_short_notice_cancellation_is_kept_as_late(desk, clock):
++    soon = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700900001")
++    clock.moment = datetime(2026, 3, 1, 9, 0)
++    assert desk.cancel(soon.id).status == "cancelled"
++    again = desk.book("amy", MONDAY, at("09:00"), "Bob Ray", "07700900002")
++    clock.moment = datetime(2026, 3, 1, 9, 1)
++    assert desk.cancel(again.id).status == "late_cancelled"
++    assert desk.book("amy", MONDAY, at("09:00"), "Cy Tan", "07700900003").status == "booked"
++
++
+ def test_only_booked_appointments_can_change(desk, clock):
+     booking = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700900001")
+     with pytest.raises(BookingError, match="B0001 has not started yet"):

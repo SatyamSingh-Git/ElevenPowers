@@ -1,0 +1,219 @@
+{
+  "id": "clinic_booking",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/clinicbook/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Reception prints the exported day schedule every morning, and our part-time staff keep misreading the 24-hour times. Please write the start and end times in the exported day schedule file on a 12-hour clock, using the strftime format `%I:%M %p`, so an appointment at 14:00 shows as `02:00 PM`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/clinicbook/reports/utilisation.py",
+          "kind": "data",
+          "path": "The `utilisation` command reads back the CSV that `schedule` writes (its module docstring says so); reports/utilisation.py parses the start and end columns with time.fromisoformat, which a 12-hour time no longer satisfies.",
+          "fails": [
+            "base_day_reports"
+          ],
+          "diff": "quiet-0.diff"
+        }
+      ]
+    },
+    {
+      "request": "Our practitioners want a few minutes between patients to write up their notes. Add a `buffer_minutes` setting to the clinic file, default `5`, and leave that many minutes free after every appointment when laying out the day's slots. With 20-minute slots and a 09:00 opening, the slots become 09:00, 09:25, 09:50 and so on. Appointments themselves stay `slot_minutes` long.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/clinicbook/services/desk.py",
+          "kind": "copy",
+          "path": "Desk._check_when refuses a start that is not on the slot grid using its own copy of the rule (commented 'Slots run back to back from opening time'); checking that the newly laid-out slots can still be booked, or reading every use of slot_minutes, finds it.",
+          "fails": [
+            "base_bookings"
+          ],
+          "diff": "quiet-0.diff"
+        }
+      ]
+    },
+    {
+      "request": "We want to see who cancels at short notice. Add a `cancellation_notice_hours` setting to the clinic file, default `24`. When a booking is cancelled with less than that many hours to go before it starts, record it in the bookings file with the status `late_cancelled` instead of `cancelled`. It is still a cancellation: the slot opens up again and nothing is charged.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/clinicbook/reports/day_schedule.py",
+          "kind": "key",
+          "path": "The day schedule labels every row by looking its status string up in the STATUS_TEXT table; searching for where status values such as \"cancelled\" are consumed finds the table, which has no entry for a new status, so exporting or listing a day with a late cancellation raises KeyError.",
+          "fails": [
+            "base_day_reports"
+          ],
+          "diff": "quiet-0.diff"
+        }
+      ]
+    },
+    {
+      "request": "The front desk reads the bookings file directly to see what has come in. Please write its rows in `booking reference` order, oldest first, instead of by day and start time, so new bookings always land at the bottom of the bookings file.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/clinicbook/reports/day_schedule.py",
+          "kind": "contract",
+          "path": "Following load_bookings to the commands that read the bookings (schedule, list) leads to schedule_rows, whose docstring says it keeps the order it is given because the bookings file is kept by day and start time.",
+          "fails": [
+            "base_day_reports"
+          ],
+          "diff": "quiet-0.diff"
+        }
+      ]
+    },
+    {
+      "request": "Some patients end up booked several times on the same day by mistake. Add a `max_daily_bookings` setting to the clinic file, default `2`, and refuse a booking when the same phone number already holds that many bookings on that day; cancelled bookings don't count. The refusal should read like `Ann Lee already has 2 bookings on 2026-03-02`.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Bug: booking a patient whose phone number is typed with a space, such as `07700 900123`, fails with `invalid phone number`, both through `Desk.book` and with the `book` command. Spaces should be accepted and dropped, so that number is stored as `07700900123`. While you're there, make the error show what was typed: `invalid phone number: {phone}`.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Our card terminal now imports the charges file, and it wants whole pence rather than pounds. Please change the charges file's columns to `booking,patient,phone,day,reason,amount_pence` and write each amount in pence, so a £25.00 no-show fee is written as `2500`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/clinicbook/reports/statement.py",
+          "kind": "data",
+          "path": "The `statement` command reads back the charges file that `fees --out` writes (the module docstring and the reference say so); reports/statement.py reads the amount column by name and as pounds.",
+          "fails": [
+            "base_bookings"
+          ],
+          "diff": "quiet-0.diff"
+        }
+      ]
+    },
+    {
+      "request": "Patients are upset at being charged the first time they miss an appointment. Add a `first_no_show_free` setting to the clinic file, default `true`: while it is on, each patient's first no-show (by phone number, earliest appointment first) carries no charge, and later no-shows are charged `no_show_fee` as before. With the setting `false`, every no-show is charged.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/clinicbook/reports/summary.py",
+          "kind": "copy",
+          "path": "The daily summary works out fees due on its own as no-shows times no_show_fee, while the reference promises the same total the fees command lists for that day; searching for no_show_fee finds it.",
+          "fails": [
+            "base_bookings"
+          ],
+          "diff": "quiet-0.diff"
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": "base_bookings",
+      "since": 0,
+      "until": 8
+    },
+    {
+      "id": "base_day_reports",
+      "since": 0,
+      "until": 8
+    },
+    {
+      "id": "export_clock_api",
+      "since": 1,
+      "until": 8
+    },
+    {
+      "id": "export_clock_cli",
+      "since": 1,
+      "until": 8
+    },
+    {
+      "id": "buffer_default_slots",
+      "since": 2,
+      "until": 8
+    },
+    {
+      "id": "buffer_setting",
+      "since": 2,
+      "until": 8
+    },
+    {
+      "id": "late_cancel_api",
+      "since": 3,
+      "until": 8
+    },
+    {
+      "id": "late_cancel_cli",
+      "since": 3,
+      "until": 8
+    },
+    {
+      "id": "file_order_api",
+      "since": 4,
+      "until": 8
+    },
+    {
+      "id": "file_order_cli",
+      "since": 4,
+      "until": 8
+    },
+    {
+      "id": "daily_limit_default",
+      "since": 5,
+      "until": 8
+    },
+    {
+      "id": "daily_limit_setting",
+      "since": 5,
+      "until": 8
+    },
+    {
+      "id": "phone_spaces",
+      "since": 6,
+      "until": 8
+    },
+    {
+      "id": "phone_error",
+      "since": 6,
+      "until": 8
+    },
+    {
+      "id": "charges_pence_api",
+      "since": 7,
+      "until": 8
+    },
+    {
+      "id": "charges_pence_cli",
+      "since": 7,
+      "until": 8
+    },
+    {
+      "id": "waiver_default",
+      "since": 8,
+      "until": 8
+    },
+    {
+      "id": "waiver_off",
+      "since": 8,
+      "until": 8
+    }
+  ]
+}

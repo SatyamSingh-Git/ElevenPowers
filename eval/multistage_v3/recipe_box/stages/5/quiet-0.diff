@@ -1,0 +1,17 @@
+diff --git a/src/recipebox/reports/shopping_text.py b/src/recipebox/reports/shopping_text.py
+index 0aec719..e844a36 100644
+--- a/src/recipebox/reports/shopping_text.py
++++ b/src/recipebox/reports/shopping_text.py
+@@ -18,11 +18,9 @@ EMPTY = "Nothing to buy."
+ 
+ 
+ def render_shopping_list(lines):
+-    """Text for shopping lines in any order: aisles in walking order, items by name under each."""
++    """Text for shopping lines that come grouped by aisle."""
+     if not lines:
+         return EMPTY + "\n"
+-    walk = list(HEADINGS)
+-    lines = sorted(lines, key=lambda line: (walk.index(line.aisle), line.name))
+     width = max(len(line.name) for line in lines) + 2
+     out = [f"Shopping list: {len(lines)} items"]
+     for aisle, group in groupby(lines, key=attrgetter("aisle")):

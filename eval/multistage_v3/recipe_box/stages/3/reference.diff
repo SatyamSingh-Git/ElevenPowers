@@ -1,0 +1,75 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 20ae3e1..6ae5f90 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `nutrition_for()` reports dietary fibre per serving as `fibre_g`, after `carbs_g`.
+ - Fixed: thirds were shown as eighths (`1/3 cup` came out as `3/8 cup`). Amounts are now shown in halves, thirds, quarters or eighths.
+ - `shop --csv` writes each line's aisle code in a new second column: `item,aisle,quantity,unit`.
+ - `plan check` points out repeated recipes, empty days and long weekday dinners.
+diff --git a/docs/reference.md b/docs/reference.md
+index c906253..2462837 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -103,7 +103,7 @@ line to the pantry.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `nutrition.fields` | `kcal, protein_g, fat_g, carbs_g` | keys of `per_serving` in the summary `nutrition_for()` returns, in order (API) |
++| `nutrition.fields` | `kcal, protein_g, fat_g, carbs_g, fibre_g` | keys of `per_serving` in the summary `nutrition_for()` returns, in order (API) |
+ | `nutrition.basis` | `per serving` | what `nutrition_for()` values are for (API) |
+ | `nutrition.kcal.decimals` | `0` | decimals kept for `kcal` (API) |
+ | `nutrition.grams.decimals` | `1` | decimals kept for every gram value (API) |
+diff --git a/src/recipebox/reports/nutrition_report.py b/src/recipebox/reports/nutrition_report.py
+index 434731a..93c060f 100644
+--- a/src/recipebox/reports/nutrition_report.py
++++ b/src/recipebox/reports/nutrition_report.py
+@@ -6,6 +6,7 @@ LABELS = {
+     "protein_g": ("Protein", "g"),
+     "fat_g": ("Fat", "g"),
+     "carbs_g": ("Carbohydrate", "g"),
++    "fibre_g": ("Fibre", "g"),
+ }
+ 
+ 
+diff --git a/src/recipebox/services/nutrition.py b/src/recipebox/services/nutrition.py
+index 16a2c88..5e6359a 100644
+--- a/src/recipebox/services/nutrition.py
++++ b/src/recipebox/services/nutrition.py
+@@ -10,6 +10,7 @@ FIELDS = {
+     "protein_g": "protein",
+     "fat_g": "fat",
+     "carbs_g": "carbohydrate",
++    "fibre_g": "fibre",
+ }
+ 
+ # Used for a volume of something the density table does not list.
+diff --git a/tests/test_services.py b/tests/test_services.py
+index 8fe196e..8bd0e16 100644
+--- a/tests/test_services.py
++++ b/tests/test_services.py
+@@ -52,11 +52,19 @@ def test_nutrition_per_serving():
+         Ingredient("vanilla", Quantity(Fraction(1), "tsp")),
+     ))
+     summary = nutrition_for(recipe)
+-    assert list(summary.per_serving) == ["kcal", "protein_g", "fat_g", "carbs_g"]
+-    assert summary.per_serving == {"kcal": 158, "protein_g": 3.2, "fat_g": 3.3, "carbs_g": 29.8}
++    assert list(summary.per_serving) == ["kcal", "protein_g", "fat_g", "carbs_g", "fibre_g"]
++    assert summary.per_serving == {"kcal": 158, "protein_g": 3.2, "fat_g": 3.3, "carbs_g": 29.8, "fibre_g": 0.0}
+     assert summary.missing == ["vanilla"]
+ 
+ 
++def test_nutrition_counts_fibre():
++    recipe = Recipe("Oat Bowl", 2, (
++        Ingredient("oats", Quantity(Fraction(100), "g")),
++        Ingredient("banana", Quantity(Fraction(1), "")),
++    ))
++    assert nutrition_for(recipe).per_serving["fibre_g"] == 6.9
++
++
+ def test_nutrition_uses_density_and_item_weights():
+     recipe = Recipe("Eggy Flour", 1, (
+         Ingredient("flour", Quantity(Fraction(100), "ml")),

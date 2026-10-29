@@ -1,0 +1,12 @@
+diff --git a/src/recipebox/reports/nutrition_report.py b/src/recipebox/reports/nutrition_report.py
+index 93c060f..434731a 100644
+--- a/src/recipebox/reports/nutrition_report.py
++++ b/src/recipebox/reports/nutrition_report.py
+@@ -6,7 +6,6 @@ LABELS = {
+     "protein_g": ("Protein", "g"),
+     "fat_g": ("Fat", "g"),
+     "carbs_g": ("Carbohydrate", "g"),
+-    "fibre_g": ("Fibre", "g"),
+ }
+ 
+ 

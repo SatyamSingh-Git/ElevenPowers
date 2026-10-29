@@ -1,0 +1,209 @@
+{
+  "id": "ticket_office",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/boxoffice/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "Finance want to see what time of day each sale, refund and exchange went through, not just the day it happened. Please make the ledger's `date` field carry the time as well, in the form `YYYY-MM-DDTHH:MM` (for example 2026-04-12T14:05), for every new entry.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/boxoffice/reports/daily.py",
+          "kind": "data",
+          "path": "The ledger's only readers are found by following read_entries: the daily report groups entries by their date field and filters on it, so it must cut the new timestamp back to the day.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_reporting"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Refunding a seat twice pays the customer twice. If seat A2 of an order is refunded and then refunded again, or the whole order is refunded afterwards, A2's price goes back to the customer a second time. A seat that was already refunded should be refused by the refund call with error `already-refunded` and the message `seat {seat} was already refunded`, and refunding a whole order should only pay back the seats not yet refunded.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "We are starting to charge for exchanges. Add a setting `exchange_fee`, default `100` pence, which is added to what the customer pays when an order is exchanged (so moving to cheaper seats pays back the difference less the fee). Finance also want every exchange to appear in the ledger as a single entry of kind `exchange` whose amount is what was settled, instead of a refund of the old seats followed by a sale of the new ones.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/boxoffice/reports/daily.py",
+          "kind": "key",
+          "path": "Reading who consumes ledger kinds leads to the daily report, which dispatches each entry to an _on_<kind> method by name and has none for the new exchange kind.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_reporting"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Concession prices come out at awkward amounts such as 12.75 or 19.12, which slows down cash sales at the counter. Round every concession price other than `adult` to the nearest `50` pence, halves rounding up, so a child ticket on a 25.50 seat costs 13.00. Adult tickets stay at the face value.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/boxoffice/reports/price_list.py",
+          "kind": "copy",
+          "path": "Searching for uses of CONCESSIONS finds the foyer price list, which computes each concession price with its own copy of the discount formula instead of calling concession_price.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_selling"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Best available keeps handing wheelchair spaces to people who don't need them, and then we have nowhere to seat a wheelchair user. Best available should never choose a wheelchair space. A free wheelchair space is also not the same as an ordinary free seat, so `seat_states` should report it as `wheelchair` instead of `free`; the states it reports become `free, held, sold, wheelchair`. Staff can still hold, sell and exchange into a wheelchair space by naming it.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/boxoffice/reports/seatplan.py",
+          "kind": "key",
+          "path": "Following where seat_states results go (the seats command) leads to the seat plan, which looks each state up in its SYMBOLS table and has no symbol for the new state.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_reporting"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "We keep every hold ever placed, so in a busy season the list of holds runs to thousands and placing or selling a hold gets slower every week. Whenever holds are saved, drop any hold whose expiry time is more than `hold_keep_minutes` minutes in the past, whatever became of it. Add `hold_keep_minutes` as a new setting, defaulting to `60`, so a hold that has only just lapsed can still be looked up for a while.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/boxoffice/storage/jsonstore.py",
+          "kind": "contract",
+          "path": "Reading how a new hold gets its id (Store.new_hold_id, called from place) shows it counts the holds on file, which only works while holds are never deleted.",
+          "diff": "quiet-0.diff",
+          "fails": [
+            "base_selling"
+          ]
+        }
+      ]
+    },
+    {
+      "request": "Families and school groups keep running into the ten-ticket limit at the counter. Please raise the default `max_tickets_per_order` to `12`. A venue that sets its own limit keeps it.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "We now sell gift vouchers in the foyer and customers want to pay for tickets with them. Accept `voucher` as a payment method at checkout, both at the counter (`sell --payment voucher`) and through the API, so the accepted methods are `card, cash, voucher`. Voucher takings should get their own line when we cash up.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    }
+  ],
+  "groups": [
+    {
+      "id": "base_selling",
+      "since": 0,
+      "until": 8
+    },
+    {
+      "id": "base_reporting",
+      "since": 0,
+      "until": 8
+    },
+    {
+      "id": "s1_sale_times",
+      "since": 1,
+      "until": 8
+    },
+    {
+      "id": "s1_refund_times",
+      "since": 1,
+      "until": 8
+    },
+    {
+      "id": "s2_refund_twice",
+      "since": 2,
+      "until": 8
+    },
+    {
+      "id": "s2_whole_after_partial",
+      "since": 2,
+      "until": 8
+    },
+    {
+      "id": "s3_exchange_fee",
+      "since": 3,
+      "until": 8
+    },
+    {
+      "id": "s3_exchange_ledger",
+      "since": 3,
+      "until": 8
+    },
+    {
+      "id": "s4_rounded_prices",
+      "since": 4,
+      "until": 8
+    },
+    {
+      "id": "s4_rounded_everywhere",
+      "since": 4,
+      "until": 8
+    },
+    {
+      "id": "s5_wheelchair_state",
+      "since": 5,
+      "until": 8
+    },
+    {
+      "id": "s5_best_skips_wheelchair",
+      "since": 5,
+      "until": 8
+    },
+    {
+      "id": "s6_old_holds_dropped",
+      "since": 6,
+      "until": 8
+    },
+    {
+      "id": "s6_keep_setting",
+      "since": 6,
+      "until": 8
+    },
+    {
+      "id": "s7_twelve_tickets",
+      "since": 7,
+      "until": 8
+    },
+    {
+      "id": "s7_limit_at_the_counter",
+      "since": 7,
+      "until": 8
+    },
+    {
+      "id": "s8_voucher_payment",
+      "since": 8,
+      "until": 8
+    },
+    {
+      "id": "s8_voucher_cashup",
+      "since": 8,
+      "until": 8
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a13f134..9ed5fa7 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- The exported day schedule writes start and end times on a 12-hour clock (`%I:%M %p`, e.g. `02:00 PM`).
+ 
+ ## 1.4.0
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index 4e23418..08026ea 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -58,7 +58,7 @@ Written by `clinic schedule DAY`. The `utilisation` command reads it back.
+ |---|---|---|
+ | `export.name` | `schedule-{day}.csv` | file the CLI `schedule` command writes unless `--out` names another |
+ | `export.columns` | `date,start,end,practitioner,room,patient,phone,status` | header row of the exported day schedule file; the status column holds a label such as Booked |
+-| `export.time_format` | `%H:%M` | strftime format of the start and end columns in the exported day schedule file |
++| `export.time_format` | `%I:%M %p` | strftime format of the start and end columns in the exported day schedule file |
+ | `export.date_format` | `%Y-%m-%d` | strftime format of the date column in the exported day schedule file |
+ 
+ ## Charges file
+diff --git a/src/clinicbook/reports/day_schedule.py b/src/clinicbook/reports/day_schedule.py
+index a28e70b..62c9aa2 100644
+--- a/src/clinicbook/reports/day_schedule.py
++++ b/src/clinicbook/reports/day_schedule.py
+@@ -4,7 +4,7 @@ from dataclasses import dataclass
+ from datetime import date, time
+ from pathlib import Path
+ 
+-TIME_FORMAT = "%H:%M"
++TIME_FORMAT = "%I:%M %p"
+ COLUMNS = ("date", "start", "end", "practitioner", "room", "patient", "phone", "status")
+ STATUS_TEXT = {
+     "booked": "Booked",
+diff --git a/src/clinicbook/reports/utilisation.py b/src/clinicbook/reports/utilisation.py
+index b0f8036..2ab46de 100644
+--- a/src/clinicbook/reports/utilisation.py
++++ b/src/clinicbook/reports/utilisation.py
+@@ -6,11 +6,12 @@ printed, and schedules exported in the past can be measured too.
+ """
+ import csv
+ from dataclasses import dataclass
+-from datetime import date, time
++from datetime import date, datetime, time
+ from pathlib import Path
+ 
+ from ..errors import StorageError
+ from ..model.times import minutes_between
++from .day_schedule import TIME_FORMAT
+ from .textfmt import percent, table
+ 
+ # Status labels for which the room was set aside, whether or not the patient came.
+@@ -51,8 +52,8 @@ def read_schedule(path):
+             try:
+                 rows.append(ExportedRow(
+                     day=date.fromisoformat(row["date"]),
+-                    start=time.fromisoformat(row["start"]),
+-                    end=time.fromisoformat(row["end"]),
++                    start=datetime.strptime(row["start"], TIME_FORMAT).time(),
++                    end=datetime.strptime(row["end"], TIME_FORMAT).time(),
+                     room=row["room"],
+                     status=row["status"],
+                 ))
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index d04e466..c3c5eae 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -21,8 +21,8 @@ def test_export_writes_one_row_per_booking(desk, clinic, tmp_path):
+         rows = list(csv.reader(handle))
+     assert rows == [
+         ["date", "start", "end", "practitioner", "room", "patient", "phone", "status"],
+-        ["2026-03-02", "09:00", "09:20", "Amy Hart", "R1", "Ann Lee", "07700900001", "Booked"],
+-        ["2026-03-02", "10:40", "11:00", "Ben Okafor", "R2", "Bob Ray", "07700900002", "Booked"],
++        ["2026-03-02", "09:00 AM", "09:20 AM", "Amy Hart", "R1", "Ann Lee", "07700900001", "Booked"],
++        ["2026-03-02", "10:40 AM", "11:00 AM", "Ben Okafor", "R2", "Bob Ray", "07700900002", "Booked"],
+     ]
+ 
+ 

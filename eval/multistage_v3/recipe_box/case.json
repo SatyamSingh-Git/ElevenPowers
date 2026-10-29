@@ -1,0 +1,218 @@
+{
+ "id": "recipe_box",
+ "profile": "v3",
+ "pythonpath": "src",
+ "test_dir": "tests",
+ "protected": "src/recipebox/_generated.py",
+ "docs": "docs/reference.md",
+ "changelog": "CHANGELOG.md",
+ "stages": [
+  {
+   "request": "When I save the shopping list with `recipebox shop PLAN --csv FILE`, I'd like every row to say which aisle the item is in, so I can sort and filter the file in a spreadsheet. Please add an `aisle` column as the second column, holding the aisle code such as `produce` or `dairy`, so the header becomes `item,aisle,quantity,unit`.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/recipebox/storage/pantry_file.py",
+     "kind": "data",
+     "path": "The CSV module says its file is also for `pantry restock`, and the reference says restock reads a list saved with `shop --csv`; following that leads to `read_purchases`, which unpacks each row by position as item, amount, unit.",
+     "diff": "quiet-0.diff",
+     "fails": [
+      "base_shopping"
+     ]
+    }
+   ]
+  },
+  {
+   "request": "Thirds come out wrong. A recipe that calls for 1/3 cup of sugar shows `3/8 cup sugar` in `recipebox show`, and showing a 3-serving porridge made with 1 cup of oats at `--servings 1` gives `3/8 cup oats` as well. Amounts should be shown as halves, thirds, quarters or eighths, that is with the denominators `2, 3, 4, 8`, so both of those read `1/3 cup`.",
+   "kind": "self-contained",
+   "bugfix": true,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "I'm tracking fibre for a diet and chart it from `nutrition_for()`. Please add dietary fibre to the per-serving values it returns, under the key `fibre_g`, right after `carbs_g`, in grams to one decimal like the other gram values, so the fields are `kcal, protein_g, fat_g, carbs_g, fibre_g`. The fibre figures are already in the food composition table.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/recipebox/reports/nutrition_report.py",
+     "kind": "key",
+     "path": "Following where the per-serving dict goes leads to `render_nutrition`, which looks every key up in its own `LABELS` registry, so a new key needs a label there.",
+     "diff": "quiet-0.diff",
+     "fails": [
+      "base_recipes"
+     ]
+    }
+   ]
+  },
+  {
+   "request": "Recipe ids are awkward to type on the command line when a title has punctuation or accents: `recipebox add` gives `Mac & Cheese` the id `mac-&-cheese`, which the shell trips over, and `Crème Brûlée!` gets `crème-brûlée!`. Ids should use only the characters `a-z 0-9 -`: drop accents (`é` becomes `e`), treat any other character as a break between words, and join the words with single dashes, with none at the start or end. So `Mac & Cheese` becomes `mac-cheese` and `Crème Brûlée!` becomes `creme-brulee`.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/recipebox/storage/plan_file.py",
+     "kind": "copy",
+     "path": "Asking where titles are turned into ids finds `_title_key` in the plan reader, a commented copy of the old id rule that plan files use to find their recipes in the library.",
+     "diff": "quiet-0.diff",
+     "fails": [
+      "base_shopping"
+     ]
+    }
+   ]
+  },
+  {
+   "request": "Now that the shopping CSV has an aisle column we sort it in the spreadsheet ourselves, and the aisle-first order only makes it harder to find an item. Please have `build_shopping_list()` return its lines in plain alphabetical order of item name (`name`), which also puts the rows of `recipebox shop --csv` in that order.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/recipebox/reports/shopping_text.py",
+     "kind": "contract",
+     "path": "Following the shopping lines to the printed list finds `render_shopping_list`, whose docstring says its lines come grouped by aisle and which runs `groupby` on them, relying on the aisle order the service used to provide.",
+     "diff": "quiet-0.diff",
+     "fails": [
+      "base_shopping"
+     ]
+    }
+   ]
+  },
+  {
+   "request": "Our shop keeps eggs in an aisle of their own, away from the dairy. Please add an `eggs` aisle straight after `dairy` and put eggs in it, so the aisle codes in walking order are `produce, bakery, dairy, eggs, meat, pantry, frozen, other`. Eggs should then carry the aisle `eggs` in the lines from `build_shopping_list()` and in the `aisle` column of `recipebox shop --csv`.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/recipebox/reports/shopping_text.py",
+     "kind": "key",
+     "path": "Searching for the existing aisle codes (`dairy`) or following the `aisle` field to the printed list finds the `HEADINGS` registry, which gives each aisle code its heading and its place in the walk.",
+     "diff": "quiet-0.diff",
+     "fails": [
+      "base_shopping"
+     ]
+    }
+   ]
+  },
+  {
+   "request": "`recipebox search` stops at 10 matches by default, which is too few for a broad word like `soup` in our library. Please make the default for `--limit` `25`, and let `--limit 0` mean no limit, printing every match. A negative limit should be refused with the message `--limit must be 0 or more`.",
+   "kind": "self-contained",
+   "bugfix": false,
+   "dependent_missed_fails": []
+  },
+  {
+   "request": "Scripts that read our `library.json` have to parse ingredient amounts such as `\"1 1/2\"` themselves. Please save each ingredient's `amount` in `library.json` as a JSON `number` (`1.5`) instead of a `string`, keeping `null` for an ingredient without an amount. Libraries saved before this change still have to open.",
+   "kind": "cross-cutting",
+   "bugfix": false,
+   "dependent_missed_fails": [],
+   "quiet": [
+    {
+     "file": "src/recipebox/services/importer.py",
+     "kind": "data",
+     "path": "Export bundles are written with `recipe_to_dict`, so the new numbers reach bundles too; the bundle module and the reference say so, and the importer that reads bundles checks that every amount is text.",
+     "diff": "quiet-0.diff",
+     "fails": [
+      "base_recipes",
+      "s4_ids_import"
+     ]
+    }
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "id": "base_shopping",
+   "since": 0,
+   "until": 8
+  },
+  {
+   "id": "base_recipes",
+   "since": 0,
+   "until": 8
+  },
+  {
+   "id": "s1_csv_columns",
+   "since": 1,
+   "until": 8
+  },
+  {
+   "id": "s1_csv_aisle",
+   "since": 1,
+   "until": 8
+  },
+  {
+   "id": "s2_thirds_show",
+   "since": 2,
+   "until": 8
+  },
+  {
+   "id": "s2_thirds_scaled",
+   "since": 2,
+   "until": 8
+  },
+  {
+   "id": "s3_fibre_api",
+   "since": 3,
+   "until": 8
+  },
+  {
+   "id": "s3_fibre_values",
+   "since": 3,
+   "until": 8
+  },
+  {
+   "id": "s4_ids_cli",
+   "since": 4,
+   "until": 8
+  },
+  {
+   "id": "s4_ids_import",
+   "since": 4,
+   "until": 8
+  },
+  {
+   "id": "s5_csv_order",
+   "since": 5,
+   "until": 8
+  },
+  {
+   "id": "s5_api_order",
+   "since": 5,
+   "until": 8
+  },
+  {
+   "id": "s6_eggs_csv",
+   "since": 6,
+   "until": 8
+  },
+  {
+   "id": "s6_eggs_api",
+   "since": 6,
+   "until": 8
+  },
+  {
+   "id": "s7_search_default",
+   "since": 7,
+   "until": 8
+  },
+  {
+   "id": "s7_search_unlimited",
+   "since": 7,
+   "until": 8
+  },
+  {
+   "id": "s8_library_numbers",
+   "since": 8,
+   "until": 8
+  },
+  {
+   "id": "s8_library_reload",
+   "since": 8,
+   "until": 8
+  }
+ ]
+}

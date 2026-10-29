@@ -1,0 +1,12 @@
+diff --git a/src/recipebox/reports/shopping_text.py b/src/recipebox/reports/shopping_text.py
+index f71d807..0aec719 100644
+--- a/src/recipebox/reports/shopping_text.py
++++ b/src/recipebox/reports/shopping_text.py
+@@ -8,7 +8,6 @@ HEADINGS = {
+     "produce": "Produce",
+     "bakery": "Bakery",
+     "dairy": "Dairy",
+-    "eggs": "Eggs",
+     "meat": "Meat",
+     "pantry": "Pantry",
+     "frozen": "Frozen",

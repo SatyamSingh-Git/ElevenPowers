@@ -1,0 +1,103 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7d55ea9..ed9c051 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Fixed: a refunded seat could be refunded again and paid out twice. Naming it now fails with
++  `already-refunded`, and refunding a whole order pays back only the seats not yet refunded.
+ - The ledger's `date` now records the minute as well as the day (`YYYY-MM-DDTHH:MM`).
+ - Markdown output for reports (`--format markdown`), for pasting into the wiki.
+ 
+diff --git a/docs/reference.md b/docs/reference.md
+index aeb8f2a..69c22b4 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -47,7 +47,7 @@ service to one data directory and one clock (`boxoffice.clock.FixedClock`).
+ 
+ - `office.holds.place(code, seats)` and `office.holds.place_best(code, count, section=None)` return a `Hold`.
+ - `office.sales.checkout(hold_id, concessions=None, payment="card", customer=None)` returns an `Order`; `concessions` maps a seat to a concession name.
+-- `office.refunds.refund(order_id, seats=None)` returns the pence paid back; `None` refunds the whole order.
++- `office.refunds.refund(order_id, seats=None)` returns the pence paid back; `None` refunds every seat not yet refunded.
+ - `office.refunds.exchange(order_id, code, seats)` moves every seat of an order and returns the pence the customer pays, negative when they are paid back.
+ - `office.seat_states(code)` maps every seat id to its state.
+ 
+@@ -151,6 +151,7 @@ concession: the same prices checkout charges.
+ | `unknown-payment` | `unknown payment method {name}` | payment method not accepted |
+ | `unknown-order` | `unknown order {order}` | no such order |
+ | `not-in-order` | `seat {seat} is not in order {order}` | refunding a seat the order lacks |
++| `already-refunded` | `seat {seat} was already refunded` | a seat is refunded once; a whole-order refund covers only the seats not yet refunded |
+ | `refund-closed` | `refunds close {hours} hours before the performance` | too late to refund or exchange |
+ | `seat-count` | `an exchange needs {count} seats` | an exchange names one new seat per seat of the order |
+ | `exchange-refunded` | `order {order} has refunded seats and cannot be exchanged` | exchanges move whole orders only |
+diff --git a/src/boxoffice/errors.py b/src/boxoffice/errors.py
+index 8b011df..14f27ec 100644
+--- a/src/boxoffice/errors.py
++++ b/src/boxoffice/errors.py
+@@ -31,6 +31,7 @@ MESSAGES = {
+     "unknown-payment": "unknown payment method {name}",
+     "unknown-order": "unknown order {order}",
+     "not-in-order": "seat {seat} is not in order {order}",
++    "already-refunded": "seat {seat} was already refunded",
+     "refund-closed": "refunds close {hours} hours before the performance",
+     "seat-count": "an exchange needs {count} seats",
+     "exchange-refunded": "order {order} has refunded seats and cannot be exchanged",
+diff --git a/src/boxoffice/services/refunds.py b/src/boxoffice/services/refunds.py
+index 0ee5606..5fdd5ea 100644
+--- a/src/boxoffice/services/refunds.py
++++ b/src/boxoffice/services/refunds.py
+@@ -15,7 +15,7 @@ class RefundService:
+         self.settings = settings
+ 
+     def refund(self, order_id, seats=None):
+-        """Refund the named seats of an order, or the whole order when `seats` is None.
++        """Refund the named seats of an order, or every seat not yet refunded when `seats` is None.
+ 
+         The booking fee is kept. Returns the amount paid back, in pence.
+         """
+@@ -24,9 +24,11 @@ class RefundService:
+         now = self.clock.now()
+         self._check_open(order.performance, now)
+         if seats is None:
+-            lines = list(order.lines)
++            lines = order.active_lines()
+         else:
+             lines = [self._line(order, seat) for seat in seats]
++        if not lines:
++            return 0
+         amount = sum(line.price for line in lines)
+         for line in lines:
+             line.refunded = True
+@@ -122,6 +124,8 @@ class RefundService:
+         line = order.line_for(seat)
+         if line is None:
+             raise BoxOfficeError("not-in-order", seat=seat, order=order.id)
++        if line.refunded:
++            raise BoxOfficeError("already-refunded", seat=seat)
+         return line
+ 
+     def _check_open(self, code, now):
+diff --git a/tests/test_refunds.py b/tests/test_refunds.py
+index 09d3c7e..805ac12 100644
+--- a/tests/test_refunds.py
++++ b/tests/test_refunds.py
+@@ -22,6 +22,17 @@ def test_refund_whole_order_keeps_the_fee(office):
+     assert office.refunds.refund(order.id) == 6000
+ 
+ 
++def test_a_seat_is_refunded_only_once(office):
++    order = sell(office, ["A1", "A2"])
++    office.refunds.refund(order.id, ["A2"])
++    with pytest.raises(BoxOfficeError) as raised:
++        office.refunds.refund(order.id, ["A2"])
++    assert str(raised.value) == "seat A2 was already refunded"
++    assert office.refunds.refund(order.id) == 3000
++    assert office.refunds.refund(order.id) == 0
++    assert [entry["amount"] for entry in office.ledger.read_entries()] == [6150, -3000, -3000]
++
++
+ def test_refund_of_a_seat_not_in_the_order(office):
+     order = sell(office, ["A1"])
+     with pytest.raises(BoxOfficeError) as raised:

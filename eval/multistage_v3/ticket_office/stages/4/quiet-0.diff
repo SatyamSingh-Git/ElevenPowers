@@ -1,0 +1,21 @@
+diff --git a/src/boxoffice/reports/price_list.py b/src/boxoffice/reports/price_list.py
+index bed064f..06663e7 100644
+--- a/src/boxoffice/reports/price_list.py
++++ b/src/boxoffice/reports/price_list.py
+@@ -1,5 +1,5 @@
+ """The price list for the foyer board: every tier at every concession."""
+-from ..model.concessions import CONCESSIONS, concession_price
++from ..model.concessions import CONCESSIONS
+ from .formatters import Column
+ 
+ 
+@@ -10,7 +10,7 @@ def price_list(performance, venue):
+     for tier in venue.tiers():
+         face = performance.prices[tier]
+         row = {"tier": tier}
+-        for name in CONCESSIONS:
+-            row[name] = concession_price(face, name)
++        for name, percent in CONCESSIONS.items():
++            row[name] = face - (face * percent + 50) // 100
+         rows.append(row)
+     return columns, rows

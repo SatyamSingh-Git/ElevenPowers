@@ -1,0 +1,145 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ed9c051..a62f0a0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Exchanges charge `exchange_fee` (default 100 pence) and are recorded in the ledger as one
++  `exchange` entry with the amount settled, instead of a refund and a sale.
+ - Fixed: a refunded seat could be refunded again and paid out twice. Naming it now fails with
+   `already-refunded`, and refunding a whole order pays back only the seats not yet refunded.
+ - The ledger's `date` now records the minute as well as the day (`YYYY-MM-DDTHH:MM`).
+diff --git a/docs/reference.md b/docs/reference.md
+index 69c22b4..2a97de5 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -18,6 +18,7 @@ error, so a typo is not silently ignored.
+ | `hold_minutes` | `15` | setting: how long a hold keeps its seats |
+ | `max_tickets_per_order` | `10` | setting: most seats in one hold, and so in one order |
+ | `refund_cutoff_hours` | `48` | setting: refunds and exchanges close this many hours before the performance starts |
++| `exchange_fee` | `100` | setting: pence added to what the customer pays for an exchange |
+ 
+ ## Command line
+ 
+@@ -48,7 +49,7 @@ service to one data directory and one clock (`boxoffice.clock.FixedClock`).
+ - `office.holds.place(code, seats)` and `office.holds.place_best(code, count, section=None)` return a `Hold`.
+ - `office.sales.checkout(hold_id, concessions=None, payment="card", customer=None)` returns an `Order`; `concessions` maps a seat to a concession name.
+ - `office.refunds.refund(order_id, seats=None)` returns the pence paid back; `None` refunds every seat not yet refunded.
+-- `office.refunds.exchange(order_id, code, seats)` moves every seat of an order and returns the pence the customer pays, negative when they are paid back.
++- `office.refunds.exchange(order_id, code, seats)` moves every seat of an order and returns the pence the customer pays (the difference in price plus `exchange_fee`), negative when they are paid back.
+ - `office.seat_states(code)` maps every seat id to its state.
+ 
+ Refusals raise `boxoffice.errors.BoxOfficeError`, whose `code` is one of the
+@@ -100,8 +101,9 @@ in seat-map order and holds the first run of free seats side by side.
+ 
+ `ledger.jsonl` in the data directory: one JSON object per line, appended and
+ never rewritten. A `sale` entry is money taken for an order; a `refund` entry
+-is money paid back. An exchange is recorded as a `refund` of the old seats
+-followed by a `sale` of the new ones. Each entry also names its `order`,
++is money paid back. An `exchange` entry is the money settled when an order
++moves to other seats: positive when the customer paid, negative when they were
++paid back, exchange fee included. Each entry also names its `order`,
+ `performance` and `payment` method.
+ 
+ | key | value | meaning |
+diff --git a/src/boxoffice/config.py b/src/boxoffice/config.py
+index 886b67e..7202544 100644
+--- a/src/boxoffice/config.py
++++ b/src/boxoffice/config.py
+@@ -15,6 +15,7 @@ class Settings:
+     hold_minutes: int = 15
+     max_tickets_per_order: int = 10
+     refund_cutoff_hours: int = 48
++    exchange_fee: int = 100
+ 
+ 
+ class SettingsError(ValueError):
+diff --git a/src/boxoffice/reports/daily.py b/src/boxoffice/reports/daily.py
+index 4bb1e75..ec33225 100644
+--- a/src/boxoffice/reports/daily.py
++++ b/src/boxoffice/reports/daily.py
+@@ -32,6 +32,13 @@ class _Day:
+         self.returned += entry["tickets"]
+         self.refunds -= entry["amount"]
+ 
++    def _on_exchange(self, entry):
++        # The seats change but the count does not; only the money settled counts.
++        if entry["amount"] >= 0:
++            self.sales += entry["amount"]
++        else:
++            self.refunds -= entry["amount"]
++
+     def row(self):
+         return {"day": self.day, "sold": self.sold, "returned": self.returned,
+                 "sales": self.sales, "refunds": self.refunds, "net": self.sales - self.refunds}
+diff --git a/src/boxoffice/services/refunds.py b/src/boxoffice/services/refunds.py
+index 5fdd5ea..59a22dd 100644
+--- a/src/boxoffice/services/refunds.py
++++ b/src/boxoffice/services/refunds.py
+@@ -41,8 +41,9 @@ class RefundService:
+         """Move every seat of an order to `seats` of performance `code`.
+ 
+         Each new seat keeps the concession of the seat it replaces, taking the
+-        seats in seat-map order. Returns what the customer pays, in pence;
+-        negative when they are owed money back.
++        seats in seat-map order. The customer pays the difference in price plus
++        the exchange fee. Returns what they pay, in pence; negative when they
++        are owed money back.
+         """
+         orders = self.store.load_orders()
+         order = self._order(orders, order_id)
+@@ -75,14 +76,13 @@ class RefundService:
+             tier = venue.seat(seat).tier
+             new_lines.append(OrderLine(seat, tier, old.concession,
+                                        concession_price(performance.prices[tier], old.concession)))
+-        old_performance, old_value = order.performance, order.face_value
++        old_value = order.face_value
+         order.performance, order.lines = code, new_lines
+         self.store.save_orders(orders)
+-        self.ledger.record_entry("refund", at=now, order=order.id, performance=old_performance,
+-                                 tickets=len(new_lines), amount=-old_value, payment=order.payment)
+-        self.ledger.record_entry("sale", at=now, order=order.id, performance=code,
+-                                 tickets=len(new_lines), amount=order.face_value, payment=order.payment)
+-        return order.face_value - old_value
++        settled = order.face_value - old_value + self.settings.exchange_fee
++        self.ledger.record_entry("exchange", at=now, order=order.id, performance=code,
++                                 tickets=len(new_lines), amount=settled, payment=order.payment)
++        return settled
+ 
+     def cancel_performance(self, code):
+         """Cancel performance `code` and pay back every order for it in full, booking fee included.
+diff --git a/tests/test_refunds.py b/tests/test_refunds.py
+index 805ac12..1520bd1 100644
+--- a/tests/test_refunds.py
++++ b/tests/test_refunds.py
+@@ -51,7 +51,7 @@ def test_refunds_close_before_the_performance(office, clock):
+ def test_exchange_to_another_performance(office):
+     office.schedule.add("TEMP-0521", "The Tempest", datetime(2026, 5, 21, 19, 30), {"A": 3500, "B": 2000})
+     order = sell(office, ["C1", "C2"], {"C2": "child"})
+-    assert office.refunds.exchange(order.id, "TEMP-0521", ["A2", "A1"]) == 5250 - 3000
++    assert office.refunds.exchange(order.id, "TEMP-0521", ["A2", "A1"]) == 5250 - 3000 + 100
+     moved = office.order(order.id)
+     assert moved.performance == "TEMP-0521"
+     assert [(line.seat, line.concession) for line in moved.lines] == [("A1", "adult"), ("A2", "child")]
+@@ -68,10 +68,18 @@ def test_exchange_needs_one_seat_per_ticket(office):
+ 
+ def test_exchange_within_a_performance_may_reuse_seats(office):
+     order = sell(office, ["A1", "A2"])
+-    assert office.refunds.exchange(order.id, "TEMP-0520", ["A2", "A3"]) == 0
++    assert office.refunds.exchange(order.id, "TEMP-0520", ["A2", "A3"]) == 100
+     assert [line.seat for line in office.order(order.id).lines] == ["A2", "A3"]
+ 
+ 
++def test_exchange_is_one_ledger_entry(office):
++    order = sell(office, ["A1", "A2"])
++    office.refunds.exchange(order.id, "TEMP-0520", ["C1", "C2"])
++    entry = office.ledger.read_entries()[-1]
++    assert len(office.ledger.read_entries()) == 2
++    assert (entry["kind"], entry["amount"], entry["tickets"]) == ("exchange", 4000 - 6000 + 100, 2)
++
++
+ def test_cancel_refunds_everything(office):
+     order = sell(office, ["A1", "A2"])
+     office.refunds.refund(order.id, ["A1"])

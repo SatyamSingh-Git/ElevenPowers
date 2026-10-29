@@ -1,0 +1,73 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ca6cb1b..7ca7ac6 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
+ - The bookings file is written in booking reference order, so new bookings land at the bottom.
+ - Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
+ - New `buffer_minutes` setting, default 5: free slots leave that gap after every appointment.
+diff --git a/docs/reference.md b/docs/reference.md
+index 504107a..9666a89 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -14,6 +14,7 @@ default shown here.
+ | `slot_minutes` | `20` | setting in the clinic file: length of every appointment, in minutes |
+ | `buffer_minutes` | `5` | setting in the clinic file: gap left after every appointment; slots start every `slot_minutes` + `buffer_minutes` from opening time |
+ | `cancellation_notice_hours` | `24` | setting in the clinic file: a booking cancelled with less than this many hours to go is recorded as `late_cancelled` |
++| `max_daily_bookings` | `2` | setting in the clinic file: most bookings one phone number may hold on one day, cancelled ones not counted; `Desk.book` and the CLI `book` command refuse more with "{patient} already has {limit} bookings on {day}" |
+ | `no_show_fee` | `25.00` | setting in the clinic file: amount charged for each no-show |
+ | `reminder_lead_hours` | `24` | setting in the clinic file: a booking's reminder is due this many hours before it starts |
+ | `booking_horizon_days` | `60` | setting in the clinic file: how many days ahead bookings open |
+diff --git a/src/clinicbook/config.py b/src/clinicbook/config.py
+index 640bf1a..0118e36 100644
+--- a/src/clinicbook/config.py
++++ b/src/clinicbook/config.py
+@@ -17,6 +17,7 @@ class Settings:
+     slot_minutes: int = 20
+     buffer_minutes: int = 5
+     cancellation_notice_hours: int = 24
++    max_daily_bookings: int = 2
+     no_show_fee: Decimal = Decimal("25.00")
+     reminder_lead_hours: int = 24
+     booking_horizon_days: int = 60
+diff --git a/src/clinicbook/services/desk.py b/src/clinicbook/services/desk.py
+index 60a3e63..00e0f01 100644
+--- a/src/clinicbook/services/desk.py
++++ b/src/clinicbook/services/desk.py
+@@ -28,6 +28,10 @@ class Desk:
+         phone = check_phone(phone)
+         who = self.clinic.practitioner(practitioner)
+         self._check_when(who, day, start)
++        limit = self.clinic.settings.max_daily_bookings
++        held = sum(1 for other in self.bookings if other.phone == phone and other.day == day and other.active)
++        if held >= limit:
++            raise BookingError(f"{patient} already has {limit} bookings on {day}")
+         minutes = self.clinic.settings.slot_minutes
+         for other in self.bookings:
+             if not other.overlaps(day, start, minutes):
+diff --git a/tests/test_desk.py b/tests/test_desk.py
+index 3aeeed3..86eeb86 100644
+--- a/tests/test_desk.py
++++ b/tests/test_desk.py
+@@ -44,6 +44,17 @@ def test_cancelled_booking_frees_the_slot(desk):
+     assert second.id == "B0002"
+ 
+ 
++def test_one_phone_number_holds_at_most_two_bookings_a_day(desk):
++    first = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700900001")
++    desk.book("ben", MONDAY, at("09:00"), "Ann Lee", "07700900001")
++    with pytest.raises(BookingError) as caught:
++        desk.book("amy", MONDAY, at("14:00"), "Ann Lee", "07700900001")
++    assert str(caught.value) == "Ann Lee already has 2 bookings on 2026-03-02"
++    desk.book("amy", date(2026, 3, 3), at("14:00"), "Ann Lee", "07700900001")
++    desk.cancel(first.id)
++    desk.book("amy", MONDAY, at("14:00"), "Ann Lee", "07700900001")
++
++
+ def test_short_notice_cancellation_is_kept_as_late(desk, clock):
+     soon = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700900001")
+     clock.moment = datetime(2026, 3, 1, 9, 0)

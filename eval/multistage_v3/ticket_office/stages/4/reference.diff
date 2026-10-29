@@ -1,0 +1,95 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a62f0a0..c1f582b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Concession prices (all but adult) are rounded to the nearest 50 pence, halves up.
+ - Exchanges charge `exchange_fee` (default 100 pence) and are recorded in the ledger as one
+   `exchange` entry with the amount settled, instead of a refund and a sale.
+ - Fixed: a refunded seat could be refunded again and paid out twice. Naming it now fails with
+diff --git a/docs/reference.md b/docs/reference.md
+index 2a97de5..62c0c9d 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -65,7 +65,7 @@ A concession takes a percentage off the face value of the seat's tier.
+ | `child` | `50` | concession: percent off face value |
+ | `senior` | `20` | concession: percent off face value |
+ | `student` | `25` | concession: percent off face value |
+-| `concession_rounding` | `1` | concession prices are a multiple of this many pence; the discount itself rounds half up |
++| `concession_rounding` | `50` | every concession but adult is rounded to the nearest multiple of this many pence, halves up; adult stays the face value |
+ | `payment_methods` | `card, cash` | payment methods accepted at checkout |
+ | `order_id` | `B0001` | order references: B and four digits, issued in sequence |
+ | `hold_id` | `H0001` | hold references: H and four digits, issued in sequence |
+diff --git a/src/boxoffice/model/concessions.py b/src/boxoffice/model/concessions.py
+index 68e3a35..5bf5ea0 100644
+--- a/src/boxoffice/model/concessions.py
++++ b/src/boxoffice/model/concessions.py
+@@ -9,14 +9,21 @@ CONCESSIONS = {
+     "student": 25,
+ }
+ 
++# Concession prices are rounded to a multiple of this, so the counter rarely handles coppers.
++ROUNDING = 50
++
+ 
+ def concession_price(face, name):
+     """The price of a seat with face value `face` sold at concession `name`, in pence.
+ 
+-    The discount is rounded to the nearest penny, halves up.
++    The discount is rounded to the nearest penny, halves up. A price below
++    the face value is then rounded to the nearest ROUNDING pence, halves up.
+     """
+     try:
+         percent = CONCESSIONS[name]
+     except KeyError:
+         raise BoxOfficeError("unknown-concession", name=name) from None
+-    return face - (face * percent + 50) // 100
++    if not percent:
++        return face
++    price = face - (face * percent + 50) // 100
++    return (price + ROUNDING // 2) // ROUNDING * ROUNDING
+diff --git a/src/boxoffice/reports/price_list.py b/src/boxoffice/reports/price_list.py
+index 06663e7..bed064f 100644
+--- a/src/boxoffice/reports/price_list.py
++++ b/src/boxoffice/reports/price_list.py
+@@ -1,5 +1,5 @@
+ """The price list for the foyer board: every tier at every concession."""
+-from ..model.concessions import CONCESSIONS
++from ..model.concessions import CONCESSIONS, concession_price
+ from .formatters import Column
+ 
+ 
+@@ -10,7 +10,7 @@ def price_list(performance, venue):
+     for tier in venue.tiers():
+         face = performance.prices[tier]
+         row = {"tier": tier}
+-        for name, percent in CONCESSIONS.items():
+-            row[name] = face - (face * percent + 50) // 100
++        for name in CONCESSIONS:
++            row[name] = concession_price(face, name)
+         rows.append(row)
+     return columns, rows
+diff --git a/tests/test_model.py b/tests/test_model.py
+index cb6b08a..acbb839 100644
+--- a/tests/test_model.py
++++ b/tests/test_model.py
+@@ -27,8 +27,14 @@ def test_parse_price_refuses(text):
+ def test_concession_prices():
+     assert concession_price(3000, "adult") == 3000
+     assert concession_price(3000, "child") == 1500
+-    assert concession_price(2550, "child") == 1275
+-    assert concession_price(2550, "senior") == 2040
++    assert concession_price(2550, "senior") == 2050
++    assert concession_price(2550, "student") == 1900
++
++
++def test_concession_prices_round_halves_up():
++    assert concession_price(2550, "child") == 1300
++    assert concession_price(2450, "child") == 1250
++    assert concession_price(2510, "adult") == 2510
+ 
+ 
+ def test_unknown_concession():

@@ -1,0 +1,126 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 9ed5fa7..6bbe697 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- New `buffer_minutes` setting, default 5: free slots leave that gap after every appointment.
+ - The exported day schedule writes start and end times on a 12-hour clock (`%I:%M %p`, e.g. `02:00 PM`).
+ 
+ ## 1.4.0
+diff --git a/docs/reference.md b/docs/reference.md
+index 08026ea..2bf91d7 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -11,7 +11,8 @@ default shown here.
+ 
+ | key | default | meaning |
+ |---|---|---|
+-| `slot_minutes` | `20` | setting in the clinic file: length of every appointment, in minutes; slots run back to back from opening time |
++| `slot_minutes` | `20` | setting in the clinic file: length of every appointment, in minutes |
++| `buffer_minutes` | `5` | setting in the clinic file: gap left after every appointment; slots start every `slot_minutes` + `buffer_minutes` from opening time |
+ | `no_show_fee` | `25.00` | setting in the clinic file: amount charged for each no-show |
+ | `reminder_lead_hours` | `24` | setting in the clinic file: a booking's reminder is due this many hours before it starts |
+ | `booking_horizon_days` | `60` | setting in the clinic file: how many days ahead bookings open |
+diff --git a/src/clinicbook/config.py b/src/clinicbook/config.py
+index c1aaa60..f1f32ef 100644
+--- a/src/clinicbook/config.py
++++ b/src/clinicbook/config.py
+@@ -15,6 +15,7 @@ SHORTEST_SLOT = 5
+ @dataclass(frozen=True)
+ class Settings:
+     slot_minutes: int = 20
++    buffer_minutes: int = 5
+     no_show_fee: Decimal = Decimal("25.00")
+     reminder_lead_hours: int = 24
+     booking_horizon_days: int = 60
+diff --git a/src/clinicbook/services/availability.py b/src/clinicbook/services/availability.py
+index 487a7dd..2c209b1 100644
+--- a/src/clinicbook/services/availability.py
++++ b/src/clinicbook/services/availability.py
+@@ -14,13 +14,13 @@ class Slot:
+     minutes: int
+ 
+ 
+-def slot_starts(opens, closes, minutes):
+-    """Start times of the whole slots between opening and closing, back to back."""
++def slot_starts(opens, closes, minutes, gap):
++    """Start times of the whole slots between opening and closing, `gap` minutes apart."""
+     starts = []
+     current = minutes_of(opens)
+     while current + minutes <= minutes_of(closes):
+         starts.append(from_minutes(current))
+-        current += minutes
++        current += minutes + gap
+     return starts
+ 
+ 
+@@ -45,7 +45,7 @@ def free_slots(clinic, bookings, day, now, practitioner=None):
+     if window is None:
+         return []
+     minutes = settings.slot_minutes
+-    starts = slot_starts(*window, minutes)
++    starts = slot_starts(*window, minutes, settings.buffer_minutes)
+     slots = []
+     for who in clinic.working_on(day):
+         if practitioner is not None and who.id != practitioner:
+diff --git a/src/clinicbook/services/desk.py b/src/clinicbook/services/desk.py
+index 2eea81d..dcfe5d5 100644
+--- a/src/clinicbook/services/desk.py
++++ b/src/clinicbook/services/desk.py
+@@ -66,8 +66,8 @@ class Desk:
+         offset = minutes_between(opens, start)
+         if offset < 0 or offset + rules.slot_minutes > minutes_between(opens, closes):
+             raise BookingError(f"{start:%H:%M} is outside opening hours")
+-        # Slots run back to back from opening time, so a booking has to start on one.
+-        if offset % rules.slot_minutes:
++        # Slots start every slot length plus buffer from opening time, so a booking has to start on one.
++        if offset % (rules.slot_minutes + rules.buffer_minutes):
+             raise BookingError(f"{start:%H:%M} is not a slot start")
+ 
+     def _still_booked(self, booking_id):
+diff --git a/tests/test_availability.py b/tests/test_availability.py
+index 23f3a13..ca73f32 100644
+--- a/tests/test_availability.py
++++ b/tests/test_availability.py
+@@ -1,15 +1,24 @@
+ from datetime import datetime
+ 
+ from clinicbook.services.availability import first_free, free_slots, free_slots_from
+-from conftest import MONDAY, SUNDAY, at
++from clinicbook.storage.clinic_file import parse_clinic
++from conftest import CLINIC, MONDAY, SUNDAY, at
+ 
+ NOW = datetime(2026, 2, 27, 8, 0)
+ 
+ 
+-def test_slots_run_back_to_back_from_opening(clinic):
++def test_slots_leave_the_buffer_after_each_appointment(clinic):
+     slots = free_slots(clinic, [], MONDAY, NOW, practitioner="amy")
++    assert [slot.start for slot in slots[:3]] == [at("09:00"), at("09:25"), at("09:50")]
++    assert slots[-1].start == at("16:30")
++    assert len(slots) == 19
++    assert {slot.minutes for slot in slots} == {20}
++
++
++def test_no_buffer_runs_slots_back_to_back():
++    raw = dict(CLINIC, settings={"buffer_minutes": 0})
++    slots = free_slots(parse_clinic(raw), [], MONDAY, NOW, practitioner="amy")
+     assert [slot.start for slot in slots[:3]] == [at("09:00"), at("09:20"), at("09:40")]
+-    assert slots[-1].start == at("16:40")
+     assert len(slots) == 24
+ 
+ 
+@@ -22,8 +31,8 @@ def test_booked_slot_is_not_offered(clinic, desk):
+ 
+ def test_nothing_on_closed_days_or_in_the_past(clinic):
+     assert free_slots(clinic, [], SUNDAY, NOW) == []
+-    late = datetime(2026, 3, 2, 16, 30)
+-    assert [slot.start for slot in free_slots(clinic, [], MONDAY, late, practitioner="amy")] == [at("16:40")]
++    late = datetime(2026, 3, 2, 16, 10)
++    assert [slot.start for slot in free_slots(clinic, [], MONDAY, late, practitioner="amy")] == [at("16:30")]
+ 
+ 
+ def test_slots_across_days_and_first_free(clinic):

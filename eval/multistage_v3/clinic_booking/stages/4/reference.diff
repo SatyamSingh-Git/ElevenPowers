@@ -1,0 +1,104 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c850f37..ca6cb1b 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- The bookings file is written in booking reference order, so new bookings land at the bottom.
+ - Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
+ - New `buffer_minutes` setting, default 5: free slots leave that gap after every appointment.
+ - The exported day schedule writes start and end times on a 12-hour clock (`%I:%M %p`, e.g. `02:00 PM`).
+diff --git a/docs/reference.md b/docs/reference.md
+index bdc02c2..504107a 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -49,7 +49,7 @@ The `status` column of the bookings file holds one of these.
+ |---|---|---|
+ | `bookings_file.name` | `bookings.csv` | bookings file the CLI reads and writes unless `--bookings` names another |
+ | `bookings_file.columns` | `id,patient,phone,practitioner,room,day,start,minutes,status,created` | header row of the bookings file |
+-| `bookings_file.order` | `day, start` | row order of the bookings file (ties go by practitioner) |
++| `bookings_file.order` | `booking reference` | row order of the bookings file: oldest booking first, so new bookings land at the bottom |
+ | `bookings_file.start` | `09:00` | how the start column of the bookings file writes a time: 24-hour HH:MM |
+ | `booking_reference` | `B0001` | booking references: `B` and a running number of at least four digits, never reused |
+ 
+diff --git a/src/clinicbook/reports/day_schedule.py b/src/clinicbook/reports/day_schedule.py
+index 6b0d77f..76a5a28 100644
+--- a/src/clinicbook/reports/day_schedule.py
++++ b/src/clinicbook/reports/day_schedule.py
+@@ -32,11 +32,9 @@ class ScheduleRow:
+ 
+ 
+ def schedule_rows(bookings, clinic, day):
+-    """The day's bookings, cancelled ones included, in the order they are given.
+-
+-    Bookings come from the bookings file, which keeps them by day and start
+-    time, so the rows read from the first appointment of the day to the last.
+-    """
++    """The day's bookings, cancelled ones included, from the first appointment of the day to the last."""
++    todays = sorted((booking for booking in bookings if booking.day == day),
++                    key=lambda booking: (booking.start, booking.practitioner))
+     return [
+         ScheduleRow(
+             day=booking.day,
+@@ -48,8 +46,7 @@ def schedule_rows(bookings, clinic, day):
+             phone=booking.phone,
+             status=booking.status,
+         )
+-        for booking in bookings
+-        if booking.day == day
++        for booking in todays
+     ]
+ 
+ 
+diff --git a/src/clinicbook/storage/bookings_file.py b/src/clinicbook/storage/bookings_file.py
+index 8934ff2..b8e1aea 100644
+--- a/src/clinicbook/storage/bookings_file.py
++++ b/src/clinicbook/storage/bookings_file.py
+@@ -6,13 +6,14 @@ from pathlib import Path
+ 
+ from ..errors import StorageError
+ from ..model.booking import STATUSES, Booking
++from .ids import booking_number
+ 
+ DEFAULT_NAME = "bookings.csv"
+ COLUMNS = ("id", "patient", "phone", "practitioner", "room", "day", "start", "minutes", "status", "created")
+ 
+ 
+ def _file_order(booking):
+-    return (booking.day, booking.start, booking.practitioner)
++    return booking_number(booking.id)
+ 
+ 
+ def _row(booking):
+@@ -64,7 +65,7 @@ def load_bookings(path=DEFAULT_NAME):
+ 
+ 
+ def save_bookings(bookings, path=DEFAULT_NAME):
+-    """Write every booking, sorted by day and start time.
++    """Write every booking in booking reference order, so new bookings land at the bottom.
+ 
+     The new file replaces the old one only once it is complete, so a crash
+     part-way through leaves the previous bookings intact.
+diff --git a/tests/test_bookings_file.py b/tests/test_bookings_file.py
+index cb55070..a3f0f21 100644
+--- a/tests/test_bookings_file.py
++++ b/tests/test_bookings_file.py
+@@ -16,13 +16,13 @@ def test_round_trip(desk, tmp_path):
+     assert load_bookings(path) == desk.bookings
+ 
+ 
+-def test_rows_are_written_by_day_and_start_time(desk, tmp_path):
++def test_rows_are_written_in_booking_reference_order(desk, tmp_path):
+     desk.book("amy", MONDAY, at("14:00"), "Ann Lee", "07700900001")
+     desk.book("amy", MONDAY, at("09:00"), "Bob Ray", "07700900002")
+     path = tmp_path / "bookings.csv"
+-    save_bookings(desk.bookings, path)
++    save_bookings(list(reversed(desk.bookings)), path)
+     with path.open(newline="", encoding="utf-8") as handle:
+-        assert [row["id"] for row in csv.DictReader(handle)] == ["B0002", "B0001"]
++        assert [row["id"] for row in csv.DictReader(handle)] == ["B0001", "B0002"]
+ 
+ 
+ def test_missing_file_means_no_bookings(tmp_path):

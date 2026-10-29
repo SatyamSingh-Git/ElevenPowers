@@ -1,0 +1,19 @@
+[project]
+name = "recipebox"
+version = "0.9.0"
+description = "Recipes, meal plans, shopping lists, a pantry and nutrition summaries"
+requires-python = ">=3.10"
+
+[project.scripts]
+recipebox = "recipebox.cli.main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

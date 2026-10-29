@@ -1,0 +1,67 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index db7985f..43514a3 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Gift vouchers are accepted as payment (`--payment voucher`) and cashed up on their own row.
+ - The default `max_tickets_per_order` is now 12, up from 10.
+ - Holds that expired more than `hold_keep_minutes` (default 60) ago are dropped when holds are
+   saved, so the list of holds no longer grows for ever.
+diff --git a/docs/reference.md b/docs/reference.md
+index 60335c9..b98d2c8 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -67,7 +67,7 @@ A concession takes a percentage off the face value of the seat's tier.
+ | `senior` | `20` | concession: percent off face value |
+ | `student` | `25` | concession: percent off face value |
+ | `concession_rounding` | `50` | every concession but adult is rounded to the nearest multiple of this many pence, halves up; adult stays the face value |
+-| `payment_methods` | `card, cash` | payment methods accepted at checkout |
++| `payment_methods` | `card, cash, voucher` | payment methods accepted at checkout; `voucher` is one of our gift vouchers |
+ | `order_id` | `B0001` | order references: B and four digits, issued in sequence |
+ | `hold_id` | `H0001` | hold references: H and four digits, issued in sequence |
+ 
+diff --git a/src/boxoffice/services/sales.py b/src/boxoffice/services/sales.py
+index bf875a9..4a15749 100644
+--- a/src/boxoffice/services/sales.py
++++ b/src/boxoffice/services/sales.py
+@@ -3,7 +3,7 @@ from ..errors import BoxOfficeError
+ from ..model.concessions import concession_price
+ from ..model.order import Order, OrderLine
+ 
+-PAYMENT_METHODS = ("card", "cash")
++PAYMENT_METHODS = ("card", "cash", "voucher")
+ 
+ 
+ class SalesService:
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index c6ed50a..ec7888a 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -40,6 +40,7 @@ def test_cashup_lists_every_method():
+     assert rows == [
+         {"payment": "card", "entries": 1, "amount": -3000},
+         {"payment": "cash", "entries": 1, "amount": 2150},
++        {"payment": "voucher", "entries": 0, "amount": 0},
+         {"payment": "total", "entries": 2, "amount": -850},
+     ]
+ 
+diff --git a/tests/test_sales.py b/tests/test_sales.py
+index b5e4277..fa362ab 100644
+--- a/tests/test_sales.py
++++ b/tests/test_sales.py
+@@ -32,6 +32,12 @@ def test_a_hold_sells_once(office):
+     assert raised.value.code == "hold-closed"
+ 
+ 
++def test_gift_vouchers_pay_for_tickets(office):
++    hold = office.holds.place("TEMP-0520", ["A1"])
++    assert office.sales.checkout(hold.id, payment="voucher").payment == "voucher"
++    assert office.ledger.read_entries()[-1]["payment"] == "voucher"
++
++
+ def test_unknown_payment(office):
+     hold = office.holds.place("TEMP-0520", ["A1"])
+     with pytest.raises(BoxOfficeError) as raised:

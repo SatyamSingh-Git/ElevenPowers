@@ -1,0 +1,87 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d519b85..e558045 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `build_shopping_list()`, and so the `shop --csv` file, lists items alphabetically by name instead of by aisle.
+ - Recipe ids use only `a-z 0-9 -`: accents are dropped and any other character separates words, so `Mac & Cheese` is `mac-cheese`.
+ - `nutrition_for()` reports dietary fibre per serving as `fibre_g`, after `carbs_g`.
+ - Fixed: thirds were shown as eighths (`1/3 cup` came out as `3/8 cup`). Amounts are now shown in halves, thirds, quarters or eighths.
+diff --git a/docs/reference.md b/docs/reference.md
+index a05c5f4..524f806 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -88,7 +88,7 @@ every error as `error: {message}` on stderr.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `shopping.order` | `aisle, name` | order of the lines `build_shopping_list()` returns (API) |
++| `shopping.order` | `name` | order of the lines `build_shopping_list()` returns (API), and so of the rows `shop --csv` writes (file) |
+ | `aisles` | `produce, bakery, dairy, meat, pantry, frozen, other` | aisle codes in the order the shop is walked; the `aisle` of each `build_shopping_list()` line (API) and the `aisle` column of `shop --csv` (file) |
+ | `shopping.metric_upgrade` | `1000` | g or ml at which a line is given in kg or l (API, CLI) |
+ | `shopping.empty` | `Nothing to buy.` | printed for an empty list (CLI) |
+diff --git a/src/recipebox/reports/shopping_text.py b/src/recipebox/reports/shopping_text.py
+index e844a36..0aec719 100644
+--- a/src/recipebox/reports/shopping_text.py
++++ b/src/recipebox/reports/shopping_text.py
+@@ -18,9 +18,11 @@ EMPTY = "Nothing to buy."
+ 
+ 
+ def render_shopping_list(lines):
+-    """Text for shopping lines that come grouped by aisle."""
++    """Text for shopping lines in any order: aisles in walking order, items by name under each."""
+     if not lines:
+         return EMPTY + "\n"
++    walk = list(HEADINGS)
++    lines = sorted(lines, key=lambda line: (walk.index(line.aisle), line.name))
+     width = max(len(line.name) for line in lines) + 2
+     out = [f"Shopping list: {len(lines)} items"]
+     for aisle, group in groupby(lines, key=attrgetter("aisle")):
+diff --git a/src/recipebox/services/shopping.py b/src/recipebox/services/shopping.py
+index 1f4de9e..02fc4ea 100644
+--- a/src/recipebox/services/shopping.py
++++ b/src/recipebox/services/shopping.py
+@@ -2,7 +2,7 @@
+ from dataclasses import dataclass, field
+ 
+ from ..core import units
+-from ..core.catalog import AISLE_ORDER, aisle_for
++from ..core.catalog import aisle_for
+ from ..core.quantity import Quantity
+ from .scaling import scale_recipe
+ 
+@@ -85,10 +85,10 @@ def _upgrade(line):
+ 
+ 
+ def build_shopping_list(plan, pantry=None):
+-    """Lines to buy for `plan`, in aisle order and by name within an aisle."""
++    """Lines to buy for `plan`, by name."""
+     lines = _merge(_needed(plan))
+     if pantry is not None:
+         lines = [kept for kept in (_after_pantry(line, pantry) for line in lines) if kept is not None]
+     lines = [_upgrade(line) for line in lines]
+-    lines.sort(key=lambda line: (AISLE_ORDER.index(line.aisle), line.name))
++    lines.sort(key=lambda line: line.name)
+     return lines
+diff --git a/tests/test_shopping.py b/tests/test_shopping.py
+index b79811e..dfe1abd 100644
+--- a/tests/test_shopping.py
++++ b/tests/test_shopping.py
+@@ -61,11 +61,10 @@ def test_aisles(pancakes, soup):
+     assert lines["flour"].aisle == "pantry"
+ 
+ 
+-def test_order_is_by_aisle_then_name(pancakes, soup):
++def test_order_is_by_name(pancakes, soup):
+     plan = Plan([MealEntry("monday", "breakfast", pancakes), MealEntry("monday", "lunch", soup)])
+     names = [line.name for line in build_shopping_list(plan)]
+     assert names == [
+-        "garlic", "onion", "tomato",
+-        "butter", "egg", "milk",
+-        "flour", "olive oil", "salt", "sugar", "vegetable stock",
++        "butter", "egg", "flour", "garlic", "milk", "olive oil",
++        "onion", "salt", "sugar", "tomato", "vegetable stock",
+     ]

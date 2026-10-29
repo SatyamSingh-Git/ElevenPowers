@@ -1,0 +1,14 @@
+diff --git a/src/boxoffice/storage/jsonstore.py b/src/boxoffice/storage/jsonstore.py
+index 4c90a5b..2721baa 100644
+--- a/src/boxoffice/storage/jsonstore.py
++++ b/src/boxoffice/storage/jsonstore.py
+@@ -54,8 +54,7 @@ class Store:
+         self._write(HOLDS_FILE, {key: hold.to_dict() for key, hold in holds.items()})
+ 
+     def new_hold_id(self, holds):
+-        # Old holds are dropped, so counting the ones left could reissue a live hold's id.
+-        return f"H{max((int(key[1:]) for key in holds), default=0) + 1:04d}"
++        return f"H{len(holds) + 1:04d}"
+ 
+     def load_orders(self):
+         return {key: Order.from_dict(key, data) for key, data in self._read(ORDERS_FILE, {}).items()}

@@ -1,0 +1,179 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c1f582b..50a223a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,8 @@
+ 
+ ## Unreleased
+ 
++- Best available no longer picks wheelchair spaces, and `seat_states` reports an open one as
++  `wheelchair`. They can still be held, sold and exchanged into by name.
+ - Concession prices (all but adult) are rounded to the nearest 50 pence, halves up.
+ - Exchanges charge `exchange_fee` (default 100 pence) and are recorded in the ledger as one
+   `exchange` entry with the amount settled, instead of a refund and a sale.
+diff --git a/docs/reference.md b/docs/reference.md
+index 62c0c9d..3f0f107 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -74,14 +74,16 @@ A concession takes a percentage off the face value of the seat's tier.
+ 
+ | key | value | meaning |
+ |---|---|---|
+-| `seat_states` | `free, held, sold` | the states the `seat_states` API call reports for a seat |
++| `seat_states` | `free, held, sold, wheelchair` | the states the `seat_states` API call reports for a seat; `wheelchair` is a wheelchair space nobody holds or has bought |
+ | `plan.free` | `.` | CLI seat plan (`seats`): symbol for a free seat |
+ | `plan.held` | `h` | CLI seat plan (`seats`): symbol for a held seat |
+ | `plan.sold` | `x` | CLI seat plan (`seats`): symbol for a sold seat |
+ 
+ The seat plan (`seats`) prints one line per row: the row, the number of its
+-first seat, then one symbol per seat. Best available searches sections and rows
+-in seat-map order and holds the first run of free seats side by side.
++first seat, then one symbol per seat; an open wheelchair space shows as `w`.
++Best available searches sections and rows in seat-map order and holds the first
++run of free seats side by side. It never picks a wheelchair space: staff hold
++those by naming them.
+ 
+ ## Seat map file
+ 
+diff --git a/src/boxoffice/reports/seatplan.py b/src/boxoffice/reports/seatplan.py
+index ec885ff..28ade12 100644
+--- a/src/boxoffice/reports/seatplan.py
++++ b/src/boxoffice/reports/seatplan.py
+@@ -2,6 +2,7 @@
+ 
+ SYMBOLS = {
+     "free": ".",
++    "wheelchair": "w",
+     "held": "h",
+     "sold": "x",
+ }
+diff --git a/src/boxoffice/services/availability.py b/src/boxoffice/services/availability.py
+index 21b8a94..c404c4e 100644
+--- a/src/boxoffice/services/availability.py
++++ b/src/boxoffice/services/availability.py
+@@ -1,11 +1,17 @@
+ """Which seats of a performance can still be sold, and finding seats together."""
+ from ..errors import BoxOfficeError
+ 
++# A free seat can be sold to anyone; a free wheelchair space is kept for those who need it.
++OPEN = ("free", "wheelchair")
++
+ 
+ def seat_states(store, code, now):
+-    """Every seat of the venue mapped to free, held or sold for performance `code` at `now`."""
++    """Every seat of the venue mapped to free, wheelchair, held or sold for `code` at `now`.
++
++    A wheelchair space nobody holds or has bought is `wheelchair` rather than `free`.
++    """
+     store.performance(code)
+-    states = {seat.id: "free" for seat in store.venue().seats()}
++    states = {seat.id: "wheelchair" if "W" in seat.flags else "free" for seat in store.venue().seats()}
+     for hold in store.load_holds().values():
+         if hold.performance == code and hold.is_active(now):
+             for seat in hold.seats:
+@@ -22,6 +28,7 @@ def best_available(store, code, count, now, section=None):
+ 
+     Sections and rows are searched in seat-map order, which runs from the best
+     seats in the house to the worst, so the first run found is the best one.
++    Wheelchair spaces are never chosen; staff hold them by name.
+     """
+     venue = store.venue()
+     if section is None:
+@@ -48,11 +55,11 @@ def best_available(store, code, count, now, section=None):
+ 
+ 
+ def section_summary(store, code, now):
+-    """For each section, how many of its seats are free, held and sold."""
++    """For each section, how many of its seats are in each state."""
+     states = seat_states(store, code, now)
+     summary = {}
+     for section in store.venue().sections:
+-        counts = {"free": 0, "held": 0, "sold": 0}
++        counts = {"free": 0, "wheelchair": 0, "held": 0, "sold": 0}
+         for seat in section.seats():
+             counts[states[seat.id]] += 1
+         summary[section.name] = counts
+diff --git a/src/boxoffice/services/holds.py b/src/boxoffice/services/holds.py
+index addb948..80436ad 100644
+--- a/src/boxoffice/services/holds.py
++++ b/src/boxoffice/services/holds.py
+@@ -3,7 +3,7 @@ from datetime import timedelta
+ 
+ from ..errors import BoxOfficeError
+ from ..model.order import Hold
+-from .availability import best_available, seat_states
++from .availability import OPEN, best_available, seat_states
+ 
+ 
+ class HoldService:
+@@ -33,7 +33,7 @@ class HoldService:
+                 raise BoxOfficeError("unknown-seat", seat=seat)
+             if seat in seen:
+                 raise BoxOfficeError("duplicate-seat", seat=seat)
+-            if states[seat] != "free":
++            if states[seat] not in OPEN:
+                 raise BoxOfficeError("seat-unavailable", seat=seat)
+             seen.add(seat)
+         order = venue.seat_order()
+diff --git a/src/boxoffice/services/refunds.py b/src/boxoffice/services/refunds.py
+index 59a22dd..b2116d4 100644
+--- a/src/boxoffice/services/refunds.py
++++ b/src/boxoffice/services/refunds.py
+@@ -4,7 +4,7 @@ from datetime import timedelta
+ from ..errors import BoxOfficeError
+ from ..model.concessions import concession_price
+ from ..model.order import OrderLine
+-from .availability import seat_states
++from .availability import OPEN, seat_states
+ 
+ 
+ class RefundService:
+@@ -67,7 +67,7 @@ class RefundService:
+                 raise BoxOfficeError("unknown-seat", seat=seat)
+             if seat in seen:
+                 raise BoxOfficeError("duplicate-seat", seat=seat)
+-            if states[seat] != "free" and seat not in own:
++            if states[seat] not in OPEN and seat not in own:
+                 raise BoxOfficeError("seat-unavailable", seat=seat)
+             seen.add(seat)
+         position = venue.seat_order()
+diff --git a/tests/test_holds.py b/tests/test_holds.py
+index 7060e04..59160a6 100644
+--- a/tests/test_holds.py
++++ b/tests/test_holds.py
+@@ -59,6 +59,22 @@ def test_best_available_takes_seats_together(office):
+     assert hold.seats == ["C1", "C2"]
+ 
+ 
++def test_free_wheelchair_spaces_have_their_own_state(office):
++    states = office.seat_states("TEMP-0520")
++    assert (states["B5"], states["B6"]) == ("free", "wheelchair")
++    hold = office.holds.place("TEMP-0520", ["B6"])
++    assert office.seat_states("TEMP-0520")["B6"] == "held"
++    office.holds.release(hold.id)
++    assert office.seat_states("TEMP-0520")["B6"] == "wheelchair"
++
++
++def test_best_available_leaves_wheelchair_spaces(office):
++    office.sales.checkout(office.holds.place("TEMP-0520", [f"A{n}" for n in range(1, 7)]).id)
++    with pytest.raises(BoxOfficeError):
++        office.holds.place_best("TEMP-0520", 6, section="Stalls")
++    assert office.holds.place_best("TEMP-0520", 5, section="Stalls").seats == ["B1", "B2", "B3", "B4", "B5"]
++
++
+ def test_best_available_gives_up(office):
+     with pytest.raises(BoxOfficeError) as raised:
+         office.holds.place_best("TEMP-0520", 5, section="Circle")
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 7a741b6..c6ed50a 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -58,7 +58,7 @@ def test_seatplan():
+     states.update({"A1": "sold", "A2": "held"})
+     lines = render_seatplan(venue, states).splitlines()
+     assert lines[2] == "  A    1 x h . . . ."
+-    assert lines[-1] == "key: . free  h held  x sold"
++    assert lines[-1].startswith("key: . free  ")
+ 
+ 
+ def test_price_list(office):

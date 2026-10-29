@@ -1,0 +1,60 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7ca7ac6..cd8c4f5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,7 @@
+ ## Unreleased
+ 
+ - `clinic handover` prints the evening note for the next open day.
++- Fixed: phone numbers typed with spaces, like `07700 900123`, were refused; spaces are now dropped. The error shows the number as typed.
+ - New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
+ - The bookings file is written in booking reference order, so new bookings land at the bottom.
+ - Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 9666a89..c5b4d52 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -109,7 +109,7 @@ Raised by `Desk.book` and the other `Desk` calls; the CLI prints them as
+ |---|---|---|
+ | `error.name` | `patient name is required` | error from `Desk.book` and the CLI `book` command for an empty name |
+ | `error.name_length` | `patient name is longer than 60 characters` | error from `Desk.book` and the CLI `book` command for a long name |
+-| `error.phone` | `invalid phone number` | error from `Desk.book` and the CLI `book` command for a phone number that is not eleven digits starting with 0 |
++| `error.phone` | `invalid phone number: {phone}` | error from `Desk.book` and the CLI `book` command for a phone number that is not eleven digits starting with 0, spaces aside; shows the number as typed |
+ | `error.past` | `cannot book in the past` | error from `Desk.book` and the CLI `book` command |
+ | `error.horizon` | `bookings open {days} days ahead` | error from `Desk.book` and the CLI `book` command past `booking_horizon_days` |
+ | `error.closed` | `clinic is closed on {day}` | error from `Desk.book` and the CLI `book` command; day as 2026-03-02 |
+diff --git a/src/clinicbook/services/validation.py b/src/clinicbook/services/validation.py
+index af4cc17..f86184a 100644
+--- a/src/clinicbook/services/validation.py
++++ b/src/clinicbook/services/validation.py
+@@ -19,7 +19,8 @@ def check_name(name):
+ 
+ 
+ def check_phone(phone):
+-    phone = phone.strip()
+-    if not PHONE.fullmatch(phone):
+-        raise ValidationError("invalid phone number")
+-    return phone
++    """The number with any spaces taken out, as patients often type it in groups."""
++    digits = phone.replace(" ", "")
++    if not PHONE.fullmatch(digits):
++        raise ValidationError(f"invalid phone number: {phone.strip()}")
++    return digits
+diff --git a/tests/test_desk.py b/tests/test_desk.py
+index 86eeb86..c363071 100644
+--- a/tests/test_desk.py
++++ b/tests/test_desk.py
+@@ -89,5 +89,12 @@ def test_patient_details():
+         check_name("   ")
+     with pytest.raises(ValidationError, match="longer than 60"):
+         check_name("x" * 61)
+-    with pytest.raises(ValidationError, match="invalid phone number"):
++    with pytest.raises(ValidationError) as caught:
+         check_phone("7700900001")
++    assert str(caught.value) == "invalid phone number: 7700900001"
++
++
++def test_phone_number_typed_with_spaces_is_accepted(desk):
++    assert check_phone("07700 900123") == "07700900123"
++    booking = desk.book("amy", MONDAY, at("09:00"), "Ann Lee", "07700 900 123")
++    assert booking.phone == "07700900123"

@@ -1,0 +1,29 @@
+diff --git a/src/clinicbook/reports/day_schedule.py b/src/clinicbook/reports/day_schedule.py
+index 76a5a28..6b0d77f 100644
+--- a/src/clinicbook/reports/day_schedule.py
++++ b/src/clinicbook/reports/day_schedule.py
+@@ -32,9 +32,11 @@ class ScheduleRow:
+ 
+ 
+ def schedule_rows(bookings, clinic, day):
+-    """The day's bookings, cancelled ones included, from the first appointment of the day to the last."""
+-    todays = sorted((booking for booking in bookings if booking.day == day),
+-                    key=lambda booking: (booking.start, booking.practitioner))
++    """The day's bookings, cancelled ones included, in the order they are given.
++
++    Bookings come from the bookings file, which keeps them by day and start
++    time, so the rows read from the first appointment of the day to the last.
++    """
+     return [
+         ScheduleRow(
+             day=booking.day,
+@@ -46,7 +48,8 @@ def schedule_rows(bookings, clinic, day):
+             phone=booking.phone,
+             status=booking.status,
+         )
+-        for booking in todays
++        for booking in bookings
++        if booking.day == day
+     ]
+ 
+ 
