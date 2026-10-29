@@ -1,0 +1,25 @@
+diff --git a/src/fleetkeep/reports/spend.py b/src/fleetkeep/reports/spend.py
+index e07129a..6984044 100644
+--- a/src/fleetkeep/reports/spend.py
++++ b/src/fleetkeep/reports/spend.py
+@@ -2,10 +2,9 @@
+ 
+ Each month of the period gets a row, even a month with no spending. Fuel is
+ counted in the month it was bought and a work order in the month it closed, at
+-its total: parts, labour and shop supplies.
++its parts plus its labour.
+ """
+ from ..model.money import dollars
+-from ..services.workorders import order_charges
+ 
+ 
+ def _month(day):
+@@ -22,7 +21,7 @@ def spend_rows(fleet, period):
+     for order in fleet.orders():
+         if order.closed is not None and order.closed in period:
+             spent = months[_month(order.closed)]
+-            spent[1] += order_charges(order, fleet.settings).total
++            spent[1] += order.parts_total + order.labour_total
+             spent[2] += 1
+     return [(month, dollars(fuel), orders, dollars(maintenance), dollars(fuel + maintenance))
+             for month, (fuel, maintenance, orders) in months.items()]

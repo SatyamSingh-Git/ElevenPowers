@@ -1,0 +1,276 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f9e6c3c..ca543fd 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Work orders carry a shop supplies charge: `shop_supplies_percent` (5) of the labour, capped at `shop_supplies_cap` (40.00); `wo show` lists it as `supplies` and counts it in `total`.
+ - New `critical` status for services overdue by more than `critical_miles` (1000) miles or `critical_days` (30) days; critical services lead the due list.
+ - Parts stock: `parts receive`, `parts count` and `parts stock`; a stocked part is charged at its average cost.
+ - `fleetkeep check` lists stale work orders, vehicles missing odometer readings, worn tyres and grounded vehicles.
+diff --git a/docs/reference.md b/docs/reference.md
+index 077bb8b..d006f25 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -17,6 +17,8 @@ setting left out takes its default.
+ | `max_daily_miles` | `1000` | fleet.ini setting: most miles a day accepted between two odometer readings |
+ | `critical_miles` | `1000` | fleet.ini setting: a service overdue by more than this many miles is `critical` |
+ | `critical_days` | `30` | fleet.ini setting: a service overdue by more than this many days is `critical` |
++| `shop_supplies_percent` | `5` | fleet.ini setting: shop supplies charged on each work order, as a percentage of its labour, rounded half up to the cent |
++| `shop_supplies_cap` | `40.00` | fleet.ini setting: most shop supplies charged on one work order |
+ 
+ ## Command line
+ 
+@@ -40,7 +42,7 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
+ | Report | Columns | Meaning |
+ |---|---|---|
+ | `fleetkeep due` | `vehicle,code,service,due_miles,remaining_miles,due_date,remaining_days,status` | command line: every service of every vehicle in service, `critical` first, then `overdue`, `due-soon` and `ok` |
+-| `fleetkeep costs` | `vehicle,miles,fuel,maintenance,total,cost_per_mile` | command line: maintenance is the total of each work order closed in the period, as `wo show` gives it |
++| `fleetkeep costs` | `vehicle,miles,fuel,maintenance,total,cost_per_mile` | command line: maintenance is the total of each work order closed in the period, as `wo show` gives it: parts, labour and shop supplies |
+ | `fleetkeep fuel report` | `vehicle,fills,gallons,fuel_cost,miles,mpg` | command line: fuel bought and full-tank economy |
+ | `fleetkeep spend` | `month,fuel,orders,maintenance,total` | command line: spending by calendar month; maintenance as in `costs` |
+ | `fleetkeep downtime` | `vehicle,orders,days_down,breakdown_days,availability` | command line: days in the shop and availability percentage |
+diff --git a/src/fleetkeep/cli/commands.py b/src/fleetkeep/cli/commands.py
+index 7348c00..92f9573 100644
+--- a/src/fleetkeep/cli/commands.py
++++ b/src/fleetkeep/cli/commands.py
+@@ -273,8 +273,8 @@ def cmd_wo_close(args, clock):
+     return 0
+ 
+ 
+-def _order_fields(order):
+-    charges = workorders.order_charges(order)
++def _order_fields(order, settings):
++    charges = workorders.order_charges(order, settings)
+     return {
+         "id": order.id,
+         "vehicle": order.vehicle_id,
+@@ -286,6 +286,7 @@ def _order_fields(order):
+         "breakdown": order.breakdown,
+         "parts": format_money(charges.parts),
+         "labour": format_money(charges.labour),
++        "supplies": format_money(charges.supplies),
+         "total": format_money(charges.total),
+     }
+ 
+@@ -293,7 +294,7 @@ def _order_fields(order):
+ def cmd_wo_show(args, clock):
+     session = Session(args)
+     order = session.fleet.order(args.order.upper())
+-    fields = _order_fields(order)
++    fields = _order_fields(order, session.fleet.settings)
+     if args.json:
+         print(json.dumps(fields, indent=2))
+         return 0
+diff --git a/src/fleetkeep/config.py b/src/fleetkeep/config.py
+index 5ca7056..1d185f8 100644
+--- a/src/fleetkeep/config.py
++++ b/src/fleetkeep/config.py
+@@ -1,6 +1,7 @@
+ """Fleet settings, read from the [fleet] section of a fleet's fleet.ini."""
+ import configparser
+ from dataclasses import dataclass
++from decimal import Decimal, InvalidOperation
+ 
+ from .errors import FleetError
+ from .model.money import format_money, parse_money
+@@ -17,6 +18,8 @@ class Settings:
+     max_daily_miles: int = 1000
+     critical_miles: int = 1000
+     critical_days: int = 30
++    shop_supplies_percent: Decimal = Decimal("5")
++    shop_supplies_cap: int = 4000
+ 
+ 
+ def _count(text):
+@@ -26,6 +29,16 @@ def _count(text):
+     return value
+ 
+ 
++def _percent(text):
++    try:
++        value = Decimal(text)
++    except InvalidOperation:
++        raise ValueError(text) from None
++    if not value.is_finite() or not 0 <= value <= 100:
++        raise ValueError(text)
++    return value
++
++
+ def _name(text):
+     if not text.strip():
+         raise ValueError(text)
+@@ -40,6 +53,8 @@ PARSERS = {
+     "max_daily_miles": _count,
+     "critical_miles": _count,
+     "critical_days": _count,
++    "shop_supplies_percent": _percent,
++    "shop_supplies_cap": parse_money,
+ }
+ 
+ 
+diff --git a/src/fleetkeep/model/money.py b/src/fleetkeep/model/money.py
+index ce877b3..0bfacc8 100644
+--- a/src/fleetkeep/model/money.py
++++ b/src/fleetkeep/model/money.py
+@@ -23,6 +23,11 @@ def times(cents, quantity):
+     return int((Decimal(cents) * Decimal(quantity)).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+ 
+ 
++def percent_of(cents, percent):
++    """`percent` per cent of `cents`, rounded half up to the cent."""
++    return times(cents, Decimal(percent) / 100)
++
++
+ def divide(cents, count):
+     """`cents` split `count` ways, rounded half up to the cent."""
+     return int((Decimal(cents) / count).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+diff --git a/src/fleetkeep/reports/costs.py b/src/fleetkeep/reports/costs.py
+index 3f86a4f..0366692 100644
+--- a/src/fleetkeep/reports/costs.py
++++ b/src/fleetkeep/reports/costs.py
+@@ -1,18 +1,19 @@
+ """What each vehicle cost to run over a period, and per mile driven.
+ 
+ Fuel is every fill-up in the period. Maintenance is what was charged on the
+-work orders closed in the period: their parts and their labour.
++work orders closed in the period: their parts, labour and shop supplies.
+ """
+ from decimal import Decimal, ROUND_HALF_UP
+ 
+ from ..model.money import dollars
+ from ..services.usage import miles_in_period
++from ..services.workorders import order_charges
+ 
+ PER_MILE_PLACES = Decimal("0.001")
+ 
+ 
+ def _maintenance(fleet, vehicle_id, period):
+-    return sum(order.parts_total + order.labour_total
++    return sum(order_charges(order, fleet.settings).total
+                for order in fleet.orders(vehicle_id)
+                if order.closed is not None and order.closed in period)
+ 
+diff --git a/src/fleetkeep/reports/spend.py b/src/fleetkeep/reports/spend.py
+index 6984044..e07129a 100644
+--- a/src/fleetkeep/reports/spend.py
++++ b/src/fleetkeep/reports/spend.py
+@@ -2,9 +2,10 @@
+ 
+ Each month of the period gets a row, even a month with no spending. Fuel is
+ counted in the month it was bought and a work order in the month it closed, at
+-its parts plus its labour.
++its total: parts, labour and shop supplies.
+ """
+ from ..model.money import dollars
++from ..services.workorders import order_charges
+ 
+ 
+ def _month(day):
+@@ -21,7 +22,7 @@ def spend_rows(fleet, period):
+     for order in fleet.orders():
+         if order.closed is not None and order.closed in period:
+             spent = months[_month(order.closed)]
+-            spent[1] += order.parts_total + order.labour_total
++            spent[1] += order_charges(order, fleet.settings).total
+             spent[2] += 1
+     return [(month, dollars(fuel), orders, dollars(maintenance), dollars(fuel + maintenance))
+             for month, (fuel, maintenance, orders) in months.items()]
+diff --git a/src/fleetkeep/services/workorders.py b/src/fleetkeep/services/workorders.py
+index d8423d6..d772d3e 100644
+--- a/src/fleetkeep/services/workorders.py
++++ b/src/fleetkeep/services/workorders.py
+@@ -2,6 +2,7 @@
+ from dataclasses import dataclass
+ 
+ from ..errors import FleetError
++from ..model.money import percent_of
+ from ..model.readings import OdometerReading
+ from ..model.stock import StockItem
+ from ..model.workorder import LabourLine, PartLine, WorkOrder
+@@ -12,6 +13,7 @@ from .inspections import assign_defects, fix_defects
+ class Charges:
+     parts: int
+     labour: int
++    supplies: int
+     total: int
+ 
+ 
+@@ -102,5 +104,8 @@ def close_order(fleet, order_id, day, odometer=None):
+     return order
+ 
+ 
+-def order_charges(order):
+-    return Charges(order.parts_total, order.labour_total, order.parts_total + order.labour_total)
++def order_charges(order, settings):
++    """What the order costs: parts, labour, and the shop supplies charged on the labour."""
++    parts, labour = order.parts_total, order.labour_total
++    supplies = min(percent_of(labour, settings.shop_supplies_percent), settings.shop_supplies_cap)
++    return Charges(parts, labour, supplies, parts + labour + supplies)
+diff --git a/tests/test_model.py b/tests/test_model.py
+index 5bff2b7..13a7671 100644
+--- a/tests/test_model.py
++++ b/tests/test_model.py
+@@ -5,7 +5,7 @@ import pytest
+ 
+ from fleetkeep.errors import FleetError
+ from fleetkeep.model.dates import Period, add_months, parse_date
+-from fleetkeep.model.money import divide, format_money, parse_money, times
++from fleetkeep.model.money import divide, format_money, parse_money, percent_of, times
+ from fleetkeep.model.readings import FuelEntry, parse_gallons
+ from fleetkeep.model.stock import StockItem
+ from fleetkeep.model.vehicle import Vehicle, normalise_vehicle_id
+@@ -28,6 +28,7 @@ def test_money_arithmetic_rounds_half_up():
+     assert times(9500, Decimal("1.25")) == 11875
+     assert times(333, Decimal("0.5")) == 167
+     assert divide(1000, 3) == 333
++    assert percent_of(14250, 5) == 713
+     assert format_money(120450) == "1204.50"
+ 
+ 
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index ac468a6..2d24c0f 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -41,9 +41,11 @@ def test_round_trip(tmp_path, fleet):
+ 
+ def test_settings(tmp_path):
+     path = tmp_path / "fleet.ini"
+-    path.write_text("[fleet]\nname = North\nlabour_rate = 102.50\ndue_soon_days = 21\n")
++    path.write_text("[fleet]\nname = North\nlabour_rate = 102.50\ndue_soon_days = 21\n"
++                    "shop_supplies_percent = 7.5\nshop_supplies_cap = 25.00\n")
+     settings = load_settings(path)
+     assert (settings.name, settings.labour_rate, settings.due_soon_days) == ("North", 10250, 21)
++    assert (settings.shop_supplies_percent, settings.shop_supplies_cap) == (Decimal("7.5"), 2500)
+     assert (settings.due_soon_miles, settings.critical_miles, settings.critical_days) == (500, 1000, 30)
+ 
+ 
+diff --git a/tests/test_workorders.py b/tests/test_workorders.py
+index ead892c..f3612b7 100644
+--- a/tests/test_workorders.py
++++ b/tests/test_workorders.py
+@@ -29,12 +29,19 @@ def test_labour_uses_the_fleet_rate_unless_given(fleet):
+     assert workorders.log_labour(fleet, order.id, "Ben", Decimal("1"), 12000).rate == 12000
+ 
+ 
+-def test_charges_add_parts_and_labour(fleet):
++def test_charges_add_parts_labour_and_supplies(fleet):
+     order = workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), ["OIL"])
+     workorders.add_part(fleet, order.id, "OF-12", 2, 1250)
+     workorders.log_labour(fleet, order.id, "Ana", Decimal("2"))
+-    charges = workorders.order_charges(order)
+-    assert (charges.parts, charges.labour, charges.total) == (2500, 19000, 21500)
++    charges = workorders.order_charges(order, fleet.settings)
++    assert (charges.parts, charges.labour, charges.supplies, charges.total) == (
++        2500, 19000, 950, 22450)
++
++
++def test_supplies_are_capped(fleet):
++    order = workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), ["OIL"])
++    workorders.log_labour(fleet, order.id, "Ana", Decimal("10"))
++    assert workorders.order_charges(order, fleet.settings).supplies == 4000
+ 
+ 
+ def test_closing_records_services_and_fixes_defects(fleet):

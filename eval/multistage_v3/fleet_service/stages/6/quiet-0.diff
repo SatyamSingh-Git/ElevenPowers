@@ -1,0 +1,40 @@
+diff --git a/src/fleetkeep/importers/timesheets.py b/src/fleetkeep/importers/timesheets.py
+index e76c340..067018a 100644
+--- a/src/fleetkeep/importers/timesheets.py
++++ b/src/fleetkeep/importers/timesheets.py
+@@ -1,9 +1,9 @@
+ """Labour from the mechanics' weekly timesheets.
+ 
+ Columns: order, mechanic, hours, rate. `rate` is left blank for ordinary work,
+-which is charged at the shop's labour rate for the vehicle's class, and filled
+-in for jobs quoted at a different rate. A timesheet goes in whole or not at all:
+-if any row is bad, nothing is charged and every bad row is listed.
++which is charged at the shop's labour rate, and filled in for jobs quoted at a
++different rate. A timesheet goes in whole or not at all: if any row is bad,
++nothing is charged and every bad row is listed.
+ """
+ from ..errors import FleetError
+ from ..model.money import parse_money
+@@ -13,11 +13,8 @@ from .source import ImportResult, read_rows
+ COLUMNS = ("order", "mechanic", "hours", "rate")
+ 
+ 
+-def _line(fleet, order, row):
+-    if row["rate"]:
+-        rate = parse_money(row["rate"])
+-    else:
+-        rate = fleet.settings.labour_rate_for(fleet.vehicle(order.vehicle_id).vehicle_class)
++def _line(fleet, row):
++    rate = parse_money(row["rate"]) if row["rate"] else fleet.settings.labour_rate
+     return LabourLine(row["mechanic"], parse_hours(row["hours"]), rate)
+ 
+ 
+@@ -28,7 +25,7 @@ def import_timesheet(fleet, path):
+             order = fleet.order(row["order"].upper())
+             if not order.is_open:
+                 raise FleetError("E122", order=order.id)
+-            charges.append((order, _line(fleet, order, row)))
++            charges.append((order, _line(fleet, row)))
+         except FleetError as error:
+             result.rejected.append((line, str(error)))
+     if result.rejected:

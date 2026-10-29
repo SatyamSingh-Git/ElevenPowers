@@ -1,0 +1,134 @@
+{
+  "id": "fleet_service",
+  "profile": "v3",
+  "pythonpath": "src",
+  "test_dir": "tests",
+  "protected": "src/fleetkeep/_generated.py",
+  "docs": "docs/reference.md",
+  "changelog": "CHANGELOG.md",
+  "stages": [
+    {
+      "request": "A van thousands of miles past its oil change shows up in `fleetkeep due` exactly like one that is a few miles late, so the bad ones get lost in the list. Add a `critical` status for services overdue by more than `critical_miles` miles or by more than `critical_days` days, both set in fleet.ini with defaults `1000` and `30`. Critical services should be listed before overdue ones.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/fleetkeep/services/reminders.py",
+          "kind": "key",
+          "path": "Reading what consumes a service's status shows the workshop reminders pick their message from a table keyed by status and skip any status the table lacks, so a critical service would silently get no reminder.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_service"]
+        }
+      ]
+    },
+    {
+      "request": "Our workshop adds a shop supplies charge to every job for rags, cleaners and small hardware, and fleetkeep has no way to record it. Each work order should carry a supplies charge of `shop_supplies_percent` percent of its labour, rounded to the cent and capped at `shop_supplies_cap` per work order. Make both fleet.ini settings, with defaults `5` and `40.00`. `fleetkeep wo show` should list the charge as `supplies` and include it in the work order's `total`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/fleetkeep/reports/costs.py",
+          "kind": "copy",
+          "path": "The cost report is documented to carry each closed work order's total as `wo show` gives it, and reading it shows it adds up parts and labour itself instead of asking for the order's total.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_records"]
+        },
+        {
+          "file": "src/fleetkeep/reports/spend.py",
+          "kind": "copy",
+          "path": "Looking for every other place that sums parts_total and labour_total finds the monthly spend report, which counts each closed work order at its parts plus its labour.",
+          "diff": "quiet-1.diff",
+          "fails": ["base_records"]
+        }
+      ]
+    },
+    {
+      "request": "Running `fleetkeep wo close` on a work order that is already closed closes it again: its close date moves to the new day, which stretches the vehicle's downtime, and its services are recorded a second time. Closing a closed work order should fail with error `E126` and the message `work order {order} is already closed`, leaving the work order as it was.",
+      "kind": "self-contained",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "Fuel prices have been moving and we want to see what each vehicle actually paid per gallon. Add a `cost_per_gallon` column to `fleetkeep fuel report`, right after `fuel_cost`: the fuel cost divided by the gallons, rounded to the cent. The report's columns become `vehicle,fills,gallons,fuel_cost,cost_per_gallon,miles,mpg`.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/fleetkeep/reports/layout.py",
+          "kind": "data",
+          "path": "Following how report rows are printed shows the renderers take each report's column names, by position, from the layout table keyed by report name, so a new value in the fuel rows needs its column there.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_records"]
+        }
+      ]
+    },
+    {
+      "request": "`fleetkeep wo open VAN-101 --service OIL2` is accepted even though the catalog has no `OIL2`, and closing that work order later crashes with `KeyError: 'OIL2'`. Opening a work order with a service code that is not in the catalog should fail with error `E127` and the message `unknown service code: {code}`, and no work order should be created.",
+      "kind": "cross-cutting",
+      "bugfix": true,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/fleetkeep/importers/history.py",
+          "kind": "contract",
+          "path": "Checking who relies on a catalog lookup raising KeyError finds the service history import, which catches KeyError to skip codes the catalog lacks; once the lookup raises the new error those rows are rejected instead.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_records"]
+        }
+      ]
+    },
+    {
+      "request": "The shop bills labour on our big trucks at a higher rate. Add a fleet.ini setting `heavy_labour_rate`, default `125.00`, and charge labour on `heavy` vehicles at that rate instead of `labour_rate`. A rate given with `--rate` on `fleetkeep wo labour` still takes precedence.",
+      "kind": "cross-cutting",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": [
+        {
+          "file": "src/fleetkeep/importers/timesheets.py",
+          "kind": "copy",
+          "path": "Looking for every place that falls back to settings.labour_rate finds the timesheet import, which applies the same default rate on its own and is documented to charge as `wo labour` does.",
+          "diff": "quiet-0.diff",
+          "fails": ["base_records"]
+        }
+      ]
+    },
+    {
+      "request": "Our new tanker trucks take more than 150 gallons in a single fill-up, and both `fleetkeep fuel add` and fuel-card imports refuse them. Raise the largest accepted fill-up to `250` gallons.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    },
+    {
+      "request": "We paste reports into the team wiki. Add a `markdown` output format, so `--format` accepts `table,csv,json,markdown`. A markdown report is a pipe table: a header row of the column names, a separator row with `---` in every cell, then one row per record with the same values as the `csv` format.",
+      "kind": "self-contained",
+      "bugfix": false,
+      "dependent_missed_fails": [],
+      "quiet": []
+    }
+  ],
+  "groups": [
+    {"id": "base_service", "since": 0, "until": 8},
+    {"id": "base_records", "since": 0, "until": 8},
+    {"id": "critical_due", "since": 1, "until": 8},
+    {"id": "critical_settings", "since": 1, "until": 8},
+    {"id": "supplies_charge", "since": 2, "until": 8},
+    {"id": "supplies_settings", "since": 2, "until": 8},
+    {"id": "close_twice_refused", "since": 3, "until": 8},
+    {"id": "close_twice_unchanged", "since": 3, "until": 8},
+    {"id": "fuel_cost_per_gallon", "since": 4, "until": 8},
+    {"id": "fuel_report_columns", "since": 4, "until": 8},
+    {"id": "unknown_code_refused", "since": 5, "until": 8},
+    {"id": "unknown_code_mixed", "since": 5, "until": 8},
+    {"id": "heavy_labour_rate", "since": 6, "until": 8},
+    {"id": "heavy_labour_settings", "since": 6, "until": 8},
+    {"id": "fill_limit_add", "since": 7, "until": 8},
+    {"id": "fill_limit_import", "since": 7, "until": 8},
+    {"id": "markdown_due", "since": 8, "until": 8},
+    {"id": "markdown_reports", "since": 8, "until": 8}
+  ]
+}

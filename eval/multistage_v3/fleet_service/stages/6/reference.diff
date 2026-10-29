@@ -1,0 +1,154 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 98db23f..30a65d7 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Labour on heavy vehicles is charged at `heavy_labour_rate` (125.00) unless a rate is given.
+ - Fixed: `wo open` accepted service codes missing from the catalog, and closing such an order crashed with a `KeyError`; it now fails with `E127`.
+ - `fuel report` has a `cost_per_gallon` column after `fuel_cost`.
+ - Fixed: `wo close` on a closed work order closed it again, moving its close date and recording its services twice; it now fails with `E126`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 0aaf8f7..63f3278 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -11,7 +11,7 @@ setting left out takes its default.
+ | Setting | Default | Meaning |
+ |---|---|---|
+ | `name` | `fleet` | fleet.ini setting: the fleet's name |
+-| `labour_rate` | `95.00` | fleet.ini setting: hourly rate for labour charged without a rate of its own |
++| `labour_rate` | `95.00` | fleet.ini setting: hourly rate for labour on light and medium vehicles charged without a rate of its own |
+ | `due_soon_miles` | `500` | fleet.ini setting: a service this many miles or fewer from due is `due-soon` |
+ | `due_soon_days` | `14` | fleet.ini setting: a service this many days or fewer from due is `due-soon` |
+ | `max_daily_miles` | `1000` | fleet.ini setting: most miles a day accepted between two odometer readings |
+@@ -19,6 +19,7 @@ setting left out takes its default.
+ | `critical_days` | `30` | fleet.ini setting: a service overdue by more than this many days is `critical` |
+ | `shop_supplies_percent` | `5` | fleet.ini setting: shop supplies charged on each work order, as a percentage of its labour, rounded half up to the cent |
+ | `shop_supplies_cap` | `40.00` | fleet.ini setting: most shop supplies charged on one work order |
++| `heavy_labour_rate` | `125.00` | fleet.ini setting: hourly rate for labour on heavy vehicles charged without a rate of its own |
+ 
+ ## Command line
+ 
+@@ -105,7 +106,7 @@ of either, and `ok` otherwise. `fleetkeep remind` prints one line for every serv
+ | `fuel import` | `Card,Unit,Date,Gallons,Amount,Odometer` | file: the fuel-card provider's export; a blank `Unit` uses the card's vehicle |
+ | `fuel import date` | `MM/DD/YYYY` | file: date format of the fuel-card export |
+ | `history import` | `vehicle,code,date,odometer` | file: service history from the previous system; unknown codes are skipped |
+-| `timesheet import` | `order,mechanic,hours,rate` | file: mechanics' timesheets; a blank rate means the labour rate, as `wo labour` charges it |
++| `timesheet import` | `order,mechanic,hours,rate` | file: mechanics' timesheets; a blank rate means the labour rate for the vehicle's class, as `wo labour` charges it |
+ | `odometer import` | `vehicle,timestamp,odometer` | file: telematics reports; the last report of each day is kept |
+ | `vehicle import` | `id,class,make,model,year,in_service,odometer` | file: the leasing company's delivery schedule |
+ 
+diff --git a/src/fleetkeep/config.py b/src/fleetkeep/config.py
+index 1d185f8..1383862 100644
+--- a/src/fleetkeep/config.py
++++ b/src/fleetkeep/config.py
+@@ -20,6 +20,11 @@ class Settings:
+     critical_days: int = 30
+     shop_supplies_percent: Decimal = Decimal("5")
+     shop_supplies_cap: int = 4000
++    heavy_labour_rate: int = 12500
++
++    def labour_rate_for(self, vehicle_class):
++        """The hourly rate for labour on a vehicle of this class."""
++        return self.heavy_labour_rate if vehicle_class == "heavy" else self.labour_rate
+ 
+ 
+ def _count(text):
+@@ -55,6 +60,7 @@ PARSERS = {
+     "critical_days": _count,
+     "shop_supplies_percent": _percent,
+     "shop_supplies_cap": parse_money,
++    "heavy_labour_rate": parse_money,
+ }
+ 
+ 
+diff --git a/src/fleetkeep/importers/timesheets.py b/src/fleetkeep/importers/timesheets.py
+index 067018a..e76c340 100644
+--- a/src/fleetkeep/importers/timesheets.py
++++ b/src/fleetkeep/importers/timesheets.py
+@@ -1,9 +1,9 @@
+ """Labour from the mechanics' weekly timesheets.
+ 
+ Columns: order, mechanic, hours, rate. `rate` is left blank for ordinary work,
+-which is charged at the shop's labour rate, and filled in for jobs quoted at a
+-different rate. A timesheet goes in whole or not at all: if any row is bad,
+-nothing is charged and every bad row is listed.
++which is charged at the shop's labour rate for the vehicle's class, and filled
++in for jobs quoted at a different rate. A timesheet goes in whole or not at all:
++if any row is bad, nothing is charged and every bad row is listed.
+ """
+ from ..errors import FleetError
+ from ..model.money import parse_money
+@@ -13,8 +13,11 @@ from .source import ImportResult, read_rows
+ COLUMNS = ("order", "mechanic", "hours", "rate")
+ 
+ 
+-def _line(fleet, row):
+-    rate = parse_money(row["rate"]) if row["rate"] else fleet.settings.labour_rate
++def _line(fleet, order, row):
++    if row["rate"]:
++        rate = parse_money(row["rate"])
++    else:
++        rate = fleet.settings.labour_rate_for(fleet.vehicle(order.vehicle_id).vehicle_class)
+     return LabourLine(row["mechanic"], parse_hours(row["hours"]), rate)
+ 
+ 
+@@ -25,7 +28,7 @@ def import_timesheet(fleet, path):
+             order = fleet.order(row["order"].upper())
+             if not order.is_open:
+                 raise FleetError("E122", order=order.id)
+-            charges.append((order, _line(fleet, row)))
++            charges.append((order, _line(fleet, order, row)))
+         except FleetError as error:
+             result.rejected.append((line, str(error)))
+     if result.rejected:
+diff --git a/src/fleetkeep/services/workorders.py b/src/fleetkeep/services/workorders.py
+index 985aea8..9a83168 100644
+--- a/src/fleetkeep/services/workorders.py
++++ b/src/fleetkeep/services/workorders.py
+@@ -84,7 +84,7 @@ def count_stock(fleet, number, on_hand):
+ def log_labour(fleet, order_id, mechanic, hours, rate=None):
+     order = fleet.order(order_id)
+     if rate is None:
+-        rate = fleet.settings.labour_rate
++        rate = fleet.settings.labour_rate_for(fleet.vehicle(order.vehicle_id).vehicle_class)
+     line = LabourLine(mechanic, hours, rate)
+     order.add_line(line)
+     return line
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index 2d24c0f..c75e706 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -42,10 +42,12 @@ def test_round_trip(tmp_path, fleet):
+ def test_settings(tmp_path):
+     path = tmp_path / "fleet.ini"
+     path.write_text("[fleet]\nname = North\nlabour_rate = 102.50\ndue_soon_days = 21\n"
+-                    "shop_supplies_percent = 7.5\nshop_supplies_cap = 25.00\n")
++                    "shop_supplies_percent = 7.5\nshop_supplies_cap = 25.00\n"
++                    "heavy_labour_rate = 130.00\n")
+     settings = load_settings(path)
+     assert (settings.name, settings.labour_rate, settings.due_soon_days) == ("North", 10250, 21)
+     assert (settings.shop_supplies_percent, settings.shop_supplies_cap) == (Decimal("7.5"), 2500)
++    assert (settings.labour_rate_for("medium"), settings.labour_rate_for("heavy")) == (10250, 13000)
+     assert (settings.due_soon_miles, settings.critical_miles, settings.critical_days) == (500, 1000, 30)
+ 
+ 
+diff --git a/tests/test_workorders.py b/tests/test_workorders.py
+index 5d63231..db68a86 100644
+--- a/tests/test_workorders.py
++++ b/tests/test_workorders.py
+@@ -29,6 +29,12 @@ def test_labour_uses_the_fleet_rate_unless_given(fleet):
+     assert workorders.log_labour(fleet, order.id, "Ben", Decimal("1"), 12000).rate == 12000
+ 
+ 
++def test_heavy_vehicles_have_their_own_rate(fleet):
++    order = workorders.open_order(fleet, "TRK-201", date(2026, 1, 5), ["OIL"])
++    assert workorders.log_labour(fleet, order.id, "Ana", Decimal("2")).amount == 25000
++    assert workorders.log_labour(fleet, order.id, "Ben", Decimal("1"), 9000).rate == 9000
++
++
+ def test_charges_add_parts_labour_and_supplies(fleet):
+     order = workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), ["OIL"])
+     workorders.add_part(fleet, order.id, "OF-12", 2, 1250)

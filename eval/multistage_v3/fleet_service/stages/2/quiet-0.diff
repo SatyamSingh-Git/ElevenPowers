@@ -1,0 +1,26 @@
+diff --git a/src/fleetkeep/reports/costs.py b/src/fleetkeep/reports/costs.py
+index 0366692..3f86a4f 100644
+--- a/src/fleetkeep/reports/costs.py
++++ b/src/fleetkeep/reports/costs.py
+@@ -1,19 +1,18 @@
+ """What each vehicle cost to run over a period, and per mile driven.
+ 
+ Fuel is every fill-up in the period. Maintenance is what was charged on the
+-work orders closed in the period: their parts, labour and shop supplies.
++work orders closed in the period: their parts and their labour.
+ """
+ from decimal import Decimal, ROUND_HALF_UP
+ 
+ from ..model.money import dollars
+ from ..services.usage import miles_in_period
+-from ..services.workorders import order_charges
+ 
+ PER_MILE_PLACES = Decimal("0.001")
+ 
+ 
+ def _maintenance(fleet, vehicle_id, period):
+-    return sum(order_charges(order, fleet.settings).total
++    return sum(order.parts_total + order.labour_total
+                for order in fleet.orders(vehicle_id)
+                if order.closed is not None and order.closed in period)
+ 

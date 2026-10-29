@@ -1,0 +1,160 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 22a45b9..f9e6c3c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- New `critical` status for services overdue by more than `critical_miles` (1000) miles or `critical_days` (30) days; critical services lead the due list.
+ - Parts stock: `parts receive`, `parts count` and `parts stock`; a stocked part is charged at its average cost.
+ - `fleetkeep check` lists stale work orders, vehicles missing odometer readings, worn tyres and grounded vehicles.
+ - `odometer fix` corrects a mistyped reading.
+diff --git a/docs/reference.md b/docs/reference.md
+index 4e213db..077bb8b 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -15,6 +15,8 @@ setting left out takes its default.
+ | `due_soon_miles` | `500` | fleet.ini setting: a service this many miles or fewer from due is `due-soon` |
+ | `due_soon_days` | `14` | fleet.ini setting: a service this many days or fewer from due is `due-soon` |
+ | `max_daily_miles` | `1000` | fleet.ini setting: most miles a day accepted between two odometer readings |
++| `critical_miles` | `1000` | fleet.ini setting: a service overdue by more than this many miles is `critical` |
++| `critical_days` | `30` | fleet.ini setting: a service overdue by more than this many days is `critical` |
+ 
+ ## Command line
+ 
+@@ -37,7 +39,7 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
+ 
+ | Report | Columns | Meaning |
+ |---|---|---|
+-| `fleetkeep due` | `vehicle,code,service,due_miles,remaining_miles,due_date,remaining_days,status` | command line: every service of every vehicle in service, `overdue` first, then `due-soon`, then `ok` |
++| `fleetkeep due` | `vehicle,code,service,due_miles,remaining_miles,due_date,remaining_days,status` | command line: every service of every vehicle in service, `critical` first, then `overdue`, `due-soon` and `ok` |
+ | `fleetkeep costs` | `vehicle,miles,fuel,maintenance,total,cost_per_mile` | command line: maintenance is the total of each work order closed in the period, as `wo show` gives it |
+ | `fleetkeep fuel report` | `vehicle,fills,gallons,fuel_cost,miles,mpg` | command line: fuel bought and full-tank economy |
+ | `fleetkeep spend` | `month,fuel,orders,maintenance,total` | command line: spending by calendar month; maintenance as in `costs` |
+@@ -49,9 +51,10 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
+ | `fleetkeep parts stock` | `number,description,on_hand,unit_cost,value` | command line: parts on hand at average cost |
+ | `fleetkeep catalog` | `code,service,miles,months,classes` | command line: the service catalog |
+ 
+-Statuses: a service is `overdue` once its miles or its date have passed,
+-`due-soon` within `due_soon_miles` or `due_soon_days` of either, and `ok`
+-otherwise. `fleetkeep remind` prints one line for every service that is not
++Statuses: a service is `critical` once it is more than `critical_miles` past
++its miles or more than `critical_days` past its date, `overdue` once its miles
++or its date have passed, `due-soon` within `due_soon_miles` or `due_soon_days`
++of either, and `ok` otherwise. `fleetkeep remind` prints one line for every service that is not
+ `ok`.
+ 
+ ## Rounding
+diff --git a/src/fleetkeep/config.py b/src/fleetkeep/config.py
+index 19a8beb..5ca7056 100644
+--- a/src/fleetkeep/config.py
++++ b/src/fleetkeep/config.py
+@@ -15,6 +15,8 @@ class Settings:
+     due_soon_miles: int = 500
+     due_soon_days: int = 14
+     max_daily_miles: int = 1000
++    critical_miles: int = 1000
++    critical_days: int = 30
+ 
+ 
+ def _count(text):
+@@ -36,6 +38,8 @@ PARSERS = {
+     "due_soon_miles": _count,
+     "due_soon_days": _count,
+     "max_daily_miles": _count,
++    "critical_miles": _count,
++    "critical_days": _count,
+ }
+ 
+ 
+diff --git a/src/fleetkeep/services/reminders.py b/src/fleetkeep/services/reminders.py
+index 2d77a80..3719fc2 100644
+--- a/src/fleetkeep/services/reminders.py
++++ b/src/fleetkeep/services/reminders.py
+@@ -5,6 +5,7 @@ from .scheduling import due_items
+ 
+ # Services with no template here are fine as they are and get no reminder.
+ TEMPLATES = {
++    "critical": "{vehicle}: {service} ({code}) is critically overdue{detail}",
+     "overdue": "{vehicle}: {service} ({code}) is overdue{detail}",
+     "due-soon": "{vehicle}: {service} ({code}) is due soon{detail}",
+ }
+diff --git a/src/fleetkeep/services/scheduling.py b/src/fleetkeep/services/scheduling.py
+index 321222d..6b09b24 100644
+--- a/src/fleetkeep/services/scheduling.py
++++ b/src/fleetkeep/services/scheduling.py
+@@ -3,7 +3,7 @@
+ A service is due `interval_miles` after the odometer it was last done at, or
+ `interval_months` after the day it was last done, whichever comes first. A
+ vehicle that has never had a service counts from its start odometer and the day
+-it entered service.
++it entered service. A service far past either limit is `critical`.
+ """
+ from dataclasses import dataclass
+ from datetime import date
+@@ -11,7 +11,7 @@ from datetime import date
+ from ..model.catalog import specs_for
+ from ..model.dates import add_months
+ 
+-STATUS_RANK = {"overdue": 0, "due-soon": 1, "ok": 2}
++STATUS_RANK = {"critical": 0, "overdue": 1, "due-soon": 2, "ok": 3}
+ 
+ 
+ @dataclass(frozen=True)
+@@ -56,9 +56,11 @@ def _due_item(fleet, vehicle, spec, odometer, as_of):
+ 
+ 
+ def classify(remaining_miles, remaining_days, settings):
+-    """`overdue` once either limit has passed, `due-soon` within the warning window."""
++    """`critical` well past a limit, `overdue` once either has passed, `due-soon` close to one."""
+     miles = remaining_miles if remaining_miles is not None else float("inf")
+     days = remaining_days if remaining_days is not None else float("inf")
++    if miles < -settings.critical_miles or days < -settings.critical_days:
++        return "critical"
+     if miles < 0 or days < 0:
+         return "overdue"
+     if miles <= settings.due_soon_miles or days <= settings.due_soon_days:
+diff --git a/tests/test_scheduling.py b/tests/test_scheduling.py
+index 5473531..fd80e6e 100644
+--- a/tests/test_scheduling.py
++++ b/tests/test_scheduling.py
+@@ -38,7 +38,7 @@ def test_overdue_comes_first(fleet):
+     fleet.add_reading(OdometerReading("VAN-101", date(2026, 2, 1), 7700))
+     items = due_items(fleet, date(2026, 2, 1))
+     assert [i.status for i in items] == sorted((i.status for i in items),
+-                                               key=["overdue", "due-soon", "ok"].index)
++                                               key=["critical", "overdue", "due-soon", "ok"].index)
+     assert item(items, "VAN-101", "OIL").status == "overdue"
+ 
+ 
+@@ -52,3 +52,16 @@ def test_reminders_for_services_due_soon(fleet):
+     fleet.add_reading(OdometerReading("VAN-101", date(2026, 1, 20), 5800))
+     texts = [r.text for r in reminders(fleet, date(2026, 1, 20))]
+     assert texts == ["VAN-101: Tyre rotation (TIRE-ROT) is due soon: 300 miles left"]
++
++
++def test_far_past_a_limit_is_critical(fleet):
++    fleet.add_reading(OdometerReading("VAN-101", date(2026, 2, 1), 7700))
++    items = due_items(fleet, date(2026, 2, 1))
++    assert item(items, "VAN-101", "OIL").status == "overdue"
++    assert item(items, "VAN-101", "TIRE-ROT").status == "critical"
++    assert items[0].status == "critical"
++
++
++def test_critical_by_days(fleet):
++    assert item(due_items(fleet, date(2026, 3, 31)), "VAN-101", "OIL").status == "overdue"
++    assert item(due_items(fleet, date(2026, 4, 1)), "VAN-101", "OIL").status == "critical"
+diff --git a/tests/test_storage.py b/tests/test_storage.py
+index 46d7eeb..ac468a6 100644
+--- a/tests/test_storage.py
++++ b/tests/test_storage.py
+@@ -44,7 +44,7 @@ def test_settings(tmp_path):
+     path.write_text("[fleet]\nname = North\nlabour_rate = 102.50\ndue_soon_days = 21\n")
+     settings = load_settings(path)
+     assert (settings.name, settings.labour_rate, settings.due_soon_days) == ("North", 10250, 21)
+-    assert settings.due_soon_miles == 500
++    assert (settings.due_soon_miles, settings.critical_miles, settings.critical_days) == (500, 1000, 30)
+ 
+ 
+ @pytest.mark.parametrize("text, code", [("[fleet]\ncolour = red\n", "E151"),

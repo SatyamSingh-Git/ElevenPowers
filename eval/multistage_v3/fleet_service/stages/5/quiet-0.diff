@@ -1,0 +1,27 @@
+diff --git a/src/fleetkeep/importers/history.py b/src/fleetkeep/importers/history.py
+index 30c9657..c6059f9 100644
+--- a/src/fleetkeep/importers/history.py
++++ b/src/fleetkeep/importers/history.py
+@@ -12,7 +12,6 @@ from ..model.vehicle import normalise_vehicle_id
+ from .source import ImportResult, read_rows
+ 
+ COLUMNS = ("vehicle", "code", "date", "odometer")
+-UNKNOWN_CODE = "E127"
+ 
+ 
+ def import_history(fleet, path):
+@@ -24,11 +23,10 @@ def import_history(fleet, path):
+             day = parse_date(row["date"])
+             odometer = parse_odometer(row["odometer"])
+             fleet.record_service(vehicle_id, code, day, odometer)
++        except KeyError:
++            result.skipped.append((line, f"not in the catalog: {code}"))
+         except FleetError as error:
+-            if error.code == UNKNOWN_CODE:
+-                result.skipped.append((line, f"not in the catalog: {code}"))
+-            else:
+-                result.rejected.append((line, str(error)))
++            result.rejected.append((line, str(error)))
+         else:
+             result.imported += 1
+     return result

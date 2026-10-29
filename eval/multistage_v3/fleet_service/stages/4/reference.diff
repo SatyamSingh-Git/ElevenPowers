@@ -1,0 +1,93 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1e43e23..31aa909 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `fuel report` has a `cost_per_gallon` column after `fuel_cost`.
+ - Fixed: `wo close` on a closed work order closed it again, moving its close date and recording its services twice; it now fails with `E126`.
+ - Work orders carry a shop supplies charge: `shop_supplies_percent` (5) of the labour, capped at `shop_supplies_cap` (40.00); `wo show` lists it as `supplies` and counts it in `total`.
+ - New `critical` status for services overdue by more than `critical_miles` (1000) miles or `critical_days` (30) days; critical services lead the due list.
+diff --git a/docs/reference.md b/docs/reference.md
+index 3cfc166..1898822 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -43,7 +43,7 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
+ |---|---|---|
+ | `fleetkeep due` | `vehicle,code,service,due_miles,remaining_miles,due_date,remaining_days,status` | command line: every service of every vehicle in service, `critical` first, then `overdue`, `due-soon` and `ok` |
+ | `fleetkeep costs` | `vehicle,miles,fuel,maintenance,total,cost_per_mile` | command line: maintenance is the total of each work order closed in the period, as `wo show` gives it: parts, labour and shop supplies |
+-| `fleetkeep fuel report` | `vehicle,fills,gallons,fuel_cost,miles,mpg` | command line: fuel bought and full-tank economy |
++| `fleetkeep fuel report` | `vehicle,fills,gallons,fuel_cost,cost_per_gallon,miles,mpg` | command line: fuel bought, its cost per gallon rounded half up to the cent, and full-tank economy |
+ | `fleetkeep spend` | `month,fuel,orders,maintenance,total` | command line: spending by calendar month; maintenance as in `costs` |
+ | `fleetkeep downtime` | `vehicle,orders,days_down,breakdown_days,availability` | command line: days in the shop and availability percentage |
+ | `fleetkeep vehicles` | `id,class,make,model,year,odometer,last_reading,miles_per_day,retired` | command line: the vehicle list |
+diff --git a/src/fleetkeep/reports/fuel.py b/src/fleetkeep/reports/fuel.py
+index 60114a6..cc5c434 100644
+--- a/src/fleetkeep/reports/fuel.py
++++ b/src/fleetkeep/reports/fuel.py
+@@ -1,4 +1,4 @@
+-"""Fuel bought and fuel economy over a period.
++"""Fuel bought, what it cost a gallon, and fuel economy over a period.
+ 
+ Economy uses the full-tank method: the miles between the first and last
+ fill-ups that logged an odometer, over the gallons bought at every logged
+@@ -7,11 +7,15 @@ economy figure.
+ """
+ from decimal import Decimal, ROUND_HALF_UP
+ 
+-from ..model.money import dollars
++from ..model.money import CENT, dollars
+ 
+ MPG_PLACES = Decimal("0.1")
+ 
+ 
++def _per_gallon(cents, gallons):
++    return (Decimal(cents) / 100 / gallons).quantize(CENT, rounding=ROUND_HALF_UP)
++
++
+ def _economy(fills):
+     logged = sorted((e for e in fills if e.odometer is not None), key=lambda e: (e.day, e.odometer))
+     if len(logged) < 2:
+@@ -30,5 +34,6 @@ def fuel_rows(fleet, period):
+         gallons = sum((entry.gallons for entry in fills), Decimal(0))
+         cost = sum(entry.cost for entry in fills)
+         miles, mpg = _economy(fills)
+-        rows.append((vehicle.id, len(fills), gallons, dollars(cost), miles, mpg))
++        rows.append((vehicle.id, len(fills), gallons, dollars(cost), _per_gallon(cost, gallons),
++                     miles, mpg))
+     return rows
+diff --git a/src/fleetkeep/reports/layout.py b/src/fleetkeep/reports/layout.py
+index f64e418..27e483c 100644
+--- a/src/fleetkeep/reports/layout.py
++++ b/src/fleetkeep/reports/layout.py
+@@ -21,7 +21,8 @@ LAYOUTS = {
+             *_right("remaining_days"), Column("status")),
+     "costs": (Column("vehicle"),
+               *_right("miles", "fuel", "maintenance", "total", "cost_per_mile")),
+-    "fuel": (Column("vehicle"), *_right("fills", "gallons", "fuel_cost", "miles", "mpg")),
++    "fuel": (Column("vehicle"),
++             *_right("fills", "gallons", "fuel_cost", "cost_per_gallon", "miles", "mpg")),
+     "downtime": (Column("vehicle"), *_right("orders", "days_down", "breakdown_days", "availability")),
+     "orders": (Column("id"), Column("vehicle"), Column("status"), Column("opened"),
+                Column("closed"), Column("services")),
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index a001876..689a082 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -31,7 +31,13 @@ def test_fuel_economy_uses_full_tanks(fleet):
+                                          (20, "10", 3500, None), (26, "25", 8750, 4800)]:
+         fleet.add_fuel(FuelEntry("VAN-101", date(2026, 1, day), Decimal(gallons), cost, odometer))
+     assert fuel_rows(fleet, JANUARY) == [
+-        ("VAN-101", 4, Decimal("70"), Decimal("245.00"), 800, Decimal("20.0"))]
++        ("VAN-101", 4, Decimal("70"), Decimal("245.00"), Decimal("3.50"), 800, Decimal("20.0"))]
++
++
++def test_cost_per_gallon_is_rounded_to_the_cent(fleet):
++    fleet.add_fuel(FuelEntry("VAN-101", date(2026, 1, 5), Decimal("18"), 6300))
++    fleet.add_fuel(FuelEntry("VAN-101", date(2026, 1, 9), Decimal("12"), 4580))
++    assert fuel_rows(fleet, JANUARY)[0][4] == Decimal("3.63")
+ 
+ 
+ def test_spend_by_month(fleet):

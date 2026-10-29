@@ -1,0 +1,14 @@
+diff --git a/src/fleetkeep/reports/layout.py b/src/fleetkeep/reports/layout.py
+index 27e483c..f64e418 100644
+--- a/src/fleetkeep/reports/layout.py
++++ b/src/fleetkeep/reports/layout.py
+@@ -21,8 +21,7 @@ LAYOUTS = {
+             *_right("remaining_days"), Column("status")),
+     "costs": (Column("vehicle"),
+               *_right("miles", "fuel", "maintenance", "total", "cost_per_mile")),
+-    "fuel": (Column("vehicle"),
+-             *_right("fills", "gallons", "fuel_cost", "cost_per_gallon", "miles", "mpg")),
++    "fuel": (Column("vehicle"), *_right("fills", "gallons", "fuel_cost", "miles", "mpg")),
+     "downtime": (Column("vehicle"), *_right("orders", "days_down", "breakdown_days", "availability")),
+     "orders": (Column("id"), Column("vehicle"), Column("status"), Column("opened"),
+                Column("closed"), Column("services")),

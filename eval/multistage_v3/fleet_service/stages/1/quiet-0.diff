@@ -1,0 +1,12 @@
+diff --git a/src/fleetkeep/services/reminders.py b/src/fleetkeep/services/reminders.py
+index 3719fc2..2d77a80 100644
+--- a/src/fleetkeep/services/reminders.py
++++ b/src/fleetkeep/services/reminders.py
+@@ -5,7 +5,6 @@ from .scheduling import due_items
+ 
+ # Services with no template here are fine as they are and get no reminder.
+ TEMPLATES = {
+-    "critical": "{vehicle}: {service} ({code}) is critically overdue{detail}",
+     "overdue": "{vehicle}: {service} ({code}) is overdue{detail}",
+     "due-soon": "{vehicle}: {service} ({code}) is due soon{detail}",
+ }

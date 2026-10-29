@@ -1,0 +1,53 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 30a65d7..7d3dc8e 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- A fill-up can be up to 250 gallons, for the tankers.
+ - Labour on heavy vehicles is charged at `heavy_labour_rate` (125.00) unless a rate is given.
+ - Fixed: `wo open` accepted service codes missing from the catalog, and closing such an order crashed with a `KeyError`; it now fails with `E127`.
+ - `fuel report` has a `cost_per_gallon` column after `fuel_cost`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 63f3278..00461e9 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -73,7 +73,7 @@ of either, and `ok` otherwise. `fleetkeep remind` prints one line for every serv
+ 
+ | Limit | Value | Meaning |
+ |---|---|---|
+-| `max_fill_gallons` | `150` | limit: largest fill-up accepted by `fuel add` and by fuel-card import |
++| `max_fill_gallons` | `250` | limit: largest fill-up accepted by `fuel add` and by fuel-card import |
+ | `min_model_year` | `1980` | limit: earliest model year accepted by `vehicle add` and vehicle import |
+ | `max_labour_hours` | `24` | limit: most hours on one labour line, from `wo labour` or a timesheet |
+ | `vehicle id` | `^[A-Z]{2,4}-[0-9]{3,4}$` | limit: vehicle ids, after upper-casing what was typed |
+diff --git a/src/fleetkeep/model/readings.py b/src/fleetkeep/model/readings.py
+index c164125..d457b85 100644
+--- a/src/fleetkeep/model/readings.py
++++ b/src/fleetkeep/model/readings.py
+@@ -5,7 +5,7 @@ from decimal import Decimal, InvalidOperation
+ 
+ from ..errors import FleetError
+ 
+-MAX_FILL_GALLONS = Decimal("150")
++MAX_FILL_GALLONS = Decimal("250")
+ GALLON_PLACES = Decimal("0.001")
+ 
+ 
+diff --git a/tests/test_model.py b/tests/test_model.py
+index 13a7671..66ed1bf 100644
+--- a/tests/test_model.py
++++ b/tests/test_model.py
+@@ -74,8 +74,9 @@ def test_fill_up_limits():
+         FuelEntry("VAN-101", date(2026, 1, 1), Decimal("0"), 100)
+     assert caught.value.code == "E111"
+     with pytest.raises(FleetError) as caught:
+-        FuelEntry("VAN-101", date(2026, 1, 1), Decimal("151"), 100)
++        FuelEntry("VAN-101", date(2026, 1, 1), Decimal("250.001"), 100)
+     assert caught.value.code == "E112"
++    assert FuelEntry("TRK-201", date(2026, 1, 1), Decimal("250"), 100).gallons == 250
+     assert parse_gallons("12.3456") == Decimal("12.346")
+ 
+ 

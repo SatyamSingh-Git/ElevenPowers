@@ -1,0 +1,70 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ca543fd..1e43e23 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: `wo close` on a closed work order closed it again, moving its close date and recording its services twice; it now fails with `E126`.
+ - Work orders carry a shop supplies charge: `shop_supplies_percent` (5) of the labour, capped at `shop_supplies_cap` (40.00); `wo show` lists it as `supplies` and counts it in `total`.
+ - New `critical` status for services overdue by more than `critical_miles` (1000) miles or `critical_days` (30) days; critical services lead the due list.
+ - Parts stock: `parts receive`, `parts count` and `parts stock`; a stocked part is charged at its average cost.
+diff --git a/docs/reference.md b/docs/reference.md
+index d006f25..3cfc166 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -136,6 +136,7 @@ them as `error: <code> <message>`.
+ | `E123` | `work order {order} cannot close before it opened on {opened}` | error raised by the library and printed by the CLI |
+ | `E124` | `service {code} does not apply to {vehicle_class} vehicles` | error raised by the library and printed by the CLI |
+ | `E125` | `only an open work order with no charges can be cancelled: {order}` | error raised by the library and printed by the CLI |
++| `E126` | `work order {order} is already closed` | error raised by the library and printed by the CLI |
+ | `E131` | `not enough {number} in stock: {on_hand} on hand` | error raised by the library and printed by the CLI |
+ | `E132` | `no price given for unstocked part {number}` | error raised by the library and printed by the CLI |
+ | `E133` | `part {number} is not stocked` | error raised by the library and printed by the CLI |
+diff --git a/src/fleetkeep/errors.py b/src/fleetkeep/errors.py
+index 856c40e..1c90ad8 100644
+--- a/src/fleetkeep/errors.py
++++ b/src/fleetkeep/errors.py
+@@ -23,6 +23,7 @@ MESSAGES = {
+     "E123": "work order {order} cannot close before it opened on {opened}",
+     "E124": "service {code} does not apply to {vehicle_class} vehicles",
+     "E125": "only an open work order with no charges can be cancelled: {order}",
++    "E126": "work order {order} is already closed",
+     "E131": "not enough {number} in stock: {on_hand} on hand",
+     "E132": "no price given for unstocked part {number}",
+     "E133": "part {number} is not stocked",
+diff --git a/src/fleetkeep/services/workorders.py b/src/fleetkeep/services/workorders.py
+index d772d3e..8595ee0 100644
+--- a/src/fleetkeep/services/workorders.py
++++ b/src/fleetkeep/services/workorders.py
+@@ -94,6 +94,8 @@ def close_order(fleet, order_id, day, odometer=None):
+     services are recorded at the vehicle's last reading on that day.
+     """
+     order = fleet.order(order_id)
++    if not order.is_open:
++        raise FleetError("E126", order=order.id)
+     order.close(day)
+     if odometer is not None:
+         fleet.add_reading(OdometerReading(order.vehicle_id, day, odometer))
+diff --git a/tests/test_workorders.py b/tests/test_workorders.py
+index f3612b7..e9893a7 100644
+--- a/tests/test_workorders.py
++++ b/tests/test_workorders.py
+@@ -57,6 +57,16 @@ def test_closing_records_services_and_fixes_defects(fleet):
+     assert caught.value.code == "E122"
+ 
+ 
++def test_closing_twice_is_refused(fleet):
++    order = workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), ["OIL"])
++    workorders.close_order(fleet, order.id, date(2026, 1, 6), odometer=5200)
++    with pytest.raises(FleetError) as caught:
++        workorders.close_order(fleet, order.id, date(2026, 1, 9))
++    assert str(caught.value) == f"E126 work order {order.id} is already closed"
++    assert order.closed == date(2026, 1, 6)
++    assert len(fleet.history("VAN-101")) == 1
++
++
+ def test_cannot_close_before_opening(fleet):
+     order = workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), [])
+     with pytest.raises(FleetError) as caught:

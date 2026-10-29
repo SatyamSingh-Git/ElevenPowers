@@ -1,0 +1,82 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7d3dc8e..6b27340 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- `--format markdown` prints reports as markdown pipe tables.
+ - A fill-up can be up to 250 gallons, for the tankers.
+ - Labour on heavy vehicles is charged at `heavy_labour_rate` (125.00) unless a rate is given.
+ - Fixed: `wo open` accepted service codes missing from the catalog, and closing such an order crashed with a `KeyError`; it now fails with `E127`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 00461e9..8d5aecc 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -30,7 +30,7 @@ runs one command and returns its exit status.
+ |---|---|---|
+ | `--fleet` | `.` | command line: fleet directory |
+ | `--format` | `table` | command line: default output format of report commands |
+-| `formats` | `table,csv,json` | command line: the values `--format` accepts |
++| `formats` | `table,csv,json,markdown` | command line: the values `--format` accepts |
+ | `--as-of` | `today` | command line: day `due`, `remind`, `vehicles`, `vehicle show`, `tyre list` and `check` report as of |
+ | `--on` | `today` | command line: day recorded by `odometer add`, `fuel add`, `wo open`, `wo close`, `vehicle retire`, `defect report` and `tyre add` |
+ | `exit status on error` | `1` | command line: a failed command prints `error: <code> <message>` to stderr |
+@@ -39,6 +39,8 @@ runs one command and returns its exit status.
+ 
+ Every report prints these columns in this order, in each format. JSON prints
+ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
++Markdown prints a pipe table with the same values as CSV, a `|` in a value
++escaped as `\|`.
+ 
+ | Report | Columns | Meaning |
+ |---|---|---|
+diff --git a/src/fleetkeep/reports/render.py b/src/fleetkeep/reports/render.py
+index d71a607..3d014fa 100644
+--- a/src/fleetkeep/reports/render.py
++++ b/src/fleetkeep/reports/render.py
+@@ -1,4 +1,4 @@
+-"""Printing report rows as a text table, CSV or JSON."""
++"""Printing report rows as a text table, CSV, JSON or a markdown table."""
+ import csv
+ from datetime import date
+ from decimal import Decimal
+@@ -53,10 +53,20 @@ def render_json(columns, rows):
+     return json.dumps(records, indent=2) + "\n"
+ 
+ 
++def render_markdown(columns, rows):
++    def line(values):
++        return "| " + " | ".join(values) + " |"
++
++    out = [line(column.name for column in columns), line("---" for _ in columns)]
++    out += [line(_text(value).replace("|", "\\|") for value in row) for row in rows]
++    return "\n".join(out) + "\n"
++
++
+ RENDERERS = {
+     "table": render_table,
+     "csv": render_csv,
+     "json": render_json,
++    "markdown": render_markdown,
+ }
+ 
+ 
+diff --git a/tests/test_reports.py b/tests/test_reports.py
+index 689a082..f6f2fb9 100644
+--- a/tests/test_reports.py
++++ b/tests/test_reports.py
+@@ -60,3 +60,12 @@ def test_render_formats():
+         "VAN-101,OIL,Engine oil and filter,7600,-50,2026-03-01,5,overdue")
+     record = json.loads(render("due", rows, "json"))[0]
+     assert (record["due_date"], record["remaining_miles"]) == ("2026-03-01", -50)
++
++
++def test_render_markdown():
++    rows = [("VAN-101", "OIL", "Engine oil | filter", 7600, None, date(2026, 3, 1), 5, "overdue")]
++    assert render("due", rows, "markdown").splitlines() == [
++        "| vehicle | code | service | due_miles | remaining_miles | due_date | remaining_days | status |",
++        "| --- | --- | --- | --- | --- | --- | --- | --- |",
++        "| VAN-101 | OIL | Engine oil \\| filter | 7600 |  | 2026-03-01 | 5 | overdue |",
++    ]

@@ -1,0 +1,126 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 31aa909..98db23f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,7 @@
+ 
+ ## Unreleased
+ 
++- Fixed: `wo open` accepted service codes missing from the catalog, and closing such an order crashed with a `KeyError`; it now fails with `E127`.
+ - `fuel report` has a `cost_per_gallon` column after `fuel_cost`.
+ - Fixed: `wo close` on a closed work order closed it again, moving its close date and recording its services twice; it now fails with `E126`.
+ - Work orders carry a shop supplies charge: `shop_supplies_percent` (5) of the labour, capped at `shop_supplies_cap` (40.00); `wo show` lists it as `supplies` and counts it in `total`.
+diff --git a/docs/reference.md b/docs/reference.md
+index 1898822..0aaf8f7 100644
+--- a/docs/reference.md
++++ b/docs/reference.md
+@@ -137,6 +137,7 @@ them as `error: <code> <message>`.
+ | `E124` | `service {code} does not apply to {vehicle_class} vehicles` | error raised by the library and printed by the CLI |
+ | `E125` | `only an open work order with no charges can be cancelled: {order}` | error raised by the library and printed by the CLI |
+ | `E126` | `work order {order} is already closed` | error raised by the library and printed by the CLI |
++| `E127` | `unknown service code: {code}` | error raised by the library and printed by the CLI |
+ | `E131` | `not enough {number} in stock: {on_hand} on hand` | error raised by the library and printed by the CLI |
+ | `E132` | `no price given for unstocked part {number}` | error raised by the library and printed by the CLI |
+ | `E133` | `part {number} is not stocked` | error raised by the library and printed by the CLI |
+diff --git a/src/fleetkeep/errors.py b/src/fleetkeep/errors.py
+index 1c90ad8..461ceea 100644
+--- a/src/fleetkeep/errors.py
++++ b/src/fleetkeep/errors.py
+@@ -24,6 +24,7 @@ MESSAGES = {
+     "E124": "service {code} does not apply to {vehicle_class} vehicles",
+     "E125": "only an open work order with no charges can be cancelled: {order}",
+     "E126": "work order {order} is already closed",
++    "E127": "unknown service code: {code}",
+     "E131": "not enough {number} in stock: {on_hand} on hand",
+     "E132": "no price given for unstocked part {number}",
+     "E133": "part {number} is not stocked",
+diff --git a/src/fleetkeep/importers/history.py b/src/fleetkeep/importers/history.py
+index c6059f9..30c9657 100644
+--- a/src/fleetkeep/importers/history.py
++++ b/src/fleetkeep/importers/history.py
+@@ -12,6 +12,7 @@ from ..model.vehicle import normalise_vehicle_id
+ from .source import ImportResult, read_rows
+ 
+ COLUMNS = ("vehicle", "code", "date", "odometer")
++UNKNOWN_CODE = "E127"
+ 
+ 
+ def import_history(fleet, path):
+@@ -23,10 +24,11 @@ def import_history(fleet, path):
+             day = parse_date(row["date"])
+             odometer = parse_odometer(row["odometer"])
+             fleet.record_service(vehicle_id, code, day, odometer)
+-        except KeyError:
+-            result.skipped.append((line, f"not in the catalog: {code}"))
+         except FleetError as error:
+-            result.rejected.append((line, str(error)))
++            if error.code == UNKNOWN_CODE:
++                result.skipped.append((line, f"not in the catalog: {code}"))
++            else:
++                result.rejected.append((line, str(error)))
+         else:
+             result.imported += 1
+     return result
+diff --git a/src/fleetkeep/model/catalog.py b/src/fleetkeep/model/catalog.py
+index 2955d5b..6677e6c 100644
+--- a/src/fleetkeep/model/catalog.py
++++ b/src/fleetkeep/model/catalog.py
+@@ -2,6 +2,7 @@
+ from dataclasses import dataclass
+ 
+ from .._generated import SERVICE_CATALOG
++from ..errors import FleetError
+ 
+ 
+ @dataclass(frozen=True)
+@@ -17,7 +18,10 @@ class ServiceSpec:
+ 
+ 
+ def service_spec(code):
+-    name, miles, months, classes = SERVICE_CATALOG[code]
++    try:
++        name, miles, months, classes = SERVICE_CATALOG[code]
++    except KeyError:
++        raise FleetError("E127", code=code) from None
+     return ServiceSpec(code, name, miles, months, classes)
+ 
+ 
+diff --git a/src/fleetkeep/services/workorders.py b/src/fleetkeep/services/workorders.py
+index 8595ee0..985aea8 100644
+--- a/src/fleetkeep/services/workorders.py
++++ b/src/fleetkeep/services/workorders.py
+@@ -2,6 +2,7 @@
+ from dataclasses import dataclass
+ 
+ from ..errors import FleetError
++from ..model.catalog import service_spec
+ from ..model.money import percent_of
+ from ..model.readings import OdometerReading
+ from ..model.stock import StockItem
+@@ -24,6 +25,8 @@ def _next_id(fleet):
+ 
+ def open_order(fleet, vehicle_id, day, services, note="", breakdown=False, defects=()):
+     vehicle = fleet.vehicle(vehicle_id)
++    for code in services:
++        service_spec(code)
+     order = WorkOrder(_next_id(fleet), vehicle.id, day, tuple(services), note, breakdown)
+     assign_defects(fleet, order, defects)
+     fleet.add_order(order)
+diff --git a/tests/test_workorders.py b/tests/test_workorders.py
+index e9893a7..5d63231 100644
+--- a/tests/test_workorders.py
++++ b/tests/test_workorders.py
+@@ -67,6 +67,13 @@ def test_closing_twice_is_refused(fleet):
+     assert len(fleet.history("VAN-101")) == 1
+ 
+ 
++def test_unknown_service_codes_are_refused(fleet):
++    with pytest.raises(FleetError) as caught:
++        workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), ["OIL", "OIL2"])
++    assert str(caught.value) == "E127 unknown service code: OIL2"
++    assert fleet.orders() == []
++
++
+ def test_cannot_close_before_opening(fleet):
+     order = workorders.open_order(fleet, "VAN-101", date(2026, 1, 5), [])
+     with pytest.raises(FleetError) as caught:
