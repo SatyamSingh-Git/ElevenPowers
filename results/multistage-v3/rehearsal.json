@@ -1,4 +1,721 @@
 {
+  "clinic_booking": {
+    "id": "clinic_booking",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_day_reports"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "export.time_format"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_bookings"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "buffer_minutes"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed",
+            "late_cancel_api": "passed",
+            "late_cancel_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_day_reports"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "cancellation_notice_hours",
+            "late_cancelled"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed",
+            "late_cancel_api": "passed",
+            "late_cancel_cli": "passed",
+            "file_order_api": "passed",
+            "file_order_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_day_reports"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "bookings_file.order"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed",
+            "late_cancel_api": "passed",
+            "late_cancel_cli": "passed",
+            "file_order_api": "passed",
+            "file_order_cli": "passed",
+            "daily_limit_default": "passed",
+            "daily_limit_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "max_daily_bookings"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed",
+            "late_cancel_api": "passed",
+            "late_cancel_cli": "passed",
+            "file_order_api": "passed",
+            "file_order_cli": "passed",
+            "daily_limit_default": "passed",
+            "daily_limit_setting": "passed",
+            "phone_spaces": "passed",
+            "phone_error": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "error.phone"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed",
+            "late_cancel_api": "passed",
+            "late_cancel_cli": "passed",
+            "file_order_api": "passed",
+            "file_order_cli": "passed",
+            "daily_limit_default": "passed",
+            "daily_limit_setting": "passed",
+            "phone_spaces": "passed",
+            "phone_error": "passed",
+            "charges_pence_api": "passed",
+            "charges_pence_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_bookings"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "charges_file.columns"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_bookings": "passed",
+            "base_day_reports": "passed",
+            "export_clock_api": "passed",
+            "export_clock_cli": "passed",
+            "buffer_default_slots": "passed",
+            "buffer_setting": "passed",
+            "late_cancel_api": "passed",
+            "late_cancel_cli": "passed",
+            "file_order_api": "passed",
+            "file_order_cli": "passed",
+            "daily_limit_default": "passed",
+            "daily_limit_setting": "passed",
+            "phone_spaces": "passed",
+            "phone_error": "passed",
+            "charges_pence_api": "passed",
+            "charges_pence_cli": "passed",
+            "waiver_default": "passed",
+            "waiver_off": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_bookings"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "first_no_show_free"
+          ]
+        }
+      }
+    ]
+  },
+  "fleet_service": {
+    "id": "fleet_service",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_service"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "critical_days",
+            "critical_miles"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "quiet_fails_1": true,
+          "quiet_suite_green_1": true,
+          "quiet_unnamed_1": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_records"
+              ],
+              "named": []
+            },
+            {
+              "failing": [
+                "base_records"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "shop_supplies_cap",
+            "shop_supplies_percent"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed",
+            "close_twice_refused": "passed",
+            "close_twice_unchanged": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "E126"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed",
+            "close_twice_refused": "passed",
+            "close_twice_unchanged": "passed",
+            "fuel_cost_per_gallon": "passed",
+            "fuel_report_columns": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_records"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "fleetkeep fuel report"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed",
+            "close_twice_refused": "passed",
+            "close_twice_unchanged": "passed",
+            "fuel_cost_per_gallon": "passed",
+            "fuel_report_columns": "passed",
+            "unknown_code_refused": "passed",
+            "unknown_code_mixed": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_records"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "E127"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed",
+            "close_twice_refused": "passed",
+            "close_twice_unchanged": "passed",
+            "fuel_cost_per_gallon": "passed",
+            "fuel_report_columns": "passed",
+            "unknown_code_refused": "passed",
+            "unknown_code_mixed": "passed",
+            "heavy_labour_rate": "passed",
+            "heavy_labour_settings": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_records"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "heavy_labour_rate"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed",
+            "close_twice_refused": "passed",
+            "close_twice_unchanged": "passed",
+            "fuel_cost_per_gallon": "passed",
+            "fuel_report_columns": "passed",
+            "unknown_code_refused": "passed",
+            "unknown_code_mixed": "passed",
+            "heavy_labour_rate": "passed",
+            "heavy_labour_settings": "passed",
+            "fill_limit_add": "passed",
+            "fill_limit_import": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "max_fill_gallons"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_service": "passed",
+            "base_records": "passed",
+            "critical_due": "passed",
+            "critical_settings": "passed",
+            "supplies_charge": "passed",
+            "supplies_settings": "passed",
+            "close_twice_refused": "passed",
+            "close_twice_unchanged": "passed",
+            "fuel_cost_per_gallon": "passed",
+            "fuel_report_columns": "passed",
+            "unknown_code_refused": "passed",
+            "unknown_code_mixed": "passed",
+            "heavy_labour_rate": "passed",
+            "heavy_labour_settings": "passed",
+            "fill_limit_add": "passed",
+            "fill_limit_import": "passed",
+            "markdown_due": "passed",
+            "markdown_reports": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "formats"
+          ]
+        }
+      }
+    ]
+  },
   "gradebook": {
     "id": "gradebook",
     "usable": true,
@@ -357,6 +1074,1428 @@
       }
     ]
   },
+  "greenhouse_monitor": {
+    "id": "greenhouse_monitor",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_operations",
+                "base_pipeline"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "readings.csv columns"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "quiet_fails_1": true,
+          "quiet_suite_green_1": true,
+          "quiet_unnamed_1": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_pipeline"
+              ],
+              "named": []
+            },
+            {
+              "failing": [
+                "base_operations"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "readings.csv sensor"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed",
+            "offset_negative_refused": "passed",
+            "offset_limit_message": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "offset limit"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed",
+            "offset_negative_refused": "passed",
+            "offset_limit_message": "passed",
+            "critical_codes": "passed",
+            "critical_margin_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_operations"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "alerts.jsonl code",
+            "critical_margin"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed",
+            "offset_negative_refused": "passed",
+            "offset_limit_message": "passed",
+            "critical_codes": "passed",
+            "critical_margin_setting": "passed",
+            "err_rows_logged": "passed",
+            "ingest_gap_count": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_pipeline"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "ingest output"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed",
+            "offset_negative_refused": "passed",
+            "offset_limit_message": "passed",
+            "critical_codes": "passed",
+            "critical_margin_setting": "passed",
+            "err_rows_logged": "passed",
+            "ingest_gap_count": "passed",
+            "timer_step_default": "passed",
+            "timer_step_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "timer_step_minutes"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed",
+            "offset_negative_refused": "passed",
+            "offset_limit_message": "passed",
+            "critical_codes": "passed",
+            "critical_margin_setting": "passed",
+            "err_rows_logged": "passed",
+            "ingest_gap_count": "passed",
+            "timer_step_default": "passed",
+            "timer_step_setting": "passed",
+            "plan_dated_columns": "passed",
+            "plan_history_kept": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_operations",
+                "timer_step_default"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "irrigation.csv columns"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_pipeline": "passed",
+            "base_operations": "passed",
+            "raw_log_columns": "passed",
+            "raw_log_values": "passed",
+            "ids_logged_upper": "passed",
+            "ids_one_sensor": "passed",
+            "offset_negative_refused": "passed",
+            "offset_limit_message": "passed",
+            "critical_codes": "passed",
+            "critical_margin_setting": "passed",
+            "err_rows_logged": "passed",
+            "ingest_gap_count": "passed",
+            "timer_step_default": "passed",
+            "timer_step_setting": "passed",
+            "plan_dated_columns": "passed",
+            "plan_history_kept": "passed",
+            "summary_zone_filter": "passed",
+            "summary_zone_unknown": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "summary --zone"
+          ]
+        }
+      }
+    ]
+  },
+  "hotel_desk": {
+    "id": "hotel_desk",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_audit"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "journal.amounts"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "max_stay_nights"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed",
+            "s3_tax_half_up": "passed",
+            "s3_quote_half_up": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_stays"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "tax.rounding"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed",
+            "s3_tax_half_up": "passed",
+            "s3_quote_half_up": "passed",
+            "s4_room_code": "passed",
+            "s4_old_code_accepted": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_stays"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "charge.room"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed",
+            "s3_tax_half_up": "passed",
+            "s3_quote_half_up": "passed",
+            "s4_room_code": "passed",
+            "s4_old_code_accepted": "passed",
+            "s5_not_ready_api": "passed",
+            "s5_not_ready_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "error.room_not_ready"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed",
+            "s3_tax_half_up": "passed",
+            "s3_quote_half_up": "passed",
+            "s4_room_code": "passed",
+            "s4_old_code_accepted": "passed",
+            "s5_not_ready_api": "passed",
+            "s5_not_ready_cli": "passed",
+            "s6_statistics_percent": "passed",
+            "s6_occupancy_report": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_audit"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "statistics.occupancy"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed",
+            "s3_tax_half_up": "passed",
+            "s3_quote_half_up": "passed",
+            "s4_room_code": "passed",
+            "s4_old_code_accepted": "passed",
+            "s5_not_ready_api": "passed",
+            "s5_not_ready_cli": "passed",
+            "s6_statistics_percent": "passed",
+            "s6_occupancy_report": "passed",
+            "s7_purge_cancelled": "passed",
+            "s7_retention_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_stays"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "cancelled_retention_days"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_stays": "passed",
+            "base_audit": "passed",
+            "s1_journal_format": "passed",
+            "s1_revenue_reads_money": "passed",
+            "s2_long_stays": "passed",
+            "s2_long_stay_paths": "passed",
+            "s3_tax_half_up": "passed",
+            "s3_quote_half_up": "passed",
+            "s4_room_code": "passed",
+            "s4_old_code_accepted": "passed",
+            "s5_not_ready_api": "passed",
+            "s5_not_ready_cli": "passed",
+            "s6_statistics_percent": "passed",
+            "s6_occupancy_report": "passed",
+            "s7_purge_cancelled": "passed",
+            "s7_retention_setting": "passed",
+            "s8_late_fee": "passed",
+            "s8_late_fee_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "late_checkout_fee"
+          ]
+        }
+      }
+    ]
+  },
+  "household_budget": {
+    "id": "household_budget",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "ledger_flow"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "payee column"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "ledger_flow"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "anywhere",
+            "contains"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed",
+            "paid_in_out_explicit": "passed",
+            "paid_in_out_detected": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "paid_in_out"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "quiet_fails_1": true,
+          "quiet_suite_green_1": true,
+          "quiet_unnamed_1": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed",
+            "paid_in_out_explicit": "passed",
+            "paid_in_out_detected": "passed",
+            "month_file_totals": "passed",
+            "month_file_categories": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "month_flow"
+              ],
+              "named": []
+            },
+            {
+              "failing": [
+                "month_flow"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "month file amounts",
+            "month file format"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed",
+            "paid_in_out_explicit": "passed",
+            "paid_in_out_detected": "passed",
+            "month_file_totals": "passed",
+            "month_file_categories": "passed",
+            "amount_exact": "passed",
+            "amount_places": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "amount decimal places"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed",
+            "paid_in_out_explicit": "passed",
+            "paid_in_out_detected": "passed",
+            "month_file_totals": "passed",
+            "month_file_categories": "passed",
+            "amount_exact": "passed",
+            "amount_places": "passed",
+            "file_order_import": "passed",
+            "file_order_rewrite": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "ledger_flow"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "transactions file order"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed",
+            "paid_in_out_explicit": "passed",
+            "paid_in_out_detected": "passed",
+            "month_file_totals": "passed",
+            "month_file_categories": "passed",
+            "amount_exact": "passed",
+            "amount_places": "passed",
+            "file_order_import": "passed",
+            "file_order_rewrite": "passed",
+            "refund_spent": "passed",
+            "refund_carried": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "month_flow"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "refunds"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "ledger_flow": "passed",
+            "month_flow": "passed",
+            "tidy_payees_file": "passed",
+            "tidy_payees_report": "passed",
+            "contains_whole_words": "passed",
+            "anywhere_kind": "passed",
+            "paid_in_out_explicit": "passed",
+            "paid_in_out_detected": "passed",
+            "month_file_totals": "passed",
+            "month_file_categories": "passed",
+            "amount_exact": "passed",
+            "amount_places": "passed",
+            "file_order_import": "passed",
+            "file_order_rewrite": "passed",
+            "refund_spent": "passed",
+            "refund_carried": "passed",
+            "top_default": "passed",
+            "top_option": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "top payees"
+          ]
+        }
+      }
+    ]
+  },
+  "library_loans": {
+    "id": "library_loans",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_money"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "fine_grace_days"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "quiet_fails_1": true,
+          "quiet_suite_green_1": true,
+          "quiet_unnamed_1": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_money"
+              ],
+              "named": []
+            },
+            {
+              "failing": [
+                "base_desk"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "ledger_header"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed",
+            "renew_blocked": "passed",
+            "renew_blocked_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_desk"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "holds_waiting"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed",
+            "renew_blocked": "passed",
+            "renew_blocked_cli": "passed",
+            "cancel_hold": "passed",
+            "cancel_ready_hold": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "no_hold"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed",
+            "renew_blocked": "passed",
+            "renew_blocked_cli": "passed",
+            "cancel_hold": "passed",
+            "cancel_ready_hold": "passed",
+            "overpay_api": "passed",
+            "overpay_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "overpayment"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed",
+            "renew_blocked": "passed",
+            "renew_blocked_cli": "passed",
+            "cancel_hold": "passed",
+            "cancel_ready_hold": "passed",
+            "overpay_api": "passed",
+            "overpay_cli": "passed",
+            "export_uk": "passed",
+            "export_uk_join": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_desk"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "export.born",
+            "export.joined"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed",
+            "renew_blocked": "passed",
+            "renew_blocked_cli": "passed",
+            "cancel_hold": "passed",
+            "cancel_ready_hold": "passed",
+            "overpay_api": "passed",
+            "overpay_cli": "passed",
+            "export_uk": "passed",
+            "export_uk_join": "passed",
+            "exempt_default": "passed",
+            "exempt_option": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_desk"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "limit_exempt"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_desk": "passed",
+            "base_money": "passed",
+            "grace_fines": "passed",
+            "grace_report": "passed",
+            "fine_line": "passed",
+            "ledger_v2": "passed",
+            "renew_blocked": "passed",
+            "renew_blocked_cli": "passed",
+            "cancel_hold": "passed",
+            "cancel_ready_hold": "passed",
+            "overpay_api": "passed",
+            "overpay_cli": "passed",
+            "export_uk": "passed",
+            "export_uk_join": "passed",
+            "exempt_default": "passed",
+            "exempt_option": "passed",
+            "holds_fifteen": "passed",
+            "holds_limit_message": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "hold_limit",
+            "max_holds"
+          ]
+        }
+      }
+    ]
+  },
   "parcelpost": {
     "id": "parcelpost",
     "usable": true,
@@ -706,6 +2845,1419 @@
           },
           "docs_forgotten": [
             "max declared value"
+          ]
+        }
+      }
+    ]
+  },
+  "payroll_lite": {
+    "id": "payroll_lite",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_consistency",
+                "base_values"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "payrun.money",
+            "payrun.schema"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_consistency"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "overtime.weekly_threshold"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed",
+            "s3_percent_over": "passed",
+            "s3_percent_over_below": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "deduction.kinds"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "quiet_fails_1": true,
+          "quiet_suite_green_1": true,
+          "quiet_unnamed_1": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed",
+            "s3_percent_over": "passed",
+            "s3_percent_over_below": "passed",
+            "s4_meal_untaxed": "passed",
+            "s4_meal_percent": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_consistency"
+              ],
+              "named": []
+            },
+            {
+              "failing": [
+                "base_consistency"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "allowance.taxable_kinds"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed",
+            "s3_percent_over": "passed",
+            "s3_percent_over_below": "passed",
+            "s4_meal_untaxed": "passed",
+            "s4_meal_percent": "passed",
+            "s5_stored_order": "passed",
+            "s5_add_appends": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_consistency",
+                "base_values"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "timesheet.row_order"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed",
+            "s3_percent_over": "passed",
+            "s3_percent_over_below": "passed",
+            "s4_meal_untaxed": "passed",
+            "s4_meal_percent": "passed",
+            "s5_stored_order": "passed",
+            "s5_add_appends": "passed",
+            "s6_quarter_hours": "passed",
+            "s6_two_decimals": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "hours.decimals"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed",
+            "s3_percent_over": "passed",
+            "s3_percent_over_below": "passed",
+            "s4_meal_untaxed": "passed",
+            "s4_meal_percent": "passed",
+            "s5_stored_order": "passed",
+            "s5_add_appends": "passed",
+            "s6_quarter_hours": "passed",
+            "s6_two_decimals": "passed",
+            "s7_bank_layout": "passed",
+            "s7_bank_out": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_consistency"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "bank.columns"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_consistency": "passed",
+            "base_values": "passed",
+            "s1_cents_totals": "passed",
+            "s1_cents_lines": "passed",
+            "s2_weekly_overtime": "passed",
+            "s2_weekly_setting": "passed",
+            "s3_percent_over": "passed",
+            "s3_percent_over_below": "passed",
+            "s4_meal_untaxed": "passed",
+            "s4_meal_percent": "passed",
+            "s5_stored_order": "passed",
+            "s5_add_appends": "passed",
+            "s6_quarter_hours": "passed",
+            "s6_two_decimals": "passed",
+            "s7_bank_layout": "passed",
+            "s7_bank_out": "passed",
+            "s8_year_end_csv": "passed",
+            "s8_year_end_text": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "year-end.columns"
+          ]
+        }
+      }
+    ]
+  },
+  "recipe_box": {
+    "id": "recipe_box",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_shopping"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "shopping.csv.columns"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "display.denominators"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed",
+            "s3_fibre_api": "passed",
+            "s3_fibre_values": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_recipes"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "nutrition.fields"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed",
+            "s3_fibre_api": "passed",
+            "s3_fibre_values": "passed",
+            "s4_ids_cli": "passed",
+            "s4_ids_import": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_shopping"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "recipe.id.characters"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed",
+            "s3_fibre_api": "passed",
+            "s3_fibre_values": "passed",
+            "s4_ids_cli": "passed",
+            "s4_ids_import": "passed",
+            "s5_csv_order": "passed",
+            "s5_api_order": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_shopping"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "shopping.order"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed",
+            "s3_fibre_api": "passed",
+            "s3_fibre_values": "passed",
+            "s4_ids_cli": "passed",
+            "s4_ids_import": "passed",
+            "s5_csv_order": "passed",
+            "s5_api_order": "passed",
+            "s6_eggs_csv": "passed",
+            "s6_eggs_api": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_shopping"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "aisles"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed",
+            "s3_fibre_api": "passed",
+            "s3_fibre_values": "passed",
+            "s4_ids_cli": "passed",
+            "s4_ids_import": "passed",
+            "s5_csv_order": "passed",
+            "s5_api_order": "passed",
+            "s6_eggs_csv": "passed",
+            "s6_eggs_api": "passed",
+            "s7_search_default": "passed",
+            "s7_search_unlimited": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "error.search_limit",
+            "search --limit"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_shopping": "passed",
+            "base_recipes": "passed",
+            "s1_csv_columns": "passed",
+            "s1_csv_aisle": "passed",
+            "s2_thirds_show": "passed",
+            "s2_thirds_scaled": "passed",
+            "s3_fibre_api": "passed",
+            "s3_fibre_values": "passed",
+            "s4_ids_cli": "passed",
+            "s4_ids_import": "passed",
+            "s5_csv_order": "passed",
+            "s5_api_order": "passed",
+            "s6_eggs_csv": "passed",
+            "s6_eggs_api": "passed",
+            "s7_search_default": "passed",
+            "s7_search_unlimited": "passed",
+            "s8_library_numbers": "passed",
+            "s8_library_reload": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_recipes",
+                "s4_ids_import"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "ingredients[].amount"
+          ]
+        }
+      }
+    ]
+  },
+  "survey_tally": {
+    "id": "survey_tally",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_io"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "multi_separator"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_analysis"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "frequency_columns"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed",
+            "s3_half_up_frequencies": "passed",
+            "s3_half_up_crosstab": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "percent_rounding"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed",
+            "s3_half_up_frequencies": "passed",
+            "s3_half_up_crosstab": "passed",
+            "s4_rating_files": "passed",
+            "s4_rating_save": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_analysis"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "question_types"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed",
+            "s3_half_up_frequencies": "passed",
+            "s3_half_up_crosstab": "passed",
+            "s4_rating_files": "passed",
+            "s4_rating_save": "passed",
+            "s5_frequency_order": "passed",
+            "s5_export_order": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_analysis"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "frequency_order"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed",
+            "s3_half_up_frequencies": "passed",
+            "s3_half_up_crosstab": "passed",
+            "s4_rating_files": "passed",
+            "s4_rating_save": "passed",
+            "s5_frequency_order": "passed",
+            "s5_export_order": "passed",
+            "s6_upper_ids": "passed",
+            "s6_mixed_case_duplicates": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_analysis"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "respondent_case"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed",
+            "s3_half_up_frequencies": "passed",
+            "s3_half_up_crosstab": "passed",
+            "s4_rating_files": "passed",
+            "s4_rating_save": "passed",
+            "s5_frequency_order": "passed",
+            "s5_export_order": "passed",
+            "s6_upper_ids": "passed",
+            "s6_mixed_case_duplicates": "passed",
+            "s7_text_limit": "passed",
+            "s7_text_import": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "text_max_length"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_io": "passed",
+            "base_analysis": "passed",
+            "s1_slash_import": "passed",
+            "s1_slash_export": "passed",
+            "s2_weighted_column": "passed",
+            "s2_weighted_values": "passed",
+            "s3_half_up_frequencies": "passed",
+            "s3_half_up_crosstab": "passed",
+            "s4_rating_files": "passed",
+            "s4_rating_save": "passed",
+            "s5_frequency_order": "passed",
+            "s5_export_order": "passed",
+            "s6_upper_ids": "passed",
+            "s6_mixed_case_duplicates": "passed",
+            "s7_text_limit": "passed",
+            "s7_text_import": "passed",
+            "s8_weight_cap": "passed",
+            "s8_weight_cli": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "weight_cap"
+          ]
+        }
+      }
+    ]
+  },
+  "ticket_office": {
+    "id": "ticket_office",
+    "usable": true,
+    "stages": [
+      {
+        "stage": 0,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed"
+          },
+          "stale": []
+        }
+      },
+      {
+        "stage": 1,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_reporting"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "date"
+          ]
+        }
+      },
+      {
+        "stage": 2,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": true
+          },
+          "docs_forgotten": [
+            "already-refunded"
+          ]
+        }
+      },
+      {
+        "stage": 3,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed",
+            "s3_exchange_fee": "passed",
+            "s3_exchange_ledger": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_reporting"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "exchange_fee"
+          ]
+        }
+      },
+      {
+        "stage": 4,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed",
+            "s3_exchange_fee": "passed",
+            "s3_exchange_ledger": "passed",
+            "s4_rounded_prices": "passed",
+            "s4_rounded_everywhere": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_selling"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "concession_rounding"
+          ]
+        }
+      },
+      {
+        "stage": 5,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed",
+            "s3_exchange_fee": "passed",
+            "s3_exchange_ledger": "passed",
+            "s4_rounded_prices": "passed",
+            "s4_rounded_everywhere": "passed",
+            "s5_wheelchair_state": "passed",
+            "s5_best_skips_wheelchair": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_reporting"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "seat_states"
+          ]
+        }
+      },
+      {
+        "stage": 6,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "quiet_fails_0": true,
+          "quiet_suite_green_0": true,
+          "quiet_unnamed_0": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed",
+            "s3_exchange_fee": "passed",
+            "s3_exchange_ledger": "passed",
+            "s4_rounded_prices": "passed",
+            "s4_rounded_everywhere": "passed",
+            "s5_wheelchair_state": "passed",
+            "s5_best_skips_wheelchair": "passed",
+            "s6_old_holds_dropped": "passed",
+            "s6_keep_setting": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "quiet": [
+            {
+              "failing": [
+                "base_selling"
+              ],
+              "named": []
+            }
+          ],
+          "docs_forgotten": [
+            "hold_keep_minutes"
+          ]
+        }
+      },
+      {
+        "stage": 7,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed",
+            "s3_exchange_fee": "passed",
+            "s3_exchange_ledger": "passed",
+            "s4_rounded_prices": "passed",
+            "s4_rounded_everywhere": "passed",
+            "s5_wheelchair_state": "passed",
+            "s5_best_skips_wheelchair": "passed",
+            "s6_old_holds_dropped": "passed",
+            "s6_keep_setting": "passed",
+            "s7_twelve_tickets": "passed",
+            "s7_limit_at_the_counter": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "max_tickets_per_order"
+          ]
+        }
+      },
+      {
+        "stage": 8,
+        "checks": {
+          "reference_groups": true,
+          "reference_docs": true,
+          "reference_rules": true,
+          "docs_forgotten": true,
+          "no_op": true
+        },
+        "detail": {
+          "groups": {
+            "base_selling": "passed",
+            "base_reporting": "passed",
+            "s1_sale_times": "passed",
+            "s1_refund_times": "passed",
+            "s2_refund_twice": "passed",
+            "s2_whole_after_partial": "passed",
+            "s3_exchange_fee": "passed",
+            "s3_exchange_ledger": "passed",
+            "s4_rounded_prices": "passed",
+            "s4_rounded_everywhere": "passed",
+            "s5_wheelchair_state": "passed",
+            "s5_best_skips_wheelchair": "passed",
+            "s6_old_holds_dropped": "passed",
+            "s6_keep_setting": "passed",
+            "s7_twelve_tickets": "passed",
+            "s7_limit_at_the_counter": "passed",
+            "s8_voucher_payment": "passed",
+            "s8_voucher_cashup": "passed"
+          },
+          "stale": [],
+          "rules": {
+            "changelog": 1,
+            "protected": true,
+            "test_with_fix": null
+          },
+          "docs_forgotten": [
+            "payment_methods"
           ]
         }
       }
