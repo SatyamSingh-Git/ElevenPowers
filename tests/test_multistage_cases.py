@@ -101,6 +101,9 @@ V3_BREAKS = {
     "no fails": _quiet(2, lambda q: q.update(fails=[])),
     "diff": lambda case: (case / "stages" / "3" / "quiet-0.diff").unlink(),
     "touches": _quiet(2, lambda q: q.update(file="src/pkg/core.py")),
+    "only on cross-cutting": lambda case: _edit_json(case / "case.json", lambda v: v["stages"][6].update(
+        quiet=[{"file": "src/pkg/parse.py", "kind": "key", "path": "p", "diff": "quiet-0.diff", "fails": ["roundtrip"]}])),
+    "lacks": _quiet(2, lambda q: q.pop("path")),
 }
 
 

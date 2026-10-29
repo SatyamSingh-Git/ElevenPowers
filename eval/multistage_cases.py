@@ -69,8 +69,13 @@ def load(root):
                 _refuse(name, f'stage {n} {what} group {group} is not an earlier group still required')
 
     for n, stage in enumerate(stages, 1):
+        if stage.get('quiet') and stage['kind'] != 'cross-cutting':
+            _refuse(name, f'stage {n} declares quiet dependents; they belong only on cross-cutting stages')
         if stage['kind'] != 'cross-cutting':
             continue
+        for entry in stage.get('quiet', []):
+            if {'file', 'kind', 'path', 'diff', 'fails'} - set(entry):
+                _refuse(name, f"stage {n} quiet dependent lacks {sorted({'file', 'kind', 'path', 'diff', 'fails'} - set(entry))}")
         if profile['quiet']:
             if not stage.get('quiet'):
                 _refuse(name, f'cross-cutting stage {n} has no quiet dependent')
