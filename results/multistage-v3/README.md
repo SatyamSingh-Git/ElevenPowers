@@ -50,10 +50,10 @@ stale. The docs claim still shows no headroom on these cases.
   ElevenPowers made the same gradebook miss and avoided the parcelpost one.
   That is a description, not a result.
 - **Statistical power.** At the pilot's rate of 1.5 lost groups per
-  superpowers-only conversation, twelve cases give roughly 0.45–0.6 power at
-  ratio 0.5 ([power table](../multistage/power.json): 0.44–0.48 at rate 1 and
-  0.78–0.80 at rate 2, three replicates). The full-run proposal must either add
-  replicates or say it is descriptive, as the frozen layout rule requires.
+  superpowers-only conversation, twelve cases at three replicates give only
+  0.64–0.67 power at ratio 0.5 ([`power.json`](power.json), computed after
+  the pilot; an estimate from v2's table had said 0.45–0.6). The full-run
+  proposal below therefore adds replicates.
 
 ## How the cases were checked
 
@@ -73,9 +73,40 @@ stale. The docs claim still shows no headroom on these cases.
 - **Agent's instructions:** the user's own `~/.claude/CLAUDE.md` is excluded, and
   the Skill tool is allowed in both arms.
 
-## Next
+## Twelve cases, frozen
 
-Under the design, ten more fresh authors write the remaining cases from the same
-[brief](../../eval/multistage_v3/AUTHORING.md). The two pilot cases stay
-unchanged. Then come review, rehearsal and freeze. The full run is proposed with
-its measured cost and waits for the user's go.
+Ten more fresh authors wrote the remaining cases from the same brief, with
+domains: clinic booking, recipes, library loans, fleet maintenance, payroll,
+theatre tickets, greenhouse monitoring, surveys, household budgets and a
+hotel desk. The two pilot cases are unchanged.
+- **Review:** each case had one fresh reviewer. Their 10 blocking findings,
+  all correct work that would have been graded wrong, went back to the authors
+  and were fixed. Typical ones:
+  - a fact whose old value named a unit;
+  - a field list an agent could accurately extend;
+  - a check that only one of two reasonable designs passes.
+- **Disclosed:** 55 of 68 quiet dependents can be reached by searching the
+  request's own words ([`review.json`](review.json)).
+- **Rehearsal:** all twelve rehearse usable from a fresh CRLF clone
+  ([`rehearsal.json`](rehearsal.json)).
+- **Freeze:** [`manifest.json`](manifest.json) was taken at `8c3d7b1`, with
+  1,220 case files. [`pilot-manifest.json`](pilot-manifest.json) keeps the
+  pilot's freeze.
+- **Published:** the cases are in the `v3/` folder of
+  <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>.
+
+## The full run, proposed and not started
+
+[`power.json`](power.json) covers twelve cases at the pilot rate of 1.5 lost
+groups per superpowers-only conversation, ratio 0.5. With no effect, the test
+rejects falsely 1.5–2.3% of the time.
+
+| layout | conversations | power | estimated cost | wall time, four at a time |
+|---|---|---|---|---|
+| 12 × 2 arms × 4 replicates | 96 | 0.78–0.79 | about $98 | about 2.5–3 h |
+| 12 × 2 arms × 5 replicates | 120 | 0.88 | about $123 | about 3–3.5 h |
+
+The cost rests on the pilot's $0.91 per conversation without ElevenPowers and
+$1.14 with it, at about 5.4 minutes of model time each. The frozen layout rule
+takes the largest affordable layout with power of at least 0.8, which is five
+replicates. It waits for the user's go.

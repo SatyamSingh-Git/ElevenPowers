@@ -1,5 +1,17 @@
 # Current delivery status
 
+**2026-10-29 — Multi-stage v3: twelve cases frozen; full run proposed.**
+Ten more cases came from fresh authors, all rehearsed usable. Independent
+reviews found ten places where correct work would have been graded wrong, and
+all were fixed before the freeze. 55 of 68 quiet dependents can be reached by
+searching the request's own words; that is disclosed. All twelve rehearse
+usable from a fresh CRLF clone. Frozen at `8c3d7b1` (1,220 case files) and
+published in the public cases repository's `v3/` folder. Proposed full run:
+twelve cases, two arms, five replicates, 120 conversations, about $123, power
+0.88 at the pilot rate. It waits for the user's go. See
+[results](../results/multistage-v3/README.md) and
+[journey 94](../journey/94-twelve-cases-and-ten-findings.md).
+
 **2026-10-28 — Multi-stage v3 pilot: a go.**
 Two new cases (`gradebook`, `parcelpost`) were built with declared quiet
 dependents that the rehearsal proves quiet: no changed name in the dependent's

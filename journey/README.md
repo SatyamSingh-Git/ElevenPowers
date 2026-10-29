@@ -1,11 +1,16 @@
 # The journey
 
-Latest: [93 — a dependent the search does not find](93-a-dependent-the-search-does-not-find.md):
+Latest: [94 — twelve cases and ten findings](94-twelve-cases-and-ten-findings.md):
+ten more v3 cases from fresh authors; independent reviews found ten places correct work would have been
+graded wrong (unit-word facts, extendable lists, an unpinned version, one-design checks, a "dependent"
+that was the requested site), all fixed. Frozen at 8c3d7b1 and published; full run proposed, waiting.
+
+Recent: [93 — a dependent the search does not find](93-a-dependent-the-search-does-not-find.md):
 multi-stage v3, bigger cases with declared quiet dependents proved quiet by the rehearsal. Pilot $4.09:
 superpowers alone broke earlier behaviour on both cases (a hard-coded precision, an order-dependent
 invoice grouping), both called genuine by a blind classifier; no docs fact went stale in any arm. Go.
 
-Recent: [92 — the pilot found nothing to prevent](92-the-pilot-found-nothing-to-prevent.md):
+Earlier: [92 — the pilot found nothing to prevent](92-the-pilot-found-nothing-to-prevent.md):
 multi-stage v2 pilot, 4 conversations, $3.39: neither arm lost any earlier behaviour, and all five
 stale facts were the oracle refusing correct docs for choices no request stated. The qualification
 found superpowers' skills could not load through the launcher and every subscription run carried
