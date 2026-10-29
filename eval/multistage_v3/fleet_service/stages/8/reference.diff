@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 7d3dc8e..6b27340 100644
+index 64618b8..361012f 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,7 +11,7 @@ index 7d3dc8e..6b27340 100644
  - Labour on heavy vehicles is charged at `heavy_labour_rate` (125.00) unless a rate is given.
  - Fixed: `wo open` accepted service codes missing from the catalog, and closing such an order crashed with a `KeyError`; it now fails with `E127`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 00461e9..8d5aecc 100644
+index 78b978c..b711300 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -30,7 +30,7 @@ runs one command and returns its exit status.

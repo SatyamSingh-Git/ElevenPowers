@@ -105,7 +105,7 @@
    "dependent_missed_fails": []
   },
   {
-   "request": "Scripts that read our `library.json` have to parse ingredient amounts such as `\"1 1/2\"` themselves. Please save each ingredient's `amount` in `library.json` as a JSON `number` (`1.5`) instead of a `string`, keeping `null` for an ingredient without an amount. Libraries saved before this change still have to open.",
+   "request": "Scripts that read our `library.json` have to parse ingredient amounts such as `\"1 1/2\"` themselves. Please save each ingredient's `amount` in `library.json` as a JSON `number` (`1.5`) instead of a `string`, keeping `null` for an ingredient without an amount. Libraries saved before this change still have to open. The file keeps `version` 1.",
    "kind": "cross-cutting",
    "bugfix": false,
    "dependent_missed_fails": [],

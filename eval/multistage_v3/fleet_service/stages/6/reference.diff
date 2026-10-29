@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 98db23f..30a65d7 100644
+index 81540eb..b645d1d 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,7 +11,7 @@ index 98db23f..30a65d7 100644
  - `fuel report` has a `cost_per_gallon` column after `fuel_cost`.
  - Fixed: `wo close` on a closed work order closed it again, moving its close date and recording its services twice; it now fails with `E126`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 0aaf8f7..63f3278 100644
+index 0866610..64858c3 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -11,7 +11,7 @@ setting left out takes its default.
@@ -31,7 +31,7 @@ index 0aaf8f7..63f3278 100644
  
  ## Command line
  
-@@ -105,7 +106,7 @@ of either, and `ok` otherwise. `fleetkeep remind` prints one line for every serv
+@@ -106,7 +107,7 @@ of either, and `ok` otherwise. `fleetkeep remind` prints one line for every serv
  | `fuel import` | `Card,Unit,Date,Gallons,Amount,Odometer` | file: the fuel-card provider's export; a blank `Unit` uses the card's vehicle |
  | `fuel import date` | `MM/DD/YYYY` | file: date format of the fuel-card export |
  | `history import` | `vehicle,code,date,odometer` | file: service history from the previous system; unknown codes are skipped |

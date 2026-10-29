@@ -1,17 +1,17 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index c850f37..ca6cb1b 100644
+index c850f37..c6d54a4 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -3,6 +3,7 @@
  ## Unreleased
  
  - `clinic handover` prints the evening note for the next open day.
-+- The bookings file is written in booking reference order, so new bookings land at the bottom.
++- The bookings file is written in `id` (booking reference) order, so new bookings land at the bottom.
  - Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
  - New `buffer_minutes` setting, default 5: free slots leave that gap after every appointment.
  - The exported day schedule writes start and end times on a 12-hour clock (`%I:%M %p`, e.g. `02:00 PM`).
 diff --git a/docs/reference.md b/docs/reference.md
-index bdc02c2..504107a 100644
+index bdc02c2..7193b4b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -49,7 +49,7 @@ The `status` column of the bookings file holds one of these.
@@ -19,7 +19,7 @@ index bdc02c2..504107a 100644
  | `bookings_file.name` | `bookings.csv` | bookings file the CLI reads and writes unless `--bookings` names another |
  | `bookings_file.columns` | `id,patient,phone,practitioner,room,day,start,minutes,status,created` | header row of the bookings file |
 -| `bookings_file.order` | `day, start` | row order of the bookings file (ties go by practitioner) |
-+| `bookings_file.order` | `booking reference` | row order of the bookings file: oldest booking first, so new bookings land at the bottom |
++| `bookings_file.order` | `id` | row order of the bookings file: oldest booking first, so new bookings land at the bottom |
  | `bookings_file.start` | `09:00` | how the start column of the bookings file writes a time: 24-hour HH:MM |
  | `booking_reference` | `B0001` | booking references: `B` and a running number of at least four digits, never reused |
  

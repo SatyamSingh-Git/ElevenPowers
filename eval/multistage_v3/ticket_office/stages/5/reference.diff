@@ -36,7 +36,7 @@ index 62c0c9d..3f0f107 100644
  ## Seat map file
  
 diff --git a/src/boxoffice/reports/seatplan.py b/src/boxoffice/reports/seatplan.py
-index ec885ff..28ade12 100644
+index 834f45a..dc4e9fb 100644
 --- a/src/boxoffice/reports/seatplan.py
 +++ b/src/boxoffice/reports/seatplan.py
 @@ -2,6 +2,7 @@
@@ -164,16 +164,3 @@ index 7060e04..59160a6 100644
  def test_best_available_gives_up(office):
      with pytest.raises(BoxOfficeError) as raised:
          office.holds.place_best("TEMP-0520", 5, section="Circle")
-diff --git a/tests/test_reports.py b/tests/test_reports.py
-index 7a741b6..c6ed50a 100644
---- a/tests/test_reports.py
-+++ b/tests/test_reports.py
-@@ -58,7 +58,7 @@ def test_seatplan():
-     states.update({"A1": "sold", "A2": "held"})
-     lines = render_seatplan(venue, states).splitlines()
-     assert lines[2] == "  A    1 x h . . . ."
--    assert lines[-1] == "key: . free  h held  x sold"
-+    assert lines[-1].startswith("key: . free  ")
- 
- 
- def test_price_list(office):

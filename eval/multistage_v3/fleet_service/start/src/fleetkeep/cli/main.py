@@ -187,6 +187,10 @@ def build_parser():
     downtime = _add(sub, "downtime", commands.cmd_downtime, "shop days and availability")
     _period_options(downtime)
     _format_option(downtime)
+
+    summary = _add(sub, "summary", commands.cmd_summary, "each vehicle's period at a glance")
+    _period_options(summary)
+    _format_option(summary)
     return parser
 
 

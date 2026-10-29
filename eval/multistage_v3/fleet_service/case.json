@@ -58,9 +58,9 @@
       "dependent_missed_fails": [],
       "quiet": [
         {
-          "file": "src/fleetkeep/reports/layout.py",
+          "file": "src/fleetkeep/reports/summary.py",
           "kind": "data",
-          "path": "Following how report rows are printed shows the renderers take each report's column names, by position, from the layout table keyed by report name, so a new value in the fuel rows needs its column there.",
+          "path": "Looking for what else consumes the fuel report's rows finds the per-vehicle summary, which fetches them through the period-report registry and reads mpg by position as the sixth value, so a column inserted before mpg shifts what it reads.",
           "diff": "quiet-0.diff",
           "fails": ["base_records"]
         }

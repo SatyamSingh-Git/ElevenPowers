@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 7ca7ac6..cd8c4f5 100644
+index 8b1782d..9a1d63a 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -3,6 +3,7 @@
@@ -8,10 +8,10 @@ index 7ca7ac6..cd8c4f5 100644
  - `clinic handover` prints the evening note for the next open day.
 +- Fixed: phone numbers typed with spaces, like `07700 900123`, were refused; spaces are now dropped. The error shows the number as typed.
  - New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
- - The bookings file is written in booking reference order, so new bookings land at the bottom.
+ - The bookings file is written in `id` (booking reference) order, so new bookings land at the bottom.
  - Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 9666a89..c5b4d52 100644
+index d1fd1b9..9166e22 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -109,7 +109,7 @@ Raised by `Desk.book` and the other `Desk` calls; the CLI prints them as

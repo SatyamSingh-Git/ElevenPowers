@@ -1,14 +1,13 @@
-diff --git a/src/fleetkeep/reports/layout.py b/src/fleetkeep/reports/layout.py
-index 27e483c..f64e418 100644
---- a/src/fleetkeep/reports/layout.py
-+++ b/src/fleetkeep/reports/layout.py
-@@ -21,8 +21,7 @@ LAYOUTS = {
-             *_right("remaining_days"), Column("status")),
-     "costs": (Column("vehicle"),
-               *_right("miles", "fuel", "maintenance", "total", "cost_per_mile")),
--    "fuel": (Column("vehicle"),
--             *_right("fills", "gallons", "fuel_cost", "cost_per_gallon", "miles", "mpg")),
-+    "fuel": (Column("vehicle"), *_right("fills", "gallons", "fuel_cost", "miles", "mpg")),
-     "downtime": (Column("vehicle"), *_right("orders", "days_down", "breakdown_days", "availability")),
-     "orders": (Column("id"), Column("vehicle"), Column("status"), Column("opened"),
-                Column("closed"), Column("services")),
+diff --git a/src/fleetkeep/reports/summary.py b/src/fleetkeep/reports/summary.py
+index b5978e8..db895e5 100644
+--- a/src/fleetkeep/reports/summary.py
++++ b/src/fleetkeep/reports/summary.py
+@@ -7,7 +7,7 @@ from .registry import PERIOD_REPORTS
+ 
+ 
+ def summary_rows(fleet, period):
+-    mpg = {row[0]: row[6] for row in PERIOD_REPORTS["fuel"](fleet, period)}
++    mpg = {row[0]: row[5] for row in PERIOD_REPORTS["fuel"](fleet, period)}
+     down = {row[0]: row for row in PERIOD_REPORTS["downtime"](fleet, period)}
+     rows = []
+     for vehicle_id, miles, _, _, total, per_mile in PERIOD_REPORTS["costs"](fleet, period):

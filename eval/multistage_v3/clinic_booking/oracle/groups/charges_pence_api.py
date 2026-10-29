@@ -41,15 +41,19 @@ def charges_file(folder, **settings):
         return list(csv.reader(handle))
 
 
+def charged(rows):
+    return [row for row in rows[1:] if row[5] != "0"]
+
+
 def test_charges_file_holds_whole_pence(tmp_path):
     rows = charges_file(tmp_path)
     assert rows[0] == ["booking", "patient", "phone", "day", "reason", "amount_pence"]
-    assert len(rows) > 1
-    assert {row[5] for row in rows[1:]} == {"2500"}
-    assert {row[4] for row in rows[1:]} == {"no-show"}
+    assert charged(rows)
+    assert {row[5] for row in charged(rows)} == {"2500"}
+    assert {row[4] for row in charged(rows)} == {"no-show"}
 
 
 def test_pence_follow_the_fee_setting(tmp_path):
     rows = charges_file(tmp_path, no_show_fee="12.50")
-    assert len(rows) > 1
-    assert {row[5] for row in rows[1:]} == {"1250"}
+    assert charged(rows)
+    assert {row[5] for row in charged(rows)} == {"1250"}

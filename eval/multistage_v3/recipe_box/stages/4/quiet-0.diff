@@ -1,20 +1,20 @@
 diff --git a/src/recipebox/storage/plan_file.py b/src/recipebox/storage/plan_file.py
-index a51dfdb..22e5586 100644
+index d54edbe..16671ab 100644
 --- a/src/recipebox/storage/plan_file.py
 +++ b/src/recipebox/storage/plan_file.py
 @@ -12,12 +12,17 @@ from pathlib import Path
  import re
  
  from ..core.plan import DAYS, MEALS, MealEntry, Plan
--from ..core.recipe import check_servings, recipe_id
-+from ..core.recipe import check_servings
+-from ..core.recipe import recipe_id
  from ..errors import PlanError, RecipeBoxError
  
  _LINE = re.compile(r"(\w+)\s+(\w+)\s*:\s*(.+?)(?:\s+x(\d+))?")
  
  
 +def _title_key(title):
-+    # The library knows recipes by id, and an id is the title lower-cased with spaces as dashes.
++    # Plan files name recipes by title, while the library keys them by id: the title
++    # lower-cased with its words joined by dashes.
 +    return "-".join(title.lower().split())
 +
 +
@@ -29,4 +29,4 @@ index a51dfdb..22e5586 100644
 +        recipe = library.find(_title_key(title))
          if recipe is None:
              raise PlanError(f"plan line {number}: no recipe titled {title}")
-         if servings is not None:
+         try:

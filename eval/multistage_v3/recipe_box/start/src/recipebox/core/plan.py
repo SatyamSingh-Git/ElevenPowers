@@ -1,6 +1,8 @@
 """A week's meal plan: which recipe is cooked for which meal, and for how many."""
 from dataclasses import dataclass
 
+from .recipe import check_servings
+
 DAYS = ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 MEALS = ("breakfast", "lunch", "dinner", "snack")
 
@@ -12,6 +14,10 @@ class MealEntry:
     recipe: object
     # None cooks the recipe as written.
     servings: int | None = None
+
+    def __post_init__(self):
+        if self.servings is not None:
+            check_servings(self.servings)
 
     @property
     def portions(self):

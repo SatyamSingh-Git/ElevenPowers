@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index ca543fd..1e43e23 100644
+index 0236ad0..20208eb 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,10 +11,10 @@ index ca543fd..1e43e23 100644
  - New `critical` status for services overdue by more than `critical_miles` (1000) miles or `critical_days` (30) days; critical services lead the due list.
  - Parts stock: `parts receive`, `parts count` and `parts stock`; a stocked part is charged at its average cost.
 diff --git a/docs/reference.md b/docs/reference.md
-index d006f25..3cfc166 100644
+index 26ab6e6..6653046 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -136,6 +136,7 @@ them as `error: <code> <message>`.
+@@ -137,6 +137,7 @@ them as `error: <code> <message>`.
  | `E123` | `work order {order} cannot close before it opened on {opened}` | error raised by the library and printed by the CLI |
  | `E124` | `service {code} does not apply to {vehicle_class} vehicles` | error raised by the library and printed by the CLI |
  | `E125` | `only an open work order with no charges can be cancelled: {order}` | error raised by the library and printed by the CLI |

@@ -64,6 +64,8 @@ def test_sold_and_released_holds_go_too(data):
     office.sales.checkout(sold.id)
     released = office.holds.place("HAM-0412E", ["A2"])
     office.holds.release(released.id)
+    # Still live at 12:00, so whatever numbering is used cannot start again from the first id.
+    office_at(data, "2026-04-01T11:50").holds.place("HAM-0412E", ["A4"])
     office_at(data, "2026-04-01T12:00").holds.place("HAM-0412E", ["A3"])
     assert checkout_error(data, "2026-04-01T12:01", sold.id) == "unknown-hold"
     assert checkout_error(data, "2026-04-01T12:01", released.id) == "unknown-hold"

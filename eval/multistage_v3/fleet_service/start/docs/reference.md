@@ -48,6 +48,7 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
 | `fleetkeep defect list` | `id,vehicle,reported,severity,description,order,fixed` | command line: inspection defects |
 | `fleetkeep parts stock` | `number,description,on_hand,unit_cost,value` | command line: parts on hand at average cost |
 | `fleetkeep catalog` | `code,service,miles,months,classes` | command line: the service catalog |
+| `fleetkeep summary` | `vehicle,miles,total,cost_per_mile,mpg,days_down,availability` | command line: one line per vehicle, each figure as `costs`, `fuel report` and `downtime` give it |
 
 Statuses: a service is `overdue` once its miles or its date have passed,
 `due-soon` within `due_soon_miles` or `due_soon_days` of either, and `ok`

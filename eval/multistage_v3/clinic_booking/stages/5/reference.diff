@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index ca6cb1b..7ca7ac6 100644
+index c6d54a4..8b1782d 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -3,6 +3,7 @@
@@ -7,11 +7,11 @@ index ca6cb1b..7ca7ac6 100644
  
  - `clinic handover` prints the evening note for the next open day.
 +- New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
- - The bookings file is written in booking reference order, so new bookings land at the bottom.
+ - The bookings file is written in `id` (booking reference) order, so new bookings land at the bottom.
  - Cancellations with less than `cancellation_notice_hours` (default 24) to go are recorded as `late_cancelled`.
  - New `buffer_minutes` setting, default 5: free slots leave that gap after every appointment.
 diff --git a/docs/reference.md b/docs/reference.md
-index 504107a..9666a89 100644
+index 7193b4b..d1fd1b9 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -14,6 +14,7 @@ default shown here.

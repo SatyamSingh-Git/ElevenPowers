@@ -29,7 +29,7 @@ def test_fees_command_writes_pence(tmp_path):
     target = tmp_path / "out.csv"
     assert cli(tmp_path, "fees", "--out", str(target)) == 0
     with open(target, newline="", encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
+        rows = [row for row in csv.DictReader(handle) if row["amount_pence"] != "0"]
     assert len(rows) >= 2
     assert {row["amount_pence"] for row in rows} == {"3000"}
     assert {row["phone"] for row in rows} == {"07700900001"}

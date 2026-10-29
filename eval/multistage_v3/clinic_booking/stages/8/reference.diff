@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 31fb242..a81a240 100644
+index c1858c4..d58a929 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -3,6 +3,7 @@
@@ -11,7 +11,7 @@ index 31fb242..a81a240 100644
  - Fixed: phone numbers typed with spaces, like `07700 900123`, were refused; spaces are now dropped. The error shows the number as typed.
  - New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
 diff --git a/docs/reference.md b/docs/reference.md
-index 634b982..a042a9c 100644
+index 561bce4..525e2ff 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -15,7 +15,8 @@ default shown here.

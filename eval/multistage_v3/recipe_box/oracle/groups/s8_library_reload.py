@@ -62,6 +62,8 @@ def test_older_text_amounts_still_open(tmp_path, capsys):
     path = home / "library.json"
     data = json.loads(path.read_text(encoding="utf-8"))
     rewrite_amounts(data, lambda amount: AS_TEXT[amount] if not isinstance(amount, str) else amount)
+    # As a library saved before the change: version 1, amounts as text.
+    data["version"] = 1
     path.write_text(json.dumps(data, indent=2), encoding="utf-8")
     capsys.readouterr()
     assert run(home, "show", "scones") == 0

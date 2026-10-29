@@ -37,7 +37,7 @@ index bf875a9..4a15749 100644
  
  class SalesService:
 diff --git a/tests/test_reports.py b/tests/test_reports.py
-index c6ed50a..ec7888a 100644
+index 7a741b6..567c10b 100644
 --- a/tests/test_reports.py
 +++ b/tests/test_reports.py
 @@ -40,6 +40,7 @@ def test_cashup_lists_every_method():

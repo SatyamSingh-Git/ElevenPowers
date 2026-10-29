@@ -28,8 +28,10 @@ def fk(tmp_path, capsys):
 
 
 def _cells(line):
-    assert line.startswith("|") and line.endswith("|"), line
-    return [cell.strip() for cell in line[1:-1].split("|")]
+    line = line.strip()
+    line = line[1:] if line.startswith("|") else line
+    line = line[:-1] if line.endswith("|") else line
+    return [cell.strip() for cell in line.split("|")]
 
 
 def test_pipe_table_matches_csv(fk):

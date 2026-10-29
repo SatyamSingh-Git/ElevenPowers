@@ -32,4 +32,6 @@ LAYOUTS = {
     "spend": (Column("month"), *_right("fuel", "orders", "maintenance", "total")),
     "stock": (Column("number"), Column("description"), *_right("on_hand", "unit_cost", "value")),
     "catalog": (Column("code"), Column("service"), *_right("miles", "months"), Column("classes")),
+    "summary": (Column("vehicle"),
+                *_right("miles", "total", "cost_per_mile", "mpg", "days_down", "availability")),
 }

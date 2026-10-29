@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index cd8c4f5..31fb242 100644
+index 9a1d63a..c1858c4 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -3,6 +3,7 @@
@@ -9,9 +9,9 @@ index cd8c4f5..31fb242 100644
 +- The charges file writes amounts in whole pence, in an `amount_pence` column, for the card terminal.
  - Fixed: phone numbers typed with spaces, like `07700 900123`, were refused; spaces are now dropped. The error shows the number as typed.
  - New `max_daily_bookings` setting, default 2: one phone number cannot hold more bookings than that on one day.
- - The bookings file is written in booking reference order, so new bookings land at the bottom.
+ - The bookings file is written in `id` (booking reference) order, so new bookings land at the bottom.
 diff --git a/docs/reference.md b/docs/reference.md
-index c5b4d52..634b982 100644
+index 9166e22..561bce4 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -72,7 +72,7 @@ Written by `clinic fees --out FILE`. The `statement` command reads it back.

@@ -59,7 +59,7 @@
       ]
     },
     {
-      "request": "The front desk reads the bookings file directly to see what has come in. Please write its rows in `booking reference` order, oldest first, instead of by day and start time, so new bookings always land at the bottom of the bookings file.",
+      "request": "The front desk reads the bookings file directly to see what has come in. Please write its rows in order of the `id` column (the booking reference), oldest first, instead of by `day, start`, so new bookings always land at the bottom of the bookings file.",
       "kind": "cross-cutting",
       "bugfix": false,
       "dependent_missed_fails": [],

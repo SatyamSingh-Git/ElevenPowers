@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 31aa909..98db23f 100644
+index 0a3c65a..81540eb 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,10 +11,10 @@ index 31aa909..98db23f 100644
  - Fixed: `wo close` on a closed work order closed it again, moving its close date and recording its services twice; it now fails with `E126`.
  - Work orders carry a shop supplies charge: `shop_supplies_percent` (5) of the labour, capped at `shop_supplies_cap` (40.00); `wo show` lists it as `supplies` and counts it in `total`.
 diff --git a/docs/reference.md b/docs/reference.md
-index 1898822..0aaf8f7 100644
+index 2b32658..0866610 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
-@@ -137,6 +137,7 @@ them as `error: <code> <message>`.
+@@ -138,6 +138,7 @@ them as `error: <code> <message>`.
  | `E124` | `service {code} does not apply to {vehicle_class} vehicles` | error raised by the library and printed by the CLI |
  | `E125` | `only an open work order with no charges can be cancelled: {order}` | error raised by the library and printed by the CLI |
  | `E126` | `work order {order} is already closed` | error raised by the library and printed by the CLI |

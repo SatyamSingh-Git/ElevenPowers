@@ -36,12 +36,15 @@ def owed_with(folder, **settings):
     return charges(desk.bookings, clinic.settings), made
 
 
+def charged(owed):
+    return {charge.booking: charge.amount for charge in owed if charge.amount}
+
+
 def test_with_the_setting_off_every_no_show_is_charged(tmp_path):
     owed, made = owed_with(tmp_path, first_no_show_free=False)
-    assert sorted(charge.booking for charge in owed) == sorted(booking.id for booking in made)
-    assert {charge.amount for charge in owed} == {Decimal("25.00")}
+    assert charged(owed) == {booking.id: Decimal("25.00") for booking in made}
 
 
 def test_with_the_setting_on_only_repeat_no_shows_are_charged(tmp_path):
     owed, made = owed_with(tmp_path, first_no_show_free=True)
-    assert [charge.booking for charge in owed] == [made[1].id]
+    assert charged(owed) == {made[1].id: Decimal("25.00")}

@@ -125,3 +125,13 @@ def test_spend_carries_the_work_order_totals(fk):
     assert (rows["2026-01"]["orders"], Decimal(rows["2026-01"]["maintenance"])) == (1, total)
     assert Decimal(rows["2026-01"]["total"]) == total + Decimal("180.60")
     assert Decimal(rows["2026-02"]["total"]) == 0
+
+
+def test_summary_agrees_with_the_reports(fk):
+    _fuel_card(fk)
+    _closed_order(fk)
+    period = ("--from", "2026-01-01", "--to", "2026-01-31", "--format", "json")
+    van = {row["vehicle"]: row for row in json.loads(fk("summary", *period))}["VAN-301"]
+    costs = {row["vehicle"]: row for row in json.loads(fk("costs", *period))}["VAN-301"]
+    assert (van["miles"], van["mpg"], van["days_down"]) == (850, "21.9", 1)
+    assert (van["total"], van["cost_per_mile"]) == (costs["total"], costs["cost_per_mile"])

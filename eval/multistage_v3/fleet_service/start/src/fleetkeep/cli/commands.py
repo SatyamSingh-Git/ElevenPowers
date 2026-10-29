@@ -11,14 +11,12 @@ from ..model.money import format_money, parse_money
 from ..model.readings import FuelEntry, OdometerReading, parse_gallons, parse_odometer
 from ..model.vehicle import Vehicle, normalise_vehicle_id
 from ..model.workorder import parse_hours
-from ..reports.costs import cost_rows
-from ..reports.downtime import downtime_rows
 from ..reports.due import due_rows
-from ..reports.fuel import fuel_rows
 from ..reports.orders import defect_rows, history_rows, order_rows
+from ..reports.registry import PERIOD_REPORTS
 from ..reports.render import render
-from ..reports.spend import spend_rows
 from ..reports.stock import stock_rows
+from ..reports.summary import summary_rows
 from ..reports.vehicles import catalog_rows, vehicle_rows
 from ..services import workorders
 from ..services.checks import run_checks
@@ -38,6 +36,13 @@ def _day(text, clock):
 
 def _period(args):
     return Period(parse_date(args.start), parse_date(args.end))
+
+
+def _period_report(args, name):
+    session = Session(args)
+    rows = PERIOD_REPORTS[name](session.fleet, _period(args))
+    print(render(name, rows, args.format), end="")
+    return 0
 
 
 def _print_import(result):
@@ -199,9 +204,7 @@ def cmd_fuel_list(args, clock):
 
 
 def cmd_fuel_report(args, clock):
-    session = Session(args)
-    print(render("fuel", fuel_rows(session.fleet, _period(args)), args.format), end="")
-    return 0
+    return _period_report(args, "fuel")
 
 
 # Service history
@@ -398,15 +401,11 @@ def cmd_remind(args, clock):
 
 
 def cmd_costs(args, clock):
-    session = Session(args)
-    print(render("costs", cost_rows(session.fleet, _period(args)), args.format), end="")
-    return 0
+    return _period_report(args, "costs")
 
 
 def cmd_spend(args, clock):
-    session = Session(args)
-    print(render("spend", spend_rows(session.fleet, _period(args)), args.format), end="")
-    return 0
+    return _period_report(args, "spend")
 
 
 def cmd_check(args, clock):
@@ -420,6 +419,10 @@ def cmd_check(args, clock):
 
 
 def cmd_downtime(args, clock):
+    return _period_report(args, "downtime")
+
+
+def cmd_summary(args, clock):
     session = Session(args)
-    print(render("downtime", downtime_rows(session.fleet, _period(args)), args.format), end="")
+    print(render("summary", summary_rows(session.fleet, _period(args)), args.format), end="")
     return 0

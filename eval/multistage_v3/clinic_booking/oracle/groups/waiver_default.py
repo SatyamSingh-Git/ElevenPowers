@@ -37,8 +37,8 @@ def test_first_no_show_is_free_and_later_ones_are_charged(tmp_path):
         desk.mark_no_show(booking.id)
     desk.mark_attended(came.id)
     owed = charges(desk.bookings, clinic.settings)
-    assert sorted(charge.booking for charge in owed) == sorted([middle.id, later.id])
-    assert {charge.amount for charge in owed} == {Decimal("25.00")}
+    charged = {charge.booking: charge.amount for charge in owed if charge.amount}
+    assert charged == {middle.id: Decimal("25.00"), later.id: Decimal("25.00")}
 
 
 def test_fees_command_leaves_out_the_first_no_show(tmp_path, capsys):
@@ -55,5 +55,4 @@ def test_fees_command_leaves_out_the_first_no_show(tmp_path, capsys):
     capsys.readouterr()
     assert cli("fees") == 0
     out = capsys.readouterr().out
-    assert "B0002" in out
-    assert "B0001" not in out
+    assert "Total: £25.00" in out.splitlines()

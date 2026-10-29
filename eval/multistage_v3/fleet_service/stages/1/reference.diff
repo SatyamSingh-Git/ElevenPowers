@@ -1,5 +1,5 @@
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index 22a45b9..f9e6c3c 100644
+index 62171a9..8475ab3 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
 @@ -2,6 +2,7 @@
@@ -11,7 +11,7 @@ index 22a45b9..f9e6c3c 100644
  - `fleetkeep check` lists stale work orders, vehicles missing odometer readings, worn tyres and grounded vehicles.
  - `odometer fix` corrects a mistyped reading.
 diff --git a/docs/reference.md b/docs/reference.md
-index 4e213db..077bb8b 100644
+index 41e4c7d..37b2e0b 100644
 --- a/docs/reference.md
 +++ b/docs/reference.md
 @@ -15,6 +15,8 @@ setting left out takes its default.
@@ -32,9 +32,9 @@ index 4e213db..077bb8b 100644
  | `fleetkeep costs` | `vehicle,miles,fuel,maintenance,total,cost_per_mile` | command line: maintenance is the total of each work order closed in the period, as `wo show` gives it |
  | `fleetkeep fuel report` | `vehicle,fills,gallons,fuel_cost,miles,mpg` | command line: fuel bought and full-tank economy |
  | `fleetkeep spend` | `month,fuel,orders,maintenance,total` | command line: spending by calendar month; maintenance as in `costs` |
-@@ -49,9 +51,10 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
- | `fleetkeep parts stock` | `number,description,on_hand,unit_cost,value` | command line: parts on hand at average cost |
+@@ -50,9 +52,10 @@ money and decimals as strings, dates as `YYYY-MM-DD` and empty values as `null`.
  | `fleetkeep catalog` | `code,service,miles,months,classes` | command line: the service catalog |
+ | `fleetkeep summary` | `vehicle,miles,total,cost_per_mile,mpg,days_down,availability` | command line: one line per vehicle, each figure as `costs`, `fuel report` and `downtime` give it |
  
 -Statuses: a service is `overdue` once its miles or its date have passed,
 -`due-soon` within `due_soon_miles` or `due_soon_days` of either, and `ok`

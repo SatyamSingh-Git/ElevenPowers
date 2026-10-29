@@ -15,7 +15,8 @@ def render_seatplan(venue, states):
         for row, seats in section.rows.items():
             marks = " ".join(SYMBOLS[states[seat.id]] for seat in seats)
             lines.append(f"  {row:<2} {seats[0].number:>3} {marks}")
-    lines.append("key: " + "  ".join(f"{symbol} {state}" for state, symbol in SYMBOLS.items()))
+    shown = set(states.values())
+    lines.append("key: " + "  ".join(f"{symbol} {state}" for state, symbol in SYMBOLS.items() if state in shown))
     return "\n".join(lines)
 
 

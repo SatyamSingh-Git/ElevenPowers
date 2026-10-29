@@ -12,14 +12,14 @@ from pathlib import Path
 import re
 
 from ..core.plan import DAYS, MEALS, MealEntry, Plan
-from ..core.recipe import check_servings
 from ..errors import PlanError, RecipeBoxError
 
 _LINE = re.compile(r"(\w+)\s+(\w+)\s*:\s*(.+?)(?:\s+x(\d+))?")
 
 
 def _title_key(title):
-    # The library knows recipes by id, and an id is the title lower-cased with spaces as dashes.
+    # Plan files name recipes by title, while the library keys them by id: the title
+    # lower-cased with its words joined by dashes.
     return "-".join(title.lower().split())
 
 
@@ -41,12 +41,10 @@ def parse_plan(text, library):
         recipe = library.find(_title_key(title))
         if recipe is None:
             raise PlanError(f"plan line {number}: no recipe titled {title}")
-        if servings is not None:
-            try:
-                check_servings(int(servings))
-            except RecipeBoxError as error:
-                raise PlanError(f"plan line {number}: {error}") from error
-        plan.add(MealEntry(day, meal, recipe, int(servings) if servings else None))
+        try:
+            plan.add(MealEntry(day, meal, recipe, int(servings) if servings else None))
+        except RecipeBoxError as error:
+            raise PlanError(f"plan line {number}: {error}") from error
     return plan
 
 
