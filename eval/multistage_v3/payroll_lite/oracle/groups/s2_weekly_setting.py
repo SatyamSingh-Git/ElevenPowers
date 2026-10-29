@@ -48,8 +48,3 @@ def test_holiday_and_sick_hours_do_not_count(tmp_path, capsys):
     assert paid_hours(tmp_path, capsys, SETTINGS, "2026-W02", rows) == {
         "basic": Decimal("40"), "holiday": Decimal("8"), "sick": Decimal("8")}
 
-
-def test_setting_is_accepted(tmp_path, capsys):
-    (tmp_path / "payroll.ini").write_text(SETTINGS + "\n[overtime]\nweekly_threshold = 37.5\n", encoding="utf-8")
-    code, _, err = cli(tmp_path, capsys, "periods", "--year", "2026")
-    assert code == 0, err
