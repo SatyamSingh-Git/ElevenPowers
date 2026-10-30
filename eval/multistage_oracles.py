@@ -85,9 +85,13 @@ def stale(case, stage, tree):
     documented = facts(path.read_text(encoding='utf-8', errors='replace')) if path.is_file() else {}
     expected = case['facts'][stage]
     removed = set().union(*(case['facts'][n] for n in range(stage))) - set(expected)
+    # A list written with a separator the project itself declares is the same list, as the file now spells it.
+    separators = {v for k, v in expected.items()
+                  if re.search('delimiter|separator', k) and len(v) == 1 and not v.isalnum()}
     # Current only when the expected value is the one value documented: an old row left beside it is stale.
     return sorted({key for key, value in expected.items()
-                   if {_shape(v) for v in documented.get(key, [])} != {_shape(value)}}
+                   if not any({_shape(v) for v in documented.get(key, [])} == {_shape(form)}
+                              for form in {value, *(value.replace(',', s) for s in separators)})}
                   | {key for key in removed if key in documented})
 
 

@@ -116,6 +116,25 @@ def test_placeholder_names_are_not_graded_but_the_text_is(case, tmp_path, expect
     assert stale({**case, "facts": facts}, 3, root) == (["default"] if is_stale else [])
 
 
+@pytest.mark.parametrize("name, declared, written, is_stale", [
+    ("grades.delimiter", ";", "a;b;c", False),
+    ("multi_separator", ";", "a;b;c", False),
+    ("grades.delimiter", ";", "a|b|c", True),
+    (None, None, "a;b;c", True),
+    ("grades.delimiter", ";", "a;b,c", True),
+    ("grades.delimiter", "3", "a3b3c", True),
+    ("--data", ".", "a.b.c", True),
+])
+def test_a_list_written_with_a_separator_the_project_declares_is_current(case, tmp_path, name, declared, written,
+                                                                          is_stale):
+    root = tree(case, 3, tmp_path / "t")
+    doc = root / "docs" / "reference.md"
+    doc.write_text(doc.read_text(encoding="utf-8").replace("| `default` | `3` |", f"| `default` | `{written}` |"),
+                   encoding="utf-8")
+    expected = {**case["facts"][3], "default": "a,b,c", **({name: declared} if name else {})}
+    assert ("default" in stale({**case, "facts": {**case["facts"], 3: expected}}, 3, root)) is is_stale
+
+
 @pytest.mark.parametrize("rows", [("`1`", "`3`"), ("`3`", "`1`")])
 def test_a_stale_row_left_beside_the_new_one_is_stale_in_either_order(case, tmp_path, rows):
     root = tree(case, 3, tmp_path / "t")
