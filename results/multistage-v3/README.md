@@ -114,6 +114,33 @@ the working copies had been rewritten with CRLF after the freeze hashed them.
 All ten frozen modules equal the blobs at `8c3d7b1` byte for byte, and equal
 the working copies once CRLF is read as LF. The run uses the frozen code.
 
+### Batch a stopped on a false breach; batch b restarted
+
+About 30 minutes in, `greenhouse_monitor--elevenpowers--0` was ended at stage 1
+as a closed-book breach. The agent had grepped its own test data:
+`grep -n "timestamp,zone\|T..:..:00,gh" tests/test_ingest.py`. The network
+pattern matched the word `gh` anywhere, inside a grep pattern included, and the
+multi-stage runner also searched the tool call's description. The household
+and library cases' files say `pip install`, so grepping those would have
+ended a conversation too.
+
+- **Stopped.** The pattern is part of the seal, so it could not be fixed in a
+  running batch. Batch a (`E:/ep-runs/multistage-v3-full-2026-10-30`) holds
+  7 complete conversations, 1 ended by the false breach and 4 interrupted,
+  for at least $8.93. It is kept, and excluded: it ran under a different seal.
+- **Repaired** (`2daad59`). A network command now counts only where a command
+  starts, and only the Bash command is read. The tests run both ways, and
+  all 10 mutants of the pattern are killed. `eval/multistage_run.py` therefore
+  differs from its hash in [`manifest.json`](manifest.json), and that change
+  is the whole difference. The cases and the analysis are unchanged.
+- **Qualified with no model.** The old and new patterns were replayed over
+  1,046 real Bash commands from both v3 batches, both pilots and the held-out
+  sweep. Only the greenhouse verdict changes. No held-out breach verdict
+  changes, so that published result stands.
+- **Restarted.** All 120 slots were sealed again as batch b
+  (`E:/ep-runs/multistage-v3-full-2026-10-30-b`). The whole batch is rerun,
+  not just the failed slot, so no slot is chosen by its outcome.
+
 ### As proposed
 
 [`power.json`](power.json) covers twelve cases at the pilot rate of 1.5 lost
