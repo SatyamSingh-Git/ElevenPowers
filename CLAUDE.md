@@ -183,7 +183,9 @@ both arms (`eval/multistage_run.py`). Its v2 pilot found no headroom, so
 rebuilt the cases with quiet dependents (`eval/multistage_quiet.py`). The v3 pilot
 (2026-10-28, $4.09) is a go: superpowers alone broke earlier behaviour on both
 cases. All twelve v3 cases are frozen (`8c3d7b1`); the full run (120 conversations,
-about $123) waits for the user. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
+about $123) started on 2026-10-30. While a sealed batch runs, do not change
+`core/`, `plugin/bin/` or the runner's harness files: the seal refuses every
+later stage. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
 is older and was qualified by an audit on 2026-09-19; read its warning before
 shrinking or reviving it, because the cheap version reintroduces an error
 `PLAN.md` §10 has already withdrawn once.

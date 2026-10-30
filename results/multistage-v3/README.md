@@ -1,7 +1,7 @@
-# Multi-stage v3: twelve cases frozen; the full run waits
+# Multi-stage v3: twelve cases frozen; the full run is running
 
 The pilot was a go, all twelve cases are frozen at `8c3d7b1`, and the full run
-is proposed but not started ([below](#the-full-run-proposed-and-not-started)).
+started on 2026-10-30 ([below](#the-full-run-started-2026-10-30)).
 
 v3 replaces v2's cases after the v2 pilot found nothing to prevent
 ([journey 92](../../journey/92-the-pilot-found-nothing-to-prevent.md)). Its
@@ -98,7 +98,23 @@ hotel desk. The two pilot cases are unchanged.
 - **Published:** the cases are in the `v3/` folder of
   <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>.
 
-## The full run, proposed and not started
+## The full run, started 2026-10-30
+
+The user said go on five replicates. 120 slots were sealed in
+`E:/ep-runs/multistage-v3-full-2026-10-30` (outside the repository), run four
+at a time and never retried. The first stage of all four lanes qualified:
+superpowers loaded in both arms, ElevenPowers' marker only in its own, and no
+closed-book breaches. A one-turn probe first confirmed authentication and
+Sonnet 5.5 on `claude` 2.1.292, for $0.15.
+
+Before sealing, two frozen modules (`eval/multistage_quiet.py`,
+`eval/multistage_run.py`) hashed differently from [`manifest.json`](manifest.json).
+The cause was newline conversion: `core.autocrlf` is true on this machine and
+the working copies had been rewritten with CRLF after the freeze hashed them.
+All ten frozen modules equal the blobs at `8c3d7b1` byte for byte, and equal
+the working copies once CRLF is read as LF. The run uses the frozen code.
+
+### As proposed
 
 [`power.json`](power.json) covers twelve cases at the pilot rate of 1.5 lost
 groups per superpowers-only conversation, ratio 0.5. With no effect, the test
@@ -112,4 +128,4 @@ rejects falsely 1.5–2.3% of the time.
 The cost rests on the pilot's $0.91 per conversation without ElevenPowers and
 $1.14 with it, at about 5.4 minutes of model time each. The frozen layout rule
 takes the largest affordable layout with power of at least 0.8, which is five
-replicates. It waits for the user's go.
+replicates.
