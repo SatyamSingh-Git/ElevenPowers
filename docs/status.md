@@ -1,5 +1,17 @@
 # Current delivery status
 
+**2026-10-30 — Multi-stage v3 full run: running (batch b).** The user said go on
+five replicates. Batch a was stopped about 30 minutes in: the network check
+treated the word `gh` inside a grep pattern as the GitHub CLI and ended a
+conversation. It was repaired (`2daad59`) and replayed over 1,046 real commands;
+only that verdict changed, and no held-out breach verdict changed. All 120 slots
+were sealed again as batch b. A docs-oracle defect (`grades.columns` written
+with the stage's own `;` delimiter) is handled by a rule pre-registered before
+batch b was read. Hosted CI met the recorded intermittent
+`test_keyboard_interrupt_cleans_tree_before_reraising` again (Ubuntu 3.13, on
+`a0d6193`, a README-only commit). See
+[results](../results/multistage-v3/README.md).
+
 **2026-10-29 — Multi-stage v3: twelve cases frozen; full run proposed.**
 Ten more cases came from fresh authors, all rehearsed usable. Independent
 reviews found ten places where correct work would have been graded wrong, and
