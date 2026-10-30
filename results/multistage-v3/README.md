@@ -141,6 +141,31 @@ ended a conversation too.
   (`E:/ep-runs/multistage-v3-full-2026-10-30-b`). The whole batch is rerun,
   not just the failed slot, so no slot is chosen by its outcome.
 
+### Batch b: 53 complete, 67 lost to the environment
+
+Batch b ran normally for about three hours. Then two things went wrong, and
+neither was in the harness or the agents:
+- **A network outage, 16:00–16:04 local time.** Every API call got
+  `SELF_SIGNED_CERT_IN_CHAIN`: something on the machine or network began
+  intercepting HTTPS. Each conversation then failed in about 250 ms, so the
+  four lanes ran through their whole remaining queues. 65 slots failed this
+  way: 61 at stage 1 with $0 spent, and 4 mid-conversation. A probe at
+  16:44 reached the model normally. The cause is unknown.
+- **A file lock, at 15:00.** Two conversations crashed between stages:
+  Windows refused to swap in an updated `result.json`
+  (`PermissionError: [WinError 5]`). The likely cause is the operator's
+  progress watcher, which read every `result.json` every 20 seconds. On
+  Windows, a file that is open blocks the replace. Later watchers read only
+  the lane logs.
+
+Batch b spent $65.35. Its 53 complete conversations stand. The 67 failures
+were set by the clock and the file lock, not by any outcome. So they run
+again, under the same harness and seal contents, as a continuation batch, and
+every batch b slot that did not complete is rerun.
+- **Change to the operator's lane script, not the harness:** a lane now stops
+  when a slot ends incomplete having spent nothing. One outage then costs one
+  slot per lane, not the queue.
+
 ### A docs-oracle defect seen in batch a, handled as fixed before batch b is read
 
 Batch a's `gradebook--superpowers--0` had one stale fact, `grades.columns`,
