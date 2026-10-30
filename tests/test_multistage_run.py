@@ -210,6 +210,13 @@ def test_a_plain_read_inside_the_project_is_not_a_breach(setup, monkeypatch):
     assert m.execute(setup.batch, _slot(setup, 'superpowers'), 'fake-host')['state'] == 'completed'
 
 
+def test_only_a_bash_command_is_read_for_network_access(setup):
+    described = {'name': 'Bash', 'input': {'command': 'ls', 'description': 'curl the docs page'}}
+    reaching = {'name': 'Bash', 'input': {'command': 'curl https://example.invalid', 'description': 'list'}}
+    assert m._breaches([described], setup.cases, setup.manifest) == []
+    assert len(m._breaches([reaching], setup.cases, setup.manifest)) == 1
+
+
 def test_a_timeout_is_kept_graded_and_stops_the_conversation(setup, monkeypatch):
     monkeypatch.setattr(m, 'run', _host(setup.cases / 'fixture', {3: 'timeout'}))
     record = m.execute(setup.batch, _slot(setup, 'superpowers'), 'fake-host')

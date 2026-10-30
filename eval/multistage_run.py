@@ -166,7 +166,8 @@ def _breaches(calls, cases_root, manifest):
     for call in calls:
         raw = '\n'.join(str(value) for value in call.get('input', {}).values())
         text = raw.replace('\\', '/').lower()
-        if (call.get('name') in REACHING_TOOLS or (call.get('name') == 'Bash' and NETWORK.search(raw))
+        command = str(call.get('input', {}).get('command', ''))
+        if (call.get('name') in REACHING_TOOLS or (call.get('name') == 'Bash' and NETWORK.search(command))
                 or any(path in text for path in hidden)):
             found.append(f"{call.get('name')}: {raw[:200]}")
     return found

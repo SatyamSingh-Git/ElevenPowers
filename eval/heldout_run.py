@@ -31,8 +31,11 @@ from .task import Task
 TOOL_ROOT = Path(__file__).resolve().parents[1]
 ARMS = ('ordinary', 'assisted')
 NAME = re.compile(r'[A-Za-z0-9._-]{1,120}')
-NETWORK = re.compile(r'\b(?:curl|wget|Invoke-WebRequest|iwr|gh|pip3?\s+(?:install|download)'
-                     r'|git\s+(?:clone|fetch|pull|ls-remote))\b')
+# Only where a command starts: the same words inside a grep pattern or a file name are data.
+NETWORK = re.compile(r'(?:^|[;&|(`]|\b(?:ba|z)?sh\s+-c\s+["\'])\s*(?:(?:sudo|xargs|env|time|nohup)\s+)*'
+                     r'(?:\S*[/\\])?(?:curl|wget|Invoke-WebRequest|iwr|gh'
+                     r'|(?:python\S*\s+-m\s+)?pip3?\s+(?:install|download)'
+                     r'|git\s+(?:clone|fetch|pull|ls-remote))(?:\.exe)?(?=\s|$)', re.MULTILINE)
 # The workspace history is one seed commit, so reading it reveals nothing; recorded, not disqualifying.
 HISTORY = re.compile(r'\bgit\s+(?:log|show|blame|reflog)\b')
 REACHING_TOOLS = {'WebFetch', 'WebSearch', 'Agent', 'Task'}

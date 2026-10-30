@@ -51,6 +51,43 @@ def _prepared(tmp_path, monkeypatch, **kwargs):
     return protocol, tasks
 
 
+@pytest.mark.parametrize("command", [
+    "curl -s https://pypi.org/x",
+    "cd src && gh pr list",
+    "ls; wget http://example.invalid",
+    "echo hi | curl -d @- http://example.invalid",
+    "x=$(curl http://example.invalid)",
+    'bash -c "curl http://example.invalid"',
+    "python -m pip install requests",
+    ".venv/Scripts/pip install -e .",
+    "git fetch origin",
+    "Invoke-WebRequest https://example.invalid",
+    "cd src\ngh api repos/x",
+    "ls | xargs curl -O",
+    "sudo pip install requests",
+    "curl.exe -s https://example.invalid",
+    ".venv\\Scripts\\pip install -e .",
+])
+def test_a_network_command_is_a_breach(command):
+    assert h.NETWORK.search(command)
+
+
+@pytest.mark.parametrize("command", [
+    # A 2026-10-30 greenhouse run: the agent grepped its own data for the zone prefix.
+    'grep -n "timestamp,zone\\|T..:..:00,gh" tests/test_ingest.py; python -m pytest tests/test_ingest.py -q',
+    'grep -rn "pip install" README.md',
+    'grep -rn "pip install -e ." README.md',
+    "grep -n 'gh pr list' notes.md",
+    'grep -c "gh" data.csv',
+    'grep "north\\|gh" zones.csv',
+    "grep -n gh-north data.csv",
+    "python -m pytest -k curl_parser",
+    "git log --oneline",
+])
+def test_a_network_word_in_data_is_not_a_breach(command):
+    assert not h.NETWORK.search(command)
+
+
 def test_arms_interleave_per_task_and_first_arm_alternates(tmp_path):
     corpus, _ = _corpus(tmp_path, names=("a", "b"))
     protocol = h.prepare(tmp_path / "batch", corpus, replicates=2, seconds=60)
