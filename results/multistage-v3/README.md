@@ -141,6 +141,24 @@ ended a conversation too.
   (`E:/ep-runs/multistage-v3-full-2026-10-30-b`). The whole batch is rerun,
   not just the failed slot, so no slot is chosen by its outcome.
 
+### A docs-oracle defect seen in batch a, handled as fixed before batch b is read
+
+Batch a's `gradebook--superpowers--0` had one stale fact, `grades.columns`,
+counted at all eight stages. Stage 1 changes the grades file's delimiter to
+`;`, and the agent rewrote the documented header as
+`student_id;name;course;credits;percent;letter`. That is the header the file
+now actually has, but the oracle expects the comma spelling. It is correct
+work graded wrong.
+
+The oracle is part of batch b's seal, so it cannot change during the run.
+This rule was written down before any batch b result was read:
+- **Primary:** the frozen oracle's grade, exactly as pre-registered.
+- **Sensitivity:** the same analysis after a general fix: a documented list
+  that differs only by a separator the project itself declares is not stale.
+  The kept snapshots are regraded.
+- **Both are reported.** Any difference between them is attributed to this
+  defect. The blind classifier still rates every stale fact.
+
 ### As proposed
 
 [`power.json`](power.json) covers twelve cases at the pilot rate of 1.5 lost
