@@ -1,7 +1,10 @@
-# Multi-stage v3: twelve cases frozen; the full run is running
+# Multi-stage v3: no measured benefit from ElevenPowers
 
-The pilot was a go, all twelve cases are frozen at `8c3d7b1`, and the full run
-started on 2026-10-30 ([below](#the-full-run-started-2026-10-30)).
+The full run is complete: 12 cases × 2 arms × 5 replicates, and 120 of 120
+conversations are comparable. On the pre-registered analysis, ElevenPowers did
+not reduce either harm the field report described. Both point estimates lean
+the other way, and neither difference is significant
+([result](#result-pre-registered-primary-analysis)).
 
 v3 replaces v2's cases after the v2 pilot found nothing to prevent
 ([journey 92](../../journey/92-the-pilot-found-nothing-to-prevent.md)). Its
@@ -97,6 +100,40 @@ hotel desk. The two pilot cases are unchanged.
   pilot's freeze.
 - **Published:** the cases are in the `v3/` folder of
   <https://github.com/SatyamSingh-Git/elevenpowers-multistage-cases>.
+
+## Result: pre-registered primary analysis
+
+[`full-analysis.json`](full-analysis.json) is batch b's 53 complete
+conversations plus batch c's 67 reruns, graded by the frozen oracles. All 120
+are comparable and none is missing. A case's difference is its mean without
+ElevenPowers minus its mean with it, so positive favours ElevenPowers. The
+cases enter an exact two-sided signed-rank test, with Holm across the two
+co-primaries.
+
+| outcome | superpowers | + ElevenPowers | cases better / worse / tied | p | Holm |
+|---|---|---|---|---|---|
+| earlier groups lost | 29 | 35 | 3 / 6 / 3 | 0.43 | 0.50 |
+| stale documented facts (stage-summed) | 43 | 79 | 1 / 5 / 6 | 0.25 | 0.50 |
+
+Per conversation, ElevenPowers cost $1.22 against $1.12, and took 10.8 minutes
+of model time against 6.5.
+
+**What this does and does not show:**
+- **No reduction is shown.** The power target assumed ElevenPowers halves
+  the lost-group rate at the pilot's rate of 1.5. The measured superpowers rate
+  was 0.48 (29 in 60 conversations), about a third of the pilot's. So the run
+  had less power than planned, and a small benefit cannot be excluded. A large
+  one is not supported: the point estimate is a 21% increase.
+- **The docs claim has the wrong sign so far.** ElevenPowers was worse on five
+  cases and better on one. Stale facts are summed over stages, so one fact
+  that goes stale early counts up to eight times. The separator sensitivity
+  analysis and the blind review below decide how much of the 79 is real.
+- **Batch provenance.** Batches b and c share every sealed field except the
+  session ids and the preparation time, and batch c's slots are exactly the
+  ones batch b did not complete. Batch a ran under the earlier network check
+  and is excluded.
+- **Total spent:** $153.40, made up of $8.93 for batch a, $65.35 for b and
+  $79.12 for c, plus about $0.30 of probes.
 
 ## The full run, started 2026-10-30
 
