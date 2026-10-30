@@ -191,6 +191,20 @@ def test_binding_fresh_git_project_does_not_leave_private_lock_or_ignore_untrack
     assert git(root,'status','--porcelain') == b'', 'local approval must not make verification source dirty'
 
 
+def test_binding_first_still_keeps_later_ledger_state_out_of_git(tmp_path):
+    # The ledger writes its ignore-everything marker only when none exists, so a
+    # marker created by binding must ignore the whole private directory itself.
+    from core.inputs.bindings import bind
+    from core.ledger import Ledger
+    from tests.test_patchproof_identity import git,commit
+    root = tmp_path/'project'; root.mkdir(); policy(root)
+    directory = tmp_path/'deps'; directory.mkdir()
+    git(root,'init','-q'); commit(root,'project declaration')
+    bind(root,'deps',directory)
+    Ledger(root=root, task='t', request='private prompt').save()
+    assert git(root,'status','--porcelain','--untracked-files=all') == b''
+
+
 def test_bracketed_paths_remain_literal_files_instead_of_globs(tmp_path):
     from core.inputs.definition import load
     policy(tmp_path,witnesses=[{'id':'route','root':'deps','paths':['types/[slug]/route.d.ts']}])

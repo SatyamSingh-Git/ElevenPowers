@@ -121,8 +121,10 @@ def bind(root, name, approved, replace=False):
         if len(value['roots']) > 32:
             raise ValueError('too many local root bindings')
         ignored = path.parent/'.gitignore'
-        prior = definition.raw(ignored, optional=True) or b''
-        text = prior.decode('utf-8')
+        prior = definition.raw(ignored, optional=True)
+        # The ledger adds its ignore-everything marker only when none exists, so
+        # a marker created here must already ignore the whole private directory.
+        text = '*\n' if prior is None else prior.decode('utf-8')
         required = '/'+FILE+'\n/.gitignore\n/ledger.lock\n'
         if not text.endswith(required):
             text += ('\n' if text and not text.endswith('\n') else '') + required
