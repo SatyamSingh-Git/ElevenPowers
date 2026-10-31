@@ -18,6 +18,7 @@ from .execution_report import inspect as execution_report
 from .policy import fingerprint as policy_fingerprint
 from ..inputs.collection import capture as input_capture, markdown as input_markdown
 from ..inputs.definition import raw as input_raw
+from ..inputs.remote import markdown as remote_markdown, receipts_view as remote_receipts, status as remote_status
 
 
 LIMITS = [
@@ -40,7 +41,10 @@ def _guard(root, deadline):
                        ('.elevenpowers/patch-verification.json', 1024 * 1024),
                        ('.elevenpowers/input-roots.json', 65536),
                        ('elevenpowers.inputs.json', 65536),
-                       ('elevenpowers.contracts.json', 65536)):
+                       ('elevenpowers.contracts.json', 65536),
+                       ('elevenpowers.remotes.json', 65536),
+                       ('.elevenpowers/remote-approvals.json', 4 * 1024 * 1024),
+                       ('.elevenpowers/remote-observations.json', 4 * 1024 * 1024)):
         if rel == '.elevenpowers/input-roots.json' and not (root/'elevenpowers.inputs.json').exists():
             continue  # Unconfigured users do not authorize reading unused approvals.
         if time.monotonic() >= deadline:
@@ -278,12 +282,15 @@ def build(root, base='HEAD~1', head='HEAD', *, timeout=120, impact=False):
             check['association_issues'].append('final bundle state inspection is unavailable')
         if execution['state'] != 'absent':
             execution['state'] = 'incomplete'
+    # Recorded history only: building a bundle never contacts a remote.
+    remote_value = remote_receipts(remote_status(root, deadline=deadline), receipts)
     value = {'schema_version': 1, 'kind': 'patchproof', 'patch': patch,
              'binding': {'state': 'bound' if bound else 'unavailable',
                          'meaning': 'current checkout and recorded input association, not universal patch safety',
                          'issues': list(dict.fromkeys(issues))},
              'verification': report, 'receipts': receipts, 'checks': checks, 'contracts': contracts,
              'impact': impact_value, 'execution': execution, 'external_inputs': external_inputs,
+             'remote_observations': remote_value,
              'coverage': {'unobserved_patch_paths': sorted(patch_paths - covered),
                           'unsupported_properties': ['API compatibility', 'database compatibility',
                                                      'security compatibility', 'behavioral compatibility']},
@@ -381,7 +388,10 @@ def markdown(value):
         if impact['query'] is not None:
             lines += ['', impact_markdown(impact['query'])]
     lines += ['- ' + _text(limit) for limit in impact['limits']]
-    lines += ['', input_markdown(value['external_inputs']), '', '## Coverage gaps and next actions', '']
+    lines += ['', input_markdown(value['external_inputs']), '']
+    if 'remote_observations' in value:
+        lines += remote_markdown(value['remote_observations'])
+    lines += ['## Coverage gaps and next actions', '']
     lines += ['- ' + _text(issue) for issue in binding['issues']]
     lines += ['- Unobserved patch path: ' + _text(p) for p in value['coverage']['unobserved_patch_paths']]
     lines += ['- Unsupported property; applicability unknown: ' + _text(p)

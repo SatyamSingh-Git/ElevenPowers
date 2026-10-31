@@ -1,5 +1,11 @@
 # Roadmap
 
+**2026-10-31 — Remote observations v1.** Approved, explicit observations of
+declared remote resources, with offline status and receipt bracketing in
+PatchProof bundles. Feeding remote state into execution and reuse decisions,
+signed attestation and live PR/fork transport remain open. See
+[usage](../the-guide/remote-observations.md).
+
 **2026-10-17 — Runner guidance and owned batches source-qualified.** Current qualification: **all four hosted cells passed their full suites**, alongside 107 local audits. Local disjoint coverage retains 2,557 passes/4 skips across two environments; the original full invocation remains a diagnosed, repaired setup failure, not a fresh single full-suite pass. Two fresh Sonnet 5.5 medium conversations retain **2/2 installed acceptances**, using 212.329 model-process seconds in total. All previous negative trials remain unchanged at their own producers. These authored cases do not establish a causal coding-quality advantage. Next: prepare a fresh comparison batch at this qualified producer using the unchanged frozen requests/oracles, then run the matched multi-stage outcome comparison as a separate experiment, with all scheduled stages, both arms and adverse/incomplete outcomes retained. See [plan](../docs/superpowers/plans/2026-10-17-declared-check-adoption.md).
 
 **2026-10-17 — Installed requalification still exposes runner-adoption gaps.** Both newly approved three-task conversations completed and now have distinct task identities; Python owns initial/recovery receipts but misses the failure, while JavaScript retains no qualifying receipts. Zero of two qualify. Reproduce ordinary compound-command and no-edit guidance boundaries before another installed trial. The larger outcome comparison remains blocked and unapproved; both original and repaired-runtime attempts stay published. See [guide](../the-guide/installed-multistage.md).

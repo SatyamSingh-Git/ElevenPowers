@@ -1,5 +1,13 @@
 # Master Plan v0.8
 
+**2026-10-31 — Remote observations v1.** `core/inputs/remote.py` adds approved,
+explicit remote observations with offline status, and PatchProof bundles gain an
+additive `remote_observations` section that brackets receipts by recorded
+observations. Reports never probe, and a remote is never fresh. Thirteen
+guards were seen to flip
+([journey 95](journey/95-a-remote-has-an-age-not-a-freshness.md)). No execution
+or reuse integration, and no benefit exit changes.
+
 **2026-10-29 — Multi-stage v3: twelve cases frozen; the full run waits.**
 Ten more cases were written by fresh authors and reviewed independently. Ten
 findings that would have graded correct work as wrong were fixed. All twelve

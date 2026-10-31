@@ -9,6 +9,8 @@ also describes operation-local guarded source reads.
 
 [External input witnesses](external-inputs.md): declare selected local dependency files or trees, approve their roots privately, and qualify explicit PatchProof execution and reuse without report-side checks.
 
+[Remote observations](remote-observations.md): declare remote resources, approve each exact URL privately, observe them explicitly, and read their recorded history offline in status and PatchProof bundles.
+
 Everything you need to install ElevenPowers, run it, understand what it is telling you, and get unstuck.
 
 If something here is wrong, out of date, or simply does not work — **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)**, or open an issue on [the repository](https://github.com/SatyamSingh-Git/ElevenPowers/issues). A report that says "I ran X, expected Y, got Z" is worth more than a polite one.
