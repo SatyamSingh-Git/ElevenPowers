@@ -1,4 +1,4 @@
-"""Explicit local approval for project-declared external input roots."""
+"""Explicit local approval for project-declared external input roots and remote resources."""
 import sys
 sys.dont_write_bytecode = True
 
@@ -12,6 +12,7 @@ import time
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 from core.inputs.bindings import bind
 from core.inputs.collection import capture
+from core.inputs import remote
 from core.jobs import Busy
 from core.redact import scrub_values
 
@@ -28,8 +29,30 @@ def main():
     inspection.add_argument('--project',type=Path,default=Path.cwd())
     inspection.add_argument('--seconds',type=float,default=10)
     inspection.add_argument('--check',action='store_true')
+    remote_approval = commands.add_parser('approve-remote',help='explicitly approve one declared remote URL')
+    remote_approval.add_argument('--project',type=Path,default=Path.cwd())
+    remote_approval.add_argument('--name',required=True)
+    observation = commands.add_parser('observe',help='fetch approved declared remotes now and record them')
+    observation.add_argument('--project',type=Path,default=Path.cwd())
+    observation.add_argument('--name',action='append')
+    observation.add_argument('--seconds',type=float)
+    observation.add_argument('--check',action='store_true')
+    listing = commands.add_parser('remotes',help='summarise recorded remote observations without network access')
+    listing.add_argument('--project',type=Path,default=Path.cwd())
     args = parser.parse_args()
     try:
+        if args.action == 'approve-remote':
+            print(json.dumps(remote.approve(args.project,args.name),ensure_ascii=True))
+            return 0
+        if args.action == 'observe':
+            rows = scrub_values(remote.observe(args.project,args.name,seconds=args.seconds))
+            print(json.dumps(rows,ensure_ascii=True))
+            return 1 if args.check and any(r['state'] != 'complete' for r in rows) else 0
+        if args.action == 'remotes':
+            value = remote.status(args.project)
+            value.pop('_rows',None)
+            print(json.dumps(scrub_values(value),ensure_ascii=True))
+            return 0
         if args.action == 'inspect':
             if not math.isfinite(args.seconds) or not 0 <= args.seconds <= 60:
                 raise ValueError('inspection seconds outside finite range')

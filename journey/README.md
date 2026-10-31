@@ -1,6 +1,11 @@
 # The journey
 
-Latest: [94 — twelve cases and ten findings](94-twelve-cases-and-ten-findings.md):
+Latest: [95 — a remote has an age, not a freshness](95-a-remote-has-an-age-not-a-freshness.md):
+remote observations v1, with approved explicit fetches, offline status and receipt bracketing in
+PatchProof bundles; redirects and validators read from real producers; an upstream ignore-marker
+defect found and fixed separately; thirteen guards seen to flip.
+
+Recent: [94 — twelve cases and ten findings](94-twelve-cases-and-ten-findings.md):
 ten more v3 cases from fresh authors; independent reviews found ten places correct work would have been
 graded wrong (unit-word facts, extendable lists, an unpinned version, one-design checks, a "dependent"
 that was the requested site), all fixed. Frozen at 8c3d7b1 and published; full run proposed, waiting.

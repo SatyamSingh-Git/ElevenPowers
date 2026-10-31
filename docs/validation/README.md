@@ -1,5 +1,6 @@
 # Validation records
 
+- [2026-10-31 remote observations](2026-10-31-remote-observations.md): approved explicit `ep_inputs observe` with body SHA-256 history; offline status and receipt bracketing in PatchProof bundles; 32 two-direction controls on a counting loopback server; thirteen guards seen to flip; upstream bind ignore-marker fix; no decision integration or benefit claim.
 - [2026-10-23 held-out vacuity by arm](2026-10-23-heldout-vacuity.md): independent 40-task corpus by a frozen rule, defects found before spend (including pytest 9 subtest failures read as passes), 40/40 rehearsal, a qualified pilot and 240 sealed runs: VACUOUS among resolved 84% ordinary vs 37% assisted, p = 0.00016, resolve unchanged.
 
 - [2026-10-19 declared-check completion closure](2026-10-19-declared-check-closure.md): exact declared-check rows beside the unchanged verdict, separate feedback intent, emission and follow-up, witnessed launcher controls and a fix pass; no model.

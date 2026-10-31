@@ -1,5 +1,14 @@
 # Current delivery status
 
+**2026-10-31 — Remote observations v1 (branch `remote-observations`).** Projects
+can declare https resources their checks depend on and approve each exact URL
+locally. Only explicit `ep_inputs observe` fetches them, recording the SHA-256 of
+the body into bounded history. Status and PatchProof bundles read that history
+offline and bracket each receipt between observations. A remote is never
+reported fresh, and remote state affects no execution, reuse or binding
+decision. The work also fixes `ep_inputs bind` leaving later ledger state
+committable. See [validation](validation/2026-10-31-remote-observations.md).
+
 **2026-10-30 — Multi-stage v3 full run: running (batch b).** The user said go on
 five replicates. Batch a was stopped about 30 minutes in: the network check
 treated the word `gh` inside a grep pattern as the GitHub CLI and ended a
