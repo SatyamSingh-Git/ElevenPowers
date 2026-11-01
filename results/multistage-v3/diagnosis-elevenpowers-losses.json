@@ -1,0 +1,697 @@
+[
+ {
+  "slot": "gradebook--elevenpowers--0",
+  "stage": 4,
+  "lost": [
+   "base_reports"
+  ],
+  "dependent": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "agent_edited": [
+   "tests/test_course_config.py",
+   "src/gradebook/storage/course_config.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_course_config.py": "",
+   "src/gradebook/storage/course_config.py": "src/gradebook/storage/course_config.py: imported by src/gradebook/cli/commands.py, src/gradebook/services/merge.py, src/gradebook/services/what_if.py, src/gradebook/storage/course_template.py (+1 more); it imports src/gradebook/errors.py, src/gradebook/grading/late.py, src/gradebook/grading/policies.py, src/gradebook/grading/scales.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--0",
+  "stage": 3,
+  "lost": [
+   "base_stays"
+  ],
+  "dependent": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "agent_edited": [
+   "tests/test_cli.py",
+   "tests/test_money.py",
+   "src/hoteldesk/money.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_cli.py": "",
+   "tests/test_money.py": "",
+   "src/hoteldesk/money.py": "src/hoteldesk/money.py: imported by src/hoteldesk/cli.py, src/hoteldesk/config.py, src/hoteldesk/reports/arrivals.py, src/hoteldesk/reports/audit_report.py (+15 more); it imports src/hoteldesk/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "household_budget--elevenpowers--0",
+  "stage": 7,
+  "lost": [
+   "month_flow"
+  ],
+  "dependent": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "agent_edited": [
+   "tests/test_budgets.py",
+   "src/budgetbook/services/budgets.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_budgets.py": "",
+   "src/budgetbook/services/budgets.py": "src/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+3 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "library_loans--elevenpowers--0",
+  "stage": 1,
+  "lost": [
+   "base_money"
+  ],
+  "dependent": [
+   "src/lending/reports/overdue.py"
+  ],
+  "agent_edited": [
+   "tests/test_basics.py",
+   "tests/test_holds_and_fines.py",
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_basics.py": "",
+   "tests/test_holds_and_fines.py": "",
+   "src/lending/config.py": "src/lending/config.py: imported by src/lending/cli/commands.py, src/lending/services/library.py, src/lending/storage/backup.py; it imports src/lending/_generated.py, src/lending/errors.py, src/lending/model/calendar.py, src/lending/model/money.py",
+   "src/lending/services/fines.py": "src/lending/services/fines.py: imported by src/lending/cli/commands.py, src/lending/reports/day_sheet.py, src/lending/reports/finance.py, src/lending/reports/members.py (+3 more); it imports src/lending/errors.py, src/lending/model/dates.py, src/lending/model/money.py, src/lending/services/policy.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "library_loans--elevenpowers--0",
+  "stage": 3,
+  "lost": [
+   "base_desk"
+  ],
+  "dependent": [
+   "src/lending/reports/loans.py"
+  ],
+  "agent_edited": [
+   "tests/test_circulation.py",
+   "tests/test_cli.py",
+   "src/lending/errors.py",
+   "src/lending/services/circulation.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_circulation.py": "",
+   "tests/test_cli.py": "",
+   "src/lending/errors.py": "src/lending/errors.py: imported by src/lending/cli/main.py, src/lending/config.py, src/lending/model/catalogue.py, src/lending/model/dates.py (+13 more)",
+   "src/lending/services/circulation.py": "src/lending/services/circulation.py: imported by src/lending/cli/commands.py; it imports src/lending/errors.py, src/lending/model/holds.py, src/lending/model/loans.py, src/lending/model/money.py (+6 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--0",
+  "stage": 1,
+  "lost": [
+   "base_consistency",
+   "base_values"
+  ],
+  "dependent": [
+   "src/payroll/services/yearend.py"
+  ],
+  "agent_edited": [
+   "tests/test_payrun_file.py",
+   "src/payroll/model/money.py",
+   "src/payroll/storage/payrun_file.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_payrun_file.py": "",
+   "src/payroll/model/money.py": "src/payroll/model/money.py: imported by src/payroll/cli.py, src/payroll/model/payslip.py, src/payroll/reports/bank_file.py, src/payroll/reports/compare.py (+17 more); it imports src/payroll/errors.py",
+   "src/payroll/storage/payrun_file.py": "src/payroll/storage/payrun_file.py: imported by src/payroll/services/doctor.py, src/payroll/services/payrun.py; it imports src/payroll/errors.py, src/payroll/model/money.py, src/payroll/model/payslip.py, src/payroll/model/period.py (+2 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "recipe_box--elevenpowers--0",
+  "stage": 4,
+  "lost": [
+   "base_shopping"
+  ],
+  "dependent": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "agent_edited": [
+   "tests/test_recipes.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_recipes.py": "",
+   "src/recipebox/core/recipe.py": "src/recipebox/core/recipe.py: imported by src/recipebox/cli/commands.py, src/recipebox/core/plan.py, src/recipebox/services/importer.py, src/recipebox/services/scaling.py (+2 more); it imports src/recipebox/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "gradebook--elevenpowers--1",
+  "stage": 4,
+  "lost": [
+   "base_reports"
+  ],
+  "dependent": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "agent_edited": [
+   "tests/test_course_config.py",
+   "src/gradebook/storage/course_config.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_course_config.py": "",
+   "src/gradebook/storage/course_config.py": "src/gradebook/storage/course_config.py: imported by src/gradebook/cli/commands.py, src/gradebook/services/merge.py, src/gradebook/services/what_if.py, src/gradebook/storage/course_template.py (+1 more); it imports src/gradebook/errors.py, src/gradebook/grading/late.py, src/gradebook/grading/policies.py, src/gradebook/grading/scales.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--1",
+  "stage": 3,
+  "lost": [
+   "base_stays"
+  ],
+  "dependent": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "agent_edited": [
+   "tests/test_cli.py",
+   "tests/test_money.py",
+   "src/hoteldesk/money.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_cli.py": "",
+   "tests/test_money.py": "",
+   "src/hoteldesk/money.py": "src/hoteldesk/money.py: imported by src/hoteldesk/cli.py, src/hoteldesk/config.py, src/hoteldesk/reports/arrivals.py, src/hoteldesk/reports/audit_report.py (+15 more); it imports src/hoteldesk/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "household_budget--elevenpowers--1",
+  "stage": 7,
+  "lost": [
+   "month_flow"
+  ],
+  "dependent": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "agent_edited": [
+   "tests/test_budgets.py",
+   "src/budgetbook/services/budgets.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_budgets.py": "",
+   "src/budgetbook/services/budgets.py": "src/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+4 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--1",
+  "stage": 5,
+  "lost": [
+   "base_consistency",
+   "base_values"
+  ],
+  "dependent": [
+   "src/payroll/services/payrun.py"
+  ],
+  "agent_edited": [
+   "tests/test_timesheets.py",
+   "src/payroll/storage/timesheet_store.py"
+  ],
+  "verdict": "detected, not delivered",
+  "briefs": {
+   "tests/test_timesheets.py": "",
+   "src/payroll/storage/timesheet_store.py": "src/payroll/storage/timesheet_store.py: imported by src/payroll/services/checks.py, src/payroll/services/doctor.py, src/payroll/services/payrun.py, src/payroll/services/timesheets.py; it imports src/payroll/model/timesheet.py, src/payroll/storage/files.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "recipe_box--elevenpowers--1",
+  "stage": 4,
+  "lost": [
+   "base_shopping"
+  ],
+  "dependent": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "agent_edited": [
+   "tests/test_recipes.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_recipes.py": "",
+   "src/recipebox/core/recipe.py": "src/recipebox/core/recipe.py: imported by src/recipebox/cli/commands.py, src/recipebox/core/plan.py, src/recipebox/services/importer.py, src/recipebox/services/scaling.py (+2 more); it imports src/recipebox/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "fleet_service--elevenpowers--2",
+  "stage": 4,
+  "lost": [
+   "base_records"
+  ],
+  "dependent": [
+   "src/fleetkeep/reports/summary.py"
+  ],
+  "agent_edited": [
+   "tests/test_reports.py",
+   "src/fleetkeep/reports/fuel.py",
+   "src/fleetkeep/reports/layout.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_reports.py": "",
+   "src/fleetkeep/reports/fuel.py": "src/fleetkeep/reports/fuel.py: imported by src/fleetkeep/reports/registry.py; it imports src/fleetkeep/model/money.py",
+   "src/fleetkeep/reports/layout.py": "src/fleetkeep/reports/layout.py: imported by src/fleetkeep/reports/render.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "gradebook--elevenpowers--2",
+  "stage": 4,
+  "lost": [
+   "base_reports"
+  ],
+  "dependent": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "agent_edited": [
+   "tests/test_course_config.py",
+   "src/gradebook/storage/course_config.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_course_config.py": "",
+   "src/gradebook/storage/course_config.py": "src/gradebook/storage/course_config.py: imported by src/gradebook/cli/commands.py, src/gradebook/services/merge.py, src/gradebook/services/what_if.py, src/gradebook/storage/course_template.py (+1 more); it imports src/gradebook/errors.py, src/gradebook/grading/late.py, src/gradebook/grading/policies.py, src/gradebook/grading/scales.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "household_budget--elevenpowers--2",
+  "stage": 7,
+  "lost": [
+   "month_flow"
+  ],
+  "dependent": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "agent_edited": [
+   "tests/test_budgets.py",
+   "src/budgetbook/services/budgets.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_budgets.py": "",
+   "src/budgetbook/services/budgets.py": "src/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+3 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "recipe_box--elevenpowers--2",
+  "stage": 4,
+  "lost": [
+   "base_shopping"
+  ],
+  "dependent": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "agent_edited": [
+   "tests/test_recipes.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_recipes.py": "",
+   "src/recipebox/core/recipe.py": "src/recipebox/core/recipe.py: imported by src/recipebox/cli/commands.py, src/recipebox/core/plan.py, src/recipebox/services/importer.py, src/recipebox/services/scaling.py (+2 more); it imports src/recipebox/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "gradebook--elevenpowers--3",
+  "stage": 4,
+  "lost": [
+   "base_reports"
+  ],
+  "dependent": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "agent_edited": [
+   "tests/test_course_config.py",
+   "src/gradebook/storage/course_config.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_course_config.py": "",
+   "src/gradebook/storage/course_config.py": "src/gradebook/storage/course_config.py: imported by src/gradebook/cli/commands.py, src/gradebook/services/merge.py, src/gradebook/services/what_if.py, src/gradebook/storage/course_template.py (+1 more); it imports src/gradebook/errors.py, src/gradebook/grading/late.py, src/gradebook/grading/policies.py, src/gradebook/grading/scales.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--3",
+  "stage": 3,
+  "lost": [
+   "base_stays"
+  ],
+  "dependent": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "agent_edited": [
+   "tests/test_cli.py",
+   "tests/test_money.py",
+   "src/hoteldesk/money.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_cli.py": "",
+   "tests/test_money.py": "",
+   "src/hoteldesk/money.py": "src/hoteldesk/money.py: imported by src/hoteldesk/cli.py, src/hoteldesk/config.py, src/hoteldesk/reports/arrivals.py, src/hoteldesk/reports/audit_report.py (+15 more); it imports src/hoteldesk/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "household_budget--elevenpowers--3",
+  "stage": 7,
+  "lost": [
+   "month_flow"
+  ],
+  "dependent": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "agent_edited": [
+   "tests/test_budgets.py",
+   "src/budgetbook/services/budgets.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_budgets.py": "",
+   "src/budgetbook/services/budgets.py": "src/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+3 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "library_loans--elevenpowers--3",
+  "stage": 1,
+  "lost": [
+   "base_money"
+  ],
+  "dependent": [
+   "src/lending/reports/overdue.py"
+  ],
+  "agent_edited": [
+   "tests/test_holds_and_fines.py",
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_holds_and_fines.py": "",
+   "src/lending/config.py": "src/lending/config.py: imported by src/lending/cli/commands.py, src/lending/services/library.py, src/lending/storage/backup.py; it imports src/lending/_generated.py, src/lending/errors.py, src/lending/model/calendar.py, src/lending/model/money.py",
+   "src/lending/services/fines.py": "src/lending/services/fines.py: imported by src/lending/cli/commands.py, src/lending/reports/day_sheet.py, src/lending/reports/finance.py, src/lending/reports/members.py (+3 more); it imports src/lending/errors.py, src/lending/model/dates.py, src/lending/model/money.py, src/lending/services/policy.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "library_loans--elevenpowers--3",
+  "stage": 3,
+  "lost": [
+   "base_desk"
+  ],
+  "dependent": [
+   "src/lending/reports/loans.py"
+  ],
+  "agent_edited": [
+   "tests/test_circulation.py",
+   "tests/test_cli.py",
+   "src/lending/errors.py",
+   "src/lending/services/circulation.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_circulation.py": "",
+   "tests/test_cli.py": "",
+   "src/lending/errors.py": "src/lending/errors.py: imported by src/lending/cli/main.py, src/lending/config.py, src/lending/model/catalogue.py, src/lending/model/dates.py (+13 more)",
+   "src/lending/services/circulation.py": "src/lending/services/circulation.py: imported by src/lending/cli/commands.py; it imports src/lending/errors.py, src/lending/model/holds.py, src/lending/model/loans.py, src/lending/model/money.py (+6 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "parcelpost--elevenpowers--3",
+  "stage": 5,
+  "lost": [
+   "base_cli_day",
+   "base_shipping_day"
+  ],
+  "dependent": [
+   "src/parcelpost/services/billing.py"
+  ],
+  "agent_edited": [
+   "tests/test_manifest_billing.py",
+   "src/parcelpost/formats/manifest.py"
+  ],
+  "verdict": "detected, not delivered",
+  "briefs": {
+   "tests/test_manifest_billing.py": "",
+   "src/parcelpost/formats/manifest.py": "src/parcelpost/formats/manifest.py: imported by src/parcelpost/services/billing.py, src/parcelpost/services/housekeeping.py, src/parcelpost/services/manifesting.py, src/parcelpost/services/reconcile.py; it imports src/parcelpost/core/money.py, src/parcelpost/storage/files.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--3",
+  "stage": 2,
+  "lost": [
+   "base_consistency"
+  ],
+  "dependent": [
+   "src/payroll/reports/hours.py"
+  ],
+  "agent_edited": [
+   "tests/test_config.py",
+   "tests/test_rules.py",
+   "src/payroll/config.py",
+   "src/payroll/rules/overtime.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_config.py": "",
+   "tests/test_rules.py": "",
+   "src/payroll/config.py": "src/payroll/config.py: imported by src/payroll/cli.py, src/payroll/services/doctor.py; it imports src/payroll/errors.py, src/payroll/model/period.py",
+   "src/payroll/rules/overtime.py": "src/payroll/rules/overtime.py: imported by src/payroll/services/payrun.py; it imports src/payroll/_generated.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "recipe_box--elevenpowers--3",
+  "stage": 4,
+  "lost": [
+   "base_shopping"
+  ],
+  "dependent": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "agent_edited": [
+   "tests/test_recipes.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_recipes.py": "",
+   "src/recipebox/core/recipe.py": "src/recipebox/core/recipe.py: imported by src/recipebox/cli/commands.py, src/recipebox/core/plan.py, src/recipebox/services/importer.py, src/recipebox/services/scaling.py (+2 more); it imports src/recipebox/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "fleet_service--elevenpowers--4",
+  "stage": 5,
+  "lost": [
+   "base_records"
+  ],
+  "dependent": [
+   "src/fleetkeep/importers/history.py"
+  ],
+  "agent_edited": [
+   "tests/test_cli.py",
+   "tests/test_workorders.py",
+   "src/fleetkeep/errors.py",
+   "src/fleetkeep/model/catalog.py",
+   "src/fleetkeep/services/workorders.py"
+  ],
+  "verdict": "detected, not delivered",
+  "briefs": {
+   "tests/test_cli.py": "",
+   "tests/test_workorders.py": "",
+   "src/fleetkeep/errors.py": "src/fleetkeep/errors.py: imported by src/fleetkeep/cli/main.py, src/fleetkeep/config.py, src/fleetkeep/importers/fuelcard.py, src/fleetkeep/importers/history.py (+15 more)",
+   "src/fleetkeep/model/catalog.py": "src/fleetkeep/model/catalog.py: imported by src/fleetkeep/reports/orders.py, src/fleetkeep/reports/vehicles.py, src/fleetkeep/services/fleet.py, src/fleetkeep/services/scheduling.py; it imports src/fleetkeep/_generated.py",
+   "src/fleetkeep/services/workorders.py": "src/fleetkeep/services/workorders.py: imported by src/fleetkeep/cli/commands.py, src/fleetkeep/reports/costs.py, src/fleetkeep/reports/spend.py; it imports src/fleetkeep/errors.py, src/fleetkeep/model/readings.py, src/fleetkeep/model/stock.py, src/fleetkeep/model/workorder.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "gradebook--elevenpowers--4",
+  "stage": 4,
+  "lost": [
+   "base_reports"
+  ],
+  "dependent": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "agent_edited": [
+   "tests/test_course_config.py",
+   "src/gradebook/storage/course_config.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_course_config.py": "",
+   "src/gradebook/storage/course_config.py": "src/gradebook/storage/course_config.py: imported by src/gradebook/cli/commands.py, src/gradebook/services/merge.py, src/gradebook/services/what_if.py, src/gradebook/storage/course_template.py (+1 more); it imports src/gradebook/errors.py, src/gradebook/grading/late.py, src/gradebook/grading/policies.py, src/gradebook/grading/scales.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--4",
+  "stage": 3,
+  "lost": [
+   "base_stays"
+  ],
+  "dependent": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "agent_edited": [
+   "tests/test_cli.py",
+   "tests/test_money.py",
+   "src/hoteldesk/money.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_cli.py": "",
+   "tests/test_money.py": "",
+   "src/hoteldesk/money.py": "src/hoteldesk/money.py: imported by src/hoteldesk/cli.py, src/hoteldesk/config.py, src/hoteldesk/reports/arrivals.py, src/hoteldesk/reports/audit_report.py (+15 more); it imports src/hoteldesk/errors.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "household_budget--elevenpowers--4",
+  "stage": 7,
+  "lost": [
+   "month_flow"
+  ],
+  "dependent": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "agent_edited": [
+   "tests/test_budgets.py",
+   "src/budgetbook/services/budgets.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_budgets.py": "",
+   "src/budgetbook/services/budgets.py": "src/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+3 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": true
+ },
+ {
+  "slot": "library_loans--elevenpowers--4",
+  "stage": 1,
+  "lost": [
+   "base_money"
+  ],
+  "dependent": [
+   "src/lending/reports/overdue.py"
+  ],
+  "agent_edited": [
+   "tests/test_holds_and_fines.py",
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_holds_and_fines.py": "",
+   "src/lending/config.py": "src/lending/config.py: imported by src/lending/cli/commands.py, src/lending/services/library.py, src/lending/storage/backup.py; it imports src/lending/_generated.py, src/lending/errors.py, src/lending/model/calendar.py, src/lending/model/money.py",
+   "src/lending/services/fines.py": "src/lending/services/fines.py: imported by src/lending/cli/commands.py, src/lending/reports/day_sheet.py, src/lending/reports/finance.py, src/lending/reports/members.py (+3 more); it imports src/lending/errors.py, src/lending/model/dates.py, src/lending/model/money.py, src/lending/services/policy.py (+1 more)"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "parcelpost--elevenpowers--4",
+  "stage": 5,
+  "lost": [
+   "base_cli_day",
+   "base_shipping_day"
+  ],
+  "dependent": [
+   "src/parcelpost/services/billing.py"
+  ],
+  "agent_edited": [
+   "tests/test_manifest_billing.py",
+   "src/parcelpost/formats/manifest.py"
+  ],
+  "verdict": "detected, not delivered",
+  "briefs": {
+   "tests/test_manifest_billing.py": "",
+   "src/parcelpost/formats/manifest.py": "src/parcelpost/formats/manifest.py: imported by src/parcelpost/services/billing.py, src/parcelpost/services/housekeeping.py, src/parcelpost/services/manifesting.py, src/parcelpost/services/reconcile.py; it imports src/parcelpost/core/money.py, src/parcelpost/storage/files.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--4",
+  "stage": 2,
+  "lost": [
+   "base_consistency"
+  ],
+  "dependent": [
+   "src/payroll/reports/hours.py"
+  ],
+  "agent_edited": [
+   "tests/test_rules.py",
+   "src/payroll/config.py",
+   "src/payroll/rules/overtime.py"
+  ],
+  "verdict": "not detected",
+  "briefs": {
+   "tests/test_rules.py": "",
+   "src/payroll/config.py": "src/payroll/config.py: imported by src/payroll/cli.py, src/payroll/services/doctor.py; it imports src/payroll/errors.py, src/payroll/model/period.py",
+   "src/payroll/rules/overtime.py": "src/payroll/rules/overtime.py: imported by src/payroll/services/payrun.py; it imports src/payroll/_generated.py"
+  },
+  "dependent_edited": false,
+  "dependent_seen_in_transcript": false
+ }
+]

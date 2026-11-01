@@ -135,6 +135,40 @@ of model time against 6.5.
 - **Total spent:** $153.40, made up of $8.93 for batch a, $65.35 for b and
   $79.12 for c, plus about $0.30 of probes.
 
+## Why ElevenPowers did not help: diagnosis of its 31 losses ($0)
+
+This takes every stage where the ElevenPowers arm lost an earlier group (31
+of them) and asks where prevention failed. Was the dependent that broke
+detected? Was the warning delivered? Was it ignored? It was computed from the
+kept snapshots and transcripts by [`diagnose_losses.py`](diagnose_losses.py).
+For detection, ElevenPowers' own `atlas.neighbourhood` brief is replayed on
+the pre-stage tree for each file the agent edited. Per-loss rows are in
+[`diagnosis-elevenpowers-losses.json`](diagnosis-elevenpowers-losses.json).
+
+| where it failed | losses |
+|---|---|
+| **not detected**: no brief for an edited file names the dependent | 27 |
+| of those, the dependent imports an edited file but sits behind the brief's four-name cutoff ("+N more") | 5 |
+| of those, the dependent does not import any edited file at all | 22 |
+| **detected**: a brief names the dependent | 4 |
+| the agent edited the dependent, in any loss | 0 |
+
+- **Detection is the main failure.** 22 of 31 dependents are not reachable
+  through imports at all. They depend on behaviour, such as a file format, a
+  row order or a precision, not on a name. No import graph can find them, so
+  a detector that watches behaviour is needed. The other 5 were reachable but
+  cut off by the four-name limit.
+- **Delivery is unverified.** The PreToolUse brief is emitted: 13 of 95 final
+  ledgers list briefed files. But its text appears in none of the
+  stream-json transcripts, so whether the model receives it cannot be read
+  from these runs. That needs its own probe.
+- **The agent was told a false FAIL in 391 of 621 stages (63%).** The startup
+  health check fails on any "unreadable test output" record.
+  `parsers.claims_to_run_tests` matches the word `tests` anywhere in a
+  command, so reading a test file (`sed -n 1,12p tests/test_x.py`) is
+  recorded as a test run nobody could read. It is the same defect class as
+  the `gh` false breach: a word matched anywhere, not where a command starts.
+
 ## The full run, started 2026-10-30
 
 The user said go on five replicates. 120 slots were sealed in
