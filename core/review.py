@@ -14,6 +14,7 @@ docs/superpowers/specs/2026-11-01-reviewer-report-design.md.
 from contextlib import contextmanager
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -23,12 +24,15 @@ from . import process
 from .config import load
 from .evidence import Kind, Result
 from .parsers import parse
-from .stress import COLLECT_ERROR
+from .strength.execution import Budget, execute
+from .stress import COLLECT_ERROR, _with_outcomes
 from .surface import TEST_NAME
 
 PINNED, NOT_PINNED, UNKNOWN = 'pinned', 'not pinned', 'unknown'
 TIMEOUT = 300
 SHOWN = 10  # Pinning tests listed by name; read in a minute, not scrolled.
+# pytest's own words for a run that did not reach every test (-x, --maxfail, a collection error).
+STOPPED = re.compile(r'^!+ (?:stopping after \d+ failures?|Interrupted: .*?) !+\s*$', re.MULTILINE)
 # No hook runs in the private worktree: nothing undeclared is run.
 GIT = ['git', '--literal-pathspecs', '-c', f'core.hooksPath={os.devnull}']
 
@@ -80,32 +84,46 @@ def _worktree(root, commit):
         shutil.rmtree(hold, ignore_errors=True)
 
 
-def _run(name, command, tree, timeout):
-    run = {'name': name, 'command': command, 'exit': None, 'seconds': 0.0, 'failing': [], 'named': False,
-           'problem': ''}
+def _run(name, command, cwd, timeout, original):
+    # pytest names its passes too, so a run can be told apart from one that stopped early.
+    command = _with_outcomes(command)
+    run = {'name': name, 'command': command, 'exit': None, 'seconds': 0.0, 'failing': [], 'passed': [],
+           'named': False, 'stopped': False, 'problem': ''}
     started = time.monotonic()
-    # A same-size edit inside one second keeps a stale .pyc (mtime+size check), so the
-    # undone tree would silently run the change; eval/heldout_vacuity measured it.
-    env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'}
-    try:
-        done = process.run(command, cwd=tree, timeout=timeout, env=env)
-    except subprocess.TimeoutExpired:
+    # core/strength's runner: no bytecode is written (a same-size undo inside one second would
+    # otherwise run the change's stale .pyc), and its guard catches a Python run that can
+    # import the reviewer's checkout instead of this worktree.
+    done = execute(command, cwd, Budget(time.monotonic() + timeout, 1), timeout, original=original)
+    if done.status == 'timed_out':
         run['problem'] = f'timed out after {timeout} seconds'
-    except process.OutputLimitExceeded:
-        run['problem'] = 'printed more output than can be read'
-    except OSError as error:
-        run['problem'] = f'could not start: {error}'
+    elif done.status == 'isolation_error':
+        run['problem'] = ('could import your checkout instead of the private worktree '
+                          '(an editable install, or PYTHONPATH pointing into it)')
+    elif done.status != 'complete':
+        run['problem'] = 'could not run, or printed more output than can be read'
     else:
-        output = (done.stdout or '') + (done.stderr or '')
-        records = parse(command, output, done.returncode, tree)
-        failing = {r.identity for r in records if r.kind is Kind.TEST and r.result is not Result.PASS}
+        output = done.stdout + done.stderr
+        tests = [r for r in parse(command, output, done.returncode, cwd) if r.kind is Kind.TEST]
+        failing = {r.identity for r in tests if r.result is not Result.PASS}
         # The pattern also matches a setup error's `ERROR file.py::test`; keep only files no test names.
         collect = {path for path in COLLECT_ERROR.findall(output)
                    if not any(name.startswith(path + '::') for name in failing)}
-        run.update(exit=done.returncode, named=bool(collect) or any(r.kind is Kind.TEST for r in records),
-                   failing=sorted(failing | collect))
+        run.update(exit=done.returncode, named=bool(collect) or bool(tests), stopped=bool(STOPPED.search(output)),
+                   failing=sorted(failing | collect),
+                   passed=sorted(r.identity for r in tests if r.result is Result.PASS))
     run['seconds'] = round(time.monotonic() - started, 2)
     return run
+
+
+def _among(name, names):
+    """The same test, or a file and a test inside it: `t.py` fails when `t.py::test` does."""
+    return any(name == other or name.startswith(other + '::') or other.startswith(name + '::') for other in names)
+
+
+def _broken(head, undone):
+    """Tests that fail with the change and pass without it."""
+    return sorted(name for name in head['failing']
+                  if _among(name, undone['passed']) and not _among(name, undone['failing']))
 
 
 def _verdict(head, undone, again):
@@ -114,10 +132,14 @@ def _verdict(head, undone, again):
             return UNKNOWN, f"the {run['name']} run {run['problem']}", []
     if head['failing'] != again['failing'] or (head['exit'] == 0) != (again['exit'] == 0):
         return UNKNOWN, 'the suite gave different results on the same tree, so a difference cannot be trusted', []
-    new = sorted(set(undone['failing']) - set(head['failing']))
+    unseen = [name for name in undone['failing'] if not _among(name, head['failing'])]
+    # When head stopped early, only a test seen passing there can show a difference.
+    new = [name for name in unseen if _among(name, head['passed'])] if head['stopped'] else unseen
     if new:
         return PINNED, (f"{len(new)} {'test fails' if len(new) == 1 else 'tests fail'} with the change "
-                        f"undone and {'passes' if len(new) == 1 else 'pass'} with it"), new
+                        f"undone and {'passes' if len(new) == 1 else 'pass'} with it"), sorted(new)
+    if undone['stopped'] or len(unseen) > len(new):
+        return UNKNOWN, 'a run stopped before every test had run, so finding no difference shows nothing', []
     if undone['exit'] == 0 or (head['named'] and undone['named'] and undone['exit'] != 0 and head['exit'] != 0):
         return NOT_PINNED, 'no test fails with the change undone that did not already fail with it', []
     if head['exit'] == 0:
@@ -130,7 +152,8 @@ def _limits(report):
               if report['command'] else 'No test command was run.',
               'A test that fails with the change undone shows the change is noticed, not that it is right.',
               'The private checkout holds tracked files and node_modules only: a virtual environment or build '
-              'output that lives inside the project is not there.']
+              'output that lives inside the project is not there. Only Python runs are checked for importing '
+              'your checkout instead.']
     if report['kept']:
         limits.insert(0, f"{len(report['kept'])} file(s) the change added were kept when it was undone, so a "
                          'test that only imports them notices nothing.')
@@ -163,7 +186,8 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
     root = Path(root).resolve(strict=True)
     command = command if command is not None else load(root).command_for('tests')
     report = {'schema': 1, 'base': _identity(root, base), 'head': _identity(root, head), 'command': command,
-              'verdict': UNKNOWN, 'reason': '', 'pinning': [], 'named': False, 'runs': [], 'strength': None}
+              'verdict': UNKNOWN, 'reason': '', 'pinning': [], 'broken': [], 'named': False, 'runs': [],
+              'strength': None}
     changed = _changed(root, report['base']['commit'], report['head']['commit'])
     report['tests'] = sorted(path for _, path in changed if TEST_NAME.search(path))
     report['undone'] = sorted(path for status, path in changed if status != 'A' and not TEST_NAME.search(path))
@@ -178,21 +202,24 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
         with _worktree(root, report['head']['commit']) as (tree, project, hold):
             runs = report['runs']
             if report['undone']:
-                runs.append(_run('head', command, project, timeout))
+                runs.append(_run('head', command, project, timeout, root))
             if runs and not runs[-1]['problem']:
                 paths = hold / 'undone.txt'
                 paths.write_bytes(b'\0'.join(p.encode('utf-8') for p in report['undone']))
                 _git(tree, 'checkout', report['base']['commit'], f'--pathspec-from-file={paths}',
                      '--pathspec-file-nul')
-                runs.append(_run('undone', command, project, timeout))
+                runs.append(_run('undone', command, project, timeout, root))
                 _git(tree, 'reset', '-q', '--hard', report['head']['commit'])
-                runs.append(_run('head again', command, project, timeout))
+                runs.append(_run('head again', command, project, timeout, root))
             if strength:
                 report['strength'] = _strength(project, root, report['base']['commit'], command)
         if runs:
             verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
                                         else (UNKNOWN, f"the head run {runs[0]['problem']}", []))
             report.update(verdict=verdict, reason=reason, pinning=pinning, named=any(r['named'] for r in runs))
+            # Only from runs that agree with themselves; an unstable suite names nothing reliably.
+            if len(runs) == 3 and runs[0]['failing'] == runs[2]['failing']:
+                report['broken'] = _broken(runs[0], runs[1])
     report['unknown'] = _limits(report)
     return report
 
@@ -219,21 +246,30 @@ def _unpinned(strength, verdict):
     return [f"Not measured: {_text(strength['state'])}."]
 
 
+def _listed(names):
+    from .export import _text
+    lines = [f'- {_text(name)}' for name in names[:SHOWN]]
+    if len(names) > SHOWN:
+        lines.append(f'- and {len(names) - SHOWN} more; the JSON report lists them all')
+    return lines + ['']
+
+
 def markdown(report):
     from .export import _text
     base, head = report['base']['commit'][:12], report['head']['commit'][:12]
     reason = report['reason'][:1].upper() + report['reason'][1:]
     lines = ['# Is this change pinned by its tests?', '', f"**{report['verdict'].upper()}.** {_text(reason)}.", '']
     if report['pinning']:
-        lines += [f'- {_text(test)}' for test in report['pinning'][:SHOWN]]
-        if len(report['pinning']) > SHOWN:
-            lines.append(f"- and {len(report['pinning']) - SHOWN} more; the JSON report lists them all")
-        lines.append('')
+        lines += _listed(report['pinning'])
     elif report['verdict'] == PINNED:
         lines += ['The runner named no test, so which tests pin it is not known.', '']
-    elif report['verdict'] == NOT_PINNED:
+    elif report['verdict'] == NOT_PINNED and not report['broken']:
         lines += ['Nothing in the suite would notice if this change were undone. '
                   'Ask for a test that fails without this change.', '']
+    if report['broken']:
+        count = len(report['broken'])
+        lines += [f"The change breaks {count} {'test that passes' if count == 1 else 'tests that pass'} without it:"]
+        lines += _listed(report['broken'])
     lines += [f"Change {base}..{head}: {len(report['undone'])} file(s) put back to base when undone, "
               f"{len(report['kept'])} added and kept, {len(report['tests'])} test file(s) changed.",
               '', '## Lines no test noticed', '', *_unpinned(report['strength'], report['verdict']), '', '## What was run', '']

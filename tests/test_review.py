@@ -192,7 +192,7 @@ def test_runs_write_no_bytecode(tmp_path):
     # change's .pyc and silently runs it; eval/heldout_vacuity measured 3 of 6 runs.
     from core.review import _run
     check = f'"{sys.executable}" -c "import sys; sys.exit(0 if sys.dont_write_bytecode else 1)"'
-    assert _run('head', check, tmp_path, 60)['exit'] == 0
+    assert _run('head', check, tmp_path, 60, tmp_path / 'checkout')['exit'] == 0
 
 
 def test_a_runner_that_names_no_test_is_judged_by_its_exit_code(tmp_path):
@@ -247,6 +247,91 @@ def test_the_reviewers_checkout_is_left_exactly_as_it_was(tmp_path):
     assert _git(root, 'status', '--porcelain') == '?? scratch.txt'
     assert (root / 'pkg' / 'mod.py').read_text(encoding='utf-8') == CHANGED
     assert len(_git(root, 'worktree', 'list').splitlines()) == 1
+
+
+def test_a_run_that_imports_the_reviewers_checkout_is_unknown(tmp_path, monkeypatch):
+    # An editable install or a PYTHONPATH into the checkout makes every run test it, not the worktree:
+    # src/ is not on the worktree's own path, so every run imports the checkout's value() == 2.
+    root, base = _project(tmp_path, {'src/pkg/__init__.py': '', 'src/pkg/mod.py': MOD, 'tests/test_mod.py': LOOSE})
+    _commit(root, {'src/pkg/mod.py': CHANGED, 'tests/test_two.py': PINNING})
+    monkeypatch.setenv('PYTHONPATH', str(root / 'src'))
+    report = review(root, base, command=PYTEST)
+    assert report['verdict'] == UNKNOWN
+    assert 'your checkout' in report['reason']
+
+
+def test_a_test_red_at_head_is_not_counted_as_pinning_when_it_cannot_import_undone(tmp_path):
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED + '\n\ndef doubled():\n    return 3\n',
+                   'tests/test_doubled.py': 'from pkg.mod import doubled\n\n\ndef test_doubled():\n    assert doubled() == 4\n'})
+    report = review(root, base, command=PYTEST)
+    assert report['verdict'] == UNKNOWN and report['pinning'] == []
+    assert 'stopped' in report['reason']
+
+
+def test_a_test_the_change_breaks_is_named_and_nothing_claims_silence(tmp_path):
+    from core.review import markdown
+    one = 'from pkg.mod import value\n\n\ndef test_one():\n    assert value() == 1\n'
+    root, base = _project(tmp_path, {'pkg/__init__.py': '', 'pkg/mod.py': MOD, 'tests/test_one.py': one})
+    _commit(root, {'pkg/mod.py': CHANGED})
+    report = review(root, base, command=PYTEST)
+    assert report['verdict'] == NOT_PINNED
+    assert report['broken'] == ['tests/test_one.py::test_one']
+    text = markdown(report)
+    assert 'The change breaks 1 test that passes without it:' in text
+    assert 'Nothing in the suite would notice' not in text
+
+
+def test_a_run_that_stops_at_its_first_failure_cannot_clear_a_change(tmp_path):
+    files = {'pkg/__init__.py': '', 'pkg/mod.py': MOD, 'tests/test_a_broken.py': 'def test_broken():\n    assert False\n'}
+    root, base = _project(tmp_path, files)
+    _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_two.py': PINNING})
+    report = review(root, base, command=PYTEST + ' -x')
+    assert report['verdict'] == UNKNOWN and 'stopped' in report['reason']
+
+
+def test_a_failure_head_never_reached_is_not_a_pin(tmp_path):
+    # --maxfail=2 stops head after test_a and test_b, which the change breaks; undone passes both,
+    # runs on, and fails test_c, which head never ran. Undone itself does not stop.
+    old = 'from pkg.mod import value\n\n\ndef test_{}():\n    assert value() == 1\n'
+    root, base = _project(tmp_path, {'pkg/__init__.py': '', 'pkg/mod.py': MOD,
+                                     'tests/test_a.py': old.format('a'), 'tests/test_b.py': old.format('b')})
+    _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_c.py': PINNING.replace('test_two', 'test_c')})
+    report = review(root, base, command=PYTEST + ' --maxfail=2')
+    assert report['runs'][1]['stopped'] is False
+    assert report['verdict'] == UNKNOWN and report['pinning'] == []
+
+
+def test_a_file_that_cannot_import_with_the_change_is_the_same_failure_as_its_tests_undone(tmp_path):
+    # Head cannot import test_legacy.py; undone can, and its test still fails, so nothing new fails.
+    # One test in the file passes undone, so the change did not break the whole file either.
+    legacy = ('from pkg.mod import legacy\n\n\ndef test_legacy():\n    assert legacy() == 0\n\n\n'
+              'def test_exists():\n    assert legacy() == 1\n')
+    root, base = _project(tmp_path, {'pkg/__init__.py': '', 'pkg/mod.py': MOD + '\n\ndef legacy():\n    return 1\n',
+                                     'tests/test_mod.py': LOOSE, 'tests/test_legacy.py': legacy})
+    _commit(root, {'pkg/mod.py': CHANGED})
+    report = review(root, base, command=PYTEST + ' --continue-on-collection-errors')
+    assert report['runs'][0]['failing'] == ['tests/test_legacy.py'] and not report['runs'][0]['stopped']
+    assert report['verdict'] == NOT_PINNED
+    assert report['broken'] == []
+
+
+def test_a_test_that_fails_only_on_its_first_run_is_neither_a_pin_nor_a_break(tmp_path):
+    root, base = _project(tmp_path)
+    marker = tmp_path / 'ran-once'
+    flaky = (f'from pathlib import Path\n\n\ndef test_fails_first():\n'
+             f'    marker = Path({str(marker)!r})\n    seen = marker.exists()\n    marker.touch()\n    assert seen\n')
+    _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_flaky.py': flaky})
+    report = review(root, base, command=PYTEST)
+    assert report['verdict'] == UNKNOWN
+    assert report['broken'] == []
+
+
+def test_a_long_list_of_broken_tests_is_cut_too():
+    from core.review import markdown
+    lines = markdown(_report(verdict=NOT_PINNED, pinning=[], broken=[f't{n}' for n in range(12)])).splitlines()
+    assert lines[4] == 'The change breaks 12 tests that pass without it:'
+    assert lines[5:16] == [f'- t{n}' for n in range(10)] + ['- and 2 more; the JSON report lists them all']
 
 
 def test_an_interrupted_review_leaves_no_worktree_even_a_locked_one(tmp_path, monkeypatch):
@@ -340,7 +425,7 @@ def _report(**overrides):
     report = {'schema': 1, 'base': commit, 'head': {**commit, 'commit': 'c' * 40}, 'command': 'npm test',
               'verdict': PINNED, 'reason': '1 test fails with the change undone and passes with it',
               'pinning': ['tests/test_two.py::test_two'], 'named': True, 'runs': [], 'tests': ['tests/test_two.py'],
-              'undone': ['pkg/mod.py'], 'kept': [], 'unknown': ['A limit.'], 'strength': None}
+              'undone': ['pkg/mod.py'], 'kept': [], 'unknown': ['A limit.'], 'strength': None, 'broken': []}
     return {**report, **overrides}
 
 
@@ -459,6 +544,7 @@ def test_mutation_issues_and_its_limit_join_the_unknowns(tmp_path):
     assert 'Mutation analysis: attempt limit' in limits
     assert any('equivalent' in limit for limit in limits)
     assert not any('equivalent' in limit for limit in _limits(_report(command='npm test')))
+    assert any('Only Python runs are checked for importing your checkout' in limit for limit in limits)
 
 
 def test_the_verdict_and_the_tests_that_pin_it_come_first():
