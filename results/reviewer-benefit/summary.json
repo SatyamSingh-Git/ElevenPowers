@@ -1,0 +1,75 @@
+{
+  "runs": {
+    "scheduled": 86,
+    "graded": 83,
+    "other": {
+      "unreadable": 3
+    },
+    "not_launched": 0
+  },
+  "analysis": {
+    "C": {
+      "caught": {
+        "diff": 9,
+        "report": 9
+      },
+      "pairs": 10,
+      "unpaired": 1,
+      "report_only": 1,
+      "diff_only": 1,
+      "p": 1.0
+    },
+    "U": {
+      "caught": {
+        "diff": 9,
+        "report": 9
+      },
+      "pairs": 9,
+      "unpaired": 2,
+      "report_only": 0,
+      "diff_only": 0,
+      "p": 1.0
+    },
+    "W": {
+      "caught": {
+        "diff": 18,
+        "report": 20
+      },
+      "pairs": 21,
+      "unpaired": 0,
+      "report_only": 2,
+      "diff_only": 0,
+      "p": 0.5
+    }
+  },
+  "gate": {
+    "C": {
+      "expected": 11,
+      "of": 11
+    },
+    "U": {
+      "expected": 11,
+      "of": 11
+    },
+    "W": {
+      "expected": 20,
+      "of": 21
+    }
+  },
+  "cost": {
+    "diff": 2.4882,
+    "report": 2.7415
+  },
+  "mean_seconds": {
+    "diff": 9.6,
+    "report": 10.0
+  },
+  "mean_output_tokens": {
+    "diff": 766,
+    "report": 862
+  },
+  "models": [
+    "claude-haiku-4-5-20251001",
+    "claude-sonnet-5-5"
+  ]
+}

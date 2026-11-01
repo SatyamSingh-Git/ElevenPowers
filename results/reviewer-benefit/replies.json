@@ -1,0 +1,3922 @@
+[
+ {
+  "slot": "payroll_lite-W2--diff",
+  "seed": "payroll_lite-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.108552,
+  "seconds": 9.7,
+  "output_tokens": 725,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/payroll/reports/bank_file.py",
+     "line": 10,
+     "kind": "wrong_behaviour",
+     "description": "NAME_LENGTH was changed from 20 to 21, an unrelated and unrequested change. The bank cuts longer names and rejects the file, and docs/reference.md still says names are cut to 20 characters (bank.name_length). Names of 21 characters would now be written and the bank would reject the file. Must be reverted to 20."
+    },
+    {
+     "file": "src/payroll/reports/bank_file.py",
+     "line": 10,
+     "kind": "missing_test",
+     "description": "No test covers name truncation length, so the NAME_LENGTH change went unnoticed by the test suite."
+    },
+    {
+     "file": "docs/reference.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten (every line shows as changed, likely line-ending change CRLF to LF) instead of a one-row edit to bank.columns. This makes the diff unreviewable and creates noisy churn. The same applies to src/payroll/services/reconcile.py and tests/test_reports.py. Original line endings should be preserved."
+    },
+    {
+     "file": "src/payroll/services/reconcile.py",
+     "line": 1,
+     "kind": "other",
+     "description": "Whole-file rewrite (line-ending change) for a one-line change in load_payments; the real change is hidden in the noise. Restore original line endings."
+    },
+    {
+     "file": "tests/test_reports.py",
+     "line": 1,
+     "kind": "other",
+     "description": "Whole-file rewrite (line-ending churn) for a one-line expectation change in test_bank_rows_skip_nothing_to_pay."
+    },
+    {
+     "file": "src/payroll/services/reconcile.py",
+     "line": 22,
+     "kind": "other",
+     "description": "Changing the order that payroll reconcile reads silently breaks bank files already written in the old order: old files will be parsed with name/reference swapped (e.g. amount parsed correctly but the reference and name swapped, producing wrong 'missing' results) or fail with Decimal errors, with no clear error. Only a changelog note guards this; consider detecting the old layout and giving a clear error."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "payroll_lite-W2--report",
+  "seed": "payroll_lite-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.113937,
+  "seconds": 9.7,
+  "output_tokens": 718,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/payroll/reports/bank_file.py",
+     "line": 10,
+     "kind": "wrong_behaviour",
+     "description": "NAME_LENGTH was changed from 20 to 21 without being asked for. The task only asked for a column reorder. The bank rejects files with longer names, and docs/reference.md still says names are cut to 20 characters (bank.name_length), so code and docs now disagree. This should be reverted to 20."
+    },
+    {
+     "file": "src/payroll/reports/bank_file.py",
+     "line": 10,
+     "kind": "missing_test",
+     "description": "No test checks the name truncation length. The NumberReplacer mutants on this line went unnoticed, which is why the unintended 20 to 21 change was not caught."
+    },
+    {
+     "file": "docs/reference.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten in the diff (every line removed and re-added), which suggests line endings were changed. The same applies to src/payroll/services/reconcile.py and tests/test_reports.py. This hides the real changes in review and adds noise to history. Restore the original line endings so the diff shows only the intended edits."
+    },
+    {
+     "file": "src/payroll/services/reconcile.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten, probably a line-ending change, when the only real change is the column order in load_payments. Restore the original line endings."
+    },
+    {
+     "file": "tests/test_reports.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten, probably a line-ending change, when the only real change is the expected row in test_bank_rows_skip_nothing_to_pay. Restore the original line endings."
+    },
+    {
+     "file": "src/payroll/services/reconcile.py",
+     "line": 22,
+     "kind": "wrong_behaviour",
+     "description": "load_payments now reads only the new column order. Any bank file already written in the old order will be misparsed without an error: the reference is read as the amount, and Decimal() will raise an obscure InvalidOperation. There is no clear error message or check for old-format files. The changelog says to run bank-file again, but the code does not help the user do so."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-C--report",
+  "seed": "recipe_box-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": false,
+  "decision": "accept",
+  "cost": 0.034984,
+  "seconds": 13.8,
+  "output_tokens": 1256,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "accept",
+   "problems": [
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 63,
+     "kind": "missing_test",
+     "description": "Mutation testing changed the numbers in the DENOMINATORS line (src/recipebox/core/quantity.py:15) four times and no test failed. The new test covers only 1/3, 2/3 and 1 1/3, so changing 2, 4 or 8 goes unnoticed. Add assertions for an amount that rounds to each of the halves, quarters and eighths, plus a 3/8 case to show eighths still work next to thirds."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 65,
+     "kind": "other",
+     "description": "An existing assertion was edited: `display_amount(13/10, 'cup') == '1 1/4'` became `6/5`. With thirds allowed, 1.3 now rounds to 1 1/3, so the edit follows from the fix. It should still be called out as a deliberate behaviour change, and a 13/10 -> '1 1/3' assertion would pin it."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 70,
+     "kind": "missing_test",
+     "description": "The reported symptom was a 3-serving porridge with 1 cup of oats shown at `--servings 1` as `3/8 cup oats`. No test covers this scaling-then-display path or the `recipebox show` output. Only `display_amount` is tested directly."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-C--diff",
+  "seed": "recipe_box-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "unreadable",
+  "caught": null,
+  "decision": null,
+  "cost": 0.027021,
+  "seconds": 11.2,
+  "output_tokens": 858,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": null,
+  "raw": "\n<invoke name=\"Bash\">\n<parameter name=\"command\">cat src/recipebox/core/quantity.py</parameter>\n</invoke>"
+ },
+ {
+  "slot": "household_budget-W2--diff",
+  "seed": "household_budget-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.045808,
+  "seconds": 5.7,
+  "output_tokens": 297,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/cli.py",
+     "line": 123,
+     "kind": "wrong_behaviour",
+     "description": "Unrelated change in cmd_rule_add: `if args.account:` was flipped to `if not args.account:`. Now a rule with an account is not validated, and a rule without an account calls require_account(workspace, None), which will error. This breaks `rule add` and is outside the scope of the task."
+    },
+    {
+     "file": "src/budgetbook/reports/month_end.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is shown as removed and re-added, which suggests line endings (CRLF to LF) or similar whitespace were changed. The same applies to tests/test_cli.py. This adds noise to the diff and should be reverted so that only the real change (TOP_PAYEES and the `top` parameter) shows."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-W2--report",
+  "seed": "household_budget-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.054611,
+  "seconds": 7.6,
+  "output_tokens": 569,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/cli.py",
+     "line": 123,
+     "kind": "wrong_behaviour",
+     "description": "Unrelated change in cmd_rule_add: `if args.account:` became `if not args.account:`. This inverts the check, so accounts given are no longer validated and require_account is called with None/empty when no account is given (likely erroring on valid rules). It is out of scope for the --top task and breaks rule add; it should be reverted. No test caught it."
+    },
+    {
+     "file": "src/budgetbook/reports/month_end.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is shown as removed and re-added, which suggests line endings were changed (CRLF/LF) or the file was rewritten. The same applies to tests/test_cli.py. This is diff noise that hides the real change and should be restored to the original line endings."
+    },
+    {
+     "file": "tests/test_cli.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole test file was rewritten (line-ending churn) rather than just appending the new test, making review harder."
+    },
+    {
+     "file": "src/budgetbook/cli.py",
+     "line": 384,
+     "kind": "missing_test",
+     "description": "_positive_int validation is only partly tested: non-numeric input (ValueError branch), negative values, and the boundary of 1 are not tested; mutants on lines 384-386 survived. Only `--top 0` is tested."
+    },
+    {
+     "file": "src/budgetbook/reports/month_end.py",
+     "line": 10,
+     "kind": "missing_test",
+     "description": "The default of TOP_PAYEES = 10 is tested only via month_report's default argument; the CLI default (no --top given) path is not tested end to end."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-C--report",
+  "seed": "household_budget-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.087172,
+  "seconds": 12.6,
+  "output_tokens": 1166,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/services/search.py",
+     "line": 14,
+     "kind": "missing_test",
+     "description": "The agent switched `search --payee` from `MATCHERS[\"contains\"]` to `MATCHERS[\"anywhere\"]` to keep it as a substring search, as the docs say. No test covers this. The mutation report shows lines 14-16 can change with every test still passing. If the lookup were reverted to `contains`, `search --payee` would silently become whole-word matching. Add a test that `search --payee` finds a substring inside a word, for example `BP` finding `EBPAY ONLINE`."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, matchers.py, search.py and tests/test_rules.py all appear as whole-file rewrites, where only a few lines changed. This looks like a line-ending change (CRLF to LF) or similar. It buries the real change in noise and makes the diff hard to review. Restore the original line endings so the diff shows only the intended edits."
+    },
+    {
+     "file": "tests/test_rules.py",
+     "line": 18,
+     "kind": "missing_test",
+     "description": "There is no test of the new `anywhere` kind through `RuleBook` or a rules file, and none for boundary behaviour with non-word characters or punctuation. Examples are a pattern like `AMAZON.CO.UK`, a payee like `BP-1234`, and patterns that start or end with a non-word character. Add tests that pin the `(?<!\\w)...(?!\\w)` choice, including underscores and digits adjacent to the pattern."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-C--diff",
+  "seed": "household_budget-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.07972199999999999,
+  "seconds": 10.8,
+  "output_tokens": 1127,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of matchers.py, CHANGELOG.md, docs/reference.md, services/search.py and tests/test_rules.py. This is almost certainly a line-ending change (CRLF to LF) or similar whitespace churn. It hides the real change and makes review and blame hard. Restore the original line endings so the diff shows only the intended edits."
+    },
+    {
+     "file": "tests/test_rules.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "Nothing tests that `search --payee` and `find_transactions` still match substrings. The agent changed search.py from `contains` to `anywhere` to keep that behaviour, but no test would fail if that switch were reverted or missed. A test such as searching 'BP' and finding 'EBPAY ONLINE' is needed."
+    },
+    {
+     "file": "tests/test_rules.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "The word-boundary edge cases are untested. These include a multi-word pattern, a pattern next to punctuation (`BP-LONDON`), a pattern next to digits or underscores (`BP1234`, which `\\w` treats as part of the word), a pattern that starts or ends with a non-word character, and a rule going through RuleBook with `anywhere`."
+    },
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 14,
+     "kind": "wrong_behaviour",
+     "description": "`(?<!\\w)` and `(?!\\w)` are not true word boundaries when the pattern begins or ends with a non-word character. A pattern like `BP*` or `&CO` can fail to match where a boundary-based rule would match, for example `BP*` in `BP* LONDON`. The lookarounds are applied unconditionally. Matching also uses re.IGNORECASE rather than casefold like the other matchers, so case folding is inconsistent."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-W2--diff",
+  "seed": "recipe_box-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.03642600000000001,
+  "seconds": 8.4,
+  "output_tokens": 563,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/recipebox/services/importer.py",
+     "line": 51,
+     "kind": "wrong_behaviour",
+     "description": "The note handling was inverted: `note if not isinstance(note, str) else \"\"` now drops every valid string note (imports become note-less) and passes non-string values through as the note. The original was `note if isinstance(note, str) else \"\"`. This is an unrelated regression introduced in the diff and breaks note preservation on bundle import."
+    },
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 123,
+     "kind": "wrong_behaviour",
+     "description": "amount_from_json snaps floats with limit_denominator(10000), while the writer emits float(amount). Amounts with denominators above 10000 (or ones that don't round-trip exactly) are silently altered on load, so saving is lossy for some valid amounts. Also, string amounts go through parse_amount, but numeric ones use different rules, so behaviour is inconsistent."
+    },
+    {
+     "file": "tests/test_services.py",
+     "line": 163,
+     "kind": "missing_test",
+     "description": "No test covers invalid numeric amounts (bool, zero, negative, NaN/inf, non-number types) in the importer or library loader, nor that a bundle note is preserved, which would have caught the inverted note logic."
+    },
+    {
+     "file": "tests/test_storage.py",
+     "line": 29,
+     "kind": "missing_test",
+     "description": "No test that a library file containing an invalid numeric amount (0, negative, true) is rejected cleanly, and no test for whole amounts being written as integers in the file beyond the single round-trip case (e.g. export bundles writing numbers is untested)."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-W2--report",
+  "seed": "recipe_box-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.04372,
+  "seconds": 8.7,
+  "output_tokens": 758,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/recipebox/services/importer.py",
+     "line": 51,
+     "kind": "wrong_behaviour",
+     "description": "The note handling was inverted: `note if not isinstance(note, str) else \"\"` now discards every valid string note (imports them as empty) and passes non-string values through as the note. The original was `note if isinstance(note, str) else \"\"`. This is an unrelated regression that silently loses ingredient notes on bundle import, and no test catches it (mutation analysis flagged this line as unnoticed)."
+    },
+    {
+     "file": "tests/test_services.py",
+     "line": 163,
+     "kind": "missing_test",
+     "description": "No test checks that an imported ingredient's note is preserved, which is why the inverted note condition in importer.py went unnoticed. Add a bundle import test with a string note."
+    },
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 125,
+     "kind": "missing_test",
+     "description": "Rejection of non-positive numeric amounts (0, negative) and of bool, NaN/inf, and other non-number types in amount_from_json is untested; the mutants on the `amount <= 0` threshold and the OverflowError/ValueError handling survived. Add tests for these error paths, through both Library.load and bundle import."
+    },
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 111,
+     "kind": "missing_test",
+     "description": "amount_to_json's whole-number branch (denominator == 1 gives an int) is not pinned by a test that would fail on a comparison change. test_library_amounts_are_numbers compares 2 == 2.0, which passes either way, so it does not check that a whole amount is saved as the integer `2` as the docs claim. Assert the type, or compare the raw text."
+    },
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 119,
+     "kind": "wrong_behaviour",
+     "description": "Reading a float with limit_denominator(10000) can snap an amount to a different value than was saved. Amounts with denominators over 10000 are altered, and tiny positive amounts can round to 0 and then be rejected as an error. Saving as float is lossy, so a library can fail to open or change values on a save/load round trip. Consider a tighter denominator or a round-trip test."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-W--report",
+  "seed": "fleet_service-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.056262000000000006,
+  "seconds": 10.9,
+  "output_tokens": 991,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/fleetkeep/config.py",
+     "line": 37,
+     "kind": "wrong_behaviour",
+     "description": "_percent rejects any value below 1 (`value < 1`). The task sets no such minimum. A workshop that wants no supplies charge (0) or a fractional rate such as 0.5 gets a config error. The check should reject only negative values (`value < 0`). The mutation run shows no test pins this boundary."
+    },
+    {
+     "file": "tests/test_scheduling.py",
+     "line": 98,
+     "kind": "missing_test",
+     "description": "No test covers invalid or boundary values for shop_supplies_percent or shop_supplies_cap, such as 0, negative, non-numeric or NaN/Infinity. The _percent error path (config.py:35) and its limits (config.py:37) are untested."
+    },
+    {
+     "file": "src/fleetkeep/reports/costs.py",
+     "line": 18,
+     "kind": "missing_test",
+     "description": "The `closed is not None and closed in period` filter is unpinned (the and\u2192or mutant survives). The new report test only has a closed order and never checks that open or out-of-period orders are excluded from maintenance with supplies counted."
+    },
+    {
+     "file": "src/fleetkeep/cli/commands.py",
+     "line": 302,
+     "kind": "missing_test",
+     "description": "Mutants on the JSON output path in cmd_wo_show (indent and return code, lines 302-303) went unnoticed. The new CLI test parses the JSON but does not assert on formatting or the exit code."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-W--diff",
+  "seed": "fleet_service-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.047404,
+  "seconds": 9.0,
+  "output_tokens": 730,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/fleetkeep/config.py",
+     "line": 37,
+     "kind": "wrong_behaviour",
+     "description": "_percent rejects any value below 1 (`value < 1`). A shop that wants no supplies charge (`shop_supplies_percent = 0`) or a fractional rate such as 0.5 gets a config error. The only invalid values should be negative or non-finite ones, so the check should be `value < 0`."
+    },
+    {
+     "file": "tests/test_scheduling.py",
+     "line": 98,
+     "kind": "missing_test",
+     "description": "The settings tests cover only the happy path (defaults, 7.5, 25.00). Nothing tests that invalid values (non-numeric, negative, NaN/Infinity) are rejected, or that boundary values such as 0 percent and 0.50 percent are accepted. That gap is why the `< 1` bug was not caught."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "ticket_office-U--diff",
+  "seed": "ticket_office-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "unreadable",
+  "caught": null,
+  "decision": null,
+  "cost": 0.074152,
+  "seconds": 8.3,
+  "output_tokens": 758,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": null,
+  "raw": "\n<invoke name=\"Grep\">\n<parameter name=\"pattern\">\\[\"date\"\\]|'date'|\\.date\\(\\)|entries_on</parameter>\n<parameter name=\"path\">E:\\ep-runs\\reviewer-study-2026-11-02\\slots\\ticket_office-U--diff</parameter>\n<parameter name=\"output_mode\">content</parameter>\n<parameter name=\"-n\">true</parameter>\n</invoke>\n\n\n\n<invoke name=\"Grep\">\n<parameter name=\"pattern\">date</parameter>\n<parameter name=\"path\">E:\\ep-runs\\reviewer-study-2026-11-02\\slots\\ticket_office-U--diff</parameter>\n<parameter name=\"output_mode\">files_with_matches</parameter>\n</invoke>\n\n\n\n<invoke name=\"Glob\">\n<parameter name=\"pattern\">**/*</parameter>\n<parameter name=\"path\">E:\\ep-runs\\reviewer-study-2026-11-02\\slots\\ticket_office-U--diff</parameter>\n</invoke>"
+ },
+ {
+  "slot": "ticket_office-U--report",
+  "seed": "ticket_office-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.076524,
+  "seconds": 7.6,
+  "output_tokens": 619,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_ledger.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "The existing test tests/test_ledger.py::test_entry_date fails with the change (it expects the old date-only format) and was not updated. The test suite is red after the change. The test must be updated to expect YYYY-MM-DDTHH:MM, and the suite must pass."
+    },
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 24,
+     "kind": "missing_test",
+     "description": "No tests were added or changed for the new behaviour: the timestamped date format on new entries, day_of handling of both legacy date-only and new timestamped entries, daily_takings grouping by day part, and entries_on matching by day. Nothing pins the change."
+    },
+    {
+     "file": "src/boxoffice/reports/daily.py",
+     "line": 47,
+     "kind": "missing_test",
+     "description": "daily_takings now groups by day_of(entry), but no test covers entries at different times on the same day being merged into one row, or mixed legacy and new entries."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is shown as rewritten (every line removed and re-added), likely a line-ending change (CRLF/LF). The same applies to docs/reference.md and daily.py. This creates noisy diffs and obscures the real change; line endings should be preserved."
+    },
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The claim that report cashup groups by the day part (CHANGELOG) is unverified; cashup is not touched in the diff. Other readers of entry['date'] (cashup, exports, JSON/CSV consumers, upgrade command) were not checked or updated for the new format, so equality comparisons on date may break."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-W--report",
+  "seed": "greenhouse_monitor-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.10130000000000002,
+  "seconds": 12.7,
+  "output_tokens": 1283,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 42,
+     "kind": "wrong_behaviour",
+     "description": "`_upgrade` checks `rows[ 1] == LOG_COLUMNS`, which is the first data row, not the header (`rows[0]`). The 'already upgraded' guard therefore never fires. Every write to an existing log inserts another empty column into every row and rewrites the header, so `value,raw,unit` becomes `value,raw,raw,unit`, and the log is corrupted on the second write. A header-only file also raises IndexError, because `rows` then has only one element."
+    },
+    {
+     "file": "tests/test_storage.py",
+     "line": 63,
+     "kind": "missing_test",
+     "description": "No test writes twice to a log that already has the `raw` column and checks that the header and rows are unchanged. `test_log_is_appended_without_repeating_column_names` only checks the line count and a prefix, so it passes even though the second write corrupts the file. The mutation report also shows the `_upgrade` constants (readings_log.py:42) and the `write_many` change at line 23 going unnoticed."
+    },
+    {
+     "file": "src/greenhouse/storage/archive.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "`archive` rewrites the readings log, and no test covers it with the new 7-column format. The archive test still uses the old 6-column log, so there is no check that `archive` keeps the `raw` column when it splits and rewrites the file."
+    },
+    {
+     "file": "src/greenhouse/storage/history.py",
+     "line": 46,
+     "kind": "missing_test",
+     "description": "The `>=` tie-break in `latest_by_sensor` is not pinned by any test: three mutations of it passed (`>`, `is not`, `!=`). The function was rewritten as part of this diff, so the tie-break should have a test."
+    },
+    {
+     "file": "docs/reference.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, history.py and tests/test_storage.py appear rewritten in full, most likely from line-ending changes. That makes the real edits hard to review and adds noise to the history."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-W--diff",
+  "seed": "greenhouse_monitor-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.095019,
+  "seconds": 13.7,
+  "output_tokens": 1209,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 41,
+     "kind": "wrong_behaviour",
+     "description": "`_upgrade` checks `rows[ 1] == LOG_COLUMNS`, which compares the first data row to the header list. It should be `rows[0]`. The check is never true, so the upgrade runs on every write to an already-upgraded log. Each write inserts another empty column after `value`, and `rows[0][index] = \"raw\"` overwrites the header, producing a corrupt log with a duplicated `raw` header and shifted data columns. A log holding only a header row would raise IndexError instead."
+    },
+    {
+     "file": "tests/test_storage.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "No test writes twice to a log that already has the `raw` column. The existing append test starts from a fresh file and is the only multi-write case, and the legacy test writes once. A second write to an upgraded log would have exposed the repeated-upgrade bug. Also untested: a header-only legacy log, and archiving or exporting a 7-column log."
+    },
+    {
+     "file": "src/greenhouse/storage/archive.py",
+     "line": 1,
+     "kind": "wrong_behaviour",
+     "description": "The archive module is not touched or tested against the new 7-column log, and the archive test still uses the old 6-column LOG. It may mishandle the `raw` column or write archive files with inconsistent headers. Other readers of the log, such as export, were not checked either."
+    },
+    {
+     "file": "docs/reference.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, history.py and tests/test_storage.py are rewritten in full, which looks like a line-ending change. This buries the real edits and makes the diff hard to review. Restore the original line endings."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-C--diff",
+  "seed": "hotel_desk-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.091158,
+  "seconds": 10.0,
+  "output_tokens": 797,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/money.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of CHANGELOG.md, docs/reference.md, money.py, reports/revenue.py, storage/journal.py and tests/test_night_audit.py, though only a few lines changed in each. This looks like a line-ending change (CRLF to LF) or similar whitespace churn. It makes the real change hard to review and pollutes blame. Restore the original line endings so the diff shows only the intended edits."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-C--report",
+  "seed": "hotel_desk-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": false,
+  "decision": "accept",
+  "cost": 0.099797,
+  "seconds": 12.4,
+  "output_tokens": 1155,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "accept",
+   "problems": [
+    {
+     "file": "tests/test_night_audit.py",
+     "line": 70,
+     "kind": "missing_test",
+     "description": "The new test only covers positive amounts written to the journal. Writing a negative amount (a refund in `payments`, for example) through `format_money` is not tested. The report flags `money.py:31` in `format_money` as a mutation no test noticed. `parse_cents` is only exercised for the negative-payment case in the read-back test."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 30,
+     "kind": "other",
+     "description": "Existing journals are not rewritten, so the first month after upgrade will hold mixed formats in one CSV: old rows in cents, new rows as `0.00`. Accountants loading that file into a spreadsheet will see inconsistent columns. The changelog mentions this, but a migration or a warning would be safer."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "Every line in CHANGELOG.md, docs/reference.md, money.py, revenue.py, journal.py and the test file shows as changed. This looks like a line-ending rewrite (CRLF to LF). It buries the real changes in the diff and should be reverted or split out."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "ticket_office-W--report",
+  "seed": "ticket_office-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.083042,
+  "seconds": 8.0,
+  "output_tokens": 605,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 41,
+     "kind": "wrong_behaviour",
+     "description": "entries_on was changed from equality to `day_of(entry) >= day`. This returns every entry on or after the given day rather than only entries on that day. The existing test only passes because the day tested is the last one in the data. It should be `day_of(entry) == day`. The mutation report confirms that >= to == goes unnoticed by the tests."
+    },
+    {
+     "file": "tests/test_ledger.py",
+     "line": 30,
+     "kind": "missing_test",
+     "description": "No test checks that entries_on excludes later days. A ledger with entries on 2026-05-02 and 2026-05-03, queried for 2026-05-02, would catch the >= bug."
+    },
+    {
+     "file": "src/boxoffice/reports/daily.py",
+     "line": 57,
+     "kind": "missing_test",
+     "description": "A mutation in totals (NumberReplacer) goes unnoticed; the new daily test does not exercise totals with timestamped entries. Minor."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, daily.py and test files show every line removed and re-added, which suggests line endings were changed (CRLF/LF) across the whole files. This makes the diff noisy and should be reverted to preserve the original line endings."
+    },
+    {
+     "file": "src/boxoffice/reports/cashup.py",
+     "line": 0,
+     "kind": "other",
+     "description": "The changelog says report cashup groups by the day part, but the diff does not touch cashup code. Check that cashup and any other consumers of entry['date'], such as CLI --day filters or exports, work with timestamped dates and use day_of or entries_on correctly."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "ticket_office-W--diff",
+  "seed": "ticket_office-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.07699399999999999,
+  "seconds": 6.7,
+  "output_tokens": 441,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 41,
+     "kind": "wrong_behaviour",
+     "description": "entries_on changed from equality to `day_of(entry) >= day`. It now returns all entries on or after the given day instead of only that day. It should be `day_of(entry) == day`. The existing test only passes because the day tested is the last one in the data."
+    },
+    {
+     "file": "tests/test_ledger.py",
+     "line": 30,
+     "kind": "missing_test",
+     "description": "No test checks that entries_on excludes later days. A test with entries on a later day than the one queried would have caught the >= bug."
+    },
+    {
+     "file": "src/boxoffice/reports/daily.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The cashup report and any other consumers of the ledger `date` (e.g. export, or filters comparing date to a day) were not checked or updated. The changelog claims cashup groups by day part, but there is no cashup change or test."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites whole files (CHANGELOG.md, docs/reference.md, daily.py, test files), apparently changing line endings. This makes the diff noisy and hard to review, and should be reverted to the original line endings."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "payroll_lite-C--diff",
+  "seed": "payroll_lite-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.09448,
+  "seconds": 12.2,
+  "output_tokens": 1052,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "year_totals was switched from raw JSON with Decimal(slip[...]) to read_payrun. That fixes the change in money encoding, but nothing tests year-end totals over schema 2 files or a mix of schema 1 and 2. Without the fix, Decimal(23750) would silently give 23750 instead of 237.50. The switch also means year-end now raises on an unsupported schema, which it did not before."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of payrun_file.py, yearend.py, CHANGELOG.md and docs/reference.md. This looks like a line-ending change (CRLF to LF) that the task did not ask for. It buries the real edits and makes review and blame harder. The original line endings should be kept so the diff shows only the intended changes."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 16,
+     "kind": "other",
+     "description": "The diff only shows yearend.py moving to read_payrun. It does not show whether any other code reads runs/*.json directly and would break on integer-cent money. I can't confirm that journal, compare, leave, reconcile or bank-file go through read_payrun, so the author should check them. Tests covering them with a schema 2 file are also missing."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "payroll_lite-C--report",
+  "seed": "payroll_lite-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.10255700000000001,
+  "seconds": 13.0,
+  "output_tokens": 1284,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "year_totals was switched from raw JSON with Decimal(slip[...]) to read_payrun. Reading the new integer-cent files the old way would have inflated every figure 100x, so this edit is essential. No test covers it, though. The report shows survived mutants on the loop, the pay-year filter (`!= year`), and the `continue`. Add a year-end test over schema 2 runs, ideally with a schema 1 run too, that checks the amounts and that a run paid in a different year is excluded."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 40,
+     "kind": "missing_test",
+     "description": "Mutants on numeric constants in write_payrun survived (probably the JSON indent or similar). The tests check the parsed values but not the written layout. This is minor, but it is listed as an unnoticed change."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 17,
+     "kind": "missing_test",
+     "description": "The schema 2 reader rejects non-integer money (strings, floats, bools) with a new error path, and that path has no test. Neither does the unsupported-schema error (for example schema 3)."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of CHANGELOG.md, docs/reference.md, yearend.py and payrun_file.py. This looks like a line-ending change (CRLF to LF) mixed in with the real edits, which buries the actual change in review. Restore the original line endings so the diff shows only the intended edits."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-U--report",
+  "seed": "clinic_booking-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.032041,
+  "seconds": 8.9,
+  "output_tokens": 707,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No tests were added or changed. The whole suite passes identically with the change undone, so the new limit, its refusal message, and the exclusion of cancelled bookings are not pinned by any test. Needed: a test that books up to the limit and checks the next booking for the same phone and day is refused with 'Ann Lee already has 2 bookings on 2026-03-02'."
+    },
+    {
+     "file": "src/clinicbook/services/desk.py",
+     "line": 32,
+     "kind": "missing_test",
+     "description": "The count check (phone match, same day, active, >= limit) is unpinned: comparison operator and number mutations went unnoticed. Needs tests for boundary cases: one booking below the limit is allowed, a booking at the limit is refused, a different phone or a different day is not counted, and cancelled and late_cancelled bookings don't count."
+    },
+    {
+     "file": "src/clinicbook/config.py",
+     "line": 23,
+     "kind": "missing_test",
+     "description": "The default of max_daily_bookings = 2 is unpinned: changing the number leaves all tests passing. Add a test that the default is 2 and that a clinic-file value overrides it."
+    },
+    {
+     "file": "src/clinicbook/config.py",
+     "line": 76,
+     "kind": "missing_test",
+     "description": "The validation 'max_daily_bookings must be at least 1' is unpinned: changing the number or the comparison (< to <=) goes unnoticed. Add tests that 0 is rejected with ConfigError and 1 is accepted."
+    },
+    {
+     "file": "src/clinicbook/services/desk.py",
+     "line": 32,
+     "kind": "wrong_behaviour",
+     "description": "The check uses `other.active` to decide what counts. It's unverified that this excludes both cancelled and late_cancelled but still counts other statuses such as no-show or completed, as the task says only cancelled bookings don't count. Also, the check runs before the overlap check, so a double-booked slot now reports the daily limit message instead of the slot conflict. Confirm this ordering is intended, and cover it with a test."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-U--diff",
+  "seed": "clinic_booking-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.024829999999999998,
+  "seconds": 7.3,
+  "output_tokens": 512,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/clinicbook/services/desk.py",
+     "line": 31,
+     "kind": "missing_test",
+     "description": "The diff adds no tests for the new daily limit. Missing cases: a booking is refused at the limit with the exact message 'Ann Lee already has 2 bookings on 2026-03-02'; a booking is allowed below the limit; cancelled and late_cancelled bookings don't count toward it; bookings on a different day or for a different phone number don't count; a custom max_daily_bookings value from the clinic file is honoured."
+    },
+    {
+     "file": "src/clinicbook/config.py",
+     "line": 76,
+     "kind": "missing_test",
+     "description": "The new validation (max_daily_bookings < 1 raises ConfigError) and the default of 2 have no tests."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "gradebook-W--diff",
+  "seed": "gradebook-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": false,
+  "decision": "request_changes",
+  "cost": 0.055061,
+  "seconds": 7.4,
+  "output_tokens": 594,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 125,
+     "kind": "wrong_behaviour",
+     "description": "_percent_of_possible in the progress report computes `line.earned + line.possible` (addition) instead of `line.earned / line.possible`. The report therefore ranks by the wrong key and can mark a different score as dropped than the calculator drops, so the progress report disagrees with the actual grade (e.g. 4/5 -> 9 vs 6/10 -> 16 drops the 4/5, the very bug being fixed). The CHANGELOG claims the report marks the same scores as dropped, which is false."
+    },
+    {
+     "file": "tests/test_calculator.py",
+     "line": 96,
+     "kind": "missing_test",
+     "description": "The only new test checks the calculator's category percent. There is no test for the progress report's dropped status (e.g. item('q2') or item('q1') is 'dropped'), so the progress.py bug is not caught. Also no test for ties or zero-possible assignments."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file (and progress.py) is shown as fully deleted and re-added, which suggests line endings or whitespace were changed across the file. This creates a noisy diff that hides the real change and should be reverted to preserve original line endings."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 70,
+     "kind": "other",
+     "description": "The docstring of _drop_lowest is now a long single line that is longer than the surrounding code style; also the module docstring and docs do not describe tie-breaking, which is now behaviourally relevant when percents are equal (sorted is stable, so ties drop the earlier assignment)."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "gradebook-W--report",
+  "seed": "gradebook-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.060454999999999995,
+  "seconds": 6.6,
+  "output_tokens": 636,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 107,
+     "kind": "wrong_behaviour",
+     "description": "_percent_of_possible in the progress report computes `line.earned + line.possible` (addition) instead of `line.earned / line.possible`. The report therefore ranks by earned+possible, not percent, and marks the wrong scores as dropped (e.g. 4/5 -> 9 vs 6/10 -> 16 drops the 4/5, the very bug being fixed). It also disagrees with the calculator, so the progress report's dropped items no longer match the grade. The CHANGELOG claim that the progress report marks the same scores as dropped is false."
+    },
+    {
+     "file": "tests/test_calculator.py",
+     "line": 108,
+     "kind": "missing_test",
+     "description": "The only new test covers the calculator's category percent. No test covers the progress report's dropped status for differently weighted assignments, which is why the `+` typo in progress.py went unnoticed (mutation of progress.py:107 survived). Add a progress report test with 4/5 and 6/10 asserting q1 is kept and q2 is dropped."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 63,
+     "kind": "missing_test",
+     "description": "The zero-possible fallback in `_percent_of_possible` (`if item.possible else Fraction(0)`) is untested; mutations of its constants survived. Also there is no test of tie handling (equal percents) or of the keep-at-least-one rule under percent ranking."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of calculator.py and progress.py (whole-file diffs, likely line-ending changes), which buries the real change and adds noise to review. Restore the original line endings so the diff shows only the intended edits."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-C--report",
+  "seed": "library_loans-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.03896,
+  "seconds": 10.0,
+  "output_tokens": 803,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 23,
+     "kind": "missing_test",
+     "description": "The overdue report's `accrued` now goes through `accrued_fine` and so applies the grace period. This is a behaviour change beyond `fine_for`, and no test covers it. A report row at or under `fine_grace_days` late should show 0 accrued, and one just past it should show the full count from the due date. ep_review also found surviving mutants in `overdue_rows` on lines 19, 20 and 26 that no test noticed. Add a test of `overdue_rows` around the grace boundary."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-C--diff",
+  "seed": "library_loans-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.032618999999999995,
+  "seconds": 8.7,
+  "output_tokens": 657,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 23,
+     "kind": "missing_test",
+     "description": "The overdue report's `accrued` column now goes through `accrued_fine`, so it shows 0 for copies within the grace period. This changes the report's behaviour, and no test covers it. A test should check a report row at exactly `fine_grace_days` late (accrued 0) and one day past it (accrued counted from the due date)."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-W--diff",
+  "seed": "household_budget-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.073883,
+  "seconds": 10.0,
+  "output_tokens": 706,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/services/search.py",
+     "line": 14,
+     "kind": "wrong_behaviour",
+     "description": "The filter's `and` was changed to `or` before the category condition. This breaks the search logic: a transaction matching the payee now passes regardless of category, account, or month, and (category is None) now lets any transaction through. `search` filters no longer combine as AND. This change is unrelated to the task and must be reverted to `and`."
+    },
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 12,
+     "kind": "wrong_behaviour",
+     "description": "`contains` uses `(?<!\\w)` and `(?!\\w)` around the escaped pattern, which only checks the neighbouring characters. If the pattern itself begins or ends with a non-word character (e.g. `AMAZON*` or `.CO.UK`), the lookarounds demand a non-word neighbour next to a non-word character, so it fails to match where a boundary-based match would be expected (e.g. `AMAZON* PRIME` does not match `AMAZON*` since the next char is a space, which is fine, but `AMAZON*MKTP` does not match). This edge case is untested and should be considered or documented."
+    },
+    {
+     "file": "tests/test_rules.py",
+     "line": 10,
+     "kind": "missing_test",
+     "description": "No test covers the search service still finding substrings via `anywhere` (e.g. `search --payee` with a mid-word text) or the AND combination of search filters, which would have caught the `or` regression in search.py. There is also no test for patterns with non-word edge characters or for a rule with `\"match\": \"anywhere\"` going through RuleBook/check_pattern."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, matchers.py and tests/test_rules.py appear as whole-file rewrites (every line removed and re-added), likely from line-ending changes (CRLF to LF). This adds diff noise and obscures the real change; the original line endings should be preserved."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-W--report",
+  "seed": "household_budget-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.08186399999999999,
+  "seconds": 8.7,
+  "output_tokens": 803,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/services/search.py",
+     "line": 14,
+     "kind": "wrong_behaviour",
+     "description": "The filter's `and` was changed to `or` between the payee condition and the category condition. `search` now returns transactions that match the payee OR satisfy the category check (which is true whenever category is None), so the payee, account and month filters are effectively ignored. This is an unrelated regression, outside the task's scope. The first `and` should be restored."
+    },
+    {
+     "file": "src/budgetbook/services/search.py",
+     "line": 14,
+     "kind": "missing_test",
+     "description": "No test covers find_transactions combining the payee, category, account and month filters. The mutation report shows ReplaceOrWithAnd and ReplaceAndWithOr on lines 14-16 went unnoticed, which is why the broken `or` passes the suite."
+    },
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 13,
+     "kind": "wrong_behaviour",
+     "description": "`_contains` uses `(?<!\\w)` and `(?!\\w)`, so word boundaries depend on the pattern's own edge characters and on `\\w` including underscore and digits. A pattern ending in a non-word character, such as `BP*` or `AT&T.`, behaves differently from what 'start and end at word boundaries' suggests. Also, casefold is no longer used, only re.IGNORECASE, which is a minor inconsistency with `anywhere`. This is borderline, but it is untested."
+    },
+    {
+     "file": "tests/test_rules.py",
+     "line": 11,
+     "kind": "missing_test",
+     "description": "Tests for `contains` do not cover digits or underscores adjacent to the pattern (e.g. `BP1234`), punctuation boundaries (e.g. `BP-LONDON`), multi-word patterns, regex-special characters in the pattern (e.g. `A.B`) or a pattern at the end of the payee. Nothing tests `anywhere` through a RuleBook or loaded rules file."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file (and docs/reference.md, matchers.py and tests/test_rules.py) is shown as fully rewritten, which suggests line endings were changed (likely CRLF to LF). This creates a noisy diff and hides the real changes. Original line endings should be preserved."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-W--report",
+  "seed": "hotel_desk-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.08885499999999999,
+  "seconds": 8.5,
+  "output_tokens": 724,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/reports/revenue.py",
+     "line": 39,
+     "kind": "wrong_behaviour",
+     "description": "`if not not days:` inverts the empty check. The report now prints 'No closed days in that range' whenever there ARE days, and tries to render a table/totals when there are none. This breaks `report revenue` entirely and is unrelated to the task. It should be `if not days:`."
+    },
+    {
+     "file": "src/hoteldesk/reports/revenue.py",
+     "line": 39,
+     "kind": "missing_test",
+     "description": "No test exercises revenue_text (empty or non-empty), so the inverted condition passes the whole suite. Add tests for both the empty-range message and a normal rendering."
+    },
+    {
+     "file": "src/hoteldesk/money.py",
+     "line": 31,
+     "kind": "missing_test",
+     "description": "format_money's formatting (zero padding, negative values) is not directly pinned; the new journal writing relies on it for negative payments, e.g. -1.50 and amounts like 5 cents -> 0.05. Add tests for negative and sub-dollar amounts written to the journal."
+    },
+    {
+     "file": "src/hoteldesk/reports/revenue.py",
+     "line": 48,
+     "kind": "missing_test",
+     "description": "Lines in revenue_text's output (totals/ADR rows) are untested; mutations to the numbers there go unnoticed."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole of CHANGELOG.md, docs/reference.md, money.py, journal.py and test_night_audit.py appear as fully rewritten in the diff (likely line-ending changes, CRLF/LF). This is noisy, hides the real change, and should be reverted to preserve the original line endings."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 22,
+     "kind": "other",
+     "description": "read_amount docstring says 'before 1.5.0' though no version bump is made; also read_amount's int(text) path and parse_cents' sign handling are only lightly tested (e.g. negative whole-cent values, blank cells, '-0.50')."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-W--diff",
+  "seed": "hotel_desk-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.081568,
+  "seconds": 8.8,
+  "output_tokens": 495,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/reports/revenue.py",
+     "line": 39,
+     "kind": "wrong_behaviour",
+     "description": "`if not not days:` inverts the empty check. The report now prints 'No closed days in that range' whenever there ARE closed days, and tries to render a table with totals when there are none. This breaks `report revenue` entirely and must be reverted to `if not days:`."
+    },
+    {
+     "file": "tests/test_night_audit.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "No test covers `revenue_text` / the CLI `report revenue` output, so the inverted empty check was not caught. Add a test for the text output with and without days."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 25,
+     "kind": "other",
+     "description": "`read_amount` assumes any cell containing '.' is a decimal and otherwise `int(text)`. Fine for the cases tested, but there is no handling or test for negative whole-cent values or blank cells; minor robustness gap."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole of CHANGELOG.md, docs/reference.md, money.py, journal.py and the test file appear as fully rewritten in the diff (every line removed and re-added), which suggests line endings were changed (e.g. CRLF to LF). This makes the diff noisy and hides the real changes; restore the original line endings."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "survey_tally-C--diff",
+  "seed": "survey_tally-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.08920499999999999,
+  "seconds": 14.5,
+  "output_tokens": 1418,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff deletes and re-adds every line of this file, and the same happens in model/questions.py, services/validation.py and tests/test_extras.py. That points to a line-ending or whitespace change (likely CRLF to LF) that has nothing to do with the task. It buries the real edits (the 'rating' key, TYPE_ALIASES and the alias lookup) and makes the diff hard to review. It also adds churn and blame noise. The original line endings should be restored so only the intended lines change."
+    },
+    {
+     "file": "docs/reference.md",
+     "line": 36,
+     "kind": "wrong_behaviour",
+     "description": "The `question_types` row looks like a generated fact table, and the code imports SCALE_PRESETS and SCHEMA_VERSION from `_generated`. The diff only edits the rendered doc by hand and does not touch whatever source produces these facts or the generated module. The next regeneration would likely revert `question_types` to `scale`, or a docs/facts consistency check would fail. The facts source should be updated and the docs regenerated."
+    },
+    {
+     "file": "src/surveytally/files/csv_responses.py",
+     "line": 101,
+     "kind": "missing_test",
+     "description": "The type rename touches three name-based dispatch points: the PARSERS key, `_tally_rating` and `_check_rating`. A missed rename fails at runtime with a KeyError or AttributeError. No test covers CSV response loading, tallying or validation of a survey whose question was loaded from `scale` or `rating`. The only new tests cover survey-file load and save. Other code that compares `question.type == 'scale'` (quality checks, reports, exports) was not shown being checked or updated."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "survey_tally-C--report",
+  "seed": "survey_tally-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.09636000000000002,
+  "seconds": 15.9,
+  "output_tokens": 1569,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of survey_file.py, and also of model/questions.py, services/validation.py and tests/test_extras.py. This looks like a line-ending change (CRLF to LF) mixed in with a few real edits. It hides the real change in the review and adds churn and merge-conflict risk. Restore the original line endings so the diff shows only the edits."
+    },
+    {
+     "file": "src/surveytally/services/validation.py",
+     "line": 30,
+     "kind": "missing_test",
+     "description": "The rename of _check_scale to _check_rating is dispatched by getattr on question.type. No test fails when the change is undone, so validating a response to a rating question is untested. A missed rename would raise AttributeError at runtime and nothing would catch it."
+    },
+    {
+     "file": "src/surveytally/services/tally.py",
+     "line": 62,
+     "kind": "missing_test",
+     "description": "_tally_rating is renamed to match the new type name, but no test covers it. The mutation run left many changes to its arithmetic unnoticed. Add a test that tallies a rating question loaded from a survey file."
+    },
+    {
+     "file": "src/surveytally/files/csv_responses.py",
+     "line": 101,
+     "kind": "missing_test",
+     "description": "The PARSERS key was changed from 'scale' to 'rating', and no test covers reading a rating answer from a responses CSV. Add a test that loads and parses a CSV with a rating question."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "wrong_behaviour",
+     "description": "Only the files in the diff were changed. Other code that keys off the type string 'scale' may still exist, for example in the CLI, reports, quality checks, or the _generated facts behind the docs' question_types row. A repo-wide search for 'scale' type usage is needed. The straightliner message still says 'scale questions', which may be intended but should be confirmed."
+    },
+    {
+     "file": "tests/test_survey_file.py",
+     "line": 58,
+     "kind": "missing_test",
+     "description": "The tests cover loading 'rating' and 'scale', and saving a survey that was loaded from 'scale'. They do not cover a full save and reload round trip, a survey that mixes old and new type names, or loading a legacy file through load_survey. Unknown-type error behaviour after the alias mapping is also untested."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-U--report",
+  "seed": "greenhouse_monitor-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.076296,
+  "seconds": 12.7,
+  "output_tokens": 1203,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 58,
+     "kind": "wrong_behaviour",
+     "description": "_log_row reads `reading.raw`, but the diff never adds a `raw` field to the Reading model (core/model.py is untouched). Writing any reading would raise AttributeError, or the column would be blank. This is consistent with the 3 existing tests that now fail: test_manual_reading_is_calibrated_and_logged, test_rows_are_converted_calibrated_and_logged and test_log_starts_with_column_names_and_rounds_values."
+    },
+    {
+     "file": "src/greenhouse/storage/history.py",
+     "line": 36,
+     "kind": "wrong_behaviour",
+     "description": "load_readings passes `raw=` to the Reading constructor, which has no such field in this diff, so loading the log would raise TypeError. It also assumes the log has a header and a `timestamp` column, so a pre-upgrade log is only readable if it was upgraded first."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 1,
+     "kind": "wrong_behaviour",
+     "description": "Nothing in the ingest or record paths captures the uncalibrated value, converted to the canonical unit, before the offset is applied. The ingest and record code is not in the diff, so `raw` would always be None (written empty) for new rows. The feature's purpose, re-deriving old readings, is not delivered."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 36,
+     "kind": "wrong_behaviour",
+     "description": "The _upgrade rewrite of an existing log is a risky change to a log documented as append-only. It reads the whole file and rewrites it in place with no atomic replace. It runs on every write, and it fails with ValueError if the header lacks `value`. Other consumers of readings.csv that unpack six columns (archive, export, validate) are not updated, and archive files in the old format are not handled."
+    },
+    {
+     "file": "tests/test_storage.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "No tests were changed or added (0 test files changed). The three tests that assert the old 6-column format were not updated, and nothing covers the new `raw` column, its decimals and unit, the empty value on old rows, the upgrade of an old log, or the round trip through load_readings. The change is reported NOT PINNED."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md and history.py are shown as whole-file rewrites, which suggests line endings were changed (CRLF to LF). This adds diff noise and should be reverted to keep the change reviewable."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-U--diff",
+  "seed": "greenhouse_monitor-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.071505,
+  "seconds": 11.8,
+  "output_tokens": 1142,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 59,
+     "kind": "wrong_behaviour",
+     "description": "`_log_row` reads `reading.raw`, and `load_readings` passes `raw=` to `Reading`. The diff never adds a `raw` field to `Reading` in core/model.py, so as shown both would raise AttributeError or TypeError. Nothing in the diff sets `raw` at ingest or `record` either: the calibration step still discards the pre-calibration value. Every new row would therefore get an empty `raw` instead of the uncalibrated value, so the feature's purpose is not met."
+    },
+    {
+     "file": "src/greenhouse/storage/history.py",
+     "line": 27,
+     "kind": "wrong_behaviour",
+     "description": "Other code that reads or writes the log is not updated. The archive command moves old rows into monthly files and export writes CSV and JSON. Any positional parsing or fixed 6-column handling there would break with the new 7-column layout, or would drop `raw`. Archived files and the log must stay consistent in their headers."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 38,
+     "kind": "wrong_behaviour",
+     "description": "`_upgrade` rewrites the whole log in place, with no temp file and atomic replace, so a crash mid-write can corrupt the log. It also raises ValueError if the header has no `value` column. It also runs on every write, reading the entire file each time, and the module docstring's claim that the log is only appended to is no longer true."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "No tests are added for the new column. Missing cases: a new log header, `raw` equal to the uncalibrated value with the kind's decimals and unit (including F-to-C conversion and calibration offsets), upgrading an old 6-column log, and loading both old and new logs."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md and history.py show every line as changed, which suggests line endings were converted (likely CRLF to LF). That is unrelated churn that hides the real change and should be reverted."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "ticket_office-C--diff",
+  "seed": "ticket_office-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.08470799999999999,
+  "seconds": 13.2,
+  "output_tokens": 960,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/boxoffice/reports/cashup.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "The changelog says `report cashup` groups by the day part of `date`, but cashup code is not touched and no test covers it. If cashup, or any other reader of `entry[\"date\"]` such as export or notices, compares `date` to a `YYYY-MM-DD` string directly, it will now silently miss every new timestamped entry. Please check every place that reads `date` and add a cashup test with mixed date-only and timestamped entries."
+    },
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, daily.py, ledger.py, test_ledger.py are shown as rewritten in full, which suggests a line-ending change (CRLF to LF) or similar whitespace churn. This hides the real change and pollutes history; restore the original line endings so the diff only contains the intended edits."
+    },
+    {
+     "file": "tests/test_ledger.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "There is no test that the sale, refund and exchange paths, end to end through the services or CLI, write the `YYYY-MM-DDTHH:MM` format. Only `Ledger.record_entry` is tested directly."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "ticket_office-C--report",
+  "seed": "ticket_office-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.09150399999999999,
+  "seconds": 13.5,
+  "output_tokens": 1193,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of CHANGELOG.md, docs/reference.md, src/boxoffice/reports/daily.py, src/boxoffice/storage/ledger.py and tests/test_ledger.py. This looks like a line-ending change (CRLF to LF). The task needed only a few lines in each file. The noise hides the real change, pollutes blame, and could cause merge conflicts. Restore the original line endings so the diff shows only the intended edits."
+    },
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 41,
+     "kind": "missing_test",
+     "description": "Mutation analysis changed `==` to `>=` in entries_on and no test failed. No test checks that entries from a later day are excluded, so the day filter is only half pinned. Add a test with an entry on a later day that must not be returned."
+    },
+    {
+     "file": "src/boxoffice/reports/daily.py",
+     "line": 57,
+     "kind": "missing_test",
+     "description": "A NumberReplacer mutation in totals went unnoticed (probably the `COLUMNS[1:]` slice). Existing tests do not pin it. This is low risk because the line is not new, but the totals row is not checked against a mixed timestamped and date-only set of entries."
+    },
+    {
+     "file": "src/boxoffice/storage/ledger.py",
+     "line": 15,
+     "kind": "wrong_behaviour",
+     "description": "day_of slices `entry[\"date\"][:10]`, and only the ledger and daily report were updated to use it. The diff does not show whether other code compares or sorts on `entry[\"date\"]` directly, such as the cashup report, export, or `upgrade`. The changelog claims cashup groups by day, but no change or test for cashup is included. Search for other uses of the `date` field and add a cashup test with timestamped entries."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-U--report",
+  "seed": "recipe_box-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.025349,
+  "seconds": 7.3,
+  "output_tokens": 520,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 0,
+     "kind": "wrong_behaviour",
+     "description": "The change breaks the existing test test_display_rounds_to_eighths_for_cooks, which passes without it. The test was not updated to match the new denominators (2, 3, 4, 8), so the suite fails with the change in place."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No test pins the fix. Nothing checks that 1/3 cup displays as '1/3 cup', or that scaling a 3-serving porridge with 1 cup of oats to --servings 1 gives '1/3 cup oats'. Undoing the change makes no new test fail. A regression test for thirds is needed."
+    },
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 15,
+     "kind": "other",
+     "description": "Adding 3 to the DENOMINATORS tuple changes rounding for every non-metric amount, not just thirds. 3/8 may now round to 1/3, and 2/3 and 5/6 amounts are affected too. The agent did not check or document this, and the existing eighths test failure shows the behaviour has changed. Check that the rounding logic, which is probably nearest-fraction, handles mixed denominators correctly, for example 3/8 versus 1/3 and the boundaries around SMALLEST. Also confirm that docs/reference.md and the CHANGELOG describe the new behaviour accurately."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-U--diff",
+  "seed": "recipe_box-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.022643999999999997,
+  "seconds": 9.0,
+  "output_tokens": 636,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 15,
+     "kind": "missing_test",
+     "description": "The change adds no regression test. Neither reported case is covered: a recipe calling for 1/3 cup sugar should show `1/3 cup`, and 1 cup of oats scaled from 3 servings to 1 should show `1/3 cup oats`. Nothing checks that the existing halves, quarters and eighths still display as before, or that 2/3 shows as `2/3`. Nothing checks how amounts that sit between the new and old denominators (for example 0.35, 0.375 and 0.4) round now that thirds compete with eighths."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-C--diff",
+  "seed": "greenhouse_monitor-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.099377,
+  "seconds": 14.8,
+  "output_tokens": 1408,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/storage/archive.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "The readings log now has 7 columns, but `archive` (and any other reader of readings.csv such as `export` or `validate`) was not touched and has no test against the new format. `test_archive_moves_old_rows_by_month` still uses the old 6-column LOG. Nothing shows that archiving a log with `raw` keeps the column, or that it does not unpack 6 fields and crash. Monthly archive files written from an upgraded log could end up with mixed headers."
+    },
+    {
+     "file": "tests/test_ingest.py",
+     "line": 33,
+     "kind": "missing_test",
+     "description": "`raw` is only tested for temperature in C and for light. There is no test that `raw` is in the canonical unit when the input unit differs (F for temperature, klux for light) or that it has the right decimals after conversion. The task requires the same unit and decimals as `value`, so this is the likely failure case."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 43,
+     "kind": "other",
+     "description": "`_upgrade` rewrites the whole log in place with `open(\"w\")`, which is not atomic. A crash mid-write loses the log. It also runs on every write to a non-fresh log, and the new migration path is only covered by one test with a single-row append. The change also reverses the module's stated invariant that the log is only ever appended to."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, history.py and test_storage.py are shown as entirely deleted and re-added. This looks like a line-ending change (CRLF to LF) that no one asked for. It buries the real edits in the diff and should be reverted so only the intended lines change."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-C--report",
+  "seed": "greenhouse_monitor-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.105214,
+  "seconds": 14.6,
+  "output_tokens": 1434,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of CHANGELOG.md, docs/reference.md, history.py, readings_log.py and test_storage.py, though only a few lines changed in each. This looks like a line-ending change (CRLF to LF) mixed into the feature change. It makes review and blame noisy and should be reverted so the diff holds only the real edits."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 41,
+     "kind": "wrong_behaviour",
+     "description": "The log was documented and designed as append-only. `_upgrade` now reads the whole file and rewrites it in place on the next write, with no atomic temp-file-and-rename. A crash mid-write would lose or truncate the history. It also raises an unhandled ValueError if the header has no `value` column, and it silently accepts any header that is not exactly LOG_COLUMNS."
+    },
+    {
+     "file": "src/greenhouse/storage/readings_log.py",
+     "line": 23,
+     "kind": "missing_test",
+     "description": "Mutation analysis found that the numeric constants in `write_many` and `_upgrade` (the `+1` insertion index and the related index logic) can change with every test still passing. The upgrade path needs tests for a header-only legacy file, blank rows, and a log that already has `raw`."
+    },
+    {
+     "file": "tests/test_ingest.py",
+     "line": 36,
+     "kind": "missing_test",
+     "description": "Nothing tests that `raw` is in the same unit and decimals as `value` when the input unit is converted (F to C, klux to lux). That is a stated requirement. Existing tests only cover inputs already in the canonical unit, with raw equal to value or value minus the offset."
+    },
+    {
+     "file": "src/greenhouse/storage/archive.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "Other readers and writers of the log (archive, export and similar) were not changed or tested against the new 7-column format. The archive test still uses the legacy 6-column log, so archiving a log with the `raw` column is unverified."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-C--report",
+  "seed": "clinic_booking-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.039178000000000004,
+  "seconds": 10.4,
+  "output_tokens": 829,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_desk.py",
+     "line": 31,
+     "kind": "missing_test",
+     "description": "The per-phone and per-day test does not pin the matching conditions on src/clinicbook/services/desk.py:32. Changing `other.phone == phone` or `other.day == day` to `>=` or `is` still passes. It needs an earlier-day booking by the same phone, a phone that compares greater than the new one, and a refusal that depends on each condition."
+    },
+    {
+     "file": "tests/test_desk.py",
+     "line": 45,
+     "kind": "missing_test",
+     "description": "The cancelled-bookings test makes a late cancellation but never books again afterwards, so it asserts nothing about late-cancelled bookings. Add a booking after the late cancel for the same phone to show it does not count."
+    },
+    {
+     "file": "tests/test_config.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "The boundary at src/clinicbook/config.py:76 is untested. The test uses 0 and 3 but not 1, so changing `< 1` to `<= 1` or altering the constant goes unnoticed. Add a case that accepts `max_daily_bookings: 1`, and ideally one that checks the limit is enforced when it is 1."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-C--diff",
+  "seed": "clinic_booking-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.032123,
+  "seconds": 8.9,
+  "output_tokens": 617,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_desk.py",
+     "line": 45,
+     "kind": "missing_test",
+     "description": "test_cancelled_bookings_do_not_count_towards_the_daily_limit sets up a late-cancelled booking (Bob Ray, cancelled after moving the clock to 08:00) but never books again for that phone afterwards and asserts nothing. The late_cancelled case, which the docs and changelog say doesn't count, is therefore not tested. A regression where late_cancelled bookings count towards the limit would pass. The test should fill the limit with a late-cancelled booking and show a new booking for that phone is accepted."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-W2--diff",
+  "seed": "hotel_desk-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.022781,
+  "seconds": 6.7,
+  "output_tokens": 292,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/services/stays.py",
+     "line": 20,
+     "kind": "wrong_behaviour",
+     "description": "Unrelated change: `room.type_code != reservation.room_type` was replaced with `is not`. Identity comparison on strings is unreliable (works only when interned), so a room of the correct type can be wrongly rejected with a ValidationError. It is out of scope for the task and should be reverted to `!=`."
+    },
+    {
+     "file": "tests/test_stays.py",
+     "line": 39,
+     "kind": "missing_test",
+     "description": "No test covers the CLI output, which the task says should print the new message. The new test only checks the service-level exception. Also the 'out_of_order' case sets status directly rather than via housekeeping.set_status, and no test covers the type-mismatch path that the unintended `is not` change affects."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-W2--report",
+  "seed": "hotel_desk-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.027697,
+  "seconds": 5.9,
+  "output_tokens": 316,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/services/stays.py",
+     "line": 20,
+     "kind": "wrong_behaviour",
+     "description": "Unrelated change from `!=` to `is not` when comparing room.type_code with reservation.room_type. Identity comparison on strings is unreliable (works only if the strings happen to be interned), so a room of the correct type may be wrongly rejected with a ValidationError when the check-in names a room. This is outside the task scope and is a likely regression; it should be reverted to `!=`."
+    },
+    {
+     "file": "tests/test_stays.py",
+     "line": 39,
+     "kind": "missing_test",
+     "description": "No test exercises the room type mismatch check on line 20 (mutations of the comparison went unnoticed by all tests), so the unintended `is not` change is not caught. A test checking in to a named room of the right type (with type strings built at runtime) and one of the wrong type would cover it."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-C--report",
+  "seed": "fleet_service-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.056274000000000005,
+  "seconds": 11.1,
+  "output_tokens": 993,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/fleetkeep/config.py",
+     "line": 37,
+     "kind": "missing_test",
+     "description": "The validation in `_percent` is untested. Mutating the `value < 0` check, the `is_finite()` check, or the raised exception leaves every test passing. No test shows that a negative, NaN, Infinity or non-numeric `shop_supplies_percent` is rejected with the usual settings error, and `shop_supplies_cap` is not tested for negative values either."
+    },
+    {
+     "file": "src/fleetkeep/reports/costs.py",
+     "line": 18,
+     "kind": "missing_test",
+     "description": "Changing the `closed is not None and closed in period` filter from `and` to `or` goes unnoticed. The new report test only covers a single order closed inside the period. Nothing checks that open orders, or orders closed outside the period, add no supplies to maintenance cost."
+    },
+    {
+     "file": "src/fleetkeep/cli/commands.py",
+     "line": 302,
+     "kind": "missing_test",
+     "description": "The `wo show` output path is only partly pinned. The `--json` indent and return value on lines 302-303 can be changed without a test failing. The text output is checked for the supplies line only, not for how it sits next to the other charge lines."
+    },
+    {
+     "file": "src/fleetkeep/services/workorders.py",
+     "line": 107,
+     "kind": "other",
+     "description": "Only `costs`, `spend` and `wo show` were switched to the new total. Other places that still add `parts_total + labour_total` (for example `wo close` output, `wo list`, exports or vehicle history) would silently disagree with the `wo show` total. The diff does not show that this was checked, and no test covers it."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-C--diff",
+  "seed": "fleet_service-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": false,
+  "decision": "accept",
+  "cost": 0.047539000000000005,
+  "seconds": 9.5,
+  "output_tokens": 742,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "accept",
+   "problems": []
+  },
+  "raw": null
+ },
+ {
+  "slot": "survey_tally-U--diff",
+  "seed": "survey_tally-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.070006,
+  "seconds": 11.8,
+  "output_tokens": 1093,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites the whole file, as it does for model/questions.py and services/validation.py. This looks like a line-ending change (CRLF to LF) or similar whitespace churn. The real change is about 4 lines, so the diff is hard to review and will clutter blame and history. The original line endings should be restored so only the intended lines change."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 17,
+     "kind": "missing_test",
+     "description": "No tests were added or updated. Nothing covers `rating` loading as a Scale, legacy `scale` files still loading, `save_survey` writing `rating` (including a round-trip of an old `scale` file), `PARSERS['rating']` in csv_responses, the renamed `_tally_rating` and `_check_rating` dispatch methods, or the codebook `type` column showing `rating`. Existing tests that reference `scale` types were not touched either."
+    },
+    {
+     "file": "src/surveytally/model/questions.py",
+     "line": 98,
+     "kind": "other",
+     "description": "The type name is renamed everywhere by hand, with no check that every consumer of `question.type` or the literal 'scale' was found. The type-driven dispatch (`getattr(self, f'_check_{question.type}')`, `_tally_{type}`, PARSERS) is easy to break. Codebook, export and CLI code that is not in the diff should be checked for remaining 'scale' string references. The `question_types` fact in docs/reference.md may also be generated or checked against code, so its source of truth should be confirmed."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "survey_tally-U--report",
+  "seed": "survey_tally-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.06834,
+  "seconds": 7.2,
+  "output_tokens": 554,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_extras.py",
+     "line": 0,
+     "kind": "wrong_behaviour",
+     "description": "The change breaks the existing test test_codebook_lists_every_code, which passes without the change. The codebook's type column now shows 'rating' instead of 'scale' (the changelog acknowledges this). The test was not updated, and the suite is left failing."
+    },
+    {
+     "file": "tests/",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No tests were added or changed. Nothing pins that 'rating' loads as a scale question, that legacy 'scale' files still load, or that save_survey writes 'rating'. The report confirms no test fails because of the change being present."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten in the diff (every line removed and re-added), which suggests line endings changed (CRLF to LF) or a similar whole-file rewrite. The same happens in model/questions.py and services/validation.py. This hides the real 3-line changes and adds noise to history; the original line endings should be kept."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 12,
+     "kind": "other",
+     "description": "The unknown-type error message uses the already-aliased kind, so it reports the rewritten name rather than what the file said. Also, the 'scale' alias is applied silently with no test, and other places that may depend on the type name (e.g. the codebook, exports, other getattr dispatch on question.type, or the generated facts/docs table used by the reference doc) were not checked, so the rename may still be incomplete."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-W3--report",
+  "seed": "greenhouse_monitor-W3",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.061565,
+  "seconds": 11.1,
+  "output_tokens": 1029,
+  "models": [
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/config/settings.py",
+     "line": 55,
+     "kind": "wrong_behaviour",
+     "description": "The check `value < 2` rejects `timer_step_minutes: 1` in settings.json, but the error message and docs say the minimum is 1. A site with timers that take single minutes cannot configure a step of 1. The check should be `value < 1`, or the whole check should be `value < 1` combined with the negative check. The mutation `AddNot` on this area also went unnoticed."
+    },
+    {
+     "file": "tests/test_config.py",
+     "line": 89,
+     "kind": "missing_test",
+     "description": "test_timer_step_setting only checks the default and that 0 is rejected. It never loads `timer_step_minutes: 1` from a file, so the off-by-one boundary bug slips through. The services test passes step 1 via `Settings(...)` directly and bypasses `load_settings`. Add a test that 1 loads and 0 is rejected."
+    },
+    {
+     "file": "src/greenhouse/services/irrigation.py",
+     "line": 41,
+     "kind": "other",
+     "description": "When rounding up would exceed `max_irrigation_minutes`, the code rounds down, and when the max is smaller than one step it returns one step, which exceeds the max. The task only asked to round up. This extra behaviour is documented but was not requested, and it breaks the max in the small-max case."
+    },
+    {
+     "file": "src/greenhouse/services/irrigation.py",
+     "line": 1,
+     "kind": "other",
+     "description": "settings.py, irrigation.py and tests/test_cli.py show as whole-file rewrites, which looks like a line-ending change. This adds diff noise and hides the real edits. Restore the original line endings."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-W3--diff",
+  "seed": "greenhouse_monitor-W3",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.0629,
+  "seconds": 8.7,
+  "output_tokens": 749,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/config/settings.py",
+     "line": 56,
+     "kind": "wrong_behaviour",
+     "description": "The validation `value < 2` for timer_step_minutes is wrong: the error says 'must be at least 1' and the docs say at least 1, but a value of 1 is rejected (and the test uses 1 in services, bypassing load_settings). A step of 1 is a legitimate setting (no rounding). It should be `value < 1`. Also 0.5 passes the <2 check incorrectly rejected, and fractional values are handled only by the later whole-number check."
+    },
+    {
+     "file": "src/greenhouse/services/irrigation.py",
+     "line": 45,
+     "kind": "wrong_behaviour",
+     "description": "When rounding up would exceed max_irrigation_minutes, the code rounds down to the largest multiple within the max (or one step, which can exceed the max). The task says round every suggestion up to a whole multiple; this silently changes the cap semantics, and with max < step it exceeds max_irrigation_minutes. This extra behaviour was not requested and is a questionable design choice (e.g., max 32 gives 30 instead of 35)."
+    },
+    {
+     "file": "src/greenhouse/config/settings.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten in the diff (every line removed and re-added), likely a line-ending change (CRLF/LF). The same happens in irrigation.py and tests/test_cli.py, creating noisy diffs that hide the real change and should be reverted to the original line endings."
+    },
+    {
+     "file": "tests/test_config.py",
+     "line": 87,
+     "kind": "missing_test",
+     "description": "The config test only checks default and 0; it does not check that 1 is accepted (which would have caught the `< 2` bug), nor that non-whole values or a valid custom value load correctly."
+    },
+    {
+     "file": "tests/test_services.py",
+     "line": 173,
+     "kind": "missing_test",
+     "description": "Tests for the clamp-down behaviour exist only for the invented cap rule; no test covers a zero-need zone with a non-default step beyond the default, and the max-below-step case (5 > max 3) enshrines a suggestion exceeding max_irrigation_minutes."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-W2--diff",
+  "seed": "library_loans-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.039663000000000004,
+  "seconds": 11.0,
+  "output_tokens": 800,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/reports/activity.py",
+     "line": 14,
+     "kind": "wrong_behaviour",
+     "description": "`entry.event is 'fine'` compares strings by identity. Event strings parsed from the ledger file are not the interned literal, so the check is false and fine entries are not skipped. They then reach `COUNTED[entry.event]`, which has no 'fine' key, and the activity report raises KeyError on any ledger containing a fine line. The check should use `==`. It also skips fine entries only because `COUNTED` has no mapping for them, which is fragile, and it puts the fine check inside the year filter condition."
+    },
+    {
+     "file": "tests/test_circulation.py",
+     "line": 83,
+     "kind": "missing_test",
+     "description": "No test runs the activity report (or any other ledger reader besides `balance`) on a ledger containing `fine` lines. That is why the `is 'fine'` bug in activity.py goes undetected. Other consumers that read `return` amounts, such as overdue or fines-collected reports, are also unchecked for the new line format."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-W2--report",
+  "seed": "library_loans-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.048723999999999996,
+  "seconds": 13.2,
+  "output_tokens": 1220,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/reports/activity.py",
+     "line": 14,
+     "kind": "wrong_behaviour",
+     "description": "`entry.event is 'fine'` compares strings by identity. This raises a SyntaxWarning and only works by interning accident, so it should be `==`. The change also mixes the event skip into the year filter, which makes the condition harder to read. Skipping `fine` lines altogether is a silent design choice, and no test covers it."
+    },
+    {
+     "file": "tests/test_circulation.py",
+     "line": 83,
+     "kind": "missing_test",
+     "description": "No test runs the activity report with a ledger that contains `fine` lines. Mutation testing shows 6 of 32 changes to activity.py:14 went unnoticed, so the `fine` skip and the year filter are untested. The report might also KeyError on `fine` through `COUNTED`, and nothing checks that."
+    },
+    {
+     "file": "src/lending/services/circulation.py",
+     "line": 69,
+     "kind": "wrong_behaviour",
+     "description": "A check-in against an existing v1 ledger now appends a `return 0.00` line plus a `fine` line under the `#lending-ledger v1` header. In v1 semantics the fine lives on the `return` line, so the file ends up in mixed formats. Older copies that read it as v1 would miss the fine. No test covers a new fined return on a v1 ledger or the resulting balance."
+    },
+    {
+     "file": "src/lending/storage/ledger.py",
+     "line": 63,
+     "kind": "other",
+     "description": "The bad-header error says only `expected #lending-ledger v2`, although v1 is also accepted. The message is misleading and should name both accepted headers."
+    },
+    {
+     "file": "src/lending/services/fines.py",
+     "line": 41,
+     "kind": "missing_test",
+     "description": "`CHARGES` now maps both `return` and `fine` to 'fine on'. There is no test of the member statement or description path, or of balances, with v1 `return` amounts alongside v2 `fine` lines. The balance is checked only for one v2 case."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "payroll_lite-W--report",
+  "seed": "payroll_lite-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.094463,
+  "seconds": 8.9,
+  "output_tokens": 623,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 24,
+     "kind": "wrong_behaviour",
+     "description": "The condition was inverted to `if not run.period.pay_date.year != year: continue`, which is equivalent to `== year`. Runs paid in the requested year are skipped and runs from other years are counted, so year-end totals are wrong. The original was `!= year`. This edit was also outside the scope of the task, which only concerned the pay-run file format."
+    },
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "No test covers year_totals: the loop body, the pay-date year filter and the continue were all altered by mutation without any test failing. The inverted filter went unnoticed for that reason."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 40,
+     "kind": "missing_test",
+     "description": "The `totals` written by write_payrun (the run's `totals` in cents) are not fully tested. Mutating the numbers on this line went unnoticed, so the 100 conversion or the totals output is unpinned; the new test checks only totals.gross."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 17,
+     "kind": "other",
+     "description": "_cents computes int(round_money(value) * 100), which relies on round_money yielding exactly two decimal places. No test covers amounts with fractional cents, negative values or large values, so the conversion is not checked at the edges."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md and docs/reference.md are shown as whole-file rewrites (every line removed and re-added), which suggests line endings were changed (CRLF/LF). This adds diff noise and should be reverted so only the intended lines change."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "payroll_lite-W--diff",
+  "seed": "payroll_lite-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.088627,
+  "seconds": 8.2,
+  "output_tokens": 649,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 24,
+     "kind": "wrong_behaviour",
+     "description": "The condition was changed to `if not run.period.pay_date.year != year: continue`, which is equivalent to `if pay_date.year == year: continue`. It skips runs in the requested year and counts runs from other years, inverting year-end totals. It should be `if run.period.pay_date.year != year`."
+    },
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 1,
+     "kind": "missing_test",
+     "description": "The year-end service was refactored to use read_payrun, but no test covers it, so the inverted year filter went unnoticed. A year-end test should cover both schema 1 and schema 2 files and runs from different years."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 15,
+     "kind": "wrong_behaviour",
+     "description": "`_cents` uses `int(round_money(value) * 100)`. This is fine for Decimal, but the schema-2 reader rejects any non-int money value, and there is no test for malformed input. Lower severity than the other problems."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole of CHANGELOG.md and docs/reference.md (and payrun_file.py) are shown as fully rewritten, most likely a line-ending change (CRLF/LF) that makes the diff noisy and hides the real changes. The original line endings should be preserved."
+    },
+    {
+     "file": "tests/test_payrun.py",
+     "line": 75,
+     "kind": "missing_test",
+     "description": "The schema-1 compatibility test builds its fixtures by converting the schema-2 output with float division (`cents / 100:.2f`) and only checks gross. It does not exercise other consumers such as bank-file, payslip, reconcile and year-end, which read money from pay-run files, and it does not cover totals."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-W--diff",
+  "seed": "library_loans-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.030732,
+  "seconds": 6.8,
+  "output_tokens": 440,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 19,
+     "kind": "wrong_behaviour",
+     "description": "The overdue report's skip condition was changed from `days <= 0` to `days <= 1`, which is an unrelated and incorrect change. A copy that is 1 day overdue is no longer listed at all, regardless of the grace setting (even with fine_grace_days=0, where it should accrue a fine). The report should still list every overdue loan (days > 0); accrued_fine already returns 0 inside the grace period. This hides overdue items from staff and is a regression."
+    },
+    {
+     "file": "tests/test_holds_and_fines.py",
+     "line": 55,
+     "kind": "missing_test",
+     "description": "No test covers the overdue report (including the `accrued` value within/after grace, and that a 1-day-late loan still appears). The report change is untested, which is how the `days <= 1` regression slipped through."
+    },
+    {
+     "file": "tests/test_holds_and_fines.py",
+     "line": 55,
+     "kind": "missing_test",
+     "description": "The grace-period test does not check the exact boundary behaviour of a return exactly at the grace limit through the real return/checkin path, nor that fines post-grace count from the due date for a non-DVD material; coverage is limited to fine_for with one material."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-W--report",
+  "seed": "library_loans-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.035498,
+  "seconds": 7.0,
+  "output_tokens": 430,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 19,
+     "kind": "wrong_behaviour",
+     "description": "The overdue row filter was changed from `days <= 0` to `days <= 1`, which is unrelated to the grace period and hides copies that are exactly 1 day overdue from the overdue report. It is also hard-coded rather than tied to `fine_grace_days`. It should stay `days <= 0` (the report lists overdue items; only the `accrued` amount should follow the grace rule), so items 1 day late with accrued 0.00 are wrongly dropped from the report."
+    },
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 19,
+     "kind": "missing_test",
+     "description": "No test covers the overdue report at all after this change: the mutation run shows the filter threshold, the continue/break behaviour and the sort key can be altered with all tests passing. The change claims the report's `accrued` follows the grace rule, but nothing verifies that, nor which rows are listed."
+    },
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 26,
+     "kind": "missing_test",
+     "description": "Sort order of overdue rows (`-row['days']`) is not pinned by any test; the unary operator mutation survived."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-W--report",
+  "seed": "recipe_box-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.029921,
+  "seconds": 10.1,
+  "output_tokens": 751,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 15,
+     "kind": "wrong_behaviour",
+     "description": "DENOMINATORS is set to (2, 3, 4, 7) instead of the required (2, 3, 4, 8). Eighths are no longer a possible rounding target; sevenths are introduced, which cooks do not use. Amounts like 3/8 or 1/8 would be rounded to sevenths or other fractions (e.g. 3/8 cup would show as 3/7 or 1/3 / 1/2), contradicting the task and the docs, which say 2, 3, 4, 8. It happens to pass the thirds tests but breaks the eighths behaviour."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 65,
+     "kind": "wrong_behaviour",
+     "description": "The existing assertion display_amount(Fraction(13, 10), 'cup') == '1 1/4' was edited to use Fraction(6, 5) so it still passes. With the correct denominators (2,3,4,8), 13/10 would round to 1 1/3 (1.3 is closer to 1/3 than 1/4), so the edit changes an existing test's input to hide the change in behaviour rather than just adding thirds coverage. The input change is unexplained and weakens the test of the quarter case; it also hints that the denominators in the code are not the intended ones."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 70,
+     "kind": "missing_test",
+     "description": "No test pins the eighths denominator (e.g. 3/8 cup should still display as 3/8, 1/8 as 1/8 other than the SMALLEST case), which is why the 8 -> 7 mutation on quantity.py:15 went unnoticed (3 of 8 mutations survived). Also no test covers the two scenarios in the task: scaling a 3-serving porridge to --servings 1, or `recipebox show` output for 1/3 cup."
+    },
+    {
+     "file": "docs/reference.md",
+     "line": 74,
+     "kind": "other",
+     "description": "Docs say display.denominators is '2, 3, 4, 8' but the code uses (2, 3, 4, 7), so docs and code disagree."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "recipe_box-W--diff",
+  "seed": "recipe_box-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.025263,
+  "seconds": 8.6,
+  "output_tokens": 683,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/recipebox/core/quantity.py",
+     "line": 15,
+     "kind": "wrong_behaviour",
+     "description": "DENOMINATORS is set to (2, 3, 4, 7) instead of (2, 3, 4, 8). Eighths are dropped and sevenths added, contradicting the task and docs/reference.md (2, 3, 4, 8). Amounts like 1/8 or 3/8 would now be rounded to sevenths (e.g. 3/8 shows as 3/7 or similar), and SMALLEST = 1/8 is no longer a representable denominator."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 65,
+     "kind": "wrong_behaviour",
+     "description": "The existing assertion display_amount(Fraction(13, 10), 'cup') == '1 1/4' was changed to Fraction(6, 5). This edits a test to fit the new behaviour rather than the code: 13/10 is 1.3, which is closer to 1 1/3 than 1 1/4 once thirds are allowed, so the test was altered to hide a behaviour change instead of acknowledging it. The edit should be reviewed and justified."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 69,
+     "kind": "missing_test",
+     "description": "No test covers the reported scenarios: 1/3 cup sugar in `show`, and scaling a 3-serving porridge with 1 cup oats to --servings 1 yielding '1/3 cup'. Also no test asserts that eighths (e.g. 3/8) still display correctly, which would have caught the 7 vs 8 typo."
+    },
+    {
+     "file": "tests/test_units_and_quantities.py",
+     "line": 62,
+     "kind": "other",
+     "description": "The test name test_display_rounds_to_eighths_for_cooks and the comment on DENOMINATORS no longer describe the behaviour, and CHANGELOG says thirds are no longer 'rounded to eighths' while the code now removes eighths."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "payroll_lite-U--diff",
+  "seed": "payroll_lite-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "unreadable",
+  "caught": null,
+  "decision": null,
+  "cost": 0.087647,
+  "seconds": 11.5,
+  "output_tokens": 805,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": null,
+  "raw": "\n<invoke name=\"Grep\">\n<parameter name=\"pattern\">json\\.loads|runs\\.glob|\\[\"gross\"\\]|\\[\"net\"\\]</parameter>\n<parameter name=\"path\">E:\\ep-runs\\reviewer-study-2026-11-02\\slots\\payroll_lite-U--diff</parameter>\n<parameter name=\"output_mode\">content</parameter>\n<parameter name=\"-n\">true</parameter>\n</invoke>\n\n\n\n<invoke name=\"Glob\">\n<parameter name=\"pattern\">**/*.py</parameter>\n<parameter name=\"path\">E:\\ep-runs\\reviewer-study-2026-11-02\\slots\\payroll_lite-U--diff</parameter>\n</invoke>"
+ },
+ {
+  "slot": "payroll_lite-U--report",
+  "seed": "payroll_lite-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.093468,
+  "seconds": 9.4,
+  "output_tokens": 818,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No test fails when the change is undone (4 files reverted, suite still passes, no test file changed). Nothing pins that pay-run files are written with schema 2, that money (payslip totals, run totals, line amount and rate) is written as integer cents, that line hours stay decimal strings, or that schema 1 files are still read."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 40,
+     "kind": "missing_test",
+     "description": "The cents conversion in write_payrun (totals via _cents, and the 100 factor in _cents) can be altered by NumberReplacer mutations with all tests passing; no test checks the written JSON values such as 101250 for 1012.50."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 15,
+     "kind": "missing_test",
+     "description": "SCHEMA constant can be changed without any test noticing; no test asserts the written schema value is 2 or that unsupported schemas are rejected."
+    },
+    {
+     "file": "src/payroll/services/yearend.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "The year_totals refactor to read_payrun is untested: the loop can be skipped, the pay-date year filter flipped or its continue turned into break, and the per-slip accumulation loop skipped, all with passing tests. Nothing checks year-end totals across schema 1 and schema 2 files or the by-pay-date year filter."
+    },
+    {
+     "file": "src/payroll/storage/payrun_file.py",
+     "line": 18,
+     "kind": "wrong_behaviour",
+     "description": "_cents uses int(round_money(value) * 100), which relies on Decimal arithmetic being exact; it should be explicitly checked for correctness on edge values (negative amounts, values with more than two decimals). Reading in _money rejects non-int values, so any schema 2 file written by an external tool with integer-valued floats or strings fails with a message that does not name the file or field."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md and docs/reference.md are shown as whole-file rewrites (every line removed and re-added), which suggests line endings were changed (likely CRLF to LF). This creates a noisy diff and unrelated churn; the same applies to yearend.py and payrun_file.py. Line endings should be preserved."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-W3--report",
+  "seed": "library_loans-W3",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": false,
+  "decision": "accept",
+  "cost": 0.037844,
+  "seconds": 9.3,
+  "output_tokens": 729,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "accept",
+   "problems": []
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-W3--diff",
+  "seed": "library_loans-W3",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": false,
+  "decision": "accept",
+  "cost": 0.031059000000000003,
+  "seconds": 8.4,
+  "output_tokens": 635,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "accept",
+   "problems": []
+  },
+  "raw": null
+ },
+ {
+  "slot": "gradebook-U--diff",
+  "seed": "gradebook-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.035008,
+  "seconds": 10.4,
+  "output_tokens": 692,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff removes and re-adds every line of the file, though only the sort key and a helper changed. This looks like a line-ending change (CRLF to LF) or similar whitespace churn. It hides the real change and bloats blame. Restore the original line endings so the diff shows only the intended edit."
+    },
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 106,
+     "kind": "other",
+     "description": "The new `_percent_of_possible` uses `Fraction(0)`, but the diff doesn't show `Fraction` being imported in progress.py. If it isn't already imported, a zero-possible line will raise NameError. Verify the import, or avoid Fraction there."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 70,
+     "kind": "missing_test",
+     "description": "No tests were added or changed. The case from the task (4/5 vs 6/10, where the 6/10 should be dropped) needs a regression test for compute_grade. It should also cover a tie on percent and zero-possible items. A matching test is needed for the progress report's dropped marking, so the two stay consistent."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "gradebook-U--report",
+  "seed": "gradebook-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.040916,
+  "seconds": 8.6,
+  "output_tokens": 754,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No test was added or changed. Undoing the change leaves the whole suite passing, so nothing pins the fix. A regression test is needed with 4/5 and 6/10 in one category and drop_lowest=1, asserting the 4/5 (80%) is kept and the 6/10 (60%) is dropped, and checking the category earned/possible totals."
+    },
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 113,
+     "kind": "missing_test",
+     "description": "The progress report's _lowest ranking is untested. Mutations to the sort key, the count arithmetic (len(counted) - 1) and the slice [:count] all went unnoticed. Add a test that the report marks the same scores as dropped as compute_grade when max points differ."
+    },
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 107,
+     "kind": "missing_test",
+     "description": "_percent_of_possible is untested, including its zero-possible fallback (Fraction(0)) and the division. Mutations to the numbers and to / were not caught. Add tests for a zero-possible item and for a normal ratio."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 63,
+     "kind": "missing_test",
+     "description": "_percent_of_possible in calculator.py is untested; changes to its constants (the zero fallback) went unnoticed. Cover the max_points == 0 case and tie-breaking behaviour among equal percents."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites the entire file, including the unchanged lines 1-61, which suggests line endings changed (CRLF/LF) or whitespace was altered. This adds review noise and may hide other edits. Restore the original line endings so the diff shows only the real change."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 63,
+     "kind": "other",
+     "description": "The same helper is duplicated in calculator.py and progress.py, so the grade and the report can drift apart. Share one ranking function. Also, the new _drop_lowest docstring is longer than the surrounding docstring style."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "gradebook-C--report",
+  "seed": "gradebook-C",
+  "kind": "C",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.042702,
+  "seconds": 7.9,
+  "output_tokens": 682,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 113,
+     "kind": "missing_test",
+     "description": "The progress report's _lowest ranking was changed to percent-of-possible, but no test covers which lines the report marks as dropped. Mutations of _lowest (count arithmetic, slice) and _percent_of_possible (division, zero fallback) went unnoticed. A test with mixed max_points (e.g. 4/5 vs 6/10) should assert the correct line is marked dropped in the progress report."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 63,
+     "kind": "missing_test",
+     "description": "The zero-possible fallback in _percent_of_possible (Fraction(0)) and the arithmetic are not exercised by any test; mutations of the numbers went unnoticed. Add a test with a zero-max-points assignment or ties to pin the behavior."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites the whole file (every line removed and re-added), which suggests line endings were changed (e.g. CRLF to LF) or the file was reformatted. This hides the real 4-line change in review and creates noisy history; restore the original line endings so the diff is minimal."
+    },
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 106,
+     "kind": "other",
+     "description": "_percent_of_possible is duplicated in calculator.py and progress.py, with the report and the grade each keeping their own ranking logic. They can drift apart again, which is how the report and grade could disagree. Share one helper, or add a test asserting the report's dropped items match the calculator's."
+    },
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 69,
+     "kind": "other",
+     "description": "Ties in percent are broken by the stable sort in input order, and this is untested. The new docstring line is also over-long relative to the surrounding code. Consider an explicit tie-break and a test for it."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "gradebook-C--diff",
+  "seed": "gradebook-C",
+  "kind": "C",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.038486,
+  "seconds": 9.2,
+  "output_tokens": 791,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/gradebook/grading/calculator.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff removes and re-adds every line of the file, including unchanged ones. This looks like a line-ending change (CRLF to LF) or other whitespace churn. The real change is only the new `_percent_of_possible` helper and the sort key in `_drop_lowest`. Restore the original line endings so the diff shows only the intended edit and blame stays useful."
+    },
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 106,
+     "kind": "missing_test",
+     "description": "The progress report's `_lowest` now ranks by percent, and the changelog says the report marks the same scores as dropped. No test covers this. The only new test exercises `compute_grade`, so the report could regress to points-based ranking unnoticed. Add a progress-report test with the 4/5 and 6/10 case that checks which line is marked dropped."
+    },
+    {
+     "file": "src/gradebook/reports/progress.py",
+     "line": 106,
+     "kind": "other",
+     "description": "`_percent_of_possible` is duplicated in `calculator.py` and `progress.py`, so the two rankings can drift apart. Share one ranking helper, or add a test that asserts the report and the calculator drop the same scores."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-U--diff",
+  "seed": "household_budget-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.06921000000000001,
+  "seconds": 10.7,
+  "output_tokens": 1041,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 13,
+     "kind": "missing_test",
+     "description": "No tests were added or changed. The new whole-word `contains` behaviour (`BP` matches `BP 1234 LONDON` and `CARD PAYMENT BP` but not `EBPAY ONLINE` or `BPAY BILLER`) is untested. The new `anywhere` kind is untested, and nothing checks that `search --payee` still finds substrings after its switch to `MATCHERS[\"anywhere\"]`."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "CHANGELOG.md, docs/reference.md, matchers.py and search.py are each shown as deleted and re-added in full, which suggests the line endings were changed (CRLF to LF) or the files were rewritten wholesale. This buries the real change, a few lines per file, in whole-file churn and should be reverted so the diff contains only the intended edits."
+    },
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 13,
+     "kind": "other",
+     "description": "The whole-word check uses `(?<!\\w)` and `(?!\\w)` around the pattern. A pattern that starts or ends with a non-word character (for example `AMZN*` or `&CO`) is therefore rejected whenever a letter or digit sits next to it, which is not a true word-boundary check. The edge case is unhandled and untested. Also, nothing in the diff shows that any other callers or default or seeded rules that use `contains` were checked and moved to `anywhere` where they relied on substring matching."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "household_budget-U--report",
+  "seed": "household_budget-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.070143,
+  "seconds": 8.9,
+  "output_tokens": 754,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_rules.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "The existing test tests/test_rules.py::test_matchers[contains-TES-TESCO...] now fails because `contains` no longer matches substrings (TES inside TESCO). The test was not updated to reflect the new whole-word semantics, so the suite is red. No test files were changed at all."
+    },
+    {
+     "file": "tests/test_rules.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No tests added for the new behaviour: `contains` matching `BP 1234 LONDON` and `CARD PAYMENT BP` but not `EBPAY ONLINE` or `BPAY BILLER`, and no tests for the new `anywhere` kind (substring, any case). The change is not pinned by any test."
+    },
+    {
+     "file": "src/budgetbook/rules/matchers.py",
+     "line": 12,
+     "kind": "wrong_behaviour",
+     "description": "Word boundary uses `(?<!\\w)` / `(?!\\w)`, so underscores and digits count as word characters. Also, with re.IGNORECASE the match uses regex case-insensitivity rather than casefold, which differs from the other matchers (e.g. `\u00df`/`SS`). Patterns that begin or end with a non-word character (e.g. `AT&T `, `C&A.`) are handled by lookarounds that are stricter than 'word boundaries'. Behaviour for such edge cases is untested and should be confirmed."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "Whole files (CHANGELOG.md, docs/reference.md, matchers.py, search.py) are shown as fully rewritten, which suggests line endings were changed (likely CRLF to LF or vice versa). This creates a noisy diff and should be reverted to preserve the original line endings."
+    },
+    {
+     "file": "src/budgetbook/services/search.py",
+     "line": 11,
+     "kind": "other",
+     "description": "search was switched to MATCHERS[\"anywhere\"] to preserve `search --payee` substring behaviour, which is correct, but is not covered by a test pinning that `search --payee` still finds substrings inside words."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-U--report",
+  "seed": "hotel_desk-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.081675,
+  "seconds": 9.7,
+  "output_tokens": 820,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 36,
+     "kind": "missing_test",
+     "description": "No test pins the new journal output. The suite passes identically with the change undone, so nothing checks that append_entry writes money columns as 0.00 (e.g. 413.25) instead of whole cents. A test is needed that runs the night audit (or append_entry) and asserts the CSV text."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 24,
+     "kind": "missing_test",
+     "description": "read_amount's backward-compatible branch (cells with '.' parsed as decimal, cells without parsed as int cents) is untested. Needs tests reading both old-format and new-format journals, including mixed files, through revenue_summary."
+    },
+    {
+     "file": "src/hoteldesk/money.py",
+     "line": 25,
+     "kind": "missing_test",
+     "description": "parse_cents (sign handling, negative amounts) is untested; mutations such as AddNot and NumberReplacer on it went unnoticed. Add tests for positive, negative and malformed values."
+    },
+    {
+     "file": "src/hoteldesk/reports/revenue.py",
+     "line": 23,
+     "kind": "missing_test",
+     "description": "revenue_summary and revenue_text changed lines are not covered: mutations on the date range filter, totals, ADR/RevPAR and text formatting all survive. Add a test that a new-format journal yields the right totals, ADR and RevPAR."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 24,
+     "kind": "wrong_behaviour",
+     "description": "read_amount treats any cell containing '.' as decimal and otherwise as int; parse_cents goes through parse_money, which rejects more than two decimals, so a hand-edited or odd cell raises ValidationError rather than a clear journal error. Also, revenue.py imports from storage.journal, a new reports-to-storage dependency; the helper arguably belongs in money.py."
+    },
+    {
+     "file": "CHANGELOG.md",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole of CHANGELOG.md, docs/reference.md, money.py, revenue.py and journal.py show as fully rewritten in the diff (every line removed and re-added), which suggests line endings were changed (CRLF to LF or the reverse). This is unrelated churn that obscures the real change and should be reverted to preserve the original line endings."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "hotel_desk-U--diff",
+  "seed": "hotel_desk-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.077495,
+  "seconds": 10.8,
+  "output_tokens": 1000,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of CHANGELOG.md, docs/reference.md, money.py, revenue.py and journal.py, which looks like a line-ending change (CRLF to LF). This buries the real change, adds churn and merge-conflict risk, and should be reverted so the diff shows only the intended edits."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 34,
+     "kind": "wrong_behaviour",
+     "description": "Existing journals are appended to without migration, so a month that spans the upgrade has whole-cents rows (41325) and 0.00 rows (413.25) in the same column. Accountants loading that file into a spreadsheet would still get wrong figures for the old rows, which defeats the request. The change needs a one-time conversion of existing rows, or at least an explicit decision from the user about mixed files."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "No tests were added. Nothing covers append_entry writing 0.00 format (including zero and negative amounts), read_amount accepting both formats, or revenue_summary reading a journal that mixes old and new rows."
+    },
+    {
+     "file": "src/hoteldesk/storage/journal.py",
+     "line": 21,
+     "kind": "other",
+     "description": "The docstring says 'written before 1.5.0', but no version bump or release is part of this change and the changelog entry is under Unreleased. The version number is a guess."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-W2--diff",
+  "seed": "greenhouse_monitor-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.044699,
+  "seconds": 9.6,
+  "output_tokens": 761,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/cli/commands.py",
+     "line": 63,
+     "kind": "wrong_behaviour",
+     "description": "cmd_record was changed from `return 0` to `return 1`, so a successful `record` now exits with failure status. This is unrelated to the task and breaks the command."
+    },
+    {
+     "file": "src/greenhouse/services/ingest.py",
+     "line": 54,
+     "kind": "wrong_behaviour",
+     "description": "Gaps are computed from the readings list and imported = log.write_many(readings) - gaps. This depends on write_many returning the total count written (not verified), and gaps are written to the log inside the same batch. It works only if write_many counts gap rows; fragile and unverified."
+    },
+    {
+     "file": "src/greenhouse/storage/history.py",
+     "line": 23,
+     "kind": "wrong_behaviour",
+     "description": "Other readers of readings.csv (e.g. archive, export, other code paths that parse the log directly) are not updated for empty values; only load_readings skips them. Archive/export could crash on float('') or drop/keep gap rows inconsistently. The docs even mention an 'ERR in the export', which isn't implemented."
+    },
+    {
+     "file": "src/greenhouse/services/ingest.py",
+     "line": 68,
+     "kind": "wrong_behaviour",
+     "description": "ERR rows skip calibration and range checks, and the unit validation uses a dummy to_canonical(kind, 0.0, unit) call, which may reject units differently than for normal rows. Also the 'ERR' match is case-insensitive/trimmed, broader than the spec's literal `ERR`."
+    },
+    {
+     "file": "tests/test_cli.py",
+     "line": 94,
+     "kind": "other",
+     "description": "The diff rewrites the unrelated test_calibrate_refuses_a_negative_offset_beyond_max_offset (whole-function delete/re-add, likely line-ending change), which is unrelated churn."
+    },
+    {
+     "file": "tests/test_cli.py",
+     "line": 34,
+     "kind": "missing_test",
+     "description": "No CLI-level test that ingest prints a nonzero gap count for ERR rows, and no test that `record` still exits 0; the return 1 regression went unnoticed. No tests for archive/export/report behaviour with gap rows in the log."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "greenhouse_monitor-W2--report",
+  "seed": "greenhouse_monitor-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.05207200000000001,
+  "seconds": 11.7,
+  "output_tokens": 1018,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/greenhouse/cli/commands.py",
+     "line": 63,
+     "kind": "wrong_behaviour",
+     "description": "cmd_record was changed from `return 0` to `return 1`. This is unrelated to the task and makes every successful `record` exit with failure status. It must be reverted to `return 0`. The mutation report shows no test noticed this, so a test for the `record` exit code is also missing."
+    },
+    {
+     "file": "tests/test_cli.py",
+     "line": 91,
+     "kind": "other",
+     "description": "The diff rewrites the whole test_calibrate_refuses_a_negative_offset_beyond_max_offset test (and the blank lines before it) with no content change, apparently line-ending changes. This is unrelated churn and should be reverted."
+    },
+    {
+     "file": "src/greenhouse/services/ingest.py",
+     "line": 68,
+     "kind": "wrong_behaviour",
+     "description": "For ERR rows, `to_canonical(kind, 0.0, unit)` is called only to validate the unit and its result is discarded. This is obscure. A unit-conversion quirk could also make it raise for 0.0 where a real value would not. Mutation testing shows the 0.0 literal is unpinned. Validate the unit more explicitly, and add a test for it."
+    },
+    {
+     "file": "src/greenhouse/services/ingest.py",
+     "line": 69,
+     "kind": "wrong_behaviour",
+     "description": "Gap readings skip calibration and range checks, which is fine. But the gap count is derived after dedup and `imported = log.write_many(readings) - result.gaps` relies on write_many returning the total written. This coupling is fragile. Count gaps and imports directly instead."
+    },
+    {
+     "file": "src/greenhouse/storage/history.py",
+     "line": 23,
+     "kind": "wrong_behaviour",
+     "description": "`if not row[\"value\"]: continue` skips any row with an empty value, including old malformed rows, not just ERR gaps. It also does not guard other readers of the log, such as archive, export, or alert-stats, which may parse value with float(). The CHANGELOG says 'Reports and views skip these rows', but no test covers archive, export, or the other readers. Check that archive keeps or handles gap rows correctly and that export does not crash."
+    },
+    {
+     "file": "tests/test_ingest.py",
+     "line": 111,
+     "kind": "missing_test",
+     "description": "Missing tests: ERR with lowercase or whitespace (`err`, ` ERR `), the CLI output with a nonzero gaps count, a gap row whose duplicate comes after a real reading, and the ERR row's unit being logged as the canonical unit. The test also imports load_readings inside the function body instead of at module top."
+    },
+    {
+     "file": "src/greenhouse/services/ingest.py",
+     "line": 27,
+     "kind": "missing_test",
+     "description": "The mutation run shows that number changes on the lines at ingest.py:27 and commands.py:41 went unnoticed, so the gap/imported count arithmetic is not fully pinned by tests. Add tests with several gaps and several files."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "survey_tally-W--report",
+  "seed": "survey_tally-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.107029,
+  "seconds": 14.0,
+  "output_tokens": 1295,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/surveytally/services/tally.py",
+     "line": 66,
+     "kind": "wrong_behaviour",
+     "description": "The rename also inverted the mean condition in _tally_rating: `... / weighted_base if not weighted_base else None`. The original was `if weighted_base else None`. Now a scale question with answers gets mean=None, and one with no answers divides by zero and raises ZeroDivisionError. This is a regression unrelated to the rename. ep_review's AddNot mutant on this line went unnoticed, which means no test checks the scale mean."
+    },
+    {
+     "file": "tests/test_tally.py",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No test checks the mean of a scale/rating FrequencyTable, either with answers or with none. That is why the inverted condition passes the suite. Add tests for the mean with answers and for an unanswered rating question (mean is None, no exception)."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The diff rewrites every line of survey_file.py, questions.py, tally.py, validation.py and test_extras.py. This looks like a line-ending change (CRLF to LF). It hides the real edits, makes review and blame hard, and should be reverted so only the intended lines change."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 30,
+     "kind": "missing_test",
+     "description": "A mutation in save_survey (a number replaced, probably the JSON indent) goes unnoticed. The new save test only checks the written type value, so the saved file's format is not pinned. Minor, and likely pre-existing."
+    },
+    {
+     "file": "src/surveytally/services/quality.py",
+     "line": 0,
+     "kind": "other",
+     "description": "Other places that may refer to the old `scale` type name were not checked or changed: the straightliner message 'scale questions', any `type == 'scale'` checks, the CLI help, and other docs. The change should be grepped for leftover `'scale'` literals. Older files that say `scale` are now handled only through TYPE_ALIASES in question_from_dict. Any other code that reads raw survey dicts would still see `scale`."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "survey_tally-W--diff",
+  "seed": "survey_tally-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": false,
+  "decision": "request_changes",
+  "cost": 0.09488200000000001,
+  "seconds": 8.4,
+  "output_tokens": 616,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/surveytally/services/tally.py",
+     "line": 58,
+     "kind": "wrong_behaviour",
+     "description": "The mean calculation condition was inverted: `if not weighted_base else None` computes the mean only when weighted_base is zero (division by zero) and returns None otherwise. Original was `if weighted_base else None`. This breaks the mean for every rating question and raises ZeroDivisionError when there are no answers."
+    },
+    {
+     "file": "src/surveytally/files/survey_file.py",
+     "line": 1,
+     "kind": "other",
+     "description": "The whole file is rewritten in the diff (every line removed and re-added), apparently a line-ending change (CRLF/LF). The same happens in model/questions.py, services/tally.py, services/validation.py and tests/test_extras.py. This hides the real change, adds noisy diff and merge-conflict risk, and should be reverted to the original line endings."
+    },
+    {
+     "file": "src/surveytally/services/tally.py",
+     "line": 1,
+     "kind": "other",
+     "description": "Renaming handlers to `_tally_rating` and `_check_rating` relies on dynamic getattr dispatch by question.type. Other places that dispatch or key on the type name 'scale' may have been missed (e.g. reports, quality.py, which produces the 'scale questions' message, other exporters, CLI/docs). The change was not checked for remaining 'scale' type-string usages, and there is no test covering tally/validation of rating questions to catch it."
+    },
+    {
+     "file": "tests/test_survey_file.py",
+     "line": 46,
+     "kind": "missing_test",
+     "description": "No test covers a survey file containing `scale` being loaded and then used in tally/validation/CSV response parsing, which would have caught the inverted mean condition. There is also no test that an unknown type error still reports properly after alias mapping."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-W--diff",
+  "seed": "clinic_booking-W",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.031006000000000002,
+  "seconds": 6.9,
+  "output_tokens": 507,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/clinicbook/config.py",
+     "line": 76,
+     "kind": "wrong_behaviour",
+     "description": "Validation is `max_daily_bookings < 2`, but the error message, docs and test say the minimum is 1. A value of 1 is wrongly rejected (ConfigError 'must be at least 1'), so clinics cannot limit patients to one booking per day. Should be `< 1`."
+    },
+    {
+     "file": "tests/test_config.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "The config test only checks 0 is rejected and 3 accepted; it never checks that 1 is accepted, which is why the off-by-one boundary bug is not caught."
+    },
+    {
+     "file": "tests/test_desk.py",
+     "line": 53,
+     "kind": "missing_test",
+     "description": "The cancelled-bookings test does not assert anything about late-cancelled bookings: it cancels `late` at the end without making any further booking or assertion. It also never verifies that a booking is refused when the count includes only active ones (e.g. that cancelled ones are excluded while two active still block). The late_cancelled exclusion relies on `other.active` without being tested."
+    },
+    {
+     "file": "tests/test_desk.py",
+     "line": 31,
+     "kind": "missing_test",
+     "description": "No test for a non-default max_daily_bookings setting (e.g. 1 or 3) being honoured by Desk.book, and the refusal message uses the configured limit rather than the actual count; only the default of 2 is exercised."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-W--report",
+  "seed": "clinic_booking-W",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.036944,
+  "seconds": 7.0,
+  "output_tokens": 612,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/clinicbook/config.py",
+     "line": 76,
+     "kind": "wrong_behaviour",
+     "description": "Validation is `max_daily_bookings < 2`, but the error message, docs and test say the minimum is 1. A value of 1 is wrongly rejected with 'must be at least 1'. It should be `< 1`."
+    },
+    {
+     "file": "tests/test_config.py",
+     "line": 22,
+     "kind": "missing_test",
+     "description": "The config test checks 0 is rejected but never checks that 1 is accepted, so the off-by-one boundary bug (`< 2`) goes unnoticed (NumberReplacer mutant survived)."
+    },
+    {
+     "file": "src/clinicbook/services/desk.py",
+     "line": 32,
+     "kind": "missing_test",
+     "description": "Limit check is not pinned at its boundary: no test checks a custom limit (e.g. 1 or 3) or that a phone with fewer than the limit bookings is accepted. Comparison mutants (>= changed to others) survived. Also the 'other.day == day' and 'other.phone == phone' conditions are only weakly tested."
+    },
+    {
+     "file": "src/clinicbook/services/desk.py",
+     "line": 32,
+     "kind": "other",
+     "description": "The limit check runs before the practitioner-overlap check and the line is long/hard to read; it also reports the limit rather than the actual count. Consider extracting a helper. Minor."
+    },
+    {
+     "file": "tests/test_desk.py",
+     "line": 43,
+     "kind": "missing_test",
+     "description": "The cancelled-bookings test has no assertions for the late-cancelled case: it cancels `late` at the end without checking that a late_cancelled booking is excluded from the count (e.g. by booking again after it for the same phone). The 'late cancelled ones don't count' claim in docs is untested."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-W2--report",
+  "seed": "clinic_booking-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.051593,
+  "seconds": 10.9,
+  "output_tokens": 782,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/clinicbook/services/fees.py",
+     "line": 30,
+     "kind": "wrong_behaviour",
+     "description": "The no-show filter was changed from `booking.status == NO_SHOW` to `b.status is NO_SHOW`. That is an identity check on a string. Statuses read from the bookings file are not guaranteed to be the same object as the constant, so no-shows loaded from disk may not match. The `fees` list, charges file and summary would then silently show no charges at all. Tests pass only because they set the status with the constant itself. Use `==`."
+    },
+    {
+     "file": "tests/test_fees.py",
+     "line": 67,
+     "kind": "missing_test",
+     "description": "No test loads bookings from the bookings file and then computes charges, so the `is` versus `==` problem went unnoticed. The mutation `Is_Eq` on fees.py:30 survived."
+    },
+    {
+     "file": "src/clinicbook/reports/summary.py",
+     "line": 27,
+     "kind": "missing_test",
+     "description": "The day filter `c.day == day` in `day_summary` is not pinned. Comparison mutations on it survived. No test checks that a no-show on another day is excluded from a day's fees due, or that a day with a charged no-show on a different date still shows zero."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "clinic_booking-W2--diff",
+  "seed": "clinic_booking-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.048131999999999994,
+  "seconds": 13.0,
+  "output_tokens": 1085,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/clinicbook/services/fees.py",
+     "line": 30,
+     "kind": "wrong_behaviour",
+     "description": "The filter changed from `b.status == NO_SHOW` to `b.status is NO_SHOW`. If statuses are plain strings, as they would be when loaded from the bookings file, identity comparison can silently miss no-shows, so charges, fees due and the charges file would be wrong for real data. The tests only use the in-memory constant, so they would not catch it. Use `==`, as the original did."
+    },
+    {
+     "file": "tests/test_fees.py",
+     "line": 67,
+     "kind": "missing_test",
+     "description": "No test covers the new behaviour through bookings loaded from a file or through the written charges file and `fees` list, with the setting on. The existing file tests were switched to `charge_all`, so the default (free first no-show) is not checked end to end. There is also no test that a loaded `first_no_show_free: false` in the clinic file reaches `charges`."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-U--diff",
+  "seed": "library_loans-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.027396999999999998,
+  "seconds": 7.8,
+  "output_tokens": 513,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/lending/services/fines.py",
+     "line": 32,
+     "kind": "missing_test",
+     "description": "The diff adds no tests. Needed cases: returned exactly at the grace limit (2 days late, no fine), 3 days late (fined for 3 days, not 1), on time, `fine_grace_days=0`, a custom value read from lending.ini, and the max_fine and price caps still applying past the grace period."
+    },
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 23,
+     "kind": "missing_test",
+     "description": "The overdue report's `accrued` column now uses the grace rule via `accrued_fine`, but no test covers it, for example a copy 2 days overdue showing 0.00 and a copy 3 days overdue showing 3 days of fine."
+    },
+    {
+     "file": "src/lending/config.py",
+     "line": 24,
+     "kind": "missing_test",
+     "description": "The new `fine_grace_days` option has no test for its default of 2, for parsing it from lending.ini, or for rejecting invalid values such as negative or non-numeric input."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "library_loans-U--report",
+  "seed": "library_loans-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.033594,
+  "seconds": 7.3,
+  "output_tokens": 627,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/",
+     "line": 0,
+     "kind": "missing_test",
+     "description": "No tests were added or changed; the suite passes identically with the change undone. Need tests that fail without the grace period: a return within fine_grace_days is not fined, a return exactly at the boundary (late == fine_grace_days) is not fined, a return one day past grace is fined for the full days counted from the due date (e.g. 3 days late pays for 3 days), and fine_grace_days=0 keeps the old behaviour."
+    },
+    {
+     "file": "src/lending/services/fines.py",
+     "line": 36,
+     "kind": "missing_test",
+     "description": "The boundary `late <= settings.fine_grace_days` is unpinned (LtE->Lt mutant survives). Add a test for a return exactly fine_grace_days late and one day after."
+    },
+    {
+     "file": "src/lending/config.py",
+     "line": 24,
+     "kind": "missing_test",
+     "description": "The default of 2 for fine_grace_days is unpinned (NumberReplacer survives). Add a test that the default is 2 and that a lending.ini value of fine_grace_days is parsed and applied."
+    },
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 19,
+     "kind": "missing_test",
+     "description": "The overdue report's `accrued` now follows the grace rule, but no test covers it; mutants on the days comparison and on the skip/continue and sort lines survive. Add overdue report tests for accrued within grace (zero), past grace (from the due date), and row ordering."
+    },
+    {
+     "file": "src/lending/reports/overdue.py",
+     "line": 20,
+     "kind": "other",
+     "description": "The overdue report behaviour changed as a side effect beyond the stated task (fine on return). A copy still out within grace now shows accrued 0 while days > 0; this is arguably reasonable but should be confirmed as intended and tested."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-W2--report",
+  "seed": "fleet_service-W2",
+  "kind": "W",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.038016,
+  "seconds": 6.4,
+  "output_tokens": 400,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/fleetkeep/services/workorders.py",
+     "line": 87,
+     "kind": "wrong_behaviour",
+     "description": "`vehicle_class is \"heavy\"` compares by identity, not equality. It only works when the string happens to be interned (it raises a SyntaxWarning on modern Python). A class value read from a file, CSV import, or built at runtime may not be the same object, so heavy vehicles could silently be charged the normal labour_rate. Use `==`."
+    },
+    {
+     "file": "tests/test_workorders.py",
+     "line": 135,
+     "kind": "missing_test",
+     "description": "No test catches the `is` vs `==` mutation (the report's unnoticed mutants at workorders.py:87). Tests only use literal/interned class strings. Add a test where the vehicle class is a non-interned string (e.g. loaded from storage or constructed at runtime) and assert the heavy rate is applied."
+    },
+    {
+     "file": "src/fleetkeep/importers/timesheets.py",
+     "line": 4,
+     "kind": "other",
+     "description": "The edited docstring line is over-long and breaks the surrounding wrapping. Rewrap it to match the file's style."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-W2--diff",
+  "seed": "fleet_service-W2",
+  "kind": "W",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.033903,
+  "seconds": 6.5,
+  "output_tokens": 449,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/fleetkeep/services/workorders.py",
+     "line": 87,
+     "kind": "wrong_behaviour",
+     "description": "`fleet.vehicle(vehicle_id).vehicle_class is \"heavy\"` compares strings by identity, not equality. It only works when the string happens to be interned; values loaded from storage or parsed from CSV/JSON may not be, so heavy vehicles can silently be charged `labour_rate`. It also raises a SyntaxWarning. Use `==`."
+    },
+    {
+     "file": "src/fleetkeep/importers/timesheets.py",
+     "line": 5,
+     "kind": "other",
+     "description": "The module docstring line was extended past the line length of the surrounding text, so the wrapping is now inconsistent with the rest of the docstring. Minor, but the paragraph should be re-wrapped."
+    },
+    {
+     "file": "tests/test_workorders.py",
+     "line": 134,
+     "kind": "missing_test",
+     "description": "The tests do not cover the `--rate` CLI path of `fleetkeep wo labour` on a heavy vehicle, and they only exercise vehicles built in the fixture, where the interned-string quirk hides the `is` bug. There is no test that loads a heavy vehicle from persisted storage and checks that it is charged `heavy_labour_rate`."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-U--diff",
+  "seed": "fleet_service-U",
+  "kind": "U",
+  "arm": "diff",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.03751500000000001,
+  "seconds": 9.9,
+  "output_tokens": 877,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "src/fleetkeep/services/workorders.py",
+     "line": 107,
+     "kind": "missing_test",
+     "description": "The diff adds no tests. Nothing covers the supplies charge: the percent calculation, rounding to the cent, the cap, a zero-labour order, `wo show` text and JSON output, or the changed `costs` and `spend` totals."
+    },
+    {
+     "file": "src/fleetkeep/config.py",
+     "line": 21,
+     "kind": "missing_test",
+     "description": "The new settings `shop_supplies_percent` and `shop_supplies_cap` have no tests for their defaults (5 and 40.00), for parsing from fleet.ini, or for rejecting invalid values such as a negative or non-numeric percent or cap. The `_percent` parser and the Decimal default are untested."
+    },
+    {
+     "file": "src/fleetkeep/reports/costs.py",
+     "line": 16,
+     "kind": "other",
+     "description": "The change only updates `costs` and `spend` to use the new total. Other places that sum `parts_total + labour_total` (for example work order listings or other reports) were not checked or updated, so they may still leave supplies out of a work order's cost."
+    }
+   ]
+  },
+  "raw": null
+ },
+ {
+  "slot": "fleet_service-U--report",
+  "seed": "fleet_service-U",
+  "kind": "U",
+  "arm": "report",
+  "state": "graded",
+  "caught": true,
+  "decision": "request_changes",
+  "cost": 0.043,
+  "seconds": 10.9,
+  "output_tokens": 1051,
+  "models": [
+   "claude-haiku-4-5-20251001",
+   "claude-sonnet-5-5"
+  ],
+  "quota": false,
+  "exit": 0,
+  "reply": {
+   "decision": "request_changes",
+   "problems": [
+    {
+     "file": "tests/test_workorders.py",
+     "line": 0,
+     "kind": "wrong_behaviour",
+     "description": "The existing test test_charges_add_parts_and_labour fails with this change and passes without it. order_charges() now requires a settings argument and Charges has a new required supplies field. The test was not updated, so the suite is red (exit 1)."
+    },
+    {
+     "file": "src/fleetkeep/services/workorders.py",
+     "line": 107,
+     "kind": "missing_test",
+     "description": "No tests were added or changed. Nothing covers the supplies charge: percent of labour, half-up rounding to the cent, the cap, the defaults of 5 and 40.00, or a cap that bites versus one that does not. ep_review reports the change as NOT PINNED."
+    },
+    {
+     "file": "src/fleetkeep/config.py",
+     "line": 21,
+     "kind": "missing_test",
+     "description": "The new fleet.ini settings shop_supplies_percent and shop_supplies_cap have no tests for parsing, defaults or invalid values. Examples are a negative or non-finite percent, a malformed cap, and a negative cap, which parse_money may accept and which would make the supplies charge negative."
+    },
+    {
+     "file": "src/fleetkeep/cli/commands.py",
+     "line": 292,
+     "kind": "missing_test",
+     "description": "The `wo show` output, in both text and JSON form, now includes `supplies` and a changed `total`. No test pins this. The text-mode rendering of the new field was not shown in the diff, so it is unclear whether the supplies line is actually listed."
+    },
+    {
+     "file": "src/fleetkeep/reports/costs.py",
+     "line": 16,
+     "kind": "missing_test",
+     "description": "The costs and spend reports now include supplies in maintenance, which goes beyond the stated task. No tests cover this. Other places that sum parts_total + labour_total may also have been missed, so the totals could disagree with `wo show`."
+    }
+   ]
+  },
+  "raw": null
+ }
+]

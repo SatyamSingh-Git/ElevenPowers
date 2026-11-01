@@ -81,3 +81,49 @@ direction fails, not just this feature.
   11.7 s and cost $0.103, and smaller prompts cost less;
 - so the expected total is under $11, and about 10 minutes at four calls at
   a time.
+
+## Result (2026-11-02, $5.23, 86 calls)
+
+All 86 calls ran. 83 replies were graded and 3 were unreadable; the quota
+never ran out. Every reply is kept in [`replies.json`](replies.json) and the
+summary in [`summary.json`](summary.json).
+
+| | diff alone | diff + report | report only / diff only | exact sign test |
+|---|---|---|---|---|
+| **W caught (primary)** | 18 of 21 | 20 of 21 | 2 / 0 | **p = 0.5** |
+| U caught | 9 of 9 | 9 of 9 | 0 / 0 | 1.0 |
+| C false alarm | 9 of 10 | 9 of 10 | 1 / 1 | 1.0 |
+
+- **Cost per arm:** $2.49 diff alone, $2.74 with the report.
+- **Mean seconds per call:** 9.6 against 10.0.
+- **Mean output tokens:** 766 against 862.
+- **Unpaired seeds:** U has 2 and C has 1, from the unreadable replies.
+
+**As pre-registered:** the primary is **not significant**. The report arm
+caught two more wrong lines and none fewer, so the falsifier's literal
+condition ("no more") is not met. But no benefit is shown either.
+
+**Exploratory, not pre-registered:**
+- **Ceiling.** The reviewer with the diff alone named 18 of 21 (86%)
+  mutation-shaped wrong lines, which left almost no room for the report.
+- **The grading is not specific.** In the correct control from the same
+  stage, the reviewer named the very spot later seeded in 2 of 9 diff-arm
+  replies and in 6 of 9 report-arm replies. The report lists unpinned
+  changed lines, and the seeded line is one of them, so in the report arm,
+  naming the seeded spot is not evidence of finding the defect.
+- **The report is acted on, not ignored.** Report-arm replies raise more
+  problems (mean 4.4 against 3.1) and name the report's lines. So §12's
+  "read and ignored" does not fire. What is missing is a gain.
+- **The decision does not separate right from wrong.** The model reviewer
+  asked for changes on 9 of 10 correct controls in both arms.
+- **The unreadable replies.** All 3 came from the diff-only arm: with tools
+  off, the model wrote tool calls asking to read the source instead of
+  answering.
+
+**Reading.** With seeds of this kind and a model reviewer, the report does
+not measurably help find wrong lines. A wrong line in a small diff is
+visible from the diff itself. The reviewer does use the report, but what it
+adds is more flagged lines, on correct changes as well as wrong ones. A
+test of the reporting direction needs defects the diff does not show,
+or reviewers for whom reading the diff is the cost (people, large changes).
+This study covers neither.
