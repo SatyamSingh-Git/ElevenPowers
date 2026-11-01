@@ -90,6 +90,33 @@ them (**my call**: mutation is slow and optional, so it stays opt-in).
 verdict. Exit 2 when no report could be produced. A reviewer's tool that
 blocks has to earn that with evidence, as §5.12 says.
 
+## Changed after the independent review (2026-11-01)
+
+An independent reviewer reproduced eleven defects in the first version,
+and each was fixed with a test that failed first:
+- **A base that has moved on.** If `--base` is not an ancestor of head, the
+  report compares from the fork point and says so. Before, the base's own
+  later edits were credited to the change.
+- **Fixtures stay.** `testdata/`, `fixtures/`, `__fixtures__/`,
+  `__snapshots__/` and `golden/` count as test material, so they stay when
+  the change is undone.
+- **A module turned into a package.** When the change replaces
+  `pkg/mod.py` with `pkg/mod/`, undoing it restores the module and removes
+  the package. Python imports the package first, so keeping it would undo
+  nothing.
+- **Broken tests.** Tests that fail with the change and pass without it are
+  named, and the report no longer says "nothing would notice".
+- **Comparable runs only:**
+  - a file and the tests inside it count as the same failure;
+  - pytest names every outcome (`-rA`);
+  - a run that stopped early (`-x`, `--maxfail`, a collection error), or a
+    failure head never reached, cannot give NOT PINNED;
+  - a Python run that can import the reviewer's checkout makes the verdict
+    UNKNOWN. This reuses `core/strength`'s import guard.
+- **Hygiene:** hooks are off, a locked worktree is removed, git timeouts
+  are errors, runs start in the project's own folder, and a tracked
+  `node_modules` is used as checked out.
+
 ## Non-goals
 
 - **Not a gate:** no blocking and no `--require-pinned` yet.
