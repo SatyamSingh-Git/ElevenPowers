@@ -385,8 +385,9 @@ def _on_post_tool(payload: dict, root: Path) -> int:
         # on work that was genuinely tested. Measured on a real repository -
         # three of four packages ran `node --test` and produced nothing, and it
         # took reading the parsers to find out. Now it is in blindspots.jsonl,
-        # where `ep_status` and `ep_doctor` already look.
-        if claims_to_run_tests(command):
+        # where `ep_status` and `ep_doctor` already look. An owned check yields
+        # no records here by design: its receipt is the evidence.
+        if claims_to_run_tests(command) and not owned_check_envelope(command):
             blindspots.record(root, "unreadable test output",
                               f"{command.strip()[:120]} -> exit {result.exit_code}, "
                               f"no runner recognised")

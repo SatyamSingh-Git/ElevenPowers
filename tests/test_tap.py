@@ -250,6 +250,23 @@ def test_a_command_that_never_claimed_to_run_tests_is_not_reported(tmp_path):
     assert _spots(tmp_path) == []
 
 
+def test_an_owned_check_is_not_reported_as_unreadable(tmp_path):
+    """Its evidence is the receipt `ep_check` writes, which parse defers to by design.
+
+    In the 2026-10-30 run, all 282 pytest commands that produced no records ran
+    the agent's pytest and then `ep_check.py --all`, as the startup message
+    advises; each was filed as unreadable test output.
+    """
+    _hook("UserPromptSubmit", {"cwd": str(tmp_path), "prompt": "fix the parser bug"})
+    _hook("PostToolUse", {
+        "cwd": str(tmp_path), "tool_name": "Bash",
+        "tool_input": {"command": "python -m pytest tests -q 2>&1 | tail -20; "
+                                  "'.venv/Scripts/python.exe' 'plugin/bin/ep_check.py' --all --project . 2>&1 | tail -6"},
+        "tool_response": {"stdout": "104 passed in 0.48s\nDeclared check batch: passed\n", "exit_code": 0}})
+
+    assert _spots(tmp_path) == []
+
+
 @pytest.mark.parametrize("command", [
     "deno test --allow-read",
     "npm test",
