@@ -1957,8 +1957,13 @@ which inputs.
   whether a test is written at all.
   - **Its bound:** plain Claude Code against Claude Code with ElevenPowers.
     Superpowers was in neither arm.
-  - **Untested:** the advantage for a superpowers user, whose workflow
-    already asks for tests.
+  - **For a superpowers user there is nothing to reduce** (v3 snapshots,
+    2026-11-01, $0, pre-registered). Superpowers alone left 1 VACUOUS
+    stage of 475 resolved, against 0 of 472 with ElevenPowers; 11 of 12
+    cases tied, p = 1.0 ([results](results/multistage-v3/vacuity/README.md)).
+    So for superpowers users the value is the report, not a change in the
+    agent. Its bound: "pinned" there is the coarse bar, at least one test
+    failing with the whole change undone, not every line.
 - **Mutation survivors (§5.16).** They name real unpinned lines: 20 of 27
   were called meaningful by two blind reviewers. Handed to an agent, they
   produce implementation-pinning tests (B8), so their consumer is a
@@ -1976,10 +1981,11 @@ and GitHub presentation.
    - what is unknown.
 
    Brainstorm and write a spec first.
-2. **Measure against superpowers, $0 first.** Re-read the v3 snapshots: does
-   the ElevenPowers arm leave fewer VACUOUS changes than superpowers alone?
-   If not, the reviewer value for superpowers users is the report, not a
-   change in agent behaviour.
+2. **Measure against superpowers, $0 first.** *Done 2026-11-01:* the
+   ElevenPowers arm does not leave fewer, because superpowers leaves almost
+   none (above). The reviewer value for superpowers users is the report,
+   which makes its unpinned lines, the finer measure, the part that matters
+   most to them.
 3. **Measure the benefit to a reviewer, not the agent's score.** Seed changes
    with known unpinned or wrong lines. Does a reviewer using the report catch
    more of them, sooner, than one reading the diff alone? §12's falsifier
