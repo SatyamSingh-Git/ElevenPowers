@@ -619,10 +619,24 @@ const GRAPH = {
       "kind": "engine",
       "size": 2,
       "label": "review.py (reviewer's report)",
-      "desc": "PLAN 13 A: would anything notice if this change were undone? The held-out VACUOUS method, runner-agnostic, for any commit pair: the declared suite runs at head, with the change's non-test edits and deletions put back to base (added files kept, its tests kept), and at head again as a stability control. PINNED names the tests that fail only with the change undone; NOT PINNED; UNKNOWN always says why. --strength adds the unpinned lines from core.strength on the same head worktree. Private detached worktree; the reviewer's checkout is never touched. Report only.",
+      "desc": "PLAN 13 A: would anything notice if this change were undone? The held-out VACUOUS method, runner-agnostic, for any commit pair: the declared suite runs at head, with the change's non-test edits and deletions put back to base (added files kept, its tests kept), and at head again as a stability control. PINNED names the tests that fail only with the change undone; NOT PINNED; UNKNOWN always says why. A base that moved on is compared from the fork point; fixtures stay with the tests; a module turned into a package is undone as the module; tests the change breaks are named; a stopped run (-x) or a Python run that can import the reviewer's checkout (core/strength's guard) cannot clear a change. --strength adds the unpinned lines from core.strength on the same head worktree. Private detached worktree, hooks off; the reviewer's checkout is never touched. Report only.",
       "files": [
         "core/review.py",
         "tests/test_review.py"
+      ]
+    },
+    {
+      "id": "reviewer-study",
+      "plane": "eval",
+      "kind": "module",
+      "size": 1,
+      "label": "Reviewer study (PLAN 13 A.3)",
+      "desc": "Does the report help a reviewer? Seeds from the kept v3 snapshots: a real pinned change (C), the same change with its tests taken out (U), and one Cosmic Ray mutation on a changed line that its tests miss but the case's behaviour oracle catches (W). A $0 gate asks ep_review about every seed before any model call. The grading is fixed in advance: a W is caught by naming its file within two lines, a U by asking for a test, and a C's request for changes is a false alarm. Arms are paired by seed, with an exact sign test on discordant pairs. The paid run is not started.",
+      "files": [
+        "eval/reviewer_seeds.py",
+        "eval/reviewer_study.py",
+        "tests/test_reviewer_seeds.py",
+        "tests/test_reviewer_study.py"
       ]
     },
     {
@@ -2851,6 +2865,16 @@ const GRAPH = {
       "source": "review",
       "target": "test-strength",
       "label": "--strength: changed lines no test noticed, on the same head worktree"
+    },
+    {
+      "source": "reviewer-study",
+      "target": "eval-multistage",
+      "label": "seeds from kept v3 snapshots; a W seed must fail a behaviour oracle its tests miss"
+    },
+    {
+      "source": "reviewer-study",
+      "target": "review",
+      "label": "the $0 gate: what the report says about every seed before any reviewer sees one"
     },
     {
       "source": "stress",
