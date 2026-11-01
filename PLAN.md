@@ -1915,7 +1915,7 @@ Carried forward: pool coverage barely exceeding selected success; candidate scal
 
 Added by v0.8, and each is answerable cheaply:
 
-- **Almost none of our recorded evidence is vacuous.** If the reversion check finds that passing records overwhelmingly fail on the reverted tree, then §5.10 describes somebody else's problem, the discrimination work is unnecessary here, and the null result needs a different explanation than the one in §0. **This is the single most falsifying measurement available and it costs $0.**
+- **Almost none of our recorded evidence is vacuous.** If the reversion check finds that passing records overwhelmingly fail on the reverted tree, then §5.10 describes somebody else's problem, the discrimination work is unnecessary here, and the null result needs a different explanation than the one in §0. **This is the single most falsifying measurement available and it costs $0.** *2026-11-01: for superpowers users it has fired.* In 474 of 475 resolved v3 stages a test failed on the reverted tree ([results](results/multistage-v3/vacuity/README.md)). Plain Claude Code remains the measured case, at 84% VACUOUS on the held-out sweep, and the coarse bar does not cover individual lines.
 - **No better intermediate state ever exists.** If runs never pass through a verified state superior to the one submitted, the ratchet has nothing to hold and §1.2 is wrong for this workload whatever it measured elsewhere.
 - **The oracle gap is under four points.** Then selection is very likely not the bottleneck and Phase C is deprioritised in favour of generation and reproduction synthesis. It is *not* cancelled on that number alone: what decides a selector is the mass it rescues minus the mass it damages, and a small gap with negligible harm is still a positive expected value (§10).
 - **Derived reproduction tests are wrong often enough to cost more than they buy.** The +28pp figure is an *oracle* signal. A derived test that encodes the wrong failure condition is a false premise with a green tick on it — the exact failure this project exists to prevent, manufactured by this project. §5.5's correct-candidate survival is the check, and it must be measured before C1 ships, not after.
@@ -1990,6 +1990,11 @@ and GitHub presentation.
    with known unpinned or wrong lines. Does a reviewer using the report catch
    more of them, sooner, than one reading the diff alone? §12's falsifier
    applies: if the report is read and ignored, this direction fails.
+   *Built 2026-11-01:* `ep_review` is the report
+   ([design](docs/superpowers/specs/2026-11-01-reviewer-report-design.md)).
+   The study's design seeds real v3 changes with defects their tests miss,
+   and has a $0 gate before any model call
+   ([design](docs/superpowers/specs/2026-11-01-reviewer-benefit-design.md)).
 
 ### B. Coding helper: next after A, open to contributors meanwhile
 
