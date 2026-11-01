@@ -182,8 +182,11 @@ both arms (`eval/multistage_run.py`). Its v2 pilot found no headroom, so
 [v3](docs/superpowers/specs/2026-10-28-multistage-v3-harder-cases-design.md)
 rebuilt the cases with quiet dependents (`eval/multistage_quiet.py`). The v3 pilot
 (2026-10-28, $4.09) is a go: superpowers alone broke earlier behaviour on both
-cases. All twelve v3 cases are frozen (`8c3d7b1`); the full run (120 conversations,
-about $123) started on 2026-10-30. While a sealed batch runs, do not change
+cases. The v3 full run (2026-10-30, 120 conversations, $153.40) found no
+measured benefit, and both point estimates lean against ElevenPowers. Its
+diagnosis is the place to start: most lost dependents are not import-reachable.
+See [`results/multistage-v3/`](results/multistage-v3/README.md). While a sealed
+batch runs, do not change
 `core/`, `plugin/bin/` or the runner's harness files: the seal refuses every
 later stage. B6 ([`results/b6-paired/design.md`](results/b6-paired/design.md))
 is older and was qualified by an audit on 2026-09-19; read its warning before
