@@ -31,6 +31,8 @@ from .surface import TEST_NAME
 PINNED, NOT_PINNED, UNKNOWN = 'pinned', 'not pinned', 'unknown'
 TIMEOUT = 300
 SHOWN = 10  # Pinning tests listed by name; read in a minute, not scrolled.
+# Expected outputs and fixtures beside the tests are test material: undoing the code keeps them.
+TEST_MATERIAL = re.compile(r'(^|/)(testdata|test_data|fixtures|__fixtures__|__snapshots__|golden)(/|$)')
 # pytest's own words for a run that did not reach every test (-x, --maxfail, a collection error).
 STOPPED = re.compile(r'^!+ (?:stopping after \d+ failures?|Interrupted: .*?) !+\s*$', re.MULTILINE)
 # No hook runs in the private worktree: nothing undeclared is run.
@@ -63,6 +65,25 @@ def _identity(root, ref):
 def _changed(root, base, head):
     fields = _git(root, 'diff', '--name-status', '-z', '--no-renames', base, head).split('\0')
     return list(zip(fields[0::2], fields[1::2]))
+
+
+def _base(root, base, head):
+    """The base as named, or where head branched from it when it has moved on since."""
+    try:
+        _git(root, 'merge-base', '--is-ancestor', base['commit'], head['commit'])
+        return base
+    except GitFailed:
+        pass
+    try:
+        fork = _git(root, 'merge-base', base['commit'], head['commit']).strip()
+    except GitFailed:
+        raise ValueError(f"{base['ref']!r} and {head['ref']!r} share no history") from None
+    # Diffing from the moved tip would undo the base's own later edits and credit them to this change.
+    return {**_identity(root, fork), 'ref': base['ref'], 'moved': base['commit']}
+
+
+def _is_test(path):
+    return bool(TEST_NAME.search(path) or TEST_MATERIAL.search(path))
 
 
 @contextmanager
@@ -185,13 +206,20 @@ def _strength(tree, root, base, command):
 def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=False):
     root = Path(root).resolve(strict=True)
     command = command if command is not None else load(root).command_for('tests')
-    report = {'schema': 1, 'base': _identity(root, base), 'head': _identity(root, head), 'command': command,
+    head = _identity(root, head)
+    report = {'schema': 1, 'base': _base(root, _identity(root, base), head), 'head': head, 'command': command,
               'verdict': UNKNOWN, 'reason': '', 'pinning': [], 'broken': [], 'named': False, 'runs': [],
               'strength': None}
     changed = _changed(root, report['base']['commit'], report['head']['commit'])
-    report['tests'] = sorted(path for _, path in changed if TEST_NAME.search(path))
-    report['undone'] = sorted(path for status, path in changed if status != 'A' and not TEST_NAME.search(path))
-    report['kept'] = sorted(path for status, path in changed if status == 'A' and not TEST_NAME.search(path))
+    report['tests'] = sorted(path for _, path in changed if _is_test(path))
+    report['undone'] = sorted(path for status, path in changed if status != 'A' and not _is_test(path))
+    added = [path for status, path in changed if status == 'A' and not _is_test(path)]
+    # A module the change turned into a package (pkg/mod.py -> pkg/mod/...): Python imports the
+    # package before the restored module, so undoing the deletion also removes what replaced it.
+    replaced = tuple(Path(path).with_suffix('').as_posix() + '/'
+                     for status, path in changed if status == 'D' and not _is_test(path))
+    report['removed'] = sorted(path for path in added if path.startswith(replaced))
+    report['kept'] = sorted(path for path in added if path not in report['removed'])
     if not command:
         report['reason'] = 'no test command is declared for this project; declare one or pass --command'
     elif not report['undone']:
@@ -208,6 +236,8 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
                 paths.write_bytes(b'\0'.join(p.encode('utf-8') for p in report['undone']))
                 _git(tree, 'checkout', report['base']['commit'], f'--pathspec-from-file={paths}',
                      '--pathspec-file-nul')
+                for path in report['removed']:
+                    (tree / path).unlink()
                 runs.append(_run('undone', command, project, timeout, root))
                 _git(tree, 'reset', '-q', '--hard', report['head']['commit'])
                 runs.append(_run('head again', command, project, timeout, root))
@@ -271,7 +301,12 @@ def markdown(report):
         lines += [f"The change breaks {count} {'test that passes' if count == 1 else 'tests that pass'} without it:"]
         lines += _listed(report['broken'])
     lines += [f"Change {base}..{head}: {len(report['undone'])} file(s) put back to base when undone, "
-              f"{len(report['kept'])} added and kept, {len(report['tests'])} test file(s) changed.",
+              f"{len(report['kept'])} added and kept, {len(report['tests'])} test file(s) changed."
+              + (f" {len(report['removed'])} added file(s) replaced a deleted one and were removed with it."
+                 if report['removed'] else '')
+              + (f" {_text(report['base']['ref'])} has moved on to {report['base']['moved'][:12]} since this "
+                 f"change branched, so it is compared from where it branched."
+                 if report['base'].get('moved') else ''),
               '', '## Lines no test noticed', '', *_unpinned(report['strength'], report['verdict']), '', '## What was run', '']
     trees = {'head': head, 'undone': f"{head} with {len(report['undone'])} file(s) put back to {base}",
              'head again': head}

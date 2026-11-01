@@ -47,6 +47,7 @@ def test_a_change_its_test_pins_is_pinned_by_that_test(tmp_path):
     assert report['verdict'] == PINNED
     assert report['pinning'] == ['tests/test_two.py::test_two']
     assert report['undone'] == ['pkg/mod.py']
+    assert 'moved' not in report['base']
 
 
 def test_a_change_no_test_notices_is_not_pinned(tmp_path):
@@ -249,6 +250,61 @@ def test_the_reviewers_checkout_is_left_exactly_as_it_was(tmp_path):
     assert len(_git(root, 'worktree', 'list').splitlines()) == 1
 
 
+def test_a_base_that_moved_on_is_compared_from_the_fork_point_and_says_so(tmp_path):
+    # From main's tip, undoing would put main's own value() == 3 in place and fail test_small.
+    root, fork = _project(tmp_path)
+    main = _git(root, 'rev-parse', '--abbrev-ref', 'HEAD')
+    _git(root, 'checkout', '-qb', 'work')
+    head = _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_small.py':
+                          'from pkg.mod import value\n\n\ndef test_small():\n    assert value() < 3\n'})
+    _git(root, 'checkout', '-q', main)
+    tip = _commit(root, {'pkg/mod.py': 'def value():\n    return 3\n'})
+    report = review(root, main, head, command=PYTEST)
+    assert report['base']['commit'] == fork and report['base']['moved'] == tip
+    assert report['verdict'] == NOT_PINNED
+    from core.review import markdown
+    assert f'has moved on to {tip[:12]} since this change branched' in markdown(report)
+
+
+def test_a_base_with_no_shared_history_is_an_error(tmp_path):
+    root, base = _project(tmp_path)
+    _git(root, 'checkout', '-q', '--orphan', 'other')
+    other = _commit(root, {'pkg/mod.py': CHANGED})
+    with pytest.raises(ValueError, match='share no history'):
+        review(root, base, other, command=PYTEST)
+
+
+def test_a_module_turned_into_a_package_is_undone_as_a_module(tmp_path):
+    # Python imports the kept package before the restored module, so keeping it would undo nothing.
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod/__init__.py': CHANGED, 'tests/test_two.py': PINNING}, deleted=['pkg/mod.py'])
+    report = review(root, base, command=PYTEST)
+    assert report['removed'] == ['pkg/mod/__init__.py'] and report['kept'] == []
+    assert report['verdict'] == PINNED
+    from core.review import markdown
+    assert '1 added file(s) replaced a deleted one and were removed with it.' in markdown(report)
+
+
+def test_a_test_module_turned_into_a_folder_keeps_what_replaced_it(tmp_path):
+    # Tests are never put back, so nothing they were replaced by is removed either.
+    root, base = _project(tmp_path, {'pkg/__init__.py': '', 'pkg/mod.py': MOD, 'tests/test_mod.py': LOOSE,
+                                     'pkg/test_util.py': 'def test_old():\n    pass\n'})
+    _commit(root, {'pkg/mod.py': CHANGED, 'pkg/test_util/helpers.py': 'H = 1\n'}, deleted=['pkg/test_util.py'])
+    report = review(root, base, command=PYTEST)
+    assert report['removed'] == [] and report['kept'] == ['pkg/test_util/helpers.py']
+
+
+def test_expected_output_in_a_fixture_folder_stays_with_the_tests(tmp_path):
+    golden = ('from pathlib import Path\nfrom pkg.mod import value\n\n\ndef test_golden():\n'
+              '    assert str(value()) == Path("testdata/expected.txt").read_text().strip()\n')
+    root, base = _project(tmp_path, {'pkg/__init__.py': '', 'pkg/mod.py': MOD, 'testdata/expected.txt': '1\n',
+                                     'tests/test_golden.py': golden})
+    _commit(root, {'pkg/mod.py': CHANGED, 'testdata/expected.txt': '2\n'})
+    report = review(root, base, command=PYTEST)
+    assert report['undone'] == ['pkg/mod.py'] and 'testdata/expected.txt' in report['tests']
+    assert report['verdict'] == PINNED
+
+
 def test_a_run_that_imports_the_reviewers_checkout_is_unknown(tmp_path, monkeypatch):
     # An editable install or a PYTHONPATH into the checkout makes every run test it, not the worktree:
     # src/ is not on the worktree's own path, so every run imports the checkout's value() == 2.
@@ -425,7 +481,8 @@ def _report(**overrides):
     report = {'schema': 1, 'base': commit, 'head': {**commit, 'commit': 'c' * 40}, 'command': 'npm test',
               'verdict': PINNED, 'reason': '1 test fails with the change undone and passes with it',
               'pinning': ['tests/test_two.py::test_two'], 'named': True, 'runs': [], 'tests': ['tests/test_two.py'],
-              'undone': ['pkg/mod.py'], 'kept': [], 'unknown': ['A limit.'], 'strength': None, 'broken': []}
+              'undone': ['pkg/mod.py'], 'kept': [], 'removed': [], 'unknown': ['A limit.'], 'strength': None,
+              'broken': []}
     return {**report, **overrides}
 
 
