@@ -21,14 +21,18 @@ def main():
     parser.add_argument('--timeout', type=float, default=TIMEOUT, help='seconds per run')
     parser.add_argument('--strength', action='store_true',
                         help="also mutate the changed lines, under the project's strength settings")
+    parser.add_argument('--max-mutants', type=int, help='with --strength: mutations to try (default 8)')
+    parser.add_argument('--mutation-seconds', type=float, help='with --strength: time for them (default 60)')
     parser.add_argument('--format', choices=('markdown', 'json'), default='markdown')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
     try:
         root = args.project.resolve(strict=True)
+        limits = {key: value for key, value in (('max_mutants', args.max_mutants),
+                                                 ('seconds', args.mutation_seconds)) if value is not None}
         value = _portable(review(root, args.base, args.head, command=args.command, timeout=args.timeout,
-                                 strength=args.strength), root)
+                                 strength=args.strength, limits=limits), root)
         text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.format == 'json' else markdown(value)
         if args.output:
             write(args.output, text, force=args.force)

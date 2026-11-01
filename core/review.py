@@ -185,12 +185,15 @@ def _limits(report):
     return limits
 
 
-def _strength(tree, root, base, command):
-    """`core.strength` on the head worktree, under the project's own strength settings."""
+def _strength(tree, root, base, command, limits):
+    """`core.strength` on the head worktree, under the project's strength settings and any overrides."""
+    from dataclasses import replace
     from .ledger import Ledger
     from .strength.runner import analyze
     ledger = Ledger(root=tree, task='review', base=base)
-    ledger._config = load(root)  # The worktree has no project configuration; the reviewer's checkout does.
+    # The worktree has no project configuration; the reviewer's checkout does.
+    config = load(root)
+    ledger._config = replace(config, strength={**config.strength, **limits})
     value = analyze(ledger, base=base, command=command)
     lines = {}
     for item in value['observations']:
@@ -199,11 +202,12 @@ def _strength(tree, root, base, command):
             lines.setdefault(key, []).append(item['operator'].rsplit('/', 1)[-1])
     return {'state': value['state'], 'issues': value['issues'], 'summary': value['summary'],
             'attempts': value['attempts'],
+            'limits': {key: value['settings'].get(key) for key in ('max_mutants', 'seconds')},
             'unpinned': [{'path': path, 'line': line, 'end_line': end, 'context': context, 'operators': operators}
                          for (path, line, end, context), operators in sorted(lines.items())]}
 
 
-def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=False):
+def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=False, limits=None):
     root = Path(root).resolve(strict=True)
     command = command if command is not None else load(root).command_for('tests')
     head = _identity(root, head)
@@ -242,7 +246,7 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
                 _git(tree, 'reset', '-q', '--hard', report['head']['commit'])
                 runs.append(_run('head again', command, project, timeout, root))
             if strength:
-                report['strength'] = _strength(project, root, report['base']['commit'], command)
+                report['strength'] = _strength(project, root, report['base']['commit'], command, limits or {})
         if runs:
             verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
                                         else (UNKNOWN, f"the head run {runs[0]['problem']}", []))
@@ -259,7 +263,7 @@ def _unpinned(strength, verdict):
     if strength is None:
         return ['Not measured. Run again with --strength to mutate the changed lines '
                 '(Cosmic Ray for Python, Stryker for JavaScript and TypeScript).']
-    counts = strength['summary']
+    counts, limits = strength['summary'], strength['limits']
     tried = counts['detected'] + counts['undetected']
     if strength['unpinned']:
         lines = [f"{counts['undetected']} of {tried} changes tried on the changed lines went unnoticed. "
@@ -268,12 +272,17 @@ def _unpinned(strength, verdict):
                   + _text(', '.join(item['operators'])) for item in strength['unpinned'][:SHOWN]]
         if len(strength['unpinned']) > SHOWN:
             lines.append(f"- and {len(strength['unpinned']) - SHOWN} more lines; the JSON report lists them all")
-        return lines
-    if tried:
-        return [f'All {tried} changes tried on the changed lines were noticed by a test.'
-                + (' The tests run these lines, but none of them tells the new behaviour from the old.'
-                   if verdict == NOT_PINNED else '')]
-    return [f"Not measured: {_text(strength['state'])}."]
+    elif tried:
+        lines = [f'All {tried} changes tried on the changed lines were noticed by a test.'
+                 + (' The tests run these lines, but none of them tells the new behaviour from the old.'
+                    if verdict == NOT_PINNED else '')]
+    else:
+        lines = [f"Not measured: {_text(strength['state'])}."]
+    # A sample, not every line: say how big, and how to look further. Invalid settings leave no budget.
+    if limits['max_mutants'] is not None:
+        lines += ['', f"Budget: up to {limits['max_mutants']} mutations in {limits['seconds']:g} seconds; "
+                      '--max-mutants and --mutation-seconds raise it.']
+    return lines
 
 
 def _listed(names):

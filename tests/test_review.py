@@ -486,6 +486,7 @@ def _report(**overrides):
     return {**report, **overrides}
 
 
+LIMITS = {'max_mutants': 8, 'seconds': 60.0}
 POSITIVE = 'def positive(value):\n    return value > 0\n'
 WEAK = 'from pkg.mod import positive\n\n\ndef test_two():\n    assert positive(2)\n'
 STRONG = WEAK + ('\n\ndef test_edges():\n    assert positive(1)\n    assert not positive(0)\n'
@@ -524,6 +525,30 @@ def test_mutation_follows_the_projects_own_strength_settings(tmp_path):
 
 
 @cosmic
+def test_a_reviewer_can_set_the_mutation_budget_for_one_review(tmp_path):
+    from core.config import Config, save
+    root, base = _strength_project(tmp_path, WEAK)
+    save(root, Config(strength={'max_mutants': 2}))
+    strength = review(root, base, command=PYTEST, strength=True, limits={'max_mutants': 3})['strength']
+    assert strength['attempts'] == 3
+    cli = [sys.executable, 'plugin/bin/ep_review.py', '--project', str(root), '--base', base, '--command', PYTEST,
+           '--strength', '--max-mutants', '1', '--mutation-seconds', '30', '--format', 'json']
+    import json
+    strength = json.loads(subprocess.run(cli, capture_output=True, text=True).stdout)['strength']
+    assert strength['attempts'] == 1 and strength['limits'] == {'max_mutants': 1, 'seconds': 30}
+
+
+def test_the_mutation_budget_is_stated_with_how_to_raise_it():
+    from core.review import markdown
+    strength = {'state': 'incomplete', 'issues': [], 'attempts': 8, 'unpinned': [],
+                'limits': LIMITS, 'summary': {'detected': 8, 'undetected': 0, 'incomplete': 0}}
+    assert ('Budget: up to 8 mutations in 60 seconds; --max-mutants and --mutation-seconds raise it.'
+            in markdown(_report(strength=strength)))
+    invalid = {**strength, 'limits': {'max_mutants': None, 'seconds': None}}
+    assert 'Budget:' not in markdown(_report(strength=invalid))
+
+
+@cosmic
 def test_a_change_that_only_adds_files_still_has_its_lines_measured(tmp_path):
     root, base = _project(tmp_path)
     _commit(root, {'pkg/sign.py': POSITIVE.replace('pkg.mod', 'pkg.sign'),
@@ -546,7 +571,7 @@ def test_unpinned_lines_are_listed_with_what_went_unnoticed():
     lines = [{'path': 'pkg/mod.py', 'line': n, 'end_line': n, 'context': 'positive', 'operators': ['NumberReplacer', 'X']}
              for n in range(1, 13)]
     strength = {'state': 'complete', 'issues': ['an engine issue'], 'attempts': 30, 'unpinned': lines,
-                'summary': {'detected': 6, 'undetected': 24, 'incomplete': 0}}
+                'limits': LIMITS, 'summary': {'detected': 6, 'undetected': 24, 'incomplete': 0}}
     text = markdown(_report(strength=strength, unknown=['A limit.', 'Mutation analysis: an engine issue']))
     assert '24 of 30 changes tried on the changed lines went unnoticed' in text
     assert r'- pkg/mod\.py:1 in positive: NumberReplacer, X' in text
@@ -570,7 +595,7 @@ def test_the_command_mutates_only_when_asked(tmp_path):
 def test_changed_lines_every_test_noticed_say_so():
     from core.review import markdown
     strength = {'state': 'complete', 'issues': [], 'attempts': 5, 'unpinned': [],
-                'summary': {'detected': 5, 'undetected': 0, 'incomplete': 0}}
+                'limits': LIMITS, 'summary': {'detected': 5, 'undetected': 0, 'incomplete': 0}}
     assert 'All 5 changes tried on the changed lines were noticed by a test.' in markdown(_report(strength=strength))
     assert 'old' not in markdown(_report(strength=strength)).split('## What was run')[0].split('## Lines')[1]
 
@@ -579,7 +604,7 @@ def test_lines_noticed_by_tests_that_cannot_tell_old_from_new_say_both():
     # Seen on a real v3 stage: every mutant was killed, yet undoing the change was not noticed.
     from core.review import markdown
     strength = {'state': 'complete', 'issues': [], 'attempts': 6, 'unpinned': [],
-                'summary': {'detected': 6, 'undetected': 0, 'incomplete': 0}}
+                'limits': LIMITS, 'summary': {'detected': 6, 'undetected': 0, 'incomplete': 0}}
     text = markdown(_report(verdict=NOT_PINNED, pinning=[], strength=strength))
     assert ('All 6 changes tried on the changed lines were noticed by a test. The tests run these lines, '
             'but none of them tells the new behaviour from the old.') in text
@@ -588,7 +613,7 @@ def test_lines_noticed_by_tests_that_cannot_tell_old_from_new_say_both():
 def test_mutation_that_could_not_run_says_so_and_how_to_ask_for_it():
     from core.review import markdown
     strength = {'state': 'unavailable', 'issues': ['optional Cosmic Ray 8.7.0 is not installed'], 'attempts': 0,
-                'unpinned': [], 'summary': {'detected': 0, 'undetected': 0, 'incomplete': 0}}
+                'unpinned': [], 'limits': LIMITS, 'summary': {'detected': 0, 'undetected': 0, 'incomplete': 0}}
     assert 'Not measured: unavailable.' in markdown(_report(strength=strength))
     assert 'Not measured. Run again with --strength' in markdown(_report())
 
@@ -596,7 +621,7 @@ def test_mutation_that_could_not_run_says_so_and_how_to_ask_for_it():
 def test_mutation_issues_and_its_limit_join_the_unknowns(tmp_path):
     from core.review import _limits
     strength = {'state': 'incomplete', 'issues': ['attempt limit'], 'attempts': 8, 'unpinned': [],
-                'summary': {'detected': 8, 'undetected': 0, 'incomplete': 0}}
+                'limits': LIMITS, 'summary': {'detected': 8, 'undetected': 0, 'incomplete': 0}}
     limits = _limits(_report(strength=strength, command='npm test'))
     assert 'Mutation analysis: attempt limit' in limits
     assert any('equivalent' in limit for limit in limits)
