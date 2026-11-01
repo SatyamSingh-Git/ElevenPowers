@@ -153,6 +153,9 @@ the pre-stage tree for each file the agent edited. Per-loss rows are in
 | **detected**: a brief names the dependent, delivered (see probe) and not acted on | 4 |
 | the agent edited the dependent, in any loss | 0 |
 
+- **A behaviour diff does not fix it either.** It would have caught only 1 of
+  31, because 30 dependents were left behind with unchanged behaviour
+  ([behaviour spike](behaviour-spike/README.md)).
 - **Detection is the main failure.** 22 of 31 dependents are not reachable
   through imports at all. They depend on behaviour, such as a file format, a
   row order or a precision, not on a name. No import graph can find them, so

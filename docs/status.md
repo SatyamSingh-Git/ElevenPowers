@@ -5,7 +5,9 @@ diagnosis of the 31 stages where the ElevenPowers arm lost earlier behaviour
 found the following:
 - **27 were never detected.** In 22 of them the dependent imports no file the
   agent edited, so no import graph can reach it; in 5 more it was cut off by
-  the brief's four-name limit.
+  the brief's four-name limit. A $0 behaviour-diff spike would have caught only
+  1 of 31: the dependents were left behind with their behaviour unchanged
+  ([spike](../results/multistage-v3/behaviour-spike/README.md)).
 - **4 were detected, delivered and not acted on.** The PreToolUse brief never
   appears in stream-json transcripts, but a both-ways probe ($0.46) showed the
   model receives it word for word.
