@@ -275,9 +275,60 @@ def claims_to_run_tests(command: str) -> bool:
     # Known runner names need no separate `tests` positional argument. This
     # predicate reports silence and offers advice; it does not qualify an exact
     # declaration or change the parser's command/receipt attribution.
-    return bool(WRAPPER.match(_bare(command))
-                or re.search(r"\b(tests?|specs?|pytest|vitest|jest|rspec|phpunit)\b", command.lower())
-                or runs_tap(command))
+    return any(_piece_runs_tests(piece) for piece in _pieces(command))
+
+
+def _pieces(command: str) -> list[str]:
+    """Split at `;`, `&&`, pipes (so `||` too) and newlines, but not inside quotes.
+
+    `grep -rn "fuel\\|fuel_cost" src tests docs` is one command; split at the
+    quoted `|`, its second half read as a test run named `fuel_cost"`.
+    """
+    pieces, current, quote, i = [], [], None, 0
+    while i < len(command):
+        ch = command[i]
+        if quote:
+            if ch == "\\" and quote == '"':
+                current.append(command[i:i + 2])
+                i += 2
+                continue
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+        elif command.startswith("&&", i) or ch in ";|\n":
+            pieces.append("".join(current))
+            current = []
+            i += 2 if command.startswith("&&", i) else 1
+            continue
+        current.append(ch)
+        i += 1
+    return [*pieces, "".join(current)]
+
+
+# Commands that look at files. `sed -n 1,12p tests/test_x.py` names a test file
+# and runs none; read as a test run, it failed the startup health check in 63% of
+# a 2026-10-30 run's stages.
+READERS = frozenset("cat sed head tail grep rg ls less more wc find echo printf awk od diff git cd "
+                    "type file stat tree".split())
+
+
+def _piece_runs_tests(piece: str) -> bool:
+    bare = _bare(piece)
+    if not bare:
+        return False
+    # A quoted program path may hold spaces: "C:/Program Files/Git/usr/bin/sed.exe".
+    first = re.match(r"\"[^\"]*\"|'[^']*'|\S+", bare).group(0)
+    words = [first, *bare[len(first):].split()]
+    command = re.split(r"[/\\]", first.strip("\"'"))[-1].lower().removesuffix(".exe")
+    if command in READERS:
+        return False
+    # Runners match on the program's name, so "C:\Program Files\nodejs\node.exe" --test is node --test.
+    named = " ".join([command, *words[1:]])
+    # A bare word, not a path: `deno test` runs tests, `tests/test_x.py` is a file.
+    return bool(WRAPPER.match(bare) or runs_tap(bare) or WRAPPER.match(named) or runs_tap(named)
+                or re.search(r"\b(pytest|vitest|jest|rspec|phpunit)\b", bare.lower())
+                or any(word.lower() in ("test", "tests", "spec", "specs", "--test") for word in words[1:]))
 
 
 DECLARED_KINDS = {"tests": Kind.SUITE, "typecheck": Kind.TYPECHECK,
