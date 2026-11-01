@@ -1,0 +1,782 @@
+[
+ {
+  "behaviour_changed": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/attention.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/reports/late_work.py",
+   "src/gradebook/services/what_if.py",
+   "src/gradebook/storage/course_config.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "edited": [
+   "src/gradebook/storage/course_config.py"
+  ],
+  "flagged": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/attention.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/reports/late_work.py",
+   "src/gradebook/services/what_if.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "tests_recorded": 94,
+  "slot": "gradebook--elevenpowers--0",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/money.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "edited": [
+   "src/hoteldesk/money.py"
+  ],
+  "flagged": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "tests_recorded": 83,
+  "slot": "hotel_desk--elevenpowers--0",
+  "stage": 3,
+  "lost": true,
+  "dependents": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "edited": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "flagged": [
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "tests_recorded": 122,
+  "slot": "household_budget--elevenpowers--0",
+  "stage": 7,
+  "lost": true,
+  "dependents": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/lending/config.py",
+   "src/lending/storage/backup.py"
+  ],
+  "edited": [
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "flagged": [
+   "src/lending/storage/backup.py"
+  ],
+  "tests_recorded": 93,
+  "slot": "library_loans--elevenpowers--0",
+  "stage": 1,
+  "lost": true,
+  "dependents": [
+   "src/lending/reports/overdue.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/lending/model/catalogue.py",
+   "src/lending/services/holds.py",
+   "src/lending/storage/backup.py"
+  ],
+  "edited": [
+   "src/lending/errors.py",
+   "src/lending/services/circulation.py"
+  ],
+  "flagged": [
+   "src/lending/model/catalogue.py",
+   "src/lending/services/holds.py",
+   "src/lending/storage/backup.py"
+  ],
+  "tests_recorded": 100,
+  "slot": "library_loans--elevenpowers--0",
+  "stage": 3,
+  "lost": true,
+  "dependents": [
+   "src/lending/reports/loans.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/payroll/model/money.py",
+   "src/payroll/storage/files.py",
+   "src/payroll/storage/payrun_file.py"
+  ],
+  "edited": [
+   "src/payroll/model/money.py",
+   "src/payroll/storage/payrun_file.py"
+  ],
+  "flagged": [
+   "src/payroll/storage/files.py"
+  ],
+  "tests_recorded": 60,
+  "slot": "payroll_lite--elevenpowers--0",
+  "stage": 1,
+  "lost": true,
+  "dependents": [
+   "src/payroll/services/yearend.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/recipebox/config.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "edited": [
+   "src/recipebox/core/recipe.py"
+  ],
+  "flagged": [
+   "src/recipebox/config.py"
+  ],
+  "tests_recorded": 114,
+  "slot": "recipe_box--elevenpowers--0",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/reports/late_work.py",
+   "src/gradebook/storage/course_config.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "edited": [
+   "src/gradebook/storage/course_config.py"
+  ],
+  "flagged": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/reports/late_work.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "tests_recorded": 95,
+  "slot": "gradebook--elevenpowers--1",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/money.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "edited": [
+   "src/hoteldesk/money.py"
+  ],
+  "flagged": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "tests_recorded": 83,
+  "slot": "hotel_desk--elevenpowers--1",
+  "stage": 3,
+  "lost": true,
+  "dependents": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "edited": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "flagged": [
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "tests_recorded": 116,
+  "slot": "household_budget--elevenpowers--1",
+  "stage": 7,
+  "lost": true,
+  "dependents": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/payroll/model/timesheet.py",
+   "src/payroll/services/timesheets.py",
+   "src/payroll/storage/files.py",
+   "src/payroll/storage/timesheet_store.py"
+  ],
+  "edited": [
+   "src/payroll/storage/timesheet_store.py"
+  ],
+  "flagged": [
+   "src/payroll/model/timesheet.py",
+   "src/payroll/services/timesheets.py",
+   "src/payroll/storage/files.py"
+  ],
+  "tests_recorded": 71,
+  "slot": "payroll_lite--elevenpowers--1",
+  "stage": 5,
+  "lost": true,
+  "dependents": [
+   "src/payroll/services/payrun.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/recipebox/config.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "edited": [
+   "src/recipebox/core/recipe.py"
+  ],
+  "flagged": [
+   "src/recipebox/config.py"
+  ],
+  "tests_recorded": 114,
+  "slot": "recipe_box--elevenpowers--1",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/fleetkeep/model/money.py",
+   "src/fleetkeep/reports/fuel.py",
+   "src/fleetkeep/storage/fleetdir.py"
+  ],
+  "edited": [
+   "src/fleetkeep/reports/fuel.py",
+   "src/fleetkeep/reports/layout.py"
+  ],
+  "flagged": [
+   "src/fleetkeep/model/money.py",
+   "src/fleetkeep/storage/fleetdir.py"
+  ],
+  "tests_recorded": 68,
+  "slot": "fleet_service--elevenpowers--2",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/fleetkeep/reports/summary.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/late_work.py",
+   "src/gradebook/services/what_if.py",
+   "src/gradebook/storage/course_config.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "edited": [
+   "src/gradebook/storage/course_config.py"
+  ],
+  "flagged": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/late_work.py",
+   "src/gradebook/services/what_if.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "tests_recorded": 94,
+  "slot": "gradebook--elevenpowers--2",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "edited": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "flagged": [
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "tests_recorded": 116,
+  "slot": "household_budget--elevenpowers--2",
+  "stage": 7,
+  "lost": true,
+  "dependents": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/recipebox/config.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "edited": [
+   "src/recipebox/core/recipe.py"
+  ],
+  "flagged": [
+   "src/recipebox/config.py"
+  ],
+  "tests_recorded": 114,
+  "slot": "recipe_box--elevenpowers--2",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/attention.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/services/what_if.py",
+   "src/gradebook/storage/course_config.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "edited": [
+   "src/gradebook/storage/course_config.py"
+  ],
+  "flagged": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/attention.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/services/what_if.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "tests_recorded": 95,
+  "slot": "gradebook--elevenpowers--3",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/money.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "edited": [
+   "src/hoteldesk/money.py"
+  ],
+  "flagged": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "tests_recorded": 83,
+  "slot": "hotel_desk--elevenpowers--3",
+  "stage": 3,
+  "lost": true,
+  "dependents": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "edited": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "flagged": [
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "tests_recorded": 118,
+  "slot": "household_budget--elevenpowers--3",
+  "stage": 7,
+  "lost": true,
+  "dependents": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/lending/config.py",
+   "src/lending/storage/backup.py",
+   "src/lending/storage/holidays_store.py"
+  ],
+  "edited": [
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "flagged": [
+   "src/lending/storage/backup.py",
+   "src/lending/storage/holidays_store.py"
+  ],
+  "tests_recorded": 93,
+  "slot": "library_loans--elevenpowers--3",
+  "stage": 1,
+  "lost": true,
+  "dependents": [
+   "src/lending/reports/overdue.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/lending/model/catalogue.py",
+   "src/lending/services/holds.py",
+   "src/lending/storage/backup.py"
+  ],
+  "edited": [
+   "src/lending/errors.py",
+   "src/lending/services/circulation.py"
+  ],
+  "flagged": [
+   "src/lending/model/catalogue.py",
+   "src/lending/services/holds.py",
+   "src/lending/storage/backup.py"
+  ],
+  "tests_recorded": 98,
+  "slot": "library_loans--elevenpowers--3",
+  "stage": 3,
+  "lost": true,
+  "dependents": [
+   "src/lending/reports/loans.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/parcelpost/cli/output.py",
+   "src/parcelpost/config.py",
+   "src/parcelpost/core/charges.py",
+   "src/parcelpost/core/clock.py",
+   "src/parcelpost/core/money.py",
+   "src/parcelpost/formats/manifest.py",
+   "src/parcelpost/reports/tables.py",
+   "src/parcelpost/services/booking.py",
+   "src/parcelpost/services/claims.py",
+   "src/parcelpost/services/manifesting.py",
+   "src/parcelpost/storage/shipments.py"
+  ],
+  "edited": [
+   "src/parcelpost/formats/manifest.py"
+  ],
+  "flagged": [
+   "src/parcelpost/cli/output.py",
+   "src/parcelpost/config.py",
+   "src/parcelpost/core/charges.py",
+   "src/parcelpost/core/clock.py",
+   "src/parcelpost/core/money.py",
+   "src/parcelpost/reports/tables.py",
+   "src/parcelpost/services/booking.py",
+   "src/parcelpost/services/claims.py",
+   "src/parcelpost/services/manifesting.py",
+   "src/parcelpost/storage/shipments.py"
+  ],
+  "tests_recorded": 86,
+  "slot": "parcelpost--elevenpowers--3",
+  "stage": 5,
+  "lost": true,
+  "dependents": [
+   "src/parcelpost/services/billing.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/payroll/config.py",
+   "src/payroll/storage/files.py"
+  ],
+  "edited": [
+   "src/payroll/config.py",
+   "src/payroll/rules/overtime.py"
+  ],
+  "flagged": [
+   "src/payroll/storage/files.py"
+  ],
+  "tests_recorded": 62,
+  "slot": "payroll_lite--elevenpowers--3",
+  "stage": 2,
+  "lost": true,
+  "dependents": [
+   "src/payroll/reports/hours.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/recipebox/config.py",
+   "src/recipebox/core/recipe.py"
+  ],
+  "edited": [
+   "src/recipebox/core/recipe.py"
+  ],
+  "flagged": [
+   "src/recipebox/config.py"
+  ],
+  "tests_recorded": 114,
+  "slot": "recipe_box--elevenpowers--3",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/recipebox/storage/plan_file.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/fleetkeep/model/catalog.py",
+   "src/fleetkeep/storage/fleetdir.py"
+  ],
+  "edited": [
+   "src/fleetkeep/errors.py",
+   "src/fleetkeep/model/catalog.py",
+   "src/fleetkeep/services/workorders.py"
+  ],
+  "flagged": [
+   "src/fleetkeep/storage/fleetdir.py"
+  ],
+  "tests_recorded": 67,
+  "slot": "fleet_service--elevenpowers--4",
+  "stage": 5,
+  "lost": true,
+  "dependents": [
+   "src/fleetkeep/importers/history.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/attention.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/storage/course_config.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "edited": [
+   "src/gradebook/storage/course_config.py"
+  ],
+  "flagged": [
+   "src/gradebook/reports/assignments.py",
+   "src/gradebook/reports/attention.py",
+   "src/gradebook/reports/categories.py",
+   "src/gradebook/reports/course_outline.py",
+   "src/gradebook/storage/course_template.py"
+  ],
+  "tests_recorded": 93,
+  "slot": "gradebook--elevenpowers--4",
+  "stage": 4,
+  "lost": true,
+  "dependents": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/money.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "edited": [
+   "src/hoteldesk/money.py"
+  ],
+  "flagged": [
+   "src/hoteldesk/cli.py",
+   "src/hoteldesk/model/folios.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/services/billing.py",
+   "src/hoteldesk/storage/backups.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "tests_recorded": 83,
+  "slot": "hotel_desk--elevenpowers--4",
+  "stage": 3,
+  "lost": true,
+  "dependents": [
+   "src/hoteldesk/services/pricing.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "edited": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "flagged": [
+   "src/budgetbook/services/catalog.py",
+   "src/budgetbook/storage/workspace.py"
+  ],
+  "tests_recorded": 121,
+  "slot": "household_budget--elevenpowers--4",
+  "stage": 7,
+  "lost": true,
+  "dependents": [
+   "src/budgetbook/reports/month_end.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/lending/config.py",
+   "src/lending/storage/backup.py"
+  ],
+  "edited": [
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "flagged": [
+   "src/lending/storage/backup.py"
+  ],
+  "tests_recorded": 93,
+  "slot": "library_loans--elevenpowers--4",
+  "stage": 1,
+  "lost": true,
+  "dependents": [
+   "src/lending/reports/overdue.py"
+  ],
+  "caught": false
+ },
+ {
+  "behaviour_changed": [
+   "src/parcelpost/cli/output.py",
+   "src/parcelpost/config.py",
+   "src/parcelpost/core/charges.py",
+   "src/parcelpost/core/clock.py",
+   "src/parcelpost/core/money.py",
+   "src/parcelpost/formats/manifest.py",
+   "src/parcelpost/reports/tables.py",
+   "src/parcelpost/services/billing.py",
+   "src/parcelpost/services/booking.py",
+   "src/parcelpost/services/claims.py",
+   "src/parcelpost/services/manifesting.py",
+   "src/parcelpost/storage/shipments.py"
+  ],
+  "edited": [
+   "src/parcelpost/formats/manifest.py"
+  ],
+  "flagged": [
+   "src/parcelpost/cli/output.py",
+   "src/parcelpost/config.py",
+   "src/parcelpost/core/charges.py",
+   "src/parcelpost/core/clock.py",
+   "src/parcelpost/core/money.py",
+   "src/parcelpost/reports/tables.py",
+   "src/parcelpost/services/billing.py",
+   "src/parcelpost/services/booking.py",
+   "src/parcelpost/services/claims.py",
+   "src/parcelpost/services/manifesting.py",
+   "src/parcelpost/storage/shipments.py"
+  ],
+  "tests_recorded": 83,
+  "slot": "parcelpost--elevenpowers--4",
+  "stage": 5,
+  "lost": true,
+  "dependents": [
+   "src/parcelpost/services/billing.py"
+  ],
+  "caught": true
+ },
+ {
+  "behaviour_changed": [
+   "src/payroll/config.py",
+   "src/payroll/storage/files.py"
+  ],
+  "edited": [
+   "src/payroll/config.py",
+   "src/payroll/rules/overtime.py"
+  ],
+  "flagged": [
+   "src/payroll/storage/files.py"
+  ],
+  "tests_recorded": 64,
+  "slot": "payroll_lite--elevenpowers--4",
+  "stage": 2,
+  "lost": true,
+  "dependents": [
+   "src/payroll/reports/hours.py"
+  ],
+  "caught": false
+ }
+]
