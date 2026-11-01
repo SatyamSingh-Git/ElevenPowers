@@ -1,0 +1,262 @@
+{
+ "all": {
+  "pooled": {
+   "superpowers": {
+    "vacuous": 1,
+    "scored": 475
+   },
+   "elevenpowers": {
+    "vacuous": 0,
+    "scored": 472
+   }
+  },
+  "cases": {
+   "clinic_booking": 0.0,
+   "fleet_service": 0.0,
+   "gradebook": 0.0,
+   "greenhouse_monitor": 0.0,
+   "hotel_desk": 0.0,
+   "household_budget": 0.0,
+   "library_loans": 0.0,
+   "parcelpost": 0.0,
+   "payroll_lite": 0.0,
+   "recipe_box": 0.0,
+   "survey_tally": 0.025,
+   "ticket_office": 0.0
+  },
+  "dropped": 0,
+  "better": 1,
+  "worse": 0,
+  "tied": 11,
+  "p": 1.0,
+  "unscored": {
+   "elevenpowers": {
+    "patch did not apply": 1
+   },
+   "superpowers": {
+    "patch did not apply": 1
+   }
+  }
+ },
+ "feature": {
+  "pooled": {
+   "superpowers": {
+    "vacuous": 1,
+    "scored": 410
+   },
+   "elevenpowers": {
+    "vacuous": 0,
+    "scored": 411
+   }
+  },
+  "cases": {
+   "clinic_booking": 0.0,
+   "fleet_service": 0.0,
+   "gradebook": 0.0,
+   "greenhouse_monitor": 0.0,
+   "hotel_desk": 0.0,
+   "household_budget": 0.0,
+   "library_loans": 0.0,
+   "parcelpost": 0.0,
+   "payroll_lite": 0.0,
+   "recipe_box": 0.0,
+   "survey_tally": 0.02857142857142857,
+   "ticket_office": 0.0
+  },
+  "dropped": 0,
+  "better": 1,
+  "worse": 0,
+  "tied": 11,
+  "p": 1.0,
+  "unscored": {
+   "elevenpowers": {
+    "patch did not apply": 1
+   },
+   "superpowers": {
+    "patch did not apply": 1
+   }
+  }
+ },
+ "bugfix": {
+  "pooled": {
+   "superpowers": {
+    "vacuous": 0,
+    "scored": 65
+   },
+   "elevenpowers": {
+    "vacuous": 0,
+    "scored": 61
+   }
+  },
+  "cases": {
+   "clinic_booking": 0.0,
+   "fleet_service": 0.0,
+   "gradebook": 0.0,
+   "greenhouse_monitor": 0.0,
+   "hotel_desk": 0.0,
+   "household_budget": 0.0,
+   "library_loans": 0.0,
+   "parcelpost": 0.0,
+   "payroll_lite": 0.0,
+   "recipe_box": 0.0,
+   "survey_tally": 0.0,
+   "ticket_office": 0.0
+  },
+  "dropped": 0,
+  "better": 0,
+  "worse": 0,
+  "tied": 12,
+  "p": 1.0,
+  "unscored": {}
+ },
+ "forward_check": {
+  "recorded": 130,
+  "mismatched": []
+ },
+ "adversarial_control": [
+  {
+   "slot": "clinic_booking--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "fleet_service--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "gradebook--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "greenhouse_monitor--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "hotel_desk--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "household_budget--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "library_loans--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "parcelpost--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "payroll_lite--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "recipe_box--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "survey_tally--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "ticket_office--superpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "clinic_booking--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "fleet_service--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "gradebook--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "greenhouse_monitor--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "hotel_desk--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "household_budget--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "library_loans--elevenpowers--0",
+   "stage": 2,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "parcelpost--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "payroll_lite--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "recipe_box--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "survey_tally--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  },
+  {
+   "slot": "ticket_office--elevenpowers--0",
+   "stage": 1,
+   "vacuous": true,
+   "reason": "revert survived"
+  }
+ ]
+}

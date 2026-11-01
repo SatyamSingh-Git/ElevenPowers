@@ -58,3 +58,43 @@ itself, not a change in what the agent does.
 only files that existed before. A feature written entirely in a new module
 counts as pinned if a test imports that module. This matches the held-out
 sweep, which shared the same bound.
+
+## Result (computed 2026-11-01, $0)
+
+| resolved stages, scored | superpowers | superpowers + ElevenPowers |
+|---|---|---|
+| all | **1 VACUOUS of 475** | **0 of 472** |
+| feature | 1 of 410 | 0 of 411 |
+| bugfix | 0 of 65 | 0 of 61 |
+
+- **Primary:** 1 case better, 0 worse, 11 tied. Exact two-sided signed-rank
+  p = 1.0.
+- **The one VACUOUS stage:** `survey_tally--superpowers--2`, stage 5, a
+  feature.
+- **Unscored:** one resolved stage per arm, both `clinic_booking` stage 8.
+  In each, the agent wrote a `£` into `CHANGELOG.md` in a non-UTF-8
+  encoding, and the grader's text patch cannot carry that byte ("patch did
+  not apply").
+- **Excluded as unresolved:** 11 stages, 4 superpowers and 7 ElevenPowers.
+- **Forward check:** all 130 recorded bugfix values were reproduced.
+- **Adversarial control:** the check flagged 24 of 24 stages once their test
+  changes were removed. On these trees it can flag VACUOUS, so the low figure
+  is a real one, not a check that cannot fire.
+
+**Decision, as pre-registered.** ElevenPowers does not leave fewer VACUOUS
+changes for a superpowers user, because superpowers alone leaves almost none.
+In 474 of 475 resolved stages, a test failed once the change was undone. So
+for superpowers users the reviewer value is the report, not a change in what
+the agent does. The held-out sweep's 84% → 37% stays bounded to plain Claude
+Code.
+
+**What this does not show.** "Pinned" here is the coarse bar: at least one
+test fails with the whole change undone. It does not say that each changed
+line is pinned. That finer question is answered by mutation survivors on the
+changed lines (PLAN §5.16), and the reviewer's report lists those as the
+unpinned lines.
+
+Files:
+- [`regrade.py`](regrade.py): the computation;
+- [`stages.json`](stages.json): one row per stage;
+- [`summary.json`](summary.json): the analysis and both checks.
