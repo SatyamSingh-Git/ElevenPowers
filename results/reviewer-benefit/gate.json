@@ -1,0 +1,1263 @@
+{
+  "tally": {
+    "C": {
+      "expected": 11,
+      "of": 11
+    },
+    "U": {
+      "expected": 11,
+      "of": 11
+    },
+    "W": {
+      "expected": 20,
+      "of": 21
+    }
+  },
+  "rows": [
+    {
+      "seed": "clinic_booking-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/clinicbook/config.py",
+          76,
+          76
+        ],
+        [
+          "src/clinicbook/services/desk.py",
+          32,
+          32
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "clinic_booking-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [
+        [
+          "src/clinicbook/config.py",
+          23,
+          23
+        ],
+        [
+          "src/clinicbook/config.py",
+          76,
+          76
+        ],
+        [
+          "src/clinicbook/services/desk.py",
+          32,
+          32
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "clinic_booking-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/clinicbook/config.py",
+          76,
+          76
+        ],
+        [
+          "src/clinicbook/services/desk.py",
+          32,
+          32
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "clinic_booking-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/clinicbook/reports/summary.py",
+          24,
+          24
+        ],
+        [
+          "src/clinicbook/reports/summary.py",
+          27,
+          27
+        ],
+        [
+          "src/clinicbook/services/fees.py",
+          30,
+          30
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "fleet_service-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/fleetkeep/cli/commands.py",
+          302,
+          302
+        ],
+        [
+          "src/fleetkeep/cli/commands.py",
+          303,
+          303
+        ],
+        [
+          "src/fleetkeep/config.py",
+          35,
+          35
+        ],
+        [
+          "src/fleetkeep/config.py",
+          37,
+          37
+        ],
+        [
+          "src/fleetkeep/reports/costs.py",
+          18,
+          18
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "fleet_service-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [],
+      "strength": "incomplete",
+      "attempts": 0,
+      "expected": true
+    },
+    {
+      "seed": "fleet_service-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/fleetkeep/cli/commands.py",
+          302,
+          302
+        ],
+        [
+          "src/fleetkeep/cli/commands.py",
+          303,
+          303
+        ],
+        [
+          "src/fleetkeep/config.py",
+          35,
+          35
+        ],
+        [
+          "src/fleetkeep/config.py",
+          37,
+          37
+        ],
+        [
+          "src/fleetkeep/reports/costs.py",
+          18,
+          18
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "fleet_service-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/fleetkeep/services/workorders.py",
+          87,
+          87
+        ]
+      ],
+      "strength": "complete",
+      "attempts": 19,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "gradebook-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/gradebook/grading/calculator.py",
+          19,
+          19
+        ],
+        [
+          "src/gradebook/grading/calculator.py",
+          63,
+          63
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          107,
+          107
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          113,
+          113
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          114,
+          114
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "gradebook-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [
+        [
+          "src/gradebook/grading/calculator.py",
+          19,
+          19
+        ],
+        [
+          "src/gradebook/grading/calculator.py",
+          63,
+          63
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          107,
+          107
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          113,
+          113
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          114,
+          114
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "gradebook-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/gradebook/grading/calculator.py",
+          19,
+          19
+        ],
+        [
+          "src/gradebook/grading/calculator.py",
+          63,
+          63
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          107,
+          107
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          113,
+          113
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          139,
+          139
+        ],
+        [
+          "src/gradebook/reports/progress.py",
+          143,
+          143
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "greenhouse_monitor-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/greenhouse/storage/history.py",
+          46,
+          46
+        ],
+        [
+          "src/greenhouse/storage/readings_log.py",
+          23,
+          23
+        ],
+        [
+          "src/greenhouse/storage/readings_log.py",
+          42,
+          42
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "greenhouse_monitor-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [],
+      "strength": "incomplete",
+      "attempts": 0,
+      "expected": true
+    },
+    {
+      "seed": "greenhouse_monitor-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/greenhouse/storage/history.py",
+          46,
+          46
+        ],
+        [
+          "src/greenhouse/storage/readings_log.py",
+          23,
+          23
+        ],
+        [
+          "src/greenhouse/storage/readings_log.py",
+          42,
+          42
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "greenhouse_monitor-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/greenhouse/cli/commands.py",
+          41,
+          41
+        ],
+        [
+          "src/greenhouse/cli/commands.py",
+          63,
+          63
+        ],
+        [
+          "src/greenhouse/services/ingest.py",
+          27,
+          27
+        ],
+        [
+          "src/greenhouse/services/ingest.py",
+          68,
+          68
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "greenhouse_monitor-W3",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/greenhouse/config/settings.py",
+          17,
+          17
+        ],
+        [
+          "src/greenhouse/config/settings.py",
+          48,
+          48
+        ],
+        [
+          "src/greenhouse/services/irrigation.py",
+          19,
+          19
+        ],
+        [
+          "src/greenhouse/services/irrigation.py",
+          35,
+          35
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": false,
+      "expected": false
+    },
+    {
+      "seed": "hotel_desk-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/hoteldesk/money.py",
+          31,
+          31
+        ],
+        [
+          "src/hoteldesk/money.py",
+          50,
+          50
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          39,
+          39
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          48,
+          48
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          49,
+          49
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "hotel_desk-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [
+        [
+          "src/hoteldesk/money.py",
+          25,
+          25
+        ],
+        [
+          "src/hoteldesk/money.py",
+          26,
+          26
+        ],
+        [
+          "src/hoteldesk/money.py",
+          31,
+          31
+        ],
+        [
+          "src/hoteldesk/money.py",
+          50,
+          50
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          17,
+          17
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          23,
+          23
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          31,
+          31
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          39,
+          39
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          48,
+          48
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          49,
+          49
+        ],
+        [
+          "src/hoteldesk/storage/journal.py",
+          25,
+          25
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "hotel_desk-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/hoteldesk/money.py",
+          31,
+          31
+        ],
+        [
+          "src/hoteldesk/money.py",
+          50,
+          50
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          39,
+          39
+        ],
+        [
+          "src/hoteldesk/reports/revenue.py",
+          48,
+          48
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "hotel_desk-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/hoteldesk/services/stays.py",
+          20,
+          20
+        ]
+      ],
+      "strength": "complete",
+      "attempts": 15,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "household_budget-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/budgetbook/rules/matchers.py",
+          21,
+          21
+        ],
+        [
+          "src/budgetbook/rules/matchers.py",
+          49,
+          49
+        ],
+        [
+          "src/budgetbook/services/search.py",
+          14,
+          14
+        ],
+        [
+          "src/budgetbook/services/search.py",
+          15,
+          15
+        ],
+        [
+          "src/budgetbook/services/search.py",
+          16,
+          16
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "household_budget-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [],
+      "strength": "incomplete",
+      "attempts": 0,
+      "expected": true
+    },
+    {
+      "seed": "household_budget-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/budgetbook/rules/matchers.py",
+          21,
+          21
+        ],
+        [
+          "src/budgetbook/rules/matchers.py",
+          49,
+          49
+        ],
+        [
+          "src/budgetbook/services/search.py",
+          14,
+          14
+        ],
+        [
+          "src/budgetbook/services/search.py",
+          15,
+          15
+        ],
+        [
+          "src/budgetbook/services/search.py",
+          16,
+          16
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "household_budget-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/budgetbook/cli.py",
+          123,
+          123
+        ],
+        [
+          "src/budgetbook/cli.py",
+          384,
+          384
+        ],
+        [
+          "src/budgetbook/cli.py",
+          385,
+          385
+        ],
+        [
+          "src/budgetbook/cli.py",
+          386,
+          386
+        ],
+        [
+          "src/budgetbook/cli.py",
+          411,
+          411
+        ],
+        [
+          "src/budgetbook/cli.py",
+          421,
+          421
+        ],
+        [
+          "src/budgetbook/cli.py",
+          582,
+          582
+        ],
+        [
+          "src/budgetbook/reports/month_end.py",
+          10,
+          10
+        ],
+        [
+          "src/budgetbook/reports/month_end.py",
+          29,
+          29
+        ],
+        [
+          "src/budgetbook/reports/month_end.py",
+          38,
+          38
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "library_loans-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/lending/reports/overdue.py",
+          19,
+          19
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          20,
+          20
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          26,
+          26
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "library_loans-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [
+        [
+          "src/lending/config.py",
+          24,
+          24
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          19,
+          19
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          20,
+          20
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          26,
+          26
+        ],
+        [
+          "src/lending/services/fines.py",
+          36,
+          36
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "library_loans-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/lending/reports/overdue.py",
+          19,
+          19
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          20,
+          20
+        ],
+        [
+          "src/lending/reports/overdue.py",
+          26,
+          26
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "library_loans-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/lending/reports/activity.py",
+          14,
+          14
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "library_loans-W3",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/lending/cli/main.py",
+          24,
+          24
+        ],
+        [
+          "src/lending/cli/main.py",
+          26,
+          26
+        ],
+        [
+          "src/lending/cli/main.py",
+          58,
+          58
+        ],
+        [
+          "src/lending/cli/main.py",
+          81,
+          81
+        ],
+        [
+          "src/lending/cli/main.py",
+          83,
+          83
+        ],
+        [
+          "src/lending/cli/main.py",
+          84,
+          84
+        ],
+        [
+          "src/lending/cli/main.py",
+          89,
+          89
+        ],
+        [
+          "src/lending/cli/main.py",
+          90,
+          90
+        ],
+        [
+          "src/lending/cli/main.py",
+          91,
+          91
+        ],
+        [
+          "src/lending/cli/main.py",
+          92,
+          92
+        ],
+        [
+          "src/lending/cli/main.py",
+          97,
+          97
+        ],
+        [
+          "src/lending/cli/main.py",
+          98,
+          98
+        ],
+        [
+          "src/lending/cli/main.py",
+          104,
+          104
+        ],
+        [
+          "src/lending/services/holds.py",
+          65,
+          65
+        ],
+        [
+          "src/lending/services/holds.py",
+          69,
+          69
+        ],
+        [
+          "src/lending/services/holds.py",
+          72,
+          72
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "payroll_lite-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/payroll/services/yearend.py",
+          22,
+          22
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          24,
+          24
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          25,
+          25
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          26,
+          26
+        ],
+        [
+          "src/payroll/storage/payrun_file.py",
+          40,
+          40
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "payroll_lite-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [
+        [
+          "src/payroll/services/yearend.py",
+          22,
+          22
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          24,
+          24
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          25,
+          25
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          26,
+          26
+        ],
+        [
+          "src/payroll/storage/payrun_file.py",
+          15,
+          15
+        ],
+        [
+          "src/payroll/storage/payrun_file.py",
+          40,
+          40
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "payroll_lite-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/payroll/services/yearend.py",
+          22,
+          22
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          24,
+          24
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          25,
+          25
+        ],
+        [
+          "src/payroll/services/yearend.py",
+          26,
+          26
+        ],
+        [
+          "src/payroll/storage/payrun_file.py",
+          40,
+          40
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "payroll_lite-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/payroll/reports/bank_file.py",
+          10,
+          10
+        ],
+        [
+          "src/payroll/reports/bank_file.py",
+          20,
+          20
+        ],
+        [
+          "src/payroll/reports/bank_file.py",
+          21,
+          21
+        ],
+        [
+          "src/payroll/services/reconcile.py",
+          13,
+          13
+        ],
+        [
+          "src/payroll/services/reconcile.py",
+          36,
+          36
+        ],
+        [
+          "src/payroll/services/reconcile.py",
+          74,
+          74
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "recipe_box-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/recipebox/core/quantity.py",
+          15,
+          15
+        ]
+      ],
+      "strength": "complete",
+      "attempts": 8,
+      "expected": true
+    },
+    {
+      "seed": "recipe_box-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [],
+      "strength": "incomplete",
+      "attempts": 0,
+      "expected": true
+    },
+    {
+      "seed": "recipe_box-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/recipebox/core/quantity.py",
+          15,
+          15
+        ]
+      ],
+      "strength": "complete",
+      "attempts": 8,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "recipe_box-W2",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/recipebox/core/quantity.py",
+          111,
+          111
+        ],
+        [
+          "src/recipebox/core/quantity.py",
+          125,
+          125
+        ],
+        [
+          "src/recipebox/core/quantity.py",
+          126,
+          126
+        ],
+        [
+          "src/recipebox/services/importer.py",
+          51,
+          51
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "survey_tally-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/surveytally/files/survey_file.py",
+          30,
+          30
+        ],
+        [
+          "src/surveytally/model/questions.py",
+          74,
+          74
+        ],
+        [
+          "src/surveytally/services/tally.py",
+          66,
+          66
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "survey_tally-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [],
+      "strength": "incomplete",
+      "attempts": 0,
+      "expected": true
+    },
+    {
+      "seed": "survey_tally-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/surveytally/files/survey_file.py",
+          30,
+          30
+        ],
+        [
+          "src/surveytally/model/questions.py",
+          74,
+          74
+        ],
+        [
+          "src/surveytally/services/tally.py",
+          36,
+          36
+        ],
+        [
+          "src/surveytally/services/tally.py",
+          66,
+          66
+        ],
+        [
+          "src/surveytally/services/tally.py",
+          72,
+          72
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    },
+    {
+      "seed": "ticket_office-C",
+      "kind": "C",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/boxoffice/reports/daily.py",
+          57,
+          57
+        ],
+        [
+          "src/boxoffice/storage/ledger.py",
+          41,
+          41
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "expected": true
+    },
+    {
+      "seed": "ticket_office-U",
+      "kind": "U",
+      "verdict": "not pinned",
+      "unpinned": [],
+      "strength": "incomplete",
+      "attempts": 0,
+      "expected": true
+    },
+    {
+      "seed": "ticket_office-W",
+      "kind": "W",
+      "verdict": "pinned",
+      "unpinned": [
+        [
+          "src/boxoffice/reports/daily.py",
+          57,
+          57
+        ],
+        [
+          "src/boxoffice/storage/ledger.py",
+          41,
+          41
+        ]
+      ],
+      "strength": "incomplete",
+      "attempts": 32,
+      "surfaced": true,
+      "expected": true
+    }
+  ]
+}
