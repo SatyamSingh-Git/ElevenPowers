@@ -1,0 +1,503 @@
+{
+ "C": {
+  "expected": 11,
+  "of": 11
+ },
+ "U": {
+  "expected": 11,
+  "of": 11
+ },
+ "W": {
+  "expected": 6,
+  "of": 11
+ },
+ "rows": [
+  {
+   "seed": "clinic_booking-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/clinicbook/config.py",
+     76,
+     76
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "clinic_booking-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [
+    [
+     "src/clinicbook/config.py",
+     23,
+     23
+    ],
+    [
+     "src/clinicbook/config.py",
+     76,
+     76
+    ],
+    [
+     "src/clinicbook/services/desk.py",
+     32,
+     32
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "clinic_booking-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "surfaced": false,
+   "expected": false
+  },
+  {
+   "seed": "fleet_service-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/fleetkeep/reports/costs.py",
+     18,
+     18
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "fleet_service-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "fleet_service-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/fleetkeep/reports/costs.py",
+     18,
+     18
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": false,
+   "expected": false
+  },
+  {
+   "seed": "gradebook-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/gradebook/reports/progress.py",
+     107,
+     107
+    ],
+    [
+     "src/gradebook/reports/progress.py",
+     113,
+     113
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "gradebook-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [
+    [
+     "src/gradebook/reports/progress.py",
+     107,
+     107
+    ],
+    [
+     "src/gradebook/reports/progress.py",
+     113,
+     113
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "gradebook-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "surfaced": false,
+   "expected": false
+  },
+  {
+   "seed": "greenhouse_monitor-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "greenhouse_monitor-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "greenhouse_monitor-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "surfaced": false,
+   "expected": false
+  },
+  {
+   "seed": "hotel_desk-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/hoteldesk/reports/revenue.py",
+     39,
+     39
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "hotel_desk-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [
+    [
+     "src/hoteldesk/money.py",
+     25,
+     25
+    ],
+    [
+     "src/hoteldesk/reports/revenue.py",
+     17,
+     17
+    ],
+    [
+     "src/hoteldesk/reports/revenue.py",
+     23,
+     23
+    ],
+    [
+     "src/hoteldesk/reports/revenue.py",
+     39,
+     39
+    ],
+    [
+     "src/hoteldesk/storage/journal.py",
+     25,
+     25
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "hotel_desk-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/hoteldesk/reports/revenue.py",
+     39,
+     39
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": true,
+   "expected": true
+  },
+  {
+   "seed": "household_budget-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/budgetbook/services/search.py",
+     14,
+     14
+    ],
+    [
+     "src/budgetbook/services/search.py",
+     15,
+     15
+    ],
+    [
+     "src/budgetbook/services/search.py",
+     16,
+     16
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "household_budget-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "household_budget-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/budgetbook/services/search.py",
+     14,
+     14
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": true,
+   "expected": true
+  },
+  {
+   "seed": "library_loans-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/lending/reports/overdue.py",
+     19,
+     19
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "library_loans-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [
+    [
+     "src/lending/config.py",
+     24,
+     24
+    ],
+    [
+     "src/lending/reports/overdue.py",
+     19,
+     19
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "library_loans-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/lending/reports/overdue.py",
+     19,
+     19
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": true,
+   "expected": true
+  },
+  {
+   "seed": "payroll_lite-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/payroll/services/yearend.py",
+     24,
+     24
+    ],
+    [
+     "src/payroll/storage/payrun_file.py",
+     40,
+     40
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "payroll_lite-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [
+    [
+     "src/payroll/services/yearend.py",
+     24,
+     24
+    ],
+    [
+     "src/payroll/storage/payrun_file.py",
+     40,
+     40
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "payroll_lite-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/payroll/services/yearend.py",
+     24,
+     24
+    ],
+    [
+     "src/payroll/storage/payrun_file.py",
+     40,
+     40
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": true,
+   "expected": true
+  },
+  {
+   "seed": "recipe_box-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/recipebox/core/quantity.py",
+     15,
+     15
+    ]
+   ],
+   "strength": "complete",
+   "expected": true
+  },
+  {
+   "seed": "recipe_box-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "recipe_box-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/recipebox/core/quantity.py",
+     15,
+     15
+    ]
+   ],
+   "strength": "complete",
+   "surfaced": true,
+   "expected": true
+  },
+  {
+   "seed": "survey_tally-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/surveytally/files/survey_file.py",
+     30,
+     30
+    ],
+    [
+     "src/surveytally/services/tally.py",
+     66,
+     66
+    ]
+   ],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "survey_tally-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "survey_tally-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/surveytally/files/survey_file.py",
+     30,
+     30
+    ],
+    [
+     "src/surveytally/services/tally.py",
+     36,
+     36
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": false,
+   "expected": false
+  },
+  {
+   "seed": "ticket_office-C",
+   "kind": "C",
+   "verdict": "pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "ticket_office-U",
+   "kind": "U",
+   "verdict": "not pinned",
+   "unpinned": [],
+   "strength": "incomplete",
+   "expected": true
+  },
+  {
+   "seed": "ticket_office-W",
+   "kind": "W",
+   "verdict": "pinned",
+   "unpinned": [
+    [
+     "src/boxoffice/storage/ledger.py",
+     41,
+     41
+    ]
+   ],
+   "strength": "incomplete",
+   "surfaced": true,
+   "expected": true
+  }
+ ]
+}

@@ -1,0 +1,487 @@
+{
+ "schema": 1,
+ "arm": "superpowers",
+ "replicate": 0,
+ "seeds": [
+  {
+   "seed": "clinic_booking-C",
+   "kind": "C",
+   "case": "clinic_booking",
+   "slot": "clinic_booking--superpowers--0",
+   "stage": 5,
+   "request": "Some patients end up booked several times on the same day by mistake. Add a `max_daily_bookings` setting to the clinic file, default `2`, and refuse a booking when the same phone number already holds that many bookings on that day; cancelled bookings don't count. The refusal should read like `Ann Lee already has 2 bookings on 2026-03-02`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "296f0e117c1f6cc414758736309abd304fe8ecca"
+  },
+  {
+   "seed": "clinic_booking-U",
+   "kind": "U",
+   "case": "clinic_booking",
+   "slot": "clinic_booking--superpowers--0",
+   "stage": 5,
+   "request": "Some patients end up booked several times on the same day by mistake. Add a `max_daily_bookings` setting to the clinic file, default `2`, and refuse a booking when the same phone number already holds that many bookings on that day; cancelled bookings don't count. The refusal should read like `Ann Lee already has 2 bookings on 2026-03-02`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "ccf3c4282df3147d479bc178838916b4f7f33a0d"
+  },
+  {
+   "seed": "clinic_booking-W",
+   "kind": "W",
+   "case": "clinic_booking",
+   "slot": "clinic_booking--superpowers--0",
+   "stage": 5,
+   "request": "Some patients end up booked several times on the same day by mistake. Add a `max_daily_bookings` setting to the clinic file, default `2`, and refuse a booking when the same phone number already holds that many bookings on that day; cancelled bookings don't count. The refusal should read like `Ann Lee already has 2 bookings on 2026-03-02`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "ccf3c4282df3147d479bc178838916b4f7f33a0d",
+   "path": "src/clinicbook/config.py",
+   "line": 76,
+   "end_line": 76,
+   "operator": "core/NumberReplacer",
+   "context": "settings_from_dict",
+   "lost": [
+    "daily_limit_setting"
+   ]
+  },
+  {
+   "seed": "fleet_service-C",
+   "kind": "C",
+   "case": "fleet_service",
+   "slot": "fleet_service--superpowers--0",
+   "stage": 2,
+   "request": "Our workshop adds a shop supplies charge to every job for rags, cleaners and small hardware, and fleetkeep has no way to record it. Each work order should carry a supplies charge of `shop_supplies_percent` percent of its labour, rounded to the cent and capped at `shop_supplies_cap` per work order. Make both fleet.ini settings, with defaults `5` and `40.00`. `fleetkeep wo show` should list the charge as `supplies` and include it in the work order's `total`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "921c5c98925b29fce007cce83e879027d8ac248e"
+  },
+  {
+   "seed": "fleet_service-U",
+   "kind": "U",
+   "case": "fleet_service",
+   "slot": "fleet_service--superpowers--0",
+   "stage": 2,
+   "request": "Our workshop adds a shop supplies charge to every job for rags, cleaners and small hardware, and fleetkeep has no way to record it. Each work order should carry a supplies charge of `shop_supplies_percent` percent of its labour, rounded to the cent and capped at `shop_supplies_cap` per work order. Make both fleet.ini settings, with defaults `5` and `40.00`. `fleetkeep wo show` should list the charge as `supplies` and include it in the work order's `total`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "1432be90fc3f3553f126f64218101c6a9adaf2d8"
+  },
+  {
+   "seed": "fleet_service-W",
+   "kind": "W",
+   "case": "fleet_service",
+   "slot": "fleet_service--superpowers--0",
+   "stage": 2,
+   "request": "Our workshop adds a shop supplies charge to every job for rags, cleaners and small hardware, and fleetkeep has no way to record it. Each work order should carry a supplies charge of `shop_supplies_percent` percent of its labour, rounded to the cent and capped at `shop_supplies_cap` per work order. Make both fleet.ini settings, with defaults `5` and `40.00`. `fleetkeep wo show` should list the charge as `supplies` and include it in the work order's `total`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "1432be90fc3f3553f126f64218101c6a9adaf2d8",
+   "path": "src/fleetkeep/config.py",
+   "line": 37,
+   "end_line": 37,
+   "operator": "core/NumberReplacer",
+   "context": "_percent",
+   "lost": [
+    "supplies_settings"
+   ]
+  },
+  {
+   "seed": "gradebook-C",
+   "kind": "C",
+   "case": "gradebook",
+   "slot": "gradebook--superpowers--0",
+   "stage": 3,
+   "request": "Drop-lowest drops the wrong score when a category's assignments are worth different amounts. A student with 4/5 on one quiz and 6/10 on another has the 4/5 dropped, because 4 points is fewer than 6, even though 60% is the worse result. Course grades should rank scores for drop-lowest by percent of possible points, not by points earned.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "41c784b90317139b4d58da478c73d861b6346dd6"
+  },
+  {
+   "seed": "gradebook-U",
+   "kind": "U",
+   "case": "gradebook",
+   "slot": "gradebook--superpowers--0",
+   "stage": 3,
+   "request": "Drop-lowest drops the wrong score when a category's assignments are worth different amounts. A student with 4/5 on one quiz and 6/10 on another has the 4/5 dropped, because 4 points is fewer than 6, even though 60% is the worse result. Course grades should rank scores for drop-lowest by percent of possible points, not by points earned.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "41c784b90317139b4d58da478c73d861b6346dd6"
+  },
+  {
+   "seed": "gradebook-W",
+   "kind": "W",
+   "case": "gradebook",
+   "slot": "gradebook--superpowers--0",
+   "stage": 3,
+   "request": "Drop-lowest drops the wrong score when a category's assignments are worth different amounts. A student with 4/5 on one quiz and 6/10 on another has the 4/5 dropped, because 4 points is fewer than 6, even though 60% is the worse result. Course grades should rank scores for drop-lowest by percent of possible points, not by points earned.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "617045fb73454693ecd945c003f00817f192b217",
+   "path": "src/gradebook/reports/progress.py",
+   "line": 107,
+   "end_line": 107,
+   "operator": "core/ReplaceBinaryOperator_Div_Add",
+   "context": "_percent_of_possible",
+   "lost": [
+    "base_reports"
+   ]
+  },
+  {
+   "seed": "greenhouse_monitor-C",
+   "kind": "C",
+   "case": "greenhouse_monitor",
+   "slot": "greenhouse_monitor--superpowers--0",
+   "stage": 1,
+   "request": "After a sensor is recalibrated we want to re-derive its old readings, but the readings log only keeps the calibrated value. Add the uncalibrated value to every row of the readings log as a new column `raw`, placed right after `value`, in the same unit and with the same decimals as `value`. The log's columns become `timestamp,zone,sensor,kind,value,raw,unit`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "867d051ba229cbda91426d84db911212c39c0b7a"
+  },
+  {
+   "seed": "greenhouse_monitor-U",
+   "kind": "U",
+   "case": "greenhouse_monitor",
+   "slot": "greenhouse_monitor--superpowers--0",
+   "stage": 1,
+   "request": "After a sensor is recalibrated we want to re-derive its old readings, but the readings log only keeps the calibrated value. Add the uncalibrated value to every row of the readings log as a new column `raw`, placed right after `value`, in the same unit and with the same decimals as `value`. The log's columns become `timestamp,zone,sensor,kind,value,raw,unit`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "78dab920cb75a26bba53d0fd3f26b6973e5c3376"
+  },
+  {
+   "seed": "greenhouse_monitor-W",
+   "kind": "W",
+   "case": "greenhouse_monitor",
+   "slot": "greenhouse_monitor--superpowers--0",
+   "stage": 1,
+   "request": "After a sensor is recalibrated we want to re-derive its old readings, but the readings log only keeps the calibrated value. Add the uncalibrated value to every row of the readings log as a new column `raw`, placed right after `value`, in the same unit and with the same decimals as `value`. The log's columns become `timestamp,zone,sensor,kind,value,raw,unit`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "78dab920cb75a26bba53d0fd3f26b6973e5c3376",
+   "path": "src/greenhouse/storage/readings_log.py",
+   "line": 42,
+   "end_line": 42,
+   "operator": "core/NumberReplacer",
+   "context": "_upgrade",
+   "lost": [
+    "base_operations"
+   ]
+  },
+  {
+   "seed": "hotel_desk-C",
+   "kind": "C",
+   "case": "hotel_desk",
+   "slot": "hotel_desk--superpowers--0",
+   "stage": 1,
+   "request": "Our accountants load `audit_journal.csv` into their spreadsheet at month end, and its money columns arrive in whole cents (`41325` for 413.25), so they divide every figure by hand. Have the night audit write the journal's money columns in the `0.00` format instead, like `413.25`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e2162304272062ba97d65d6b6a46cc4b4593d586"
+  },
+  {
+   "seed": "hotel_desk-U",
+   "kind": "U",
+   "case": "hotel_desk",
+   "slot": "hotel_desk--superpowers--0",
+   "stage": 1,
+   "request": "Our accountants load `audit_journal.csv` into their spreadsheet at month end, and its money columns arrive in whole cents (`41325` for 413.25), so they divide every figure by hand. Have the night audit write the journal's money columns in the `0.00` format instead, like `413.25`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e2162304272062ba97d65d6b6a46cc4b4593d586"
+  },
+  {
+   "seed": "hotel_desk-W",
+   "kind": "W",
+   "case": "hotel_desk",
+   "slot": "hotel_desk--superpowers--0",
+   "stage": 1,
+   "request": "Our accountants load `audit_journal.csv` into their spreadsheet at month end, and its money columns arrive in whole cents (`41325` for 413.25), so they divide every figure by hand. Have the night audit write the journal's money columns in the `0.00` format instead, like `413.25`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "18557f696b892731aaca1ef2a07ecb9b8f467341",
+   "path": "src/hoteldesk/reports/revenue.py",
+   "line": 39,
+   "end_line": 39,
+   "operator": "core/AddNot",
+   "context": "revenue_text",
+   "lost": [
+    "base_audit",
+    "s1_revenue_reads_money"
+   ]
+  },
+  {
+   "seed": "household_budget-C",
+   "kind": "C",
+   "case": "household_budget",
+   "slot": "household_budget--superpowers--0",
+   "stage": 2,
+   "request": "In the rules file, a rule with `\"match\": \"contains\"` matches its pattern anywhere inside the payee (`substring, any case`), so my `BP` rule for Fuel also files `EBPAY ONLINE` and `BPAY BILLER` as fuel. Change `contains` to match `whole words, any case`: the pattern has to start and end at word boundaries in the payee, so `BP` still matches `BP 1234 LONDON` and `CARD PAYMENT BP` but no longer `EBPAY ONLINE`. For rules that relied on the old behaviour, add a new match kind, `anywhere`, that works exactly the way `contains` works today: `substring, any case`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e279c3cdcd17ee5fef7b0e2fd220e392d461b864"
+  },
+  {
+   "seed": "household_budget-U",
+   "kind": "U",
+   "case": "household_budget",
+   "slot": "household_budget--superpowers--0",
+   "stage": 2,
+   "request": "In the rules file, a rule with `\"match\": \"contains\"` matches its pattern anywhere inside the payee (`substring, any case`), so my `BP` rule for Fuel also files `EBPAY ONLINE` and `BPAY BILLER` as fuel. Change `contains` to match `whole words, any case`: the pattern has to start and end at word boundaries in the payee, so `BP` still matches `BP 1234 LONDON` and `CARD PAYMENT BP` but no longer `EBPAY ONLINE`. For rules that relied on the old behaviour, add a new match kind, `anywhere`, that works exactly the way `contains` works today: `substring, any case`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e279c3cdcd17ee5fef7b0e2fd220e392d461b864"
+  },
+  {
+   "seed": "household_budget-W",
+   "kind": "W",
+   "case": "household_budget",
+   "slot": "household_budget--superpowers--0",
+   "stage": 2,
+   "request": "In the rules file, a rule with `\"match\": \"contains\"` matches its pattern anywhere inside the payee (`substring, any case`), so my `BP` rule for Fuel also files `EBPAY ONLINE` and `BPAY BILLER` as fuel. Change `contains` to match `whole words, any case`: the pattern has to start and end at word boundaries in the payee, so `BP` still matches `BP 1234 LONDON` and `CARD PAYMENT BP` but no longer `EBPAY ONLINE`. For rules that relied on the old behaviour, add a new match kind, `anywhere`, that works exactly the way `contains` works today: `substring, any case`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "a03180a74fada9c794acf6d8f2fd65fff04e1c25",
+   "path": "src/budgetbook/services/search.py",
+   "line": 14,
+   "end_line": 14,
+   "operator": "core/ReplaceAndWithOr",
+   "context": "find_transactions",
+   "lost": [
+    "ledger_flow"
+   ]
+  },
+  {
+   "seed": "library_loans-C",
+   "kind": "C",
+   "case": "library_loans",
+   "slot": "library_loans--superpowers--0",
+   "stage": 1,
+   "request": "Members keep bringing books back a day or two late and then arguing about the small fines. Please add a grace period: a copy returned no more than `fine_grace_days` days after its due date is not fined at all. Make it a `lending.ini` option named `fine_grace_days`, default `2`. Past the grace period the fine still counts from the due date, so a book returned 3 days late pays for 3 days, as it does now.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "8e70f35f3f90e80cffbd7ee08314aa83f6481bff"
+  },
+  {
+   "seed": "library_loans-U",
+   "kind": "U",
+   "case": "library_loans",
+   "slot": "library_loans--superpowers--0",
+   "stage": 1,
+   "request": "Members keep bringing books back a day or two late and then arguing about the small fines. Please add a grace period: a copy returned no more than `fine_grace_days` days after its due date is not fined at all. Make it a `lending.ini` option named `fine_grace_days`, default `2`. Past the grace period the fine still counts from the due date, so a book returned 3 days late pays for 3 days, as it does now.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "73c67062b8d7dc3fa0d2fa44033a2c1d06552d03"
+  },
+  {
+   "seed": "library_loans-W",
+   "kind": "W",
+   "case": "library_loans",
+   "slot": "library_loans--superpowers--0",
+   "stage": 1,
+   "request": "Members keep bringing books back a day or two late and then arguing about the small fines. Please add a grace period: a copy returned no more than `fine_grace_days` days after its due date is not fined at all. Make it a `lending.ini` option named `fine_grace_days`, default `2`. Past the grace period the fine still counts from the due date, so a book returned 3 days late pays for 3 days, as it does now.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "73c67062b8d7dc3fa0d2fa44033a2c1d06552d03",
+   "path": "src/lending/reports/overdue.py",
+   "line": 19,
+   "end_line": 19,
+   "operator": "core/NumberReplacer",
+   "context": "overdue_rows",
+   "lost": [
+    "grace_report"
+   ]
+  },
+  {
+   "seed": "payroll_lite-C",
+   "kind": "C",
+   "case": "payroll_lite",
+   "slot": "payroll_lite--superpowers--0",
+   "stage": 1,
+   "request": "The bookkeeping tool we load pay-run files into (`runs/{period}.json`) keeps tripping over money written as decimal strings like \"1012.50\". Please write money in pay-run files as `integer cents` instead, so 1,012.50 becomes `101250`. That covers every money field in the file: each payslip's totals, the run's `totals`, and each line's `amount` and `rate`. Line hours stay as they are. Since the layout changes, pay-run files written from now on should carry `\"schema\": 2`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "6eb83db076a5ff261226dd472e71b0efdef6ec0f"
+  },
+  {
+   "seed": "payroll_lite-U",
+   "kind": "U",
+   "case": "payroll_lite",
+   "slot": "payroll_lite--superpowers--0",
+   "stage": 1,
+   "request": "The bookkeeping tool we load pay-run files into (`runs/{period}.json`) keeps tripping over money written as decimal strings like \"1012.50\". Please write money in pay-run files as `integer cents` instead, so 1,012.50 becomes `101250`. That covers every money field in the file: each payslip's totals, the run's `totals`, and each line's `amount` and `rate`. Line hours stay as they are. Since the layout changes, pay-run files written from now on should carry `\"schema\": 2`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "d296705d9f8796620a31735321bcd0ec883f4b30"
+  },
+  {
+   "seed": "payroll_lite-W",
+   "kind": "W",
+   "case": "payroll_lite",
+   "slot": "payroll_lite--superpowers--0",
+   "stage": 1,
+   "request": "The bookkeeping tool we load pay-run files into (`runs/{period}.json`) keeps tripping over money written as decimal strings like \"1012.50\". Please write money in pay-run files as `integer cents` instead, so 1,012.50 becomes `101250`. That covers every money field in the file: each payslip's totals, the run's `totals`, and each line's `amount` and `rate`. Line hours stay as they are. Since the layout changes, pay-run files written from now on should carry `\"schema\": 2`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "d296705d9f8796620a31735321bcd0ec883f4b30",
+   "path": "src/payroll/services/yearend.py",
+   "line": 24,
+   "end_line": 24,
+   "operator": "core/AddNot",
+   "context": "year_totals",
+   "lost": [
+    "base_consistency",
+    "base_values"
+   ]
+  },
+  {
+   "seed": "recipe_box-C",
+   "kind": "C",
+   "case": "recipe_box",
+   "slot": "recipe_box--superpowers--0",
+   "stage": 2,
+   "request": "Thirds come out wrong. A recipe that calls for 1/3 cup of sugar shows `3/8 cup sugar` in `recipebox show`, and showing a 3-serving porridge made with 1 cup of oats at `--servings 1` gives `3/8 cup oats` as well. Amounts should be shown as halves, thirds, quarters or eighths, that is with the denominators `2, 3, 4, 8`, so both of those read `1/3 cup`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e1c5b7c0715c6179e4672b62f4a87b2a646c268f"
+  },
+  {
+   "seed": "recipe_box-U",
+   "kind": "U",
+   "case": "recipe_box",
+   "slot": "recipe_box--superpowers--0",
+   "stage": 2,
+   "request": "Thirds come out wrong. A recipe that calls for 1/3 cup of sugar shows `3/8 cup sugar` in `recipebox show`, and showing a 3-serving porridge made with 1 cup of oats at `--servings 1` gives `3/8 cup oats` as well. Amounts should be shown as halves, thirds, quarters or eighths, that is with the denominators `2, 3, 4, 8`, so both of those read `1/3 cup`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e1c5b7c0715c6179e4672b62f4a87b2a646c268f"
+  },
+  {
+   "seed": "recipe_box-W",
+   "kind": "W",
+   "case": "recipe_box",
+   "slot": "recipe_box--superpowers--0",
+   "stage": 2,
+   "request": "Thirds come out wrong. A recipe that calls for 1/3 cup of sugar shows `3/8 cup sugar` in `recipebox show`, and showing a 3-serving porridge made with 1 cup of oats at `--servings 1` gives `3/8 cup oats` as well. Amounts should be shown as halves, thirds, quarters or eighths, that is with the denominators `2, 3, 4, 8`, so both of those read `1/3 cup`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "e1c5b7c0715c6179e4672b62f4a87b2a646c268f",
+   "path": "src/recipebox/core/quantity.py",
+   "line": 15,
+   "end_line": 15,
+   "operator": "core/NumberReplacer",
+   "context": "module",
+   "lost": [
+    "base_recipes"
+   ]
+  },
+  {
+   "seed": "survey_tally-C",
+   "kind": "C",
+   "case": "survey_tally",
+   "slot": "survey_tally--superpowers--0",
+   "stage": 4,
+   "request": "We now build questionnaires in a form builder whose survey files call scale questions `rating`. Make `rating` the question type name for scale questions: survey files that say `rating` should load as scale questions, and saving a survey should write `rating`. We have years of older survey files that say `scale`, and those must keep loading. The question types in a survey file are then `single, multi, rating, text`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "4a91e01d52903b820a5c1742a7a845c9478715b1"
+  },
+  {
+   "seed": "survey_tally-U",
+   "kind": "U",
+   "case": "survey_tally",
+   "slot": "survey_tally--superpowers--0",
+   "stage": 4,
+   "request": "We now build questionnaires in a form builder whose survey files call scale questions `rating`. Make `rating` the question type name for scale questions: survey files that say `rating` should load as scale questions, and saving a survey should write `rating`. We have years of older survey files that say `scale`, and those must keep loading. The question types in a survey file are then `single, multi, rating, text`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "988f57e106e6e81c8af20b2ede412ff8ec3f7039"
+  },
+  {
+   "seed": "survey_tally-W",
+   "kind": "W",
+   "case": "survey_tally",
+   "slot": "survey_tally--superpowers--0",
+   "stage": 4,
+   "request": "We now build questionnaires in a form builder whose survey files call scale questions `rating`. Make `rating` the question type name for scale questions: survey files that say `rating` should load as scale questions, and saving a survey should write `rating`. We have years of older survey files that say `scale`, and those must keep loading. The question types in a survey file are then `single, multi, rating, text`.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "988f57e106e6e81c8af20b2ede412ff8ec3f7039",
+   "path": "src/surveytally/services/tally.py",
+   "line": 66,
+   "end_line": 66,
+   "operator": "core/AddNot",
+   "context": "_tally_rating",
+   "lost": [
+    "s4_rating_files"
+   ]
+  },
+  {
+   "seed": "ticket_office-C",
+   "kind": "C",
+   "case": "ticket_office",
+   "slot": "ticket_office--superpowers--0",
+   "stage": 1,
+   "request": "Finance want to see what time of day each sale, refund and exchange went through, not just the day it happened. Please make the ledger's `date` field carry the time as well, in the form `YYYY-MM-DDTHH:MM` (for example 2026-04-12T14:05), for every new entry.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "b9adbb94aba2772f4b1bf8cd0c3e91b1d1134365"
+  },
+  {
+   "seed": "ticket_office-U",
+   "kind": "U",
+   "case": "ticket_office",
+   "slot": "ticket_office--superpowers--0",
+   "stage": 1,
+   "request": "Finance want to see what time of day each sale, refund and exchange went through, not just the day it happened. Please make the ledger's `date` field carry the time as well, in the form `YYYY-MM-DDTHH:MM` (for example 2026-04-12T14:05), for every new entry.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "b9adbb94aba2772f4b1bf8cd0c3e91b1d1134365"
+  },
+  {
+   "seed": "ticket_office-W",
+   "kind": "W",
+   "case": "ticket_office",
+   "slot": "ticket_office--superpowers--0",
+   "stage": 1,
+   "request": "Finance want to see what time of day each sale, refund and exchange went through, not just the day it happened. Please make the ledger's `date` field carry the time as well, in the form `YYYY-MM-DDTHH:MM` (for example 2026-04-12T14:05), for every new entry.",
+   "command": "\"python\" -m pytest tests -q -p no:cacheprovider",
+   "base": "8863ef9dc44136ec93f7ea5afa0850c246fd3ed9",
+   "path": "src/boxoffice/storage/ledger.py",
+   "line": 41,
+   "end_line": 41,
+   "operator": "core/ReplaceComparisonOperator_Eq_GtE",
+   "context": "entries_on",
+   "lost": [
+    "base_reporting"
+   ]
+  }
+ ],
+ "searched": {
+  "clinic_booking": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "fleet_service": [
+   1,
+   2
+  ],
+  "gradebook": [
+   1,
+   2,
+   3
+  ],
+  "greenhouse_monitor": [
+   1
+  ],
+  "hotel_desk": [
+   1
+  ],
+  "household_budget": [
+   1,
+   2
+  ],
+  "library_loans": [
+   1
+  ],
+  "parcelpost": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "payroll_lite": [
+   1
+  ],
+  "recipe_box": [
+   1,
+   2
+  ],
+  "survey_tally": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "ticket_office": [
+   1
+  ]
+ },
+ "without_w": [
+  "parcelpost"
+ ]
+}

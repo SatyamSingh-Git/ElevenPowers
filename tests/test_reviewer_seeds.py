@@ -1,7 +1,7 @@
 """Seeds for the reviewer study: real changes, the same change untested, and one wrong line."""
 import subprocess
 
-from eval.reviewer_seeds import commit_pair, without_tests, wrong
+from eval.reviewer_seeds import commit_pair, judge, tally, without_tests, wrong
 
 
 def _tree(root, files):
@@ -43,3 +43,23 @@ def test_a_wrong_seed_passes_its_tests_and_breaks_behaviour_that_passed():
     assert not wrong(0, kept, dict(kept))
     assert not wrong(0, kept, {'s1': 'passed', 's2': 'passed', 'old': 'timeout'})
     assert wrong(0, kept, {'s1': 'passed', 's2': 'timeout', 'old': 'failed'})
+
+
+def _report(verdict, *lines):
+    return {'verdict': verdict, 'strength': {'state': 'complete', 'attempts': 8,
+                                             'unpinned': [{'path': p, 'line': a, 'end_line': b} for p, a, b in lines]}}
+
+
+def test_the_gate_wants_controls_pinned_untested_changes_not_and_the_wrong_line_named():
+    w = {'seed': 'x-W', 'kind': 'W', 'path': 'src/m.py', 'line': 40}
+    assert judge(w, _report('pinned', ('src/m.py', 42, 42)))['expected']
+    assert judge(w, _report('pinned', ('src/m.py', 30, 38)))['expected']
+    assert not judge(w, _report('pinned', ('src/m.py', 43, 50)))['expected']
+    assert not judge(w, _report('pinned', ('src/m.py', 30, 37)))['expected']
+    assert not judge(w, _report('pinned', ('src/n.py', 40, 40)))['expected']
+    assert judge({'seed': 'x-C', 'kind': 'C'}, _report('pinned'))['expected']
+    assert not judge({'seed': 'x-C', 'kind': 'C'}, _report('not pinned'))['expected']
+    assert judge({'seed': 'x-U', 'kind': 'U'}, _report('not pinned'))['expected']
+    assert not judge({'seed': 'x-U', 'kind': 'U'}, _report('unknown'))['expected']
+    rows = [judge(w, _report('pinned', ('src/m.py', 40, 40))), judge({'seed': 'x-U', 'kind': 'U'}, _report('unknown'))]
+    assert tally(rows) == {'C': {'expected': 0, 'of': 0}, 'U': {'expected': 0, 'of': 1}, 'W': {'expected': 1, 'of': 1}}

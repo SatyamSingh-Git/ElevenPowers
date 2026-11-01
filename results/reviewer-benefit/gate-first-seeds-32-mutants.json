@@ -1,0 +1,155 @@
+[
+ {
+  "seed": "clinic_booking-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 2,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "fleet_service-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 5,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "gradebook-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 6,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "greenhouse_monitor-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 3,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "hotel_desk-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 4,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "household_budget-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 5,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "library_loans-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 3,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "payroll_lite-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 5,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined",
+   "deleted code is absent from the current source; deletion anchors are context, not examined removed behavior"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "recipe_box-W",
+  "surfaced": true,
+  "state": "complete",
+  "attempts": 8,
+  "unpinned": 1,
+  "issues": [],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "survey_tally-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 5,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ },
+ {
+  "seed": "ticket_office-W",
+  "surfaced": true,
+  "state": "incomplete",
+  "attempts": 32,
+  "unpinned": 2,
+  "issues": [
+   "mutation attempt limit: additional candidates were not examined"
+  ],
+  "limits": {
+   "max_mutants": 32,
+   "seconds": 300
+  }
+ }
+]

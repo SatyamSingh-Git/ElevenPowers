@@ -4,7 +4,8 @@ Per case, one stage of the superpowers arm's first conversation gives three
 seeds over the same real change: C as the agent left it, U with the stage's
 test changes taken back out, and W with one Cosmic Ray mutation on a changed
 line that the stage's own tests miss and the case's behaviour oracle catches.
-The gate then asks ep_review about every seed before any model sees one.
+`judge` is the gate: what ep_review's frozen report says about each seed, before
+any model sees one (eval/reviewer_run.py freezes the reports and applies it).
 See docs/superpowers/specs/2026-11-01-reviewer-benefit-design.md.
 """
 import argparse
@@ -18,7 +19,7 @@ import tempfile
 import time
 
 from core import process
-from core.review import NOT_PINNED, PINNED, review
+from core.review import NOT_PINNED, PINNED
 from core.strength.engines import cosmic
 from core.strength.execution import Budget
 from core.strength.scope import select
@@ -96,7 +97,8 @@ def find(case, before, after, n, scratch, *, python=sys.executable, seconds=180,
     return None
 
 
-def build(out, batches, *, arm='superpowers', replicate=0):
+def build(out, batches, *, arm='superpowers', replicate=0, per_case=3):
+    """Up to per_case W seeds per case; C and U come from the first, over the same change."""
     out = Path(out)
     analysis = json.loads((V3 / 'full-analysis.json').read_text(encoding='utf-8'))
     rerun = set(json.loads((V3 / 'full-rerun-c.json').read_text(encoding='utf-8')))
@@ -108,7 +110,7 @@ def build(out, batches, *, arm='superpowers', replicate=0):
             continue
         case = load(TOOL_ROOT / 'eval' / 'multistage_v3' / row['case'])
         folder = batches['c' if row['slot'] in rerun else 'b'] / row['slot']
-        searched[row['case']] = []
+        searched[row['case']], found = [], 0
         for stage in row['grade']['stages']:
             n = stage['stage']
             own = {g['id'] for g in case['groups'] if g['since'] == n}
@@ -121,38 +123,41 @@ def build(out, batches, *, arm='superpowers', replicate=0):
                 hit = find(case, before, after, n, Path(scratch))
                 if not hit:
                     continue
-                request = case['stages'][n - 1]['request']
-                untested = without_tests(before, after, case['test_dir'], Path(scratch) / 'untested')
-                for kind, head in (('C', after), ('U', untested), ('W', hit['tree'])):
-                    name = f"{row['case']}-{kind}"
+                found += 1
+                kinds = [('W', hit['tree'])]
+                if found == 1:
+                    kinds = [('C', after), ('U', without_tests(before, after, case['test_dir'],
+                                                               Path(scratch) / 'untested'))] + kinds
+                for kind, head in kinds:
+                    name = f"{row['case']}-{kind}" + (str(found) if kind == 'W' and found > 1 else '')
                     seed = {'seed': name, 'kind': kind, 'case': row['case'], 'slot': row['slot'], 'stage': n,
-                            'request': request, 'command': _tests(case, 'python'),
+                            'request': case['stages'][n - 1]['request'], 'command': _tests(case, 'python'),
                             'base': commit_pair(before, head, out / name)}
                     if kind == 'W':
                         seed.update({k: hit[k] for k in ('path', 'line', 'end_line', 'operator', 'context', 'lost')})
                     seeds.append(seed)
-            break
-    return {'schema': 1, 'arm': arm, 'replicate': replicate, 'seeds': seeds, 'searched': searched,
-            'without_w': sorted(c for c in searched if not any(s['case'] == c for s in seeds))}
+            if found == per_case:
+                break
+    return {'schema': 1, 'arm': arm, 'replicate': replicate, 'per_case': per_case, 'seeds': seeds,
+            'searched': searched, 'without_w': sorted(c for c in searched if not any(s['case'] == c for s in seeds))}
 
 
-def gate(manifest, out):
-    """What ep_review says about each seed, before any reviewer sees one."""
-    rows = []
-    for seed in manifest['seeds']:
-        report = review(Path(out) / seed['seed'], seed['base'], command=_tests({'test_dir': 'tests'}, sys.executable),
-                        strength=True)
-        row = {'seed': seed['seed'], 'kind': seed['kind'], 'verdict': report['verdict'],
-               'unpinned': [(u['path'], u['line'], u['end_line']) for u in report['strength']['unpinned']],
-               'strength': report['strength']['state']}
-        if seed['kind'] == 'W':
-            row['surfaced'] = any(path == seed['path'] and start - 2 <= seed['line'] <= end + 2
-                                  for path, start, end in row['unpinned'])
-        row['expected'] = {'C': report['verdict'] == PINNED, 'U': report['verdict'] == NOT_PINNED,
-                           'W': row.get('surfaced', False)}[seed['kind']]
-        rows.append(row)
+def judge(seed, report):
+    """Did ep_review's report say what this seed needs it to say?"""
+    unpinned = [(u['path'], u['line'], u['end_line']) for u in report['strength']['unpinned']]
+    row = {'seed': seed['seed'], 'kind': seed['kind'], 'verdict': report['verdict'], 'unpinned': unpinned,
+           'strength': report['strength']['state'], 'attempts': report['strength']['attempts']}
+    if seed['kind'] == 'W':
+        row['surfaced'] = any(path == seed['path'] and start - 2 <= seed['line'] <= end + 2
+                              for path, start, end in unpinned)
+    row['expected'] = {'C': report['verdict'] == PINNED, 'U': report['verdict'] == NOT_PINNED,
+                       'W': row.get('surfaced', False)}[seed['kind']]
+    return row
+
+
+def tally(rows):
     return {kind: {'expected': sum(r['expected'] for r in rows if r['kind'] == kind),
-                   'of': sum(r['kind'] == kind for r in rows)} for kind in 'CUW'} | {'rows': rows}
+                   'of': sum(r['kind'] == kind for r in rows)} for kind in 'CUW'}
 
 
 def main():
@@ -161,15 +166,14 @@ def main():
     parser.add_argument('--batch', type=Path, default=Path('E:/ep-runs/multistage-v3-full-2026-10-30-b'))
     parser.add_argument('--continuation', type=Path, default=Path('E:/ep-runs/multistage-v3-full-2026-10-30-c'))
     parser.add_argument('--results', type=Path, default=TOOL_ROOT / 'results' / 'reviewer-benefit')
+    parser.add_argument('--per-case', type=int, default=3)
     args = parser.parse_args()
     if args.out.exists():
         parser.exit(2, 'the seed folder must be new\n')
-    manifest = build(args.out, {'b': args.batch, 'c': args.continuation})
+    manifest = build(args.out, {'b': args.batch, 'c': args.continuation}, per_case=args.per_case)
     args.results.mkdir(parents=True, exist_ok=True)
     (args.results / 'seeds.json').write_text(json.dumps(manifest, indent=1), encoding='utf-8')
-    checked = gate(manifest, args.out)
-    (args.results / 'gate.json').write_text(json.dumps(checked, indent=1), encoding='utf-8')
-    print(json.dumps({k: v for k, v in checked.items() if k != 'rows'}), 'without W:', manifest['without_w'])
+    print({kind: sum(s['kind'] == kind for s in manifest['seeds']) for kind in 'CUW'}, 'without W:', manifest['without_w'])
 
 
 if __name__ == '__main__':
