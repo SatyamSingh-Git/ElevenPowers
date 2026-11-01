@@ -1,5 +1,25 @@
 # Master Plan v0.8
 
+**2026-11-01 — Two directions: reviewer evidence first, coding helper open.**
+The v3 full run (120 conversations, superpowers in both arms) found no measured
+benefit, and both point estimates lean against ElevenPowers. The $0 diagnosis
+of its 31 losses explains why:
+- **Detection.** 27 dependents were never detected, and 22 of them are not
+  import-reachable.
+- **Delivery works.** A probe showed the briefs reach the model.
+- **The 4 that were detected were not acted on.**
+- **A behaviour-diff detector would have caught 1 of 31.** The dependents
+  were left behind with unchanged behaviour.
+
+A false startup FAIL, shown in 63% of stages, is repaired. ElevenPowers now
+has two directions, recorded in [§13](#13-two-directions-reviewer-evidence-and-coding-helper):
+- **Reviewer evidence, the current focus.** It has the one measured effect.
+- **Coding helper, next after reviewer evidence.** It has its failures
+  written down, and is open to contributors meanwhile.
+
+See [`results/multistage-v3/`](results/multistage-v3/README.md) and
+[CONTRIBUTING](CONTRIBUTING.md).
+
 **2026-10-31 — Remote observations v1.** `core/inputs/remote.py` adds approved,
 explicit remote observations with offline status, and PatchProof bundles gain an
 additive `remote_observations` section that brackets receipts by recorded
@@ -1785,6 +1805,15 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 
 ## 10. Claims withdrawn or qualified
 
+- **ElevenPowers keeps earlier work and docs intact for a superpowers user.**
+  Not supported, 2026-10-30. In the field report's own setting, superpowers in
+  both arms and 12 cases × 5 replicates, the counts were:
+  - earlier groups lost: 29 without ElevenPowers, 35 with it (Holm p 0.50);
+  - stale documented facts: 43 without, 79 with (Holm p 0.50).
+
+  The claim stays open only as the coding-helper direction in §13, with its
+  failures recorded. See [the v3 results](results/multistage-v3/README.md).
+
 - **The new scrub case's process consumer/test references.** Withdrawn
   2026-10-04: pinned core/process.py and tests/test_process.py do not import or
   test redaction. The corpus and raw outcomes remain frozen; a separate
@@ -1904,6 +1933,98 @@ Added by §5.16, and the first one is answerable this week for nothing:
 - **The survivors are equivalent mutants.** *Did not fire: two blind reviewers call 20 of 27 MEANINGFUL, and exactly 1 is unanimously equivalent (2026-09-24).* If survivors are common but a reviewer judges most of them semantically identical to the original, the mechanism is a noise generator. It moves to `docs/postponed.md` with the trigger that would revive it, and the honest report is that mutation at this granularity does not survive contact with this corpus.
 - **Mutant feedback to an agent produces tests that pin the implementation.** *Fired, 2026-09-24 (B8).* Given the exact list, the agent killed every mutant — including, in both replicates, the one unanimously equivalent mutant, by asserting which slice expression the source uses. The consequence is not that §5.16 is withdrawn but that its output is not an agent instruction: raw mutants are never handed to an agent as targets, and the report's consumer is a reviewer.
 - **A reviewer does not act on a list of unpinned lines.** §5.17's whole claim is that *"these three lines could be altered and nothing you ran would notice"* is actionable without reading the diff. If it is read and ignored, that is the same falsifier as "surfacing changes nothing", now with the strongest content the report is ever likely to carry — and it would settle the question for the reporting direction, not just for one feature.
+
+---
+
+## 13. Two directions: reviewer evidence and coding helper
+
+*(2026-11-01.)* Both stay in scope. The order follows the evidence: build
+first where a benefit has been measured, and keep the other open with its
+failures written down so anyone can pick it up without repeating them.
+
+### A. Reviewer evidence: the current focus
+
+**For whom:** the person deciding whether to accept a change an agent made.
+**What it says:** whether the change is pinned by tests that would fail
+without it. It names any lines that could be altered without anything
+noticing, and gives receipts for what was run, against which tree and
+which inputs.
+
+**Measured so far**
+- **Held-out sweep, 2026-10-22.** VACUOUS among resolved patches fell from
+  84% to 37% (p = 0.00016), with resolve rates unchanged
+  ([results](results/heldout/sweep-2026-10-22/README.md)). The mechanism was
+  whether a test is written at all.
+  - **Its bound:** plain Claude Code against Claude Code with ElevenPowers.
+    Superpowers was in neither arm.
+  - **Untested:** the advantage for a superpowers user, whose workflow
+    already asks for tests.
+- **Mutation survivors (§5.16).** They name real unpinned lines: 20 of 27
+  were called meaningful by two blind reviewers. Handed to an agent, they
+  produce implementation-pinning tests (B8), so their consumer is a
+  reviewer.
+
+**Already built and reusable:** PatchProof receipts and bundles, discrimination
+(`core/stress.py`), changed-region strength (`core/strength/`), the end report,
+and GitHub presentation.
+
+**Next, in order**
+1. **Design the reviewer's view.** One report a reviewer reads in a minute:
+   - pinned or not;
+   - the unpinned lines;
+   - what was run, and on which tree;
+   - what is unknown.
+
+   Brainstorm and write a spec first.
+2. **Measure against superpowers, $0 first.** Re-read the v3 snapshots: does
+   the ElevenPowers arm leave fewer VACUOUS changes than superpowers alone?
+   If not, the reviewer value for superpowers users is the report, not a
+   change in agent behaviour.
+3. **Measure the benefit to a reviewer, not the agent's score.** Seed changes
+   with known unpinned or wrong lines. Does a reviewer using the report catch
+   more of them, sooner, than one reading the diff alone? §12's falsifier
+   applies: if the report is read and ignored, this direction fails.
+
+### B. Coding helper: next after A, open to contributors meanwhile
+
+**Goal:** fewer earlier behaviours broken and fewer docs left stale while an
+agent works. **Status:** no measured benefit. Do not claim one (§10).
+**Owner:** the maintainers take this up once A's three steps are done.
+Until then any contributor can start on an open problem below.
+
+**What has been tried and what it showed** (v3, 2026-10-30;
+[diagnosis](results/multistage-v3/README.md#why-elevenpowers-did-not-help-diagnosis-of-its-31-losses-0)):
+- **Import-graph briefs** (`core/atlas.neighbourhood`) named the broken
+  dependent in 4 of 31 losses. 22 dependents import nothing the agent edited,
+  and 5 sat behind the brief's four-name cutoff.
+- **Delivery works.** PreToolUse `additionalContext` reaches the model word
+  for word ([probe](results/multistage-v3/delivery-probe.json)). All 4
+  delivered briefs were not acted on.
+- **Behaviour diff under the project's own tests** caught 1 of 31
+  ([spike](results/multistage-v3/behaviour-spike/README.md)). The public suite
+  runs every dependent, but 30 dependents were left behind: their behaviour
+  did not change when a convention around them did.
+- **Cost:** the arm took 10.8 minutes of model time per conversation against
+  6.5, and a false startup FAIL in 63% of stages, now repaired, added noise.
+
+**Open problems a contributor can take**
+1. **Left-behind dependents.** When a change moves a convention (a
+   precision, an order, a format, a key), find the other places that encoded
+   the old one, without relying on shared names. The twelve v3 cases, with
+   their kept snapshots, are a ready benchmark, and the dependents are
+   declared in each case's `case.json`.
+2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
+   What form, timing or wording changes what the agent does next, measured
+   both ways, without the in-loop harm an intervening critic can cause? §10
+   qualifies that literature: its 26-point collapse is HotPotQA, not coding.
+3. **Brief cutoff.** List the importers a brief hides behind "+N more", or
+   rank them, without flooding the context.
+4. **Overhead.** Find where the arm's extra minutes go, and cut what carries
+   no information.
+
+**Gate for any claim:** a no-model replay on the kept v3 snapshots first, then
+a paired run with superpowers in both arms, under the same sealing and
+pre-registration as v3. See [CONTRIBUTING](CONTRIBUTING.md).
 
 ---
 
