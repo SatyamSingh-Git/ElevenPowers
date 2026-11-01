@@ -111,4 +111,5 @@ show the $0 replay and propose the run in an issue.
 ## Contact and licence
 
 Open an issue, or write to **[satyambcnrk@gmail.com](mailto:satyambcnrk@gmail.com)**.
-Contributions are accepted under the licence the README states (Apache-2.0).
+ElevenPowers is licensed under [Apache-2.0](LICENSE), and contributions are
+accepted under the same licence (its section 5).

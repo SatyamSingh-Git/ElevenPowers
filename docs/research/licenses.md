@@ -62,4 +62,9 @@ Read from each clone's LICENSE file on 2026-09-09 at the commits recorded in `ca
 | openai/codex | b4d4205 | Apache-2.0 | OpenAI | Keep license notice; preserve NOTICE if present | Host only; nothing reused |
 | google-gemini/gemini-cli | ed2ac40 | Apache-2.0 | Google LLC | Keep license notice; preserve NOTICE if present | Host only; nothing reused |
 
-Project license decision (ADR-005, pending): Apache-2.0 is compatible with reuse from every system above. MIT-licensed material can be included in an Apache-2.0 project with its notice preserved. A `NOTICE` file will list every reused file with its origin, commit, and license, and every reused file will carry a provenance header.
+Project license decision (ADR-005, decided 2026-11-01): Apache-2.0, with the
+unmodified text from apache.org in [`LICENSE`](../../LICENSE). On that date
+no third-party file is vendored: no file in `core/`, `plugin/`, `eval/` or
+`architecture/` carries another project's copyright or SPDX header, because
+what was borrowed was taken as an idea and credited here. So there is no
+`NOTICE` yet. The first reused file brings one. Apache-2.0 is compatible with reuse from every system above. MIT-licensed material can be included in an Apache-2.0 project with its notice preserved. A `NOTICE` file will list every reused file with its origin, commit, and license, and every reused file will carry a provenance header.

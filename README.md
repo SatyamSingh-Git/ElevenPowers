@@ -4,7 +4,7 @@
 
 ### Your coding agent says it's done.<br/>This asks for the receipts.
 
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](docs/research/licenses.md)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![Hosts](https://img.shields.io/badge/hosts-5%20integrations-D97757.svg)](the-guide/platforms.md)
 [![Tests](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/SatyamSingh-Git/ElevenPowers/actions/workflows/tests.yml)
