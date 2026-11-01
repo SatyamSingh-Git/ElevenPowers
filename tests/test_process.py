@@ -55,7 +55,10 @@ def test_timeout_preserves_output_as_strings(tmp_path):
 def tree_command(tmp_path, linger):
     leaf = tmp_path / "leaf.py"
     leaf.write_text("import os,time,pathlib\n"
-                    "pathlib.Path('grandchild.pid').write_text(str(os.getpid()))\n"
+                    # Renamed into place: tests act the moment grandchild.pid exists, and
+                    # write_text creates it empty first (CI read int('') on 271fd33).
+                    "pathlib.Path('grandchild.tmp').write_text(str(os.getpid()))\n"
+                    "os.replace('grandchild.tmp', 'grandchild.pid')\n"
                     "time.sleep(60)\n", encoding="utf-8")
     child = tmp_path / "child.py"
     child.write_text("import os,time,pathlib,subprocess,sys\n"
