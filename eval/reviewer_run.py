@@ -9,7 +9,7 @@ median prompt is longer than a Windows command line allows.
 See docs/superpowers/specs/2026-11-01-reviewer-benefit-design.md.
 """
 import argparse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -52,7 +52,12 @@ def command(program, model):
     return [*args[:at], *program, *args[at + 1:]]
 
 
-def prepare(batch, seeds, manifest, *, model='claude-sonnet-5-5', limits=None):
+def _frozen(job):
+    repo, base, tests, limits = job
+    return _portable(review(Path(repo), base, command=tests, strength=True, limits=limits), Path(repo))
+
+
+def prepare(batch, seeds, manifest, *, model='claude-sonnet-5-5', limits=None, workers=4):
     root = Path(batch).absolute()
     if root.exists():
         raise ValueError('new batch required')
@@ -64,12 +69,15 @@ def prepare(batch, seeds, manifest, *, model='claude-sonnet-5-5', limits=None):
     inputs = root / 'inputs'
     inputs.mkdir(parents=True)
     frozen, rows = {}, []
-    for seed in manifest['seeds']:
+    # Each report runs its own suites and mutations; separate processes keep them apart.
+    jobs = [(str(Path(seeds) / seed['seed']), seed['base'], seed['command'].replace('"python"', f'"{sys.executable}"', 1),
+             limits) for seed in manifest['seeds']]
+    with ProcessPoolExecutor(workers) as pool:
+        reports = list(pool.map(_frozen, jobs))
+    for seed, report in zip(manifest['seeds'], reports):
         repo = Path(seeds) / seed['seed']
         diff = subprocess.run(['git', '-c', 'core.autocrlf=false', 'diff', '--no-color', '--no-ext-diff', seed['base'],
                                'HEAD'], cwd=repo, capture_output=True, check=True).stdout.decode('utf-8', 'replace')
-        tests = seed['command'].replace('"python"', f'"{sys.executable}"', 1)
-        report = _portable(review(repo, seed['base'], command=tests, strength=True, limits=limits), repo)
         rows.append(judge(seed, report))
         text = markdown(report)
         (inputs / f"{seed['seed']}.diff").write_text(diff, encoding='utf-8', newline='')
@@ -194,6 +202,7 @@ def main():
     prepared.add_argument('--manifest', type=Path, required=True)
     prepared.add_argument('--max-mutants', type=int)
     prepared.add_argument('--mutation-seconds', type=float)
+    prepared.add_argument('--workers', type=int, default=4)
     launched = commands.add_parser('run')
     launched.add_argument('--batch', type=Path, required=True)
     launched.add_argument('--workers', type=int, default=4)
@@ -205,7 +214,7 @@ def main():
         limits = {key: value for key, value in (('max_mutants', args.max_mutants), ('seconds', args.mutation_seconds))
                   if value is not None}
         protocol, gate = prepare(args.batch, args.seeds, json.loads(args.manifest.read_text(encoding='utf-8')),
-                                 limits=limits)
+                                 limits=limits, workers=args.workers)
         print(len(protocol['slots']), 'slots;', 'gate', gate['tally'])
     elif args.action == 'run':
         program = shutil.which('claude')
