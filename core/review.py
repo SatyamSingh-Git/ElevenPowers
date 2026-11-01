@@ -29,20 +29,28 @@ from .surface import TEST_NAME
 PINNED, NOT_PINNED, UNKNOWN = 'pinned', 'not pinned', 'unknown'
 TIMEOUT = 300
 SHOWN = 10  # Pinning tests listed by name; read in a minute, not scrolled.
-GIT = ['git', '--literal-pathspecs']
+# No hook runs in the private worktree: nothing undeclared is run.
+GIT = ['git', '--literal-pathspecs', '-c', f'core.hooksPath={os.devnull}']
+
+
+class GitFailed(ValueError):
+    """Git ran and refused, as opposed to not finishing."""
 
 
 def _git(root, *args, timeout=120):
-    done = process.run([*GIT, *args], cwd=root, timeout=timeout, shell=False)
+    try:
+        done = process.run([*GIT, *args], cwd=root, timeout=timeout, shell=False)
+    except (subprocess.TimeoutExpired, process.OutputLimitExceeded) as error:
+        raise ValueError(f"git {' '.join(args[:2])} did not finish: {error}") from None
     if done.returncode != 0:
-        raise ValueError(f"git {' '.join(args[:2])} failed: {(done.stderr or done.stdout).strip()[:300]}")
+        raise GitFailed(f"git {' '.join(args[:2])} failed: {(done.stderr or done.stdout).strip()[:300]}")
     return done.stdout
 
 
 def _identity(root, ref):
     try:
         commit = _git(root, 'rev-parse', '--verify', '--end-of-options', f'{ref}^{{commit}}').strip()
-    except ValueError:
+    except GitFailed:
         # git says only "Needed a single revision", which does not say which one.
         raise ValueError(f'{ref!r} does not name a commit in this repository') from None
     return {'ref': ref, 'commit': commit, 'tree': _git(root, 'rev-parse', f'{commit}^{{tree}}').strip()}
@@ -55,17 +63,20 @@ def _changed(root, base, head):
 
 @contextmanager
 def _worktree(root, commit):
+    """The head worktree, and the project's own folder inside it."""
     hold = Path(tempfile.mkdtemp(prefix='ep-review-'))
     tree = hold / 'tree'
     try:
+        project = tree / _git(root, 'rev-parse', '--show-prefix').strip()
         _git(root, 'worktree', 'add', '--detach', str(tree), commit)
         # Ordinary JS tests need their installed dependencies; copied, as core/strength
-        # copies them, so a test cannot change the reviewer's own.
-        if (root / 'node_modules').is_dir():
-            shutil.copytree(root / 'node_modules', tree / 'node_modules', symlinks=True)
-        yield tree, hold
+        # copies them, so a test cannot change the reviewer's own. A tracked one is already there.
+        if (root / 'node_modules').is_dir() and not (project / 'node_modules').exists():
+            shutil.copytree(root / 'node_modules', project / 'node_modules', symlinks=True)
+        yield tree, project, hold
     finally:
-        subprocess.run(['git', 'worktree', 'remove', '--force', str(tree)], cwd=root, capture_output=True)
+        # Twice: an interrupted `worktree add` leaves the worktree locked, and one --force refuses that.
+        subprocess.run(['git', 'worktree', 'remove', '--force', '--force', str(tree)], cwd=root, capture_output=True)
         shutil.rmtree(hold, ignore_errors=True)
 
 
@@ -164,20 +175,20 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=F
                             else 'the change touched only tests' if report['tests'] else 'nothing changed')
     # Mutation still measures the lines of a change that only added files.
     if command and (report['undone'] or (strength and report['kept'])):
-        with _worktree(root, report['head']['commit']) as (tree, hold):
+        with _worktree(root, report['head']['commit']) as (tree, project, hold):
             runs = report['runs']
             if report['undone']:
-                runs.append(_run('head', command, tree, timeout))
+                runs.append(_run('head', command, project, timeout))
             if runs and not runs[-1]['problem']:
                 paths = hold / 'undone.txt'
                 paths.write_bytes(b'\0'.join(p.encode('utf-8') for p in report['undone']))
                 _git(tree, 'checkout', report['base']['commit'], f'--pathspec-from-file={paths}',
                      '--pathspec-file-nul')
-                runs.append(_run('undone', command, tree, timeout))
+                runs.append(_run('undone', command, project, timeout))
                 _git(tree, 'reset', '-q', '--hard', report['head']['commit'])
-                runs.append(_run('head again', command, tree, timeout))
+                runs.append(_run('head again', command, project, timeout))
             if strength:
-                report['strength'] = _strength(tree, root, report['base']['commit'], command)
+                report['strength'] = _strength(project, root, report['base']['commit'], command)
         if runs:
             verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
                                         else (UNKNOWN, f"the head run {runs[0]['problem']}", []))

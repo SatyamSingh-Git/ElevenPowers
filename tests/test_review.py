@@ -8,6 +8,8 @@ import pytest
 from core.review import NOT_PINNED, PINNED, UNKNOWN, review
 
 PYTEST = f'"{sys.executable}" -m pytest tests -q -p no:cacheprovider'
+cosmic = pytest.mark.skipif(__import__('importlib').util.find_spec('cosmic_ray') is None,
+                            reason='optional Cosmic Ray is not installed')
 GIT = ['git', '-c', 'user.email=e@e', '-c', 'user.name=e', '-c', 'core.autocrlf=false']
 MOD = 'def value():\n    return 1\n'
 CHANGED = 'def value():\n    return 2\n'
@@ -247,6 +249,83 @@ def test_the_reviewers_checkout_is_left_exactly_as_it_was(tmp_path):
     assert len(_git(root, 'worktree', 'list').splitlines()) == 1
 
 
+def test_an_interrupted_review_leaves_no_worktree_even_a_locked_one(tmp_path, monkeypatch):
+    # An interrupted `worktree add` leaves its worktree locked, which `remove --force` refuses.
+    import core.review as module
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED})
+
+    def interrupted(*args, **kwargs):
+        subprocess.run(['git', 'worktree', 'lock', str(args[2])], cwd=root, check=True)
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(module, '_run', interrupted)
+    with pytest.raises(KeyboardInterrupt):
+        review(root, base, command=PYTEST)
+    assert len(_git(root, 'worktree', 'list').splitlines()) == 1
+
+
+@pytest.mark.parametrize('failure', ['timeout', 'output'])
+def test_a_git_command_that_hangs_or_floods_is_an_error_not_a_traceback(tmp_path, monkeypatch, failure):
+    import core.review as module
+    root, base = _project(tmp_path)
+
+    def broken(command, **kwargs):
+        if failure == 'timeout':
+            raise subprocess.TimeoutExpired(command, 1)
+        raise module.process.OutputLimitExceeded('too much')
+
+    monkeypatch.setattr(module.process, 'run', broken)
+    with pytest.raises(ValueError, match='git rev-parse'):
+        review(root, base, command=PYTEST)
+
+
+def test_the_projects_git_hooks_do_not_run(tmp_path):
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_two.py': PINNING})
+    marker = tmp_path / 'hook-ran'
+    hook = root / '.git' / 'hooks' / 'post-checkout'
+    hook.write_text(f'#!/bin/sh\ntouch "{marker.as_posix()}"\n', encoding='utf-8', newline='\n')
+    hook.chmod(0o755)
+    subprocess.run(['git', 'checkout', '-q', 'HEAD~1'], cwd=root, check=True)
+    assert marker.exists()  # the hook does run for an ordinary checkout here
+    marker.unlink()
+    subprocess.run(['git', 'checkout', '-q', '-'], cwd=root, check=True)
+    marker.unlink()
+    assert review(root, base, command=PYTEST)['verdict'] == PINNED
+    assert not marker.exists()
+
+
+def test_a_project_in_a_subfolder_runs_from_that_folder(tmp_path):
+    files = {'app/pkg/__init__.py': '', 'app/pkg/mod.py': MOD, 'app/tests/test_mod.py': LOOSE, 'README.md': 'x\n'}
+    root, base = _project(tmp_path, files)
+    _commit(root, {'app/pkg/mod.py': CHANGED, 'app/tests/test_two.py': PINNING})
+    report = review(root / 'app', base, command=PYTEST)
+    assert report['verdict'] == PINNED
+    assert report['pinning'] == ['tests/test_two.py::test_two']
+
+
+@cosmic
+def test_mutation_in_a_subfolder_project_says_why_it_cannot_attribute_lines(tmp_path):
+    files = {'app/pkg/__init__.py': '', 'app/pkg/mod.py': MOD, 'app/tests/test_mod.py': LOOSE}
+    root, base = _project(tmp_path, files)
+    _commit(root, {'app/pkg/mod.py': CHANGED, 'app/tests/test_two.py': PINNING})
+    strength = review(root / 'app', base, command=PYTEST, strength=True)['strength']
+    assert any('repository root' in issue for issue in strength['issues'])
+
+
+@pytest.mark.skipif(shutil.which('node') is None, reason='node is optional')
+def test_a_tracked_node_modules_is_used_as_checked_out(tmp_path):
+    test = ('const test = require("node:test");\nconst assert = require("node:assert");\n'
+            'const {value} = require("../lib/mod.js");\nconst dep = require("dep");\n')
+    files = {'node_modules/dep/index.js': 'exports.kind = "number";\n', 'lib/mod.js': 'exports.value = () => 1;\n',
+             'test/mod.test.js': test + 'test("number", () => assert.strictEqual(typeof value(), dep.kind));\n'}
+    root, base = _project(tmp_path, files)
+    _commit(root, {'lib/mod.js': 'exports.value = () => 2;\n',
+                   'test/two.test.js': test + 'test("two", () => assert.strictEqual(value(), 2));\n'})
+    assert review(root, base, command='node --test')['verdict'] == PINNED
+
+
 def test_head_can_be_a_commit_other_than_the_checkout(tmp_path):
     root, base = _project(tmp_path)
     head = _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_two.py': PINNING})
@@ -265,8 +344,6 @@ def _report(**overrides):
     return {**report, **overrides}
 
 
-cosmic = pytest.mark.skipif(__import__('importlib').util.find_spec('cosmic_ray') is None,
-                            reason='optional Cosmic Ray is not installed')
 POSITIVE = 'def positive(value):\n    return value > 0\n'
 WEAK = 'from pkg.mod import positive\n\n\ndef test_two():\n    assert positive(2)\n'
 STRONG = WEAK + ('\n\ndef test_edges():\n    assert positive(1)\n    assert not positive(0)\n'
