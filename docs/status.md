@@ -34,8 +34,9 @@ PLAN §13 A, steps 1 and 2.
 
   The other four: a leaked locked worktree, git hooks running, a subfolder
   project run from the repository top, and a tracked `node_modules`
-  crashing the copy. The report now has 65 tests, and 30 more mutants were
-  run without stale bytecode, all killed.
+  crashing the copy. The report now has 65 tests, and 40 more mutants were
+  run, all killed: 9, 19 and 12 for the three groups of fixes. Groups 2
+  and 3 ran without stale bytecode.
 - **A mutation-harness artefact, recorded.** A mutant and its neighbour had
   the same size and were written in the same second, so the second ran the
   first's `.pyc`. This is the stale-bytecode defect `eval/heldout_vacuity`
