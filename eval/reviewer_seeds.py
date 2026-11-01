@@ -76,7 +76,7 @@ def find(case, before, after, n, scratch, *, python=sys.executable, seconds=180,
     paths = [p for p in scope.paths if p.endswith('.py')]
     if scope.issues or not paths:
         return None
-    found = cosmic(pair, paths, python, Budget(deadline, candidates), {p: scope.regions[p] for p in paths})
+    found, _ = cosmic(pair, paths, python, Budget(deadline, candidates), {p: scope.regions[p] for p in paths})
     kept = oracles.groups(case, n, after)
     env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'}
     for candidate in found:
