@@ -13,7 +13,7 @@
 
 **[The idea](#the-thirty-second-version)** · **[The survey](#first-i-went-and-read-the-competition)** · **[What's different](#whats-different-here)** · **[In your project](#using-elevenpowers-in-your-project)** · **[Install](#install)** · **[Status](#where-this-actually-is)** · **[Credit](#standing-on-fourteen-sets-of-shoulders)** · **[The journey](#this-is-a-work-in-progress-and-says-so-on-purpose)**
 
-**[🗺️ Open the live architecture graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)** — five views, including a [contributor roadmap](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned)
+**[🗺️ Open the live architecture graph](https://satyamsingh-git.github.io/ElevenPowers/architecture/)** — five views, including a [contributor roadmap](https://satyamsingh-git.github.io/ElevenPowers/architecture/#planned). Want to help? Start with **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 </div>
 
