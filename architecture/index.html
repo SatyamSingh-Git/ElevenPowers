@@ -631,12 +631,14 @@ const GRAPH = {
       "kind": "module",
       "size": 1,
       "label": "Reviewer study (PLAN 13 A.3)",
-      "desc": "Does the report help a reviewer? Seeds from the kept v3 snapshots: a real pinned change (C), the same change with its tests taken out (U), and one Cosmic Ray mutation on a changed line that its tests miss but the case's behaviour oracle catches (W). A $0 gate asks ep_review about every seed before any model call. The grading is fixed in advance: a W is caught by naming its file within two lines, a U by asking for a test, and a C's request for changes is a false alarm. Arms are paired by seed, with an exact sign test on discordant pairs. The paid run is not started.",
+      "desc": "Does the report help a reviewer? Seeds from the kept v3 snapshots: a real pinned change (C), the same change with its tests taken out (U), and one Cosmic Ray mutation on a changed line that its tests miss but the case's behaviour oracle catches (W). A $0 gate asks ep_review about every seed before any model call. The grading is fixed in advance: a W is caught by naming its file within two lines, a U by asking for a test, and a C's request for changes is a false alarm. Arms are paired by seed, with an exact sign test on discordant pairs. The sealed runner freezes every diff and report at prepare, sends each prompt on stdin to a no-tool subscription call, never retries, and stops on a spent quota.",
       "files": [
         "eval/reviewer_seeds.py",
         "eval/reviewer_study.py",
+        "eval/reviewer_run.py",
         "tests/test_reviewer_seeds.py",
-        "tests/test_reviewer_study.py"
+        "tests/test_reviewer_study.py",
+        "tests/test_reviewer_run.py"
       ]
     },
     {
