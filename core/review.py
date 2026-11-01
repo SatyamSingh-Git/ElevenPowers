@@ -123,14 +123,36 @@ def _limits(report):
     if report['kept']:
         limits.insert(0, f"{len(report['kept'])} file(s) the change added were kept when it was undone, so a "
                          'test that only imports them notices nothing.')
+    if report['strength']:
+        limits += [f'Mutation analysis: {issue}' for issue in report['strength']['issues']]
+        limits.append('A change to a line that no test noticed can behave the same as the original (an equivalent '
+                      'mutant), so each unpinned line is a question to look at, not a proven gap.')
     return limits
 
 
-def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT):
+def _strength(tree, root, base, command):
+    """`core.strength` on the head worktree, under the project's own strength settings."""
+    from .ledger import Ledger
+    from .strength.runner import analyze
+    ledger = Ledger(root=tree, task='review', base=base)
+    ledger._config = load(root)  # The worktree has no project configuration; the reviewer's checkout does.
+    value = analyze(ledger, base=base, command=command)
+    lines = {}
+    for item in value['observations']:
+        if item['status'] == 'undetected':
+            key = (item['path'], item['line'], item['end_line'], item['context'])
+            lines.setdefault(key, []).append(item['operator'].rsplit('/', 1)[-1])
+    return {'state': value['state'], 'issues': value['issues'], 'summary': value['summary'],
+            'attempts': value['attempts'],
+            'unpinned': [{'path': path, 'line': line, 'end_line': end, 'context': context, 'operators': operators}
+                         for (path, line, end, context), operators in sorted(lines.items())]}
+
+
+def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT, strength=False):
     root = Path(root).resolve(strict=True)
     command = command if command is not None else load(root).command_for('tests')
     report = {'schema': 1, 'base': _identity(root, base), 'head': _identity(root, head), 'command': command,
-              'verdict': UNKNOWN, 'reason': '', 'pinning': [], 'named': False, 'runs': []}
+              'verdict': UNKNOWN, 'reason': '', 'pinning': [], 'named': False, 'runs': [], 'strength': None}
     changed = _changed(root, report['base']['commit'], report['head']['commit'])
     report['tests'] = sorted(path for _, path in changed if TEST_NAME.search(path))
     report['undone'] = sorted(path for status, path in changed if status != 'A' and not TEST_NAME.search(path))
@@ -140,11 +162,13 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT):
     elif not report['undone']:
         report['reason'] = ('the change only added files, which are kept when it is undone' if report['kept']
                             else 'the change touched only tests' if report['tests'] else 'nothing changed')
-    else:
+    # Mutation still measures the lines of a change that only added files.
+    if command and (report['undone'] or (strength and report['kept'])):
         with _worktree(root, report['head']['commit']) as (tree, hold):
             runs = report['runs']
-            runs.append(_run('head', command, tree, timeout))
-            if not runs[-1]['problem']:
+            if report['undone']:
+                runs.append(_run('head', command, tree, timeout))
+            if runs and not runs[-1]['problem']:
                 paths = hold / 'undone.txt'
                 paths.write_bytes(b'\0'.join(p.encode('utf-8') for p in report['undone']))
                 _git(tree, 'checkout', report['base']['commit'], f'--pathspec-from-file={paths}',
@@ -152,11 +176,36 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT):
                 runs.append(_run('undone', command, tree, timeout))
                 _git(tree, 'reset', '-q', '--hard', report['head']['commit'])
                 runs.append(_run('head again', command, tree, timeout))
-        verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
-                                    else (UNKNOWN, f"the head run {runs[0]['problem']}", []))
-        report.update(verdict=verdict, reason=reason, pinning=pinning, named=any(r['named'] for r in runs))
+            if strength:
+                report['strength'] = _strength(tree, root, report['base']['commit'], command)
+        if runs:
+            verdict, reason, pinning = (_verdict(*runs) if len(runs) == 3
+                                        else (UNKNOWN, f"the head run {runs[0]['problem']}", []))
+            report.update(verdict=verdict, reason=reason, pinning=pinning, named=any(r['named'] for r in runs))
     report['unknown'] = _limits(report)
     return report
+
+
+def _unpinned(strength, verdict):
+    from .export import _text
+    if strength is None:
+        return ['Not measured. Run again with --strength to mutate the changed lines '
+                '(Cosmic Ray for Python, Stryker for JavaScript and TypeScript).']
+    counts = strength['summary']
+    tried = counts['detected'] + counts['undetected']
+    if strength['unpinned']:
+        lines = [f"{counts['undetected']} of {tried} changes tried on the changed lines went unnoticed. "
+                 'Each line below could be altered while every test still passes:', '']
+        lines += [f"- {_text(item['path'])}:{item['line']} in {_text(item['context'] or 'module')}: "
+                  + _text(', '.join(item['operators'])) for item in strength['unpinned'][:SHOWN]]
+        if len(strength['unpinned']) > SHOWN:
+            lines.append(f"- and {len(strength['unpinned']) - SHOWN} more lines; the JSON report lists them all")
+        return lines
+    if tried:
+        return [f'All {tried} changes tried on the changed lines were noticed by a test.'
+                + (' The tests run these lines, but none of them tells the new behaviour from the old.'
+                   if verdict == NOT_PINNED else '')]
+    return [f"Not measured: {_text(strength['state'])}."]
 
 
 def markdown(report):
@@ -176,9 +225,7 @@ def markdown(report):
                   'Ask for a test that fails without this change.', '']
     lines += [f"Change {base}..{head}: {len(report['undone'])} file(s) put back to base when undone, "
               f"{len(report['kept'])} added and kept, {len(report['tests'])} test file(s) changed.",
-              '', '## Lines no test noticed', '',
-              'Not measured here. Mutation analysis of the changed lines is optional: '
-              f'python plugin/bin/ep_strength.py --root PROJECT --base {base}', '', '## What was run', '']
+              '', '## Lines no test noticed', '', *_unpinned(report['strength'], report['verdict']), '', '## What was run', '']
     trees = {'head': head, 'undone': f"{head} with {len(report['undone'])} file(s) put back to {base}",
              'head again': head}
     if report['runs']:

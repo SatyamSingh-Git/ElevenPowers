@@ -19,13 +19,16 @@ def main():
     parser.add_argument('--head', default='HEAD', help='the commit with the change (default HEAD)')
     parser.add_argument('--command', help="test command to judge (default: the project's declared tests command)")
     parser.add_argument('--timeout', type=float, default=TIMEOUT, help='seconds per run')
+    parser.add_argument('--strength', action='store_true',
+                        help="also mutate the changed lines, under the project's strength settings")
     parser.add_argument('--format', choices=('markdown', 'json'), default='markdown')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--force', action='store_true')
     args = parser.parse_args()
     try:
         root = args.project.resolve(strict=True)
-        value = _portable(review(root, args.base, args.head, command=args.command, timeout=args.timeout), root)
+        value = _portable(review(root, args.base, args.head, command=args.command, timeout=args.timeout,
+                                 strength=args.strength), root)
         text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.format == 'json' else markdown(value)
         if args.output:
             write(args.output, text, force=args.force)
