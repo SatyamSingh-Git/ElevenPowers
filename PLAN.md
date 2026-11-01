@@ -1995,6 +1995,16 @@ and GitHub presentation.
    The study's design seeds real v3 changes with defects their tests miss,
    and has a $0 gate before any model call
    ([design](docs/superpowers/specs/2026-11-01-reviewer-benefit-design.md)).
+   *Run 2026-11-02 ($5.23, pre-registered): no measured benefit for a model
+   reviewer* ([results](results/reviewer-benefit/README.md)).
+   - Wrong lines were caught 18 of 21 from the diff alone and 20 of 21 with
+     the report (p = 0.5).
+   - The diff arm is at ceiling, and the location grading is not specific
+     to the defect.
+   - The report is acted on (more problems raised, its lines named), so the
+     "read and ignored" falsifier does not fire, but no gain is shown.
+   - The next test needs defects the diff does not show, or human reviewers
+     on large changes, where reading is the cost.
 
 ### B. Coding helper: next after A, open to contributors meanwhile
 

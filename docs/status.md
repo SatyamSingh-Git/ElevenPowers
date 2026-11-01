@@ -42,9 +42,24 @@ PLAN §13 A, steps 1 and 2.
   first's `.pyc`. This is the stale-bytecode defect `eval/heldout_vacuity`
   measured. The harness now runs without bytecode. Of the earlier runs, only
   that one pair matched, and it was rechecked by hand.
-- **Not yet measured:** whether a reviewer with the report catches more
-  seeded unpinned or wrong lines than one with the diff alone (§13 A.3).
-  The seeds are built (see below), and the paid run waits for the gate.
+- **The reviewer study (§13 A.3, 2026-11-02, $5.23, pre-registered) found
+  no measured benefit for a model reviewer**
+  ([results](../results/reviewer-benefit/README.md)).
+  - **Primary:** wrong lines caught 18 of 21 from the diff alone and 20 of
+    21 with the report, p = 0.5.
+  - **Why it could not show a gain:** the diff arm is at ceiling, and the
+    location grading is not specific; the controls' own reports list the
+    seeded spot in 11 of 11.
+  - **The report is acted on, not ignored,** but it adds flagged lines on
+    correct changes too. The reviewer asked for changes on 9 of 10 correct
+    controls in both arms.
+  - **Built for it:** `ep_review --max-mutants/--mutation-seconds`, and the
+    report states its budget. At the default 8 mutations the seeded line
+    surfaced in 6 of 11; at 32, in 20 of 21.
+- **CI was red from `35a3447` to `d4f1706`, my doing.** Each new module was
+  pushed before it was drawn on the architecture map, and
+  `test_architecture_coverage` failed on all four CI configurations.
+  Reproduced locally and fixed.
 - **A third recorded intermittent CI test:**
   `test_process.py::test_sigterm_cleans_tree_in_main_thread` read an empty
   pid file (`int('')`) on Windows 3.13 at `271fd33`, a docs-only commit. The

@@ -108,8 +108,9 @@ condition ("no more") is not met. But no benefit is shown either.
   mutation-shaped wrong lines, which left almost no room for the report.
 - **The grading is not specific.** In the correct control from the same
   stage, the reviewer named the very spot later seeded in 2 of 9 diff-arm
-  replies and in 6 of 9 report-arm replies. The report lists unpinned
-  changed lines, and the seeded line is one of them, so in the report arm,
+  replies and in 6 of 9 report-arm replies. The control's own report lists
+  that spot as unpinned in 11 of 11 cases, which follows from how W seeds
+  are chosen: they are survivors on changed lines. So in the report arm,
   naming the seeded spot is not evidence of finding the defect.
 - **The report is acted on, not ignored.** Report-arm replies raise more
   problems (mean 4.4 against 3.1) and name the report's lines. So §12's
