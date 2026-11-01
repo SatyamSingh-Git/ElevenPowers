@@ -150,7 +150,7 @@ the pre-stage tree for each file the agent edited. Per-loss rows are in
 | **not detected**: no brief for an edited file names the dependent | 27 |
 | of those, the dependent imports an edited file but sits behind the brief's four-name cutoff ("+N more") | 5 |
 | of those, the dependent does not import any edited file at all | 22 |
-| **detected**: a brief names the dependent | 4 |
+| **detected**: a brief names the dependent, delivered (see probe) and not acted on | 4 |
 | the agent edited the dependent, in any loss | 0 |
 
 - **Detection is the main failure.** 22 of 31 dependents are not reachable
@@ -158,10 +158,13 @@ the pre-stage tree for each file the agent edited. Per-loss rows are in
   row order or a precision, not on a name. No import graph can find them, so
   a detector that watches behaviour is needed. The other 5 were reachable but
   cut off by the four-name limit.
-- **Delivery is unverified.** The PreToolUse brief is emitted: 13 of 95 final
-  ledgers list briefed files. But its text appears in none of the
-  stream-json transcripts, so whether the model receives it cannot be read
-  from these runs. That needs its own probe.
+- **Delivery works; the transcripts just do not show it.** The PreToolUse
+  brief is emitted: 13 of 95 final ledgers list briefed files. Its text
+  appears in none of the stream-json transcripts. A probe on 2026-11-01
+  ([`delivery-probe.json`](delivery-probe.json), $0.46) emitted ElevenPowers'
+  exact output shape with a token. The model quoted it word for word, and with
+  the hook silent it answered NONE. So the 4 detected losses were delivered
+  and not acted on, not undelivered.
 - **The agent was told a false FAIL in 391 of 621 stages (63%).** The startup
   health check fails on any "unreadable test output" record.
   `parsers.claims_to_run_tests` matches the word `tests` anywhere in a

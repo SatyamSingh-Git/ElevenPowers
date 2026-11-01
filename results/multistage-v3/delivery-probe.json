@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-01",
+  "question": "Does a PreToolUse hook's additionalContext, in the exact shape ElevenPowers emits, reach the model?",
+  "host": "claude 2.1.292",
+  "model": "claude-sonnet-5-5",
+  "settings": "--setting-sources project,local; the user's ~/.claude/CLAUDE.md excluded with claudeMdExcludes; tools Write only",
+  "hook_output": {"hookSpecificOutput": {"hookEventName": "PreToolUse", "additionalContext": "notes.txt: imported by PELICAN-7-src/report.py"}},
+  "prompt": "Create a file named notes.txt containing the single word hello. Then answer: did any hook give you additional context during this turn? If yes, quote it exactly; if not, reply NONE. Do not guess.",
+  "arms": {
+    "with": {"hook": "prints hook_output", "cost_usd": 0.236, "answer_quotes_token": true,
+             "answer_excerpt": "Yes, a hook gave me additional context. The PreToolUse:Write hook said: > notes.txt: imported by PELICAN-7-src/report.py"},
+    "without": {"hook": "prints nothing", "cost_usd": 0.224, "answer_quotes_token": false,
+                "answer_excerpt": "I created `notes.txt` containing `hello`. NONE"}
+  },
+  "conclusion": "Delivered. The brief reaches the model although stream-json transcripts never show it, so the v3 diagnosis's 'detected, not delivered' losses were delivered and not acted on."
+}

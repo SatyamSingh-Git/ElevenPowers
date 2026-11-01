@@ -6,8 +6,9 @@ found the following:
 - **27 were never detected.** In 22 of them the dependent imports no file the
   agent edited, so no import graph can reach it; in 5 more it was cut off by
   the brief's four-name limit.
-- **4 were detected, but delivery is unverified.** The PreToolUse brief is
-  emitted, yet its text appears in no stream-json transcript.
+- **4 were detected, delivered and not acted on.** The PreToolUse brief never
+  appears in stream-json transcripts, but a both-ways probe ($0.46) showed the
+  model receives it word for word.
 - **The agent was told a false FAIL in 63% of stages.** Reading a test file,
   as in `sed -n 1,12p tests/test_x.py`, counted as an unreadable test run, and
   the startup health check failed on it.
