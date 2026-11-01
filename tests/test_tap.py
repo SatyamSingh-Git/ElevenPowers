@@ -250,6 +250,58 @@ def test_a_command_that_never_claimed_to_run_tests_is_not_reported(tmp_path):
     assert _spots(tmp_path) == []
 
 
+@pytest.mark.parametrize("command", [
+    "deno test --allow-read",
+    "npm test",
+    "python -m pytest tests -q 2>&1 | tail -8",
+    "cd work && go test ./...",
+    "cargo test",
+    "npx vitest run",
+    "bundle exec rspec",
+    "make test",
+    "node --test",
+    '"E:/project/.venv/Scripts/python.exe" -m pytest -q',
+    "cd src\ngo test ./...",
+    # The declared-closure exercise's real JavaScript check, run by absolute path.
+    '"C:\\Program Files\\nodejs\\node.exe" --test check.test.mjs 2>&1 | tail -15',
+    "C:/tools/npm.cmd test",
+    '"C:/msys64/usr/bin/make.exe" check',
+    "ls src && cargo test",
+    # test_strength's TypeScript check: a flag between node and --test.
+    "node --experimental-strip-types --test a.test.mjs",
+    "C:/tools/bats.exe t",
+])
+def test_a_command_that_runs_tests_claims_to(command):
+    from core.parsers import claims_to_run_tests
+
+    assert claims_to_run_tests(command)
+
+
+# Real commands from the 2026-10-30 multi-stage run: each read or edited a test
+# file, and each was recorded as unreadable test output, so 63% of the agent's
+# startup messages reported a failing health check.
+@pytest.mark.parametrize("command", [
+    "sed -n 1,12p tests/test_transcript.py",
+    "cd work && ls tests && sed -n 30,40p docs/reference.md",
+    "cat CHANGELOG.md | head -20; sed -n 1,30p tests/test_transcript.py",
+    'grep -rn "pytest" docs',
+    "/usr/bin/grep -rn pytest docs",
+    'grep -rn "fuel\\|fuel_cost" src tests docs',
+    "grep -rn 'cap 50; or' tests src",
+    'grep -rn "a\\"; npm test" docs',
+    '"C:/Program Files/Git/usr/bin/sed.exe" -n 1,5p tests/test_x.py',
+    '"C:/Program Files/Git/usr/bin/ls.exe" tests',
+    "C:/tools/ls.exe tests",
+    "git diff tests/test_files.py",
+    "python - <<'E'\np='tests/test_importers.py'\nprint(open(p).read())\nE",
+    "git status",
+])
+def test_a_command_that_only_reads_test_files_does_not_claim_to_run_tests(command):
+    from core.parsers import claims_to_run_tests
+
+    assert not claims_to_run_tests(command)
+
+
 # --- found by attacking the shipped version ---------------------------------
 
 def test_a_text_file_cannot_fabricate_a_passing_suite(root):
