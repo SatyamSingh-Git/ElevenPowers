@@ -1,6 +1,35 @@
 # Current delivery status
 
-**2026-10-31 — Remote observations v1 (branch `remote-observations`).** Projects
+**2026-11-01 — Why ElevenPowers did not help, and the first repair.** A $0
+diagnosis of the 31 stages where the ElevenPowers arm lost earlier behaviour
+found the following:
+- **27 were never detected.** In 22 of them the dependent imports no file the
+  agent edited, so no import graph can reach it; in 5 more it was cut off by
+  the brief's four-name limit.
+- **4 were detected, but delivery is unverified.** The PreToolUse brief is
+  emitted, yet its text appears in no stream-json transcript.
+- **The agent was told a false FAIL in 63% of stages.** Reading a test file,
+  as in `sed -n 1,12p tests/test_x.py`, counted as an unreadable test run, and
+  the startup health check failed on it.
+
+That false FAIL is repaired: a command now claims to run tests only where a
+non-reader command runs one, outside quotes. Replayed over the run's 884
+recorded commands, 82 remain, and every one is a real `python -m pytest` run.
+That ElevenPowers could not read those pytest runs is the next defect. See
+[diagnosis](../results/multistage-v3/README.md#why-elevenpowers-did-not-help-diagnosis-of-its-31-losses-0).
+
+**2026-10-30 — Multi-stage v3 full run: no measured benefit.** 120 of 120
+conversations are comparable, superpowers 7.0.0 in both arms, Sonnet 5.5 at
+medium.
+- **Earlier groups lost:** 29 without ElevenPowers, 35 with it (Holm p 0.50).
+- **Stale documented facts:** 43 without, 79 with (Holm p 0.50).
+
+Both point estimates lean against ElevenPowers, and neither is significant.
+ElevenPowers took 10.8 minutes of model time per conversation against 6.5.
+Total $153.40, including a stopped batch and a network-outage rerun. See
+[results](../results/multistage-v3/README.md).
+
+**2026-10-31 — Remote observations v1 (merged as PR #3).** Projects
 can declare https resources their checks depend on and approve each exact URL
 locally. Only explicit `ep_inputs observe` fetches them, recording the SHA-256 of
 the body into bounded history. Status and PatchProof bundles read that history
@@ -9,7 +38,7 @@ reported fresh, and remote state affects no execution, reuse or binding
 decision. The work also fixes `ep_inputs bind` leaving later ledger state
 committable. See [validation](validation/2026-10-31-remote-observations.md).
 
-**2026-10-30 — Multi-stage v3 full run: running (batch b).** The user said go on
+**2026-10-30 — Multi-stage v3 full run: how it ran.** The user said go on
 five replicates. Batch a was stopped about 30 minutes in: the network check
 treated the word `gh` inside a grep pattern as the GitHub CLI and ended a
 conversation. It was repaired (`2daad59`) and replayed over 1,046 real commands;
