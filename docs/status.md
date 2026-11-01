@@ -1,5 +1,33 @@
 # Current delivery status
 
+**2026-11-01 — The reviewer's report, and the superpowers comparison.**
+PLAN §13 A, steps 1 and 2.
+- **Measured first, $0.** The pre-registered comparison regraded every v3
+  stage with the held-out VACUOUS method. Superpowers alone left 1 VACUOUS
+  stage of 475 resolved, against 0 of 472 with ElevenPowers: 11 of 12 cases
+  tied, p = 1.0. Forward check 130/130; adversarial control 24/24
+  ([results](../results/multistage-v3/vacuity/README.md)). For superpowers
+  users there is nothing to reduce, so the value is the report.
+- **Built: [`ep_review`](../the-guide/commands.md#ep_review--is-this-change-pinned-by-its-tests).**
+  For any commit pair it says whether the change is pinned by the declared
+  tests. Three runs happen in a private head worktree: at head, with the
+  change undone, and at head again. With `--strength` it also lists the
+  changed lines no test noticed. It has 45 tests, with pytest and
+  `node --test` read both ways, and 61 mutants, all killed.
+  - That count is corrected here. The commit messages of `35a3447` and
+    `7c042dc` said 22 and 24; recounted, they were 20 and 20.
+  - Run on two real v3 stages, it agrees with the regrade: one PINNED by 53
+    tests, one NOT PINNED.
+  - On the NOT PINNED stage every mutant was still killed. Its tests run
+    the changed lines but cannot tell new behaviour from old, and the
+    report now says so.
+- **Not yet measured:** whether a reviewer with the report catches more
+  seeded unpinned or wrong lines than one with the diff alone (§13 A.3).
+- **A third recorded intermittent CI test:**
+  `test_process.py::test_sigterm_cleans_tree_in_main_thread` read an empty
+  pid file (`int('')`) on Windows 3.13 at `271fd33`, a docs-only commit. The
+  other three cells passed.
+
 **2026-11-01 — Why ElevenPowers did not help, and the first repair.** A $0
 diagnosis of the 31 stages where the ElevenPowers arm lost earlier behaviour
 found the following:

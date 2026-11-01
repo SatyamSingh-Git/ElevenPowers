@@ -440,6 +440,24 @@ Neither command runs project checks or launches a model. Captures qualify native
 histories; performance measures reads. Use `--output FILE` to save explicitly
 and `--check` to opt into an exit-code gate.
 
+### Is this change pinned?
+
+Before accepting a change, ask whether anything would notice it undone:
+
+```bash
+python plugin/bin/ep_review.py --project PATH --base main --strength
+```
+
+It runs the project's declared tests in a private worktree:
+- at head;
+- with the change's non-test edits put back to the base;
+- at head again.
+
+Then it reports PINNED, NOT PINNED or UNKNOWN. PINNED names the tests that
+pin the change. `--strength` adds the changed lines that could be altered
+while every test still passes. See
+[the command](the-guide/commands.md#ep_review--is-this-change-pinned-by-its-tests).
+
 ### Portable verification reports
 
 Export a local report a reviewer can read without your coding session:

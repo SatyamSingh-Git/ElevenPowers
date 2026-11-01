@@ -233,6 +233,55 @@ do not establish an installed-session result. Current freshness is checked; the
 earlier manual stale-view step is not independently attested. Local acceptance
 does not certify a production patch or other host versions.
 
+## ep_review — is this change pinned by its tests?
+
+For the person deciding whether to accept a change, from a coding agent or
+anyone else.
+
+```bash
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base main
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base BASE --head HEAD --strength
+python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base BASE --format json --output review.json
+```
+
+It answers one question: would anything notice if this change were undone?
+The project's declared `tests` command (or `--command`) runs three times in a
+private detached worktree at `--head` (default `HEAD`):
+1. as the change left it;
+2. with every non-test file the change modified or deleted put back to
+   `--base`, while its tests and the files it added stay;
+3. at head again.
+
+| verdict | meaning |
+|---|---|
+| **PINNED** | some test fails only with the change undone; up to ten are named |
+| **NOT PINNED** | nothing in the suite would notice the change undone |
+| **UNKNOWN** | the reason is always given: no declared command, a change that only adds files or touches only tests, a run that timed out, a red head with no test names, or a suite that disagreed with itself on the same tree |
+
+**Unpinned lines.** `--strength` also mutates the changed lines through
+[ep_strength](#ep_strength--inspect-changed-code-test-strength)'s engines,
+under the project's strength settings (60 seconds and 8 mutants by default).
+It lists each line that could be altered while every test still passes. A
+change that only adds files gets this too.
+
+**Its limits.** These are always listed under *Unknown*:
+- Only the one command is judged.
+- A pin shows that the change is noticed, not that it is right.
+- Added files stay, so a test that only imports them notices nothing.
+- The worktree holds tracked files and a copy of `node_modules`, not a
+  virtual environment kept inside the project.
+- An unnoticed mutation can be equivalent behaviour.
+
+**Exit codes.** It is report-only: exit 0 whenever a report is produced,
+whatever the verdict, and exit 2 when none can be (an unknown ref, or not a
+repository). The reviewer's checkout is never touched.
+
+This is the method behind the held-out result: VACUOUS fell from 84% to 37%
+with plain Claude Code. With superpowers in both arms, the agent already pins
+almost every change (1 VACUOUS stage of 475), so for those users the report
+is the value. See [the comparison](../results/multistage-v3/vacuity/README.md)
+and [design](../docs/superpowers/specs/2026-11-01-reviewer-report-design.md).
+
 ## ep_strength — inspect changed-code test strength
 
 ```bash
