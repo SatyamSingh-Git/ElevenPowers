@@ -28,6 +28,7 @@ from .surface import TEST_NAME
 
 PINNED, NOT_PINNED, UNKNOWN = 'pinned', 'not pinned', 'unknown'
 TIMEOUT = 300
+SHOWN = 10  # Pinning tests listed by name; read in a minute, not scrolled.
 GIT = ['git', '--literal-pathspecs']
 
 
@@ -39,7 +40,11 @@ def _git(root, *args, timeout=120):
 
 
 def _identity(root, ref):
-    commit = _git(root, 'rev-parse', '--verify', '--end-of-options', f'{ref}^{{commit}}').strip()
+    try:
+        commit = _git(root, 'rev-parse', '--verify', '--end-of-options', f'{ref}^{{commit}}').strip()
+    except ValueError:
+        # git says only "Needed a single revision", which does not say which one.
+        raise ValueError(f'{ref!r} does not name a commit in this repository') from None
     return {'ref': ref, 'commit': commit, 'tree': _git(root, 'rev-parse', f'{commit}^{{tree}}').strip()}
 
 
@@ -82,10 +87,12 @@ def _run(name, command, tree, timeout):
     else:
         output = (done.stdout or '') + (done.stderr or '')
         records = parse(command, output, done.returncode, tree)
-        collect = set(COLLECT_ERROR.findall(output))
+        failing = {r.identity for r in records if r.kind is Kind.TEST and r.result is not Result.PASS}
+        # The pattern also matches a setup error's `ERROR file.py::test`; keep only files no test names.
+        collect = {path for path in COLLECT_ERROR.findall(output)
+                   if not any(name.startswith(path + '::') for name in failing)}
         run.update(exit=done.returncode, named=bool(collect) or any(r.kind is Kind.TEST for r in records),
-                   failing=sorted({r.identity for r in records if r.kind is Kind.TEST and r.result is not Result.PASS}
-                                  | collect))
+                   failing=sorted(failing | collect))
     run['seconds'] = round(time.monotonic() - started, 2)
     return run
 
@@ -98,7 +105,8 @@ def _verdict(head, undone, again):
         return UNKNOWN, 'the suite gave different results on the same tree, so a difference cannot be trusted', []
     new = sorted(set(undone['failing']) - set(head['failing']))
     if new:
-        return PINNED, f'{len(new)} test(s) fail with the change undone and pass with it', new
+        return PINNED, (f"{len(new)} {'test fails' if len(new) == 1 else 'tests fail'} with the change "
+                        f"undone and {'passes' if len(new) == 1 else 'pass'} with it"), new
     if undone['exit'] == 0 or (head['named'] and undone['named'] and undone['exit'] != 0 and head['exit'] != 0):
         return NOT_PINNED, 'no test fails with the change undone that did not already fail with it', []
     if head['exit'] == 0:
@@ -107,7 +115,7 @@ def _verdict(head, undone, again):
 
 
 def _limits(report):
-    limits = [f"Only `{report['command']}` was judged; another test command could notice what this one did not."
+    limits = [f"Only \"{report['command']}\" was judged; another test command could notice what this one did not."
               if report['command'] else 'No test command was run.',
               'A test that fails with the change undone shows the change is noticed, not that it is right.',
               'The private checkout holds tracked files and node_modules only: a virtual environment or build '
@@ -149,3 +157,36 @@ def review(root, base, head='HEAD', *, command=None, timeout=TIMEOUT):
         report.update(verdict=verdict, reason=reason, pinning=pinning, named=any(r['named'] for r in runs))
     report['unknown'] = _limits(report)
     return report
+
+
+def markdown(report):
+    from .export import _text
+    base, head = report['base']['commit'][:12], report['head']['commit'][:12]
+    reason = report['reason'][:1].upper() + report['reason'][1:]
+    lines = ['# Is this change pinned by its tests?', '', f"**{report['verdict'].upper()}.** {_text(reason)}.", '']
+    if report['pinning']:
+        lines += [f'- {_text(test)}' for test in report['pinning'][:SHOWN]]
+        if len(report['pinning']) > SHOWN:
+            lines.append(f"- and {len(report['pinning']) - SHOWN} more; the JSON report lists them all")
+        lines.append('')
+    elif report['verdict'] == PINNED:
+        lines += ['The runner named no test, so which tests pin it is not known.', '']
+    elif report['verdict'] == NOT_PINNED:
+        lines += ['Nothing in the suite would notice if this change were undone. '
+                  'Ask for a test that fails without this change.', '']
+    lines += [f"Change {base}..{head}: {len(report['undone'])} file(s) put back to base when undone, "
+              f"{len(report['kept'])} added and kept, {len(report['tests'])} test file(s) changed.",
+              '', '## Lines no test noticed', '',
+              'Not measured here. Mutation analysis of the changed lines is optional: '
+              f'python plugin/bin/ep_strength.py --root PROJECT --base {base}', '', '## What was run', '']
+    trees = {'head': head, 'undone': f"{head} with {len(report['undone'])} file(s) put back to {base}",
+             'head again': head}
+    if report['runs']:
+        lines += ['| run | tree | command | exit | failing | seconds |', '|---|---|---|---|---|---|']
+        lines += ['| ' + ' | '.join([run['name'], trees[run['name']], _text(run['command']),
+                                     _text(run['problem']) if run['problem'] else str(run['exit']),
+                                     str(len(run['failing'])), str(run['seconds'])]) + ' |'
+                  for run in report['runs']]
+    else:
+        lines.append('Nothing was run.')
+    return '\n'.join(lines + ['', '## Unknown', ''] + [f'- {_text(limit)}' for limit in report['unknown']]) + '\n'

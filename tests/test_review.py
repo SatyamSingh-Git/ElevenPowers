@@ -90,6 +90,17 @@ def test_a_test_that_cannot_import_with_the_change_undone_is_named(tmp_path):
     assert report['pinning'] == ['tests/test_doubled.py']
 
 
+def test_a_test_whose_setup_errors_is_named_once(tmp_path):
+    # pytest prints `ERROR tests/test_fix.py::test_uses - ...`; the collection-error
+    # pattern alone would also name the bare file.
+    root, base = _project(tmp_path)
+    fixture = ('import pytest\nfrom pkg.mod import value\n\n\n@pytest.fixture\ndef two():\n'
+               '    assert value() == 2\n    return value()\n\n\ndef test_uses(two):\n    assert two == 2\n')
+    _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_fix.py': fixture})
+    report = review(root, base, command=PYTEST)
+    assert report['pinning'] == ['tests/test_fix.py::test_uses']
+
+
 def test_a_path_that_reads_as_a_glob_puts_back_only_itself(tmp_path):
     # Read as a pattern, git expands lib[.]spec.py to the test lib.spec.py beside it too,
     # and the test being judged is undone with the change (watched with git 2.45).
@@ -243,3 +254,113 @@ def test_head_can_be_a_commit_other_than_the_checkout(tmp_path):
     report = review(root, base, head, command=PYTEST)
     assert report['verdict'] == PINNED
     assert report['head']['commit'] == head
+
+
+def _report(**overrides):
+    commit = {'ref': 'x', 'commit': 'a' * 40, 'tree': 'b' * 40}
+    report = {'schema': 1, 'base': commit, 'head': {**commit, 'commit': 'c' * 40}, 'command': 'npm test',
+              'verdict': PINNED, 'reason': '1 test fails with the change undone and passes with it',
+              'pinning': ['tests/test_two.py::test_two'], 'named': True, 'runs': [], 'tests': ['tests/test_two.py'],
+              'undone': ['pkg/mod.py'], 'kept': [], 'unknown': ['A limit.']}
+    return {**report, **overrides}
+
+
+def test_the_verdict_and_the_tests_that_pin_it_come_first():
+    from core.review import markdown
+    lines = markdown(_report()).splitlines()
+    assert lines[2] == '**PINNED.** 1 test fails with the change undone and passes with it.'
+    assert lines[4] == r'- tests/test\_two\.py::test\_two'
+    assert lines[5] == ''
+
+
+def test_a_long_list_of_pinning_tests_is_cut_to_what_can_be_read_in_a_minute():
+    from core.review import markdown
+    lines = markdown(_report(pinning=[f't{n}' for n in range(12)])).splitlines()
+    assert lines[4:15] == [f'- t{n}' for n in range(10)] + ['- and 2 more; the JSON report lists them all']
+    assert markdown(_report(pinning=[f't{n}' for n in range(10)])).splitlines()[13:15] == ['- t9', '']
+
+
+def test_the_reason_reads_as_a_sentence():
+    from core.review import markdown
+    assert '**NOT PINNED.** No test fails.' in markdown(_report(verdict=NOT_PINNED, pinning=[], reason='no test fails'))
+
+
+def test_a_change_nothing_notices_tells_the_reviewer_what_to_ask_for():
+    from core.review import markdown
+    text = markdown(_report(verdict=NOT_PINNED, pinning=[], reason='no test fails'))
+    assert '**NOT PINNED.**' in text
+    assert 'Ask for a test that fails without this change' in text
+
+
+def test_a_pin_without_names_says_the_names_are_unknown():
+    from core.review import markdown
+    assert 'named no test' in markdown(_report(pinning=[], named=False))
+
+
+def test_every_run_is_listed_with_its_tree_and_every_limit_is_kept():
+    from core.review import markdown
+    runs = [{'name': name, 'command': 'npm test', 'exit': code, 'seconds': 1.5, 'failing': failing, 'named': True,
+             'problem': ''} for name, code, failing in (('head', 0, []), ('undone', 1, ['t']), ('head again', 0, []))]
+    text = markdown(_report(runs=runs, unknown=['First limit.', 'Second limit.']))
+    assert '| head | ' + 'c' * 12 in text
+    assert '| undone | ' + 'c' * 12 + ' with 1 file(s) put back to ' + 'a' * 12 in text
+    assert text.count('| npm test |') == 3
+    assert '| npm test | 1 | 1 | 1.5 |' in text
+    assert r'- First limit\.' in text and r'- Second limit\.' in text
+    assert ('Change ' + 'a' * 12 + '..' + 'c' * 12 + ': 1 file(s) put back to base when undone, '
+            '0 added and kept, 1 test file(s) changed.') in text
+
+
+def test_a_run_that_could_not_finish_shows_why_in_place_of_its_exit_code():
+    from core.review import markdown
+    run = {'name': 'head', 'command': 'npm test', 'exit': None, 'seconds': 3.0, 'failing': [], 'named': False,
+           'problem': 'timed out after 3 seconds'}
+    assert '| npm test | timed out after 3 seconds | 0 |' in markdown(_report(verdict=UNKNOWN, runs=[run]))
+
+
+def test_a_report_with_no_runs_says_nothing_was_run():
+    from core.review import markdown
+    assert 'Nothing was run.' in markdown(_report(verdict=UNKNOWN, runs=[]))
+
+
+def test_the_command_prints_a_report_and_exits_zero_whatever_the_verdict(tmp_path):
+    import json
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED})
+    cli = [sys.executable, 'plugin/bin/ep_review.py', '--project', str(root), '--base', base, '--command', PYTEST]
+    done = subprocess.run(cli, capture_output=True, text=True)
+    assert done.returncode == 0, done.stderr
+    assert '**NOT PINNED.**' in done.stdout
+    assert str(root) not in done.stdout
+    done = subprocess.run([*cli, '--format', 'json'], capture_output=True, text=True)
+    assert json.loads(done.stdout)['verdict'] == NOT_PINNED
+    saved = tmp_path / 'review.md'
+    done = subprocess.run([*cli, '--output', str(saved)], capture_output=True, text=True)
+    assert done.returncode == 0 and '**NOT PINNED.**' in saved.read_text(encoding='utf-8')
+
+
+def test_the_command_keeps_the_project_path_out_of_what_it_prints(tmp_path):
+    import json
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED})
+    command = f'"{sys.executable}" -m pytest "{root / "tests"}" -q -p no:cacheprovider'
+    done = subprocess.run([sys.executable, 'plugin/bin/ep_review.py', '--project', str(root), '--base', base,
+                           '--command', command, '--format', 'json'], capture_output=True, text=True)
+    printed = json.loads(done.stdout)['command']
+    assert str(root) not in printed and '<project>' in printed
+
+
+def test_the_command_passes_its_timeout_to_every_run(tmp_path):
+    root, base = _project(tmp_path)
+    _commit(root, {'pkg/mod.py': CHANGED, 'tests/test_slow.py': 'import time\n\n\ndef test_slow():\n    time.sleep(30)\n'})
+    done = subprocess.run([sys.executable, 'plugin/bin/ep_review.py', '--project', str(root), '--base', base,
+                           '--command', PYTEST, '--timeout', '3'], capture_output=True, text=True)
+    assert 'timed out after 3' in done.stdout
+
+
+def test_the_command_exits_two_when_no_report_can_be_made(tmp_path):
+    root, _ = _project(tmp_path)
+    done = subprocess.run([sys.executable, 'plugin/bin/ep_review.py', '--project', str(root), '--base', 'no-such-ref'],
+                          capture_output=True, text=True)
+    assert done.returncode == 2
+    assert 'no-such-ref' in done.stderr
