@@ -246,17 +246,39 @@ python PATH_TO_ELEVENPOWERS/plugin/bin/ep_review.py --project . --base BASE --fo
 
 It answers one question: would anything notice if this change were undone?
 The project's declared `tests` command (or `--command`) runs three times in a
-private detached worktree at `--head` (default `HEAD`):
+private detached worktree at `--head` (default `HEAD`). The runs start from the
+project's own folder, with git hooks off:
 1. as the change left it;
 2. with every non-test file the change modified or deleted put back to
-   `--base`, while its tests and the files it added stay;
+   `--base`, while its tests, its fixtures (`testdata/`, `fixtures/`,
+   `__snapshots__/`, `golden/`) and the files it added stay. A module the
+   change turned into a package is undone as the module;
 3. at head again.
+
+If `--base` has moved on since the change branched (`--base main` after
+`main` gained commits), the change is compared from where it branched, and the
+report says so. Comparing with main's tip would credit main's own later edits
+to the change.
 
 | verdict | meaning |
 |---|---|
 | **PINNED** | some test fails only with the change undone; up to ten are named |
 | **NOT PINNED** | nothing in the suite would notice the change undone |
-| **UNKNOWN** | the reason is always given: no declared command, a change that only adds files or touches only tests, a run that timed out, a red head with no test names, or a suite that disagreed with itself on the same tree |
+| **UNKNOWN** | the reason is always given; see below |
+
+UNKNOWN is given when:
+- no command is declared;
+- the change only adds files or touches only tests;
+- a run timed out;
+- a Python run could import your checkout instead of the worktree (an
+  editable install, or `PYTHONPATH` pointing into it);
+- a red head named no tests;
+- a run stopped before every test ran (`-x`, `--maxfail`, a collection
+  error);
+- the suite disagreed with itself on the same tree.
+
+Tests that fail with the change and pass without it are listed separately:
+the change breaks them.
 
 **Unpinned lines.** `--strength` also mutates the changed lines through
 [ep_strength](#ep_strength--inspect-changed-code-test-strength)'s engines,
@@ -270,7 +292,12 @@ change that only adds files gets this too.
 - Added files stay, so a test that only imports them notices nothing.
 - The worktree holds tracked files and a copy of `node_modules`, not a
   virtual environment kept inside the project.
+- Only Python runs are checked for importing your checkout.
+- Fixture folders other than the four named above are undone with the code.
 - An unnoticed mutation can be equivalent behaviour.
+- With `--strength`, a project in a repository subfolder gets no mutation
+  results, because line attribution needs the repository root. The report
+  says so.
 
 **Exit codes.** It is report-only: exit 0 whenever a report is produced,
 whatever the verdict, and exit 2 when none can be (an unknown ref, or not a

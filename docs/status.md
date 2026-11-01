@@ -21,8 +21,29 @@ PLAN §13 A, steps 1 and 2.
   - On the NOT PINNED stage every mutant was still killed. Its tests run
     the changed lines but cannot tell new behaviour from old, and the
     report now says so.
+- **An independent review found 11 defects, all reproduced and all
+  fixed.** Seven gave a wrong or misleading verdict:
+  - a run importing the reviewer's checkout (editable install) read NOT
+    PINNED;
+  - a `--base` that had moved on was credited with its own edits;
+  - a test red at head was named as pinning;
+  - a module turned into a package was never undone;
+  - a broken test was hidden behind "nothing would notice";
+  - `-x` let a stopped run clear a change;
+  - golden files were undone with the code.
+
+  The other four: a leaked locked worktree, git hooks running, a subfolder
+  project run from the repository top, and a tracked `node_modules`
+  crashing the copy. The report now has 65 tests, and 30 more mutants were
+  run without stale bytecode, all killed.
+- **A mutation-harness artefact, recorded.** A mutant and its neighbour had
+  the same size and were written in the same second, so the second ran the
+  first's `.pyc`. This is the stale-bytecode defect `eval/heldout_vacuity`
+  measured. The harness now runs without bytecode. Of the earlier runs, only
+  that one pair matched, and it was rechecked by hand.
 - **Not yet measured:** whether a reviewer with the report catches more
   seeded unpinned or wrong lines than one with the diff alone (§13 A.3).
+  The seeds are built (see below), and the paid run waits for the gate.
 - **A third recorded intermittent CI test:**
   `test_process.py::test_sigterm_cleans_tree_in_main_thread` read an empty
   pid file (`int('')`) on Windows 3.13 at `271fd33`, a docs-only commit. The
