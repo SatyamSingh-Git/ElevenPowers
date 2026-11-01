@@ -169,6 +169,25 @@ the pre-stage tree for each file the agent edited. Per-loss rows are in
   recorded as a test run nobody could read. It is the same defect class as
   the `gh` false breach: a word matched anywhere, not where a command starts.
 
+**Repair, replayed on this run.** A command now claims to run tests only when
+one of its pieces, split at `;`, `&&`, pipes and newlines outside quotes, is a
+non-reader command that runs them. That means a known wrapper or TAP harness,
+matched on the program's name even when it is called by path, a named runner,
+or a bare `test`/`tests` argument rather than a path. Of the 884 "unreadable
+test output" records the ElevenPowers arm wrote, 82 still claim, and in every
+one the claiming piece is `python -m pytest tests -q 2>&1`. The other 802 were:
+- reads of test files (`cd … && sed`, `cat`, `grep`, `git diff`);
+- `grep` patterns holding a quoted `\|`;
+- Python heredocs editing a test file.
+
+The 82 are a separate defect: ElevenPowers could not read real pytest output
+piped through `tail` with a second command after `;`. That is the next thing to
+fix. A first version of this repair split inside quotes and was caught by this
+replay. A second matched TAP harnesses on the raw text, missing
+`"C:\Program Files\nodejs\node.exe" --test`. A third did not count a `--test`
+flag, missing `node --experimental-strip-types --test`, so TAP output from that
+run was never parsed. The full suite caught both.
+
 ## The full run, started 2026-10-30
 
 The user said go on five replicates. 120 slots were sealed in
