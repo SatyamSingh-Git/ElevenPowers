@@ -180,9 +180,13 @@ one the claiming piece is `python -m pytest tests -q 2>&1`. The other 802 were:
 - `grep` patterns holding a quoted `\|`;
 - Python heredocs editing a test file.
 
-The 82 are a separate defect: ElevenPowers could not read real pytest output
-piped through `tail` with a second command after `;`. That is the next thing to
-fix. A first version of this repair split inside quotes and was caught by this
+The 82 were not unreadable either. Every one ran the agent's pytest and then
+`ep_check.py --all`, as ElevenPowers' startup message advises. `parse` defers
+such a command to the receipt `ep_check` writes, by design, and the hook then
+filed the empty result as unreadable. Of the 2,022 Bash commands in the arm's
+transcripts, 282 pytest commands produced no records, and all 282 were owned
+checks. With the hook repaired (`d07a9d8`), none of the 2,022 is filed, so this
+run's data would have produced no false FAIL at all. A first version of this repair split inside quotes and was caught by this
 replay. A second matched TAP harnesses on the raw text, missing
 `"C:\Program Files\nodejs\node.exe" --test`. A third did not count a `--test`
 flag, missing `node --experimental-strip-types --test`, so TAP output from that

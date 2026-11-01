@@ -14,8 +14,10 @@ found the following:
 
 That false FAIL is repaired: a command now claims to run tests only where a
 non-reader command runs one, outside quotes. Replayed over the run's 884
-recorded commands, 82 remain, and every one is a real `python -m pytest` run.
-That ElevenPowers could not read those pytest runs is the next defect. See
+recorded commands, 82 remained, and each was the agent's pytest followed by
+ElevenPowers' own `ep_check`. Its receipt is the evidence, yet the hook filed
+the command as unreadable; that is repaired too (`d07a9d8`). Replayed over all
+2,022 Bash commands of the arm, none is now filed. See
 [diagnosis](../results/multistage-v3/README.md#why-elevenpowers-did-not-help-diagnosis-of-its-31-losses-0).
 
 **2026-10-30 — Multi-stage v3 full run: no measured benefit.** 120 of 120
