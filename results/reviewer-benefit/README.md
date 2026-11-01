@@ -65,6 +65,16 @@ direction fails, not just this feature.
   acts on named lines, not whether ep_review finds arbitrary bugs.
 - There is one call per seed per arm, on the twelve v3 projects only.
 
+**The final seed set, recorded before any study call:**
+- **21 W, 11 C and 11 U seeds, so 86 calls**
+  ([`seeds.json`](seeds.json)).
+- **Where the W seeds come from:** at most three per case. Three cases gave
+  only one, and `parcelpost` gave none in any of its eight stages.
+- **The rebuild is deterministic:** it reproduced all 33 first-round seeds
+  exactly.
+- **Power:** if the report arm catches 50% against 15%, the expected p is
+  about 0.04. A smaller effect would likely go undetected.
+
 **Size and cost, stated before starting.** About 110 calls:
 - up to 33 W, 11 C and 11 U seeds, in two arms each;
 - a full-size qualification call (the largest seed, 44.5K characters) took
