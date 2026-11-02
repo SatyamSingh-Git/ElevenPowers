@@ -42,10 +42,28 @@ is a spike, not product code.
   first, so the signal comes from the change. Five dependents are central
   enough to reach the top 3 for any edit.
 
+## Held out ([`heldout.py`](heldout.py))
+
+v3 declares only five quiet dependents outside the twelve (case, stage)
+pairs read before writing the method. The 120 conversations' own edits rank
+them 17 times, in both arms:
+
+| | top 1 | top 3 | control (another stage's edit), top 3 | random, top 3 |
+|---|---|---|---|---|
+| all 17 | 2 | **4 (24%)** | 0 | 6% |
+| copy, 2 | | 2 of 2 | | |
+| contract, 14 | | 2 of 14 | | |
+| data, 1 | | 0 of 1 | | |
+
+The held-out set agrees with the in-sample pattern but is too small to
+settle it. A copy of the changed rule is found; a contract on an order or a
+format mostly is not.
+
 ## Bounds
 
-- **In-sample.** The method was chosen after reading these twelve
-  dependents, so a held-out set of dependents is needed before any claim.
+- **In-sample, mostly.** The 31 losses were read before the method was
+  chosen. The held-out check covers only 5 dependents, 14 of its 17
+  rankings being contracts.
 - **Recall only.** Top 3 means naming 3 of about 50 files per edited
   function. How often those names are noise has not been measured.
 - **Detection is not prevention.** The 4 dependents the import brief did

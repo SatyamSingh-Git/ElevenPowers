@@ -1,0 +1,155 @@
+[
+ {
+  "slot": "greenhouse_monitor--elevenpowers--0",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 29,
+  "of": 48,
+  "control_rank": 10
+ },
+ {
+  "slot": "greenhouse_monitor--superpowers--0",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 28,
+  "of": 48,
+  "control_rank": 8
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--0",
+  "stage": 7,
+  "dependent": "src/hoteldesk/services/booking.py",
+  "kind": "contract",
+  "rank": 3,
+  "of": 51,
+  "control_rank": 18
+ },
+ {
+  "slot": "survey_tally--superpowers--0",
+  "stage": 2,
+  "dependent": "src/surveytally/reports/compare.py",
+  "kind": "data",
+  "rank": 7,
+  "of": 39,
+  "control_rank": 6
+ },
+ {
+  "slot": "ticket_office--superpowers--0",
+  "stage": 4,
+  "dependent": "src/boxoffice/reports/price_list.py",
+  "kind": "copy",
+  "rank": 1,
+  "of": 50,
+  "control_rank": 32
+ },
+ {
+  "slot": "greenhouse_monitor--superpowers--1",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 28,
+  "of": 48,
+  "control_rank": 9
+ },
+ {
+  "slot": "greenhouse_monitor--elevenpowers--1",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 26,
+  "of": 48,
+  "control_rank": 9
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--1",
+  "stage": 7,
+  "dependent": "src/hoteldesk/services/booking.py",
+  "kind": "contract",
+  "rank": 6,
+  "of": 51,
+  "control_rank": 18
+ },
+ {
+  "slot": "hotel_desk--superpowers--1",
+  "stage": 7,
+  "dependent": "src/hoteldesk/services/booking.py",
+  "kind": "contract",
+  "rank": 7,
+  "of": 51,
+  "control_rank": 18
+ },
+ {
+  "slot": "survey_tally--superpowers--1",
+  "stage": 5,
+  "dependent": "src/surveytally/reports/summary.py",
+  "kind": "contract",
+  "rank": 2,
+  "of": 40,
+  "control_rank": 24
+ },
+ {
+  "slot": "greenhouse_monitor--elevenpowers--2",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 26,
+  "of": 48,
+  "control_rank": 11
+ },
+ {
+  "slot": "greenhouse_monitor--superpowers--2",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 25,
+  "of": 48,
+  "control_rank": 9
+ },
+ {
+  "slot": "ticket_office--superpowers--2",
+  "stage": 4,
+  "dependent": "src/boxoffice/reports/price_list.py",
+  "kind": "copy",
+  "rank": 1,
+  "of": 50,
+  "control_rank": 32
+ },
+ {
+  "slot": "greenhouse_monitor--superpowers--3",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 26,
+  "of": 48,
+  "control_rank": 9
+ },
+ {
+  "slot": "greenhouse_monitor--elevenpowers--3",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 29,
+  "of": 48,
+  "control_rank": 8
+ },
+ {
+  "slot": "greenhouse_monitor--elevenpowers--4",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 26,
+  "of": 48,
+  "control_rank": 9
+ },
+ {
+  "slot": "greenhouse_monitor--superpowers--4",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "rank": 26,
+  "of": 48,
+  "control_rank": 11
+ }
+]
