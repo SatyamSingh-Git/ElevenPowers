@@ -2027,6 +2027,18 @@ Until then any contributor can start on an open problem below.
   did not change when a convention around them did.
 - **Cost:** the arm took 10.8 minutes of model time per conversation against
   6.5, and a false startup FAIL in 63% of stages, now repaired, added noise.
+- **Shared rare tokens** (2026-11-02, $0,
+  [spike](results/multistage-v3/convention-spike/README.md)). The edited
+  functions' identifiers, literals and numbers, weighted by rarity across
+  the project, rank the broken dependent:
+  - in the top 3 in 17 of 31 losses, against 5 of 31 for another stage's
+    edit;
+  - in the top 3 in 4 of 17 held-out rankings, against 0 for the control;
+  - well for copies of the changed rule, poorly for order and format
+    contracts.
+
+  It is a detection lead only: in-sample, recall only, and not yet shown to
+  change what an agent does.
 
 **Open problems a contributor can take**
 1. **Left-behind dependents.** When a change moves a convention (a
