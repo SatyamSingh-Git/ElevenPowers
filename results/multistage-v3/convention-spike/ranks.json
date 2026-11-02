@@ -1,0 +1,509 @@
+[
+ {
+  "slot": "gradebook--elevenpowers--0",
+  "stage": 4,
+  "dependent": "src/gradebook/storage/grades_csv.py",
+  "rank": 28,
+  "of": 54,
+  "shared_rarest": [],
+  "import_brief": false,
+  "control_rank": 3,
+  "control_stage": 5
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--0",
+  "stage": 3,
+  "dependent": "src/hoteldesk/services/pricing.py",
+  "rank": 1,
+  "of": 52,
+  "shared_rarest": [
+   "Decimal",
+   "rate",
+   "1"
+  ],
+  "import_brief": false,
+  "control_rank": 32,
+  "control_stage": 4
+ },
+ {
+  "slot": "household_budget--elevenpowers--0",
+  "stage": 7,
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "rank": 1,
+  "of": 48,
+  "shared_rarest": [
+   "is_spending",
+   "get",
+   "catalog",
+   "transaction",
+   "transactions",
+   "category"
+  ],
+  "import_brief": false,
+  "control_rank": null,
+  "control_stage": 8
+ },
+ {
+  "slot": "library_loans--elevenpowers--0",
+  "stage": 1,
+  "dependent": "src/lending/reports/overdue.py",
+  "rank": 1,
+  "of": 57,
+  "shared_rarest": [
+   "min",
+   "daily_fine",
+   "max_fine",
+   "days_late",
+   "price",
+   "loan"
+  ],
+  "import_brief": false,
+  "control_rank": 11,
+  "control_stage": 2
+ },
+ {
+  "slot": "library_loans--elevenpowers--0",
+  "stage": 3,
+  "dependent": "src/lending/reports/loans.py",
+  "rank": 6,
+  "of": 57,
+  "shared_rarest": [
+   "max_renewals",
+   "renewals",
+   "loan",
+   "settings",
+   "due",
+   "today"
+  ],
+  "import_brief": false,
+  "control_rank": 14,
+  "control_stage": 4
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--0",
+  "stage": 1,
+  "dependent": "src/payroll/services/yearend.py",
+  "rank": 6,
+  "of": 45,
+  "shared_rarest": [
+   "\"pay_date\"",
+   "\"payslips\"",
+   "json",
+   "document",
+   "loads",
+   "read_text"
+  ],
+  "import_brief": false,
+  "control_rank": 24,
+  "control_stage": 2
+ },
+ {
+  "slot": "recipe_box--elevenpowers--0",
+  "stage": 4,
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "rank": 2,
+  "of": 50,
+  "shared_rarest": [
+   "\"-\"",
+   "re",
+   "split",
+   "strip",
+   "lower",
+   "servings"
+  ],
+  "import_brief": false,
+  "control_rank": 11,
+  "control_stage": 5
+ },
+ {
+  "slot": "gradebook--elevenpowers--1",
+  "stage": 4,
+  "dependent": "src/gradebook/storage/grades_csv.py",
+  "rank": 28,
+  "of": 54,
+  "shared_rarest": [],
+  "import_brief": false,
+  "control_rank": 3,
+  "control_stage": 5
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--1",
+  "stage": 3,
+  "dependent": "src/hoteldesk/services/pricing.py",
+  "rank": 1,
+  "of": 52,
+  "shared_rarest": [
+   "Decimal",
+   "rate",
+   "1"
+  ],
+  "import_brief": false,
+  "control_rank": 21,
+  "control_stage": 4
+ },
+ {
+  "slot": "household_budget--elevenpowers--1",
+  "stage": 7,
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "rank": 8,
+  "of": 48,
+  "shared_rarest": [
+   "is_spending",
+   "get",
+   "catalog",
+   "items",
+   "transaction",
+   "t"
+  ],
+  "import_brief": false,
+  "control_rank": null,
+  "control_stage": 8
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--1",
+  "stage": 5,
+  "dependent": "src/payroll/services/payrun.py",
+  "rank": 13,
+  "of": 46,
+  "shared_rarest": [
+   "period_id",
+   "entries",
+   "sorted",
+   "data",
+   "hours",
+   "kind"
+  ],
+  "import_brief": true,
+  "control_rank": 12,
+  "control_stage": 6
+ },
+ {
+  "slot": "recipe_box--elevenpowers--1",
+  "stage": 4,
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "rank": 2,
+  "of": 50,
+  "shared_rarest": [
+   "\"-\"",
+   "re",
+   "split",
+   "strip",
+   "lower",
+   "servings"
+  ],
+  "import_brief": false,
+  "control_rank": 11,
+  "control_stage": 5
+ },
+ {
+  "slot": "fleet_service--elevenpowers--2",
+  "stage": 4,
+  "dependent": "src/fleetkeep/reports/summary.py",
+  "rank": 4,
+  "of": 50,
+  "shared_rarest": [
+   "mpg",
+   "\"fuel\"",
+   "miles",
+   "period",
+   "append",
+   "0"
+  ],
+  "import_brief": false,
+  "control_rank": 28,
+  "control_stage": 5
+ },
+ {
+  "slot": "gradebook--elevenpowers--2",
+  "stage": 4,
+  "dependent": "src/gradebook/storage/grades_csv.py",
+  "rank": 28,
+  "of": 54,
+  "shared_rarest": [],
+  "import_brief": false,
+  "control_rank": 3,
+  "control_stage": 5
+ },
+ {
+  "slot": "household_budget--elevenpowers--2",
+  "stage": 7,
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "rank": 8,
+  "of": 48,
+  "shared_rarest": [
+   "is_spending",
+   "get",
+   "catalog",
+   "transaction",
+   "items",
+   "transactions"
+  ],
+  "import_brief": false,
+  "control_rank": null,
+  "control_stage": 8
+ },
+ {
+  "slot": "recipe_box--elevenpowers--2",
+  "stage": 4,
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "rank": 2,
+  "of": 50,
+  "shared_rarest": [
+   "\"-\"",
+   "re",
+   "split",
+   "strip",
+   "lower",
+   "servings"
+  ],
+  "import_brief": false,
+  "control_rank": 11,
+  "control_stage": 5
+ },
+ {
+  "slot": "gradebook--elevenpowers--3",
+  "stage": 4,
+  "dependent": "src/gradebook/storage/grades_csv.py",
+  "rank": 28,
+  "of": 54,
+  "shared_rarest": [],
+  "import_brief": false,
+  "control_rank": 3,
+  "control_stage": 5
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--3",
+  "stage": 3,
+  "dependent": "src/hoteldesk/services/pricing.py",
+  "rank": 1,
+  "of": 52,
+  "shared_rarest": [
+   "Decimal",
+   "rate",
+   "1"
+  ],
+  "import_brief": false,
+  "control_rank": 32,
+  "control_stage": 4
+ },
+ {
+  "slot": "household_budget--elevenpowers--3",
+  "stage": 7,
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "rank": 1,
+  "of": 48,
+  "shared_rarest": [
+   "is_spending",
+   "get",
+   "catalog",
+   "transaction",
+   "transactions",
+   "category"
+  ],
+  "import_brief": false,
+  "control_rank": null,
+  "control_stage": 8
+ },
+ {
+  "slot": "library_loans--elevenpowers--3",
+  "stage": 1,
+  "dependent": "src/lending/reports/overdue.py",
+  "rank": 1,
+  "of": 57,
+  "shared_rarest": [
+   "min",
+   "daily_fine",
+   "max_fine",
+   "days_late",
+   "price",
+   "loan"
+  ],
+  "import_brief": false,
+  "control_rank": 11,
+  "control_stage": 2
+ },
+ {
+  "slot": "library_loans--elevenpowers--3",
+  "stage": 3,
+  "dependent": "src/lending/reports/loans.py",
+  "rank": 6,
+  "of": 57,
+  "shared_rarest": [
+   "max_renewals",
+   "renewals",
+   "loan",
+   "settings",
+   "due",
+   "today"
+  ],
+  "import_brief": false,
+  "control_rank": 14,
+  "control_stage": 4
+ },
+ {
+  "slot": "parcelpost--elevenpowers--3",
+  "stage": 5,
+  "dependent": "src/parcelpost/services/billing.py",
+  "rank": 3,
+  "of": 58,
+  "shared_rarest": [
+   "attrgetter",
+   "key",
+   "account",
+   "tracking_number"
+  ],
+  "import_brief": true,
+  "control_rank": 19,
+  "control_stage": 6
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--3",
+  "stage": 2,
+  "dependent": "src/payroll/reports/hours.py",
+  "rank": 1,
+  "of": 45,
+  "shared_rarest": [
+   "min",
+   "ordinary",
+   "holiday",
+   "overtime",
+   "daily_threshold",
+   "\"overtime\""
+  ],
+  "import_brief": false,
+  "control_rank": 28,
+  "control_stage": 3
+ },
+ {
+  "slot": "recipe_box--elevenpowers--3",
+  "stage": 4,
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "rank": 2,
+  "of": 50,
+  "shared_rarest": [
+   "\"-\"",
+   "re",
+   "split",
+   "strip",
+   "lower",
+   "servings"
+  ],
+  "import_brief": false,
+  "control_rank": 11,
+  "control_stage": 5
+ },
+ {
+  "slot": "fleet_service--elevenpowers--4",
+  "stage": 5,
+  "dependent": "src/fleetkeep/importers/history.py",
+  "rank": 14,
+  "of": 49,
+  "shared_rarest": [
+   "code",
+   "vehicle",
+   "FleetError",
+   "day",
+   "vehicle_id",
+   "fleet"
+  ],
+  "import_brief": true,
+  "control_rank": 6,
+  "control_stage": 6
+ },
+ {
+  "slot": "gradebook--elevenpowers--4",
+  "stage": 4,
+  "dependent": "src/gradebook/storage/grades_csv.py",
+  "rank": 28,
+  "of": 54,
+  "shared_rarest": [],
+  "import_brief": false,
+  "control_rank": 3,
+  "control_stage": 5
+ },
+ {
+  "slot": "hotel_desk--elevenpowers--4",
+  "stage": 3,
+  "dependent": "src/hoteldesk/services/pricing.py",
+  "rank": 1,
+  "of": 52,
+  "shared_rarest": [
+   "Decimal",
+   "rate",
+   "1"
+  ],
+  "import_brief": false,
+  "control_rank": 21,
+  "control_stage": 4
+ },
+ {
+  "slot": "household_budget--elevenpowers--4",
+  "stage": 7,
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "rank": 8,
+  "of": 48,
+  "shared_rarest": [
+   "is_spending",
+   "get",
+   "catalog",
+   "items",
+   "transaction",
+   "t"
+  ],
+  "import_brief": false,
+  "control_rank": null,
+  "control_stage": 8
+ },
+ {
+  "slot": "library_loans--elevenpowers--4",
+  "stage": 1,
+  "dependent": "src/lending/reports/overdue.py",
+  "rank": 1,
+  "of": 57,
+  "shared_rarest": [
+   "min",
+   "daily_fine",
+   "max_fine",
+   "days_late",
+   "price",
+   "loan"
+  ],
+  "import_brief": false,
+  "control_rank": 7,
+  "control_stage": 2
+ },
+ {
+  "slot": "parcelpost--elevenpowers--4",
+  "stage": 5,
+  "dependent": "src/parcelpost/services/billing.py",
+  "rank": 3,
+  "of": 58,
+  "shared_rarest": [
+   "attrgetter",
+   "key",
+   "account",
+   "tracking_number"
+  ],
+  "import_brief": true,
+  "control_rank": 19,
+  "control_stage": 6
+ },
+ {
+  "slot": "payroll_lite--elevenpowers--4",
+  "stage": 2,
+  "dependent": "src/payroll/reports/hours.py",
+  "rank": 1,
+  "of": 45,
+  "shared_rarest": [
+   "min",
+   "ordinary",
+   "holiday",
+   "overtime",
+   "daily_threshold",
+   "\"overtime\""
+  ],
+  "import_brief": false,
+  "control_rank": 28,
+  "control_stage": 3
+ }
+]
