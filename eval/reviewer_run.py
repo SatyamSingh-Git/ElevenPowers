@@ -89,9 +89,11 @@ def prepare(batch, seeds, manifest, *, model='claude-sonnet-5-5', limits=None, w
     random.Random(ORDER).shuffle(names)
     slots = [f'{name}--{arm}' for index, name in enumerate(names)
              for arm in (ARMS if index % 2 == 0 else ARMS[::-1])]
-    version = subprocess.run([shutil.which('claude') or 'claude', '--version'], capture_output=True, text=True)
+    # Preparing calls no model, so it runs where the CLI is absent (hosted CI); `run` checks sign-in.
+    program = shutil.which('claude')
+    version = subprocess.run([program, '--version'], capture_output=True, text=True).stdout.strip() if program else ''
     protocol = {'schema': 1, 'prepared_at': datetime.now(timezone.utc).isoformat(), 'host': 'claude', 'model': model,
-                'effort': 'medium', 'cli': version.stdout.strip(), 'limits': limits or {}, 'seeds': frozen,
+                'effort': 'medium', 'cli': version, 'limits': limits or {}, 'seeds': frozen,
                 'slots': slots, 'harness_sha256': _harness(), 'gate': tally(rows)}
     _write(root / 'protocol.json', protocol)
     _write(root / 'protocol-seal.json', {'sha256': _hash((root / 'protocol.json').read_bytes())})

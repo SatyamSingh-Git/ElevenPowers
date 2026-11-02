@@ -147,3 +147,11 @@ def test_the_collected_summary_carries_cost_time_and_models_by_arm(tmp_path):
     assert summary['mean_output_tokens'] == {'diff': 7, 'report': 7}
     assert summary['models'] == ['claude-sonnet-5-5']
     assert set(summary['mean_seconds']) == {'diff', 'report'}
+
+
+def test_a_batch_is_prepared_on_a_machine_without_the_claude_cli(tmp_path, monkeypatch):
+    # Preparing calls no model; hosted CI has no `claude`, and running it there raised.
+    import eval.reviewer_run as module
+    monkeypatch.setattr(module.shutil, 'which', lambda name: None)
+    _, protocol, _, _ = _batch(tmp_path)
+    assert protocol['cli'] == ''
