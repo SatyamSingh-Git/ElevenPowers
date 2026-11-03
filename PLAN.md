@@ -2037,8 +2037,16 @@ Until then any contributor can start on an open problem below.
   - well for copies of the changed rule, poorly for order and format
     contracts.
 
-  It is a detection lead only: in-sample, recall only, and not yet shown to
-  change what an agent does.
+  It is a detection lead only: in-sample, and not yet shown to change what
+  an agent does. **As a standing warning it is noise** (2026-11-03, all 960
+  stages):
+  - it would warn on 73–88% of the self-contained stages, which need
+    nothing elsewhere;
+  - about 1 named file in 60 is a declared dependent;
+  - no threshold on its score separates the two kinds of stage.
+
+  What is left is an on-demand question ("which other files carry this
+  rule?"), not a warning on every edit.
 
 **Open problems a contributor can take**
 1. **Left-behind dependents.** When a change moves a convention (a
