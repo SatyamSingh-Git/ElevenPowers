@@ -2101,8 +2101,15 @@ Until then any contributor can start on an open problem below.
      The same hooks alone take 0.44 s and 0.21 s, so the run's load
      multiplied them. That load is not measured.
 
-   Next: one hook process per tool call is the cost to cut first, and the
-   mutation step need not run at Stop when nothing reads it.
+   Cut 2026-11-03, $0:
+   - Claude Code on Windows runs hooks through Git Bash. Each hook was also
+     wrapped in PowerShell, which cost 0.17–0.26 s a call. Plain paths now
+     start Python directly (`407d749`).
+   - `ep_check --all` re-read the whole runtime seven times. It now takes
+     2.13 s from 3.44 s (`97db162`).
+
+   Still open: the mutation step need not run at Stop when nothing reads it.
+   No paid run has measured the effect of these cuts.
 
 **Gate for any claim:** a no-model replay on the kept v3 snapshots first, then
 a paired run with superpowers in both arms, under the same sealing and

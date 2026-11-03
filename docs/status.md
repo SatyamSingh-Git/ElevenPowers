@@ -20,6 +20,11 @@ parser defect.** PLAN §13 B.
     same hooks take 0.44 s.
   - Stop costs a median 10 s and startup 1.4 s.
   - The mutation step's result never reaches the agent.
+  - **Two overhead cuts, $0.** Claude hooks on Windows no longer start
+    PowerShell first (`407d749`): Claude Code runs them through Git Bash,
+    seen by a hook that blocked its own prompt. `ep_check --all` no longer
+    re-reads the runtime seven times; it now takes 2.13 s from 3.44 s
+    (`97db162`). Their effect on a paid run is not measured.
 - **Fixed: a parametrised test id was cut at its first space.** Replays hit
   it as `test_bad_settings_are_refused[raw4-setting`, and confirmation ended
   "incomplete" in 2 of 9.
