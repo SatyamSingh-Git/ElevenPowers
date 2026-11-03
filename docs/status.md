@@ -15,7 +15,10 @@ parser defect.** PLAN §13 B.
   - The real Stop runs took a median 5.3 s.
   - A first reading put the mutation step at 16 s of a 21 s Stop. It came
     from replays that started each stage clean, and it is withdrawn in §10.
-  - About 20 s per stage is unattributed.
+  - From the transcripts' clocks, the hooks on ordinary tool calls cost
+    18.4 s of the 34.9 s gap. An Edit took 3.17 s against 0.03 s; alone the
+    same hooks take 0.44 s.
+  - Stop costs a median 10 s and startup 1.4 s.
   - The mutation step's result never reaches the agent.
 - **Fixed: a parametrised test id was cut at its first space.** Replays hit
   it as `test_bad_settings_are_refused[raw4-setting`, and confirmation ended

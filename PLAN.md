@@ -1816,8 +1816,9 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
   came from committed each stage's start, so the mutation step examined the
   stage's edits. The run never committed between stages, so from stage 2 on
   the step refused every file as already dirty. The 125 real Stop runs kept
-  took a median 5.3 s, of which test strength took 0.6 s. About 20 s per
-  stage is unattributed.
+  took a median 5.3 s of checks, of which test strength took 0.6 s. The
+  transcripts' clocks put about half the gap in the hooks on ordinary tool
+  calls instead.
 
 - **ElevenPowers keeps earlier work and docs intact for a superpowers user.**
   Not supported, 2026-10-30. In the field report's own setting, superpowers in
@@ -2091,10 +2092,17 @@ Until then any contributor can start on an open problem below.
      (§10);
    - the mutation step's result never reaches the agent. It goes to the
      export and the doctor, and no agent ran either;
-   - about 20 s per stage is unattributed.
+   - from the transcripts' clocks, the 34.9 s gap per stage is:
+     - 18.4 s in tool calls. An Edit took 3.17 s against 0.03 s, a Read
+       0.90 s against 0.02 s.
+     - a median 10 s after the last event, which is Stop.
+     - 1.4 s at startup.
 
-   Next: attribute the remaining 20 s, and decide whether the mutation step
-   belongs at Stop at all when nothing reads it.
+     The same hooks alone take 0.44 s and 0.21 s, so the run's load
+     multiplied them. That load is not measured.
+
+   Next: one hook process per tool call is the cost to cut first, and the
+   mutation step need not run at Stop when nothing reads it.
 
 **Gate for any claim:** a no-model replay on the kept v3 snapshots first, then
 a paired run with superpowers in both arms, under the same sealing and
