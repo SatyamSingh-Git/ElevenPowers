@@ -9,10 +9,14 @@ parser defect.** PLAN §13 B.
 - **Reordering the brief's importers tracks file size, not the edit.**
   Another stage's edit does as well
   ([brief cutoff](../results/multistage-v3/brief-cutoff/README.md)).
-- **The arm's extra minutes are wall time.** Most of the gap is the Stop
-  hook, a median 21 s per stage, of which the mutation step takes 16 s
-  ([overhead](../results/multistage-v3/overhead/README.md)). The "model time"
-  label is corrected in PLAN §10.
+- **The arm's extra minutes are wall time**, about 33 s per stage outside
+  the model ([overhead](../results/multistage-v3/overhead/README.md)). The
+  "model time" label is corrected in PLAN §10.
+  - The real Stop runs took a median 5.3 s.
+  - A first reading put the mutation step at 16 s of a 21 s Stop. It came
+    from replays that started each stage clean, and it is withdrawn in §10.
+  - About 20 s per stage is unattributed.
+  - The mutation step's result never reaches the agent.
 - **Fixed: a parametrised test id was cut at its first space.** Replays hit
   it as `test_bad_settings_are_refused[raw4-setting`, and confirmation ended
   "incomplete" in 2 of 9.

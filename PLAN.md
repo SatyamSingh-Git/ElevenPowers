@@ -1808,8 +1808,16 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 - **"10.8 minutes of model time against 6.5" (v3).** Corrected 2026-11-03.
   It is wall time: the harness's clock around each `claude` process. Per
   stage the model's own time is 36.2 s against 34.3 s. The other 33 s is
-  hooks and checks, chiefly the Stop hook's mutation step. See
+  outside the model. See
   [the overhead breakdown](results/multistage-v3/overhead/README.md).
+
+- **"The Stop hook's mutation step is most of the gap, 16 s of a 21 s
+  Stop."** Withdrawn 2026-11-03, the day it was written. The replays it
+  came from committed each stage's start, so the mutation step examined the
+  stage's edits. The run never committed between stages, so from stage 2 on
+  the step refused every file as already dirty. The 125 real Stop runs kept
+  took a median 5.3 s, of which test strength took 0.6 s. About 20 s per
+  stage is unattributed.
 
 - **ElevenPowers keeps earlier work and docs intact for a superpowers user.**
   Not supported, 2026-10-30. In the field report's own setting, superpowers in
@@ -2078,10 +2086,15 @@ Until then any contributor can start on an open problem below.
    no information. Found 2026-11-03 ($0,
    [breakdown](results/multistage-v3/overhead/README.md)):
    - the extra time is outside the model, about 33 s per stage;
-   - the Stop hook takes a median 21 s, 16 s of it the mutation step, which
-     ended incomplete in all nine replays.
+   - the real Stop runs took a median 5.3 s. The 21 s replayed Stop, 16 s of
+     it mutation, came from stages started clean, which the run's were not
+     (§10);
+   - the mutation step's result never reaches the agent. It goes to the
+     export and the doctor, and no agent ran either;
+   - about 20 s per stage is unattributed.
 
-   Whether that step tells the agent anything is the next question.
+   Next: attribute the remaining 20 s, and decide whether the mutation step
+   belongs at Stop at all when nothing reads it.
 
 **Gate for any claim:** a no-model replay on the kept v3 snapshots first, then
 a paired run with superpowers in both arms, under the same sealing and
