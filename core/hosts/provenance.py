@@ -2,9 +2,16 @@
 import hashlib
 import os
 from pathlib import Path
+import time
 
 MAX_FILES = 512
 MAX_BYTES = 8 * 1024 * 1024
+# Callers ask before and after every step to see the runtime did not move under them,
+# seven times in one `ep_check --all`. Git's index answers the same question: unchanged
+# names, sizes and mtimes vouch for unchanged content, except for a file written within
+# two seconds of being read (racily clean), which is read again.
+_LAST = {}
+RACY_NS = 2_000_000_000
 
 
 def fingerprint(source=None):
@@ -30,8 +37,14 @@ def fingerprint(source=None):
                     raise ValueError('runtime file limit reached')
     if not files:
         raise ValueError('runtime source files unavailable')
+    ordered = sorted(files, key=lambda p: p.relative_to(root).as_posix())
+    stats = [path.stat() for path in ordered]
+    key = tuple((p.relative_to(root).as_posix(), s.st_mtime_ns, s.st_size) for p, s in zip(ordered, stats))
+    if root in _LAST and _LAST[root][0] == key:
+        return _LAST[root][1]
+    read_at = time.time_ns()
     digest, total = hashlib.sha256(), 0
-    for path in sorted(files, key=lambda p: p.relative_to(root).as_posix()):
+    for path in ordered:
         with path.open('rb') as stream:
             data = stream.read(MAX_BYTES - total + 1)
         total += len(data)
@@ -40,4 +53,7 @@ def fingerprint(source=None):
         name = path.relative_to(root).as_posix().encode('utf-8')
         digest.update(len(name).to_bytes(4, 'big') + name)
         digest.update(len(data).to_bytes(8, 'big') + data)
-    return digest.hexdigest()
+    value = digest.hexdigest()
+    if all(s.st_mtime_ns < read_at - RACY_NS for s in stats):
+        _LAST[root] = (key, value)
+    return value
