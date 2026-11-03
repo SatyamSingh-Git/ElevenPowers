@@ -116,7 +116,8 @@ co-primaries.
 | stale documented facts (stage-summed) | 43 | 79 | 1 / 5 / 6 | 0.25 | 0.50 |
 
 Per conversation, ElevenPowers cost $1.22 against $1.12, and took 10.8 minutes
-of model time against 6.5.
+of wall time against 6.5 (corrected 2026-11-03 from "model time": the model's
+own time is nearly equal; see [overhead](overhead/README.md)).
 
 **What this does and does not show:**
 - **No reduction is shown.** The power target assumed ElevenPowers halves

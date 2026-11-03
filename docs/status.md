@@ -95,7 +95,8 @@ medium.
 - **Stale documented facts:** 43 without, 79 with (Holm p 0.50).
 
 Both point estimates lean against ElevenPowers, and neither is significant.
-ElevenPowers took 10.8 minutes of model time per conversation against 6.5.
+ElevenPowers took 10.8 minutes of wall time per conversation against 6.5; the
+model's own time is nearly equal (corrected 2026-11-03, [overhead](../results/multistage-v3/overhead/README.md)).
 Total $153.40, including a stopped batch and a network-outage rerun. See
 [results](../results/multistage-v3/README.md).
 

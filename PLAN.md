@@ -1805,6 +1805,12 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 
 ## 10. Claims withdrawn or qualified
 
+- **"10.8 minutes of model time against 6.5" (v3).** Corrected 2026-11-03.
+  It is wall time: the harness's clock around each `claude` process. Per
+  stage the model's own time is 36.2 s against 34.3 s. The other 33 s is
+  hooks and checks, chiefly the Stop hook's mutation step. See
+  [the overhead breakdown](results/multistage-v3/overhead/README.md).
+
 - **ElevenPowers keeps earlier work and docs intact for a superpowers user.**
   Not supported, 2026-10-30. In the field report's own setting, superpowers in
   both arms and 12 cases × 5 replicates, the counts were:
@@ -2025,8 +2031,10 @@ Until then any contributor can start on an open problem below.
   ([spike](results/multistage-v3/behaviour-spike/README.md)). The public suite
   runs every dependent, but 30 dependents were left behind: their behaviour
   did not change when a convention around them did.
-- **Cost:** the arm took 10.8 minutes of model time per conversation against
-  6.5, and a false startup FAIL in 63% of stages, now repaired, added noise.
+- **Cost:** the arm took 10.8 minutes of wall time per conversation against
+  6.5, with the model's own time nearly equal
+  ([overhead](results/multistage-v3/overhead/README.md)). A false startup
+  FAIL in 63% of stages, now repaired, added noise.
 - **Shared rare tokens** (2026-11-02, $0,
   [spike](results/multistage-v3/convention-spike/README.md)). The edited
   functions' identifiers, literals and numbers, weighted by rarity across
@@ -2067,7 +2075,13 @@ Until then any contributor can start on an open problem below.
      well (7 of 12 against 5 of 12);
    - ranking by use of the touched functions changed nothing.
 4. **Overhead.** Find where the arm's extra minutes go, and cut what carries
-   no information.
+   no information. Found 2026-11-03 ($0,
+   [breakdown](results/multistage-v3/overhead/README.md)):
+   - the extra time is outside the model, about 33 s per stage;
+   - the Stop hook takes a median 21 s, 16 s of it the mutation step, which
+     ended incomplete in all nine replays.
+
+   Whether that step tells the agent anything is the next question.
 
 **Gate for any claim:** a no-model replay on the kept v3 snapshots first, then
 a paired run with superpowers in both arms, under the same sealing and
