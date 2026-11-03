@@ -49,13 +49,21 @@ parser defect.** PLAN §13 B.
   `e677bde` failed
   `test_advice_delivery_exercise[javascript]` on windows-3.13 only. It had
   failed the same way on `c28971e`. The replay arm's advice worker left the
-  timeout/failure message, and the attempt stayed incomplete. Its cause is
-  **not found**:
-  - Locally the worker takes about 0.4 s against a 2.5 s limit.
-  - The two runs' timings disagree about whether it stalled or failed fast.
+  timeout/failure message, and the attempt stayed incomplete.
 
-  The exercise now reports each attempt's status and `elapsed_ms`. A forced
-  stall reads 2512 ms, so the next failure will say which it was (`09c175b`).
+  **Cause found and fixed.** The exercise began reporting each attempt's
+  status and `elapsed_ms` (`09c175b`), and the next failure (`bc31298`) said
+  it plainly:
+  - the worker was killed at 2762 ms against its 2.5 s limit;
+  - a successful one on the same runner took 1418 ms, against about 450 ms
+    locally.
+
+  Acceptance projects now give the worker the policy's maximum of 5 s
+  (`f037c54`). The fix was watched flipping with a worker slowed by 2.2 s.
+
+  **Open, for a decision:** a user who turns advice on gets 1.0 s by
+  default, killed at 1.5 s. On a machine as slow as that runner, the worker
+  would come close to that limit, and sometimes pass it.
 
 **2026-11-01 — The reviewer's report, and the superpowers comparison.**
 PLAN §13 A, steps 1 and 2.
