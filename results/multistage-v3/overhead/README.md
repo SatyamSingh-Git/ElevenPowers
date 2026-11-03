@@ -161,8 +161,28 @@ and UserPromptSubmit callbacks with no errors. The tests require exit code 2,
 which a Stop block uses, to survive Git Bash in both forms.
 
 At the run's rate of about 15 hook calls per stage, the saving is roughly
-3–4 s of the 35 s per stage. That is an estimate from the per-start figures;
-no paid run has measured it.
+3–4 s of the 35 s per stage. That is an estimate from the per-start figures.
+
+**Paid check, $0.62** ([`hook_form_ab.py`](hook_form_ab.py),
+[output](hook_form_ab.txt)). Four one-stage sessions on `clinic_booking`
+stage 1, two pairs, the second in reversed order. Every hook, the per-tool
+ones included, was processed with no errors in both forms. All four
+sessions ended with 72 tests passing.
+
+| per call, median | encoded | plain |
+|---|---|---|
+| Edit, pair 1 (encoded ran first) | 3.78 s (8) | 0.61 s (8) |
+| Edit, pair 2 (plain ran first) | **0.96 s** (8) | **0.63 s** (1) |
+| Read, pair 1 / pair 2 | 0.49 / 0.33 s | 0.33 / 0.30 s |
+
+Pair 1 alone would claim a 3.2 s saving per Edit and wall time halved (138
+s against 64 s, both 21 turns). Pair 2 does not support that: whatever made
+the first session slow came with running first, and its cause is unknown.
+
+The order-controlled reading is about **0.35 s per Edit**, with Read
+unchanged. Pair 2's wall times cannot be compared, because the sessions took
+11 and 18 turns. One pair each way is not an estimate of the run-level
+effect.
 
 ## Fixed: `ep_check --all` hashed the runtime seven times
 
