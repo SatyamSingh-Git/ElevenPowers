@@ -86,7 +86,9 @@ def prepare(host, destination, language, source, version='', *, advice=False):
     (root / '.gitignore').write_text('.elevenpowers/\nwait.flag\n__pycache__/\n', encoding='utf-8')
     command = f'"{runtime}" ' + ('check.py' if language == 'python' else '--test check.test.mjs')
     save(root, Config(profile='guide', commands={'tests': command}, auto_detect=False, strength={'enabled': False},
-                      milestone_advice=({'enabled': True, 'seconds': 2, 'cooldown': 0, 'max_attempts': 3}
+                      # The policy's maximum: acceptance proves delivery, not speed. Windows CI
+                      # workers took 1.4 s, and 2.8 s at the tail, against a 2 s budget.
+                      milestone_advice=({'enabled': True, 'seconds': 5, 'cooldown': 0, 'max_attempts': 3}
                                         if advice else {})))
     if advice:
         declarations = {'schema': 1, 'milestones': [

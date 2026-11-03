@@ -23,7 +23,7 @@ def test_actual_producer_keeps_replay_and_native_ingress_distinct(tmp_path, lang
     assert all(row == 'unobserved' for row in replay['followups'])
     for row in (native, replay):
         assert [a['status'] for a in row['advice_attempts']] == ['delivered']
-        assert 0 < row['advice_attempts'][0]['elapsed_ms'] < 2500
+        assert 0 < row['advice_attempts'][0]['elapsed_ms'] < 5500
 
 
 def test_producer_refuses_existing_destination_without_changing_it(tmp_path):
