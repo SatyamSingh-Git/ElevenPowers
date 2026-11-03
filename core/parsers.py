@@ -23,13 +23,19 @@ PYTEST_TAIL = re.compile(
     r"^=+\s+(?P<body>\d+ [a-z]+(?:, \d+ [a-z]+)*)\s+in\s+[\d.]+s(?:\s+\(\d+:\d{2}(?::\d{2})?\))?\s+=+$",
     re.MULTILINE,
 )
-PYTEST_NODE = re.compile(r"^(?P<status>PASSED|FAILED|ERROR)\s+(?P<node>\S+::\S+)", re.MULTILINE)
-PYTEST_SHORT = re.compile(r"^(?P<node>\S+::\S+)\s+(?P<status>PASSED|FAILED|ERROR)", re.MULTILINE)
+# A parametrised id can hold spaces, " - " and "]" (`test[a - b]`, `test[x]y]`), so its
+# bracket runs to the first "]" that ends the line, starts the " - " message or, in -v
+# output, comes before the status. Captured from pytest 9.1.1.
+PYTEST_NODE = re.compile(
+    r"^(?P<status>PASSED|FAILED|ERROR)\s+(?P<node>[^\s\[]+::[^\s\[]+(?:\[.*?\](?= - |\s*$))?)", re.MULTILINE)
+PYTEST_SHORT = re.compile(
+    r"^(?P<node>[^\s\[]+::[^\s\[]+(?:\[.*?\])?)\s+(?P<status>PASSED|FAILED|ERROR)", re.MULTILINE)
 # pytest 9 prints a test whose subtests failed as PASSED, then once per failure as
 # `SUBFAILED(<params>) <node>`, `SUBFAILED[<msg>] <node>` or both; captured from
 # 9.1.1. Parameters can hold `) ` and `::`, so the node is the `.py::` token that
 # ends the line or precedes its ` - ` message.
-PYTEST_SUBFAILED = re.compile(r"^SUBFAILED[\[(].*?(?<!\S)(?P<node>\S+?\.py::\S+)(?= - |\s*$)", re.MULTILINE)
+PYTEST_SUBFAILED = re.compile(r"^SUBFAILED[\[(].*?(?<!\S)(?P<node>\S+?\.py::[^\s\[]+(?:\[.*?\])?)(?= - |\s*$)",
+                              re.MULTILINE)
 # `pytest -q` ends with a bare summary and no rule of equals signs around it, so
 # the decorated pattern above recovers no counts from the quiet mode that most
 # agents actually use.

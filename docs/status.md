@@ -1,5 +1,36 @@
 # Current delivery status
 
+**2026-11-03 — Coding helper ($0): noise, the brief's cutoff, overhead, and a
+parser defect.** PLAN §13 B.
+- **Shared rare tokens are noise as a standing warning.** They would warn on
+  73–88% of the self-contained stages, and about 1 named file in 60 is a
+  declared dependent
+  ([noise](../results/multistage-v3/convention-spike/README.md#noise-planned-2026-11-03-before-running-noisepy)).
+- **Reordering the brief's importers tracks file size, not the edit.**
+  Another stage's edit does as well
+  ([brief cutoff](../results/multistage-v3/brief-cutoff/README.md)).
+- **The arm's extra minutes are wall time.** Most of the gap is the Stop
+  hook, a median 21 s per stage, of which the mutation step takes 16 s
+  ([overhead](../results/multistage-v3/overhead/README.md)). The "model time"
+  label is corrected in PLAN §10.
+- **Fixed: a parametrised test id was cut at its first space.** Replays hit
+  it as `test_bad_settings_are_refused[raw4-setting`, and confirmation ended
+  "incomplete" in 2 of 9.
+  - The ids can hold spaces, ` - ` and `]`, read from pytest 9.1.1's real
+    `-rA`, `-v` and SUBFAILED output.
+  - There were three product patterns: `parsers.PYTEST_NODE`,
+    `PYTEST_SHORT` and `PYTEST_SUBFAILED`. A fourth, `stress.PASSED_LINE`, was
+    a copy and now reuses `PYTEST_NODE`.
+  - Six tests cover them. Of 9 mutants, 8 are killed; the survivor is
+    equivalent.
+  - Both affected replays went from confirmation "incomplete" to "passed".
+  - **Not changed:** `eval/mine.py` (`NODE`) and `eval/heldout_vacuity.py`
+    (`FAILED`) read ids the same way. They grade published, sealed results,
+    so a change there needs its own regrade.
+- **CI.** `23879e6` failed one intermittent process test. The test's helper
+  counted a reaped process as alive when kill(0) answered after its `/proc`
+  entry had gone. The fix was watched flipping under WSL Linux.
+
 **2026-11-01 — The reviewer's report, and the superpowers comparison.**
 PLAN §13 A, steps 1 and 2.
 - **Measured first, $0.** The pre-registered comparison regraded every v3

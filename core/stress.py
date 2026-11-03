@@ -384,14 +384,14 @@ CONFIRM_LIMIT = 12
 # pytest's own summary line for a test that ran and passed. Captured from
 # `pytest -q -rA` on 3.13 rather than remembered; the id is the whole token, so
 # parametrised ids like `test_x[case-1]` come through intact.
-PASSED_LINE = re.compile(r"^PASSED\s+(\S+)", re.MULTILINE)
 
 
 def _passed(output: str) -> set[str]:
     """Ids pytest named PASSED, less those whose subtests failed (pytest 9 prints both)."""
-    from .parsers import PYTEST_SUBFAILED
+    from .parsers import PYTEST_NODE, PYTEST_SUBFAILED
     subfailed = {m.group("node").replace("\\", "/") for m in PYTEST_SUBFAILED.finditer(output)}
-    return {m.group(1).replace("\\", "/") for m in PASSED_LINE.finditer(output)} - subfailed
+    return {m.group("node").replace("\\", "/") for m in PYTEST_NODE.finditer(output)
+            if m.group("status") == "PASSED"} - subfailed
 
 # Stopping early is the right default for a developer and the wrong one for a
 # question about several named tests, so it is dropped for the confirmation run.
