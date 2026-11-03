@@ -109,6 +109,12 @@ def _observe(root, host, language, mode, *, ordinary_prompts=False):
         'emission_state': before['state'] == ('emitted' if mode == 'native-control' else 'generated'),
         'no_consumption_claim': all(view['model_consumption'] == 'unproven' for view in views),
     }
+    # Each attempt's elapsed time tells a worker killed at its limit (about seconds + 0.5)
+    # from one that failed fast; both leave the same incomplete context behind.
+    advice = root / '.elevenpowers/advice.json'
+    attempts = ([{'status': a['status'], 'elapsed_ms': a.get('elapsed_ms')}
+                 for t in json.loads(advice.read_text())['tasks'] for a in t['attempts']]
+                if advice.exists() else [])
     qualified = all(requirements.values())
     if ordinary_prompts:
         qualified = qualified and bool(task.task) and not task.claims and after_edit.task == task.task
@@ -116,6 +122,7 @@ def _observe(root, host, language, mode, *, ordinary_prompts=False):
             'requirements': requirements,
             'initial_process_exit': initial, 'process_exits': codes, 'callbacks': callbacks,
             'before_check': before, 'followups': followups, 'observations': views,
+            'advice_attempts': attempts,
             'task_opened_by_prompt': bool(task.task) if ordinary_prompts else False,
             'task_preserved_after_edit': after_edit.task == task.task,
             'prompt_claims': [claim.value for claim in task.claims],
