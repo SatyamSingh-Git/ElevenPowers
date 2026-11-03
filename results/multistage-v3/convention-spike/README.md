@@ -59,6 +59,31 @@ The held-out set agrees with the in-sample pattern but is too small to
 settle it. A copy of the changed rule is found; a contract on an order or a
 format mostly is not.
 
+## Noise (planned 2026-11-03, before running [`noise.py`](noise.py))
+
+Recall alone says nothing about how often the ranking would warn for no
+reason. v3 has a natural negative set: 33 of its 96 stages are
+*self-contained*, changes the case declares need nothing elsewhere. Across
+the 120 conversations, every stage is ranked with its own edit.
+
+- **Score.** A file's *share* is the rare-token weight it shares with the
+  edit, divided by the edit's total. A warning fires on a stage when its top
+  file's share reaches a threshold *t*. It then names the files at or above
+  *t*, at most 3.
+- **Negative.** On a self-contained stage, any warning is a false alarm.
+- **Positive.** On a cross-cutting stage, a declared quiet dependent the
+  agent left unedited is found when the warning names it.
+- **Reported, for t in 0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5:**
+  - the fraction of self-contained stages that warn;
+  - the fraction of unedited dependents named;
+  - of the files named on cross-cutting stages, the fraction that are
+    declared dependents.
+
+Every threshold is chosen in-sample. A useful one shows only that there is
+something worth validating on cases not built yet. A false-alarm rate on
+self-contained stages close to the rate on cross-cutting ones means the
+ranking cannot tell them apart.
+
 ## Bounds
 
 - **In-sample, mostly.** The 31 losses were read before the method was
