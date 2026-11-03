@@ -67,7 +67,8 @@ def sources(tree):
             for p in tree.rglob('*.py') if not TEST_NAME.search(p.relative_to(tree).as_posix())}
 
 
-def rank(before_tree, after_tree, edited, dependent):
+def scored(before_tree, after_tree, edited):
+    """Every unedited source file, best first, as (shared weight, path); also the edit's total weight."""
     before, after = sources(before_tree), sources(after_tree)
     query = []
     for path in edited:
@@ -84,6 +85,11 @@ def rank(before_tree, after_tree, edited, dependent):
     query = set(query)
     scores = sorted(((sum(idf.get(w, 0) for w in query & words), path) for path, words in documents.items()
                      if path not in edited), reverse=True)
+    return scores, sum(idf.get(w, 0) for w in query), query, documents, idf
+
+
+def rank(before_tree, after_tree, edited, dependent):
+    scores, _, query, documents, idf = scored(before_tree, after_tree, edited)
     order = [path for _, path in scores]
     shared = sorted(query & documents.get(dependent, set()), key=lambda w: -idf.get(w, 0))[:6]
     return (order.index(dependent) + 1 if dependent in order else None), len(order), shared

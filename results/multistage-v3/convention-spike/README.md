@@ -84,6 +84,50 @@ something worth validating on cases not built yet. A false-alarm rate on
 self-contained stages close to the rate on cross-cutting ones means the
 ranking cannot tell them apart.
 
+### Result: as a warning, it is noise
+
+The 960 stages break down as 330 self-contained and 630 cross-cutting, with
+76 declared dependents the agent left unedited.
+
+| t | self-contained stages that warn | cross-cutting stages that warn | dependents named | named files that are dependents |
+|---|---|---|---|---|
+| 0 | 88% | 99% | 27 of 76 (36%) | 27 of 1,866 (1%) |
+| 0.1 | 73% | 99% | 27 (36%) | 27 of 1,866 (1%) |
+| 0.2 | 65% | 91% | 25 (33%) | 25 of 1,388 (2%) |
+| 0.3 | 48% | 57% | 13 (17%) | 13 of 592 (2%) |
+| 0.4 | 36% | 26% | 5 (7%) | 5 of 214 (2%) |
+| 0.5 | 15% | 8% | 2 (3%) | 2 of 58 (3%) |
+
+(0.05 and 0.15 fall between their neighbours; [`noise.py`](noise.py) prints
+all eight.)
+
+- **No threshold separates the two kinds of stage.** Self-contained stages
+  warn nearly as often as cross-cutting ones, and above 0.3 they warn more
+  often. Every threshold that cuts the false alarms cuts the dependents found
+  at least as fast.
+- **About 1 named file in 60 is a declared dependent.** Naming files at
+  random would score about 1 in 430 (76 dependents among roughly 52
+  candidates on each of 630 stages). So the ranking beats chance by about
+  sixfold, and is still about 98% noise.
+- **Recall here is lower than in the losses.** The rate is 27 of 76 (36%),
+  against 17 of 31 in the losses. This count takes every unedited
+  dependent, including the contracts the in-sample set had fewer of.
+
+**Bounds.**
+- "Noise" means a file is not a declared dependent. Some named files may be
+  related in ways the cases do not declare, such as callers that needed no
+  change.
+- The share threshold is one score. A score built differently (rank among
+  the project's own files, or a gap to the second file) was not tried. Trying
+  scores until one separates the stages would be fitting to these 960.
+
+**What follows for PLAN §13 B.** Shared rare tokens find copies of a
+changed rule, but as a standing warning they would name about three files on
+almost every stage, and those names would almost always be wrong. They
+could feed a question the agent answers on demand ("which other files have
+this rule?"), but not a warning delivered on every edit. That matches the
+finding of open problem 2, that warnings were delivered and not acted on.
+
 ## Bounds
 
 - **In-sample, mostly.** The 31 losses were read before the method was
