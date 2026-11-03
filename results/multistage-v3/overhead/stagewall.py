@@ -42,15 +42,21 @@ def stage(path):
     if end is None or not stamped or 'time_to_request_ms' not in end:
         return None
     asked, tools, calls, spans = {}, collections.Counter(), collections.defaultdict(list), []
+    previous = float('-inf')
     for event in stamped:
         for block in event.get('message', {}).get('content', []) if isinstance(event.get('message', {}).get('content'), list) else []:
             if block.get('type') == 'tool_use':
                 asked[block['id']] = (seconds(event['timestamp']), kind(block))
             elif block.get('type') == 'tool_result' and block.get('tool_use_id') in asked:
                 started, name = asked.pop(block['tool_use_id'])
-                tools[name] += seconds(event['timestamp']) - started
-                calls[name].append(seconds(event['timestamp']) - started)
-                spans.append((started, seconds(event['timestamp'])))
+                finished = seconds(event['timestamp'])
+                # Edits asked for in one turn run one after another; a call's own cost
+                # starts when the result before it arrived, not when it was asked for.
+                own = finished - max(started, previous)
+                tools[name] += own
+                calls[name].append(own)
+                spans.append((started, finished))
+                previous = finished
     # Calls asked for together run together, so their spans overlap; count the union.
     covered, reach = 0.0, float('-inf')
     for started, finished in sorted(spans):

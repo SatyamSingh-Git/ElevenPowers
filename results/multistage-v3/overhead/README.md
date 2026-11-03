@@ -96,19 +96,24 @@ The last row's superpowers mean is pulled below zero by stages whose
 background tasks reported after the result. Medians are 12.8 s against
 2.9 s, a gap of about **10 s**.
 
-Per call, median:
+Per call, median. Edits asked for in one turn run one after another, so a
+call's own cost starts when the result before it arrived, not when it was
+asked for. An earlier version of this table timed from the ask, which
+counted the queue (Edit 3.17 s, Read 0.90 s).
 
 | call | ElevenPowers | superpowers |
 |---|---|---|
-| Edit | **3.17 s** (839) | 0.03 s (497) |
-| Read | **0.90 s** (764) | 0.02 s (582) |
-| shell, not tests | **2.55 s** (943) | 0.45 s (1,045) |
-| shell, tests | 3.68 s (690) | 1.80 s (1,103) |
-| shell, `ep_check` | 7.44 s (332) | — |
+| Edit | **2.31 s** (839) | 0.03 s (497) |
+| Read | **0.58 s** (764) | 0.02 s (582) |
+| shell, not tests | **2.53 s** (943) | 0.45 s (1,045) |
+| shell, tests | 3.63 s (690) | 1.80 s (1,103) |
+| shell, `ep_check` | **7.40 s** (332) | — |
 
 **Half the gap is the hooks on ordinary tool calls.** An Edit runs two
 ElevenPowers hook processes, a shell call two and a Read one. In the run
-each cost about 1–1.5 s.
+each cost about 0.6–1.2 s. Inside the hook, the work itself had a median of
+25 ms before a tool and 77 ms after it (`integrations.json`, 3,954
+samples). The rest was starting the hook.
 
 Run alone on copies of two conversations' final trees
 ([`edithook.py`](edithook.py), [output](edithook.txt)), the same hooks take
@@ -127,8 +132,37 @@ Run alone, a Read's hook takes 0.218 s:
 
 The work is `ledger.saw(path)`. It is not idle: the scope check before an
 edit (`unrelated(here, ledger.seen, …)`) reads it, so dropping the Read hook
-changes behaviour. Lazier imports would change nothing, at about two-thirds
-of the cost of each call.
+changes behaviour. Of the imports, most is the ledger itself (0.103 s) and
+the standard library under it. Deferring the rest saves about 13%.
+
+## Fixed: every hook started PowerShell first (`407d749`)
+
+On Windows the installer wrote each hook as `powershell.exe -NoProfile
+-NonInteractive -EncodedCommand …`. That form is correct whether a host
+runs hooks through cmd, PowerShell or bash.
+
+Claude Code 2.1.292 runs them through Git Bash: `claude.exe → bash.exe →
+bash.exe → python`. That was seen at $0 by a hook that recorded its own
+parents and then blocked the prompt before any model call. PowerShell in
+between did nothing for that host and cost 0.17 s a start alone, 0.26 s
+under load.
+
+When every path is plain, the Claude command is now bare words. Otherwise
+it keeps the encoded form, which bash also runs. The other hosts are not
+shown to use bash and are unchanged.
+
+| real Claude Code, real hooks, prompt blocked (no model call) | median of 5 |
+|---|---|
+| encoded hook commands | 3.95 s |
+| plain hook commands | 3.69 s |
+
+That saving is SessionStart alone. Both forms processed 5 of 5 SessionStart
+and UserPromptSubmit callbacks with no errors. The tests require exit code 2,
+which a Stop block uses, to survive Git Bash in both forms.
+
+At the run's rate of about 15 hook calls per stage, the saving is roughly
+3–4 s of the 35 s per stage. That is an estimate from the per-start figures;
+no paid run has measured it.
 
 ## What the mutation step tells the agent: nothing, here
 
