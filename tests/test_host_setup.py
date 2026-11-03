@@ -115,6 +115,46 @@ def test_copilot_setup_merges_and_executes_direct_args(tmp_path):
     assert json.loads(path.read_text()) == original
 
 
+def _stand_in(source):
+    # Prints what it was given and exits 2, the code a Stop gate blocks with.
+    launcher = source / "plugin/bin/ep_hook.py"
+    launcher.parent.mkdir(parents=True)
+    launcher.write_text("import json, sys\nprint(json.dumps(sys.argv[1:]))\nsys.exit(2)\n")
+    return source
+
+
+def _git_bash():
+    import shutil
+    git = shutil.which("git")
+    found = git and next((p / "bin/bash.exe" for p in Path(git).resolve().parents if (p / "bin/bash.exe").exists()), None)
+    if not found:
+        pytest.skip("Git Bash not found")
+    return found
+
+
+# Claude Code 2.1.292 on Windows runs hook commands through Git Bash; seen on 2026-11-03
+# by a blocked-prompt hook that recorded its own parent processes.
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows hook command form")
+@pytest.mark.parametrize("name, wrapped", [("plain-runtime", False), ("runtime space %EP_TEST% 'literal'", True)])
+def test_claude_hooks_reach_python_through_git_bash_and_keep_exit_codes(tmp_path, name, wrapped):
+    import subprocess
+    from core.hosts.setup import install
+    project = tmp_path / "project"
+    project.mkdir()
+    path = install("claude", project, sys.executable, _stand_in(tmp_path / name))
+    command = json.loads(path.read_text())["hooks"]["Stop"][0]["hooks"][0]["command"]
+    assert command.lower().startswith("powershell") is wrapped
+    done = subprocess.run([str(_git_bash()), "-c", command], input="{}", text=True, capture_output=True, timeout=30)
+    assert (done.returncode, json.loads(done.stdout)) == (2, ["Stop"]), done.stderr
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows hook command form")
+def test_hosts_not_shown_to_use_git_bash_keep_the_encoded_command(tmp_path):
+    from core.hosts.setup import WINDOWS_PREFIX, install
+    path = install("codex", tmp_path, sys.executable, SOURCE)
+    assert json.loads(path.read_text())["hooks"]["Stop"][0]["hooks"][0]["command"].startswith(WINDOWS_PREFIX)
+
+
 @pytest.mark.parametrize("name", ["R&D", "runtime space %EP_TEST% 'literal'", "runtime Ω"])
 def test_setup_launches_source_with_shell_metacharacters(tmp_path, name):
     import subprocess

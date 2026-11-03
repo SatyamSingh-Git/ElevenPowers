@@ -27,6 +27,17 @@ def invocation(args: list[str]) -> str:
     return WINDOWS_PREFIX + base64.b64encode(script.encode("utf-16-le")).decode("ascii")
 
 
+def git_bash_invocation(args: list[str]) -> str:
+    # Claude Code on Windows runs hooks through Git Bash (2.1.292, seen 2026-11-03), so
+    # plain paths can start Python directly: PowerShell in between cost 0.17-0.26 s a
+    # call. Anything bash could reinterpret keeps the encoded form, which bash runs too.
+    if os.name == "nt":
+        words = [a.replace("\\", "/") for a in args]
+        if all(re.fullmatch(r"[A-Za-z0-9:/._-]+", w) for w in words):
+            return " ".join(words)
+    return invocation(args)
+
+
 def invocation_args(command: str) -> list[str]:
     try:
         if command.startswith(WINDOWS_PREFIX):
@@ -147,7 +158,8 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
         for entry in entries:
             if platform != "copilot":
                 for handler in entry.get("hooks", [entry]):
-                    handler["command"] = invocation([*args, event] if platform == 'claude' else [*args, platform, event])
+                    handler["command"] = (git_bash_invocation([*args, event]) if platform == 'claude'
+                                          else invocation([*args, platform, event]))
             for handler in entry.get("hooks", []):
                 handler["name" if platform == "gemini" else "statusMessage"] = MARKER
         hooks.setdefault(event, []).extend(entries)
