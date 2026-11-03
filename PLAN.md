@@ -2059,7 +2059,13 @@ Until then any contributor can start on an open problem below.
    both ways, without the in-loop harm an intervening critic can cause? §10
    qualifies that literature: its 26-point collapse is HotPotQA, not coding.
 3. **Brief cutoff.** List the importers a brief hides behind "+N more", or
-   rank them, without flooding the context.
+   rank them, without flooding the context. Tried 2026-11-03 ($0,
+   [spike](results/multistage-v3/brief-cutoff/README.md)):
+   - ranking by the edit's shared rare tokens tracks file size, not the
+     edit;
+   - at the stages it was not designed from, another stage's edit does as
+     well (7 of 12 against 5 of 12);
+   - ranking by use of the touched functions changed nothing.
 4. **Overhead.** Find where the arm's extra minutes go, and cut what carries
    no information.
 
