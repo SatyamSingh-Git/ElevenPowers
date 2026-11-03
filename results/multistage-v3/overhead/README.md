@@ -164,6 +164,31 @@ At the run's rate of about 15 hook calls per stage, the saving is roughly
 3–4 s of the 35 s per stage. That is an estimate from the per-start figures;
 no paid run has measured it.
 
+## Fixed: `ep_check --all` hashed the runtime seven times
+
+The agent's own `ep_check --all` took 7.40 s a call in the run, against
+1.80 s for the same tests run plainly. Profiled on a copy of a real final
+tree, 1.62 s of a 3.44 s call was `provenance.fingerprint()`. It ran seven
+times, each time reading every runtime file.
+
+The calls are guards, before launch, after the run and at batch closure,
+that the runtime did not move under the check. They stay. The fingerprint
+now borrows Git's index rule:
+
+- unchanged names, sizes and mtimes vouch for unchanged content;
+- a file written within 2 s of being read is read again (racily clean).
+
+| same tree, median of 3 | before | after |
+|---|---|---|
+| `pytest` alone | 0.92 s | 0.96 s |
+| `ep_check --all` | 3.44 s | **2.13 s** |
+| of which fingerprint, 7 calls | 1.62 s | 0.50 s |
+
+Known limit, as in Git: a same-size edit whose old mtime is put back by
+hand is not seen on a file older than 2 s when last read. Resized, renamed
+and recently written files are; each has a test, and six mutants of the
+rule are killed.
+
 ## What the mutation step tells the agent: nothing, here
 
 Its result goes to `strength.json`, the exported report and the doctor's
