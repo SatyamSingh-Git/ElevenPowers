@@ -72,10 +72,50 @@ the task opened" and examined no mutant. A first stage starts clean and
 would run the whole analysis, as the replays did; none of those runs was
 kept.
 
-So Stop, the tool hooks and the agent's own `ep_check` account for about
-10–12 s of the 33 s per stage. **About 20 s per stage is not attributed.**
-Four conversations shared the machine during the run, and this file does not
-measure what that cost.
+Stop is therefore a smaller part than the replay said. The next section
+finds where the rest goes.
+
+## Where the 35 s goes, from the transcripts' own clocks ([`stagewall.py`](stagewall.py))
+
+Each stage's `result` event records the process's startup
+(`time_to_request_ms`, with its hook phase), and every assistant and user
+event is timestamped. Every tool call can be timed from the event that asked
+for it to the event that returned it. Calls asked for together run together,
+so the total counts their union. All 480 stages per arm
+([output](stagewall.txt)).
+
+| mean per stage | ElevenPowers | superpowers | difference |
+|---|---|---|---|
+| wall | 76.7 s | 41.8 s | **34.9 s** |
+| startup (SessionStart, UserPromptSubmit) | 1.5 s | 0.2 s | 1.4 s |
+| tool calls | 27.3 s | 8.9 s | **18.4 s** |
+| the model, between tool calls | 30.1 s | 33.8 s | −3.7 s |
+| after the last event (Stop, exit) | 17.8 s | −1.1 s | 18.9 s |
+
+The last row's superpowers mean is pulled below zero by stages whose
+background tasks reported after the result. Medians are 12.8 s against
+2.9 s, a gap of about **10 s**.
+
+Per call, median:
+
+| call | ElevenPowers | superpowers |
+|---|---|---|
+| Edit | **3.17 s** (839) | 0.03 s (497) |
+| Read | **0.90 s** (764) | 0.02 s (582) |
+| shell, not tests | **2.55 s** (943) | 0.45 s (1,045) |
+| shell, tests | 3.68 s (690) | 1.80 s (1,103) |
+| shell, `ep_check` | 7.44 s (332) | — |
+
+**Half the gap is the hooks on ordinary tool calls.** An Edit runs two
+ElevenPowers hook processes, a shell call two and a Read one. In the run
+each cost about 1–1.5 s.
+
+Run alone on copies of two conversations' final trees
+([`edithook.py`](edithook.py), [output](edithook.txt)), the same hooks take
+0.44 s for an Edit and 0.21 s for a Read. That holds with the run's own
+23–70 KB ledger and with the state reset, so accumulated state is not the
+cause. The run had four conversations sharing the machine. Its load is the
+remaining candidate, and it is not measured.
 
 ## What the mutation step tells the agent: nothing, here
 

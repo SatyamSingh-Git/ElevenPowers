@@ -1,0 +1,4 @@
+state as left  ledger    23175 bytes  Edit pre+post 0.44 s  Read post 0.21 s (medians of 5)
+config only    ledger        0 bytes  Edit pre+post 0.41 s  Read post 0.20 s (medians of 5)
+state as left  ledger    69582 bytes  Edit pre+post 0.44 s  Read post 0.22 s (medians of 5)
+config only    ledger        0 bytes  Edit pre+post 0.40 s  Read post 0.20 s (medians of 5)
