@@ -93,11 +93,13 @@ def alive(pid):
         os.kill(pid, 0)
     except ProcessLookupError:
         return False
-    status = Path(f"/proc/{pid}/stat")
     try:
-        return not (status.exists() and status.read_text().rsplit(")", 1)[1].split()[0] in {"Z", "X"})
-    except (FileNotFoundError, ProcessLookupError):
-        return False  # It exited between the existence probe and the read.
+        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0] not in {"Z", "X"}
+    except ProcessLookupError:
+        return False
+    except FileNotFoundError:
+        # Where procfs exists, no entry means reaped; kill(0) can still answer for an instant.
+        return not Path("/proc/self/stat").exists()
 
 
 def assert_tree_stopped(tmp_path):
@@ -126,6 +128,14 @@ def test_alive_handles_process_disappearing_during_proc_read(monkeypatch, error)
         raise error()
     monkeypatch.setattr(Path, "read_text", vanished)
     assert not alive(1234)
+
+
+@pytest.mark.skipif(not Path("/proc/self/stat").exists(), reason="needs procfs")
+def test_alive_counts_a_pid_without_a_proc_entry_as_gone(monkeypatch):
+    # CI on 23879e6: a reaped child still answered kill(0) for an instant after its
+    # /proc entry went, and the helper called it a survivor.
+    monkeypatch.setattr(os, "kill", lambda *a: None)
+    assert not alive(2 ** 22 + 1)  # above Linux's largest pid_max, so never in /proc
 
 
 @pytest.mark.parametrize("linger", [False, True])
