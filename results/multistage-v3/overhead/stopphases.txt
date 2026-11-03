@@ -1,0 +1,9 @@
+60 ElevenPowers conversations, 0 without verification.json, 125 Stop runs
+Stop run span: median 5.3 s, mean 6.1 s, max 29.1 s
+  working tree inspection  median  0.23 s  mean  0.27 s
+  baseline preparation     median  0.19 s  mean  0.19 s
+  baseline                 median  1.96 s  mean  2.12 s
+  confirmation             median  0.97 s  mean  1.18 s
+  test strength            median  0.64 s  mean  0.75 s
+test strength ended because:
+   125  changed source was already dirty when the task opened

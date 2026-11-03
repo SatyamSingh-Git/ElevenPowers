@@ -42,13 +42,47 @@ runs.
 | of which the suite, the base-tree suite and confirmation | about 4 s |
 | `ep_check --all`, when the agent runs it | about 3 s |
 
-Stop, 1–3 s of tool hooks and the agent's own `ep_check` add up to about
-29 s. That is most of the 33 s gap. The run had four conversations at once
-and this replay had one, so the replay is a floor.
+~~Stop, 1–3 s of tool hooks and the agent's own `ep_check` add up to about
+29 s, most of the 33 s gap; the largest single cost is the mutation step at
+Stop.~~ **Withdrawn the same day.** The replay is not how the run's stages
+began; see the next section.
 
-**The largest single cost is the mutation step at Stop.** It takes about
-half the gap, and it ended "incomplete" at its mutation limit in all nine
-replays.
+## The Stop runs the conversations actually made ([`stopphases.py`](stopphases.py))
+
+The replay committed each stage's starting snapshot, so the stage's edits
+were the only change and the mutation step examined them. The run never
+committed between stages. From stage 2 on, every earlier stage's edit was
+already uncommitted when the task opened, and the mutation step refuses
+those files: whose change they are cannot be told.
+
+Each conversation's `verification.json` keeps its recent Stop runs: 125
+from the 60 ElevenPowers conversations, all from later stages
+([output](stopphases.txt)).
+
+| per Stop run | median | mean |
+|---|---|---|
+| **whole run** | **5.3 s** | **6.1 s** |
+| base-tree suite | 2.0 s | 2.1 s |
+| confirmation | 1.0 s | 1.2 s |
+| test strength | 0.6 s | 0.8 s |
+| worktree and Git inspection | 0.4 s | 0.5 s |
+
+All 125 ended test strength with "changed source was already dirty when
+the task opened" and examined no mutant. A first stage starts clean and
+would run the whole analysis, as the replays did; none of those runs was
+kept.
+
+So Stop, the tool hooks and the agent's own `ep_check` account for about
+10–12 s of the 33 s per stage. **About 20 s per stage is not attributed.**
+Four conversations shared the machine during the run, and this file does not
+measure what that cost.
+
+## What the mutation step tells the agent: nothing, here
+
+Its result goes to `strength.json`, the exported report and the doctor's
+health view. Neither the Stop message nor the gate message carries it. In
+the 60 conversations no agent ran the export or the doctor, and no
+assistant message mentions mutants or test strength.
 
 ## Found on the way: a test id cut at its first space
 
@@ -59,8 +93,10 @@ ends "incomplete".
 
 ## Bounds
 
-- **Floor, not a measurement of the run.** The replay is unloaded, on one
+- **The replay is a floor, but not of the run.** It is unloaded, on one
   machine, one stage per case, with the stage's whole change written at
-  once.
-- **What the mutation step tells the agent was not measured here.** Cutting
-  it saves time; whether it costs information is a separate question.
+  once, and it starts each stage clean, which the run did not.
+- **The real Stop runs are later stages only.** `verification.json` keeps
+  recent runs, so no first-stage Stop is measured.
+- **"Tells the agent nothing" is this harness's flow.** A person who runs
+  the export or the doctor does see the analysis.
