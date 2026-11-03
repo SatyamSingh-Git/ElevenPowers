@@ -24,7 +24,11 @@ parser defect.** PLAN §13 B.
     PowerShell first (`407d749`): Claude Code runs them through Git Bash,
     seen by a hook that blocked its own prompt. `ep_check --all` no longer
     re-reads the runtime seven times; it now takes 2.13 s from 3.44 s
-    (`97db162`). Their effect on a paid run is not measured.
+    (`97db162`).
+  - **Paid check, $0.62:** four one-stage sessions found every hook
+    processed in the plain form, and an Edit at 0.63 s against 0.96 s with
+    the order controlled. A larger first-pair gap came with running first
+    and is not claimed.
 - **Fixed: a parametrised test id was cut at its first space.** Replays hit
   it as `test_bad_settings_are_refused[raw4-setting`, and confirmation ended
   "incomplete" in 2 of 9.

@@ -2108,8 +2108,17 @@ Until then any contributor can start on an open problem below.
    - `ep_check --all` re-read the whole runtime seven times. It now takes
      2.13 s from 3.44 s (`97db162`).
 
-   Still open: the mutation step need not run at Stop when nothing reads it.
-   No paid run has measured the effect of these cuts.
+   A paid check ($0.62, four one-stage sessions, two pairs in opposite
+   orders) found every hook processed without error in the plain form. An
+   Edit took 0.63 s against 0.96 s. A first pair showed 0.61 s against
+   3.78 s and wall time halved, but that gap came with running first and is
+   not claimed.
+
+   Left as designed: the Stop hook's mutation step. Its approved design
+   runs it at completion. It exits at once without an engine, took 0.6 s on
+   the run's later stages, and a project can turn it off. The rest of Stop
+   is its three test runs (3.3 s of 6.8 s) and about 64 Git calls
+   (2.3 s).
 
 **Gate for any claim:** a no-model replay on the kept v3 snapshots first, then
 a paired run with superpowers in both arms, under the same sealing and
