@@ -117,6 +117,19 @@ Run alone on copies of two conversations' final trees
 cause. The run had four conversations sharing the machine. Its load is the
 remaining candidate, and it is not measured.
 
+Run alone, a Read's hook takes 0.218 s:
+
+| part | time |
+|---|---|
+| bare interpreter | 0.037 s |
+| imports (`core.hook`, 0.103 s, and what it pulls in) | 0.144 s |
+| the work | about 0.04 s |
+
+The work is `ledger.saw(path)`. It is not idle: the scope check before an
+edit (`unrelated(here, ledger.seen, …)`) reads it, so dropping the Read hook
+changes behaviour. Lazier imports would change nothing, at about two-thirds
+of the cost of each call.
+
 ## What the mutation step tells the agent: nothing, here
 
 Its result goes to `strength.json`, the exported report and the doctor's
