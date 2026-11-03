@@ -30,6 +30,16 @@ parser defect.** PLAN §13 B.
 - **CI.** `23879e6` failed one intermittent process test. The test's helper
   counted a reaped process as alive when kill(0) answered after its `/proc`
   entry had gone. The fix was watched flipping under WSL Linux.
+  `e677bde` failed
+  `test_advice_delivery_exercise[javascript]` on windows-3.13 only. It had
+  failed the same way on `c28971e`. The replay arm's advice worker left the
+  timeout/failure message, and the attempt stayed incomplete. Its cause is
+  **not found**:
+  - Locally the worker takes about 0.4 s against a 2.5 s limit.
+  - The two runs' timings disagree about whether it stalled or failed fast.
+
+  The exercise now reports each attempt's status and `elapsed_ms`. A forced
+  stall reads 2512 ms, so the next failure will say which it was (`09c175b`).
 
 **2026-11-01 — The reviewer's report, and the superpowers comparison.**
 PLAN §13 A, steps 1 and 2.
