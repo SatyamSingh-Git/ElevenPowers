@@ -224,3 +224,25 @@ def test_files_in_no_shared_rule_get_no_rule_note(tmp_path):
     root = declared(tmp_path)
     assert 'Declared rule' not in _brief(root, 'app/names.py')
     assert 'Declared rule' not in _brief(root, 'app/store.py')
+
+
+
+# --- at completion: the person is told which declared rule was changed only partly ---
+
+def _report(root, touched):
+    from core.ledger import Ledger
+    from core.obligations import Claim, Risk
+    from core.report import end_report
+    base = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=root, capture_output=True, text=True).stdout.strip()
+    return end_report(Ledger(root=root, claims=[Claim.BUG_FIXED], risk=Risk.LOW, base=base, touched=touched))
+
+
+def test_the_end_report_names_a_declared_rule_changed_in_one_file_only(tmp_path):
+    text = _report(declared(tmp_path), ['app/money.py'])
+    assert 'lodging-tax' in text and 'changed app/money.py, not app/services/pricing.py' in text, text
+
+
+def test_the_end_report_is_quiet_when_a_rule_changed_everywhere_or_nowhere(tmp_path):
+    root = declared(tmp_path)
+    assert 'lodging-tax' not in _report(root, ['app/money.py', 'app/services/pricing.py'])
+    assert 'lodging-tax' not in _report(root, ['app/names.py'])

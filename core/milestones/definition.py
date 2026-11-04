@@ -116,3 +116,18 @@ def rules_naming(root, path):
             lines.append(f"Declared rule {item['id']} ({description}) is also kept in {shown}. "
                          'Change them together, or say why one should differ.')
     return '\n'.join(lines[:3])
+
+
+
+def partly_changed(root, touched):
+    """Declared multi-file rules this task changed in some files and not the others."""
+    if not configured(root):
+        return []
+    said = []
+    for item in load(root)['milestones']:
+        changed = [p for p in item['inputs'] if p in touched]
+        unchanged = [p for p in item['inputs'] if p not in touched]
+        if changed and unchanged:
+            said.append(f"declared rule {item['id']}: changed {', '.join(changed[:4])}, "
+                        f"not {', '.join(unchanged[:4])}")
+    return said[:5]
