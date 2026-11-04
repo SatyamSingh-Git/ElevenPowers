@@ -40,3 +40,33 @@ control arm lost the dependent. The pilot must show four things:
 - no run is lost to infrastructure.
 
 It is too small to show an effect and is not read for one.
+
+### Pilot result: the harness qualifies, and delivery has a gap
+
+All 12 runs completed, with nothing lost to infrastructure: $1.63, 43–136
+s each ([batch](E:/ep-runs/rule-groups-acted-on-pilot-2026-11-04)).
+
+| stage | control: dependent lost | rules: dependent lost |
+|---|---|---|
+| `household_budget` 7 | 3 of 3 | 1 of 3 |
+| `recipe_box` 4 | 3 of 3 | 0 of 3 |
+
+As pre-registered, this is not read for an effect. Reading the transcripts
+shows why it must not be. The note reached the agent in only 3 of 6 rules
+runs:
+
+- **Note received:** in both `household_budget` runs that kept the
+  dependent, and in `recipe_box` 2, the agent edited a declared file with
+  the Edit tool, and the brief named the other file.
+- **Note never received:** in `recipe_box` 0 and 1, the agent wrote every
+  file by running Python in Bash. No Edit was made, so no brief fired.
+  Neither run read `elevenpowers.milestones.json`, and the session-start
+  context is the same in both arms. Those agents found the dependent on
+  their own, so the arms' difference there is not the note's.
+- **Note never received, dependent lost:** `household_budget` rules 1 also
+  edited through Bash.
+
+**Decision:** the full run waits for a repair. A rule note has to reach an
+agent that edits through the shell as well. It is repaired, rehearsed again
+at $0 on the shell path, and only then sealed and run. The pilot batch is
+kept as it is.
