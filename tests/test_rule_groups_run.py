@@ -23,6 +23,44 @@ def test_certification_accepts_only_pairs_that_a_stage_breaks(tmp_path):
     assert pairs <= breaking_pairs(case, tmp_path / 'again')
 
 
+def _proposed_ids(tmp_path):
+    import subprocess
+    from core.milestones.propose import propose
+    from eval.multistage_cases import tree
+    start = tree(_case(), 0, tmp_path / 'proposed')
+    subprocess.run(['git', 'init', '-q'], cwd=start, check=True)
+    subprocess.run(['git', 'add', '-A'], cwd=start, check=True, capture_output=True)
+    return [p['entry']['id'] for p in propose(start, limit=50, seconds=120)['proposals']]
+
+
+def test_a_reviewer_s_certification_declares_exactly_the_pairs_it_kept(tmp_path):
+    from eval.rule_groups_run import certify
+    ids = _proposed_ids(tmp_path)
+    kept = [ids[7], ids[2]]
+    entries = certify(_case(), tmp_path / 'reviewed', accept=kept)
+    assert [e['id'] for e in entries] == [ids[2], ids[7]]
+    for entry in entries:
+        assert entry['description'].startswith('These files keep the same rule (they share ')
+        assert entry['checks'] == [{'kind': 'test_suite', 'command': f"python -m pytest {_case()['test_dir']} -q"}]
+
+
+def test_a_kept_pair_that_was_never_proposed_is_refused(tmp_path):
+    import pytest
+    from eval.rule_groups_run import certify
+    with pytest.raises(ValueError, match='not among the proposals'):
+        certify(_case(), tmp_path, accept=['rule-made-up'])
+
+
+def test_the_sealed_protocol_freezes_the_reviewer_s_pairs(tmp_path, monkeypatch):
+    from eval import rule_groups_run as m
+    monkeypatch.setattr(m.subscription, 'auth', lambda *a: True)
+    ids = _proposed_ids(tmp_path)
+    protocol = m.prepare(tmp_path / 'batch', [('payroll_lite', 2)], replicates=1, seconds=60,
+                         accepted={'payroll_lite': [ids[0]]})
+    assert [e['id'] for e in protocol['rules']['payroll_lite']] == [ids[0]]
+    assert protocol['accepted'] == {'payroll_lite': [ids[0]]}
+
+
 def test_a_certified_description_borrows_no_word_from_any_request(tmp_path):
     from eval.rule_groups_run import certify
     case = _case()

@@ -64,16 +64,24 @@ def breaking_pairs(case, scratch):
     return pairs
 
 
-def certify(case, scratch):
-    """A perfect reviewer of the top proposals at stage 0: accept exactly the pairs some stage breaks."""
+def certify(case, scratch, accept=None):
+    """A perfect reviewer of the top proposals at stage 0: accept exactly the pairs some stage breaks.
+
+    `accept` (rule ids) replaces it with a real reviewer's choice among the same proposals."""
     scratch = Path(scratch)
     start = tree(case, 0, scratch / 'start')
     subprocess.run(['git', 'init', '-q'], cwd=start, check=True)
     subprocess.run(['git', 'add', '-A'], cwd=start, check=True, capture_output=True)
-    wanted = breaking_pairs(case, scratch / 'pairs')
+    proposals = propose(start, limit=PROPOSALS, seconds=120)['proposals']
+    if accept is None:
+        wanted = breaking_pairs(case, scratch / 'pairs')
+        accept = {p['entry']['id'] for p in proposals if frozenset(p['files']) in wanted}
+    unknown = set(accept) - {p['entry']['id'] for p in proposals}
+    if unknown:
+        raise ValueError(f"{case['id']}: {sorted(unknown)} not among the proposals")
     entries = []
-    for proposal in propose(start, limit=PROPOSALS, seconds=120)['proposals']:
-        if frozenset(proposal['files']) in wanted:
+    for proposal in proposals:
+        if proposal['entry']['id'] in accept:
             entries.append({**proposal['entry'],
                             'description': f"These files keep the same rule (they share {', '.join(proposal['shared'][:3])}).",
                             'checks': [{'kind': 'test_suite', 'command': f"python -m pytest {case['test_dir']} -q"}]})
@@ -105,10 +113,11 @@ def workspace(case, stage, arm, folder, entries):
 
 
 def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5', cases=CASES, manifest=MANIFEST,
-            arms=ARMS, descriptions=None):
+            arms=ARMS, descriptions=None, accepted=None):
     """Seal the slots and the certified rules before any run; `stages` is a list of (case, stage).
 
-    `descriptions` ({case: {rule id: sentence}}) is required by, and only by, the described arm."""
+    `descriptions` ({case: {rule id: sentence}}) is required by, and only by, the described arm.
+    `accepted` ({case: [rule id]}) certifies a reviewer's kept pairs in place of the perfect ones."""
     if model not in subscription.SUPPORTED_MODELS['claude']:
         raise ValueError('unsupported subscription model')
     if len(set(arms)) != len(arms) or len(arms) < 2 or not set(arms) <= {*ARMS, DESCRIBED}:
@@ -132,7 +141,8 @@ def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5'
         for name in names:
             if _files(cases, name) != _frozen(frozen, name):
                 raise ValueError(f'{name} differs from the frozen manifest')
-            rules[name] = certify(load(Path(cases) / name), Path(scratch) / name)
+            rules[name] = certify(load(Path(cases) / name), Path(scratch) / name,
+                                  accept=None if accepted is None else accepted[name])
     described = {}
     for name in names if descriptions is not None else []:
         given = descriptions.get(name, {})
@@ -149,7 +159,7 @@ def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5'
                 'stages': [list(s) for s in stages], 'unattended': UNATTENDED,
                 'cases_root': str(Path(cases).absolute()), 'manifest': str(Path(manifest).absolute()),
                 'files': {name: _frozen(frozen, name) for name in names}, 'rules': rules,
-                'arms': list(arms), 'described': described,
+                'arms': list(arms), 'described': described, 'accepted': accepted,
                 'runtime_fingerprint': fingerprint(), 'harness_sha256': _harness(), 'slots': slots,
                 'sessions': {slot: str(uuid.uuid4()) for slot in slots}}
     _write(root / 'protocol.json', protocol)
@@ -303,6 +313,7 @@ def main(argv=None):
     p.add_argument('--seconds', type=int, default=900)
     p.add_argument('--arm', action='append', help=f'repeatable; default {" and ".join(ARMS)}')
     p.add_argument('--descriptions', type=Path, help='JSON {case: {rule id: sentence}} for the described arm')
+    p.add_argument('--accepted', type=Path, help="JSON {case: [rule id]}: a reviewer's kept pairs, certified as given")
     e = sub.add_parser('execute')
     e.add_argument('batch', type=Path)
     e.add_argument('slot')
@@ -314,7 +325,8 @@ def main(argv=None):
         stages = [(item.split(':')[0], int(item.split(':')[1])) for item in args.stage]
         value = prepare(args.batch, stages, replicates=args.replicates, seconds=args.seconds,
                         arms=tuple(args.arm or ARMS),
-                        descriptions=json.loads(args.descriptions.read_text(encoding='utf-8')) if args.descriptions else None)
+                        descriptions=json.loads(args.descriptions.read_text(encoding='utf-8')) if args.descriptions else None,
+                        accepted=json.loads(args.accepted.read_text(encoding='utf-8')) if args.accepted else None)
         print(json.dumps({'slots': value['slots'], 'rules': {k: len(v) for k, v in value['rules'].items()}}, indent=2))
     elif args.action == 'execute':
         record = execute(args.batch, args.slot, args.executable)

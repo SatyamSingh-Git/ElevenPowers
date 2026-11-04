@@ -1,0 +1,46 @@
+{
+ "household_budget": [
+  "rule-reopen_month-is_closed",
+  "rule-forecast-upcoming",
+  "rule-for_workspace-add_category",
+  "rule-add_category-rename_category",
+  "rule-categorise_open_months-file_transfers",
+  "rule-summarise-_spent_by_category",
+  "rule-import_statement-categorise_open_months",
+  "rule-cmd_rule_add-find_problems",
+  "rule-import_statement-post_due",
+  "rule-year_report-_carried_into",
+  "rule-find_problems-rename_category"
+ ],
+ "library_loans": [
+  "rule-parse_date-_day",
+  "rule-status-summary",
+  "rule-overdue_rows-fine_for",
+  "rule-spells-replay",
+  "rule-write_members_csv-save_members",
+  "rule-_check_loans-replay"
+ ],
+ "parcelpost": [
+  "rule-vat-vat",
+  "rule-render_text-render_zpl",
+  "rule-_check_digit-_plausible_number",
+  "rule-base_rate-render_rate_card"
+ ],
+ "payroll_lite": [
+  "rule-hours_rows-split_hours",
+  "rule-_employee-_employee",
+  "rule-add_employee-_employee",
+  "rule-add_employee-_employee-2"
+ ],
+ "recipe_box": [
+  "rule-recipe_markdown-render_recipe",
+  "rule-recipe_id-_title_key",
+  "rule-_to_grams-grams",
+  "rule-_read_recipe-recipe_from_dict",
+  "rule-parse_ingredient-parse_quantity",
+  "rule-_enough-_after_pantry",
+  "rule-recipe_markdown-recipe_html",
+  "rule-render_recipe-recipe_html",
+  "rule-convertible-_group"
+ ]
+}

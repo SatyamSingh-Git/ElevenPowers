@@ -1,0 +1,85 @@
+[
+ {
+  "stage": "household_budget 7",
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "declared rules": 11,
+  "pair kept": true,
+  "declarations load": true,
+  "control has none": true,
+  "edit brief names dependent": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "shell note names dependent": true,
+  "rule notes in the shell note": 2,
+  "control briefs carry no rule": true,
+  "control shell silent": true,
+  "neighbourhood names dependent, either arm": false,
+  "passes": true
+ },
+ {
+  "stage": "recipe_box 4",
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "declared rules": 9,
+  "pair kept": true,
+  "declarations load": true,
+  "control has none": true,
+  "edit brief names dependent": [
+   "src/recipebox/core/recipe.py"
+  ],
+  "shell note names dependent": true,
+  "rule notes in the shell note": 1,
+  "control briefs carry no rule": true,
+  "control shell silent": true,
+  "neighbourhood names dependent, either arm": false,
+  "passes": true
+ },
+ {
+  "stage": "library_loans 1",
+  "dependent": "src/lending/reports/overdue.py",
+  "declared rules": 6,
+  "pair kept": true,
+  "declarations load": true,
+  "control has none": true,
+  "edit brief names dependent": [
+   "src/lending/services/fines.py"
+  ],
+  "shell note names dependent": true,
+  "rule notes in the shell note": 1,
+  "control briefs carry no rule": true,
+  "control shell silent": true,
+  "neighbourhood names dependent, either arm": false,
+  "passes": true
+ },
+ {
+  "stage": "payroll_lite 2",
+  "dependent": "src/payroll/reports/hours.py",
+  "declared rules": 4,
+  "pair kept": true,
+  "declarations load": true,
+  "control has none": true,
+  "edit brief names dependent": [
+   "src/payroll/rules/overtime.py"
+  ],
+  "shell note names dependent": true,
+  "rule notes in the shell note": 1,
+  "control briefs carry no rule": true,
+  "control shell silent": true,
+  "neighbourhood names dependent, either arm": false,
+  "passes": true
+ },
+ {
+  "stage": "parcelpost 5",
+  "dependent": "src/parcelpost/services/billing.py",
+  "declared rules": 4,
+  "pair kept": false,
+  "declarations load": true,
+  "control has none": true,
+  "edit brief names dependent": [],
+  "shell note names dependent": false,
+  "rule notes in the shell note": 0,
+  "control briefs carry no rule": true,
+  "control shell silent": true,
+  "neighbourhood names dependent, either arm": true,
+  "passes": true
+ }
+]
