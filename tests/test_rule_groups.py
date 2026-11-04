@@ -112,7 +112,30 @@ def test_sources_it_cannot_read_are_counted_not_skipped_silently(tmp_path):
     from core.milestones.propose import propose
     coverage = propose(project(tmp_path, {'web/tax.js': 'export const tax = (c) => Math.round(c * 0.1175);\n'}))['coverage']
     assert coverage['not_examined'] == 1
-    assert not coverage['complete']
+    assert any('1 non-Python source files were not examined' == issue for issue in coverage['issues'])
+
+
+def _words(prefix, count):
+    return ', '.join(f'{prefix}{i}' for i in range(count))
+
+
+def test_two_large_functions_do_not_outrank_a_small_copy_by_size(tmp_path):
+    # The large pair shares ten rare words, more than the tax pair; each also has sixty of its own.
+    from core.milestones.propose import propose
+    large = 'def {name}():\n    return [{shared}, {own}]\n'
+    root = project(tmp_path, {
+        'app/big_one.py': large.format(name='big_one', shared=_words('both', 10), own=_words('alpha', 60)),
+        'app/big_two.py': large.format(name='big_two', shared=_words('both', 10), own=_words('beta', 60))})
+    ranked = [p['files'] for p in propose(root)['proposals']]
+    assert ranked.index(['app/money.py', 'app/services/pricing.py']) < ranked.index(['app/big_one.py', 'app/big_two.py'])
+
+
+def test_words_used_everywhere_weigh_less_than_words_two_functions_share(tmp_path):
+    # Twelve files share six words used everywhere; counted alike, those pairs would win.
+    from core.milestones.propose import propose
+    common = {f'app/common_{i}.py': f'def common_{i}():\n    return [{_words("everywhere", 6)}]\n' for i in range(12)}
+    ranked = [p['files'] for p in propose(project(tmp_path, common))['proposals']]
+    assert ranked[0] == ['app/money.py', 'app/services/pricing.py']
 
 
 def test_the_limit_bounds_the_list(tmp_path):
