@@ -122,6 +122,43 @@ of universal safety. Collection detects declaration/ledger movement but is not
 an atomic filesystem transaction. This release adds a useful inspection and
 retention capability; coding improvement still needs a controlled usage result.
 
+## Rule groups: one rule kept in several files
+
+A rule worked out in two places, such as a tax rounding or an overtime split,
+breaks quietly when only one place changes. Twenty of the 31 losses in the
+multi-stage v3 run were exactly this. The approach is borrowed from NVIDIA
+Auto-Ontology: a machine discovers candidates, you certify them, and only
+what you certified reaches the agent.
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
+```
+
+1. **Discover.** Each proposal names two files, the two functions, the rare
+   words they share, and a milestone entry ready to edit. The words are the
+   reason: shared `ROUND_HALF_UP`, `quantize` and `cents` suggest one rounding
+   rule, while shared `writer` and `newline` are just two CSV writers. Pairs
+   already declared together are not proposed again.
+2. **Certify.** Copy an entry you accept into `elevenpowers.milestones.json`,
+   replace its `TODO` description with the rule in your words, and keep or
+   change its check. An entry needs at least one check. The project's
+   declared `tests` command is filled in when there is one.
+3. **Ground.** Before an agent first edits a file in a declared rule that
+   names other files, its brief says so and names them. At completion, the
+   end report names a declared rule the task changed in only some of its
+   files. Neither blocks.
+
+**Limits:**
+
+- Python sources only. Other source files are counted as not examined.
+- A proposal is a candidate, not a finding. On the v3 cases, 50 proposals
+  per project covered 20 of 51 dependents never used to design the method,
+  against 11 for a control and 3.9 at random.
+- An edit to a shared helper that reads no rule input itself is missed.
+- Whether an agent acts on the brief is not measured.
+
+See the [spike and replay](../results/multistage-v3/discover/README.md).
+
 ## Optional automatic edit advice
 
 After declaring milestones, add this to the existing `.elevenpowers/config.json`:

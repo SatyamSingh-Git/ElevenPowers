@@ -103,7 +103,12 @@ python plugin/bin/ep_milestones.py --project PATH
 python plugin/bin/ep_milestones.py --project PATH --json --output milestones.json
 python plugin/bin/ep_milestones.py --project PATH --impact --changed src/auth.py
 python plugin/bin/ep_milestones.py --project PATH --seconds 30 --check
+python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
 ```
+
+`--propose` lists files that may keep the same rule, for you to certify. It
+never writes the declaration. See
+[rule groups](milestones.md#rule-groups-one-rule-kept-in-several-files).
 
 Opt in with tracked root `elevenpowers.milestones.json`. Existing ledger saves
 retain exact matching aggregate receipts automatically; reading launches no
