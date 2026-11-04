@@ -62,9 +62,20 @@ What the sanity check showed before the run:
 - The query holds field names (`term`, `credits`, `grade_decimals`), but
   many edits write no named field at all. The `household_budget` stage 7
   query was empty.
-- A v3 contract is mostly an order or a format kept by position, which named
-  fields do not carry.
+- The held-out contracts are not shared fields at all. The three distinct
+  ones, as their `case.json` paths record, are assumptions about the data
+  the changed code produces:
+  - `greenhouse_monitor` s5: every reading has a number;
+  - `hotel_desk` s7: reservations only ever grow, so `len + 1` is a new id;
+  - `survey_tally` s5: rows arrive sorted by count.
 
-This is a reading of one sanity check, not a measured cause.
+  Each is found "following" what the changed producer returns to the code
+  that uses it.
+
+(A first version of this note said contracts were orders or formats kept by
+position. That was written before reading these paths, and it was wrong.)
+
 "Constrains the same state" may still be right as a description. Shared
-field names are not a way to find that state.
+field names are not a way to find that state. The paths point at data flow
+from the changed producer to its consumers. That is the next thing to try,
+under its own plan.
