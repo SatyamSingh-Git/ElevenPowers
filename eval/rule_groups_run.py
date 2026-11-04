@@ -34,6 +34,8 @@ from .multistage_run import (HARNESS as V3_HARNESS, KEPT_OUT, MARK, PROJECT_SETT
 from .preservation import _read, _write
 
 ARMS = ('control', 'rules')
+# The certified rules again, each description replaced by a reviewer's sentence.
+DESCRIBED = 'described'
 PROPOSALS = 50
 CASES = TOOL_ROOT / 'eval' / 'multistage_v3'
 MANIFEST = TOOL_ROOT / 'results' / 'multistage-v3' / 'manifest.json'
@@ -88,7 +90,7 @@ def outcome(case, stage, before, after):
 
 def workspace(case, stage, arm, folder, entries):
     """The reference tree before `stage`, set up as the v3 ElevenPowers arm; `rules` adds the declarations."""
-    if arm not in ARMS:
+    if arm not in (*ARMS, DESCRIBED):
         raise ValueError(f'unknown arm {arm}')
     folder = Path(folder)
     work = tree(case, stage - 1, folder / 'work')
@@ -96,16 +98,23 @@ def workspace(case, stage, arm, folder, entries):
     _interpreter(sys.executable, folder)
     save(work, Config(profile='guide', commands={'tests': f"python -m pytest {case['test_dir']} -q"}))
     install('claude', work, sys.executable, TOOL_ROOT)
-    if arm == 'rules':
+    if arm != 'control':
         _write(work / 'elevenpowers.milestones.json', {'schema': 1, 'milestones': entries})
     _seed_git(work)
     return work
 
 
-def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5', cases=CASES, manifest=MANIFEST):
-    """Seal the slots and the certified rules before any run; `stages` is a list of (case, stage)."""
+def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5', cases=CASES, manifest=MANIFEST,
+            arms=ARMS, descriptions=None):
+    """Seal the slots and the certified rules before any run; `stages` is a list of (case, stage).
+
+    `descriptions` ({case: {rule id: sentence}}) is required by, and only by, the described arm."""
     if model not in subscription.SUPPORTED_MODELS['claude']:
         raise ValueError('unsupported subscription model')
+    if len(set(arms)) != len(arms) or len(arms) < 2 or not set(arms) <= {*ARMS, DESCRIBED}:
+        raise ValueError(f'arms must be two or more of {(*ARMS, DESCRIBED)}')
+    if (DESCRIBED in arms) != (descriptions is not None):
+        raise ValueError('the described arm needs descriptions, and descriptions need the described arm')
     root = Path(batch).absolute()
     if root.exists():
         raise ValueError('new batch required')
@@ -124,16 +133,23 @@ def prepare(batch, stages, *, replicates, seconds=900, model='claude-sonnet-5-5'
             if _files(cases, name) != _frozen(frozen, name):
                 raise ValueError(f'{name} differs from the frozen manifest')
             rules[name] = certify(load(Path(cases) / name), Path(scratch) / name)
+    described = {}
+    for name in names if descriptions is not None else []:
+        given = descriptions.get(name, {})
+        if set(given) != {e['id'] for e in rules[name]}:
+            raise ValueError(f'{name}: descriptions must name exactly its certified rules')
+        described[name] = [{**e, 'description': given[e['id']]} for e in rules[name]]
     slots = []
     for replicate in range(replicates):
         for index, (name, stage) in enumerate(stages):
-            arms = ARMS if (index + replicate) % 2 == 0 else ARMS[::-1]
-            slots += [f'{name}--{stage}--{arm}--{replicate}' for arm in arms]
+            order = arms if (index + replicate) % 2 == 0 else arms[::-1]
+            slots += [f'{name}--{stage}--{arm}--{replicate}' for arm in order]
     protocol = {'schema': 1, 'prepared_at': datetime.now(timezone.utc).isoformat(), 'host': 'claude',
                 'model': model, 'effort': 'medium', 'seconds': seconds, 'replicates': replicates,
                 'stages': [list(s) for s in stages], 'unattended': UNATTENDED,
                 'cases_root': str(Path(cases).absolute()), 'manifest': str(Path(manifest).absolute()),
                 'files': {name: _frozen(frozen, name) for name in names}, 'rules': rules,
+                'arms': list(arms), 'described': described,
                 'runtime_fingerprint': fingerprint(), 'harness_sha256': _harness(), 'slots': slots,
                 'sessions': {slot: str(uuid.uuid4()) for slot in slots}}
     _write(root / 'protocol.json', protocol)
@@ -172,7 +188,8 @@ def execute(batch, slot, executable):
         record['state'] = 'authentication_or_host_unavailable'
         _write(folder / 'result.json', record)
         return record
-    work = workspace(case, stage, arm, folder, protocol['rules'][case['id']])
+    entries = protocol['described'][case['id']] if arm == DESCRIBED else protocol['rules'][case['id']]
+    work = workspace(case, stage, arm, folder, entries)
     shutil.copytree(work, folder / 'before', ignore=shutil.ignore_patterns(*KEPT_OUT))
     environment = {**_sandboxed(folder), 'ANTHROPIC_DEFAULT_HAIKU_MODEL': protocol['model']}
     prompt = case['stages'][stage - 1]['request'] + '\n\n' + UNATTENDED
@@ -217,11 +234,11 @@ def execute(batch, slot, executable):
     record['state'] = state
     shutil.copytree(work, folder / 'after', ignore=shutil.ignore_patterns(*KEPT_OUT))
     record['outcome'] = outcome(case, stage, folder / 'before', folder / 'after')
-    declared = {p for entry in protocol['rules'][case['id']] for p in entry['inputs']}
+    declared = {p for entry in entries for p in entry['inputs']}
     ledger = work / '.elevenpowers' / 'ledger.json'
     briefed = json.loads(ledger.read_text(encoding='utf-8')).get('briefed', []) if ledger.exists() else []
-    # Delivery: a declared file got the rule note, before an Edit or after a shell write (rules arm only).
-    record['declared_files_briefed'] = sorted(declared & set(briefed)) if arm == 'rules' else []
+    # Delivery: a declared file got the rule note, before an Edit or after a shell write.
+    record['declared_files_briefed'] = sorted(declared & set(briefed)) if arm != 'control' else []
     _write(folder / 'result.json', record)
     return record
 
@@ -284,6 +301,8 @@ def main(argv=None):
     p.add_argument('--stage', action='append', required=True, help='CASE:STAGE, repeatable')
     p.add_argument('--replicates', type=int, required=True)
     p.add_argument('--seconds', type=int, default=900)
+    p.add_argument('--arm', action='append', help=f'repeatable; default {" and ".join(ARMS)}')
+    p.add_argument('--descriptions', type=Path, help='JSON {case: {rule id: sentence}} for the described arm')
     e = sub.add_parser('execute')
     e.add_argument('batch', type=Path)
     e.add_argument('slot')
@@ -293,7 +312,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.action == 'prepare':
         stages = [(item.split(':')[0], int(item.split(':')[1])) for item in args.stage]
-        value = prepare(args.batch, stages, replicates=args.replicates, seconds=args.seconds)
+        value = prepare(args.batch, stages, replicates=args.replicates, seconds=args.seconds,
+                        arms=tuple(args.arm or ARMS),
+                        descriptions=json.loads(args.descriptions.read_text(encoding='utf-8')) if args.descriptions else None)
         print(json.dumps({'slots': value['slots'], 'rules': {k: len(v) for k, v in value['rules'].items()}}, indent=2))
     elif args.action == 'execute':
         record = execute(args.batch, args.slot, args.executable)

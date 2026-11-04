@@ -68,8 +68,9 @@ def test_only_the_rules_arm_carries_the_declarations(tmp_path):
 
 # --- the sealed one-stage runner, with only the external model process substituted ---
 
-def _fake(plan, *, model='claude-sonnet-5-5', loaded=True):
-    """The fake host plays the agent: 'reference' applies the stage's change, 'quiet' leaves the dependent behind."""
+def _fake(plan, *, model='claude-sonnet-5-5', loaded=True, briefed=()):
+    """The fake host plays the agent: 'reference' applies the stage's change, 'quiet' leaves the dependent behind.
+    `briefed` stands in for the files the real hook would have briefed."""
     from types import SimpleNamespace
     from eval import rule_groups_run as m
     from eval.bundle import apply_patch
@@ -84,10 +85,17 @@ def _fake(plan, *, model='claude-sonnet-5-5', loaded=True):
         case = json.loads((PAYROLL / 'case.json').read_text(encoding='utf-8'))
         stage = next(n for n, s in enumerate(case['stages'], 1) if s['request'] in command[2])
         session = command[command.index('--session-id') + 1]
-        calls.append({'stage': stage, 'root': root, 'declared': (root / 'elevenpowers.milestones.json').exists()})
+        declarations = root / 'elevenpowers.milestones.json'
+        calls.append({'stage': stage, 'root': root, 'declared': declarations.exists(),
+                      'declarations': json.loads(declarations.read_text(encoding='utf-8')) if declarations.exists() else None})
         diffs = ['reference.diff'] + (['quiet-0.diff'] if plan == 'quiet' else [])
         for name in diffs:
             assert not apply_patch(root, (PAYROLL / 'stages' / str(stage) / name).read_text(encoding='utf-8'))
+        if briefed:
+            ledger = root / '.elevenpowers' / 'ledger.json'
+            state = json.loads(ledger.read_text(encoding='utf-8')) if ledger.exists() else {}
+            ledger.parent.mkdir(exist_ok=True)
+            ledger.write_text(json.dumps({**state, 'briefed': list(briefed)}), encoding='utf-8')
         events = [{'type': 'system', 'subtype': 'hook_response', 'hook_name': 'SessionStart:startup',
                    'output': json.dumps({'hookSpecificOutput': {'additionalContext': 'ElevenPowers active (profile: guide).'}})}
                   if loaded else {'type': 'system', 'subtype': 'hook_started'},
@@ -158,6 +166,48 @@ def test_a_changed_protocol_is_refused(tmp_path, monkeypatch):
     path.write_text(path.read_text(encoding='utf-8').replace('"replicates": 1', '"replicates": 2'), encoding='utf-8')
     with pytest.raises(ValueError, match='sealed protocol changed'):
         m.execute(tmp_path / 'batch', 'payroll_lite--2--rules--0', 'fake-host')
+
+
+def _described(tmp_path, monkeypatch, descriptions=None, arms=('rules', 'described')):
+    from eval import rule_groups_run as m
+    monkeypatch.setattr(m.subscription, 'auth', lambda *a: True)
+    if descriptions is None:
+        ids = [e['id'] for e in m.certify(_case(), tmp_path / 'ids')]
+        descriptions = {'payroll_lite': {i: f'Reviewer sentence for {i}.' for i in ids}}
+    return m.prepare(tmp_path / 'batch', [('payroll_lite', 2)], replicates=1, seconds=60,
+                     arms=arms, descriptions=descriptions)
+
+
+def test_the_described_arm_keeps_the_certified_rules_in_a_reviewer_s_words(tmp_path, monkeypatch):
+    protocol = _described(tmp_path, monkeypatch)
+    assert sorted(protocol['slots']) == ['payroll_lite--2--described--0', 'payroll_lite--2--rules--0']
+    rules, described = protocol['rules']['payroll_lite'], protocol['described']['payroll_lite']
+    assert [{**e, 'description': ''} for e in described] == [{**e, 'description': ''} for e in rules]
+    assert [e['description'] for e in described] == [f"Reviewer sentence for {e['id']}." for e in rules]
+
+
+def test_descriptions_must_name_exactly_the_certified_rules(tmp_path, monkeypatch):
+    import pytest
+    from eval import rule_groups_run as m
+    ids = [e['id'] for e in m.certify(_case(), tmp_path / 'ids')]
+    for n, given in enumerate(({i: 'x' for i in ids[1:]}, {**{i: 'x' for i in ids}, 'rule-made-up': 'x'})):
+        with pytest.raises(ValueError, match='exactly its certified rules'):
+            _described(tmp_path / str(n), monkeypatch, {'payroll_lite': given})
+    with pytest.raises(ValueError, match='described arm'):
+        m.prepare(tmp_path / 'none' / 'batch', [('payroll_lite', 2)], replicates=1, arms=('rules', 'described'))
+
+
+def test_the_described_arm_runs_with_the_described_declarations(tmp_path, monkeypatch):
+    from eval import rule_groups_run as m
+    protocol = _described(tmp_path, monkeypatch)
+    host = _fake('reference', briefed=['src/payroll/rules/overtime.py'])
+    monkeypatch.setattr(m, 'run', host)
+    for slot in protocol['slots']:
+        record = m.execute(tmp_path / 'batch', slot, 'fake-host')
+        assert (record['state'], record['declared_files_briefed']) == ('completed', ['src/payroll/rules/overtime.py'])
+    seen = {c['declarations']['milestones'][0]['description'] for c in host.calls}
+    assert seen == {protocol['rules']['payroll_lite'][0]['description'],
+                    protocol['described']['payroll_lite'][0]['description']}
 
 
 def test_the_stratified_test_is_exact_and_one_sided():
