@@ -2125,8 +2125,10 @@ Until then any contributor can start on an open problem below.
        `reports/hours.py` before the rule was edited, and the end report
        named it as unchanged.
      - Agents act on the brief: 4 of 50 dependents lost against 35 of 50
-       (open problem 2 below). Not measured: whether people certify the
-       right pairs.
+       (open problem 2 below). A blind model reviewer kept 16 of the 27
+       pairs that matter ([results](results/rule-groups-reviewed/README.md)),
+       and with its pairs declared, 15 of 50 were lost against 31 of 50.
+       Not measured: what a person who knows the project keeps.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
@@ -2150,9 +2152,25 @@ Until then any contributor can start on an open problem below.
        harm of about 20 points, not a small one.
    - The pilot found the note missed agents that write through the shell.
      That was repaired, and the design amended, before sealing.
-   - Still open: whether real people certify the right pairs. Three of the
-     four rules-arm losses were on one pair tied in two ways, and the note
-     named one of them. A blind reviewer's description named the same one,
+   - **With a reviewer's certification: still acted on**
+     ([design](docs/superpowers/specs/2026-11-05-rule-groups-acted-on-reviewed-design.md),
+     [results](results/rule-groups-acted-on-reviewed/README.md)).
+     - A blind, tool-free Sonnet reviewer read each project's 50 proposals
+       and kept 16 of the 27 pairs some stage breaks
+       ([results](results/rule-groups-reviewed/README.md)).
+     - With its kept pairs declared, the same five stages lost the
+       dependent in 31 of 50 control runs and 15 of 50 rules runs
+       (p = 7.3 × 10⁻⁵).
+     - Ten of the fifteen are `parcelpost` 5, whose pair it dropped: no
+       note, so no change. The other five are `household_budget` 7, with
+       the same note as the perfect run and within that stage's
+       between-batch variation.
+     - No other group was lost, cost rose 8%, and the extra declared pairs
+       brought at most two notes to a run.
+     - Bounded: a model reviewer, not a person who knows the project.
+   - Still open: what people who know the project certify. Three of the
+     four perfect-run losses were on one pair tied in two ways, and the
+     note named one of them. A blind reviewer's description named the same one,
      so the experiment for that was stopped before sealing
      ([record](results/rule-groups-described/README.md)). Whether wording
      that declares the files coupled as a whole does better is untested.

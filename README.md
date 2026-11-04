@@ -577,15 +577,24 @@ were declared but not the point, run once per arm, they did no measurable
 harm. Nothing beyond a declared dependent was lost in either arm, and no
 declared file was edited that the stage did not need.
 
+That run simulated a perfect certification. A blind model reviewer,
+reading each project's 50 proposals with no tools and no sight of any
+change, kept 16 of the 27 pairs that matter. Rerun with exactly its kept
+pairs declared, the dependent was lost in 31 of 50 runs without rules and
+15 of 50 with them (p = 7.3 × 10⁻⁵). Ten of those fifteen were on the one
+stage whose pair it dropped, where no note was sent.
+
 That is bounded:
 
-- certification was simulated as perfect;
+- the reviewer was a model, not a person who knows the project;
 - the five stages were chosen for their known losses;
 - the result says nothing where no declared rule covers the broken pair.
 
 See [the spike and replay](results/multistage-v3/discover/README.md), the
-[design](docs/superpowers/specs/2026-11-04-rule-groups-design.md) and
-[the experiment](results/rule-groups-acted-on/README.md).
+[design](docs/superpowers/specs/2026-11-04-rule-groups-design.md),
+[the experiment](results/rule-groups-acted-on/README.md),
+[the reviewer](results/rule-groups-reviewed/README.md) and
+[the rerun](results/rule-groups-acted-on-reviewed/README.md).
 
 ### Optional test strength
 

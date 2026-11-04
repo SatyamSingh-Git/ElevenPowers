@@ -1,11 +1,16 @@
 # The journey
 
-Latest: [97 — the first note an agent acted on](97-the-first-note-acted-on.md): with certified rules
+Latest: [98 — a reviewer in place of a perfect one](98-a-reviewer-in-place-of-a-perfect-one.md): a
+blind model reviewer kept 16 of the 27 pairs that matter; with its pairs declared, 15 of 50 dependents
+were lost against 31 of 50 (p = 7.3 × 10⁻⁵). Ten of the fifteen were the pair it dropped, where no note
+was sent. The rehearsal's adversarial row caught a check that could not tell a rule note from an import line.
+
+Previous: [97 — the first note an agent acted on](97-the-first-note-acted-on.md): with certified rules
 the dependent was left behind in 4 of 50 one-stage runs, against 35 of 50 without (p = 8.6 × 10⁻¹³);
 the pilot first found the note missed agents that write through the shell, and that was repaired
 before sealing. Bounded by a simulated perfect certification on stages chosen for their losses.
 
-Previous: [96 — a rule a person certifies](96-a-rule-a-person-certifies.md): rule groups, after NVIDIA
+Recent: [96 — a rule a person certifies](96-a-rule-a-person-certifies.md): rule groups, after NVIDIA
 Auto-Ontology's discover-certify-ground loop: proposals from the project alone cover 20 of 51 never-read
 v3 dependents; only declared rules reach the agent; three detectors tried and not built first.
 

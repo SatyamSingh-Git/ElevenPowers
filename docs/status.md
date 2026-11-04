@@ -1,5 +1,36 @@
 # Current delivery status
 
+**2026-11-05 — With a reviewer's certification instead of a perfect one,
+rules still help: 15 of 50 dependents lost against 31 of 50.** PLAN §13 B.
+- **The reviewer** ([design](superpowers/specs/2026-11-05-rule-groups-reviewed-design.md),
+  [results](../results/rule-groups-reviewed/README.md), $1.44): one
+  tool-free Sonnet 5.5 turn per project, blind to every stage, read the 50
+  proposals with both functions' source. It kept 16 of the 27 pairs some
+  stage breaks, past the pre-set half, and 3–11 proposals per project.
+  It kept 12 of 16 pairs whose functions are the real tie, and 3 of 9
+  whose are not.
+- **The rerun** ([design](superpowers/specs/2026-11-05-rule-groups-acted-on-reviewed-design.md),
+  [results](../results/rule-groups-acted-on-reviewed/README.md)): the
+  acted-on design with the reviewer's kept pairs declared. 100 runs, all
+  completed, $16.35.
+  - **Primary:** the exact one-sided stratified test gives p = 7.3 × 10⁻⁵.
+  - Ten of the fifteen rules-arm losses are `parcelpost` 5. The reviewer
+    dropped its pair, its rules runs received no note, and they lost as
+    control did.
+  - The other five are `household_budget` 7, whose runs got the same
+    dependent's note as in the perfect run. That stage's control arm moved
+    as far between batches.
+  - On the four covered stages: 5 of 40 against 22 of 40.
+  - No other group lost in either arm. Cost +8%. The extra declared pairs
+    did not crowd the note: the most any run received was two.
+- **Gate 1's adversarial row caught a loose check:** it matched the
+  dependent anywhere in the brief, including the import-neighbourhood line
+  both arms get. It now matches rule notes only. The acted-on gate had the
+  same check, and a replay shows its note was there.
+- Runner: `certify(..., accept=)` and `prepare(..., accepted=)` freeze a
+  reviewer's pairs into the sealed protocol. Five mutants were killed, and
+  the perfect path recomputes identically for all 17 sealed case-batches.
+
 **2026-11-05 — The description experiment stopped before sealing, and a lead
 is withdrawn.** It was designed to test whether a reviewer's sentence beats
 the template on `parcelpost` 5
