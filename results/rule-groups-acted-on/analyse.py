@@ -27,8 +27,7 @@ def tool_names(folder):
     return names
 
 
-def main():
-    batch = Path(sys.argv[1]).resolve(strict=True)
+def build(batch):
     value = collect(batch)
     cases = {}
     for row in value['rows']:
@@ -62,15 +61,25 @@ def main():
             'exploratory_request_done': sum(bool(r['request_done']) for r in rows),
             'exploratory_runs_with_no_edit_tool': sum(r['edit_tool_calls'] == 0 for r in rows)}
     report['rows'] = value['rows']
-    Path(__file__).with_name(f'analysis-{batch.name}.json').write_text(json.dumps(report, indent=1), encoding='utf-8')
+    return report
+
+
+def show(batch, report):
     print('states', report['states'])
     print('per stage (rules lost, rules n, control lost, control n):')
     for (name, stage), table in zip(json.loads((batch / 'protocol.json').read_text(encoding='utf-8'))['stages'],
-                                    value['tables']):
+                                    report['tables']):
         print(f'  {name} {stage}: {table}')
     print('pre-registered one-sided exact stratified p:', report['p_one_sided'])
     for arm, summary in report['arms'].items():
         print(arm, summary)
+
+
+def main():
+    batch = Path(sys.argv[1]).resolve(strict=True)
+    report = build(batch)
+    Path(__file__).with_name(f'analysis-{batch.name}.json').write_text(json.dumps(report, indent=1), encoding='utf-8')
+    show(batch, report)
 
 
 if __name__ == '__main__':
