@@ -2084,8 +2084,16 @@ Until then any contributor can start on an open problem below.
      - Not built.
    - **The held-out contracts are data assumptions,** such as "rows arrive
      sorted" or "the list only grows". Their recorded paths follow what the
-     changed producer returns to its consumers, which makes data flow the
-     next detector to try.
+     changed producer returns to its consumers.
+   - **Data flow** (calls to the touched functions, plus one more hop):
+     [spike](results/multistage-v3/dataflow/README.md).
+     - On 51 never-read dependents, built from each case's reference: 4 in
+       the top 3, against 17 needed. Not built.
+     - The data travels through files and objects, not calls.
+   - **On those 51, shared rare tokens hold:** 16 in the top 3, against 6
+     for the control and 3.1 at random. This is their first clean test, and
+     weaker than in-sample (55%). Co-readers found 12. Shared tokens remain
+     the best lead, still only for an on-demand question.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
