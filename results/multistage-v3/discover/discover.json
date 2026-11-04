@@ -1,0 +1,1473 @@
+[
+ {
+  "case": "clinic_booking",
+  "stage": 1,
+  "dependent": "src/clinicbook/reports/utilisation.py",
+  "kind": "data",
+  "edited": [
+   "src/clinicbook/reports/day_schedule.py"
+  ],
+  "fresh": true,
+  "place": 69,
+  "place_at_start": 69,
+  "pair": [
+   0.295,
+   "src/clinicbook/reports/day_schedule.py",
+   "src/clinicbook/reports/utilisation.py",
+   "export_day",
+   "read_schedule",
+   [
+    "end",
+    "newline",
+    "csv",
+    "handle",
+    "open"
+   ]
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 2,
+  "dependent": "src/clinicbook/services/desk.py",
+  "kind": "copy",
+  "edited": [
+   "src/clinicbook/config.py",
+   "src/clinicbook/services/availability.py"
+  ],
+  "fresh": true,
+  "place": 19,
+  "place_at_start": 21,
+  "pair": [
+   0.417,
+   "src/clinicbook/services/availability.py",
+   "src/clinicbook/services/desk.py",
+   "free_slots",
+   "_check_when",
+   [
+    "combine",
+    "slot_minutes",
+    "booking_horizon_days",
+    "who",
+    "window"
+   ]
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 3,
+  "dependent": "src/clinicbook/reports/day_schedule.py",
+  "kind": "key",
+  "edited": [
+   "src/clinicbook/config.py",
+   "src/clinicbook/model/booking.py",
+   "src/clinicbook/services/desk.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 4,
+  "dependent": "src/clinicbook/reports/day_schedule.py",
+  "kind": "contract",
+  "edited": [
+   "src/clinicbook/storage/bookings_file.py"
+  ],
+  "fresh": true,
+  "place": 25,
+  "place_at_start": 27,
+  "pair": [
+   0.405,
+   "src/clinicbook/reports/day_schedule.py",
+   "src/clinicbook/storage/bookings_file.py",
+   "export_day",
+   "save_bookings",
+   [
+    "COLUMNS",
+    "\"w\"",
+    "writer",
+    "writerow",
+    "newline"
+   ]
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 7,
+  "dependent": "src/clinicbook/reports/statement.py",
+  "kind": "data",
+  "edited": [
+   "src/clinicbook/services/fees.py"
+  ],
+  "fresh": true,
+  "place": 1,
+  "place_at_start": 1,
+  "pair": [
+   0.698,
+   "src/clinicbook/reports/statement.py",
+   "src/clinicbook/services/fees.py",
+   "total",
+   "total",
+   [
+    "\"0.00\"",
+    "total",
+    "Decimal",
+    "amount",
+    "sum"
+   ]
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 8,
+  "dependent": "src/clinicbook/reports/summary.py",
+  "kind": "copy",
+  "edited": [
+   "src/clinicbook/config.py",
+   "src/clinicbook/services/fees.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "fleet_service",
+  "stage": 1,
+  "dependent": "src/fleetkeep/services/reminders.py",
+  "kind": "key",
+  "edited": [
+   "src/fleetkeep/config.py",
+   "src/fleetkeep/services/scheduling.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "fleet_service",
+  "stage": 2,
+  "dependent": "src/fleetkeep/reports/costs.py",
+  "kind": "copy",
+  "edited": [
+   "src/fleetkeep/config.py",
+   "src/fleetkeep/cli/commands.py",
+   "src/fleetkeep/model/money.py",
+   "src/fleetkeep/reports/spend.py",
+   "src/fleetkeep/services/workorders.py"
+  ],
+  "fresh": true,
+  "place": 11,
+  "place_at_start": 11,
+  "pair": [
+   0.5,
+   "src/fleetkeep/model/money.py",
+   "src/fleetkeep/reports/costs.py",
+   "times",
+   "_per_mile",
+   [
+    "cents",
+    "rounding",
+    "ROUND_HALF_UP",
+    "quantize",
+    "Decimal"
+   ]
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 2,
+  "dependent": "src/fleetkeep/reports/spend.py",
+  "kind": "copy",
+  "edited": [
+   "src/fleetkeep/config.py",
+   "src/fleetkeep/cli/commands.py",
+   "src/fleetkeep/model/money.py",
+   "src/fleetkeep/reports/costs.py",
+   "src/fleetkeep/services/workorders.py"
+  ],
+  "fresh": true,
+  "place": 47,
+  "place_at_start": 47,
+  "pair": [
+   0.384,
+   "src/fleetkeep/reports/costs.py",
+   "src/fleetkeep/reports/spend.py",
+   "_maintenance",
+   "spend_rows",
+   [
+    "parts_total",
+    "labour_total",
+    "period",
+    "closed",
+    "orders"
+   ]
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 4,
+  "dependent": "src/fleetkeep/reports/summary.py",
+  "kind": "data",
+  "edited": [
+   "src/fleetkeep/reports/fuel.py",
+   "src/fleetkeep/reports/layout.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "fleet_service",
+  "stage": 5,
+  "dependent": "src/fleetkeep/importers/history.py",
+  "kind": "contract",
+  "edited": [
+   "src/fleetkeep/errors.py",
+   "src/fleetkeep/model/catalog.py",
+   "src/fleetkeep/services/workorders.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "fleet_service",
+  "stage": 6,
+  "dependent": "src/fleetkeep/importers/timesheets.py",
+  "kind": "copy",
+  "edited": [
+   "src/fleetkeep/config.py",
+   "src/fleetkeep/services/workorders.py"
+  ],
+  "fresh": true,
+  "place": 61,
+  "place_at_start": 53,
+  "pair": [
+   0.367,
+   "src/fleetkeep/importers/timesheets.py",
+   "src/fleetkeep/services/workorders.py",
+   "_line",
+   "log_labour",
+   [
+    "labour_rate",
+    "LabourLine",
+    "rate",
+    "settings",
+    "fleet"
+   ]
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 1,
+  "dependent": "src/gradebook/services/transcript.py",
+  "kind": "data",
+  "edited": [
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "fresh": true,
+  "place": 64,
+  "place_at_start": 64,
+  "pair": [
+   0.31,
+   "src/gradebook/services/transcript.py",
+   "src/gradebook/storage/grades_csv.py",
+   "read_posted_grades",
+   "export_grades",
+   [
+    "newline",
+    "handle",
+    "open",
+    "csv",
+    "\"utf-8\""
+   ]
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 2,
+  "dependent": "src/gradebook/reports/progress.py",
+  "kind": "key",
+  "edited": [
+   "src/gradebook/grading/policies.py",
+   "src/gradebook/storage/course_config.py"
+  ],
+  "fresh": true,
+  "place": 92,
+  "place_at_start": 94,
+  "pair": [
+   0.263,
+   "src/gradebook/reports/progress.py",
+   "src/gradebook/storage/course_config.py",
+   "category",
+   "_check_categories",
+   [
+    "category",
+    "categories"
+   ]
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 3,
+  "dependent": "src/gradebook/reports/progress.py",
+  "kind": "copy",
+  "edited": [
+   "src/gradebook/grading/calculator.py"
+  ],
+  "fresh": true,
+  "place": 7,
+  "place_at_start": 8,
+  "pair": [
+   0.555,
+   "src/gradebook/grading/calculator.py",
+   "src/gradebook/reports/progress.py",
+   "_counted_items",
+   "_category_progress",
+   [
+    "rule",
+    "days_late",
+    "assignments_in",
+    "get_late_rule",
+    "Fraction"
+   ]
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 4,
+  "dependent": "src/gradebook/storage/grades_csv.py",
+  "kind": "contract",
+  "edited": [
+   "src/gradebook/storage/course_config.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "gradebook",
+  "stage": 5,
+  "dependent": "src/gradebook/storage/sheet_csv.py",
+  "kind": "data",
+  "edited": [
+   "src/gradebook/reports/score_sheet.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "gradebook",
+  "stage": 8,
+  "dependent": "src/gradebook/services/transcript.py",
+  "kind": "contract",
+  "edited": [
+   "src/gradebook/grading/calculator.py",
+   "src/gradebook/grading/results.py",
+   "src/gradebook/reports/summary.py",
+   "src/gradebook/storage/grades_csv.py"
+  ],
+  "fresh": true,
+  "place": 55,
+  "place_at_start": 64,
+  "pair": [
+   0.318,
+   "src/gradebook/services/transcript.py",
+   "src/gradebook/storage/grades_csv.py",
+   "read_posted_grades",
+   "export_grades",
+   [
+    "delimiter",
+    "newline",
+    "handle",
+    "open",
+    "csv"
+   ]
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 1,
+  "dependent": "src/greenhouse/storage/history.py",
+  "kind": "data",
+  "edited": [
+   "src/greenhouse/storage/readings_log.py"
+  ],
+  "fresh": true,
+  "place": 63,
+  "place_at_start": 63,
+  "pair": [
+   0.298,
+   "src/greenhouse/storage/history.py",
+   "src/greenhouse/storage/readings_log.py",
+   "load_readings",
+   "write_many",
+   [
+    "newline",
+    "open",
+    "csv",
+    "handle",
+    "exists"
+   ]
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 2,
+  "dependent": "src/greenhouse/storage/calibration.py",
+  "kind": "key",
+  "edited": [
+   "src/greenhouse/cli/commands.py",
+   "src/greenhouse/services/ingest.py",
+   "src/greenhouse/services/manual.py"
+  ],
+  "fresh": true,
+  "place": 78,
+  "place_at_start": 81,
+  "pair": [
+   0.279,
+   "src/greenhouse/cli/commands.py",
+   "src/greenhouse/storage/calibration.py",
+   "cmd_calibrate",
+   "set_offset",
+   [
+    "set_offset",
+    "offset",
+    "ValidationError",
+    "sensor"
+   ]
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 2,
+  "dependent": "src/greenhouse/services/manual.py",
+  "kind": "copy",
+  "edited": [
+   "src/greenhouse/cli/commands.py",
+   "src/greenhouse/services/ingest.py",
+   "src/greenhouse/storage/calibration.py"
+  ],
+  "fresh": true,
+  "place": 3,
+  "place_at_start": 3,
+  "pair": [
+   0.612,
+   "src/greenhouse/services/ingest.py",
+   "src/greenhouse/services/manual.py",
+   "parse_row",
+   "record_manual",
+   [
+    "\"missing sensor\"",
+    "check_range",
+    "canonical_unit",
+    "to_canonical",
+    "offset_for"
+   ]
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 4,
+  "dependent": "src/greenhouse/reports/messages.py",
+  "kind": "key",
+  "edited": [
+   "src/greenhouse/config/settings.py",
+   "src/greenhouse/services/alerts.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 5,
+  "dependent": "src/greenhouse/services/summary.py",
+  "kind": "contract",
+  "edited": [
+   "src/greenhouse/cli/commands.py",
+   "src/greenhouse/core/model.py",
+   "src/greenhouse/services/ingest.py",
+   "src/greenhouse/services/trends.py",
+   "src/greenhouse/storage/history.py",
+   "src/greenhouse/storage/readings_log.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 7,
+  "dependent": "src/greenhouse/services/valves.py",
+  "kind": "data",
+  "edited": [
+   "src/greenhouse/cli/commands.py",
+   "src/greenhouse/storage/plans.py"
+  ],
+  "fresh": true,
+  "place": 32,
+  "place_at_start": 30,
+  "pair": [
+   0.355,
+   "src/greenhouse/services/valves.py",
+   "src/greenhouse/storage/plans.py",
+   "planned_minutes",
+   "write_plan",
+   [
+    "newline",
+    "csv",
+    "handle",
+    "open",
+    "\"utf-8\""
+   ]
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 1,
+  "dependent": "src/hoteldesk/reports/revenue.py",
+  "kind": "data",
+  "edited": [
+   "src/hoteldesk/storage/journal.py"
+  ],
+  "fresh": true,
+  "place": 99,
+  "place_at_start": 99,
+  "pair": [
+   0.26,
+   "src/hoteldesk/reports/revenue.py",
+   "src/hoteldesk/storage/journal.py",
+   "revenue_summary",
+   "append_entry",
+   [
+    "\"business_date\"",
+    "newline",
+    "open",
+    "handle",
+    "csv"
+   ]
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 3,
+  "dependent": "src/hoteldesk/services/pricing.py",
+  "kind": "copy",
+  "edited": [
+   "src/hoteldesk/money.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 4,
+  "dependent": "src/hoteldesk/reports/folio_print.py",
+  "kind": "key",
+  "edited": [
+   "src/hoteldesk/model/charges.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 6,
+  "dependent": "src/hoteldesk/reports/audit_report.py",
+  "kind": "data",
+  "edited": [
+   "src/hoteldesk/reports/occupancy.py",
+   "src/hoteldesk/services/inventory.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 7,
+  "dependent": "src/hoteldesk/services/booking.py",
+  "kind": "contract",
+  "edited": [
+   "src/hoteldesk/config.py",
+   "src/hoteldesk/model/hotel.py",
+   "src/hoteldesk/services/night_audit.py",
+   "src/hoteldesk/storage/state.py"
+  ],
+  "fresh": false,
+  "place": 6,
+  "place_at_start": 6,
+  "pair": [
+   0.542,
+   "src/hoteldesk/services/booking.py",
+   "src/hoteldesk/services/night_audit.py",
+   "arriving",
+   "open_items",
+   [
+    "BOOKED",
+    "r",
+    "key",
+    "reservations",
+    "arrival"
+   ]
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 1,
+  "dependent": "src/budgetbook/services/importing.py",
+  "kind": "copy",
+  "edited": [
+   "src/budgetbook/storage/journal.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "household_budget",
+  "stage": 2,
+  "dependent": "src/budgetbook/services/search.py",
+  "kind": "key",
+  "edited": [
+   "src/budgetbook/rules/matchers.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "household_budget",
+  "stage": 4,
+  "dependent": "src/budgetbook/services/budgets.py",
+  "kind": "data",
+  "edited": [
+   "src/budgetbook/reports/annual.py",
+   "src/budgetbook/services/closing.py"
+  ],
+  "fresh": true,
+  "place": 42,
+  "place_at_start": 43,
+  "pair": [
+   0.325,
+   "src/budgetbook/reports/annual.py",
+   "src/budgetbook/services/budgets.py",
+   "year_report",
+   "_carried_into",
+   [
+    "closed",
+    "\"categories\"",
+    "entry",
+    "read_json",
+    "closed_month_path"
+   ]
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 4,
+  "dependent": "src/budgetbook/reports/annual.py",
+  "kind": "data",
+  "edited": [
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/closing.py"
+  ],
+  "fresh": true,
+  "place": 42,
+  "place_at_start": 43,
+  "pair": [
+   0.325,
+   "src/budgetbook/reports/annual.py",
+   "src/budgetbook/services/budgets.py",
+   "year_report",
+   "_carried_into",
+   [
+    "closed",
+    "\"categories\"",
+    "entry",
+    "read_json",
+    "closed_month_path"
+   ]
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 6,
+  "dependent": "src/budgetbook/reports/register.py",
+  "kind": "contract",
+  "edited": [
+   "src/budgetbook/storage/journal.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": 86,
+  "pair": null
+ },
+ {
+  "case": "household_budget",
+  "stage": 7,
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "kind": "copy",
+  "edited": [
+   "src/budgetbook/services/budgets.py"
+  ],
+  "fresh": false,
+  "place": 18,
+  "place_at_start": 19,
+  "pair": [
+   0.384,
+   "src/budgetbook/reports/month_end.py",
+   "src/budgetbook/services/budgets.py",
+   "summarise",
+   "_spent_by_category",
+   [
+    "is_spending",
+    "get",
+    "catalog",
+    "transaction",
+    "transactions"
+   ]
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 1,
+  "dependent": "src/lending/reports/overdue.py",
+  "kind": "copy",
+  "edited": [
+   "src/lending/config.py",
+   "src/lending/services/fines.py"
+  ],
+  "fresh": false,
+  "place": 24,
+  "place_at_start": 24,
+  "pair": [
+   0.436,
+   "src/lending/reports/overdue.py",
+   "src/lending/services/fines.py",
+   "overdue_rows",
+   "fine_for",
+   [
+    "min",
+    "daily_fine",
+    "max_fine",
+    "days_late",
+    "price"
+   ]
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 2,
+  "dependent": "src/lending/services/fines.py",
+  "kind": "data",
+  "edited": [
+   "src/lending/reports/activity.py",
+   "src/lending/services/circulation.py",
+   "src/lending/storage/ledger.py"
+  ],
+  "fresh": true,
+  "place": 70,
+  "place_at_start": 72,
+  "pair": [
+   0.331,
+   "src/lending/services/circulation.py",
+   "src/lending/services/fines.py",
+   "checkout",
+   "waive",
+   [
+    "Entry",
+    "owed",
+    "balance",
+    "record",
+    "format_money"
+   ]
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 2,
+  "dependent": "src/lending/reports/activity.py",
+  "kind": "key",
+  "edited": [
+   "src/lending/services/circulation.py",
+   "src/lending/services/fines.py",
+   "src/lending/storage/ledger.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "library_loans",
+  "stage": 3,
+  "dependent": "src/lending/reports/loans.py",
+  "kind": "copy",
+  "edited": [
+   "src/lending/errors.py",
+   "src/lending/services/circulation.py"
+  ],
+  "fresh": false,
+  "place": 100,
+  "place_at_start": null,
+  "pair": [
+   0.297,
+   "src/lending/reports/loans.py",
+   "src/lending/services/circulation.py",
+   "member_loans",
+   "renew",
+   [
+    "max_renewals",
+    "renewals",
+    "loan",
+    "settings",
+    "due"
+   ]
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 6,
+  "dependent": "src/lending/storage/member_import.py",
+  "kind": "data",
+  "edited": [
+   "src/lending/model/dates.py",
+   "src/lending/storage/member_export.py"
+  ],
+  "fresh": true,
+  "place": 3,
+  "place_at_start": 3,
+  "pair": [
+   0.582,
+   "src/lending/model/dates.py",
+   "src/lending/storage/member_import.py",
+   "parse_date",
+   "_day",
+   [
+    "fromisoformat",
+    "ValueError",
+    "text",
+    "strip",
+    "refuse"
+   ]
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 7,
+  "dependent": "src/lending/services/accounts.py",
+  "kind": "copy",
+  "edited": [
+   "src/lending/config.py",
+   "src/lending/services/circulation.py",
+   "src/lending/services/policy.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "parcelpost",
+  "stage": 1,
+  "dependent": "src/parcelpost/services/billing.py",
+  "kind": "data",
+  "edited": [
+   "src/parcelpost/formats/manifest.py"
+  ],
+  "fresh": true,
+  "place": 44,
+  "place_at_start": 44,
+  "pair": [
+   0.331,
+   "src/parcelpost/formats/manifest.py",
+   "src/parcelpost/services/billing.py",
+   "manifest_filename",
+   "bill_day",
+   [
+    "manifest_filename",
+    "day",
+    "isoformat"
+   ]
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 2,
+  "dependent": "src/parcelpost/reports/daily.py",
+  "kind": "key",
+  "edited": [
+   "src/parcelpost/core/shipment.py",
+   "src/parcelpost/services/scans.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "parcelpost",
+  "stage": 4,
+  "dependent": "src/parcelpost/services/scans.py",
+  "kind": "copy",
+  "edited": [
+   "src/parcelpost/core/ids.py"
+  ],
+  "fresh": true,
+  "place": 16,
+  "place_at_start": 16,
+  "pair": [
+   0.426,
+   "src/parcelpost/core/ids.py",
+   "src/parcelpost/services/scans.py",
+   "_check_digit",
+   "_plausible_number",
+   [
+    "serial",
+    "digit",
+    "10",
+    "3",
+    "sum"
+   ]
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 5,
+  "dependent": "src/parcelpost/services/billing.py",
+  "kind": "contract",
+  "edited": [
+   "src/parcelpost/formats/manifest.py"
+  ],
+  "fresh": false,
+  "place": 44,
+  "place_at_start": 44,
+  "pair": [
+   0.331,
+   "src/parcelpost/formats/manifest.py",
+   "src/parcelpost/services/billing.py",
+   "manifest_filename",
+   "bill_day",
+   [
+    "manifest_filename",
+    "day",
+    "isoformat"
+   ]
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 7,
+  "dependent": "src/parcelpost/cli/output.py",
+  "kind": "key",
+  "edited": [
+   "src/parcelpost/rating/surcharges.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 1,
+  "dependent": "src/payroll/services/yearend.py",
+  "kind": "data",
+  "edited": [
+   "src/payroll/storage/payrun_file.py"
+  ],
+  "fresh": false,
+  "place": 65,
+  "place_at_start": 65,
+  "pair": [
+   0.308,
+   "src/payroll/services/yearend.py",
+   "src/payroll/storage/payrun_file.py",
+   "year_totals",
+   "read_payrun",
+   [
+    "\"pay_date\"",
+    "\"payslips\"",
+    "document",
+    "loads",
+    "json"
+   ]
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 2,
+  "dependent": "src/payroll/reports/hours.py",
+  "kind": "copy",
+  "edited": [
+   "src/payroll/config.py",
+   "src/payroll/rules/overtime.py"
+  ],
+  "fresh": false,
+  "place": 1,
+  "place_at_start": 1,
+  "pair": [
+   0.677,
+   "src/payroll/reports/hours.py",
+   "src/payroll/rules/overtime.py",
+   "hours_rows",
+   "split_hours",
+   [
+    "min",
+    "overtime",
+    "holiday",
+    "ordinary",
+    "daily_threshold"
+   ]
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 4,
+  "dependent": "src/payroll/reports/payslip.py",
+  "kind": "key",
+  "edited": [
+   "src/payroll/reports/journal.py",
+   "src/payroll/rules/allowances.py",
+   "src/payroll/services/payrun.py"
+  ],
+  "fresh": true,
+  "place": 37,
+  "place_at_start": 35,
+  "pair": [
+   0.382,
+   "src/payroll/reports/journal.py",
+   "src/payroll/reports/payslip.py",
+   "_cell",
+   "_row",
+   [
+    "format_money",
+    "amount",
+    "\"\""
+   ]
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 4,
+  "dependent": "src/payroll/reports/journal.py",
+  "kind": "copy",
+  "edited": [
+   "src/payroll/reports/payslip.py",
+   "src/payroll/rules/allowances.py",
+   "src/payroll/services/payrun.py"
+  ],
+  "fresh": true,
+  "place": 37,
+  "place_at_start": 35,
+  "pair": [
+   0.382,
+   "src/payroll/reports/journal.py",
+   "src/payroll/reports/payslip.py",
+   "_cell",
+   "_row",
+   [
+    "format_money",
+    "amount",
+    "\"\""
+   ]
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 5,
+  "dependent": "src/payroll/services/payrun.py",
+  "kind": "contract",
+  "edited": [
+   "src/payroll/storage/timesheet_store.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 7,
+  "dependent": "src/payroll/services/reconcile.py",
+  "kind": "data",
+  "edited": [
+   "src/payroll/reports/bank_file.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "recipe_box",
+  "stage": 1,
+  "dependent": "src/recipebox/storage/pantry_file.py",
+  "kind": "data",
+  "edited": [
+   "src/recipebox/reports/shopping_csv.py"
+  ],
+  "fresh": true,
+  "place": 5,
+  "place_at_start": 5,
+  "pair": [
+   0.549,
+   "src/recipebox/reports/shopping_csv.py",
+   "src/recipebox/storage/pantry_file.py",
+   "write_shopping_csv",
+   "save_pantry",
+   [
+    "writer",
+    "\"w\"",
+    "newline",
+    "handle",
+    "writerow"
+   ]
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 3,
+  "dependent": "src/recipebox/reports/nutrition_report.py",
+  "kind": "key",
+  "edited": [
+   "src/recipebox/services/nutrition.py"
+  ],
+  "fresh": true,
+  "place": 73,
+  "place_at_start": 73,
+  "pair": [
+   0.291,
+   "src/recipebox/reports/nutrition_report.py",
+   "src/recipebox/services/nutrition.py",
+   "render_nutrition",
+   "nutrition_for",
+   [
+    "per_serving",
+    "missing",
+    "items",
+    "servings",
+    "title"
+   ]
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 4,
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "kind": "copy",
+  "edited": [
+   "src/recipebox/core/recipe.py"
+  ],
+  "fresh": false,
+  "place": 2,
+  "place_at_start": 2,
+  "pair": [
+   0.593,
+   "src/recipebox/core/recipe.py",
+   "src/recipebox/storage/plan_file.py",
+   "recipe_id",
+   "_title_key",
+   [
+    "\"-\"",
+    "split",
+    "lower",
+    "join",
+    "title"
+   ]
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 5,
+  "dependent": "src/recipebox/reports/shopping_text.py",
+  "kind": "contract",
+  "edited": [
+   "src/recipebox/services/shopping.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "recipe_box",
+  "stage": 6,
+  "dependent": "src/recipebox/reports/shopping_text.py",
+  "kind": "key",
+  "edited": [
+   "src/recipebox/core/catalog.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "recipe_box",
+  "stage": 8,
+  "dependent": "src/recipebox/services/importer.py",
+  "kind": "data",
+  "edited": [
+   "src/recipebox/core/quantity.py",
+   "src/recipebox/storage/library.py"
+  ],
+  "fresh": true,
+  "place": 5,
+  "place_at_start": 6,
+  "pair": [
+   0.541,
+   "src/recipebox/services/importer.py",
+   "src/recipebox/storage/library.py",
+   "_read_recipe",
+   "recipe_from_dict",
+   [
+    "\"minutes\"",
+    "\"steps\"",
+    "\"servings\"",
+    "\"title\"",
+    "Recipe"
+   ]
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 1,
+  "dependent": "src/surveytally/reports/responses_export.py",
+  "kind": "copy",
+  "edited": [
+   "src/surveytally/files/csv_responses.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "survey_tally",
+  "stage": 2,
+  "dependent": "src/surveytally/reports/compare.py",
+  "kind": "data",
+  "edited": [
+   "src/surveytally/reports/export.py"
+  ],
+  "fresh": false,
+  "place": 43,
+  "place_at_start": 43,
+  "pair": [
+   0.358,
+   "src/surveytally/reports/compare.py",
+   "src/surveytally/reports/export.py",
+   "read_percentages",
+   "_write_csv",
+   [
+    "'utf-8'",
+    "newline",
+    "csv",
+    "handle",
+    "open"
+   ]
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 4,
+  "dependent": "src/surveytally/services/tally.py",
+  "kind": "key",
+  "edited": [
+   "src/surveytally/files/csv_responses.py",
+   "src/surveytally/files/survey_file.py",
+   "src/surveytally/model/questions.py",
+   "src/surveytally/services/validation.py"
+  ],
+  "fresh": true,
+  "place": 4,
+  "place_at_start": 4,
+  "pair": [
+   0.614,
+   "src/surveytally/services/tally.py",
+   "src/surveytally/services/validation.py",
+   "__init__",
+   "__init__",
+   [
+    "__init__"
+   ]
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 5,
+  "dependent": "src/surveytally/reports/summary.py",
+  "kind": "contract",
+  "edited": [
+   "src/surveytally/services/tally.py"
+  ],
+  "fresh": false,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "survey_tally",
+  "stage": 6,
+  "dependent": "src/surveytally/files/weights_file.py",
+  "kind": "copy",
+  "edited": [
+   "src/surveytally/files/csv_responses.py",
+   "src/surveytally/files/json_responses.py"
+  ],
+  "fresh": true,
+  "place": 10,
+  "place_at_start": 10,
+  "pair": [
+   0.52,
+   "src/surveytally/files/csv_responses.py",
+   "src/surveytally/files/weights_file.py",
+   "read_responses",
+   "read_weights",
+   [
+    "reader",
+    "fieldnames",
+    "DictReader",
+    "'utf-8-sig'",
+    "start"
+   ]
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 1,
+  "dependent": "src/boxoffice/reports/daily.py",
+  "kind": "data",
+  "edited": [
+   "src/boxoffice/storage/ledger.py"
+  ],
+  "fresh": true,
+  "place": 40,
+  "place_at_start": 40,
+  "pair": [
+   0.381,
+   "src/boxoffice/reports/daily.py",
+   "src/boxoffice/storage/ledger.py",
+   "daily_takings",
+   "entries_on",
+   [
+    "\"date\"",
+    "day",
+    "entry"
+   ]
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 3,
+  "dependent": "src/boxoffice/reports/daily.py",
+  "kind": "key",
+  "edited": [
+   "src/boxoffice/config.py",
+   "src/boxoffice/services/refunds.py"
+  ],
+  "fresh": true,
+  "place": null,
+  "place_at_start": null,
+  "pair": null
+ },
+ {
+  "case": "ticket_office",
+  "stage": 4,
+  "dependent": "src/boxoffice/reports/price_list.py",
+  "kind": "copy",
+  "edited": [
+   "src/boxoffice/model/concessions.py"
+  ],
+  "fresh": false,
+  "place": 32,
+  "place_at_start": 33,
+  "pair": [
+   0.406,
+   "src/boxoffice/model/concessions.py",
+   "src/boxoffice/reports/price_list.py",
+   "concession_price",
+   "price_list",
+   [
+    "50",
+    "CONCESSIONS",
+    "percent",
+    "face",
+    "100"
+   ]
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 5,
+  "dependent": "src/boxoffice/reports/seatplan.py",
+  "kind": "key",
+  "edited": [
+   "src/boxoffice/services/availability.py",
+   "src/boxoffice/services/holds.py",
+   "src/boxoffice/services/refunds.py"
+  ],
+  "fresh": true,
+  "place": 90,
+  "place_at_start": 92,
+  "pair": [
+   0.264,
+   "src/boxoffice/reports/seatplan.py",
+   "src/boxoffice/services/availability.py",
+   "render_seatplan",
+   "best_available",
+   [
+    "states",
+    "sections",
+    "number",
+    "section",
+    "id"
+   ]
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 6,
+  "dependent": "src/boxoffice/storage/jsonstore.py",
+  "kind": "contract",
+  "edited": [
+   "src/boxoffice/config.py",
+   "src/boxoffice/services/holds.py"
+  ],
+  "fresh": true,
+  "place": 99,
+  "place_at_start": null,
+  "pair": [
+   0.261,
+   "src/boxoffice/services/holds.py",
+   "src/boxoffice/storage/jsonstore.py",
+   "mark_sold",
+   "save_holds",
+   [
+    "save_holds",
+    "holds"
+   ]
+  ]
+ }
+]
