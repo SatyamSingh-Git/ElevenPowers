@@ -120,3 +120,71 @@ replicate blocks in turn, shuffled within each block with a seed. Every
 slot runs once and is never retried. The protocol pins the runtime
 fingerprint and the harness hash, and every slot checks both before it
 starts.
+
+### Result: the certified rule was acted on
+
+All 100 runs completed, and none was lost to infrastructure. The run cost
+$16.39 ([analysis](analysis-rule-groups-acted-on-full-2026-11-04.json),
+from [`analyse.py`](analyse.py)).
+
+**Primary (pre-registered):** the dependent was lost in **35 of 50 control
+runs (70%)** and **4 of 50 rules runs (8%)**. The exact one-sided
+stratified test gives **p = 8.6 × 10⁻¹³**.
+
+| stage | control: dependent lost | rules: dependent lost |
+|---|---|---|
+| `household_budget` 7 | 8 of 10 | 1 of 10 |
+| `recipe_box` 4 | 9 of 10 | 0 of 10 |
+| `library_loans` 1 | 6 of 10 | 0 of 10 |
+| `payroll_lite` 2 | 2 of 10 | 0 of 10 |
+| `parcelpost` 5 | 10 of 10 | 3 of 10 |
+
+**Secondary (pre-registered):**
+
+- **Harm.** Other groups were lost in 0 of 50 runs in each arm. Rules runs
+  cost $8.53 against $7.86 (+8.5%) and took 89.0 s of model time against
+  82.2 s (+8%).
+- **Delivery.** All 50 rules runs were briefed on a declared file.
+- **Not run in this batch.** The other covered stages and the
+  self-contained stages were not part of it, so "the same outcome on every
+  other covered stage" and "edits to a declared file where nothing needed
+  it" are unmeasured.
+
+**Exploratory, not pre-registered:**
+
+- **The stage's own request was done in all 50 rules runs.** So no rules
+  run kept the dependent by doing nothing. This check was confirmed both
+  ways at $0 on every stage: an untouched tree fails the request groups,
+  and the reference passes them. The control arm's 44 of 50 is not a
+  separate finding. All six misses are `library_loans` dependent losses,
+  where the request group `grace_report` exercises the dependent report.
+- **The shell repair carried the result.** 21 rules runs never used an
+  edit tool, and none of them lost the dependent. Without the repair they
+  would have received no note at all. In the control arm, 13 of 19 such
+  runs lost it.
+- **The four rules-arm losses saw the note and left the dependent
+  unchanged.** Three named it in the final message and said why they had
+  left it, which is the note's own second branch:
+  - `household_budget` 1 told the user that netting refunds in
+    `reports/month_end.py` "is a small change";
+  - `parcelpost` 4 left `billing.py` alone because the change "doesn't
+    touch the filename or the day";
+  - `parcelpost` 6 left it because it had not touched the manifest
+    filename, "so billing and reconcile still read the file as before".
+
+  The `parcelpost` rule's description was the neutral template: "they share
+  manifest_filename, day, isoformat". The agents reasoned from exactly
+  those words. A person's description of the rule would not point at the
+  filename. This is a lead on description quality, not a finding.
+
+**What bounds it** (from the design):
+
+- Certification is perfect by construction. A person may accept fewer
+  pairs, or wrong ones.
+- Proposals cover 20 of v3's 51 never-read dependents. Where no certified
+  rule covers the broken pair, nothing changes.
+- The five stages were chosen for their known losses, so the result says
+  the note works where a loss is likely, not how often it matters.
+- Each run is one stage from the reference tree, not a conversation.
+- Both arms ran ElevenPowers. The gain is the certified rules' alone, and
+  the shipped tool without them is the 70% control.
