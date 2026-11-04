@@ -148,6 +148,11 @@ python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
    end report names a declared rule the task changed in only some of its
    files. Neither blocks.
 
+Proposals follow the project's source scan, so its `scan.exclude` patterns
+leave fixtures, vendored code and generated copies out. Without them, exact
+copies in fixture folders head the list. They are real copies, but rarely
+the rules you mean to keep in step.
+
 **Limits:**
 
 - Python sources only. Other source files are counted as not examined.
