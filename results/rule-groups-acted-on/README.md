@@ -109,3 +109,14 @@ then quoted any rule note it had received. Total cost $0.11.
 
 The design records the repair as an amendment, made before sealing
 ([spec](../../docs/superpowers/specs/2026-11-04-rule-groups-acted-on-design.md)).
+
+## Gate 3: the full run, sealed and launched 2026-11-04
+
+`E:/ep-runs/rule-groups-acted-on-full-2026-11-04`: five stages, two arms and
+ten replicates, which is 100 one-stage runs at Sonnet 5.5, medium effort. The
+estimate is about $14–16. [`launch.py`](launch.py) runs them four at a time.
+Their order is fixed in `launch-order.json` before the first launch:
+replicate blocks in turn, shuffled within each block with a seed. Every
+slot runs once and is never retried. The protocol pins the runtime
+fingerprint and the harness hash, and every slot checks both before it
+starts.
