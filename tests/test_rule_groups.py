@@ -246,3 +246,23 @@ def test_the_end_report_is_quiet_when_a_rule_changed_everywhere_or_nowhere(tmp_p
     root = declared(tmp_path)
     assert 'lodging-tax' not in _report(root, ['app/money.py', 'app/services/pricing.py'])
     assert 'lodging-tax' not in _report(root, ['app/names.py'])
+
+
+
+def test_every_proposed_entry_has_its_own_id_so_several_can_be_certified(tmp_path):
+    # Two different pairs of `total` functions would both be called rule-total-total.
+    from core.milestones.propose import propose
+    total = 'def total(lines):\n    return sum(line.amount_cents for line in lines) // VAT_DIVISOR\n'
+    root = project(tmp_path, {'app/a.py': total, 'app/b.py': total, 'app/c.py': total})
+    ids = [p['entry']['id'] for p in propose(root)['proposals']]
+    assert len(ids) == len(set(ids)), ids
+
+
+def test_a_proposed_id_never_repeats_one_already_declared(tmp_path):
+    from core.milestones.propose import propose
+    root = project(tmp_path)
+    (root / 'elevenpowers.milestones.json').write_text(json.dumps({'schema': 1, 'milestones': [dict(
+        RULE, id='rule-lodging_tax-quote_tax', inputs=['app/money.py'])]}), encoding='utf-8')
+    first = propose(root)['proposals'][0]
+    assert first['files'] == ['app/money.py', 'app/services/pricing.py']
+    assert first['entry']['id'] != 'rule-lodging_tax-quote_tax'

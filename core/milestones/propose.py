@@ -117,6 +117,14 @@ def propose(root, *, limit=50, seconds=30):
     proposals = [{'score': round(score, 4), 'files': list(files), 'functions': list(functions), 'shared': common,
                   'entry': _entry(files, functions, common, command)}
                  for files, (score, functions, common) in ordered]
+    # Same-named functions recur (`total` and `total`), and the schema refuses a repeated id.
+    taken = {m['id'] for m in declared['milestones']}
+    for proposal in proposals:
+        base, number = proposal['entry']['id'], 1
+        while proposal['entry']['id'] in taken:
+            number += 1
+            proposal['entry']['id'] = f'{base[:60]}-{number}'
+        taken.add(proposal['entry']['id'])
     return {'schema': 1, 'proposals': proposals,
             'coverage': {'complete': not issues, 'python_files': len(texts), 'functions': len(rows),
                          'not_examined': len(unread), 'issues': issues},
