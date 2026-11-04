@@ -1,0 +1,790 @@
+[
+ {
+  "case": "clinic_booking",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/reports/day_schedule.py"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 2,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/services/availability.py",
+   "src/clinicbook/services/desk.py"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 3,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/reports/day_schedule.py",
+   "src/clinicbook/services/desk.py"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/reports/day_schedule.py",
+   "src/clinicbook/storage/bookings_file.py"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 5,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/services/desk.py"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 6,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 7,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/reports/statement.py",
+   "src/clinicbook/services/fees.py"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 8,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/clinicbook/services/fees.py"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "fleet_service",
+  "stage": 2,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/fleetkeep/model/money.py",
+   "src/fleetkeep/reports/costs.py",
+   "src/fleetkeep/reports/spend.py",
+   "src/fleetkeep/services/workorders.py"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 3,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/fleetkeep/services/workorders.py"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 4,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "fleet_service",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/fleetkeep/services/workorders.py"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 6,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/fleetkeep/services/workorders.py"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 7,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "fleet_service",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "gradebook",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "gradebook",
+  "stage": 2,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": [
+   "src/gradebook/reports/progress.py"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 3,
+  "kind": "covered",
+  "declared_rules": 1,
+  "reference_touches_declared": [
+   "src/gradebook/grading/calculator.py",
+   "src/gradebook/reports/progress.py"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 4,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "gradebook",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "gradebook",
+  "stage": 6,
+  "kind": "self-contained",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "gradebook",
+  "stage": 7,
+  "kind": "self-contained",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "gradebook",
+  "stage": 8,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": [
+   "src/gradebook/grading/calculator.py"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 2,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/greenhouse/services/ingest.py",
+   "src/greenhouse/services/manual.py"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 3,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 4,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/greenhouse/services/ingest.py"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 6,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 7,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/greenhouse/services/valves.py",
+   "src/greenhouse/storage/plans.py"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 2,
+  "kind": "self-contained",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 3,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 4,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 5,
+  "kind": "self-contained",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 6,
+  "kind": "uncovered",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 7,
+  "kind": "covered",
+  "declared_rules": 1,
+  "reference_touches_declared": [
+   "src/hoteldesk/services/booking.py",
+   "src/hoteldesk/services/night_audit.py"
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 1,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "household_budget",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "household_budget",
+  "stage": 2,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "household_budget",
+  "stage": 3,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "household_budget",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/budgetbook/reports/annual.py",
+   "src/budgetbook/services/budgets.py",
+   "src/budgetbook/services/closing.py"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 5,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "household_budget",
+  "stage": 6,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "household_budget",
+  "stage": 7,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/budgetbook/reports/month_end.py",
+   "src/budgetbook/services/budgets.py"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/budgetbook/reports/month_end.py"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 1,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/lending/reports/overdue.py",
+   "src/lending/services/fines.py"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 2,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/lending/services/fines.py"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 3,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "library_loans",
+  "stage": 4,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "library_loans",
+  "stage": 5,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/lending/services/fines.py"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 6,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/lending/model/dates.py",
+   "src/lending/storage/member_import.py"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 7,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "library_loans",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "parcelpost",
+  "stage": 1,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/parcelpost/formats/manifest.py",
+   "src/parcelpost/services/billing.py"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 2,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/parcelpost/services/scans.py"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 3,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "parcelpost",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/parcelpost/core/ids.py",
+   "src/parcelpost/services/scans.py"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 5,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/parcelpost/formats/manifest.py",
+   "src/parcelpost/services/billing.py"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 6,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "parcelpost",
+  "stage": 7,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "parcelpost",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 2,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/payroll/reports/hours.py",
+   "src/payroll/rules/overtime.py"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 3,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/payroll/reports/journal.py",
+   "src/payroll/reports/payslip.py"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 6,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/payroll/reports/hours.py"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 7,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "recipe_box",
+  "stage": 1,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/recipebox/reports/shopping_csv.py",
+   "src/recipebox/storage/pantry_file.py"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 2,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "recipe_box",
+  "stage": 3,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "recipe_box",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/recipebox/core/recipe.py",
+   "src/recipebox/storage/plan_file.py"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "recipe_box",
+  "stage": 6,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "recipe_box",
+  "stage": 7,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "recipe_box",
+  "stage": 8,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/recipebox/services/importer.py",
+   "src/recipebox/storage/library.py"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 1,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/surveytally/files/csv_responses.py"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 2,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/surveytally/reports/compare.py",
+   "src/surveytally/reports/export.py"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 3,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "survey_tally",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/surveytally/files/csv_responses.py",
+   "src/surveytally/services/tally.py",
+   "src/surveytally/services/validation.py"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/surveytally/services/tally.py"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 6,
+  "kind": "covered",
+  "declared_rules": 3,
+  "reference_touches_declared": [
+   "src/surveytally/files/csv_responses.py",
+   "src/surveytally/files/weights_file.py"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 7,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "survey_tally",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 3,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "ticket_office",
+  "stage": 1,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/boxoffice/reports/daily.py",
+   "src/boxoffice/storage/ledger.py"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 2,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "ticket_office",
+  "stage": 3,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/boxoffice/reports/daily.py"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 4,
+  "kind": "covered",
+  "declared_rules": 2,
+  "reference_touches_declared": [
+   "src/boxoffice/model/concessions.py",
+   "src/boxoffice/reports/price_list.py"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 5,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "ticket_office",
+  "stage": 6,
+  "kind": "uncovered",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "ticket_office",
+  "stage": 7,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ },
+ {
+  "case": "ticket_office",
+  "stage": 8,
+  "kind": "self-contained",
+  "declared_rules": 2,
+  "reference_touches_declared": []
+ }
+]
