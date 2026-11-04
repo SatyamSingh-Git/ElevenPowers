@@ -55,3 +55,37 @@ stages.
 - A reference change is cleaner than an agent's, so these ranks may be
   better than an agent's edit would give.
 - Contracts, the kind that motivated this, are only 5 of the 51.
+
+## Result ([`fresh.py`](fresh.py), [rows](fresh.json), [summary](fresh.txt))
+
+| 51 never-read dependents, top 3 | hits | control | by kind: copy / data / key / contract |
+|---|---|---|---|
+| **shared rare tokens** | **16** | 6 | 6 / 5 / 3 / 2 |
+| co-readers | 12 | 6 | 4 / 6 / 1 / 1 |
+| data flow | 4 | 2 | 0 / 1 / 3 / 0 |
+| random | 3.1 | | |
+
+**Data flow is recorded as tried, and nothing is built.** It needed 17, and
+it found 4. Two misses were read after the run to rule out a bug, and the
+scorer did what the plan said:
+
+- `clinic_booking` stage 4 changed the order `save_bookings` writes. The
+  dependent never calls it: it reads the saved file through the loader.
+- `gradebook` stage 8's dependent calls none of the touched functions.
+
+Both times the data travels through a file or an object, not through a call.
+Following calls by name cannot see that.
+
+**The token ranking's first clean test.** These 51 stages were never read,
+and the ranks come from the reference change, not from an agent's edit.
+
+- It puts 16 of 51 (31%) in the top 3, against 6 for its control and 3.1 at
+  random.
+- In-sample it found 17 of 31 (55%), so out of sample it is weaker but
+  holds.
+- Co-readers, the more specific of the two, finds fewer here as well.
+
+This qualifies, without changing, PLAN's reading of the token ranking. It
+is a real but modest lead, still only for an on-demand question. Its noise
+on self-contained stages, measured earlier, still rules out a standing
+warning.

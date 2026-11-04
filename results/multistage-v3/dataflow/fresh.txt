@@ -1,0 +1,6 @@
+{'case': 'ticket_office', 'stage': 6, 'dependent': 'src/boxoffice/storage/jsonstore.py', 'kind': 'contract', 'tokens': 5, 'of': 49, 'tokens_control': 9, 'coreaders': 26, 'coreaders_control': 6, 'dataflow': 13, 'dataflow_control': 6}
+51 never-read dependents
+tokens     top 1/3/5 {1: 8, 3: 16, 5: 26}  control top 3 6  top 3 by kind {'contract': 2, 'copy': 6, 'data': 5, 'key': 3}
+coreaders  top 1/3/5 {1: 5, 3: 12, 5: 21}  control top 3 6  top 3 by kind {'contract': 1, 'copy': 4, 'data': 6, 'key': 1}
+dataflow   top 1/3/5 {1: 0, 3: 4, 5: 9}  control top 3 2  top 3 by kind {'contract': 0, 'copy': 0, 'data': 1, 'key': 3}
+random, top 3: 3.1
