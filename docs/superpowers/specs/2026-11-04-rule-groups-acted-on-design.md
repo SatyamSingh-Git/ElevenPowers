@@ -1,7 +1,7 @@
 # Does an agent act on a certified rule? (PLAN §13 B, open problem 2)
 
-**Status: design, 2026-11-04. Nothing has run. A $0 rehearsal and a pilot
-come before any decision on the full run.**
+**Status: design, 2026-11-04. Gate 1 and the pilot have run; the treatment
+was repaired and amended below, before the full run was sealed.**
 
 ## Question
 
@@ -111,6 +111,26 @@ is resized before sealing, never after.
 3. **Seal and run** the 100, never retrying for a result. Every attempt is
    kept.
 
+## Amendment after the pilot, before sealing (2026-11-04)
+
+The pilot ([results](../../../results/rule-groups-acted-on/README.md))
+qualified the harness. It also showed that the treatment as written, a note
+before the agent edits a declared file, reached only edits made with the Edit
+tool. Three of six rules-arm runs wrote every file by running Python in Bash
+and never saw the note.
+
+- **Treatment, repaired** (`core/hook.py`, d8e31ca). After a shell command,
+  each file the task changed that a declared multi-file rule names, and that
+  was not briefed yet, gets the same note once. Gate 1 was rerun with a
+  shell-write replay: 0 of 5 before the repair, 5 of 5 after, with the
+  control arm silent.
+- **No resize.** The pilot's control arm lost the dependent in 6 of 6 runs,
+  at or above the 64% baseline.
+- **The pilot is not pooled** with the full run, because its treatment was
+  different. The primary outcome, test, direction and size are unchanged.
+- **Delivery** is read from the runtime's `briefed` record, which now holds
+  both routes.
+
 ## Bounds known in advance
 
 - One stage from the reference tree is not a conversation: the agent has no
@@ -120,3 +140,6 @@ is resized before sealing, never after.
 - The five stages were read when the losses were diagnosed. Their selection
   is by known baseline failure, not at random, so the result says whether
   the brief works where a loss is likely, not how often.
+- Through the shell, the note arrives after the command that wrote the file,
+  not before it. It can still change the rest of the stage, but not that
+  write.
