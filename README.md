@@ -555,8 +555,10 @@ python plugin/bin/ep_milestones.py --project PATH --propose
 2. **Certify.** You copy the pairs that really keep the same rule into
    `elevenpowers.milestones.json`, and describe the rule in each entry.
 3. **Ground.** Before an agent first edits one of those files, its brief
-   names the rule and the other files. The end report names a declared rule
-   the task changed in only some of its files. Neither blocks.
+   names the rule and the other files. An agent that writes the file
+   through a shell command gets the same note right after that command. The
+   end report names a declared rule the task changed in only some of its
+   files. Neither blocks.
 
 Proposals never reach the agent; only what you declared does. This version
 reads Python only and counts other source files as not examined.
@@ -564,9 +566,23 @@ reads Python only and counts other source files as not examined.
 On the multi-stage v3 cases, 50 proposals per project covered 20 of 51
 dependents the method was never designed on. The control covered 11, and
 random 3.9. Replayed on a real loss, the brief and the end report named the
-file the agent had left behind. Whether an agent acts on the brief is not
-measured. See [the spike and replay](results/multistage-v3/discover/README.md)
-and the [design](docs/superpowers/specs/2026-11-04-rule-groups-design.md).
+file the agent had left behind.
+
+**Agents act on the note.** In 100 one-stage runs (Sonnet 5.5, with
+superpowers and ElevenPowers in both arms), the dependent was left behind
+in 35 of 50 runs without declared rules and 4 of 50 with them. The
+pre-registered exact test gives p = 8.6 × 10⁻¹³. No other behaviour was
+lost, and the cost was 8.5% higher.
+
+That is bounded:
+
+- certification was simulated as perfect;
+- the five stages were chosen for their known losses;
+- the result says nothing where no declared rule covers the broken pair.
+
+See [the spike and replay](results/multistage-v3/discover/README.md), the
+[design](docs/superpowers/specs/2026-11-04-rule-groups-design.md) and
+[the experiment](results/rule-groups-acted-on/README.md).
 
 ### Optional test strength
 

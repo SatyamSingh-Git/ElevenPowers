@@ -2108,19 +2108,29 @@ Until then any contributor can start on an open problem below.
      - Replayed on a real loss (`payroll_lite` stage 2), the brief named
        `reports/hours.py` before the rule was edited, and the end report
        named it as unchanged.
-     - Not measured: whether an agent acts on the brief (open problem 2),
-       and whether people certify the right pairs.
+     - Agents act on the brief: 4 of 50 dependents lost against 35 of 50
+       (open problem 2 below). Not measured: whether people certify the
+       right pairs.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
    qualifies that literature: its 26-point collapse is HotPotQA, not coding.
-   - Being measured for certified rules
+   - **Measured for certified rules: acted on**
      ([design](docs/superpowers/specs/2026-11-04-rule-groups-acted-on-design.md),
-     [results](results/rule-groups-acted-on/README.md)): 100 one-stage runs
-     on the five stages where v3 lost most. The arms differ only in the
-     declarations file.
+     [results](results/rule-groups-acted-on/README.md)).
+     - The dependent was lost in 35 of 50 control runs and 4 of 50 rules
+       runs: 100 one-stage runs on the five stages where v3 lost most, with
+       arms differing only in the declarations file. The exact one-sided
+       stratified test gives p = 8.6 × 10⁻¹³.
+     - No other group was lost, and cost rose 8.5%.
+     - Bounded: certification was simulated as perfect, on stages chosen
+       for their known losses.
    - The pilot found the note missed agents that write through the shell.
      That was repaired, and the design amended, before sealing.
+   - Still open: whether real people certify the right pairs and describe
+     them well. Three of the four rules-arm losses were on one stage whose
+     description was only shared words. Also open: the 31 never-read
+     dependents that no proposal covers.
 3. **Brief cutoff.** List the importers a brief hides behind "+N more", or
    rank them, without flooding the context. Tried 2026-11-03 ($0,
    [spike](results/multistage-v3/brief-cutoff/README.md)):

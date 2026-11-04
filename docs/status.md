@@ -1,7 +1,7 @@
 # Current delivery status
 
-**2026-11-04 — Is a certified rule acted on? The full run is going.** PLAN §13
-B, open problem 2
+**2026-11-04 — A certified rule is acted on: 35 of 50 dependents lost
+without it, 4 of 50 with it.** PLAN §13 B, open problem 2
 ([design](superpowers/specs/2026-11-04-rule-groups-acted-on-design.md),
 [results](../results/rule-groups-acted-on/README.md)).
 - **Pilot** (12 one-stage runs, $1.63): the harness qualified. It also found
@@ -13,7 +13,17 @@ B, open problem 2
   - A $0.11 real-host probe, run both ways, had the agent quote the note
     word for word in the rules arm and say NONE in the control arm.
   - The design was amended before sealing.
-- **Full run:** 100 runs, sealed and launched. The result is pending.
+- **Full run:** 100 one-stage runs, all completed, $16.39. The arms differed
+  only in the declarations file.
+  - **Primary:** the exact one-sided stratified test gives
+    p = 8.6 × 10⁻¹³.
+  - **Harm:** no other group was lost in either arm. Cost was 8.5% higher
+    and model time 8%.
+  - **Exploratory:** every rules run did the stage's own request. All 21
+    rules runs that edited only through the shell kept the dependent.
+  - **Bounded:** certification was simulated as perfect, on stages chosen
+    for their known losses. The other covered stages and the self-contained
+    stages were not run.
 
 **2026-11-04 — Rule groups built; three detectors tried and not built.**
 PLAN §13 B, open problem 1, all at $0 under plans written before each ran.

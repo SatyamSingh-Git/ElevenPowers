@@ -144,9 +144,20 @@ python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
    change its check. An entry needs at least one check. The project's
    declared `tests` command is filled in when there is one.
 3. **Ground.** Before an agent first edits a file in a declared rule that
-   names other files, its brief says so and names them. At completion, the
-   end report names a declared rule the task changed in only some of its
-   files. Neither blocks.
+   names other files, its brief says so and names them. An agent that writes
+   the file through a shell command gets the same note right after that
+   command. At completion, the end report names a declared rule the task
+   changed in only some of its files. Neither blocks.
+
+**Write the description as the rule, not the shared words.** In the
+experiment that measured this
+([results](../results/rule-groups-acted-on/README.md)), agents with
+declared rules left a dependent file behind in 4 of 50 runs, against 35 of
+50 without. Three of the four losses were on one stage. Its description
+was only the shared words "manifest_filename, day, isoformat". Two of
+those agents reasoned that a change to the manifest order "doesn't touch
+the filename", and left the other file alone. A sentence that says what the rule is gives
+them less to misread.
 
 Proposals follow the project's source scan, so its `scan.exclude` patterns
 leave fixtures, vendored code and generated copies out. Without them, exact

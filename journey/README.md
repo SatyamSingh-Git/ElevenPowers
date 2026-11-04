@@ -1,10 +1,15 @@
 # The journey
 
-Latest: [96 — a rule a person certifies](96-a-rule-a-person-certifies.md): rule groups, after NVIDIA
+Latest: [97 — the first note an agent acted on](97-the-first-note-acted-on.md): with certified rules
+the dependent was left behind in 4 of 50 one-stage runs, against 35 of 50 without (p = 8.6 × 10⁻¹³);
+the pilot first found the note missed agents that write through the shell, and that was repaired
+before sealing. Bounded by a simulated perfect certification on stages chosen for their losses.
+
+Previous: [96 — a rule a person certifies](96-a-rule-a-person-certifies.md): rule groups, after NVIDIA
 Auto-Ontology's discover-certify-ground loop: proposals from the project alone cover 20 of 51 never-read
 v3 dependents; only declared rules reach the agent; three detectors tried and not built first.
 
-Previous: [95 — a remote has an age, not a freshness](95-a-remote-has-an-age-not-a-freshness.md):
+Recent: [95 — a remote has an age, not a freshness](95-a-remote-has-an-age-not-a-freshness.md):
 remote observations v1, with approved explicit fetches, offline status and receipt bracketing in
 PatchProof bundles; redirects and validators read from real producers; an upstream ignore-marker
 defect found and fixed separately; thirteen guards seen to flip.
