@@ -65,3 +65,37 @@ outcome existed.
   dependent.
 - A test of that would need stages where the broken coupling is not the
   proposed one, chosen in advance and not only this one.
+
+## How often a certified pair names the wrong tie ([`coupling_scan.py`](coupling_scan.py), [output](coupling-scan.json), $0)
+
+The scan looked at each of the 25 covered v3 stages. For each, it asked
+whether the reference changes a function the certifying proposal named, or
+another function in the same two files. Functions were read with `ast`,
+and changed lines with `difflib`. Read by hand, `parcelpost` 5 changes
+`_manifest_order` and `make_invoices`, and `household_budget` 7 changes
+exactly the two proposed functions.
+
+- **16 stages:** the stage changes a proposed function, so the note names
+  the tie that breaks.
+- **9 stages:** the stage breaks another tie between the same files.
+  - `clinic_booking` 7, `gradebook` 3, `hotel_desk` 7;
+  - `parcelpost` 1, `parcelpost` 5;
+  - `payroll_lite` 4, `recipe_box` 1, `recipe_box` 8, `survey_tally` 4.
+
+Joined with the acted-on and harm runs' covered stages, the dependent was
+lost as follows:
+
+| the stage breaks… | control | rules |
+|---|---|---|
+| the tie the note names (16 stages) | 26 of 52 (50%) | 2 of 52 (4%) |
+| another tie (9 stages) | 11 of 18 (61%) | 4 of 18 (22%) |
+
+**Exploratory and after the fact.** The cells are small and unbalanced:
+10 of the 18 runs in the second row are `parcelpost` 5. The note helps in
+both rows, because it puts the other file in front of the agent. Where it
+names the wrong tie, it leaves more behind.
+
+A note that declares the files coupled as a whole, rather than by one
+rule, could close that residue. It could also invite edits nothing needed.
+These 9 stages are where it would have to be tested, chosen now, before
+any such wording exists.

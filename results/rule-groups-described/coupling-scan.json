@@ -1,0 +1,571 @@
+[
+ {
+  "stage": "clinic_booking 2",
+  "dependent": "src/clinicbook/services/desk.py",
+  "rule": "rule-free_slots-_check_when",
+  "proposed": {
+   "src/clinicbook/services/availability.py": "free_slots",
+   "src/clinicbook/services/desk.py": "_check_when"
+  },
+  "changed": {
+   "src/clinicbook/services/availability.py": [
+    "free_slots",
+    "slot_starts"
+   ],
+   "src/clinicbook/services/desk.py": [
+    "_check_when"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "clinic_booking 4",
+  "dependent": "src/clinicbook/reports/day_schedule.py",
+  "rule": "rule-export_day-save_bookings",
+  "proposed": {
+   "src/clinicbook/reports/day_schedule.py": "export_day",
+   "src/clinicbook/storage/bookings_file.py": "save_bookings"
+  },
+  "changed": {
+   "src/clinicbook/reports/day_schedule.py": [
+    "schedule_rows"
+   ],
+   "src/clinicbook/storage/bookings_file.py": [
+    "_file_order",
+    "save_bookings"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "clinic_booking 7",
+  "dependent": "src/clinicbook/reports/statement.py",
+  "rule": "rule-total-total",
+  "proposed": {
+   "src/clinicbook/reports/statement.py": "total",
+   "src/clinicbook/services/fees.py": "total"
+  },
+  "changed": {
+   "src/clinicbook/reports/statement.py": [
+    "_line"
+   ],
+   "src/clinicbook/services/fees.py": [
+    "write_charges"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "fleet_service 2",
+  "dependent": "src/fleetkeep/reports/costs.py",
+  "rule": "rule-times-_per_mile",
+  "proposed": {
+   "src/fleetkeep/model/money.py": "times",
+   "src/fleetkeep/reports/costs.py": "_per_mile"
+  },
+  "changed": {
+   "src/fleetkeep/model/money.py": [
+    "divide",
+    "percent_of"
+   ],
+   "src/fleetkeep/reports/costs.py": [
+    "_maintenance"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "fleet_service 2",
+  "dependent": "src/fleetkeep/reports/costs.py",
+  "rule": "rule-_maintenance-order_charges",
+  "proposed": {
+   "src/fleetkeep/reports/costs.py": "_maintenance",
+   "src/fleetkeep/services/workorders.py": "order_charges"
+  },
+  "changed": {
+   "src/fleetkeep/reports/costs.py": [
+    "_maintenance"
+   ],
+   "src/fleetkeep/services/workorders.py": [
+    "order_charges"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "fleet_service 2",
+  "dependent": "src/fleetkeep/reports/costs.py",
+  "rule": "rule-_maintenance-spend_rows",
+  "proposed": {
+   "src/fleetkeep/reports/costs.py": "_maintenance",
+   "src/fleetkeep/reports/spend.py": "spend_rows"
+  },
+  "changed": {
+   "src/fleetkeep/reports/costs.py": [
+    "_maintenance"
+   ],
+   "src/fleetkeep/reports/spend.py": [
+    "spend_rows"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "fleet_service 2",
+  "dependent": "src/fleetkeep/reports/spend.py",
+  "rule": "rule-_maintenance-spend_rows",
+  "proposed": {
+   "src/fleetkeep/reports/costs.py": "_maintenance",
+   "src/fleetkeep/reports/spend.py": "spend_rows"
+  },
+  "changed": {
+   "src/fleetkeep/reports/costs.py": [
+    "_maintenance"
+   ],
+   "src/fleetkeep/reports/spend.py": [
+    "spend_rows"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "gradebook 3",
+  "dependent": "src/gradebook/reports/progress.py",
+  "rule": "rule-_counted_items-_category_progress",
+  "proposed": {
+   "src/gradebook/grading/calculator.py": "_counted_items",
+   "src/gradebook/reports/progress.py": "_category_progress"
+  },
+  "changed": {
+   "src/gradebook/grading/calculator.py": [
+    "_drop_lowest"
+   ],
+   "src/gradebook/reports/progress.py": [
+    "_lowest"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "greenhouse_monitor 2",
+  "dependent": "src/greenhouse/services/manual.py",
+  "rule": "rule-parse_row-record_manual",
+  "proposed": {
+   "src/greenhouse/services/ingest.py": "parse_row",
+   "src/greenhouse/services/manual.py": "record_manual"
+  },
+  "changed": {
+   "src/greenhouse/services/ingest.py": [
+    "parse_row"
+   ],
+   "src/greenhouse/services/manual.py": [
+    "record_manual"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "greenhouse_monitor 7",
+  "dependent": "src/greenhouse/services/valves.py",
+  "rule": "rule-planned_minutes-write_plan",
+  "proposed": {
+   "src/greenhouse/services/valves.py": "planned_minutes",
+   "src/greenhouse/storage/plans.py": "write_plan"
+  },
+  "changed": {
+   "src/greenhouse/services/valves.py": [
+    "planned_minutes"
+   ],
+   "src/greenhouse/storage/plans.py": [
+    "write_plan"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "hotel_desk 7",
+  "dependent": "src/hoteldesk/services/booking.py",
+  "rule": "rule-arriving-open_items",
+  "proposed": {
+   "src/hoteldesk/services/booking.py": "arriving",
+   "src/hoteldesk/services/night_audit.py": "open_items"
+  },
+  "changed": {
+   "src/hoteldesk/services/booking.py": [
+    "_next_id"
+   ],
+   "src/hoteldesk/services/night_audit.py": [
+    "_purge_cancelled",
+    "_total_the_day",
+    "run_audit"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "household_budget 4",
+  "dependent": "src/budgetbook/services/budgets.py",
+  "rule": "rule-year_report-_carried_into",
+  "proposed": {
+   "src/budgetbook/reports/annual.py": "year_report",
+   "src/budgetbook/services/budgets.py": "_carried_into"
+  },
+  "changed": {
+   "src/budgetbook/reports/annual.py": [
+    "year_report"
+   ],
+   "src/budgetbook/services/budgets.py": [
+    "_carried_into"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "household_budget 4",
+  "dependent": "src/budgetbook/services/budgets.py",
+  "rule": "rule-budget_status-close_month",
+  "proposed": {
+   "src/budgetbook/services/budgets.py": "budget_status",
+   "src/budgetbook/services/closing.py": "close_month"
+  },
+  "changed": {
+   "src/budgetbook/services/budgets.py": [
+    "_carried_into"
+   ],
+   "src/budgetbook/services/closing.py": [
+    "_category_entry",
+    "close_month"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "household_budget 4",
+  "dependent": "src/budgetbook/reports/annual.py",
+  "rule": "rule-year_report-_carried_into",
+  "proposed": {
+   "src/budgetbook/reports/annual.py": "year_report",
+   "src/budgetbook/services/budgets.py": "_carried_into"
+  },
+  "changed": {
+   "src/budgetbook/reports/annual.py": [
+    "year_report"
+   ],
+   "src/budgetbook/services/budgets.py": [
+    "_carried_into"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "household_budget 7",
+  "dependent": "src/budgetbook/reports/month_end.py",
+  "rule": "rule-summarise-_spent_by_category",
+  "proposed": {
+   "src/budgetbook/reports/month_end.py": "summarise",
+   "src/budgetbook/services/budgets.py": "_spent_by_category"
+  },
+  "changed": {
+   "src/budgetbook/reports/month_end.py": [
+    "summarise"
+   ],
+   "src/budgetbook/services/budgets.py": [
+    "_spent_by_category"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "library_loans 1",
+  "dependent": "src/lending/reports/overdue.py",
+  "rule": "rule-overdue_rows-fine_for",
+  "proposed": {
+   "src/lending/reports/overdue.py": "overdue_rows",
+   "src/lending/services/fines.py": "fine_for"
+  },
+  "changed": {
+   "src/lending/reports/overdue.py": [
+    "overdue_rows"
+   ],
+   "src/lending/services/fines.py": [
+    "fine_for"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "library_loans 6",
+  "dependent": "src/lending/storage/member_import.py",
+  "rule": "rule-parse_date-_day",
+  "proposed": {
+   "src/lending/model/dates.py": "parse_date",
+   "src/lending/storage/member_import.py": "_day"
+  },
+  "changed": {
+   "src/lending/model/dates.py": [
+    "format_day_first"
+   ],
+   "src/lending/storage/member_import.py": [
+    "_day"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "parcelpost 1",
+  "dependent": "src/parcelpost/services/billing.py",
+  "rule": "rule-manifest_filename-bill_day",
+  "proposed": {
+   "src/parcelpost/formats/manifest.py": "manifest_filename",
+   "src/parcelpost/services/billing.py": "bill_day"
+  },
+  "changed": {
+   "src/parcelpost/formats/manifest.py": [
+    "_manifest_row"
+   ],
+   "src/parcelpost/services/billing.py": [
+    "read_charges"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "parcelpost 4",
+  "dependent": "src/parcelpost/services/scans.py",
+  "rule": "rule-_check_digit-_plausible_number",
+  "proposed": {
+   "src/parcelpost/core/ids.py": "_check_digit",
+   "src/parcelpost/services/scans.py": "_plausible_number"
+  },
+  "changed": {
+   "src/parcelpost/core/ids.py": [
+    "_check_digit"
+   ],
+   "src/parcelpost/services/scans.py": [
+    "_plausible_number"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "parcelpost 5",
+  "dependent": "src/parcelpost/services/billing.py",
+  "rule": "rule-manifest_filename-bill_day",
+  "proposed": {
+   "src/parcelpost/formats/manifest.py": "manifest_filename",
+   "src/parcelpost/services/billing.py": "bill_day"
+  },
+  "changed": {
+   "src/parcelpost/formats/manifest.py": [
+    "_manifest_order"
+   ],
+   "src/parcelpost/services/billing.py": [
+    "make_invoices"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "payroll_lite 2",
+  "dependent": "src/payroll/reports/hours.py",
+  "rule": "rule-hours_rows-split_hours",
+  "proposed": {
+   "src/payroll/reports/hours.py": "hours_rows",
+   "src/payroll/rules/overtime.py": "split_hours"
+  },
+  "changed": {
+   "src/payroll/reports/hours.py": [
+    "hours_rows"
+   ],
+   "src/payroll/rules/overtime.py": [
+    "split_hours"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "payroll_lite 4",
+  "dependent": "src/payroll/reports/payslip.py",
+  "rule": "rule-_cell-_row",
+  "proposed": {
+   "src/payroll/reports/journal.py": "_cell",
+   "src/payroll/reports/payslip.py": "_row"
+  },
+  "changed": {
+   "src/payroll/reports/journal.py": [
+    "journal_lines"
+   ],
+   "src/payroll/reports/payslip.py": [
+    "render_payslip"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "payroll_lite 4",
+  "dependent": "src/payroll/reports/journal.py",
+  "rule": "rule-_cell-_row",
+  "proposed": {
+   "src/payroll/reports/journal.py": "_cell",
+   "src/payroll/reports/payslip.py": "_row"
+  },
+  "changed": {
+   "src/payroll/reports/journal.py": [
+    "journal_lines"
+   ],
+   "src/payroll/reports/payslip.py": [
+    "render_payslip"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "recipe_box 1",
+  "dependent": "src/recipebox/storage/pantry_file.py",
+  "rule": "rule-write_shopping_csv-save_pantry",
+  "proposed": {
+   "src/recipebox/reports/shopping_csv.py": "write_shopping_csv",
+   "src/recipebox/storage/pantry_file.py": "save_pantry"
+  },
+  "changed": {
+   "src/recipebox/reports/shopping_csv.py": [
+    "shopping_rows"
+   ],
+   "src/recipebox/storage/pantry_file.py": [
+    "read_purchases"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "recipe_box 4",
+  "dependent": "src/recipebox/storage/plan_file.py",
+  "rule": "rule-recipe_id-_title_key",
+  "proposed": {
+   "src/recipebox/core/recipe.py": "recipe_id",
+   "src/recipebox/storage/plan_file.py": "_title_key"
+  },
+  "changed": {
+   "src/recipebox/core/recipe.py": [
+    "recipe_id"
+   ],
+   "src/recipebox/storage/plan_file.py": [
+    "_title_key",
+    "parse_plan"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "recipe_box 8",
+  "dependent": "src/recipebox/services/importer.py",
+  "rule": "rule-_read_recipe-recipe_from_dict",
+  "proposed": {
+   "src/recipebox/services/importer.py": "_read_recipe",
+   "src/recipebox/storage/library.py": "recipe_from_dict"
+  },
+  "changed": {
+   "src/recipebox/services/importer.py": [
+    "_read_ingredient"
+   ],
+   "src/recipebox/storage/library.py": [
+    "_ingredient_from_dict",
+    "_ingredient_to_dict"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "survey_tally 2",
+  "dependent": "src/surveytally/reports/compare.py",
+  "rule": "rule-read_percentages-_write_csv",
+  "proposed": {
+   "src/surveytally/reports/compare.py": "read_percentages",
+   "src/surveytally/reports/export.py": "_write_csv"
+  },
+  "changed": {
+   "src/surveytally/reports/compare.py": [
+    "read_percentages"
+   ],
+   "src/surveytally/reports/export.py": [
+    "frequency_rows"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "survey_tally 4",
+  "dependent": "src/surveytally/services/tally.py",
+  "rule": "rule-__init__-__init__",
+  "proposed": {
+   "src/surveytally/services/tally.py": "__init__",
+   "src/surveytally/services/validation.py": "__init__"
+  },
+  "changed": {
+   "src/surveytally/services/tally.py": [
+    "_tally_rating",
+    "_tally_scale"
+   ],
+   "src/surveytally/services/validation.py": [
+    "_check_rating",
+    "_check_scale"
+   ]
+  },
+  "rule_changed": false
+ },
+ {
+  "stage": "survey_tally 6",
+  "dependent": "src/surveytally/files/weights_file.py",
+  "rule": "rule-read_responses-read_weights",
+  "proposed": {
+   "src/surveytally/files/csv_responses.py": "read_responses",
+   "src/surveytally/files/weights_file.py": "read_weights"
+  },
+  "changed": {
+   "src/surveytally/files/csv_responses.py": [
+    "_response"
+   ],
+   "src/surveytally/files/weights_file.py": [
+    "read_weights"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "ticket_office 1",
+  "dependent": "src/boxoffice/reports/daily.py",
+  "rule": "rule-daily_takings-entries_on",
+  "proposed": {
+   "src/boxoffice/reports/daily.py": "daily_takings",
+   "src/boxoffice/storage/ledger.py": "entries_on"
+  },
+  "changed": {
+   "src/boxoffice/reports/daily.py": [
+    "daily_takings"
+   ],
+   "src/boxoffice/storage/ledger.py": [
+    "entries_on",
+    "record_entry"
+   ]
+  },
+  "rule_changed": true
+ },
+ {
+  "stage": "ticket_office 4",
+  "dependent": "src/boxoffice/reports/price_list.py",
+  "rule": "rule-concession_price-price_list",
+  "proposed": {
+   "src/boxoffice/model/concessions.py": "concession_price",
+   "src/boxoffice/reports/price_list.py": "price_list"
+  },
+  "changed": {
+   "src/boxoffice/model/concessions.py": [
+    "concession_price"
+   ],
+   "src/boxoffice/reports/price_list.py": [
+    "price_list"
+   ]
+  },
+  "rule_changed": true
+ }
+]
