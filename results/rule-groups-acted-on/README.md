@@ -184,6 +184,15 @@ stratified test gives **p = 8.6 × 10⁻¹³**.
   order. The pair is tied in two ways, and the note named one
   ([record](../rule-groups-described/README.md)).
 
+- **Silent losses: 30 of 50 runs without the note, 2 of 50 with it.** A
+  silent loss is a dependent lost and never named in the agent's final
+  message. That is what reaches a person unflagged.
+  - The test is strict: the dependent's filename must appear, so
+    `parcelpost` rules 6's "billing and reconcile" does not count.
+  - By it, 5 of 35 control losses and 2 of 4 rules losses were named.
+  - Most of the gap is losses prevented, not losses reported. Added
+    2026-11-05, exploratory.
+
 **What bounds it** (from the design):
 
 - Certification is perfect by construction. A person may accept fewer
