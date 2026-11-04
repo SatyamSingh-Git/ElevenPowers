@@ -12,6 +12,19 @@ the template on `parcelpost` 5
 - The guide now says to describe every way the files are tied.
 - The runner gained a tested `described` arm, with seven mutants killed,
   for when that is worth testing.
+- **A hosted CI failure was root-caused and fixed.**
+  - The windows-latest 3.11 advice exercise failed twice in one run, with
+    attempts killed at 5515 and 5532 ms against a 5 s budget. The rest of
+    the exercise ran at local speed.
+  - The cause: the parent killed the worker at `seconds + 0.5` from before
+    the spawn, while the worker gave `build` a fresh budget from its own
+    start. A slow startup meant a bounded build was killed instead of
+    returning incomplete coverage.
+  - The fix: the worker now spends the parent's deadline. Replayed with a
+    1 s late start, the attempt went from killed after 2.53 s to delivered
+    in 2.11 s.
+  - An earlier red run (`edb1f29`) was a separate, already-fixed gap: a
+    harness module that wasn't yet on the architecture graph.
 
 **2026-11-04 — No harm from certified rules where no one needs them.** The
 follow-up to the acted-on run
