@@ -1,0 +1,479 @@
+[
+ {
+  "stage": "clinic_booking 2",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "clinic_booking 4",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "clinic_booking 5",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "clinic_booking 6",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "clinic_booking 7",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "fleet_service 2",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "fleet_service 3",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "fleet_service 7",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "fleet_service 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "gradebook 3",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "gradebook 6",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "gradebook 7",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "greenhouse_monitor 2",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "greenhouse_monitor 3",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "greenhouse_monitor 6",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "greenhouse_monitor 7",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "greenhouse_monitor 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "hotel_desk 2",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "hotel_desk 5",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "hotel_desk 7",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "hotel_desk 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "household_budget 3",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "household_budget 4",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "household_budget 5",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "household_budget 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "library_loans 4",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "library_loans 5",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "library_loans 6",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "library_loans 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "parcelpost 1",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "parcelpost 3",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "parcelpost 4",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "parcelpost 6",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "parcelpost 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "payroll_lite 3",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "payroll_lite 4",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "payroll_lite 6",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "payroll_lite 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "recipe_box 1",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "recipe_box 2",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "recipe_box 7",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "recipe_box 8",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "survey_tally 2",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "survey_tally 3",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "survey_tally 4",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "survey_tally 6",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "survey_tally 7",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "survey_tally 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "ticket_office 1",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "ticket_office 2",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "ticket_office 4",
+  "kind": "covered",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "ticket_office 7",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ },
+ {
+  "stage": "ticket_office 8",
+  "kind": "self-contained",
+  "declarations ok": true,
+  "reference regresses": [],
+  "reference does request": true,
+  "untouched does request": false,
+  "passes": true
+ }
+]
