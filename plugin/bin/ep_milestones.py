@@ -10,6 +10,10 @@ from core.milestones import build, markdown
 
 
 def main():
+    # Proposals quote a project's own words, which a Windows pipe's code page cannot always encode.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, default=Path.cwd())
     parser.add_argument('--json', action='store_true')

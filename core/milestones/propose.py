@@ -46,8 +46,20 @@ def _functions(source):
         tree = ast.parse(source)
     except (SyntaxError, ValueError):
         return []
-    return [(node.name, _tokens(ast.get_source_segment(source, node) or ''))
+    # ast.get_source_segment splits the whole file again for each function: on sqlalchemy that
+    # was 25 of the 30 seconds. This is its split (only \r\n, \r and \n end a line), done once.
+    lines = re.findall(r'[^\r\n]*(?:\r\n|\r|\n)|[^\r\n]+\Z', source)
+    return [(node.name, _tokens(_segment(lines, node)))
             for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+
+
+def _segment(lines, node):
+    # Column offsets count UTF-8 bytes, as in ast.get_source_segment.
+    first, last = node.lineno - 1, node.end_lineno - 1
+    if first == last:
+        return lines[first].encode()[node.col_offset:node.end_col_offset].decode()
+    return ''.join([lines[first].encode()[node.col_offset:].decode(), *lines[first + 1:last],
+                    lines[last].encode()[:node.end_col_offset].decode()])
 
 
 def _entry(files, functions, shared, command):
@@ -78,7 +90,9 @@ def propose(root, *, limit=50, seconds=30):
     idf = {word: math.log(len(texts) / count) for word, count in held.items()}
     rows = [(path, name, {w for w in words if idf.get(w, 0) > 0})
             for path, text in texts.items() for name, words in _functions(text)]
-    weight = [sum(idf[w] for w in words) for _, _, words in rows]
+    # fsum, not sum: words come in set order, which follows the hash seed, and copies of one rule
+    # tie at a score of 1 only if their sums round the same in every process.
+    weight = [math.fsum(idf[w] for w in words) for _, _, words in rows]
     index = defaultdict(list)
     for i, (_, _, words) in enumerate(rows):
         for word in words:
@@ -86,7 +100,7 @@ def propose(root, *, limit=50, seconds=30):
     skipped = sum(len(holders) > MAX_HOLDERS for holders in index.values())
     if skipped:
         issues.append(f'{skipped} tokens held by more than {MAX_HOLDERS} functions were skipped')
-    shared = defaultdict(float)
+    shared = defaultdict(list)
     for word, holders in index.items():
         if len(holders) > MAX_HOLDERS:
             continue
@@ -96,16 +110,16 @@ def propose(root, *, limit=50, seconds=30):
         for x, i in enumerate(holders):
             for j in holders[x + 1:]:
                 if rows[i][0] != rows[j][0]:
-                    shared[i, j] += idf[word]
+                    shared[i, j].append(idf[word])
     declared = load_declarations(root)
     issues += declared['issues']
     together = {frozenset((a, b)) for m in declared['milestones'] for a in m['inputs'] for b in m['inputs'] if a != b}
     best = {}
-    for (i, j), total in shared.items():
+    for (i, j), parts in shared.items():
         files = tuple(sorted((rows[i][0], rows[j][0])))
         if frozenset(files) in together or not weight[i] or not weight[j]:
             continue
-        score = total / math.sqrt(weight[i] * weight[j])
+        score = math.fsum(parts) / math.sqrt(weight[i] * weight[j])
         if score > best.get(files, (0,))[0]:
             first, second = (i, j) if rows[i][0] == files[0] else (j, i)
             best[files] = (score, (rows[first][1], rows[second][1]),

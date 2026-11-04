@@ -138,6 +138,65 @@ def test_words_used_everywhere_weigh_less_than_words_two_functions_share(tmp_pat
     assert ranked[0] == ['app/money.py', 'app/services/pricing.py']
 
 
+def test_a_large_project_is_scored_within_its_budget(tmp_path):
+    # sqlalchemy's 245 files spent the whole 30 s cutting functions out of their files, and nothing was proposed.
+    from core.milestones.propose import propose
+    # The cost was functions times file length, so a few long files show it best.
+    body = ''.join(f'def handler_{n}(event):\n    return event.get("field_{n}") or fallback_{n % 7}\n\n\n'
+                   for n in range(1500))
+    files = {f'app/module_{m}.py': body.replace('handler_', f'handler_{m}_') for m in range(4)}
+    value = propose(project(tmp_path, files), seconds=10)
+    assert value['proposals']
+    assert not any('time budget' in issue for issue in value['coverage']['issues'])
+
+
+def test_each_function_is_cut_out_exactly_as_ast_cuts_it(monkeypatch):
+    # The text itself, not its tokens: a cut one character long can still yield the same tokens.
+    import ast
+    from core.milestones import propose
+    source = ('# café\r\nclass Meter:\r\n    def read(self):  # été\r\n        return "é" + UNIT  # x\r\n'
+              '\r\n    async def poll(self): return await tick()\r\n\x0c\ndef outer(x):\r    def inner(y):\r'
+              '        return y * RATE\r    return inner(x)\nlabel = "ü"; one = lambda: 0\ndef last(): return "▄"  # y')
+    tree = ast.parse(source)
+    expected = [(node.name, ast.get_source_segment(source, node)) for node in ast.walk(tree)
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+    assert len(expected) == 5
+    monkeypatch.setattr(propose, '_tokens', lambda text: text)
+    assert propose._functions(source) == expected
+
+
+def test_the_same_project_gets_the_same_proposals_in_every_process(tmp_path):
+    # sqlalchemy's tied dialect methods came back in a different order from run to run: float sums
+    # followed set order, which follows each process's hash seed.
+    import os
+    import random
+    import sys
+    from pathlib import Path
+    # Thirty rules, each copied into two files, all weighted alike: their pairs tie exactly, so
+    # they belong in file order. Word n is also used by n + 1 other functions, so words weigh differently,
+    # and those come first (app/common_*), so a pair's words are summed in another function's set order.
+    groups = {g: [f'g{g}_word_{n}' for n in range(12)] for g in range(30)}
+    copies = {}
+    for g, words in groups.items():
+        for copy in range(2):
+            order = random.Random(g * 2 + copy).sample(words, len(words))
+            copies[f'app/dialect_{g}_{copy}.py'] = f'def setup_{g}_{copy}(connection):\n    return [{", ".join(order)}]\n'
+    spread = {f'app/common_{k}.py': 'def use_{}():\n    return [{}]\n'.format(
+        k, ', '.join(w for words in groups.values() for n, w in enumerate(words) if n >= k)) for k in range(12)}
+    root = project(tmp_path, {**copies, **spread})
+    launcher = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_milestones.py'
+    orders = set()
+    for seed in range(6):
+        done = subprocess.run([sys.executable, str(launcher), '--propose', '--json', '--project', str(root)],
+                              capture_output=True, text=True, encoding='utf-8', env={**os.environ, 'PYTHONHASHSEED': str(seed)})
+        orders.add(tuple(tuple(p['files']) for p in json.loads(done.stdout)['proposals']
+                         if p['functions'][0].startswith('setup_')
+                         and p['functions'][0].rsplit('_', 1)[0] == p['functions'][1].rsplit('_', 1)[0]))
+    assert len(orders) == 1
+    tied = orders.pop()
+    assert len(tied) == 30 and list(tied) == sorted(tied)
+
+
 def test_the_limit_bounds_the_list(tmp_path):
     from core.milestones.propose import propose
     assert len(propose(project(tmp_path), limit=1)['proposals']) == 1
@@ -148,6 +207,21 @@ def _cli(*args):
     from pathlib import Path
     launcher = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_milestones.py'
     return subprocess.run([sys.executable, str(launcher), *args], capture_output=True, text=True, encoding='utf-8')
+
+
+def test_the_command_prints_words_its_console_cannot_encode(tmp_path):
+    # rich's block characters crashed it on a Windows pipe (cp1252); force that console everywhere.
+    import os
+    import sys
+    from pathlib import Path
+    bars = "def {name}(width):\n    return '▄▀' * width + BAR_EDGE\n"
+    root = project(tmp_path, {'app/bars.py': bars.format(name='bar_top'), 'app/meter.py': bars.format(name='meter_top')})
+    launcher = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_milestones.py'
+    for form in (['--json'], []):
+        done = subprocess.run([sys.executable, str(launcher), '--propose', '--project', str(root), *form],
+                              capture_output=True, env={**os.environ, 'PYTHONIOENCODING': 'cp1252'})
+        assert done.returncode == 0, done.stderr.decode('utf-8', 'replace')
+        assert '▄▀' in done.stdout.decode('utf-8')
 
 
 def test_the_command_lists_proposals_with_reasons_and_entries_to_certify(tmp_path):
