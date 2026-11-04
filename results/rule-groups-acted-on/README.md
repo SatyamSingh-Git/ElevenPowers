@@ -70,3 +70,36 @@ runs:
 agent that edits through the shell as well. It is repaired, rehearsed again
 at $0 on the shell path, and only then sealed and run. The pilot batch is
 kept as it is.
+
+### Repair: the note now follows a shell write (2026-11-04)
+
+After a Bash or PowerShell command, `core/hook.py` checks what the task
+has changed since it opened. Each changed file that a declared multi-file
+rule names, and that has not been briefed, gets the rule note once. The
+note is the same one an Edit brings.
+
+- Tests are in `tests/test_rule_groups.py`, five new.
+  - Forward: a script-written declared file brings the note, once.
+  - Adversarial: there is no note for an undeclared file, a file briefed
+    earlier, or a file the developer had already changed before the task.
+  - A shell change outside any rule leaves that file's own brief for its
+    first Edit.
+- Mutation check: five of six mutants were killed. The survivor removes the
+  shell-only gate. It makes no difference to what is said, because every
+  Edit is briefed before it happens. The gate only saves a `git status` on
+  every other tool call.
+- **Gate 1 rerun** with a shell-write replay ([`rehearse.py`](rehearse.py)):
+  before the repair it failed 0 of 5, with the dependent never named. After
+  it, it passes 5 of 5, and the control arm is silent both times.
+  [`rehearsal.json`](rehearsal.json) is the passing run. It was produced in
+  a detached worktree whose `core/hook.py` and `rehearse.py` are
+  byte-identical to this commit's.
+
+**Next, when resumed:**
+
+- Update the architecture graph: rule notes now also flow through
+  PostToolUse.
+- Then seal and run the full experiment:
+  `python -m eval.rule_groups_run prepare <new batch> --stage household_budget:7 --stage recipe_box:4 --stage library_loans:1 --stage payroll_lite:2 --stage parcelpost:5 --replicates 10`.
+  That is 100 runs, about $16 and about 2.5 h. Leave `core/` untouched
+  while it runs.

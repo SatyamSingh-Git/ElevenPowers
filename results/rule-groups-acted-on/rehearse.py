@@ -1,6 +1,7 @@
 """Gate 1 of the acted-on design, at $0: on each primary stage, the certification holds the
 stage's pair, the declarations load, only the rules arm carries them, the reference edit
-replayed through the real hooks brings a brief naming the dependent, and the grader scores
+replayed through the real hooks brings a brief naming the dependent, the same change written
+by a shell command brings the note too (and nothing in the control arm), and the grader scores
 the reference as kept and the quiet variant as lost. Usage: rehearse.py <new scratch dir>."""
 import json
 import os
@@ -12,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from core.milestones.definition import load as declarations  # noqa: E402
 from eval.multistage_cases import load, tree  # noqa: E402
-from eval.rule_groups_run import certify, outcome, workspace  # noqa: E402
+from eval.rule_groups_run import ARMS, certify, outcome, workspace  # noqa: E402
 
 PRIMARY = [('household_budget', 7), ('recipe_box', 4), ('library_loans', 1), ('payroll_lite', 2), ('parcelpost', 5)]
 HOOK = ROOT / 'plugin' / 'bin' / 'ep_hook.py'
@@ -45,15 +46,30 @@ def main():
         named = [path for path in changed if dependent in hook(
             rules, 'PreToolUse', tool_name='Edit',
             tool_input={'file_path': str(rules / path), 'old_string': 'a', 'new_string': 'b'}).get('additionalContext', '')]
+        # The pilot's agents also wrote files by running Python in Bash: replay that, leaving the dependent behind.
+        shell_notes = {}
+        for arm in ARMS:
+            work = workspace(case, n, arm, folder / f'{arm}-shell', entries)
+            hook(work, 'SessionStart', source='startup')
+            hook(work, 'UserPromptSubmit', prompt=case['stages'][n - 1]['request'])
+            for path in changed:
+                (work / path).parent.mkdir(parents=True, exist_ok=True)
+                (work / path).write_bytes((quiet / path).read_bytes())
+            shell_notes[arm] = hook(work, 'PostToolUse', tool_name='Bash', tool_input={'command': 'python apply_change.py'},
+                                    tool_response={'stdout': '', 'stderr': '', 'interrupted': False, 'isImage': False,
+                                                   'noOutputExpected': False}).get('additionalContext', '')
         row = {'stage': f'{name} {n}', 'dependent': dependent, 'declared rules': len(entries),
                'pair certified': any(dependent in e['inputs'] for e in entries),
                'declarations load': not declarations(rules)['issues'] and len(declarations(rules)['milestones']) == len(entries),
                'control has none': not (control / 'elevenpowers.milestones.json').exists(),
                'brief names dependent before': named,
+               'shell write names dependent': dependent in shell_notes['rules'],
+               'control shell silent': 'Declared rule' not in shell_notes['control'],
                'reference kept': not outcome(case, n, control, reference)['dependent_lost'],
                'quiet graded lost': outcome(case, n, control, quiet)['dependent_lost']}
         row['passes'] = all([row['pair certified'], row['declarations load'], row['control has none'],
-                             bool(named), row['reference kept'], row['quiet graded lost']])
+                             bool(named), row['shell write names dependent'], row['control shell silent'],
+                             row['reference kept'], row['quiet graded lost']])
         rows.append(row)
         print(json.dumps(row))
     (Path(__file__).with_name('rehearsal.json')).write_text(json.dumps(rows, indent=1), encoding='utf-8')

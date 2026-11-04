@@ -220,6 +220,49 @@ def test_the_rule_is_said_once_per_file_not_on_every_edit(tmp_path):
     assert 'lodging-tax' not in _brief(root, 'app/money.py')
 
 
+def _shell(root, command='python edit.py'):
+    done = _hook('PostToolUse', {'cwd': str(root), 'tool_name': 'Bash', 'tool_input': {'command': command},
+                                 'tool_response': {'stdout': '', 'stderr': '', 'exit_code': 0}})
+    return json.loads(done.stdout)['hookSpecificOutput'].get('additionalContext', '') if done.stdout.strip() else ''
+
+
+def test_an_agent_that_edits_through_the_shell_is_told_too(tmp_path):
+    # Seen in the acted-on pilot: agents wrote files with Python in Bash, and no Edit brief ever fired.
+    root = declared(tmp_path)
+    money = root / 'app/money.py'
+    money.write_text(money.read_text(encoding='utf-8').replace('ROUND_HALF_UP)', 'ROUND_HALF_EVEN)'), encoding='utf-8')
+    note = _shell(root)
+    assert 'lodging-tax' in note and 'app/services/pricing.py' in note, note
+    assert 'lodging-tax' not in _shell(root), 'said once per file, not after every command'
+
+
+def test_a_shell_command_that_touches_no_declared_file_says_nothing(tmp_path):
+    root = declared(tmp_path)
+    (root / 'app/store.py').write_text('# changed\n', encoding='utf-8')
+    assert 'Declared rule' not in _shell(root)
+
+
+def test_a_shell_change_outside_any_rule_keeps_the_file_s_own_brief_for_its_first_edit(tmp_path):
+    root = declared(tmp_path)
+    (root / 'app/rates.py').write_text('LODGING_RATE = 0.12\n', encoding='utf-8')
+    _shell(root)
+    assert 'imported by app/money.py' in _brief(root, 'app/rates.py')
+
+
+def test_a_declared_file_changed_before_the_task_opened_is_not_put_on_the_agent(tmp_path):
+    root = declared(tmp_path)
+    (root / 'app/money.py').write_text('# the developer, mid-change\n', encoding='utf-8')
+    _hook('UserPromptSubmit', {'cwd': str(root), 'prompt': 'add a store opening hours page'})
+    assert 'lodging-tax' not in _shell(root)
+
+
+def test_a_file_already_briefed_before_an_edit_is_not_told_again_after_the_shell(tmp_path):
+    root = declared(tmp_path)
+    assert 'lodging-tax' in _brief(root, 'app/money.py')
+    (root / 'app/money.py').write_text('# changed\n', encoding='utf-8')
+    assert 'lodging-tax' not in _shell(root)
+
+
 def test_files_in_no_shared_rule_get_no_rule_note(tmp_path):
     root = declared(tmp_path)
     assert 'Declared rule' not in _brief(root, 'app/names.py')

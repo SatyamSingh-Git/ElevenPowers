@@ -286,6 +286,18 @@ def on_post_tool(payload: dict, root: Path) -> int:
                 text = deliver(Ledger.load(root))
                 if text:
                     _emit('PostToolUse', additionalContext=text)
+            from .milestones.definition import configured, rules_naming
+            if tool in COMMAND_TOOLS and configured(root):
+                # Agents also write files by running scripts, and no Edit brief fires for those:
+                # in the acted-on pilot, three of six rules-arm runs never saw the rule this way.
+                ledger = Ledger.load(root)
+                notes = {path: rules_naming(root, path) for path in _since_task_opened(ledger, root)
+                         if path not in ledger.briefed}
+                notes = {path: note for path, note in notes.items() if note}
+                if notes:
+                    ledger.briefed.extend(notes)
+                    ledger.save()
+                    _emit('PostToolUse', additionalContext='\n'.join(notes.values()))
         fields = transport.fields_of(messages)
         if fields:
             _emit('PostToolUse', **fields)

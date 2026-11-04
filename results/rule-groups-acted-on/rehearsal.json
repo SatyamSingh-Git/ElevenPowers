@@ -9,6 +9,8 @@
   "brief names dependent before": [
    "src/budgetbook/services/budgets.py"
   ],
+  "shell write names dependent": true,
+  "control shell silent": true,
   "reference kept": true,
   "quiet graded lost": true,
   "passes": true
@@ -23,6 +25,8 @@
   "brief names dependent before": [
    "src/recipebox/core/recipe.py"
   ],
+  "shell write names dependent": true,
+  "control shell silent": true,
   "reference kept": true,
   "quiet graded lost": true,
   "passes": true
@@ -37,6 +41,8 @@
   "brief names dependent before": [
    "src/lending/services/fines.py"
   ],
+  "shell write names dependent": true,
+  "control shell silent": true,
   "reference kept": true,
   "quiet graded lost": true,
   "passes": true
@@ -51,6 +57,8 @@
   "brief names dependent before": [
    "src/payroll/rules/overtime.py"
   ],
+  "shell write names dependent": true,
+  "control shell silent": true,
   "reference kept": true,
   "quiet graded lost": true,
   "passes": true
@@ -65,6 +73,8 @@
   "brief names dependent before": [
    "src/parcelpost/formats/manifest.py"
   ],
+  "shell write names dependent": true,
+  "control shell silent": true,
   "reference kept": true,
   "quiet graded lost": true,
   "passes": true
