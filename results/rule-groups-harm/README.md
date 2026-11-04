@@ -36,3 +36,43 @@ Each runs once per arm, which is 106 runs.
 5.5, medium effort, about $17. The acted-on [`launch.py`](../rule-groups-acted-on/launch.py)
 runs four at a time, in a seeded order fixed before the first launch. No
 run is retried.
+
+## Result: no harm found
+
+All 106 runs completed, and none was retried. Cost was $15.52
+([analysis](analysis-rule-groups-harm-2026-11-04.json), from
+[`analyse.py`](analyse.py)).
+
+| pre-registered measure | control | rules | one-sided p |
+|---|---|---|---|
+| **Primary:** a group other than the dependent lost | 0 of 53 | 0 of 53 | 1.0 (harm) |
+| A declared file changed where the reference changes none | 0 of 28 | 0 of 28 | 1.0 (more) |
+| Dependent lost, 20 other covered stages | 2 of 20 | 2 of 20 | 0.75 (fewer) |
+| Stage's own request done | 53 of 53 | 53 of 53 | |
+| Cost | $7.65 | $7.87 (+3%) | |
+| Mean model time per run | 81.4 s | 101.8 s | |
+
+- **Harm.** No run in either arm lost anything except a declared
+  dependent, and no agent edited a declared file the stage did not need.
+  One run per arm rules out a harm of about 20 points, not a small one.
+- **Covered stages.** These are not the stages chosen for their losses.
+  Each arm lost 2 of 20, so there was nothing to gain where v3 never lost.
+  One rules-arm loss (`library_loans` 6) was never briefed, because the
+  agent did not touch a declared file. The other (`hotel_desk` 7) was
+  briefed, and that stage's control lost too.
+- **Time, read with care.** The +25% mean is one run: `household_budget` 4
+  in the rules arm took 792 s at an ordinary $0.21. Its own `python -`
+  heredoc command hit the Bash tool's 120 s limit and was moved to the
+  background, and the session waited for it. That happens inside the tool,
+  before any hook runs. The median paired difference is +3.8 s.
+- **The shell-path note's own cost, measured at $0.** The real PostToolUse
+  Bash hook takes 0.331 s with declarations against 0.265 s without, the
+  medians of 30 calls each. That is +66 ms a command. Rules-arm runs made
+  4.6 shell calls on average, so about 0.3 s a run.
+
+Together with [the acted-on result](../rule-groups-acted-on/README.md):
+where a certified rule covers the broken pair and a loss is likely, the
+note cut lost dependents from 35 of 50 to 4 of 50. Everywhere else it was
+run, it changed nothing measurable. Certification was simulated as perfect
+in both. A wrongly certified pair, the likeliest source of harm, is
+untested.
