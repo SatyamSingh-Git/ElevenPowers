@@ -143,6 +143,31 @@ def test_the_limit_bounds_the_list(tmp_path):
     assert len(propose(project(tmp_path), limit=1)['proposals']) == 1
 
 
+def _cli(*args):
+    import sys
+    from pathlib import Path
+    launcher = Path(__file__).resolve().parents[1] / 'plugin/bin/ep_milestones.py'
+    return subprocess.run([sys.executable, str(launcher), *args], capture_output=True, text=True, encoding='utf-8')
+
+
+def test_the_command_lists_proposals_with_reasons_and_entries_to_certify(tmp_path):
+    root = project(tmp_path)
+    done = _cli('--propose', '--project', str(root))
+    assert done.returncode == 0, done.stderr
+    assert 'app/money.py' in done.stdout and 'app/services/pricing.py' in done.stdout
+    assert 'ROUND_HALF_UP' in done.stdout
+    assert '"inputs": [' in done.stdout
+    assert 'elevenpowers.milestones.json' in done.stdout
+    assert not (root / 'elevenpowers.milestones.json').exists()
+
+
+def test_the_command_speaks_json_and_honours_the_limit(tmp_path):
+    done = _cli('--propose', '--limit', '1', '--json', '--project', str(project(tmp_path)))
+    assert done.returncode == 0, done.stderr
+    value = json.loads(done.stdout)
+    assert [p['files'] for p in value['proposals']] == [['app/money.py', 'app/services/pricing.py']]
+
+
 def test_a_token_held_by_too_many_functions_is_skipped_and_said(tmp_path, monkeypatch):
     from core.milestones import propose as module
     monkeypatch.setattr(module, 'MAX_HOLDERS', 1)

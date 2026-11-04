@@ -19,8 +19,21 @@ def main():
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--impact', action='store_true')
     parser.add_argument('--changed', nargs='+', action='extend')
+    parser.add_argument('--propose', action='store_true',
+                        help='propose files that carry the same rule, for a person to certify as milestones')
+    parser.add_argument('--limit', type=int, default=50, help='with --propose: how many pairs to list')
     args = parser.parse_args()
     try:
+        if args.propose:
+            from core.milestones.propose import markdown as proposal_text, propose
+            value = propose(args.project, limit=args.limit, seconds=args.seconds)
+            text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.json else proposal_text(value)
+            if args.output:
+                write(args.output, text, force=args.force)
+                print(f'Saved {args.output}')
+            else:
+                print(text, end='')
+            return 0
         value = build(args.project, seconds=args.seconds, impact=args.impact, changed=args.changed)
         text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.json else markdown(value)
         if args.output:

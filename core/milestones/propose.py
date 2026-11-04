@@ -9,6 +9,7 @@ scored by the rarity-weighted tokens they share, normalised by size.
 import ast
 from collections import defaultdict
 import io
+import json
 import keyword
 import math
 from pathlib import Path
@@ -122,3 +123,22 @@ def propose(root, *, limit=50, seconds=30):
             'limits': ['Proposals are candidates for a person to certify, never findings.',
                        'Shared rare tokens suggest a shared rule; they do not show one.',
                        'Only Python sources are examined in this version.']}
+
+
+def markdown(value):
+    coverage = value['coverage']
+    lines = ['# Proposed rule groups (candidates to certify, not findings)', '',
+             'Each pair shares rare words between two functions in different files. If both keep the same rule,',
+             'describe it and add the entry to elevenpowers.milestones.json: an agent editing one file is then',
+             'told about the other. Reject the rest. Nothing is written for you.', '',
+             f"Examined: {coverage['python_files']} Python files, {coverage['functions']} functions; "
+             f"{coverage['not_examined']} other source files not examined."]
+    lines += ['Gap: ' + issue for issue in coverage['issues']]
+    if not value['proposals']:
+        lines += ['', 'No pair of files shares rare words.']
+    for number, proposal in enumerate(value['proposals'], 1):
+        (a, b), (fa, fb) = proposal['files'], proposal['functions']
+        entry = json.dumps(proposal['entry'], indent=2).replace('\n', '\n   ')
+        lines += ['', f"{number}. {a} ({fa}) and {b} ({fb}), score {proposal['score']}",
+                  f"   Shared: {', '.join(proposal['shared'])}", f'   Entry: {entry}']
+    return '\n'.join(lines) + '\n'
