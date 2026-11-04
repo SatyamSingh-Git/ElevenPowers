@@ -196,3 +196,33 @@ were written from secondary summaries and stated more than their sources
 support. Every entry added from here carries its limit in the same breath as its
 claim, and an entry that contradicts an earlier one says so explicitly rather
 than being quietly appended.
+
+### Interdependent requirements (2026-11-04)
+
+- [When Requirements Interact (CodeSpecWeave)](https://arxiv.org/html/2610.40256)
+  (Wang et al., arXiv 2610.40256). *Read from arXiv HTML through a summariser.
+  The figures below have not been checked against the text, so verify one
+  before citing it.*
+  - **The failure it names is ours.** Its §3.1.1 failure mode is a patch
+    that "satisfies one requirement while violating another that constrains
+    the same state". In v3 that is the left-behind dependent.
+  - **How it makes requirements interact:** they are anchored "to the same
+    state transitions or core components" (§2.3). It has no dependency
+    graph and no category for existing dependents.
+  - **Tests that miss the interaction.** Review found test/specification
+    misalignment in 73.9% of 3,067 candidate tasks (Table 1). §2.4: tests
+    "often fail to check flaws that arise only when the requirements
+    interact at runtime".
+  - **What helps.** More edit-and-retest loops after RL (Table 3,
+    correlational). Longer output did not help. No prompting or checklist
+    intervention was tested.
+  - **Its benchmark,** CodeSpecWeave-Bench: 100 tasks and 1,044
+    specifications, pass rates 44.0–74.0%. No code release is listed.
+
+  **Plan change:** §13 B open problem 1 gains a detector to try, anchored on
+  the same state (files that write, key or format what the edit writes)
+  rather than shared inputs. Contracts are 14 of v3's 17 held-out
+  dependents. The co-readers spike, which looked at inputs, found 3 of them.
+  The 73.9% figure supports §13 A's premise that passing tests are weak
+  evidence, but it is the authors' own review pipeline, not an independent
+  audit.
