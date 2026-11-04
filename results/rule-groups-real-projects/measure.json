@@ -1,0 +1,573 @@
+{
+ "real": {
+  "attr": {
+   "exit": 0,
+   "seconds": 0.62,
+   "coverage": {
+    "complete": false,
+    "python_files": 13,
+    "functions": 208,
+    "not_examined": 0,
+    "issues": [
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "kinds": {
+    "dunder": 7,
+    "different names": 41,
+    "same name": 2
+   },
+   "top10": [
+    "src/attr/_make.py::__call__ <-> src/attr/validators.py::__call__",
+    "src/attr/_make.py::__str__ <-> src/attr/exceptions.py::__str__",
+    "src/attr/_make.py::attrib <-> src/attr/_next_gen.py::field",
+    "src/attr/_make.py::pipe <-> src/attr/converters.py::optional",
+    "src/attr/_funcs.py::has <-> src/attr/_make.py::fields",
+    "src/attr/_cmp.py::method <-> src/attr/_make.py::__ne__",
+    "src/attr/_make.py::validate <-> src/attr/setters.py::validate",
+    "src/attr/_make.py::__lt__ <-> src/attr/_version_info.py::__lt__",
+    "src/attr/_funcs.py::asdict <-> src/attr/_next_gen.py::asdict",
+    "src/attr/_cmp.py::__init__ <-> src/attr/exceptions.py::__init__"
+   ]
+  },
+  "click": {
+   "exit": 0,
+   "seconds": 0.97,
+   "coverage": {
+    "complete": false,
+    "python_files": 17,
+    "functions": 579,
+    "not_examined": 0,
+    "issues": [
+     "1 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "kinds": {
+    "dunder": 22,
+    "same name": 4,
+    "different names": 24
+   },
+   "top10": [
+    "src/click/_utils.py::__repr__ <-> src/click/core.py::__repr__",
+    "src/click/_compat.py::__getattr__ <-> src/click/_termui_impl.py::__getattr__",
+    "src/click/_termui_impl.py::writelines <-> src/click/_winconsole.py::writelines",
+    "src/click/_termui_impl.py::__init__ <-> src/click/termui.py::edit",
+    "src/click/_termui_impl.py::__exit__ <-> src/click/utils.py::__exit__",
+    "src/click/_compat.py::__exit__ <-> src/click/utils.py::__exit__",
+    "src/click/core.py::__exit__ <-> src/click/utils.py::__exit__",
+    "src/click/core.py::convert <-> src/click/types.py::convert",
+    "src/click/__init__.py::__getattr__ <-> src/click/core.py::__getattr__",
+    "src/click/decorators.py::new_func <-> src/click/utils.py::wrapper"
+   ]
+  },
+  "_pytest": {
+   "exit": 0,
+   "seconds": 3.14,
+   "coverage": {
+    "complete": false,
+    "python_files": 78,
+    "functions": 2029,
+    "not_examined": 0,
+    "issues": [
+     "6 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "kinds": {
+    "same name": 20,
+    "dunder": 22,
+    "different names": 8
+   },
+   "top10": [
+    "src/_pytest/doctest.py::_initrequest <-> src/_pytest/python.py::_initrequest",
+    "src/_pytest/pytester.py::__getattr__ <-> src/_pytest/reports.py::__getattr__",
+    "src/_pytest/nodes.py::from_parent <-> src/_pytest/python.py::from_parent",
+    "src/_pytest/fixtures.py::__repr__ <-> src/_pytest/mark/structures.py::__repr__",
+    "src/_pytest/main.py::collect <-> src/_pytest/python.py::collect",
+    "src/_pytest/setuponly.py::pytest_cmdline_main <-> src/_pytest/setupplan.py::pytest_cmdline_main",
+    "src/_pytest/fixtures.py::__repr__ <-> src/_pytest/pytester.py::__repr__",
+    "src/_pytest/capture.py::__iter__ <-> src/_pytest/mark/expression.py::__iter__",
+    "src/_pytest/hookspec.py::pytest_pycollect_makemodule <-> src/_pytest/python.py::pytest_pycollect_makemodule",
+    "src/_pytest/_code/source.py::__str__ <-> src/_pytest/pytester.py::__str__"
+   ]
+  },
+  "rich": {
+   "exit": 0,
+   "seconds": 2.71,
+   "coverage": {
+    "complete": false,
+    "python_files": 100,
+    "functions": 912,
+    "not_examined": 0,
+    "issues": [
+     "2 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "kinds": {
+    "dunder": 42,
+    "same name": 3,
+    "different names": 5
+   },
+   "top10": [
+    "src/rich/bar.py::__rich_measure__ <-> src/rich/progress_bar.py::__rich_measure__",
+    "src/rich/live.py::__exit__ <-> src/rich/progress.py::__exit__",
+    "src/rich/live.py::__exit__ <-> src/rich/status.py::__exit__",
+    "src/rich/progress.py::__exit__ <-> src/rich/status.py::__exit__",
+    "src/rich/align.py::__rich_measure__ <-> src/rich/styled.py::__rich_measure__",
+    "src/rich/console.py::__rich_console__ <-> src/rich/control.py::__rich_console__",
+    "src/rich/__main__.py::__rich_console__ <-> src/rich/palette.py::__rich_console__",
+    "src/rich/align.py::__rich_measure__ <-> src/rich/constrain.py::__rich_measure__",
+    "src/rich/_null_file.py::writable <-> src/rich/progress.py::writable",
+    "src/rich/align.py::__repr__ <-> src/rich/emoji.py::__repr__"
+   ]
+  },
+  "sqlalchemy": {
+   "exit": 0,
+   "seconds": 13.92,
+   "coverage": {
+    "complete": false,
+    "python_files": 245,
+    "functions": 10994,
+    "not_examined": 0,
+    "issues": [
+     "69 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "kinds": {
+    "same name": 33,
+    "dunder": 17
+   },
+   "top10": [
+    "src/sqlalchemy/connectors/aioodbc.py::autocommit <-> src/sqlalchemy/dialects/oracle/oracledb.py::autocommit",
+    "src/sqlalchemy/connectors/aioodbc.py::autocommit <-> src/sqlalchemy/dialects/postgresql/psycopg.py::autocommit",
+    "src/sqlalchemy/connectors/asyncio.py::rollback <-> src/sqlalchemy/dialects/postgresql/asyncpg.py::rollback",
+    "src/sqlalchemy/connectors/asyncio.py::rollback <-> src/sqlalchemy/engine/interfaces.py::rollback",
+    "src/sqlalchemy/connectors/asyncio.py::rollback <-> src/sqlalchemy/pool/base.py::rollback",
+    "src/sqlalchemy/connectors/pyodbc.py::check_quote <-> src/sqlalchemy/dialects/mssql/mssqlpython.py::check_quote",
+    "src/sqlalchemy/dialects/mssql/aioodbc.py::create_server_side_cursor <-> src/sqlalchemy/dialects/postgresql/asyncpg.py::create_server_side_cursor",
+    "src/sqlalchemy/dialects/mssql/base.py::_get_limit_or_fetch <-> src/sqlalchemy/dialects/oracle/base.py::_get_limit_or_fetch",
+    "src/sqlalchemy/dialects/mssql/base.py::get_isolation_level_values <-> src/sqlalchemy/dialects/postgresql/asyncpg.py::get_isolation_level_values",
+    "src/sqlalchemy/dialects/mssql/base.py::get_isolation_level_values <-> src/sqlalchemy/dialects/sqlite/base.py::get_isolation_level_values"
+   ]
+  },
+  "ElevenPowers": {
+   "exit": 0,
+   "seconds": 30.69,
+   "coverage": {
+    "complete": false,
+    "python_files": 1454,
+    "functions": 6386,
+    "not_examined": 3,
+    "issues": [
+     "3 non-Python source files were not examined",
+     "65 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "kinds": {
+    "same name": 47,
+    "dunder": 3
+   },
+   "top10": [
+    "eval/multistage_cases/access_policy/oracle/groups/base_policy.py::policy <-> eval/multistage_cases/access_policy/oracle/groups/s6_multi_parent.py::policy",
+    "eval/multistage_cases/eventlog/start/src/eventlog/index.py::close <-> eval/multistage_cases/eventlog/start/src/eventlog/segment.py::close",
+    "eval/multistage_cases/marklite/oracle/groups/g0_render.py::tags <-> eval/multistage_cases/marklite/oracle/groups/g2_attr_quotes.py::tags",
+    "eval/multistage_cases/marklite/oracle/groups/g0_toc.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py::flatten",
+    "eval/multistage_cases/marklite/oracle/groups/g0_toc.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g1_prefix_option.py::flatten",
+    "eval/multistage_cases/marklite/oracle/groups/g0_toc.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g3_toc_depth.py::flatten",
+    "eval/multistage_cases/marklite/oracle/groups/g0_toc.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g5_strike_toc.py::flatten",
+    "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g1_prefix_option.py::flatten",
+    "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g3_toc_depth.py::flatten",
+    "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py::flatten <-> eval/multistage_cases/marklite/oracle/groups/g5_strike_toc.py::flatten"
+   ],
+   "co_changed": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "co_change": {
+    "commits_modifying_two_or_more_files": 614,
+    "top50_co_changed": 0,
+    "top50": 50,
+    "base_pairs": 828828,
+    "base_co_changed": 993,
+    "by_kind": {
+     "dunder": [
+      0,
+      3
+     ],
+     "same name": [
+      0,
+      47
+     ],
+     "different names": [
+      0,
+      0
+     ]
+    }
+   }
+  }
+ },
+ "v3": {
+  "clinic_booking": {
+   "kinds": {
+    "same name": 3,
+    "dunder": 2,
+    "different names": 45
+   },
+   "truth": [
+    [
+     [
+      "total",
+      "total"
+     ],
+     "same name"
+    ],
+    [
+     [
+      "free_slots",
+      "_check_when"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "export_day",
+      "save_bookings"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "fleet_service": {
+   "kinds": {
+    "same name": 2,
+    "different names": 47,
+    "dunder": 1
+   },
+   "truth": [
+    [
+     [
+      "times",
+      "_per_mile"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "_maintenance",
+      "order_charges"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "_maintenance",
+      "spend_rows"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "gradebook": {
+   "kinds": {
+    "same name": 3,
+    "different names": 46,
+    "dunder": 1
+   },
+   "truth": [
+    [
+     [
+      "_counted_items",
+      "_category_progress"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "greenhouse_monitor": {
+   "kinds": {
+    "different names": 45,
+    "dunder": 5
+   },
+   "truth": [
+    [
+     [
+      "parse_row",
+      "record_manual"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "planned_minutes",
+      "write_plan"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "hotel_desk": {
+   "kinds": {
+    "same name": 1,
+    "different names": 49
+   },
+   "truth": [
+    [
+     [
+      "arriving",
+      "open_items"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "household_budget": {
+   "kinds": {
+    "different names": 49,
+    "dunder": 1
+   },
+   "truth": [
+    [
+     [
+      "summarise",
+      "_spent_by_category"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "year_report",
+      "_carried_into"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "budget_status",
+      "close_month"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "library_loans": {
+   "kinds": {
+    "different names": 46,
+    "same name": 3,
+    "dunder": 1
+   },
+   "truth": [
+    [
+     [
+      "parse_date",
+      "_day"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "overdue_rows",
+      "fine_for"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "parcelpost": {
+   "kinds": {
+    "same name": 4,
+    "different names": 45,
+    "dunder": 1
+   },
+   "truth": [
+    [
+     [
+      "_check_digit",
+      "_plausible_number"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "manifest_filename",
+      "bill_day"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "payroll_lite": {
+   "kinds": {
+    "different names": 48,
+    "same name": 1,
+    "dunder": 1
+   },
+   "truth": [
+    [
+     [
+      "hours_rows",
+      "split_hours"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "_cell",
+      "_row"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "recipe_box": {
+   "kinds": {
+    "different names": 46,
+    "dunder": 4
+   },
+   "truth": [
+    [
+     [
+      "recipe_id",
+      "_title_key"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "write_shopping_csv",
+      "save_pantry"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "_read_recipe",
+      "recipe_from_dict"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "survey_tally": {
+   "kinds": {
+    "same name": 2,
+    "different names": 43,
+    "dunder": 5
+   },
+   "truth": [
+    [
+     [
+      "__init__",
+      "__init__"
+     ],
+     "dunder"
+    ],
+    [
+     [
+      "read_responses",
+      "read_weights"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "read_percentages",
+      "_write_csv"
+     ],
+     "different names"
+    ]
+   ]
+  },
+  "ticket_office": {
+   "kinds": {
+    "dunder": 12,
+    "different names": 38
+   },
+   "truth": [
+    [
+     [
+      "concession_price",
+      "price_list"
+     ],
+     "different names"
+    ],
+    [
+     [
+      "daily_takings",
+      "entries_on"
+     ],
+     "different names"
+    ]
+   ]
+  }
+ },
+ "v3_totals": {
+  "top50": {
+   "same name": 19,
+   "dunder": 34,
+   "different names": 547
+  },
+  "truth": {
+   "same name": 1,
+   "different names": 25,
+   "dunder": 1
+  }
+ }
+}

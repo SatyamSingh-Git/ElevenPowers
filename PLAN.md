@@ -2129,6 +2129,13 @@ Until then any contributor can start on an open problem below.
        pairs that matter ([results](results/rule-groups-reviewed/README.md)),
        and with its pairs declared, 15 of 50 were lost against 31 of 50.
        Not measured: what a person who knows the project keeps.
+     - On six real projects (2026-11-05,
+       [results](results/rule-groups-real-projects/README.md)), three
+       defects the v3 cases never showed were fixed: an encoding crash, a
+       quadratic cut that left `sqlalchemy` with no proposals, and tie
+       order that followed the hash seed. Protocol-method pairs head real
+       lists (44% of `click`'s top 50), so real review takes more
+       rejecting than v3 suggests.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10

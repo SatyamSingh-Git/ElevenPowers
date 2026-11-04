@@ -1,5 +1,28 @@
 # Current delivery status
 
+**2026-11-05 — Rule-group proposals run on real projects now.**
+`ep_milestones --propose` had been run only on the twelve v3 cases. On six
+real ones (`attr`, `click`, `_pytest`, `rich`, `sqlalchemy`, ElevenPowers;
+[plan and results](../results/rule-groups-real-projects/README.md),
+written before measuring, $0), three defects showed. All three are fixed
+in `33cecbd`:
+- `rich` crashed the command on a character its Windows pipe could not
+  encode. The output is now UTF-8.
+- `sqlalchemy` spent 25 of its 30 seconds cutting functions out of their
+  files and proposed nothing. Each file is now split once, and the run
+  takes 8–14 s.
+- Tied pairs came out in a different order in each process, because the
+  float sums followed the hash seed. The sums are now exact.
+
+All twelve v3 cases give byte-identical proposals, and the sealed
+certifications recompute the same, so no published figure moves. On real
+code, protocol-method pairs head the lists: 44% of `click`'s top 50 and
+84% of `rich`'s, against 6% on v3. One v3 truth pair is such a pair, so by
+the rule set in advance they are not filtered; the guide says to reject
+them. Limits left as they are: a too-small `--seconds` can return an
+empty "partial" list, and cutting functions out still ignores the
+budget (4.9 s at `--seconds 1` on `sqlalchemy`).
+
 **2026-11-05 — Setup works with a Microsoft Store Python.** `ep_setup`
 failed with `WinError 1920` whenever it ran on the Store's Python. That
 interpreter is an app-execution alias, which runs but cannot be resolved

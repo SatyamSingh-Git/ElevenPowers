@@ -180,9 +180,21 @@ the rules you mean to keep in step.
   per project covered 20 of 51 dependents never used to design the method,
   against 11 for a control and 3.9 at random.
 - An edit to a shared helper that reads no rule input itself is missed.
-- Whether an agent acts on the brief is not measured.
+- Agents act on the brief, on stages chosen for their losses: the
+  dependent was left behind in 4 of 50 one-stage runs with every
+  breaking pair declared, against 35 of 50 without. With a blind model
+  reviewer's choice declared, it was 15 of 50 against 31 of 50.
+- On real projects, pairs of protocol methods (`__exit__`, `__repr__`)
+  often head the list: 44% of `click`'s top 50 and 84% of `rich`'s.
+  Reject them unless the two really keep one rule.
+- On a large tree the 30-second default may run out. The list then says
+  "proposals are partial", and can be empty; rerun with a larger
+  `--seconds`.
 
-See the [spike and replay](../results/multistage-v3/discover/README.md).
+See the [spike and replay](../results/multistage-v3/discover/README.md),
+[the acted-on runs](../results/rule-groups-acted-on/README.md),
+[the reviewer's rerun](../results/rule-groups-acted-on-reviewed/README.md)
+and [real projects](../results/rule-groups-real-projects/README.md).
 
 ## Optional automatic edit advice
 
