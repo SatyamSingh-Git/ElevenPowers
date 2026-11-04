@@ -54,3 +54,37 @@ person can read in one sitting, with reasons.
 - Coverage is a ceiling: a person may reject a true pair.
 - Precision cannot be judged without human labels. The declared
   dependents give a lower bound only.
+
+## Result: passes its bar ([`discover.py`](discover.py), [rows](discover.json), [summary](discover.txt))
+
+| 51 never-read dependents, covered within K proposals per project | K = 10 | 20 | **50** | 100 |
+|---|---|---|---|---|
+| proposals from the tree before each stage | 8 | 11 | **20** | 32 |
+| one review at stage 0 | 8 | 10 | 20 | 32 |
+| control: the dependent joined to another stage's changed files | 3 | 5 | 11 | 18 |
+| random, expected | 0.8 | 1.6 | 3.9 | 7.8 |
+
+- **At K = 50 it covers 20 of 51,** against a bar of 17. That is about
+  twice the control and five times random.
+- **One review at the start does as well** as reviewing again before every
+  stage, so a project need not re-run it on every change.
+- **By kind, at K = 50:** copy 8 of 13, data 9 of 17, key 2 of 16,
+  contract 1 of 5.
+- **The control is not small** (11): files in these small projects are
+  related, and a dependent often shares rules with more than one change. The
+  margin over it is what supports the claim.
+
+A proposal reads as a reason a person can judge. From the covered rows:
+
+- `reports/statement.py` and `services/fees.py`: `total` and `total`
+  sharing `"0.00"`, `Decimal`, `amount`;
+- `model/money.py` and `reports/costs.py`: `ROUND_HALF_UP`, `quantize`,
+  `cents`;
+- `services/ingest.py` and `services/manual.py`: `"missing sensor"`,
+  `check_range`, `canonical_unit`.
+
+Some are generic, such as two CSV writers sharing `newline`, `writer` and
+`"w"`. Rejecting those is the point of the certify step.
+
+**Decision:** build it. Proposals go to a person, never to the agent, and
+only pairs a person declares reach the agent.

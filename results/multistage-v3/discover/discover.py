@@ -95,19 +95,33 @@ def main():
             case = load(root)
             start = tree(case, 0, scratch / f"{case['id']}-0")
             at_start = propose(start)
-            for n, stage in enumerate(case['stages'], 1):
+            stages = case['stages']
+            references = {}
+
+            def changed_by(m):
+                if m not in references:
+                    references[m] = edits(tree(case, m - 1, scratch / f"{case['id']}-control-{m}-before"),
+                                          tree(case, m, scratch / f"{case['id']}-control-{m}-after"))
+                return references[m]
+            for n, stage in enumerate(stages, 1):
                 quiet = stage.get('quiet') or []
                 if not quiet:
                     continue
                 before = tree(case, n - 1, scratch / f"{case['id']}-{n - 1}-ref")
                 proposals = propose(before)
+                pairs = math.comb(len(sources(before)), 2)
+                other = next(m for m in (n + 1, n - 1, n + 2, n - 2) if 1 <= m <= len(stages) and m != n)
                 for which, item in enumerate(quiet):
                     after = tree(case, n, scratch / f"{case['id']}-{n}-quiet-{which}", 'quiet', which)
                     edited = [p for p in edits(before, after) if p != item['file']]
                     place = covered(proposals, edited, item['file'])
+                    # Control: the same dependent joined to another stage's changed files, same proposals.
+                    control = covered(proposals, [p for p in changed_by(other) if p != item['file']], item['file'])
                     rows.append({'case': case['id'], 'stage': n, 'dependent': item['file'], 'kind': item['kind'],
                                  'edited': edited, 'fresh': (case['id'], n) not in seen,
                                  'place': place, 'place_at_start': covered(at_start, edited, item['file']),
+                                 'control': control,
+                                 'random': {k: min(1, k * len(edited) / pairs) for k in KS} if pairs else {},
                                  'pair': next(([round(s, 3), a, b, fa, fb, c] for s, a, b, fa, fb, c in proposals
                                                if {a, b} & set(edited) and item['file'] in (a, b)), None)})
                     print(rows[-1]['case'], n, item['kind'], item['file'], 'place', place)
@@ -117,9 +131,11 @@ def main():
     for label, subset in (('never-read (decides)', [r for r in rows if r['fresh']]),
                           ('read stages', [r for r in rows if not r['fresh']])):
         print(f'{label}: {len(subset)} dependents')
-        for key in ('place', 'place_at_start'):
+        for key, name in (('place', 'review before each stage'), ('place_at_start', 'one review at stage 0'),
+                          ('control', "control: another stage's edit")):
             hits = {k: sum(r[key] is not None and r[key] <= k for r in subset) for k in KS}
-            print(f"   {'review before each stage' if key == 'place' else 'one review at stage 0':26} {hits}")
+            print(f'   {name:30} {hits}')
+        print(f"   {'random, expected':30} {({k: round(sum(r['random'].get(k, 0) for r in subset), 1) for k in KS})}")
         for kind in sorted({r['kind'] for r in subset}):
             sub = [r for r in subset if r['kind'] == kind]
             print(f"   {kind:9} {len(sub):3}  K=50: {sum(r['place'] is not None and r['place'] <= 50 for r in sub)}")

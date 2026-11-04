@@ -10,6 +10,13 @@
   "fresh": true,
   "place": 69,
   "place_at_start": 69,
+  "control": null,
+  "random": {
+   "10": 0.008503401360544218,
+   "20": 0.017006802721088437,
+   "50": 0.04251700680272109,
+   "100": 0.08503401360544217
+  },
   "pair": [
    0.295,
    "src/clinicbook/reports/day_schedule.py",
@@ -37,6 +44,13 @@
   "fresh": true,
   "place": 19,
   "place_at_start": 21,
+  "control": 35,
+  "random": {
+   "10": 0.017006802721088437,
+   "20": 0.034013605442176874,
+   "50": 0.08503401360544217,
+   "100": 0.17006802721088435
+  },
   "pair": [
    0.417,
    "src/clinicbook/services/availability.py",
@@ -65,6 +79,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": 25,
+  "random": {
+   "10": 0.025510204081632654,
+   "20": 0.05102040816326531,
+   "50": 0.12755102040816327,
+   "100": 0.25510204081632654
+  },
   "pair": null
  },
  {
@@ -78,6 +99,13 @@
   "fresh": true,
   "place": 25,
   "place_at_start": 27,
+  "control": null,
+  "random": {
+   "10": 0.008503401360544218,
+   "20": 0.017006802721088437,
+   "50": 0.04251700680272109,
+   "100": 0.08503401360544217
+  },
   "pair": [
    0.405,
    "src/clinicbook/reports/day_schedule.py",
@@ -87,8 +115,8 @@
    [
     "COLUMNS",
     "\"w\"",
-    "writer",
     "writerow",
+    "writer",
     "newline"
    ]
   ]
@@ -104,6 +132,13 @@
   "fresh": true,
   "place": 1,
   "place_at_start": 1,
+  "control": 1,
+  "random": {
+   "10": 0.008503401360544218,
+   "20": 0.017006802721088437,
+   "50": 0.04251700680272109,
+   "100": 0.08503401360544217
+  },
   "pair": [
    0.698,
    "src/clinicbook/reports/statement.py",
@@ -131,6 +166,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.017006802721088437,
+   "20": 0.034013605442176874,
+   "50": 0.08503401360544217,
+   "100": 0.17006802721088435
+  },
   "pair": null
  },
  {
@@ -145,6 +187,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.015082956259426848,
+   "20": 0.030165912518853696,
+   "50": 0.07541478129713423,
+   "100": 0.15082956259426847
+  },
   "pair": null
  },
  {
@@ -162,6 +211,13 @@
   "fresh": true,
   "place": 11,
   "place_at_start": 11,
+  "control": 45,
+  "random": {
+   "10": 0.03770739064856712,
+   "20": 0.07541478129713423,
+   "50": 0.1885369532428356,
+   "100": 0.3770739064856712
+  },
   "pair": [
    0.5,
    "src/fleetkeep/model/money.py",
@@ -170,8 +226,8 @@
    "_per_mile",
    [
     "cents",
-    "rounding",
     "ROUND_HALF_UP",
+    "rounding",
     "quantize",
     "Decimal"
    ]
@@ -192,6 +248,13 @@
   "fresh": true,
   "place": 47,
   "place_at_start": 47,
+  "control": null,
+  "random": {
+   "10": 0.03770739064856712,
+   "20": 0.07541478129713423,
+   "50": 0.1885369532428356,
+   "100": 0.3770739064856712
+  },
   "pair": [
    0.384,
    "src/fleetkeep/reports/costs.py",
@@ -199,8 +262,8 @@
    "_maintenance",
    "spend_rows",
    [
-    "parts_total",
     "labour_total",
+    "parts_total",
     "period",
     "closed",
     "orders"
@@ -219,6 +282,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.015082956259426848,
+   "20": 0.030165912518853696,
+   "50": 0.07541478129713423,
+   "100": 0.15082956259426847
+  },
   "pair": null
  },
  {
@@ -234,6 +304,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": 35,
+  "random": {
+   "10": 0.02262443438914027,
+   "20": 0.04524886877828054,
+   "50": 0.11312217194570136,
+   "100": 0.22624434389140272
+  },
   "pair": null
  },
  {
@@ -248,6 +325,13 @@
   "fresh": true,
   "place": 61,
   "place_at_start": 53,
+  "control": null,
+  "random": {
+   "10": 0.015082956259426848,
+   "20": 0.030165912518853696,
+   "50": 0.07541478129713423,
+   "100": 0.15082956259426847
+  },
   "pair": [
    0.367,
    "src/fleetkeep/importers/timesheets.py",
@@ -274,6 +358,13 @@
   "fresh": true,
   "place": 64,
   "place_at_start": 64,
+  "control": 67,
+  "random": {
+   "10": 0.006734006734006734,
+   "20": 0.013468013468013467,
+   "50": 0.03367003367003367,
+   "100": 0.06734006734006734
+  },
   "pair": [
    0.31,
    "src/gradebook/services/transcript.py",
@@ -281,8 +372,8 @@
    "read_posted_grades",
    "export_grades",
    [
-    "newline",
     "handle",
+    "newline",
     "open",
     "csv",
     "\"utf-8\""
@@ -301,6 +392,13 @@
   "fresh": true,
   "place": 92,
   "place_at_start": 94,
+  "control": 7,
+  "random": {
+   "10": 0.013468013468013467,
+   "20": 0.026936026936026935,
+   "50": 0.06734006734006734,
+   "100": 0.13468013468013468
+  },
   "pair": [
    0.263,
    "src/gradebook/reports/progress.py",
@@ -324,6 +422,13 @@
   "fresh": true,
   "place": 7,
   "place_at_start": 8,
+  "control": 34,
+  "random": {
+   "10": 0.006734006734006734,
+   "20": 0.013468013468013467,
+   "50": 0.03367003367003367,
+   "100": 0.06734006734006734
+  },
   "pair": [
    0.555,
    "src/gradebook/grading/calculator.py",
@@ -331,8 +436,8 @@
    "_counted_items",
    "_category_progress",
    [
-    "rule",
     "days_late",
+    "rule",
     "assignments_in",
     "get_late_rule",
     "Fraction"
@@ -350,6 +455,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": 11,
+  "random": {
+   "10": 0.006734006734006734,
+   "20": 0.013468013468013467,
+   "50": 0.03367003367003367,
+   "100": 0.06734006734006734
+  },
   "pair": null
  },
  {
@@ -363,6 +475,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.006734006734006734,
+   "20": 0.013468013468013467,
+   "50": 0.03367003367003367,
+   "100": 0.06734006734006734
+  },
   "pair": null
  },
  {
@@ -379,6 +498,13 @@
   "fresh": true,
   "place": 55,
   "place_at_start": 64,
+  "control": 69,
+  "random": {
+   "10": 0.026936026936026935,
+   "20": 0.05387205387205387,
+   "50": 0.13468013468013468,
+   "100": 0.26936026936026936
+  },
   "pair": [
    0.318,
    "src/gradebook/services/transcript.py",
@@ -387,8 +513,8 @@
    "export_grades",
    [
     "delimiter",
-    "newline",
     "handle",
+    "newline",
     "open",
     "csv"
    ]
@@ -405,6 +531,13 @@
   "fresh": true,
   "place": 63,
   "place_at_start": 63,
+  "control": 91,
+  "random": {
+   "10": 0.00725689404934688,
+   "20": 0.01451378809869376,
+   "50": 0.036284470246734396,
+   "100": 0.07256894049346879
+  },
   "pair": [
    0.298,
    "src/greenhouse/storage/history.py",
@@ -413,9 +546,9 @@
    "write_many",
    [
     "newline",
-    "open",
-    "csv",
     "handle",
+    "csv",
+    "open",
     "exists"
    ]
   ]
@@ -433,6 +566,13 @@
   "fresh": true,
   "place": 78,
   "place_at_start": 81,
+  "control": null,
+  "random": {
+   "10": 0.02177068214804064,
+   "20": 0.04354136429608128,
+   "50": 0.10885341074020319,
+   "100": 0.21770682148040638
+  },
   "pair": [
    0.279,
    "src/greenhouse/cli/commands.py",
@@ -460,6 +600,13 @@
   "fresh": true,
   "place": 3,
   "place_at_start": 3,
+  "control": null,
+  "random": {
+   "10": 0.02177068214804064,
+   "20": 0.04354136429608128,
+   "50": 0.10885341074020319,
+   "100": 0.21770682148040638
+  },
   "pair": [
    0.612,
    "src/greenhouse/services/ingest.py",
@@ -471,7 +618,7 @@
     "check_range",
     "canonical_unit",
     "to_canonical",
-    "offset_for"
+    "Reading"
    ]
   ]
  },
@@ -487,6 +634,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.01451378809869376,
+   "20": 0.02902757619738752,
+   "50": 0.07256894049346879,
+   "100": 0.14513788098693758
+  },
   "pair": null
  },
  {
@@ -505,6 +659,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.04354136429608128,
+   "20": 0.08708272859216255,
+   "50": 0.21770682148040638,
+   "100": 0.43541364296081275
+  },
   "pair": null
  },
  {
@@ -519,6 +680,13 @@
   "fresh": true,
   "place": 32,
   "place_at_start": 30,
+  "control": 95,
+  "random": {
+   "10": 0.01451378809869376,
+   "20": 0.02902757619738752,
+   "50": 0.07256894049346879,
+   "100": 0.14513788098693758
+  },
   "pair": [
    0.355,
    "src/greenhouse/services/valves.py",
@@ -527,8 +695,8 @@
    "write_plan",
    [
     "newline",
-    "csv",
     "handle",
+    "csv",
     "open",
     "\"utf-8\""
    ]
@@ -545,6 +713,13 @@
   "fresh": true,
   "place": 99,
   "place_at_start": 99,
+  "control": null,
+  "random": {
+   "10": 0.00725689404934688,
+   "20": 0.01451378809869376,
+   "50": 0.036284470246734396,
+   "100": 0.07256894049346879
+  },
   "pair": [
    0.26,
    "src/hoteldesk/reports/revenue.py",
@@ -553,9 +728,9 @@
    "append_entry",
    [
     "\"business_date\"",
+    "handle",
     "newline",
     "open",
-    "handle",
     "csv"
    ]
   ]
@@ -571,6 +746,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.00725689404934688,
+   "20": 0.01451378809869376,
+   "50": 0.036284470246734396,
+   "100": 0.07256894049346879
+  },
   "pair": null
  },
  {
@@ -584,6 +766,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.00725689404934688,
+   "20": 0.01451378809869376,
+   "50": 0.036284470246734396,
+   "100": 0.07256894049346879
+  },
   "pair": null
  },
  {
@@ -598,6 +787,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.01451378809869376,
+   "20": 0.02902757619738752,
+   "50": 0.07256894049346879,
+   "100": 0.14513788098693758
+  },
   "pair": null
  },
  {
@@ -614,6 +810,13 @@
   "fresh": false,
   "place": 6,
   "place_at_start": 6,
+  "control": null,
+  "random": {
+   "10": 0.02902757619738752,
+   "20": 0.05805515239477504,
+   "50": 0.14513788098693758,
+   "100": 0.29027576197387517
+  },
   "pair": [
    0.542,
    "src/hoteldesk/services/booking.py",
@@ -640,6 +843,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": 12,
+  "random": {
+   "10": 0.008865248226950355,
+   "20": 0.01773049645390071,
+   "50": 0.044326241134751775,
+   "100": 0.08865248226950355
+  },
   "pair": null
  },
  {
@@ -653,6 +863,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.008865248226950355,
+   "20": 0.01773049645390071,
+   "50": 0.044326241134751775,
+   "100": 0.08865248226950355
+  },
   "pair": null
  },
  {
@@ -667,6 +884,13 @@
   "fresh": true,
   "place": 42,
   "place_at_start": 43,
+  "control": null,
+  "random": {
+   "10": 0.01773049645390071,
+   "20": 0.03546099290780142,
+   "50": 0.08865248226950355,
+   "100": 0.1773049645390071
+  },
   "pair": [
    0.325,
    "src/budgetbook/reports/annual.py",
@@ -675,8 +899,8 @@
    "_carried_into",
    [
     "closed",
-    "\"categories\"",
     "entry",
+    "\"categories\"",
     "read_json",
     "closed_month_path"
    ]
@@ -694,6 +918,13 @@
   "fresh": true,
   "place": 42,
   "place_at_start": 43,
+  "control": null,
+  "random": {
+   "10": 0.01773049645390071,
+   "20": 0.03546099290780142,
+   "50": 0.08865248226950355,
+   "100": 0.1773049645390071
+  },
   "pair": [
    0.325,
    "src/budgetbook/reports/annual.py",
@@ -702,8 +933,8 @@
    "_carried_into",
    [
     "closed",
-    "\"categories\"",
     "entry",
+    "\"categories\"",
     "read_json",
     "closed_month_path"
    ]
@@ -720,6 +951,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": 86,
+  "control": null,
+  "random": {
+   "10": 0.008865248226950355,
+   "20": 0.01773049645390071,
+   "50": 0.044326241134751775,
+   "100": 0.08865248226950355
+  },
   "pair": null
  },
  {
@@ -733,6 +971,13 @@
   "fresh": false,
   "place": 18,
   "place_at_start": 19,
+  "control": null,
+  "random": {
+   "10": 0.008865248226950355,
+   "20": 0.01773049645390071,
+   "50": 0.044326241134751775,
+   "100": 0.08865248226950355
+  },
   "pair": [
    0.384,
    "src/budgetbook/reports/month_end.py",
@@ -760,6 +1005,13 @@
   "fresh": false,
   "place": 24,
   "place_at_start": 24,
+  "control": 24,
+  "random": {
+   "10": 0.011689070718877849,
+   "20": 0.023378141437755698,
+   "50": 0.058445353594389245,
+   "100": 0.11689070718877849
+  },
   "pair": [
    0.436,
    "src/lending/reports/overdue.py",
@@ -768,8 +1020,8 @@
    "fine_for",
    [
     "min",
-    "daily_fine",
     "max_fine",
+    "daily_fine",
     "days_late",
     "price"
    ]
@@ -788,6 +1040,13 @@
   "fresh": true,
   "place": 70,
   "place_at_start": 72,
+  "control": 70,
+  "random": {
+   "10": 0.017533606078316773,
+   "20": 0.03506721215663355,
+   "50": 0.08766803039158387,
+   "100": 0.17533606078316774
+  },
   "pair": [
    0.331,
    "src/lending/services/circulation.py",
@@ -816,6 +1075,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.017533606078316773,
+   "20": 0.03506721215663355,
+   "50": 0.08766803039158387,
+   "100": 0.17533606078316774
+  },
   "pair": null
  },
  {
@@ -830,6 +1096,13 @@
   "fresh": false,
   "place": 100,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.011689070718877849,
+   "20": 0.023378141437755698,
+   "50": 0.058445353594389245,
+   "100": 0.11689070718877849
+  },
   "pair": [
    0.297,
    "src/lending/reports/loans.py",
@@ -857,6 +1130,13 @@
   "fresh": true,
   "place": 3,
   "place_at_start": 3,
+  "control": 97,
+  "random": {
+   "10": 0.011689070718877849,
+   "20": 0.023378141437755698,
+   "50": 0.058445353594389245,
+   "100": 0.11689070718877849
+  },
   "pair": [
    0.582,
    "src/lending/model/dates.py",
@@ -868,7 +1148,7 @@
     "ValueError",
     "text",
     "strip",
-    "refuse"
+    "date"
    ]
   ]
  },
@@ -885,6 +1165,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.017533606078316773,
+   "20": 0.03506721215663355,
+   "50": 0.08766803039158387,
+   "100": 0.17533606078316774
+  },
   "pair": null
  },
  {
@@ -898,6 +1185,13 @@
   "fresh": true,
   "place": 44,
   "place_at_start": 44,
+  "control": 60,
+  "random": {
+   "10": 0.0058445353594389245,
+   "20": 0.011689070718877849,
+   "50": 0.029222676797194622,
+   "100": 0.058445353594389245
+  },
   "pair": [
    0.331,
    "src/parcelpost/formats/manifest.py",
@@ -923,6 +1217,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.011689070718877849,
+   "20": 0.023378141437755698,
+   "50": 0.058445353594389245,
+   "100": 0.11689070718877849
+  },
   "pair": null
  },
  {
@@ -936,6 +1237,13 @@
   "fresh": true,
   "place": 16,
   "place_at_start": 16,
+  "control": null,
+  "random": {
+   "10": 0.0058445353594389245,
+   "20": 0.011689070718877849,
+   "50": 0.029222676797194622,
+   "100": 0.058445353594389245
+  },
   "pair": [
    0.426,
    "src/parcelpost/core/ids.py",
@@ -962,6 +1270,13 @@
   "fresh": false,
   "place": 44,
   "place_at_start": 44,
+  "control": null,
+  "random": {
+   "10": 0.0058445353594389245,
+   "20": 0.011689070718877849,
+   "50": 0.029222676797194622,
+   "100": 0.058445353594389245
+  },
   "pair": [
    0.331,
    "src/parcelpost/formats/manifest.py",
@@ -986,6 +1301,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.0058445353594389245,
+   "20": 0.011689070718877849,
+   "50": 0.029222676797194622,
+   "100": 0.058445353594389245
+  },
   "pair": null
  },
  {
@@ -999,6 +1321,13 @@
   "fresh": false,
   "place": 65,
   "place_at_start": 65,
+  "control": null,
+  "random": {
+   "10": 0.009250693802035153,
+   "20": 0.018501387604070305,
+   "50": 0.04625346901017576,
+   "100": 0.09250693802035152
+  },
   "pair": [
    0.308,
    "src/payroll/services/yearend.py",
@@ -1007,10 +1336,10 @@
    "read_payrun",
    [
     "\"pay_date\"",
-    "\"payslips\"",
-    "document",
     "loads",
-    "json"
+    "document",
+    "json",
+    "\"payslips\""
    ]
   ]
  },
@@ -1026,6 +1355,13 @@
   "fresh": false,
   "place": 1,
   "place_at_start": 1,
+  "control": null,
+  "random": {
+   "10": 0.018501387604070305,
+   "20": 0.03700277520814061,
+   "50": 0.09250693802035152,
+   "100": 0.18501387604070305
+  },
   "pair": [
    0.677,
    "src/payroll/reports/hours.py",
@@ -1036,8 +1372,8 @@
     "min",
     "overtime",
     "holiday",
-    "ordinary",
-    "daily_threshold"
+    "daily_threshold",
+    "ordinary"
    ]
   ]
  },
@@ -1054,6 +1390,13 @@
   "fresh": true,
   "place": 37,
   "place_at_start": 35,
+  "control": null,
+  "random": {
+   "10": 0.027752081406105456,
+   "20": 0.05550416281221091,
+   "50": 0.13876040703052728,
+   "100": 0.27752081406105455
+  },
   "pair": [
    0.382,
    "src/payroll/reports/journal.py",
@@ -1080,6 +1423,13 @@
   "fresh": true,
   "place": 37,
   "place_at_start": 35,
+  "control": 23,
+  "random": {
+   "10": 0.027752081406105456,
+   "20": 0.05550416281221091,
+   "50": 0.13876040703052728,
+   "100": 0.27752081406105455
+  },
   "pair": [
    0.382,
    "src/payroll/reports/journal.py",
@@ -1104,6 +1454,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": 88,
+  "random": {
+   "10": 0.009250693802035153,
+   "20": 0.018501387604070305,
+   "50": 0.04625346901017576,
+   "100": 0.09250693802035152
+  },
   "pair": null
  },
  {
@@ -1117,6 +1474,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.009250693802035153,
+   "20": 0.018501387604070305,
+   "50": 0.04625346901017576,
+   "100": 0.09250693802035152
+  },
   "pair": null
  },
  {
@@ -1130,6 +1494,13 @@
   "fresh": true,
   "place": 5,
   "place_at_start": 5,
+  "control": 22,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": [
    0.549,
    "src/recipebox/reports/shopping_csv.py",
@@ -1137,11 +1508,11 @@
    "write_shopping_csv",
    "save_pantry",
    [
-    "writer",
-    "\"w\"",
-    "newline",
+    "lineterminator",
+    "writerow",
     "handle",
-    "writerow"
+    "\"w\"",
+    "newline"
    ]
   ]
  },
@@ -1156,6 +1527,13 @@
   "fresh": true,
   "place": 73,
   "place_at_start": 73,
+  "control": null,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": [
    0.291,
    "src/recipebox/reports/nutrition_report.py",
@@ -1182,6 +1560,13 @@
   "fresh": false,
   "place": 2,
   "place_at_start": 2,
+  "control": null,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": [
    0.593,
    "src/recipebox/core/recipe.py",
@@ -1208,6 +1593,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": null
  },
  {
@@ -1221,6 +1613,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": null
  },
  {
@@ -1235,6 +1634,13 @@
   "fresh": true,
   "place": 5,
   "place_at_start": 6,
+  "control": 16,
+  "random": {
+   "10": 0.01568627450980392,
+   "20": 0.03137254901960784,
+   "50": 0.0784313725490196,
+   "100": 0.1568627450980392
+  },
   "pair": [
    0.541,
    "src/recipebox/services/importer.py",
@@ -1243,8 +1649,8 @@
    "recipe_from_dict",
    [
     "\"minutes\"",
-    "\"steps\"",
     "\"servings\"",
+    "\"steps\"",
     "\"title\"",
     "Recipe"
    ]
@@ -1261,6 +1667,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": 8,
+  "random": {
+   "10": 0.012195121951219513,
+   "20": 0.024390243902439025,
+   "50": 0.06097560975609756,
+   "100": 0.12195121951219512
+  },
   "pair": null
  },
  {
@@ -1274,6 +1687,13 @@
   "fresh": false,
   "place": 43,
   "place_at_start": 43,
+  "control": 65,
+  "random": {
+   "10": 0.012195121951219513,
+   "20": 0.024390243902439025,
+   "50": 0.06097560975609756,
+   "100": 0.12195121951219512
+  },
   "pair": [
    0.358,
    "src/surveytally/reports/compare.py",
@@ -1303,6 +1723,13 @@
   "fresh": true,
   "place": 4,
   "place_at_start": 4,
+  "control": null,
+  "random": {
+   "10": 0.04878048780487805,
+   "20": 0.0975609756097561,
+   "50": 0.24390243902439024,
+   "100": 0.4878048780487805
+  },
   "pair": [
    0.614,
    "src/surveytally/services/tally.py",
@@ -1325,6 +1752,13 @@
   "fresh": false,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.012195121951219513,
+   "20": 0.024390243902439025,
+   "50": 0.06097560975609756,
+   "100": 0.12195121951219512
+  },
   "pair": null
  },
  {
@@ -1339,6 +1773,13 @@
   "fresh": true,
   "place": 10,
   "place_at_start": 10,
+  "control": null,
+  "random": {
+   "10": 0.024390243902439025,
+   "20": 0.04878048780487805,
+   "50": 0.12195121951219512,
+   "100": 0.24390243902439024
+  },
   "pair": [
    0.52,
    "src/surveytally/files/csv_responses.py",
@@ -1346,11 +1787,11 @@
    "read_responses",
    "read_weights",
    [
-    "reader",
     "fieldnames",
+    "reader",
     "DictReader",
-    "'utf-8-sig'",
-    "start"
+    "start",
+    "'utf-8-sig'"
    ]
   ]
  },
@@ -1365,6 +1806,13 @@
   "fresh": true,
   "place": 40,
   "place_at_start": 40,
+  "control": null,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": [
    0.381,
    "src/boxoffice/reports/daily.py",
@@ -1390,6 +1838,13 @@
   "fresh": true,
   "place": null,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.01568627450980392,
+   "20": 0.03137254901960784,
+   "50": 0.0784313725490196,
+   "100": 0.1568627450980392
+  },
   "pair": null
  },
  {
@@ -1403,6 +1858,13 @@
   "fresh": false,
   "place": 32,
   "place_at_start": 33,
+  "control": null,
+  "random": {
+   "10": 0.00784313725490196,
+   "20": 0.01568627450980392,
+   "50": 0.0392156862745098,
+   "100": 0.0784313725490196
+  },
   "pair": [
    0.406,
    "src/boxoffice/model/concessions.py",
@@ -1431,6 +1893,13 @@
   "fresh": true,
   "place": 90,
   "place_at_start": 92,
+  "control": null,
+  "random": {
+   "10": 0.023529411764705882,
+   "20": 0.047058823529411764,
+   "50": 0.11764705882352941,
+   "100": 0.23529411764705882
+  },
   "pair": [
    0.264,
    "src/boxoffice/reports/seatplan.py",
@@ -1442,7 +1911,7 @@
     "sections",
     "number",
     "section",
-    "id"
+    "seats"
    ]
   ]
  },
@@ -1458,6 +1927,13 @@
   "fresh": true,
   "place": 99,
   "place_at_start": null,
+  "control": null,
+  "random": {
+   "10": 0.01568627450980392,
+   "20": 0.03137254901960784,
+   "50": 0.0784313725490196,
+   "100": 0.1568627450980392
+  },
   "pair": [
    0.261,
    "src/boxoffice/services/holds.py",

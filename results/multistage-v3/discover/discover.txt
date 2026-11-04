@@ -2,15 +2,19 @@ ticket_office 4 copy src/boxoffice/reports/price_list.py place 32
 ticket_office 5 key src/boxoffice/reports/seatplan.py place 90
 ticket_office 6 contract src/boxoffice/storage/jsonstore.py place 99
 never-read (decides): 51 dependents
-   review before each stage   {10: 8, 20: 11, 50: 20, 100: 32}
-   one review at stage 0      {10: 8, 20: 10, 50: 20, 100: 32}
+   review before each stage       {10: 8, 20: 11, 50: 20, 100: 32}
+   one review at stage 0          {10: 8, 20: 10, 50: 20, 100: 32}
+   control: another stage's edit  {10: 3, 20: 5, 50: 11, 100: 18}
+   random, expected               {10: 0.8, 20: 1.6, 50: 3.9, 100: 7.8}
    contract    5  K=50: 1
    copy       13  K=50: 8
    data       17  K=50: 9
    key        16  K=50: 2
 read stages: 17 dependents
-   review before each stage   {10: 3, 20: 4, 50: 8, 100: 10}
-   one review at stage 0      {10: 3, 20: 4, 50: 8, 100: 9}
+   review before each stage       {10: 3, 20: 4, 50: 8, 100: 10}
+   one review at stage 0          {10: 3, 20: 4, 50: 8, 100: 9}
+   control: another stage's edit  {10: 0, 20: 1, 50: 3, 100: 5}
+   random, expected               {10: 0.2, 20: 0.5, 50: 1.2, 100: 2.4}
    contract    7  K=50: 2
    copy        7  K=50: 5
    data        3  K=50: 1
