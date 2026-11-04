@@ -2093,8 +2093,9 @@ Until then any contributor can start on an open problem below.
    - the mutation step's result never reaches the agent. It goes to the
      export and the doctor, and no agent ran either;
    - from the transcripts' clocks, the 34.9 s gap per stage is:
-     - 18.4 s in tool calls. An Edit took 3.17 s against 0.03 s, a Read
-       0.90 s against 0.02 s.
+     - 18.4 s in tool calls. An Edit took 2.31 s against 0.03 s, a Read
+       0.58 s against 0.02 s, timed from the result before each call so
+       that a queue of Edits is not counted twice.
      - a median 10 s after the last event, which is Stop.
      - 1.4 s at startup.
 
