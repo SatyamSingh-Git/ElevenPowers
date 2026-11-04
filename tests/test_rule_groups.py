@@ -174,3 +174,53 @@ def test_a_token_held_by_too_many_functions_is_skipped_and_said(tmp_path, monkey
     value = module.propose(project(tmp_path))
     assert value['proposals'] == []
     assert any('skipped' in issue for issue in value['coverage']['issues'])
+
+
+# --- grounding: only what a person declared reaches the agent ----------------
+
+RULE = {'id': 'lodging-tax', 'description': 'Lodging tax rounds half-up to the cent, per charge.',
+        'inputs': ['app/money.py', 'app/services/pricing.py'],
+        'checks': [{'kind': 'test_suite', 'command': 'python -m pytest -q'}]}
+ALONE = {'id': 'greeting', 'description': 'Greetings are title case.', 'inputs': ['app/names.py'],
+         'checks': [{'kind': 'test_suite', 'command': 'python -m pytest -q'}]}
+
+
+def _hook(event, payload):
+    import sys
+    from pathlib import Path
+    return subprocess.run([sys.executable, '-m', 'core.hook', event], input=json.dumps(payload),
+                          capture_output=True, text=True, cwd=Path(__file__).resolve().parents[1])
+
+
+def _brief(root, path):
+    done = _hook('PreToolUse', {'cwd': str(root), 'tool_name': 'Edit', 'tool_input': {'file_path': str(root / path)}})
+    return json.loads(done.stdout)['hookSpecificOutput'].get('additionalContext', '') if done.stdout.strip() else ''
+
+
+def declared(tmp_path):
+    root = project(tmp_path)
+    (root / 'elevenpowers.milestones.json').write_text(json.dumps({'schema': 1, 'milestones': [RULE, ALONE]}),
+                                                       encoding='utf-8')
+    for args in (['add', '-A'], ['-c', 'user.email=e@e', '-c', 'user.name=e', 'commit', '-qm', 'base']):
+        subprocess.run(['git', *args], cwd=root, check=True, capture_output=True)
+    _hook('UserPromptSubmit', {'cwd': str(root), 'prompt': 'fix the lodging tax rounding'})
+    return root
+
+
+def test_before_an_edit_a_declared_rule_names_the_other_file_that_keeps_it(tmp_path):
+    brief = _brief(declared(tmp_path), 'app/money.py')
+    assert 'lodging-tax' in brief and 'rounds half-up to the cent' in brief, brief
+    assert 'app/services/pricing.py' in brief, brief
+
+
+def test_the_rule_is_said_once_per_file_not_on_every_edit(tmp_path):
+    root = declared(tmp_path)
+    _brief(root, 'app/money.py')
+    _hook('PostToolUse', {'cwd': str(root), 'tool_name': 'Edit', 'tool_input': {'file_path': str(root / 'app/money.py')}})
+    assert 'lodging-tax' not in _brief(root, 'app/money.py')
+
+
+def test_files_in_no_shared_rule_get_no_rule_note(tmp_path):
+    root = declared(tmp_path)
+    assert 'Declared rule' not in _brief(root, 'app/names.py')
+    assert 'Declared rule' not in _brief(root, 'app/store.py')

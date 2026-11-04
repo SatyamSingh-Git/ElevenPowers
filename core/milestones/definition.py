@@ -101,3 +101,18 @@ def load(root, *, deadline=None):
     except (OSError, ValueError, TypeError, UnicodeError, RecursionError) as error:
         result['issues'].append(f'{type(error).__name__}: milestone declarations unavailable or invalid: {error}')
     return result
+
+
+def rules_naming(root, path):
+    """Declared milestones that name `path` and other files too: the person-certified rule note."""
+    if not configured(root):
+        return ''
+    lines = []
+    for item in load(root)['milestones']:
+        others = [p for p in item['inputs'] if p != path]
+        if path in item['inputs'] and others:
+            shown = ', '.join(others[:4]) + (f' (+{len(others) - 4} more)' if len(others) > 4 else '')
+            description = ' '.join(item['description'].split())[:200]
+            lines.append(f"Declared rule {item['id']} ({description}) is also kept in {shown}. "
+                         'Change them together, or say why one should differ.')
+    return '\n'.join(lines[:3])

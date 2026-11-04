@@ -238,7 +238,12 @@ def on_pre_tool(payload: dict, root: Path) -> int:
         # agent reads a file before editing it practically always - so the note
         # meant for the first edit was suppressed by the read that preceded it,
         # every time, and only a direct blind edit ever saw one.
-        brief = neighbourhood(root, here) if here not in ledger.briefed else ""
+        brief = ""
+        if here not in ledger.briefed:
+            # A rule a person declared across files outranks the import map: it names the
+            # copy an import graph cannot see (20 of 31 v3 losses were such copies).
+            from .milestones.definition import rules_naming
+            brief = "\n".join(filter(None, (rules_naming(root, here), neighbourhood(root, here))))
         if brief:
             ledger.briefed.append(here)
             ledger.save()
