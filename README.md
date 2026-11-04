@@ -542,6 +542,32 @@ These are capability results, not measured coding improvement. See the
 [journey 63](journey/63-earlier-behavior-needs-current-evidence.md) and
 [published observations](results/milestone-verification/README.md).
 
+**Rule groups: one rule kept in several files.** This is borrowed from
+NVIDIA Auto-Ontology's discover, certify and ground loop.
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH --propose
+```
+
+1. **Discover.** `--propose` lists pairs of files whose functions share rare
+   words, each with its reason and a milestone entry ready to edit. It
+   writes nothing.
+2. **Certify.** You copy the pairs that really keep the same rule into
+   `elevenpowers.milestones.json`, and describe the rule in each entry.
+3. **Ground.** Before an agent first edits one of those files, its brief
+   names the rule and the other files. The end report names a declared rule
+   the task changed in only some of its files. Neither blocks.
+
+Proposals never reach the agent; only what you declared does. This version
+reads Python only and counts other source files as not examined.
+
+On the multi-stage v3 cases, 50 proposals per project covered 20 of 51
+dependents the method was never designed on. The control covered 11, and
+random 3.9. Replayed on a real loss, the brief and the end report named the
+file the agent had left behind. Whether an agent acts on the brief is not
+measured. See [the spike and replay](results/multistage-v3/discover/README.md)
+and the [design](docs/superpowers/specs/2026-11-04-rule-groups-design.md).
+
 ### Optional test strength
 
 **Changed-region test strength** asks whether passing tests notice small changes to
