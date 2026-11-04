@@ -21,6 +21,15 @@ On each primary stage:
 - the grader scores the reference as kept and the left-behind variant as
   lost.
 
+**Looser than it reads, found 2026-11-05.** The Edit check matched the
+dependent anywhere in the brief. On `parcelpost` 5 the brief's
+import-neighbourhood line names `billing.py` in both arms, so that row
+could have passed with no rule note. A replay under this certification
+shows the rule note present, in the rules arm only, and the shell check
+already matched rule notes alone. The
+[reviewed rerun's rehearsal](../rule-groups-acted-on-reviewed/rehearse.py)
+matches rule notes only; its adversarial row is what exposed this.
+
 ## Gate 2: pilot, launched 2026-11-04
 
 Two stages chosen for their v3 baseline:
