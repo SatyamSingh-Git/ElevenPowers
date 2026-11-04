@@ -42,3 +42,29 @@ the co-readers `run.py`, with only the scorer swapped.
 **Bounds known in advance:** 17 held-out rankings is small. A difference of
 one or two is not a result, so "beats" means at least 7 of 17, two more
 than co-readers.
+
+## Result: it does not work in this form ([`run.py`](run.py), [output](run.txt))
+
+| top 3 | same state | its control | co-readers |
+|---|---|---|---|
+| held out, of 17 | **0** | 1 | 5 |
+| in-sample, of 31 (decides nothing) | 6 | 5 | 11 |
+
+- Held out it finds none of the 14 contract dependents it was aimed at. In
+  sample, another stage's edit does as well as the stage's own.
+- No threshold makes a warning: at t = 0.5 it warns on 22% of self-contained
+  stages and names 5 of 76 dependents.
+- Recorded as tried, and nothing is built. The union planned for a win is
+  not run.
+
+What the sanity check showed before the run:
+
+- The query holds field names (`term`, `credits`, `grade_decimals`), but
+  many edits write no named field at all. The `household_budget` stage 7
+  query was empty.
+- A v3 contract is mostly an order or a format kept by position, which named
+  fields do not carry.
+
+This is a reading of one sanity check, not a measured cause.
+"Constrains the same state" may still be right as a description. Shared
+field names are not a way to find that state.

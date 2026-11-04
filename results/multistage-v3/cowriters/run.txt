@@ -1,0 +1,18 @@
+in-sample losses: 31 rankings; top 1/3/5 {1: 0, 3: 6, 5: 9}; control {1: 5, 3: 5, 5: 5}; random top 3 1.8
+   contract    9  top 3 2  control 5
+   copy       20  top 3 4  control 0
+   data        2  top 3 0  control 0
+held-out: 17 rankings; top 1/3/5 {1: 0, 3: 0, 5: 0}; control {1: 1, 3: 1, 5: 1}; random top 3 1.1
+   contract   14  top 3 0  control 0
+   copy        2  top 3 0  control 0
+   data        1  top 3 0  control 1
+noise: 960 stages, 330 self-contained, 630 cross-cutting, 76 unedited dependents
+t     warns(self-contained)  warns(cross-cutting)  dependents named  named that are dependents
+0          66%                  93%            5 of 76 (7%)          5 of 1726 (0%)
+0.05       55%                  91%            5 of 76 (7%)          5 of 1653 (0%)
+0.1        45%                  88%            5 of 76 (7%)          5 of 1586 (0%)
+0.15       42%                  86%            5 of 76 (7%)          5 of 1531 (0%)
+0.2        39%                  83%            5 of 76 (7%)          5 of 1385 (0%)
+0.3        29%                  67%            5 of 76 (7%)          5 of 1028 (0%)
+0.4        29%                  47%            5 of 76 (7%)          5 of 689 (1%)
+0.5        22%                  39%            5 of 76 (7%)          5 of 555 (1%)
