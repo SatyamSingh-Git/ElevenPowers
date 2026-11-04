@@ -174,8 +174,15 @@ stratified test gives **p = 8.6 × 10⁻¹³**.
 
   The `parcelpost` rule's description was the neutral template: "they share
   manifest_filename, day, isoformat". The agents reasoned from exactly
-  those words. A person's description of the rule would not point at the
-  filename. This is a lead on description quality, not a finding.
+  those words.
+
+  *Withdrawn 2026-11-05 (PLAN §10).* This paragraph went on to say that a
+  person's description would not point at the filename, as a lead on
+  description quality. A blind stand-in reviewer described the filename
+  rule too. Stage 5 breaks a different coupling between the same files:
+  billing's `groupby` in `make_invoices` relies on the manifest's line
+  order. The pair is tied in two ways, and the note named one
+  ([record](../rule-groups-described/README.md)).
 
 **What bounds it** (from the design):
 

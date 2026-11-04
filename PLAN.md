@@ -1805,6 +1805,22 @@ The 1.4x gate result stands for its narrow configuration. It is not an argument 
 
 ## 10. Claims withdrawn or qualified
 
+- **"A person's description of the rule would not point at the filename"**
+  (the acted-on run's `parcelpost` losses, 2026-11-04). Withdrawn
+  2026-11-05, the day after it was written as a lead and carried into the
+  guide.
+  - A stand-in reviewer was given only the certified pair's two files. It
+    was blind and had no tools, and it described the filename rule too.
+  - The coupling stage 5 broke is a different one between the same files:
+    `make_invoices` groups the manifest's charges with `groupby`, relying
+    on its line order.
+  - The proposal paired `manifest_filename` with `bill_day`, and neither
+    function holds that order dependency.
+
+  The losses show a pair tied in two ways, with the note naming one. They
+  do not show a weak description. See
+  [the stopped experiment](results/rule-groups-described/README.md).
+
 - **"10.8 minutes of model time against 6.5" (v3).** Corrected 2026-11-03.
   It is wall time: the harness's clock around each `claude` process. Per
   stage the model's own time is 36.2 s against 34.3 s. The other 33 s is
@@ -2134,10 +2150,13 @@ Until then any contributor can start on an open problem below.
        harm of about 20 points, not a small one.
    - The pilot found the note missed agents that write through the shell.
      That was repaired, and the design amended, before sealing.
-   - Still open: whether real people certify the right pairs and describe
-     them well. Three of the four rules-arm losses were on one stage whose
-     description was only shared words. Also open: the 31 never-read
-     dependents that no proposal covers.
+   - Still open: whether real people certify the right pairs. Three of the
+     four rules-arm losses were on one pair tied in two ways, and the note
+     named one of them. A blind reviewer's description named the same one,
+     so the experiment for that was stopped before sealing
+     ([record](results/rule-groups-described/README.md)). Whether wording
+     that declares the files coupled as a whole does better is untested.
+     Also open: the 31 never-read dependents that no proposal covers.
 3. **Brief cutoff.** List the importers a brief hides behind "+N more", or
    rank them, without flooding the context. Tried 2026-11-03 ($0,
    [spike](results/multistage-v3/brief-cutoff/README.md)):

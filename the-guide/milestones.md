@@ -149,15 +149,24 @@ python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
    command. At completion, the end report names a declared rule the task
    changed in only some of its files. Neither blocks.
 
-**Write the description as the rule, not the shared words.** In the
-experiment that measured this
+**Say every way the files are tied, not only the one the proposal found.**
+An agent takes the declared rule as the whole contract between the files.
+In the experiment that measured this
 ([results](../results/rule-groups-acted-on/README.md)), agents with
 declared rules left a dependent file behind in 4 of 50 runs, against 35 of
-50 without. Three of the four losses were on one stage. Its description
-was only the shared words "manifest_filename, day, isoformat". Two of
-those agents reasoned that a change to the manifest order "doesn't touch
-the filename", and left the other file alone. A sentence that says what the rule is gives
-them less to misread.
+50 without. Three of the four losses were on one pair.
+
+- **The proposal:** it paired the manifest's filename function with
+  billing's, and the rule said so.
+- **The change:** it reordered the manifest's lines.
+- **The tie that broke:** billing groups those lines by account, so it
+  relies on their order.
+
+The agents checked the change against the declared rule, found the
+filename untouched, and left billing alone. A careful description of the
+proposed pair would have said the same
+([why](../results/rule-groups-described/README.md)). If you know the files
+also share an order, a format or a unit, write that in the description too.
 
 Proposals follow the project's source scan, so its `scan.exclude` patterns
 leave fixtures, vendored code and generated copies out. Without them, exact

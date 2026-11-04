@@ -47,9 +47,15 @@ together, or say why one should differ".
 The four losses took the second way, or simply missed it. Three named the
 file and gave a reason for leaving it. On `parcelpost`, two reasoned from
 the description's own words, "manifest_filename, day, isoformat": the
-change "doesn't touch the filename". The experiment's description was a
-neutral template, deliberately worse than a person's. The product's own
-proposal asks for the rule in words, and now the guide says why.
+change "doesn't touch the filename".
+
+That first read as a weak description, and this entry said so. The next
+morning a blind stand-in reviewer, given only the pair's two files,
+described the filename rule as well. The coupling the stage broke was
+another one between the same files: billing's `groupby` relies on the
+manifest's line order. The note named one tie of two, and the agents
+checked that one correctly. The lead is withdrawn in PLAN §10
+([record](../results/rule-groups-described/README.md)).
 
 ## What it is not
 

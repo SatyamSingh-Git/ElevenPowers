@@ -33,9 +33,8 @@ enough that someone changing either file knows what must stay consistent. Reply 
 
 def tool_free(prompt):
     args = subscription.command('claude', 'claude', Path.cwd(), prompt, model=MODEL)
-    cut = args.index('--tools')
-    args = args[:cut] + ['--tools', '', '--output-format', 'stream-json', '--verbose']
-    return [a for i, a in enumerate(args) if not (a == 'json' and args[i - 1] == '--output-format')]
+    args[args.index('--output-format') + 1] = 'stream-json'
+    return args[:args.index('--tools')] + ['--tools', '', '--verbose']
 
 
 def main():

@@ -1,0 +1,6 @@
+{
+ "parcelpost": {
+  "rule-_check_digit-_plausible_number": "The check digit of a tracking number (PP + 8-digit serial + digit + GB) is (10 \u2212 weighted sum % 10) % 10 over the serial's digits with weights alternating 3,1 starting at 3; `_plausible_number` must validate exactly what `_check_digit` issues.",
+  "rule-manifest_filename-bill_day": "Billing finds a day's manifest by calling `manifest_filename(day)` (`manifest-<day.isoformat()>.csv`) in `settings.manifest_dir`, so the manifest writer and `bill_day` must keep deriving the filename from that one function."
+ }
+}

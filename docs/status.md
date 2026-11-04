@@ -1,5 +1,18 @@
 # Current delivery status
 
+**2026-11-05 — The description experiment stopped before sealing, and a lead
+is withdrawn.** It was designed to test whether a reviewer's sentence beats
+the template on `parcelpost` 5
+([record](../results/rule-groups-described/README.md)).
+- Its blind, tool-free describer named the same filename rule as the
+  template. The stage breaks another coupling between the same files:
+  billing's `groupby` relies on the manifest's line order.
+- No run was made, so the cost was $0.07. The "better description" lead is
+  withdrawn in PLAN §10.
+- The guide now says to describe every way the files are tied.
+- The runner gained a tested `described` arm, with seven mutants killed,
+  for when that is worth testing.
+
 **2026-11-04 — No harm from certified rules where no one needs them.** The
 follow-up to the acted-on run
 ([design](superpowers/specs/2026-11-04-rule-groups-harm-design.md),

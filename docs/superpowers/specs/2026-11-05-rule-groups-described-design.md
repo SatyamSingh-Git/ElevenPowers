@@ -1,7 +1,12 @@
 # Does a reviewer's description close the gap the template left? (PLAN §13 B)
 
-**Status: design, 2026-11-05, written before any description was generated
-and before any run.**
+**Status: stopped before sealing, 2026-11-05.** The describer ran as
+fixed below. It described the certified pair's filename rule, the same
+coupling as the template. Stage 5 breaks a different coupling between the
+same files: billing's `groupby` relies on the manifest's line order. So the
+described arm could not test what the question asks. No run was made
+([record](../../../results/rule-groups-described/README.md)). The text
+below is the design as written before any description was generated.
 
 ## Question
 
