@@ -1,0 +1,248 @@
+[
+ {
+  "case": "clinic_booking",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-total-total",
+   "rule-_clashes-_clashes",
+   "rule-free_slots-_check_when"
+  ],
+  "certified": [
+   "rule-export_day-save_bookings",
+   "rule-free_slots-_check_when",
+   "rule-total-total"
+  ],
+  "certified_kept": [
+   "rule-free_slots-_check_when",
+   "rule-total-total"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-_next_id-_next_id",
+   "rule-parse_gallons-parse_hours",
+   "rule-import_timesheet-add_line",
+   "rule-add_line-add_part",
+   "rule-_maintenance-order_charges",
+   "rule-_maintenance-spend_rows"
+  ],
+  "certified": [
+   "rule-_maintenance-order_charges",
+   "rule-_maintenance-spend_rows",
+   "rule-times-_per_mile"
+  ],
+  "certified_kept": [
+   "rule-_maintenance-order_charges",
+   "rule-_maintenance-spend_rows"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-category-category",
+   "rule-category-category-2",
+   "rule-category-category-3",
+   "rule-import_lms-import_sheet",
+   "rule-_counted_items-_category_progress",
+   "rule-reweighted-_check_categories",
+   "rule-_spread-category_report",
+   "rule-explain_grade-weighted"
+  ],
+  "certified": [
+   "rule-_counted_items-_category_progress"
+  ],
+  "certified_kept": [
+   "rule-_counted_items-_category_progress"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-parse_row-record_manual",
+   "rule-digest_text-timed",
+   "rule-describe-alert_record",
+   "rule-status_rows-evaluate",
+   "rule-planned_minutes-write_plan"
+  ],
+  "certified": [
+   "rule-parse_row-record_manual",
+   "rule-planned_minutes-write_plan"
+  ],
+  "certified_kept": [
+   "rule-parse_row-record_manual",
+   "rule-planned_minutes-write_plan"
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-room_total-room_total",
+   "rule-add_room-_rooms",
+   "rule-_extend-extend_stay",
+   "rule-held-_booked_nights",
+   "rule-forecast_rows-held"
+  ],
+  "certified": [
+   "rule-arriving-open_items"
+  ],
+  "certified_kept": []
+ },
+ {
+  "case": "household_budget",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-reopen_month-is_closed",
+   "rule-forecast-upcoming",
+   "rule-for_workspace-add_category",
+   "rule-add_category-rename_category",
+   "rule-categorise_open_months-file_transfers",
+   "rule-summarise-_spent_by_category",
+   "rule-import_statement-categorise_open_months",
+   "rule-cmd_rule_add-find_problems",
+   "rule-import_statement-post_due",
+   "rule-year_report-_carried_into",
+   "rule-find_problems-rename_category"
+  ],
+  "certified": [
+   "rule-budget_status-close_month",
+   "rule-summarise-_spent_by_category",
+   "rule-year_report-_carried_into"
+  ],
+  "certified_kept": [
+   "rule-summarise-_spent_by_category",
+   "rule-year_report-_carried_into"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-parse_date-_day",
+   "rule-status-summary",
+   "rule-overdue_rows-fine_for",
+   "rule-spells-replay",
+   "rule-write_members_csv-save_members",
+   "rule-_check_loans-replay"
+  ],
+  "certified": [
+   "rule-overdue_rows-fine_for",
+   "rule-parse_date-_day"
+  ],
+  "certified_kept": [
+   "rule-overdue_rows-fine_for",
+   "rule-parse_date-_day"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-vat-vat",
+   "rule-render_text-render_zpl",
+   "rule-_check_digit-_plausible_number",
+   "rule-base_rate-render_rate_card"
+  ],
+  "certified": [
+   "rule-_check_digit-_plausible_number",
+   "rule-manifest_filename-bill_day"
+  ],
+  "certified_kept": [
+   "rule-_check_digit-_plausible_number"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-hours_rows-split_hours",
+   "rule-_employee-_employee",
+   "rule-add_employee-_employee",
+   "rule-add_employee-_employee-2"
+  ],
+  "certified": [
+   "rule-_cell-_row",
+   "rule-hours_rows-split_hours"
+  ],
+  "certified_kept": [
+   "rule-hours_rows-split_hours"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-recipe_markdown-render_recipe",
+   "rule-recipe_id-_title_key",
+   "rule-_to_grams-grams",
+   "rule-_read_recipe-recipe_from_dict",
+   "rule-parse_ingredient-parse_quantity",
+   "rule-_enough-_after_pantry",
+   "rule-recipe_markdown-recipe_html",
+   "rule-render_recipe-recipe_html",
+   "rule-convertible-_group"
+  ],
+  "certified": [
+   "rule-_read_recipe-recipe_from_dict",
+   "rule-recipe_id-_title_key",
+   "rule-write_shopping_csv-save_pantry"
+  ],
+  "certified_kept": [
+   "rule-_read_recipe-recipe_from_dict",
+   "rule-recipe_id-_title_key"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-percent-percent",
+   "rule-_submitted-_submitted",
+   "rule-banner_table-crosstab_table",
+   "rule-_encode-write_json_responses",
+   "rule-percent-_row"
+  ],
+  "certified": [
+   "rule-__init__-__init__",
+   "rule-read_percentages-_write_csv",
+   "rule-read_responses-read_weights"
+  ],
+  "certified_kept": []
+ },
+ {
+  "case": "ticket_office",
+  "proposals": 50,
+  "parsed": true,
+  "kept": [
+   "rule-order-_order",
+   "rule-order-assign_customer",
+   "rule-_save-_write",
+   "rule-production_summary-season_summary",
+   "rule-reprice-performance",
+   "rule-concession_price-price_list",
+   "rule-show_performance-_check_open"
+  ],
+  "certified": [
+   "rule-concession_price-price_list",
+   "rule-daily_takings-entries_on"
+  ],
+  "certified_kept": [
+   "rule-concession_price-price_list"
+  ]
+ }
+]

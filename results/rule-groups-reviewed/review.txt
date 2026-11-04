@@ -1,0 +1,13 @@
+{"case": "clinic_booking", "parsed": true, "kept": 3, "certified_kept": "2 of 3", "tools": [], "cost": 0.123691}
+{"case": "fleet_service", "parsed": true, "kept": 6, "certified_kept": "2 of 3", "tools": [], "cost": 0.100989}
+{"case": "gradebook", "parsed": true, "kept": 8, "certified_kept": "1 of 1", "tools": [], "cost": 0.14368799999999998}
+{"case": "greenhouse_monitor", "parsed": true, "kept": 5, "certified_kept": "2 of 2", "tools": [], "cost": 0.105391}
+{"case": "hotel_desk", "parsed": true, "kept": 5, "certified_kept": "0 of 1", "tools": [], "cost": 0.11980099999999999}
+{"case": "household_budget", "parsed": true, "kept": 11, "certified_kept": "2 of 3", "tools": [], "cost": 0.140515}
+{"case": "library_loans", "parsed": true, "kept": 6, "certified_kept": "2 of 2", "tools": [], "cost": 0.11063699999999999}
+{"case": "parcelpost", "parsed": true, "kept": 4, "certified_kept": "1 of 2", "tools": [], "cost": 0.11727800000000001}
+{"case": "payroll_lite", "parsed": true, "kept": 4, "certified_kept": "1 of 2", "tools": [], "cost": 0.131631}
+{"case": "recipe_box", "parsed": true, "kept": 9, "certified_kept": "2 of 3", "tools": [], "cost": 0.124603}
+{"case": "survey_tally", "parsed": true, "kept": 5, "certified_kept": "0 of 3", "tools": [], "cost": 0.12146299999999999}
+{"case": "ticket_office", "parsed": true, "kept": 7, "certified_kept": "1 of 2", "tools": [], "cost": 0.09806}
+recall 16 of 27; kept per case [3, 6, 8, 5, 5, 11, 6, 4, 4, 9, 5, 7]; cost $1.44

@@ -13,7 +13,6 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'results' / 'rule-groups-described'))
 from core.milestones.propose import propose  # noqa: E402
-from core.process import run  # noqa: E402
 from describe import tool_free  # noqa: E402
 from eval.multistage_cases import load, tree  # noqa: E402
 from eval.rule_groups_run import certify  # noqa: E402
@@ -65,7 +64,10 @@ def main():
         prompt = PROMPT.format(proposals='\n\n'.join(block(i, p, start) for i, p in enumerate(proposals, 1)))
         empty = scratch / case['id'] / 'reviewer'
         empty.mkdir(parents=True)
-        done = run(tool_free(prompt), cwd=empty, timeout=600, shell=False)
+        # On stdin: about 53k characters, past Windows' 32,767-character command line (WinError 206).
+        args = tool_free('')
+        done = subprocess.run(args[:2] + args[3:], input=prompt, cwd=empty, capture_output=True, text=True,
+                              encoding='utf-8', timeout=600)
         events = [json.loads(line) for line in done.stdout.splitlines() if line.strip().startswith('{')]
         init = next((e for e in events if e.get('type') == 'system' and e.get('subtype') == 'init'), {})
         result = next((e for e in events if e.get('type') == 'result'), {})

@@ -1,0 +1,31 @@
+Traceback (most recent call last):
+  File "E:\ElevenPowers\results\rule-groups-reviewed\review.py", line 89, in <module>
+    main()
+    ~~~~^^
+  File "E:\ElevenPowers\results\rule-groups-reviewed\review.py", line 68, in main
+    done = run(tool_free(prompt), cwd=empty, timeout=600, shell=False)
+  File "E:\ElevenPowers\core\process.py", line 74, in run
+    child = subprocess.Popen(command, cwd=cwd, shell=shell,
+                             stdin=subprocess.DEVNULL, stdout=out,
+                             stderr=err, env=env, **options)
+  File "C:\Python313\Lib\subprocess.py", line 1038, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\subprocess.py", line 1550, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+FileNotFoundError: [WinError 206] The filename or extension is too long
