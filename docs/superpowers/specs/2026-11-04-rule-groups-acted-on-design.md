@@ -78,9 +78,20 @@ declared dependent's oracle group is lost.
   `integrations.json` counts and its `briefed` record.
 
 **Size.** Ten runs per arm on each of the five stages: 100 runs, about $16
-and about 2.5 hours at four at a time. Ten runs per arm per stage detects a
-fall from 64% to about 30% with roughly 80% power; that figure is an
-estimate, to be checked before sealing.
+and about 2.5 hours at four at a time. Simulated with the pre-registered
+test ([`power.py`](../../../results/multistage-v3/discover/power.py),
+[output](../../../results/multistage-v3/discover/power.txt)):
+
+| loss rate in the rules arm | power at 10 per arm per stage |
+|---|---|
+| 64%, no effect | 3% (the false-positive rate) |
+| 51% | 33% |
+| **40%** | **81%** |
+| 27% | 98% |
+
+The baselines come from conversations, not single stages. The pilot checks
+that the control arm still loses at a similar rate. If it does not, the run
+is resized before sealing, never after.
 
 ## Gates, in order
 

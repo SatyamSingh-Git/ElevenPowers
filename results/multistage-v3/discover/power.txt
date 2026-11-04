@@ -1,0 +1,8 @@
+n= 6 per arm per stage  odds ratio 1.0   rules-arm loss rate 64%  power 3%
+n= 6 per arm per stage  odds ratio 0.5   rules-arm loss rate 51%  power 20%
+n= 6 per arm per stage  odds ratio 0.25  rules-arm loss rate 40%  power 57%
+n= 6 per arm per stage  odds ratio 0.1   rules-arm loss rate 27%  power 88%
+n=10 per arm per stage  odds ratio 1.0   rules-arm loss rate 64%  power 3%
+n=10 per arm per stage  odds ratio 0.5   rules-arm loss rate 51%  power 33%
+n=10 per arm per stage  odds ratio 0.25  rules-arm loss rate 40%  power 81%
+n=10 per arm per stage  odds ratio 0.1   rules-arm loss rate 27%  power 98%
