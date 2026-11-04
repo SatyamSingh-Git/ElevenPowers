@@ -226,3 +226,32 @@ than being quietly appended.
   The 73.9% figure supports §13 A's premise that passing tests are weak
   evidence, but it is the authors' own review pipeline, not an independent
   audit.
+
+- [NVIDIA Auto-Ontology](https://github.com/NVIDIA/auto-ontology)
+  (Apache-2.0, created 2026-04). *Read from its README, docs and source
+  layout on 2026-11-04. Its evaluation lives in a companion repository and
+  was not read.*
+  - **What it is:** a service beside databases. It compiles schema metadata
+    into an ontology of business terms mapped to columns, with reviewed SQL,
+    and serves it to agents over MCP, skills and REST.
+  - **Its connectors are databases only:** Postgres, MySQL, Snowflake,
+    Databricks, ClickHouse, DuckDB, SQLite, Trino and others. It needs
+    Docker, Postgres and an NVIDIA API key. Nothing in it reads a code
+    repository, so there is nothing to borrow as code.
+  - **What transfers is its loop:**
+    - **Discover:** generate the map;
+    - **Certify:** a person reviews and certifies each definition;
+    - **Ground:** agents query only the certified map ("one definition per
+      business concept", where it is used).
+
+  **Plan change, a candidate for §13 B open problem 1.** v3's left-behind
+  copies are one rule kept in several files, like one business term mapped
+  across tables. ElevenPowers already has the "certified" half:
+  `elevenpowers.milestones.json` declares a behaviour's input files and
+  checks, and an edit to an input brings bounded advice.
+
+  The missing half is Discover: proposing which files carry the same rule,
+  for a person to accept or reject once. The shared-token ranking is too
+  noisy to warn an agent (about 1 named file in 10 is a dependent), but as
+  candidates a person prunes once, that noise costs a review, not every
+  edit. Not built and not measured.
