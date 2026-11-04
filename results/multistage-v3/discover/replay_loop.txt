@@ -1,0 +1,7 @@
+proposals: [(['src/payroll/reports/hours.py', 'src/payroll/rules/overtime.py'], ['min', 'daily_threshold', 'holiday']), (['src/payroll/reports/journal.py', 'src/payroll/reports/summary.py'], ['COLUMNS', 'writerow', 'getvalue']), (['src/payroll/storage/employee_csv.py', 'src/payroll/storage/employee_store.py'], ['_employee', '"bank_account"', '"id"'])]
+edit src/payroll/config.py: brief of 148 characters
+edit src/payroll/rules/overtime.py: brief of 291 characters
+brief before editing src/payroll/rules/overtime.py: ['Declared rule overtime-split (How ordinary and overtime hours are split for pay.) is also kept in src/payroll/reports/hours.py. Change them together, or say why one should differ.']
+edit tests/test_config.py: brief of 0 characters
+edit tests/test_rules.py: brief of 0 characters
+end report: ['declared rule overtime-split: changed src/payroll/rules/overtime.py, not src/payroll/reports/hours.py']

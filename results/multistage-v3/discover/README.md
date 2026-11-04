@@ -88,3 +88,35 @@ Some are generic, such as two CSV writers sharing `newline`, `writer` and
 
 **Decision:** build it. Proposals go to a person, never to the agent, and
 only pairs a person declares reach the agent.
+
+## Built, and the whole loop replayed on a real loss ([`replay_loop.py`](replay_loop.py), [output](replay_loop.txt))
+
+The runtime's `propose()` gives the spike's place for all 51 never-read
+dependents ([`product.py`](product.py), [output](product.txt)).
+
+`payroll_lite` stage 2 is one of the 31 v3 losses: the agent changed the
+overtime rule and left `reports/hours.py`, which keeps its own copy. On
+that conversation's kept snapshot, at $0:
+
+1. **Discover.** The top proposal for the project is
+   `rules/overtime.py` with `reports/hours.py`, sharing `daily_threshold`
+   and `holiday`.
+2. **Certify.** The replay accepts it as a person would. The rule's
+   description is the replay's own words, not the case's.
+3. **Ground, for the agent.** The agent's real edits are replayed through
+   the real hooks. Before it edits `rules/overtime.py`, its brief says:
+   "Declared rule overtime-split (How ordinary and overtime hours are split
+   for pay.) is also kept in src/payroll/reports/hours.py. Change them
+   together, or say why one should differ."
+4. **Ground, for the reviewer.** At Stop, the end report says: "declared
+   rule overtime-split: changed src/payroll/rules/overtime.py, not
+   src/payroll/reports/hours.py". That is the file this agent left behind.
+
+**Not shown:**
+
+- whether an agent acts on the brief: briefs were ignored in v3, and this
+  needs a paid, pre-registered run;
+- whether a person accepts the right pairs: the replay accepted the top one.
+
+`hotel_desk` stage 3 is not covered. Its edited helper reads no rule input
+of its own, the same case co-readers missed.
