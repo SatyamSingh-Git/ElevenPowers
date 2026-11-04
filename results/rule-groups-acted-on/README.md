@@ -95,11 +95,17 @@ note is the same one an Edit brings.
   a detached worktree whose `core/hook.py` and `rehearse.py` are
   byte-identical to this commit's.
 
-**Next, when resumed:**
+**Real-host check, both ways** ([`shell_probe.py`](shell_probe.py),
+[transcripts](shell-probe/)). The hook emitting the note is not the same as
+the model receiving it. So this was run with Claude Code 2.1.292 and Sonnet
+5.5, with the runner's own command and sandbox, outside any batch. Each run
+was one turn: the agent ran a script with Bash that wrote a declared file,
+then quoted any rule note it had received. Total cost $0.11.
 
-- Update the architecture graph: rule notes now also flow through
-  PostToolUse.
-- Then seal and run the full experiment:
-  `python -m eval.rule_groups_run prepare <new batch> --stage household_budget:7 --stage recipe_box:4 --stage library_loans:1 --stage payroll_lite:2 --stage parcelpost:5 --replicates 10`.
-  That is 100 runs, about $16 and about 2.5 h. Leave `core/` untouched
-  while it runs.
+- **rules:** the reply quoted the note word for word, including the rule
+  id `rule-hours_rows-split_hours`. The agent's only tool call was that one
+  Bash command, so it could not have read the declarations itself.
+- **control:** the reply was `NONE`, and nothing was briefed.
+
+The design records the repair as an amendment, made before sealing
+([spec](../../docs/superpowers/specs/2026-11-04-rule-groups-acted-on-design.md)).

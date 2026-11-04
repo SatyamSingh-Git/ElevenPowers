@@ -220,7 +220,7 @@ def execute(batch, slot, executable):
     declared = {p for entry in protocol['rules'][case['id']] for p in entry['inputs']}
     ledger = work / '.elevenpowers' / 'ledger.json'
     briefed = json.loads(ledger.read_text(encoding='utf-8')).get('briefed', []) if ledger.exists() else []
-    # Delivery: a declared file the agent was about to edit got the rule note in its brief (rules arm only).
+    # Delivery: a declared file got the rule note, before an Edit or after a shell write (rules arm only).
     record['declared_files_briefed'] = sorted(declared & set(briefed)) if arm == 'rules' else []
     _write(folder / 'result.json', record)
     return record
