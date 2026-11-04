@@ -1,5 +1,29 @@
 # Current delivery status
 
+**2026-11-04 — Rule groups built; three detectors tried and not built.**
+PLAN §13 B, open problem 1, all at $0 under plans written before each ran.
+- **Built: rule groups** (discover, certify, ground, after NVIDIA
+  Auto-Ontology).
+  - `ep_milestones --propose` lists file pairs that may keep the same rule.
+    50 per project cover 20 of 51 never-read v3 dependents (control 11).
+  - A person certifies them as multi-file milestones.
+  - Only those declarations reach the agent: a pre-edit brief names the
+    other files, and the end report names a declared rule changed in only
+    some of its files. Neither blocks.
+  - Replayed on a real loss, the brief and the end report named the file
+    the agent left behind
+    ([results](../results/multistage-v3/discover/README.md)).
+  - Not measured: whether an agent acts on the brief.
+- **Tried and not built:**
+  - co-readers, 5 of 17 held out but under its in-sample bar;
+  - same state, 0 of 17;
+  - data flow, 4 of 51.
+
+  On the 51 never-read dependents, shared rare tokens held at 16 of 51 in
+  the top 3, against a control of 6.
+- **Read:** CodeSpecWeave (arXiv 2610.40256) and NVIDIA Auto-Ontology,
+  recorded in the [reading list](research/reading-list.md).
+
 **2026-11-03 — Coding helper ($0): noise, the brief's cutoff, overhead, and a
 parser defect.** PLAN §13 B.
 - **Shared rare tokens are noise as a standing warning.** They would warn on

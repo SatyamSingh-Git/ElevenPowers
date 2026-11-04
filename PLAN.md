@@ -2094,6 +2094,22 @@ Until then any contributor can start on an open problem below.
      for the control and 3.1 at random. This is their first clean test, and
      weaker than in-sample (55%). Co-readers found 12. Shared tokens remain
      the best lead, still only for an on-demand question.
+   - **Built 2026-11-04: rule groups** (discover, certify, ground, after
+     NVIDIA Auto-Ontology).
+     [Spike and replay](results/multistage-v3/discover/README.md),
+     [design](docs/superpowers/specs/2026-11-04-rule-groups-design.md).
+     - Proposals made from the project alone, before any change: 50 per
+       project cover 20 of the 51 never-read dependents (control 11, random
+       3.9). The pre-set bar was 17.
+     - `ep_milestones --propose` lists them for a person to certify as
+       multi-file milestones. Only declared rules reach the agent: a
+       pre-edit brief naming the other files, and an end-report line when a
+       declared rule changed in only some of its files.
+     - Replayed on a real loss (`payroll_lite` stage 2), the brief named
+       `reports/hours.py` before the rule was edited, and the end report
+       named it as unchanged.
+     - Not measured: whether an agent acts on the brief (open problem 2),
+       and whether people certify the right pairs.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
