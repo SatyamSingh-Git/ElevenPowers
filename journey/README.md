@@ -1,6 +1,10 @@
 # The journey
 
-Latest: [95 — a remote has an age, not a freshness](95-a-remote-has-an-age-not-a-freshness.md):
+Latest: [96 — a rule a person certifies](96-a-rule-a-person-certifies.md): rule groups, after NVIDIA
+Auto-Ontology's discover-certify-ground loop: proposals from the project alone cover 20 of 51 never-read
+v3 dependents; only declared rules reach the agent; three detectors tried and not built first.
+
+Previous: [95 — a remote has an age, not a freshness](95-a-remote-has-an-age-not-a-freshness.md):
 remote observations v1, with approved explicit fetches, offline status and receipt bracketing in
 PatchProof bundles; redirects and validators read from real producers; an upstream ignore-marker
 defect found and fixed separately; thirteen guards seen to flip.
