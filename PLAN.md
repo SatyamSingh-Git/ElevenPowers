@@ -2125,6 +2125,13 @@ Until then any contributor can start on an open problem below.
      - No other group was lost, and cost rose 8.5%.
      - Bounded: certification was simulated as perfect, on stages chosen
        for their known losses.
+     - **No harm where no one needs them**
+       ([results](results/rule-groups-harm/README.md)). On the other 53
+       covered and self-contained stages, run once per arm, both arms lost
+       nothing beyond a declared dependent (0 of 53 each). Neither edited a
+       declared file the stage did not need (0 of 28 each). The covered
+       dependent was lost in 2 of 20 runs in each arm. This rules out a
+       harm of about 20 points, not a small one.
    - The pilot found the note missed agents that write through the shell.
      That was repaired, and the design amended, before sealing.
    - Still open: whether real people certify the right pairs and describe

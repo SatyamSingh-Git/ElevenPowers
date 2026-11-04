@@ -1,5 +1,21 @@
 # Current delivery status
 
+**2026-11-04 — No harm from certified rules where no one needs them.** The
+follow-up to the acted-on run
+([design](superpowers/specs/2026-11-04-rule-groups-harm-design.md),
+[results](../results/rule-groups-harm/README.md)) ran the 53 stages that
+run left out, once per arm: 106 runs, all completed, $15.52.
+- **Harm:** no group other than a declared dependent was lost in either
+  arm (0 of 53 each), and no declared file was edited where the reference
+  changes none (0 of 28 each). This rules out a harm of about 20 points,
+  not a small one.
+- **Covered stages not chosen for their losses:** the dependent was lost
+  in 2 of 20 runs in each arm, so there was nothing to gain where v3 never
+  lost.
+- **Cost:** +3%. The shell-path note's hook costs +66 ms a shell command,
+  measured at $0. The +25% mean time is one run whose own command hit the
+  Bash tool's 120 s limit.
+
 **2026-11-04 — A certified rule is acted on: 35 of 50 dependents lost
 without it, 4 of 50 with it.** PLAN §13 B, open problem 2
 ([design](superpowers/specs/2026-11-04-rule-groups-acted-on-design.md),

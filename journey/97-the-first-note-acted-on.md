@@ -63,5 +63,25 @@ It is not evidence that ElevenPowers as shipped helps. The control arm
 - **The stages were chosen for their losses.** The result says the note
   works where a loss is likely, not how often that is.
 
+## And where no one needs it
+
+A note that says "change them together" could make agents edit files a
+stage never needed. So the same evening, the 53 stages the run had left out
+were run once per arm, with a design and an analysis committed first:
+
+- 20 covered stages, not chosen for their losses;
+- 33 self-contained stages.
+
+Nothing beyond a declared dependent was lost in either arm (0 of 53 each),
+and no declared file was edited that the stage did not need (0 of 28
+each). The covered dependent was lost in 2 of 20 runs in each arm: where
+v3 never lost, there was nothing to gain.
+
+One run per arm rules out a large harm, not a small one
+([results](../results/rule-groups-harm/README.md)). Its mean time looked
+25% worse. That was one run whose own command hung for the Bash tool's
+120 seconds. Timing the hook itself took a minute at $0: 66 ms a shell
+command.
+
 The next questions are the person's half: does someone reviewing fifty
 proposals keep the right ones, and describe them well enough?

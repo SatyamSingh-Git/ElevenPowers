@@ -572,7 +572,10 @@ file the agent had left behind.
 superpowers and ElevenPowers in both arms), the dependent was left behind
 in 35 of 50 runs without declared rules and 4 of 50 with them. The
 pre-registered exact test gives p = 8.6 × 10⁻¹³. No other behaviour was
-lost, and the cost was 8.5% higher.
+lost, and the cost was 8.5% higher. On the 53 other stages where the rules
+were declared but not the point, run once per arm, they did no measurable
+harm. Nothing beyond a declared dependent was lost in either arm, and no
+declared file was edited that the stage did not need.
 
 That is bounded:
 
