@@ -45,6 +45,36 @@ def test_codex_setup_launches_quoted_paths(tmp_path):
     assert isinstance(json.loads(result.stdout), dict)
 
 
+def _store_python():
+    import os
+    folder = Path(os.environ.get("LOCALAPPDATA", "")) / "Microsoft" / "WindowsApps"
+    for alias in sorted(folder.glob("PythonSoftwareFoundation.Python.*/python.exe")) if folder.is_dir() else []:
+        try:
+            alias.resolve(strict=True)
+        except OSError:
+            return alias
+    return None
+
+
+@pytest.mark.skipif(_store_python() is None, reason="needs a Microsoft Store Python, whose alias does not resolve")
+def test_setup_launches_a_store_python_through_its_alias(tmp_path):
+    import subprocess
+    from core.hosts.setup import install
+    path = install("codex", tmp_path, str(_store_python()), SOURCE)
+    command = json.loads(path.read_text())["hooks"]["Stop"][0]["hooks"][0]["command"]
+    result = subprocess.run(command, shell=True, input=json.dumps({"cwd": str(tmp_path)}),
+                            text=True, capture_output=True, cwd=tmp_path, timeout=20)
+    assert result.returncode == 0, result.stderr
+    assert isinstance(json.loads(result.stdout), dict)
+
+
+def test_setup_refuses_an_interpreter_that_does_not_exist(tmp_path):
+    from core.hosts.setup import install
+    with pytest.raises(ValueError, match="must exist"):
+        install("codex", tmp_path, str(tmp_path / "missing" / "python.exe"), SOURCE)
+    assert not (tmp_path / ".codex").exists()
+
+
 def test_gemini_setup_preserves_settings_and_uses_native_names(tmp_path):
     from core.hosts.setup import install, remove
     path = tmp_path / ".gemini/settings.json"

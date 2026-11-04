@@ -141,7 +141,9 @@ def install(platform: str, project: Path, python: str, source: Path) -> Path:
     if platform in {"cursor", "copilot"} and current.get("version", 1) != 1:
         raise ValueError(f"unsupported {platform} hooks configuration version")
     launcher = Path(source).resolve() / ('plugin/bin/ep_hook.py' if platform == 'claude' else 'plugin/bin/ep_host.py')
-    executable = Path(python).resolve(strict=True)
+    # Not strict: a Microsoft Store Python is an app-execution alias that cannot be
+    # resolved (WinError 1920) but runs; the is_file check below refuses a missing one.
+    executable = Path(python).resolve()
     if not launcher.is_file() or not executable.is_file():
         raise ValueError("Python executable and ElevenPowers launcher must exist")
     args = [str(executable), str(launcher)]

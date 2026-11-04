@@ -1,5 +1,15 @@
 # Current delivery status
 
+**2026-11-05 — Setup works with a Microsoft Store Python.** `ep_setup`
+failed with `WinError 1920` whenever it ran on the Store's Python. That
+interpreter is an app-execution alias, which runs but cannot be resolved
+strictly. It was found by running the changed runner's tests on 3.11, the
+CI floor, locally; hosted CI's Windows runners do not use the Store build.
+Setup now records the alias, and a missing interpreter is refused with the
+intended message instead of a raw `FileNotFoundError`. The installed hook,
+run through the alias, answers. Both directions are tested and two mutants
+were killed. The alias test skips where no Store Python is installed.
+
 **2026-11-05 — With a reviewer's certification instead of a perfect one,
 rules still help: 15 of 50 dependents lost against 31 of 50.** PLAN §13 B.
 - **The reviewer** ([design](superpowers/specs/2026-11-05-rule-groups-reviewed-design.md),
