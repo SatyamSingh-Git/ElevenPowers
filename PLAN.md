@@ -2070,7 +2070,22 @@ Until then any contributor can start on an open problem below.
    precision, an order, a format, a key), find the other places that encoded
    the old one, without relying on shared names. The twelve v3 cases, with
    their kept snapshots, are a ready benchmark, and the dependents are
-   declared in each case's `case.json`.
+   declared in each case's `case.json`. Tried 2026-11-04, $0, each under a
+   plan written before it ran:
+   - **Co-readers:** files that read the edit's rare inputs.
+     [Spike](results/multistage-v3/coreaders/README.md).
+     - Held out: 5 of 17 in the top 3, control 0.
+     - In-sample: 11 of 31, under its pre-set bar of 14.
+     - Not built. It misses when the edited helper reads nothing and its
+       callers hold the input.
+   - **Same state:** fields the edit writes, from CodeSpecWeave's anchor.
+     [Spike](results/multistage-v3/cowriters/README.md).
+     - Held out: 0 of 17.
+     - Not built.
+   - **The held-out contracts are data assumptions,** such as "rows arrive
+     sorted" or "the list only grows". Their recorded paths follow what the
+     changed producer returns to its consumers, which makes data flow the
+     next detector to try.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
