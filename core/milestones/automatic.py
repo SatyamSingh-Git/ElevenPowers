@@ -167,8 +167,10 @@ def deliver(ledger):
     checks = []
     text = 'ElevenPowers milestone advice incomplete: worker timed out or failed. Keep fallback verification; inspect ep_milestones.py explicitly.'
     try:
+        # A deadline, not a duration: the worker's startup comes out of the same budget,
+        # so it ends bounded before this timeout instead of being killed inside it.
         done = run([sys.executable, '-I', str(Path(__file__).with_name('advice_worker.py')),
-                    str(ledger.root.resolve()), str(settings['seconds']), task_id],
+                    str(ledger.root.resolve()), repr(started + settings['seconds']), task_id],
                    cwd=TOOL_ROOT, shell=False, timeout=settings['seconds'] + .5)
         if done.returncode != 0 or len(done.stdout.encode('utf-8')) > 32768:
             raise ValueError('worker output unavailable')

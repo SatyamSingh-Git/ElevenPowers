@@ -15,11 +15,13 @@ import time
 
 def main():
     root = Path(sys.argv[1]).resolve(strict=True)
-    seconds = float(sys.argv[2])
-    payload, _, issues = read_ledger(root, time.monotonic() + seconds)
+    # The parent's deadline on the monotonic clock, which both processes share (QueryPerformanceCounter
+    # on Windows, CLOCK_MONOTONIC elsewhere). A late start leaves less time, never more.
+    deadline = float(sys.argv[2])
+    payload, _, issues = read_ledger(root, deadline)
     if issues or digest(payload.get('task')) != sys.argv[3]:
         raise ValueError('task changed or unavailable before inspection')
-    report = build(root, seconds=seconds, impact=True)
+    report = build(root, seconds=max(0.0, deadline - time.monotonic()), impact=True)
     context, visible = render_with_checks(report)
     from core.checks import guidance
     runner = guidance(root, commands=[row['command'] for row in visible])

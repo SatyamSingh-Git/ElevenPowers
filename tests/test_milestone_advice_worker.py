@@ -30,6 +30,54 @@ def test_real_worker_is_read_only_and_deduplicated(tmp_path):
     assert 'command' not in json.dumps(state) and 'prompt' not in json.dumps(state)
 
 
+def test_the_worker_spends_what_is_left_of_the_parent_s_budget_not_a_fresh_one(tmp_path, monkeypatch):
+    # Hosted Windows: worker startup outran the parent's 0.5 s margin, so a worker still inside
+    # its own bounded build was killed at seconds + 0.5 instead of returning incomplete coverage.
+    import sys
+    import time
+    import core.milestones.advice_worker as worker
+    from core.milestones.automatic import digest
+    ledger = opted(tmp_path)
+    budgets, build = [], worker.build
+    monkeypatch.setattr(worker, 'build', lambda root, *, seconds, impact: budgets.append(seconds) or build(
+        root, seconds=seconds, impact=impact))
+    deadline = time.monotonic() + 2.0
+    time.sleep(0.5)
+    monkeypatch.setattr(sys, 'argv', ['advice_worker.py', str(tmp_path), repr(deadline), digest(ledger.task)])
+    worker.main()
+    assert len(budgets) == 1 and 0 < budgets[0] <= 1.5
+
+
+def test_a_worker_that_starts_after_the_deadline_does_no_work(tmp_path, monkeypatch):
+    import sys
+    import time
+    import pytest
+    import core.milestones.advice_worker as worker
+    from core.milestones.automatic import digest
+    ledger = opted(tmp_path)
+    monkeypatch.setattr(worker, 'build', lambda *a, **kw: pytest.fail('built after the deadline'))
+    monkeypatch.setattr(sys, 'argv', ['advice_worker.py', str(tmp_path), repr(time.monotonic() - 0.1), digest(ledger.task)])
+    with pytest.raises(ValueError, match='unavailable before inspection'):
+        worker.main()
+
+
+def test_delivery_hands_the_worker_its_own_deadline(tmp_path, monkeypatch):
+    import time
+    import core.milestones.automatic as automatic
+    ledger = opted(tmp_path)
+    run, deadlines = automatic.run, []
+
+    def worker(command, **kwargs):
+        deadlines.append(float(command[4]))
+        return run(command, **kwargs)
+
+    monkeypatch.setattr(automatic, 'run', worker)
+    before = time.monotonic()
+    assert 'milestone advice' in automatic.deliver(ledger)
+    after = time.monotonic()
+    assert len(deadlines) == 1 and before + 2 <= deadlines[0] <= after + 2
+
+
 def test_changed_inputs_and_new_task_get_bounded_allowances(tmp_path):
     from core.milestones.automatic import deliver
     ledger = opted(tmp_path)
