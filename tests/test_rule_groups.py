@@ -1,0 +1,128 @@
+"""Rule groups: proposing files that carry the same rule, for a person to certify.
+
+Measured before it was built: results/multistage-v3/discover/README.md.
+"""
+import json
+import subprocess
+
+TAX = '''from decimal import Decimal, ROUND_HALF_UP
+from .rates import LODGING_RATE
+
+
+def lodging_tax(cents):
+    return int((Decimal(cents) * LODGING_RATE).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+'''
+QUOTE = '''from decimal import Decimal, ROUND_HALF_UP
+from ..rates import LODGING_RATE
+
+
+def quote_tax(nights):
+    return sum(int((Decimal(n) * LODGING_RATE).quantize(Decimal(1), rounding=ROUND_HALF_UP)) for n in nights)
+'''
+NAMES = '''def greeting(name):
+    return "Hello, " + name.title()
+'''
+FILES = '''import json
+
+
+def save(path, value):
+    with open(path, "w") as stream:
+        json.dump(value, stream)
+'''
+OTHER_FILES = '''import json
+
+
+def load(path):
+    with open(path) as stream:
+        return json.load(stream)
+'''
+
+
+def project(root, extra=None):
+    files = {'app/money.py': TAX, 'app/services/pricing.py': QUOTE, 'app/names.py': NAMES,
+             'app/store.py': FILES, 'app/archive.py': OTHER_FILES, 'app/rates.py': 'LODGING_RATE = 0.1175\n',
+             **(extra or {})}
+    for name, text in files.items():
+        (root / name).parent.mkdir(parents=True, exist_ok=True)
+        (root / name).write_text(text, encoding='utf-8')
+    subprocess.run(['git', 'init', '-q'], cwd=root, check=True)
+    subprocess.run(['git', 'add', '-A'], cwd=root, check=True)
+    return root
+
+
+def test_a_rule_kept_in_two_files_is_proposed_first_with_its_reason(tmp_path):
+    from core.milestones.propose import propose
+    value = propose(project(tmp_path))
+    first = value['proposals'][0]
+    assert first['files'] == ['app/money.py', 'app/services/pricing.py']
+    assert first['functions'] == ['lodging_tax', 'quote_tax']
+    # The five rarest; LODGING_RATE is also defined in rates.py, so it is less rare.
+    assert {'ROUND_HALF_UP', 'quantize'} <= set(first['shared'])
+
+
+def test_files_that_share_only_ordinary_words_rank_below_the_rule(tmp_path):
+    from core.milestones.propose import propose
+    ranked = [p['files'] for p in propose(project(tmp_path))['proposals']]
+    assert ranked.index(['app/money.py', 'app/services/pricing.py']) < ranked.index(['app/archive.py', 'app/store.py'])
+    assert ['app/names.py', 'app/store.py'] not in ranked
+
+
+def test_test_files_and_same_file_pairs_are_never_proposed(tmp_path):
+    from core.milestones.propose import propose
+    copy = {'tests/test_tax.py': TAX.replace('from .rates', 'from app.rates'),
+            'app/money_twice.py': TAX + '\n\n' + TAX.replace('lodging_tax', 'lodging_tax_again')}
+    for proposal in propose(project(tmp_path, copy))['proposals']:
+        assert not any(f.startswith('tests/') for f in proposal['files'])
+        assert proposal['files'][0] != proposal['files'][1]
+
+
+def test_a_pair_already_declared_together_is_not_proposed_again(tmp_path):
+    from core.milestones.propose import propose
+    root = project(tmp_path)
+    (root / 'elevenpowers.milestones.json').write_text(json.dumps({'schema': 1, 'milestones': [
+        {'id': 'lodging-tax', 'description': 'Lodging tax rounds half-up to the cent.',
+         'inputs': ['app/money.py', 'app/services/pricing.py'],
+         'checks': [{'kind': 'test_suite', 'command': 'python -m pytest -q'}]}]}), encoding='utf-8')
+    files = [p['files'] for p in propose(root)['proposals']]
+    assert ['app/money.py', 'app/services/pricing.py'] not in files
+
+
+def test_a_proposal_carries_an_entry_to_certify_with_the_declared_tests(tmp_path):
+    from core.config import Config, save
+    from core.milestones.propose import propose
+    root = project(tmp_path)
+    save(root, Config(commands={'tests': 'python -m pytest -q'}))
+    entry = propose(root)['proposals'][0]['entry']
+    assert entry['inputs'] == ['app/money.py', 'app/services/pricing.py']
+    assert entry['checks'] == [{'kind': 'test_suite', 'command': 'python -m pytest -q'}]
+    assert entry['description'].startswith('TODO')
+
+
+def test_without_a_declared_test_command_the_entry_says_a_check_is_needed(tmp_path):
+    from core.config import Config, save
+    from core.milestones.propose import propose
+    root = project(tmp_path)
+    save(root, Config(commands={}, auto_detect=False))
+    value = propose(root)
+    assert value['proposals'][0]['entry']['checks'] == []
+    assert any('check' in issue for issue in value['coverage']['issues'])
+
+
+def test_sources_it_cannot_read_are_counted_not_skipped_silently(tmp_path):
+    from core.milestones.propose import propose
+    coverage = propose(project(tmp_path, {'web/tax.js': 'export const tax = (c) => Math.round(c * 0.1175);\n'}))['coverage']
+    assert coverage['not_examined'] == 1
+    assert not coverage['complete']
+
+
+def test_the_limit_bounds_the_list(tmp_path):
+    from core.milestones.propose import propose
+    assert len(propose(project(tmp_path), limit=1)['proposals']) == 1
+
+
+def test_a_token_held_by_too_many_functions_is_skipped_and_said(tmp_path, monkeypatch):
+    from core.milestones import propose as module
+    monkeypatch.setattr(module, 'MAX_HOLDERS', 1)
+    value = module.propose(project(tmp_path))
+    assert value['proposals'] == []
+    assert any('skipped' in issue for issue in value['coverage']['issues'])
