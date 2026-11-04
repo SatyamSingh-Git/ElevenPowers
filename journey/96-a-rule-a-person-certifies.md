@@ -51,3 +51,23 @@ Replayed on a real loss, both named the report the agent had left behind.
 Attacking the finished work found one defect: two proposals could share an
 id, and the schema refuses that. Whether an agent acts on the brief is the
 open question it hands on.
+
+## The note has to arrive wherever the edit happens
+
+The pilot for that question ran 12 one-stage sessions. Its transcripts
+showed something no replay could have. Half the rules-arm agents never
+touched the Edit tool: they wrote every file by running Python in Bash. A
+note gated on "before an edit" was gated on one tool, and those agents
+never received it. The $0 rehearsal had replayed only the Edit path, so it
+passed.
+
+Now a shell command that changes a declared file brings the same note,
+once. The rehearsal replays a script write too. Before the repair it failed
+0 of 5, and after it it passes 5 of 5. A probe on the real host, run both
+ways, had the rules agent quote the note word for word and the control
+agent say NONE. The design was amended before the full run was sealed,
+never after.
+
+The lesson is the one this project keeps relearning. A rehearsal checks
+the path someone thought of. Only the real producer, here an agent left
+to work its own way, shows the path it actually takes.

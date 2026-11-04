@@ -2114,6 +2114,13 @@ Until then any contributor can start on an open problem below.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
    qualifies that literature: its 26-point collapse is HotPotQA, not coding.
+   - Being measured for certified rules
+     ([design](docs/superpowers/specs/2026-11-04-rule-groups-acted-on-design.md),
+     [results](results/rule-groups-acted-on/README.md)): 100 one-stage runs
+     on the five stages where v3 lost most. The arms differ only in the
+     declarations file.
+   - The pilot found the note missed agents that write through the shell.
+     That was repaired, and the design amended, before sealing.
 3. **Brief cutoff.** List the importers a brief hides behind "+N more", or
    rank them, without flooding the context. Tried 2026-11-03 ($0,
    [spike](results/multistage-v3/brief-cutoff/README.md)):

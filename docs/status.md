@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-11-04 — Is a certified rule acted on? The full run is going.** PLAN §13
+B, open problem 2
+([design](superpowers/specs/2026-11-04-rule-groups-acted-on-design.md),
+[results](../results/rule-groups-acted-on/README.md)).
+- **Pilot** (12 one-stage runs, $1.63): the harness qualified. It also found
+  that the note reached only agents that edit with the Edit tool. Three of
+  six rules-arm runs wrote every file with Python in Bash and never saw it.
+- **Repaired:** after a shell command, each changed file that a declared
+  rule names gets the same note, once.
+  - Gate 1 went from 0 of 5 to 5 of 5 on a shell-write replay.
+  - A $0.11 real-host probe, run both ways, had the agent quote the note
+    word for word in the rules arm and say NONE in the control arm.
+  - The design was amended before sealing.
+- **Full run:** 100 runs, sealed and launched. The result is pending.
+
 **2026-11-04 — Rule groups built; three detectors tried and not built.**
 PLAN §13 B, open problem 1, all at $0 under plans written before each ran.
 - **Built: rule groups** (discover, certify, ground, after NVIDIA
