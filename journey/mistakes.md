@@ -765,6 +765,41 @@ screen that found this is thirty lines and runs in seconds — it is now
 `eval.exposure`, and it runs beside the taxonomy rather than after an auditor
 asks.
 
+### One intermittent, two root causes, neither of them it
+
+`test_actual_producer_keeps_replay_and_native_ingress_distinct[javascript]`
+failed on hosted Windows now and then for a week. The first fix (`f037c54`)
+raised the advice worker's budget from 2 s to 5 s, because a killed attempt
+had run 2762 ms. The second (`76ff758`) made the worker spend the parent's
+deadline, because a slow start could push a bounded build past the kill.
+Each was recorded as the cause. The failure then came back at 5594 ms.
+
+The cause was a download. `tree-sitter-language-pack` 1.20.0 fetches a
+grammar the first time one is used, a 21.5 MB bundle taking 4 to 12 s. It
+does so inside `get_parser`, which no deadline reaches. On a fresh runner
+the replay worker is the first JavaScript parse in the suite.
+
+*Cause:* both fixes explained the number in front of them, not the pattern
+across the records. Every failure was JavaScript, never Python. Every one
+was the replay row, which runs first. Each was killed at the limit,
+whatever the limit was, while the row after it finished in under a
+second. A budget that is always used up exactly is not too small: the
+work never finishes. Three questions would have found it a week earlier.
+What does JavaScript load that Python does not? Why does the first row
+fail and the second never? What happens with an empty cache?
+
+*Cost:* two commits claiming a root cause, a week of red CI cells read as
+noise, and a product defect behind them. At the default 1 s budget,
+JavaScript milestone advice on a fresh machine could never be delivered.
+
+*Changed:* no read downloads a grammar, and `python -m core.polyglot`
+fetches them once. The rule this adds to "a probe must be seen to flip":
+**a fix for an intermittent has to explain its whole pattern, not one
+failure.** If the fix would not also explain why the other cases pass, it
+is a fix for one number. And again, running the producer beat reading it.
+The pack's own `download()` returns at once and writes nothing; only
+running it showed that.
+
 ## 2026-09-28 to 2026-09-29: setup that still needed the user
 
 **Partial scans looked like complete evidence.** A filesystem walk encountered generated data and a selection cap without carrying its omissions into freshness. Git-aware selection and explicit coverage diagnostics now define what a receipt covers. A diagnostic is not an invitation to certify the smaller set.
