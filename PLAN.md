@@ -2148,6 +2148,19 @@ Until then any contributor can start on an open problem below.
        Ten share mostly a record's field names (`payee`, `credits`) and
        score far below it. Nine of those ten are data, contract or key
        changes: they need a different signal, not a different weighting.
+     - **On real history the coverage was not seen** (2026-11-05, $0,
+       pre-registered, [results](results/rule-groups-history/README.md)).
+       - The benchmark: 160 quiet co-changes from `click`, `attrs`, `rich`
+         and `pytest`, each passing v3's quiet check. Sixteen of a read
+         thirty were rules.
+       - At K = 50 the proposals covered 60, the same as their control.
+       - Co-change history covered 93 against its control's 90, so it is
+         not a candidate.
+       - Exploratory: both beat their controls only where an import
+         already joins the two files (90 of 160), which the existing brief
+         names. On the 70 an import does not join, neither did.
+       - Proposals are therefore not shown to find undeclared rules in
+         real code.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10

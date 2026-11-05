@@ -178,7 +178,11 @@ the rules you mean to keep in step.
 - Python sources only. Other source files are counted as not examined.
 - A proposal is a candidate, not a finding. On the v3 cases, 50 proposals
   per project covered 20 of 51 dependents never used to design the method,
-  against 11 for a control and 3.9 at random.
+  against 11 for a control and 3.9 at random. On four real projects'
+  history it did no better than a control, except where an import already
+  joins the two files
+  ([results](../results/rule-groups-history/README.md)). Declare the
+  rules you know; do not expect the list to find ones you don't.
 - An edit to a shared helper that reads no rule input itself is missed.
 - Agents act on the brief, on stages chosen for their losses: the
   dependent was left behind in 4 of 50 one-stage runs with every

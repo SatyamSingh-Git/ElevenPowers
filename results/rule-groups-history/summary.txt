@@ -1,0 +1,64 @@
+total: 160 dependents in 108 commits
+  product           K=10:  26  K=20:  40  K=50:  60  K=100:  69
+  product_control   K=10:  28  K=20:  40  K=50:  60  K=100:  73
+  cochange          K=10:  41  K=20:  53  K=50:  93  K=100: 105
+  cochange_control  K=10:  47  K=20:  64  K=50:  90  K=100: 105
+  combined          K=10:  39  K=20:  57  K=50:  85  K=100: 105
+click: 40 dependents in 30 commits
+  product           K=10:  15  K=20:  18  K=50:  30  K=100:  33
+  product_control   K=10:  15  K=20:  18  K=50:  26  K=100:  33
+  cochange          K=10:  16  K=20:  21  K=50:  31  K=100:  32
+  cochange_control  K=10:  19  K=20:  24  K=50:  34  K=100:  36
+  combined          K=10:  15  K=20:  25  K=50:  31  K=100:  33
+attrs: 40 dependents in 25 commits
+  product           K=10:  10  K=20:  21  K=50:  28  K=100:  30
+  product_control   K=10:  13  K=20:  21  K=50:  31  K=100:  33
+  cochange          K=10:  13  K=20:  17  K=50:  29  K=100:  33
+  cochange_control  K=10:  20  K=20:  26  K=50:  30  K=100:  34
+  combined          K=10:  14  K=20:  19  K=50:  28  K=100:  37
+rich: 40 dependents in 26 commits
+  product           K=10:   1  K=20:   1  K=50:   2  K=100:   2
+  product_control   K=10:   0  K=20:   1  K=50:   2  K=100:   4
+  cochange          K=10:   8  K=20:   8  K=50:  18  K=100:  19
+  cochange_control  K=10:   7  K=20:   9  K=50:  17  K=100:  21
+  combined          K=10:   7  K=20:   9  K=50:  14  K=100:  20
+pytest: 40 dependents in 27 commits
+  product           K=10:   0  K=20:   0  K=50:   0  K=100:   4
+  product_control   K=10:   0  K=20:   0  K=50:   1  K=100:   3
+  cochange          K=10:   4  K=20:   7  K=50:  15  K=100:  21
+  cochange_control  K=10:   1  K=20:   5  K=50:   9  K=100:  14
+  combined          K=10:   3  K=20:   4  K=50:  12  K=100:  15
+sample: rule: 16 dependents in 15 commits
+  product           K=10:   1  K=20:   2  K=50:   3  K=100:   3
+  product_control   K=10:   0  K=20:   2  K=50:   3  K=100:   4
+  cochange          K=10:   3  K=20:   5  K=50:   8  K=100:  10
+  cochange_control  K=10:   5  K=20:   7  K=50:   8  K=100:   8
+  combined          K=10:   3  K=20:   4  K=50:   6  K=100:   8
+sample: sweep: 10 dependents in 9 commits
+  product           K=10:   4  K=20:   5  K=50:   7  K=100:   7
+  product_control   K=10:   5  K=20:   6  K=50:   7  K=100:   7
+  cochange          K=10:   1  K=20:   3  K=50:   6  K=100:   8
+  cochange_control  K=10:   5  K=20:   6  K=50:   7  K=100:   8
+  combined          K=10:   1  K=20:   4  K=50:   6  K=100:   8
+sample: unrelated: 4 dependents in 3 commits
+  product           K=10:   0  K=20:   0  K=50:   0  K=100:   0
+  product_control   K=10:   0  K=20:   0  K=50:   1  K=100:   1
+  cochange          K=10:   0  K=20:   0  K=50:   3  K=100:   3
+  cochange_control  K=10:   0  K=20:   1  K=50:   3  K=100:   3
+  combined          K=10:   0  K=20:   0  K=50:   1  K=100:   3
+linked at the parent: 90 dependents in 69 commits
+  product           K=10:  21  K=20:  34  K=50:  48  K=100:  55
+  product_control   K=10:  22  K=20:  29  K=50:  40  K=100:  48
+  cochange          K=10:  36  K=20:  45  K=50:  61  K=100:  69
+  cochange_control  K=10:  34  K=20:  41  K=50:  54  K=100:  64
+  combined          K=10:  33  K=20:  47  K=50:  61  K=100:  68
+not linked: 70 dependents in 42 commits
+  product           K=10:   5  K=20:   6  K=50:  12  K=100:  14
+  product_control   K=10:   6  K=20:  11  K=50:  20  K=100:  25
+  cochange          K=10:   5  K=20:   8  K=50:  32  K=100:  36
+  cochange_control  K=10:  13  K=20:  23  K=50:  36  K=100:  41
+  combined          K=10:   6  K=20:  10  K=50:  24  K=100:  37
+K=50 product over product_control: 11 discordant for, 11 against, one-sided p = 0.584
+K=50 cochange over cochange_control: 16 discordant for, 13 against, one-sided p = 0.356
+K=50 combined over product: 32 discordant for, 7 against, one-sided p = 3.51e-05
+K=50 cochange over product: 45 discordant for, 12 against, one-sided p = 6.56e-06

@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-11-05 — Rule-group proposals are not shown to find rules in real code.**
+Pre-registered, $0 ([results](../results/rule-groups-history/README.md)).
+- **Benchmark:** 160 quiet co-changes from the history of `click`,
+  `attrs`, `rich` and `pytest`. Each is a file changed in a small commit
+  that names none of what the rest of the commit changed, by v3's own
+  check.
+- **Result:** at K = 50 the proposals covered 60, the same as a control
+  joining the same file to another commit. Co-change history covered 93
+  against its control's 90.
+- **Where they do better:** both beat their controls only where an import
+  already joins the two files, which the existing brief names
+  (exploratory).
+- **What still stands:** agents act on rules a person declares. The
+  guide, the README and PLAN §13 B now say this.
+
 **2026-11-05 — Rule-group proposals keep their time budget.**
 Only pairing watched the clock in `ep_milestones --propose`. Reading and
 cutting the files, about three quarters of the time, did not.

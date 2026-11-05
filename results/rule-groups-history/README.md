@@ -102,3 +102,79 @@ read sample by its sort.
   sample sort as **rule**, the totals say mostly how well each signal
   finds files changed together, not rules, and the write-up says so.
 - Every figure is reported whatever it shows.
+
+## Result: neither bar met ([`build.py`](build.py), [`measure.py`](measure.py), [cases](benchmark.json), [sample](sample.json), [rows](measure.json), [summary](summary.txt))
+
+Run 2026-11-05 on the code at `d5397d3`. There are 160 quiet dependents
+in 108 commits, 40 per project. They come from the newest 882 commits of
+`click`, 794 of `attrs`, 500 of `rich` and 221 of `pytest`. No run hit a
+time budget or an unreadable file.
+
+| 160 quiet dependents, covered within K | 10 | 20 | **50** | 100 |
+|---|---|---|---|---|
+| product | 26 | 40 | **60** | 69 |
+| product control | 28 | 40 | **60** | 73 |
+| co-change | 41 | 53 | **93** | 105 |
+| co-change control | 47 | 64 | **90** | 105 |
+| combined | 39 | 57 | **85** | 105 |
+
+- **The product's v3 coverage was not seen on real history.** At K = 50
+  it covered 60, the same as its control. There were 11 discordant
+  dependents each way, p = 0.58. On v3 it was 20 of 51 against 11.
+- **Co-change is not a candidate.** The combined list did cover 25 more
+  than the product's top 50 (32 against 7 discordant, p = 3.5 × 10⁻⁵).
+  But co-change alone covered 93 against its control's 90 (p = 0.36), so
+  the second condition fails.
+- **By project,** the product at K = 50 covered:
+  - `click`: 30, control 26;
+  - `attrs`: 28, control 31;
+  - `rich`: 2, control 2;
+  - `pytest`: 0, control 1.
+
+  In the two small projects a few central files pair with nearly anything.
+  In the two larger ones the top 100 rarely joins the edit's files at all.
+- **The read sample:**
+  - it sorted as 16 **rule**, 10 **sweep** and 4 **unrelated**, so rules
+    are more than a third;
+  - on the 16 rules the product covered 3 at K = 50, as did its control;
+  - co-change covered 8, as did its control.
+
+**Checked by hand, both ways** (`attrs` `45b6b6b`):
+- A recount of co-change with a different Git command matched: 67
+  commits, 160 pairs, places 5 and 3.
+- The product's place 1 is a `__call__` pair between `_make.py` and
+  `validators.py`, and `_make.py` is in 8 of the top 10 proposals. A hit
+  there says the file is central, not that the edit was found.
+- An edit naming a file that does not exist gets no place.
+- No edit or control of the 160 contains its own dependent.
+
+### Exploratory, chosen after seeing the above
+
+- **Controls that share a file with the edit:** 61 of 160 do, because
+  small projects keep changing the same files. On the 99 that share none,
+  the product covered 31 against 33, and co-change 51 against 47
+  (p = 0.29). The verdict stands.
+- **Linked by an import at the parent,** by the product's own import graph
+  (`core.atlas.source_model`): 90 of 160.
+  - On those 90, both signals beat their controls. The product won 10
+    discordant and lost 2 (p = 0.019); co-change won 9 and lost 2
+    (p = 0.033).
+  - On the 70 not linked, neither did. The product won 1 and lost 9;
+    co-change won 7 and lost 11.
+  - Of the 16 read as rules, 6 are linked at the parent. The other links
+    the reading saw were made by the commit itself.
+
+  So on real history, what the proposals find is already joined by an
+  import, which the existing brief names. The dependents an import does
+  not join are the problem rule groups exist for, and there they found
+  nothing a control did not.
+
+**What this does and does not say:**
+- The labels are quiet co-changes, not breakages shown as on v3.
+- There are four projects, and the reader of the sample is the plan's
+  author.
+- Coverage is by file pair, as on v3.
+- It does not touch the finding that agents act on a declared rule
+  ([acted on](../rule-groups-acted-on/README.md)). It says that
+  proposals, as built, are not shown to find undeclared rules in real
+  code. A person still has to name them.
