@@ -300,6 +300,8 @@ def _rule_notes_after_shell(root: Path) -> None:
     from .milestones.definition import configured, rules_naming
     from .milestones.marked import present
     ledger = Ledger.load(root)
+    if not ledger.task:
+        return      # nothing has opened, so nothing changed since it did, and no state is created
     if not configured(root) and ledger.marked is None:
         # Asked once per task, and with no ledger held: the search can take seconds.
         found = present(root)
