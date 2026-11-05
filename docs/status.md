@@ -1,5 +1,22 @@
 # Current delivery status
 
+**2026-11-05 — Rule-group proposals keep their time budget.**
+Only pairing watched the clock in `ep_milestones --propose`. Reading and
+cutting the files, about three quarters of the time, did not.
+- **Effect:** a budget too small for the tree overran it, and pairing
+  then stopped at its first word with nothing proposed. On a copy of
+  `sqlalchemy` (245 files), `--seconds 2` took 17.5 s and proposed
+  nothing. A Python tree about twice its size would do the same at the
+  30 s default.
+- **Fix:** reading and cutting now get half the budget. The list then
+  says how many files were examined, and pairs come only from those.
+- **Result:** `--seconds 2` now takes 1.8 s and examines 50 of 245
+  files; `--seconds 4` takes 3.5 s and examines 139. Both give 50
+  proposals.
+- **Tests:** the new test pins the clock and runs both ways. Five
+  mutants were killed, including one that only a new unreadable-file
+  test catches.
+
 **2026-11-05 — The recurring Windows advice failure was a grammar download.**
 `test_actual_producer_keeps_replay_and_native_ingress_distinct[javascript]`
 failed again on hosted windows-latest 3.11 (`6019812`, results only). The

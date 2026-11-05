@@ -77,19 +77,24 @@ def propose(root, *, limit=50, seconds=30):
     unread = [p for p in scan.files if Path(p).suffix in UNREAD and not TEST_NAME.search(p)]
     if unread:
         issues.append(f'{len(unread)} non-Python source files were not examined')
-    texts = {}
+    texts, cut, held = {}, {}, defaultdict(int)
+    # Reading and cutting get half the budget, so that pairing has time for what was read.
+    reading = deadline - seconds / 2
     for path in python:
+        if time.monotonic() >= reading:
+            issues.append(f'time budget reached reading; {len(texts)} of {len(python)} Python files examined')
+            break
         try:
             texts[path] = (root / path).read_text(encoding='utf-8')
         except (OSError, UnicodeError):
             issues.append(f'{path} could not be read')
-    held = defaultdict(int)
-    for text in texts.values():
-        for word in _tokens(text):
+            continue
+        cut[path] = _functions(texts[path])
+        for word in _tokens(texts[path]):
             held[word] += 1
     idf = {word: math.log(len(texts) / count) for word, count in held.items()}
     rows = [(path, name, {w for w in words if idf.get(w, 0) > 0})
-            for path, text in texts.items() for name, words in _functions(text)]
+            for path in texts for name, words in cut[path]]
     # fsum, not sum: words come in set order, which follows the hash seed, and copies of one rule
     # tie at a score of 1 only if their sums round the same in every process.
     weight = [math.fsum(idf[w] for w in words) for _, _, words in rows]

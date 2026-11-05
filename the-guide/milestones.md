@@ -187,9 +187,10 @@ the rules you mean to keep in step.
 - On real projects, pairs of protocol methods (`__exit__`, `__repr__`)
   often head the list: 44% of `click`'s top 50 and 84% of `rich`'s.
   Reject them unless the two really keep one rule.
-- On a large tree the 30-second default may run out. The list then says
-  "proposals are partial", and can be empty; rerun with a larger
-  `--seconds`.
+- On a large tree the 30-second default may run out. Reading stops at
+  half the budget, so that pairing has the rest, and the list says how
+  many Python files were examined; pairs come only from those. Rerun
+  with a larger `--seconds` to read them all.
 
 See the [spike and replay](../results/multistage-v3/discover/README.md),
 [the acted-on runs](../results/rule-groups-acted-on/README.md),

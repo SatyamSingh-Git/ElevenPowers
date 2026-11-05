@@ -115,6 +115,15 @@ def test_sources_it_cannot_read_are_counted_not_skipped_silently(tmp_path):
     assert any('1 non-Python source files were not examined' == issue for issue in coverage['issues'])
 
 
+def test_a_python_file_it_cannot_decode_is_named_and_the_rest_still_proposed(tmp_path):
+    from core.milestones.propose import propose
+    root = project(tmp_path)
+    (root / 'app/legacy.py').write_bytes(b'# -*- coding: latin-1 -*-\nNAME = "caf\xe9"\n')
+    value = propose(root)
+    assert value['proposals'][0]['files'] == ['app/money.py', 'app/services/pricing.py']
+    assert 'app/legacy.py could not be read' in value['coverage']['issues']
+
+
 def _words(prefix, count):
     return ', '.join(f'{prefix}{i}' for i in range(count))
 
@@ -147,6 +156,30 @@ def test_a_large_project_is_scored_within_its_budget(tmp_path):
     files = {f'app/module_{m}.py': body.replace('handler_', f'handler_{m}_') for m in range(4)}
     value = propose(project(tmp_path, files), seconds=10)
     assert value['proposals']
+    assert not any('time budget' in issue for issue in value['coverage']['issues'])
+
+
+def test_a_project_too_large_for_its_budget_proposes_from_the_files_it_read(tmp_path, monkeypatch):
+    # Reading and cutting never looked at the clock; only pairing did. A project twice sqlalchemy's
+    # size ran past the 30 s default, and pairing then stopped at its first word with nothing proposed.
+    from core.milestones import propose as module
+    root = project(tmp_path, {f'app/zz_{n}.py': f'def filler_{n}():\n    return {n}\n' for n in range(6)})
+    clock, cut = [0.0], module._functions
+
+    def one_second_a_file(text):
+        clock[0] += 1
+        return cut(text)
+    monkeypatch.setattr(module.time, 'monotonic', lambda: clock[0])
+    monkeypatch.setattr(module, '_functions', one_second_a_file)
+
+    value = module.propose(root, seconds=12)
+    assert value['proposals'][0]['files'] == ['app/money.py', 'app/services/pricing.py']
+    assert value['coverage']['python_files'] == 6
+    assert 'time budget reached reading; 6 of 12 Python files examined' in value['coverage']['issues']
+
+    clock[0] = 0.0
+    value = module.propose(root, seconds=100)
+    assert value['coverage']['python_files'] == 12
     assert not any('time budget' in issue for issue in value['coverage']['issues'])
 
 
