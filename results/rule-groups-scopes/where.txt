@@ -1,0 +1,16 @@
+covered 20 | a side with no changed line in a function: 0 (dependent 0 , edit 0 )
+missed 31 | a side with no changed line in a function: 14 (dependent 12 , edit 6 )
+    data clinic_booking 1 src/clinicbook/reports/utilisation.py dependent ['function', 'import'] edit ['module']
+    key clinic_booking 3 src/clinicbook/reports/day_schedule.py dependent ['module'] edit ['class', 'function', 'import', 'module']
+    key fleet_service 1 src/fleetkeep/services/reminders.py dependent ['module'] edit ['class', 'function', 'module']
+    data gradebook 1 src/gradebook/services/transcript.py dependent ['function'] edit ['module']
+    key gradebook 2 src/gradebook/reports/progress.py dependent ['module'] edit ['function', 'import', 'module']
+    key greenhouse_monitor 4 src/greenhouse/reports/messages.py dependent ['module'] edit ['class', 'function']
+    key hotel_desk 4 src/hoteldesk/reports/folio_print.py dependent ['import', 'module'] edit ['function', 'module']
+    data library_loans 2 src/lending/services/fines.py dependent ['module'] edit ['function', 'module']
+    key parcelpost 2 src/parcelpost/reports/daily.py dependent ['import', 'module'] edit ['import', 'module']
+    key parcelpost 7 src/parcelpost/cli/output.py dependent ['module'] edit ['function', 'module']
+    key recipe_box 3 src/recipebox/reports/nutrition_report.py dependent ['module'] edit ['module']
+    key recipe_box 6 src/recipebox/reports/shopping_text.py dependent ['module'] edit ['module']
+    copy survey_tally 1 src/surveytally/reports/responses_export.py dependent ['module'] edit ['module']
+    key ticket_office 5 src/boxoffice/reports/seatplan.py dependent ['module'] edit ['function', 'import', 'module']

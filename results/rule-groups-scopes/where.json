@@ -1,0 +1,801 @@
+[
+ {
+  "case": "clinic_booking",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/clinicbook/reports/utilisation.py",
+  "place": 69,
+  "covered": false,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "module"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 2,
+  "kind": "copy",
+  "dependent_file": "src/clinicbook/services/desk.py",
+  "place": 19,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "class",
+   "function"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 3,
+  "kind": "key",
+  "dependent_file": "src/clinicbook/reports/day_schedule.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 4,
+  "kind": "contract",
+  "dependent_file": "src/clinicbook/reports/day_schedule.py",
+  "place": 25,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "import"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 7,
+  "kind": "data",
+  "dependent_file": "src/clinicbook/reports/statement.py",
+  "place": 1,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "clinic_booking",
+  "stage": 8,
+  "kind": "copy",
+  "dependent_file": "src/clinicbook/reports/summary.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "class",
+   "function"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 1,
+  "kind": "key",
+  "dependent_file": "src/fleetkeep/services/reminders.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 2,
+  "kind": "copy",
+  "dependent_file": "src/fleetkeep/reports/costs.py",
+  "place": 11,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import",
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 2,
+  "kind": "copy",
+  "dependent_file": "src/fleetkeep/reports/spend.py",
+  "place": 47,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import",
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "fleet_service",
+  "stage": 6,
+  "kind": "copy",
+  "dependent_file": "src/fleetkeep/importers/timesheets.py",
+  "place": 61,
+  "covered": false,
+  "dependent": [
+   "function",
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/gradebook/services/transcript.py",
+  "place": 64,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "module"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 2,
+  "kind": "key",
+  "dependent_file": "src/gradebook/reports/progress.py",
+  "place": 92,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 3,
+  "kind": "copy",
+  "dependent_file": "src/gradebook/reports/progress.py",
+  "place": 7,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 5,
+  "kind": "data",
+  "dependent_file": "src/gradebook/storage/sheet_csv.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function",
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "gradebook",
+  "stage": 8,
+  "kind": "contract",
+  "dependent_file": "src/gradebook/services/transcript.py",
+  "place": 55,
+  "covered": false,
+  "dependent": [
+   "function",
+   "import",
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/greenhouse/storage/history.py",
+  "place": 63,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 2,
+  "kind": "key",
+  "dependent_file": "src/greenhouse/storage/calibration.py",
+  "place": 78,
+  "covered": false,
+  "dependent": [
+   "function",
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 2,
+  "kind": "copy",
+  "dependent_file": "src/greenhouse/services/manual.py",
+  "place": 3,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 4,
+  "kind": "key",
+  "dependent_file": "src/greenhouse/reports/messages.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "class",
+   "function"
+  ]
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 7,
+  "kind": "data",
+  "dependent_file": "src/greenhouse/services/valves.py",
+  "place": 32,
+  "covered": true,
+  "dependent": [
+   "function",
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/hoteldesk/reports/revenue.py",
+  "place": 99,
+  "covered": false,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 4,
+  "kind": "key",
+  "dependent_file": "src/hoteldesk/reports/folio_print.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "import",
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 6,
+  "kind": "data",
+  "dependent_file": "src/hoteldesk/reports/audit_report.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 1,
+  "kind": "copy",
+  "dependent_file": "src/budgetbook/services/importing.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 2,
+  "kind": "key",
+  "dependent_file": "src/budgetbook/services/search.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 4,
+  "kind": "data",
+  "dependent_file": "src/budgetbook/services/budgets.py",
+  "place": 42,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 4,
+  "kind": "data",
+  "dependent_file": "src/budgetbook/reports/annual.py",
+  "place": 42,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "household_budget",
+  "stage": 6,
+  "kind": "contract",
+  "dependent_file": "src/budgetbook/reports/register.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 2,
+  "kind": "data",
+  "dependent_file": "src/lending/services/fines.py",
+  "place": 70,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 2,
+  "kind": "key",
+  "dependent_file": "src/lending/reports/activity.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function",
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 6,
+  "kind": "data",
+  "dependent_file": "src/lending/storage/member_import.py",
+  "place": 3,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import",
+   "module"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "library_loans",
+  "stage": 7,
+  "kind": "copy",
+  "dependent_file": "src/lending/services/accounts.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/parcelpost/services/billing.py",
+  "place": 44,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "function",
+   "import"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 2,
+  "kind": "key",
+  "dependent_file": "src/parcelpost/reports/daily.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "import",
+   "module"
+  ],
+  "edited": [
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 4,
+  "kind": "copy",
+  "dependent_file": "src/parcelpost/services/scans.py",
+  "place": 16,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "parcelpost",
+  "stage": 7,
+  "kind": "key",
+  "dependent_file": "src/parcelpost/cli/output.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 4,
+  "kind": "key",
+  "dependent_file": "src/payroll/reports/payslip.py",
+  "place": 37,
+  "covered": true,
+  "dependent": [
+   "function",
+   "module"
+  ],
+  "edited": [
+   "function"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 4,
+  "kind": "copy",
+  "dependent_file": "src/payroll/reports/journal.py",
+  "place": 37,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 7,
+  "kind": "data",
+  "dependent_file": "src/payroll/services/reconcile.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/recipebox/storage/pantry_file.py",
+  "place": 5,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 3,
+  "kind": "key",
+  "dependent_file": "src/recipebox/reports/nutrition_report.py",
+  "place": 73,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "module"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 5,
+  "kind": "contract",
+  "dependent_file": "src/recipebox/reports/shopping_text.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "import"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 6,
+  "kind": "key",
+  "dependent_file": "src/recipebox/reports/shopping_text.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "module"
+  ]
+ },
+ {
+  "case": "recipe_box",
+  "stage": 8,
+  "kind": "data",
+  "dependent_file": "src/recipebox/services/importer.py",
+  "place": 5,
+  "covered": true,
+  "dependent": [
+   "function",
+   "import"
+  ],
+  "edited": [
+   "function",
+   "import"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 1,
+  "kind": "copy",
+  "dependent_file": "src/surveytally/reports/responses_export.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "module"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 4,
+  "kind": "key",
+  "dependent_file": "src/surveytally/services/tally.py",
+  "place": 4,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "module"
+  ]
+ },
+ {
+  "case": "survey_tally",
+  "stage": 6,
+  "kind": "copy",
+  "dependent_file": "src/surveytally/files/weights_file.py",
+  "place": 10,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 1,
+  "kind": "data",
+  "dependent_file": "src/boxoffice/reports/daily.py",
+  "place": 40,
+  "covered": true,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 3,
+  "kind": "key",
+  "dependent_file": "src/boxoffice/reports/daily.py",
+  "place": null,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "class",
+   "function"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 5,
+  "kind": "key",
+  "dependent_file": "src/boxoffice/reports/seatplan.py",
+  "place": 90,
+  "covered": false,
+  "dependent": [
+   "module"
+  ],
+  "edited": [
+   "function",
+   "import",
+   "module"
+  ]
+ },
+ {
+  "case": "ticket_office",
+  "stage": 6,
+  "kind": "contract",
+  "dependent_file": "src/boxoffice/storage/jsonstore.py",
+  "place": 99,
+  "covered": false,
+  "dependent": [
+   "function"
+  ],
+  "edited": [
+   "class",
+   "function",
+   "module"
+  ]
+ }
+]
