@@ -96,7 +96,9 @@ code, protocol-method pairs head the lists: 44% of `click`'s top 50 and
 the rule set in advance they are not filtered; the guide says to reject
 them. Limits left as they are: a too-small `--seconds` can return an
 empty "partial" list, and cutting functions out still ignores the
-budget (4.9 s at `--seconds 1` on `sqlalchemy`).
+budget (4.9 s at `--seconds 1` on `sqlalchemy`). *Both removed later that
+day (`a5f735e`, above): `--seconds 1` on `sqlalchemy` now takes 0.8 s and
+returns 50 proposals.*
 
 **2026-11-05 — Setup works with a Microsoft Store Python.** `ep_setup`
 failed with `WinError 1920` whenever it ran on the Store's Python. That
