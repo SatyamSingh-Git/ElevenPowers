@@ -57,3 +57,58 @@ graph, which briefs already name and which covered 4 of 31 v3 losses.
 - **Every real project must still exit 0 within its 30 s budget.**
   Measure 4 has no labels, so it is reported, not judged.
 - Otherwise the candidate is recorded as tried and not built.
+
+## Result: not adopted ([`measure.py`](measure.py), [`summary.py`](summary.py), [summary](summary.txt))
+
+Run 2026-11-05: [`candidate.diff`](candidate.diff) applied to `7592cde`,
+against `7592cde` itself. The code was then reverted. Its tests and
+mutants are in the diff: ten mutants, all killed.
+
+| 51 never-read dependents, covered within K | K = 10 | 20 | **50** | 100 |
+|---|---|---|---|---|
+| functions only (current) | 8 | 11 | **20** | 32 |
+| with module and class bodies | 13 | 16 | **20** | 35 |
+| control, current | 3 | 5 | 11 | 18 |
+| control, with bodies | 3 | 7 | 12 | 18 |
+
+- **The bar was not met:** 20 of 51 at K = 50 against 23, and the margin
+  over the control fell from 9 to 8.
+- **It reaches the rules it was meant for, but displaces others.** Of the
+  14 dependents with a side outside any function, 4 entered the top 50:
+  `clinic_booking` 1 and 3, `gradebook` 1 and `recipe_box` 3. Of the 37
+  with both sides in functions, 3 entered and 7 left, so those covered fell
+  from 20 to 16. Eight entered and eight left in all.
+- **Nearer the top it helps:** 13 of 51 in the top 10, against 8. A person
+  who reads only the first ten would see more, but the plan's question was
+  50, decided in advance, and the answer stands.
+- **The read stages,** for completeness: 8 of 17 at K = 50 fell to 7.
+- **The reviewed run would change:** of the 34 pairs its reviewer kept, 3
+  leave the top 50 at stage 0 (`household_budget` 2, `library_loans` 1),
+  and 3 more stay under another id.
+
+**Real projects: all six exit 0 within the propose deadline**, with
+`sqlalchemy` taking 17.0 s against 13.8 s. What the bodies bring is mostly
+boilerplate:
+
+| project | bodies | top 50 with a body |
+|---|---|---|
+| `attr` | 35 | 16 |
+| `click` | 82 | 10 |
+| `_pytest` | 190 | 23 |
+| `rich` | 170 | **46** |
+| `sqlalchemy` | 1,461 | 11 |
+| ElevenPowers | 1,303 | 32 |
+
+- **`rich`:** 37 of its 46 are generated Unicode width tables, each paired
+  with the next version's. Six more share only `TYPE_CHECKING`, and three
+  only `T = TypeVar("T")`.
+- **`_pytest`:** 15 of its 23 share only `TYPE_CHECKING`.
+- **`sqlalchemy`:** some are real copies, such as two dialects'
+  `RESERVED_WORDS` tables. Five share only `inherit_cache`.
+- **ElevenPowers:** all 32 pair files under `eval/`, its bundled cases'
+  fixture data.
+
+**Left open:** the 14 rules outside functions are still not proposed,
+and the 17 missed with both sides in functions are a separate failure.
+Any further variant, such as dropping `TYPE_CHECKING` blocks, would be
+shaped by these 51 after seeing them, so it needs other cases to judge it.

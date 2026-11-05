@@ -1,0 +1,154 @@
+diff --git a/core/milestones/propose.py b/core/milestones/propose.py
+index 60088a1..99659ea 100644
+--- a/core/milestones/propose.py
++++ b/core/milestones/propose.py
+@@ -53,6 +53,44 @@ def _functions(source):
+             for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+ 
+ 
++def _bodies(source):
++    """Each module's and class's own statements, beside its functions: a rule is often kept in a table
++    no function holds. Imports, docstrings and decorators are not rules."""
++    try:
++        tree = ast.parse(source)
++    except (SyntaxError, ValueError):
++        return []
++    owner, gone = {}, set()
++    for node in ast.walk(tree):
++        if isinstance(node, (ast.Module, ast.ClassDef)):
++            body = node.body
++            if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) \
++                    and isinstance(body[0].value.value, str):
++                gone.update(range(body[0].lineno, body[0].end_lineno + 1))
++        if isinstance(node, ast.ClassDef):
++            # Its name and bases are what its users share with it, not a rule it keeps.
++            start = node.body[0].lineno
++            gone.update(range(min([node.lineno] + [d.lineno for d in node.decorator_list]), start))
++            # ast.walk goes outward in, so a nested class takes its lines from the class around it.
++            owner.update((line, node) for line in range(start, node.end_lineno + 1))
++        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
++            gone.update(range(min([node.lineno] + [d.lineno for d in node.decorator_list]), node.end_lineno + 1))
++        elif isinstance(node, (ast.Import, ast.ImportFrom)):
++            gone.update(range(node.lineno, node.end_lineno + 1))
++    # Placed by ast's lines, which a lone \r also ends.
++    lines = ''.join(line.rstrip('\r\n') + '\n' for line in re.findall(r'[^\r\n]*(?:\r\n|\r|\n)|[^\r\n]+\Z', source))
++    words = defaultdict(set)
++    try:
++        for token in tokenize.generate_tokens(io.StringIO(lines).readline):
++            line = token.start[0]
++            if token.type in (tokenize.NAME, tokenize.STRING, tokenize.NUMBER) and token.string not in COMMON \
++                    and line not in gone:
++                words[owner.get(line, tree)].add(token.string)
++    except (tokenize.TokenError, IndentationError, SyntaxError):
++        pass
++    return [('<module>' if scope is tree else f'class {scope.name}', found) for scope, found in words.items()]
++
++
+ def _segment(lines, node):
+     # Column offsets count UTF-8 bytes, as in ast.get_source_segment.
+     first, last = node.lineno - 1, node.end_lineno - 1
+@@ -88,8 +126,11 @@ def propose(root, *, limit=50, seconds=30):
+         for word in _tokens(text):
+             held[word] += 1
+     idf = {word: math.log(len(texts) / count) for word, count in held.items()}
+-    rows = [(path, name, {w for w in words if idf.get(w, 0) > 0})
+-            for path, text in texts.items() for name, words in _functions(text)]
++    rows, functions = [], 0
++    for path, text in texts.items():
++        units = _functions(text)
++        functions += len(units)
++        rows += [(path, name, {w for w in words if idf.get(w, 0) > 0}) for name, words in units + _bodies(text)]
+     # fsum, not sum: words come in set order, which follows the hash seed, and copies of one rule
+     # tie at a score of 1 only if their sums round the same in every process.
+     weight = [math.fsum(idf[w] for w in words) for _, _, words in rows]
+@@ -140,7 +181,8 @@ def propose(root, *, limit=50, seconds=30):
+             proposal['entry']['id'] = f'{base[:60]}-{number}'
+         taken.add(proposal['entry']['id'])
+     return {'schema': 1, 'proposals': proposals,
+-            'coverage': {'complete': not issues, 'python_files': len(texts), 'functions': len(rows),
++            'coverage': {'complete': not issues, 'python_files': len(texts), 'functions': functions,
++                         'bodies': len(rows) - functions,
+                          'not_examined': len(unread), 'issues': issues},
+             'limits': ['Proposals are candidates for a person to certify, never findings.',
+                        'Shared rare tokens suggest a shared rule; they do not show one.',
+@@ -150,10 +192,11 @@ def propose(root, *, limit=50, seconds=30):
+ def markdown(value):
+     coverage = value['coverage']
+     lines = ['# Proposed rule groups (candidates to certify, not findings)', '',
+-             'Each pair shares rare words between two functions in different files. If both keep the same rule,',
+-             'describe it and add the entry to elevenpowers.milestones.json: an agent editing one file is then',
+-             'told about the other. Reject the rest. Nothing is written for you.', '',
+-             f"Examined: {coverage['python_files']} Python files, {coverage['functions']} functions; "
++             'Each pair shares rare words between two functions, or module or class bodies, in different files.',
++             'If both keep the same rule, describe it and add the entry to elevenpowers.milestones.json: an agent',
++             'editing one file is then told about the other. Reject the rest. Nothing is written for you.', '',
++             f"Examined: {coverage['python_files']} Python files, {coverage['functions']} functions, "
++             f"{coverage['bodies']} module or class bodies; "
+              f"{coverage['not_examined']} other source files not examined."]
+     lines += ['Gap: ' + issue for issue in coverage['issues']]
+     if not value['proposals']:
+diff --git a/tests/test_rule_groups.py b/tests/test_rule_groups.py
+index 06526fb..5901762 100644
+--- a/tests/test_rule_groups.py
++++ b/tests/test_rule_groups.py
+@@ -165,6 +165,60 @@ def test_each_function_is_cut_out_exactly_as_ast_cuts_it(monkeypatch):
+     assert propose._functions(source) == expected
+ 
+ 
++STATUSES = '''class Status:
++    """Where a shipment is."""
++    BOOKED = "booked"
++    IN_TRANSIT = "in_transit"
++    RETURNED = "returned"
++'''
++COLUMNS = '''from ..core.status import Status
++
++COLUMNS = (("booked", "Booked"), ("in_transit", "In transit"), ("returned", "Returned"))
++'''
++
++
++def test_a_rule_kept_in_tables_outside_any_function_is_proposed(tmp_path):
++    # parcelpost's daily report kept its own table of statuses. No function held it, so it was never proposed.
++    from core.milestones.propose import propose
++    value = propose(project(tmp_path, {'app/core/status.py': STATUSES, 'app/reports/daily.py': COLUMNS}))
++    pairs = {tuple(p['files']): p for p in value['proposals']}
++    pair = pairs[('app/core/status.py', 'app/reports/daily.py')]
++    assert pair['functions'] == ['class Status', '<module>']
++    assert {'"booked"', '"in_transit"', '"returned"'} <= set(pair['shared'])
++    assert (value['coverage']['functions'], value['coverage']['bodies']) == (5, 3)
++
++
++def test_imports_and_docstrings_outside_functions_are_not_a_rule(tmp_path):
++    # Imports are the import graph, which briefs already name; a docstring is prose.
++    from core.milestones.propose import propose
++    both = '"""Totals for the quarterly ledger export."""\nfrom .ledger import reconcile_quarter, LEDGER_EPOCH\n'
++    value = propose(project(tmp_path, {'app/one.py': both, 'app/two.py': both}))
++    assert not [p for p in value['proposals'] if 'app/one.py' in p['files']]
++
++
++def test_a_proposal_names_the_method_that_keeps_the_rule_not_its_class(tmp_path):
++    from core.milestones.propose import propose
++    # Its methods keep half the rule each. Taken as one, the class would share more with closing than either.
++    ledger = ('class Ledger:\n    def close(self):\n        return self.book.settle(settle_rate)\n\n'
++              '    def reopen(self):\n        return self.book.extend(grace_days)\n')
++    closing = 'def closing(book):\n    return book.settle(settle_rate), book.extend(grace_days)\n'
++    value = propose(project(tmp_path, {'app/ledger.py': ledger, 'app/closing.py': closing}))
++    pair = next(p for p in value['proposals'] if p['files'] == ['app/closing.py', 'app/ledger.py'])
++    assert pair['functions'][1] in ('close', 'reopen')
++
++
++def test_each_body_keeps_only_its_own_statements():
++    # Lone carriage returns end lines for ast as well, so tokens must be placed by ast's lines.
++    from core.milestones.propose import _bodies
++    source = ('"""Module prose."""\rimport os\rfrom .units import KG\r\rLIMITS = {"parcel": 30}\r\r'
++              '@register\rclass Meter:\r    """Class prose."""\r    UNIT = "kg"\r\r'
++              '    @property\r    def read(self):\r        return KG\r\r    class Inner:\r        SCALE = 1000\r\r'
++              'if os.name == "nt":\r    import ntpath\r    SEP = "/"\r\r'
++              'def helper():\r    class Local:\r        HIDDEN = 1\r    return Local\r')
++    assert dict(_bodies(source)) == {'<module>': {'LIMITS', '"parcel"', '30', 'os', '"nt"', 'SEP', '"/"'},
++                                     'class Meter': {'UNIT', '"kg"'}, 'class Inner': {'SCALE', '1000'}}
++
++
+ def test_the_same_project_gets_the_same_proposals_in_every_process(tmp_path):
+     # sqlalchemy's tied dialect methods came back in a different order from run to run: float sums
+     # followed set order, which follows each process's hash seed.

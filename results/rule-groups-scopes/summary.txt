@@ -1,0 +1,110 @@
+51 never-read dependents, covered within K = (10, 20, 50, 100):
+  before 51 rows | proposals [8, 11, 20, 32] | control [3, 5, 11, 18]
+  after  51 rows | proposals [13, 16, 20, 35] | control [3, 7, 12, 18]
+17 read stages, for completeness, covered within K = (10, 20, 50, 100):
+  before 17 rows | proposals [3, 4, 8, 10] | control [0, 1, 3, 5]
+  after  17 rows | proposals [3, 3, 7, 10] | control [0, 1, 3, 4]
+  ENTERS top 50: data clinic_booking 1 src/clinicbook/reports/utilisation.py place 69 -> 2
+  moves  top 50: copy clinic_booking 2 src/clinicbook/services/desk.py place 19 -> 29
+  ENTERS top 50: key clinic_booking 3 src/clinicbook/reports/day_schedule.py place None -> 4
+  moves  top 50: contract clinic_booking 4 src/clinicbook/reports/day_schedule.py place 25 -> 30
+  moves  top 50: copy clinic_booking 8 src/clinicbook/reports/summary.py place None -> 84
+  moves  top 50: key fleet_service 1 src/fleetkeep/services/reminders.py place None -> 86
+  moves  top 50: copy fleet_service 2 src/fleetkeep/reports/costs.py place 11 -> 19
+  LEAVES top 50: copy fleet_service 2 src/fleetkeep/reports/spend.py place 47 -> 64
+  moves  top 50: copy fleet_service 6 src/fleetkeep/importers/timesheets.py place 61 -> 81
+  ENTERS top 50: data gradebook 1 src/gradebook/services/transcript.py place 64 -> 8
+  moves  top 50: key gradebook 2 src/gradebook/reports/progress.py place 92 -> 100
+  moves  top 50: copy gradebook 3 src/gradebook/reports/progress.py place 7 -> 9
+  ENTERS top 50: contract gradebook 8 src/gradebook/services/transcript.py place 55 -> 8
+  moves  top 50: data greenhouse_monitor 1 src/greenhouse/storage/history.py place 63 -> 93
+  moves  top 50: key greenhouse_monitor 2 src/greenhouse/storage/calibration.py place 78 -> None
+  moves  top 50: copy greenhouse_monitor 2 src/greenhouse/services/manual.py place 3 -> 5
+  ENTERS top 50: read contract greenhouse_monitor 5 src/greenhouse/services/summary.py place None -> 26
+  LEAVES top 50: data greenhouse_monitor 7 src/greenhouse/services/valves.py place 32 -> 54
+  ENTERS top 50: data hotel_desk 1 src/hoteldesk/reports/revenue.py place 99 -> 3
+  moves  top 50: read contract hotel_desk 7 src/hoteldesk/services/booking.py place 6 -> 7
+  moves  top 50: data household_budget 4 src/budgetbook/services/budgets.py place 42 -> 9
+  LEAVES top 50: data household_budget 4 src/budgetbook/reports/annual.py place 42 -> 54
+  moves  top 50: read copy household_budget 7 src/budgetbook/reports/month_end.py place 18 -> 27
+  moves  top 50: read copy library_loans 1 src/lending/reports/overdue.py place 24 -> 33
+  moves  top 50: data library_loans 2 src/lending/services/fines.py place 70 -> 71
+  moves  top 50: read copy library_loans 3 src/lending/reports/loans.py place 100 -> None
+  moves  top 50: data library_loans 6 src/lending/storage/member_import.py place 3 -> 1
+  LEAVES top 50: data parcelpost 1 src/parcelpost/services/billing.py place 44 -> 65
+  moves  top 50: key parcelpost 2 src/parcelpost/reports/daily.py place None -> 56
+  moves  top 50: copy parcelpost 4 src/parcelpost/services/scans.py place 16 -> 24
+  LEAVES top 50: read contract parcelpost 5 src/parcelpost/services/billing.py place 44 -> 65
+  moves  top 50: read data payroll_lite 1 src/payroll/services/yearend.py place 65 -> 91
+  moves  top 50: read copy payroll_lite 2 src/payroll/reports/hours.py place 1 -> 4
+  LEAVES top 50: key payroll_lite 4 src/payroll/reports/payslip.py place 37 -> 51
+  LEAVES top 50: copy payroll_lite 4 src/payroll/reports/journal.py place 37 -> 51
+  ENTERS top 50: data payroll_lite 7 src/payroll/services/reconcile.py place None -> 14
+  moves  top 50: data recipe_box 1 src/recipebox/storage/pantry_file.py place 5 -> 8
+  ENTERS top 50: key recipe_box 3 src/recipebox/reports/nutrition_report.py place 73 -> 41
+  moves  top 50: read copy recipe_box 4 src/recipebox/storage/plan_file.py place 2 -> 4
+  moves  top 50: data recipe_box 8 src/recipebox/services/importer.py place 5 -> 8
+  moves  top 50: copy survey_tally 1 src/surveytally/reports/responses_export.py place None -> 85
+  LEAVES top 50: read data survey_tally 2 src/surveytally/reports/compare.py place 43 -> 58
+  moves  top 50: key survey_tally 4 src/surveytally/services/tally.py place 4 -> 6
+  moves  top 50: copy survey_tally 6 src/surveytally/files/weights_file.py place 10 -> 14
+  LEAVES top 50: data ticket_office 1 src/boxoffice/reports/daily.py place 40 -> 53
+  moves  top 50: read copy ticket_office 4 src/boxoffice/reports/price_list.py place 32 -> 43
+  moves  top 50: key ticket_office 5 src/boxoffice/reports/seatplan.py place 90 -> None
+  moves  top 50: contract ticket_office 6 src/boxoffice/storage/jsonstore.py place 99 -> None
+Real projects (time budget: the propose deadline, 30 s):
+  attr: exit 0, 0.79 s -> 0.59 s, time budget reached False, bodies 35, top 50 with a body 16 of 50
+     src/attr/setters.py (validate) <-> src/attr/validators.py (class _OptionalValidator): validator, attrib
+     src/attr/_version_info.py (class VersionInfo) <-> src/attr/validators.py (class _InstanceOfValidator): attrib, type
+     src/attr/_compat.py (class _AnnotationExtractor) <-> src/attr/_make.py (class Factory): __slots__
+     src/attr/_next_gen.py (field) <-> src/attr/validators.py (class _OptionalValidator): validator, attrib
+     src/attr/_cmp.py (<module>) <-> src/attr/validators.py (<module>): "ge", "gt", "le", "lt"
+  click: exit 0, 0.94 s -> 0.99 s, time budget reached False, bodies 82, top 50 with a body 10 of 50
+     src/click/exceptions.py (class MissingParameter) <-> src/click/types.py (class ParamTypeInfoDict): param_type
+     src/click/core.py (get_usage_pieces) <-> src/click/exceptions.py (class NoArgsIsHelpError): ctx, Context
+     src/click/decorators.py (callback) <-> src/click/exceptions.py (class NoArgsIsHelpError): ctx, Context
+     src/click/testing.py (mode) <-> src/click/types.py (class FileInfoDict): mode
+     src/click/_winconsole.py (__repr__) <-> src/click/types.py (class FileInfoDict): encoding
+  _pytest: exit 0, 2.77 s -> 3.01 s, time budget reached False, bodies 190, top 50 with a body 23 of 50
+     src/_pytest/_py/path.py (class Stat) <-> src/_pytest/assertion/__init__.py (<module>): TYPE_CHECKING
+     src/_pytest/_py/path.py (class Stat) <-> src/_pytest/legacypath.py (<module>): TYPE_CHECKING
+     src/_pytest/_py/path.py (class Stat) <-> src/_pytest/main.py (<module>): TYPE_CHECKING
+     src/_pytest/_py/path.py (class Stat) <-> src/_pytest/pytester.py (class RecordedHookCall): TYPE_CHECKING
+     src/_pytest/_py/path.py (class Stat) <-> src/_pytest/python_api.py (<module>): TYPE_CHECKING
+  rich: exit 0, 2.4 s -> 2.69 s, time budget reached False, bodies 170, top 50 with a body 46 of 50
+     src/rich/_loop.py (<module>) <-> src/rich/_stack.py (<module>): "T", T, TypeVar
+     src/rich/constrain.py (<module>) <-> src/rich/file_proxy.py (<module>): TYPE_CHECKING
+     src/rich/constrain.py (<module>) <-> src/rich/measure.py (<module>): TYPE_CHECKING
+     src/rich/constrain.py (<module>) <-> src/rich/screen.py (<module>): TYPE_CHECKING
+     src/rich/file_proxy.py (<module>) <-> src/rich/measure.py (<module>): TYPE_CHECKING
+  sqlalchemy: exit 0, 13.76 s -> 17.01 s, time budget reached False, bodies 1461, top 50 with a body 11 of 50
+     src/sqlalchemy/dialects/mssql/base.py (class MSIdentifierPreparer) <-> src/sqlalchemy/dialects/postgresql/base.py (class PGIdentifierPreparer): RESERVED_WORDS, reserved_words
+     src/sqlalchemy/dialects/postgresql/_psycopg_common.py (class _PsycopgARRAY) <-> src/sqlalchemy/dialects/postgresql/asyncpg.py (class AsyncpgARRAY): render_bind_cast
+     src/sqlalchemy/dialects/postgresql/_psycopg_common.py (class _PsycopgARRAY) <-> src/sqlalchemy/dialects/postgresql/psycopg.py (class _PGString): render_bind_cast
+     src/sqlalchemy/dialects/postgresql/asyncpg.py (class AsyncpgARRAY) <-> src/sqlalchemy/dialects/postgresql/pg8000.py (class _PGString): render_bind_cast
+     src/sqlalchemy/dialects/postgresql/asyncpg.py (class AsyncpgARRAY) <-> src/sqlalchemy/dialects/postgresql/psycopg.py (class _PGString): render_bind_cast
+  ElevenPowers: exit 0, 33.26 s -> 26.42 s, time budget reached False, bodies 1303, top 50 with a body 32 of 50
+     eval/multistage_cases/conftest.py (<module>) <-> eval/multistage_v3/conftest.py (<module>): collect_ignore_glob, "*"
+     eval/multistage_cases/marklite/start/src/marklite/blocks.py (class Document) <-> eval/multistage_cases/marklite/start/src/marklite/inline.py (class Emphasis): children
+     eval/multistage_cases/tabulate_report/oracle/groups/csv_cli.py (<module>) <-> eval/multistage_cases/tabulate_report/oracle/groups/keys_library.py (<module>): """region,product,units,amount
+East,Widget,3,1200.50
+West,Gadget,1,-150.25
+East,Gadget,2,300
+North,Widget,5,"1,000.00"
+West,Widget,4,99.75
+""", SALES
+     eval/multistage_cases/tabulate_report/oracle/groups/csv_cli.py (<module>) <-> eval/multistage_cases/tabulate_report/oracle/groups/keys_rendered.py (<module>): """region,product,units,amount
+East,Widget,3,1200.50
+West,Gadget,1,-150.25
+East,Gadget,2,300
+North,Widget,5,"1,000.00"
+West,Widget,4,99.75
+""", SALES
+     eval/multistage_cases/tabulate_report/oracle/groups/csv_library.py (<module>) <-> eval/multistage_cases/tabulate_report/oracle/groups/stream_report.py (<module>): "1,000.00", "-150.25", "99.75", "1200.50", "300"
+Reviewed run's accepted pairs at stage 0:
+  household_budget: 9 of 11 same id and files; 0 same files under another id; lost ['rule-year_report-_carried_into', 'rule-find_problems-rename_category']
+  library_loans: 3 of 6 same id and files; 2 same files under another id; lost ['rule-_check_loans-replay']
+  parcelpost: 4 of 4 same id and files; 0 same files under another id; lost []
+  payroll_lite: 3 of 4 same id and files; 1 same files under another id; lost []
+  recipe_box: 9 of 9 same id and files; 0 same files under another id; lost []
+Decided in advance: covered at K = 50 20 -> 20 (bar 23); margin over control 9 -> 8 (bar: no smaller); real projects within budget True. Adopted: False

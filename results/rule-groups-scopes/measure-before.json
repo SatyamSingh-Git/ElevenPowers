@@ -1,0 +1,8103 @@
+{
+ "checkout": "C:\\Users\\Satyam\\AppData\\Local\\Temp\\claude\\beaf5804dab3a479\\6089f8f8-25e4-4c76-8aa5-0235929028e5\\scratchpad\\base",
+ "v3": [
+  {
+   "case": "clinic_booking",
+   "stage": 1,
+   "dependent": "src/clinicbook/reports/utilisation.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 69,
+   "control": null
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 2,
+   "dependent": "src/clinicbook/services/desk.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 19,
+   "control": 35
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 3,
+   "dependent": "src/clinicbook/reports/day_schedule.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": 25
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 4,
+   "dependent": "src/clinicbook/reports/day_schedule.py",
+   "kind": "contract",
+   "fresh": true,
+   "place": 25,
+   "control": null
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 7,
+   "dependent": "src/clinicbook/reports/statement.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 1,
+   "control": 1
+  },
+  {
+   "case": "clinic_booking",
+   "stage": 8,
+   "dependent": "src/clinicbook/reports/summary.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "fleet_service",
+   "stage": 1,
+   "dependent": "src/fleetkeep/services/reminders.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "fleet_service",
+   "stage": 2,
+   "dependent": "src/fleetkeep/reports/costs.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 11,
+   "control": 45
+  },
+  {
+   "case": "fleet_service",
+   "stage": 2,
+   "dependent": "src/fleetkeep/reports/spend.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 47,
+   "control": null
+  },
+  {
+   "case": "fleet_service",
+   "stage": 4,
+   "dependent": "src/fleetkeep/reports/summary.py",
+   "kind": "data",
+   "fresh": false,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "fleet_service",
+   "stage": 5,
+   "dependent": "src/fleetkeep/importers/history.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": null,
+   "control": 35
+  },
+  {
+   "case": "fleet_service",
+   "stage": 6,
+   "dependent": "src/fleetkeep/importers/timesheets.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 61,
+   "control": null
+  },
+  {
+   "case": "gradebook",
+   "stage": 1,
+   "dependent": "src/gradebook/services/transcript.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 64,
+   "control": 67
+  },
+  {
+   "case": "gradebook",
+   "stage": 2,
+   "dependent": "src/gradebook/reports/progress.py",
+   "kind": "key",
+   "fresh": true,
+   "place": 92,
+   "control": 7
+  },
+  {
+   "case": "gradebook",
+   "stage": 3,
+   "dependent": "src/gradebook/reports/progress.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 7,
+   "control": 34
+  },
+  {
+   "case": "gradebook",
+   "stage": 4,
+   "dependent": "src/gradebook/storage/grades_csv.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": null,
+   "control": 11
+  },
+  {
+   "case": "gradebook",
+   "stage": 5,
+   "dependent": "src/gradebook/storage/sheet_csv.py",
+   "kind": "data",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "gradebook",
+   "stage": 8,
+   "dependent": "src/gradebook/services/transcript.py",
+   "kind": "contract",
+   "fresh": true,
+   "place": 55,
+   "control": 69
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 1,
+   "dependent": "src/greenhouse/storage/history.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 63,
+   "control": 91
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 2,
+   "dependent": "src/greenhouse/storage/calibration.py",
+   "kind": "key",
+   "fresh": true,
+   "place": 78,
+   "control": null
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 2,
+   "dependent": "src/greenhouse/services/manual.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 3,
+   "control": null
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 4,
+   "dependent": "src/greenhouse/reports/messages.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 5,
+   "dependent": "src/greenhouse/services/summary.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "greenhouse_monitor",
+   "stage": 7,
+   "dependent": "src/greenhouse/services/valves.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 32,
+   "control": 95
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 1,
+   "dependent": "src/hoteldesk/reports/revenue.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 99,
+   "control": null
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 3,
+   "dependent": "src/hoteldesk/services/pricing.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 4,
+   "dependent": "src/hoteldesk/reports/folio_print.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 6,
+   "dependent": "src/hoteldesk/reports/audit_report.py",
+   "kind": "data",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "hotel_desk",
+   "stage": 7,
+   "dependent": "src/hoteldesk/services/booking.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": 6,
+   "control": null
+  },
+  {
+   "case": "household_budget",
+   "stage": 1,
+   "dependent": "src/budgetbook/services/importing.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": null,
+   "control": 12
+  },
+  {
+   "case": "household_budget",
+   "stage": 2,
+   "dependent": "src/budgetbook/services/search.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "household_budget",
+   "stage": 4,
+   "dependent": "src/budgetbook/services/budgets.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 42,
+   "control": null
+  },
+  {
+   "case": "household_budget",
+   "stage": 4,
+   "dependent": "src/budgetbook/reports/annual.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 42,
+   "control": null
+  },
+  {
+   "case": "household_budget",
+   "stage": 6,
+   "dependent": "src/budgetbook/reports/register.py",
+   "kind": "contract",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "household_budget",
+   "stage": 7,
+   "dependent": "src/budgetbook/reports/month_end.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": 18,
+   "control": null
+  },
+  {
+   "case": "library_loans",
+   "stage": 1,
+   "dependent": "src/lending/reports/overdue.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": 24,
+   "control": 24
+  },
+  {
+   "case": "library_loans",
+   "stage": 2,
+   "dependent": "src/lending/services/fines.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 70,
+   "control": 70
+  },
+  {
+   "case": "library_loans",
+   "stage": 2,
+   "dependent": "src/lending/reports/activity.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "library_loans",
+   "stage": 3,
+   "dependent": "src/lending/reports/loans.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": 100,
+   "control": null
+  },
+  {
+   "case": "library_loans",
+   "stage": 6,
+   "dependent": "src/lending/storage/member_import.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 3,
+   "control": 97
+  },
+  {
+   "case": "library_loans",
+   "stage": 7,
+   "dependent": "src/lending/services/accounts.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "parcelpost",
+   "stage": 1,
+   "dependent": "src/parcelpost/services/billing.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 44,
+   "control": 60
+  },
+  {
+   "case": "parcelpost",
+   "stage": 2,
+   "dependent": "src/parcelpost/reports/daily.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "parcelpost",
+   "stage": 4,
+   "dependent": "src/parcelpost/services/scans.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 16,
+   "control": null
+  },
+  {
+   "case": "parcelpost",
+   "stage": 5,
+   "dependent": "src/parcelpost/services/billing.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": 44,
+   "control": null
+  },
+  {
+   "case": "parcelpost",
+   "stage": 7,
+   "dependent": "src/parcelpost/cli/output.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 1,
+   "dependent": "src/payroll/services/yearend.py",
+   "kind": "data",
+   "fresh": false,
+   "place": 65,
+   "control": null
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 2,
+   "dependent": "src/payroll/reports/hours.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": 1,
+   "control": null
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 4,
+   "dependent": "src/payroll/reports/payslip.py",
+   "kind": "key",
+   "fresh": true,
+   "place": 37,
+   "control": null
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 4,
+   "dependent": "src/payroll/reports/journal.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 37,
+   "control": 23
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 5,
+   "dependent": "src/payroll/services/payrun.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": null,
+   "control": 88
+  },
+  {
+   "case": "payroll_lite",
+   "stage": 7,
+   "dependent": "src/payroll/services/reconcile.py",
+   "kind": "data",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "recipe_box",
+   "stage": 1,
+   "dependent": "src/recipebox/storage/pantry_file.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 5,
+   "control": 22
+  },
+  {
+   "case": "recipe_box",
+   "stage": 3,
+   "dependent": "src/recipebox/reports/nutrition_report.py",
+   "kind": "key",
+   "fresh": true,
+   "place": 73,
+   "control": null
+  },
+  {
+   "case": "recipe_box",
+   "stage": 4,
+   "dependent": "src/recipebox/storage/plan_file.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": 2,
+   "control": null
+  },
+  {
+   "case": "recipe_box",
+   "stage": 5,
+   "dependent": "src/recipebox/reports/shopping_text.py",
+   "kind": "contract",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "recipe_box",
+   "stage": 6,
+   "dependent": "src/recipebox/reports/shopping_text.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "recipe_box",
+   "stage": 8,
+   "dependent": "src/recipebox/services/importer.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 5,
+   "control": 16
+  },
+  {
+   "case": "survey_tally",
+   "stage": 1,
+   "dependent": "src/surveytally/reports/responses_export.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": null,
+   "control": 8
+  },
+  {
+   "case": "survey_tally",
+   "stage": 2,
+   "dependent": "src/surveytally/reports/compare.py",
+   "kind": "data",
+   "fresh": false,
+   "place": 43,
+   "control": 65
+  },
+  {
+   "case": "survey_tally",
+   "stage": 4,
+   "dependent": "src/surveytally/services/tally.py",
+   "kind": "key",
+   "fresh": true,
+   "place": 4,
+   "control": null
+  },
+  {
+   "case": "survey_tally",
+   "stage": 5,
+   "dependent": "src/surveytally/reports/summary.py",
+   "kind": "contract",
+   "fresh": false,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "survey_tally",
+   "stage": 6,
+   "dependent": "src/surveytally/files/weights_file.py",
+   "kind": "copy",
+   "fresh": true,
+   "place": 10,
+   "control": null
+  },
+  {
+   "case": "ticket_office",
+   "stage": 1,
+   "dependent": "src/boxoffice/reports/daily.py",
+   "kind": "data",
+   "fresh": true,
+   "place": 40,
+   "control": null
+  },
+  {
+   "case": "ticket_office",
+   "stage": 3,
+   "dependent": "src/boxoffice/reports/daily.py",
+   "kind": "key",
+   "fresh": true,
+   "place": null,
+   "control": null
+  },
+  {
+   "case": "ticket_office",
+   "stage": 4,
+   "dependent": "src/boxoffice/reports/price_list.py",
+   "kind": "copy",
+   "fresh": false,
+   "place": 32,
+   "control": null
+  },
+  {
+   "case": "ticket_office",
+   "stage": 5,
+   "dependent": "src/boxoffice/reports/seatplan.py",
+   "kind": "key",
+   "fresh": true,
+   "place": 90,
+   "control": null
+  },
+  {
+   "case": "ticket_office",
+   "stage": 6,
+   "dependent": "src/boxoffice/storage/jsonstore.py",
+   "kind": "contract",
+   "fresh": true,
+   "place": 99,
+   "control": null
+  }
+ ],
+ "stage0": {
+  "clinic_booking": {
+   "rule-total-total": [
+    "src/clinicbook/reports/statement.py",
+    "src/clinicbook/services/fees.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/services/desk.py"
+   ],
+   "rule-read_sent-load_bookings": [
+    "src/clinicbook/services/reminders.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-write_starter-save_waitlist": [
+    "src/clinicbook/storage/starter.py",
+    "src/clinicbook/storage/waitlist_file.py"
+   ],
+   "rule-export_day-write_charges": [
+    "src/clinicbook/reports/day_schedule.py",
+    "src/clinicbook/services/fees.py"
+   ],
+   "rule-statement_from_file-load_bookings": [
+    "src/clinicbook/reports/statement.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-_read-load_waitlist": [
+    "src/clinicbook/storage/clinic_file.py",
+    "src/clinicbook/storage/waitlist_file.py"
+   ],
+   "rule-write_charges-save_bookings": [
+    "src/clinicbook/services/fees.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-write_charges-write_directory": [
+    "src/clinicbook/services/fees.py",
+    "src/clinicbook/services/patients.py"
+   ],
+   "rule-end-add_minutes": [
+    "src/clinicbook/model/booking.py",
+    "src/clinicbook/model/times.py"
+   ],
+   "rule-_clashes-_clashes": [
+    "src/clinicbook/services/availability.py",
+    "src/clinicbook/services/checks.py"
+   ],
+   "rule-statement_from_file-read_sent": [
+    "src/clinicbook/reports/statement.py",
+    "src/clinicbook/services/reminders.py"
+   ],
+   "rule-weekday_name-works_on": [
+    "src/clinicbook/model/hours.py",
+    "src/clinicbook/model/people.py"
+   ],
+   "rule-first_free-offers": [
+    "src/clinicbook/services/availability.py",
+    "src/clinicbook/services/waitlist.py"
+   ],
+   "rule-export_day-write_directory": [
+    "src/clinicbook/reports/day_schedule.py",
+    "src/clinicbook/services/patients.py"
+   ],
+   "rule-book-book_series": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/services/series.py"
+   ],
+   "rule-slots-first_free": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/services/availability.py"
+   ],
+   "rule-add_closure-write_starter": [
+    "src/clinicbook/storage/clinic_file.py",
+    "src/clinicbook/storage/starter.py"
+   ],
+   "rule-statement_from_file-read_schedule": [
+    "src/clinicbook/reports/statement.py",
+    "src/clinicbook/reports/utilisation.py"
+   ],
+   "rule-read_schedule-load_bookings": [
+    "src/clinicbook/reports/utilisation.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-free_slots-_check_when": [
+    "src/clinicbook/services/availability.py",
+    "src/clinicbook/services/desk.py"
+   ],
+   "rule-percent-percent": [
+    "src/clinicbook/reports/textfmt.py",
+    "src/clinicbook/reports/utilisation.py"
+   ],
+   "rule-add_minutes-slot_starts": [
+    "src/clinicbook/model/times.py",
+    "src/clinicbook/services/availability.py"
+   ],
+   "rule-load_bookings-import_partner_file": [
+    "src/clinicbook/storage/bookings_file.py",
+    "src/clinicbook/storage/partner_import.py"
+   ],
+   "rule-write_charges-append_outbox": [
+    "src/clinicbook/services/fees.py",
+    "src/clinicbook/services/reminders.py"
+   ],
+   "rule-__init__-__init__-2": [
+    "src/clinicbook/clock.py",
+    "src/clinicbook/services/desk.py"
+   ],
+   "rule-export_day-save_bookings": [
+    "src/clinicbook/reports/day_schedule.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-wait_list-_encode": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/storage/waitlist_file.py"
+   ],
+   "rule-_booking-_decode": [
+    "src/clinicbook/storage/bookings_file.py",
+    "src/clinicbook/storage/waitlist_file.py"
+   ],
+   "rule-write_directory-append_outbox": [
+    "src/clinicbook/services/patients.py",
+    "src/clinicbook/services/reminders.py"
+   ],
+   "rule-write_directory-save_bookings": [
+    "src/clinicbook/services/patients.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-_unknown-find": [
+    "src/clinicbook/services/checks.py",
+    "src/clinicbook/services/desk.py"
+   ],
+   "rule-read_sent-import_partner_file": [
+    "src/clinicbook/services/reminders.py",
+    "src/clinicbook/storage/partner_import.py"
+   ],
+   "rule-read_schedule-read_sent": [
+    "src/clinicbook/reports/utilisation.py",
+    "src/clinicbook/services/reminders.py"
+   ],
+   "rule-attendance-stranded": [
+    "src/clinicbook/reports/attendance.py",
+    "src/clinicbook/services/closures.py"
+   ],
+   "rule-active-cancel": [
+    "src/clinicbook/model/booking.py",
+    "src/clinicbook/services/desk.py"
+   ],
+   "rule-room-_unknown": [
+    "src/clinicbook/model/clinic.py",
+    "src/clinicbook/services/checks.py"
+   ],
+   "rule-wait_remove-remove": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/services/waitlist.py"
+   ],
+   "rule-settings-settings_to_dict": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/config.py"
+   ],
+   "rule-export_day-append_outbox": [
+    "src/clinicbook/reports/day_schedule.py",
+    "src/clinicbook/services/reminders.py"
+   ],
+   "rule-fees-render_statement": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/reports/statement.py"
+   ],
+   "rule-_clashes-_row": [
+    "src/clinicbook/services/availability.py",
+    "src/clinicbook/storage/bookings_file.py"
+   ],
+   "rule-practitioner-_practitioner_ids": [
+    "src/clinicbook/model/clinic.py",
+    "src/clinicbook/storage/partner_import.py"
+   ],
+   "rule-practitioner-find": [
+    "src/clinicbook/model/clinic.py",
+    "src/clinicbook/services/desk.py"
+   ],
+   "rule-practitioners-_practitioners": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/storage/clinic_file.py"
+   ],
+   "rule-show_booking-schedule_rows": [
+    "src/clinicbook/cli/commands.py",
+    "src/clinicbook/reports/day_schedule.py"
+   ],
+   "rule-archive_path-backups": [
+    "src/clinicbook/storage/archive.py",
+    "src/clinicbook/storage/backups.py"
+   ],
+   "rule-open_minutes-room_utilisation": [
+    "src/clinicbook/model/hours.py",
+    "src/clinicbook/reports/utilisation.py"
+   ],
+   "rule-ends_at-_clashes": [
+    "src/clinicbook/model/booking.py",
+    "src/clinicbook/services/checks.py"
+   ],
+   "rule-parse_time-parse_window": [
+    "src/clinicbook/cli/parsing.py",
+    "src/clinicbook/model/hours.py"
+   ]
+  },
+  "fleet_service": {
+   "rule-_next_id-_next_id": [
+    "src/fleetkeep/services/inspections.py",
+    "src/fleetkeep/services/workorders.py"
+   ],
+   "rule-_timestamp-parse_date": [
+    "src/fleetkeep/importers/telematics.py",
+    "src/fleetkeep/model/dates.py"
+   ],
+   "rule-parse_gallons-parse_hours": [
+    "src/fleetkeep/model/readings.py",
+    "src/fleetkeep/model/workorder.py"
+   ],
+   "rule-defect_rows-fix_defects": [
+    "src/fleetkeep/reports/orders.py",
+    "src/fleetkeep/services/inspections.py"
+   ],
+   "rule-days-miles_in_period": [
+    "src/fleetkeep/model/dates.py",
+    "src/fleetkeep/services/usage.py"
+   ],
+   "rule-_order_fields-order_to_dict": [
+    "src/fleetkeep/cli/commands.py",
+    "src/fleetkeep/storage/jsonfiles.py"
+   ],
+   "rule-_read-read_documents": [
+    "src/fleetkeep/storage/csvfiles.py",
+    "src/fleetkeep/storage/jsonfiles.py"
+   ],
+   "rule-cost_rows-fuel_rows": [
+    "src/fleetkeep/reports/costs.py",
+    "src/fleetkeep/reports/fuel.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/fleetkeep/clock.py",
+    "src/fleetkeep/storage/fleetdir.py"
+   ],
+   "rule-value-stock_rows": [
+    "src/fleetkeep/model/stock.py",
+    "src/fleetkeep/reports/stock.py"
+   ],
+   "rule-times-_per_mile": [
+    "src/fleetkeep/model/money.py",
+    "src/fleetkeep/reports/costs.py"
+   ],
+   "rule-_print_import-summary": [
+    "src/fleetkeep/cli/commands.py",
+    "src/fleetkeep/importers/source.py"
+   ],
+   "rule-import_history-import_vehicles": [
+    "src/fleetkeep/importers/history.py",
+    "src/fleetkeep/importers/vehicles.py"
+   ],
+   "rule-_year-parse_odometer": [
+    "src/fleetkeep/importers/vehicles.py",
+    "src/fleetkeep/model/readings.py"
+   ],
+   "rule-import_timesheet-add_line": [
+    "src/fleetkeep/importers/timesheets.py",
+    "src/fleetkeep/model/workorder.py"
+   ],
+   "rule-is_open-fix_defects": [
+    "src/fleetkeep/model/inspection.py",
+    "src/fleetkeep/services/inspections.py"
+   ],
+   "rule-_day-parse_date": [
+    "src/fleetkeep/importers/fuelcard.py",
+    "src/fleetkeep/model/dates.py"
+   ],
+   "rule-import_history-import_telematics": [
+    "src/fleetkeep/importers/history.py",
+    "src/fleetkeep/importers/telematics.py"
+   ],
+   "rule-_day-_timestamp": [
+    "src/fleetkeep/importers/fuelcard.py",
+    "src/fleetkeep/importers/telematics.py"
+   ],
+   "rule-each_day-days_down": [
+    "src/fleetkeep/model/dates.py",
+    "src/fleetkeep/services/downtime.py"
+   ],
+   "rule-is_open-is_open": [
+    "src/fleetkeep/model/inspection.py",
+    "src/fleetkeep/model/workorder.py"
+   ],
+   "rule-history_rows-record_service": [
+    "src/fleetkeep/reports/orders.py",
+    "src/fleetkeep/services/fleet.py"
+   ],
+   "rule-defect_rows-defect_to_dict": [
+    "src/fleetkeep/reports/orders.py",
+    "src/fleetkeep/storage/jsonfiles.py"
+   ],
+   "rule-add_line-add_part": [
+    "src/fleetkeep/model/workorder.py",
+    "src/fleetkeep/services/workorders.py"
+   ],
+   "rule-stock_rows-stock_to_dict": [
+    "src/fleetkeep/reports/stock.py",
+    "src/fleetkeep/storage/jsonfiles.py"
+   ],
+   "rule-_name-parse_date": [
+    "src/fleetkeep/config.py",
+    "src/fleetkeep/model/dates.py"
+   ],
+   "rule-read_rows-_read": [
+    "src/fleetkeep/importers/source.py",
+    "src/fleetkeep/storage/csvfiles.py"
+   ],
+   "rule-add_defect-report_defect": [
+    "src/fleetkeep/services/fleet.py",
+    "src/fleetkeep/services/inspections.py"
+   ],
+   "rule-remove_order-cancel_order": [
+    "src/fleetkeep/services/fleet.py",
+    "src/fleetkeep/services/workorders.py"
+   ],
+   "rule-is_open-fix_defects-2": [
+    "src/fleetkeep/model/workorder.py",
+    "src/fleetkeep/services/inspections.py"
+   ],
+   "rule-history-write_history": [
+    "src/fleetkeep/services/fleet.py",
+    "src/fleetkeep/storage/csvfiles.py"
+   ],
+   "rule-write_settings-write_documents": [
+    "src/fleetkeep/config.py",
+    "src/fleetkeep/storage/jsonfiles.py"
+   ],
+   "rule-_day-today": [
+    "src/fleetkeep/cli/commands.py",
+    "src/fleetkeep/clock.py"
+   ],
+   "rule-import_history-import_timesheet": [
+    "src/fleetkeep/importers/history.py",
+    "src/fleetkeep/importers/timesheets.py"
+   ],
+   "rule-defect_rows-grounded_vehicles": [
+    "src/fleetkeep/reports/orders.py",
+    "src/fleetkeep/services/checks.py"
+   ],
+   "rule-value-stock_to_dict": [
+    "src/fleetkeep/model/stock.py",
+    "src/fleetkeep/storage/jsonfiles.py"
+   ],
+   "rule-_period-days": [
+    "src/fleetkeep/cli/commands.py",
+    "src/fleetkeep/model/dates.py"
+   ],
+   "rule-import_fuel_card-import_history": [
+    "src/fleetkeep/importers/fuelcard.py",
+    "src/fleetkeep/importers/history.py"
+   ],
+   "rule-stock_rows-empty_stock": [
+    "src/fleetkeep/reports/stock.py",
+    "src/fleetkeep/services/checks.py"
+   ],
+   "rule-_name-parse_odometer": [
+    "src/fleetkeep/config.py",
+    "src/fleetkeep/model/readings.py"
+   ],
+   "rule-is_open-defect_rows": [
+    "src/fleetkeep/model/inspection.py",
+    "src/fleetkeep/reports/orders.py"
+   ],
+   "rule-import_fuel_card-import_timesheet": [
+    "src/fleetkeep/importers/fuelcard.py",
+    "src/fleetkeep/importers/timesheets.py"
+   ],
+   "rule-_maintenance-orders_in": [
+    "src/fleetkeep/reports/costs.py",
+    "src/fleetkeep/services/downtime.py"
+   ],
+   "rule-cmd_fuel_add-_entry": [
+    "src/fleetkeep/cli/commands.py",
+    "src/fleetkeep/importers/fuelcard.py"
+   ],
+   "rule-_maintenance-order_charges": [
+    "src/fleetkeep/reports/costs.py",
+    "src/fleetkeep/services/workorders.py"
+   ],
+   "rule-cmd_tyre_add-record_tread": [
+    "src/fleetkeep/cli/commands.py",
+    "src/fleetkeep/services/inspections.py"
+   ],
+   "rule-_maintenance-spend_rows": [
+    "src/fleetkeep/reports/costs.py",
+    "src/fleetkeep/reports/spend.py"
+   ],
+   "rule-in_service_on-active_vehicles": [
+    "src/fleetkeep/model/vehicle.py",
+    "src/fleetkeep/services/fleet.py"
+   ],
+   "rule-worn_tyres-latest_treads": [
+    "src/fleetkeep/services/checks.py",
+    "src/fleetkeep/services/inspections.py"
+   ],
+   "rule-parse_date-parse_odometer": [
+    "src/fleetkeep/model/dates.py",
+    "src/fleetkeep/model/readings.py"
+   ]
+  },
+  "gradebook": {
+   "rule-category-category": [
+    "src/gradebook/model/course.py",
+    "src/gradebook/reports/progress.py"
+   ],
+   "rule-category-category-2": [
+    "src/gradebook/grading/results.py",
+    "src/gradebook/model/course.py"
+   ],
+   "rule-category-category-3": [
+    "src/gradebook/grading/results.py",
+    "src/gradebook/reports/progress.py"
+   ],
+   "rule-read_posted_grades-read_table": [
+    "src/gradebook/services/transcript.py",
+    "src/gradebook/storage/csv_util.py"
+   ],
+   "rule-import_lms-import_sheet": [
+    "src/gradebook/storage/lms_csv.py",
+    "src/gradebook/storage/sheet_csv.py"
+   ],
+   "rule-missing-_cell": [
+    "src/gradebook/model/scores.py",
+    "src/gradebook/reports/score_sheet.py"
+   ],
+   "rule-_summary_row-_grade_row": [
+    "src/gradebook/reports/summary.py",
+    "src/gradebook/storage/grades_csv.py"
+   ],
+   "rule-_counted_items-_category_progress": [
+    "src/gradebook/grading/calculator.py",
+    "src/gradebook/reports/progress.py"
+   ],
+   "rule-import_scores-import_sheet": [
+    "src/gradebook/storage/scores_csv.py",
+    "src/gradebook/storage/sheet_csv.py"
+   ],
+   "rule-missing_work-late_work": [
+    "src/gradebook/reports/attention.py",
+    "src/gradebook/reports/late_work.py"
+   ],
+   "rule-write_score_sheet-export_scores": [
+    "src/gradebook/reports/score_sheet.py",
+    "src/gradebook/storage/scores_export.py"
+   ],
+   "rule-write_score_sheet-export_grades": [
+    "src/gradebook/reports/score_sheet.py",
+    "src/gradebook/storage/grades_csv.py"
+   ],
+   "rule-reweighted-_check_categories": [
+    "src/gradebook/services/what_if.py",
+    "src/gradebook/storage/course_config.py"
+   ],
+   "rule-export_grades-export_scores": [
+    "src/gradebook/storage/grades_csv.py",
+    "src/gradebook/storage/scores_export.py"
+   ],
+   "rule-points_total-exact_percent": [
+    "src/gradebook/grading/policies.py",
+    "src/gradebook/grading/results.py"
+   ],
+   "rule-import_lms-import_scores": [
+    "src/gradebook/storage/lms_csv.py",
+    "src/gradebook/storage/scores_csv.py"
+   ],
+   "rule-class_summary-what_if": [
+    "src/gradebook/reports/summary.py",
+    "src/gradebook/services/what_if.py"
+   ],
+   "rule-_counted_items-late_work": [
+    "src/gradebook/grading/calculator.py",
+    "src/gradebook/reports/late_work.py"
+   ],
+   "rule-import_file-get_importer": [
+    "src/gradebook/services/gradebook.py",
+    "src/gradebook/storage/importers.py"
+   ],
+   "rule-get-submitted_day": [
+    "src/gradebook/model/scores.py",
+    "src/gradebook/services/gradebook.py"
+   ],
+   "rule-at_risk-what_if": [
+    "src/gradebook/reports/attention.py",
+    "src/gradebook/services/what_if.py"
+   ],
+   "rule-load_calendar-load_course": [
+    "src/gradebook/model/calendar.py",
+    "src/gradebook/storage/course_config.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/gradebook/errors.py",
+    "src/gradebook/model/scores.py"
+   ],
+   "rule-sync_roster-import_roster": [
+    "src/gradebook/services/roster_sync.py",
+    "src/gradebook/storage/roster_csv.py"
+   ],
+   "rule-course_outline-late_work": [
+    "src/gradebook/reports/course_outline.py",
+    "src/gradebook/reports/late_work.py"
+   ],
+   "rule-_spread-class_statistics": [
+    "src/gradebook/reports/assignments.py",
+    "src/gradebook/services/statistics.py"
+   ],
+   "rule-assignment_report-course_outline": [
+    "src/gradebook/reports/assignments.py",
+    "src/gradebook/reports/course_outline.py"
+   ],
+   "rule-missing_work-course_outline": [
+    "src/gradebook/reports/attention.py",
+    "src/gradebook/reports/course_outline.py"
+   ],
+   "rule-assignment_report-missing_work": [
+    "src/gradebook/reports/assignments.py",
+    "src/gradebook/reports/attention.py"
+   ],
+   "rule-_spread-category_report": [
+    "src/gradebook/reports/assignments.py",
+    "src/gradebook/reports/categories.py"
+   ],
+   "rule-_notes-_weighted_basis": [
+    "src/gradebook/reports/course_outline.py",
+    "src/gradebook/reports/progress.py"
+   ],
+   "rule-category_report-class_summary": [
+    "src/gradebook/reports/categories.py",
+    "src/gradebook/reports/summary.py"
+   ],
+   "rule-_counted_items-submitted_day": [
+    "src/gradebook/grading/calculator.py",
+    "src/gradebook/services/gradebook.py"
+   ],
+   "rule-progress_report-_grade_row": [
+    "src/gradebook/reports/progress.py",
+    "src/gradebook/storage/grades_csv.py"
+   ],
+   "rule-check_gradebook-submitted_day": [
+    "src/gradebook/services/checks.py",
+    "src/gradebook/services/gradebook.py"
+   ],
+   "rule-load_course-write_starter_course": [
+    "src/gradebook/storage/course_config.py",
+    "src/gradebook/storage/course_template.py"
+   ],
+   "rule-reaches-record_score": [
+    "src/gradebook/services/forecast.py",
+    "src/gradebook/services/gradebook.py"
+   ],
+   "rule-at_risk-class_summary": [
+    "src/gradebook/reports/attention.py",
+    "src/gradebook/reports/summary.py"
+   ],
+   "rule-explain_grade-weighted": [
+    "src/gradebook/grading/explain.py",
+    "src/gradebook/grading/policies.py"
+   ],
+   "rule-_counted_items-check_gradebook": [
+    "src/gradebook/grading/calculator.py",
+    "src/gradebook/services/checks.py"
+   ],
+   "rule-assignment_report-late_work": [
+    "src/gradebook/reports/assignments.py",
+    "src/gradebook/reports/late_work.py"
+   ],
+   "rule-assignment-_check_assignments": [
+    "src/gradebook/model/course.py",
+    "src/gradebook/storage/course_config.py"
+   ],
+   "rule-course_outline-class_summary": [
+    "src/gradebook/reports/course_outline.py",
+    "src/gradebook/reports/summary.py"
+   ],
+   "rule-progress_report-grade": [
+    "src/gradebook/reports/progress.py",
+    "src/gradebook/services/gradebook.py"
+   ],
+   "rule-missing-_unanswered": [
+    "src/gradebook/model/scores.py",
+    "src/gradebook/reports/attention.py"
+   ],
+   "rule-write_starter_course-save_gradebook": [
+    "src/gradebook/storage/course_template.py",
+    "src/gradebook/storage/gradebook_file.py"
+   ],
+   "rule-_unanswered-_cell": [
+    "src/gradebook/reports/attention.py",
+    "src/gradebook/reports/score_sheet.py"
+   ],
+   "rule-per_day-_spread": [
+    "src/gradebook/grading/late.py",
+    "src/gradebook/reports/assignments.py"
+   ],
+   "rule-curve_assignment-record_score": [
+    "src/gradebook/services/curve.py",
+    "src/gradebook/services/gradebook.py"
+   ],
+   "rule-cmd_import-import_file": [
+    "src/gradebook/cli/commands.py",
+    "src/gradebook/services/gradebook.py"
+   ]
+  },
+  "greenhouse_monitor": {
+   "rule-cmd_summary-cmd_climate": [
+    "src/greenhouse/cli/commands.py",
+    "src/greenhouse/cli/views.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/greenhouse/storage/paths.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-parse_row-record_manual": [
+    "src/greenhouse/services/ingest.py",
+    "src/greenhouse/services/manual.py"
+   ],
+   "rule-parse_day-_number": [
+    "src/greenhouse/core/clock.py",
+    "src/greenhouse/services/ingest.py"
+   ],
+   "rule-__init__-__init__-2": [
+    "src/greenhouse/storage/calibration.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-digest_text-timed": [
+    "src/greenhouse/reports/digest.py",
+    "src/greenhouse/reports/messages.py"
+   ],
+   "rule-planned_minutes-load_readings": [
+    "src/greenhouse/services/valves.py",
+    "src/greenhouse/storage/history.py"
+   ],
+   "rule-export_record-status_rows": [
+    "src/greenhouse/reports/readings_export.py",
+    "src/greenhouse/reports/status.py"
+   ],
+   "rule-export_record-alert_record": [
+    "src/greenhouse/reports/readings_export.py",
+    "src/greenhouse/storage/alerts_log.py"
+   ],
+   "rule-summary_csv-export_csv": [
+    "src/greenhouse/reports/export.py",
+    "src/greenhouse/reports/readings_export.py"
+   ],
+   "rule-describe-alert_record": [
+    "src/greenhouse/reports/messages.py",
+    "src/greenhouse/storage/alerts_log.py"
+   ],
+   "rule-export_record-_log_row": [
+    "src/greenhouse/reports/readings_export.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-summary_text-weekly_table": [
+    "src/greenhouse/reports/export.py",
+    "src/greenhouse/reports/weekly.py"
+   ],
+   "rule-__init__-__init__-3": [
+    "src/greenhouse/config/thresholds.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-crop-zone": [
+    "src/greenhouse/config/crops.py",
+    "src/greenhouse/config/layout.py"
+   ],
+   "rule-status_rows-alert_record": [
+    "src/greenhouse/reports/status.py",
+    "src/greenhouse/storage/alerts_log.py"
+   ],
+   "rule-format_value-number": [
+    "src/greenhouse/core/units.py",
+    "src/greenhouse/reports/formatting.py"
+   ],
+   "rule-write_plan-write_many": [
+    "src/greenhouse/storage/plans.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-export_json-save": [
+    "src/greenhouse/reports/readings_export.py",
+    "src/greenhouse/storage/calibration.py"
+   ],
+   "rule-status_rows-evaluate": [
+    "src/greenhouse/reports/status.py",
+    "src/greenhouse/services/alerts.py"
+   ],
+   "rule-__init__-__init__-4": [
+    "src/greenhouse/storage/calibration.py",
+    "src/greenhouse/storage/paths.py"
+   ],
+   "rule-day-parse_day": [
+    "src/greenhouse/cli/context.py",
+    "src/greenhouse/core/clock.py"
+   ],
+   "rule-cmd_irrigate-total_minutes": [
+    "src/greenhouse/cli/commands.py",
+    "src/greenhouse/services/irrigation.py"
+   ],
+   "rule-number-_coerce": [
+    "src/greenhouse/config/jsonfile.py",
+    "src/greenhouse/config/settings.py"
+   ],
+   "rule-condensation_text-margin": [
+    "src/greenhouse/reports/environment.py",
+    "src/greenhouse/services/condensation.py"
+   ],
+   "rule-write_schedule-archive_readings": [
+    "src/greenhouse/services/valves.py",
+    "src/greenhouse/storage/archive.py"
+   ],
+   "rule-write_digest-write_schedule": [
+    "src/greenhouse/reports/digest.py",
+    "src/greenhouse/services/valves.py"
+   ],
+   "rule-write_digest-save": [
+    "src/greenhouse/reports/digest.py",
+    "src/greenhouse/storage/calibration.py"
+   ],
+   "rule-write_digest-archive_readings": [
+    "src/greenhouse/reports/digest.py",
+    "src/greenhouse/storage/archive.py"
+   ],
+   "rule-planned_minutes-write_plan": [
+    "src/greenhouse/services/valves.py",
+    "src/greenhouse/storage/plans.py"
+   ],
+   "rule-write_schedule-save": [
+    "src/greenhouse/services/valves.py",
+    "src/greenhouse/storage/calibration.py"
+   ],
+   "rule-cmd_limits-is_empty": [
+    "src/greenhouse/cli/views.py",
+    "src/greenhouse/core/model.py"
+   ],
+   "rule-cmd_offsets-load_calibration": [
+    "src/greenhouse/cli/views.py",
+    "src/greenhouse/storage/calibration.py"
+   ],
+   "rule-cmd_digest-write_digest": [
+    "src/greenhouse/cli/views.py",
+    "src/greenhouse/reports/digest.py"
+   ],
+   "rule-append_alerts-save": [
+    "src/greenhouse/storage/alerts_log.py",
+    "src/greenhouse/storage/calibration.py"
+   ],
+   "rule-_alert-_log_row": [
+    "src/greenhouse/services/alerts.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-__init__-__init__-5": [
+    "src/greenhouse/config/layout.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-cmd_report-daily_report": [
+    "src/greenhouse/cli/commands.py",
+    "src/greenhouse/reports/daily.py"
+   ],
+   "rule-check_kind-_number": [
+    "src/greenhouse/core/units.py",
+    "src/greenhouse/services/ingest.py"
+   ],
+   "rule-_alert-alert_record": [
+    "src/greenhouse/services/alerts.py",
+    "src/greenhouse/storage/alerts_log.py"
+   ],
+   "rule-cmd_record-_log_row": [
+    "src/greenhouse/cli/commands.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-cmd_water-per_square_metre": [
+    "src/greenhouse/cli/views.py",
+    "src/greenhouse/services/water.py"
+   ],
+   "rule-describe-export_record": [
+    "src/greenhouse/reports/messages.py",
+    "src/greenhouse/reports/readings_export.py"
+   ],
+   "rule-zone_climate-risk_hours": [
+    "src/greenhouse/services/climate.py",
+    "src/greenhouse/services/condensation.py"
+   ],
+   "rule-total_minutes-estimate": [
+    "src/greenhouse/services/irrigation.py",
+    "src/greenhouse/services/water.py"
+   ],
+   "rule-now-_alert": [
+    "src/greenhouse/core/clock.py",
+    "src/greenhouse/services/alerts.py"
+   ],
+   "rule-moved-trends": [
+    "src/greenhouse/services/inventory.py",
+    "src/greenhouse/services/trends.py"
+   ],
+   "rule-summary_json-save": [
+    "src/greenhouse/reports/export.py",
+    "src/greenhouse/storage/calibration.py"
+   ],
+   "rule-status_rows-_log_row": [
+    "src/greenhouse/reports/status.py",
+    "src/greenhouse/storage/readings_log.py"
+   ],
+   "rule-cmd_zones-suggest": [
+    "src/greenhouse/cli/views.py",
+    "src/greenhouse/services/irrigation.py"
+   ]
+  },
+  "hotel_desk": {
+   "rule-room_total-room_total": [
+    "src/hoteldesk/model/reservations.py",
+    "src/hoteldesk/services/pricing.py"
+   ],
+   "rule-staying-due_out": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/housekeeping.py"
+   ],
+   "rule-load_setup-load_hotel": [
+    "src/hoteldesk/storage/setup.py",
+    "src/hoteldesk/storage/state.py"
+   ],
+   "rule-_check_free-first_full_night": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/inventory.py"
+   ],
+   "rule-arriving-stays": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/guests.py"
+   ],
+   "rule-arriving-open_items": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/night_audit.py"
+   ],
+   "rule-cmd_rooms-board_rows": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/reports/housekeeping_board.py"
+   ],
+   "rule-in_house_rows-ledger_rows": [
+    "src/hoteldesk/reports/arrivals.py",
+    "src/hoteldesk/reports/ledger.py"
+   ],
+   "rule-add_room-_rooms": [
+    "src/hoteldesk/services/rooms_admin.py",
+    "src/hoteldesk/storage/setup.py"
+   ],
+   "rule-change_dates-extend_stay": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/stays.py"
+   ],
+   "rule-load_settings-load_hotel": [
+    "src/hoteldesk/config.py",
+    "src/hoteldesk/storage/state.py"
+   ],
+   "rule-_extend-extend_stay": [
+    "src/hoteldesk/services/night_audit.py",
+    "src/hoteldesk/services/stays.py"
+   ],
+   "rule-forecast_text-occupancy_text": [
+    "src/hoteldesk/reports/forecast.py",
+    "src/hoteldesk/reports/occupancy.py"
+   ],
+   "rule-export_folios-append_entry": [
+    "src/hoteldesk/storage/folio_export.py",
+    "src/hoteldesk/storage/journal.py"
+   ],
+   "rule-balance-ledger_rows": [
+    "src/hoteldesk/model/folios.py",
+    "src/hoteldesk/reports/ledger.py"
+   ],
+   "rule-journal_path-backup_folder": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/storage/backups.py"
+   ],
+   "rule-stays-open_items": [
+    "src/hoteldesk/services/guests.py",
+    "src/hoteldesk/services/night_audit.py"
+   ],
+   "rule-load_settings-load_setup": [
+    "src/hoteldesk/config.py",
+    "src/hoteldesk/storage/setup.py"
+   ],
+   "rule-availability_rows-availability": [
+    "src/hoteldesk/reports/availability.py",
+    "src/hoteldesk/services/inventory.py"
+   ],
+   "rule-occupancy_rows-day_statistics": [
+    "src/hoteldesk/reports/occupancy.py",
+    "src/hoteldesk/services/inventory.py"
+   ],
+   "rule-set_status-move_room": [
+    "src/hoteldesk/services/housekeeping.py",
+    "src/hoteldesk/services/stays.py"
+   ],
+   "rule-held-_booked_nights": [
+    "src/hoteldesk/services/inventory.py",
+    "src/hoteldesk/services/rooms_admin.py"
+   ],
+   "rule-cmd_wake_up-book_wake_up": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/services/desk_log.py"
+   ],
+   "rule-nights-first_full_night": [
+    "src/hoteldesk/model/reservations.py",
+    "src/hoteldesk/services/inventory.py"
+   ],
+   "rule-nights-_booked_nights": [
+    "src/hoteldesk/model/reservations.py",
+    "src/hoteldesk/services/rooms_admin.py"
+   ],
+   "rule-book_wake_up-check_in": [
+    "src/hoteldesk/services/desk_log.py",
+    "src/hoteldesk/services/stays.py"
+   ],
+   "rule-book_wake_up-set_status": [
+    "src/hoteldesk/services/desk_log.py",
+    "src/hoteldesk/services/housekeeping.py"
+   ],
+   "rule-nights-check_stay": [
+    "src/hoteldesk/model/reservations.py",
+    "src/hoteldesk/services/stay_rules.py"
+   ],
+   "rule-cmd_pay-post_payment": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/services/billing.py"
+   ],
+   "rule-change_dates-quote": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/pricing.py"
+   ],
+   "rule-cmd_show-_balance": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/reports/arrivals.py"
+   ],
+   "rule-rooms_of_type-_choose_room": [
+    "src/hoteldesk/model/hotel.py",
+    "src/hoteldesk/services/stays.py"
+   ],
+   "rule-rooms_of_type-board_rows": [
+    "src/hoteldesk/model/hotel.py",
+    "src/hoteldesk/reports/housekeeping_board.py"
+   ],
+   "rule-cmd_quote-total": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/services/pricing.py"
+   ],
+   "rule-cmd_rooms-rooms_of_type": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/model/hotel.py"
+   ],
+   "rule-paid-_total_the_day": [
+    "src/hoteldesk/model/folios.py",
+    "src/hoteldesk/services/night_audit.py"
+   ],
+   "rule-board_summary-status_counts": [
+    "src/hoteldesk/reports/housekeeping_board.py",
+    "src/hoteldesk/services/housekeeping.py"
+   ],
+   "rule-forecast_rows-held": [
+    "src/hoteldesk/reports/forecast.py",
+    "src/hoteldesk/services/inventory.py"
+   ],
+   "rule-rooms_of_type-add_room": [
+    "src/hoteldesk/model/hotel.py",
+    "src/hoteldesk/services/rooms_admin.py"
+   ],
+   "rule-import_bookings-import_guests": [
+    "src/hoteldesk/storage/channel_import.py",
+    "src/hoteldesk/storage/guest_import.py"
+   ],
+   "rule-departing-_booked_nights": [
+    "src/hoteldesk/services/booking.py",
+    "src/hoteldesk/services/rooms_admin.py"
+   ],
+   "rule-cmd_add_room-add_room": [
+    "src/hoteldesk/cli.py",
+    "src/hoteldesk/services/rooms_admin.py"
+   ],
+   "rule-rooms_of_type-open_items": [
+    "src/hoteldesk/model/hotel.py",
+    "src/hoteldesk/services/night_audit.py"
+   ],
+   "rule-sellable-set_status": [
+    "src/hoteldesk/model/rooms.py",
+    "src/hoteldesk/services/housekeeping.py"
+   ],
+   "rule-departure_rows-departing": [
+    "src/hoteldesk/reports/arrivals.py",
+    "src/hoteldesk/services/booking.py"
+   ],
+   "rule-due_out-_post_room_charges": [
+    "src/hoteldesk/services/housekeeping.py",
+    "src/hoteldesk/services/night_audit.py"
+   ],
+   "rule-guest-is_vip": [
+    "src/hoteldesk/model/hotel.py",
+    "src/hoteldesk/services/guests.py"
+   ],
+   "rule-check_stay-extend_stay": [
+    "src/hoteldesk/services/stay_rules.py",
+    "src/hoteldesk/services/stays.py"
+   ],
+   "rule-covers-forecast_rows": [
+    "src/hoteldesk/model/reservations.py",
+    "src/hoteldesk/reports/forecast.py"
+   ],
+   "rule-availability_rows-occupancy_rows": [
+    "src/hoteldesk/reports/availability.py",
+    "src/hoteldesk/reports/occupancy.py"
+   ]
+  },
+  "household_budget": {
+   "rule-reopen_month-is_closed": [
+    "src/budgetbook/services/closing.py",
+    "src/budgetbook/storage/workspace.py"
+   ],
+   "rule-forecast-upcoming": [
+    "src/budgetbook/services/forecast.py",
+    "src/budgetbook/services/recurring.py"
+   ],
+   "rule-for_workspace-add_category": [
+    "src/budgetbook/services/catalog.py",
+    "src/budgetbook/services/config.py"
+   ],
+   "rule-of-ensure_open": [
+    "src/budgetbook/model/dates.py",
+    "src/budgetbook/services/ledger.py"
+   ],
+   "rule-cmd_account_forecast-lowest": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/forecast.py"
+   ],
+   "rule-export_month-render_csv": [
+    "src/budgetbook/reports/export.py",
+    "src/budgetbook/reports/render.py"
+   ],
+   "rule-cmd_reconcile-difference": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/reconcile.py"
+   ],
+   "rule-cmd_search-account_register": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/reports/register.py"
+   ],
+   "rule-add_category-rename_category": [
+    "src/budgetbook/services/config.py",
+    "src/budgetbook/services/renames.py"
+   ],
+   "rule-__str__-__str__": [
+    "src/budgetbook/importers/base.py",
+    "src/budgetbook/model/dates.py"
+   ],
+   "rule-cmd_budget_remove-remove_budget": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/budgets.py"
+   ],
+   "rule-_contains-_identity": [
+    "src/budgetbook/rules/matchers.py",
+    "src/budgetbook/services/importing.py"
+   ],
+   "rule-cmd_rule_check-first_match": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/rules/engine.py"
+   ],
+   "rule-set_budget-save_budgets": [
+    "src/budgetbook/services/budgets.py",
+    "src/budgetbook/storage/files.py"
+   ],
+   "rule-export_month-_encode": [
+    "src/budgetbook/reports/export.py",
+    "src/budgetbook/storage/journal.py"
+   ],
+   "rule-categorise_open_months-file_transfers": [
+    "src/budgetbook/services/ledger.py",
+    "src/budgetbook/services/transfers.py"
+   ],
+   "rule-cmd_goal_add-add_goal": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/goals.py"
+   ],
+   "rule-_currency-for_workspace": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/catalog.py"
+   ],
+   "rule-summarise-_spent_by_category": [
+    "src/budgetbook/reports/month_end.py",
+    "src/budgetbook/services/budgets.py"
+   ],
+   "rule-cmd_transfers-file_transfers": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/transfers.py"
+   ],
+   "rule-cmd_add-_encode": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/storage/journal.py"
+   ],
+   "rule-_print_report-render": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/reports/render.py"
+   ],
+   "rule-source-_encode": [
+    "src/budgetbook/model/records.py",
+    "src/budgetbook/storage/journal.py"
+   ],
+   "rule-__init__-save_rules": [
+    "src/budgetbook/rules/engine.py",
+    "src/budgetbook/storage/files.py"
+   ],
+   "rule-import_statement-categorise_open_months": [
+    "src/budgetbook/services/importing.py",
+    "src/budgetbook/services/ledger.py"
+   ],
+   "rule-applies_to-first_match": [
+    "src/budgetbook/model/records.py",
+    "src/budgetbook/rules/engine.py"
+   ],
+   "rule-require_account-remove_budget": [
+    "src/budgetbook/services/accounts.py",
+    "src/budgetbook/services/budgets.py"
+   ],
+   "rule-cmd_recurring_add-add_item": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/recurring.py"
+   ],
+   "rule-cmd_rule_add-find_problems": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/health.py"
+   ],
+   "rule-add_goal-save_goals": [
+    "src/budgetbook/services/goals.py",
+    "src/budgetbook/storage/files.py"
+   ],
+   "rule-remove_budget-rename_category": [
+    "src/budgetbook/services/budgets.py",
+    "src/budgetbook/services/renames.py"
+   ],
+   "rule-cmd_goal_add-save_goals": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/storage/files.py"
+   ],
+   "rule-months_between-due_dates": [
+    "src/budgetbook/model/dates.py",
+    "src/budgetbook/services/recurring.py"
+   ],
+   "rule-import_statement-post_due": [
+    "src/budgetbook/services/importing.py",
+    "src/budgetbook/services/recurring.py"
+   ],
+   "rule-balances-archive_year": [
+    "src/budgetbook/services/accounts.py",
+    "src/budgetbook/services/archive.py"
+   ],
+   "rule-status_report-available": [
+    "src/budgetbook/reports/status.py",
+    "src/budgetbook/services/budgets.py"
+   ],
+   "rule-next-progress": [
+    "src/budgetbook/model/dates.py",
+    "src/budgetbook/services/goals.py"
+   ],
+   "rule-__init__-find_problems": [
+    "src/budgetbook/rules/engine.py",
+    "src/budgetbook/services/health.py"
+   ],
+   "rule-cmd_archive-archive_path": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/archive.py"
+   ],
+   "rule-find_problems-set_category": [
+    "src/budgetbook/services/health.py",
+    "src/budgetbook/services/ledger.py"
+   ],
+   "rule-net_worth_report-spending_trend": [
+    "src/budgetbook/reports/net_worth.py",
+    "src/budgetbook/reports/trend.py"
+   ],
+   "rule-parse-_currency": [
+    "src/budgetbook/model/dates.py",
+    "src/budgetbook/services/config.py"
+   ],
+   "rule-year_report-_carried_into": [
+    "src/budgetbook/reports/annual.py",
+    "src/budgetbook/services/budgets.py"
+   ],
+   "rule-find_problems-rename_category": [
+    "src/budgetbook/services/health.py",
+    "src/budgetbook/services/renames.py"
+   ],
+   "rule-archive_year-rename_account": [
+    "src/budgetbook/services/archive.py",
+    "src/budgetbook/services/renames.py"
+   ],
+   "rule-add_transaction-add_item": [
+    "src/budgetbook/services/ledger.py",
+    "src/budgetbook/services/recurring.py"
+   ],
+   "rule-cmd_account_add-add_account": [
+    "src/budgetbook/cli.py",
+    "src/budgetbook/services/accounts.py"
+   ],
+   "rule-require_account-rename_account": [
+    "src/budgetbook/services/accounts.py",
+    "src/budgetbook/services/renames.py"
+   ],
+   "rule-category_for-find_transactions": [
+    "src/budgetbook/rules/engine.py",
+    "src/budgetbook/services/search.py"
+   ],
+   "rule-budget_status-close_month": [
+    "src/budgetbook/services/budgets.py",
+    "src/budgetbook/services/closing.py"
+   ]
+  },
+  "library_loans": {
+   "rule-month_of-_age": [
+    "src/lending/model/dates.py",
+    "src/lending/services/membership.py"
+   ],
+   "rule-save_notes-save_transit": [
+    "src/lending/storage/notes_store.py",
+    "src/lending/storage/transit_store.py"
+   ],
+   "rule-parse_date-_day": [
+    "src/lending/model/dates.py",
+    "src/lending/storage/member_import.py"
+   ],
+   "rule-read_outbox-load_transit": [
+    "src/lending/storage/outbox.py",
+    "src/lending/storage/transit_store.py"
+   ],
+   "rule-load_holds-load_transit": [
+    "src/lending/storage/holds_store.py",
+    "src/lending/storage/transit_store.py"
+   ],
+   "rule-load_notes-read_outbox": [
+    "src/lending/storage/notes_store.py",
+    "src/lending/storage/outbox.py"
+   ],
+   "rule-load_holds-load_members": [
+    "src/lending/storage/holds_store.py",
+    "src/lending/storage/members_store.py"
+   ],
+   "rule-collected-save_holds": [
+    "src/lending/services/holds.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-save_members-save_notes": [
+    "src/lending/storage/members_store.py",
+    "src/lending/storage/notes_store.py"
+   ],
+   "rule-load_members-load_transit": [
+    "src/lending/storage/members_store.py",
+    "src/lending/storage/transit_store.py"
+   ],
+   "rule-read_outbox-read_scans": [
+    "src/lending/storage/outbox.py",
+    "src/lending/storage/scans.py"
+   ],
+   "rule-save_holds-save_notes": [
+    "src/lending/storage/holds_store.py",
+    "src/lending/storage/notes_store.py"
+   ],
+   "rule-status-summary": [
+    "src/lending/cli/commands.py",
+    "src/lending/services/accounts.py"
+   ],
+   "rule-due_rows-loans_of": [
+    "src/lending/reports/due.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-clear_notes-clear_notes": [
+    "src/lending/cli/commands.py",
+    "src/lending/services/notes.py"
+   ],
+   "rule-lapsed_rows-idle_rows": [
+    "src/lending/reports/members.py",
+    "src/lending/reports/stock.py"
+   ],
+   "rule-load_holds-read_outbox": [
+    "src/lending/storage/holds_store.py",
+    "src/lending/storage/outbox.py"
+   ],
+   "rule-entries-read_scans": [
+    "src/lending/storage/ledger.py",
+    "src/lending/storage/scans.py"
+   ],
+   "rule-entries-read_outbox": [
+    "src/lending/storage/ledger.py",
+    "src/lending/storage/outbox.py"
+   ],
+   "rule-load_holidays-entries": [
+    "src/lending/storage/holidays_store.py",
+    "src/lending/storage/ledger.py"
+   ],
+   "rule-receive-receive": [
+    "src/lending/cli/commands.py",
+    "src/lending/services/transit.py"
+   ],
+   "rule-load_holidays-read_outbox": [
+    "src/lending/storage/holidays_store.py",
+    "src/lending/storage/outbox.py"
+   ],
+   "rule-load_members-read_outbox": [
+    "src/lending/storage/members_store.py",
+    "src/lending/storage/outbox.py"
+   ],
+   "rule-overdue_rows-fine_for": [
+    "src/lending/reports/overdue.py",
+    "src/lending/services/fines.py"
+   ],
+   "rule-queue_rows-position": [
+    "src/lending/reports/holdshelf.py",
+    "src/lending/services/holds.py"
+   ],
+   "rule-search_rows-save_catalogue": [
+    "src/lending/reports/search.py",
+    "src/lending/storage/catalogue_store.py"
+   ],
+   "rule-transit_rows-save_transit": [
+    "src/lending/services/transit.py",
+    "src/lending/storage/transit_store.py"
+   ],
+   "rule-demand_rows-search_rows": [
+    "src/lending/reports/demand.py",
+    "src/lending/reports/search.py"
+   ],
+   "rule-idle_rows-copy_history": [
+    "src/lending/reports/stock.py",
+    "src/lending/services/history.py"
+   ],
+   "rule-save_catalogue-save_transit": [
+    "src/lending/storage/catalogue_store.py",
+    "src/lending/storage/transit_store.py"
+   ],
+   "rule-save_catalogue-save_holds": [
+    "src/lending/storage/catalogue_store.py",
+    "src/lending/storage/holds_store.py"
+   ],
+   "rule-balance-member_history": [
+    "src/lending/services/fines.py",
+    "src/lending/services/history.py"
+   ],
+   "rule-shelf_rows-hold_ready_notices": [
+    "src/lending/reports/holdshelf.py",
+    "src/lending/services/notices.py"
+   ],
+   "rule-profile_rows-member_history": [
+    "src/lending/reports/members.py",
+    "src/lending/services/history.py"
+   ],
+   "rule-waive-waive": [
+    "src/lending/cli/commands.py",
+    "src/lending/services/fines.py"
+   ],
+   "rule-shelf_rows-save_holds": [
+    "src/lending/reports/holdshelf.py",
+    "src/lending/storage/holds_store.py"
+   ],
+   "rule-spells-replay": [
+    "src/lending/services/history.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-copy-loan": [
+    "src/lending/model/catalogue.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-days_late-is_overdue": [
+    "src/lending/model/dates.py",
+    "src/lending/model/loans.py"
+   ],
+   "rule-due_rows-overdue_rows": [
+    "src/lending/reports/due.py",
+    "src/lending/reports/overdue.py"
+   ],
+   "rule-save_members-update_member": [
+    "src/lending/services/library.py",
+    "src/lending/services/membership.py"
+   ],
+   "rule-withdraw-is_free": [
+    "src/lending/services/cataloguing.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-save_catalogue-save_notes": [
+    "src/lending/storage/catalogue_store.py",
+    "src/lending/storage/notes_store.py"
+   ],
+   "rule-write_members_csv-save_members": [
+    "src/lending/storage/member_export.py",
+    "src/lending/storage/members_store.py"
+   ],
+   "rule-balance-record": [
+    "src/lending/services/fines.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-_put_aside-hold_ready_notices": [
+    "src/lending/services/holds.py",
+    "src/lending/services/notices.py"
+   ],
+   "rule-withdraw-checkout": [
+    "src/lending/services/cataloguing.py",
+    "src/lending/services/circulation.py"
+   ],
+   "rule-_check_loans-replay": [
+    "src/lending/services/audit.py",
+    "src/lending/services/library.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/lending/model/dates.py",
+    "src/lending/storage/ledger.py"
+   ],
+   "rule-queue_rows-_check_holds": [
+    "src/lending/reports/holdshelf.py",
+    "src/lending/services/audit.py"
+   ]
+  },
+  "parcelpost": {
+   "rule-vat-vat": [
+    "src/parcelpost/reports/statement.py",
+    "src/parcelpost/services/billing.py"
+   ],
+   "rule-save-save": [
+    "src/parcelpost/storage/accounts.py",
+    "src/parcelpost/storage/addressbook.py"
+   ],
+   "rule-parse_amount-kg_to_grams": [
+    "src/parcelpost/core/money.py",
+    "src/parcelpost/core/units.py"
+   ],
+   "rule-render_invoice-render_statement": [
+    "src/parcelpost/reports/invoices.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-parse_carrier_invoice-parse_scan_file": [
+    "src/parcelpost/formats/carrier_invoice.py",
+    "src/parcelpost/formats/scanfile.py"
+   ],
+   "rule-label_filename-label_path": [
+    "src/parcelpost/formats/labels.py",
+    "src/parcelpost/services/booking.py"
+   ],
+   "rule-quote_all-quote_every_service": [
+    "src/parcelpost/rating/quote.py",
+    "src/parcelpost/services/booking.py"
+   ],
+   "rule-read_events-__init__": [
+    "src/parcelpost/formats/events.py",
+    "src/parcelpost/storage/accounts.py"
+   ],
+   "rule-save-save-2": [
+    "src/parcelpost/storage/accounts.py",
+    "src/parcelpost/storage/shipments.py"
+   ],
+   "rule-shipments_table-render_statement": [
+    "src/parcelpost/cli/output.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-load_claims-__init__": [
+    "src/parcelpost/services/claims.py",
+    "src/parcelpost/storage/accounts.py"
+   ],
+   "rule-write_manifest-export_shipments": [
+    "src/parcelpost/formats/manifest.py",
+    "src/parcelpost/reports/export.py"
+   ],
+   "rule-render_text-render_zpl": [
+    "src/parcelpost/formats/labels.py",
+    "src/parcelpost/formats/zpl.py"
+   ],
+   "rule-invoices_table-render_invoice": [
+    "src/parcelpost/cli/output.py",
+    "src/parcelpost/reports/invoices.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/parcelpost/core/clock.py",
+    "src/parcelpost/core/errors.py"
+   ],
+   "rule-_check_digit-_plausible_number": [
+    "src/parcelpost/core/ids.py",
+    "src/parcelpost/services/scans.py"
+   ],
+   "rule-render_statement-render_zone_totals": [
+    "src/parcelpost/reports/statement.py",
+    "src/parcelpost/reports/zones.py"
+   ],
+   "rule-base_rate-render_rate_card": [
+    "src/parcelpost/rating/tariff.py",
+    "src/parcelpost/reports/ratecard.py"
+   ],
+   "rule-_percent-parse_amount": [
+    "src/parcelpost/config.py",
+    "src/parcelpost/core/money.py"
+   ],
+   "rule-_percent-kg_to_grams": [
+    "src/parcelpost/config.py",
+    "src/parcelpost/core/units.py"
+   ],
+   "rule-total-subtotal": [
+    "src/parcelpost/core/charges.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-save-save-3": [
+    "src/parcelpost/storage/addressbook.py",
+    "src/parcelpost/storage/shipments.py"
+   ],
+   "rule-read_events-load_claims": [
+    "src/parcelpost/formats/events.py",
+    "src/parcelpost/services/claims.py"
+   ],
+   "rule-close_day-request_pickup": [
+    "src/parcelpost/services/manifesting.py",
+    "src/parcelpost/services/pickup.py"
+   ],
+   "rule-invoices_table-total": [
+    "src/parcelpost/cli/output.py",
+    "src/parcelpost/services/billing.py"
+   ],
+   "rule-total-subtotal-2": [
+    "src/parcelpost/core/charges.py",
+    "src/parcelpost/services/billing.py"
+   ],
+   "rule-_hours-parse_day": [
+    "src/parcelpost/config.py",
+    "src/parcelpost/core/clock.py"
+   ],
+   "rule-check_data-close_day": [
+    "src/parcelpost/services/housekeeping.py",
+    "src/parcelpost/services/manifesting.py"
+   ],
+   "rule-shipments_table-render_stalled": [
+    "src/parcelpost/cli/output.py",
+    "src/parcelpost/reports/stalled.py"
+   ],
+   "rule-_book-book": [
+    "src/parcelpost/cli/main.py",
+    "src/parcelpost/services/booking.py"
+   ],
+   "rule-find_stalled-track": [
+    "src/parcelpost/reports/stalled.py",
+    "src/parcelpost/services/tracking.py"
+   ],
+   "rule-render_performance-render_statement": [
+    "src/parcelpost/reports/performance.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-amount-applicable": [
+    "src/parcelpost/core/charges.py",
+    "src/parcelpost/rating/surcharges.py"
+   ],
+   "rule-export_shipments-account_statement": [
+    "src/parcelpost/reports/export.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-manifest_filename-close_day": [
+    "src/parcelpost/formats/manifest.py",
+    "src/parcelpost/services/manifesting.py"
+   ],
+   "rule-load_claims-__init__-2": [
+    "src/parcelpost/services/claims.py",
+    "src/parcelpost/storage/addressbook.py"
+   ],
+   "rule-load_claims-__init__-3": [
+    "src/parcelpost/services/claims.py",
+    "src/parcelpost/storage/shipments.py"
+   ],
+   "rule-_statement-account_statement": [
+    "src/parcelpost/cli/main.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-book-book_return": [
+    "src/parcelpost/services/booking.py",
+    "src/parcelpost/services/returns.py"
+   ],
+   "rule-render_invoice-subtotal": [
+    "src/parcelpost/reports/invoices.py",
+    "src/parcelpost/services/billing.py"
+   ],
+   "rule-import_scans-track": [
+    "src/parcelpost/services/scans.py",
+    "src/parcelpost/services/tracking.py"
+   ],
+   "rule-shipments-subtotal": [
+    "src/parcelpost/reports/daily.py",
+    "src/parcelpost/reports/statement.py"
+   ],
+   "rule-_manifest_order-find": [
+    "src/parcelpost/formats/manifest.py",
+    "src/parcelpost/storage/shipments.py"
+   ],
+   "rule-manifest_filename-bill_day": [
+    "src/parcelpost/formats/manifest.py",
+    "src/parcelpost/services/billing.py"
+   ],
+   "rule-surcharge_codes-quote": [
+    "src/parcelpost/core/charges.py",
+    "src/parcelpost/rating/quote.py"
+   ],
+   "rule-_order-encode_shipment": [
+    "src/parcelpost/services/importer.py",
+    "src/parcelpost/storage/shipments.py"
+   ],
+   "rule-_claim-claims_table": [
+    "src/parcelpost/cli/main.py",
+    "src/parcelpost/cli/output.py"
+   ],
+   "rule-read_charges-append_lines": [
+    "src/parcelpost/services/billing.py",
+    "src/parcelpost/storage/files.py"
+   ],
+   "rule-reconciliation_text-balanced": [
+    "src/parcelpost/cli/output.py",
+    "src/parcelpost/services/reconcile.py"
+   ],
+   "rule-read_events-__init__-2": [
+    "src/parcelpost/formats/events.py",
+    "src/parcelpost/storage/addressbook.py"
+   ]
+  },
+  "payroll_lite": {
+   "rule-hours_rows-split_hours": [
+    "src/payroll/reports/hours.py",
+    "src/payroll/rules/overtime.py"
+   ],
+   "rule-render_journal_csv-render_csv": [
+    "src/payroll/reports/journal.py",
+    "src/payroll/reports/summary.py"
+   ],
+   "rule-_employee-_employee": [
+    "src/payroll/storage/employee_csv.py",
+    "src/payroll/storage/employee_store.py"
+   ],
+   "rule-render_csv-employees_csv": [
+    "src/payroll/reports/summary.py",
+    "src/payroll/storage/employee_csv.py"
+   ],
+   "rule-total-paid_total": [
+    "src/payroll/model/payslip.py",
+    "src/payroll/reports/bank_file.py"
+   ],
+   "rule-write_bank_file-render_csv": [
+    "src/payroll/reports/bank_file.py",
+    "src/payroll/reports/summary.py"
+   ],
+   "rule-render_journal_csv-employees_csv": [
+    "src/payroll/reports/journal.py",
+    "src/payroll/storage/employee_csv.py"
+   ],
+   "rule-render_run-render_text": [
+    "src/payroll/reports/run_summary.py",
+    "src/payroll/reports/summary.py"
+   ],
+   "rule-write_bank_file-render_journal_csv": [
+    "src/payroll/reports/bank_file.py",
+    "src/payroll/reports/journal.py"
+   ],
+   "rule-parse_employees-parse_timesheet": [
+    "src/payroll/storage/employee_csv.py",
+    "src/payroll/storage/timesheet_csv.py"
+   ],
+   "rule-render_csv-write_timesheet": [
+    "src/payroll/reports/summary.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-write_bank_file-write_timesheet": [
+    "src/payroll/reports/bank_file.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-write_bank_file-employees_csv": [
+    "src/payroll/reports/bank_file.py",
+    "src/payroll/storage/employee_csv.py"
+   ],
+   "rule-add_employee-_employee": [
+    "src/payroll/services/employees.py",
+    "src/payroll/storage/employee_csv.py"
+   ],
+   "rule-duplicate_problem-_order": [
+    "src/payroll/storage/timesheet_csv.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-load_run-run": [
+    "src/payroll/services/payrun.py",
+    "src/payroll/storage/files.py"
+   ],
+   "rule-blank_sheet-write_timesheet": [
+    "src/payroll/services/timesheets.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-period_warnings-run_payroll": [
+    "src/payroll/services/checks.py",
+    "src/payroll/services/payrun.py"
+   ],
+   "rule-blank_sheet-employees_csv": [
+    "src/payroll/services/timesheets.py",
+    "src/payroll/storage/employee_csv.py"
+   ],
+   "rule-employees_add-add_employee": [
+    "src/payroll/cli.py",
+    "src/payroll/services/employees.py"
+   ],
+   "rule-render_journal_csv-write_timesheet": [
+    "src/payroll/reports/journal.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-round_money-parse_hours": [
+    "src/payroll/model/money.py",
+    "src/payroll/model/timesheet.py"
+   ],
+   "rule-_save-save_employees": [
+    "src/payroll/services/leave.py",
+    "src/payroll/storage/employee_store.py"
+   ],
+   "rule-total-render_run": [
+    "src/payroll/model/payslip.py",
+    "src/payroll/reports/run_summary.py"
+   ],
+   "rule-render_hours-render_text": [
+    "src/payroll/reports/hours.py",
+    "src/payroll/reports/summary.py"
+   ],
+   "rule-load_payments-read_timesheet": [
+    "src/payroll/services/reconcile.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-write_bank_file-blank_sheet": [
+    "src/payroll/reports/bank_file.py",
+    "src/payroll/services/timesheets.py"
+   ],
+   "rule-add_employee-_employee-2": [
+    "src/payroll/services/employees.py",
+    "src/payroll/storage/employee_store.py"
+   ],
+   "rule-employees_csv-write_timesheet": [
+    "src/payroll/storage/employee_csv.py",
+    "src/payroll/storage/timesheet_store.py"
+   ],
+   "rule-render_csv-blank_sheet": [
+    "src/payroll/reports/summary.py",
+    "src/payroll/services/timesheets.py"
+   ],
+   "rule-render_journal_text-render_run": [
+    "src/payroll/reports/journal.py",
+    "src/payroll/reports/run_summary.py"
+   ],
+   "rule-_signed-_cell": [
+    "src/payroll/reports/compare.py",
+    "src/payroll/reports/journal.py"
+   ],
+   "rule-employees_show-_record": [
+    "src/payroll/cli.py",
+    "src/payroll/storage/employee_store.py"
+   ],
+   "rule-set_active-_active": [
+    "src/payroll/services/employees.py",
+    "src/payroll/services/timesheets.py"
+   ],
+   "rule-_cell-_row": [
+    "src/payroll/reports/journal.py",
+    "src/payroll/reports/payslip.py"
+   ],
+   "rule-remove_entries-check_row": [
+    "src/payroll/services/timesheets.py",
+    "src/payroll/storage/timesheet_csv.py"
+   ],
+   "rule-render_journal_csv-blank_sheet": [
+    "src/payroll/reports/journal.py",
+    "src/payroll/services/timesheets.py"
+   ],
+   "rule-employee_problems-add_employee": [
+    "src/payroll/model/employee.py",
+    "src/payroll/services/employees.py"
+   ],
+   "rule-periods_list-describe": [
+    "src/payroll/cli.py",
+    "src/payroll/model/period.py"
+   ],
+   "rule-hours_rows-day_rows": [
+    "src/payroll/reports/hours.py",
+    "src/payroll/reports/staffing.py"
+   ],
+   "rule-diagnose-list_runs": [
+    "src/payroll/services/doctor.py",
+    "src/payroll/services/payrun.py"
+   ],
+   "rule-render_costs-render_run": [
+    "src/payroll/reports/costs.py",
+    "src/payroll/reports/run_summary.py"
+   ],
+   "rule-render_hours-render_journal_text": [
+    "src/payroll/reports/hours.py",
+    "src/payroll/reports/journal.py"
+   ],
+   "rule-_record-_line_record": [
+    "src/payroll/storage/employee_store.py",
+    "src/payroll/storage/payrun_file.py"
+   ],
+   "rule-period_warnings-stored_entries": [
+    "src/payroll/services/checks.py",
+    "src/payroll/services/timesheets.py"
+   ],
+   "rule-hours_rows-period_warnings": [
+    "src/payroll/reports/hours.py",
+    "src/payroll/services/checks.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/payroll/errors.py",
+    "src/payroll/storage/files.py"
+   ],
+   "rule-describe-write_payrun": [
+    "src/payroll/model/period.py",
+    "src/payroll/storage/payrun_file.py"
+   ],
+   "rule-render_compare-render_run": [
+    "src/payroll/reports/compare.py",
+    "src/payroll/reports/run_summary.py"
+   ],
+   "rule-format_hours-_line_record": [
+    "src/payroll/model/timesheet.py",
+    "src/payroll/storage/payrun_file.py"
+   ]
+  },
+  "recipe_box": {
+   "rule-recipe_markdown-render_recipe": [
+    "src/recipebox/reports/markdown.py",
+    "src/recipebox/reports/recipe_card.py"
+   ],
+   "rule-recipe_id-_title_key": [
+    "src/recipebox/core/recipe.py",
+    "src/recipebox/storage/plan_file.py"
+   ],
+   "rule-_to_grams-grams": [
+    "src/recipebox/services/conversion.py",
+    "src/recipebox/services/nutrition.py"
+   ],
+   "rule-write_bundle-save": [
+    "src/recipebox/storage/bundle.py",
+    "src/recipebox/storage/library.py"
+   ],
+   "rule-write_shopping_csv-save_pantry": [
+    "src/recipebox/reports/shopping_csv.py",
+    "src/recipebox/storage/pantry_file.py"
+   ],
+   "rule-_read_recipe-recipe_from_dict": [
+    "src/recipebox/services/importer.py",
+    "src/recipebox/storage/library.py"
+   ],
+   "rule-parse_ingredient-parse_quantity": [
+    "src/recipebox/core/ingredients.py",
+    "src/recipebox/core/quantity.py"
+   ],
+   "rule-display_quantity-shopping_rows": [
+    "src/recipebox/core/quantity.py",
+    "src/recipebox/reports/shopping_csv.py"
+   ],
+   "rule-render_recipe-dump_recipe": [
+    "src/recipebox/reports/recipe_card.py",
+    "src/recipebox/storage/recipe_text.py"
+   ],
+   "rule-dimension-_group": [
+    "src/recipebox/core/quantity.py",
+    "src/recipebox/services/shopping.py"
+   ],
+   "rule-_enough-_after_pantry": [
+    "src/recipebox/services/cookable.py",
+    "src/recipebox/services/shopping.py"
+   ],
+   "rule-recipe_markdown-dump_recipe": [
+    "src/recipebox/reports/markdown.py",
+    "src/recipebox/storage/recipe_text.py"
+   ],
+   "rule-render_plan-format_plan": [
+    "src/recipebox/reports/plan_report.py",
+    "src/recipebox/storage/plan_file.py"
+   ],
+   "rule-__len__-__len__": [
+    "src/recipebox/core/pantry.py",
+    "src/recipebox/core/plan.py"
+   ],
+   "rule-__len__-__len__-2": [
+    "src/recipebox/core/plan.py",
+    "src/recipebox/storage/library.py"
+   ],
+   "rule-use-_after_pantry": [
+    "src/recipebox/core/pantry.py",
+    "src/recipebox/services/shopping.py"
+   ],
+   "rule-import_-import_bundle": [
+    "src/recipebox/cli/commands.py",
+    "src/recipebox/services/importer.py"
+   ],
+   "rule-recipe_markdown-recipe_html": [
+    "src/recipebox/reports/markdown.py",
+    "src/recipebox/reports/recipe_html.py"
+   ],
+   "rule-prep_list-_needed": [
+    "src/recipebox/services/prep.py",
+    "src/recipebox/services/shopping.py"
+   ],
+   "rule-what_can_i_cook-cookable": [
+    "src/recipebox/cli/commands.py",
+    "src/recipebox/services/cookable.py"
+   ],
+   "rule-use-_enough": [
+    "src/recipebox/core/pantry.py",
+    "src/recipebox/services/cookable.py"
+   ],
+   "rule-to-_quantity": [
+    "src/recipebox/core/quantity.py",
+    "src/recipebox/storage/pantry_file.py"
+   ],
+   "rule-convert-convert_ingredient": [
+    "src/recipebox/core/units.py",
+    "src/recipebox/services/conversion.py"
+   ],
+   "rule-render_recipe-recipe_html": [
+    "src/recipebox/reports/recipe_card.py",
+    "src/recipebox/reports/recipe_html.py"
+   ],
+   "rule-__len__-__len__-3": [
+    "src/recipebox/core/pantry.py",
+    "src/recipebox/storage/library.py"
+   ],
+   "rule-_read_recipe-parse_recipe": [
+    "src/recipebox/services/importer.py",
+    "src/recipebox/storage/recipe_text.py"
+   ],
+   "rule-swap-substitute": [
+    "src/recipebox/cli/commands.py",
+    "src/recipebox/services/substitutes.py"
+   ],
+   "rule-dimension-scale_quantity": [
+    "src/recipebox/core/quantity.py",
+    "src/recipebox/services/scaling.py"
+   ],
+   "rule-to-_enough": [
+    "src/recipebox/core/quantity.py",
+    "src/recipebox/services/cookable.py"
+   ],
+   "rule-load_plan-read_recipe_file": [
+    "src/recipebox/storage/plan_file.py",
+    "src/recipebox/storage/recipe_text.py"
+   ],
+   "rule-plan_set-load_plan": [
+    "src/recipebox/cli/commands.py",
+    "src/recipebox/storage/plan_file.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/recipebox/core/plan.py",
+    "src/recipebox/errors.py"
+   ],
+   "rule-__post_init__-check_servings": [
+    "src/recipebox/core/plan.py",
+    "src/recipebox/core/recipe.py"
+   ],
+   "rule-_read_ingredient-_quantity": [
+    "src/recipebox/services/importer.py",
+    "src/recipebox/storage/pantry_file.py"
+   ],
+   "rule-rename-add": [
+    "src/recipebox/cli/commands.py",
+    "src/recipebox/storage/library.py"
+   ],
+   "rule-convertible-_group": [
+    "src/recipebox/core/units.py",
+    "src/recipebox/services/shopping.py"
+   ],
+   "rule-render_stats-library_stats": [
+    "src/recipebox/reports/stats_report.py",
+    "src/recipebox/services/stats.py"
+   ],
+   "rule-add-_quantity": [
+    "src/recipebox/core/pantry.py",
+    "src/recipebox/storage/pantry_file.py"
+   ],
+   "rule-_long_weekdays-format_plan": [
+    "src/recipebox/services/plan_check.py",
+    "src/recipebox/storage/plan_file.py"
+   ],
+   "rule-scale_quantity-_group": [
+    "src/recipebox/services/scaling.py",
+    "src/recipebox/services/shopping.py"
+   ],
+   "rule-format_ingredient-_ingredient_to_dict": [
+    "src/recipebox/core/ingredients.py",
+    "src/recipebox/storage/library.py"
+   ],
+   "rule-run-main": [
+    "src/recipebox/cli/commands.py",
+    "src/recipebox/cli/main.py"
+   ],
+   "rule-render_pantry-render_listing": [
+    "src/recipebox/reports/pantry_report.py",
+    "src/recipebox/reports/recipe_card.py"
+   ],
+   "rule-render_grid-render_plan": [
+    "src/recipebox/reports/plan_grid.py",
+    "src/recipebox/reports/plan_report.py"
+   ],
+   "rule-to_base-scale_quantity": [
+    "src/recipebox/core/units.py",
+    "src/recipebox/services/scaling.py"
+   ],
+   "rule-dimension-grams": [
+    "src/recipebox/core/quantity.py",
+    "src/recipebox/services/nutrition.py"
+   ],
+   "rule-use-to": [
+    "src/recipebox/core/pantry.py",
+    "src/recipebox/core/quantity.py"
+   ],
+   "rule-shopping_markdown-render_shopping_list": [
+    "src/recipebox/reports/markdown.py",
+    "src/recipebox/reports/shopping_text.py"
+   ],
+   "rule-render_pantry-render_shopping_list": [
+    "src/recipebox/reports/pantry_report.py",
+    "src/recipebox/reports/shopping_text.py"
+   ],
+   "rule-week_intake-format_plan": [
+    "src/recipebox/services/weekly.py",
+    "src/recipebox/storage/plan_file.py"
+   ]
+  },
+  "survey_tally": {
+   "rule-percent-percent": [
+    "src/surveytally/services/coding.py",
+    "src/surveytally/services/crosstab.py"
+   ],
+   "rule-_submitted-_submitted": [
+    "src/surveytally/files/csv_responses.py",
+    "src/surveytally/files/json_responses.py"
+   ],
+   "rule-label_for-name": [
+    "src/surveytally/model/questions.py",
+    "src/surveytally/reports/tables.py"
+   ],
+   "rule-__init__-__init__": [
+    "src/surveytally/services/tally.py",
+    "src/surveytally/services/validation.py"
+   ],
+   "rule-write_weights-_write_csv": [
+    "src/surveytally/files/weights_file.py",
+    "src/surveytally/reports/export.py"
+   ],
+   "rule-banner_table-crosstab_table": [
+    "src/surveytally/reports/banner.py",
+    "src/surveytally/reports/tables.py"
+   ],
+   "rule-write_codebook-_write_csv": [
+    "src/surveytally/reports/codebook.py",
+    "src/surveytally/reports/export.py"
+   ],
+   "rule-_write_csv-write_responses": [
+    "src/surveytally/reports/export.py",
+    "src/surveytally/reports/responses_export.py"
+   ],
+   "rule-_encode-write_json_responses": [
+    "src/surveytally/files/store.py",
+    "src/surveytally/reports/responses_export.py"
+   ],
+   "rule-read_responses-read_weights": [
+    "src/surveytally/files/csv_responses.py",
+    "src/surveytally/files/weights_file.py"
+   ],
+   "rule-__str__-__str__": [
+    "src/surveytally/model/errors.py",
+    "src/surveytally/services/quality.py"
+   ],
+   "rule-read_targets-read_weights": [
+    "src/surveytally/files/targets_file.py",
+    "src/surveytally/files/weights_file.py"
+   ],
+   "rule-format_changes-render_text": [
+    "src/surveytally/reports/compare.py",
+    "src/surveytally/reports/render.py"
+   ],
+   "rule-read_weights-read_codeframe": [
+    "src/surveytally/files/weights_file.py",
+    "src/surveytally/services/coding.py"
+   ],
+   "rule-_cell-name": [
+    "src/surveytally/reports/responses_export.py",
+    "src/surveytally/reports/tables.py"
+   ],
+   "rule-label_for-_codes": [
+    "src/surveytally/model/questions.py",
+    "src/surveytally/reports/codebook.py"
+   ],
+   "rule-label_for-_check_scale": [
+    "src/surveytally/model/questions.py",
+    "src/surveytally/services/validation.py"
+   ],
+   "rule-_scale_fields-to_dict": [
+    "src/surveytally/files/survey_file.py",
+    "src/surveytally/model/questions.py"
+   ],
+   "rule-_headline-frequency_table": [
+    "src/surveytally/reports/summary.py",
+    "src/surveytally/reports/tables.py"
+   ],
+   "rule-write_weights-write_responses": [
+    "src/surveytally/files/weights_file.py",
+    "src/surveytally/reports/responses_export.py"
+   ],
+   "rule-read_targets-read_codeframe": [
+    "src/surveytally/files/targets_file.py",
+    "src/surveytally/services/coding.py"
+   ],
+   "rule-frequency_rows-frequency_table": [
+    "src/surveytally/reports/export.py",
+    "src/surveytally/reports/tables.py"
+   ],
+   "rule-read_responses-read_codeframe": [
+    "src/surveytally/files/csv_responses.py",
+    "src/surveytally/services/coding.py"
+   ],
+   "rule-__init__-__init__-2": [
+    "src/surveytally/model/errors.py",
+    "src/surveytally/services/validation.py"
+   ],
+   "rule-__post_init__-__post_init__": [
+    "src/surveytally/model/questions.py",
+    "src/surveytally/model/survey.py"
+   ],
+   "rule-format_percent-cell": [
+    "src/surveytally/reports/formatting.py",
+    "src/surveytally/reports/tables.py"
+   ],
+   "rule-_record-_decode": [
+    "src/surveytally/files/json_responses.py",
+    "src/surveytally/files/store.py"
+   ],
+   "rule-read_responses-read_targets": [
+    "src/surveytally/files/csv_responses.py",
+    "src/surveytally/files/targets_file.py"
+   ],
+   "rule-write_weights-write_codebook": [
+    "src/surveytally/files/weights_file.py",
+    "src/surveytally/reports/codebook.py"
+   ],
+   "rule-question-row": [
+    "src/surveytally/model/survey.py",
+    "src/surveytally/services/tally.py"
+   ],
+   "rule-score-compute_scores": [
+    "src/surveytally/model/survey.py",
+    "src/surveytally/services/scoring.py"
+   ],
+   "rule-percent-_row": [
+    "src/surveytally/services/coding.py",
+    "src/surveytally/services/tally.py"
+   ],
+   "rule-cmd_weight-describe": [
+    "src/surveytally/cli/main.py",
+    "src/surveytally/services/weighting.py"
+   ],
+   "rule-crosstab-_count": [
+    "src/surveytally/services/crosstab.py",
+    "src/surveytally/services/tally.py"
+   ],
+   "rule-analyse-compute_scores": [
+    "src/surveytally/services/analysis.py",
+    "src/surveytally/services/scoring.py"
+   ],
+   "rule-frequency_rows-format_percent": [
+    "src/surveytally/reports/export.py",
+    "src/surveytally/reports/formatting.py"
+   ],
+   "rule-points-_points": [
+    "src/surveytally/model/questions.py",
+    "src/surveytally/services/filters.py"
+   ],
+   "rule-write_codebook-write_responses": [
+    "src/surveytally/reports/codebook.py",
+    "src/surveytally/reports/responses_export.py"
+   ],
+   "rule-__init__-__init__-3": [
+    "src/surveytally/model/errors.py",
+    "src/surveytally/services/tally.py"
+   ],
+   "rule-read_json_responses-load_survey": [
+    "src/surveytally/files/json_responses.py",
+    "src/surveytally/files/survey_file.py"
+   ],
+   "rule-banner_table-crosstab": [
+    "src/surveytally/reports/banner.py",
+    "src/surveytally/services/crosstab.py"
+   ],
+   "rule-add_responses-save_survey": [
+    "src/surveytally/files/store.py",
+    "src/surveytally/files/survey_file.py"
+   ],
+   "rule-read_percentages-_write_csv": [
+    "src/surveytally/reports/compare.py",
+    "src/surveytally/reports/export.py"
+   ],
+   "rule-save_survey-write_json_responses": [
+    "src/surveytally/files/survey_file.py",
+    "src/surveytally/reports/responses_export.py"
+   ],
+   "rule-_points-_check_scale": [
+    "src/surveytally/services/filters.py",
+    "src/surveytally/services/validation.py"
+   ],
+   "rule-_check_header-__post_init__": [
+    "src/surveytally/files/csv_responses.py",
+    "src/surveytally/model/questions.py"
+   ],
+   "rule-row-weight_for": [
+    "src/surveytally/services/tally.py",
+    "src/surveytally/services/weighting.py"
+   ],
+   "rule-label_for-_cell": [
+    "src/surveytally/model/questions.py",
+    "src/surveytally/reports/responses_export.py"
+   ],
+   "rule-cmd_import-clean": [
+    "src/surveytally/cli/main.py",
+    "src/surveytally/services/cleaning.py"
+   ],
+   "rule-format_percent-_headline": [
+    "src/surveytally/reports/formatting.py",
+    "src/surveytally/reports/summary.py"
+   ]
+  },
+  "ticket_office": {
+   "rule-__init__-__init__": [
+    "src/boxoffice/services/holds.py",
+    "src/boxoffice/services/refunds.py"
+   ],
+   "rule-__init__-__init__-2": [
+    "src/boxoffice/services/schedule.py",
+    "src/boxoffice/services/waitlist.py"
+   ],
+   "rule-__init__-__init__-3": [
+    "src/boxoffice/services/holds.py",
+    "src/boxoffice/services/waitlist.py"
+   ],
+   "rule-__init__-__init__-4": [
+    "src/boxoffice/services/refunds.py",
+    "src/boxoffice/services/sales.py"
+   ],
+   "rule-__init__-__init__-5": [
+    "src/boxoffice/services/refunds.py",
+    "src/boxoffice/services/waitlist.py"
+   ],
+   "rule-__init__-__init__-6": [
+    "src/boxoffice/services/holds.py",
+    "src/boxoffice/services/schedule.py"
+   ],
+   "rule-__init__-__init__-7": [
+    "src/boxoffice/services/holds.py",
+    "src/boxoffice/services/sales.py"
+   ],
+   "rule-order-_order": [
+    "src/boxoffice/services/boxoffice.py",
+    "src/boxoffice/services/refunds.py"
+   ],
+   "rule-order-assign_customer": [
+    "src/boxoffice/services/boxoffice.py",
+    "src/boxoffice/services/sales.py"
+   ],
+   "rule-_save-_write": [
+    "src/boxoffice/storage/customers.py",
+    "src/boxoffice/storage/jsonstore.py"
+   ],
+   "rule-__init__-__init__-8": [
+    "src/boxoffice/services/refunds.py",
+    "src/boxoffice/services/schedule.py"
+   ],
+   "rule-__init__-__init__-9": [
+    "src/boxoffice/storage/customers.py",
+    "src/boxoffice/storage/ledger.py"
+   ],
+   "rule-__init__-__init__-10": [
+    "src/boxoffice/services/sales.py",
+    "src/boxoffice/services/waitlist.py"
+   ],
+   "rule-__init__-__init__-11": [
+    "src/boxoffice/storage/jsonstore.py",
+    "src/boxoffice/storage/ledger.py"
+   ],
+   "rule-production_summary-season_summary": [
+    "src/boxoffice/reports/productions.py",
+    "src/boxoffice/reports/season.py"
+   ],
+   "rule-free_count-seat_states": [
+    "src/boxoffice/services/availability.py",
+    "src/boxoffice/services/boxoffice.py"
+   ],
+   "rule-seat_states-__init__": [
+    "src/boxoffice/services/boxoffice.py",
+    "src/boxoffice/services/waitlist.py"
+   ],
+   "rule-__init__-__init__-12": [
+    "src/boxoffice/services/sales.py",
+    "src/boxoffice/services/schedule.py"
+   ],
+   "rule-export_orders-export_mailing_list": [
+    "src/boxoffice/storage/csv_export.py",
+    "src/boxoffice/storage/mailing_export.py"
+   ],
+   "rule-venue-read_seatmap": [
+    "src/boxoffice/storage/jsonstore.py",
+    "src/boxoffice/storage/seatmap_format.py"
+   ],
+   "rule-reprice-performance": [
+    "src/boxoffice/services/schedule.py",
+    "src/boxoffice/storage/jsonstore.py"
+   ],
+   "rule-_read-upgrade": [
+    "src/boxoffice/storage/jsonstore.py",
+    "src/boxoffice/storage/migrations.py"
+   ],
+   "rule-capacity-occupancy": [
+    "src/boxoffice/model/venue.py",
+    "src/boxoffice/reports/occupancy.py"
+   ],
+   "rule-is_active-active": [
+    "src/boxoffice/model/order.py",
+    "src/boxoffice/services/holds.py"
+   ],
+   "rule-_save-upgrade": [
+    "src/boxoffice/storage/customers.py",
+    "src/boxoffice/storage/migrations.py"
+   ],
+   "rule-add_customer-add": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/storage/customers.py"
+   ],
+   "rule-list_performances-to_dict": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/model/performance.py"
+   ],
+   "rule-seat_states-__init__-2": [
+    "src/boxoffice/services/boxoffice.py",
+    "src/boxoffice/services/holds.py"
+   ],
+   "rule-_order_rows-to_dict": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/model/order.py"
+   ],
+   "rule-matches-search": [
+    "src/boxoffice/model/customer.py",
+    "src/boxoffice/storage/customers.py"
+   ],
+   "rule-line_for-_line": [
+    "src/boxoffice/model/order.py",
+    "src/boxoffice/services/refunds.py"
+   ],
+   "rule-concession_mix-season_summary": [
+    "src/boxoffice/reports/concession_mix.py",
+    "src/boxoffice/reports/season.py"
+   ],
+   "rule-concession_price-price_list": [
+    "src/boxoffice/model/concessions.py",
+    "src/boxoffice/reports/price_list.py"
+   ],
+   "rule-concession_mix-production_summary": [
+    "src/boxoffice/reports/concession_mix.py",
+    "src/boxoffice/reports/productions.py"
+   ],
+   "rule-seat_states-check_data": [
+    "src/boxoffice/services/availability.py",
+    "src/boxoffice/services/checks.py"
+   ],
+   "rule-leave-save_waitlist": [
+    "src/boxoffice/services/waitlist.py",
+    "src/boxoffice/storage/jsonstore.py"
+   ],
+   "rule-check_data-check": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/services/boxoffice.py"
+   ],
+   "rule-show_seatmap-capacity": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/model/venue.py"
+   ],
+   "rule-to_dict-season_summary": [
+    "src/boxoffice/model/performance.py",
+    "src/boxoffice/reports/season.py"
+   ],
+   "rule-daily_takings-entries_on": [
+    "src/boxoffice/reports/daily.py",
+    "src/boxoffice/storage/ledger.py"
+   ],
+   "rule-check-__init__": [
+    "src/boxoffice/services/boxoffice.py",
+    "src/boxoffice/services/schedule.py"
+   ],
+   "rule-show_performance-_check_open": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/services/refunds.py"
+   ],
+   "rule-customer_orders-assign_customer": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/services/sales.py"
+   ],
+   "rule-door_list-house_sheet": [
+    "src/boxoffice/reports/door_list.py",
+    "src/boxoffice/reports/house_sheet.py"
+   ],
+   "rule-seat_states-place": [
+    "src/boxoffice/services/availability.py",
+    "src/boxoffice/services/holds.py"
+   ],
+   "rule-seats-section_summary": [
+    "src/boxoffice/model/venue.py",
+    "src/boxoffice/services/availability.py"
+   ],
+   "rule-install_venue-read_seatmap": [
+    "src/boxoffice/cli/commands.py",
+    "src/boxoffice/storage/seatmap_format.py"
+   ],
+   "rule-format_time-_when": [
+    "src/boxoffice/clock.py",
+    "src/boxoffice/reports/receipt.py"
+   ],
+   "rule-mailing_list-export_mailing_list": [
+    "src/boxoffice/storage/customers.py",
+    "src/boxoffice/storage/mailing_export.py"
+   ],
+   "rule-from_dict-performances": [
+    "src/boxoffice/model/performance.py",
+    "src/boxoffice/storage/jsonstore.py"
+   ]
+  }
+ },
+ "real": {
+  "attr": {
+   "exit": 0,
+   "seconds": 0.79,
+   "coverage": {
+    "complete": false,
+    "python_files": 13,
+    "functions": 208,
+    "not_examined": 0,
+    "issues": [
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "top50": [
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "__call__",
+      "__call__"
+     ],
+     [
+      "__call__",
+      "attr",
+      "inst"
+     ],
+     0.6566
+    ],
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/exceptions.py"
+     ],
+     [
+      "__str__",
+      "__str__"
+     ],
+     [
+      "__str__"
+     ],
+     0.6465
+    ],
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/_next_gen.py"
+     ],
+     [
+      "attrib",
+      "field"
+     ],
+     [
+      "alias",
+      "init",
+      "kw_only",
+      "on_setattr",
+      "factory"
+     ],
+     0.5775
+    ],
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/converters.py"
+     ],
+     [
+      "pipe",
+      "optional"
+     ],
+     [
+      "\"return\"",
+      "\"val\"",
+      "__annotations__",
+      "rt",
+      "t"
+     ],
+     0.4989
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/_make.py"
+     ],
+     [
+      "has",
+      "fields"
+     ],
+     [
+      "\"__attrs_attrs__\"",
+      "__attrs_attrs__",
+      "generic_base",
+      "getattr",
+      "get_generic_base"
+     ],
+     0.4896
+    ],
+    [
+     [
+      "src/attr/_cmp.py",
+      "src/attr/_make.py"
+     ],
+     [
+      "method",
+      "__ne__"
+     ],
+     [
+      "result",
+      "NotImplemented",
+      "other"
+     ],
+     0.4404
+    ],
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/setters.py"
+     ],
+     [
+      "validate",
+      "validate"
+     ],
+     [
+      "_run_validators",
+      "validate",
+      "_config",
+      "validator",
+      "v"
+     ],
+     0.4224
+    ],
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/_version_info.py"
+     ],
+     [
+      "__lt__",
+      "__lt__"
+     ],
+     [
+      "__lt__",
+      "NotImplemented",
+      "other"
+     ],
+     0.381
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/_next_gen.py"
+     ],
+     [
+      "asdict",
+      "asdict"
+     ],
+     [
+      "filter",
+      "recurse",
+      "retain_collection_types",
+      "value_serializer",
+      "asdict"
+     ],
+     0.336
+    ],
+    [
+     [
+      "src/attr/_cmp.py",
+      "src/attr/exceptions.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "__init__"
+     ],
+     0.2801
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/exceptions.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "__init__",
+      "TypeError"
+     ],
+     0.2642
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/_make.py"
+     ],
+     [
+      "_get_annotations",
+      "_is_slot_attr"
+     ],
+     [
+      "get",
+      "__dict__"
+     ],
+     0.2639
+    ],
+    [
+     [
+      "src/attr/_config.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "get_run_validators",
+      "get_disabled"
+     ],
+     [
+      "get_run_validators"
+     ],
+     0.2435
+    ],
+    [
+     [
+      "src/attr/_cmp.py",
+      "src/attr/_version_info.py"
+     ],
+     [
+      "method",
+      "__eq__"
+     ],
+     [
+      "NotImplemented",
+      "other"
+     ],
+     0.2309
+    ],
+    [
+     [
+      "src/attr/_next_gen.py",
+      "src/attr/converters.py"
+     ],
+     [
+      "field",
+      "default_if_none_converter"
+     ],
+     [
+      "factory",
+      "default"
+     ],
+     0.2091
+    ],
+    [
+     [
+      "src/attr/_cmp.py",
+      "src/attr/_compat.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "__init__"
+     ],
+     0.1947
+    ],
+    [
+     [
+      "src/attr/_next_gen.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "inspect",
+      "__repr__"
+     ],
+     [
+      "r"
+     ],
+     0.1722
+    ],
+    [
+     [
+      "src/attr/_config.py",
+      "src/attr/setters.py"
+     ],
+     [
+      "get_run_validators",
+      "validate"
+     ],
+     [
+      "_run_validators"
+     ],
+     0.167
+    ],
+    [
+     [
+      "src/attr/converters.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "optional_converter",
+      "__call__"
+     ],
+     [
+      "inst"
+     ],
+     0.1589
+    ],
+    [
+     [
+      "src/attr/_config.py",
+      "src/attr/_make.py"
+     ],
+     [
+      "get_run_validators",
+      "validate"
+     ],
+     [
+      "_run_validators"
+     ],
+     0.1584
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "astuple",
+      "__call__"
+     ],
+     [
+      "issubclass",
+      "inst",
+      "type",
+      "TypeError"
+     ],
+     0.1533
+    ],
+    [
+     [
+      "src/attr/setters.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "validate",
+      "__repr__"
+     ],
+     [
+      "validator"
+     ],
+     0.1531
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "_get_annotations",
+      "__call__"
+     ],
+     [
+      "format"
+     ],
+     0.1515
+    ],
+    [
+     [
+      "src/attr/exceptions.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "__init__",
+      "__call__"
+     ],
+     [
+      "TypeError",
+      "msg"
+     ],
+     0.1366
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/_next_gen.py"
+     ],
+     [
+      "__init__",
+      "inspect"
+     ],
+     [
+      "inspect"
+     ],
+     0.1339
+    ],
+    [
+     [
+      "src/attr/_version_info.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "_ensure_tuple",
+      "optional"
+     ],
+     [
+      "tuple",
+      "isinstance"
+     ],
+     0.1314
+    ],
+    [
+     [
+      "src/attr/_config.py",
+      "src/attr/exceptions.py"
+     ],
+     [
+      "set_run_validators",
+      "__init__"
+     ],
+     [
+      "TypeError",
+      "msg"
+     ],
+     0.1226
+    ],
+    [
+     [
+      "src/attr/converters.py",
+      "src/attr/setters.py"
+     ],
+     [
+      "optional",
+      "convert"
+     ],
+     [
+      "Converter",
+      "converter",
+      "isinstance"
+     ],
+     0.1192
+    ],
+    [
+     [
+      "src/attr/filters.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "_split_what",
+      "__call__"
+     ],
+     [
+      "type",
+      "isinstance"
+     ],
+     0.1189
+    ],
+    [
+     [
+      "src/attr/_make.py",
+      "src/attr/filters.py"
+     ],
+     [
+      "_add_hash",
+      "_split_what"
+     ],
+     [
+      "Attribute",
+      "type"
+     ],
+     0.1151
+    ],
+    [
+     [
+      "src/attr/__init__.py",
+      "src/attr/_make.py"
+     ],
+     [
+      "_make_getattr",
+      "_add_method_dunders_safe"
+     ],
+     [
+      "Callable",
+      "AttributeError"
+     ],
+     0.1124
+    ],
+    [
+     [
+      "src/attr/_next_gen.py",
+      "src/attr/setters.py"
+     ],
+     [
+      "field",
+      "validate"
+     ],
+     [
+      "validator",
+      "attrib"
+     ],
+     0.1042
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/filters.py"
+     ],
+     [
+      "_asdict_anything",
+      "_split_what"
+     ],
+     [
+      "frozenset",
+      "type"
+     ],
+     0.1035
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/_funcs.py"
+     ],
+     [
+      "get_generic_base",
+      "has"
+     ],
+     [
+      "get_generic_base"
+     ],
+     0.1025
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/_version_info.py"
+     ],
+     [
+      "astuple",
+      "_ensure_tuple"
+     ],
+     [
+      "astuple",
+      "tuple",
+      "__class__"
+     ],
+     0.101
+    ],
+    [
+     [
+      "src/attr/converters.py",
+      "src/attr/exceptions.py"
+     ],
+     [
+      "default_if_none",
+      "__init__"
+     ],
+     [
+      "TypeError",
+      "msg"
+     ],
+     0.0907
+    ],
+    [
+     [
+      "src/attr/_config.py",
+      "src/attr/converters.py"
+     ],
+     [
+      "set_run_validators",
+      "default_if_none"
+     ],
+     [
+      "TypeError",
+      "isinstance",
+      "msg"
+     ],
+     0.0867
+    ],
+    [
+     [
+      "src/attr/_next_gen.py",
+      "src/attr/_version_info.py"
+     ],
+     [
+      "astuple",
+      "_ensure_tuple"
+     ],
+     [
+      "astuple"
+     ],
+     0.0826
+    ],
+    [
+     [
+      "src/attr/_cmp.py",
+      "src/attr/filters.py"
+     ],
+     [
+      "_check_same_type",
+      "include_"
+     ],
+     [
+      "__class__"
+     ],
+     0.0803
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/converters.py"
+     ],
+     [
+      "__init__",
+      "default_if_none"
+     ],
+     [
+      "TypeError",
+      "ValueError"
+     ],
+     0.0791
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/converters.py"
+     ],
+     [
+      "_asdict_anything",
+      "optional_converter"
+     ],
+     [
+      "val"
+     ],
+     0.075
+    ],
+    [
+     [
+      "src/attr/_cmp.py",
+      "src/attr/validators.py"
+     ],
+     [
+      "_make_operator",
+      "matches_re"
+     ],
+     [
+      "func",
+      "__name__"
+     ],
+     0.0745
+    ],
+    [
+     [
+      "src/attr/_funcs.py",
+      "src/attr/setters.py"
+     ],
+     [
+      "_asdict_anything",
+      "wrapped_pipe"
+     ],
+     [
+      "rv"
+     ],
+     0.0706
+    ],
+    [
+     [
+      "src/attr/_next_gen.py",
+      "src/attr/exceptions.py"
+     ],
+     [
+      "inspect",
+      "__str__"
+     ],
+     [
+      "msg"
+     ],
+     0.0702
+    ],
+    [
+     [
+      "src/attr/_version_info.py",
+      "src/attr/converters.py"
+     ],
+     [
+      "_ensure_tuple",
+      "to_bool"
+     ],
+     [
+      "1",
+      "isinstance"
+     ],
+     0.069
+    ],
+    [
+     [
+      "src/attr/__init__.py",
+      "src/attr/_version_info.py"
+     ],
+     [
+      "__getattr__",
+      "_from_version_string"
+     ],
+     [
+      "_from_version_string"
+     ],
+     0.0648
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/filters.py"
+     ],
+     [
+      "get_generic_base",
+      "include_"
+     ],
+     [
+      "__class__"
+     ],
+     0.0614
+    ],
+    [
+     [
+      "src/attr/__init__.py",
+      "src/attr/_next_gen.py"
+     ],
+     [
+      "__getattr__",
+      "field"
+     ],
+     [
+      "metadata"
+     ],
+     0.0558
+    ],
+    [
+     [
+      "src/attr/_version_info.py",
+      "src/attr/filters.py"
+     ],
+     [
+      "_ensure_tuple",
+      "include_"
+     ],
+     [
+      "__class__"
+     ],
+     0.0542
+    ],
+    [
+     [
+      "src/attr/_compat.py",
+      "src/attr/_config.py"
+     ],
+     [
+      "__init__",
+      "set_run_validators"
+     ],
+     [
+      "TypeError"
+     ],
+     0.0535
+    ]
+   ]
+  },
+  "click": {
+   "exit": 0,
+   "seconds": 0.94,
+   "coverage": {
+    "complete": false,
+    "python_files": 17,
+    "functions": 579,
+    "not_examined": 0,
+    "issues": [
+     "1 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "top50": [
+    [
+     [
+      "src/click/_utils.py",
+      "src/click/core.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__class__",
+      "__name__",
+      "__repr__"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/_termui_impl.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "_stream",
+      "getattr",
+      "__getattr__",
+      "Any",
+      "t"
+     ],
+     0.9538
+    ],
+    [
+     [
+      "src/click/_termui_impl.py",
+      "src/click/_winconsole.py"
+     ],
+     [
+      "writelines",
+      "writelines"
+     ],
+     [
+      "writelines",
+      "line",
+      "lines",
+      "write",
+      "Iterable"
+     ],
+     0.8846
+    ],
+    [
+     [
+      "src/click/_termui_impl.py",
+      "src/click/termui.py"
+     ],
+     [
+      "__init__",
+      "edit"
+     ],
+     [
+      "\".txt\"",
+      "editor",
+      "extension",
+      "require_save",
+      "env"
+     ],
+     0.8741
+    ],
+    [
+     [
+      "src/click/_termui_impl.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "__exit__",
+      "exc_type",
+      "exc_value",
+      "tb",
+      "BaseException"
+     ],
+     0.8693
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "__exit__",
+      "exc_type",
+      "exc_value",
+      "tb",
+      "BaseException"
+     ],
+     0.8566
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "__exit__",
+      "exc_type",
+      "exc_value",
+      "tb",
+      "BaseException"
+     ],
+     0.6634
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/types.py"
+     ],
+     [
+      "convert",
+      "convert"
+     ],
+     [
+      "convert",
+      "param",
+      "ctx"
+     ],
+     0.6237
+    ],
+    [
+     [
+      "src/click/__init__.py",
+      "src/click/core.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "\" 'Command' instead.\"",
+      "\" 'Group' instead.\"",
+      "\"'BaseCommand' is deprecated and will be removed in Click 9.0. Use\"",
+      "\"'MultiCommand' is deprecated and will be removed in Click 9.0. Use\"",
+      "\"BaseCommand\""
+     ],
+     0.5882
+    ],
+    [
+     [
+      "src/click/decorators.py",
+      "src/click/utils.py"
+     ],
+     [
+      "new_func",
+      "wrapper"
+     ],
+     [
+      "P",
+      "R",
+      "kwargs",
+      "args"
+     ],
+     0.5804
+    ],
+    [
+     [
+      "src/click/_termui_impl.py",
+      "src/click/core.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "__exit__",
+      "exc_type",
+      "exc_value",
+      "tb",
+      "BaseException"
+     ],
+     0.5767
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/core.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "__exit__",
+      "exc_type",
+      "exc_value",
+      "tb",
+      "BaseException"
+     ],
+     0.5682
+    ],
+    [
+     [
+      "src/click/types.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__init__",
+      "open_file"
+     ],
+     [
+      "lazy",
+      "atomic",
+      "\"strict\"",
+      "\"r\"",
+      "mode"
+     ],
+     0.5566
+    ],
+    [
+     [
+      "src/click/decorators.py",
+      "src/click/types.py"
+     ],
+     [
+      "callback",
+      "__call__"
+     ],
+     [
+      "param",
+      "Parameter",
+      "ctx",
+      "Context"
+     ],
+     0.5527
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/decorators.py"
+     ],
+     [
+      "group",
+      "group"
+     ],
+     [
+      "group",
+      "Group",
+      "Callable",
+      "Any",
+      "t"
+     ],
+     0.5484
+    ],
+    [
+     [
+      "src/click/_winconsole.py",
+      "src/click/formatting.py"
+     ],
+     [
+      "name",
+      "getvalue"
+     ],
+     [
+      "buffer"
+     ],
+     0.4978
+    ],
+    [
+     [
+      "src/click/exceptions.py",
+      "src/click/types.py"
+     ],
+     [
+      "__init__",
+      "__call__"
+     ],
+     [
+      "param",
+      "Parameter",
+      "ctx",
+      "Context"
+     ],
+     0.4784
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/_winconsole.py"
+     ],
+     [
+      "_get_windows_console_stream",
+      "_get_windows_console_stream"
+     ],
+     [
+      "_get_windows_console_stream",
+      "TextIO",
+      "encoding",
+      "errors",
+      "f"
+     ],
+     0.4675
+    ],
+    [
+     [
+      "src/click/_winconsole.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "getattr",
+      "__getattr__",
+      "Any",
+      "t"
+     ],
+     0.4512
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/testing.py"
+     ],
+     [
+      "isatty",
+      "should_strip_ansi"
+     ],
+     [
+      "stream",
+      "IO",
+      "Any",
+      "bool",
+      "t"
+     ],
+     0.4505
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/parser.py"
+     ],
+     [
+      "add_to_parser",
+      "__init__"
+     ],
+     [
+      "dest",
+      "nargs",
+      "obj"
+     ],
+     0.449
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/termui.py"
+     ],
+     [
+      "prompt_for_value",
+      "prompt"
+     ],
+     [
+      "confirmation_prompt",
+      "hide_input",
+      "show_default",
+      "value_proc",
+      "show_choices"
+     ],
+     0.4483
+    ],
+    [
+     [
+      "src/click/_textwrap.py",
+      "src/click/formatting.py"
+     ],
+     [
+      "indent_only",
+      "wrap_text"
+     ],
+     [
+      "indent",
+      "indent_only",
+      "initial_indent",
+      "splitlines",
+      "subsequent_indent"
+     ],
+     0.4445
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/shell_completion.py"
+     ],
+     [
+      "invoke",
+      "_resolve_context"
+     ],
+     [
+      "_protected_args",
+      "allow_extra_args",
+      "make_context",
+      "parent",
+      "resolve_command"
+     ],
+     0.4414
+    ],
+    [
+     [
+      "src/click/testing.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "getattr",
+      "__getattr__",
+      "Any",
+      "t"
+     ],
+     0.42
+    ],
+    [
+     [
+      "src/click/decorators.py",
+      "src/click/exceptions.py"
+     ],
+     [
+      "callback",
+      "__init__"
+     ],
+     [
+      "param",
+      "Parameter",
+      "ctx",
+      "Context"
+     ],
+     0.4152
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/exceptions.py"
+     ],
+     [
+      "collect_usage_pieces",
+      "__init__"
+     ],
+     [
+      "ctx",
+      "super",
+      "Context"
+     ],
+     0.3854
+    ],
+    [
+     [
+      "src/click/_termui_impl.py",
+      "src/click/testing.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "getattr",
+      "__getattr__",
+      "Any",
+      "t"
+     ],
+     0.3838
+    ],
+    [
+     [
+      "src/click/termui.py",
+      "src/click/utils.py"
+     ],
+     [
+      "secho",
+      "echo"
+     ],
+     [
+      "bytearray",
+      "nl",
+      "err",
+      "IO",
+      "bytes"
+     ],
+     0.3582
+    ],
+    [
+     [
+      "src/click/_winconsole.py",
+      "src/click/testing.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "getattr",
+      "__getattr__",
+      "Any",
+      "t"
+     ],
+     0.3557
+    ],
+    [
+     [
+      "src/click/shell_completion.py",
+      "src/click/types.py"
+     ],
+     [
+      "get_completions",
+      "shell_complete"
+     ],
+     [
+      "CompletionItem",
+      "incomplete",
+      "shell_complete",
+      "ctx"
+     ],
+     0.3539
+    ],
+    [
+     [
+      "src/click/_utils.py",
+      "src/click/types.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__name__",
+      "__repr__"
+     ],
+     0.3276
+    ],
+    [
+     [
+      "src/click/exceptions.py",
+      "src/click/termui.py"
+     ],
+     [
+      "show",
+      "secho"
+     ],
+     [
+      "err",
+      "IO",
+      "file",
+      "color",
+      "echo"
+     ],
+     0.3155
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/types.py"
+     ],
+     [
+      "_get_argv_encoding",
+      "convert"
+     ],
+     [
+      "_get_argv_encoding",
+      "getfilesystemencoding",
+      "sys"
+     ],
+     0.3136
+    ],
+    [
+     [
+      "src/click/_utils.py",
+      "src/click/testing.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__name__",
+      "__repr__"
+     ],
+     0.3084
+    ],
+    [
+     [
+      "src/click/core.py",
+      "src/click/testing.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__name__",
+      "__repr__"
+     ],
+     0.3084
+    ],
+    [
+     [
+      "src/click/decorators.py",
+      "src/click/shell_completion.py"
+     ],
+     [
+      "callback",
+      "_is_incomplete_argument"
+     ],
+     [
+      "param",
+      "Parameter",
+      "ctx",
+      "Context",
+      "bool"
+     ],
+     0.3038
+    ],
+    [
+     [
+      "src/click/exceptions.py",
+      "src/click/utils.py"
+     ],
+     [
+      "show",
+      "__init__"
+     ],
+     [
+      "IO",
+      "file",
+      "Any",
+      "t"
+     ],
+     0.3022
+    ],
+    [
+     [
+      "src/click/formatting.py",
+      "src/click/parser.py"
+     ],
+     [
+      "join_options",
+      "_normalize_opt"
+     ],
+     [
+      "_split_opt",
+      "opt",
+      "prefix"
+     ],
+     0.3021
+    ],
+    [
+     [
+      "src/click/__init__.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "\"get_binary_stream\"",
+      "\"get_text_stream\"",
+      "DeprecationWarning",
+      "stacklevel",
+      "warn"
+     ],
+     0.2755
+    ],
+    [
+     [
+      "src/click/_compat.py",
+      "src/click/termui.py"
+     ],
+     [
+      "term_len",
+      "unstyle"
+     ],
+     [
+      "strip_ansi"
+     ],
+     0.274
+    ],
+    [
+     [
+      "src/click/shell_completion.py",
+      "src/click/testing.py"
+     ],
+     [
+      "__init__",
+      "get_default_prog_name"
+     ],
+     [
+      "cli",
+      "Command"
+     ],
+     0.27
+    ],
+    [
+     [
+      "src/click/parser.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "DeprecationWarning",
+      "stacklevel",
+      "warn",
+      "warnings",
+      "AttributeError"
+     ],
+     0.2672
+    ],
+    [
+     [
+      "src/click/_winconsole.py",
+      "src/click/types.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__"
+     ],
+     0.2669
+    ],
+    [
+     [
+      "src/click/_utils.py",
+      "src/click/_winconsole.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__"
+     ],
+     0.2625
+    ],
+    [
+     [
+      "src/click/_winconsole.py",
+      "src/click/core.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__"
+     ],
+     0.2625
+    ],
+    [
+     [
+      "src/click/_termui_impl.py",
+      "src/click/formatting.py"
+     ],
+     [
+      "render_progress",
+      "__init__"
+     ],
+     [
+      "columns",
+      "get_terminal_size",
+      "max_width",
+      "shutil",
+      "width"
+     ],
+     0.2566
+    ],
+    [
+     [
+      "src/click/exceptions.py",
+      "src/click/shell_completion.py"
+     ],
+     [
+      "__init__",
+      "_is_incomplete_argument"
+     ],
+     [
+      "param",
+      "Parameter",
+      "ctx",
+      "Context"
+     ],
+     0.25
+    ],
+    [
+     [
+      "src/click/shell_completion.py",
+      "src/click/utils.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "__getattr__",
+      "Any",
+      "t"
+     ],
+     0.249
+    ],
+    [
+     [
+      "src/click/termui.py",
+      "src/click/testing.py"
+     ],
+     [
+      "getchar",
+      "_getchar"
+     ],
+     [
+      "_getchar",
+      "echo",
+      "bool"
+     ],
+     0.2486
+    ]
+   ]
+  },
+  "_pytest": {
+   "exit": 0,
+   "seconds": 2.77,
+   "coverage": {
+    "complete": false,
+    "python_files": 78,
+    "functions": 2029,
+    "not_examined": 0,
+    "issues": [
+     "6 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "top50": [
+    [
+     [
+      "src/_pytest/doctest.py",
+      "src/_pytest/python.py"
+     ],
+     [
+      "_initrequest",
+      "_initrequest"
+     ],
+     [
+      "TopRequest",
+      "_initrequest",
+      "_request",
+      "funcargs",
+      "_ispytest"
+     ],
+     0.9194
+    ],
+    [
+     [
+      "src/_pytest/pytester.py",
+      "src/_pytest/reports.py"
+     ],
+     [
+      "__getattr__",
+      "__getattr__"
+     ],
+     [
+      "__getattr__",
+      "key"
+     ],
+     0.8997
+    ],
+    [
+     [
+      "src/_pytest/nodes.py",
+      "src/_pytest/python.py"
+     ],
+     [
+      "from_parent",
+      "from_parent"
+     ],
+     [
+      "\"\"\"The public constructor.\"\"\"",
+      "from_parent",
+      "kw",
+      "Self",
+      "parent"
+     ],
+     0.8955
+    ],
+    [
+     [
+      "src/_pytest/fixtures.py",
+      "src/_pytest/mark/structures.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "node"
+     ],
+     0.8898
+    ],
+    [
+     [
+      "src/_pytest/main.py",
+      "src/_pytest/python.py"
+     ],
+     [
+      "collect",
+      "collect"
+     ],
+     [
+      "cols",
+      "direntry",
+      "with_parents",
+      "collection_path",
+      "pytest_collect_directory"
+     ],
+     0.8866
+    ],
+    [
+     [
+      "src/_pytest/setuponly.py",
+      "src/_pytest/setupplan.py"
+     ],
+     [
+      "pytest_cmdline_main",
+      "pytest_cmdline_main"
+     ],
+     [
+      "setuponly",
+      "setupshow",
+      "pytest_cmdline_main",
+      "ExitCode",
+      "option"
+     ],
+     0.8325
+    ],
+    [
+     [
+      "src/_pytest/fixtures.py",
+      "src/_pytest/pytester.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.796
+    ],
+    [
+     [
+      "src/_pytest/capture.py",
+      "src/_pytest/mark/expression.py"
+     ],
+     [
+      "__iter__",
+      "__iter__"
+     ],
+     [
+      "__iter__",
+      "Iterator"
+     ],
+     0.7902
+    ],
+    [
+     [
+      "src/_pytest/hookspec.py",
+      "src/_pytest/python.py"
+     ],
+     [
+      "pytest_pycollect_makemodule",
+      "pytest_pycollect_makemodule"
+     ],
+     [
+      "pytest_pycollect_makemodule",
+      "module_path",
+      "Module",
+      "Path",
+      "parent"
+     ],
+     0.77
+    ],
+    [
+     [
+      "src/_pytest/_code/source.py",
+      "src/_pytest/pytester.py"
+     ],
+     [
+      "__str__",
+      "__str__"
+     ],
+     [
+      "__str__",
+      "lines",
+      "\"\\n\"",
+      "join"
+     ],
+     0.7508
+    ],
+    [
+     [
+      "src/_pytest/helpconfig.py",
+      "src/_pytest/terminal.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "option_strings",
+      "nargs",
+      "dest",
+      "super",
+      "Sequence"
+     ],
+     0.7407
+    ],
+    [
+     [
+      "src/_pytest/hookspec.py",
+      "src/_pytest/stepwise.py"
+     ],
+     [
+      "pytest_sessionstart",
+      "pytest_sessionstart"
+     ],
+     [
+      "pytest_sessionstart",
+      "Session",
+      "session"
+     ],
+     0.736
+    ],
+    [
+     [
+      "src/_pytest/python.py",
+      "src/_pytest/unittest.py"
+     ],
+     [
+      "newinstance",
+      "newinstance"
+     ],
+     [
+      "newinstance",
+      "obj"
+     ],
+     0.7318
+    ],
+    [
+     [
+      "src/_pytest/hookspec.py",
+      "src/_pytest/runner.py"
+     ],
+     [
+      "pytest_runtest_makereport",
+      "pytest_runtest_makereport"
+     ],
+     [
+      "pytest_runtest_makereport",
+      "CallInfo",
+      "call",
+      "TestReport",
+      "Item"
+     ],
+     0.7304
+    ],
+    [
+     [
+      "src/_pytest/_code/code.py",
+      "src/_pytest/_code/source.py"
+     ],
+     [
+      "__getitem__",
+      "__getitem__"
+     ],
+     [
+      "slice",
+      "__getitem__",
+      "key"
+     ],
+     0.7264
+    ],
+    [
+     [
+      "src/_pytest/_code/source.py",
+      "src/_pytest/capture.py"
+     ],
+     [
+      "__iter__",
+      "__iter__"
+     ],
+     [
+      "__iter__",
+      "Iterator"
+     ],
+     0.7007
+    ],
+    [
+     [
+      "src/_pytest/_code/code.py",
+      "src/_pytest/fixtures.py"
+     ],
+     [
+      "__post_init__",
+      "__post_init__"
+     ],
+     [
+      "__post_init__"
+     ],
+     0.6874
+    ],
+    [
+     [
+      "src/_pytest/assertion/__init__.py",
+      "src/_pytest/hookspec.py"
+     ],
+     [
+      "call_assertion_pass_hook",
+      "pytest_assertion_pass"
+     ],
+     [
+      "pytest_assertion_pass",
+      "expl",
+      "orig",
+      "lineno",
+      "item"
+     ],
+     0.679
+    ],
+    [
+     [
+      "src/_pytest/fixtures.py",
+      "src/_pytest/stepwise.py"
+     ],
+     [
+      "pytest_sessionstart",
+      "pytest_sessionstart"
+     ],
+     [
+      "pytest_sessionstart",
+      "Session",
+      "session"
+     ],
+     0.6674
+    ],
+    [
+     [
+      "src/_pytest/runner.py",
+      "src/_pytest/stepwise.py"
+     ],
+     [
+      "pytest_sessionstart",
+      "pytest_sessionstart"
+     ],
+     [
+      "pytest_sessionstart",
+      "Session",
+      "session"
+     ],
+     0.6611
+    ],
+    [
+     [
+      "src/_pytest/fixtures.py",
+      "src/_pytest/python.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "baseid",
+      "Scope",
+      "argname",
+      "params",
+      "NOTSET"
+     ],
+     0.6419
+    ],
+    [
+     [
+      "src/_pytest/python.py",
+      "src/_pytest/reports.py"
+     ],
+     [
+      "repr_failure",
+      "_format_failed_longrepr"
+     ],
+     [
+      "\"tbstyle\"",
+      "_repr_failure_py",
+      "repr_failure",
+      "\"auto\"",
+      "style"
+     ],
+     0.6405
+    ],
+    [
+     [
+      "src/_pytest/config/__init__.py",
+      "src/_pytest/config/argparsing.py"
+     ],
+     [
+      "_processopt",
+      "processoption"
+     ],
+     [
+      "Argument",
+      "_processopt",
+      "dest",
+      "option"
+     ],
+     0.6359
+    ],
+    [
+     [
+      "src/_pytest/_code/code.py",
+      "src/_pytest/doctest.py"
+     ],
+     [
+      "toterminal",
+      "toterminal"
+     ],
+     [
+      "toterminal",
+      "TerminalWriter",
+      "tw",
+      "lines",
+      "line"
+     ],
+     0.6355
+    ],
+    [
+     [
+      "src/_pytest/_code/code.py",
+      "src/_pytest/reports.py"
+     ],
+     [
+      "__str__",
+      "longreprtext"
+     ],
+     [
+      "StringIO",
+      "toterminal",
+      "file",
+      "TerminalWriter",
+      "getvalue"
+     ],
+     0.634
+    ],
+    [
+     [
+      "src/_pytest/assertion/_typing.py",
+      "src/_pytest/assertion/highlight.py"
+     ],
+     [
+      "__call__",
+      "dummy_highlighter"
+     ],
+     [
+      "\"python\"",
+      "\"diff\"",
+      "lexer",
+      "source",
+      "Literal"
+     ],
+     0.63
+    ],
+    [
+     [
+      "src/_pytest/_code/source.py",
+      "src/_pytest/config/__init__.py"
+     ],
+     [
+      "__iter__",
+      "__iter__"
+     ],
+     [
+      "__iter__",
+      "iter",
+      "Iterator"
+     ],
+     0.6206
+    ],
+    [
+     [
+      "src/_pytest/mark/__init__.py",
+      "src/_pytest/mark/structures.py"
+     ],
+     [
+      "param",
+      "param"
+     ],
+     [
+      "Collection",
+      "_HiddenParam",
+      "marks",
+      "ParameterSet",
+      "MarkDecorator"
+     ],
+     0.6188
+    ],
+    [
+     [
+      "src/_pytest/_py/path.py",
+      "src/_pytest/pytester.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.6185
+    ],
+    [
+     [
+      "src/_pytest/legacypath.py",
+      "src/_pytest/pytester.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.6185
+    ],
+    [
+     [
+      "src/_pytest/_code/code.py",
+      "src/_pytest/outcomes.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__class__",
+      "__repr__"
+     ],
+     0.6168
+    ],
+    [
+     [
+      "src/_pytest/nodes.py",
+      "src/_pytest/unittest.py"
+     ],
+     [
+      "_traceback_filter",
+      "_traceback_filter"
+     ],
+     [
+      "_traceback_filter",
+      "Traceback",
+      "traceback",
+      "ExceptionInfo",
+      "excinfo"
+     ],
+     0.6051
+    ],
+    [
+     [
+      "src/_pytest/mark/structures.py",
+      "src/_pytest/pytester.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__"
+     ],
+     0.6006
+    ],
+    [
+     [
+      "src/_pytest/fixtures.py",
+      "src/_pytest/runner.py"
+     ],
+     [
+      "addfinalizer",
+      "addfinalizer"
+     ],
+     [
+      "finalizer",
+      "addfinalizer",
+      "node",
+      "Callable",
+      "object"
+     ],
+     0.5959
+    ],
+    [
+     [
+      "src/_pytest/threadexception.py",
+      "src/_pytest/unraisableexception.py"
+     ],
+     [
+      "collect_thread_exception",
+      "collect_unraisable"
+     ],
+     [
+      "cause_msg",
+      "hook_error",
+      "meta",
+      "__cause__",
+      "exc_value"
+     ],
+     0.5955
+    ],
+    [
+     [
+      "src/_pytest/mark/expression.py",
+      "src/_pytest/mark/structures.py"
+     ],
+     [
+      "__call__",
+      "__call__"
+     ],
+     [
+      "__call__",
+      "kwargs"
+     ],
+     0.5954
+    ],
+    [
+     [
+      "src/_pytest/reports.py",
+      "src/_pytest/subtests.py"
+     ],
+     [
+      "pytest_report_to_serializable",
+      "pytest_report_to_serializable"
+     ],
+     [
+      "_to_json",
+      "pytest_report_to_serializable",
+      "TestReport",
+      "report",
+      "Any"
+     ],
+     0.5937
+    ],
+    [
+     [
+      "src/_pytest/outcomes.py",
+      "src/_pytest/reports.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__class__",
+      "__repr__",
+      "__name__"
+     ],
+     0.5932
+    ],
+    [
+     [
+      "src/_pytest/runner.py",
+      "src/_pytest/terminal.py"
+     ],
+     [
+      "pytest_report_teststatus",
+      "pytest_report_teststatus"
+     ],
+     [
+      "\"s\"",
+      "\"E\"",
+      "\"error\"",
+      "BaseReport",
+      "\"setup\""
+     ],
+     0.5927
+    ],
+    [
+     [
+      "src/_pytest/config/argparsing.py",
+      "src/_pytest/helpconfig.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "option_strings",
+      "nargs",
+      "dest",
+      "super",
+      "Sequence"
+     ],
+     0.5911
+    ],
+    [
+     [
+      "src/_pytest/_io/pprint.py",
+      "src/_pytest/_py/path.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "__init__"
+     ],
+     0.5809
+    ],
+    [
+     [
+      "src/_pytest/hookspec.py",
+      "src/_pytest/main.py"
+     ],
+     [
+      "pytest_collection",
+      "pytest_collection"
+     ],
+     [
+      "pytest_collection",
+      "Session",
+      "session"
+     ],
+     0.574
+    ],
+    [
+     [
+      "src/_pytest/_code/source.py",
+      "src/_pytest/mark/expression.py"
+     ],
+     [
+      "__len__",
+      "__len__"
+     ],
+     [
+      "__len__"
+     ],
+     0.5678
+    ],
+    [
+     [
+      "src/_pytest/capture.py",
+      "src/_pytest/python_api.py"
+     ],
+     [
+      "start",
+      "__repr__"
+     ],
+     [
+      "NotImplementedError"
+     ],
+     0.5613
+    ],
+    [
+     [
+      "src/_pytest/config/argparsing.py",
+      "src/_pytest/terminal.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "option_strings",
+      "nargs",
+      "dest",
+      "super",
+      "Sequence"
+     ],
+     0.558
+    ],
+    [
+     [
+      "src/_pytest/cacheprovider.py",
+      "src/_pytest/stepwise.py"
+     ],
+     [
+      "pytest_sessionfinish",
+      "pytest_sessionfinish"
+     ],
+     [
+      "\"workerinput\"",
+      "cache",
+      "pytest_sessionfinish",
+      "getoption",
+      "Session"
+     ],
+     0.5547
+    ],
+    [
+     [
+      "src/_pytest/debugging.py",
+      "src/_pytest/doctest.py"
+     ],
+     [
+      "pytest_exception_interact",
+      "_disable_output_capturing_for_darwin"
+     ],
+     [
+      "in_",
+      "read_global_capture",
+      "suspend_global_capture",
+      "capman",
+      "\"capturemanager\""
+     ],
+     0.5538
+    ],
+    [
+     [
+      "src/_pytest/capture.py",
+      "src/_pytest/config/__init__.py"
+     ],
+     [
+      "__iter__",
+      "__iter__"
+     ],
+     [
+      "__iter__",
+      "Iterator"
+     ],
+     0.553
+    ],
+    [
+     [
+      "src/_pytest/cacheprovider.py",
+      "src/_pytest/main.py"
+     ],
+     [
+      "pytest_cmdline_main",
+      "pytest_cmdline_main"
+     ],
+     [
+      "wrap_session",
+      "pytest_cmdline_main",
+      "ExitCode",
+      "Config",
+      "config"
+     ],
+     0.5457
+    ],
+    [
+     [
+      "src/_pytest/doctest.py",
+      "src/_pytest/nodes.py"
+     ],
+     [
+      "reportinfo",
+      "reportinfo"
+     ],
+     [
+      "reportinfo",
+      "PathLike",
+      "os",
+      "tuple"
+     ],
+     0.5451
+    ]
+   ]
+  },
+  "rich": {
+   "exit": 0,
+   "seconds": 2.4,
+   "coverage": {
+    "complete": false,
+    "python_files": 100,
+    "functions": 912,
+    "not_examined": 0,
+    "issues": [
+     "2 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "top50": [
+    [
+     [
+      "src/rich/bar.py",
+      "src/rich/progress_bar.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "4",
+      "Measurement",
+      "max_width",
+      "ConsoleOptions"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/rich/live.py",
+      "src/rich/progress.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "exc_tb",
+      "exc_val",
+      "stop",
+      "__exit__",
+      "BaseException"
+     ],
+     0.9657
+    ],
+    [
+     [
+      "src/rich/live.py",
+      "src/rich/status.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "exc_tb",
+      "exc_val",
+      "stop",
+      "__exit__",
+      "BaseException"
+     ],
+     0.9657
+    ],
+    [
+     [
+      "src/rich/progress.py",
+      "src/rich/status.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "exc_tb",
+      "exc_val",
+      "stop",
+      "__exit__",
+      "BaseException"
+     ],
+     0.9657
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/styled.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "renderable",
+      "\"ConsoleOptions\"",
+      "Measurement",
+      "\"Console\""
+     ],
+     0.8968
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/control.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.8819
+    ],
+    [
+     [
+      "src/rich/__main__.py",
+      "src/rich/palette.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"\u2584\"",
+      "h",
+      "hls_to_rgb",
+      "b1",
+      "b2"
+     ],
+     0.8703
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/constrain.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "measurement",
+      "__rich_measure__",
+      "renderable",
+      "\"ConsoleOptions\"",
+      "Measurement"
+     ],
+     0.8277
+    ],
+    [
+     [
+      "src/rich/_null_file.py",
+      "src/rich/progress.py"
+     ],
+     [
+      "writable",
+      "writable"
+     ],
+     [
+      "writable",
+      "bool"
+     ],
+     0.8225
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/emoji.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.814
+    ],
+    [
+     [
+      "src/rich/spinner.py",
+      "src/rich/styled.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "\"ConsoleOptions\"",
+      "Measurement",
+      "\"Console\"",
+      "get"
+     ],
+     0.8087
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/live.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "exc_tb",
+      "exc_val",
+      "__exit__",
+      "BaseException",
+      "TracebackType"
+     ],
+     0.8086
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/progress.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "exc_tb",
+      "exc_val",
+      "__exit__",
+      "BaseException",
+      "TracebackType"
+     ],
+     0.8086
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/status.py"
+     ],
+     [
+      "__exit__",
+      "__exit__"
+     ],
+     [
+      "exc_tb",
+      "exc_val",
+      "__exit__",
+      "BaseException",
+      "TracebackType"
+     ],
+     0.8086
+    ],
+    [
+     [
+      "src/rich/__main__.py",
+      "src/rich/rule.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "ConsoleOptions",
+      "options",
+      "1"
+     ],
+     0.8001
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/spinner.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.7827
+    ],
+    [
+     [
+      "src/rich/color.py",
+      "src/rich/emoji.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__"
+     ],
+     0.7516
+    ],
+    [
+     [
+      "src/rich/bar.py",
+      "src/rich/rule.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "ConsoleOptions",
+      "options",
+      "Console"
+     ],
+     0.7497
+    ],
+    [
+     [
+      "src/rich/progress_bar.py",
+      "src/rich/rule.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "ConsoleOptions",
+      "options",
+      "Console"
+     ],
+     0.7497
+    ],
+    [
+     [
+      "src/rich/constrain.py",
+      "src/rich/styled.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "renderable",
+      "\"ConsoleOptions\"",
+      "Measurement",
+      "\"Console\""
+     ],
+     0.7422
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/containers.py"
+     ],
+     [
+      "renderables",
+      "__init__"
+     ],
+     [
+      "_renderables",
+      "renderables",
+      "\"RenderableType\"",
+      "List"
+     ],
+     0.7407
+    ],
+    [
+     [
+      "src/rich/__main__.py",
+      "src/rich/bar.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "max_width",
+      "ConsoleOptions",
+      "options"
+     ],
+     0.7392
+    ],
+    [
+     [
+      "src/rich/__main__.py",
+      "src/rich/progress_bar.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "max_width",
+      "ConsoleOptions",
+      "options"
+     ],
+     0.7392
+    ],
+    [
+     [
+      "src/rich/_null_file.py",
+      "src/rich/containers.py"
+     ],
+     [
+      "__iter__",
+      "__iter__"
+     ],
+     [
+      "Iterator",
+      "__iter__",
+      "iter"
+     ],
+     0.7289
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/spinner.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "\"ConsoleOptions\"",
+      "Measurement",
+      "\"Console\"",
+      "get"
+     ],
+     0.7252
+    ],
+    [
+     [
+      "src/rich/containers.py",
+      "src/rich/emoji.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.7208
+    ],
+    [
+     [
+      "src/rich/control.py",
+      "src/rich/segment.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "segment",
+      "\"Console\"",
+      "__rich_console__"
+     ],
+     0.6918
+    ],
+    [
+     [
+      "src/rich/control.py",
+      "src/rich/spinner.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.6903
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/emoji.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.6898
+    ],
+    [
+     [
+      "src/rich/style.py",
+      "src/rich/text.py"
+     ],
+     [
+      "on",
+      "on"
+     ],
+     [
+      "from_meta",
+      "on",
+      "handlers",
+      "meta",
+      "key"
+     ],
+     0.6867
+    ],
+    [
+     [
+      "src/rich/emoji.py",
+      "src/rich/style.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.6861
+    ],
+    [
+     [
+      "src/rich/__init__.py",
+      "src/rich/console.py"
+     ],
+     [
+      "print_json",
+      "print_json"
+     ],
+     [
+      "allow_nan",
+      "check_circular",
+      "ensure_ascii",
+      "print_json",
+      "skip_keys"
+     ],
+     0.6841
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/segment.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.6711
+    ],
+    [
+     [
+      "src/rich/emoji.py",
+      "src/rich/text.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.6569
+    ],
+    [
+     [
+      "src/rich/__init__.py",
+      "src/rich/json.py"
+     ],
+     [
+      "print_json",
+      "__init__"
+     ],
+     [
+      "allow_nan",
+      "check_circular",
+      "ensure_ascii",
+      "skip_keys",
+      "json"
+     ],
+     0.6368
+    ],
+    [
+     [
+      "src/rich/emoji.py",
+      "src/rich/rule.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.6363
+    ],
+    [
+     [
+      "src/rich/containers.py",
+      "src/rich/control.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.6303
+    ],
+    [
+     [
+      "src/rich/progress.py",
+      "src/rich/progress_bar.py"
+     ],
+     [
+      "percentage",
+      "percentage_completed"
+     ],
+     [
+      "100.0",
+      "completed",
+      "0.0",
+      "total",
+      "min"
+     ],
+     0.6267
+    ],
+    [
+     [
+      "src/rich/syntax.py",
+      "src/rich/table.py"
+     ],
+     [
+      "__set__",
+      "padding"
+     ],
+     [
+      "_padding",
+      "Padding",
+      "PaddingDimensions",
+      "unpack",
+      "padding"
+     ],
+     0.6169
+    ],
+    [
+     [
+      "src/rich/__main__.py",
+      "src/rich/styled.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "\"Console\"",
+      "options",
+      "console"
+     ],
+     0.6163
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/color.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__"
+     ],
+     0.6118
+    ],
+    [
+     [
+      "src/rich/control.py",
+      "src/rich/emoji.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.6083
+    ],
+    [
+     [
+      "src/rich/constrain.py",
+      "src/rich/spinner.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "\"ConsoleOptions\"",
+      "Measurement",
+      "\"Console\"",
+      "get"
+     ],
+     0.6002
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/rule.py"
+     ],
+     [
+      "rule",
+      "__init__"
+     ],
+     [
+      "\"\u2500\"",
+      "\"rule.line\"",
+      "characters",
+      "AlignMethod",
+      "align"
+     ],
+     0.5981
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/padding.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "measurement",
+      "__rich_measure__",
+      "renderable",
+      "\"ConsoleOptions\"",
+      "Measurement"
+     ],
+     0.5942
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/constrain.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "\"Console\"",
+      "__rich_console__",
+      "options"
+     ],
+     0.594
+    ],
+    [
+     [
+      "src/rich/emoji.py",
+      "src/rich/styled.py"
+     ],
+     [
+      "__rich_console__",
+      "__rich_console__"
+     ],
+     [
+      "get_style",
+      "\"RenderResult\"",
+      "\"ConsoleOptions\"",
+      "Segment",
+      "\"Console\""
+     ],
+     0.5901
+    ],
+    [
+     [
+      "src/rich/__main__.py",
+      "src/rich/spinner.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "__rich_measure__",
+      "Measurement",
+      "\"Console\"",
+      "options",
+      "console"
+     ],
+     0.5887
+    ],
+    [
+     [
+      "src/rich/console.py",
+      "src/rich/panel.py"
+     ],
+     [
+      "__rich_measure__",
+      "__rich_measure__"
+     ],
+     [
+      "measure_renderables",
+      "\"Measurement\"",
+      "renderables",
+      "__rich_measure__",
+      "\"ConsoleOptions\""
+     ],
+     0.5879
+    ],
+    [
+     [
+      "src/rich/align.py",
+      "src/rich/containers.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "__repr__",
+      "r"
+     ],
+     0.5867
+    ]
+   ]
+  },
+  "sqlalchemy": {
+   "exit": 0,
+   "seconds": 13.76,
+   "coverage": {
+    "complete": false,
+    "python_files": 245,
+    "functions": 10994,
+    "not_examined": 0,
+    "issues": [
+     "69 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "top50": [
+    [
+     [
+      "src/sqlalchemy/connectors/aioodbc.py",
+      "src/sqlalchemy/dialects/oracle/oracledb.py"
+     ],
+     [
+      "autocommit",
+      "autocommit"
+     ],
+     [
+      "_connection",
+      "autocommit"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/connectors/aioodbc.py",
+      "src/sqlalchemy/dialects/postgresql/psycopg.py"
+     ],
+     [
+      "autocommit",
+      "autocommit"
+     ],
+     [
+      "_connection",
+      "autocommit"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/connectors/asyncio.py",
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py"
+     ],
+     [
+      "rollback",
+      "rollback"
+     ],
+     [
+      "rollback"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/connectors/asyncio.py",
+      "src/sqlalchemy/engine/interfaces.py"
+     ],
+     [
+      "rollback",
+      "rollback"
+     ],
+     [
+      "rollback"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/connectors/asyncio.py",
+      "src/sqlalchemy/pool/base.py"
+     ],
+     [
+      "rollback",
+      "rollback"
+     ],
+     [
+      "rollback"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/connectors/pyodbc.py",
+      "src/sqlalchemy/dialects/mssql/mssqlpython.py"
+     ],
+     [
+      "check_quote",
+      "check_quote"
+     ],
+     [
+      "\"{\"",
+      "\"}\"",
+      "\"}}\"",
+      "check_quote",
+      "\"{%s}\""
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mssql/aioodbc.py",
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py"
+     ],
+     [
+      "create_server_side_cursor",
+      "create_server_side_cursor"
+     ],
+     [
+      "server_side",
+      "create_server_side_cursor",
+      "_dbapi_connection",
+      "cursor"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mssql/base.py",
+      "src/sqlalchemy/dialects/oracle/base.py"
+     ],
+     [
+      "_get_limit_or_fetch",
+      "_get_limit_or_fetch"
+     ],
+     [
+      "_get_limit_or_fetch",
+      "_fetch_clause",
+      "_limit_clause",
+      "select"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mssql/base.py",
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py"
+     ],
+     [
+      "get_isolation_level_values",
+      "get_isolation_level_values"
+     ],
+     [
+      "_isolation_lookup",
+      "get_isolation_level_values",
+      "dbapi_connection"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mssql/base.py",
+      "src/sqlalchemy/dialects/sqlite/base.py"
+     ],
+     [
+      "get_isolation_level_values",
+      "get_isolation_level_values"
+     ],
+     [
+      "_isolation_lookup",
+      "get_isolation_level_values",
+      "dbapi_connection"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mysql/aiomysql.py",
+      "src/sqlalchemy/dialects/mysql/asyncmy.py"
+     ],
+     [
+      "close",
+      "close"
+     ],
+     [
+      "ensure_closed",
+      "_connection",
+      "await_",
+      "close"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mysql/aiomysql.py",
+      "src/sqlalchemy/dialects/sqlite/aiosqlite.py"
+     ],
+     [
+      "do_terminate",
+      "do_terminate"
+     ],
+     [
+      "do_terminate",
+      "terminate",
+      "DBAPIConnection",
+      "dbapi_connection"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mysql/asyncmy.py",
+      "src/sqlalchemy/dialects/sqlite/aiosqlite.py"
+     ],
+     [
+      "do_terminate",
+      "do_terminate"
+     ],
+     [
+      "do_terminate",
+      "terminate",
+      "DBAPIConnection",
+      "dbapi_connection"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mysql/dml.py",
+      "src/sqlalchemy/dialects/postgresql/dml.py"
+     ],
+     [
+      "apply_to_insert",
+      "apply_to_insert"
+     ],
+     [
+      "StandardInsert",
+      "append_replacing_same_type",
+      "\"post_values\"",
+      "apply_syntax_extension_point",
+      "apply_to_insert"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/mysql/mariadbconnector.py",
+      "src/sqlalchemy/dialects/mysql/mysqlconnector.py"
+     ],
+     [
+      "create_server_side_cursor",
+      "create_server_side_cursor"
+     ],
+     [
+      "buffered",
+      "create_server_side_cursor",
+      "_dbapi_connection",
+      "DBAPICursor",
+      "cursor"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/oracle/cx_oracle.py",
+      "src/sqlalchemy/dialects/postgresql/pg8000.py"
+     ],
+     [
+      "get_dbapi_type",
+      "get_dbapi_type"
+     ],
+     [
+      "get_dbapi_type",
+      "INTERVAL",
+      "dbapi"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/oracle/cx_oracle.py",
+      "src/sqlalchemy/sql/sqltypes.py"
+     ],
+     [
+      "get_dbapi_type",
+      "get_dbapi_type"
+     ],
+     [
+      "STRING",
+      "get_dbapi_type",
+      "dbapi"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/oracle/oracledb.py",
+      "src/sqlalchemy/dialects/postgresql/psycopg.py"
+     ],
+     [
+      "_executemany_async",
+      "_executemany_async"
+     ],
+     [
+      "_executemany_async",
+      "seq_of_parameters",
+      "operation",
+      "_cursor",
+      "executemany"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/oracle/types.py",
+      "src/sqlalchemy/sql/sqltypes.py"
+     ],
+     [
+      "get_dbapi_type",
+      "get_dbapi_type"
+     ],
+     [
+      "NUMBER",
+      "get_dbapi_type",
+      "dbapi"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/_psycopg_common.py",
+      "src/sqlalchemy/dialects/postgresql/pg8000.py"
+     ],
+     [
+      "get_isolation_level_values",
+      "get_isolation_level_values"
+     ],
+     [
+      "\"READ UNCOMMITTED\"",
+      "\"REPEATABLE READ\"",
+      "\"READ COMMITTED\"",
+      "\"SERIALIZABLE\"",
+      "\"AUTOCOMMIT\""
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/array.py",
+      "src/sqlalchemy/sql/elements.py"
+     ],
+     [
+      "_select_iterable",
+      "_select_iterable"
+     ],
+     [
+      "_SelectIterable",
+      "_select_iterable"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py",
+      "src/sqlalchemy/dialects/postgresql/psycopg2.py"
+     ],
+     [
+      "set_isolation_level",
+      "set_isolation_level"
+     ],
+     [
+      "_isolation_lookup",
+      "set_isolation_level",
+      "level",
+      "dbapi_connection"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py",
+      "src/sqlalchemy/dialects/sqlite/base.py"
+     ],
+     [
+      "get_isolation_level_values",
+      "get_isolation_level_values"
+     ],
+     [
+      "_isolation_lookup",
+      "get_isolation_level_values",
+      "dbapi_connection"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py",
+      "src/sqlalchemy/engine/interfaces.py"
+     ],
+     [
+      "rollback",
+      "rollback"
+     ],
+     [
+      "rollback"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/asyncpg.py",
+      "src/sqlalchemy/pool/base.py"
+     ],
+     [
+      "rollback",
+      "rollback"
+     ],
+     [
+      "rollback"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/pg8000.py",
+      "src/sqlalchemy/dialects/postgresql/psycopg.py"
+     ],
+     [
+      "_dialect_specific_select_one",
+      "_dialect_specific_select_one"
+     ],
+     [
+      "_dialect_specific_select_one",
+      "\";\""
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/pg8000.py",
+      "src/sqlalchemy/testing/fixtures/sql.py"
+     ],
+     [
+      "description",
+      "description"
+     ],
+     [
+      "description",
+      "cursor"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/dialects/postgresql/psycopg.py",
+      "src/sqlalchemy/dialects/postgresql/psycopg2.py"
+     ],
+     [
+      "to_range",
+      "to_range"
+     ],
+     [
+      "_bounds",
+      "_lower",
+      "_upper",
+      "\"[)\"",
+      "to_range"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/engine/_row_cy.py",
+      "src/sqlalchemy/util/_collections.py"
+     ],
+     [
+      "__len__",
+      "__len__"
+     ],
+     [
+      "_data",
+      "__len__"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/engine/interfaces.py",
+      "src/sqlalchemy/pool/base.py"
+     ],
+     [
+      "rollback",
+      "rollback"
+     ],
+     [
+      "rollback"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/engine/row.py",
+      "src/sqlalchemy/ext/associationproxy.py"
+     ],
+     [
+      "__repr__",
+      "__repr__"
+     ],
+     [
+      "repr",
+      "__repr__"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/associationproxy.py",
+      "src/sqlalchemy/pool/base.py"
+     ],
+     [
+      "info",
+      "info"
+     ],
+     [
+      "_InfoType",
+      "info"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/base.py",
+      "src/sqlalchemy/orm/instrumentation.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/base.py",
+      "src/sqlalchemy/orm/path_registry.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/base.py",
+      "src/sqlalchemy/orm/strategy_options.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/base.py",
+      "src/sqlalchemy/sql/selectable.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/base.py",
+      "src/sqlalchemy/testing/assertions.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/base.py",
+      "src/sqlalchemy/testing/pickleable.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/scoping.py",
+      "src/sqlalchemy/ext/asyncio/session.py"
+     ],
+     [
+      "identity_map",
+      "identity_map"
+     ],
+     [
+      "IdentityMap",
+      "_proxied",
+      "identity_map",
+      "attr"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/scoping.py",
+      "src/sqlalchemy/orm/scoping.py"
+     ],
+     [
+      "identity_map",
+      "identity_map"
+     ],
+     [
+      "IdentityMap",
+      "_proxied",
+      "identity_map",
+      "attr"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/ext/asyncio/session.py",
+      "src/sqlalchemy/orm/scoping.py"
+     ],
+     [
+      "identity_map",
+      "identity_map"
+     ],
+     [
+      "IdentityMap",
+      "_proxied",
+      "identity_map",
+      "attr"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/instrumentation.py",
+      "src/sqlalchemy/orm/path_registry.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/instrumentation.py",
+      "src/sqlalchemy/orm/strategy_options.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/instrumentation.py",
+      "src/sqlalchemy/sql/selectable.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/instrumentation.py",
+      "src/sqlalchemy/testing/assertions.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/instrumentation.py",
+      "src/sqlalchemy/testing/pickleable.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/path_registry.py",
+      "src/sqlalchemy/orm/strategy_options.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/path_registry.py",
+      "src/sqlalchemy/sql/selectable.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/path_registry.py",
+      "src/sqlalchemy/testing/assertions.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ],
+    [
+     [
+      "src/sqlalchemy/orm/path_registry.py",
+      "src/sqlalchemy/testing/pickleable.py"
+     ],
+     [
+      "__hash__",
+      "__hash__"
+     ],
+     [
+      "__hash__",
+      "id"
+     ],
+     1.0
+    ]
+   ]
+  },
+  "ElevenPowers": {
+   "exit": 0,
+   "seconds": 33.26,
+   "coverage": {
+    "complete": false,
+    "python_files": 1456,
+    "functions": 6395,
+    "not_examined": 3,
+    "issues": [
+     "3 non-Python source files were not examined",
+     "66 tokens held by more than 200 functions were skipped",
+     "no declared tests command: add a check to each entry before certifying it"
+    ]
+   },
+   "stderr": "",
+   "top50": [
+    [
+     [
+      "eval/multistage_cases/access_policy/oracle/groups/base_policy.py",
+      "eval/multistage_cases/access_policy/oracle/groups/s6_multi_parent.py"
+     ],
+     [
+      "policy",
+      "policy"
+     ],
+     [
+      "DATA",
+      "param",
+      "load_dict",
+      "TEXT",
+      "parse_policy"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/eventlog/start/src/eventlog/index.py",
+      "eval/multistage_cases/eventlog/start/src/eventlog/segment.py"
+     ],
+     [
+      "close",
+      "close"
+     ],
+     [
+      "_file",
+      "close"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g0_render.py",
+      "eval/multistage_cases/marklite/oracle/groups/g2_attr_quotes.py"
+     ],
+     [
+      "tags",
+      "tags"
+     ],
+     [
+      "Tags",
+      "feed",
+      "attrs",
+      "html",
+      "tag"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g0_toc.py",
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g0_toc.py",
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_option.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g0_toc.py",
+      "eval/multistage_cases/marklite/oracle/groups/g3_toc_depth.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g0_toc.py",
+      "eval/multistage_cases/marklite/oracle/groups/g5_strike_toc.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py",
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_option.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py",
+      "eval/multistage_cases/marklite/oracle/groups/g3_toc_depth.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_default.py",
+      "eval/multistage_cases/marklite/oracle/groups/g5_strike_toc.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_option.py",
+      "eval/multistage_cases/marklite/oracle/groups/g3_toc_depth.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g1_prefix_option.py",
+      "eval/multistage_cases/marklite/oracle/groups/g5_strike_toc.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/marklite/oracle/groups/g3_toc_depth.py",
+      "eval/multistage_cases/marklite/oracle/groups/g5_strike_toc.py"
+     ],
+     [
+      "flatten",
+      "flatten"
+     ],
+     [
+      "\"children\"",
+      "flatten",
+      "getattr",
+      "entries",
+      "entry"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/throttle/oracle/groups/s5_monotonic_clock.py",
+      "eval/multistage_cases/throttle/oracle/groups/s5_monotonic_report.py"
+     ],
+     [
+      "monotonic",
+      "monotonic"
+     ],
+     [
+      "at",
+      "monotonic"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/throttle/oracle/groups/s5_monotonic_clock.py",
+      "eval/multistage_v3/parcelpost/start/src/parcelpost/core/clock.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "at",
+      "__init__"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/throttle/oracle/groups/s5_monotonic_report.py",
+      "eval/multistage_v3/parcelpost/start/src/parcelpost/core/clock.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "at",
+      "__init__"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/throttle/start/src/throttle/clock.py",
+      "eval/multistage_v3/hotel_desk/start/src/hoteldesk/clock.py"
+     ],
+     [
+      "now",
+      "now"
+     ],
+     [
+      "_now",
+      "now"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_cases/tinyroute/start/src/tinyroute/errors.py",
+      "eval/multistage_v3/gradebook/start/src/gradebook/errors.py"
+     ],
+     [
+      "__init__",
+      "__init__"
+     ],
+     [
+      "super",
+      "__init__"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/gradebook/start/src/gradebook/model/course.py",
+      "eval/multistage_v3/gradebook/start/src/gradebook/reports/progress.py"
+     ],
+     [
+      "category",
+      "category"
+     ],
+     [
+      "categories",
+      "category",
+      "KeyError"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/cancel_hold.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/cancel_ready_hold.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/exempt_default.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/exempt_option.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/export_uk.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/export_uk_join.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/fine_line.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/grace_fines.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/grace_report.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/holds_fifteen.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/holds_limit_message.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/ledger_v2.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/overpay_api.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/overpay_cli.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/renew_blocked.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_desk.py",
+      "eval/multistage_v3/library_loans/oracle/groups/renew_blocked_cli.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/cancel_hold.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/cancel_ready_hold.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/exempt_default.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/exempt_option.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/export_uk.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/export_uk_join.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/fine_line.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/grace_fines.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/grace_report.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/holds_fifteen.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/holds_limit_message.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/ledger_v2.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/overpay_api.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ],
+    [
+     [
+      "eval/multistage_v3/library_loans/oracle/groups/base_money.py",
+      "eval/multistage_v3/library_loans/oracle/groups/overpay_cli.py"
+     ],
+     [
+      "title",
+      "title"
+     ],
+     [
+      "'8.99'",
+      "'Someone'",
+      "'CEN'",
+      "'price'",
+      "'author'"
+     ],
+     1.0
+    ]
+   ]
+  }
+ }
+}

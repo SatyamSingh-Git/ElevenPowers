@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-11-05 — Proposing rules kept outside functions: tried, not built.**
+Proposals compare functions only. In 14 of the 31 never-read v3
+dependents they miss, one side keeps the rule in no function, such as a
+module-level table of statuses
+([plan and results](../results/rule-groups-scopes/README.md), plan
+committed before the candidate existed, $0).
+- Adding each module's and class's own statements as units covered 4 of
+  those 14. It pushed 7 others out of the top 50, so coverage stayed 20
+  of 51, under the pre-set bar of 23.
+- On real projects, most of the new pairs were boilerplate or generated
+  tables.
+
+The code was reverted. Its diff, tests and mutants are kept with the
+results.
+
 **2026-11-05 — Rule-group proposals run on real projects now.**
 `ep_milestones --propose` had been run only on the twelve v3 cases. On six
 real ones (`attr`, `click`, `_pytest`, `rich`, `sqlalchemy`, ElevenPowers;

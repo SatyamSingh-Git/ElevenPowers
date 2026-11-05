@@ -2136,6 +2136,12 @@ Until then any contributor can start on an open problem below.
        order that followed the hash seed. Protocol-method pairs head real
        lists (44% of `click`'s top 50), so real review takes more
        rejecting than v3 suggests.
+     - **Rules kept outside functions** (2026-11-05, $0,
+       [results](results/rule-groups-scopes/README.md)). In 14 of the 31
+       uncovered never-read dependents, one side keeps the rule in no
+       function, such as a module-level table. Adding module and class
+       bodies covered 4 of those 14 but pushed 7 others out: 20 of 51 at
+       K = 50 either way, under the pre-set bar of 23. Not built.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10
