@@ -18,6 +18,15 @@ def test_labelled_scope_cases(case):
     assert bool(reason) is case.should_ask, f"{case.name}: {case.why}"
 
 
+def test_a_path_keeps_the_dot_that_begins_its_name(tmp_path):
+    from core.scope import normalise
+    (tmp_path / '.github' / 'workflows').mkdir(parents=True)
+    assert normalise(str(tmp_path / '.github/workflows/ci.yml'), tmp_path) == '.github/workflows/ci.yml'
+    assert normalise('.bazelrc') == '.bazelrc'
+    assert normalise('./src/a.py') == 'src/a.py' and normalise('/src/a.py') == 'src/a.py'
+    assert normalise(str(tmp_path), tmp_path) == ''
+
+
 def test_area_treats_a_test_tree_as_mirroring_its_source_tree():
     assert area("tests/auth/test_session.py") == area("src/auth/session.py")
 

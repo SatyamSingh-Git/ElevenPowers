@@ -51,7 +51,9 @@ def normalise(path: str, root: Path | None = None) -> str:
             text = str(Path(path).resolve().relative_to(Path(root).resolve())).replace("\\", "/")
         except (ValueError, OSError):
             pass
-    return text.lstrip("./")
+    # Leading `./` and `/` only: lstrip("./") also ate the dot of `.github` and `.bazelrc`.
+    text = re.sub(r"^(?:\./|/)+", "", text)
+    return "" if text == "." else text
 
 
 def tokens(text: str) -> set[str]:

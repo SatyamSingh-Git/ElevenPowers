@@ -192,6 +192,13 @@ def test_before_an_edit_a_marked_rule_names_the_other_file_that_keeps_it(tmp_pat
             'Change them together, or say why one should differ.') in brief, brief
 
 
+def test_a_marked_file_in_a_dot_folder_gets_its_note(tmp_path):
+    # CI workflows are a common home for these rules, and `.github` once lost its dot on the way in.
+    from tests.test_rule_groups import _brief
+    root = marked(tmp_path, {'.github/workflows/ci.yml': '# LINT.IfChange\npython: "3.11"\n# LINT.ThenChange(//config/upload.py)\n'})
+    assert 'Marked rule unnamed (.github/workflows/ci.yml lines 1-3)' in _brief(root, '.github/workflows/ci.yml')
+
+
 def test_a_file_with_no_marked_rule_gets_no_marked_note(tmp_path):
     from tests.test_rule_groups import _brief
     assert 'Marked rule' not in _brief(marked(tmp_path), 'app/names.py')
