@@ -286,27 +286,48 @@ def on_post_tool(payload: dict, root: Path) -> int:
                 text = deliver(Ledger.load(root))
                 if text:
                     _emit('PostToolUse', additionalContext=text)
-            from .milestones.definition import configured, rules_naming
-            from .milestones.marked import present
-            ledger = Ledger.load(root) if tool in COMMAND_TOOLS else None
-            if ledger is not None and not configured(root) and ledger.marked is None:
-                # Asked once per task, so a project with no rules pays one search, not one per command.
-                ledger.marked = present(root)
-                ledger.save()
-            if ledger is not None and (configured(root) or ledger.marked):
-                # Agents also write files by running scripts, and no Edit brief fires for those:
-                # in the acted-on pilot, three of six rules-arm runs never saw the rule this way.
-                notes = {path: rules_naming(root, path) for path in _since_task_opened(ledger, root)
-                         if path not in ledger.briefed}
-                notes = {path: note for path, note in notes.items() if note}
-                if notes:
-                    ledger.briefed.extend(notes)
-                    ledger.save()
-                    _emit('PostToolUse', additionalContext='\n'.join(notes.values()))
+            if tool in COMMAND_TOOLS:
+                _rule_notes_after_shell(root)
         fields = transport.fields_of(messages)
         if fields:
             _emit('PostToolUse', **fields)
         return code
+
+
+def _rule_notes_after_shell(root: Path) -> None:
+    """Agents also write files by running scripts, and no Edit brief fires for those: in the
+    acted-on pilot, three of six rules-arm runs never saw the rule this way."""
+    from .milestones.definition import configured, rules_naming
+    from .milestones.marked import present
+    ledger = Ledger.load(root)
+    if not configured(root) and ledger.marked is None:
+        # Asked once per task, and with no ledger held: the search can take seconds.
+        found = present(root)
+        if found is not None:
+            ledger = Ledger.update(root, lambda current: setattr(current, 'marked', found))
+    if not (configured(root) or ledger.marked):
+        return
+    started = time.time()
+    notes = {}
+    for path in _since_task_opened(ledger, root):
+        try:
+            # A file read after an earlier command and not written since is not read again.
+            if path in ledger.briefed or (root / path).stat().st_mtime < ledger.rules_checked_at:
+                continue
+        except OSError:
+            continue
+        note = rules_naming(root, path)
+        if note:
+            notes[path] = note
+    said = {}
+
+    def record(current):
+        said.update({path: note for path, note in notes.items() if path not in current.briefed})
+        current.briefed.extend(said)
+        current.rules_checked_at = started
+    Ledger.update(root, record)
+    if said:
+        _emit('PostToolUse', additionalContext='\n'.join(said.values()))
 
 
 def _on_post_tool(payload: dict, root: Path) -> int:

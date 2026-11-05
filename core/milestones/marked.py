@@ -29,7 +29,7 @@ def present(root):
     try:
         done = run(['git', 'grep', '-q', '--untracked', '-F', '-e', 'LINT.ThenChange'], cwd=root, timeout=10, shell=False)
     except (OSError, subprocess.SubprocessError):
-        return False
+        return None     # not an answer, so not one to keep for the task
     return done.returncode == 0
 
 
@@ -44,7 +44,8 @@ def read(root, path, text=None):
         full = safe_path(root, path)
         if text is None and full.stat().st_size > MAX_BYTES:
             return [], [f'{path}: larger than 1 MiB; its marked rules were not read']
-        text = full.read_text(encoding='utf-8', errors='replace') if text is None else text
+        # Bytes, not read_text: line numbers must be git's, so no newline is translated.
+        text = full.read_bytes().decode('utf-8-sig', errors='replace') if text is None else text
     except (OSError, ValueError):
         return [], []
     if 'LINT.' not in text:
@@ -58,7 +59,8 @@ def read(root, path, text=None):
 
 def _parse(text, path):
     blocks, issues, open_at, label, fenced = [], [], None, None, False
-    lines = text.splitlines()
+    # Only '\n' ends a line for git; str.splitlines also breaks on form feeds and more.
+    lines = text.split('\n')
     number = 0
     while number < len(lines):
         line = lines[number].strip()
@@ -91,7 +93,8 @@ def _parse(text, path):
             if open_at is None:
                 issues.append(f'{path}:{start}: LINT.ThenChange with no open LINT.IfChange')
                 continue
-            blocks.append({'path': path, 'label': label, 'start': open_at, 'end': number,
+            # `then` is where the guarded lines end; a target list that runs on is not the rule.
+            blocks.append({'path': path, 'label': label, 'start': open_at, 'then': start, 'end': number,
                            'targets': [spec.strip() for spec in args.split(',') if spec.strip()]})
         open_at = None
     if open_at is not None:
@@ -145,15 +148,19 @@ def left_behind(root, touched, base):
     said, changes = [], {}
 
     def changed(path, block=None):
+        # The diff runs from the task's base, so a file dirty before the task shows changes this
+        # task never made: only a file the task touched can have kept the rule in step.
+        if path not in touched:
+            return False
         if not base:
-            return path in touched
+            return True
         if path not in changes:
             changes[path] = _changes(root, base, path)
-        lines, after = changes[path]
-        if block is None:
-            return bool(lines or after)
-        return (any(block['start'] < line < block['end'] for line in lines)
-                or any(block['start'] <= line < block['end'] for line in after))
+        lines, after, whole = changes[path]
+        if whole or block is None:
+            return whole or bool(lines or after)
+        return (any(block['start'] < line < block['then'] for line in lines)
+                or any(block['start'] <= line < block['then'] for line in after))
 
     for path in touched:
         blocks = read(root, path)[0]
@@ -176,17 +183,18 @@ HUNK = re.compile(r'^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@', re.M)
 
 
 def _changes(root, base, path):
-    """New-side lines this task changed in `path`, and the lines a deletion follows."""
+    """New-side lines this task changed in `path`, the lines a deletion follows, and whether it is all new."""
     from ..process import run
     try:
-        diff = run(['git', 'diff', '-U0', base, '--', path], cwd=root, timeout=10, shell=False)
+        # Plain hunks whatever the user's settings: no colour, no external or textconv diff, and
+        # a binary or -diff file diffed as text so that a change to it is seen.
+        diff = run(['git', 'diff', '--no-color', '--no-ext-diff', '--no-textconv', '--text', '-U0', base, '--', path],
+                   cwd=root, timeout=10, shell=False)
         tracked = run(['git', 'ls-files', '--error-unmatch', '--', path], cwd=root, timeout=10, shell=False)
     except (OSError, subprocess.SubprocessError):
-        return set(), set()
+        return set(), set(), False
     if tracked.returncode:
-        # Untracked: the whole file is what this task added.
-        text = (Path(root) / path).read_text(encoding='utf-8', errors='replace') if (Path(root) / path).is_file() else ''
-        return set(range(1, len(text.splitlines()) + 1)), set()
+        return set(), set(), True       # untracked: the whole file is what this task added
     lines, after = set(), set()
     for start, count in HUNK.findall(diff.stdout if diff.returncode == 0 else ''):
         count = 1 if count == '' else int(count)
@@ -194,7 +202,7 @@ def _changes(root, base, path):
             lines.update(range(int(start), int(start) + count))
         else:
             after.add(int(start))
-    return lines, after
+    return lines, after, False
 
 
 def _comment(line):
@@ -209,22 +217,21 @@ def _comment(line):
 
 
 def _target(root, path, spec, labels):
-    where, _, label = spec.rpartition(':')
-    if not where and not label:
-        where, label = spec, ''
-    if label and not LABEL.fullmatch(label):
-        where, label = spec, ''
+    where, colon, label = spec.rpartition(':')
+    if not colon or (label and not LABEL.fullmatch(label)):
+        where, label = spec, ''      # no label: `server_flags.py` is a file, not a same-file label
     if not where:
         return {'spec': spec, 'path': path, 'label': label, 'found': label in labels}
     if where.startswith('//'):
         candidates = [where[2:]]
     else:
         candidates = [posixpath.join(posixpath.dirname(path), where), where]
+    inside = root.resolve()
     for candidate in candidates:
         candidate = posixpath.normpath(candidate)
-        if candidate.startswith('../') or candidate == '..' or posixpath.isabs(candidate):
-            continue
-        if (root / candidate).is_file():
+        # Resolved, because on Windows `..\` and `C:/` are path syntax that posixpath does not see.
+        full = (root / candidate).resolve()
+        if full.is_relative_to(inside) and full.is_file():
             return {'spec': spec, 'path': candidate, 'label': label or None, 'found': True}
     # Only a `//` path names one place; a bare one found under neither reading is not guessed at.
     unique = posixpath.normpath(candidates[0]) if len(candidates) == 1 else None

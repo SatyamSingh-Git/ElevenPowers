@@ -43,7 +43,7 @@ def test_a_labelled_block_is_read_with_its_lines_and_its_root_relative_target(tm
     write(tmp_path, {'config/upload.py': UPLOAD, 'docs/api.md': API})
     blocks, issues = read(tmp_path, 'config/upload.py')
     assert issues == []
-    assert blocks == [{'path': 'config/upload.py', 'label': 'upload_limit', 'start': 3, 'end': 5,
+    assert blocks == [{'path': 'config/upload.py', 'label': 'upload_limit', 'start': 3, 'then': 5, 'end': 5,
                        'targets': [{'spec': '//docs/api.md:upload_limit', 'path': 'docs/api.md',
                                     'label': 'upload_limit', 'found': True}]}]
 
@@ -58,6 +58,23 @@ def test_a_bare_target_is_found_beside_the_file_first_and_then_from_the_root(tmp
         ('lib/testing/flagsaver.py', 'flag_override_parsing', True), ('lib/workspace.bzl', None, True)]
 
 
+def test_a_bare_file_name_is_a_file_beside_this_one_not_a_label(tmp_path):
+    # LIT writes `# LINT.ThenChange(server_flags.py)` for the file in the same folder.
+    write(tmp_path, {'lit/server_config.py': '# LINT.IfChange\nport = 5432\n# LINT.ThenChange(server_flags.py)\n',
+                     'lit/server_flags.py': ''})
+    blocks, _ = read(tmp_path, 'lit/server_config.py')
+    assert blocks[0]['targets'] == [{'spec': 'server_flags.py', 'path': 'lit/server_flags.py', 'label': None, 'found': True}]
+
+
+def test_line_numbers_are_git_s_whatever_else_breaks_a_line(tmp_path):
+    # A form feed or a lone carriage return is a line break to str.splitlines, not to git.
+    (tmp_path / 'a.py').write_bytes(b'\xef\xbb\xbf# LINT.IfChange\nA = 1\n# LINT.ThenChange(//b.py)\n'
+                                    b'x = 1\n\x0c\ny = "\r"\n# LINT.IfChange\nB = 1\n# LINT.ThenChange(//b.py)\n')
+    write(tmp_path, {'b.py': ''})
+    blocks, issues = read(tmp_path, 'a.py')
+    assert issues == [] and [(b['start'], b['end']) for b in blocks] == [(1, 3), (7, 9)], (blocks, issues)
+
+
 def test_a_target_list_may_run_over_several_comment_lines(tmp_path):
     source = ('# LINT.IfChange\nRATE_LIMIT_RPS = 100\n# LINT.ThenChange(\n#     //db/limits.sql,\n#\n'
               '#     //docs/api.md:rate_limits,\n#     :alert_threshold,\n# )\n'
@@ -65,7 +82,7 @@ def test_a_target_list_may_run_over_several_comment_lines(tmp_path):
     write(tmp_path, {'app/limits.py': source, 'db/limits.sql': '', 'docs/api.md': ''})
     blocks, issues = read(tmp_path, 'app/limits.py')
     assert issues == []
-    assert [(b['start'], b['end']) for b in blocks] == [(1, 8), (9, 11)]
+    assert [(b['start'], b['then'], b['end']) for b in blocks] == [(1, 3, 8), (9, 11, 11)]
     assert [(t['path'], t['label'], t['found']) for t in blocks[0]['targets']] == [
         ('db/limits.sql', None, True), ('docs/api.md', 'rate_limits', True), ('app/limits.py', 'alert_threshold', True)]
     assert blocks[1]['targets'] == [{'spec': ':rate', 'path': 'app/limits.py', 'label': 'rate', 'found': False}]
@@ -102,10 +119,13 @@ def test_a_patch_quotes_other_files_and_is_not_read_for_rules(tmp_path):
 
 
 def test_a_target_outside_the_project_is_never_resolved(tmp_path):
-    write(tmp_path, {'app/a.py': '# LINT.IfChange\nA = 1\n# LINT.ThenChange(../../outside.py)\n'})
-    (tmp_path.parent / 'outside.py').write_text('', encoding='utf-8')
-    blocks, _ = read(tmp_path, 'app/a.py')
-    assert blocks[0]['targets'][0]['found'] is False and blocks[0]['targets'][0]['path'] is None
+    root = tmp_path / 'project'
+    outside = tmp_path / 'outside.py'
+    outside.write_text('', encoding='utf-8')
+    for spec in ('../../outside.py', '..\\..\\outside.py', outside.as_posix()):
+        write(root, {'app/a.py': f'# LINT.IfChange\nA = 1\n# LINT.ThenChange({spec})\n'})
+        blocks, _ = read(root, 'app/a.py')
+        assert [(t['found'], t['path']) for t in blocks[0]['targets']] == [(False, None)], (spec, blocks)
 
 
 def test_a_directive_with_text_after_it_is_prose_not_a_block(tmp_path):
@@ -265,6 +285,40 @@ def test_a_target_named_without_a_label_counts_as_changed_by_any_change_to_its_f
     assert 'marked rule' not in report(root, ['app/rate.py', 'app/names.py'])
 
 
+def test_adding_or_removing_a_target_in_a_list_is_not_the_rule_changing(tmp_path):
+    source = '# LINT.IfChange\nRATE = 1\n# LINT.ThenChange(\n#     //docs/api.md,\n#     //app/old.py,\n# )\n'
+    root = marked(tmp_path, {'app/rate.py': source, 'app/old.py': ''})
+    edit(root, 'app/rate.py', '#     //app/old.py,\n', '')
+    assert 'marked rule' not in report(root, ['app/rate.py'])
+    edit(root, 'app/rate.py', '#     //docs/api.md,\n', '#     //docs/api.md,\n#     //app/names.py,\n')
+    assert 'marked rule' not in report(root, ['app/rate.py'])
+    edit(root, 'app/rate.py', 'RATE = 1', 'RATE = 2')
+    assert 'marked rule unnamed (app/rate.py lines 1-6): changed, not docs/api.md' in report(root, ['app/rate.py'])
+
+
+def test_the_report_reads_git_s_hunks_whatever_the_user_s_diff_settings(tmp_path):
+    root = marked(tmp_path)
+    for key, value in (('color.diff', 'always'), ('color.ui', 'always')):
+        subprocess.run(['git', 'config', key, value], cwd=root, check=True)
+    edit(root, 'config/upload.py', 'MAX_UPLOAD_SIZE_MB = 50', 'MAX_UPLOAD_SIZE_MB = 100')
+    assert LEFT in report(root, ['config/upload.py'])
+
+
+def test_a_target_git_treats_as_binary_still_counts_as_changed(tmp_path):
+    root = marked(tmp_path, {'.gitattributes': 'gen/* -diff\n', 'gen/lock.json': '{"a": 1}\n',
+                             'app/rate.py': '# LINT.IfChange\nRATE = 1\n# LINT.ThenChange(//gen/lock.json)\n'})
+    edit(root, 'app/rate.py', 'RATE = 1', 'RATE = 2')
+    edit(root, 'gen/lock.json', '1', '2')
+    assert 'marked rule' not in report(root, ['app/rate.py', 'gen/lock.json'])
+
+
+def test_a_target_changed_before_the_task_opened_is_not_this_task_keeping_it_in_step(tmp_path):
+    root = marked(tmp_path)
+    edit(root, 'docs/api.md', 'up to 50 MB', 'up to 60 MB')   # the developer, mid-change, before the task
+    edit(root, 'config/upload.py', 'MAX_UPLOAD_SIZE_MB = 50', 'MAX_UPLOAD_SIZE_MB = 100')
+    assert LEFT in report(root, ['config/upload.py'])
+
+
 def test_a_changed_block_whose_only_target_is_outside_the_project_is_not_reported(tmp_path):
     root = marked(tmp_path, {'ops/variables.py': '# LINT.IfChange\nA = 1\n# LINT.ThenChange(//internal/variable.proto)\n'})
     edit(root, 'ops/variables.py', 'A = 1', 'A = 2')
@@ -324,6 +378,37 @@ def test_the_command_lists_every_marked_rule_and_what_is_broken(tmp_path):
     assert 'ops/variables.py lines 1-3 -> //internal/variable.proto (not found)' in text, text
     assert 'tfx/types/artifact.py lines 1-3 -> <Internal source code> (not found)' in text, text
     assert 'app/anchor.py lines 1-3 -> no targets: a label other rules name' in text, text
+
+
+def test_a_file_already_looked_at_after_one_command_is_not_read_again_after_the_next(tmp_path):
+    # A formatter can change thousands of files; each later command must not read them all again.
+    import os
+    from tests.test_rule_groups import _shell
+    root = marked(tmp_path)
+    names = root / 'app/names.py'
+    names.write_text('def name():\n    return 2\n', encoding='utf-8')
+    assert _shell(root) == ''
+    before = os.stat(names).st_mtime
+    names.write_text('# LINT.IfChange\nA = 1\n# LINT.ThenChange(//config/upload.py)\n', encoding='utf-8')
+    os.utime(names, (before, before))
+    assert _shell(root) == '', 'unchanged since the last command, so not read again'
+    os.utime(names)
+    assert 'Marked rule unnamed' in _shell(root)
+
+
+def test_a_search_that_failed_is_not_taken_for_an_answer(tmp_path, monkeypatch):
+    import subprocess as sp
+    from core import process
+    from core.milestones.marked import present
+    write(tmp_path, {'a.py': '# LINT.IfChange\nA = 1\n# LINT.ThenChange(//b.py)\n', 'b.py': ''})
+    subprocess.run(['git', 'init', '-q'], cwd=tmp_path, check=True)
+    subprocess.run(['git', 'add', '-A'], cwd=tmp_path, check=True)
+    assert present(tmp_path) is True
+
+    def slow(*args, **kwargs):
+        raise sp.TimeoutExpired(args[0], 10)
+    monkeypatch.setattr(process, 'run', slow)
+    assert present(tmp_path) is None
 
 
 def test_a_rule_whose_targets_are_all_outside_the_project_is_not_put_on_the_agent(tmp_path):

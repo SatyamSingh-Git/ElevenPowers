@@ -13,7 +13,21 @@ them, and naming one now takes two comments.
   diff from the task's base) whose target did not change.
 - **Also:** `ep_milestones --marked` lists them, and proposals skip pairs
   already marked.
-- **Tests:** 31 tests, run both ways, and 29 mutants, all killed.
+- **Tests:** 39 tests, run both ways, and 41 mutants, all killed.
+- **An independent review of the first commit (`6096d94`) found nine
+  defects in it,** each confirmed with a reproduction and fixed with a
+  test seen failing first:
+  - a bare file name beside the file (`server_flags.py`, as LIT writes it)
+    was read as a same-file label;
+  - editing a multi-line target list counted as changing the rule;
+  - form feeds and a BOM moved or hid directives;
+  - `color.diff=always`, or a binary target, defeated the diff;
+  - a target dirty before the task counted as kept in step;
+  - on Windows, `..\` and `C:/` targets resolved outside the project;
+  - a failed search was cached for the task;
+  - the ledger save could drop another hook's writes;
+  - every shell command re-read each changed file. Now only files written
+    since the last command are read.
 - **On real projects:**
   - abseil-py's own rule was named in the brief through the real hook;
   - a change inside its block was reported, and one outside it was not;
