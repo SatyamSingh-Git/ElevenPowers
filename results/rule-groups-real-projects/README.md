@@ -138,6 +138,13 @@ for all 17 sealed case-batches, so no published figure moves.
   step would also need a test that forces the deadline to land between
   two phases, which was not worth it for a few seconds.
 
+*Both limits were removed on 2026-11-05 (`a5f735e`,
+[status](../../docs/status.md)). Reading and cutting now stop at half the
+budget, and pairs come from the files read. On a fresh copy of
+`sqlalchemy`, `--seconds 1` took 0.8 s and `--seconds 2` 1.45 s. Each
+returned 50 proposals, from 20–31 and 60 of 245 files, and said how
+many it examined. With the default 30 s, all 245 were read in 8.6 s.*
+
 **Exploratory, added after seeing the above:** with the bundled cases and
 `results/` excluded, ElevenPowers' top 50 are all same-name pairs. They
 are mostly copied helpers, such as one `_harness` function in five
