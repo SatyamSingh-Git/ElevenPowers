@@ -255,3 +255,21 @@ than being quietly appended.
   noisy to warn an agent (about 1 named file in 10 is a dependent), but as
   candidates a person prunes once, that noise costs a review, not every
   edit. Not built and not measured.
+
+## The 2026-11-05 sweep — what already works
+
+Five parallel passes, each reading 28–45 sources. The synthesis and the
+track reports are in [audit_2026_11_05/](audit_2026_11_05/README.md), and
+seven central claims were re-read against their pages.
+- **On frontier models, add-ons move cost, not results.**
+- **A rule enforced as a check beats the same rule as text,** and a prose
+  version can score below no guidance (ECLoop, ContextCov).
+- **Knowledge a person supplies helps; self-generated knowledge does not.**
+- **Automatic discovery of coupled code has a low ceiling everywhere.**
+- **For reviewers, attached evidence does not move merges,** and showing AI
+  output to reviewers cost them time in a randomized trial at Meta. Whether
+  a test discriminates is what matters, and people cannot judge it.
+
+**Plan change, proposed and not yet adopted:** from advice to gates, and
+from the reviewer to the author. The synthesis lists the cheapest tests to
+run before building.
