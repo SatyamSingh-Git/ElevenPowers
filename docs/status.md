@@ -28,6 +28,13 @@ them, and naming one now takes two comments.
   - the ledger save could drop another hook's writes;
   - every shell command re-read each changed file. Now only files written
     since the last command are read.
+- **Hosted CI then caught a tenth defect** in `6096d94`, on all four cells:
+  a shell command run with no task open wrote the ledger. Two older tests
+  assert that it must not. It was fixed in `49a1610`, and both tests pass.
+  [The mistake](../journey/mistakes.md) was deleting my own test for it.
+- **The review also found an older defect:** `normalise` stripped the dot
+  from `.github/...`. So no brief, and no rule note, ever reached a file in
+  a dot-folder (`e5cf72e`).
 - **On real projects:**
   - abseil-py's own rule was named in the brief through the real hook;
   - a change inside its block was reported, and one outside it was not;

@@ -800,6 +800,32 @@ is a fix for one number. And again, running the producer beat reading it.
 The pack's own `download()` returns at once and writes nothing; only
 running it showed that.
 
+### A right test deleted by a check that reverted one file of three
+
+Building marked rules (2026-11-05), I wrote a test: a shell command with
+no task open must leave no ledger behind. It failed. To see whether my
+change was to blame, I stashed `core/hook.py` alone and ran it again. It
+still failed, so I concluded that the hook had always written state there.
+I deleted the test and removed the guard it had prompted.
+
+Hosted CI then failed on every cell. Two older tests assert exactly what
+mine had: `test_no_open_task_means_no_state_is_created` and
+`test_native_tool_callback_without_a_task_cannot_invent_one`.
+
+*Cause:* the check reverted one file while the ledger and marker changes
+stayed in place, under a project set up differently from the older tests.
+It answered a different question from the one I asked. A test that fails
+"without my change" has not been seen without my change unless the whole
+change is gone.
+
+*Cost:* a red hosted run on all four cells, and a fix commit (`49a1610`).
+An independent review found nine more defects in the same feature before
+CI did.
+
+*Changed:* to decide that a failing test is wrong, compare against a clean
+worktree of the commit before. Never stash part of a change. And before
+deleting a test, search for an older one that asserts the same thing.
+
 ## 2026-09-28 to 2026-09-29: setup that still needed the user
 
 **Partial scans looked like complete evidence.** A filesystem walk encountered generated data and a selection cap without carrying its omissions into freshness. Git-aware selection and explicit coverage diagnostics now define what a receipt covers. A diagnostic is not an invitation to certify the smaller set.
