@@ -12,7 +12,11 @@ them is a shared base and a shared override.
 
 from __future__ import annotations
 
+import json
+import os
+from pathlib import Path
 import subprocess
+import sys
 
 import pytest
 
@@ -21,6 +25,43 @@ from core import polyglot, radius
 needs_grammars = pytest.mark.skipif(
     not polyglot.available(),
     reason="optional: pip install tree-sitter-language-pack")
+
+
+READ_ONE_FILE = """
+import json, sys
+from pathlib import Path
+from core import atlas, polyglot, radius
+from core.impact.build import build
+graph = build(Path(sys.argv[1]), seconds=30)
+print(json.dumps({'ready': polyglot.ready('javascript'),
+                  'parsed': polyglot._parse('a.js', b'export const x = 1;')[0] is not None,
+                  'readable': radius.readable('a.js'), 'graphable': atlas._graphable('src/a.js'),
+                  'issues': graph.issues, 'parsed_typescript': graph.coverage.get('parsed_typescript')}))
+"""
+
+
+@needs_grammars
+@pytest.mark.parametrize("cache", ["empty", "this machine's"])
+def test_a_grammar_not_on_disk_is_never_downloaded_by_a_read(tmp_path, cache):
+    # The pack downloads a missing grammar on first use: 21.5 MB, 4 to 12 s, inside whatever
+    # bounded hook asked. Hosted CI killed the advice worker in that download.
+    project = tmp_path / "project"
+    (project / "src").mkdir(parents=True)
+    (project / "src" / "a.js").write_text("export const x = 1;\n")
+    env = dict(os.environ)
+    if cache == "empty":
+        env["TREE_SITTER_LANGUAGE_PACK_CACHE_DIR"] = str(tmp_path / "grammars")
+    done = subprocess.run([sys.executable, "-c", READ_ONE_FILE, str(project)], cwd=Path(__file__).parents[1],
+                          env=env, capture_output=True, text=True, timeout=60)
+    assert done.returncode == 0, done.stderr
+    value = json.loads(done.stdout)
+    if cache == "empty":
+        assert value == {'ready': False, 'parsed': False, 'readable': False, 'graphable': False,
+                         'issues': ['optional JS/TS grammar unavailable: src/a.js'], 'parsed_typescript': 0}
+        assert not [p for p in (tmp_path / "grammars").rglob("*") if p.is_file() and p.parent.name in ("libs", "bundles")]
+    else:
+        assert value == {'ready': True, 'parsed': True, 'readable': True, 'graphable': True,
+                         'issues': [], 'parsed_typescript': 1}
 
 
 def git(root, *args):

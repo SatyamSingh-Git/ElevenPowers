@@ -1,5 +1,33 @@
 # Current delivery status
 
+**2026-11-05 — The recurring Windows advice failure was a grammar download.**
+`test_actual_producer_keeps_replay_and_native_ingress_distinct[javascript]`
+failed again on hosted windows-latest 3.11 (`6019812`, results only). The
+replay attempt was killed at 5594 ms, while native-control in the same run
+was delivered in 797 ms.
+- **Cause:** `tree-sitter-language-pack` 1.20.0 downloads a missing
+  grammar the first time one is used: a 21.5 MB bundle, 4 to 12 s here.
+  The download runs inside `polyglot._parse`, which nothing can bound.
+  - On a fresh runner the replay worker is the suite's first JavaScript
+    parse, so it paid for the download.
+  - That explains every earlier record: JavaScript only, replay only,
+    killed at the limit under both the 2 s and 5 s budgets, and passing
+    whenever the network was fast. Neither the budget raise
+    (`f037c54`) nor the deadline fix (`76ff758`) could reach it.
+- **Reproduced:** with an empty grammar cache, the replay worker took
+  4431 ms, against 428 ms warm.
+- **Product defect:** at the default 1 s budget, JavaScript milestone
+  advice on a fresh machine could never be delivered. Each attempt
+  restarted the download and was killed.
+- **Fix:** no read downloads now. A grammar not on disk is read as
+  nothing: `radius`, `atlas` and the impact graph say so, and the graph
+  names it a gap.
+  - `python -m core.polyglot` fetches the nine grammars once. It uses the
+    pack's `prefetch`, because its `download` returns at once and writes
+    nothing.
+  - CI runs that command after installing the pack.
+  - With an empty cache the replay worker now takes 452 ms.
+
 **2026-11-05 — Proposing rules kept outside functions: tried, not built.**
 Proposals compare functions only. In 14 of the 31 never-read v3
 dependents they miss, one side keeps the rule in no function, such as a
@@ -91,7 +119,8 @@ the template on `parcelpost` 5
 - The guide now says to describe every way the files are tied.
 - The runner gained a tested `described` arm, with seven mutants killed,
   for when that is worth testing.
-- **A hosted CI failure was root-caused and fixed.**
+- **A hosted CI failure was root-caused and fixed.** *Not the whole cause:
+  it recurred, and the grammar download found on 2026-11-05 is.*
   - The windows-latest 3.11 advice exercise failed twice in one run, with
     attempts killed at 5515 and 5532 ms against a 5 s budget. The rest of
     the exercise ran at local speed.

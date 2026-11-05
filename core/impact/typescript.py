@@ -118,7 +118,7 @@ def extract_typescript(graph, sources, deadline):
         if time.monotonic() >= deadline:
             graph.issues.append('impact deadline reached parsing JS/TS source')
             break
-        if not polyglot.available():
+        if not polyglot.ready(polyglot.language_of(path)):
             graph.issues.append('optional JS/TS grammar unavailable: ' + path)
             continue
         tree, _ = polyglot._parse(path, data)

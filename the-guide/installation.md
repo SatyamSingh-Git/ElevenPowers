@@ -92,9 +92,12 @@ Core evidence collection works across supported repository types; unusual verifi
 
 ```bash
 pip install tree-sitter-language-pack
+cd PATH_TO_ELEVENPOWERS && python -m core.polyglot
 ```
 
-That adds **TypeScript, TSX, JavaScript, Go, Rust, Java, Ruby, PHP and C#**. Nothing else changes, and there is no configuration — the feature notices the pack and starts reading those files.
+That adds **TypeScript, TSX, JavaScript, Go, Rust, Java, Ruby, PHP and C#**. The second line fetches those nine grammars once (about 21 MB, a few seconds). Nothing else changes, and there is no configuration — the feature notices the grammars and starts reading those files.
+
+The fetch is a separate step on purpose. The pack would otherwise download a grammar the first time one is used, which here is always inside a hook with a budget of a few seconds; on a slow connection that download killed the very advice it was meant to serve. ElevenPowers never downloads while it reads: a grammar not yet fetched is read as nothing, and the impact graph names it as a gap.
 
 Without it, nothing breaks and nothing is silently degraded: Python is read exactly as before through the standard library, other languages are simply not read, and the check says nothing rather than guessing. That is why it is optional at all — a plugin you must install four packages to try is a plugin nobody tries.
 

@@ -45,7 +45,11 @@ For JavaScript/TypeScript, optionally install the tested parser versions:
 
 ```sh
 python -m pip install -r PATH_TO_ELEVENPOWERS/requirements-impact.txt
+cd PATH_TO_ELEVENPOWERS && python -m core.polyglot
 ```
+
+The second line fetches the grammars once. Nothing downloads them while the
+graph is built, so a grammar not fetched is reported as unavailable.
 
 Relative imports, barrels, CommonJS and uniquely declared workspace package
 entries are supported, including `.mts`/`.cts` and JS-extension substitution.

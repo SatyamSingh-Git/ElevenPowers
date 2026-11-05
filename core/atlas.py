@@ -127,8 +127,8 @@ def _graphable(path: str) -> bool:
 
     if _is_module(path):
         return True
-    return (polyglot.available() and polyglot.language_of(path) in polyglot.IMPORTABLE
-            and not TEST_NAME.search(path))
+    language = polyglot.language_of(path)
+    return polyglot.ready(language) and language in polyglot.IMPORTABLE and not TEST_NAME.search(path)
 
 
 TS_EXTENSIONS = (".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs")

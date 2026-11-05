@@ -17,8 +17,11 @@ carries no inheritance, which is the one thing a sibling check needs.
 that the plugin installs with nothing, and that promise is kept: the import
 below is guarded, every entry point answers "no" when it fails, and
 `core/radius.py` falls back to Python-only exactly as before. A user who wants
-polyglot runs `pip install tree-sitter-language-pack`; a user who does not is
-not asked to.
+polyglot runs `pip install tree-sitter-language-pack` and then, once,
+`python -m core.polyglot` to fetch the grammars; a user who does not is not
+asked to. Reading never fetches: the pack downloads a missing grammar on first
+use, 21.5 MB in 4 to 12 seconds, and every reader here runs inside a hook's
+budget. A grammar not on disk is read as nothing, like a language not listed.
 
 **Per-language, because grammars differ.** `class_declaration` in TypeScript is
 `class_specifier` in C++ and `impl_item` in Rust, and the node holding the base
@@ -29,9 +32,10 @@ tested rather than clever, and a language missing from it is simply not read.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import cache
 
 try:  # pragma: no cover - exercised by the absence test, not by import
-    from tree_sitter_language_pack import get_parser as _get_parser
+    from tree_sitter_language_pack import downloaded_languages as _downloaded, get_parser as _get_parser
 except Exception:                                          # noqa: BLE001
     _get_parser = None
 
@@ -137,6 +141,26 @@ def available() -> bool:
     return _get_parser is not None
 
 
+@cache
+def _on_disk() -> frozenset[str]:
+    # 2.6 ms a call, and the import graph asks once per path.
+    return frozenset(_downloaded())
+
+
+def ready(language: str) -> bool:
+    """Can this grammar be read without downloading it?"""
+    return available() and language in _on_disk()
+
+
+def fetch() -> None:
+    """Download every grammar this module reads: the one place a grammar is downloaded."""
+    # Not `download`: in 1.20.0 it returns at once and writes nothing.
+    from tree_sitter_language_pack import prefetch
+
+    prefetch(sorted(SHAPES))
+    _on_disk.cache_clear()
+
+
 def language_of(path: str) -> str:
     """The grammar for this file, or empty if this module does not read it."""
     dot = path.rfind(".")
@@ -146,7 +170,7 @@ def language_of(path: str) -> str:
 
 def _parse(path: str, source: bytes):
     language = language_of(path)
-    if not language or not available():
+    if not ready(language):
         return None, None
     try:
         return _get_parser(language).parse(source), SHAPES[language]
@@ -344,3 +368,11 @@ def imports(path: str, source: bytes) -> list[str]:
             continue
         stack.extend(node.children)
     return [f for f in found if f]
+
+
+if __name__ == "__main__":
+    fetch()
+    missing = sorted(set(SHAPES) - _on_disk())
+    if missing:
+        raise SystemExit("grammars still not on disk after fetching: " + ", ".join(missing))
+    print("grammars on disk: " + ", ".join(sorted(SHAPES)))

@@ -178,14 +178,15 @@ def readable(path: str) -> bool:
     """Can symbols be extracted from this file at all?
 
     Python always, through the standard library. Everything else only when the
-    optional grammar pack is installed - see `core/polyglot.py`. Without it this
+    optional grammar pack is installed and that language's grammar fetched - see
+    `core/polyglot.py`. Without it this
     module behaves exactly as it did when it was Python-only.
     """
     from . import polyglot
 
     if path.endswith(".py"):
         return True
-    return polyglot.available() and bool(polyglot.language_of(path))
+    return polyglot.ready(polyglot.language_of(path))
 
 
 def _symbols(root: Path, path: str) -> list[Symbol]:
