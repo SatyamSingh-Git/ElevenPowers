@@ -1,0 +1,346 @@
+[
+ {
+  "id": 10,
+  "project": "click",
+  "commit": "ac5cec5fe54e5a691e7bac17f441ce9498e0744c",
+  "dependent": "src/click/core.py",
+  "edit": [
+   "src/click/__init__.py"
+  ],
+  "sort": "rule",
+  "note": "linked: the edit exports the changed enum from its module"
+ },
+ {
+  "id": 18,
+  "project": "click",
+  "commit": "fde47b4b4f978f179b9dff34583cb2b99021f482",
+  "dependent": "src/click/_termui_impl.py",
+  "edit": [
+   "src/click/_compat.py"
+  ],
+  "sort": "sweep",
+  "note": "type-ignore comments removed"
+ },
+ {
+  "id": 24,
+  "project": "click",
+  "commit": "4d7ce025cfc7a94d0c4b388ea3d7c565c0e28d9d",
+  "dependent": "src/click/core.py",
+  "edit": [
+   "src/click/decorators.py"
+  ],
+  "sort": "sweep",
+  "note": "mypy findings"
+ },
+ {
+  "id": 25,
+  "project": "click",
+  "commit": "d19d0def9a2a5979312b705bbfd53725aa1d5081",
+  "dependent": "src/click/core.py",
+  "edit": [
+   "src/click/parser.py"
+  ],
+  "sort": "sweep",
+  "note": "typos"
+ },
+ {
+  "id": 35,
+  "project": "click",
+  "commit": "3510c69cf57efb7038a2af4601bada294c2f7907",
+  "dependent": "src/click/_termui_impl.py",
+  "edit": [
+   "src/click/_compat.py"
+  ],
+  "sort": "sweep",
+  "note": "blank lines from a formatter"
+ },
+ {
+  "id": 37,
+  "project": "click",
+  "commit": "0db91e220517c767e1e81fd37d1dd7ce83fa77b7",
+  "dependent": "src/click/core.py",
+  "edit": [
+   "examples/aliases/aliases.py"
+  ],
+  "sort": "rule",
+  "note": "contract: which name resolve_command returns; the example overrides it to keep the old one"
+ },
+ {
+  "id": 52,
+  "project": "attrs",
+  "commit": "2f1014aa60e5714fc754ea615e9cb0e4da7ef787",
+  "dependent": "src/attr/_next_gen.py",
+  "edit": [
+   "src/attr/converters.py",
+   "src/attr/validators.py"
+  ],
+  "sort": "sweep",
+  "note": "blank lines"
+ },
+ {
+  "id": 55,
+  "project": "attrs",
+  "commit": "ae7340966c12b9d6525f0c2fc413b997dc294e66",
+  "dependent": "src/attr/setters.py",
+  "edit": [
+   "src/attr/_make.py"
+  ],
+  "sort": "sweep",
+  "note": "Ruff: raise without parentheses"
+ },
+ {
+  "id": 64,
+  "project": "attrs",
+  "commit": "597c3a8adb5abeda66e0f6e9aed7fcaec26ee1a0",
+  "dependent": "src/attr/_make.py",
+  "edit": [
+   "src/attr/_compat.py"
+  ],
+  "sort": "rule",
+  "note": "linked: the dependent uses a version flag the edit defines"
+ },
+ {
+  "id": 66,
+  "project": "attrs",
+  "commit": "c824bbe103881db59d1f8f45d7cef1f8497d8147",
+  "dependent": "src/attr/_compat.py",
+  "edit": [
+   "src/attr/__init__.py"
+  ],
+  "sort": "rule",
+  "note": "linked: the edit imports Protocol, which the dependent defines"
+ },
+ {
+  "id": 72,
+  "project": "attrs",
+  "commit": "f7fa5a810c4c6919b6ce56228226c68bf4859e45",
+  "dependent": "src/attrs/__init__.py",
+  "edit": [
+   "src/attr/__init__.py"
+  ],
+  "sort": "rule",
+  "note": "linked: two export lists kept in step"
+ },
+ {
+  "id": 77,
+  "project": "attrs",
+  "commit": "a18b3957d55c669de56799a9a72ea31febe93ce4",
+  "dependent": "setup.py",
+  "edit": [
+   "src/attr/_compat.py"
+  ],
+  "sort": "unrelated",
+  "note": "a classifier and compatibility code, both for Python 3.11"
+ },
+ {
+  "id": 79,
+  "project": "attrs",
+  "commit": "d785c656e5d742a74bf2dc1edfeb4ada789991c8",
+  "dependent": "src/attr/_compat.py",
+  "edit": [
+   "src/attr/validators.py"
+  ],
+  "sort": "sweep",
+  "note": "Python 2 docstrings removed"
+ },
+ {
+  "id": 80,
+  "project": "rich",
+  "commit": "a9c4aaba7ead5599d969aa4c8f3c6dae5549cef4",
+  "dependent": "rich/default_styles.py",
+  "edit": [
+   "rich/markdown.py"
+  ],
+  "sort": "rule",
+  "note": "key: the style \"markdown.kbd\" defined in one and looked up in the other"
+ },
+ {
+  "id": 84,
+  "project": "rich",
+  "commit": "63d3200199f6d4a01268d71f98f27dbe416ee268",
+  "dependent": "rich/syntax.py",
+  "edit": [
+   "rich/protocol.py",
+   "rich/repr.py"
+  ],
+  "sort": "sweep",
+  "note": "import-time cuts"
+ },
+ {
+  "id": 90,
+  "project": "rich",
+  "commit": "f924a21a314420a723a94a8d10b769dc855a67ec",
+  "dependent": "rich/_unicode_data/__init__.py",
+  "edit": [
+   "rich/__main__.py",
+   "rich/cells.py"
+  ],
+  "sort": "unrelated",
+  "note": "a coverage pragma, a sponsor message and cell-width logic"
+ },
+ {
+  "id": 91,
+  "project": "rich",
+  "commit": "f924a21a314420a723a94a8d10b769dc855a67ec",
+  "dependent": "rich/cells.py",
+  "edit": [
+   "rich/__main__.py",
+   "rich/_unicode_data/__init__.py"
+  ],
+  "sort": "unrelated",
+  "note": "the same commit from the other side"
+ },
+ {
+  "id": 98,
+  "project": "rich",
+  "commit": "0ab2467297190cdf09dde9256ce26d4e7e18ff3a",
+  "dependent": "rich/diagnose.py",
+  "edit": [
+   "rich/console.py"
+  ],
+  "sort": "rule",
+  "note": "key: the environment variable TTY_INTERACTIVE read in one and reported in the other"
+ },
+ {
+  "id": 103,
+  "project": "rich",
+  "commit": "f19b246826d23ec14ee09edeedc5953c640792ed",
+  "dependent": "rich/default_styles.py",
+  "edit": [
+   "rich/traceback.py"
+  ],
+  "sort": "rule",
+  "note": "key: the style \"traceback.note\""
+ },
+ {
+  "id": 107,
+  "project": "rich",
+  "commit": "5955c4e54e8c2e8726de0bf4907e9cd4c9a84004",
+  "dependent": "rich/default_styles.py",
+  "edit": [
+   "rich/traceback.py"
+  ],
+  "sort": "unrelated",
+  "note": "a style flag and a type annotation"
+ },
+ {
+  "id": 111,
+  "project": "rich",
+  "commit": "63b27f7afe3c013b1489bd900f9b4e35faf1a56f",
+  "dependent": "rich/syntax.py",
+  "edit": [
+   "rich/traceback.py"
+  ],
+  "sort": "rule",
+  "note": "linked: a keyword argument renamed and its caller"
+ },
+ {
+  "id": 120,
+  "project": "pytest",
+  "commit": "fd356839cbe402940c46ef50256b41b5ad0eb612",
+  "dependent": "src/_pytest/timing.py",
+  "edit": [
+   "src/_pytest/runner.py",
+   "src/_pytest/subtests.py",
+   "src/_pytest/unittest.py"
+  ],
+  "sort": "rule",
+  "note": "linked: CallInfo takes a timing.Duration"
+ },
+ {
+  "id": 122,
+  "project": "pytest",
+  "commit": "71e56049305f3c8e22166b463a2eac97e278aeec",
+  "dependent": "src/_pytest/config/__init__.py",
+  "edit": [
+   "src/_pytest/deprecated.py"
+  ],
+  "sort": "rule",
+  "note": "linked: the dependent uses a warning the edit defines"
+ },
+ {
+  "id": 124,
+  "project": "pytest",
+  "commit": "bcd254872ce246628c40fa3845f253252ab9ddc4",
+  "dependent": "src/_pytest/terminal.py",
+  "edit": [
+   "src/_pytest/deprecated.py"
+  ],
+  "sort": "rule",
+  "note": "linked: the dependent uses a warning the edit defines"
+ },
+ {
+  "id": 129,
+  "project": "pytest",
+  "commit": "b7c1834d814749a6ee8e3a002deba53068313ec4",
+  "dependent": "src/_pytest/approx.py",
+  "edit": [
+   "src/_pytest/warning_types.py",
+   "src/pytest/__init__.py",
+   "testing/python/approx.py"
+  ],
+  "sort": "rule",
+  "note": "linked: a new warning class, raised in one and defined in the other"
+ },
+ {
+  "id": 130,
+  "project": "pytest",
+  "commit": "b7c1834d814749a6ee8e3a002deba53068313ec4",
+  "dependent": "src/_pytest/warning_types.py",
+  "edit": [
+   "src/_pytest/approx.py",
+   "src/pytest/__init__.py",
+   "testing/python/approx.py"
+  ],
+  "sort": "rule",
+  "note": "linked: the same commit from the other side"
+ },
+ {
+  "id": 136,
+  "project": "pytest",
+  "commit": "ee08c0015ee12ec359aa04933103637f13821838",
+  "dependent": "src/_pytest/main.py",
+  "edit": [
+   "src/_pytest/terminal.py"
+  ],
+  "sort": "rule",
+  "note": "key: the ini option \"max_warnings\" declared with a type in one and read in the other"
+ },
+ {
+  "id": 138,
+  "project": "pytest",
+  "commit": "98fcf2690fef1477596fdb9be5a313b1870bfcd4",
+  "dependent": "testing/python/collect.py",
+  "edit": [
+   "src/_pytest/config/__init__.py"
+  ],
+  "sort": "rule",
+  "note": "contract: which exception a missing plugin raises; the dependent is a test the product reads as source"
+ },
+ {
+  "id": 146,
+  "project": "pytest",
+  "commit": "5882c162f85daceb49fabd673b53510d71fb72ea",
+  "dependent": "src/_pytest/_code/code.py",
+  "edit": [
+   "src/_pytest/junitxml.py",
+   "src/_pytest/pathlib.py",
+   "src/_pytest/terminal.py"
+  ],
+  "sort": "sweep",
+  "note": "Ruff: removeprefix"
+ },
+ {
+  "id": 149,
+  "project": "pytest",
+  "commit": "5882c162f85daceb49fabd673b53510d71fb72ea",
+  "dependent": "src/_pytest/terminal.py",
+  "edit": [
+   "src/_pytest/_code/code.py",
+   "src/_pytest/junitxml.py",
+   "src/_pytest/pathlib.py"
+  ],
+  "sort": "sweep",
+  "note": "Ruff: removeprefix, the other side"
+ }
+]
