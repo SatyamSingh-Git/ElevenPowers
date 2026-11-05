@@ -203,3 +203,10 @@ more useful record.
 | D137 | Removal qualifies coverage without suppressing available analysis | Current source cannot contain removed behavior, but neighboring edited source can still be examined | Nonfatal removal limitations retain useful observations and an incomplete final state |
 | D138 | Preserve historical grades beside separately versioned reproduction | Mixed failures/setup errors cannot be credited as complete detection under the corrected evaluator | Twelve regrades completed; three Click F03 corrections explicit, nine exact matches |
 | D139 | Analysis relevance is separate from coding benefit | A sample reaching the correct function does not show improved submitted code or tests over ordinary review | Real relevance gains measured; held-out equal-budget behavioral benefit exit remains open |
+
+## Rule groups — 2026-11-05
+
+| # | Decision | Reasoning | Status |
+|---|---|---|---|
+| D140 | Keep the milestone advice default at 1 second | The repeated misses were the 21.5 MB grammar download, now never made by a read; with an empty cache, JavaScript advice arrives in about 0.45 s, naming the grammar as unavailable. With grammars on disk, the host exercise at 1 s delivered 7 of 8 JavaScript attempts (0.43–1.0 s) and 4 of 4 Python; one JavaScript attempt was incomplete at 1.64 s | Stands. The user decided, 2026-11-05, on the empty-cache figure; the one-in-eight figure was measured after and reported to them |
+| D141 | A person names the rules; make naming them cheap rather than improving discovery | On 160 quiet co-changes from four real projects, proposals covered 60 at K = 50, as did a control; agents act on declared rules | Stands. See journey 99 |
