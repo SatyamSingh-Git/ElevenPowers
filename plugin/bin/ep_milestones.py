@@ -26,8 +26,20 @@ def main():
     parser.add_argument('--propose', action='store_true',
                         help='propose files that carry the same rule, for a person to certify as milestones')
     parser.add_argument('--limit', type=int, default=50, help='with --propose: how many pairs to list')
+    parser.add_argument('--marked', action='store_true',
+                        help='list the rules marked in the code with LINT.IfChange / LINT.ThenChange')
     args = parser.parse_args()
     try:
+        if args.marked:
+            from core.milestones.marked import listing, listing_text
+            value = listing(args.project)
+            text = json.dumps(value, indent=2, ensure_ascii=False) + '\n' if args.json else listing_text(value)
+            if args.output:
+                write(args.output, text, force=args.force)
+                print(f'Saved {args.output}')
+            else:
+                print(text, end='')
+            return 0
         if args.propose:
             from core.milestones.propose import markdown as proposal_text, propose
             value = propose(args.project, limit=args.limit, seconds=args.seconds)

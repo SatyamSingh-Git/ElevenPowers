@@ -573,6 +573,16 @@ only where an import already joins the files
 ([results](results/rule-groups-history/README.md)). Treat the list as a
 prompt for what you already know, not as discovery.
 
+**The cheapest way to name a rule is where it lives.** Google's
+IfThisThenThat comments, `# LINT.IfChange(label)` above the rule and
+`# LINT.ThenChange(//other/file.py:label)` below it, are read as declared
+rules: the same pre-edit note, and an end-report line when the task changed
+the block but not its target. Projects that already use them, as
+TensorFlow, TFX and abseil do, need nothing else.
+`ep_milestones.py --marked` lists them. The note is the measured one;
+marking is a new way into it, not separately measured
+([guide](the-guide/milestones.md#mark-it-where-it-lives)).
+
 **Agents act on the note.** In 100 one-stage runs (Sonnet 5.5, with
 superpowers and ElevenPowers in both arms), the dependent was left behind
 in 35 of 50 runs without declared rules and 4 of 50 with them. The

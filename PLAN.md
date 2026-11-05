@@ -2161,6 +2161,14 @@ Until then any contributor can start on an open problem below.
          names. On the 70 an import does not join, neither did.
        - Proposals are therefore not shown to find undeclared rules in
          real code.
+     - **Built 2026-11-05: rules marked in the code**
+       ([design](docs/superpowers/specs/2026-11-05-marked-rules-design.md)).
+       Since a person names the rule, naming one is now two comments.
+       - They are Google's IfThisThenThat directives, read as ifttt-lint
+         (MIT) reads them. TensorFlow, TFX and abseil already use them.
+       - They feed the same pre-edit note and end report as declared rules.
+       - Seen working through the real hook on abseil-py's own rule.
+       - Not measured with agents on its own.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10

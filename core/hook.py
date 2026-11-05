@@ -287,10 +287,15 @@ def on_post_tool(payload: dict, root: Path) -> int:
                 if text:
                     _emit('PostToolUse', additionalContext=text)
             from .milestones.definition import configured, rules_naming
-            if tool in COMMAND_TOOLS and configured(root):
+            from .milestones.marked import present
+            ledger = Ledger.load(root) if tool in COMMAND_TOOLS else None
+            if ledger is not None and not configured(root) and ledger.marked is None:
+                # Asked once per task, so a project with no rules pays one search, not one per command.
+                ledger.marked = present(root)
+                ledger.save()
+            if ledger is not None and (configured(root) or ledger.marked):
                 # Agents also write files by running scripts, and no Edit brief fires for those:
                 # in the acted-on pilot, three of six rules-arm runs never saw the rule this way.
-                ledger = Ledger.load(root)
                 notes = {path: rules_naming(root, path) for path in _since_task_opened(ledger, root)
                          if path not in ledger.briefed}
                 notes = {path: note for path, note in notes.items() if note}

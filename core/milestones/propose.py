@@ -21,6 +21,7 @@ from ..config import load as load_config
 from ..evidence import SOURCE_SUFFIXES, scan_sources
 from ..surface import TEST_NAME
 from .definition import load as load_declarations
+from .marked import read as read_marked
 
 # Tokens held by more functions than this weigh little and cost quadratic time.
 MAX_HOLDERS = 200
@@ -119,6 +120,8 @@ def propose(root, *, limit=50, seconds=30):
     declared = load_declarations(root)
     issues += declared['issues']
     together = {frozenset((a, b)) for m in declared['milestones'] for a in m['inputs'] for b in m['inputs'] if a != b}
+    together |= {frozenset((path, t['path'])) for path in texts for block in read_marked(root, path, texts[path])[0]
+                 for t in block['targets'] if t['found'] and t['path'] != path}
     best = {}
     for (i, j), parts in shared.items():
         files = tuple(sorted((rows[i][0], rows[j][0])))

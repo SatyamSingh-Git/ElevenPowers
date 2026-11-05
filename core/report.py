@@ -256,7 +256,7 @@ def _end_report(ledger: Ledger) -> str:
     # A rule a person declared across files, changed in only some of them: the
     # left-behind copy, named from a certified declaration rather than a guess.
     from .milestones.definition import partly_changed
-    for said in partly_changed(ledger.root, ledger.touched):
+    for said in partly_changed(ledger.root, ledger.touched, ledger.base):
         lines.append(f"  {said}")
     # A pattern nothing produced, and a test that could not have failed.
     # Both are claims the ledger can check, and both were shipped here

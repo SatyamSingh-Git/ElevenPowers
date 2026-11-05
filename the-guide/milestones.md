@@ -126,9 +126,63 @@ retention capability; coding improvement still needs a controlled usage result.
 
 A rule worked out in two places, such as a tax rounding or an overtime split,
 breaks quietly when only one place changes. Twenty of the 31 losses in the
-multi-stage v3 run were exactly this. The approach is borrowed from NVIDIA
-Auto-Ontology: a machine discovers candidates, you certify them, and only
-what you certified reaches the agent.
+multi-stage v3 run were exactly this. Agents act on a rule you name, but the
+proposals below did not find rules in real code, so name the ones you know.
+
+### Mark it where it lives
+
+The cheapest way is two comments. This is the convention Chromium,
+TensorFlow and abseil already use, Google's IfThisThenThat, and it is read
+here as [ifttt-lint](https://github.com/simonepri/ifttt-lint) reads it:
+
+```python
+# LINT.IfChange(upload_limit)
+MAX_UPLOAD_SIZE_MB = 50
+# LINT.ThenChange(//docs/api.md:upload_limit)
+```
+
+- **Before the first edit:** before an agent first edits
+  `config/upload.py`, its brief says the block is also kept in
+  `docs/api.md:upload_limit`. An agent that writes the file through a
+  shell command gets the same note after that command.
+- **At completion:** the end report names the block if the task changed a
+  line inside it but not its target.
+  - A `path:label` target counts as changed only if its labelled block
+    changed.
+  - A bare path counts if the file changed at all.
+  - `:label` is a block in the same file.
+- **Paths:** `//path` is read from the project root. Any other path is read
+  from the file's folder, then from the root. A target that is not in the
+  project, such as an internal path in exported code, is not put on the
+  agent.
+- **Comments:** `#`, `//`, `--`, `;`, `%`, `/* */` and `<!-- -->` all work.
+  A directive must be alone on its comment line. Nested blocks, unclosed
+  blocks and directives in Markdown fences are not read, and the listing
+  names them.
+- **What it does not do:** a marked rule carries no checks, and nothing
+  blocks.
+- **Projects that already mark rules** need nothing else.
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH --marked
+```
+
+This lists every marked rule, with any target or label not found. On
+abseil-py it lists two rules, on TFX 18 and on TF-GNN 26.
+
+**Measured, and not:**
+- **The note** uses the delivery and wording measured for declared rules
+  (below).
+- **Marking** is a new way into that note. It has not been measured with
+  agents on its own.
+
+### Or declare it, with a check
+
+An entry in `elevenpowers.milestones.json` also carries the check that
+proves the behaviour (above). The proposals help you think of entries. The
+approach is borrowed from NVIDIA Auto-Ontology: a machine discovers
+candidates, you certify them, and only what you certified reaches the
+agent.
 
 ```bash
 python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
@@ -138,7 +192,7 @@ python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
    words they share, and a milestone entry ready to edit. The words are the
    reason: shared `ROUND_HALF_UP`, `quantize` and `cents` suggest one rounding
    rule, while shared `writer` and `newline` are just two CSV writers. Pairs
-   already declared together are not proposed again.
+   already declared or marked together are not proposed again.
 2. **Certify.** Copy an entry you accept into `elevenpowers.milestones.json`,
    replace its `TODO` description with the rule in your words, and keep or
    change its check. An entry needs at least one check. The project's

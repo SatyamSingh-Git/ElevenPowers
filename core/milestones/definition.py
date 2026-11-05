@@ -104,30 +104,34 @@ def load(root, *, deadline=None):
 
 
 def rules_naming(root, path):
-    """Declared milestones that name `path` and other files too: the person-certified rule note."""
-    if not configured(root):
-        return ''
+    """Rules a person declared or marked that keep `path` in step with other files: the rule note."""
+    from .marked import read
     lines = []
-    for item in load(root)['milestones']:
+    for item in load(root)['milestones'] if configured(root) else []:
         others = [p for p in item['inputs'] if p != path]
         if path in item['inputs'] and others:
             shown = ', '.join(others[:4]) + (f' (+{len(others) - 4} more)' if len(others) > 4 else '')
             description = ' '.join(item['description'].split())[:200]
             lines.append(f"Declared rule {item['id']} ({description}) is also kept in {shown}. "
                          'Change them together, or say why one should differ.')
+    for block in read(root, path)[0]:
+        targets = [t for t in block['targets'] if t['found']]
+        if targets:
+            shown = ', '.join(t['path'] + (f":{t['label']}" if t['label'] else '') for t in targets[:4])
+            lines.append(f"Marked rule {block['label'] or 'unnamed'} ({path} lines {block['start']}-{block['end']}) "
+                         f'is also kept in {shown}. Change them together, or say why one should differ.')
     return '\n'.join(lines[:3])
 
 
 
-def partly_changed(root, touched):
-    """Declared multi-file rules this task changed in some files and not the others."""
-    if not configured(root):
-        return []
+def partly_changed(root, touched, base=''):
+    """Declared or marked multi-file rules this task changed in some files and not the others."""
+    from .marked import left_behind
     said = []
-    for item in load(root)['milestones']:
+    for item in load(root)['milestones'] if configured(root) else []:
         changed = [p for p in item['inputs'] if p in touched]
         unchanged = [p for p in item['inputs'] if p not in touched]
         if changed and unchanged:
             said.append(f"declared rule {item['id']}: changed {', '.join(changed[:4])}, "
                         f"not {', '.join(unchanged[:4])}")
-    return said[:5]
+    return (said + left_behind(root, touched, base))[:5]

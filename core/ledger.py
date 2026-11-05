@@ -187,6 +187,8 @@ class Ledger:
     measured it: emitted on a direct edit, silent after a read. The feature was
     suppressed by the most common way anyone works.
     """
+    marked: bool | None = None
+    """Does the project hold a `LINT.ThenChange`? Asked on the task's first shell command, once."""
     passed_before: list = field(default_factory=list)
     """Test identities observed **passing** on the tree this task started from.
 
@@ -283,6 +285,7 @@ class Ledger:
             failed_before=raw.get("failed_before", []) or [],
             passed_before=raw.get("passed_before", []) or [],
             briefed=raw.get("briefed", []) or [],
+            marked=raw.get("marked"),
             discrimination_inputs=raw.get("discrimination_inputs", {}) or {},
             discrimination=raw.get("discrimination", {}) or {},
         )
@@ -370,6 +373,7 @@ class Ledger:
             "failed_before": self.failed_before,
             "passed_before": self.passed_before,
             "briefed": self.briefed,
+            "marked": self.marked,
             "discrimination_inputs": self.discrimination_inputs,
             "discrimination": self.discrimination,
             # Written for diagnosis, never read back. `stress` declines when a

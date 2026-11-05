@@ -1,5 +1,33 @@
 # Current delivery status
 
+**2026-11-05 — Rules can be marked in the code.**
+Proposals did not find rules in real code (below), so a person names
+them, and naming one now takes two comments.
+- **The convention:** Google's IfThisThenThat directives
+  (`LINT.IfChange` / `LINT.ThenChange`), read as
+  [ifttt-lint](https://github.com/simonepri/ifttt-lint) (MIT) reads them.
+  They are read as declared rules.
+- **Before the first edit:** the rule note names a marked block's targets,
+  including for a file a shell command wrote.
+- **At completion:** the end report names a block the task changed (by its
+  diff from the task's base) whose target did not change.
+- **Also:** `ep_milestones --marked` lists them, and proposals skip pairs
+  already marked.
+- **Tests:** 31 tests, run both ways, and 29 mutants, all killed.
+- **On real projects:**
+  - abseil-py's own rule was named in the brief through the real hook;
+  - a change inside its block was reported, and one outside it was not;
+  - TFX and TF-GNN list 18 and 26 marked rules.
+- **The real code found four things the tests had not:**
+  - anchor-only blocks (`LINT.ThenChange()`);
+  - targets like `<Internal source code>`;
+  - a patch file quoting directives, now skipped;
+  - bare targets found nowhere, now shown as written.
+- **Cost:** proposals on `sqlalchemy` take the same time as before, since
+  a file without `LINT.` is not parsed.
+- **Not measured:** whether agents act on a marked rule as they did on a
+  declared one. The note and its delivery are the same.
+
 **2026-11-05 — Rule-group proposals are not shown to find rules in real code.**
 Pre-registered, $0 ([results](../results/rule-groups-history/README.md)).
 - **Benchmark:** 160 quiet co-changes from the history of `click`,
