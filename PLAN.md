@@ -2142,6 +2142,12 @@ Until then any contributor can start on an open problem below.
        function, such as a module-level table. Adding module and class
        bodies covered 4 of those 14 but pushed 7 others out: 20 of 51 at
        K = 50 either way, under the pre-set bar of 23. Not built.
+     - **The other 17** keep the rule in functions on both sides
+       (diagnosis, $0, in-sample). One shares no rare word with the edit.
+       Six share a distinctive name and score near the 50th proposal.
+       Ten share mostly a record's field names (`payee`, `credits`) and
+       score far below it. Nine of those ten are data, contract or key
+       changes: they need a different signal, not a different weighting.
 2. **Getting a delivered warning acted on.** Briefs arrive and are ignored.
    What form, timing or wording changes what the agent does next, measured
    both ways, without the in-loop harm an intervening critic can cause? §10

@@ -1,0 +1,348 @@
+[
+ {
+  "case": "clinic_booking",
+  "stage": 8,
+  "kind": "copy",
+  "dependent": "src/clinicbook/reports/summary.py",
+  "place": null,
+  "score_50th": 0.3354,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.2419,
+   "edit": "src/clinicbook/services/fees.py:charges",
+   "dependent_function": "day_summary",
+   "shared": [
+    "no_show_fee",
+    "NO_SHOW",
+    "settings",
+    "status",
+    "booking",
+    "bookings"
+   ]
+  }
+ },
+ {
+  "case": "fleet_service",
+  "stage": 6,
+  "kind": "copy",
+  "dependent": "src/fleetkeep/importers/timesheets.py",
+  "place": 61,
+  "score_50th": 0.3833,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 2,
+  "best": {
+   "score": 0.3665,
+   "edit": "src/fleetkeep/services/workorders.py:log_labour",
+   "dependent_function": "_line",
+   "shared": [
+    "labour_rate",
+    "LabourLine",
+    "rate",
+    "settings",
+    "fleet"
+   ]
+  }
+ },
+ {
+  "case": "gradebook",
+  "stage": 5,
+  "kind": "data",
+  "dependent": "src/gradebook/storage/sheet_csv.py",
+  "place": null,
+  "score_50th": 0.3366,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.0569,
+   "edit": "src/gradebook/reports/score_sheet.py:write_score_sheet",
+   "dependent_function": "import_sheet",
+   "shared": [
+    "assignment_id",
+    "book",
+    "course",
+    "student_id"
+   ]
+  }
+ },
+ {
+  "case": "gradebook",
+  "stage": 8,
+  "kind": "contract",
+  "dependent": "src/gradebook/services/transcript.py",
+  "place": 55,
+  "score_50th": 0.3366,
+  "changed_pairs": 3,
+  "sharing_any_rare_word": 3,
+  "best": {
+   "score": 0.1306,
+   "edit": "src/gradebook/storage/grades_csv.py:_grade_row",
+   "dependent_function": "_credit_totals",
+   "shared": [
+    "credits",
+    "letter"
+   ]
+  }
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 1,
+  "kind": "data",
+  "dependent": "src/greenhouse/storage/history.py",
+  "place": 63,
+  "score_50th": 0.3206,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.1637,
+   "edit": "src/greenhouse/storage/readings_log.py:_log_row",
+   "dependent_function": "load_readings",
+   "shared": [
+    "at",
+    "sensor",
+    "unit",
+    "kind",
+    "zone"
+   ]
+  }
+ },
+ {
+  "case": "greenhouse_monitor",
+  "stage": 2,
+  "kind": "key",
+  "dependent": "src/greenhouse/storage/calibration.py",
+  "place": 78,
+  "score_50th": 0.3208,
+  "changed_pairs": 9,
+  "sharing_any_rare_word": 6,
+  "best": {
+   "score": 0.2794,
+   "edit": "src/greenhouse/cli/commands.py:cmd_calibrate",
+   "dependent_function": "set_offset",
+   "shared": [
+    "set_offset",
+    "offset",
+    "ValidationError",
+    "sensor"
+   ]
+  }
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 1,
+  "kind": "data",
+  "dependent": "src/hoteldesk/reports/revenue.py",
+  "place": 99,
+  "score_50th": 0.321,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.26,
+   "edit": "src/hoteldesk/storage/journal.py:append_entry",
+   "dependent_function": "revenue_summary",
+   "shared": [
+    "\"business_date\"",
+    "newline",
+    "handle",
+    "open",
+    "csv",
+    "\"utf-8\""
+   ]
+  }
+ },
+ {
+  "case": "hotel_desk",
+  "stage": 6,
+  "kind": "data",
+  "dependent": "src/hoteldesk/reports/audit_report.py",
+  "place": null,
+  "score_50th": 0.3304,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 2,
+  "best": {
+   "score": 0.1633,
+   "edit": "src/hoteldesk/reports/occupancy.py:occupancy_text",
+   "dependent_function": "audit_report_text",
+   "shared": [
+    "'occupancy'",
+    "100",
+    "\"adr\"",
+    "\"revpar\""
+   ]
+  }
+ },
+ {
+  "case": "household_budget",
+  "stage": 1,
+  "kind": "copy",
+  "dependent": "src/budgetbook/services/importing.py",
+  "place": null,
+  "score_50th": 0.3129,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.1377,
+   "edit": "src/budgetbook/storage/journal.py:_encode",
+   "dependent_function": "_identity",
+   "shared": [
+    "payee",
+    "amount"
+   ]
+  }
+ },
+ {
+  "case": "household_budget",
+  "stage": 2,
+  "kind": "key",
+  "dependent": "src/budgetbook/services/search.py",
+  "place": null,
+  "score_50th": 0.3113,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.0584,
+   "edit": "src/budgetbook/rules/matchers.py:_contains",
+   "dependent_function": "find_transactions",
+   "shared": [
+    "payee"
+   ]
+  }
+ },
+ {
+  "case": "household_budget",
+  "stage": 6,
+  "kind": "contract",
+  "dependent": "src/budgetbook/reports/register.py",
+  "place": null,
+  "score_50th": 0.3113,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 2,
+  "best": {
+   "score": 0.0783,
+   "edit": "src/budgetbook/storage/journal.py:save_transactions",
+   "dependent_function": "account_register",
+   "shared": [
+    "transaction",
+    "\"\"",
+    "transactions",
+    "date"
+   ]
+  }
+ },
+ {
+  "case": "library_loans",
+  "stage": 2,
+  "kind": "key",
+  "dependent": "src/lending/reports/activity.py",
+  "place": null,
+  "score_50th": 0.358,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.0326,
+   "edit": "src/lending/storage/ledger.py:_check_header",
+   "dependent_function": "activity_rows",
+   "shared": [
+    "1"
+   ]
+  }
+ },
+ {
+  "case": "library_loans",
+  "stage": 7,
+  "kind": "copy",
+  "dependent": "src/lending/services/accounts.py",
+  "place": null,
+  "score_50th": 0.3546,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.2886,
+   "edit": "src/lending/services/circulation.py:checkout",
+   "dependent_function": "summary",
+   "shared": [
+    "loan_limit",
+    "owed",
+    "loans_of",
+    "balance",
+    "loan",
+    "kind"
+   ]
+  }
+ },
+ {
+  "case": "payroll_lite",
+  "stage": 7,
+  "kind": "data",
+  "dependent": "src/payroll/services/reconcile.py",
+  "place": null,
+  "score_50th": 0.338,
+  "changed_pairs": 2,
+  "sharing_any_rare_word": 2,
+  "best": {
+   "score": 0.1221,
+   "edit": "src/payroll/reports/bank_file.py:bank_rows",
+   "dependent_function": "load_payments",
+   "shared": [
+    "reference",
+    "PayrollError"
+   ]
+  }
+ },
+ {
+  "case": "recipe_box",
+  "stage": 5,
+  "kind": "contract",
+  "dependent": "src/recipebox/reports/shopping_text.py",
+  "place": null,
+  "score_50th": 0.3418,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 1,
+  "best": {
+   "score": 0.1401,
+   "edit": "src/recipebox/services/shopping.py:build_shopping_list",
+   "dependent_function": "render_shopping_list",
+   "shared": [
+    "aisle",
+    "line",
+    "lines",
+    "key"
+   ]
+  }
+ },
+ {
+  "case": "ticket_office",
+  "stage": 3,
+  "kind": "key",
+  "dependent": "src/boxoffice/reports/daily.py",
+  "place": null,
+  "score_50th": 0.342,
+  "changed_pairs": 1,
+  "sharing_any_rare_word": 0,
+  "best": {
+   "score": 0.0,
+   "edit": "src/boxoffice/services/refunds.py:exchange",
+   "dependent_function": "row",
+   "shared": []
+  }
+ },
+ {
+  "case": "ticket_office",
+  "stage": 6,
+  "kind": "contract",
+  "dependent": "src/boxoffice/storage/jsonstore.py",
+  "place": 99,
+  "score_50th": 0.335,
+  "changed_pairs": 3,
+  "sharing_any_rare_word": 3,
+  "best": {
+   "score": 0.2139,
+   "edit": "src/boxoffice/services/holds.py:place",
+   "dependent_function": "new_hold_id",
+   "shared": [
+    "new_hold_id",
+    "holds"
+   ]
+  }
+ }
+]

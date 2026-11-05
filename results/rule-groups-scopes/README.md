@@ -112,3 +112,27 @@ boilerplate:
 and the 17 missed with both sides in functions are a separate failure.
 Any further variant, such as dropping `TYPE_CHECKING` blocks, would be
 shaped by these 51 after seeing them, so it needs other cases to judge it.
+
+## The other 17: both sides in functions ([`infunction.py`](infunction.py), [rows](infunction.json))
+
+*Diagnosis only, 2026-11-05, $0, in-sample.* For each, the changed
+functions on both sides are scored as proposals score them: rare words
+shared, over the square root of their weights. The changed edit function
+paired with the changed dependent function is set against the stage's
+50th proposal.
+
+- **One shares no rare word:** `ticket_office` 3. No ranking of shared
+  words reaches it.
+- **Six are near the cutoff,** at 0.64 to 0.96 of the 50th score. They
+  share a distinctive name: `labour_rate`, `set_offset`, `loan_limit`,
+  `"business_date"`, `no_show_fee`, `new_hold_id`. Three are copies of
+  the rule.
+- **Ten are far below,** at 0.09 to 0.51. Nine of them are data,
+  contract or key changes. The words they share are mostly a record's
+  field names: `payee`, `amount`, `credits`, `transaction`, `date`, or a
+  bare `1`.
+
+This puts numbers on the plan's earlier finding: shared rare words find
+copies of a rule and miss format contracts between a writer and a reader.
+A variant aimed at the six would again be shaped by these cases. The nine
+contracts need a different signal, not a different weighting.
