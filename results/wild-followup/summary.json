@@ -1,0 +1,53 @@
+{
+  "population": 3159,
+  "drops": {
+    "no non-test source change": 980,
+    "file list not fetchable": 13,
+    "file list capped at 3,000": 1,
+    "not yet fetched": 0
+  },
+  "repositories": 514,
+  "table": {
+    "no_test_fix": 122,
+    "no_test_clean": 2201,
+    "test_fix": 33,
+    "test_clean": 803
+  },
+  "rates": {
+    "no_test": 0.052518295307791646,
+    "test": 0.039473684210526314
+  },
+  "primary_mh_by_repo": {
+    "or": 0.9113838310633103,
+    "lo": 0.5382552927202576,
+    "hi": 1.543171983178858,
+    "prs": 2253
+  },
+  "permutation_p": 0.698,
+  "permutations": 1000,
+  "forward_planted_or2": {
+    "or": 2.1365134554607548,
+    "lo": 1.3336825781342303,
+    "hi": 3.422620809631237,
+    "prs": 2253
+  },
+  "power": {
+    "1.5": 0.39,
+    "2.0": 0.885
+  },
+  "fisher_pooled_p": 0.16092467770261742,
+  "mh_by_agent": {
+    "or": 1.2807793408069386,
+    "lo": 0.8632124070260876,
+    "hi": 1.9003384410209028,
+    "prs": 3159
+  },
+  "logistic_size_agent": {
+    "or": 1.459249160437146,
+    "lo": 0.9770989581824968,
+    "hi": 2.179316735939859,
+    "size_or_per_log_line": 1.3671021286999718
+  },
+  "no_test_with_missed_layout": 19,
+  "reading": "inconclusive: the interval covers both 1 and 1.5"
+}
