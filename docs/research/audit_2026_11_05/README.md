@@ -320,6 +320,15 @@ decide whether a claim like "this test passes" still holds after a change:
      least 60 developers.
    - Not possible without recruiting reviewers.
 
+**What came of tests 1 and 2 (2026-11-06):**
+- **Test 1 is inconclusive.** Within repositories the odds ratio was 0.91
+  (0.54–1.54), with power 0.39 at 1.5. It neither supports nor removes the
+  premise, so nothing is built on it
+  ([results](../../../results/wild-followup/README.md)).
+- **Test 2 found the check was already there, and wrong.** The ledger certified
+  a test the agent broke as "pre-existing" on its first sighting. It now needs
+  proof from the tree the task opened ([status](../../status.md)).
+
 ## Claims re-read against the page
 
 Each of these was re-read on 2026-11-05 and matched the track report:

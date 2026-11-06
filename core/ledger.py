@@ -170,6 +170,14 @@ class Ledger:
     somebody else's half-finished work. Measured on a probe, a task that edited
     one file was credited with four.
     """
+    opened_vcs: str = ""
+    """The working tree's fingerprint when this task opened (`vcs_state`)."""
+    opened_commit: str = ""
+    """The tree this task opened, uncommitted work included, as a commit (`git stash create`)."""
+    first_edit_at: float = 0.0
+    """When the task first changed a file. A sighting on the opened tree counts only before it."""
+    at_open: dict = field(default_factory=dict)
+    """Tests failing now, run on `opened_commit`: True red there, False green, None not answered."""
     failed_before: list = field(default_factory=list)
     """Test identities that were already red on the tree this task started from.
 
@@ -283,6 +291,10 @@ class Ledger:
             base=raw.get("base", ""),
             outputs=raw.get("outputs", []) or [],
             opened_dirty=raw.get("opened_dirty", []) or [],
+            opened_vcs=raw.get("opened_vcs", "") or "",
+            opened_commit=raw.get("opened_commit", "") or "",
+            first_edit_at=raw.get("first_edit_at", 0.0) or 0.0,
+            at_open=raw.get("at_open", {}) or {},
             outputs_dropped=raw.get("outputs_dropped", 0) or 0,
             failed_before=raw.get("failed_before", []) or [],
             passed_before=raw.get("passed_before", []) or [],
@@ -385,6 +397,10 @@ class Ledger:
             "base": self.base,
             "outputs": self.outputs,
             "opened_dirty": self.opened_dirty,
+            "opened_vcs": self.opened_vcs,
+            "opened_commit": self.opened_commit,
+            "first_edit_at": self.first_edit_at,
+            "at_open": self.at_open,
             "outputs_dropped": self.outputs_dropped,
             "failed_before": self.failed_before,
             "passed_before": self.passed_before,
@@ -485,6 +501,7 @@ class Ledger:
         # was invisible: a task that started on a README and then reached into
         # `src/auth/` kept the risk the README earned it.
         self.touched = sorted(set(self.touched) | {rel})
+        self.first_edit_at = self.first_edit_at or time.time()
         self.risk, self.domains = risk_of(self.touched, self.request)
         if self.claims or not self.request or opens_new_task(self.request):
             return
@@ -633,8 +650,44 @@ class Ledger:
             and e.freshness(self.root) is Freshness.FRESH
         ]
 
+    def _red_before(self, identity: str) -> bool:
+        """Is this check shown to have been failing before the task changed anything?
+
+        The task's first sighting of a failure is not that evidence: agents run
+        the tests after editing as often as before, and then call what they broke
+        pre-existing. FeatureArc (arXiv 2610.37434) counted 321 such dismissals in
+        367 red stages, 23 of them checked on the starting code. What shows it is
+        that check, run by the runtime on the tree the task opened (`at_open`), or
+        a red sighting on that tree before the task's first edit. The base commit
+        does not: it lacks the developer's uncommitted work, and its runs carry the
+        task's own tests over.
+        """
+        if self.at_open.get(identity):
+            return True
+        return bool(self.opened_vcs) and any(
+            e.identity == identity and e.result is Result.FAIL and e.vcs == self.opened_vcs
+            and (not self.first_edit_at or e.at < self.first_edit_at) for e in self.evidence)
+
+    def failing_now(self) -> list[Evidence]:
+        """Tests whose latest record fails on the tree as it is, unless a whole suite passed since.
+
+        `pytest -q` names failures but prints passes as dots, so a test that went
+        red and then green on an unchanged tree keeps a fresh failing record; the
+        later passing suite is what says it is green.
+        """
+        latest: dict[str, Evidence] = {}
+        for e in self.evidence:
+            if e.kind is Kind.TEST and e.execution == "complete":
+                if e.identity not in latest or e.at >= latest[e.identity].at:
+                    latest[e.identity] = e
+        green = [e.at for e in self.evidence if e.kind is Kind.SUITE and e.result is Result.PASS
+                 and e.execution == "complete" and not Obligation._is_scoped(e)]
+        since = max(green, default=0.0)
+        return [e for e in latest.values() if e.result is Result.FAIL and e.at > since
+                and e.freshness(self.root) is Freshness.FRESH]
+
     def pre_existing(self) -> list[Evidence]:
-        """Failures that were already there when the task started.
+        """Failures shown to have been there when the task started.
 
         Stability measurements are excluded: a repeat run that found the bug is
         the reproduction the task exists to fix, not somebody else's breakage.
@@ -646,7 +699,8 @@ class Ledger:
             key = (e.kind, e.identity)
             if key not in first or e.at < first[key].at:
                 first[key] = e
-        return [e for e in first.values() if e.result is Result.FAIL and e.execution == "complete"]
+        return [e for e in first.values() if e.result is Result.FAIL and e.execution == "complete"
+                and self._red_before(e.identity)]
 
     def _check(self, obligation: Obligation) -> Check:
         if obligation.require_prior_failure:
@@ -902,6 +956,10 @@ class Ledger:
         # granted on a number that cannot support it.
         was, now = self._failing_tests(first.at), self._failing_tests(last.at)
         if not was or not now or now - was:
+            return None
+        # The first run is only the first one the agent made, often after its
+        # own edit, so it cannot stand for the tree before the task.
+        if not all(self._red_before(test) for test in now):
             return None
         return last if last.failed <= first.failed else None
 

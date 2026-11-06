@@ -826,6 +826,37 @@ CI did.
 worktree of the commit before. Never stash part of a change. And before
 deleting a test, search for an older one that asserts the same thing.
 
+### Asking the base commit what only the opened tree knows
+
+The first fix for the "pre-existing" excuse (2026-11-06) asked the base commit
+which tests were red there, because `stress` already ran it. An independent
+review found eight defects in it, each reproduced through the hook:
+- **It blamed the agent:**
+  - the base commit lacks the developer's uncommitted work, so a test that
+    work had broken counted against the agent;
+  - a flaky test and a teardown error already red on main became
+    contradictions.
+- **It still excused the agent:**
+  - the run carries the task's own tests over, so a test the agent wrote was
+    red there by construction;
+  - with `PYTHONPATH` pointing into the checkout, the old tree tested the
+    agent's code.
+- **It could not answer at all** for a project in a subfolder, whose test
+  names did not match.
+
+*Cause:* a run reused for a question it does not answer. `stress` asks whether
+a check could have failed without the change: old source, new tests. "Was this
+failing before the task?" needs the tree the task opened, with its own tests,
+run where it cannot import the checkout. `core/review` already ran things that
+way.
+
+*Cost:* one design thrown away, and a full-suite run stopped at 20%. It was
+slower too, because red stops in the suite now paid for a base run.
+
+*Changed:* name the question before choosing where to ask it. A run reused for
+a new question must first be shown to answer it. Each of the eight defects is
+now a test.
+
 ## 2026-09-28 to 2026-09-29: setup that still needed the user
 
 **Partial scans looked like complete evidence.** A filesystem walk encountered generated data and a selection cap without carrying its omissions into freshness. Git-aware selection and explicit coverage diagnostics now define what a receipt covers. A diagnostic is not an invitation to certify the smaller set.

@@ -18,7 +18,7 @@ from pathlib import Path
 from . import blindspots, jobs
 from .atlas import neighbourhood
 from .claims import infer, opens_new_task
-from .evidence import Result
+from .evidence import Result, vcs_state
 from .ledger import STATE_DIR, Ledger, Status
 from .obligations import risk_of
 from .parsers import declared_needs, claims_to_run_tests, looks_like_tap, parse, written_paths
@@ -27,7 +27,7 @@ from .scope import normalise, unrelated
 from .verify import discharge
 from .report import end_report, gate_message, guidance, start_banner
 from .ratchet import snapshot
-from .stress import base_commit, confirm, stress, wording
+from .stress import already_failing, base_commit, confirm, opened_commit, stress, wording
 from .wiring import COMMAND_TOOLS, EDIT_TOOLS, FILE_TOOLS
 from .hosts import transport
 
@@ -138,6 +138,14 @@ def on_session_start(payload: dict, root: Path) -> int:
     return 0
 
 
+def _record_opening(ledger: Ledger, root: Path) -> None:
+    """What the task starts from: the commit, the work already in flight, and that tree itself."""
+    ledger.base = base_commit(root)
+    ledger.opened_dirty = _changed_paths(root)
+    ledger.opened_vcs = vcs_state(root)
+    ledger.opened_commit = opened_commit(root, ledger.base)
+
+
 def on_prompt(payload: dict, root: Path) -> int:
     request = (payload.get("prompt") or "").strip()
     if not request:
@@ -150,14 +158,13 @@ def on_prompt(payload: dict, root: Path) -> int:
     if new_subject:
         # A new subject owns a new scope even when it states no coding claim.
         # Questions/read requests must not inherit another task's receipts.
-        ledger = Ledger(root=root, task=f"t-{time.time_ns()}", base=base_commit(root),
-                        opened_dirty=_changed_paths(root))
+        ledger = Ledger(root=root, task=f"t-{time.time_ns()}")
+        _record_opening(ledger, root)
     elif identity_missing:
         # Repair legacy empty-ID ledgers without discarding an ongoing claim.
         ledger.task = f"t-{time.time_ns()}"
         if not ledger.base:
-            ledger.base = base_commit(root)
-            ledger.opened_dirty = _changed_paths(root)
+            _record_opening(ledger, root)
     from .hosts.readiness import record_task
     record_task(ledger.task)
     advice = _declared_advice(root, request) if new_subject or identity_missing else ''
@@ -173,8 +180,7 @@ def on_prompt(payload: dict, root: Path) -> int:
         # check silently never ran. It cost 37% of a paid sweep: six of sixteen
         # runs, and every one of the six was opened by an edit.
         if request != ledger.request or not ledger.base:
-            ledger.base = base_commit(root)
-            ledger.opened_dirty = _changed_paths(root)
+            _record_opening(ledger, root)
         ledger.claims = []
         ledger.request = request
         ledger.save()
@@ -542,6 +548,11 @@ def _complete_stop(payload: dict, root: Path, ledger: Ledger) -> int:
 
     ledger.touched = sorted(set(ledger.touched) | set(changed))
     status = ledger.settle(payload.get("last_assistant_message", ""))
+
+    # Asked before the suite is run again: a failure shown red on the tree the
+    # task opened may be all that stands between this stop and VERIFIED.
+    if status is not Status.VERIFIED and ledger.config.verifies and already_failing(ledger):
+        status = ledger.status()
 
     if status is not Status.VERIFIED and ledger.config.speaks:
         # Compute what is missing rather than demanding it. Blocking to make the

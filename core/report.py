@@ -65,6 +65,7 @@ def _gate_message(ledger: Ledger) -> str:
                 lines.append(f"           {_hint(ledger, check)}")
                 if check.caveat:
                     lines.append(f"           so far: {check.caveat}")
+    lines.extend(_unshown(ledger))
     lines.extend(_coverage_warnings(ledger))
     if not lines:
         return ""
@@ -74,6 +75,19 @@ def _gate_message(ledger: Ledger) -> str:
     if runner:
         lines.append(runner)
     return "\n".join(lines)
+
+
+def _unshown(ledger: Ledger) -> list[str]:
+    """Failures nothing shows to be older than the task, named so the agent can act on them."""
+    tests = [e.identity for e in ledger.failing_now() if not ledger._red_before(e.identity)]
+    green = [t for t in tests if ledger.at_open.get(t) is False]
+    unknown = [t for t in tests if t not in green]
+    lines = []
+    if green:
+        lines.append("  failing now, and passing when this task opened: " + ", ".join(green))
+    if unknown:
+        lines.append("  failing now, not shown to predate this task: " + ", ".join(unknown))
+    return lines
 
 
 def start_banner(ledger: Ledger) -> str:
@@ -230,6 +244,7 @@ def _end_report(ledger: Ledger) -> str:
     captured = len(ledger.evidence)
     fresh = sum(1 for e in ledger.evidence if e.freshness(ledger.root) is Freshness.FRESH)
     lines.append(f"  evidence: {captured} record(s), {fresh} fresh")
+    lines.extend(_unshown(ledger))
     pre = ledger.pre_existing()
     if pre:
         lines.append("  pre-existing failures, not attributed to this change: "

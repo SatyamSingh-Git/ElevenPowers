@@ -131,9 +131,9 @@ def test_pre_existing_failure_does_not_contradict(repo):
     """A suite that was already red when the task began is not ours to answer for."""
     files = source_files(repo)
     tree = tree_hash(repo, files)
-    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], risk=Risk.LOW)
+    led = Ledger(root=repo, claims=[Claim.BUG_FIXED], risk=Risk.LOW, opened_vcs="opening")
     led.add([
-        Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=1.0),
+        Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=1.0, vcs="opening"),
         Evidence(Kind.SUITE, "tests/test_auth.py", Result.PASS, files, tree, at=2.0),
         Evidence(Kind.SUITE, "other", Result.FAIL, files, tree, at=3.0),
     ])

@@ -413,8 +413,13 @@ def vcs_state(root: Path) -> str:
     changes = git("diff", "HEAD")
     if status is None or changes is None:
         return ""
-    h = hashlib.sha256((head + "\n--\n" + status + "\n--\n" + changes).encode())
-    for line in status.splitlines():
+    # Untracked files in caches and build output are what running the tests
+    # writes. Counted, they made the first test run a change to the tree, and a
+    # failure seen on the tree a task opened could never be shown to be one.
+    lines = [line for line in status.splitlines()
+             if not (line.startswith("??") and CACHE_DIRS & set(Path(line[3:].strip().strip('"')).parts))]
+    h = hashlib.sha256((head + "\n--\n" + "\n".join(lines) + "\n--\n" + changes).encode())
+    for line in lines:
         if not line.startswith("??"):
             continue
         path = root / line[3:].strip().strip('"')
@@ -428,6 +433,8 @@ IGNORED_DIRS = {
     ".mypy_cache", ".pytest_cache", ".ruff_cache", "dist", "build", ".next",
     ".tox", "target", ".gradle", ".idea", ".elevenpowers",
 }
+# Written by running things, never by hand; a package can be called `build`.
+CACHE_DIRS = IGNORED_DIRS - {"dist", "build", "target"}
 
 SOURCE_SUFFIXES = {
     ".py", ".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".rb",

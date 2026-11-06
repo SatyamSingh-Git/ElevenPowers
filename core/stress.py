@@ -100,6 +100,16 @@ def base_commit(root: Path) -> str:
     return _git(root, "rev-parse", "HEAD") or ""
 
 
+def opened_commit(root: Path, base: str) -> str:
+    """The tree a task opens, uncommitted tracked work included, as a commit.
+
+    `git stash create` writes a commit object and moves neither the working tree
+    nor any ref. On a clean tree it prints nothing, and the base is that tree.
+    Untracked files are not in it.
+    """
+    return _git(root, "stash", "create") or base
+
+
 def _defer_baseline(command: str) -> None:
     session = jobs.current()
     item = session.queue("baseline", command)
@@ -621,3 +631,47 @@ def confirm(ledger) -> list:
            "failed" if failed or done.returncode else "passed",
            "; ".join(issues) if issues else "not every chosen test produced an outcome" if incomplete else "")
     return found
+
+
+def already_failing(ledger) -> bool:
+    """Run the tests failing now on the tree the task opened, and record which were red there.
+
+    The check FeatureArc (arXiv 2610.37434) found agents skipping: 23 of 321
+    "pre-existing" dismissals were tried on the starting code. That tree is
+    `opened_commit`, uncommitted work included, not the base commit. Tests in
+    files the task touched are not asked: a test it wrote or edited is red there
+    by construction. Through `core/review`'s runner, which runs in the project's
+    own folder and refuses a run that could import this checkout instead.
+    Returns whether anything was learned; each test is asked once per task.
+    """
+    command = ledger.config.commands.get("tests", "")
+    mine = {p.replace("\\", "/") for p in ledger.touched}
+    ids = [e.identity for e in ledger.failing_now()
+           if "::" in e.identity and e.identity not in ledger.at_open
+           and e.identity.split("::")[0] not in mine and not ledger._red_before(e.identity)][:CONFIRM_LIMIT]
+    run = _targeted(command, ledger.root, tuple(ids)) if ids and command and ledger.opened_commit else ""
+    if not run:
+        return False
+    if jobs.current() is None:
+        with jobs.Session(ledger.root, ledger.task):
+            return already_failing(ledger)
+    seconds = int(min(TIMEOUT, jobs.current().budget.remaining))
+    if seconds <= 0:
+        return False
+    from .review import _among, _run, _worktree
+    try:
+        with _worktree(ledger.root, ledger.opened_commit) as (_, project, _):
+            outcome = _run("opened", run, project, seconds, ledger.root)
+    except ValueError:
+        return False
+    for test in ids:
+        if outcome["problem"]:
+            ledger.at_open[test] = None
+        elif _among(test, outcome["failing"]):
+            ledger.at_open[test] = True
+        elif _among(test, outcome["passed"]):
+            ledger.at_open[test] = False
+        else:
+            ledger.at_open[test] = None
+    ledger.save()
+    return True

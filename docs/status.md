@@ -1,5 +1,77 @@
 # Current delivery status
 
+**2026-11-06 — "Pre-existing" now needs proof.**
+- **The defect.** The ledger took a test's first sighting in the task as its
+  state before the task. So an agent that broke a test, then ran the suite
+  twice, got **VERIFIED**, with the test listed as "pre-existing, not
+  attributed to this change". This was reproduced through the real hook with
+  git and pytest: the output was the same whether the test was red on the base
+  commit or broken by the agent.
+  - It is the excuse FeatureArc
+    ([2610.37434](https://arxiv.org/html/2610.37434)) measured: agents
+    dismissed 321 of 367 red stages that way and checked 23.
+  - In the 106 agent-run ledgers saved under `results/`, 69 listed such
+    failures. 233 of those failures were shown red on the base commit. The
+    other 916 had no evidence either way. Those ledgers predate a record of
+    which tests passed on the base, so how many the agents broke cannot be
+    counted.
+- **Now.** A failure is pre-existing only when shown, in one of two ways:
+  - the runtime runs it at Stop on the tree the task opened, and it is red
+    there (`stress.already_failing`). That tree is recorded at task open with
+    `git stash create`, so uncommitted work is included. The run uses
+    `core/review`'s worktree runner, which runs in the project's own folder
+    and refuses a run that could import the checkout. Each test is asked
+    once, and tests in files the task touched are never asked;
+  - it was seen red on that tree before the task's first edit.
+
+  An unshown failure is named in the gate and the end report: either "failing
+  now, and passing when this task opened", or "not shown to predate this
+  task". It is never excused.
+- **The first version was wrong.** An independent review found eight defects,
+  each reproduced through the hook. It accused correct work in four cases the
+  old code got right:
+  - uncommitted work at task open;
+  - a flaky red-then-green test;
+  - a teardown error already red on main;
+  - a project in a subfolder.
+
+  It still excused the agent in three:
+  - a test the agent wrote, carried onto the base;
+  - an old tree importing the checkout through `PYTHONPATH`;
+  - an edit git cannot see.
+
+  And it recomputed the status in the wrong place. All eight came from asking
+  the *base commit*, so the design changed, not eight patches. Each finding is
+  now a test.
+  [The mistake](../journey/mistakes.md#asking-the-base-commit-what-only-the-opened-tree-knows).
+- **The trade.** Where nothing can show it, a failure on a project that is red
+  on main is no longer conceded. That happens with no test command and no run
+  before the edit. Under `strict` the gate asks twice and then reports
+  UNVERIFIED.
+- **Tests:** 24 new, both directions, 11 of them end to end through the hook;
+  22 mutants, all killed. One survived first, because its test never reached
+  the call it named; the test was fixed and watched flipping.
+  `vcs_state` now ignores untracked caches but not real `build/` or `dist/`
+  packages.
+- **Found by the same review, older, and not fixed yet:**
+  - **A setup or teardown error marks the whole file red.** `stress`'s
+    `COLLECT_ERROR` also matches the `ERROR file.py::test` line, putting the
+    whole file into `failed_before`. `_reproduction()` matches that entry as a
+    prefix, so any passing test in the file can read as reproduced.
+    `core/review` already filters this.
+  - **Fail-fast flags are kept on the base run.** A declared `-x` or
+    `--maxfail` stays on the base-tree run, so failures after the first are in
+    neither list.
+  - **Subfolder test names don't match.** pytest run from a subfolder on
+    Windows prints names with backslashes, which are never normalised against
+    the base lists.
+
+**2026-11-06 — In the wild, a test in an agent PR did not measurably predict
+fewer follow-up fixes; the study was too small to say more.** Within
+repositories the odds ratio was 0.91 (0.54–1.54), with power 0.39 at 1.5.
+It was pre-registered, and both directions of the analysis were checked. See
+[results](../results/wild-followup/README.md).
+
 **2026-11-05 — Rules can be marked in the code.**
 Proposals did not find rules in real code (below), so a person names
 them, and naming one now takes two comments.

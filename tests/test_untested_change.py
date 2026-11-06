@@ -66,7 +66,8 @@ def test_an_earlier_qualification_is_kept_alongside(repo):
     """A suite red before and no redder now already says so; that must survive."""
     files = source_files(repo)
     tree = tree_hash(repo, files)
-    led = Ledger(root=repo, claims=[Claim.FEATURE_ADDED], risk=Risk.LOW)
+    led = Ledger(root=repo, claims=[Claim.FEATURE_ADDED], risk=Risk.LOW,
+                 at_open={"tests/test_auth.py::test_old": True})
     led.touched = ["src/auth.py"]
     for at in (time.time() - 10, time.time()):
         led.add([
