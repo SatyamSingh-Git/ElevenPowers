@@ -34,6 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
+9. **Your rules, at the moment they apply.** A rule you declare ("these files change together") is shown to the agent right before it edits one of them. The agent left the other file behind in 4 of 50 runs instead of 35 of 50, and rarely without telling you. Wording the rule as an instruction leaned further (2 of 20 against 6 of 20), not yet significant. [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
@@ -614,6 +615,31 @@ See [the spike and replay](results/multistage-v3/discover/README.md), the
 [the experiment](results/rule-groups-acted-on/README.md),
 [the reviewer](results/rule-groups-reviewed/README.md) and
 [the rerun](results/rule-groups-acted-on-reviewed/README.md).
+
+**What is left is told to you, not hidden.** When an agent with a rule in
+front of it still leaves the other file unchanged, it nearly always says so
+and offers to finish. Across those two experiments, the dependent was lost
+without the agent's final message naming it in:
+- 16 of 50 runs without rules, against 0 of 50 with a perfect set;
+- 19 of 50 against 8 of 50 with the reviewer's set. Seven of those 8 were on
+  the stage no kept rule covered.
+
+That is read from a file-name match on the final message, after the fact
+([details](results/rule-gate/README.md#silent-and-told-losses-exploratory-after-the-fact)).
+
+**Write the rule as an instruction: the next benefit, promising and not yet
+established.** On the stage where the request and the rule pull apart, the
+rule was worded as "`A` and `B` must stay consistent: change both in the same
+task". The dependent was then lost in **2 of 20** runs, against **6 of 20**
+with the descriptive template. The instruction was on all 11 rules, and no
+run made a needless edit because of it. The difference is **not
+significant** (one-sided p = 0.12), and this is one stage at 20 runs per arm.
+It counts as a benefit only once a larger run fixed in advance confirms it
+([results](results/rule-mandate/README.md)).
+
+Sending the agent back at Stop for a rule left behind did **not** help. All
+7 agents sent back explained a scope choice and kept it
+([results](results/rule-gate/README.md)), so that gate is off by default.
 
 ### Optional test strength
 
