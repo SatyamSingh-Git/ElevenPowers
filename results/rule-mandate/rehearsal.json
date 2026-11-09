@@ -1,0 +1,13 @@
+{
+ "briefs": {
+  "rules": "Declared rule rule-summarise-_spent_by_category (These files keep the same rule (they share is_spending, get, catalog).) is also kept in src/budgetbook/reports/month_end.py. Change them together, or say why one should differ.\nDeclared rule rule-year_report-_carried_into (These files keep the same rule (they share closed, \"categories\", entry).) is also kept in src/budgetbook/reports/annual.py. Change them together, or say why one should differ.\nsrc/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+3 more)",
+  "described": "Declared rule rule-summarise-_spent_by_category (`summarise` (src/budgetbook/reports/month_end.py) and `_spent_by_category` (src/budgetbook/services/budgets.py) must stay consistent: change both in the same task.) is also kept in src/budgetbook/reports/month_end.py. Change them together, or say why one should differ.\nDeclared rule rule-year_report-_carried_into (`year_report` (src/budgetbook/reports/annual.py) and `_carried_into` (src/budgetbook/services/budgets.py) must stay consistent: change both in the same task.) is also kept in src/budgetbook/reports/annual.py. Change them together, or say why one should differ.\nsrc/budgetbook/services/budgets.py: imported by src/budgetbook/cli.py, src/budgetbook/services/closing.py; it imports src/budgetbook/errors.py, src/budgetbook/model/money.py, src/budgetbook/model/records.py, src/budgetbook/services/catalog.py (+3 more)"
+ },
+ "checks": {
+  "mandates cover exactly the certified rules": true,
+  "described brief carries the whole mandate": true,
+  "described brief has no template text": true,
+  "rules brief carries the template": true,
+  "rules brief has no mandate": true
+ }
+}

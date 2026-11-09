@@ -1,0 +1,15 @@
+{
+ "household_budget": {
+  "rule-add_category-rename_category": "`add_category` (src/budgetbook/services/config.py) and `rename_category` (src/budgetbook/services/renames.py) must stay consistent: change both in the same task.",
+  "rule-categorise_open_months-file_transfers": "`categorise_open_months` (src/budgetbook/services/ledger.py) and `file_transfers` (src/budgetbook/services/transfers.py) must stay consistent: change both in the same task.",
+  "rule-cmd_rule_add-find_problems": "`cmd_rule_add` (src/budgetbook/cli.py) and `find_problems` (src/budgetbook/services/health.py) must stay consistent: change both in the same task.",
+  "rule-find_problems-rename_category": "`find_problems` (src/budgetbook/services/health.py) and `rename_category` (src/budgetbook/services/renames.py) must stay consistent: change both in the same task.",
+  "rule-for_workspace-add_category": "`for_workspace` (src/budgetbook/services/catalog.py) and `add_category` (src/budgetbook/services/config.py) must stay consistent: change both in the same task.",
+  "rule-forecast-upcoming": "`forecast` (src/budgetbook/services/forecast.py) and `upcoming` (src/budgetbook/services/recurring.py) must stay consistent: change both in the same task.",
+  "rule-import_statement-categorise_open_months": "`import_statement` (src/budgetbook/services/importing.py) and `categorise_open_months` (src/budgetbook/services/ledger.py) must stay consistent: change both in the same task.",
+  "rule-import_statement-post_due": "`import_statement` (src/budgetbook/services/importing.py) and `post_due` (src/budgetbook/services/recurring.py) must stay consistent: change both in the same task.",
+  "rule-reopen_month-is_closed": "`reopen_month` (src/budgetbook/services/closing.py) and `is_closed` (src/budgetbook/storage/workspace.py) must stay consistent: change both in the same task.",
+  "rule-summarise-_spent_by_category": "`summarise` (src/budgetbook/reports/month_end.py) and `_spent_by_category` (src/budgetbook/services/budgets.py) must stay consistent: change both in the same task.",
+  "rule-year_report-_carried_into": "`year_report` (src/budgetbook/reports/annual.py) and `_carried_into` (src/budgetbook/services/budgets.py) must stay consistent: change both in the same task."
+ }
+}
