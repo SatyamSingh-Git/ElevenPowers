@@ -57,3 +57,16 @@ reading
 ([design](../docs/superpowers/specs/2026-11-09-rule-as-mandate-design.md)).
 
 So the declared-rule note stays as it is, and the gate stays opt-in and off.
+
+## The same day: the rule as an instruction
+
+The next run worded every rule as an instruction. The dependent was lost in
+2 of 20 runs, against 6 of 20 with the template (p = 0.12), with no needless
+edits ([results](../results/rule-mandate/README.md)).
+- That leans toward the instruction, but it is a null by the rule written
+  first.
+- One of the two that still declined had read the instruction and said so,
+  then left the file "on purpose and saying so below".
+
+What both runs agree on is narrower and firmer: with a rule in front of
+them, agents almost never leave a file behind without telling the user.

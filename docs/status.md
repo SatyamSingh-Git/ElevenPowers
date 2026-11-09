@@ -1,5 +1,16 @@
 # Current delivery status
 
+**2026-11-09 — A rule worded as an instruction: 2 of 20 lost against 6 of 20, not significant.**
+- On `household_budget` 7, every reviewed rule worded as "`A` and `B` must
+  stay consistent: change both in the same task" lost the dependent in 2 of
+  20 runs. The proposer's template lost it in 6 of 20 (one-sided p = 0.12,
+  $6.76) ([results](../results/rule-mandate/README.md)).
+- There was no harm: no needless `annual.py` edit, and no other group lost.
+  Both instruction-arm losses told the user why.
+- By the rule fixed in advance this is a null, so nothing changes by default.
+  It is underpowered for a 30%-to-10% effect. Only a fresh, larger,
+  pre-registered run can settle it.
+
 **2026-11-09 — A rule left behind can stop the agent once. Measured: it changed nothing, so it stays off.**
 - **Result** ([results](../results/rule-gate/README.md), $18.36, 98 runs, all
   completed):
