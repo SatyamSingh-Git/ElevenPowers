@@ -1,5 +1,20 @@
 # Current delivery status
 
+**2026-11-09 — Confirmed: a rule worded as an instruction is followed over a narrow request.**
+- **The run.** It was a fresh, sealed replication, designed before it ran
+  and never pooled with the first. 60 runs per arm on `household_budget` 7.
+- **The result.** With each rule worded "`A` and `B` must stay consistent:
+  change both in the same task", the dependent was lost in 5 of 60 runs.
+  With the descriptive template it was lost in 23 of 60 (one-sided
+  p = 8.3 × 10⁻⁵, $18.68) ([results](../results/rule-mandate-confirm/README.md)).
+- **Harm.** None: no needless `annual.py` edit, and no other group lost.
+- **The change.** `ep_milestones --propose` now writes that sentence as each
+  entry's description, in place of `TODO`. Past the note's 200-character cut
+  it drops the paths and keeps the instruction.
+  - Tests: two in `tests/test_rule_groups.py`, seen failing first.
+  - Mutation check: the fallback mutant was killed.
+- **Bounds:** one stage, one model, one generated sentence.
+
 **2026-11-09 — A rule worded as an instruction: 2 of 20 lost against 6 of 20, not significant.**
 - On `household_budget` 7, every reviewed rule worded as "`A` and `B` must
   stay consistent: change both in the same task" lost the dependent in 2 of

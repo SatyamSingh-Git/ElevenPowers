@@ -63,9 +63,14 @@ def _segment(lines, node):
                     lines[last].encode()[:node.end_col_offset].decode()])
 
 
-def _entry(files, functions, shared, command):
+def _entry(files, functions, command):
     slug = re.sub(r'[^A-Za-z0-9_-]', '-', f'rule-{functions[0]}-{functions[1]}')[:64]
-    return {'id': slug, 'description': f"TODO: name the rule both files keep (they share {', '.join(shared[:3])}).",
+    # Worded as an instruction: 5 of 60 dependents lost against 23 of 60 for a description
+    # (results/rule-mandate-confirm). The rule note shows 200 characters, so long paths go first.
+    description = f"`{functions[0]}` ({files[0]}) and `{functions[1]}` ({files[1]}) must stay consistent: change both in the same task."
+    if len(description) > 200:
+        description = f"`{functions[0]}` and `{functions[1]}` must stay consistent: change both in the same task."
+    return {'id': slug, 'description': description,
             'inputs': list(files), 'checks': [{'kind': 'test_suite', 'command': command}] if command else []}
 
 
@@ -137,7 +142,7 @@ def propose(root, *, limit=50, seconds=30):
         issues.append('no declared tests command: add a check to each entry before certifying it')
     ordered = sorted(best.items(), key=lambda item: (-item[1][0], item[0]))[:limit]
     proposals = [{'score': round(score, 4), 'files': list(files), 'functions': list(functions), 'shared': common,
-                  'entry': _entry(files, functions, common, command)}
+                  'entry': _entry(files, functions, command)}
                  for files, (score, functions, common) in ordered]
     # Same-named functions recur (`total` and `total`), and the schema refuses a repeated id.
     taken = {m['id'] for m in declared['milestones']}

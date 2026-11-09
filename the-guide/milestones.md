@@ -195,15 +195,15 @@ python plugin/bin/ep_milestones.py --project PATH --propose --limit 50
    rule, while shared `writer` and `newline` are just two CSV writers. Pairs
    already declared or marked together are not proposed again.
 2. **Certify.** Copy an entry you accept into `elevenpowers.milestones.json`,
-   replace its `TODO` description with the rule in your words, and keep or
-   change its check. An entry needs at least one check. The project's
-   declared `tests` command is filled in when there is one.
-   - **Write the description as an instruction**, for example: "`summarise`
-     and `_spent_by_category` must stay consistent: change both in the same
-     task." Worded that way, the dependent was left behind in 2 of 20 runs
-     against 6 of 20 with a plain description, with no needless edits. That
-     is promising but not yet significant (p = 0.12, one stage)
-     ([results](../results/rule-mandate/README.md)).
+   and keep or change its check. An entry needs at least one check. The
+   project's declared `tests` command is filled in when there is one.
+   - **The description is already an instruction**, for example:
+     "`summarise` (…/month_end.py) and `_spent_by_category` (…/budgets.py)
+     must stay consistent: change both in the same task." Keep that form if
+     you reword it. Where a request pulled the other way, the dependent was
+     left behind in 5 of 60 runs worded this way, against 23 of 60 with a
+     plain description, with no needless edits (p = 8.3 × 10⁻⁵, one stage,
+     Sonnet 5.5) ([results](../results/rule-mandate-confirm/README.md)).
    - Keep it under 200 characters: the note shows only the first 200.
 3. **Ground.** Before an agent first edits a file in a declared rule that
    names other files, its brief says so and names them. An agent that writes

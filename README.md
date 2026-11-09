@@ -34,7 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
-9. **Better instruction following.** The rules you write down are shown to the agent at the moment they apply, so it follows them. On test projects, it skipped a required change in 4 of 50 runs instead of 35 of 50, and almost always told you when it did. Rules written as direct instructions did even better in an early test. [Details](#behavior-evidence-across-development-milestones).
+9. **Better instruction following.** The rules you write down are shown to the agent at the moment they apply, so it follows them. On test projects, it skipped a required change in 4 of 50 runs instead of 35 of 50, and almost always told you when it did. Even when your request pulled the other way, a rule written as a direct instruction was followed about four times as often as a plain description (skipped in 5 of 60 runs against 23 of 60). [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
@@ -627,15 +627,17 @@ without the agent's final message naming it in:
 That is read from a file-name match on the final message, after the fact
 ([details](results/rule-gate/README.md#silent-and-told-losses-exploratory-after-the-fact)).
 
-**Write the rule as an instruction: the next benefit, promising and not yet
-established.** On the stage where the request and the rule pull apart, the
-rule was worded as "`A` and `B` must stay consistent: change both in the same
-task". The dependent was then lost in **2 of 20** runs, against **6 of 20**
-with the descriptive template. The instruction was on all 11 rules, and no
-run made a needless edit because of it. The difference is **not
-significant** (one-sided p = 0.12), and this is one stage at 20 runs per arm.
-It counts as a benefit only once a larger run fixed in advance confirms it
-([results](results/rule-mandate/README.md)).
+**Write the rule as an instruction: confirmed.** On the stage where the
+request and the rule pull apart, each rule was worded as "`A` and `B` must
+stay consistent: change both in the same task". The dependent was then lost
+in **5 of 60** runs, against **23 of 60** with a descriptive one (one-sided
+p = 8.3 × 10⁻⁵). That was a fresh run fixed in advance, after a first run of
+2 of 20 against 6 of 20 that leaned the same way but did not count.
+
+The instruction was on all 11 rules, and no run made a needless edit because
+of it. `ep_milestones --propose` now writes entries this way. It is one stage
+and one model (Sonnet 5.5)
+([results](results/rule-mandate-confirm/README.md)).
 
 Sending the agent back at Stop for a rule left behind did **not** help. All
 7 agents sent back explained a scope choice and kept it

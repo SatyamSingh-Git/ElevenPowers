@@ -95,7 +95,17 @@ def test_a_proposal_carries_an_entry_to_certify_with_the_declared_tests(tmp_path
     entry = propose(root)['proposals'][0]['entry']
     assert entry['inputs'] == ['app/money.py', 'app/services/pricing.py']
     assert entry['checks'] == [{'kind': 'test_suite', 'command': 'python -m pytest -q'}]
-    assert entry['description'].startswith('TODO')
+    # The wording measured in results/rule-mandate-confirm: 5 of 60 lost against 23 of 60.
+    assert entry['description'] == ('`lodging_tax` (app/money.py) and `quote_tax` (app/services/pricing.py) '
+                                     'must stay consistent: change both in the same task.')
+
+
+def test_a_proposed_instruction_still_ends_whole_when_the_paths_are_long(tmp_path):
+    from core.milestones.propose import _entry
+    deep = 'src/' + '/'.join(['package'] * 12)
+    entry = _entry((f'{deep}/a.py', f'{deep}/b.py'), ('first', 'second'), 'pytest')
+    assert len(entry['description']) <= 200
+    assert entry['description'] == '`first` and `second` must stay consistent: change both in the same task.'
 
 
 def test_without_a_declared_test_command_the_entry_says_a_check_is_needed(tmp_path):

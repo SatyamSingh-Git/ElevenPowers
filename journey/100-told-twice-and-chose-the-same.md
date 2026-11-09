@@ -70,3 +70,12 @@ edits ([results](../results/rule-mandate/README.md)).
 
 What both runs agree on is narrower and firmer: with a rule in front of
 them, agents almost never leave a file behind without telling the user.
+
+The lean was then put to a fresh run of 60 per arm, fixed in advance and
+never pooled. It held: **5 of 60 lost against 23 of 60** (p = 8.3 × 10⁻⁵),
+with no needless edits ([results](../results/rule-mandate-confirm/README.md)).
+- The gate told the agent again and changed nothing.
+- The instruction told it once, in the right words, and changed a lot.
+
+What moved the agent was not insistence but clarity about what was required.
+The proposer now writes rules that way.
